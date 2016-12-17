@@ -1,0 +1,52 @@
+{
+  "name": "pipes",
+  "version": "0.0.0",
+  "description": "Robust pipeline for creating build tools that are separated into routines and tasks.",
+  "keywords": [],
+  "scripts": {
+    "clean": "rimraf ./lib",
+    "build": "babel ./src -d ./lib",
+    "watch": "babel --watch ./src -d ./lib",
+    "lint": "eslint ./src ./tests",
+    "flow": "flow check",
+    "mocha": "mocha --opts ./mocha.opts './tests/**/*.test.js'",
+    "pretest": "yarn run clean && yarn run build",
+    "test": "yarn run mocha",
+    "posttest": "yarn run lint && yarn run flow",
+    "preversion": "yarn test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milesj/pipes.git"
+  },
+  "author": {
+    "name": "Miles Johnson",
+    "url": "http://milesj.me"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/milesj/pipes/issues"
+  },
+  "homepage": "https://github.com/milesj/pipes#readme",
+  "dependencies": {
+    "babel-runtime": "^6.18.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-eslint": "^7.1.0",
+    "babel-plugin-transform-flow-comments": "^6.17.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "chai": "^3.5.0",
+    "enzyme": "^2.6.0",
+    "eslint": "^3.12.1",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-plugin-flowtype": "^2.25.0",
+    "eslint-plugin-import": "^2.2.0",
+    "flow-bin": "^0.37.0",
+    "mocha": "^3.1.2",
+    "rimraf": "^2.5.4"
+  }
+}
