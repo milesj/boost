@@ -15,7 +15,13 @@ export default class Pipeline extends Routine {
    * Instantiate a pipeline instance from a configuration file.
    */
   static fromConfig(configPath: string): Pipeline {
-    return new Pipeline('pipes', JSON.parse(fs.readFileSync(configPath, 'utf8')));
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const pipeline = new Pipeline('pipes');
+
+    pipeline.config = config;
+    pipeline.globalConfig = config;
+
+    return pipeline;
   }
 
   /**
@@ -36,7 +42,7 @@ export default class Pipeline extends Routine {
   /**
    * Add a routine using pipeline terminology.
    */
-  pipe(routine: Routine): this {
-    return this.chain(routine);
+  pipe(...routines: Routine[]): this {
+    return this.chain(...routines);
   }
 }

@@ -17,6 +17,6 @@ export function delayForParallel(name, value) {
         end: Date.now(),
         start,
       });
-    }, random(0, 150));
+    }, random(0, 200));
   });
 }

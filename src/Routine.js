@@ -4,23 +4,26 @@
  * @flow
  */
 
+import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import executeSequentially from './executeSequentially';
 
 import type { RoutineConfig, Result, ResultPromise, Task } from './types';
 
 export default class Routine {
-  name: string = '';
   config: RoutineConfig = {};
+  globalConfig: RoutineConfig = {};
+  name: string = '';
   subroutines: Routine[] = [];
 
-  constructor(name: string, config: RoutineConfig = {}) {
+  constructor(name: string, defaultConfig: RoutineConfig = {}) {
     if (!name || typeof name !== 'string') {
       throw new TypeError('Routine name must be a valid string.');
     }
 
+    this.config = { ...defaultConfig };
+    this.globalConfig = {};
     this.name = name;
-    this.config = { ...config };
     this.subroutines = [];
   }
 
@@ -29,19 +32,11 @@ export default class Routine {
    */
   chain(...routines: Routine[]): this {
     routines.forEach((routine: Routine) => {
-      if (!(routine instanceof Routine)) {
+      if (routine instanceof Routine) {
+        this.subroutines.push(routine.configure(this.config, this.globalConfig));
+      } else {
         throw new TypeError('Routine must be an instance of `Routine`.');
       }
-
-      // Inherit configurations if they exists
-      const nestedConfig = this.config[routine.name];
-
-      if (isObject(nestedConfig)) {
-        // $FlowIssue isObject check not persisting here
-        routine.configure(nestedConfig);
-      }
-
-      this.subroutines.push(routine);
     });
 
     return this;
@@ -50,8 +45,17 @@ export default class Routine {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(config: RoutineConfig) {
-    Object.assign(this.config, config);
+  configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig): this {
+    this.globalConfig = globalConfig;
+
+    const config = parentConfig[this.name];
+
+    if (isObject(config)) {
+      // $FlowIssue Flow cannot introspect from isObject
+      merge(this.config, config);
+    }
+
+    return this;
   }
 
   /**

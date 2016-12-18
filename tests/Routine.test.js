@@ -55,6 +55,30 @@ describe('Routine', () => {
       expect(routine.subroutines).to.deep.equal([foo, bar, baz]);
     });
 
+    it('passes global configuration to all subroutines', () => {
+      routine.globalConfig = {
+        dryRun: true,
+        foo: {
+          command: 'npm run build',
+        },
+        baz: {
+          outDir: './out/',
+          compress: true,
+        },
+      };
+      routine.config = routine.globalConfig;
+
+      const foo = new Routine('foo');
+      const bar = new Routine('bar');
+      const baz = new Routine('baz');
+
+      routine.chain(foo, bar, baz);
+
+      expect(foo.globalConfig).to.deep.equal(routine.globalConfig);
+      expect(bar.globalConfig).to.deep.equal(routine.globalConfig);
+      expect(baz.globalConfig).to.deep.equal(routine.globalConfig);
+    });
+
     it('passes nested configuration to subroutines of the same name', () => {
       routine.config = {
         foo: {
@@ -111,6 +135,35 @@ describe('Routine', () => {
 
       expect(baz.config).to.deep.equal({
         deep: true,
+      });
+    });
+
+    it('deep merges configuration', () => {
+      routine.config = {
+        foo: {
+          command: 'npm run build',
+          options: {
+            babel: true,
+          },
+        },
+      };
+
+      const foo = new Routine('foo', {
+        command: '',
+        options: {
+          babel: false,
+          es2015: true,
+        },
+      });
+
+      routine.chain(foo);
+
+      expect(foo.config).to.deep.equal({
+        command: 'npm run build',
+        options: {
+          babel: true,
+          es2015: true,
+        },
       });
     });
 
