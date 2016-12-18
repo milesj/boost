@@ -40,9 +40,9 @@ export default class Pipeline extends Routine {
   }
 
   /**
-   * Add a routine using pipeline terminology.
+   * Add a routine using different terminology.
    */
-  pipe(...routines: Routine[]): this {
+  phase(...routines: Routine[]): this {
     return this.chain(...routines);
   }
 }

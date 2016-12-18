@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
+  "main": "./lib/index.js",
+  "files": [
+    "*.md",
+    "lib"
+  ],
   "scripts": {
     "clean": "rimraf ./lib",
     "build": "babel ./src -d ./lib",
@@ -12,7 +17,7 @@
     "pretest": "yarn run lint",
     "test": "yarn run mocha",
     "posttest": "yarn run flow",
-    "preversion": "yarn test"
+    "preversion": "yarn test && yarn run clean && yarn run build"
   },
   "repository": {
     "type": "git",

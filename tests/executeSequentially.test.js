@@ -41,4 +41,24 @@ describe('executeSequentially()', () => {
         ]);
       });
   });
+
+  it('handles buffers', () => {
+    return executeSequentially(Buffer.alloc(9), [
+      (buffer) => {
+        buffer.write('foo', 0, 3);
+        return buffer;
+      },
+      (buffer) => {
+        buffer.write('bar', 3, 3);
+        return buffer;
+      },
+      (buffer) => {
+        buffer.write('baz', 6, 3);
+        return buffer;
+      },
+    ], (buffer, func) => func(buffer))
+      .then((buffer) => {
+        expect(buffer.toString('utf8')).to.equal('foobarbaz');
+      });
+  });
 });
