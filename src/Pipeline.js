@@ -4,14 +4,19 @@
  * @flow
  */
 
+import fs from 'fs';
 import Routine from './Routine';
-import executeSequentially from './helpers/executeSequentially';
 
-import type { RoutineConfig, Result, ResultPromise } from './types';
+import type { Result, ResultPromise } from './types';
 
-export default class Pipeline {
-  configurations: { [key: string]: RoutineConfig } = {};
-  routines: Routine[] = [];
+export default class Pipeline extends Routine {
+
+  /**
+   * Instantiate a pipeline instance from a configuration file.
+   */
+  static fromConfig(configPath: string): Pipeline {
+    return new Pipeline('pipes', JSON.parse(fs.readFileSync(configPath, 'utf8')));
+  }
 
   /**
    * Execute the routines in sequential order while passing the result
@@ -20,32 +25,18 @@ export default class Pipeline {
    */
   execute(initialValue: Result<*> = null): ResultPromise<*> {
     try {
-      return executeSequentially(this.routines, initialValue, this.executeRoutine);
+      return this.serializeSubroutines(initialValue);
     } catch (e) {
+      // Catch all errors that happen down the tree
+      // and do something with them.
       throw e;
     }
   }
 
   /**
-   * Execute the routine with the provided value.
+   * Add a routine using pipeline terminology.
    */
-  executeRoutine(value: Result<*>, routine: Routine): ResultPromise<*> {
-    return routine.execute(value);
-  }
-
-  /**
-   * Add a new routine with a unique name.
-   */
-  pipe(name: string, routine: Routine): this {
-    if (!(routine instanceof Routine)) {
-      throw new TypeError(`Routine "${name}" must be an instance of \`Routine\`.`);
-    }
-
-    // Inherit configurations if they exists
-    routine.configure(this.configurations[name] || {});
-
-    this.routines.push(routine);
-
-    return this;
+  pipe(routine: Routine): this {
+    return this.chain(routine);
   }
 }

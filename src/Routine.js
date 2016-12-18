@@ -4,15 +4,41 @@
  * @flow
  */
 
+import isObject from './helpers/isObject';
 import executeSequentially from './helpers/executeSequentially';
 
 import type { RoutineConfig, Result, ResultPromise, Task } from './types';
 
 export default class Routine {
+  name: string = '';
   config: RoutineConfig = {};
+  subroutines: Routine[] = [];
 
-  constructor(config: RoutineConfig = {}) {
+  constructor(name: string, config: RoutineConfig = {}) {
+    this.name = name;
     this.config = { ...config };
+    this.subroutines = [];
+  }
+
+  /**
+   * Add a new subroutine within this routine.
+   */
+  chain(routine: Routine): this {
+    if (!(routine instanceof Routine)) {
+      throw new TypeError('Routine must be an instance of `Routine`.');
+    }
+
+    // Inherit configurations if they exists
+    const nestedConfig = this.config[routine.name];
+
+    if (isObject(nestedConfig)) {
+      // $FlowIssue isObject check not persisting here
+      routine.configure(nestedConfig);
+    }
+
+    this.subroutines.push(routine);
+
+    return this;
   }
 
   /**
@@ -31,24 +57,42 @@ export default class Routine {
   }
 
   /**
+   * Execute a subroutine wih the provided value.
+   */
+  executeSubroutine(value: Result<*>, routine: Routine): ResultPromise<*> {
+    return routine.execute(value);
+  }
+
+  /**
    * Execute a task (usually a method in the current routine class)
    * with the provided value. If the result is not a promise,
    * convert it to one.
    */
   executeTask(value: Result<*>, task: Task): ResultPromise<*> {
-    const nextValue = task(value);
+    const nextValue = task.call(this, value);
 
     if (nextValue instanceof Promise) {
       return nextValue;
 
     } else if (nextValue instanceof Error) {
       return Promise.reject(nextValue);
-
-    } else if (nextValue instanceof Function) {
-      return new Promise(nextValue);
     }
 
     return Promise.resolve(nextValue);
+  }
+
+  /**
+   * Execute subroutines in parralel with a value being passed to each subroutine.
+   * A combination promise will be returned as the result.
+   */
+  parallelizeSubroutines(value: Result<*>): ResultPromise<*> {
+    try {
+      return Promise.all(this.subroutines.map(routine => (
+        this.executeSubroutine(value, routine)
+      )));
+    } catch (e) {
+      throw e;
+    }
   }
 
   /**
@@ -64,8 +108,18 @@ export default class Routine {
   }
 
   /**
-   * Execute tasks in sequential (serial) order with the output of each
-   * task being passed to the next one in the chain.
+   * Execute subroutines in sequential (serial) order.
+   */
+  serializeSubroutines(value: Result<*>): ResultPromise<*> {
+    try {
+      return executeSequentially(this.subroutines, value, this.executeSubroutine);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Execute tasks in sequential (serial) order.
    */
   serializeTasks(value: Result<*>, tasks: Task[]): ResultPromise<*> {
     try {
