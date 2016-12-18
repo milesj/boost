@@ -10,9 +10,9 @@
     "lint": "eslint ./src ./tests",
     "flow": "flow check",
     "mocha": "mocha --opts ./mocha.opts './tests/**/*.test.js'",
-    "pretest": "yarn run clean && yarn run build",
+    "pretest": "yarn run lint",
     "test": "yarn run mocha",
-    "posttest": "yarn run lint && yarn run flow",
+    "posttest": "yarn run flow",
     "preversion": "yarn test"
   },
   "repository": {
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/milesj/pipes#readme",
   "dependencies": {
     "babel-runtime": "^6.18.0",
-    "lodash-es": "^4.17.2"
+    "lodash": "^4.17.2"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

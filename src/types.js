@@ -14,4 +14,4 @@ export type Result<T> = T;
 
 export type ResultPromise<T> = Promise<Result<T>>;
 
-export type Task = (value: Result<*>) => Result<*> | ResultPromise<*>;
+export type Task<T> = (value: Result<T>) => Result<T> | ResultPromise<T>;

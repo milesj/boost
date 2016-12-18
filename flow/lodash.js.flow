@@ -1,0 +1,3 @@
+declare module "lodash/isObject" {
+  declare export default function isObject(mixed): boolean;
+}

@@ -4,7 +4,7 @@
  * @flow
  */
 
-import isObject from 'lodash-es/isObject';
+import isObject from 'lodash/isObject';
 import executeSequentially from './executeSequentially';
 
 import type { RoutineConfig, Result, ResultPromise, Task } from './types';
@@ -15,6 +15,10 @@ export default class Routine {
   subroutines: Routine[] = [];
 
   constructor(name: string, config: RoutineConfig = {}) {
+    if (!name || typeof name !== 'string') {
+      throw new TypeError('Routine name must be a valid string.');
+    }
+
     this.name = name;
     this.config = { ...config };
     this.subroutines = [];
@@ -23,20 +27,22 @@ export default class Routine {
   /**
    * Add a new subroutine within this routine.
    */
-  chain(routine: Routine): this {
-    if (!(routine instanceof Routine)) {
-      throw new TypeError('Routine must be an instance of `Routine`.');
-    }
+  chain(...routines: Routine[]): this {
+    routines.forEach((routine: Routine) => {
+      if (!(routine instanceof Routine)) {
+        throw new TypeError('Routine must be an instance of `Routine`.');
+      }
 
-    // Inherit configurations if they exists
-    const nestedConfig = this.config[routine.name];
+      // Inherit configurations if they exists
+      const nestedConfig = this.config[routine.name];
 
-    if (isObject(nestedConfig)) {
-      // $FlowIssue isObject check not persisting here
-      routine.configure(nestedConfig);
-    }
+      if (isObject(nestedConfig)) {
+        // $FlowIssue isObject check not persisting here
+        routine.configure(nestedConfig);
+      }
 
-    this.subroutines.push(routine);
+      this.subroutines.push(routine);
+    });
 
     return this;
   }
@@ -52,33 +58,22 @@ export default class Routine {
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  execute(value: Result<*>): ResultPromise<*> {
-    return Promise.resolve(value);
+  execute(value: Result<*>): Result<*> {
+    return value;
   }
 
   /**
    * Execute a subroutine wih the provided value.
    */
-  executeSubroutine(value: Result<*>, routine: Routine): ResultPromise<*> {
+  executeSubroutine(value: Result<*>, routine: Routine): Result<*> {
     return routine.execute(value);
   }
 
   /**
-   * Execute a task (usually a method in the current routine class)
-   * with the provided value. If the result is not a promise,
-   * convert it to one.
+   * Execute a task (a method in the current routine) with the provided value.
    */
-  executeTask(value: Result<*>, task: Task): ResultPromise<*> {
-    const nextValue = task.call(this, value);
-
-    if (nextValue instanceof Promise) {
-      return nextValue;
-
-    } else if (nextValue instanceof Error) {
-      return Promise.reject(nextValue);
-    }
-
-    return Promise.resolve(nextValue);
+  executeTask(value: Result<*>, task: Task<*>): Result<*> {
+    return task.call(this, value);
   }
 
   /**
@@ -86,46 +81,28 @@ export default class Routine {
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines(value: Result<*>): ResultPromise<*> {
-    try {
-      return Promise.all(this.subroutines.map(routine => (
-        this.executeSubroutine(value, routine)
-      )));
-    } catch (e) {
-      throw e;
-    }
+    return Promise.all(this.subroutines.map(routine => this.executeSubroutine(value, routine)));
   }
 
   /**
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: Result<*>, tasks: Task[]): ResultPromise<*> {
-    try {
-      return Promise.all(tasks.map(task => this.executeTask(value, task)));
-    } catch (e) {
-      throw e;
-    }
+  parallelizeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
+    return Promise.all(tasks.map(task => this.executeTask(value, task)));
   }
 
   /**
    * Execute subroutines in sequential (serial) order.
    */
   serializeSubroutines(value: Result<*>): ResultPromise<*> {
-    try {
-      return executeSequentially(this.subroutines, value, this.executeSubroutine);
-    } catch (e) {
-      throw e;
-    }
+    return executeSequentially(value, this.subroutines, this.executeSubroutine);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: Result<*>, tasks: Task[]): ResultPromise<*> {
-    try {
-      return executeSequentially(tasks, value, this.executeTask);
-    } catch (e) {
-      throw e;
-    }
+  serializeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
+    return executeSequentially(value, tasks, this.executeTask);
   }
 }
