@@ -1,7 +1,7 @@
 {
   "name": "pipes",
   "version": "0.0.0",
-  "description": "Robust pipeline for creating build tools that are separated into routines and tasks.",
+  "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
   "scripts": {
     "clean": "rimraf ./lib",
