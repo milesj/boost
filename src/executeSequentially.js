@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type { Result, ResultPromise } from '../types';
+import type { Result, ResultPromise } from './types';
 
 /**
  * Execute processes in sequential order with the output of each
@@ -16,19 +16,7 @@ export default function executeSequentially<T>(
   initialValue: Result<*>,
   accumulator: (value: Result<*>, process: T) => ResultPromise<*>,
 ): ResultPromise<*> {
-  const promise = Promise.resolve(initialValue);
-
-  processes.forEach((process: T) => {
-    promise.then((value: Result<*>) => {
-      const nextValue = accumulator(value, process);
-
-      if (!(nextValue instanceof Promise)) {
-        throw new TypeError('Value returned from an execution must be a `Promise`.');
-      }
-
-      return nextValue;
-    });
-  });
-
-  return promise;
+  return processes.reduce((promise: ResultPromise<*>, process: T) => (
+    promise.then((value: Result<*>) => accumulator(value, process))
+  ), Promise.resolve(initialValue));
 }

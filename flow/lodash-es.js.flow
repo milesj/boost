@@ -1,0 +1,3 @@
+declare module "lodash-es" {
+  declare export function isObject(Object): boolean;
+}

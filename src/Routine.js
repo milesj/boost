@@ -4,8 +4,8 @@
  * @flow
  */
 
-import isObject from './helpers/isObject';
-import executeSequentially from './helpers/executeSequentially';
+import isObject from 'lodash-es/isObject';
+import executeSequentially from './executeSequentially';
 
 import type { RoutineConfig, Result, ResultPromise, Task } from './types';
 
