@@ -4,6 +4,8 @@
  * @flow
  */
 
+import chalk from 'chalk';
+import readline from 'readline';
 import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import executeSequentially from './executeSequentially';
@@ -12,6 +14,7 @@ import type { RoutineConfig, Result, ResultPromise, Task } from './types';
 
 export default class Routine {
   config: RoutineConfig = {};
+  console: readline.Interface;
   globalConfig: RoutineConfig = {};
   name: string = '';
   subroutines: Routine[] = [];
@@ -25,6 +28,22 @@ export default class Routine {
     this.globalConfig = {};
     this.name = name;
     this.subroutines = [];
+    this.console = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+  }
+
+  /**
+   * Request input from the console.
+   */
+  askQuestion(question: string): Promise<string> {
+    return new Promise((resolve: (string) => void) => {
+      this.console.question(chalk.magenta(question), (answer: string) => {
+        resolve(answer);
+        this.console.close();
+      });
+    });
   }
 
   /**
@@ -78,6 +97,22 @@ export default class Routine {
    */
   executeTask(value: Result<*>, task: Task<*>): Result<*> {
     return task.call(this, value);
+  }
+
+  /**
+   * Output a message to the console.
+   */
+  log(message: string): this {
+    this.console.write(message);
+
+    return this;
+  }
+
+  /**
+   * Output a title for the current routing phase.
+   */
+  logTitle(step: string, message: string): this {
+    return this.log(`${chalk.gray(`[${step}]`)} ${chalk.reset(message)}`);
   }
 
   /**
