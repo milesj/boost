@@ -3,5 +3,6 @@
 --reporter dot
 --ui bdd
 --colors
+--check-leaks
 --full-trace
 --recursive

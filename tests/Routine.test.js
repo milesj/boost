@@ -198,20 +198,6 @@ describe('Routine', () => {
           expect(error).to.deep.equal(new Error('Failure'));
         });
     });
-
-    it('executes all subroutines in parallel', () => {
-      const foo = new ParralelSubsRoutine('foo');
-      const bar = new ParralelSubsRoutine('bar');
-      const baz = new ParralelSubsRoutine('baz');
-
-      routine.chain(foo).chain(bar).chain(baz);
-
-      return routine.parallelizeSubroutines(123)
-        .then((values) => {
-          expect(values.every(v => v.start === values[0].start)).to.equal(true);
-          expect(values.some(v => v.end !== values[0].end)).to.equal(true);
-        });
-    });
   });
 
   describe('parallelizeTasks()', () => {
@@ -229,19 +215,6 @@ describe('Routine', () => {
         .catch((error) => {
           expect(error).to.deep.equal(new Error('Failure'));
         });
-    });
-
-    it('executes all tasks in parallel', () => {
-      routine = new ParralelTasksRoutine('base');
-
-      return routine.parallelizeTasks(123, [
-        routine.foo,
-        routine.bar,
-        routine.baz,
-      ]).then((values) => {
-        expect(values.every(v => v.start === values[0].start)).to.equal(true);
-        expect(values.some(v => v.end !== values[0].end)).to.equal(true);
-      });
     });
   });
 

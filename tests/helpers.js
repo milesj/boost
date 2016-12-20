@@ -9,14 +9,8 @@ export function delayForParallel(name, value) {
       return;
     }
 
-    const start = Date.now();
-
     setTimeout(() => {
-      resolve({
-        key: `${value}-${name}`,
-        end: Date.now(),
-        start,
-      });
+      resolve(value);
     }, random(0, 200));
   });
 }
