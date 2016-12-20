@@ -1,0 +1,7 @@
+declare module "chalk" {
+  declare export default {
+    gray(msg: string): string,
+    magenta(msg: string): string,
+    reset(msg: string): string,
+  };
+}
