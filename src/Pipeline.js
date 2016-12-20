@@ -16,7 +16,7 @@ export default class Pipeline extends Routine {
    */
   static fromConfig(configPath: string): Pipeline {
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    const pipeline = new Pipeline('subspace');
+    const pipeline = new Pipeline('boost');
 
     pipeline.config = config;
     pipeline.globalConfig = config;

@@ -1,5 +1,5 @@
 {
-  "name": "subspace",
+  "name": "boost",
   "version": "0.0.0",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/milesj/subspace.git"
+    "url": "git+https://github.com/milesj/boost.git"
   },
   "author": {
     "name": "Miles Johnson",
@@ -29,9 +29,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/milesj/subspace/issues"
+    "url": "https://github.com/milesj/boost/issues"
   },
-  "homepage": "https://github.com/milesj/subspace#readme",
+  "homepage": "https://github.com/milesj/boost#readme",
   "dependencies": {
     "babel-runtime": "^6.18.0",
     "chalk": "^1.1.3",
