@@ -4,8 +4,9 @@
  * @flow
  */
 
+import CLI from './CLI';
 import Pipeline from './Pipeline';
 import Routine from './Routine';
 
-export { Routine };
-export default Pipeline;
+export { Pipeline, Routine };
+export default CLI;

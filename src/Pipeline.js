@@ -4,24 +4,17 @@
  * @flow
  */
 
-import fs from 'fs';
 import Routine from './Routine';
 
-import type { Result, ResultPromise } from './types';
+import type { RoutineConfig, Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
 
-  /**
-   * Instantiate a pipeline instance from a configuration file.
-   */
-  static fromConfig(configPath: string): Pipeline {
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    const pipeline = new Pipeline('boost');
+  constructor(name: string, config: RoutineConfig = {}) {
+    super(name, config);
 
-    pipeline.config = config;
-    pipeline.globalConfig = config;
-
-    return pipeline;
+    // Inherit global config as well
+    this.globalConfig = config;
   }
 
   /**
@@ -30,13 +23,7 @@ export default class Pipeline extends Routine {
    * be passed by the consumer.
    */
   execute(initialValue: Result<*> = null): ResultPromise<*> {
-    try {
-      return this.serializeSubroutines(initialValue);
-    } catch (e) {
-      // Catch all errors that happen down the tree
-      // and do something with them.
-      throw e;
-    }
+    return this.serializeSubroutines(initialValue);
   }
 
   /**

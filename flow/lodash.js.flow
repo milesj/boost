@@ -1,7 +1,7 @@
-declare module "lodash/merge" {
-  declare export default function merge(Object, Object): Object;
+declare module 'lodash/merge' {
+  declare export default function merge(obj: Object, obj: Object): Object;
 }
 
-declare module "lodash/isObject" {
-  declare export default function isObject(mixed): boolean;
+declare module 'lodash/isObject' {
+  declare export default function isObject(value: mixed): boolean;
 }

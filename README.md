@@ -8,7 +8,7 @@ Robust pipeline for creating build tools that separate logic into routines and t
 If Babel + Babili was created using this library, the implementation would look something like the following.
 
 ```js
-Pipeline.fromConfig('./.babelrc')
+(new Pipeline('babel', require('./.babelrc')))
   .phase(new LocateRoutine('locate'))        // Glob initial files
   .phase(new ResolveRoutine('resolve'))      // Resolve dependency lookups
   .phase(new TransformRoutine('transform'))  // Apply transformations
