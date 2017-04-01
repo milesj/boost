@@ -14,4 +14,6 @@ export type Result<T> = T;
 
 export type ResultPromise<T> = Promise<Result<T>>;
 
+export type ResultAccumulator<T1, T2> = (value: Result<T1>, item: T2) => ResultPromise<*>;
+
 export type Task<T> = (value: Result<T>) => Result<T> | ResultPromise<T>;

@@ -4,17 +4,13 @@
  * @flow
  */
 
-import chalk from 'chalk';
-import readline from 'readline';
 import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
-import executeSequentially from './executeSequentially';
 
-import type { RoutineConfig, Result, ResultPromise, Task } from './types';
+import type { RoutineConfig, Result, ResultPromise, ResultAccumulator, Task } from './types';
 
 export default class Routine {
   config: RoutineConfig = {};
-  console: readline.Interface;
   globalConfig: RoutineConfig = {};
   name: string = '';
   subroutines: Routine[] = [];
@@ -25,25 +21,7 @@ export default class Routine {
     }
 
     this.config = { ...defaultConfig };
-    this.globalConfig = {};
     this.name = name;
-    this.subroutines = [];
-    this.console = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-  }
-
-  /**
-   * Request input from the console.
-   */
-  askQuestion(question: string): Promise<string> {
-    return new Promise((resolve: (string) => void) => {
-      this.console.question(chalk.magenta(question), (answer: string) => {
-        resolve(answer);
-        this.console.close();
-      });
-    });
   }
 
   /**
@@ -66,39 +44,24 @@ export default class Routine {
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  execute(value: Result<*>): Result<*> {
-    return value;
+  execute(value: Result<*>): ResultPromise<*> {
+    return this.wrapPromise(value);
   }
 
   /**
    * Execute a subroutine wih the provided value.
    */
-  executeSubroutine(value: Result<*>, routine: Routine): Result<*> {
-    return routine.execute(value);
-  }
+  executeSubroutine = (value: Result<*>, routine: Routine): ResultPromise<*> => (
+    this.wrapPromise(routine.execute(value))
+  );
 
   /**
-   * Execute a task (a method in the current routine) with the provided value.
+   * Execute a task, a method in the current routine, or a function,
+   * with the provided value.
    */
-  executeTask(value: Result<*>, task: Task<*>): Result<*> {
-    return task.call(this, value);
-  }
-
-  /**
-   * Output a message to the console.
-   */
-  log(message: string): this {
-    this.console.write(message);
-
-    return this;
-  }
-
-  /**
-   * Output a title for the current routing phase.
-   */
-  logTitle(step: string, message: string): this {
-    return this.log(`${chalk.gray(`[${step}]`)} ${chalk.reset(message)}`);
-  }
+  executeTask = (value: Result<*>, task: Task<*>): ResultPromise<*> => (
+    this.wrapPromise(task.call(this, value))
+  );
 
   /**
    * Execute subroutines in parralel with a value being passed to each subroutine.
@@ -132,16 +95,38 @@ export default class Routine {
   }
 
   /**
+   * Execute processes in sequential order with the output of each
+   * task being passed to the next promise in the chain. Utilize the
+   * `accumulator` function to execute the list of processes.
+   */
+  serialize<T>(
+    initialValue: Result<*>,
+    items: T[],
+    accumulator: ResultAccumulator<*, T>,
+  ): ResultPromise<*> {
+    return items.reduce((promise: ResultPromise<*>, item: T) => (
+      promise.then((value: Result<*>) => accumulator(value, item))
+    ), Promise.resolve(initialValue));
+  }
+
+  /**
    * Execute subroutines in sequential (serial) order.
    */
   serializeSubroutines(value: Result<*>): ResultPromise<*> {
-    return executeSequentially(value, this.subroutines, this.executeSubroutine);
+    return this.serialize(value, this.subroutines, this.executeSubroutine);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
   serializeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
-    return executeSequentially(value, tasks, this.executeTask);
+    return this.serialize(value, tasks, this.executeTask);
+  }
+
+  /**
+   * Wrap a value in a promise if it has not already been.
+   */
+  wrapPromise(value: Result<*>): ResultPromise<*> {
+    return (value instanceof Promise) ? value : Promise.resolve(value);
   }
 }
