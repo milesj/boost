@@ -1,10 +1,4 @@
 import Routine from '../src/Routine';
-import {
-  ParralelSubsRoutine,
-  ParralelTasksRoutine,
-  SerializeSubsRoutine,
-  SerializeTasksRoutine,
-} from './stubs';
 
 describe('Routine', () => {
   let routine;
@@ -68,12 +62,18 @@ describe('Routine', () => {
   });
 
   describe('parallelizeSubroutines()', () => {
+    class FailureSubRoutine extends Routine {
+      execute() {
+        throw new Error('Failure');
+      }
+    }
+
     it('returns a resolved promise if no subroutines exist', async () => {
       expect(await routine.parallelizeSubroutines('abc')).toEqual([]);
     });
 
     it('captures and rethrows errors that occur down the chain', async () => {
-      routine.pipe(new ParralelSubsRoutine('qux'));
+      routine.pipe(new FailureSubRoutine('failure'));
 
       try {
         await routine.parallelizeSubroutines('abc');
@@ -84,18 +84,38 @@ describe('Routine', () => {
   });
 
   describe('parallelizeTasks()', () => {
+    class FailureTaskRoutine extends Routine {
+      foo(value) {
+        return `${value}-foo`;
+      }
+
+      bar() {
+        throw new Error('Failure');
+      }
+    }
+
     it('returns a resolved promise if no tasks exist', async () => {
       expect(await routine.parallelizeTasks('abc', [])).toEqual([]);
     });
 
     it('captures and rethrows errors that occur down the chain', async () => {
-      routine = new ParralelTasksRoutine('base');
+      routine = new FailureTaskRoutine('failure');
 
       try {
-        await routine.parallelizeTasks('abc', [routine.qux]);
+        await routine.parallelizeTasks('abc', [routine.foo, routine.bar]);
       } catch (error) {
         expect(error).toEqual(new Error('Failure'));
       }
+    });
+
+    it('supports normal functions', async () => {
+      expect(await routine.parallelizeTasks('abc', [
+        value => value.toUpperCase(),
+        value => `${value}${value}`,
+      ])).toEqual([
+        'ABC',
+        'abcabc',
+      ]);
     });
   });
 
@@ -295,6 +315,15 @@ describe('Routine', () => {
   });
 
   describe('serializeSubroutines()', () => {
+    class SerializeSubsRoutine extends Routine {
+      execute(value) {
+        return Promise.resolve({
+          count: value.count * this.config.multiplier,
+          key: value.key + this.name,
+        });
+      }
+    }
+
     it('returns initial value if no tasks', async () => {
       routine = new SerializeSubsRoutine('base');
 
@@ -316,6 +345,16 @@ describe('Routine', () => {
   });
 
   describe('serializeTasks()', () => {
+    class SerializeTasksRoutine extends Routine {
+      duplicate(value) {
+        return `${value}${value}`;
+      }
+
+      upperCase(value) {
+        return value.toUpperCase();
+      }
+    }
+
     it('returns initial value if no tasks', async () => {
       routine = new SerializeTasksRoutine('base');
 
@@ -328,8 +367,14 @@ describe('Routine', () => {
       expect(await routine.serializeTasks('foo', [
         routine.duplicate,
         routine.upperCase,
-        routine.lowerFirst,
-      ])).toBe('fOOFOO');
+      ])).toBe('FOOFOO');
+    });
+
+    it('supports normal functions', async () => {
+      expect(await routine.serializeTasks('foo', [
+        value => `${value}${value}`,
+        value => value.toUpperCase(),
+      ])).toBe('FOOFOO');
     });
   });
 });

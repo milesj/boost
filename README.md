@@ -9,11 +9,11 @@ If Babel + Babili was created using this library, the implementation would look 
 
 ```js
 (new Pipeline('babel', require('./.babelrc')))
-  .phase(new LocateRoutine('locate'))        // Glob initial files
-  .phase(new ResolveRoutine('resolve'))      // Resolve dependency lookups
-  .phase(new TransformRoutine('transform'))  // Apply transformations
-  .phase(new MinifyRoutine('minify'))        // Apply minification
-  .phase(new BundleRoutine('bundle', {       // Bundle and or output the files
+  .pipe(new LocateRoutine('locate'))        // Glob initial files
+  .pipe(new ResolveRoutine('resolve'))      // Resolve dependency lookups
+  .pipe(new TransformRoutine('transform'))  // Apply transformations
+  .pipe(new MinifyRoutine('minify'))        // Apply minification
+  .pipe(new BundleRoutine('bundle', {       // Bundle and or output the files
     out: './lib',
   }))
   .execute('./src');
