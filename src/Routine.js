@@ -47,21 +47,6 @@ export default class Routine {
   }
 
   /**
-   * Add a new subroutine within this routine.
-   */
-  chain(...routines: Routine[]): this {
-    routines.forEach((routine: Routine) => {
-      if (routine instanceof Routine) {
-        this.subroutines.push(routine.configure(this.config, this.globalConfig));
-      } else {
-        throw new TypeError('Routine must be an instance of `Routine`.');
-      }
-    });
-
-    return this;
-  }
-
-  /**
    * Configure the routine after it has been instantiated.
    */
   configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig): this {
@@ -129,6 +114,21 @@ export default class Routine {
    */
   parallelizeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
     return Promise.all(tasks.map(task => this.executeTask(value, task)));
+  }
+
+  /**
+   * Add a new subroutine within this routine.
+   */
+  pipe(...routines: Routine[]): this {
+    routines.forEach((routine: Routine) => {
+      if (routine instanceof Routine) {
+        this.subroutines.push(routine.configure(this.config, this.globalConfig));
+      } else {
+        throw new TypeError('Routine must be an instance of `Routine`.');
+      }
+    });
+
+    return this;
   }
 
   /**

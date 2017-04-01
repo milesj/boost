@@ -7,4 +7,3 @@
 ./.flowconfig
 ./.gitignore
 ./.travis.yml
-./mocha.opts

@@ -3,7 +3,7 @@
   "extends": "airbnb-base",
   "plugins": ["flowtype"],
   "env": {
-    "mocha": true,
+    "jest": true,
     "node": true
   },
   "parserOptions": {

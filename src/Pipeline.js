@@ -25,11 +25,4 @@ export default class Pipeline extends Routine {
   execute(initialValue: Result<*> = null): ResultPromise<*> {
     return this.serializeSubroutines(initialValue);
   }
-
-  /**
-   * Add a routine using different terminology.
-   */
-  phase(...routines: Routine[]): this {
-    return this.chain(...routines);
-  }
 }

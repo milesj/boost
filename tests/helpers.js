@@ -9,8 +9,6 @@ export function delayForParallel(name, value) {
       return;
     }
 
-    setTimeout(() => {
-      resolve(value);
-    }, random(0, 200));
+    resolve(value);
   });
 }

@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type { Result, ResultPromise } from './types';
+import type { ResultPromise } from './types';
 
 /**
  * Execute processes in sequential order with the output of each
@@ -12,11 +12,11 @@ import type { Result, ResultPromise } from './types';
  * `accumulator` function to execute the list of processes.
  */
 export default function executeSequentially<T>(
-  initialValue: Result<*>,
-  processes: T[],
-  accumulator: (value: Result<*>, process: T) => ResultPromise<*>,
-): ResultPromise<*> {
-  return processes.reduce((promise: ResultPromise<*>, process: T) => (
-    promise.then((value: Result<*>) => accumulator(value, process))
+  initialValue: T,
+  items: T[],
+  accumulator: (value: T, item: T) => ResultPromise<T>,
+): ResultPromise<T> {
+  return items.reduce((promise: ResultPromise<T>, item: T) => (
+    promise.then((value: T) => accumulator(value, item))
   ), Promise.resolve(initialValue));
 }

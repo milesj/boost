@@ -1,11 +1,10 @@
-import { expect } from 'chai';
 import Routine from '../src/Routine';
 import {
   ParralelSubsRoutine,
   ParralelTasksRoutine,
   SerializeSubsRoutine,
   SerializeTasksRoutine,
-} from './mocks';
+} from './stubs';
 
 describe('Routine', () => {
   let routine;
@@ -16,23 +15,23 @@ describe('Routine', () => {
 
   describe('constructor()', () => {
     it('throws an error if no name is provided', () => {
-      expect(() => new Routine()).to.throw(TypeError);
+      expect(() => new Routine()).toThrowError('Routine name must be a valid string.');
     });
 
     it('throws an error if name is not a string', () => {
-      expect(() => new Routine(123)).to.throw(TypeError);
+      expect(() => new Routine(123)).toThrowError('Routine name must be a valid string.');
     });
 
     it('inherits default config', () => {
       routine = new Routine('base', { foo: 123 });
 
-      expect(routine.config).to.deep.equal({ foo: 123 });
+      expect(routine.config).toEqual({ foo: 123 });
     });
   });
 
-  describe('chain()', () => {
+  describe('pipe()', () => {
     it('throws an error if a non-Routine is passed', () => {
-      expect(() => routine.chain('foo')).to.throw(TypeError);
+      expect(() => routine.pipe('foo')).toThrowError('a');
     });
 
     it('sets subroutines in order', () => {
@@ -40,9 +39,9 @@ describe('Routine', () => {
       const bar = new Routine('bar');
       const baz = new Routine('baz');
 
-      routine.chain(foo).chain(bar).chain(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
-      expect(routine.subroutines).to.deep.equal([foo, bar, baz]);
+      expect(routine.subroutines).toEqual([foo, bar, baz]);
     });
 
     it('sets subroutines via rest arguments', () => {
@@ -50,9 +49,9 @@ describe('Routine', () => {
       const bar = new Routine('bar');
       const baz = new Routine('baz');
 
-      routine.chain(foo, bar, baz);
+      routine.pipe(foo, bar, baz);
 
-      expect(routine.subroutines).to.deep.equal([foo, bar, baz]);
+      expect(routine.subroutines).toEqual([foo, bar, baz]);
     });
 
     it('passes global configuration to all subroutines', () => {
@@ -72,11 +71,11 @@ describe('Routine', () => {
       const bar = new Routine('bar');
       const baz = new Routine('baz');
 
-      routine.chain(foo, bar, baz);
+      routine.pipe(foo, bar, baz);
 
-      expect(foo.globalConfig).to.deep.equal(routine.globalConfig);
-      expect(bar.globalConfig).to.deep.equal(routine.globalConfig);
-      expect(baz.globalConfig).to.deep.equal(routine.globalConfig);
+      expect(foo.globalConfig).toEqual(routine.globalConfig);
+      expect(bar.globalConfig).toEqual(routine.globalConfig);
+      expect(baz.globalConfig).toEqual(routine.globalConfig);
     });
 
     it('passes nested configuration to subroutines of the same name', () => {
@@ -94,13 +93,13 @@ describe('Routine', () => {
       const bar = new Routine('bar');
       const baz = new Routine('baz');
 
-      routine.chain(foo).chain(bar).chain(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
-      expect(foo.config).to.deep.equal({
+      expect(foo.config).toEqual({
         command: 'npm run build',
       });
 
-      expect(baz.config).to.deep.equal({
+      expect(baz.config).toEqual({
         outDir: './out/',
         compress: true,
       });
@@ -121,11 +120,11 @@ describe('Routine', () => {
       const bar = new Routine('bar');
       const baz = new Routine('baz');
 
-      routine.chain(foo);
-      foo.chain(bar);
-      bar.chain(baz);
+      routine.pipe(foo);
+      foo.pipe(bar);
+      bar.pipe(baz);
 
-      expect(foo.config).to.deep.equal({
+      expect(foo.config).toEqual({
         bar: {
           baz: {
             deep: true,
@@ -133,7 +132,7 @@ describe('Routine', () => {
         },
       });
 
-      expect(baz.config).to.deep.equal({
+      expect(baz.config).toEqual({
         deep: true,
       });
     });
@@ -156,9 +155,9 @@ describe('Routine', () => {
         },
       });
 
-      routine.chain(foo);
+      routine.pipe(foo);
 
-      expect(foo.config).to.deep.equal({
+      expect(foo.config).toEqual({
         command: 'npm run build',
         options: {
           babel: true,
@@ -174,46 +173,48 @@ describe('Routine', () => {
 
       const foo = new Routine('foo');
 
-      routine.chain(foo);
+      routine.pipe(foo);
 
-      expect(foo.config).to.deep.equal({});
+      expect(foo.config).toEqual({});
     });
   });
 
   describe('parallelizeSubroutines()', () => {
     it('returns a resolved promise if no subroutines exist', () => {
-      return routine.parallelizeSubroutines('abc')
+      routine.parallelizeSubroutines('abc')
         .then((value) => {
-          expect(value).to.deep.equal([]);
+          console.log(1);
+          expect(value).toEqual([]);
         });
     });
 
     it('captures and rethrows errors that occur down the chain', () => {
       const qux = new ParralelSubsRoutine('qux');
 
-      routine.chain(qux);
-
-      return routine.parallelizeSubroutines('abc')
+      routine.pipe(qux);
+      routine.parallelizeSubroutines('abc')
         .catch((error) => {
-          expect(error).to.deep.equal(new Error('Failure'));
+          console.log(2);
+          expect(error).toEqual(new Error('Failure'));
         });
     });
   });
 
   describe('parallelizeTasks()', () => {
     it('returns a resolved promise if no tasks exist', () => {
-      return routine.parallelizeTasks('abc', [])
+      routine.parallelizeTasks('abc', [])
         .then((value) => {
-          expect(value).to.deep.equal([]);
+          console.log(3);
+          expect(value).toEqual([]);
         });
     });
 
     it('captures and rethrows errors that occur down the chain', () => {
       routine = new ParralelTasksRoutine('base');
-
-      return routine.parallelizeTasks('abc', [routine.qux])
+      routine.parallelizeTasks('abc', [routine.qux])
         .catch((error) => {
-          expect(error).to.deep.equal(new Error('Failure'));
+          console.log(4);
+          expect(error).toEqual(new Error('Failure'));
         });
     });
   });
@@ -221,10 +222,10 @@ describe('Routine', () => {
   describe('serializeSubroutines()', () => {
     it('returns initial value if no tasks', () => {
       routine = new SerializeSubsRoutine('base');
-
-      return routine.serializeSubroutines(123)
+      routine.serializeSubroutines(123)
         .then((value) => {
-          expect(value).to.equal(123);
+          console.log(5);
+          expect(value).toBe(123);
         });
     });
 
@@ -233,11 +234,11 @@ describe('Routine', () => {
       const bar = new SerializeSubsRoutine('bar', { multiplier: 3 });
       const baz = new SerializeSubsRoutine('baz', { multiplier: 1 });
 
-      routine.chain(foo, bar, baz);
-
-      return routine.serializeSubroutines({ count: 6, key: '' })
+      routine.pipe(foo, bar, baz);
+      routine.serializeSubroutines({ count: 6, key: '' })
         .then((value) => {
-          expect(value).to.deep.equal({
+          console.log(6);
+          expect(value).toEqual({
             count: 36,
             key: 'foobarbaz',
           });
@@ -248,22 +249,22 @@ describe('Routine', () => {
   describe('serializeTasks()', () => {
     it('returns initial value if no tasks', () => {
       routine = new SerializeTasksRoutine('base');
-
-      return routine.serializeTasks(123, [])
+      routine.serializeTasks(123, [])
         .then((value) => {
-          expect(value).to.equal(123);
+          console.log(7);
+          expect(value).toBe(123);
         });
     });
 
     it('executes all passed tasks in sequential order', () => {
       routine = new SerializeTasksRoutine('base');
-
-      return routine.serializeTasks('foo', [
+      routine.serializeTasks('foo', [
         routine.duplicate,
         routine.upperCase,
         routine.lowerFirst,
       ]).then((value) => {
-        expect(value).to.equal('fOOFOO');
+        console.log(8);
+        expect(value).toBe('fOOFOO');
       });
     });
   });
