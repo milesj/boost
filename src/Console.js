@@ -78,6 +78,15 @@ export default class Console {
   }
 
   /**
+   * Logs a debug message based on a conditional.
+   */
+  invariant(condition: boolean, message: string, pass: string, fail: string): this {
+    this.debug(`${message}: ${condition ? chalk.green(pass) : chalk.red(fail)}`);
+
+    return this;
+  }
+
+  /**
    * Output a message to the client.
    */
   log(message: string, newline: boolean = true): this {
