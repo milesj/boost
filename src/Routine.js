@@ -27,21 +27,29 @@ export default class Routine {
   }
 
   /**
+   * Called once the routine has been configured and is ready to execute.
+   */
+  bootstrap() {}
+
+  /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig): this {
+  configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig, console: Console): this {
     this.globalConfig = globalConfig;
+
+    // Inhert console from root
+    this.console = console;
 
     // Inherit config from parent
     const config = parentConfig[this.name];
 
     if (isObject(config)) {
-      // $FlowIssue Flow cannot introspect from isObject
+      // $FlowIgnore Flow cannot introspect from isObject
       merge(this.config, config);
     }
 
-    // Initialize setup
-    this.setup();
+    // Initialize routine (this must be last!)
+    this.bootstrap();
 
     return this;
   }
@@ -51,14 +59,14 @@ export default class Routine {
    * This method *must* be overridden in a subclass.
    */
   execute(value: Result<*>): ResultPromise<*> {
-    return this.wrapPromise(value);
+    return value;
   }
 
   /**
    * Execute a subroutine wih the provided value.
    */
   executeSubroutine = (value: Result<*>, routine: Routine): ResultPromise<*> => (
-    this.wrapPromise(routine.execute(value))
+    this.wrapPromise(routine.run(value))
   );
 
   /**
@@ -91,18 +99,32 @@ export default class Routine {
   pipe(...routines: Routine[]): this {
     routines.forEach((routine: Routine) => {
       if (routine instanceof Routine) {
-        routine.configure(this.config, this.globalConfig);
+        this.subroutines.push(routine.configure(
+          this.config,
+          this.globalConfig,
+          this.console,
+        ));
 
-        // eslint-disable-next-line no-param-reassign
-        routine.console = this.console;
-
-        this.subroutines.push(routine);
       } else {
         throw new TypeError('Routine must be an instance of `Routine`.');
       }
     });
 
     return this;
+  }
+
+  /**
+   * Run the current routine by executing it and performing any
+   * before and after processes.
+   */
+  run(value: Result<*>): ResultPromise<*> {
+    this.console.groupStart(this.name);
+
+    return this.wrapPromise(this.execute(value))
+      // $FlowIgnore
+      .finally(() => {
+        this.console.groupStop();
+      });
   }
 
   /**
@@ -133,11 +155,6 @@ export default class Routine {
   serializeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
     return this.serialize(value, tasks, this.executeTask);
   }
-
-  /**
-   * Called once the routine has been configured and is ready to execute.
-   */
-  setup() {}
 
   /**
    * Wrap a value in a promise if it has not already been.

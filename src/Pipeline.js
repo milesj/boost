@@ -13,7 +13,7 @@ export default class Pipeline extends Routine {
   constructor(name: string, config: RoutineConfig = {}) {
     super(name, config);
 
-    // Inherit global config as well
+    // Define the global config
     this.globalConfig = config;
 
     // Initialize the root console
@@ -23,7 +23,11 @@ export default class Pipeline extends Routine {
   /**
    * Execute all subroutines in order.
    */
-  execute(initialValue: Result<*> = null): ResultPromise<*> {
-    return this.serializeSubroutines(initialValue);
+  run(initialValue: Result<*> = null): ResultPromise<*> {
+    return this.serializeSubroutines(initialValue)
+      // $FlowIgnore
+      .finally(() => {
+        this.console.close();
+      });
   }
 }

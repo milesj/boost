@@ -27,11 +27,17 @@ export default class Console {
    */
   ask(question: string): Promise<string> {
     return new Promise((resolve: (string) => void) => {
-      this.io.question(chalk.magenta(question), (answer: string) => {
-        this.io.close();
-        resolve(answer);
-      });
+      this.io.question(chalk.magenta(question), resolve);
     });
+  }
+
+  /**
+   * Close the readline streams.
+   */
+  close() {
+    if (this.io) {
+      this.io.close();
+    }
   }
 
   /**
@@ -39,7 +45,7 @@ export default class Console {
    */
   debug(message: string): this {
     if (this.config.debug) {
-      this.io.write(`${this.indent(this.groups.length)}${message}`);
+      this.log(`${chalk.blue('[debug]')} ${this.indent(this.groups.length)}${message}`);
     }
 
     return this;
@@ -49,7 +55,7 @@ export default class Console {
    * Start a capturing group, which will indent all incoming debug messages.
    */
   groupStart(group: string): this {
-    this.debug(`[${group}]`);
+    this.debug(chalk.gray(`[${group}]`));
     this.groups.push(group);
 
     return this;
@@ -74,8 +80,8 @@ export default class Console {
   /**
    * Output a message to the client.
    */
-  log(message: string): this {
-    this.io.write(message);
+  log(message: string, newline: boolean = true): this {
+    this.io.write(`${message}${newline ? '\n' : ''}`);
 
     return this;
   }

@@ -7,8 +7,17 @@ describe('Routine', () => {
     routine = new Routine('base');
 
     // Use a fake object for testing
-    routine.console = { console: true };
+    routine.console = {
+      groupStart() {},
+      groupStop() {},
+    };
   });
+
+  class FailureSubRoutine extends Routine {
+    execute() {
+      throw new Error('Failure');
+    }
+  }
 
   describe('constructor()', () => {
     it('throws an error if no name is provided', () => {
@@ -27,29 +36,19 @@ describe('Routine', () => {
   });
 
   describe('configure()', () => {
-    it('triggers setup', () => {
+    it('triggers bootstrap', () => {
       let config = {};
 
-      class SetupRoutine extends Routine {
-        setup() {
+      class BootstrapRoutine extends Routine {
+        bootstrap() {
           config = this.globalConfig;
         }
       }
 
-      routine = new SetupRoutine('setup');
+      routine = new BootstrapRoutine('bootstrap');
       routine.configure({}, { foo: 'bar' });
 
       expect(config).toEqual({ foo: 'bar' });
-    });
-  });
-
-  describe('execute()', () => {
-    it('returns a promise', () => {
-      expect(routine.execute(123)).toBeInstanceOf(Promise);
-    });
-
-    it('passes the value down the promise', async () => {
-      expect(await routine.execute(123)).toBe(123);
     });
   });
 
@@ -61,11 +60,15 @@ describe('Routine', () => {
     }
 
     it('returns a promise', () => {
-      expect(routine.executeSubroutine(123, new SubRoutine('sub'))).toBeInstanceOf(Promise);
+      routine.pipe(new SubRoutine('sub'));
+
+      expect(routine.executeSubroutine(123, routine.subroutines[0])).toBeInstanceOf(Promise);
     });
 
     it('passes the value down the promise', async () => {
-      expect(await routine.executeSubroutine(123, new SubRoutine('sub'))).toBe(246);
+      routine.pipe(new SubRoutine('sub'));
+
+      expect(await routine.executeSubroutine(123, routine.subroutines[0])).toBe(246);
     });
   });
 
@@ -82,12 +85,6 @@ describe('Routine', () => {
   });
 
   describe('parallelizeSubroutines()', () => {
-    class FailureSubRoutine extends Routine {
-      execute() {
-        throw new Error('Failure');
-      }
-    }
-
     it('returns a resolved promise if no subroutines exist', async () => {
       expect(await routine.parallelizeSubroutines('abc')).toEqual([]);
     });
@@ -294,6 +291,38 @@ describe('Routine', () => {
       routine.pipe(foo);
 
       expect(foo.console).toBe(routine.console);
+    });
+  });
+
+  describe('run()', () => {
+    it('returns a promise', () => {
+      expect(routine.run(123)).toBeInstanceOf(Promise);
+    });
+
+    it('passes the value down the promise', async () => {
+      expect(await routine.run(123)).toBe(123);
+    });
+
+    it('triggers group start and stop', async () => {
+      const startSpy = jest.spyOn(routine.console, 'groupStart');
+      const stopSpy = jest.spyOn(routine.console, 'groupStop');
+
+      await routine.run(123);
+
+      expect(startSpy).toBeCalledWith('base');
+      expect(stopSpy).toBeCalled();
+    });
+
+    it('triggers group stop if an error occurs', async () => {
+      const stopSpy = jest.spyOn(routine.console, 'groupStop');
+
+      try {
+        await routine.pipe(new FailureSubRoutine('failure')).run(123);
+      } catch (error) {
+        expect(error).toEqual(new Error('Failure'));
+      }
+
+      expect(stopSpy).toBeCalled();
     });
   });
 
