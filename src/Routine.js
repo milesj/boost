@@ -34,11 +34,9 @@ export default class Routine {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig, console: Console): this {
+  configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig, rootConsole: Console): this {
     this.globalConfig = globalConfig;
-
-    // Inhert console from root
-    this.console = console;
+    this.console = rootConsole;
 
     // Inherit config from parent
     const config = parentConfig[this.name];

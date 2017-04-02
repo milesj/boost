@@ -14,7 +14,7 @@ export default class Console {
   groups: string[] = [];
   io: readline.Interface;
 
-  constructor(config: RoutineConfig) {
+  constructor(config: RoutineConfig = {}) {
     this.config = config;
     this.io = readline.createInterface({
       input: process.stdin,
@@ -89,8 +89,8 @@ export default class Console {
   /**
    * Output a message to the client.
    */
-  log(message: string, newline: boolean = true): this {
-    this.io.write(`${message}${newline ? '\n' : ''}`);
+  log(message: string, newline: number = 1): this {
+    this.io.write(`${message}${newline ? '\n'.repeat(newline) : ''}`);
 
     return this;
   }
