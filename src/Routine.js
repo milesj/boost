@@ -6,11 +6,13 @@
 
 import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
+import Console from './Console';
 
 import type { RoutineConfig, Result, ResultPromise, ResultAccumulator, Task } from './types';
 
 export default class Routine {
   config: RoutineConfig = {};
+  console: Console;
   globalConfig: RoutineConfig = {};
   name: string = '';
   subroutines: Routine[] = [];
@@ -89,7 +91,12 @@ export default class Routine {
   pipe(...routines: Routine[]): this {
     routines.forEach((routine: Routine) => {
       if (routine instanceof Routine) {
-        this.subroutines.push(routine.configure(this.config, this.globalConfig));
+        routine.configure(this.config, this.globalConfig);
+
+        // eslint-disable-next-line no-param-reassign
+        routine.console = this.console;
+
+        this.subroutines.push(routine);
       } else {
         throw new TypeError('Routine must be an instance of `Routine`.');
       }

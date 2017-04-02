@@ -5,6 +5,9 @@ describe('Routine', () => {
 
   beforeEach(() => {
     routine = new Routine('base');
+
+    // Use a fake object for testing
+    routine.console = { console: true };
   });
 
   describe('constructor()', () => {
@@ -283,6 +286,14 @@ describe('Routine', () => {
       routine.pipe(foo);
 
       expect(foo.config).toEqual({});
+    });
+
+    it('inherits console from parent routine', () => {
+      const foo = new Routine('foo');
+
+      routine.pipe(foo);
+
+      expect(foo.console).toBe(routine.console);
     });
   });
 

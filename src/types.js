@@ -6,9 +6,7 @@
 
 export type PrimitiveType = string | number | boolean;
 
-export type RoutineConfig = {
-  [key: string]: PrimitiveType | PrimitiveType[] | RoutineConfig,
-};
+export type RoutineConfig = { [key: string]: PrimitiveType | PrimitiveType[] | RoutineConfig };
 
 export type Result<T> = T;
 
