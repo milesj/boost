@@ -7,3 +7,5 @@
 ./.flowconfig
 ./.gitignore
 ./.travis.yml
+./jest.json
+./yarn.lock
