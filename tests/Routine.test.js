@@ -23,6 +23,23 @@ describe('Routine', () => {
     });
   });
 
+  describe('configure()', () => {
+    it('triggers setup', () => {
+      let config = {};
+
+      class SetupRoutine extends Routine {
+        setup() {
+          config = this.globalConfig;
+        }
+      }
+
+      routine = new SetupRoutine('setup');
+      routine.configure({}, { foo: 'bar' });
+
+      expect(config).toEqual({ foo: 'bar' });
+    });
+  });
+
   describe('execute()', () => {
     it('returns a promise', () => {
       expect(routine.execute(123)).toBeInstanceOf(Promise);
@@ -292,6 +309,29 @@ describe('Routine', () => {
         'foo',
         'baz',
       ]);
+    });
+
+    it('aborts early if an error occurs', async () => {
+      let count = 0;
+
+      function incCount(value) {
+        count += 1;
+        return value;
+      }
+
+      try {
+        await routine.serialize([], [
+          incCount,
+          incCount,
+          () => Promise.reject(new Error('Abort')),
+          incCount,
+          incCount,
+        ], (value, func) => func(value));
+      } catch (error) {
+        expect(error).toEqual(new Error('Abort'));
+      }
+
+      expect(count).toBe(2);
     });
 
     it('handles buffers', async () => {

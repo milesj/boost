@@ -30,12 +30,16 @@ export default class Routine {
   configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig): this {
     this.globalConfig = globalConfig;
 
+    // Inherit config from parent
     const config = parentConfig[this.name];
 
     if (isObject(config)) {
       // $FlowIssue Flow cannot introspect from isObject
       merge(this.config, config);
     }
+
+    // Initialize setup
+    this.setup();
 
     return this;
   }
@@ -122,6 +126,11 @@ export default class Routine {
   serializeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
     return this.serialize(value, tasks, this.executeTask);
   }
+
+  /**
+   * Called once the routine has been configured and is ready to execute.
+   */
+  setup() {}
 
   /**
    * Wrap a value in a promise if it has not already been.
