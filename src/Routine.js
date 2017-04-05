@@ -7,23 +7,36 @@
 import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import Console from './Console';
+import Task from './Task';
 
-import type { RoutineConfig, Result, ResultPromise, ResultAccumulator, Task } from './types';
+import type {
+  RoutineConfig,
+  Result,
+  ResultPromise,
+  ResultAccumulator,
+  TaskCallback,
+  TreeNode,
+} from './types';
 
-export default class Routine {
+export default class Routine extends Task {
   config: RoutineConfig = {};
   console: Console;
   globalConfig: RoutineConfig = {};
-  name: string = '';
+  key: string = '';
   subroutines: Routine[] = [];
+  tasks: Task[] = [];
 
-  constructor(name: string, defaultConfig: RoutineConfig = {}) {
-    if (!name || typeof name !== 'string') {
-      throw new TypeError('Routine name must be a valid string.');
+  constructor(key: string, title: string, defaultConfig: RoutineConfig = {}) {
+    super(title, value => value);
+
+    if (!key || typeof key !== 'string') {
+      throw new TypeError('Routine key must be a valid unique string.');
     }
 
+    // We cant pass to super, so bind here
+    this.action = this.execute.bind(this);
     this.config = { ...defaultConfig };
-    this.name = name;
+    this.key = key;
   }
 
   /**
@@ -39,7 +52,7 @@ export default class Routine {
     this.console = rootConsole;
 
     // Inherit config from parent
-    const config = parentConfig[this.name];
+    const config = parentConfig[this.key];
 
     if (isObject(config)) {
       // $FlowIgnore Flow cannot introspect from isObject
@@ -61,34 +74,31 @@ export default class Routine {
   }
 
   /**
-   * Execute a subroutine wih the provided value.
-   */
-  executeSubroutine = (value: Result<*>, routine: Routine): ResultPromise<*> => (
-    this.wrapPromise(routine.run(value))
-  );
-
-  /**
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: Result<*>, task: Task<*>): ResultPromise<*> => (
-    this.wrapPromise(task.call(this, value))
+  executeTask = (value: Result<*>, task: Task): ResultPromise<*> => (
+    this.wrapPromise(task.run(value))
+      // $FlowIgnore
+      .finally(() => {
+        this.console.render();
+      })
   );
 
   /**
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines(value: Result<*>): ResultPromise<*> {
-    return Promise.all(this.subroutines.map(routine => this.executeSubroutine(value, routine)));
+  parallelizeSubroutines(value: Result<*> = null): ResultPromise<*> {
+    return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
   /**
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
-    return Promise.all(tasks.map(task => this.executeTask(value, task)));
+  parallelizeTasks(value: Result<*> = null): ResultPromise<*> {
+    return Promise.all(this.tasks.map(task => this.executeTask(value, task)));
   }
 
   /**
@@ -112,16 +122,16 @@ export default class Routine {
   }
 
   /**
-   * Run the current routine by executing it and performing any
-   * before and after processes.
+   * Trigger console processes before and after execution.
    */
   run(value: Result<*>): ResultPromise<*> {
-    this.console.groupStart(this.name);
+    this.console.groupStart(this.key);
 
-    return this.wrapPromise(this.execute(value))
+    return super.run(value)
       // $FlowIgnore
       .finally(() => {
         this.console.groupStop();
+        this.console.render();
       });
   }
 
@@ -136,28 +146,42 @@ export default class Routine {
     accumulator: ResultAccumulator<*, T>,
   ): ResultPromise<*> {
     return items.reduce((promise: ResultPromise<*>, item: T) => (
-      promise.then((value: Result<*>) => accumulator(value, item))
+      promise.then(value => accumulator(value, item))
     ), Promise.resolve(initialValue));
   }
 
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines(value: Result<*>): ResultPromise<*> {
-    return this.serialize(value, this.subroutines, this.executeSubroutine);
+  serializeSubroutines(value: Result<*> = null): ResultPromise<*> {
+    return this.serialize(value, this.subroutines, this.executeTask);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: Result<*>, tasks: Task<*>[]): ResultPromise<*> {
-    return this.serialize(value, tasks, this.executeTask);
+  serializeTasks(value: Result<*> = null): ResultPromise<*> {
+    return this.serialize(value, this.tasks, this.executeTask);
   }
 
   /**
-   * Wrap a value in a promise if it has not already been.
+   * Define an individual task.
    */
-  wrapPromise(value: Result<*>): ResultPromise<*> {
-    return (value instanceof Promise) ? value : Promise.resolve(value);
+  task(title: string, callback: TaskCallback<*>): this {
+    this.tasks.push(new Task(title, callback));
+
+    return this;
+  }
+
+  /**
+   * {Generate a tree structure to use in CLI output.
+   */
+  toTree(): TreeNode {
+    const tree = super.toTree();
+
+    tree.tasks = this.tasks.map(task => task.toTree());
+    tree.routines = this.subroutines.map(routine => routine.toTree());
+
+    return tree;
   }
 }

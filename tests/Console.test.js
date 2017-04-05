@@ -22,7 +22,7 @@ describe('Pipeline', () => {
       });
 
       expect(await con.ask('question')).toBe('answer');
-      expect(con.io.question).toBeCalledWith(chalk.magenta('question'), expect.any(Function));
+      expect(con.io.question).toBeCalledWith(chalk.magenta('question\n'), expect.any(Function));
     });
   });
 

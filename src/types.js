@@ -12,6 +12,16 @@ export type Result<T> = T;
 
 export type ResultPromise<T> = Promise<Result<T>>;
 
-export type ResultAccumulator<T1, T2> = (value: Result<T1>, item: T2) => ResultPromise<*>;
+export type ResultAccumulator<T1, T2> = (value: Result<T1>, item: T2) => ResultPromise<T1>;
 
-export type Task<T> = (value: Result<T>) => Result<T> | ResultPromise<T>;
+export type Status = 'pending' | 'skipped' | 'passed' | 'failed';
+
+export type TaskCallback<T> = (value: Result<T>) => Result<T> | ResultPromise<T>;
+
+export type TreeNode = {
+  routines?: TreeNode[],
+  status: Status,
+  tasks?: TreeNode[],
+  time: number,
+  title: string,
+};

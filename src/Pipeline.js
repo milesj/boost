@@ -11,7 +11,7 @@ import type { RoutineConfig, Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
   constructor(name: string, config: RoutineConfig = {}) {
-    super(name, config);
+    super(name, name, config);
 
     // Define the global config
     this.globalConfig = config;
@@ -27,6 +27,7 @@ export default class Pipeline extends Routine {
     return this.serializeSubroutines(initialValue)
       // $FlowIgnore
       .finally(() => {
+        this.console.render();
         this.console.close();
       });
   }

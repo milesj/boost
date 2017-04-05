@@ -43,7 +43,7 @@ describe('Pipeline', () => {
     const spy = jest.spyOn(pipeline.console, 'close');
 
     try {
-      await pipeline.pipe(new FailureRoutine('fail')).run();
+      await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
     } catch (error) {
       expect(error).toEqual(new Error('Oops'));
     }

@@ -27,7 +27,9 @@ export default class Console {
    */
   ask(question: string): Promise<string> {
     return new Promise((resolve: (string) => void) => {
-      this.io.question(chalk.magenta(question), resolve);
+      this.io.question(chalk.magenta(`${question}\n`), (answer: string) => {
+        resolve(answer.trim());
+      });
     });
   }
 
@@ -93,5 +95,9 @@ export default class Console {
     this.io.write(`${message}${newline ? '\n'.repeat(newline) : ''}`);
 
     return this;
+  }
+
+  render() {
+    // TODO
   }
 }

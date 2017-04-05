@@ -1,35 +1,46 @@
 import Routine from '../src/Routine';
+import Task from '../src/Task';
+import { PENDING } from '../src/constants';
 
 describe('Routine', () => {
   let routine;
+  let cli;
 
   beforeEach(() => {
-    routine = new Routine('base');
+    routine = new Routine('key', 'title');
 
     // Use a fake object for testing
-    routine.console = {
+    cli = {
       groupStart() {},
       groupStop() {},
+      render() {},
     };
+    routine.console = cli;
   });
 
   class FailureSubRoutine extends Routine {
+    constructor(...args) {
+      super(...args);
+
+      this.console = cli;
+    }
+
     execute() {
       throw new Error('Failure');
     }
   }
 
   describe('constructor()', () => {
-    it('throws an error if no name is provided', () => {
-      expect(() => new Routine()).toThrowError('Routine name must be a valid string.');
+    it('throws an error if no key is provided', () => {
+      expect(() => new Routine('', 'title')).toThrowError('Routine key must be a valid unique string.');
     });
 
-    it('throws an error if name is not a string', () => {
-      expect(() => new Routine(123)).toThrowError('Routine name must be a valid string.');
+    it('throws an error if key is not a string', () => {
+      expect(() => new Routine(123, 'title')).toThrowError('Routine key must be a valid unique string.');
     });
 
     it('inherits default config', () => {
-      routine = new Routine('base', { foo: 123 });
+      routine = new Routine('key', 'title', { foo: 123 });
 
       expect(routine.config).toEqual({ foo: 123 });
     });
@@ -40,47 +51,67 @@ describe('Routine', () => {
       let config = {};
 
       class BootstrapRoutine extends Routine {
+        constructor(...args) {
+          super(...args);
+
+          this.console = cli;
+        }
+
         bootstrap() {
           config = this.globalConfig;
         }
       }
 
-      routine = new BootstrapRoutine('bootstrap');
+      routine = new BootstrapRoutine('bootstrap', 'title');
       routine.configure({}, { foo: 'bar' });
 
       expect(config).toEqual({ foo: 'bar' });
     });
   });
 
-  describe('executeSubroutine()', () => {
-    class SubRoutine extends Routine {
-      execute(value) {
-        return value * 2;
-      }
-    }
-
-    it('returns a promise', () => {
-      routine.pipe(new SubRoutine('sub'));
-
-      expect(routine.executeSubroutine(123, routine.subroutines[0])).toBeInstanceOf(Promise);
-    });
-
-    it('passes the value down the promise', async () => {
-      routine.pipe(new SubRoutine('sub'));
-
-      expect(await routine.executeSubroutine(123, routine.subroutines[0])).toBe(246);
-    });
-  });
-
   describe('executeTask()', () => {
-    const task = value => value * 3;
+    let task;
+
+    beforeEach(() => {
+      task = new Task('title', value => value * 3);
+    });
 
     it('returns a promise', () => {
       expect(routine.executeTask(123, task)).toBeInstanceOf(Promise);
     });
 
+    it('re-renders the console', async () => {
+      const spy = jest.spyOn(routine.console, 'render');
+
+      await routine.executeTask(123, task);
+
+      expect(spy).toBeCalled();
+    });
+
     it('passes the value down the promise', async () => {
       expect(await routine.executeTask(123, task)).toBe(369);
+    });
+
+    it('updates status if a success', async () => {
+      await routine.executeTask(123, task);
+
+      expect(task.hasPassed()).toBe(true);
+      expect(task.time).not.toBe(0);
+    });
+
+    it('updates status if a failure', async () => {
+      task = new Task('title', () => {
+        throw new Error('Oops');
+      });
+
+      try {
+        await routine.executeTask(123, task);
+      } catch (error) {
+        expect(error).toEqual(new Error('Oops'));
+      }
+
+      expect(task.hasFailed()).toBe(true);
+      expect(task.time).not.toBe(0);
     });
   });
 
@@ -90,7 +121,7 @@ describe('Routine', () => {
     });
 
     it('captures and rethrows errors that occur down the chain', async () => {
-      routine.pipe(new FailureSubRoutine('failure'));
+      routine.pipe(new FailureSubRoutine('failure', 'title'));
 
       try {
         await routine.parallelizeSubroutines('abc');
@@ -102,6 +133,12 @@ describe('Routine', () => {
 
   describe('parallelizeTasks()', () => {
     class FailureTaskRoutine extends Routine {
+      constructor(...args) {
+        super(...args);
+
+        this.console = cli;
+      }
+
       foo(value) {
         return `${value}-foo`;
       }
@@ -112,24 +149,26 @@ describe('Routine', () => {
     }
 
     it('returns a resolved promise if no tasks exist', async () => {
-      expect(await routine.parallelizeTasks('abc', [])).toEqual([]);
+      expect(await routine.parallelizeTasks('abc')).toEqual([]);
     });
 
     it('captures and rethrows errors that occur down the chain', async () => {
-      routine = new FailureTaskRoutine('failure');
+      routine = new FailureTaskRoutine('failure', 'title');
+      routine.task('foo', routine.foo);
+      routine.task('bar', routine.bar);
 
       try {
-        await routine.parallelizeTasks('abc', [routine.foo, routine.bar]);
+        await routine.parallelizeTasks('abc');
       } catch (error) {
         expect(error).toEqual(new Error('Failure'));
       }
     });
 
     it('supports normal functions', async () => {
-      expect(await routine.parallelizeTasks('abc', [
-        value => value.toUpperCase(),
-        value => `${value}${value}`,
-      ])).toEqual([
+      routine.task('upper', value => value.toUpperCase());
+      routine.task('dupe', value => `${value}${value}`);
+
+      expect(await routine.parallelizeTasks('abc')).toEqual([
         'ABC',
         'abcabc',
       ]);
@@ -142,9 +181,9 @@ describe('Routine', () => {
     });
 
     it('sets subroutines in order', () => {
-      const foo = new Routine('foo');
-      const bar = new Routine('bar');
-      const baz = new Routine('baz');
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
 
       routine.pipe(foo).pipe(bar).pipe(baz);
 
@@ -152,9 +191,9 @@ describe('Routine', () => {
     });
 
     it('sets subroutines via rest arguments', () => {
-      const foo = new Routine('foo');
-      const bar = new Routine('bar');
-      const baz = new Routine('baz');
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
 
       routine.pipe(foo, bar, baz);
 
@@ -174,9 +213,9 @@ describe('Routine', () => {
       };
       routine.config = routine.globalConfig;
 
-      const foo = new Routine('foo');
-      const bar = new Routine('bar');
-      const baz = new Routine('baz');
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
 
       routine.pipe(foo, bar, baz);
 
@@ -185,7 +224,7 @@ describe('Routine', () => {
       expect(baz.globalConfig).toEqual(routine.globalConfig);
     });
 
-    it('passes nested configuration to subroutines of the same name', () => {
+    it('passes nested configuration to subroutines of the same key', () => {
       routine.config = {
         foo: {
           command: 'yarn run build',
@@ -196,9 +235,9 @@ describe('Routine', () => {
         },
       };
 
-      const foo = new Routine('foo');
-      const bar = new Routine('bar');
-      const baz = new Routine('baz');
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
 
       routine.pipe(foo).pipe(bar).pipe(baz);
 
@@ -223,9 +262,9 @@ describe('Routine', () => {
         },
       };
 
-      const foo = new Routine('foo');
-      const bar = new Routine('bar');
-      const baz = new Routine('baz');
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
 
       routine.pipe(foo);
       foo.pipe(bar);
@@ -254,7 +293,7 @@ describe('Routine', () => {
         },
       };
 
-      const foo = new Routine('foo', {
+      const foo = new Routine('foo', 'title', {
         command: '',
         options: {
           babel: false,
@@ -278,7 +317,7 @@ describe('Routine', () => {
         foo: 123,
       };
 
-      const foo = new Routine('foo');
+      const foo = new Routine('foo', 'title');
 
       routine.pipe(foo);
 
@@ -286,7 +325,7 @@ describe('Routine', () => {
     });
 
     it('inherits console from parent routine', () => {
-      const foo = new Routine('foo');
+      const foo = new Routine('foo', 'title');
 
       routine.pipe(foo);
 
@@ -306,23 +345,47 @@ describe('Routine', () => {
     it('triggers group start and stop', async () => {
       const startSpy = jest.spyOn(routine.console, 'groupStart');
       const stopSpy = jest.spyOn(routine.console, 'groupStop');
+      const renderSpy = jest.spyOn(routine.console, 'render');
 
       await routine.run(123);
 
-      expect(startSpy).toBeCalledWith('base');
+      expect(startSpy).toBeCalledWith('key');
       expect(stopSpy).toBeCalled();
+      expect(renderSpy).toBeCalled();
     });
 
     it('triggers group stop if an error occurs', async () => {
       const stopSpy = jest.spyOn(routine.console, 'groupStop');
+      const renderSpy = jest.spyOn(routine.console, 'render');
 
       try {
-        await routine.pipe(new FailureSubRoutine('failure')).run(123);
+        await routine.pipe(new FailureSubRoutine('failure', 'title')).run(123);
       } catch (error) {
         expect(error).toEqual(new Error('Failure'));
       }
 
       expect(stopSpy).toBeCalled();
+      expect(renderSpy).toBeCalled();
+    });
+
+    it('updates status if a success', async () => {
+      await routine.run(123);
+
+      expect(routine.hasPassed()).toBe(true);
+    });
+
+    it('updates status if a failure', async () => {
+      routine.action = () => {
+        throw new Error('Failure');
+      };
+
+      try {
+        await routine.run(123);
+      } catch (error) {
+        expect(error).toEqual(new Error('Failure'));
+      }
+
+      expect(routine.hasFailed()).toBe(true);
     });
   });
 
@@ -396,24 +459,30 @@ describe('Routine', () => {
 
   describe('serializeSubroutines()', () => {
     class SerializeSubsRoutine extends Routine {
+      constructor(...args) {
+        super(...args);
+
+        this.console = cli;
+      }
+
       execute(value) {
         return Promise.resolve({
           count: value.count * this.config.multiplier,
-          key: value.key + this.name,
+          key: value.key + this.key,
         });
       }
     }
 
     it('returns initial value if no tasks', async () => {
-      routine = new SerializeSubsRoutine('base');
+      routine = new SerializeSubsRoutine('key', 'title');
 
       expect(await routine.serializeSubroutines(123)).toBe(123);
     });
 
     it('executes all chained subroutines in sequential order', async () => {
-      const foo = new SerializeSubsRoutine('foo', { multiplier: 2 });
-      const bar = new SerializeSubsRoutine('bar', { multiplier: 3 });
-      const baz = new SerializeSubsRoutine('baz', { multiplier: 1 });
+      const foo = new SerializeSubsRoutine('foo', 'title', { multiplier: 2 });
+      const bar = new SerializeSubsRoutine('bar', 'title', { multiplier: 3 });
+      const baz = new SerializeSubsRoutine('baz', 'title', { multiplier: 1 });
 
       routine.pipe(foo, bar, baz);
 
@@ -426,6 +495,12 @@ describe('Routine', () => {
 
   describe('serializeTasks()', () => {
     class SerializeTasksRoutine extends Routine {
+      constructor(...args) {
+        super(...args);
+
+        this.console = cli;
+      }
+
       duplicate(value) {
         return `${value}${value}`;
       }
@@ -436,25 +511,120 @@ describe('Routine', () => {
     }
 
     it('returns initial value if no tasks', async () => {
-      routine = new SerializeTasksRoutine('base');
+      routine = new SerializeTasksRoutine('key', 'title');
 
-      expect(await routine.serializeTasks(123, [])).toBe(123);
+      expect(await routine.serializeTasks(123)).toBe(123);
     });
 
     it('executes all passed tasks in sequential order', async () => {
-      routine = new SerializeTasksRoutine('base');
+      routine = new SerializeTasksRoutine('key', 'title');
+      routine.task('upper', routine.upperCase);
+      routine.task('dupe', routine.duplicate);
 
-      expect(await routine.serializeTasks('foo', [
-        routine.duplicate,
-        routine.upperCase,
-      ])).toBe('FOOFOO');
+      expect(await routine.serializeTasks('foo')).toBe('FOOFOO');
     });
 
     it('supports normal functions', async () => {
-      expect(await routine.serializeTasks('foo', [
-        value => `${value}${value}`,
-        value => value.toUpperCase(),
-      ])).toBe('FOOFOO');
+      routine.task('upper', value => value.toUpperCase());
+      routine.task('dupe', value => `${value}${value}`);
+
+      expect(await routine.serializeTasks('foo')).toBe('FOOFOO');
+    });
+  });
+
+  describe('task()', () => {
+    it('maps `Task` objects', () => {
+      expect(routine.tasks).toHaveLength(0);
+
+      routine.task('foo', value => value);
+      routine.task('bar', value => value);
+
+      expect(routine.tasks).toHaveLength(2);
+      expect(routine.tasks[0]).toBeInstanceOf(Task);
+      expect(routine.tasks[1]).toBeInstanceOf(Task);
+    });
+  });
+
+  describe('toTree()', () => {
+    it('returns an object descriptor of the routine', () => {
+      expect(routine.toTree()).toEqual({
+        time: expect.any(Number),
+        title: 'title',
+        status: PENDING,
+        tasks: [],
+        routines: [],
+      });
+    });
+
+    it('includes tasks', () => {
+      routine.task('foo', value => value);
+      routine.task('bar', value => value);
+
+      expect(routine.toTree()).toEqual({
+        time: expect.any(Number),
+        title: 'title',
+        status: PENDING,
+        tasks: [
+          {
+            time: expect.any(Number),
+            title: 'foo',
+            status: PENDING,
+          },
+          {
+            time: expect.any(Number),
+            title: 'bar',
+            status: PENDING,
+          },
+        ],
+        routines: [],
+      });
+    });
+
+    it('includes subroutines', () => {
+      const foo = new Routine('foo', 'foo');
+      foo.task('foo task', value => value);
+
+      const bar = new Routine('bar', 'bar');
+      bar.pipe(new Routine('barChild', 'bar subroutine'));
+
+      routine.pipe(foo, bar);
+
+      expect(routine.toTree()).toEqual({
+        time: expect.any(Number),
+        title: 'title',
+        status: PENDING,
+        tasks: [],
+        routines: [
+          {
+            time: expect.any(Number),
+            title: 'foo',
+            status: PENDING,
+            tasks: [
+              {
+                time: expect.any(Number),
+                title: 'foo task',
+                status: PENDING,
+              },
+            ],
+            routines: [],
+          },
+          {
+            time: expect.any(Number),
+            title: 'bar',
+            status: PENDING,
+            tasks: [],
+            routines: [
+              {
+                time: expect.any(Number),
+                title: 'bar subroutine',
+                status: PENDING,
+                tasks: [],
+                routines: [],
+              },
+            ],
+          },
+        ],
+      });
     });
   });
 });
