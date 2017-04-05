@@ -7,15 +7,15 @@
 import chalk from 'chalk';
 import readline from 'readline';
 
-import type { RoutineConfig } from './types';
+import type { GlobalConfig } from './types';
 
 export default class Console {
-  config: RoutineConfig = {};
+  global: GlobalConfig;
   groups: string[] = [];
   io: readline.Interface;
 
-  constructor(config: RoutineConfig = {}) {
-    this.config = config;
+  constructor(globalConfig: GlobalConfig) {
+    this.global = globalConfig;
     this.io = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -46,7 +46,7 @@ export default class Console {
    * Output a message only when debug is enabled.
    */
   debug(message: string): this {
-    if (this.config.debug) {
+    if (this.global.config.debug) {
       this.log(`${chalk.blue('[debug]')} ${this.indent(this.groups.length)}${message}`);
     }
 

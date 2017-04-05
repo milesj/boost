@@ -6,18 +6,19 @@
 
 import Routine from './Routine';
 import Console from './Console';
+import { DEFAULT_GLOBALS } from './constants';
 
-import type { RoutineConfig, Result, ResultPromise } from './types';
+import type { GlobalConfig, Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
-  constructor(name: string, config: RoutineConfig = {}) {
-    super(name, name, config);
+  constructor(name: string, globalConfig: GlobalConfig = DEFAULT_GLOBALS) {
+    super(name, name, globalConfig.config);
 
     // Define the global config
-    this.globalConfig = config;
+    this.global = globalConfig;
 
     // Initialize the root console
-    this.console = new Console(config);
+    this.console = new Console(globalConfig);
   }
 
   /**

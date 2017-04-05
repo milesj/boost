@@ -7,7 +7,7 @@ describe('Pipeline', () => {
   let con;
 
   beforeEach(() => {
-    con = new Console();
+    con = new Console({ config: {} });
     con.io = {
       close() {},
       question() {},
@@ -48,7 +48,7 @@ describe('Pipeline', () => {
     it('logs if debug is true', () => {
       const spy = jest.spyOn(con.io, 'write');
 
-      con.config.debug = true;
+      con.global.config.debug = true;
       con.debug('message');
 
       expect(spy).toBeCalledWith(`${chalk.blue('[debug]')} message\n`);
@@ -57,7 +57,7 @@ describe('Pipeline', () => {
     it('indents when within a group', () => {
       const spy = jest.spyOn(con.io, 'write');
 
-      con.config.debug = true;
+      con.global.config.debug = true;
       con.groupStart('one').groupStart('two');
       con.debug('message');
 
@@ -69,7 +69,7 @@ describe('Pipeline', () => {
     it('logs a message and appends a group name', () => {
       const spy = jest.spyOn(con.io, 'write');
 
-      con.config.debug = true;
+      con.global.config.debug = true;
       con.groupStart('foo');
 
       expect(spy).toBeCalledWith(`${chalk.blue('[debug]')} ${chalk.gray('[foo]')}\n`);
@@ -79,7 +79,7 @@ describe('Pipeline', () => {
 
   describe('groupStop()', () => {
     it('removes the group name from the list', () => {
-      con.config.debug = true;
+      con.global.config.debug = true;
       con.groupStart('foo');
 
       expect(con.groups).toEqual(['foo']);
@@ -110,7 +110,7 @@ describe('Pipeline', () => {
     it('logs green if true', () => {
       const spy = jest.spyOn(con.io, 'write');
 
-      con.config.debug = true;
+      con.global.config.debug = true;
       con.invariant(true, 'message', 'foo', 'bar');
 
       expect(spy).toBeCalledWith(`${chalk.blue('[debug]')} message: ${chalk.green('foo')}\n`);
@@ -119,7 +119,7 @@ describe('Pipeline', () => {
     it('logs red if false', () => {
       const spy = jest.spyOn(con.io, 'write');
 
-      con.config.debug = true;
+      con.global.config.debug = true;
       con.invariant(false, 'message', 'foo', 'bar');
 
       expect(spy).toBeCalledWith(`${chalk.blue('[debug]')} message: ${chalk.red('bar')}\n`);

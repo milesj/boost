@@ -8,6 +8,11 @@ describe('Routine', () => {
 
   beforeEach(() => {
     routine = new Routine('key', 'title');
+    routine.global = {
+      command: {},
+      config: {},
+      package: {},
+    };
 
     // Use a fake object for testing
     cli = {
@@ -58,7 +63,7 @@ describe('Routine', () => {
         }
 
         bootstrap() {
-          config = this.globalConfig;
+          config = this.global;
         }
       }
 
@@ -201,17 +206,21 @@ describe('Routine', () => {
     });
 
     it('passes global configuration to all subroutines', () => {
-      routine.globalConfig = {
-        dryRun: true,
-        foo: {
-          command: 'yarn run build',
+      routine.global = {
+        command: {},
+        config: {
+          dryRun: true,
+          foo: {
+            command: 'yarn run build',
+          },
+          baz: {
+            outDir: './out/',
+            compress: true,
+          },
         },
-        baz: {
-          outDir: './out/',
-          compress: true,
-        },
+        package: {},
       };
-      routine.config = routine.globalConfig;
+      routine.config = routine.global.config;
 
       const foo = new Routine('foo', 'title');
       const bar = new Routine('bar', 'title');
@@ -219,9 +228,9 @@ describe('Routine', () => {
 
       routine.pipe(foo, bar, baz);
 
-      expect(foo.globalConfig).toEqual(routine.globalConfig);
-      expect(bar.globalConfig).toEqual(routine.globalConfig);
-      expect(baz.globalConfig).toEqual(routine.globalConfig);
+      expect(foo.global).toEqual(routine.global);
+      expect(bar.global).toEqual(routine.global);
+      expect(baz.global).toEqual(routine.global);
     });
 
     it('passes nested configuration to subroutines of the same key', () => {

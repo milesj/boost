@@ -6,7 +6,20 @@
 
 export type PrimitiveType = string | number | boolean;
 
-export type RoutineConfig = { [key: string]: PrimitiveType | PrimitiveType[] | RoutineConfig };
+export type Config = { [key: string]: PrimitiveType | PrimitiveType[] | Config };
+
+export type GlobalConfig = {
+  command: {
+    name: string,
+    options: string[],
+  },
+  config: Config,
+  package: {
+    name: string,
+    version: string,
+    [key: string]: PrimitiveType | PrimitiveType[] | Config,
+  },
+};
 
 export type Result<T> = T;
 

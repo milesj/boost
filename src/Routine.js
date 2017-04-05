@@ -10,7 +10,8 @@ import Console from './Console';
 import Task from './Task';
 
 import type {
-  RoutineConfig,
+  Config,
+  GlobalConfig,
   Result,
   ResultPromise,
   ResultAccumulator,
@@ -19,14 +20,14 @@ import type {
 } from './types';
 
 export default class Routine extends Task {
-  config: RoutineConfig = {};
+  config: Config;
   console: Console;
-  globalConfig: RoutineConfig = {};
+  global: GlobalConfig;
   key: string = '';
   subroutines: Routine[] = [];
   tasks: Task[] = [];
 
-  constructor(key: string, title: string, defaultConfig: RoutineConfig = {}) {
+  constructor(key: string, title: string, defaultConfig: Config = {}) {
     super(title, value => value);
 
     if (!key || typeof key !== 'string') {
@@ -47,8 +48,8 @@ export default class Routine extends Task {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parentConfig: RoutineConfig, globalConfig: RoutineConfig, rootConsole: Console): this {
-    this.globalConfig = globalConfig;
+  configure(parentConfig: Config, globalConfig: GlobalConfig, rootConsole: Console): this {
+    this.global = globalConfig;
     this.console = rootConsole;
 
     // Inherit config from parent
@@ -109,7 +110,7 @@ export default class Routine extends Task {
       if (routine instanceof Routine) {
         this.subroutines.push(routine.configure(
           this.config,
-          this.globalConfig,
+          this.global,
           this.console,
         ));
 
