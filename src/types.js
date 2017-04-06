@@ -29,7 +29,7 @@ export type ResultPromise = Promise<Result>;
 
 export type ResultAccumulator<T> = (value: Result, item: T) => ResultPromise;
 
-export type Status = 'pending' | 'skipped' | 'passed' | 'failed';
+export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
 export type TaskCallback = (value: Result) => Result | ResultPromise;
 

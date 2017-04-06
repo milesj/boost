@@ -5,7 +5,7 @@
  */
 
 import Promise from 'bluebird';
-import { PENDING, SKIPPED, PASSED, FAILED } from './constants';
+import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
 import type { Result, ResultPromise, Status, TaskCallback, TreeNode } from './types';
 
@@ -66,6 +66,8 @@ export default class Task {
     if (this.isSkipped()) {
       return Promise.resolve(value);
     }
+
+    this.status = RUNNING;
 
     try {
       this.status = PASSED;

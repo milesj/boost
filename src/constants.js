@@ -7,6 +7,7 @@
 import type { Status, GlobalConfig } from './types';
 
 export const PENDING: Status = 'pending';
+export const RUNNING: Status = 'running';
 export const SKIPPED: Status = 'skipped';
 export const PASSED: Status = 'passed';
 export const FAILED: Status = 'failed';
