@@ -25,11 +25,9 @@ export default class Pipeline extends Routine {
    * Execute all subroutines in order.
    */
   run(initialValue: Result<*> = null): ResultPromise<*> {
-    return this.serializeSubroutines(initialValue)
-      // $FlowIgnore
-      .finally(() => {
-        this.console.render();
-        this.console.close();
-      });
+    return this.serializeSubroutines(initialValue).finally(() => {
+      this.console.render();
+      this.console.close();
+    });
   }
 }

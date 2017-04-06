@@ -4,6 +4,7 @@
  * @flow
  */
 
+import Promise from 'bluebird';
 import chalk from 'chalk';
 import readline from 'readline';
 

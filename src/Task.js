@@ -4,6 +4,7 @@
  * @flow
  */
 
+import Promise from 'bluebird';
 import { PENDING, SKIPPED, PASSED, FAILED } from './constants';
 
 import type { Result, ResultPromise, Status, TaskCallback, TreeNode } from './types';
@@ -93,6 +94,8 @@ export default class Task {
    * Wrap a value in a promise if it has not already been.
    */
   wrapPromise(value: Result<*>): ResultPromise<*> {
-    return (value instanceof Promise) ? value : Promise.resolve(value);
+    return (value instanceof Promise || value instanceof global.Promise)
+      ? value
+      : Promise.resolve(value);
   }
 }

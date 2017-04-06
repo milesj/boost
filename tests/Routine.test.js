@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import { PENDING } from '../src/constants';

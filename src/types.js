@@ -4,6 +4,8 @@
  * @flow
  */
 
+import Promise from 'bluebird';
+
 export type PrimitiveType = string | number | boolean;
 
 export type Config = { [key: string]: PrimitiveType | PrimitiveType[] | Config };

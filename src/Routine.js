@@ -4,6 +4,7 @@
  * @flow
  */
 
+import Promise from 'bluebird';
 import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import Console from './Console';
@@ -79,11 +80,9 @@ export default class Routine extends Task {
    * with the provided value.
    */
   executeTask = (value: Result<*>, task: Task): ResultPromise<*> => (
-    this.wrapPromise(task.run(value))
-      // $FlowIgnore
-      .finally(() => {
-        this.console.render();
-      })
+    this.wrapPromise(task.run(value)).finally(() => {
+      this.console.render();
+    })
   );
 
   /**
@@ -91,6 +90,7 @@ export default class Routine extends Task {
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines(value: Result<*> = null): ResultPromise<*> {
+    // $FlowIgnore
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -99,6 +99,7 @@ export default class Routine extends Task {
    * A combination promise will be returned as the result.
    */
   parallelizeTasks(value: Result<*> = null): ResultPromise<*> {
+    // $FlowIgnore
     return Promise.all(this.tasks.map(task => this.executeTask(value, task)));
   }
 
@@ -128,12 +129,10 @@ export default class Routine extends Task {
   run(value: Result<*>): ResultPromise<*> {
     this.console.groupStart(this.key);
 
-    return super.run(value)
-      // $FlowIgnore
-      .finally(() => {
-        this.console.groupStop();
-        this.console.render();
-      });
+    return super.run(value).finally(() => {
+      this.console.groupStop();
+      this.console.render();
+    });
   }
 
   /**

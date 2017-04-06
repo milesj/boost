@@ -1,5 +1,0 @@
-declare module 'promise.prototype.finally' {
-  declare export default {
-    shim(): void,
-  };
-}
