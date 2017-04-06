@@ -16,5 +16,5 @@ If Babel + Babili was created using this library, the implementation would look 
   .pipe(new BundleRoutine('bundle', {       // Bundle and or output the files
     out: './lib',
   }))
-  .execute('./src');
+  .run('./src');
 ```
