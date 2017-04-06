@@ -23,15 +23,15 @@ export type GlobalConfig = {
   },
 };
 
-export type Result<T> = T;
+export type Result = *;
 
-export type ResultPromise<T> = Promise<Result<T>>;
+export type ResultPromise = Promise<Result>;
 
-export type ResultAccumulator<T1, T2> = (value: Result<T1>, item: T2) => ResultPromise<T1>;
+export type ResultAccumulator<T> = (value: Result, item: T) => ResultPromise;
 
 export type Status = 'pending' | 'skipped' | 'passed' | 'failed';
 
-export type TaskCallback<T> = (value: Result<T>) => Result<T> | ResultPromise<T>;
+export type TaskCallback = (value: Result) => Result | ResultPromise;
 
 export type TreeNode = {
   routines?: TreeNode[],

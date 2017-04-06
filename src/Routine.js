@@ -71,7 +71,7 @@ export default class Routine extends Task {
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  execute(value: Result<*>): ResultPromise<*> {
+  execute(value: Result): ResultPromise {
     return value;
   }
 
@@ -79,7 +79,7 @@ export default class Routine extends Task {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: Result<*>, task: Task): ResultPromise<*> => (
+  executeTask = (value: Result, task: Task): ResultPromise => (
     this.wrapPromise(task.run(value)).finally(() => {
       this.console.render();
     })
@@ -89,7 +89,7 @@ export default class Routine extends Task {
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines(value: Result<*> = null): ResultPromise<*> {
+  parallelizeSubroutines(value: Result = null): ResultPromise {
     // $FlowIgnore
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
@@ -98,7 +98,7 @@ export default class Routine extends Task {
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: Result<*> = null): ResultPromise<*> {
+  parallelizeTasks(value: Result = null): ResultPromise {
     // $FlowIgnore
     return Promise.all(this.tasks.map(task => this.executeTask(value, task)));
   }
@@ -126,7 +126,7 @@ export default class Routine extends Task {
   /**
    * Trigger console processes before and after execution.
    */
-  run(value: Result<*>): ResultPromise<*> {
+  run(value: Result): ResultPromise {
     this.console.groupStart(this.key);
 
     return super.run(value).finally(() => {
@@ -141,11 +141,11 @@ export default class Routine extends Task {
    * `accumulator` function to execute the list of processes.
    */
   serialize<T>(
-    initialValue: Result<*>,
+    initialValue: Result,
     items: T[],
-    accumulator: ResultAccumulator<*, T>,
-  ): ResultPromise<*> {
-    return items.reduce((promise: ResultPromise<*>, item: T) => (
+    accumulator: ResultAccumulator<T>,
+  ): ResultPromise {
+    return items.reduce((promise: ResultPromise, item: T) => (
       promise.then(value => accumulator(value, item))
     ), Promise.resolve(initialValue));
   }
@@ -153,21 +153,21 @@ export default class Routine extends Task {
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines(value: Result<*> = null): ResultPromise<*> {
+  serializeSubroutines(value: Result = null): ResultPromise {
     return this.serialize(value, this.subroutines, this.executeTask);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: Result<*> = null): ResultPromise<*> {
+  serializeTasks(value: Result = null): ResultPromise {
     return this.serialize(value, this.tasks, this.executeTask);
   }
 
   /**
    * Define an individual task.
    */
-  task(title: string, callback: TaskCallback<*>): this {
+  task(title: string, callback: TaskCallback): this {
     this.tasks.push(new Task(title, callback));
 
     return this;

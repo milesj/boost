@@ -4,14 +4,14 @@
  * @flow
  */
 
-import type { Status } from './types';
+import type { Status, GlobalConfig } from './types';
 
 export const PENDING: Status = 'pending';
 export const SKIPPED: Status = 'skipped';
 export const PASSED: Status = 'passed';
 export const FAILED: Status = 'failed';
 
-export const DEFAULT_GLOBALS = {
+export const DEFAULT_GLOBALS: GlobalConfig = {
   command: {
     name: '',
     options: [],

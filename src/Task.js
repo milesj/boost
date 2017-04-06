@@ -10,12 +10,12 @@ import { PENDING, SKIPPED, PASSED, FAILED } from './constants';
 import type { Result, ResultPromise, Status, TaskCallback, TreeNode } from './types';
 
 export default class Task {
-  action: TaskCallback<*>;
+  action: TaskCallback;
   time: number = 0;
   title: string = '';
   status: Status = PENDING;
 
-  constructor(title: string, action: TaskCallback<*>) {
+  constructor(title: string, action: TaskCallback) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -60,7 +60,7 @@ export default class Task {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(value: Result<*>): ResultPromise<*> {
+  run(value: Result): ResultPromise {
     this.time = Date.now();
 
     if (this.isSkipped()) {
@@ -93,7 +93,7 @@ export default class Task {
   /**
    * Wrap a value in a promise if it has not already been.
    */
-  wrapPromise(value: Result<*>): ResultPromise<*> {
+  wrapPromise(value: Result): ResultPromise {
     return (value instanceof Promise || value instanceof global.Promise)
       ? value
       : Promise.resolve(value);
