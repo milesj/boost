@@ -553,6 +553,18 @@ describe('Routine', () => {
       expect(routine.tasks[0]).toBeInstanceOf(Task);
       expect(routine.tasks[1]).toBeInstanceOf(Task);
     });
+
+    it('binds the action function to the routine', async () => {
+      let config;
+
+      routine.task('foo', function () {
+        config = this.config;
+      });
+
+      await routine.executeTask(null, routine.tasks[0]);
+
+      expect(config).toEqual(routine.config);
+    });
   });
 
   describe('toTree()', () => {

@@ -168,7 +168,7 @@ export default class Routine extends Task {
    * Define an individual task.
    */
   task(title: string, callback: TaskCallback): this {
-    this.tasks.push(new Task(title, callback));
+    this.tasks.push(new Task(title, callback.bind(this)));
 
     return this;
   }
