@@ -80,6 +80,17 @@ export default class Task {
   }
 
   /**
+   * Mark a task as skipped if the condition is true.
+   */
+  skip(condition: boolean = true): this {
+    if (condition) {
+      this.status = SKIPPED;
+    }
+
+    return this;
+  }
+
+  /**
    * Generate a tree structure to use in CLI output.
    */
   toTree(): TreeNode {
@@ -94,8 +105,6 @@ export default class Task {
    * Wrap a value in a promise if it has not already been.
    */
   wrapPromise(value: Result): ResultPromise {
-    return (value instanceof Promise || value instanceof global.Promise)
-      ? value
-      : Promise.resolve(value);
+    return (value instanceof Promise) ? value : Promise.resolve(value);
   }
 }

@@ -103,6 +103,24 @@ describe('Task', () => {
     });
   });
 
+  describe('skip()', () => {
+    it('marks a task as SKIPPED', () => {
+      expect(task.isSkipped()).toBe(false);
+
+      task.skip();
+
+      expect(task.isSkipped()).toBe(true);
+    });
+
+    it('evaluates a condition to determine whether to skip', () => {
+      expect(task.isSkipped()).toBe(false);
+
+      task.skip(1 === 2);
+
+      expect(task.isSkipped()).toBe(false);
+    });
+  });
+
   describe('toTree()', () => {
     it('returns an object descriptor of the task', () => {
       expect(task.toTree()).toEqual({
@@ -118,12 +136,12 @@ describe('Task', () => {
       expect(task.wrapPromise(123)).toBeInstanceOf(Promise);
     });
 
-    it('returns the promise as is', () => {
-      expect(task.wrapPromise(Promise.resolve(123))).toBeInstanceOf(Promise);
+    it('wraps native promise in a bluebird promise', () => {
+      expect(task.wrapPromise(global.Promise.resolve(123))).toBeInstanceOf(Promise);
     });
 
-    it('returns the native promise as is', () => {
-      expect(task.wrapPromise(global.Promise.resolve(123))).toBeInstanceOf(global.Promise);
+    it('returns the promise as is', () => {
+      expect(task.wrapPromise(Promise.resolve(123))).toBeInstanceOf(Promise);
     });
   });
 });
