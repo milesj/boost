@@ -1,0 +1,4 @@
+declare module 'elegant-spinner' {
+  declare export var frames: string[];
+  declare export default () => () => string;
+}

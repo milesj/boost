@@ -1,0 +1,5 @@
+declare module 'log-update' {
+  declare export function clear(): void;
+  declare export function done(): void;
+  declare export default function render(): void;
+}

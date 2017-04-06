@@ -1,8 +1,16 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Console from '../src/Console';
+import { PENDING } from '../src/constants';
+import MockRenderer from './__mocks__/Renderer.mock';
 
-jest.mock('readline');
+jest.mock('readline', () => ({
+  createInterface: () => ({
+    close() {},
+    question() {},
+    write() {},
+  }),
+}));
 
 describe('Pipeline', () => {
   const globals = {
@@ -14,21 +22,23 @@ describe('Pipeline', () => {
     package: {},
   };
 
-  it('inherits both normal config and global config', () => {
-    const pipeline = new Pipeline('boost', globals);
+  let pipeline;
 
+  beforeEach(() => {
+    pipeline = new Pipeline('boost', globals);
+    pipeline.console = new Console(new MockRenderer(), globals);
+  });
+
+  it('inherits both normal config and global config', () => {
     expect(pipeline.config).toEqual(globals.config);
     expect(pipeline.global).toEqual(globals);
   });
 
   it('instantiates a console', () => {
-    const pipeline = new Pipeline('boost', globals);
-
     expect(pipeline.console).toBeInstanceOf(Console);
   });
 
   it('closes console connection once ran', async () => {
-    const pipeline = new Pipeline('boost', globals);
     const spy = jest.spyOn(pipeline.console, 'close');
 
     await pipeline.run();
@@ -43,7 +53,6 @@ describe('Pipeline', () => {
       }
     }
 
-    const pipeline = new Pipeline('boost', globals);
     const spy = jest.spyOn(pipeline.console, 'close');
 
     try {
@@ -53,5 +62,31 @@ describe('Pipeline', () => {
     }
 
     expect(spy).toBeCalled();
+  });
+
+  describe('loadTree()', () => {
+    it('returns an array of subroutine nodes', () => {
+      pipeline.pipe(
+        new Routine('foo', 'foo'),
+        new Routine('bar', 'bar'),
+      );
+
+      expect(pipeline.loadTree()).toEqual([
+        {
+          time: expect.any(Number),
+          title: 'foo',
+          status: PENDING,
+          tasks: [],
+          routines: [],
+        },
+        {
+          time: expect.any(Number),
+          title: 'bar',
+          status: PENDING,
+          tasks: [],
+          routines: [],
+        },
+      ]);
+    });
   });
 });

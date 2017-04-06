@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import Console from '../src/Console';
+import MockRenderer from './__mocks__/Renderer.mock';
 
 jest.mock('readline');
 
@@ -7,7 +8,7 @@ describe('Pipeline', () => {
   let con;
 
   beforeEach(() => {
-    con = new Console({ config: {} });
+    con = new Console(new MockRenderer(), { config: {} });
     con.io = {
       close() {},
       question() {},

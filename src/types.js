@@ -40,3 +40,5 @@ export type TreeNode = {
   time: number,
   title: string,
 };
+
+export type TreeLoader = () => TreeNode[];

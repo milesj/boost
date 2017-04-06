@@ -6,5 +6,6 @@ declare module 'chalk' {
     magenta(msg: string): string,
     red(msg: string): string,
     reset(msg: string): string,
+    yellow(msg: string): string,
   };
 }

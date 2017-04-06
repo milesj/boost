@@ -5,10 +5,11 @@
  */
 
 import Routine from './Routine';
+import Renderer from './Renderer';
 import Console from './Console';
 import { DEFAULT_GLOBALS } from './constants';
 
-import type { GlobalConfig, Result, ResultPromise } from './types';
+import type { GlobalConfig, Result, ResultPromise, TreeNode } from './types';
 
 export default class Pipeline extends Routine {
   constructor(name: string, globalConfig: GlobalConfig = DEFAULT_GLOBALS) {
@@ -18,15 +19,19 @@ export default class Pipeline extends Routine {
     this.global = globalConfig;
 
     // Initialize the root console
-    this.console = new Console(globalConfig);
+    this.console = new Console(new Renderer(this.loadTree), globalConfig);
   }
+
+  /**
+   * Load tree data to be used by the console renderer.
+   */
+  loadTree = (): TreeNode[] => this.toTree().routines || [];
 
   /**
    * Execute all subroutines in order.
    */
   run(initialValue: Result = null): ResultPromise {
     return this.serializeSubroutines(initialValue).finally(() => {
-      this.console.render();
       this.console.close();
     });
   }

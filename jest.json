@@ -2,8 +2,8 @@
   "collectCoverage": false,
   "coverageDirectory": "./coverage",
   "globals": {},
-  "resetMocks": false,
-  "resetModules": false,
+  "resetMocks": true,
+  "resetModules": true,
   "roots": ["./src", "./tests"],
   "setupTestFrameworkScriptFile": "./tests/setup.js",
   "verbose": false
