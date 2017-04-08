@@ -1,5 +1,6 @@
 import Promise from 'bluebird';
 import Task from '../src/Task';
+import TaskResult from '../src/TaskResult';
 import { PENDING, SKIPPED, PASSED, FAILED } from '../src/constants';
 
 describe('Task', () => {
@@ -24,46 +25,6 @@ describe('Task', () => {
 
     it('errors if action is not a function', () => {
       expect(() => new Task('title', 123)).toThrowError('Tasks require an executable function.');
-    });
-  });
-
-  describe('hasFailed()', () => {
-    it('returns a boolean for FAILED status state', () => {
-      expect(task.hasFailed()).toBe(false);
-
-      task.status = FAILED;
-
-      expect(task.hasFailed()).toBe(true);
-    });
-  });
-
-  describe('hasPassed()', () => {
-    it('returns a boolean for PASSED status state', () => {
-      expect(task.hasPassed()).toBe(false);
-
-      task.status = PASSED;
-
-      expect(task.hasPassed()).toBe(true);
-    });
-  });
-
-  describe('isPending()', () => {
-    it('returns a boolean for PENDING status state', () => {
-      expect(task.isPending()).toBe(true);
-
-      task.status = PASSED;
-
-      expect(task.isPending()).toBe(false);
-    });
-  });
-
-  describe('isSkipped()', () => {
-    it('returns a boolean for SKIPPED status state', () => {
-      expect(task.isSkipped()).toBe(false);
-
-      task.status = SKIPPED;
-
-      expect(task.isSkipped()).toBe(true);
     });
   });
 
@@ -105,43 +66,39 @@ describe('Task', () => {
 
   describe('skip()', () => {
     it('marks a task as SKIPPED', () => {
-      expect(task.isSkipped()).toBe(false);
+      expect(task.status).toBe(PENDING);
 
       task.skip();
 
-      expect(task.isSkipped()).toBe(true);
+      expect(task.status).toBe(SKIPPED);
     });
 
     it('evaluates a condition to determine whether to skip', () => {
-      expect(task.isSkipped()).toBe(false);
+      expect(task.status).toBe(PENDING);
 
       task.skip(1 === 2);
 
-      expect(task.isSkipped()).toBe(false);
+      expect(task.status).toBe(PENDING);
     });
   });
 
-  describe('toTree()', () => {
-    it('returns an object descriptor of the task', () => {
-      expect(task.toTree()).toEqual({
-        time: expect.any(Number),
-        title: 'title',
-        status: PENDING,
-      });
+  describe('toResult()', () => {
+    it('returns a result descriptor of the task', () => {
+      expect(task.toResult()).toEqual(new TaskResult('title', PENDING));
     });
   });
 
-  describe('wrapPromise()', () => {
+  describe('wrap()', () => {
     it('wraps the value in a promise', () => {
-      expect(task.wrapPromise(123)).toBeInstanceOf(Promise);
+      expect(task.wrap(123)).toBeInstanceOf(Promise);
     });
 
     it('wraps native promise in a bluebird promise', () => {
-      expect(task.wrapPromise(global.Promise.resolve(123))).toBeInstanceOf(Promise);
+      expect(task.wrap(global.Promise.resolve(123))).toBeInstanceOf(Promise);
     });
 
     it('returns the promise as is', () => {
-      expect(task.wrapPromise(Promise.resolve(123))).toBeInstanceOf(Promise);
+      expect(task.wrap(Promise.resolve(123))).toBeInstanceOf(Promise);
     });
   });
 });

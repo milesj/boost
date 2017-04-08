@@ -5,9 +5,10 @@
  */
 
 import Promise from 'bluebird';
+import TaskResult from './TaskResult';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
-import type { Result, ResultPromise, Status, TaskCallback, TreeNode } from './types';
+import type { Result, ResultPromise, Status, TaskCallback } from './types';
 
 export default class Task {
   action: TaskCallback;
@@ -29,56 +30,30 @@ export default class Task {
   }
 
   /**
-   * Return true if this task has failed when executing.
-   */
-  hasFailed(): boolean {
-    return (this.status === FAILED);
-  }
-
-  /**
-   * Return true if this task has been executed successfully.
-   */
-  hasPassed(): boolean {
-    return (this.status === PASSED);
-  }
-
-  /**
-   * Return true if this task has not been executed yet.
-   */
-  isPending(): boolean {
-    return (this.status === PENDING);
-  }
-
-  /**
-   * Return true if this task will be skipped.
-   */
-  isSkipped(): boolean {
-    return (this.status === SKIPPED);
-  }
-
-  /**
    * Run the current task by executing it and performing any
    * before and after processes.
    */
   run(value: Result): ResultPromise {
-    this.time = Date.now();
-
-    if (this.isSkipped()) {
+    if (this.status === SKIPPED) {
       return Promise.resolve(value);
     }
 
     this.status = RUNNING;
 
-    try {
-      this.status = PASSED;
+    return new Promise((resolve: *) => {
+      resolve(this.action(value));
+    }).then(
+      (result: Result) => {
+        this.status = PASSED;
 
-      return this.wrapPromise(this.action(value));
+        return result;
+      },
+      (error: Error) => {
+        this.status = FAILED;
 
-    } catch (error) {
-      this.status = FAILED;
-
-      return Promise.reject(error);
-    }
+        throw error;
+      },
+    );
   }
 
   /**
@@ -93,20 +68,16 @@ export default class Task {
   }
 
   /**
-   * Generate a tree structure to use in CLI output.
+   * Generate a result to use in CLI output.
    */
-  toTree(): TreeNode {
-    return {
-      time: Date.now(),
-      title: this.title,
-      status: this.status,
-    };
+  toResult(): TaskResult {
+    return new TaskResult(this.title, this.status);
   }
 
   /**
    * Wrap a value in a promise if it has not already been.
    */
-  wrapPromise(value: Result): ResultPromise {
+  wrap(value: Result): ResultPromise {
     return (value instanceof Promise) ? value : Promise.resolve(value);
   }
 }

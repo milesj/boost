@@ -9,6 +9,7 @@ import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import Console from './Console';
 import Task from './Task';
+import TaskResult from './TaskResult';
 
 import type {
   Config,
@@ -17,7 +18,6 @@ import type {
   ResultPromise,
   ResultAccumulator,
   TaskCallback,
-  TreeNode,
 } from './types';
 
 export default class Routine extends Task {
@@ -80,7 +80,7 @@ export default class Routine extends Task {
    * with the provided value.
    */
   executeTask = (value: Result, task: Task): ResultPromise => (
-    this.wrapPromise(task.run(value)).finally(() => {
+    this.wrap(task.run(value)).finally(() => {
       this.console.render();
     })
   );
@@ -174,14 +174,14 @@ export default class Routine extends Task {
   }
 
   /**
-   * {Generate a tree structure to use in CLI output.
+   * Generate a result to use in CLI output.
    */
-  toTree(): TreeNode {
-    const tree = super.toTree();
+  toResult(): TaskResult {
+    const result = super.toResult();
 
-    tree.tasks = this.tasks.map(task => task.toTree());
-    tree.routines = this.subroutines.map(routine => routine.toTree());
+    result.tasks = this.tasks.map(task => task.toResult());
+    result.routines = this.subroutines.map(routine => routine.toResult());
 
-    return tree;
+    return result;
   }
 }

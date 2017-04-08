@@ -1,5 +1,9 @@
 declare module 'log-update' {
-  declare export function clear(): void;
-  declare export function done(): void;
-  declare export default function render(): void;
+  declare export type LogUpdate = {
+    (output: string): void,
+    clear: () => void,
+    done: () => void,
+  };
+
+  declare export default LogUpdate;
 }

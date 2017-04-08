@@ -7,9 +7,10 @@
 import Routine from './Routine';
 import Renderer from './Renderer';
 import Console from './Console';
+import TaskResult from './TaskResult';
 import { DEFAULT_GLOBALS } from './constants';
 
-import type { GlobalConfig, Result, ResultPromise, TreeNode } from './types';
+import type { GlobalConfig, Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
   constructor(name: string, globalConfig: GlobalConfig = DEFAULT_GLOBALS) {
@@ -19,13 +20,13 @@ export default class Pipeline extends Routine {
     this.global = globalConfig;
 
     // Initialize the root console
-    this.console = new Console(new Renderer(this.loadTree), globalConfig);
+    this.console = new Console(new Renderer(this.loadResults), globalConfig);
   }
 
   /**
-   * Load tree data to be used by the console renderer.
+   * Load task results to be used by the console renderer.
    */
-  loadTree = (): TreeNode[] => this.toTree().routines || [];
+  loadResults = (): TaskResult[] => this.toResult().routines;
 
   /**
    * Execute all subroutines in order.

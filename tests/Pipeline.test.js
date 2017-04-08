@@ -1,6 +1,7 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Console from '../src/Console';
+import TaskResult from '../src/TaskResult';
 import { PENDING } from '../src/constants';
 import MockRenderer from './__mocks__/Renderer.mock';
 
@@ -64,28 +65,16 @@ describe('Pipeline', () => {
     expect(spy).toBeCalled();
   });
 
-  describe('loadTree()', () => {
-    it('returns an array of subroutine nodes', () => {
+  describe('loadResults()', () => {
+    it('returns an array of task results', () => {
       pipeline.pipe(
         new Routine('foo', 'foo'),
         new Routine('bar', 'bar'),
       );
 
-      expect(pipeline.loadTree()).toEqual([
-        {
-          time: expect.any(Number),
-          title: 'foo',
-          status: PENDING,
-          tasks: [],
-          routines: [],
-        },
-        {
-          time: expect.any(Number),
-          title: 'bar',
-          status: PENDING,
-          tasks: [],
-          routines: [],
-        },
+      expect(pipeline.loadResults()).toEqual([
+        new TaskResult('foo', PENDING),
+        new TaskResult('bar', PENDING),
       ]);
     });
   });

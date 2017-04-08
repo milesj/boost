@@ -8,104 +8,100 @@ import chalk from 'chalk';
 import spinner from 'elegant-spinner';
 import figures from 'figures';
 import logUpdate from 'log-update';
+import TaskResult from './TaskResult';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
-import type { Status, TreeNode, TreeLoader } from './types';
+import type { LogUpdate } from 'log-update'; // eslint-disable-line
+import type { Status, ResultsLoader } from './types';
 
 export default class Renderer {
   instance: number = 0;
-  loader: TreeLoader;
+  load: ResultsLoader;
+  log: LogUpdate;
   spinner: () => string;
 
-  constructor(loader: TreeLoader) {
-    this.loader = loader;
+  constructor(loader: ResultsLoader) {
+    this.load = loader;
+    this.log = logUpdate;
     this.spinner = spinner();
   }
 
   /**
-   * Render the output by looping over all nodes in the tree.
+   * Render the output by looping over all results in the tree.
    */
   render() {
     const output = [];
-    const nodes = this.loader();
+    const results = this.load();
 
-    nodes.forEach((node: TreeNode) => {
-      output.push(...this.renderNode(node, 0));
+    results.forEach((result: TaskResult) => {
+      output.push(...this.renderResult(result, 0));
     });
 
     return output.join('\n');
   }
 
   /**
-   * Render a single node including it's title and status.
+   * Render a single result including it's title and status.
    * If sub-tasks or routines exist, render them recursively.
    */
-  renderNode(node: TreeNode, level: number = 0): string[] {
+  renderResult(result: TaskResult, level: number = 0): string[] {
     const output = [];
 
     // Generate the message row
-    let message = `${'    '.repeat(level)}${this.renderStatus(node.status)} ${node.title}`;
+    let message = `${'    '.repeat(level)}${this.renderStatus(result.status)} ${result.title}`;
 
-    if (node.status === SKIPPED) {
+    if (result.isSkipped()) {
       message += ` ${chalk.yellow('[skipped]')}`;
-    } else if (node.status === FAILED) {
+
+    } else if (result.hasFailed()) {
       message += ` ${chalk.red('[failed]')}`;
     }
 
     output.push(message);
 
     // Show only one task at a time
-    if (node.tasks && node.tasks.length) {
-      let pendingTask;
-      let runningTask;
-      let failedTask;
+    let pendingTask;
+    let runningTask;
+    let failedTask;
 
-      node.tasks.some((task: TreeNode) => {
-        switch (task.status) {
-          case PENDING:
-            pendingTask = task;
-            return false;
+    result.tasks.some((task: TaskResult) => {
+      if (task.isPending()) {
+        pendingTask = task;
 
-          case RUNNING:
-            runningTask = task;
-            return false;
+      } else if (task.isRunning()) {
+        runningTask = task;
 
-          // Always show the failed task
-          case FAILED:
-            failedTask = task;
-            return true;
-
-          default:
-            return false;
-        }
-      });
-
-      const task = failedTask || runningTask || pendingTask;
-
-      if (task) {
-        output.push(...this.renderNode(task, level + 1));
+      } else if (task.hasFailed()) {
+        failedTask = task;
+        return true;
       }
+
+      return false;
+    });
+
+    const activeTask = failedTask || runningTask || pendingTask;
+
+    if (activeTask) {
+      output.push(...this.renderResult(activeTask, level + 1));
     }
 
     // Show all subroutines
-    if (node.routines && node.routines.length) {
-      node.routines.forEach((routine: TreeNode) => {
-        output.push(...this.renderNode(routine, level + 1));
-      });
-    }
+    result.routines.forEach((routine: TaskResult) => {
+      output.push(...this.renderResult(routine, level + 1));
+    });
 
     return output;
   }
 
   /**
-   * Render a status symbol for a node.
+   * Render a status symbol for a result.
    */
   renderStatus(status: Status): string {
     switch (status) {
       case PENDING:
         return chalk.gray(figures.circle);
       case RUNNING:
-        return this.spinner();
+        return chalk.gray(this.spinner());
       case SKIPPED:
         return chalk.yellow(figures.circleDotted);
       case PASSED:
@@ -121,7 +117,7 @@ export default class Renderer {
    * Clear the current output.
    */
   reset() {
-    logUpdate.clear();
+    this.log.clear();
   }
 
   /**
@@ -129,9 +125,7 @@ export default class Renderer {
    */
   start() {
     if (!this.instance) {
-      this.instance = setInterval(() => {
-        logUpdate(this.render());
-      }, 100);
+      this.instance = setInterval(() => this.update(), 100);
     }
   }
 
@@ -144,7 +138,14 @@ export default class Renderer {
       this.instance = 0;
     }
 
-    logUpdate(this.render());
-    logUpdate.done();
+    this.update();
+    this.log.done();
+  }
+
+  /**
+   * Force a render and update the current output.
+   */
+  update() {
+    this.log(this.render());
   }
 }

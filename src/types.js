@@ -4,7 +4,8 @@
  * @flow
  */
 
-import Promise from 'bluebird';
+import type Promise from 'bluebird';
+import type TaskResult from './TaskResult';
 
 export type PrimitiveType = string | number | boolean;
 
@@ -33,12 +34,4 @@ export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
 export type TaskCallback = (value: Result) => Result | ResultPromise;
 
-export type TreeNode = {
-  routines?: TreeNode[],
-  status: Status,
-  tasks?: TreeNode[],
-  time: number,
-  title: string,
-};
-
-export type TreeLoader = () => TreeNode[];
+export type ResultsLoader = () => TaskResult[];

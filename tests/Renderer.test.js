@@ -1,12 +1,11 @@
-import logUpdate from 'log-update'; // mocked
 import Renderer from '../src/Renderer';
 
 jest.mock('log-update', () => {
-  const render = jest.fn();
-  render.clear = jest.fn();
-  render.done = jest.fn();
+  const logUpdate = jest.fn();
+  logUpdate.clear = jest.fn();
+  logUpdate.done = jest.fn();
 
-  return render;
+  return logUpdate;
 });
 
 describe('Renderer', () => {
@@ -26,7 +25,7 @@ describe('Renderer', () => {
     it('clears the output', () => {
       renderer.reset();
 
-      expect(logUpdate.clear).toBeCalled();
+      expect(renderer.log.clear).toBeCalled();
     });
   });
 
@@ -38,7 +37,7 @@ describe('Renderer', () => {
       jest.runTimersToTime(100);
 
       expect(spy).toBeCalled();
-      expect(logUpdate).toBeCalledWith('');
+      expect(renderer.log).toBeCalledWith('');
     });
 
     it('only triggers one render at a time', () => {
@@ -60,13 +59,13 @@ describe('Renderer', () => {
       renderer.stop();
 
       expect(spy).toBeCalled();
-      expect(logUpdate).toBeCalledWith('');
+      expect(renderer.log).toBeCalledWith('');
     });
 
     it('closes the stream', () => {
       renderer.stop();
 
-      expect(logUpdate.done).toBeCalled();
+      expect(renderer.log.done).toBeCalled();
     });
   });
 });

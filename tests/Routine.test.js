@@ -1,7 +1,8 @@
 import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
-import { PENDING } from '../src/constants';
+import TaskResult from '../src/TaskResult';
+import { PENDING, PASSED, FAILED } from '../src/constants';
 
 describe('Routine', () => {
   let routine;
@@ -101,8 +102,7 @@ describe('Routine', () => {
     it('updates status if a success', async () => {
       await routine.executeTask(123, task);
 
-      expect(task.hasPassed()).toBe(true);
-      expect(task.time).not.toBe(0);
+      expect(task.status).toBe(PASSED);
     });
 
     it('updates status if a failure', async () => {
@@ -116,8 +116,7 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(task.hasFailed()).toBe(true);
-      expect(task.time).not.toBe(0);
+      expect(task.status).toBe(FAILED);
     });
   });
 
@@ -381,7 +380,7 @@ describe('Routine', () => {
     it('updates status if a success', async () => {
       await routine.run(123);
 
-      expect(routine.hasPassed()).toBe(true);
+      expect(routine.status).toBe(PASSED);
     });
 
     it('updates status if a failure', async () => {
@@ -395,7 +394,7 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Failure'));
       }
 
-      expect(routine.hasFailed()).toBe(true);
+      expect(routine.status).toBe(FAILED);
     });
   });
 
@@ -567,39 +566,22 @@ describe('Routine', () => {
     });
   });
 
-  describe('toTree()', () => {
-    it('returns an object descriptor of the routine', () => {
-      expect(routine.toTree()).toEqual({
-        time: expect.any(Number),
-        title: 'title',
-        status: PENDING,
-        tasks: [],
-        routines: [],
-      });
+  describe('toResult()', () => {
+    it('returns a result descriptor of the routine', () => {
+      expect(routine.toResult()).toEqual(new TaskResult('title', PENDING));
     });
 
     it('includes tasks', () => {
       routine.task('foo', value => value);
       routine.task('bar', value => value);
 
-      expect(routine.toTree()).toEqual({
-        time: expect.any(Number),
-        title: 'title',
-        status: PENDING,
-        tasks: [
-          {
-            time: expect.any(Number),
-            title: 'foo',
-            status: PENDING,
-          },
-          {
-            time: expect.any(Number),
-            title: 'bar',
-            status: PENDING,
-          },
-        ],
-        routines: [],
-      });
+      const result = new TaskResult('title', PENDING);
+      result.tasks = [
+        new TaskResult('foo', PENDING),
+        new TaskResult('bar', PENDING),
+      ];
+
+      expect(routine.toResult()).toEqual(result);
     });
 
     it('includes subroutines', () => {
@@ -611,42 +593,16 @@ describe('Routine', () => {
 
       routine.pipe(foo, bar);
 
-      expect(routine.toTree()).toEqual({
-        time: expect.any(Number),
-        title: 'title',
-        status: PENDING,
-        tasks: [],
-        routines: [
-          {
-            time: expect.any(Number),
-            title: 'foo',
-            status: PENDING,
-            tasks: [
-              {
-                time: expect.any(Number),
-                title: 'foo task',
-                status: PENDING,
-              },
-            ],
-            routines: [],
-          },
-          {
-            time: expect.any(Number),
-            title: 'bar',
-            status: PENDING,
-            tasks: [],
-            routines: [
-              {
-                time: expect.any(Number),
-                title: 'bar subroutine',
-                status: PENDING,
-                tasks: [],
-                routines: [],
-              },
-            ],
-          },
-        ],
-      });
+      const sub1 = new TaskResult('foo', PENDING);
+      sub1.tasks = [new TaskResult('foo task', PENDING)];
+
+      const sub2 = new TaskResult('bar', PENDING);
+      sub2.routines = [new TaskResult('bar subroutine', PENDING)];
+
+      const result = new TaskResult('title', PENDING);
+      result.routines = [sub1, sub2];
+
+      expect(routine.toResult()).toEqual(result);
     });
   });
 });
