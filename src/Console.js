@@ -50,7 +50,7 @@ export default class Console {
    */
   debug(message: string): this {
     if (this.global.config.debug) {
-      this.log(`${chalk.blue('[debug]')} ${this.indent(this.groups.length)}${message}`);
+      this.log(`${chalk.blue('[debug]')} ${this.renderer.indent(this.groups.length)}${message}`);
     }
 
     return this;
@@ -76,13 +76,6 @@ export default class Console {
   }
 
   /**
-   * Create an indentation based on the defined length.
-   */
-  indent(length: number): string {
-    return '    '.repeat(length);
-  }
-
-  /**
    * Logs a debug message based on a conditional.
    */
   invariant(condition: boolean, message: string, pass: string, fail: string): this {
@@ -104,6 +97,6 @@ export default class Console {
    * Trigger a render.
    */
   render() {
-    this.renderer.start();
+    this.renderer.update();
   }
 }

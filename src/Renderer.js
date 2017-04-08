@@ -5,25 +5,32 @@
  */
 
 import chalk from 'chalk';
-import spinner from 'elegant-spinner';
 import figures from 'figures';
 import logUpdate from 'log-update';
 import TaskResult from './TaskResult';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
+import type { Chalk } from 'chalk'; // eslint-disable-line
 import type { LogUpdate } from 'log-update'; // eslint-disable-line
-import type { Status, ResultsLoader } from './types';
+import type { ResultsLoader } from './types';
 
 export default class Renderer {
+  chalk: Chalk;
   instance: number = 0;
   load: ResultsLoader;
   log: LogUpdate;
-  spinner: () => string;
 
   constructor(loader: ResultsLoader) {
+    this.chalk = chalk;
     this.load = loader;
     this.log = logUpdate;
-    this.spinner = spinner();
+  }
+
+  /**
+   * Create an indentation based on the defined length.
+   */
+  indent(length: number): string {
+    return '    '.repeat(length);
   }
 
   /**
@@ -44,17 +51,20 @@ export default class Renderer {
    * Render a single result including it's title and status.
    * If sub-tasks or routines exist, render them recursively.
    */
-  renderResult(result: TaskResult, level: number = 0): string[] {
+  renderResult(result: TaskResult, level: number = 0, suffix: string = ''): string[] {
     const output = [];
 
     // Generate the message row
-    let message = `${'    '.repeat(level)}${this.renderStatus(result.status)} ${result.title}`;
+    let message = `${this.indent(level)}${this.renderStatus(result)} ${result.title}`;
 
     if (result.isSkipped()) {
       message += ` ${chalk.yellow('[skipped]')}`;
 
     } else if (result.hasFailed()) {
       message += ` ${chalk.red('[failed]')}`;
+
+    } else if (suffix) {
+      message += ` ${suffix}`;
     }
 
     output.push(message);
@@ -63,26 +73,28 @@ export default class Renderer {
     let pendingTask;
     let runningTask;
     let failedTask;
+    let passed = 0;
 
-    result.tasks.some((task: TaskResult) => {
-      if (task.isPending()) {
+    result.tasks.forEach((task: TaskResult) => {
+      if (task.isPending() && !pendingTask) {
         pendingTask = task;
 
-      } else if (task.isRunning()) {
+      } else if (task.isRunning() && !runningTask) {
         runningTask = task;
 
-      } else if (task.hasFailed()) {
+      } else if (task.hasFailed() && !failedTask) {
         failedTask = task;
-        return true;
-      }
 
-      return false;
+      } else if (task.hasPassed()) {
+        passed += 1;
+      }
     });
 
     const activeTask = failedTask || runningTask || pendingTask;
+    const taskSuffix = chalk.gray(`[${passed}/${result.tasks.length}]`);
 
     if (activeTask) {
-      output.push(...this.renderResult(activeTask, level + 1));
+      output.push(...this.renderResult(activeTask, level + 1, taskSuffix));
     }
 
     // Show all subroutines
@@ -96,12 +108,12 @@ export default class Renderer {
   /**
    * Render a status symbol for a result.
    */
-  renderStatus(status: Status): string {
-    switch (status) {
+  renderStatus(result: TaskResult): string {
+    switch (result.status) {
       case PENDING:
         return chalk.gray(figures.circle);
       case RUNNING:
-        return chalk.gray(this.spinner());
+        return chalk.gray(result.spinner());
       case SKIPPED:
         return chalk.yellow(figures.circleDotted);
       case PASSED:
@@ -133,12 +145,13 @@ export default class Renderer {
    * Stop rendering and finalize the output.
    */
   stop() {
+    this.update();
+
     if (this.instance) {
       clearInterval(this.instance);
       this.instance = 0;
     }
 
-    this.update();
     this.log.done();
   }
 
@@ -146,6 +159,10 @@ export default class Renderer {
    * Force a render and update the current output.
    */
   update() {
-    this.log(this.render());
+    if (this.instance) {
+      this.log(this.render());
+    } else {
+      this.start();
+    }
   }
 }

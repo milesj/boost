@@ -57,4 +57,13 @@ describe('TaskResult', () => {
       expect(result.isSkipped()).toBe(true);
     });
   });
+
+  describe('spinner()', () => {
+    it('increases frames each call', () => {
+      expect(result.spinner()).toBe('⠙');
+      expect(result.spinner()).toBe('⠹');
+      expect(result.spinner()).toBe('⠸');
+      expect(result.spinner()).toBe('⠼');
+    });
+  });
 });

@@ -91,14 +91,6 @@ describe('Pipeline', () => {
     });
   });
 
-  describe('indent()', () => {
-    it('indents with spaces', () => {
-      expect(con.indent(0)).toBe('');
-      expect(con.indent(1)).toBe('    ');
-      expect(con.indent(3)).toBe('            ');
-    });
-  });
-
   describe('invariant()', () => {
     it('doesnt log if debug is false', () => {
       const spy = jest.spyOn(con.io, 'write');

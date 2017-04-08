@@ -4,15 +4,17 @@
  * @flow
  */
 
+import spinner from 'elegant-spinner';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
 import type { Status } from './types';
 
 export default class TaskResult {
-  title: string;
+  spinnerFrames: ?() => string = null;
+  routines: TaskResult[] = [];
   status: Status;
   tasks: TaskResult[] = [];
-  routines: TaskResult[] = [];
+  title: string;
 
   constructor(title: string, status: Status) {
     this.title = title;
@@ -52,5 +54,16 @@ export default class TaskResult {
    */
   isSkipped(): boolean {
     return (this.status === SKIPPED);
+  }
+
+  /**
+   * Create a spinner and update the frames each call.
+   */
+  spinner(): string {
+    if (!this.spinnerFrames) {
+      this.spinnerFrames = spinner();
+    }
+
+    return this.spinnerFrames();
   }
 }

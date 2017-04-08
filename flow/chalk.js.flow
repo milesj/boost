@@ -1,5 +1,5 @@
 declare module 'chalk' {
-  declare export default {
+  declare export type Chalk = {
     blue(msg: string): string,
     gray(msg: string): string,
     green(msg: string): string,
@@ -8,4 +8,6 @@ declare module 'chalk' {
     reset(msg: string): string,
     yellow(msg: string): string,
   };
+
+  declare export default Chalk;
 }
