@@ -34,7 +34,7 @@ describe('Renderer', () => {
 
   describe('render()', () => {
     it('renders a results tree in a single output', () => {
-      const git = new TaskResult('Git', PASSED);
+      const git = new TaskResult('Git', RUNNING);
       git.tasks = [
         new TaskResult('Checking current branch', PASSED),
         new TaskResult('Checking for local changes', PASSED),
@@ -52,8 +52,7 @@ describe('Renderer', () => {
       ]);
 
       expect(renderer.render()).toBe(`${chalk.green('✔')} Status checks
-    ${chalk.gray('◯')} Checking for vulnerable dependencies ${chalk.gray('[0/1]')}
-    ${chalk.green('✔')} Git
+    ${chalk.gray('⠙')} Git
         ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
     });
   });
@@ -61,7 +60,7 @@ describe('Renderer', () => {
   describe('renderResult()', () => {
     it('creates a PENDING message', () => {
       expect(renderer.renderResult(new TaskResult('Title', PENDING))).toEqual([
-        `${chalk.gray('◯')} Title`,
+        `${chalk.gray('●')} Title`,
       ]);
     });
 
@@ -106,7 +105,7 @@ describe('Renderer', () => {
 
         expect(renderer.renderResult(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('◯')} Sub-task #1 ${chalk.gray('[0/3]')}`,
+          `    ${chalk.gray('●')} Sub-task #1 ${chalk.gray('[0/3]')}`,
         ]);
       });
 
@@ -154,6 +153,19 @@ describe('Renderer', () => {
         ]);
       });
 
+      it('does not display tasks if parent isnt RUNNING', () => {
+        const result = new TaskResult('Title', PASSED);
+        result.tasks = [
+          new TaskResult('Sub-task #1', PENDING),
+          new TaskResult('Sub-task #2', RUNNING),
+          new TaskResult('Sub-task #3', PASSED),
+        ];
+
+        expect(renderer.renderResult(result)).toEqual([
+          `${chalk.green('✔')} Title`,
+        ]);
+      });
+
       it('increases count for PASSED tasks', () => {
         const result = new TaskResult('Title', RUNNING);
         result.tasks = [
@@ -164,7 +176,7 @@ describe('Renderer', () => {
 
         expect(renderer.renderResult(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('◯')} Sub-task #2 ${chalk.gray('[2/3]')}`,
+          `    ${chalk.gray('●')} Sub-task #2 ${chalk.gray('[2/3]')}`,
         ]);
       });
     });
@@ -180,9 +192,9 @@ describe('Renderer', () => {
 
         expect(renderer.renderResult(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('◯')} Sub-routine #1`,
-          `    ${chalk.gray('◯')} Sub-routine #2`,
-          `    ${chalk.gray('◯')} Sub-routine #3`,
+          `    ${chalk.gray('●')} Sub-routine #1`,
+          `    ${chalk.gray('●')} Sub-routine #2`,
+          `    ${chalk.gray('●')} Sub-routine #3`,
         ]);
       });
 
@@ -227,8 +239,8 @@ describe('Renderer', () => {
   });
 
   describe('renderStatus()', () => {
-    it('renders a circle for PENDING', () => {
-      expect(renderer.renderStatus(new TaskResult('', PENDING))).toBe(chalk.gray('◯'));
+    it('renders a bullet for PENDING', () => {
+      expect(renderer.renderStatus(new TaskResult('', PENDING))).toBe(chalk.gray('●'));
     });
 
     it('renders a spinner for RUNNING', () => {

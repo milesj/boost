@@ -93,7 +93,8 @@ export default class Renderer {
     const activeTask = failedTask || runningTask || pendingTask;
     const taskSuffix = chalk.gray(`[${passed}/${result.tasks.length}]`);
 
-    if (activeTask) {
+    // Only show if the parent is running or a task failed
+    if (activeTask && (result.isRunning() || failedTask)) {
       output.push(...this.renderResult(activeTask, level + 1, taskSuffix));
     }
 
@@ -111,7 +112,7 @@ export default class Renderer {
   renderStatus(result: TaskResult): string {
     switch (result.status) {
       case PENDING:
-        return chalk.gray(figures.circle);
+        return chalk.gray(figures.bullet);
       case RUNNING:
         return chalk.gray(result.spinner());
       case SKIPPED:
