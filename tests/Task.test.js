@@ -1,7 +1,6 @@
 import Promise from 'bluebird';
 import Task from '../src/Task';
-import TaskResult from '../src/TaskResult';
-import { PENDING, SKIPPED, PASSED, FAILED } from '../src/constants';
+import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from '../src/constants';
 
 describe('Task', () => {
   let task;
@@ -25,6 +24,56 @@ describe('Task', () => {
 
     it('errors if action is not a function', () => {
       expect(() => new Task('title', 123)).toThrowError('Tasks require an executable function.');
+    });
+  });
+
+  describe('hasFailed()', () => {
+    it('returns a boolean for FAILED status state', () => {
+      expect(task.hasFailed()).toBe(false);
+
+      task.status = FAILED;
+
+      expect(task.hasFailed()).toBe(true);
+    });
+  });
+
+  describe('hasPassed()', () => {
+    it('returns a boolean for PASSED status state', () => {
+      expect(task.hasPassed()).toBe(false);
+
+      task.status = PASSED;
+
+      expect(task.hasPassed()).toBe(true);
+    });
+  });
+
+  describe('isPending()', () => {
+    it('returns a boolean for PENDING status state', () => {
+      expect(task.isPending()).toBe(true);
+
+      task.status = PASSED;
+
+      expect(task.isPending()).toBe(false);
+    });
+  });
+
+  describe('isRunning()', () => {
+    it('returns a boolean for RUNNING status state', () => {
+      expect(task.isRunning()).toBe(false);
+
+      task.status = RUNNING;
+
+      expect(task.isRunning()).toBe(true);
+    });
+  });
+
+  describe('isSkipped()', () => {
+    it('returns a boolean for SKIPPED status state', () => {
+      expect(task.isSkipped()).toBe(false);
+
+      task.status = SKIPPED;
+
+      expect(task.isSkipped()).toBe(true);
     });
   });
 
@@ -82,9 +131,12 @@ describe('Task', () => {
     });
   });
 
-  describe('toResult()', () => {
-    it('returns a result descriptor of the task', () => {
-      expect(task.toResult()).toEqual(new TaskResult('title', PENDING));
+  describe('spinner()', () => {
+    it('increases frames each call', () => {
+      expect(task.spinner()).toBe('⠙');
+      expect(task.spinner()).toBe('⠹');
+      expect(task.spinner()).toBe('⠸');
+      expect(task.spinner()).toBe('⠼');
     });
   });
 

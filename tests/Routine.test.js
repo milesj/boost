@@ -1,8 +1,7 @@
 import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
-import TaskResult from '../src/TaskResult';
-import { PENDING, PASSED, FAILED } from '../src/constants';
+import { PASSED, FAILED } from '../src/constants';
 
 describe('Routine', () => {
   let routine;
@@ -543,14 +542,14 @@ describe('Routine', () => {
 
   describe('task()', () => {
     it('maps `Task` objects', () => {
-      expect(routine.tasks).toHaveLength(0);
+      expect(routine.subtasks).toHaveLength(0);
 
       routine.task('foo', value => value);
       routine.task('bar', value => value);
 
-      expect(routine.tasks).toHaveLength(2);
-      expect(routine.tasks[0]).toBeInstanceOf(Task);
-      expect(routine.tasks[1]).toBeInstanceOf(Task);
+      expect(routine.subtasks).toHaveLength(2);
+      expect(routine.subtasks[0]).toBeInstanceOf(Task);
+      expect(routine.subtasks[1]).toBeInstanceOf(Task);
     });
 
     it('binds the action function to the routine', async () => {
@@ -560,49 +559,9 @@ describe('Routine', () => {
         config = this.config;
       });
 
-      await routine.executeTask(null, routine.tasks[0]);
+      await routine.executeTask(null, routine.subtasks[0]);
 
       expect(config).toEqual(routine.config);
-    });
-  });
-
-  describe('toResult()', () => {
-    it('returns a result descriptor of the routine', () => {
-      expect(routine.toResult()).toEqual(new TaskResult('title', PENDING));
-    });
-
-    it('includes tasks', () => {
-      routine.task('foo', value => value);
-      routine.task('bar', value => value);
-
-      const result = new TaskResult('title', PENDING);
-      result.tasks = [
-        new TaskResult('foo', PENDING),
-        new TaskResult('bar', PENDING),
-      ];
-
-      expect(routine.toResult()).toEqual(result);
-    });
-
-    it('includes subroutines', () => {
-      const foo = new Routine('foo', 'foo');
-      foo.task('foo task', value => value);
-
-      const bar = new Routine('bar', 'bar');
-      bar.pipe(new Routine('barChild', 'bar subroutine'));
-
-      routine.pipe(foo, bar);
-
-      const sub1 = new TaskResult('foo', PENDING);
-      sub1.tasks = [new TaskResult('foo task', PENDING)];
-
-      const sub2 = new TaskResult('bar', PENDING);
-      sub2.routines = [new TaskResult('bar subroutine', PENDING)];
-
-      const result = new TaskResult('title', PENDING);
-      result.routines = [sub1, sub2];
-
-      expect(routine.toResult()).toEqual(result);
     });
   });
 });

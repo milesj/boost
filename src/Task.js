@@ -5,16 +5,18 @@
  */
 
 import Promise from 'bluebird';
-import TaskResult from './TaskResult';
+import { frames } from 'elegant-spinner';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
 import type { Result, ResultPromise, Status, TaskCallback } from './types';
 
 export default class Task {
   action: TaskCallback;
-  time: number = 0;
+  frame: number = 0;
   title: string = '';
   status: Status = PENDING;
+  subroutines: Task[] = [];
+  subtasks: Task[] = [];
 
   constructor(title: string, action: TaskCallback) {
     if (!title || typeof title !== 'string') {
@@ -30,11 +32,46 @@ export default class Task {
   }
 
   /**
+   * Return true if the task failed when executing.
+   */
+  hasFailed(): boolean {
+    return (this.status === FAILED);
+  }
+
+  /**
+   * Return true if the task executed successfully.
+   */
+  hasPassed(): boolean {
+    return (this.status === PASSED);
+  }
+
+  /**
+   * Return true if the task has not been executed yet.
+   */
+  isPending(): boolean {
+    return (this.status === PENDING);
+  }
+
+  /**
+   * Return true if the task is currently running.
+   */
+  isRunning(): boolean {
+    return (this.status === RUNNING);
+  }
+
+  /**
+   * Return true if the task was or will be skipped.
+   */
+  isSkipped(): boolean {
+    return (this.status === SKIPPED);
+  }
+
+  /**
    * Run the current task by executing it and performing any
    * before and after processes.
    */
   run(value: Result): ResultPromise {
-    if (this.status === SKIPPED) {
+    if (this.isSkipped()) {
       return Promise.resolve(value);
     }
 
@@ -68,10 +105,13 @@ export default class Task {
   }
 
   /**
-   * Generate a result to use in CLI output.
+   * Create a spinner and update the frames each call.
    */
-  toResult(): TaskResult {
-    return new TaskResult(this.title, this.status);
+  spinner(): string {
+    // eslint-disable-next-line no-plusplus
+    this.frame = ++this.frame % frames.length;
+
+    return frames[this.frame];
   }
 
   /**

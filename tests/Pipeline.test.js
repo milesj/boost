@@ -1,8 +1,6 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Console from '../src/Console';
-import TaskResult from '../src/TaskResult';
-import { PENDING } from '../src/constants';
 import MockRenderer from './__mocks__/Renderer.mock';
 
 jest.mock('readline', () => ({
@@ -65,17 +63,14 @@ describe('Pipeline', () => {
     expect(spy).toBeCalled();
   });
 
-  describe('loadResults()', () => {
+  describe('loadTasks()', () => {
     it('returns an array of task results', () => {
-      pipeline.pipe(
-        new Routine('foo', 'foo'),
-        new Routine('bar', 'bar'),
-      );
+      const foo = new Routine('foo', 'foo');
+      const bar = new Routine('bar', 'bar');
 
-      expect(pipeline.loadResults()).toEqual([
-        new TaskResult('foo', PENDING),
-        new TaskResult('bar', PENDING),
-      ]);
+      pipeline.pipe(foo, bar);
+
+      expect(pipeline.loadTasks()).toEqual([foo, bar]);
     });
   });
 });

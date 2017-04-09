@@ -5,7 +5,7 @@
  */
 
 import type Promise from 'bluebird';
-import type TaskResult from './TaskResult';
+import type Task from './Task';
 
 export type PrimitiveType = string | number | boolean;
 
@@ -34,4 +34,4 @@ export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
 export type TaskCallback = (value: Result) => Result | ResultPromise;
 
-export type ResultsLoader = () => TaskResult[];
+export type TasksLoader = () => Task[];

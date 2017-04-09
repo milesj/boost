@@ -9,7 +9,6 @@ import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import Console from './Console';
 import Task from './Task';
-import TaskResult from './TaskResult';
 
 import type {
   Config,
@@ -25,8 +24,6 @@ export default class Routine extends Task {
   console: Console;
   global: GlobalConfig;
   key: string = '';
-  subroutines: Routine[] = [];
-  tasks: Task[] = [];
 
   constructor(key: string, title: string, defaultConfig: Config = {}) {
     super(title, value => value);
@@ -100,7 +97,7 @@ export default class Routine extends Task {
    */
   parallelizeTasks(value: Result = null): ResultPromise {
     // $FlowIgnore
-    return Promise.all(this.tasks.map(task => this.executeTask(value, task)));
+    return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 
   /**
@@ -161,27 +158,15 @@ export default class Routine extends Task {
    * Execute tasks in sequential (serial) order.
    */
   serializeTasks(value: Result = null): ResultPromise {
-    return this.serialize(value, this.tasks, this.executeTask);
+    return this.serialize(value, this.subtasks, this.executeTask);
   }
 
   /**
    * Define an individual task.
    */
   task(title: string, callback: TaskCallback): this {
-    this.tasks.push(new Task(title, callback.bind(this)));
+    this.subtasks.push(new Task(title, callback.bind(this)));
 
     return this;
-  }
-
-  /**
-   * Generate a result to use in CLI output.
-   */
-  toResult(): TaskResult {
-    const result = super.toResult();
-
-    result.tasks = this.tasks.map(task => task.toResult());
-    result.routines = this.subroutines.map(routine => routine.toResult());
-
-    return result;
   }
 }

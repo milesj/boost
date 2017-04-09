@@ -7,7 +7,6 @@
 import Routine from './Routine';
 import Renderer from './Renderer';
 import Console from './Console';
-import TaskResult from './TaskResult';
 import { DEFAULT_GLOBALS } from './constants';
 
 import type { GlobalConfig, Result, ResultPromise } from './types';
@@ -20,13 +19,13 @@ export default class Pipeline extends Routine {
     this.global = globalConfig;
 
     // Initialize the root console
-    this.console = new Console(new Renderer(this.loadResults), globalConfig);
+    this.console = new Console(new Renderer(this.loadTasks), globalConfig);
   }
 
   /**
    * Load task results to be used by the console renderer.
    */
-  loadResults = (): TaskResult[] => this.toResult().routines;
+  loadTasks = () => this.subroutines;
 
   /**
    * Execute all subroutines in order.
