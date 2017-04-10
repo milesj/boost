@@ -9,6 +9,7 @@ import merge from 'lodash/merge';
 import isObject from 'lodash/isObject';
 import Console from './Console';
 import Task from './Task';
+import { PENDING } from './constants';
 
 import type {
   Config,
@@ -20,22 +21,24 @@ import type {
 } from './types';
 
 export default class Routine extends Task {
-  config: Config;
   console: Console;
   global: GlobalConfig;
   key: string = '';
 
   constructor(key: string, title: string, defaultConfig: Config = {}) {
-    super(title, value => value);
+    super(title, null, defaultConfig);
 
     if (!key || typeof key !== 'string') {
       throw new TypeError('Routine key must be a valid unique string.');
     }
 
+    this.key = key;
+
     // We cant pass to super, so bind here
     this.action = this.execute.bind(this);
-    this.config = { ...defaultConfig };
-    this.key = key;
+
+    // We also need to set it back to pending
+    this.status = PENDING;
   }
 
   /**
@@ -164,8 +167,12 @@ export default class Routine extends Task {
   /**
    * Define an individual task.
    */
-  task(title: string, callback: TaskCallback): this {
-    this.subtasks.push(new Task(title, callback.bind(this)));
+  task(title: string, action: TaskCallback, config: Config = {}): this {
+    if (typeof action !== 'function') {
+      throw new Error('Tasks require an executable function.');
+    }
+
+    this.subtasks.push(new Task(title, action.bind(this), config));
 
     return this;
   }

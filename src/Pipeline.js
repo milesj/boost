@@ -23,7 +23,7 @@ export default class Pipeline extends Routine {
   }
 
   /**
-   * Load task results to be used by the console renderer.
+   * Load tasks to be used by the console renderer.
    */
   loadTasks = () => this.subroutines;
 

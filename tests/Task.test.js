@@ -18,12 +18,24 @@ describe('Task', () => {
       expect(() => new Task(123)).toThrowError('Tasks require a title.');
     });
 
-    it('errors if no action', () => {
-      expect(() => new Task('title')).toThrowError('Tasks require an executable function.');
-    });
-
     it('errors if action is not a function', () => {
       expect(() => new Task('title', 123)).toThrowError('Tasks require an executable function.');
+    });
+
+    it('doesnt error if action is null', () => {
+      expect(() => new Task('title')).not.toThrow();
+    });
+
+    it('marks the task as skipped if no action', () => {
+      task = new Task('title');
+
+      expect(task.isSkipped()).toBe(true);
+    });
+
+    it('inherits default config', () => {
+      task = new Task('title', value => value, { foo: 'bar' });
+
+      expect(task.config).toEqual({ foo: 'bar' });
     });
   });
 
@@ -110,6 +122,12 @@ describe('Task', () => {
         expect(error).toEqual(new Error('Oops'));
         expect(task.status).toBe(FAILED);
       }
+    });
+
+    it('passes the value through when no action exists', async () => {
+      task.action = null;
+
+      expect(await task.run(123)).toBe(123);
     });
 
     it('passes a context to the action', async () => {

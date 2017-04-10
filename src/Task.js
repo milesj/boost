@@ -8,10 +8,11 @@ import Promise from 'bluebird';
 import { frames } from 'elegant-spinner';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
-import type { Result, ResultPromise, Status, TaskCallback } from './types';
+import type { Config, Result, ResultPromise, Status, TaskCallback } from './types';
 
 export default class Task {
-  action: TaskCallback;
+  action: ?TaskCallback = null;
+  config: Config = {};
   context: Object = {};
   frame: number = 0;
   title: string = '';
@@ -19,17 +20,19 @@ export default class Task {
   subroutines: Task[] = [];
   subtasks: Task[] = [];
 
-  constructor(title: string, action: TaskCallback) {
+  constructor(title: string, action: ?TaskCallback = null, defaultConfig: Config = {}) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
 
-    if (!action || typeof action !== 'function') {
+    if (action !== null && typeof action !== 'function') {
       throw new Error('Tasks require an executable function.');
     }
 
-    this.title = title;
     this.action = action;
+    this.config = { ...defaultConfig };
+    this.status = action ? PENDING : SKIPPED;
+    this.title = title;
   }
 
   /**
@@ -74,13 +77,14 @@ export default class Task {
   run(value: Result, context: Object = {}): ResultPromise {
     this.context = context;
 
-    if (this.isSkipped()) {
+    if (this.isSkipped() || !this.action) {
       return Promise.resolve(value);
     }
 
     this.status = RUNNING;
 
     return new Promise((resolve: *) => {
+      // $FlowIgnore We check above
       resolve(this.action(value, context));
     }).then(
       (result: Result) => {

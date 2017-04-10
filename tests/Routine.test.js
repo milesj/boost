@@ -687,5 +687,11 @@ describe('Routine', () => {
 
       expect(config).toEqual(routine.config);
     });
+
+    it('defines the config for the task', () => {
+      routine.task('foo', value => value, { foo: 'bar' });
+
+      expect(routine.subtasks[0].config).toEqual({ foo: 'bar' });
+    });
   });
 });
