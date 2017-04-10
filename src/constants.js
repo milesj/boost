@@ -14,8 +14,8 @@ export const FAILED: Status = 'failed';
 
 export const DEFAULT_GLOBALS: GlobalConfig = {
   command: {
+    args: [],
     name: '',
-    options: [],
   },
   config: {
     debug: false,

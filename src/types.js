@@ -13,8 +13,8 @@ export type Config = { [key: string]: PrimitiveType | PrimitiveType[] | Config }
 
 export type GlobalConfig = {
   command: {
+    args: string[],
     name: string,
-    options: string[],
   },
   config: Config,
   package: {
@@ -22,6 +22,10 @@ export type GlobalConfig = {
     version: string,
     [key: string]: PrimitiveType | PrimitiveType[] | Config,
   },
+};
+
+export type AppConfig = {
+  defaultConfig?: Config,
 };
 
 export type Result = *;

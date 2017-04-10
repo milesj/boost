@@ -12,8 +12,8 @@ import { DEFAULT_GLOBALS } from './constants';
 import type { GlobalConfig, Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
-  constructor(name: string, globalConfig: GlobalConfig = DEFAULT_GLOBALS) {
-    super(name, name, globalConfig.config);
+  constructor(globalConfig: GlobalConfig = DEFAULT_GLOBALS) {
+    super('root', 'Pipeline', globalConfig.config);
 
     // Define the global config
     this.global = globalConfig;

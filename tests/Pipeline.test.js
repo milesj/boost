@@ -24,7 +24,7 @@ describe('Pipeline', () => {
   let pipeline;
 
   beforeEach(() => {
-    pipeline = new Pipeline('boost', globals);
+    pipeline = new Pipeline(globals);
     pipeline.console = new Console(new MockRenderer(), globals);
   });
 
