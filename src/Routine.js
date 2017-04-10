@@ -77,7 +77,7 @@ export default class Routine extends Task {
    * with the provided value.
    */
   executeTask = (value: Result, task: Task): ResultPromise => (
-    this.wrap(task.run(value)).finally(() => {
+    this.wrap(task.run(value, this.context)).finally(() => {
       this.console.render();
     })
   );
@@ -123,10 +123,10 @@ export default class Routine extends Task {
   /**
    * Trigger console processes before and after execution.
    */
-  run(value: Result): ResultPromise {
+  run(value: Result, context: Object = {}): ResultPromise {
     this.console.groupStart(this.key);
 
-    return super.run(value).finally(() => {
+    return super.run(value, context).finally(() => {
       this.console.groupStop();
       this.console.render();
     });

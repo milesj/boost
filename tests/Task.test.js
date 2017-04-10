@@ -111,6 +111,24 @@ describe('Task', () => {
         expect(task.status).toBe(FAILED);
       }
     });
+
+    it('passes a context to the action', async () => {
+      const context = { count: 1 };
+
+      /* eslint-disable no-param-reassign */
+      task.action = (value, con) => {
+        con.count += 1;
+        con.foo = 'bar';
+      };
+      /* eslint-enable */
+
+      await task.run(123, context);
+
+      expect(context).toEqual({
+        count: 2,
+        foo: 'bar',
+      });
+    });
   });
 
   describe('skip()', () => {

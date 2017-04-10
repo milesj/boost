@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
@@ -33,6 +35,44 @@ describe('Routine', () => {
 
     execute() {
       throw new Error('Failure');
+    }
+  }
+
+  class ContextSubRoutine extends Routine {
+    constructor(...args) {
+      super(...args);
+
+      this.console = cli;
+
+      this
+        .task('foo', this.foo)
+        .task('bar', this.bar)
+        .task('baz', this.baz);
+    }
+
+    execute(value, context) {
+      context.count *= this.config.multiplier;
+      context[this.key] = true;
+
+      return value;
+    }
+
+    foo(value, context) {
+      context.foo = 123;
+
+      return value;
+    }
+
+    bar(value, context) {
+      context.bar = 456;
+
+      return value;
+    }
+
+    baz(value, context) {
+      context.baz = 789;
+
+      return value;
     }
   }
 
@@ -133,6 +173,31 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Failure'));
       }
     });
+
+    it('passes context through routines when ran', async () => {
+      const context = {
+        parallel: 'routine',
+        count: 3,
+      };
+
+      routine.pipe(
+        new ContextSubRoutine('foo', 'title', { multiplier: 2 }),
+        new ContextSubRoutine('bar', 'title', { multiplier: 3 }),
+        new ContextSubRoutine('baz', 'title', { multiplier: 2 }),
+      );
+      routine.action = value => routine.parallelizeSubroutines(value);
+
+      await routine.run(null, context);
+
+      expect(context).toEqual({
+        parallel: 'routine',
+        count: 36,
+        foo: true,
+        bar: true,
+        baz: true,
+      });
+      expect(routine.context).toBe(context);
+    });
   });
 
   describe('parallelizeTasks()', () => {
@@ -176,6 +241,23 @@ describe('Routine', () => {
         'ABC',
         'abcabc',
       ]);
+    });
+
+    it('passes context through tasks when ran', async () => {
+      const context = { parallel: 'task' };
+
+      routine = new ContextSubRoutine('context', 'title');
+      routine.action = value => routine.parallelizeTasks(value);
+
+      await routine.run(null, context);
+
+      expect(context).toEqual({
+        parallel: 'task',
+        foo: 123,
+        bar: 456,
+        baz: 789,
+      });
+      expect(routine.context).toBe(context);
     });
   });
 
@@ -499,6 +581,31 @@ describe('Routine', () => {
         key: 'foobarbaz',
       });
     });
+
+    it('passes context through routines when ran', async () => {
+      const context = {
+        serial: 'routine',
+        count: 3,
+      };
+
+      routine.pipe(
+        new ContextSubRoutine('foo', 'title', { multiplier: 2 }),
+        new ContextSubRoutine('bar', 'title', { multiplier: 3 }),
+        new ContextSubRoutine('baz', 'title', { multiplier: 2 }),
+      );
+      routine.action = value => routine.serializeSubroutines(value);
+
+      await routine.run(null, context);
+
+      expect(context).toEqual({
+        serial: 'routine',
+        count: 36,
+        foo: true,
+        bar: true,
+        baz: true,
+      });
+      expect(routine.context).toBe(context);
+    });
   });
 
   describe('serializeTasks()', () => {
@@ -537,6 +644,23 @@ describe('Routine', () => {
       routine.task('dupe', value => `${value}${value}`);
 
       expect(await routine.serializeTasks('foo')).toBe('FOOFOO');
+    });
+
+    it('passes context through tasks when ran', async () => {
+      const context = { serial: 'task' };
+
+      routine = new ContextSubRoutine('context', 'title');
+      routine.action = value => routine.serializeTasks(value);
+
+      await routine.run(null, context);
+
+      expect(context).toEqual({
+        serial: 'task',
+        foo: 123,
+        bar: 456,
+        baz: 789,
+      });
+      expect(routine.context).toBe(context);
     });
   });
 

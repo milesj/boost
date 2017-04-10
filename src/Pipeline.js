@@ -30,7 +30,9 @@ export default class Pipeline extends Routine {
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: Result = null): ResultPromise {
+  run(initialValue: Result = null, context: Object = {}): ResultPromise {
+    this.context = context;
+
     return this.serializeSubroutines(initialValue).finally(() => {
       this.console.close();
     });

@@ -12,6 +12,7 @@ import type { Result, ResultPromise, Status, TaskCallback } from './types';
 
 export default class Task {
   action: TaskCallback;
+  context: Object = {};
   frame: number = 0;
   title: string = '';
   status: Status = PENDING;
@@ -70,7 +71,9 @@ export default class Task {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(value: Result): ResultPromise {
+  run(value: Result, context: Object = {}): ResultPromise {
+    this.context = context;
+
     if (this.isSkipped()) {
       return Promise.resolve(value);
     }
@@ -78,7 +81,7 @@ export default class Task {
     this.status = RUNNING;
 
     return new Promise((resolve: *) => {
-      resolve(this.action(value));
+      resolve(this.action(value, context));
     }).then(
       (result: Result) => {
         this.status = PASSED;
