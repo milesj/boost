@@ -509,6 +509,7 @@ describe('Routine', () => {
 
       function incCount(value) {
         count += 1;
+
         return value;
       }
 
@@ -531,14 +532,17 @@ describe('Routine', () => {
       const result = await routine.serialize(Buffer.alloc(9), [
         (buffer) => {
           buffer.write('foo', 0, 3);
+
           return buffer;
         },
         (buffer) => {
           buffer.write('bar', 3, 3);
+
           return buffer;
         },
         (buffer) => {
           buffer.write('baz', 6, 3);
+
           return buffer;
         },
       ], (buffer, func) => func(buffer));
@@ -679,8 +683,8 @@ describe('Routine', () => {
     it('binds the action function to the routine', async () => {
       let config;
 
-      routine.task('foo', function () {
-        config = this.config;
+      routine.task('foo', function foo() {
+        ({ config } = this);
       });
 
       await routine.executeTask(null, routine.subtasks[0]);

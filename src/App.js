@@ -68,7 +68,6 @@ export default class App {
     let config = {};
 
     try {
-      // $FlowIgnore
       config = require(path.join(CWD, filePath));
     } catch (error) {
       config = {};
@@ -86,7 +85,6 @@ export default class App {
    */
   loadPackage(): Object {
     try {
-      // $FlowIgnore
       return require(path.join(CWD, 'package.json'));
     } catch (error) {
       throw new Error(

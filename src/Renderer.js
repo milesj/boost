@@ -14,6 +14,8 @@ import type { Chalk } from 'chalk'; // eslint-disable-line
 import type { LogUpdate } from 'log-update'; // eslint-disable-line
 import type { TasksLoader } from './types';
 
+const RENDER_INTERVAL: number = 100;
+
 export default class Renderer {
   chalk: Chalk;
   instance: number = 0;
@@ -141,7 +143,7 @@ export default class Renderer {
    */
   start() {
     if (!this.instance) {
-      this.instance = setInterval(() => this.update(), 100);
+      this.instance = setInterval(() => this.update(), RENDER_INTERVAL);
     }
   }
 

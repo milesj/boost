@@ -17,6 +17,9 @@ describe('Renderer', () => {
   beforeEach(() => {
     renderer = new Renderer(() => ([]));
 
+    // eslint-disable-next-line global-require
+    require('log-update').mockReset();
+
     jest.useFakeTimers();
   });
 
@@ -313,7 +316,7 @@ describe('Renderer', () => {
   });
 
   describe('update()', () => {
-    it('triggers a start of interval not set', () => {
+    it('triggers a start if interval not set', () => {
       const spy = jest.spyOn(renderer, 'start');
 
       renderer.update();

@@ -4,21 +4,16 @@
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
   "main": "./lib/index.js",
-  "files": [
-    "*.md",
-    "lib"
-  ],
   "scripts": {
-    "clean": "rimraf ./lib",
-    "build": "babel ./src -d ./lib",
-    "lint": "eslint ./src ./tests",
-    "flow": "flow check",
-    "jest": "jest --config ./jest.json",
+    "babel": "build-lib ./src -d ./lib",
     "coverage": "yarn run jest -- --coverage",
-    "pretest": "yarn run lint",
-    "test": "yarn run jest",
+    "eslint": "run-linter ./src ./tests",
+    "flow": "type-check",
+    "jest": "run-tests",
     "posttest": "yarn run flow",
-    "preversion": "yarn test && yarn run clean && yarn run build"
+    "pretest": "yarn run eslint",
+    "preversion": "yarn test && yarn run babel",
+    "test": "yarn run jest"
   },
   "repository": {
     "type": "git",
@@ -42,10 +37,11 @@
     "elegant-spinner": "^1.0.1",
     "figures": "^2.0.0",
     "lodash": "^4.17.2",
-    "vorpal": "^1.11.4"
+    "log-update": "^2.0.0",
+    "vorpal": "^1.12.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "^0.3.3"
+    "@milesj/build-tool-config": "^0.3.4"
   },
   "babel": {
     "extends": "./node_modules/@milesj/build-tool-config/babel.node.json5"
