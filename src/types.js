@@ -9,7 +9,14 @@ import type Task from './Task';
 
 export type PrimitiveType = string | number | boolean;
 
-export type Config = { [key: string]: PrimitiveType | PrimitiveType[] | Config };
+export type ConfigValue = PrimitiveType | PrimitiveType[] | { [key: string]: ConfigValue };
+
+export type Config = {
+  debug?: boolean,
+  dry?: boolean,
+  extends?: string | string[],
+  [key: string]: ConfigValue,
+};
 
 export type GlobalConfig = {
   command: {
@@ -20,7 +27,7 @@ export type GlobalConfig = {
   package: {
     name: string,
     version: string,
-    [key: string]: PrimitiveType | PrimitiveType[] | Config,
+    [key: string]: ConfigValue,
   },
 };
 

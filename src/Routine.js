@@ -13,6 +13,7 @@ import { PENDING } from './constants';
 
 import type {
   Config,
+  ConfigValue,
   GlobalConfig,
   Result,
   ResultPromise,
@@ -175,5 +176,12 @@ export default class Routine extends Task {
     this.subtasks.push(new Task(title, action.bind(this), config));
 
     return this;
+  }
+
+  /**
+   * Validate the configuration specific to this routine.
+   * This process occurs in the config loading phase.
+   */
+  static validateConfig(config: { [key: string]: ConfigValue }) {
   }
 }

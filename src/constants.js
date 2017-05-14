@@ -19,9 +19,14 @@ export const DEFAULT_GLOBALS: GlobalConfig = {
   },
   config: {
     debug: false,
+    dry: false,
+    extends: [],
+    plugins: [],
   },
   package: {
     name: '',
     version: '',
   },
 };
+
+export const RESTRICTED_CONFIG_KEYS: string[] = ['debug', 'dry', 'extends', 'plugins'];

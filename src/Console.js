@@ -6,7 +6,6 @@
 
 import Promise from 'bluebird';
 import chalk from 'chalk';
-import readline from 'readline';
 import Renderer from './Renderer';
 
 import type { GlobalConfig } from './types';
@@ -14,35 +13,11 @@ import type { GlobalConfig } from './types';
 export default class Console {
   global: GlobalConfig;
   groups: string[] = [];
-  io: readline.Interface;
   renderer: Renderer;
 
   constructor(renderer: Renderer, globalConfig: GlobalConfig) {
     this.global = globalConfig;
-    this.io = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
     this.renderer = renderer;
-  }
-
-  /**
-   * Request input from the client.
-   */
-  ask(question: string): Promise<string> {
-    return new Promise((resolve: (string) => void) => {
-      this.io.question(chalk.magenta(`${question}\n`), (answer: string) => {
-        resolve(answer.trim());
-      });
-    });
-  }
-
-  /**
-   * Close the readline streams.
-   */
-  close() {
-    this.renderer.stop();
-    this.io.close();
   }
 
   /**

@@ -83,16 +83,16 @@ export default class Task {
 
     this.status = RUNNING;
 
-    return new Promise((resolve: *) => {
+    return new Promise((resolve) => {
       // $FlowIgnore We check above
       resolve(this.action(value, context));
     }).then(
-      (result: Result) => {
+      (result) => {
         this.status = PASSED;
 
         return result;
       },
-      (error: Error) => {
+      (error) => {
         this.status = FAILED;
 
         throw error;
