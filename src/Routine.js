@@ -117,10 +117,10 @@ export default class Routine extends Task {
    * Trigger processes before and after execution.
    */
   run(value: Result, context: Object = {}): ResultPromise {
-    this.tool.groupStart(this.key);
+    this.tool.startDebugGroup(this.key);
 
     return super.run(value, context).finally(() => {
-      this.tool.groupStop();
+      this.tool.stopDebugGroup();
       this.tool.render();
     });
   }

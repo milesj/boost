@@ -28,7 +28,7 @@ export default class Pipeline extends Routine {
     this.context = context;
 
     return this.serializeSubroutines(initialValue).finally(() => {
-      this.tool.close();
+      this.tool.closeConsole();
     });
   }
 }
