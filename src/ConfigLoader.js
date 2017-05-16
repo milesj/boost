@@ -7,36 +7,38 @@
 import camelCase from 'lodash/camelCase';
 import fs from 'fs';
 import glob from 'glob';
-import isPlainObject from 'lodash/isPlainObject';
+import JSON5 from 'json5';
 import merge from 'lodash/merge';
 import path from 'path';
-import JSON5 from 'json5';
+import isEmptyObject from './helpers/isEmptyObject';
 
-import type { Config, GlobalConfig } from './types';
+import type { ToolConfig, PackageConfig } from './types';
+
+const PLUGIN_PREFIX: string = 'plugin:';
 
 export default class ConfigLoader {
-  config: Config = {};
+  config: ToolConfig = {};
   name: string;
-  package: $PropertyType<GlobalConfig, 'package'> = {};
+  package: PackageConfig = {};
 
   constructor(name: string) {
     this.name = name;
-    this.loadPackageJSON();
-    this.loadConfig();
-    this.extendPresets();
-    this.validateConfig();
   }
 
   /**
    * If an `extends` option exists, merge the current configuration
    * with the preset configurations defined within `extends`.
    */
-  extendPresets() {
-    let { config: { extends: extendPaths } } = this;
+  extendPresets(config: ToolConfig): ToolConfig {
+    if (isEmptyObject(config)) {
+      throw new Error('Cannot extend presets as configuration has not been loaded.');
+    }
+
+    let { extends: extendPaths } = config;
 
     // Nothing to extend
     if (!extendPaths) {
-      return;
+      return config;
     }
 
     extendPaths = Array.isArray(extendPaths) ? extendPaths : [extendPaths];
@@ -60,9 +62,15 @@ export default class ConfigLoader {
       }
 
       // Node module, generate a path
+      let moduleName = extendPath;
+
+      if (moduleName.startsWith(PLUGIN_PREFIX)) {
+        moduleName = `${this.name}-plugin-${moduleName.slice(PLUGIN_PREFIX.length)}`;
+      }
+
       return path.resolve(
         'node_modules/',
-        extendPath,
+        moduleName,
         `config/${this.name}.preset.js`,
       );
     });
@@ -82,7 +90,9 @@ export default class ConfigLoader {
     });
 
     // Apply local configuration last
-    this.config = merge(nextConfig, this.config);
+    this.config = merge(nextConfig, config);
+
+    return this.config;
   }
 
   /**
@@ -91,48 +101,57 @@ export default class ConfigLoader {
    *
    * Support both JSON and JS file formats by globbing the config directory.
    */
-  loadConfig() {
+  loadConfig(): ToolConfig {
+    if (isEmptyObject(this.package)) {
+      throw new Error('Cannot load configuration as "package.json" has not been loaded.');
+    }
+
     const { name } = this;
     const camelName = camelCase(name);
+    let config = {};
 
     // Config has been defined in package.json
     if (this.package[camelName]) {
-      this.config = { ...this.package[camelName] };
-
-      return;
-    }
+      config = this.package[camelName];
 
     // Locate files within a local config folder
-    const filePaths = glob.sync(
-      path.join(process.cwd(), `config/${name}.{json,json5,js}`),
-      { absolute: true },
-    );
+    } else {
+      const filePaths = glob.sync(
+        path.join(process.cwd(), `config/${name}.{json,json5,js}`),
+        { absolute: true },
+      );
 
-    if (filePaths.length === 0) {
-      throw new Error(
-        'Local configuration file could not be found. ' +
-        `One of "${name}.json" or "${name}.js" must exist ` +
-        'in a "config" folder relative to the project root.',
-      );
-    } else if (filePaths.length !== 1) {
-      throw new Error(
-        `Multiple "${name}" configuration files found. Only 1 may exist.`,
-      );
+      if (filePaths.length === 0) {
+        throw new Error(
+          'Local configuration file could not be found. ' +
+          `One of "${name}.json" or "${name}.js" must exist ` +
+          'in a "config" folder relative to the project root.',
+        );
+
+      } else if (filePaths.length !== 1) {
+        throw new Error(
+          `Multiple "${name}" configuration files found. Only 1 may exist.`,
+        );
+      }
+
+      // Parse and extract the located file
+      config = this.parseFile(filePaths[0]);
     }
 
-    // Parse and extract the located file
-    this.config = this.parseFile(filePaths[0]);
-
-    if (!isPlainObject(this.config)) {
+    if (isEmptyObject(config)) {
       throw new Error('Invalid configuration. Must be a plain object.');
     }
+
+    this.config = config;
+
+    return this.extendPresets(config);
   }
 
   /**
    * Load the "package.json" from the current working directory,
    * as we require the build tool to be ran from the project root.
    */
-  loadPackageJSON() {
+  loadPackageJSON(): PackageConfig {
     if (!fs.existsSync('package.json')) {
       throw new Error(
         'Local "package.json" could not be found. ' +
@@ -141,6 +160,8 @@ export default class ConfigLoader {
     }
 
     this.package = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+    return this.package;
   }
 
   /**
@@ -164,29 +185,5 @@ export default class ConfigLoader {
       default:
         throw new Error(`Unsupported configuration format ${this.name}${ext}.`);
     }
-  }
-
-  validateConfig() {
-    Object.keys(this.config).forEach((key) => {
-      const value = this.config[key];
-
-      if (key === 'debug' || key === 'dry') {
-        if (typeof value !== 'boolean') {
-          throw new Error(`Configuration option "${key}" must be a boolean.`);
-        }
-
-      } else if (key === 'extends') {
-        // We validated above
-
-      } else if (key === 'plugins') {
-        // TODO
-
-      } else if (true) {
-        // TODO - validate the config in a routine of the same name
-
-      } else {
-        throw new Error(`Unknown configuration option "${key}".`);
-      }
-    });
   }
 }

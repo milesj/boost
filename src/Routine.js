@@ -6,15 +6,13 @@
 
 import Promise from 'bluebird';
 import merge from 'lodash/merge';
-import isObject from 'lodash/isObject';
-import Console from './Console';
 import Task from './Task';
+import Tool from './Tool';
+import isObject from './helpers/isObject';
 import { PENDING } from './constants';
 
 import type {
   Config,
-  ConfigValue,
-  GlobalConfig,
   Result,
   ResultPromise,
   ResultAccumulator,
@@ -22,9 +20,8 @@ import type {
 } from './types';
 
 export default class Routine extends Task {
-  console: Console;
-  global: GlobalConfig;
   key: string = '';
+  tool: Tool;
 
   constructor(key: string, title: string, defaultConfig: Config = {}) {
     super(title, null, defaultConfig);
@@ -50,15 +47,13 @@ export default class Routine extends Task {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parentConfig: Config, globalConfig: GlobalConfig, rootConsole: Console): this {
-    this.global = globalConfig;
-    this.console = rootConsole;
+  configure(tool: Tool, parentConfig: Config): this {
+    this.tool = tool;
 
     // Inherit config from parent
     const config = parentConfig[this.key];
 
     if (isObject(config)) {
-      // $FlowIgnore Flow cannot introspect from isObject
       merge(this.config, config);
     }
 
@@ -82,7 +77,7 @@ export default class Routine extends Task {
    */
   executeTask = (value: Result, task: Task): ResultPromise => (
     this.wrap(task.run(value, this.context)).finally(() => {
-      this.console.render();
+      this.tool.render();
     })
   );
 
@@ -91,7 +86,6 @@ export default class Routine extends Task {
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines(value: Result = null): ResultPromise {
-    // $FlowIgnore
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -100,7 +94,6 @@ export default class Routine extends Task {
    * A combination promise will be returned as the result.
    */
   parallelizeTasks(value: Result = null): ResultPromise {
-    // $FlowIgnore
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 
@@ -108,16 +101,12 @@ export default class Routine extends Task {
    * Add a new subroutine within this routine.
    */
   pipe(...routines: Routine[]): this {
-    routines.forEach((routine: Routine) => {
+    routines.forEach((routine) => {
       if (routine instanceof Routine) {
-        this.subroutines.push(routine.configure(
-          this.config,
-          this.global,
-          this.console,
-        ));
+        this.subroutines.push(routine.configure(this.tool, this.config));
 
       } else {
-        throw new TypeError('Routine must be an instance of `Routine`.');
+        throw new TypeError('Routines must be an instance of `Routine`.');
       }
     });
 
@@ -125,14 +114,14 @@ export default class Routine extends Task {
   }
 
   /**
-   * Trigger console processes before and after execution.
+   * Trigger processes before and after execution.
    */
   run(value: Result, context: Object = {}): ResultPromise {
-    this.console.groupStart(this.key);
+    this.tool.groupStart(this.key);
 
     return super.run(value, context).finally(() => {
-      this.console.groupStop();
-      this.console.render();
+      this.tool.groupStop();
+      this.tool.render();
     });
   }
 
@@ -176,12 +165,5 @@ export default class Routine extends Task {
     this.subtasks.push(new Task(title, action.bind(this), config));
 
     return this;
-  }
-
-  /**
-   * Validate the configuration specific to this routine.
-   * This process occurs in the config loading phase.
-   */
-  static validateConfig(config: { [key: string]: ConfigValue }) {
   }
 }

@@ -5,25 +5,19 @@
  */
 
 import Routine from './Routine';
-import Renderer from './Renderer';
-import Console from './Console';
-import { DEFAULT_GLOBALS } from './constants';
+import Tool from './Tool';
 
-import type { GlobalConfig, Result, ResultPromise } from './types';
+import type { Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
-  constructor(globalConfig: GlobalConfig = DEFAULT_GLOBALS) {
-    super('root', 'Pipeline', globalConfig.config);
+  constructor(tool: Tool) {
+    super('root', 'Pipeline', tool.config);
 
-    // Define the global config
-    this.global = globalConfig;
-
-    // Initialize the root console
-    this.console = new Console(new Renderer(this.loadTasks), globalConfig);
+    this.tool = tool;
   }
 
   /**
-   * Load tasks to be used by the console renderer.
+   * Load tasks to be used by the user interface renderer.
    */
   loadTasks = () => this.subroutines;
 
@@ -34,7 +28,7 @@ export default class Pipeline extends Routine {
     this.context = context;
 
     return this.serializeSubroutines(initialValue).finally(() => {
-      this.console.close();
+      this.tool.close();
     });
   }
 }
