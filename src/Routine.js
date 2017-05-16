@@ -27,7 +27,7 @@ export default class Routine extends Task {
     super(title, null, defaultConfig);
 
     if (!key || typeof key !== 'string') {
-      throw new TypeError('Routine key must be a valid unique string.');
+      throw new Error('Routine key must be a valid unique string.');
     }
 
     this.key = key;
@@ -106,7 +106,7 @@ export default class Routine extends Task {
         this.subroutines.push(routine.configure(this.tool, this.config));
 
       } else {
-        throw new TypeError('Routines must be an instance of `Routine`.');
+        throw new Error('Routines must be an instance of `Routine`.');
       }
     });
 

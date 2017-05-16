@@ -1,66 +1,27 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
-import Console from '../src/Console';
-import MockRenderer from './__mocks__/Renderer.mock';
-
-jest.mock('readline', () => ({
-  createInterface: () => ({
-    close() {},
-    question() {},
-    write() {},
-  }),
-}));
+import Tool from '../src/Tool';
 
 describe('Pipeline', () => {
-  const globals = {
-    command: {},
-    config: {
-      foo: 'bar',
-      bar: { qux: 123 },
-    },
-    package: {},
-  };
-
+  let tool;
   let pipeline;
 
   beforeEach(() => {
-    pipeline = new Pipeline(globals);
-    pipeline.console = new Console(new MockRenderer(), globals);
+    tool = new Tool();
+    tool.config = { foo: 'bar' };
+
+    pipeline = new Pipeline(tool);
   });
 
-  it('inherits both normal config and global config', () => {
-    expect(pipeline.config).toEqual(globals.config);
-    expect(pipeline.global).toEqual(globals);
-  });
+  describe('constructor()', () => {
+    it('errors if no tool is passed', () => {
+      expect(() => new Pipeline())
+        .toThrowError('A build `Tool` instance is required to operate the pipeline.');
+    });
 
-  it('instantiates a console', () => {
-    expect(pipeline.console).toBeInstanceOf(Console);
-  });
-
-  it('closes console connection once ran', async () => {
-    const spy = jest.spyOn(pipeline.console, 'close');
-
-    await pipeline.run();
-
-    expect(spy).toBeCalled();
-  });
-
-  it('closes console connection if an error occurs', async () => {
-    class FailureRoutine extends Routine {
-      execute() {
-        throw new Error('Oops');
-      }
-    }
-
-    const spy = jest.spyOn(pipeline.console, 'close');
-
-    try {
-      await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
-    } catch (error) {
-      expect(error).toEqual(new Error('Oops'));
-    }
-
-    expect(spy).toBeCalled();
+    it('inherits config from tool', () => {
+      expect(pipeline.config).toEqual({ foo: 'bar' });
+    });
   });
 
   describe('loadTasks()', () => {
@@ -71,6 +32,34 @@ describe('Pipeline', () => {
       pipeline.pipe(foo, bar);
 
       expect(pipeline.loadTasks()).toEqual([foo, bar]);
+    });
+  });
+
+  describe('run()', () => {
+    it('closes console connection once ran', async () => {
+      const spy = jest.spyOn(pipeline.tool, 'closeConsole');
+
+      await pipeline.run();
+
+      expect(spy).toBeCalled();
+    });
+
+    it('closes console connection if an error occurs', async () => {
+      class FailureRoutine extends Routine {
+        execute() {
+          throw new Error('Oops');
+        }
+      }
+
+      const spy = jest.spyOn(pipeline.tool, 'closeConsole');
+
+      try {
+        await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
+      } catch (error) {
+        expect(error).toEqual(new Error('Oops'));
+      }
+
+      expect(spy).toBeCalled();
     });
   });
 });

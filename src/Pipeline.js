@@ -11,13 +11,17 @@ import type { Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
   constructor(tool: Tool) {
-    super('root', 'Pipeline', tool.config);
+    super('root', 'Pipeline', tool ? tool.config : {});
+
+    if (!tool || !(tool instanceof Tool)) {
+      throw new Error('A build `Tool` instance is required to operate the pipeline.');
+    }
 
     this.tool = tool;
   }
 
   /**
-   * Load tasks to be used by the user interface renderer.
+   * Load tasks to be used by the interface renderer.
    */
   loadTasks = () => this.subroutines;
 

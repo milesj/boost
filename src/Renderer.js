@@ -6,25 +6,20 @@
 
 import chalk from 'chalk';
 import figures from 'figures';
-import logUpdate from 'log-update';
 import Task from './Task';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
-import type { Chalk } from 'chalk'; // eslint-disable-line
-import type { LogUpdate } from 'log-update'; // eslint-disable-line
 import type { TasksLoader } from './types';
 
-const RENDER_INTERVAL: number = 100;
-
 export default class Renderer {
-  chalk: Chalk;
-  instance: number = 0;
-  load: TasksLoader;
-  log: LogUpdate;
+  loadTasks: TasksLoader;
 
   constructor(loader: TasksLoader) {
-    this.load = loader;
-    this.log = logUpdate;
+    if (typeof loader !== 'function') {
+      throw new Error('`Renderer` requires a function to load tasks data.');
+    }
+
+    this.loadTasks = loader;
   }
 
   /**
@@ -39,9 +34,9 @@ export default class Renderer {
    */
   render() {
     const output = [];
-    const tasks = this.load() || [];
+    const tasks = this.loadTasks() || [];
 
-    tasks.forEach((task: Task) => {
+    tasks.forEach((task) => {
       output.push(...this.renderTask(task, 0));
     });
 
@@ -77,7 +72,7 @@ export default class Renderer {
       let failedTask;
       let passed = 0;
 
-      task.subtasks.forEach((subTask: Task) => {
+      task.subtasks.forEach((subTask) => {
         if (subTask.isPending() && !pendingTask) {
           pendingTask = subTask;
 
@@ -103,7 +98,7 @@ export default class Renderer {
 
     // Show all sub-routines
     if (task.subroutines.length) {
-      task.subroutines.forEach((routine: Task) => {
+      task.subroutines.forEach((routine) => {
         output.push(...this.renderTask(routine, level + 1));
       });
     }
@@ -128,47 +123,6 @@ export default class Renderer {
         return chalk.red(figures.cross);
       default:
         return '';
-    }
-  }
-
-  /**
-   * Clear the current output.
-   */
-  reset() {
-    this.log.clear();
-  }
-
-  /**
-   * Start the rendering process.
-   */
-  start() {
-    if (!this.instance) {
-      this.instance = setInterval(() => this.update(), RENDER_INTERVAL);
-    }
-  }
-
-  /**
-   * Stop rendering and finalize the output.
-   */
-  stop() {
-    this.update();
-
-    if (this.instance) {
-      clearInterval(this.instance);
-      this.instance = 0;
-    }
-
-    this.log.done();
-  }
-
-  /**
-   * Force a render and update the current output.
-   */
-  update() {
-    if (this.instance) {
-      this.log(this.render());
-    } else {
-      this.start();
     }
   }
 }

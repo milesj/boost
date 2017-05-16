@@ -39,7 +39,6 @@
     "glob": "^7.1.1",
     "json5": "^0.5.1",
     "lodash": "^4.17.2",
-    "log-update": "^2.0.0",
     "vorpal": "^1.12.0"
   },
   "devDependencies": {

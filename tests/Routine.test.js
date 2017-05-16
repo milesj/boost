@@ -3,36 +3,34 @@
 import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
+import Tool from '../src/Tool';
 import { PASSED, FAILED } from '../src/constants';
 
 describe('Routine', () => {
   let routine;
-  let cli;
+  let tool;
 
   beforeEach(() => {
-    routine = new Routine('key', 'title');
-    routine.global = {
-      command: {},
-      config: {},
-      package: {},
+    tool = new Tool();
+    tool.config = {
+      debug: false,
+      dry: true,
+      extends: [],
+      plugins: [],
+      foo: {
+        command: 'yarn run build',
+      },
+      baz: {
+        outDir: './out/',
+        compress: true,
+      },
     };
 
-    // Use a fake object for testing
-    cli = {
-      groupStart() {},
-      groupStop() {},
-      render() {},
-    };
-    routine.console = cli;
+    routine = new Routine('key', 'title');
+    routine.configure(tool, {});
   });
 
   class FailureSubRoutine extends Routine {
-    constructor(...args) {
-      super(...args);
-
-      this.console = cli;
-    }
-
     execute() {
       throw new Error('Failure');
     }
@@ -42,7 +40,7 @@ describe('Routine', () => {
     constructor(...args) {
       super(...args);
 
-      this.console = cli;
+      this.tool = tool;
 
       this
         .task('foo', this.foo)
@@ -97,21 +95,15 @@ describe('Routine', () => {
       let config = {};
 
       class BootstrapRoutine extends Routine {
-        constructor(...args) {
-          super(...args);
-
-          this.console = cli;
-        }
-
         bootstrap() {
-          config = this.global;
+          ({ config } = this.tool);
         }
       }
 
       routine = new BootstrapRoutine('bootstrap', 'title');
-      routine.configure({}, { foo: 'bar' });
+      routine.configure(tool, { foo: 'bar' });
 
-      expect(config).toEqual({ foo: 'bar' });
+      expect(config).toEqual(tool.config);
     });
   });
 
@@ -126,8 +118,8 @@ describe('Routine', () => {
       expect(routine.executeTask(123, task)).toBeInstanceOf(Promise);
     });
 
-    it('re-renders the console', async () => {
-      const spy = jest.spyOn(routine.console, 'render');
+    it('renders the console', async () => {
+      const spy = jest.spyOn(routine.tool, 'render');
 
       await routine.executeTask(123, task);
 
@@ -205,7 +197,7 @@ describe('Routine', () => {
       constructor(...args) {
         super(...args);
 
-        this.console = cli;
+        this.tool = tool;
       }
 
       foo(value) {
@@ -287,21 +279,7 @@ describe('Routine', () => {
     });
 
     it('passes global configuration to all subroutines', () => {
-      routine.global = {
-        command: {},
-        config: {
-          dryRun: true,
-          foo: {
-            command: 'yarn run build',
-          },
-          baz: {
-            outDir: './out/',
-            compress: true,
-          },
-        },
-        package: {},
-      };
-      routine.config = routine.global.config;
+      routine.config = routine.tool.config;
 
       const foo = new Routine('foo', 'title');
       const bar = new Routine('bar', 'title');
@@ -433,9 +411,9 @@ describe('Routine', () => {
     });
 
     it('triggers group start and stop', async () => {
-      const startSpy = jest.spyOn(routine.console, 'groupStart');
-      const stopSpy = jest.spyOn(routine.console, 'groupStop');
-      const renderSpy = jest.spyOn(routine.console, 'render');
+      const startSpy = jest.spyOn(routine.tool, 'startDebugGroup');
+      const stopSpy = jest.spyOn(routine.tool, 'stopDebugGroup');
+      const renderSpy = jest.spyOn(routine.tool, 'render');
 
       await routine.run(123);
 
@@ -445,8 +423,8 @@ describe('Routine', () => {
     });
 
     it('triggers group stop if an error occurs', async () => {
-      const stopSpy = jest.spyOn(routine.console, 'groupStop');
-      const renderSpy = jest.spyOn(routine.console, 'render');
+      const stopSpy = jest.spyOn(routine.tool, 'stopDebugGroup');
+      const renderSpy = jest.spyOn(routine.tool, 'render');
 
       try {
         await routine.pipe(new FailureSubRoutine('failure', 'title')).run(123);
@@ -556,7 +534,7 @@ describe('Routine', () => {
       constructor(...args) {
         super(...args);
 
-        this.console = cli;
+        this.tool = tool;
       }
 
       execute(value) {
@@ -617,7 +595,7 @@ describe('Routine', () => {
       constructor(...args) {
         super(...args);
 
-        this.console = cli;
+        this.tool = tool;
       }
 
       duplicate(value) {
