@@ -4,45 +4,23 @@
  * @flow
  */
 
-/* eslint-disable global-require, import/no-dynamic-require */
-
-import path from 'path';
-import isObject from 'lodash/isObject';
-import merge from 'lodash/merge';
 import Vorpal from 'vorpal';
 import Command from './Command';
 
-import type { AppConfig, GlobalConfig } from './types';
-
-const CWD = process.cwd();
+import type { AppConfig } from './types';
 
 export default class App {
   config: AppConfig;
-  global: GlobalConfig;
-  id: string;
-  package: Object;
-  title: string;
+  name: string;
   vorpal: Vorpal;
 
-  constructor(id: string, config: AppConfig = {}) {
-    if (!id || typeof id !== 'string') {
+  constructor(name: string, config: AppConfig = {}) {
+    if (!name || typeof name !== 'string') {
       throw new Error('A unique ID is required for Boost applications.');
     }
 
-    this.id = id;
+    this.name = name;
     this.config = config;
-
-    // Setup global configuration
-    this.global = {
-      command: {
-        name: '',
-        args: [],
-      },
-      config: this.loadConfig(),
-      package: this.loadPackage(),
-    };
-
-    // Setup vorpal
     this.vorpal = new Vorpal();
   }
 
@@ -54,49 +32,14 @@ export default class App {
       throw new Error('A callback function is required when creating commands.');
     }
 
-    callback(new Command(this.vorpal.command(format), this.global));
+    callback(new Command(this.vorpal.command(format)));
 
     return this;
   }
 
-  /**
-   * Attempt to load a local configuration file found in the
-   * current working directories config/ folder.
-   */
-  loadConfig(): Object {
-    const filePath = `config/${this.id}.js`;
-    let config = {};
-
-    try {
-      config = require(path.join(CWD, filePath));
-    } catch (error) {
-      config = {};
-    }
-
-    if (!isObject(config)) {
-      throw new Error(`Local configuration file "${filePath}" must return an object.`);
-    }
-
-    return merge({}, this.config.defaultConfig || {}, config);
-  }
-
-  /**
-   * Attempt to load `package.json` from the current working directory.
-   */
-  loadPackage(): Object {
-    try {
-      return require(path.join(CWD, 'package.json'));
-    } catch (error) {
-      throw new Error(
-        'Local "package.json" could not be found. ' +
-        'Please run this command in your project\'s root.',
-      );
-    }
-  }
-
   run(): this {
     this.vorpal
-      .delimiter(`${this.id}$ `)
+      .delimiter(`${this.name}$ `)
       // .show()
       .parse(process.argv);
 

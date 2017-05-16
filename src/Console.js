@@ -4,18 +4,17 @@
  * @flow
  */
 
-import Promise from 'bluebird';
 import chalk from 'chalk';
 import Renderer from './Renderer';
 
-import type { GlobalConfig } from './types';
+import type { Config } from './types';
 
 export default class Console {
-  global: GlobalConfig;
+  global: Config;
   groups: string[] = [];
   renderer: Renderer;
 
-  constructor(renderer: Renderer, globalConfig: GlobalConfig) {
+  constructor(renderer: Renderer, globalConfig: Config) {
     this.global = globalConfig;
     this.renderer = renderer;
   }

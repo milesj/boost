@@ -18,3 +18,22 @@ If Babel + Babili was created using this library, the implementation would look 
   }))
   .run('./src');
 ```
+
+# Lifecycle
+
+```
+vorpal
+  -> define command
+    -> add metadata
+    -> add routines
+    -> run command
+      -> init tool
+        -> load configuration
+        -> load plugins
+        -> load UI
+      -> init pipeline
+        -> set tool
+        -> set routines
+        -> configure routines
+        -> run pipeline
+```
