@@ -16,7 +16,7 @@ export default class App {
 
   constructor(name: string, config: AppConfig = {}) {
     if (!name || typeof name !== 'string') {
-      throw new Error('A unique ID is required for Boost applications.');
+      throw new Error('A unique name is required for Boost applications.');
     }
 
     this.name = name;
@@ -32,7 +32,7 @@ export default class App {
       throw new Error('A callback function is required when creating commands.');
     }
 
-    callback(new Command(this.vorpal.command(format)));
+    callback(new Command(this.name, this.vorpal.command(format)));
 
     return this;
   }

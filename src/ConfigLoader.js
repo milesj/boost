@@ -19,12 +19,12 @@ import type { ToolConfig, PackageConfig } from './types';
 const PLUGIN_PREFIX: string = 'plugin:';
 
 export default class ConfigLoader {
+  appName: string;
   config: ToolConfig;
-  name: string;
   package: PackageConfig;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(appName: string) {
+    this.appName = appName;
   }
 
   /**
@@ -67,13 +67,13 @@ export default class ConfigLoader {
       let moduleName = extendPath;
 
       if (moduleName.startsWith(PLUGIN_PREFIX)) {
-        moduleName = `${this.name}-plugin-${moduleName.slice(PLUGIN_PREFIX.length)}`;
+        moduleName = `${this.appName}-plugin-${moduleName.slice(PLUGIN_PREFIX.length)}`;
       }
 
       return path.resolve(
         'node_modules/',
         moduleName,
-        `config/${this.name}.preset.js`,
+        `config/${this.appName}.preset.js`,
       );
     });
 
@@ -99,7 +99,7 @@ export default class ConfigLoader {
 
   /**
    * Load a local configuration file relative to the current working directory,
-   * or from within a package.json property of the same name.
+   * or from within a package.json property of the same appName.
    *
    * Support both JSON and JS file formats by globbing the config directory.
    */
@@ -108,8 +108,8 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { name } = this;
-    const camelName = camelCase(name);
+    const { appName } = this;
+    const camelName = camelCase(appName);
     let config = {};
 
     // Config has been defined in package.json
@@ -124,20 +124,20 @@ export default class ConfigLoader {
     // Locate files within a local config folder
     } else {
       const filePaths = glob.sync(
-        path.join(process.cwd(), `config/${name}.{json,json5,js}`),
+        path.join(process.cwd(), `config/${appName}.{json,json5,js}`),
         { absolute: true },
       );
 
       if (filePaths.length === 0) {
         throw new Error(
           'Local configuration file could not be found. ' +
-          `One of "${name}.json" or "${name}.js" must exist ` +
+          `One of "${appName}.json" or "${appName}.js" must exist ` +
           'in a "config" folder relative to the project root.',
         );
 
       } else if (filePaths.length !== 1) {
         throw new Error(
-          `Multiple "${name}" configuration files found. Only 1 may exist.`,
+          `Multiple "${appName}" configuration files found. Only 1 may exist.`,
         );
       }
 
@@ -205,10 +205,10 @@ export default class ConfigLoader {
     }
 
     if (isEmptyObject(value)) {
-      throw new Error(`Invalid configuration for ${name}. Must return an object.`);
+      throw new Error(`Invalid configuration file ${name}. Must return an object.`);
     }
 
-    // $FlowIgnore We type check for object above
+    // $FlowIgnore We type check object above
     return value;
   }
 }

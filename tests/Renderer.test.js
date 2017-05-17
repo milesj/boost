@@ -7,7 +7,7 @@ describe('Renderer', () => {
   let renderer;
 
   beforeEach(() => {
-    renderer = new Renderer(() => ([]));
+    renderer = new Renderer();
 
     jest.useFakeTimers();
   });
@@ -39,9 +39,7 @@ describe('Renderer', () => {
       ];
       statusChecks.subroutines = [git];
 
-      renderer.loadTasks = () => ([statusChecks]);
-
-      expect(renderer.render()).toBe(`${chalk.green('✔')} Status checks
+      expect(renderer.render([statusChecks])).toBe(`${chalk.green('✔')} Status checks
     ${chalk.gray('⠙')} Git
         ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
     });

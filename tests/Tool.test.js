@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import Renderer from '../src/Renderer';
 import Tool from '../src/Tool';
 
 describe('Tool', () => {
@@ -7,7 +6,6 @@ describe('Tool', () => {
 
   beforeEach(() => {
     tool = new Tool();
-    tool.renderer = new Renderer(() => ([])); // TODO temporary
     tool.config = {};
     tool.package = {};
   });

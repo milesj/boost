@@ -9,19 +9,7 @@ import figures from 'figures';
 import Task from './Task';
 import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
 
-import type { TasksLoader } from './types';
-
 export default class Renderer {
-  loadTasks: TasksLoader;
-
-  constructor(loader: TasksLoader) {
-    if (typeof loader !== 'function') {
-      throw new Error('`Renderer` requires a function to load tasks data.');
-    }
-
-    this.loadTasks = loader;
-  }
-
   /**
    * Create an indentation based on the defined length.
    */
@@ -32,9 +20,8 @@ export default class Renderer {
   /**
    * Render the output by looping over all tasks in the tree.
    */
-  render() {
+  render(tasks: Task[] = []) {
     const output = [];
-    const tasks = this.loadTasks() || [];
 
     tasks.forEach((task) => {
       output.push(...this.renderTask(task, 0));

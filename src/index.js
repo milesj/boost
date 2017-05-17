@@ -4,9 +4,9 @@
  * @flow
  */
 
-// import CLI from './CLI';
+import App from './App';
 import Pipeline from './Pipeline';
 import Routine from './Routine';
 
 export { Pipeline, Routine };
-// export default CLI;
+export default App;

@@ -6,19 +6,22 @@
 
 import chalk from 'chalk';
 import ConfigLoader from './ConfigLoader';
+import Renderer from './Renderer';
 import isEmptyObject from './helpers/isEmptyObject';
 
 import type { ToolConfig, PackageConfig } from './types';
 
 export default class Tool {
+  appName: string;
   config: ToolConfig;
   debugs: string[] = [];
   debugGroups: string[] = [];
-  name: string;
   package: PackageConfig;
+  renderer: Renderer;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(appName: string, renderer?: Renderer) {
+    this.appName = appName;
+    this.renderer = renderer || new Renderer();
   }
 
   /**
@@ -57,7 +60,7 @@ export default class Tool {
    * Must be called first in the lifecycle.
    */
   loadConfig(): ToolConfig {
-    const configLoader = new ConfigLoader(this.name);
+    const configLoader = new ConfigLoader(this.appName);
 
     this.package = configLoader.loadPackageJSON();
     this.config = configLoader.loadConfig();

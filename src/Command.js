@@ -12,10 +12,12 @@ import type { Command as VorpalCommand } from 'vorpal'; // eslint-disable-line
 import type { Result } from './types';
 
 export default class Command {
+  appName: string;
   command: VorpalCommand;
   routines: Routine[] = [];
 
-  constructor(command: VorpalCommand) {
+  constructor(appName: string, command: VorpalCommand) {
+    this.appName = appName;
     this.command = command;
   }
 
@@ -71,7 +73,7 @@ export default class Command {
     const { routines } = this;
 
     // Setup the build tool instance
-    const tool = new Tool('NAME'); // TODO
+    const tool = new Tool(this.appName);
 
     tool.loadConfig();
     tool.loadPlugins();
