@@ -132,8 +132,8 @@ export default class ConfigLoader {
       if (filePaths.length === 0) {
         throw new Error(
           'Local configuration file could not be found. ' +
-          `One of "${appName}.json" or "${appName}.js" must exist ` +
-          'in a "config" folder relative to the project root.',
+          `One of "config/${appName}.json" or "config/${appName}.js" must exist ` +
+          'relative to the project root.',
         );
 
       } else if (filePaths.length !== 1) {
@@ -156,7 +156,12 @@ export default class ConfigLoader {
       throw new Error('Invalid configuration. Must be a plain object.');
     }
 
-    return this.extendPresets(config);
+    // Extend from preset configurations if available
+    if (config.extends) {
+      // TODO
+    }
+
+    return this.config;
   }
 
   /**

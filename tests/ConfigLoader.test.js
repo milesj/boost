@@ -1,6 +1,7 @@
 import mfs from 'mock-fs';
 import JSON5 from 'json5';
 import ConfigLoader from '../src/ConfigLoader';
+import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 
 describe('ConfigLoader', () => {
   let loader;
@@ -12,6 +13,117 @@ describe('ConfigLoader', () => {
 
   afterEach(() => {
     mfs.restore();
+  });
+
+  describe('loadConfig()', () => {
+    it('errors if package.json has not been loaded', () => {
+      expect(() => {
+        loader.loadConfig();
+      }).toThrowError('Cannot load configuration as "package.json" has not been loaded.');
+    });
+
+    describe('from package.json', () => {
+      it('errors if not an object', () => {
+        loader.package = { boost: [] };
+
+        expect(() => {
+          loader.loadConfig();
+        }).toThrowError('Invalid configuration. Must be a plain object.');
+      });
+
+      it('supports an object under the same name as the app', () => {
+        loader.package = {
+          boost: { foo: 'bar' },
+        };
+
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+      });
+
+      it('supports a string and converts it to `extends`', () => {
+        loader.package = {
+          boost: 'path/to/extend',
+        };
+
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({ extends: 'path/to/extend' }));
+      });
+
+      it('merges with default config', () => {
+        loader.package = {
+          boost: { foo: 'bar' },
+        };
+
+        expect(loader.loadConfig()).toEqual({
+          ...DEFAULT_TOOL_CONFIG,
+          foo: 'bar',
+        });
+      });
+    });
+
+    describe('from config folder', () => {
+      beforeEach(() => {
+        loader.package = { name: 'foo' };
+
+        mfs({
+          'package.json': JSON.stringify({ name: 'foo' }),
+        });
+      });
+
+      it('errors if no files found', () => {
+        expect(() => {
+          loader.loadConfig();
+        }).toThrowError(
+          'Local configuration file could not be found. One of "config/boost.json" or "config/boost.js" must exist relative to the project root.',
+        );
+      });
+
+      it('errors if too many files are found', () => {
+        mfs({
+          'config/boost.js': '',
+          'config/boost.json': '',
+        });
+
+        expect(() => {
+          loader.loadConfig();
+        }).toThrowError(
+          'Multiple "boost" configuration files found. Only 1 may exist.',
+        );
+      });
+
+      it('supports .json files', () => {
+        mfs({
+          'config/boost.json': JSON.stringify({ foo: 'bar' }),
+        });
+
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+      });
+
+      it('supports .json5 files', () => {
+        mfs({
+          'config/boost.json5': JSON5.stringify({ foo: 'bar' }),
+        });
+
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+      });
+
+      it('supports .js files', () => {
+        mfs({
+          'config/boost.js': 'module.exports = { foo: \'bar\' };',
+        });
+
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+      });
+
+      it('merges with default config', () => {
+        mfs({
+          'config/boost.json': JSON.stringify({ foo: 'bar' }),
+        });
+
+        expect(loader.loadConfig()).toEqual({
+          ...DEFAULT_TOOL_CONFIG,
+          foo: 'bar',
+        });
+      });
+    });
   });
 
   describe('loadPackageJSON()', () => {
