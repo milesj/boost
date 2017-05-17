@@ -86,6 +86,7 @@ export default class Routine extends Task {
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines(value: Result = null): ResultPromise {
+    // $FlowIgnore Native Promise.all() type definitions do not match Bluebird
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -94,6 +95,7 @@ export default class Routine extends Task {
    * A combination promise will be returned as the result.
    */
   parallelizeTasks(value: Result = null): ResultPromise {
+    // $FlowIgnore Native Promise.all() type definitions do not match Bluebird
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 

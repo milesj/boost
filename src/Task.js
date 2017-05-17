@@ -84,6 +84,7 @@ export default class Task {
     this.status = RUNNING;
 
     return new Promise((resolve) => {
+      // $FlowIgnore We check if nullable above
       resolve(this.action(value, context));
     }).then(
       (result) => {

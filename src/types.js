@@ -4,29 +4,23 @@
  * @flow
  */
 
-/* eslint-disable no-use-before-define */
-
 import type Promise from 'bluebird';
 import type Task from './Task';
 
-export type PrimitiveType = string | number | boolean;
-
-export type ConfigValue = PrimitiveType | PrimitiveType[] | Config;
-
-export type Config = { [key: string]: ConfigValue };
+export type Config = Object;
 
 export type ToolConfig = {
   debug?: boolean,
   dry?: boolean,
   extends?: string | string[],
   plugins?: string[],
-  [key: string]: ConfigValue,
+  [key: string]: string | string[] | number | boolean | Object,
 };
 
 export type PackageConfig = {
   name: string,
   version: string,
-  [key: string]: ConfigValue,
+  // Add others if we need them
 };
 
 export type AppConfig = {

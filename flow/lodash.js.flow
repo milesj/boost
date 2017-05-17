@@ -1,5 +1,9 @@
+declare module 'lodash/camelCase' {
+  declare export default function camelCase(str: string): string;
+}
+
 declare module 'lodash/merge' {
-  declare export default function merge(obj: Object, obj: Object): Object;
+  declare export default function merge(obj: Object, ...objs: Object[]): Object;
 }
 
 declare module 'lodash/isObject' {

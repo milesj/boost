@@ -1,0 +1,10 @@
+declare module 'glob' {
+  declare function hasMagic(pattern: string, options?: Object): boolean;
+  declare function sync(pattern: string, options?: Object): string[];
+
+  declare export default {
+    hasMagic: hasMagic,
+    sync: sync,
+    (pattern: string, options?: Object, callback: (?Error, string[]) => void): string[],
+  };
+}

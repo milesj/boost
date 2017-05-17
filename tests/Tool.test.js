@@ -8,6 +8,8 @@ describe('Tool', () => {
   beforeEach(() => {
     tool = new Tool();
     tool.renderer = new Renderer(() => ([])); // TODO temporary
+    tool.config = {};
+    tool.package = {};
   });
 
   describe.skip('closeConsole()');

@@ -10,16 +10,18 @@ import glob from 'glob';
 import JSON5 from 'json5';
 import merge from 'lodash/merge';
 import path from 'path';
+import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
+import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from './constants';
 
 import type { ToolConfig, PackageConfig } from './types';
 
 const PLUGIN_PREFIX: string = 'plugin:';
 
 export default class ConfigLoader {
-  config: ToolConfig = {};
+  config: ToolConfig;
   name: string;
-  package: PackageConfig = {};
+  package: PackageConfig;
 
   constructor(name: string) {
     this.name = name;
@@ -37,7 +39,7 @@ export default class ConfigLoader {
     let { extends: extendPaths } = config;
 
     // Nothing to extend
-    if (!extendPaths) {
+    if (!extendPaths || !extendPaths.length) {
       return config;
     }
 
@@ -89,8 +91,8 @@ export default class ConfigLoader {
       merge(nextConfig, this.parseFile(filePath));
     });
 
-    // Apply local configuration last
-    this.config = merge(nextConfig, config);
+    // Apply local configuration after presets
+    merge(this.config, nextConfig, config);
 
     return this.config;
   }
@@ -113,6 +115,11 @@ export default class ConfigLoader {
     // Config has been defined in package.json
     if (this.package[camelName]) {
       config = this.package[camelName];
+
+      // Extend from a preset if a string
+      if (typeof config === 'string') {
+        config = { extends: config };
+      }
 
     // Locate files within a local config folder
     } else {
@@ -138,11 +145,15 @@ export default class ConfigLoader {
       config = this.parseFile(filePaths[0]);
     }
 
-    if (isEmptyObject(config)) {
+    // Set the current config incase presets do not exist
+    if (isObject(config)) {
+      this.config = {
+        ...DEFAULT_TOOL_CONFIG,
+        ...config,
+      };
+    } else {
       throw new Error('Invalid configuration. Must be a plain object.');
     }
-
-    this.config = config;
 
     return this.extendPresets(config);
   }
@@ -159,7 +170,10 @@ export default class ConfigLoader {
       );
     }
 
-    this.package = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    this.package = {
+      ...DEFAULT_PACKAGE_CONFIG,
+      ...this.parseFile('package.json'),
+    };
 
     return this.package;
   }
@@ -170,20 +184,31 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string): Config {
+  parseFile(filePath: string): Object {
+    const name = path.basename(filePath);
     const ext = path.extname(filePath);
+    let value;
 
     switch (ext) {
       case '.json':
       case '.json5':
-        return JSON5.parse(fs.readFileSync(filePath, 'utf8'));
+        value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
+        break;
 
       case '.js':
         // eslint-disable-next-line
-        return require(filePath);
+        value = require(filePath);
+        break;
 
       default:
-        throw new Error(`Unsupported configuration format ${this.name}${ext}.`);
+        throw new Error(`Unsupported configuration format ${name}.`);
     }
+
+    if (isEmptyObject(value)) {
+      throw new Error(`Invalid configuration for ${name}. Must return an object.`);
+    }
+
+    // $FlowIgnore We type check for object above
+    return value;
   }
 }

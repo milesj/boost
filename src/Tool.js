@@ -11,11 +11,11 @@ import isEmptyObject from './helpers/isEmptyObject';
 import type { ToolConfig, PackageConfig } from './types';
 
 export default class Tool {
-  config: ToolConfig = {};
+  config: ToolConfig;
   debugs: string[] = [];
   debugGroups: string[] = [];
   name: string;
-  package: PackageConfig = {};
+  package: PackageConfig;
 
   constructor(name: string) {
     this.name = name;
