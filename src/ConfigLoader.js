@@ -10,6 +10,7 @@ import glob from 'glob';
 import JSON5 from 'json5';
 import merge from 'lodash/merge';
 import path from 'path';
+import vm from 'vm';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from './constants';
@@ -166,7 +167,7 @@ export default class ConfigLoader {
     if (!fs.existsSync('package.json')) {
       throw new Error(
         'Local "package.json" could not be found. ' +
-        'Please run this command in your project\'s root.',
+        'Please run the command in your project\'s root.',
       );
     }
 
@@ -189,23 +190,22 @@ export default class ConfigLoader {
     const ext = path.extname(filePath);
     let value;
 
-    switch (ext) {
-      case '.json':
-      case '.json5':
-        value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
-        break;
+    if (ext === '.json' || ext === '.json5') {
+      value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
 
-      case '.js':
-        // eslint-disable-next-line
-        value = require(filePath);
-        break;
+    } else if (ext === '.js') {
+      const context = { module: {} };
 
-      default:
-        throw new Error(`Unsupported configuration format ${name}.`);
+      vm.runInNewContext(fs.readFileSync(filePath, 'utf8'), context);
+
+      value = context.module.exports;
+
+    } else {
+      throw new Error(`Unsupported configuration file format "${name}".`);
     }
 
-    if (isEmptyObject(value)) {
-      throw new Error(`Invalid configuration file ${name}. Must return an object.`);
+    if (!isObject(value)) {
+      throw new Error(`Invalid configuration file "${name}". Must return an object.`);
     }
 
     // $FlowIgnore We type check object above
