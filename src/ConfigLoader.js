@@ -92,8 +92,10 @@ export default class ConfigLoader {
       merge(nextConfig, this.parseFile(filePath));
     });
 
-    // Apply local configuration after presets
-    merge(this.config, nextConfig, config);
+    // Apply preset configuration before local
+    merge(this.config, nextConfig, config, {
+      extends: extendPaths,
+    });
 
     return this.config;
   }

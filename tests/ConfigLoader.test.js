@@ -1,5 +1,6 @@
-import mfs from 'mock-fs';
 import JSON5 from 'json5';
+import mfs from 'mock-fs';
+import path from 'path';
 import ConfigLoader from '../src/ConfigLoader';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 
@@ -13,6 +14,98 @@ describe('ConfigLoader', () => {
 
   afterEach(() => {
     mfs.restore();
+  });
+
+  describe('extendPresets()', () => {
+    beforeEach(() => {
+      loader.config = {};
+    });
+
+    it('errors if config is empty', () => {
+      expect(() => {
+        loader.extendPresets();
+      }).toThrowError('Cannot extend presets as configuration has not been loaded.');
+    });
+
+    it('errors if config is not an object', () => {
+      expect(() => {
+        loader.extendPresets(123);
+      }).toThrowError('Cannot extend presets as configuration has not been loaded.');
+    });
+
+    it('returns the config as is if no `extends`', () => {
+      expect(loader.extendPresets({ foo: 'bar' })).toEqual({ foo: 'bar' });
+    });
+
+    it('returns the config if `extends` is empty', () => {
+      expect(loader.extendPresets({ extends: '' })).toEqual({ extends: '' });
+      expect(loader.extendPresets({ extends: [] })).toEqual({ extends: [] });
+    });
+
+    it('errors if `extends` value is not a string', () => {
+      expect(() => {
+        loader.extendPresets({ extends: 123 });
+        loader.extendPresets({ extends: [123] });
+      }).toThrowError(
+        'Invalid `extends` configuration value. Must be a string or an array of strings.',
+      );
+    });
+
+    it('supports absolute paths', () => {
+      mfs({
+        'absolute/file.json': JSON.stringify({ foo: 'bar' }),
+      });
+
+      const absPath = path.join(process.cwd(), 'absolute/file.json');
+
+      expect(loader.extendPresets({
+        extends: absPath,
+      })).toEqual({
+        extends: [absPath],
+        foo: 'bar',
+      });
+    });
+
+    it('supports relative paths', () => {
+      mfs({
+        'relative/file.json': JSON.stringify({ foo: 'bar' }),
+      });
+
+      const relPath = './relative/file.json';
+
+      expect(loader.extendPresets({
+        extends: relPath,
+      })).toEqual({
+        extends: [path.join(process.cwd(), relPath)],
+        foo: 'bar',
+      });
+    });
+
+    it('supports node modules', () => {
+      mfs({
+        'node_modules/foo-bar/config/boost.preset.js': 'module.exports = { foo: \'bar\' };',
+      });
+
+      expect(loader.extendPresets({
+        extends: 'foo-bar',
+      })).toEqual({
+        extends: [path.join(process.cwd(), './node_modules/foo-bar/config/boost.preset.js')],
+        foo: 'bar',
+      });
+    });
+
+    it('supports plugins', () => {
+      mfs({
+        'node_modules/boost-plugin-foo/config/boost.preset.js': 'module.exports = { foo: \'bar\' };',
+      });
+
+      expect(loader.extendPresets({
+        extends: 'plugin:foo',
+      })).toEqual({
+        extends: [path.join(process.cwd(), './node_modules/boost-plugin-foo/config/boost.preset.js')],
+        foo: 'bar',
+      });
+    });
   });
 
   describe('loadConfig()', () => {
