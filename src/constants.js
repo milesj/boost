@@ -24,4 +24,4 @@ export const DEFAULT_PACKAGE_CONFIG: PackageConfig = {
   version: '',
 };
 
-export const RESTRICTED_CONFIG_KEYS: string[] = ['debug', 'dry', 'extends', 'plugins'];
+export const RESTRICTED_CONFIG_KEYS: string[] = Object.keys(DEFAULT_TOOL_CONFIG);

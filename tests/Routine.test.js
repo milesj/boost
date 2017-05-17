@@ -4,7 +4,7 @@ import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
-import { PASSED, FAILED } from '../src/constants';
+import { PASSED, FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
 
 describe('Routine', () => {
   let routine;
@@ -13,10 +13,7 @@ describe('Routine', () => {
   beforeEach(() => {
     tool = new Tool();
     tool.config = {
-      debug: false,
-      dry: true,
-      extends: [],
-      plugins: [],
+      ...DEFAULT_TOOL_CONFIG,
       foo: {
         command: 'yarn run build',
       },
@@ -81,6 +78,10 @@ describe('Routine', () => {
 
     it('throws an error if key is not a string', () => {
       expect(() => new Routine(123, 'title')).toThrowError('Routine key must be a valid unique string.');
+    });
+
+    it('throws an error if key is reserved', () => {
+      expect(() => new Routine('extends', 'title')).toThrowError('Invalid routine key "extends". This key is reserved.');
     });
 
     it('inherits default config', () => {

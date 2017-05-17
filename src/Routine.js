@@ -9,7 +9,7 @@ import merge from 'lodash/merge';
 import Task from './Task';
 import Tool from './Tool';
 import isObject from './helpers/isObject';
-import { PENDING } from './constants';
+import { PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type {
   Config,
@@ -28,6 +28,9 @@ export default class Routine extends Task {
 
     if (!key || typeof key !== 'string') {
       throw new Error('Routine key must be a valid unique string.');
+
+    } else if (RESTRICTED_CONFIG_KEYS.includes(key)) {
+      throw new Error(`Invalid routine key "${key}". This key is reserved.`);
     }
 
     this.key = key;
