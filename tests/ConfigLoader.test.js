@@ -4,6 +4,10 @@ import path from 'path';
 import ConfigLoader from '../src/ConfigLoader';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 
+function createJavascriptFile(data) {
+  return `module.exports = ${JSON5.stringify(data)};`;
+}
+
 describe('ConfigLoader', () => {
   let loader;
 
@@ -14,98 +18,6 @@ describe('ConfigLoader', () => {
 
   afterEach(() => {
     mfs.restore();
-  });
-
-  describe('extendPresets()', () => {
-    beforeEach(() => {
-      loader.config = {};
-    });
-
-    it('errors if config is empty', () => {
-      expect(() => {
-        loader.extendPresets();
-      }).toThrowError('Cannot extend presets as configuration has not been loaded.');
-    });
-
-    it('errors if config is not an object', () => {
-      expect(() => {
-        loader.extendPresets(123);
-      }).toThrowError('Cannot extend presets as configuration has not been loaded.');
-    });
-
-    it('returns the config as is if no `extends`', () => {
-      expect(loader.extendPresets({ foo: 'bar' })).toEqual({ foo: 'bar' });
-    });
-
-    it('returns the config if `extends` is empty', () => {
-      expect(loader.extendPresets({ extends: '' })).toEqual({ extends: '' });
-      expect(loader.extendPresets({ extends: [] })).toEqual({ extends: [] });
-    });
-
-    it('errors if `extends` value is not a string', () => {
-      expect(() => {
-        loader.extendPresets({ extends: 123 });
-        loader.extendPresets({ extends: [123] });
-      }).toThrowError(
-        'Invalid `extends` configuration value. Must be a string or an array of strings.',
-      );
-    });
-
-    it('supports absolute paths', () => {
-      mfs({
-        'absolute/file.json': JSON.stringify({ foo: 'bar' }),
-      });
-
-      const absPath = path.join(process.cwd(), 'absolute/file.json');
-
-      expect(loader.extendPresets({
-        extends: absPath,
-      })).toEqual({
-        extends: [absPath],
-        foo: 'bar',
-      });
-    });
-
-    it('supports relative paths', () => {
-      mfs({
-        'relative/file.json': JSON.stringify({ foo: 'bar' }),
-      });
-
-      const relPath = './relative/file.json';
-
-      expect(loader.extendPresets({
-        extends: relPath,
-      })).toEqual({
-        extends: [path.join(process.cwd(), relPath)],
-        foo: 'bar',
-      });
-    });
-
-    it('supports node modules', () => {
-      mfs({
-        'node_modules/foo-bar/config/boost.preset.js': 'module.exports = { foo: \'bar\' };',
-      });
-
-      expect(loader.extendPresets({
-        extends: 'foo-bar',
-      })).toEqual({
-        extends: [path.join(process.cwd(), './node_modules/foo-bar/config/boost.preset.js')],
-        foo: 'bar',
-      });
-    });
-
-    it('supports plugins', () => {
-      mfs({
-        'node_modules/boost-plugin-foo/config/boost.preset.js': 'module.exports = { foo: \'bar\' };',
-      });
-
-      expect(loader.extendPresets({
-        extends: 'plugin:foo',
-      })).toEqual({
-        extends: [path.join(process.cwd(), './node_modules/boost-plugin-foo/config/boost.preset.js')],
-        foo: 'bar',
-      });
-    });
   });
 
   describe('loadConfig()', () => {
@@ -133,11 +45,19 @@ describe('ConfigLoader', () => {
       });
 
       it('supports a string and converts it to `extends`', () => {
+        mfs({
+          'node_modules/module/config/boost.preset.js': createJavascriptFile({}),
+        });
+
         loader.package = {
-          boost: 'path/to/extend',
+          boost: 'module',
         };
 
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({ extends: 'path/to/extend' }));
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({
+          extends: [
+            path.join(process.cwd(), 'node_modules/module/config/boost.preset.js'),
+          ],
+        }));
       });
 
       it('merges with default config', () => {
@@ -200,7 +120,7 @@ describe('ConfigLoader', () => {
 
       it('supports .js files', () => {
         mfs({
-          'config/boost.js': 'module.exports = { foo: \'bar\' };',
+          'config/boost.js': createJavascriptFile({ foo: 'bar' }),
         });
 
         expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
@@ -247,6 +167,144 @@ describe('ConfigLoader', () => {
       expect(loader.loadPackageJSON()).toEqual({
         name: 'foo',
         version: '',
+      });
+    });
+  });
+
+  describe('parseAndExtend()', () => {
+    it('errors if a non-string or non-object is provided', () => {
+      expect(() => {
+        loader.parseAndExtend(123);
+        loader.parseAndExtend([]);
+      }).toThrowError('Invalid configuration. Must be a plain object.');
+    });
+
+    it('errors if preset does not exist', () => {
+      expect(() => {
+        loader.parseAndExtend({ extends: './foo.json' });
+      }).toThrowError(
+        `Preset configuration ${path.join(process.cwd(), './foo.json')} does not exist.`,
+      );
+    });
+
+    it('errors if preset is not a file', () => {
+      mfs({
+        foo: mfs.directory(),
+      });
+
+      expect(() => {
+        loader.parseAndExtend({ extends: './foo/' });
+      }).toThrowError(
+        `Preset configuration ${path.join(process.cwd(), './foo')} must be a valid file.`,
+      );
+    });
+
+    it('parses a file path if a string is provided', () => {
+      mfs({
+        'foo.json': JSON.stringify({ foo: 'bar' }),
+      });
+
+      expect(loader.parseAndExtend('foo.json')).toEqual({ foo: 'bar' });
+    });
+
+    it('returns the config as is if no `extends`', () => {
+      expect(loader.parseAndExtend({ foo: 'bar' })).toEqual({ foo: 'bar' });
+    });
+
+    it('returns the config if `extends` is empty', () => {
+      expect(loader.parseAndExtend({ extends: '' })).toEqual({ extends: '' });
+      expect(loader.parseAndExtend({ extends: [] })).toEqual({ extends: [] });
+    });
+
+    it('extends a preset and merges objects', () => {
+      mfs({
+        'foo.json': JSON.stringify({ foo: 'qux', debug: true }),
+      });
+
+      expect(loader.parseAndExtend({
+        foo: 'bar',
+        extends: './foo.json',
+      })).toEqual({
+        foo: 'bar',
+        debug: true,
+        extends: [
+          path.join(process.cwd(), './foo.json'),
+        ],
+      });
+    });
+
+    it('extends multiple presets in order', () => {
+      mfs({
+        'foo.json': JSON.stringify({ a: 1 }),
+        'node_modules/module/config/boost.preset.js': createJavascriptFile({ b: 2 }),
+      });
+
+      expect(loader.parseAndExtend({
+        c: 3,
+        extends: ['./foo.json', 'module'],
+      })).toEqual({
+        a: 1,
+        b: 2,
+        c: 3,
+        extends: [
+          path.join(process.cwd(), './foo.json'),
+          path.join(process.cwd(), 'node_modules/module/config/boost.preset.js'),
+        ],
+      });
+    });
+
+    it('recursively extends presets', () => {
+      mfs({
+        'node_modules/foo/config/boost.preset.js': createJavascriptFile({ a: 1, extends: 'bar' }),
+        'node_modules/bar/config/boost.preset.js': createJavascriptFile({ b: 2, extends: 'baz' }),
+        'node_modules/baz/config/boost.preset.js': createJavascriptFile({ c: 3 }),
+      });
+
+      expect(loader.parseAndExtend({
+        d: 4,
+        extends: 'foo',
+      })).toEqual({
+        a: 1,
+        b: 2,
+        c: 3,
+        d: 4,
+        extends: [
+          path.join(process.cwd(), 'node_modules/baz/config/boost.preset.js'),
+          path.join(process.cwd(), 'node_modules/bar/config/boost.preset.js'),
+          path.join(process.cwd(), 'node_modules/foo/config/boost.preset.js'),
+        ],
+      });
+    });
+
+    it('concatenates and uniquifys arrays', () => {
+      mfs({
+        'foo.json': JSON.stringify({ list: ['foo', 'bar'] }),
+      });
+
+      expect(loader.parseAndExtend({
+        list: ['baz'],
+        extends: './foo.json',
+      })).toEqual({
+        list: ['foo', 'bar', 'baz'],
+        extends: [
+          path.join(process.cwd(), './foo.json'),
+        ],
+      });
+    });
+
+    it('merges objects', () => {
+      mfs({
+        'foo.json': JSON.stringify({ map: { foo: 123, bar: true } }),
+      });
+
+      expect(loader.parseAndExtend({
+        map: { foo: 456, baz: 'wtf' },
+        extends: './foo.json',
+      })).toEqual({
+        map: { foo: 456, bar: true, baz: 'wtf' },
+        extends: [
+          path.join(process.cwd(), './foo.json'),
+        ],
       });
     });
   });
@@ -313,10 +371,86 @@ describe('ConfigLoader', () => {
 
     it('parses .js files', () => {
       mfs({
-        'foo.js': 'module.exports = { name: \'foo\' };',
+        'foo.js': createJavascriptFile({ name: 'foo' }),
       });
 
       expect(loader.parseFile('foo.js')).toEqual({ name: 'foo' });
+    });
+  });
+
+  describe('resolveExtendPaths()', () => {
+    beforeEach(() => {
+      mfs({
+        'absolute/file.json': JSON.stringify({ foo: 'bar' }),
+        'relative/file.json': JSON.stringify({ foo: 'bar' }),
+        'node_modules/foo-bar/config/boost.preset.js': createJavascriptFile({ foo: 'bar' }),
+        'node_modules/@ns/foo-bar/config/boost.preset.js': createJavascriptFile({ foo: 'bar' }),
+        'node_modules/boost-plugin-foo/config/boost.preset.js': createJavascriptFile({ foo: 'bar' }),
+      });
+    });
+
+    it('errors if `extends` value is not a string', () => {
+      expect(() => {
+        loader.resolveExtendPaths(123);
+        loader.resolveExtendPaths([123]);
+      }).toThrowError(
+        'Invalid `extends` configuration value. Must be a string or an array of strings.',
+      );
+    });
+
+    it('errors for an invalid extend path', () => {
+      expect(() => {
+        loader.resolveExtendPaths(['FooBarBaz']);
+      }).toThrowError('Invalid `extends` configuration value "FooBarBaz".');
+    });
+
+    it('supports a single string value', () => {
+      expect(loader.resolveExtendPaths('foo-bar')).toEqual([
+        path.join(process.cwd(), './node_modules/foo-bar/config/boost.preset.js'),
+      ]);
+    });
+
+    it('supports multiple string values using an array', () => {
+      expect(loader.resolveExtendPaths(['foo-bar', 'plugin:foo'])).toEqual([
+        path.join(process.cwd(), './node_modules/foo-bar/config/boost.preset.js'),
+        path.join(process.cwd(), './node_modules/boost-plugin-foo/config/boost.preset.js'),
+      ]);
+    });
+
+    it('resolves absolute paths', () => {
+      const absPath = path.join(process.cwd(), 'absolute/file.json');
+
+      expect(loader.resolveExtendPaths([absPath])).toEqual([absPath]);
+    });
+
+    it('resolves relative paths', () => {
+      expect(loader.resolveExtendPaths(['./relative/file.json'])).toEqual([
+        path.join(process.cwd(), './relative/file.json'),
+      ]);
+    });
+
+    it('resolves node modules', () => {
+      expect(loader.resolveExtendPaths(['foo-bar'])).toEqual([
+        path.join(process.cwd(), './node_modules/foo-bar/config/boost.preset.js'),
+      ]);
+    });
+
+    it('resolves node modules with a namespace', () => {
+      expect(loader.resolveExtendPaths(['@ns/foo-bar'])).toEqual([
+        path.join(process.cwd(), './node_modules/@ns/foo-bar/config/boost.preset.js'),
+      ]);
+    });
+
+    it('resolves plugins', () => {
+      expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
+        path.join(process.cwd(), './node_modules/boost-plugin-foo/config/boost.preset.js'),
+      ]);
+    });
+
+    it('resolves plugins using their full name', () => {
+      expect(loader.resolveExtendPaths(['boost-plugin-foo'])).toEqual([
+        path.join(process.cwd(), './node_modules/boost-plugin-foo/config/boost.preset.js'),
+      ]);
     });
   });
 });

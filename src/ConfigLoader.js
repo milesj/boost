@@ -8,7 +8,7 @@ import camelCase from 'lodash/camelCase';
 import fs from 'fs';
 import glob from 'glob';
 import JSON5 from 'json5';
-import merge from 'lodash/merge';
+import mergeWith from 'lodash/mergeWith';
 import path from 'path';
 import vm from 'vm';
 import isObject from './helpers/isObject';
@@ -17,7 +17,8 @@ import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from './constants';
 
 import type { ToolConfig, PackageConfig } from './types';
 
-const PLUGIN_PREFIX: string = 'plugin:';
+const MODULE_NAME_PATTERN: RegExp = /^(@[a-z-]+\/)?[a-z-]+$/;
+const PLUGIN_NAME_PATTERN: RegExp = /^plugin:[a-z-]+$/;
 
 export default class ConfigLoader {
   appName: string;
@@ -29,75 +30,19 @@ export default class ConfigLoader {
   }
 
   /**
-   * If an `extends` option exists, merge the current configuration
-   * with the preset configurations defined within `extends`.
+   * Handle special cases when merging 2 configuration values.
+   * If the target and source are both arrays, concatenate them.
    */
-  extendPresets(config: ToolConfig): ToolConfig {
-    if (isEmptyObject(config)) {
-      throw new Error('Cannot extend presets as configuration has not been loaded.');
+  handleMerge(target: *, source: *): * {
+    if (Array.isArray(target) && Array.isArray(source)) {
+      return Array.from(new Set([
+        ...target,
+        ...source,
+      ]));
     }
 
-    let { extends: extendPaths } = config;
-
-    // Nothing to extend
-    if (!extendPaths || !extendPaths.length) {
-      return config;
-    }
-
-    extendPaths = Array.isArray(extendPaths) ? extendPaths : [extendPaths];
-
-    // Determine file paths to preset configs
-    extendPaths = extendPaths.map((extendPath) => {
-      if (typeof extendPath !== 'string') {
-        throw new Error(
-          'Invalid `extends` configuration value. ' +
-          'Must be a string or an array of strings.',
-        );
-      }
-
-      // Absolute path, use it directly
-      if (path.isAbsolute(extendPath)) {
-        return path.normalize(extendPath);
-
-      // Relative path, resolve with cwd
-      } else if (extendPath[0] === '.') {
-        return path.resolve(extendPath);
-      }
-
-      // Node module, generate a path
-      let moduleName = extendPath;
-
-      if (moduleName.startsWith(PLUGIN_PREFIX)) {
-        moduleName = `${this.appName}-plugin-${moduleName.slice(PLUGIN_PREFIX.length)}`;
-      }
-
-      return path.resolve(
-        'node_modules/',
-        moduleName,
-        `config/${this.appName}.preset.js`,
-      );
-    });
-
-    // Recursively merge preset configurations
-    const nextConfig = {};
-
-    extendPaths.forEach((filePath) => {
-      if (!fs.existsSync(filePath)) {
-        throw new Error(`Preset configuration ${filePath} does not exist.`);
-
-      } else if (!fs.statSync(filePath).isFile()) {
-        throw new Error(`Preset configuration ${filePath} must be a valid file.`);
-      }
-
-      merge(nextConfig, this.parseFile(filePath));
-    });
-
-    // Apply preset configuration before local
-    merge(this.config, nextConfig, config, {
-      extends: extendPaths,
-    });
-
-    return this.config;
+    // Defer to lodash
+    return undefined;
   }
 
   /**
@@ -144,24 +89,14 @@ export default class ConfigLoader {
         );
       }
 
-      // Parse and extract the located file
-      config = this.parseFile(filePaths[0]);
+      [config] = filePaths;
     }
 
-    // Set the current config incase presets do not exist
-    if (isObject(config)) {
-      this.config = {
-        ...DEFAULT_TOOL_CONFIG,
-        ...config,
-      };
-    } else {
-      throw new Error('Invalid configuration. Must be a plain object.');
-    }
-
-    // Extend from preset configurations if available
-    if (config.extends) {
-      // TODO
-    }
+    // Parse and extend configuration
+    this.config = {
+      ...DEFAULT_TOOL_CONFIG,
+      ...this.parseAndExtend(config),
+    };
 
     return this.config;
   }
@@ -184,6 +119,56 @@ export default class ConfigLoader {
     };
 
     return this.package;
+  }
+
+  /**
+   * If an `extends` option exists, recursively merge the current configuration
+   * with the preset configurations defined within `extends`,
+   * and return the new configuration object.
+   */
+  parseAndExtend(fileOrConfig: string | Object): Object {
+    let config;
+
+    // Parse out the object if a file path
+    if (typeof fileOrConfig === 'string') {
+      config = this.parseFile(fileOrConfig);
+    } else {
+      config = fileOrConfig;
+    }
+
+    // Verify we're working with an object
+    if (!isObject(config)) {
+      throw new Error('Invalid configuration. Must be a plain object.');
+    }
+
+    const { extends: extendPaths } = config;
+
+    // Nothing to extend, so return the current config
+    if (!extendPaths || !extendPaths.length) {
+      return config;
+    }
+
+    // Resolve extend paths and inherit their config
+    const nextConfig = {};
+    const resolvedPaths = this.resolveExtendPaths(extendPaths);
+
+    resolvedPaths.forEach((extendPath) => {
+      if (!fs.existsSync(extendPath)) {
+        throw new Error(`Preset configuration ${extendPath} does not exist.`);
+
+      } else if (!fs.statSync(extendPath).isFile()) {
+        throw new Error(`Preset configuration ${extendPath} must be a valid file.`);
+      }
+
+      mergeWith(nextConfig, this.parseAndExtend(extendPath), this.handleMerge);
+    });
+
+    // Apply the current config after extending preset configs
+    config.extends = resolvedPaths;
+
+    mergeWith(nextConfig, config, this.handleMerge);
+
+    return nextConfig;
   }
 
   /**
@@ -217,5 +202,51 @@ export default class ConfigLoader {
 
     // $FlowIgnore We type check object above
     return value;
+  }
+
+  /**
+   * Resolve file system paths for the `extends` configuration value
+   * using the following guidelines:
+   *
+   *  - Absolute paths should be normalized and used as is.
+   *  - Relative paths should be resolved relative to the CWD.
+   *  - Strings that match a node module name should resolve to a config file relative to the CWD.
+   *  - Strings that start with "plugin:" should adhere to the previous rule.
+   */
+  resolveExtendPaths(extendPaths: string | string[]): string[] {
+    return (Array.isArray(extendPaths) ? extendPaths : [extendPaths]).map((extendPath) => {
+      if (typeof extendPath !== 'string') {
+        throw new Error(
+          'Invalid `extends` configuration value. Must be a string or an array of strings.',
+        );
+      }
+
+      // Absolute path, use it directly
+      if (path.isAbsolute(extendPath)) {
+        return path.normalize(extendPath);
+
+      // Relative path, resolve with cwd
+      } else if (extendPath[0] === '.') {
+        return path.resolve(extendPath);
+
+      // Node module, resolve to a config file
+      } else if (extendPath.match(MODULE_NAME_PATTERN)) {
+        return path.resolve(
+          'node_modules/',
+          extendPath,
+          `config/${this.appName}.preset.js`,
+        );
+
+      // Plugin, resolve to a node module
+      } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
+        return path.resolve(
+          'node_modules/',
+          `${this.appName}-plugin-${extendPath.replace('plugin:', '')}`,
+          `config/${this.appName}.preset.js`,
+        );
+      }
+
+      throw new Error(`Invalid \`extends\` configuration value "${extendPath}".`);
+    });
   }
 }

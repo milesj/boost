@@ -6,6 +6,14 @@ declare module 'lodash/merge' {
   declare export default function merge(obj: Object, ...objs: Object[]): Object;
 }
 
+declare module 'lodash/mergeWith' {
+  declare export default function mergeWith(
+    obj: Object,
+    obj: Object,
+    callback: (target: *, source: *, key: string) => *,
+  ): Object;
+}
+
 declare module 'lodash/isObject' {
   declare export default function isObject(value: mixed): boolean;
 }
