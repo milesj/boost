@@ -5,6 +5,7 @@
  */
 
 import Promise from 'bluebird';
+import execa from 'execa';
 import merge from 'lodash/merge';
 import Task from './Task';
 import Tool from './Tool';
@@ -72,6 +73,13 @@ export default class Routine extends Task {
    */
   execute(value: Result): ResultPromise {
     return value;
+  }
+
+  /**
+   * Execute a command with the given arguments and pass the results through a promise.
+   */
+  executeCommand(command: string, args?: string[] = [], options?: Object = {}): ResultPromise {
+    return this.wrap(execa.stdout(command, args, options));
   }
 
   /**

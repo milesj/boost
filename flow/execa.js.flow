@@ -1,0 +1,7 @@
+declare module 'execa' {
+  declare export default {
+    stdout(file: string, args?: string[], opts?: Object): string,
+    stderr(file: string, args?: string[], opts?: Object): string,
+    (file: string, args?: string[], opts?: Object): Object,
+  };
+}
