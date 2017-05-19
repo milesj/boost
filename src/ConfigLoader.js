@@ -24,6 +24,7 @@ export default class ConfigLoader {
   appName: string;
   config: ToolConfig;
   package: PackageConfig;
+  parsedFiles: { [key: string]: boolean } = {};
 
   constructor(appName: string) {
     this.appName = appName;
@@ -153,6 +154,10 @@ export default class ConfigLoader {
     const resolvedPaths = this.resolveExtendPaths(extendPaths);
 
     resolvedPaths.forEach((extendPath) => {
+      if (this.parsedFiles[extendPath]) {
+        return;
+      }
+
       if (!fs.existsSync(extendPath)) {
         throw new Error(`Preset configuration ${extendPath} does not exist.`);
 
@@ -199,6 +204,8 @@ export default class ConfigLoader {
     if (!isObject(value)) {
       throw new Error(`Invalid configuration file "${name}". Must return an object.`);
     }
+
+    this.parsedFiles[filePath] = true;
 
     // $FlowIgnore We type check object above
     return value;

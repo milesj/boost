@@ -276,6 +276,26 @@ describe('ConfigLoader', () => {
       });
     });
 
+    it('avoids circular recursion', () => {
+      mfs({
+        'node_modules/foo/config/boost.preset.js': createJavascriptFile({ a: 1, extends: 'bar' }),
+        'node_modules/bar/config/boost.preset.js': createJavascriptFile({ b: 2, extends: 'foo' }),
+      });
+
+      expect(loader.parseAndExtend({
+        c: 3,
+        extends: 'foo',
+      })).toEqual({
+        a: 1,
+        b: 2,
+        c: 3,
+        extends: [
+          path.join(process.cwd(), 'node_modules/foo/config/boost.preset.js'),
+          path.join(process.cwd(), 'node_modules/bar/config/boost.preset.js'),
+        ],
+      });
+    });
+
     it('concatenates and uniquifys arrays', () => {
       mfs({
         'foo.json': JSON.stringify({ list: ['foo', 'bar'] }),
