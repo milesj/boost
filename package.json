@@ -42,14 +42,14 @@
     "vorpal": "^1.12.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "^0.3.4",
+    "@milesj/build-tool-config": "^0.4.1",
     "mock-fs": "^4.3.0"
   },
   "babel": {
     "extends": "./node_modules/@milesj/build-tool-config/babel.node.json5"
   },
   "eslintConfig": {
-    "extends": "./node_modules/@milesj/build-tool-config/eslint.json5"
+    "extends": "./node_modules/@milesj/build-tool-config/eslint.node.json5"
   },
   "jest": {
     "preset": "@milesj/build-tool-config"
