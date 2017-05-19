@@ -19,6 +19,9 @@ export default class Command {
   constructor(appName: string, command: VorpalCommand) {
     this.appName = appName;
     this.command = command;
+
+    // Pipe the command action to run our pipeline
+    command.action(args => this.run(args));
   }
 
   /**
@@ -40,15 +43,6 @@ export default class Command {
   }
 
   /**
-   * Define a description for the current command.
-   */
-  description(description: string): this {
-    this.command.description(description);
-
-    return this;
-  }
-
-  /**
    * Define an option (or argument) for the current command.
    */
   option(...args: *[]): this {
@@ -60,7 +54,7 @@ export default class Command {
   /**
    * Persist routines to later pass to the current pipeline.
    */
-  routine(...routines: Routine[]): this {
+  pipe(...routines: Routine[]): this {
     this.routines.push(...routines);
 
     return this;
@@ -69,21 +63,18 @@ export default class Command {
   /**
    * Run the command by executing the pipeline.
    */
-  run(value: Result, context: Object = {}) {
-    const { routines } = this;
+  run(value: Result) {
+    const context = {};
 
     // Setup the build tool instance
-    const tool = new Tool(this.appName);
-
-    tool.loadConfig();
-    tool.loadPlugins();
+    const tool = (new Tool(this.appName))
+      .loadConfig()
+      .loadPlugins();
 
     // Setup and run the pipeline
-    const pipeline = new Pipeline(tool);
-
-    pipeline.pipe(...routines);
-
-    return pipeline.run(value, context);
+    return (new Pipeline(tool))
+      .pipe(...this.routines)
+      .run(value, context);
   }
 
   /**

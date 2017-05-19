@@ -1,15 +1,10 @@
-import App from '../src/App';
+const Boost = require('../lib/App').default;
 
-const app = new App('boost', {})
-  .command('build', (command) => {
-    command
-      .alias('b')
-      .description('Build source files')
-      .option('-f, --force', 'Force overwrite')
-      .option('-m, --minify', 'Minify source code');
+const app = new Boost('publish');
 
-    console.log(command);
-  })
-  .run();
+app.command('build [dir]', 'Build source files')
+  .alias('b')
+  .option('-f, --force', 'Force overwrite')
+  .option('-m, --minify', 'Minify source code');
 
-console.log(app);
+app.run();

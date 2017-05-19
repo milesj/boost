@@ -59,13 +59,17 @@ export default class Tool {
    *
    * Must be called first in the lifecycle.
    */
-  loadConfig(): ToolConfig {
+  loadConfig(): this {
+    if (this.package || this.config) {
+      return this;
+    }
+
     const configLoader = new ConfigLoader(this.appName);
 
     this.package = configLoader.loadPackageJSON();
     this.config = configLoader.loadConfig();
 
-    return this.config;
+    return this;
   }
 
   /**
@@ -73,12 +77,14 @@ export default class Tool {
    *
    * Must be called after config has been loaded.
    */
-  loadPlugins() {
+  loadPlugins(): this {
     if (isEmptyObject(this.config)) {
       throw new Error('Cannot load plugins as configuration has not been loaded.');
     }
 
     // TODO
+
+    return this;
   }
 
   /**

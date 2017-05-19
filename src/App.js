@@ -7,40 +7,37 @@
 import Vorpal from 'vorpal';
 import Command from './Command';
 
-import type { AppConfig } from './types';
+const APP_NAME_PATTERN: RegExp = /^[a-z-]+$/;
 
 export default class App {
-  config: AppConfig;
   name: string;
   vorpal: Vorpal;
 
-  constructor(name: string, config: AppConfig = {}) {
+  constructor(name: string) {
     if (!name || typeof name !== 'string') {
-      throw new Error('A unique name is required for Boost applications.');
+      throw new Error('A unique application name is required for Boost.');
+
+    } else if (!name.match(APP_NAME_PATTERN)) {
+      throw new Error('Invalid application name. May only contain dashes and lowercase characters.');
     }
 
     this.name = name;
-    this.config = config;
     this.vorpal = new Vorpal();
   }
 
   /**
    * Register an executable command using a callback.
    */
-  command(format: string, callback: (Command) => void): this {
-    if (typeof callback !== 'function') {
-      throw new Error('A callback function is required when creating commands.');
-    }
-
-    callback(new Command(this.name, this.vorpal.command(format)));
-
-    return this;
+  command(format: string, description: string = ''): Command {
+    return new Command(this.name, this.vorpal.command(format, description));
   }
 
+  /**
+   * Run the application and execute the command.
+   */
   run(): this {
     this.vorpal
       .delimiter(`${this.name}$ `)
-      // .show()
       .parse(process.argv);
 
     return this;
