@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import Renderer from '../src/Renderer';
 import { createTaskWithStatus } from './helpers';
-import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from '../src/constants';
+import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
 describe('Renderer', () => {
   let renderer;
@@ -26,16 +26,16 @@ describe('Renderer', () => {
 
   describe('render()', () => {
     it('renders a results tree in a single output', () => {
-      const git = createTaskWithStatus('Git', RUNNING);
+      const git = createTaskWithStatus('Git', STATUS_RUNNING);
       git.subtasks = [
-        createTaskWithStatus('Checking current branch', PASSED),
-        createTaskWithStatus('Checking for local changes', PASSED),
-        createTaskWithStatus('Checking for remote changes', RUNNING),
+        createTaskWithStatus('Checking current branch', STATUS_PASSED),
+        createTaskWithStatus('Checking for local changes', STATUS_PASSED),
+        createTaskWithStatus('Checking for remote changes', STATUS_RUNNING),
       ];
 
-      const statusChecks = createTaskWithStatus('Status checks', PASSED);
+      const statusChecks = createTaskWithStatus('Status checks', STATUS_PASSED);
       statusChecks.subtasks = [
-        createTaskWithStatus('Checking for vulnerable dependencies', PENDING),
+        createTaskWithStatus('Checking for vulnerable dependencies', STATUS_PENDING),
       ];
       statusChecks.subroutines = [git];
 
@@ -46,32 +46,32 @@ describe('Renderer', () => {
   });
 
   describe('renderTask()', () => {
-    it('creates a PENDING message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', PENDING))).toEqual([
+    it('creates a STATUS_PENDING message', () => {
+      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_PENDING))).toEqual([
         `${chalk.gray('●')} Title`,
       ]);
     });
 
-    it('creates a RUNNING message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', RUNNING))).toEqual([
+    it('creates a STATUS_RUNNING message', () => {
+      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_RUNNING))).toEqual([
         `${chalk.gray('⠙')} Title`,
       ]);
     });
 
-    it('creates a SKIPPED message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', SKIPPED))).toEqual([
+    it('creates a STATUS_SKIPPED message', () => {
+      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_SKIPPED))).toEqual([
         `${chalk.yellow('◌')} Title ${chalk.yellow('[skipped]')}`,
       ]);
     });
 
-    it('creates a PASSED message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', PASSED))).toEqual([
+    it('creates a STATUS_PASSED message', () => {
+      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_PASSED))).toEqual([
         `${chalk.green('✔')} Title`,
       ]);
     });
 
-    it('creates a FAILED message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', FAILED))).toEqual([
+    it('creates a STATUS_FAILED message', () => {
+      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_FAILED))).toEqual([
         `${chalk.red('✖')} Title ${chalk.red('[failed]')}`,
       ]);
     });
@@ -83,12 +83,12 @@ describe('Renderer', () => {
     });
 
     describe('with tasks', () => {
-      it('displays PENDING tasks', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+      it('displays STATUS_PENDING tasks', () => {
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PENDING),
-          createTaskWithStatus('Sub-task #2', PENDING),
-          createTaskWithStatus('Sub-task #3', PENDING),
+          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #3', STATUS_PENDING),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -97,12 +97,12 @@ describe('Renderer', () => {
         ]);
       });
 
-      it('displays RUNNING tasks over PENDING tasks', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+      it('displays STATUS_RUNNING tasks over STATUS_PENDING tasks', () => {
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PENDING),
-          createTaskWithStatus('Sub-task #2', PENDING),
-          createTaskWithStatus('Sub-task #3', RUNNING),
+          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -111,15 +111,15 @@ describe('Renderer', () => {
         ]);
       });
 
-      it('displays FAILED tasks over all others', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+      it('displays STATUS_FAILED tasks over all others', () => {
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PASSED),
-          createTaskWithStatus('Sub-task #2', FAILED),
-          createTaskWithStatus('Sub-task #3', RUNNING),
-          createTaskWithStatus('Sub-task #4', FAILED),
-          createTaskWithStatus('Sub-task #5', PENDING),
-          createTaskWithStatus('Sub-task #6', SKIPPED),
+          createTaskWithStatus('Sub-task #1', STATUS_PASSED),
+          createTaskWithStatus('Sub-task #2', STATUS_FAILED),
+          createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
+          createTaskWithStatus('Sub-task #4', STATUS_FAILED),
+          createTaskWithStatus('Sub-task #5', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #6', STATUS_SKIPPED),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -128,12 +128,12 @@ describe('Renderer', () => {
         ]);
       });
 
-      it('does not display SKIPPED or PASSED tasks', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+      it('does not display STATUS_SKIPPED or STATUS_PASSED tasks', () => {
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PASSED),
-          createTaskWithStatus('Sub-task #2', SKIPPED),
-          createTaskWithStatus('Sub-task #3', SKIPPED),
+          createTaskWithStatus('Sub-task #1', STATUS_PASSED),
+          createTaskWithStatus('Sub-task #2', STATUS_SKIPPED),
+          createTaskWithStatus('Sub-task #3', STATUS_SKIPPED),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -141,12 +141,12 @@ describe('Renderer', () => {
         ]);
       });
 
-      it('does not display tasks if parent isnt RUNNING', () => {
-        const result = createTaskWithStatus('Title', PASSED);
+      it('does not display tasks if parent isnt STATUS_RUNNING', () => {
+        const result = createTaskWithStatus('Title', STATUS_PASSED);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PENDING),
-          createTaskWithStatus('Sub-task #2', RUNNING),
-          createTaskWithStatus('Sub-task #3', PASSED),
+          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #2', STATUS_RUNNING),
+          createTaskWithStatus('Sub-task #3', STATUS_PASSED),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -154,12 +154,12 @@ describe('Renderer', () => {
         ]);
       });
 
-      it('increases count for PASSED tasks', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+      it('increases count for STATUS_PASSED tasks', () => {
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PASSED),
-          createTaskWithStatus('Sub-task #2', PENDING),
-          createTaskWithStatus('Sub-task #3', PASSED),
+          createTaskWithStatus('Sub-task #1', STATUS_PASSED),
+          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #3', STATUS_PASSED),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -171,11 +171,11 @@ describe('Renderer', () => {
 
     describe('with subroutines', () => {
       it('displays all sub-routines', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subroutines = [
-          createTaskWithStatus('Sub-routine #1', PENDING),
-          createTaskWithStatus('Sub-routine #2', PENDING),
-          createTaskWithStatus('Sub-routine #3', PENDING),
+          createTaskWithStatus('Sub-routine #1', STATUS_PENDING),
+          createTaskWithStatus('Sub-routine #2', STATUS_PENDING),
+          createTaskWithStatus('Sub-routine #3', STATUS_PENDING),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -187,11 +187,11 @@ describe('Renderer', () => {
       });
 
       it('displays different statuses', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subroutines = [
-          createTaskWithStatus('Sub-routine #1', RUNNING),
-          createTaskWithStatus('Sub-routine #2', FAILED),
-          createTaskWithStatus('Sub-routine #3', PASSED),
+          createTaskWithStatus('Sub-routine #1', STATUS_RUNNING),
+          createTaskWithStatus('Sub-routine #2', STATUS_FAILED),
+          createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -203,16 +203,16 @@ describe('Renderer', () => {
       });
 
       it('displays tasks above sub-routines', () => {
-        const result = createTaskWithStatus('Title', RUNNING);
+        const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subtasks = [
-          createTaskWithStatus('Sub-task #1', PENDING),
-          createTaskWithStatus('Sub-task #2', PENDING),
-          createTaskWithStatus('Sub-task #3', RUNNING),
+          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
+          createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
         ];
         result.subroutines = [
-          createTaskWithStatus('Sub-routine #1', RUNNING),
-          createTaskWithStatus('Sub-routine #2', SKIPPED),
-          createTaskWithStatus('Sub-routine #3', PASSED),
+          createTaskWithStatus('Sub-routine #1', STATUS_RUNNING),
+          createTaskWithStatus('Sub-routine #2', STATUS_SKIPPED),
+          createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
         ];
 
         expect(renderer.renderTask(result)).toEqual([
@@ -227,24 +227,24 @@ describe('Renderer', () => {
   });
 
   describe('renderStatus()', () => {
-    it('renders a bullet for PENDING', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', PENDING))).toBe(chalk.gray('●'));
+    it('renders a bullet for STATUS_PENDING', () => {
+      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_PENDING))).toBe(chalk.gray('●'));
     });
 
-    it('renders a spinner for RUNNING', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', RUNNING))).toBe(chalk.gray('⠙'));
+    it('renders a spinner for STATUS_RUNNING', () => {
+      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_RUNNING))).toBe(chalk.gray('⠙'));
     });
 
-    it('renders a dotted circle for SKIPPED', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', SKIPPED))).toBe(chalk.yellow('◌'));
+    it('renders a dotted circle for STATUS_SKIPPED', () => {
+      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_SKIPPED))).toBe(chalk.yellow('◌'));
     });
 
-    it('renders a tick for PASSED', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', PASSED))).toBe(chalk.green('✔'));
+    it('renders a tick for STATUS_PASSED', () => {
+      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_PASSED))).toBe(chalk.green('✔'));
     });
 
-    it('renders a cross for FAILED', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', FAILED))).toBe(chalk.red('✖'));
+    it('renders a cross for STATUS_FAILED', () => {
+      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(chalk.red('✖'));
     });
   });
 });

@@ -6,6 +6,9 @@
 
 import path from 'path';
 
+/**
+ * Resolve a Node/NPM module path to an app config file.
+ */
 export default function resolveModuleConfigPath(
   appName: string,
   moduleName: string,

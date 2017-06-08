@@ -10,7 +10,7 @@ import merge from 'lodash/merge';
 import Task from './Task';
 import Tool from './Tool';
 import isObject from './helpers/isObject';
-import { PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
+import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type {
   Config,
@@ -40,7 +40,7 @@ export default class Routine extends Task {
     this.action = this.execute.bind(this);
 
     // We also need to set it back to pending
-    this.status = PENDING;
+    this.status = STATUS_PENDING;
   }
 
   /**

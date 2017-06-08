@@ -19,7 +19,7 @@ Command.prototype.pipe = function pipe(...routines: Routine[]) {
   if (this.routines) {
     this.routines.push(...routines);
   } else {
-    this.routines = [];
+    this.routines = routines;
   }
 
   return this;

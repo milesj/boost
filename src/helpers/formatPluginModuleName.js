@@ -4,6 +4,9 @@
  * @flow
  */
 
+/**
+ * Combine app and plugin names into a Node/NPM applicable module name.
+ */
 export default function formatPluginModuleName(appName: string, pluginName: string): string {
   return `${appName}-plugin-${pluginName.toLowerCase().replace('plugin:', '')}`;
 }

@@ -10,11 +10,11 @@ export const APP_NAME_PATTERN: RegExp = /^[a-z-]+$/;
 export const MODULE_NAME_PATTERN: RegExp = /^(@[a-z-]+\/)?[a-z-]+$/;
 export const PLUGIN_NAME_PATTERN: RegExp = /^plugin:[a-z-]+$/;
 
-export const PENDING: Status = 'pending';
-export const RUNNING: Status = 'running';
-export const SKIPPED: Status = 'skipped';
-export const PASSED: Status = 'passed';
-export const FAILED: Status = 'failed';
+export const STATUS_PENDING: Status = 'pending';
+export const STATUS_RUNNING: Status = 'running';
+export const STATUS_SKIPPED: Status = 'skipped';
+export const STATUS_PASSED: Status = 'passed';
+export const STATUS_FAILED: Status = 'failed';
 
 export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,

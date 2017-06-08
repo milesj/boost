@@ -4,7 +4,7 @@ import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
-import { PASSED, FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
+import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
 
 describe('Routine', () => {
   let routine;
@@ -134,7 +134,7 @@ describe('Routine', () => {
     it('updates status if a success', async () => {
       await routine.executeTask(123, task);
 
-      expect(task.status).toBe(PASSED);
+      expect(task.status).toBe(STATUS_PASSED);
     });
 
     it('updates status if a failure', async () => {
@@ -148,7 +148,7 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(task.status).toBe(FAILED);
+      expect(task.status).toBe(STATUS_FAILED);
     });
   });
 
@@ -440,7 +440,7 @@ describe('Routine', () => {
     it('updates status if a success', async () => {
       await routine.run(123);
 
-      expect(routine.status).toBe(PASSED);
+      expect(routine.status).toBe(STATUS_PASSED);
     });
 
     it('updates status if a failure', async () => {
@@ -454,7 +454,7 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Failure'));
       }
 
-      expect(routine.status).toBe(FAILED);
+      expect(routine.status).toBe(STATUS_FAILED);
     });
   });
 

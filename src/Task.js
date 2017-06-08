@@ -6,7 +6,13 @@
 
 import Promise from 'bluebird';
 import { frames } from 'elegant-spinner';
-import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
+import {
+  STATUS_PENDING,
+  STATUS_RUNNING,
+  STATUS_SKIPPED,
+  STATUS_PASSED,
+  STATUS_FAILED,
+} from './constants';
 
 import type { Config, Result, ResultPromise, Status, TaskCallback } from './types';
 
@@ -16,7 +22,7 @@ export default class Task {
   context: Object = {};
   frame: number = 0;
   title: string = '';
-  status: Status = PENDING;
+  status: Status = STATUS_PENDING;
   subroutines: Task[] = [];
   subtasks: Task[] = [];
 
@@ -31,7 +37,7 @@ export default class Task {
 
     this.action = action;
     this.config = { ...defaultConfig };
-    this.status = action ? PENDING : SKIPPED;
+    this.status = action ? STATUS_PENDING : STATUS_SKIPPED;
     this.title = title;
   }
 
@@ -39,35 +45,35 @@ export default class Task {
    * Return true if the task failed when executing.
    */
   hasFailed(): boolean {
-    return (this.status === FAILED);
+    return (this.status === STATUS_FAILED);
   }
 
   /**
    * Return true if the task executed successfully.
    */
   hasPassed(): boolean {
-    return (this.status === PASSED);
+    return (this.status === STATUS_PASSED);
   }
 
   /**
    * Return true if the task has not been executed yet.
    */
   isPending(): boolean {
-    return (this.status === PENDING);
+    return (this.status === STATUS_PENDING);
   }
 
   /**
    * Return true if the task is currently running.
    */
   isRunning(): boolean {
-    return (this.status === RUNNING);
+    return (this.status === STATUS_RUNNING);
   }
 
   /**
    * Return true if the task was or will be skipped.
    */
   isSkipped(): boolean {
-    return (this.status === SKIPPED);
+    return (this.status === STATUS_SKIPPED);
   }
 
   /**
@@ -81,19 +87,19 @@ export default class Task {
       return Promise.resolve(value);
     }
 
-    this.status = RUNNING;
+    this.status = STATUS_RUNNING;
 
     return new Promise((resolve) => {
       // $FlowIgnore We check if nullable above
       resolve(this.action(value, context));
     }).then(
       (result) => {
-        this.status = PASSED;
+        this.status = STATUS_PASSED;
 
         return result;
       },
       (error) => {
-        this.status = FAILED;
+        this.status = STATUS_FAILED;
 
         throw error;
       },
@@ -105,7 +111,7 @@ export default class Task {
    */
   skip(condition: boolean = true): this {
     if (condition) {
-      this.status = SKIPPED;
+      this.status = STATUS_SKIPPED;
     }
 
     return this;

@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import Task from '../src/Task';
-import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from '../src/constants';
+import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
 describe('Task', () => {
   let task;
@@ -40,50 +40,50 @@ describe('Task', () => {
   });
 
   describe('hasFailed()', () => {
-    it('returns a boolean for FAILED status state', () => {
+    it('returns a boolean for STATUS_FAILED status state', () => {
       expect(task.hasFailed()).toBe(false);
 
-      task.status = FAILED;
+      task.status = STATUS_FAILED;
 
       expect(task.hasFailed()).toBe(true);
     });
   });
 
   describe('hasPassed()', () => {
-    it('returns a boolean for PASSED status state', () => {
+    it('returns a boolean for STATUS_PASSED status state', () => {
       expect(task.hasPassed()).toBe(false);
 
-      task.status = PASSED;
+      task.status = STATUS_PASSED;
 
       expect(task.hasPassed()).toBe(true);
     });
   });
 
   describe('isPending()', () => {
-    it('returns a boolean for PENDING status state', () => {
+    it('returns a boolean for STATUS_PENDING status state', () => {
       expect(task.isPending()).toBe(true);
 
-      task.status = PASSED;
+      task.status = STATUS_PASSED;
 
       expect(task.isPending()).toBe(false);
     });
   });
 
   describe('isRunning()', () => {
-    it('returns a boolean for RUNNING status state', () => {
+    it('returns a boolean for STATUS_RUNNING status state', () => {
       expect(task.isRunning()).toBe(false);
 
-      task.status = RUNNING;
+      task.status = STATUS_RUNNING;
 
       expect(task.isRunning()).toBe(true);
     });
   });
 
   describe('isSkipped()', () => {
-    it('returns a boolean for SKIPPED status state', () => {
+    it('returns a boolean for STATUS_SKIPPED status state', () => {
       expect(task.isSkipped()).toBe(false);
 
-      task.status = SKIPPED;
+      task.status = STATUS_SKIPPED;
 
       expect(task.isSkipped()).toBe(true);
     });
@@ -93,7 +93,7 @@ describe('Task', () => {
     it('resolves a value with the action', async () => {
       try {
         expect(await task.run(123)).toBe(246);
-        expect(task.status).toBe(PASSED);
+        expect(task.status).toBe(STATUS_PASSED);
       } catch (error) {
         expect(true).toBe(false); // Would fail
       }
@@ -101,7 +101,7 @@ describe('Task', () => {
 
     it('resolves a value if the task should be skipped', async () => {
       try {
-        task.status = SKIPPED;
+        task.status = STATUS_SKIPPED;
 
         expect(await task.run(123)).toBe(123);
       } catch (error) {
@@ -120,7 +120,7 @@ describe('Task', () => {
         expect(true).toBe(false); // Would fail
       } catch (error) {
         expect(error).toEqual(new Error('Oops'));
-        expect(task.status).toBe(FAILED);
+        expect(task.status).toBe(STATUS_FAILED);
       }
     });
 
@@ -150,20 +150,20 @@ describe('Task', () => {
   });
 
   describe('skip()', () => {
-    it('marks a task as SKIPPED', () => {
-      expect(task.status).toBe(PENDING);
+    it('marks a task as STATUS_SKIPPED', () => {
+      expect(task.status).toBe(STATUS_PENDING);
 
       task.skip();
 
-      expect(task.status).toBe(SKIPPED);
+      expect(task.status).toBe(STATUS_SKIPPED);
     });
 
     it('evaluates a condition to determine whether to skip', () => {
-      expect(task.status).toBe(PENDING);
+      expect(task.status).toBe(STATUS_PENDING);
 
       task.skip(1 === 2);
 
-      expect(task.status).toBe(PENDING);
+      expect(task.status).toBe(STATUS_PENDING);
     });
   });
 

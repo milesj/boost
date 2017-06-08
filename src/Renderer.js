@@ -7,7 +7,13 @@
 import chalk from 'chalk';
 import figures from 'figures';
 import Task from './Task';
-import { PENDING, RUNNING, SKIPPED, PASSED, FAILED } from './constants';
+import {
+  STATUS_PENDING,
+  STATUS_RUNNING,
+  STATUS_SKIPPED,
+  STATUS_PASSED,
+  STATUS_FAILED,
+} from './constants';
 
 export default class Renderer {
   /**
@@ -98,15 +104,15 @@ export default class Renderer {
    */
   renderStatus(task: Task): string {
     switch (task.status) {
-      case PENDING:
+      case STATUS_PENDING:
         return chalk.gray(figures.bullet);
-      case RUNNING:
+      case STATUS_RUNNING:
         return chalk.gray(task.spinner());
-      case SKIPPED:
+      case STATUS_SKIPPED:
         return chalk.yellow(figures.circleDotted);
-      case PASSED:
+      case STATUS_PASSED:
         return chalk.green(figures.tick);
-      case FAILED:
+      case STATUS_FAILED:
         return chalk.red(figures.cross);
       default:
         return '';
