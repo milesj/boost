@@ -59,3 +59,9 @@ declare module 'vorpal' {
     version(version: string): this;
   }
 }
+
+declare module 'vorpal/dist/command' {
+  import type { Command } from 'vorpal';
+
+  declare export default Command;
+}

@@ -5,15 +5,32 @@
  */
 
 import Vorpal from 'vorpal';
-import Command from './Command';
+import Command from 'vorpal/dist/command';
+import Pipeline from './Pipeline';
+import Routine from './Routine';
+import Tool from './Tool';
+import { APP_NAME_PATTERN } from './constants';
 
-const APP_NAME_PATTERN: RegExp = /^[a-z-]+$/;
+import type { Result } from './types';
 
-export default class App {
+// Add routine support to Vorpal's command
+// $FlowIgnore
+Command.prototype.pipe = function pipe(...routines: Routine[]) {
+  if (this.routines) {
+    this.routines.push(...routines);
+  } else {
+    this.routines = [];
+  }
+
+  return this;
+};
+
+export default class App extends Vorpal {
   name: string;
-  vorpal: Vorpal;
 
   constructor(name: string) {
+    super();
+
     if (!name || typeof name !== 'string') {
       throw new Error('A unique application name is required for Boost.');
 
@@ -22,21 +39,37 @@ export default class App {
     }
 
     this.name = name;
-    this.vorpal = new Vorpal();
   }
 
   /**
-   * Register an executable command using a callback.
+   * Register a command and define the action used to run the pipeline.
    */
-  command(format: string, description: string = ''): Command {
-    return new Command(this.name, this.vorpal.command(format, description));
+  command(format: string, description?: string = '', options?: Object = {}): typeof Command {
+    const command = super.command(format, description, options);
+    const appName = this.name;
+
+    command.action(function runCommand(value: Result) {
+      const context = {};
+
+      // Setup the build tool instance
+      const tool = new Tool(appName)
+        .loadConfig()
+        .loadPlugins();
+
+      // Setup and run the pipeline
+      return new Pipeline(tool)
+        .pipe(...this.routines)
+        .run(value, context);
+    });
+
+    return command;
   }
 
   /**
    * Run the application and execute the command.
    */
   run(): this {
-    this.vorpal
+    this
       .delimiter(`${this.name}$ `)
       .parse(process.argv);
 
