@@ -37,20 +37,23 @@
     "elegant-spinner": "^1.0.1",
     "execa": "^0.6.3",
     "figures": "^2.0.0",
-    "glob": "^7.1.1",
+    "glob": "^7.1.2",
     "json5": "^0.5.1",
     "lodash": "^4.17.2",
     "vorpal": "^1.12.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "^0.4.1",
+    "@milesj/build-tool-config": "^0.8.0",
     "mock-fs": "^4.3.0"
   },
   "babel": {
     "extends": "./node_modules/@milesj/build-tool-config/babel.node.json5"
   },
   "eslintConfig": {
-    "extends": "./node_modules/@milesj/build-tool-config/eslint.node.json5"
+    "extends": "./node_modules/@milesj/build-tool-config/eslint.node.json5",
+    "rules": {
+      "unicorn/prefer-type-error": "off"
+    }
   },
   "jest": {
     "preset": "@milesj/build-tool-config"

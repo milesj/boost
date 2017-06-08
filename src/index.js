@@ -5,8 +5,7 @@
  */
 
 import App from './App';
-import Pipeline from './Pipeline';
 import Routine from './Routine';
 
-export { Pipeline, Routine };
+export { Routine };
 export default App;

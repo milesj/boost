@@ -13,12 +13,14 @@ import path from 'path';
 import vm from 'vm';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
-import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from './constants';
+import {
+  MODULE_NAME_PATTERN,
+  PLUGIN_NAME_PATTERN,
+  DEFAULT_TOOL_CONFIG,
+  DEFAULT_PACKAGE_CONFIG,
+} from './constants';
 
 import type { ToolConfig, PackageConfig } from './types';
-
-const MODULE_NAME_PATTERN: RegExp = /^(@[a-z-]+\/)?[a-z-]+$/;
-const PLUGIN_NAME_PATTERN: RegExp = /^plugin:[a-z-]+$/;
 
 export default class ConfigLoader {
   appName: string;
@@ -145,7 +147,7 @@ export default class ConfigLoader {
     const { extends: extendPaths } = config;
 
     // Nothing to extend, so return the current config
-    if (!extendPaths || !extendPaths.length) {
+    if (!extendPaths || extendPaths.length === 0) {
       return config;
     }
 

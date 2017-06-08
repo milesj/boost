@@ -53,7 +53,7 @@ export default class Renderer {
     output.push(message);
 
     // Show only one sub-task at a time
-    if (task.subtasks.length) {
+    if (task.subtasks.length > 0) {
       let pendingTask;
       let runningTask;
       let failedTask;
@@ -84,7 +84,7 @@ export default class Renderer {
     }
 
     // Show all sub-routines
-    if (task.subroutines.length) {
+    if (task.subroutines.length > 0) {
       task.subroutines.forEach((routine) => {
         output.push(...this.renderTask(routine, level + 1));
       });
