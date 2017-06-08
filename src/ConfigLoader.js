@@ -11,8 +11,10 @@ import JSON5 from 'json5';
 import mergeWith from 'lodash/mergeWith';
 import path from 'path';
 import vm from 'vm';
+import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
+import resolveModuleConfigPath from './helpers/resolveModuleConfigPath';
 import {
   MODULE_NAME_PATTERN,
   PLUGIN_NAME_PATTERN,
@@ -240,18 +242,13 @@ export default class ConfigLoader {
 
       // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
-        return path.resolve(
-          'node_modules/',
-          extendPath,
-          `config/${this.appName}.preset.js`,
-        );
+        return resolveModuleConfigPath(this.appName, extendPath);
 
       // Plugin, resolve to a node module
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
-        return path.resolve(
-          'node_modules/',
-          `${this.appName}-plugin-${extendPath.replace('plugin:', '')}`,
-          `config/${this.appName}.preset.js`,
+        return resolveModuleConfigPath(
+          this.appName,
+          formatPluginModuleName(this.appName, extendPath),
         );
       }
 
