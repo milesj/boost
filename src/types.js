@@ -14,7 +14,7 @@ export type ToolConfig = {
   dry?: boolean,
   extends?: string | string[],
   plugins?: string[],
-  [key: string]: string | string[] | number | boolean | Object,
+  [key: string]: string | string[] | number | number[] | boolean | Object,
 };
 
 export type PackageConfig = {
@@ -23,8 +23,11 @@ export type PackageConfig = {
   // Add others if we need them
 };
 
-export type AppConfig = {
-  defaultConfig?: Config,
+export type CommandOptions = {
+  options: {
+    [key: string]: string | number | boolean,
+  },
+  [key: string]: string | string[] | number | number[] | boolean,
 };
 
 export type Result = *;

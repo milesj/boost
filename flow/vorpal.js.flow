@@ -11,7 +11,7 @@ declare module 'vorpal' {
     commands: Command[];
     options: Object[];
     constructor(name: string, parent: Vorpal): void;
-    action(callback: (args: Args) => Promise<*>): this;
+    action(callback: (args: Object) => Promise<*>): this;
     alias(...aliases: string[]): this;
     autocomplete(list: AutoComplete): this;
     cancel(callback: () => void): this;

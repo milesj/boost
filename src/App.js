@@ -11,7 +11,7 @@ import Routine from './Routine';
 import Tool from './Tool';
 import { APP_NAME_PATTERN } from './constants';
 
-import type { Result } from './types';
+import type { CommandOptions } from './types';
 
 // Add routine support to Vorpal's command
 // $FlowIgnore
@@ -48,18 +48,24 @@ export default class App extends Vorpal {
     const command = super.command(format, description, options);
     const appName = this.name;
 
-    command.action(function runCommand(value: Result) {
+    // The action "this" is of CommandInstance, not Command
+    command.action(function runCommand(opts: CommandOptions) {
       const context = {};
 
       // Setup the build tool instance
       const tool = new Tool(appName)
+        .setCommand(opts)
         .loadConfig()
         .loadPlugins();
 
       // Setup and run the pipeline
-      return new Pipeline(tool)
-        .pipe(...this.routines)
-        .run(value, context);
+      const pipeline = new Pipeline(tool);
+
+      if (this.commandObject.routines) {
+        pipeline.pipe(...this.commandObject.routines);
+      }
+
+      return pipeline.run(opts, context);
     });
 
     return command;

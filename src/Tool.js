@@ -9,10 +9,11 @@ import ConfigLoader from './ConfigLoader';
 import Renderer from './Renderer';
 import isEmptyObject from './helpers/isEmptyObject';
 
-import type { ToolConfig, PackageConfig } from './types';
+import type { CommandOptions, ToolConfig, PackageConfig } from './types';
 
 export default class Tool {
   appName: string;
+  command: CommandOptions;
   config: ToolConfig;
   debugs: string[] = [];
   debugGroups: string[] = [];
@@ -92,6 +93,19 @@ export default class Tool {
    */
   render(): this {
     // TODO
+    return this;
+  }
+
+  /**
+   * Set the currently active command options passed down by Vorpal.
+   */
+  setCommand(command?: CommandOptions): this {
+    if (this.command) {
+      throw new Error('Command options have already been defined, cannot redefine.');
+    }
+
+    this.command = command || { options: {} };
+
     return this;
   }
 

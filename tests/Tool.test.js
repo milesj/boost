@@ -1,11 +1,13 @@
 import chalk from 'chalk';
+import mfs from 'mock-fs';
 import Tool from '../src/Tool';
+import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from '../src/constants';
 
 describe('Tool', () => {
   let tool;
 
   beforeEach(() => {
-    tool = new Tool();
+    tool = new Tool('boost');
     tool.config = {};
     tool.package = {};
   });
@@ -67,11 +69,70 @@ describe('Tool', () => {
     });
   });
 
-  describe.skip('loadConfig()');
+  describe('loadConfig()', () => {
+    beforeEach(() => {
+      tool = new Tool('boost');
+
+      mfs({
+        'package.json': JSON.stringify({ name: 'boost' }),
+        'config/boost.json': JSON.stringify({ foo: 'bar' }),
+      });
+    });
+
+    afterEach(() => {
+      mfs.restore();
+    });
+
+    it('loads package.json', () => {
+      tool.loadConfig();
+
+      expect(tool.package).toEqual({
+        ...DEFAULT_PACKAGE_CONFIG,
+        name: 'boost',
+      });
+    });
+
+    it('loads config file', () => {
+      tool.loadConfig();
+
+      expect(tool.config).toEqual({
+        ...DEFAULT_TOOL_CONFIG,
+        foo: 'bar',
+      });
+    });
+  });
 
   describe.skip('loadPlugins()');
 
   describe.skip('render()');
+
+  describe('setCommand()', () => {
+    it('sets default command options', () => {
+      tool.setCommand();
+
+      expect(tool.command).toEqual({ options: {} });
+    });
+
+    it('inherits custom command options', () => {
+      tool.setCommand({
+        options: { force: true },
+        path: './src',
+      });
+
+      expect(tool.command).toEqual({
+        options: { force: true },
+        path: './src',
+      });
+    });
+
+    it('errors if command options have been set', () => {
+      tool.setCommand({});
+
+      expect(() => {
+        tool.setCommand({});
+      }).toThrowError('Command options have already been defined, cannot redefine.');
+    });
+  });
 
   describe('startDebugGroup()', () => {
     it('logs a message and appends a group name', () => {
