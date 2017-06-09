@@ -6,6 +6,8 @@
 
 import chalk from 'chalk';
 import ConfigLoader from './ConfigLoader';
+import Plugin from './Plugin';
+import PluginLoader from './PluginLoader';
 import Renderer from './Renderer';
 import isEmptyObject from './helpers/isEmptyObject';
 
@@ -18,6 +20,7 @@ export default class Tool {
   debugs: string[] = [];
   debugGroups: string[] = [];
   package: PackageConfig;
+  plugins: Plugin[] = [];
   renderer: Renderer;
 
   constructor(appName: string, renderer?: Renderer) {
@@ -83,7 +86,9 @@ export default class Tool {
       throw new Error('Cannot load plugins as configuration has not been loaded.');
     }
 
-    // TODO
+    const pluginLoader = new PluginLoader(this.appName);
+
+    this.plugins = pluginLoader.loadPlugins(this.config.plugins || []);
 
     return this;
   }

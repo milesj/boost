@@ -5,7 +5,10 @@
  */
 
 import type Promise from 'bluebird';
+import type Plugin from './Plugin';
 import type Task from './Task';
+
+export type Primitive = string | number | boolean;
 
 export type Config = Object;
 
@@ -13,8 +16,8 @@ export type ToolConfig = {
   debug?: boolean,
   dry?: boolean,
   extends?: string | string[],
-  plugins?: string[],
-  [key: string]: string | string[] | number | number[] | boolean | Object,
+  plugins?: (string | Plugin)[],
+  [key: string]: Primitive | Primitive[] | Object,
 };
 
 export type PackageConfig = {
@@ -24,10 +27,8 @@ export type PackageConfig = {
 };
 
 export type CommandOptions = {
-  options: {
-    [key: string]: string | number | boolean,
-  },
-  [key: string]: string | string[] | number | number[] | boolean,
+  options: { [opt: string]: Primitive },
+  [arg: string]: Primitive | Primitive[],
 };
 
 export type Result = *;
