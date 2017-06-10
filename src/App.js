@@ -8,7 +8,7 @@ import Vorpal from 'vorpal';
 import Command from 'vorpal/dist/command';
 import Pipeline from './Pipeline';
 import Routine from './Routine';
-import Tool from './Tool';
+import ToolBuilder from './ToolBuilder';
 import { APP_NAME_PATTERN } from './constants';
 
 import type { CommandOptions } from './types';
@@ -53,10 +53,12 @@ export default class App extends Vorpal {
       const context = {};
 
       // Setup the build tool instance
-      const tool = new Tool(appName)
+      const tool = new ToolBuilder(appName)
         .setCommand(opts)
+        // .setRenderer()
         .loadConfig()
-        .loadPlugins();
+        .loadPlugins()
+        .build();
 
       // Setup and run the pipeline
       const pipeline = new Pipeline(tool);

@@ -5,16 +5,14 @@
  */
 
 import chalk from 'chalk';
-import ConfigLoader from './ConfigLoader';
 import Plugin from './Plugin';
-import PluginLoader from './PluginLoader';
 import Renderer from './Renderer';
-import isEmptyObject from './helpers/isEmptyObject';
 
 import type { CommandOptions, ToolConfig, PackageConfig } from './types';
 
 export default class Tool {
   appName: string;
+  chalk: typeof chalk;
   command: CommandOptions;
   config: ToolConfig;
   debugs: string[] = [];
@@ -23,9 +21,10 @@ export default class Tool {
   plugins: Plugin[] = [];
   renderer: Renderer;
 
-  constructor(appName: string, renderer?: Renderer) {
+  constructor(appName: string) {
     this.appName = appName;
-    this.renderer = renderer || new Renderer();
+    this.chalk = chalk;
+    this.renderer = new Renderer();
   }
 
   /**
@@ -59,58 +58,10 @@ export default class Tool {
   }
 
   /**
-   * Load the package.json and local configuration files.
-   *
-   * Must be called first in the lifecycle.
-   */
-  loadConfig(): this {
-    if (this.package || this.config) {
-      return this;
-    }
-
-    const configLoader = new ConfigLoader(this.appName);
-
-    this.package = configLoader.loadPackageJSON();
-    this.config = configLoader.loadConfig();
-
-    return this;
-  }
-
-  /**
-   * Register plugins from the loaded configuration.
-   *
-   * Must be called after config has been loaded.
-   */
-  loadPlugins(): this {
-    if (isEmptyObject(this.config)) {
-      throw new Error('Cannot load plugins as configuration has not been loaded.');
-    }
-
-    const pluginLoader = new PluginLoader(this.appName);
-
-    this.plugins = pluginLoader.loadPlugins(this.config.plugins || []);
-
-    return this;
-  }
-
-  /**
    * Trigger a render.
    */
   render(): this {
     // TODO
-    return this;
-  }
-
-  /**
-   * Set the currently active command options passed down by Vorpal.
-   */
-  setCommand(command?: CommandOptions): this {
-    if (this.command) {
-      throw new Error('Command options have already been defined, cannot redefine.');
-    }
-
-    this.command = command || { options: {} };
-
     return this;
   }
 
