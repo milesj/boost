@@ -16,6 +16,8 @@ export const STATUS_SKIPPED: Status = 'skipped';
 export const STATUS_PASSED: Status = 'passed';
 export const STATUS_FAILED: Status = 'failed';
 
+export const DEFAULT_PLUGIN_PRIORITY: number = 100;
+
 export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,
   dry: false,
