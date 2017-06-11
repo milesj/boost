@@ -5,12 +5,13 @@
  */
 
 import chalk from 'chalk';
+import Emitter from './Emitter';
 import Plugin from './Plugin';
 import Renderer from './Renderer';
 
 import type { CommandOptions, ToolConfig, PackageConfig } from './types';
 
-export default class Tool {
+export default class Tool extends Emitter {
   appName: string;
   chalk: typeof chalk;
   command: CommandOptions;
@@ -22,6 +23,8 @@ export default class Tool {
   renderer: Renderer;
 
   constructor(appName: string) {
+    super();
+
     this.appName = appName;
     this.chalk = chalk;
     this.renderer = new Renderer();

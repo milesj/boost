@@ -5,7 +5,8 @@
  */
 
 import App from './App';
+import Plugin from './Plugin';
 import Routine from './Routine';
 
-export { Routine };
+export { Plugin, Routine };
 export default App;
