@@ -15,7 +15,7 @@ export default class Plugin {
   tool: ?Tool = null;
 
   constructor(config: Config = {}) {
-    this.config = config;
+    this.config = { ...config };
   }
 
   bootstrap(tool: Tool) {

@@ -4,7 +4,6 @@
  * @flow
  */
 
-import path from 'path';
 import Plugin from './Plugin';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
@@ -32,8 +31,9 @@ export default class PluginLoader {
     // Use `require` instead of `vm` so that we can rely on Node's index resolution algorithm`
     try {
       // eslint-disable-next-line
-      importedPlugin = require(path.resolve('node_modules', moduleName));
+      importedPlugin = require(moduleName);
     } catch (error) {
+      console.log(error);
       throw new Error(`Missing plugin module "${moduleName}".`);
     }
 
@@ -49,8 +49,13 @@ export default class PluginLoader {
     }
 
     const PluginClass = importedPlugin;
+    const plugin = new PluginClass(config);
 
-    return new PluginClass(config);
+    if (!(plugin instanceof Plugin)) {
+      throw new Error(`Plugin exported from "${moduleName}" is not an instance of \`Plugin\`.`);
+    }
+
+    return plugin;
   }
 
   /**
