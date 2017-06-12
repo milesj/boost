@@ -41,10 +41,6 @@ export default class ToolBuilder {
    * Must be called first in the lifecycle.
    */
   loadConfig(): this {
-    if (this.package || this.config) {
-      return this;
-    }
-
     const configLoader = new ConfigLoader(this.appName);
 
     this.tool.package = configLoader.loadPackageJSON();

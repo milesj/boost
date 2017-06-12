@@ -5,11 +5,12 @@
  */
 
 import Event from './Event';
+import { APP_NAME_PATTERN } from './constants';
 
 import type { Result } from './types';
 
-type ListenerArgs = *[];
-type Listener = (...args: ListenerArgs) => *;
+type Args = *[];
+type Listener = (...args: Args) => *;
 
 export default class Emitter {
   listeners: { [eventName: string]: Set<Listener> } = {};
@@ -17,7 +18,7 @@ export default class Emitter {
   /**
    * Emit an event with the provided arguments. Optionally cascade the event value.
    */
-  emit(event: Event, args: ListenerArgs = [], cascade: boolean = false): Event {
+  emit(event: Event, args: Args = [], cascade: boolean = false): Event {
     if (!(event instanceof Event)) {
       throw new Error('Invalid event, must be an instance of `Event`.');
 
@@ -27,7 +28,7 @@ export default class Emitter {
 
     Array.from(this.getListeners(event.name)).some((listener) => {
       if (event.stopped) {
-        return false;
+        return true;
       }
 
       const nextValue = listener(event, ...args);
@@ -37,7 +38,7 @@ export default class Emitter {
         event.value = nextValue;
       }
 
-      return true;
+      return false;
     });
 
     return event;
@@ -46,7 +47,7 @@ export default class Emitter {
   /**
    * Asyncronously execute listeners in the next tick for the provided event and arguments.
    */
-  emitAsync(eventName: string, args: ListenerArgs = []): Event {
+  emitAsync(eventName: string, args: Args = []): Event {
     const event = new Event(eventName);
 
     process.nextTick(() => this.emit(event, args));
@@ -58,7 +59,7 @@ export default class Emitter {
    * Asyncronously execute listeners in the next tick for the provided event and arguments,
    * while passing a value from the previous listener to the next listener.
    */
-  emitAsyncCascade(eventName: string, initialValue: Result, args: ListenerArgs = []): Event {
+  emitAsyncCascade(eventName: string, initialValue: Result, args: Args = []): Event {
     const event = new Event(eventName, initialValue);
 
     process.nextTick(() => this.emit(event, args, true));
@@ -69,7 +70,7 @@ export default class Emitter {
   /**
    * Syncronously execute listeners for the provided event and arguments.
    */
-  emitSync(eventName: string, args: ListenerArgs = []): Event {
+  emitSync(eventName: string, args: Args = []): Event {
     return this.emit(new Event(eventName), args);
   }
 
@@ -77,7 +78,7 @@ export default class Emitter {
    * Syncronously execute listeners for the provided event and arguments,
    * while passing a value from the previous listener to the next listener.
    */
-  emitSyncCascade(eventName: string, initialValue: Result, args: ListenerArgs = []): Event {
+  emitSyncCascade(eventName: string, initialValue: Result, args: Args = []): Event {
     return this.emit(new Event(eventName, initialValue), args, true);
   }
 
@@ -92,6 +93,13 @@ export default class Emitter {
    * Return a set of listeners for a specific event name.
    */
   getListeners(eventName: string): Set<Listener> {
+    if (!eventName.match(APP_NAME_PATTERN)) {
+      throw new Error(
+        `Invalid event name "${eventName}". ` +
+        'May only contain dashes and lowercase characters.',
+      );
+    }
+
     if (!this.listeners[eventName]) {
       this.listeners[eventName] = new Set();
     }

@@ -15,9 +15,6 @@ export default class Event {
   constructor(name: string, value: Result = null) {
     if (!name || typeof name !== 'string') {
       throw new Error('A valid event name is required.');
-
-    } else if (typeof value === 'undefined') {
-      throw new Error(`A valid initial value is required for ${name}, found undefined.`);
     }
 
     this.name = name;

@@ -1,7 +1,15 @@
 import chalk from 'chalk';
 import Renderer from '../src/Renderer';
-import { createTaskWithStatus } from './helpers';
+import Task from '../src/Task';
 import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+
+function createTaskWithStatus(title, status) {
+  const task = new Task(title, value => value);
+
+  task.status = status;
+
+  return task;
+}
 
 describe('Renderer', () => {
   let renderer;
