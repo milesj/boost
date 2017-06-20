@@ -227,7 +227,7 @@ export default class ConfigLoader {
   resolveExtendPaths(extendPaths: string | string[]): string[] {
     return (Array.isArray(extendPaths) ? extendPaths : [extendPaths]).map((extendPath) => {
       if (typeof extendPath !== 'string') {
-        throw new Error(
+        throw new TypeError(
           'Invalid `extends` configuration value. Must be a string or an array of strings.',
         );
       }

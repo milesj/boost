@@ -119,7 +119,7 @@ export default class Routine extends Task {
         this.subroutines.push(routine.configure(this.tool, this.config));
 
       } else {
-        throw new Error('Routines must be an instance of `Routine`.');
+        throw new TypeError('Routines must be an instance of `Routine`.');
       }
     });
 
@@ -172,7 +172,7 @@ export default class Routine extends Task {
    */
   task(title: string, action: TaskCallback, config: Config = {}): this {
     if (typeof action !== 'function') {
-      throw new Error('Tasks require an executable function.');
+      throw new TypeError('Tasks require an executable function.');
     }
 
     this.subtasks.push(new Task(title, action.bind(this), config));

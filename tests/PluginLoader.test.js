@@ -1,5 +1,4 @@
 import mfs from 'mock-fs';
-import path from 'path';
 import Plugin from '../src/Plugin';
 import PluginLoader from '../src/PluginLoader';
 
