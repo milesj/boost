@@ -97,7 +97,7 @@ export default class Routine extends Task {
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines(value: Result = null): ResultPromise {
+  parallelizeSubroutines(value: Result): ResultPromise {
     // $FlowIgnore Native Promise.all() type definitions do not match Bluebird
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
@@ -106,7 +106,7 @@ export default class Routine extends Task {
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: Result = null): ResultPromise {
+  parallelizeTasks(value: Result): ResultPromise {
     // $FlowIgnore Native Promise.all() type definitions do not match Bluebird
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
@@ -157,14 +157,14 @@ export default class Routine extends Task {
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines(value: Result = null): ResultPromise {
+  serializeSubroutines(value: Result): ResultPromise {
     return this.serialize(value, this.subroutines, this.executeTask);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: Result = null): ResultPromise {
+  serializeTasks(value: Result): ResultPromise {
     return this.serialize(value, this.subtasks, this.executeTask);
   }
 

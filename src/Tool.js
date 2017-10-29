@@ -39,7 +39,7 @@ export default class Tool extends Emitter {
   }
 
   /**
-   * Close the current Vorpal interface instance.
+   * Close the current CLI instance.
    */
   closeConsole(): this {
     // TODO

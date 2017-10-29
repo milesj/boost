@@ -68,7 +68,7 @@ export default class ToolBuilder {
   }
 
   /**
-   * Set the currently active command options passed down by Vorpal.
+   * Set the currently active command options passed down by the CLI.
    */
   setCommand(command?: CommandOptions): this {
     if (this.tool.command) {

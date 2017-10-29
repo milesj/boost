@@ -1,5 +1,4 @@
 import mfs from 'mock-fs';
-import Plugin from '../src/Plugin';
 import PluginLoader from '../src/PluginLoader';
 
 function createPluginPackage(template) {
@@ -32,14 +31,6 @@ describe('PluginLoader', () => {
       expect(() => {
         loader.importPlugin('foo');
       }).toThrowError('Missing plugin module "boost-plugin-foo".');
-    });
-
-    it('errors if a plugin instance is exported', () => {
-      mfs(createPluginPackage(() => new Plugin()));
-
-      expect(() => {
-        loader.importPlugin('foo');
-      }).toThrowError('asds');
     });
 
     it('errors if a non-function is exported', () => {

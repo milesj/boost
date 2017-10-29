@@ -137,7 +137,7 @@ export default class Task {
   /**
    * Wrap a value in a promise if it has not already been.
    */
-  wrap(value: Result): ResultPromise {
+  wrap(value: *): ResultPromise {
     return (value instanceof Promise) ? value : Promise.resolve(value);
   }
 }
