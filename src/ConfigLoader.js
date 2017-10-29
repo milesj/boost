@@ -80,14 +80,14 @@ export default class ConfigLoader {
     // Locate files within a local config folder
     } else {
       const filePaths = glob.sync(
-        path.join(process.cwd(), `config/${appName}.{json,json5,js}`),
+        path.join(process.cwd(), `config/${appName}.{js,json,json5}`),
         { absolute: true },
       );
 
       if (filePaths.length === 0) {
         throw new Error(
           'Local configuration file could not be found. ' +
-          `One of "config/${appName}.json" or "config/${appName}.js" must exist ` +
+          `One of "config/${appName}.js" or "config/${appName}.json" must exist ` +
           'relative to the project root.',
         );
 

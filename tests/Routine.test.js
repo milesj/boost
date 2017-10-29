@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 
-import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
