@@ -4,7 +4,8 @@
  * @flow
  */
 
+import Options from 'optimal';
 import Plugin from './Plugin';
 import Routine from './Routine';
 
-export { Plugin, Routine };
+export { Plugin, Routine, Options };
