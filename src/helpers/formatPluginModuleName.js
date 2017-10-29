@@ -7,6 +7,10 @@
 /**
  * Combine app and plugin names into a Node/NPM applicable module name.
  */
-export default function formatPluginModuleName(appName: string, pluginName: string): string {
-  return `${appName}-plugin-${pluginName.toLowerCase().replace('plugin:', '')}`;
+export default function formatPluginModuleName(
+  appName: string,
+  pluginName: string,
+  name: string,
+): string {
+  return `${appName}-${pluginName}-${name.toLowerCase().replace(`${pluginName}:`, '')}`;
 }

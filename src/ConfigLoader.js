@@ -33,8 +33,11 @@ export default class ConfigLoader {
 
   parsedFiles: { [key: string]: boolean } = {};
 
-  constructor(appName: string) {
+  pluginName: string;
+
+  constructor(appName: string, pluginName: string) {
     this.appName = appName;
+    this.pluginName = pluginName;
   }
 
   /**
@@ -250,7 +253,7 @@ export default class ConfigLoader {
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
         return resolveModuleConfigPath(
           this.appName,
-          formatPluginModuleName(this.appName, extendPath),
+          formatPluginModuleName(this.appName, this.pluginName, extendPath),
         );
       }
 

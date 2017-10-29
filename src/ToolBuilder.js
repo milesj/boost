@@ -15,10 +15,13 @@ import type { CommandOptions } from './types';
 export default class ToolBuilder {
   appName: string;
 
+  pluginName: string;
+
   tool: Tool;
 
-  constructor(appName: string) {
+  constructor(appName: string, pluginName: string = 'plugin') {
     this.appName = appName;
+    this.pluginName = pluginName;
     this.tool = new Tool(appName);
   }
 
@@ -42,7 +45,7 @@ export default class ToolBuilder {
    * Must be called first in the lifecycle.
    */
   loadConfig(): this {
-    const configLoader = new ConfigLoader(this.appName);
+    const configLoader = new ConfigLoader(this.appName, this.pluginName);
 
     this.tool.package = configLoader.loadPackageJSON();
     this.tool.config = configLoader.loadConfig();
@@ -60,7 +63,7 @@ export default class ToolBuilder {
       throw new Error('Cannot load plugins as configuration has not been loaded.');
     }
 
-    const pluginLoader = new PluginLoader(this.appName);
+    const pluginLoader = new PluginLoader(this.appName, this.pluginName);
 
     this.tool.plugins = pluginLoader.loadPlugins(this.tool.config.plugins || []);
 
@@ -77,7 +80,7 @@ export default class ToolBuilder {
 
     this.tool.command = {
       options: {},
-      ...(command || {}),
+      ...command,
     };
 
     return this;

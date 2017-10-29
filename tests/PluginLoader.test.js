@@ -18,7 +18,7 @@ describe('PluginLoader', () => {
   let loader;
 
   beforeEach(() => {
-    loader = new PluginLoader('boost');
+    loader = new PluginLoader('boost', 'plugin');
     mfs();
   });
 

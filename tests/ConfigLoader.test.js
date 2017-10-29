@@ -14,7 +14,7 @@ describe('ConfigLoader', () => {
   let loader;
 
   beforeEach(() => {
-    loader = new ConfigLoader('boost');
+    loader = new ConfigLoader('boost', 'plugin');
     mfs();
   });
 

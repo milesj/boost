@@ -15,10 +15,13 @@ type PluginOrModuleName = string | Plugin;
 export default class PluginLoader {
   appName: string;
 
+  pluginName: string;
+
   plugins: Plugin[] = [];
 
-  constructor(appName: string) {
+  constructor(appName: string, pluginName: string) {
     this.appName = appName;
+    this.pluginName = pluginName;
   }
 
   /**
@@ -26,7 +29,7 @@ export default class PluginLoader {
    * with the provided configuration object.
    */
   importPlugin(name: string, config: Config = {}): Plugin {
-    const moduleName = formatPluginModuleName(this.appName, name);
+    const moduleName = formatPluginModuleName(this.appName, this.pluginName, name);
     let importedPlugin;
 
     // Use `require` instead of `vm` so that we can rely on Node's index resolution algorithm`
@@ -45,7 +48,9 @@ export default class PluginLoader {
       );
 
     } else if (typeof importedPlugin !== 'function') {
-      throw new TypeError(`Invalid plugin class definition exported from "${moduleName}".`);
+      throw new TypeError(
+        `Invalid plugin class definition exported from "${moduleName}".`,
+      );
     }
 
     const PluginClass = importedPlugin;
