@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import Task from '../src/Task';
 import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
@@ -178,6 +179,10 @@ describe('Task', () => {
   describe('wrap()', () => {
     it('wraps the value in a promise', () => {
       expect(task.wrap(123)).toBeInstanceOf(Promise);
+    });
+
+    it('wraps native promise in a bluebird promise', () => {
+      expect(task.wrap(global.Promise.resolve(123))).toBeInstanceOf(Promise);
     });
 
     it('returns the promise as is', () => {

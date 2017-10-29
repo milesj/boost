@@ -87,7 +87,7 @@ describe('ConfigLoader', () => {
         expect(() => {
           loader.loadConfig();
         }).toThrowError(
-          'Local configuration file could not be found. One of "config/boost.json" or "config/boost.js" must exist relative to the project root.',
+          'Local configuration file could not be found. One of "config/boost.js" or "config/boost.json" must exist relative to the project root.',
         );
       });
 

@@ -4,6 +4,7 @@
  * @flow
  */
 
+import type Promise from 'bluebird';
 import type Plugin from './Plugin';
 import type Task from './Task';
 

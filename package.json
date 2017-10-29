@@ -33,6 +33,7 @@
     "node": ">=6.5.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "chalk": "^2.3.0",
     "elegant-spinner": "^1.0.1",
     "execa": "^0.8.0",

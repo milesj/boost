@@ -4,6 +4,7 @@
  * @flow
  */
 
+import Promise from 'bluebird';
 import execa from 'execa';
 import merge from 'lodash/merge';
 import Task from './Task';
