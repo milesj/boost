@@ -22,6 +22,7 @@ import type {
 
 export default class Routine extends Task {
   key: string = '';
+
   tool: Tool;
 
   constructor(key: string, title: string, defaultConfig: Config = {}) {

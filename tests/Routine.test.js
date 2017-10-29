@@ -14,12 +14,12 @@ describe('Routine', () => {
     tool = new Tool();
     tool.config = {
       ...DEFAULT_TOOL_CONFIG,
+      baz: {
+        compress: true,
+        outDir: './out/',
+      },
       foo: {
         command: 'yarn run build',
-      },
-      baz: {
-        outDir: './out/',
-        compress: true,
       },
     };
 
@@ -169,8 +169,8 @@ describe('Routine', () => {
 
     it('passes context through routines when ran', async () => {
       const context = {
-        parallel: 'routine',
         count: 3,
+        parallel: 'routine',
       };
 
       routine.pipe(
@@ -183,11 +183,11 @@ describe('Routine', () => {
       await routine.run(null, context);
 
       expect(context).toEqual({
-        parallel: 'routine',
-        count: 36,
-        foo: true,
         bar: true,
         baz: true,
+        count: 36,
+        foo: true,
+        parallel: 'routine',
       });
       expect(routine.context).toBe(context);
     });
@@ -245,10 +245,10 @@ describe('Routine', () => {
       await routine.run(null, context);
 
       expect(context).toEqual({
-        parallel: 'task',
-        foo: 123,
         bar: 456,
         baz: 789,
+        foo: 123,
+        parallel: 'task',
       });
       expect(routine.context).toBe(context);
     });
@@ -295,12 +295,12 @@ describe('Routine', () => {
 
     it('passes nested configuration to subroutines of the same key', () => {
       routine.config = {
+        baz: {
+          compress: true,
+          outDir: './out/',
+        },
         foo: {
           command: 'yarn run build',
-        },
-        baz: {
-          outDir: './out/',
-          compress: true,
         },
       };
 
@@ -315,8 +315,8 @@ describe('Routine', () => {
       });
 
       expect(baz.config).toEqual({
-        outDir: './out/',
         compress: true,
+        outDir: './out/',
       });
     });
 
@@ -567,8 +567,8 @@ describe('Routine', () => {
 
     it('passes context through routines when ran', async () => {
       const context = {
-        serial: 'routine',
         count: 3,
+        serial: 'routine',
       };
 
       routine.pipe(
@@ -581,11 +581,11 @@ describe('Routine', () => {
       await routine.run(null, context);
 
       expect(context).toEqual({
-        serial: 'routine',
-        count: 36,
-        foo: true,
         bar: true,
         baz: true,
+        count: 36,
+        foo: true,
+        serial: 'routine',
       });
       expect(routine.context).toBe(context);
     });
@@ -638,10 +638,10 @@ describe('Routine', () => {
       await routine.run(null, context);
 
       expect(context).toEqual({
-        serial: 'task',
-        foo: 123,
         bar: 456,
         baz: 789,
+        foo: 123,
+        serial: 'task',
       });
       expect(routine.context).toBe(context);
     });

@@ -71,9 +71,11 @@ describe('Emitter', () => {
 
     describe('cascading', () => {
       it('can pass value by returning', () => {
+        /* eslint-disable no-return-assign */
         emitter.on('foo', event => (event.value += 1));
         emitter.on('foo', event => (event.value += 1));
         emitter.on('foo', event => (event.value += 1));
+        /* eslint-enable no-return-assign */
 
         const event = emitter.emit(new Event('foo'), [], true);
 

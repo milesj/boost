@@ -11,7 +11,9 @@ import type { Config } from './types';
 
 export default class Plugin {
   config: Config;
+
   priority: number = DEFAULT_PLUGIN_PRIORITY;
+
   tool: ?Tool = null;
 
   constructor(config: Config = {}) {

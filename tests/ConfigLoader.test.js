@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 import JSON5 from 'json5';
 import mfs from 'mock-fs';
 import path from 'path';

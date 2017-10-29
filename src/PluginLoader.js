@@ -14,6 +14,7 @@ type PluginOrModuleName = string | Plugin;
 
 export default class PluginLoader {
   appName: string;
+
   plugins: Plugin[] = [];
 
   constructor(appName: string) {
@@ -33,26 +34,25 @@ export default class PluginLoader {
       // eslint-disable-next-line
       importedPlugin = require(moduleName);
     } catch (error) {
-      console.log(error);
       throw new Error(`Missing plugin module "${moduleName}".`);
     }
 
     // An instance was returned instead of the class definition
     if (importedPlugin instanceof Plugin) {
-      throw new Error(
+      throw new TypeError(
         `A plugin class instance was exported from "${moduleName}". ` +
         `${this.appName} requires a plugin class definition to be exported.`,
       );
 
     } else if (typeof importedPlugin !== 'function') {
-      throw new Error(`Invalid plugin class definition exported from "${moduleName}".`);
+      throw new TypeError(`Invalid plugin class definition exported from "${moduleName}".`);
     }
 
     const PluginClass = importedPlugin;
     const plugin = new PluginClass(config);
 
     if (!(plugin instanceof Plugin)) {
-      throw new Error(`Plugin exported from "${moduleName}" is not an instance of \`Plugin\`.`);
+      throw new TypeError(`Plugin exported from "${moduleName}" is not an instance of \`Plugin\`.`);
     }
 
     return plugin;

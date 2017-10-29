@@ -20,10 +20,10 @@ export default class Emitter {
    */
   emit(event: Event, args: Args = [], cascade: boolean = false): Event {
     if (!(event instanceof Event)) {
-      throw new Error('Invalid event, must be an instance of `Event`.');
+      throw new TypeError('Invalid event, must be an instance of `Event`.');
 
     } else if (!Array.isArray(args)) {
-      throw new Error(`Invalid arguments for event "${event.name}", must be an array.`);
+      throw new TypeError(`Invalid arguments for event "${event.name}", must be an array.`);
     }
 
     Array.from(this.getListeners(event.name)).some((listener) => {
@@ -121,7 +121,7 @@ export default class Emitter {
    */
   on(eventName: string, listener: Listener): this {
     if (typeof listener !== 'function') {
-      throw new Error(`Invalid event listener for "${eventName}", must be a function.`);
+      throw new TypeError(`Invalid event listener for "${eventName}", must be a function.`);
     }
 
     this.getListeners(eventName).add(listener);

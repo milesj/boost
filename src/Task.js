@@ -18,12 +18,19 @@ import type { Config, Result, ResultPromise, Status, TaskCallback } from './type
 
 export default class Task {
   action: ?TaskCallback = null;
+
   config: Config = {};
+
   context: Object = {};
+
   frame: number = 0;
+
   title: string = '';
+
   status: Status = STATUS_PENDING;
+
   subroutines: Task[] = [];
+
   subtasks: Task[] = [];
 
   constructor(title: string, action: ?TaskCallback = null, defaultConfig: Config = {}) {

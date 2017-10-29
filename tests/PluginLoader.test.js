@@ -5,12 +5,12 @@ import PluginLoader from '../src/PluginLoader';
 function createPluginPackage(template) {
   return {
     'node_modules/boost-plugin-foo': {
+      'index.js': template,
       'package.json': JSON.stringify({
+        main: './index.js',
         name: 'boost-plugin-foo',
         version: '0.0.0',
-        main: './index.js',
       }),
-      'index.js': template,
     },
   };
 }

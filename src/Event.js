@@ -8,8 +8,11 @@ import type { Result } from './types';
 
 export default class Event {
   name: string;
+
   stopped: boolean = false;
+
   time: number;
+
   value: Result;
 
   constructor(name: string, value: Result = null) {

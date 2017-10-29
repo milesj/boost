@@ -13,13 +13,21 @@ import type { CommandOptions, ToolConfig, PackageConfig } from './types';
 
 export default class Tool extends Emitter {
   appName: string;
+
   chalk: typeof chalk;
+
   command: CommandOptions;
+
   config: ToolConfig;
+
   debugs: string[] = [];
+
   debugGroups: string[] = [];
+
   package: PackageConfig;
+
   plugins: Plugin[] = [];
+
   renderer: Renderer;
 
   constructor(appName: string) {

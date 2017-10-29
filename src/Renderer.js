@@ -26,7 +26,7 @@ export default class Renderer {
   /**
    * Render the output by looping over all tasks in the tree.
    */
-  render(tasks: Task[] = []) {
+  render(tasks: Task[] = []): string {
     const output = [];
 
     tasks.forEach((task) => {

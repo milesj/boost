@@ -1,14 +1,16 @@
 coverage/
-flow/
 flow-typed/
 tests/
 .babelrc
+.eslintcache
 .eslintignore
 .eslintrc
+.esprintrc
 .flowconfig
 .gitignore
 .npmignore
 .travis.yml
 .yarnclean
 jest.json
+lerna.json
 yarn-error.log

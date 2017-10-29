@@ -1,8 +1,9 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
+
+/* eslint-disable */
 
 import Vorpal from 'vorpal';
 import Command from 'vorpal/dist/command';

@@ -24,8 +24,8 @@ describe('ToolBuilder', () => {
   describe('loadConfig()', () => {
     beforeEach(() => {
       mfs({
-        'package.json': JSON.stringify({ name: 'boost' }),
         'config/boost.json': JSON.stringify({ foo: 'bar' }),
+        'package.json': JSON.stringify({ name: 'boost' }),
       });
     });
 

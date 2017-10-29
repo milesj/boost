@@ -26,8 +26,11 @@ import type { ToolConfig, PackageConfig } from './types';
 
 export default class ConfigLoader {
   appName: string;
+
   config: ToolConfig;
+
   package: PackageConfig;
+
   parsedFiles: { [key: string]: boolean } = {};
 
   constructor(appName: string) {
@@ -211,7 +214,6 @@ export default class ConfigLoader {
 
     this.parsedFiles[filePath] = true;
 
-    // $FlowIgnore We type check object above
     return value;
   }
 

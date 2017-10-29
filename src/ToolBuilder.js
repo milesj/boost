@@ -14,6 +14,7 @@ import type { CommandOptions } from './types';
 
 export default class ToolBuilder {
   appName: string;
+
   tool: Tool;
 
   constructor(appName: string) {
@@ -89,7 +90,7 @@ export default class ToolBuilder {
     if (renderer instanceof Renderer) {
       this.tool.renderer = renderer;
     } else {
-      throw new Error('Invalid rendered, must be an instance of `Renderer`.');
+      throw new TypeError('Invalid rendered, must be an instance of `Renderer`.');
     }
 
     return this;
