@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "./lib/index.js",
   "scripts": {
-    "babel": "build-lib",
+    "babel": "build-lib ./src -d ./lib",
     "coverage": "run-tests --coverage",
     "eslint": "run-linter ./src ./tests",
     "flow": "type-check",
