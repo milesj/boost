@@ -22,7 +22,7 @@ If Babel + Babili was created using this library, the implementation would look 
 # Lifecycle
 
 ```
-vorpal
+app
   -> define command
     -> add metadata
     -> add routines

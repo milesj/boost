@@ -1,6 +1,0 @@
-declare module 'json5' {
-  declare export default {
-    parse(data: string): null | string | boolean | number | Array<any> | Object,
-    stringify(data: any): string,
-  };
-}

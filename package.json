@@ -39,11 +39,11 @@
     "figures": "^2.0.0",
     "glob": "^7.1.2",
     "json5": "^0.5.1",
-    "lodash": "^4.17.2",
-    "vorpal": "^1.12.0"
+    "lodash": "^4.17.2"
   },
   "devDependencies": {
     "@milesj/build-tool-config": "0.35.0",
+    "flow-bin": "^0.57.3",
     "mock-fs": "^4.4.2"
   },
   "babel": {
