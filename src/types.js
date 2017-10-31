@@ -42,3 +42,9 @@ export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 export type TaskCallback = (value: Result) => Result | ResultPromise;
 
 export type TasksLoader = () => Task[];
+
+export type EventArguments = *[];
+
+export type EventListener = (...args: EventArguments) => void;
+
+export type EventNextHandler = (index: number, ...args: EventArguments) => void;

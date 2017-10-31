@@ -7,79 +7,62 @@
 import Event from './Event';
 import { APP_NAME_PATTERN } from './constants';
 
-import type { Result } from './types';
-
-type Args = *[];
-type Listener = (...args: Args) => *;
+import type { EventArguments, EventListener, Result } from './types';
 
 export default class Emitter {
-  listeners: { [eventName: string]: Set<Listener> } = {};
+  listeners: { [eventName: string]: Set<EventListener> } = {};
 
   /**
-   * Emit an event with the provided arguments. Optionally cascade the event value.
+   * Syncronously execute listeners for the defined event and arguments.
    */
-  emit(event: Event, args: Args = [], cascade: boolean = false): Event {
-    if (!(event instanceof Event)) {
-      throw new TypeError('Invalid event, must be an instance of `Event`.');
-
-    } else if (!Array.isArray(args)) {
-      throw new TypeError(`Invalid arguments for event "${event.name}", must be an array.`);
-    }
+  emit(eventName: string, initialValue: Result, args: EventArguments = []): Event {
+    const event = new Event(eventName, initialValue);
 
     Array.from(this.getListeners(event.name)).some((listener) => {
-      if (event.stopped) {
-        return true;
-      }
+      listener(event, ...args);
 
-      const nextValue = listener(event, ...args);
-
-      if (cascade && typeof nextValue !== 'undefined') {
-        // eslint-disable-next-line no-param-reassign
-        event.value = nextValue;
-      }
-
-      return false;
+      return event.stopped;
     });
 
     return event;
   }
 
   /**
-   * Asyncronously execute listeners in the next tick for the provided event and arguments.
+   * Syncronously execute listeners for the defined event and arguments,
+   * through a chaining lyer controlled by next handlers.
    */
-  emitAsync(eventName: string, args: Args = []): Event {
-    const event = new Event(eventName);
-
-    process.nextTick(() => this.emit(event, args));
-
-    return event;
-  }
-
-  /**
-   * Asyncronously execute listeners in the next tick for the provided event and arguments,
-   * while passing a value from the previous listener to the next listener.
-   */
-  emitAsyncCascade(eventName: string, initialValue: Result, args: Args = []): Event {
+  emitCascade(eventName: string, initialValue: Result, args: EventArguments = []): Event {
     const event = new Event(eventName, initialValue);
+    const listeners = Array.from(this.getListeners(event.name));
+    let index = 0;
 
-    process.nextTick(() => this.emit(event, args, true));
+    if (listeners.length === 0) {
+      return event;
+    }
+
+    // Handler passed to each listener
+    function next(nextIndex: number, ...nextEventArguments: EventArguments) {
+      if (nextIndex < index || nextIndex > listeners.length) {
+        throw new Error('Invalid cascading event.');
+      }
+
+      index = nextIndex;
+      const listener = listeners[index];
+
+      if (!listener || event.stopped) {
+        return;
+      }
+
+      // Set the next handler
+      event.next = () => next(index + 1, ...nextEventArguments);
+
+      listener(event, ...nextEventArguments);
+    }
+
+    // Execute the first listener
+    next(0, ...args);
 
     return event;
-  }
-
-  /**
-   * Syncronously execute listeners for the provided event and arguments.
-   */
-  emitSync(eventName: string, args: Args = []): Event {
-    return this.emit(new Event(eventName), args);
-  }
-
-  /**
-   * Syncronously execute listeners for the provided event and arguments,
-   * while passing a value from the previous listener to the next listener.
-   */
-  emitSyncCascade(eventName: string, initialValue: Result, args: Args = []): Event {
-    return this.emit(new Event(eventName, initialValue), args, true);
   }
 
   /**
@@ -92,7 +75,7 @@ export default class Emitter {
   /**
    * Return a set of listeners for a specific event name.
    */
-  getListeners(eventName: string): Set<Listener> {
+  getListeners(eventName: string): Set<EventListener> {
     if (!eventName.match(APP_NAME_PATTERN)) {
       throw new Error(
         `Invalid event name "${eventName}". ` +
@@ -110,7 +93,7 @@ export default class Emitter {
   /**
    * Remove a listener function from a specific event name.
    */
-  off(eventName: string, listener: Listener): this {
+  off(eventName: string, listener: EventListener): this {
     this.getListeners(eventName).delete(listener);
 
     return this;
@@ -119,7 +102,7 @@ export default class Emitter {
   /**
    * Register a listener function to a specific event name.
    */
-  on(eventName: string, listener: Listener): this {
+  on(eventName: string, listener: EventListener): this {
     if (typeof listener !== 'function') {
       throw new TypeError(`Invalid event listener for "${eventName}", must be a function.`);
     }

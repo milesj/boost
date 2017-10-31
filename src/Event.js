@@ -4,10 +4,12 @@
  * @flow
  */
 
-import type { Result } from './types';
+import type { EventNextHandler, Result } from './types';
 
 export default class Event {
   name: string;
+
+  next: ?EventNextHandler = null;
 
   stopped: boolean = false;
 
