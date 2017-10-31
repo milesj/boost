@@ -4,6 +4,7 @@
  * @flow
  */
 
+import upperFirst from 'lodash/upperFirst';
 import Plugin from './Plugin';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
@@ -29,7 +30,8 @@ export default class PluginLoader {
    * with the provided configuration object.
    */
   importPlugin(name: string, config: Config = {}): Plugin {
-    const moduleName = formatPluginModuleName(this.appName, this.pluginName, name);
+    const { appName, pluginName } = this;
+    const moduleName = formatPluginModuleName(appName, pluginName, name);
     let importedPlugin;
 
     // Use `require` instead of `vm` so that we can rely on Node's index resolution algorithm`
@@ -37,19 +39,19 @@ export default class PluginLoader {
       // eslint-disable-next-line
       importedPlugin = require(moduleName);
     } catch (error) {
-      throw new Error(`Missing plugin module "${moduleName}".`);
+      throw new Error(`Missing ${pluginName} module "${moduleName}".`);
     }
 
     // An instance was returned instead of the class definition
     if (importedPlugin instanceof Plugin) {
       throw new TypeError(
-        `A plugin class instance was exported from "${moduleName}". ` +
-        `${this.appName} requires a plugin class definition to be exported.`,
+        `A ${pluginName} class instance was exported from "${moduleName}". ` +
+        `${appName} requires a ${pluginName} class definition to be exported.`,
       );
 
     } else if (typeof importedPlugin !== 'function') {
       throw new TypeError(
-        `Invalid plugin class definition exported from "${moduleName}".`,
+        `Invalid ${pluginName} class definition exported from "${moduleName}".`,
       );
     }
 
@@ -57,7 +59,7 @@ export default class PluginLoader {
     const plugin = new PluginClass(config);
 
     if (!(plugin instanceof Plugin)) {
-      throw new TypeError(`Plugin exported from "${moduleName}" is not an instance of \`Plugin\`.`);
+      throw new TypeError(`${upperFirst(pluginName)} exported from "${moduleName}" is invalid.`);
     }
 
     return plugin;
@@ -68,11 +70,15 @@ export default class PluginLoader {
    * as configuration for the `Plugin` instance.
    */
   importPluginFromConfig(baseConfig: Config = {}): Plugin {
-    const { plugin, ...config } = baseConfig;
+    const { pluginName } = this;
+    const config = { ...baseConfig };
+    const plugin = config[pluginName];
+
+    delete config[pluginName];
 
     if (!plugin || typeof plugin !== 'string') {
       throw new Error(
-        'A `plugin` name property must exist when loading plugins through a configuration object.',
+        `A "${pluginName}" property must exist when loading through a configuration object.`,
       );
     }
 
@@ -85,6 +91,8 @@ export default class PluginLoader {
    * instantiate from a module. If an object, extract the name and run the previous.
    */
   loadPlugins(plugins: PluginOrModuleName[]): Plugin[] {
+    const { pluginName } = this;
+
     this.plugins = plugins.map((plugin) => {
       if (plugin instanceof Plugin) {
         return plugin;
@@ -97,8 +105,7 @@ export default class PluginLoader {
       }
 
       throw new Error(
-        'Invalid plugin. Must be an instance of `Plugin` ' +
-        'or the name of a module that exports a `Plugin` class.',
+        `Invalid ${pluginName}. Must be a class instance or a module that exports a class definition.`,
       );
     });
 

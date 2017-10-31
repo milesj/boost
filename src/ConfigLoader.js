@@ -227,7 +227,7 @@ export default class ConfigLoader {
    *  - Absolute paths should be normalized and used as is.
    *  - Relative paths should be resolved relative to the CWD.
    *  - Strings that match a node module name should resolve to a config file relative to the CWD.
-   *  - Strings that start with "plugin:" should adhere to the previous rule.
+   *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
   resolveExtendPaths(extendPaths: string | string[]): string[] {
     return (Array.isArray(extendPaths) ? extendPaths : [extendPaths]).map((extendPath) => {

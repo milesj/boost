@@ -5,7 +5,6 @@
  */
 
 import Promise from 'bluebird';
-import type Plugin from './Plugin';
 import type Task from './Task';
 
 export type Primitive = string | number | boolean;
@@ -16,8 +15,7 @@ export type ToolConfig = {
   debug?: boolean,
   dry?: boolean,
   extends?: string | string[],
-  plugins?: (string | Plugin)[],
-  [key: string]: Primitive | Primitive[] | Object,
+  [key: string]: *,
 };
 
 export type PackageConfig = {

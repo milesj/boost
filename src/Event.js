@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type { EventNextHandler, Result } from './types';
+import type { EventNextHandler } from './types';
 
 export default class Event {
   name: string;
@@ -15,9 +15,9 @@ export default class Event {
 
   time: number;
 
-  value: Result;
+  value: *;
 
-  constructor(name: string, value: Result = null) {
+  constructor(name: string, value: * = null) {
     if (!name || typeof name !== 'string') {
       throw new Error('A valid event name is required.');
     }

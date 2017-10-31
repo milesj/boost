@@ -22,7 +22,6 @@ export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,
   dry: false,
   extends: [],
-  plugins: [],
 };
 
 export const DEFAULT_PACKAGE_CONFIG: PackageConfig = {

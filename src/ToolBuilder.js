@@ -4,6 +4,7 @@
  * @flow
  */
 
+import pluralize from 'pluralize';
 import ConfigLoader from './ConfigLoader';
 import PluginLoader from './PluginLoader';
 import Renderer from './Renderer';
@@ -59,13 +60,14 @@ export default class ToolBuilder {
    * Must be called after config has been loaded.
    */
   loadPlugins(): this {
+    const pluralPluginName = pluralize(this.pluginName);
+
     if (isEmptyObject(this.tool.config)) {
-      throw new Error('Cannot load plugins as configuration has not been loaded.');
+      throw new Error(`Cannot load ${pluralPluginName} as configuration has not been loaded.`);
     }
 
-    const pluginLoader = new PluginLoader(this.appName, this.pluginName);
-
-    this.tool.plugins = pluginLoader.loadPlugins(this.tool.config.plugins || []);
+    this.tool.plugins = new PluginLoader(this.appName, this.pluginName)
+      .loadPlugins(this.tool.config[pluralPluginName]);
 
     return this;
   }

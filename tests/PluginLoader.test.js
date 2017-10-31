@@ -17,6 +17,8 @@ function createPluginPackage(template) {
 describe('PluginLoader', () => {
   let loader;
 
+  // TODO write tests
+
   beforeEach(() => {
     loader = new PluginLoader('boost', 'plugin');
     mfs();
