@@ -64,7 +64,7 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName } = this.options;
+    const { appName, root } = this.options;
     const camelName = camelCase(appName);
     let config = {};
 
@@ -80,7 +80,7 @@ export default class ConfigLoader {
     // Locate files within a local config folder
     } else {
       const filePaths = glob.sync(
-        path.join(process.cwd(), `config/${appName}.{js,json,json5}`),
+        path.join(root, `config/${appName}.{js,json,json5}`),
         { absolute: true },
       );
 
@@ -114,7 +114,9 @@ export default class ConfigLoader {
    * as we require the build tool to be ran from the project root.
    */
   loadPackageJSON(): PackageConfig {
-    if (!fs.existsSync('package.json')) {
+    const filePath = path.join(this.options.root, 'package.json');
+
+    if (!fs.existsSync(filePath)) {
       throw new Error(
         'Local "package.json" could not be found. ' +
         'Please run the command in your project\'s root.',
@@ -123,7 +125,7 @@ export default class ConfigLoader {
 
     this.package = {
       ...DEFAULT_PACKAGE_CONFIG,
-      ...this.parseFile('package.json'),
+      ...this.parseFile(filePath),
     };
 
     return this.package;

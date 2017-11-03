@@ -21,6 +21,8 @@ export default class Tool extends Emitter {
 
   config: ToolConfig;
 
+  configLoader: ConfigLoader;
+
   debugs: string[] = [];
 
   debugGroups: string[] = [];
@@ -30,6 +32,8 @@ export default class Tool extends Emitter {
   options: ToolOptions;
 
   package: PackageConfig;
+
+  pluginLoader: PluginLoader;
 
   plugins: Plugin[] = [];
 
@@ -41,6 +45,7 @@ export default class Tool extends Emitter {
     this.options = new Options(options, {
       appName: string(),
       pluginName: string('plugin'),
+      root: string(process.cwd()),
     }, {
       name: 'Tool',
     });
@@ -111,6 +116,7 @@ export default class Tool extends Emitter {
 
     this.package = configLoader.loadPackageJSON();
     this.config = configLoader.loadConfig();
+    this.configLoader = configLoader;
 
     return this;
   }
@@ -127,7 +133,10 @@ export default class Tool extends Emitter {
       throw new Error(`Cannot load ${pluralPluginName} as configuration has not been loaded.`);
     }
 
-    this.plugins = new PluginLoader(this.options).loadPlugins(this.config[pluralPluginName]);
+    const pluginLoader = new PluginLoader(this.options);
+
+    this.plugins = pluginLoader.loadPlugins(this.config[pluralPluginName]);
+    this.pluginLoader = pluginLoader;
 
     return this;
   }

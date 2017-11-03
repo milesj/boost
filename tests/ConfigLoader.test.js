@@ -17,6 +17,7 @@ describe('ConfigLoader', () => {
     loader = new ConfigLoader({
       appName: 'boost',
       pluginName: 'plugin',
+      root: process.cwd(),
     });
 
     mfs();

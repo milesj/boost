@@ -23,6 +23,7 @@ describe('PluginLoader', () => {
     loader = new PluginLoader({
       appName: 'boost',
       pluginName: 'plugin',
+      root: process.cwd(),
     });
 
     mfs();

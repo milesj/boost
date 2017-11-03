@@ -19,6 +19,7 @@ export type ToolConfig = {
 export type ToolOptions = {
   appName: string,
   pluginName: string,
+  root: string,
 };
 
 export type PackageConfig = {
