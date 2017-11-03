@@ -1,11 +1,16 @@
 import chalk from 'chalk';
+import mfs from 'mock-fs';
 import Tool from '../src/Tool';
+import Renderer from '../src/Renderer';
+import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from '../src/constants';
 
 describe('Tool', () => {
   let tool;
 
   beforeEach(() => {
-    tool = new Tool('boost');
+    tool = new Tool({
+      appName: 'boost',
+    });
     tool.config = {};
     tool.package = {};
   });
@@ -67,7 +72,78 @@ describe('Tool', () => {
     });
   });
 
+  describe('loadConfig()', () => {
+    beforeEach(() => {
+      mfs({
+        'config/boost.json': JSON.stringify({ foo: 'bar' }),
+        'package.json': JSON.stringify({ name: 'boost' }),
+      });
+    });
+
+    afterEach(() => {
+      mfs.restore();
+    });
+
+    it('loads package.json', () => {
+      tool.loadConfig();
+
+      expect(tool.package).toEqual({
+        ...DEFAULT_PACKAGE_CONFIG,
+        name: 'boost',
+      });
+    });
+
+    it('loads config file', () => {
+      tool.loadConfig();
+
+      expect(tool.config).toEqual({
+        ...DEFAULT_TOOL_CONFIG,
+        foo: 'bar',
+      });
+    });
+  });
+
+  describe('loadPlugins()', () => {
+    it('errors if config is falsy', () => {
+      expect(() => {
+        tool.loadPlugins();
+      }).toThrowError('Cannot load plugins as configuration has not been loaded.');
+    });
+
+    it('errors if config is an empty object', () => {
+      expect(() => {
+        tool.config = {};
+        tool.loadPlugins();
+      }).toThrowError('Cannot load plugins as configuration has not been loaded.');
+    });
+
+    it('does nothing if no plugins found in config', () => {
+      tool.config = { plugins: [] };
+      tool.loadPlugins();
+
+      expect(tool.plugins).toEqual([]);
+    });
+
+    // TODO test plugins
+  });
+
   describe.skip('render()');
+
+  describe('setRenderer()', () => {
+    it('errors if not an instance of Renderer', () => {
+      expect(() => {
+        tool.setRenderer(123);
+      }).toThrowError('Invalid renderer, must be an instance of `Renderer`.');
+    });
+
+    it('sets the renderer', () => {
+      const renderer = new Renderer();
+
+      tool.setRenderer(renderer);
+
+      expect(tool.renderer).toBe(renderer);
+    });
+  });
 
   describe('startDebugGroup()', () => {
     it('logs a message and appends a group name', () => {
