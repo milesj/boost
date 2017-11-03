@@ -14,7 +14,6 @@ import mergeWith from 'lodash/mergeWith';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
-import resolveModuleConfigPath from './helpers/resolveModuleConfigPath';
 import {
   MODULE_NAME_PATTERN,
   PLUGIN_NAME_PATTERN,
@@ -191,7 +190,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string): Object {
+  parseFile(filePath: string, options?: Object = {}): Object {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value;
@@ -200,11 +199,15 @@ export default class ConfigLoader {
       value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
 
     } else if (ext === '.js') {
-      const context = { module: {} };
+      const module = {};
 
-      vm.runInNewContext(fs.readFileSync(filePath, 'utf8'), context);
+      vm.runInNewContext(fs.readFileSync(filePath, 'utf8'), { module });
 
-      value = context.module.exports;
+      value = module.exports;
+
+      if (typeof value === 'function') {
+        value = value(options);
+      }
 
     } else {
       throw new Error(`Unsupported configuration file format "${name}".`);
@@ -248,17 +251,32 @@ export default class ConfigLoader {
 
       // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
-        return resolveModuleConfigPath(appName, extendPath);
+        return this.resolveModuleConfigPath(appName, extendPath, true);
 
       // Plugin, resolve to a node module
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
-        return resolveModuleConfigPath(
+        return this.resolveModuleConfigPath(
           appName,
           formatPluginModuleName(appName, pluginName, extendPath),
+          true,
         );
       }
 
       throw new Error(`Invalid \`extends\` configuration value "${extendPath}".`);
     });
+  }
+
+  /**
+   * Resolve a Node/NPM module path to an app config file.
+   */
+  resolveModuleConfigPath(
+    appName: string,
+    moduleName: string,
+    preset?: boolean = false,
+    ext?: string = 'js',
+  ): string {
+    const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
+
+    return path.resolve('node_modules', moduleName, `config/${fileName}`);
   }
 }

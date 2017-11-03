@@ -403,6 +403,25 @@ describe('ConfigLoader', () => {
 
       expect(loader.parseFile('foo.js')).toEqual({ name: 'foo' });
     });
+
+    it('parses .js files that return functions', () => {
+      mfs({
+        'foo.js': 'module.exports = () => { return { name: "foo" }; };',
+      });
+
+      expect(loader.parseFile('foo.js')).toEqual({ name: 'foo' });
+    });
+
+    it('parses .js files that return functions with options passed', () => {
+      mfs({
+        'foo.js': 'module.exports = (opts) => { return { name: "foo", ...opts }; };',
+      });
+
+      expect(loader.parseFile('foo.js', { version: 1 })).toEqual({
+        name: 'foo',
+        version: 1,
+      });
+    });
   });
 
   describe('resolveExtendPaths()', () => {
@@ -478,6 +497,23 @@ describe('ConfigLoader', () => {
       expect(loader.resolveExtendPaths(['boost-plugin-foo'])).toEqual([
         path.join(process.cwd(), './node_modules/boost-plugin-foo/config/boost.preset.js'),
       ]);
+    });
+  });
+
+  describe('resolveModuleConfigPath()', () => {
+    it('returns file path with correct naming', () => {
+      expect(loader.resolveModuleConfigPath('foo', 'bar'))
+        .toBe(path.join(process.cwd(), './node_modules/bar/config/foo.js'));
+    });
+
+    it('can flag as preset', () => {
+      expect(loader.resolveModuleConfigPath('foo', 'bar', true))
+        .toBe(path.join(process.cwd(), './node_modules/bar/config/foo.preset.js'));
+    });
+
+    it('can change the extension', () => {
+      expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json'))
+        .toBe(path.join(process.cwd(), './node_modules/bar/config/foo.preset.json'));
     });
   });
 });
