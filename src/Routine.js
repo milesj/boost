@@ -80,6 +80,7 @@ export default class Routine extends Task {
    * Execute a command with the given arguments and pass the results through a promise.
    */
   executeCommand(command: string, args?: string[] = [], options?: Object = {}): ResultPromise {
+    /* istanbul ignore next */
     return this.wrap(execa.stdout(command, args, options));
   }
 

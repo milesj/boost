@@ -13,6 +13,15 @@ describe('Tool', () => {
     });
     tool.config = {};
     tool.package = {};
+
+    mfs({
+      'config/boost.json': JSON.stringify({ foo: 'bar' }),
+      'package.json': JSON.stringify({ name: 'boost' }),
+    });
+  });
+
+  afterEach(() => {
+    mfs.restore();
   });
 
   describe.skip('closeConsole()');
@@ -72,18 +81,21 @@ describe('Tool', () => {
     });
   });
 
+  describe('initialize()', () => {
+    it('loads config', () => {
+      expect(tool.config).toEqual({});
+      expect(tool.package).toEqual({});
+      expect(tool.initialized).toBe(false);
+
+      tool.initialize();
+
+      expect(tool.config).not.toEqual({});
+      expect(tool.package).not.toEqual({});
+      expect(tool.initialized).toBe(true);
+    });
+  });
+
   describe('loadConfig()', () => {
-    beforeEach(() => {
-      mfs({
-        'config/boost.json': JSON.stringify({ foo: 'bar' }),
-        'package.json': JSON.stringify({ name: 'boost' }),
-      });
-    });
-
-    afterEach(() => {
-      mfs.restore();
-    });
-
     it('loads package.json', () => {
       tool.loadConfig();
 

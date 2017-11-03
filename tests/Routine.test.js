@@ -650,6 +650,12 @@ describe('Routine', () => {
   });
 
   describe('task()', () => {
+    it('errors if not a function', () => {
+      expect(() => {
+        routine.task('foo', 'bar');
+      }).toThrowError('Tasks require an executable function.');
+    });
+
     it('maps `Task` objects', () => {
       expect(routine.subtasks).toHaveLength(0);
 

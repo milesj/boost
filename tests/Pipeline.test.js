@@ -1,4 +1,3 @@
-import mfs from 'mock-fs';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Tool from '../src/Tool';
@@ -8,14 +7,11 @@ describe('Pipeline', () => {
   let pipeline;
 
   beforeEach(() => {
-    mfs({
-      'config/boost.json': JSON.stringify({ foo: 'bar' }),
-      'package.json': JSON.stringify({ name: 'boost' }),
-    });
-
     tool = new Tool({
       appName: 'boost',
     });
+    tool.config = { foo: 'bar' };
+    tool.initialized = true; // Avoid loaders
 
     pipeline = new Pipeline(tool);
   });

@@ -53,7 +53,8 @@ export default class Tool extends Emitter {
    * Bootstrap plugins by registering event listeners and passing the tool object.
    */
   bootstrapPlugins(): this {
-    return this; // TODO
+    // TODO
+    return this;
   }
 
   /**

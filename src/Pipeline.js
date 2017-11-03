@@ -10,13 +10,15 @@ import Tool from './Tool';
 import type { Result, ResultPromise } from './types';
 
 export default class Pipeline extends Routine {
+  tool: Tool;
+
   constructor(tool: Tool) {
     super('root', 'Pipeline', tool ? tool.config : {});
 
-    if (!tool || !(tool instanceof Tool)) {
-      throw new Error('A build `Tool` instance is required to operate the pipeline.');
+    if (tool instanceof Tool) {
+      tool.initialize();
     } else {
-      // tool.initialize();
+      throw new TypeError('A build `Tool` instance is required to operate the pipeline.');
     }
 
     this.tool = tool;
@@ -33,7 +35,7 @@ export default class Pipeline extends Routine {
   run(initialValue: Result, context?: Object = {}): ResultPromise {
     this.context = context;
 
-    return this.serializeSubroutines(initialValue || null).finally(() => {
+    return this.serializeSubroutines(initialValue).finally(() => {
       this.tool.closeConsole();
     });
   }
