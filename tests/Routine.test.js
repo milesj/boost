@@ -11,7 +11,9 @@ describe('Routine', () => {
   let tool;
 
   beforeEach(() => {
-    tool = new Tool();
+    tool = new Tool({
+      appName: 'boost',
+    });
     tool.config = {
       ...DEFAULT_TOOL_CONFIG,
       baz: {

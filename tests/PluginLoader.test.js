@@ -20,7 +20,11 @@ describe('PluginLoader', () => {
   // TODO write tests
 
   beforeEach(() => {
-    loader = new PluginLoader('boost', 'plugin');
+    loader = new PluginLoader({
+      appName: 'boost',
+      pluginName: 'plugin',
+    });
+
     mfs();
   });
 

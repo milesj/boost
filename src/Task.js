@@ -33,7 +33,7 @@ export default class Task {
 
   subtasks: Task[] = [];
 
-  constructor(title: string, action: ?TaskCallback = null, defaultConfig: Config = {}) {
+  constructor(title: string, action?: ?TaskCallback = null, defaultConfig?: Config = {}) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -87,7 +87,7 @@ export default class Task {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(value: Result, context: Object = {}): ResultPromise {
+  run(value: Result, context?: Object = {}): ResultPromise {
     this.context = context;
 
     if (this.isSkipped() || !this.action) {
@@ -96,6 +96,7 @@ export default class Task {
 
     this.status = STATUS_RUNNING;
 
+    // Use a callback so thrown errors are rejected
     return new Promise((resolve) => {
       // $FlowIgnore We check if nullable above
       resolve(this.action(value, context));
@@ -116,7 +117,7 @@ export default class Task {
   /**
    * Mark a task as skipped if the condition is true.
    */
-  skip(condition: boolean = true): this {
+  skip(condition?: boolean = true): this {
     if (condition) {
       this.status = STATUS_SKIPPED;
     }

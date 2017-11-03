@@ -25,7 +25,7 @@ export default class Routine extends Task {
 
   tool: Tool;
 
-  constructor(key: string, title: string, defaultConfig: Config = {}) {
+  constructor(key: string, title: string, defaultConfig?: Config = {}) {
     super(title, null, defaultConfig);
 
     if (!key || typeof key !== 'string') {
@@ -72,7 +72,7 @@ export default class Routine extends Task {
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  execute(value: Result): ResultPromise {
+  execute(value: Result, context?: Object = {}): ResultPromise {
     return value;
   }
 
@@ -130,7 +130,7 @@ export default class Routine extends Task {
   /**
    * Trigger processes before and after execution.
    */
-  run(value: Result, context: Object = {}): ResultPromise {
+  run(value: Result, context?: Object = {}): ResultPromise {
     this.tool.startDebugGroup(this.key);
 
     return super.run(value, context).finally(() => {
@@ -171,7 +171,7 @@ export default class Routine extends Task {
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskCallback, config: Config = {}): this {
+  task(title: string, action: TaskCallback, config?: Config = {}): this {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

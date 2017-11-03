@@ -5,7 +5,21 @@
  */
 
 import Options from 'optimal';
+import ConfigLoader from './ConfigLoader';
+import Pipeline from './Pipeline';
 import Plugin from './Plugin';
+import PluginLoader from './PluginLoader';
+import Renderer from './Renderer';
 import Routine from './Routine';
+import Tool from './Tool';
 
-export { Plugin, Routine, Options };
+export {
+  ConfigLoader,
+  Options,
+  Pipeline,
+  Plugin,
+  PluginLoader,
+  Renderer,
+  Routine,
+  Tool,
+};

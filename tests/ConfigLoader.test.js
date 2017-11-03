@@ -14,7 +14,11 @@ describe('ConfigLoader', () => {
   let loader;
 
   beforeEach(() => {
-    loader = new ConfigLoader('boost', 'plugin');
+    loader = new ConfigLoader({
+      appName: 'boost',
+      pluginName: 'plugin',
+    });
+
     mfs();
   });
 

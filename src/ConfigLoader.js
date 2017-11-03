@@ -4,13 +4,13 @@
  * @flow
  */
 
-import camelCase from 'lodash/camelCase';
 import fs from 'fs';
 import glob from 'glob';
 import JSON5 from 'json5';
-import mergeWith from 'lodash/mergeWith';
 import path from 'path';
 import vm from 'vm';
+import camelCase from 'lodash/camelCase';
+import mergeWith from 'lodash/mergeWith';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -22,22 +22,19 @@ import {
   DEFAULT_PACKAGE_CONFIG,
 } from './constants';
 
-import type { ToolConfig, PackageConfig } from './types';
+import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export default class ConfigLoader {
-  appName: string;
-
   config: ToolConfig;
+
+  options: ToolOptions;
 
   package: PackageConfig;
 
   parsedFiles: { [key: string]: boolean } = {};
 
-  pluginName: string;
-
-  constructor(appName: string, pluginName: string) {
-    this.appName = appName;
-    this.pluginName = pluginName;
+  constructor(options: ToolOptions) {
+    this.options = options;
   }
 
   /**
@@ -67,7 +64,7 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName } = this;
+    const { appName } = this.options;
     const camelName = camelCase(appName);
     let config = {};
 
@@ -237,6 +234,8 @@ export default class ConfigLoader {
         );
       }
 
+      const { appName, pluginName } = this.options;
+
       // Absolute path, use it directly
       if (path.isAbsolute(extendPath)) {
         return path.normalize(extendPath);
@@ -247,13 +246,13 @@ export default class ConfigLoader {
 
       // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
-        return resolveModuleConfigPath(this.appName, extendPath);
+        return resolveModuleConfigPath(appName, extendPath);
 
       // Plugin, resolve to a node module
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
         return resolveModuleConfigPath(
-          this.appName,
-          formatPluginModuleName(this.appName, this.pluginName, extendPath),
+          appName,
+          formatPluginModuleName(appName, pluginName, extendPath),
         );
       }
 

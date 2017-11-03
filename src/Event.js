@@ -17,7 +17,7 @@ export default class Event {
 
   value: *;
 
-  constructor(name: string, value: * = null) {
+  constructor(name: string, value?: * = null) {
     if (!name || typeof name !== 'string') {
       throw new Error('A valid event name is required.');
     }

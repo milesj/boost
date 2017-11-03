@@ -12,5 +12,9 @@ export default function formatPluginModuleName(
   pluginName: string,
   name: string,
 ): string {
-  return `${appName}-${pluginName}-${name.toLowerCase().replace(`${pluginName}:`, '')}`;
+  const moduleName = name.toLowerCase()
+    .replace('plugin:', '')
+    .replace(`${pluginName}:`, '');
+
+  return `${appName}-${pluginName}-${moduleName}`;
 }

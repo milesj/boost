@@ -15,6 +15,8 @@ export default class Pipeline extends Routine {
 
     if (!tool || !(tool instanceof Tool)) {
       throw new Error('A build `Tool` instance is required to operate the pipeline.');
+    } else {
+      // tool.initialize();
     }
 
     this.tool = tool;
@@ -28,7 +30,7 @@ export default class Pipeline extends Routine {
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: Result, context: Object = {}): ResultPromise {
+  run(initialValue: Result, context?: Object = {}): ResultPromise {
     this.context = context;
 
     return this.serializeSubroutines(initialValue || null).finally(() => {

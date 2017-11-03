@@ -40,7 +40,7 @@ export default class Renderer {
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: Task, level: number = 0, suffix: string = ''): string[] {
+  renderTask(task: Task, level?: number = 0, suffix?: string = ''): string[] {
     const output = [];
 
     // Generate the message row
