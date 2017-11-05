@@ -23,7 +23,7 @@ import type {
 export default class Routine extends Task {
   key: string = '';
 
-  tool: Tool;
+  tool: Tool<*>;
 
   constructor(key: string, title: string, defaultConfig?: Config = {}) {
     super(title, null, defaultConfig);
@@ -52,11 +52,12 @@ export default class Routine extends Task {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(tool: Tool, parentConfig: Config): this {
-    this.tool = tool;
+  configure(parent: Routine): this {
+    this.context = parent.context;
+    this.tool = parent.tool;
 
     // Inherit config from parent
-    const config = parentConfig[this.key];
+    const config = parent.config[this.key];
 
     if (isObject(config)) {
       merge(this.config, config);
@@ -118,7 +119,7 @@ export default class Routine extends Task {
   pipe(...routines: Routine[]): this {
     routines.forEach((routine) => {
       if (routine instanceof Routine) {
-        this.subroutines.push(routine.configure(this.tool, this.config));
+        this.subroutines.push(routine.configure(this));
 
       } else {
         throw new TypeError('Routines must be an instance of `Routine`.');

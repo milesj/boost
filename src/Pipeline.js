@@ -9,10 +9,10 @@ import Tool from './Tool';
 
 import type { Result, ResultPromise } from './types';
 
-export default class Pipeline extends Routine {
-  tool: Tool;
+export default class Pipeline<T: Object> extends Routine {
+  tool: Tool<T>;
 
-  constructor(tool: Tool) {
+  constructor(tool: Tool<T>) {
     super('root', 'Pipeline', tool ? tool.config : {});
 
     if (tool instanceof Tool) {

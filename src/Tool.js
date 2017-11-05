@@ -16,7 +16,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool extends Emitter {
+export default class Tool<T: Object> extends Emitter {
   chalk: typeof chalk;
 
   config: ToolConfig;
@@ -33,9 +33,9 @@ export default class Tool extends Emitter {
 
   package: PackageConfig;
 
-  pluginLoader: PluginLoader;
+  pluginLoader: PluginLoader<T>;
 
-  plugins: Plugin[] = [];
+  plugins: Plugin<T>[] = [];
 
   renderer: Renderer;
 

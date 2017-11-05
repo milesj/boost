@@ -7,22 +7,22 @@
 import Tool from './Tool';
 import { DEFAULT_PLUGIN_PRIORITY } from './constants';
 
-export default class Plugin {
+export default class Plugin<T: Object> {
   moduleName: string = '';
 
   name: string = '';
 
-  options: Object = {};
+  options: T;
 
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
-  tool: ?Tool = null;
+  tool: ?Tool<T> = null;
 
-  constructor(options?: Object = {}) {
+  constructor(options?: T) {
     this.options = { ...options };
   }
 
-  bootstrap(tool: Tool) {
+  bootstrap(tool: Tool<T>) {
     this.tool = tool;
   }
 }

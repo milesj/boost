@@ -4,7 +4,6 @@
  * @flow
  */
 
-import Options from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Pipeline from './Pipeline';
 import Plugin from './Plugin';
@@ -15,7 +14,6 @@ import Tool from './Tool';
 
 export {
   ConfigLoader,
-  Options,
   Pipeline,
   Plugin,
   PluginLoader,

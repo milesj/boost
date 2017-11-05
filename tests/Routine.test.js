@@ -26,7 +26,11 @@ describe('Routine', () => {
     };
 
     routine = new Routine('key', 'title');
-    routine.configure(tool, {});
+    routine.configure({
+      config: {},
+      context: {},
+      tool,
+    });
   });
 
   class FailureSubRoutine extends Routine {
@@ -104,7 +108,11 @@ describe('Routine', () => {
       }
 
       routine = new BootstrapRoutine('bootstrap', 'title');
-      routine.configure(tool, { foo: 'bar' });
+      routine.configure({
+        config: { foo: 'bar' },
+        context: {},
+        tool,
+      });
 
       expect(config).toEqual(tool.config);
     });

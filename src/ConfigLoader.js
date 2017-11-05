@@ -6,9 +6,9 @@
 
 import fs from 'fs';
 import glob from 'glob';
-import JSON5 from 'json5';
 import path from 'path';
 import vm from 'vm';
+import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
