@@ -55,14 +55,6 @@ export default class Tool<T: Object> extends Emitter {
   }
 
   /**
-   * Bootstrap plugins by registering event listeners and passing the tool object.
-   */
-  bootstrapPlugins(): this {
-    // TODO
-    return this;
-  }
-
-  /**
    * Close the current CLI instance.
    */
   closeConsole(): this {
@@ -86,15 +78,16 @@ export default class Tool<T: Object> extends Emitter {
   /**
    * Initialize the tool by loading config and plugins.
    */
-  initialize() {
+  initialize(): this {
     if (this.initialized) {
-      return;
+      return this;
     }
 
-    this.initialized = true;
     this.loadConfig();
     this.loadPlugins();
-    this.bootstrapPlugins();
+    this.initialized = true;
+
+    return this;
   }
 
   /**
@@ -112,11 +105,13 @@ export default class Tool<T: Object> extends Emitter {
    * Must be called first in the lifecycle.
    */
   loadConfig(): this {
-    const configLoader = new ConfigLoader(this.options);
+    if (this.initialized) {
+      return this;
+    }
 
-    this.package = configLoader.loadPackageJSON();
-    this.config = configLoader.loadConfig();
-    this.configLoader = configLoader;
+    this.configLoader = new ConfigLoader(this.options);
+    this.package = this.configLoader.loadPackageJSON();
+    this.config = this.configLoader.loadConfig();
 
     return this;
   }
@@ -127,16 +122,23 @@ export default class Tool<T: Object> extends Emitter {
    * Must be called after config has been loaded.
    */
   loadPlugins(): this {
+    if (this.initialized) {
+      return this;
+    }
+
     const pluralPluginName = pluralize(this.options.pluginName);
 
     if (isEmptyObject(this.config)) {
       throw new Error(`Cannot load ${pluralPluginName} as configuration has not been loaded.`);
     }
 
-    const pluginLoader = new PluginLoader(this.options);
+    this.pluginLoader = new PluginLoader(this.options);
+    this.plugins = this.pluginLoader.loadPlugins(this.config[pluralPluginName]);
 
-    this.plugins = pluginLoader.loadPlugins(this.config[pluralPluginName]);
-    this.pluginLoader = pluginLoader;
+    // Bootstrap each plugin with the tool
+    this.plugins.forEach((plugin) => {
+      plugin.bootstrap(this);
+    });
 
     return this;
   }

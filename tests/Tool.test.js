@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import mfs from 'mock-fs';
 import Tool from '../src/Tool';
+import Plugin from '../src/Plugin';
 import Renderer from '../src/Renderer';
 import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from '../src/constants';
 
@@ -96,6 +97,14 @@ describe('Tool', () => {
   });
 
   describe('loadConfig()', () => {
+    it('doesnt load if initialized', () => {
+      tool.initialized = true;
+      tool.loadConfig();
+
+      expect(tool.config).toEqual({});
+      expect(tool.package).toEqual({});
+    });
+
     it('loads package.json', () => {
       tool.loadConfig();
 
@@ -129,11 +138,29 @@ describe('Tool', () => {
       }).toThrowError('Cannot load plugins as configuration has not been loaded.');
     });
 
-    it('does nothing if no plugins found in config', () => {
+    it('doesnt load if no plugins found in config', () => {
       tool.config = { plugins: [] };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual([]);
+    });
+
+    it('doesnt load if initialized', () => {
+      tool.initialized = true;
+      tool.config = { plugins: ['foo'] };
+      tool.loadPlugins();
+
+      expect(tool.plugins).toEqual([]);
+    });
+
+    it('bootstraps plugins on load', () => {
+      const plugin = new Plugin();
+      const spy = jest.spyOn(plugin, 'bootstrap');
+
+      tool.config = { plugins: [plugin] };
+      tool.loadPlugins();
+
+      expect(spy).toHaveBeenCalledWith(tool);
     });
 
     // TODO test plugins
