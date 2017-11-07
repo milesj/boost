@@ -1,4 +1,4 @@
-# Boost v0.0.0
+# Boost
 [![Build Status](https://travis-ci.org/milesj/boost.svg?branch=master)](https://travis-ci.org/milesj/boost)
 
 Robust pipeline for creating build tools that separate logic into routines and tasks.

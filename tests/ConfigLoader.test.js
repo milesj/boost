@@ -414,7 +414,7 @@ describe('ConfigLoader', () => {
 
     it('parses .js files that return functions with options passed', () => {
       mfs({
-        'foo.js': 'module.exports = (opts) => { return { name: "foo", ...opts }; };',
+        'foo.js': 'module.exports = opts => Object.assign({ name: "foo" }, opts);',
       });
 
       expect(loader.parseFile('foo.js', { version: 1 })).toEqual({

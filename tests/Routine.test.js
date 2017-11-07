@@ -120,7 +120,8 @@ describe('Routine', () => {
 
   describe('executeCommand()', () => {
     it('runs a local command and captures output', async () => {
-      expect(await routine.executeCommand('yarn', ['-v'])).toMatch(/^\d\.\d\.\d$/);
+      expect((await routine.executeCommand('yarn', ['-v'])).stdout)
+        .toMatch(/^\d+\.\d+\.\d+$/);
     });
   });
 
