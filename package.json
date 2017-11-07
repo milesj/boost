@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@milesj/build-tool-config": "0.35.0",
+    "fs-extra": "^4.0.2",
     "mock-fs": "^4.4.2"
   },
   "babel": {

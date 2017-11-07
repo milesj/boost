@@ -29,7 +29,7 @@ export default class PluginLoader<T: Object> {
     const moduleName = formatPluginModuleName(appName, pluginName, name);
     let importedPlugin;
 
-    // Use `require` instead of `vm` so that we can rely on Node's index resolution algorithm`
+    // Use `require` instead of `vm` so that we can rely on Node's index resolution algorithm
     try {
       // eslint-disable-next-line
       importedPlugin = require(moduleName);
@@ -41,7 +41,7 @@ export default class PluginLoader<T: Object> {
     if (importedPlugin instanceof Plugin) {
       throw new TypeError(
         `A ${pluginName} class instance was exported from "${moduleName}". ` +
-        `${appName} requires a ${pluginName} class definition to be exported.`,
+        `${upperFirst(appName)} requires a ${pluginName} class definition to be exported.`,
       );
 
     } else if (typeof importedPlugin !== 'function') {
@@ -67,7 +67,7 @@ export default class PluginLoader<T: Object> {
    * If loading from an object, extract the plugin name and use the remaining object
    * as options for the `Plugin` instance.
    */
-  importPluginFromOptions(baseOptions?: Object = {}): Plugin<T> {
+  importPluginFromOptions(baseOptions: Object): Plugin<T> {
     const { pluginName } = this.options;
     const options = { ...baseOptions };
     const plugin = options[pluginName];
@@ -120,7 +120,7 @@ export default class PluginLoader<T: Object> {
    * Sort the plugins from highest to lowest priority.
    */
   sortPlugins(): this {
-    this.plugins.sort((a, b) => b.priority - a.priority);
+    this.plugins.sort((a, b) => a.priority - b.priority);
 
     return this;
   }

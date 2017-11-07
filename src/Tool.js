@@ -39,7 +39,7 @@ export default class Tool<T: Object> extends Emitter {
 
   renderer: Renderer;
 
-  constructor(options?: Object = {}) {
+  constructor(options: Object) {
     super();
 
     this.options = new Options(options, {

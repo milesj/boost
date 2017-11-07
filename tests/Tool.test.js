@@ -56,6 +56,20 @@ describe('Tool', () => {
     });
   });
 
+  describe('initialize()', () => {
+    it('loads config', () => {
+      expect(tool.config).toEqual({});
+      expect(tool.package).toEqual({});
+      expect(tool.initialized).toBe(false);
+
+      tool.initialize();
+
+      expect(tool.config).not.toEqual({});
+      expect(tool.package).not.toEqual({});
+      expect(tool.initialized).toBe(true);
+    });
+  });
+
   describe('invariant()', () => {
     it('doesnt log if debug is false', () => {
       tool.invariant(true, 'message', 'foo', 'bar');
@@ -79,20 +93,6 @@ describe('Tool', () => {
       expect(tool.debugs).toEqual([
         `${chalk.blue('[debug]')} message: ${chalk.red('bar')}`,
       ]);
-    });
-  });
-
-  describe('initialize()', () => {
-    it('loads config', () => {
-      expect(tool.config).toEqual({});
-      expect(tool.package).toEqual({});
-      expect(tool.initialized).toBe(false);
-
-      tool.initialize();
-
-      expect(tool.config).not.toEqual({});
-      expect(tool.package).not.toEqual({});
-      expect(tool.initialized).toBe(true);
     });
   });
 
@@ -162,8 +162,6 @@ describe('Tool', () => {
 
       expect(spy).toHaveBeenCalledWith(tool);
     });
-
-    // TODO test plugins
   });
 
   describe.skip('render()');

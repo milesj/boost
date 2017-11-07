@@ -42,11 +42,6 @@ export default class Emitter {
 
     // Handler passed to each listener
     function next(nextIndex: number, ...nextEventArguments: EventArguments) {
-      if (nextIndex < index || nextIndex > listeners.length) {
-        /* istanbul ignore next */
-        throw new Error('Invalid cascading event.');
-      }
-
       index = nextIndex;
       const listener = listeners[index];
 
