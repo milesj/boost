@@ -8,6 +8,7 @@ import upperFirst from 'lodash/upperFirst';
 import Plugin from './Plugin';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
+import requireModule from './helpers/requireModule';
 
 import type { ToolOptions } from './types';
 
@@ -29,10 +30,8 @@ export default class PluginLoader<T: Object> {
     const moduleName = formatPluginModuleName(appName, pluginName, name);
     let importedPlugin;
 
-    // Use `require` instead of `vm` so that we can rely on Node's index resolution algorithm
     try {
-      // eslint-disable-next-line
-      importedPlugin = require(moduleName);
+      importedPlugin = requireModule(moduleName);
     } catch (error) {
       throw new Error(`Missing ${pluginName} module "${moduleName}".`);
     }

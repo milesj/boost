@@ -7,13 +7,13 @@
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
-import vm from 'vm';
 import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
+import requireModule from './helpers/requireModule';
 import {
   MODULE_NAME_PATTERN,
   PLUGIN_NAME_PATTERN,
@@ -115,6 +115,8 @@ export default class ConfigLoader {
   loadPackageJSON(): PackageConfig {
     const filePath = path.join(this.options.root, 'package.json');
 
+    console.log(filePath);
+
     if (!fs.existsSync(filePath)) {
       throw new Error(
         'Local "package.json" could not be found. ' +
@@ -199,11 +201,7 @@ export default class ConfigLoader {
       value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
 
     } else if (ext === '.js') {
-      const module = {};
-
-      vm.runInNewContext(fs.readFileSync(filePath, 'utf8'), { module });
-
-      value = module.exports;
+      value = requireModule(filePath);
 
       if (typeof value === 'function') {
         value = value(options);
