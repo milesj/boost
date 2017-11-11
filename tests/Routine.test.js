@@ -5,6 +5,7 @@ import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
+import { MockRenderer } from './helpers';
 
 describe('Routine', () => {
   let routine;
@@ -13,6 +14,7 @@ describe('Routine', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
+      renderer: new MockRenderer(),
     });
     tool.initialized = true; // Avoid loaders
     tool.config = {

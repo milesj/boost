@@ -6,6 +6,8 @@
 
 import chalk from 'chalk';
 import figures from 'figures';
+import logUpdate from 'log-update';
+import Options, { bool, number } from 'optimal';
 import Task from './Task';
 import {
   STATUS_PENDING,
@@ -15,7 +17,29 @@ import {
   STATUS_FAILED,
 } from './constants';
 
+import type { TasksLoader } from './types';
+
+type RendererOptions = {
+  clearOutput: boolean,
+  refreshRate: number,
+};
+
 export default class Renderer {
+  instance: number = 0;
+
+  loader: ?TasksLoader = null;
+
+  options: RendererOptions;
+
+  constructor(options?: Object = {}) {
+    this.options = new Options(options, {
+      clearOutput: bool(),
+      refreshRate: number(100), // eslint-disable-line no-magic-numbers
+    }, {
+      name: 'Renderer',
+    });
+  }
+
   /**
    * Create an indentation based on the defined length.
    */
@@ -116,6 +140,50 @@ export default class Renderer {
         return chalk.red(figures.cross);
       default:
         return '';
+    }
+  }
+
+  /**
+   * Start the output process once setting the task loader.
+   */
+  start(loader: TasksLoader) {
+    if (this.instance) {
+      return;
+    } else if (!loader || typeof loader !== 'function') {
+      throw new TypeError('A tasks loader is required to render CLI output.');
+    }
+
+    this.loader = loader;
+
+    this.instance = setInterval(() => {
+      this.update();
+    }, this.options.refreshRate);
+  }
+
+  /**
+   * Stop and or clear the output process.
+   */
+  stop() {
+    // Turn off interval
+    clearInterval(this.instance);
+
+    // Render the final output
+    if (this.options.clearOutput) {
+      logUpdate.clear();
+    } else {
+      logUpdate.done();
+    }
+
+    // Dereference our loader
+    this.loader = null;
+  }
+
+  /**
+   * Update and flush the output if the loader is defined.
+   */
+  update() {
+    if (this.loader) {
+      logUpdate(this.render(this.loader()));
     }
   }
 }

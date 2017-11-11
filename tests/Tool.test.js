@@ -1,9 +1,8 @@
 import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
-import Renderer from '../src/Renderer';
 import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from '../src/constants';
-import { getFixturePath } from './helpers';
+import { getFixturePath, MockRenderer } from './helpers';
 
 describe('Tool', () => {
   let tool;
@@ -11,10 +10,22 @@ describe('Tool', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
+      renderer: new MockRenderer(),
       root: getFixturePath('app'),
     });
     tool.config = {};
     tool.package = {};
+  });
+
+  describe('constructor()', () => {
+    it('errors if `renderer` is not an instance of Renderer', () => {
+      expect(() => {
+        tool = new Tool({
+          appName: 'boost',
+          renderer: 123,
+        });
+      }).toThrowError('Invalid Tool option "renderer". Must be an instance of "Renderer".');
+    });
   });
 
   describe.skip('closeConsole()');
@@ -157,22 +168,6 @@ describe('Tool', () => {
   });
 
   describe.skip('render()');
-
-  describe('setRenderer()', () => {
-    it('errors if not an instance of Renderer', () => {
-      expect(() => {
-        tool.setRenderer(123);
-      }).toThrowError('Invalid renderer, must be an instance of `Renderer`.');
-    });
-
-    it('sets the renderer', () => {
-      const renderer = new Renderer();
-
-      tool.setRenderer(renderer);
-
-      expect(tool.renderer).toBe(renderer);
-    });
-  });
 
   describe('startDebugGroup()', () => {
     it('logs a message and appends a group name', () => {

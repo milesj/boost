@@ -25,7 +25,7 @@ export default class Pipeline<T: Object> extends Routine {
   }
 
   /**
-   * Load tasks to be used by the interface renderer.
+   * Load tasks to be used by the CLI renderer.
    */
   loadTasks = () => this.subroutines;
 
@@ -34,6 +34,7 @@ export default class Pipeline<T: Object> extends Routine {
    */
   run(initialValue: Result, context?: Object = {}): ResultPromise {
     this.context = context;
+    this.tool.openConsole(this.loadTasks);
 
     return this.serializeSubroutines(initialValue).finally(() => {
       this.tool.closeConsole();

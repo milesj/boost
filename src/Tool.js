@@ -6,7 +6,7 @@
 
 import chalk from 'chalk';
 import pluralize from 'pluralize';
-import Options, { string } from 'optimal';
+import Options, { instance, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Emitter from './Emitter';
 import Plugin from './Plugin';
@@ -14,7 +14,7 @@ import PluginLoader from './PluginLoader';
 import Renderer from './Renderer';
 import isEmptyObject from './helpers/isEmptyObject';
 
-import type { ToolConfig, ToolOptions, PackageConfig } from './types';
+import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export default class Tool<T: Object> extends Emitter {
   chalk: typeof chalk;
@@ -45,20 +45,22 @@ export default class Tool<T: Object> extends Emitter {
     this.options = new Options(options, {
       appName: string(),
       pluginName: string('plugin'),
+      renderer: instance(Renderer).nullable(),
       root: string(process.cwd()),
     }, {
       name: 'Tool',
     });
 
     this.chalk = chalk;
-    this.renderer = new Renderer();
+    this.renderer = this.options.renderer || new Renderer();
   }
 
   /**
    * Close the current CLI instance.
    */
   closeConsole(): this {
-    // TODO
+    this.renderer.stop();
+
     return this;
   }
 
@@ -117,6 +119,15 @@ export default class Tool<T: Object> extends Emitter {
   }
 
   /**
+   * Open a new CLI instance.
+   */
+  openConsole(loader: TasksLoader): this {
+    this.renderer.start(loader);
+
+    return this;
+  }
+
+  /**
    * Register plugins from the loaded configuration.
    *
    * Must be called after config has been loaded.
@@ -144,22 +155,10 @@ export default class Tool<T: Object> extends Emitter {
   }
 
   /**
-   * Trigger a render.
+   * Trigger an update in the console.
    */
   render(): this {
-    // TODO
-    return this;
-  }
-
-  /**
-   * Set the renderer that controls the CLI output.
-   */
-  setRenderer(renderer: Renderer): this {
-    if (renderer instanceof Renderer) {
-      this.renderer = renderer;
-    } else {
-      throw new TypeError('Invalid renderer, must be an instance of `Renderer`.');
-    }
+    this.renderer.update();
 
     return this;
   }

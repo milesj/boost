@@ -1,6 +1,7 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Tool from '../src/Tool';
+import { MockRenderer } from './helpers';
 
 describe('Pipeline', () => {
   let tool;
@@ -9,6 +10,7 @@ describe('Pipeline', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
+      renderer: new MockRenderer(),
     });
     tool.config = { foo: 'bar' };
     tool.initialized = true; // Avoid loaders

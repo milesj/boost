@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
+import Renderer from '../src/Renderer';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -45,4 +46,12 @@ export function createTempFileInRoot(file, data) {
   fs.writeFileSync(filePath, data);
 
   return () => fs.removeSync(filePath);
+}
+
+export class MockRenderer extends Renderer {
+  start() {}
+
+  stop() {}
+
+  update() {}
 }
