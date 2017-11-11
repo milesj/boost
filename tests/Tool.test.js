@@ -1,9 +1,9 @@
 import chalk from 'chalk';
-import mfs from 'mock-fs';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Renderer from '../src/Renderer';
 import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from '../src/constants';
+import { getFixturePath } from './helpers';
 
 describe('Tool', () => {
   let tool;
@@ -11,18 +11,10 @@ describe('Tool', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
+      root: getFixturePath('app'),
     });
     tool.config = {};
     tool.package = {};
-
-    mfs({
-      'config/boost.json': JSON.stringify({ foo: 'bar' }),
-      'package.json': JSON.stringify({ name: 'boost' }),
-    });
-  });
-
-  afterEach(() => {
-    mfs.restore();
   });
 
   describe.skip('closeConsole()');

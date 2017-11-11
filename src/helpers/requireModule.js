@@ -12,7 +12,7 @@ export default function requireModule(path: string): * {
 
   // Support Babel compiled files
   // eslint-disable-next-line no-underscore-dangle
-  if (value.__esModule) {
+  if (value && value.__esModule) {
     value = value.default;
   }
 

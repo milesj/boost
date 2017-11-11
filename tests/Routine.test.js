@@ -14,6 +14,7 @@ describe('Routine', () => {
     tool = new Tool({
       appName: 'boost',
     });
+    tool.initialized = true; // Avoid loaders
     tool.config = {
       ...DEFAULT_TOOL_CONFIG,
       baz: {

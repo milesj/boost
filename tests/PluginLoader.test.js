@@ -1,8 +1,6 @@
-import fs from 'fs-extra';
 import Plugin from '../src/Plugin';
 import PluginLoader from '../src/PluginLoader';
-
-const createdPlugins = new Set();
+import { getTestRoot, copyFixtureToMock } from './helpers';
 
 function createPlugin(name) {
   const plugin = new Plugin();
@@ -12,41 +10,22 @@ function createPlugin(name) {
   return plugin;
 }
 
-function createPluginPackage(fixture, plugin) {
-  fs.copySync(
-    `./tests/fixtures/${fixture}`,
-    `./node_modules/${plugin}`,
-    { overwrite: true },
-  );
-
-  fs.writeJsonSync(`./node_modules/${plugin}/package.json`, {
-    main: './index.js',
-    name: plugin,
-    version: '0.0.0',
-  });
-
-  createdPlugins.add(plugin);
-}
-
-function removePluginPackage(plugin) {
-  fs.removeSync(`./node_modules/${plugin}`);
-
-  createdPlugins.delete(plugin);
-}
-
 describe('PluginLoader', () => {
   let loader;
+  let fixtures = [];
 
   beforeEach(() => {
     loader = new PluginLoader({
       appName: 'boost',
       pluginName: 'plugin',
-      root: process.cwd(),
+      root: getTestRoot(),
     });
+
+    fixtures = [];
   });
 
   afterEach(() => {
-    createdPlugins.forEach(plugin => removePluginPackage(plugin));
+    fixtures.forEach(remove => remove());
   });
 
   describe('importPlugin()', () => {
@@ -57,7 +36,7 @@ describe('PluginLoader', () => {
     });
 
     it('errors if a non-function is exported', () => {
-      createPluginPackage('plugin-exported-nonfunc', 'boost-plugin-nonfunc');
+      fixtures.push(copyFixtureToMock('plugin-exported-nonfunc', 'boost-plugin-nonfunc'));
 
       expect(() => {
         loader.importPlugin('nonfunc');
@@ -65,7 +44,7 @@ describe('PluginLoader', () => {
     });
 
     it('errors if a non-plugin is exported', () => {
-      createPluginPackage('plugin-exported-func', 'boost-plugin-func');
+      fixtures.push(copyFixtureToMock('plugin-exported-func', 'boost-plugin-func'));
 
       expect(() => {
         loader.importPlugin('func');
@@ -73,7 +52,7 @@ describe('PluginLoader', () => {
     });
 
     it('errors if a plugin instance is exported', () => {
-      createPluginPackage('plugin-exported-instance', 'boost-plugin-instance');
+      fixtures.push(copyFixtureToMock('plugin-exported-instance', 'boost-plugin-instance'));
 
       expect(() => {
         loader.importPlugin('instance');
@@ -81,7 +60,7 @@ describe('PluginLoader', () => {
     });
 
     it('errors if a non-plugin instance is exported', () => {
-      createPluginPackage('plugin-exported-nonplugin-instance', 'boost-plugin-nonplugin');
+      fixtures.push(copyFixtureToMock('plugin-exported-nonplugin-instance', 'boost-plugin-nonplugin'));
 
       expect(() => {
         loader.importPlugin('nonplugin');
@@ -89,7 +68,7 @@ describe('PluginLoader', () => {
     });
 
     it('imports and instantiates a plugin', () => {
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-definition');
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-definition'));
 
       const plugin = loader.importPlugin('definition');
 
@@ -99,7 +78,7 @@ describe('PluginLoader', () => {
     });
 
     it('can customize plugin type name', () => {
-      createPluginPackage('plugin-exported-definition', 'boost-addon-definition');
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-addon-definition'));
 
       loader.options.pluginName = 'addon';
 
@@ -124,7 +103,7 @@ describe('PluginLoader', () => {
     });
 
     it('imports and instantiates a plugin with options', () => {
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-definition-with-opts');
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-definition-with-opts'));
 
       const plugin = loader.importPluginFromOptions({
         foo: 'bar',
@@ -155,9 +134,9 @@ describe('PluginLoader', () => {
     });
 
     it('supports string names', () => {
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-foo');
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-bar');
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-baz');
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-foo'));
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-bar'));
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-baz'));
 
       expect(loader.loadPlugins([
         'foo',
@@ -171,9 +150,9 @@ describe('PluginLoader', () => {
     });
 
     it('supports options objects', () => {
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-foo');
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-bar');
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-baz');
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-foo'));
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-bar'));
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-baz'));
 
       expect(loader.loadPlugins([
         { plugin: 'foo' },
@@ -187,8 +166,8 @@ describe('PluginLoader', () => {
     });
 
     it('supports all 3 at once', () => {
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-bar');
-      createPluginPackage('plugin-exported-definition', 'boost-plugin-baz');
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-bar'));
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'boost-plugin-baz'));
 
       expect(loader.loadPlugins([
         createPlugin('foo'),

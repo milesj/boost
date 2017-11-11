@@ -115,8 +115,6 @@ export default class ConfigLoader {
   loadPackageJSON(): PackageConfig {
     const filePath = path.join(this.options.root, 'package.json');
 
-    console.log(filePath);
-
     if (!fs.existsSync(filePath)) {
       throw new Error(
         'Local "package.json" could not be found. ' +
@@ -139,10 +137,12 @@ export default class ConfigLoader {
    */
   parseAndExtend(fileOrConfig: string | Object): Object {
     let config;
+    let baseDir = '';
 
     // Parse out the object if a file path
     if (typeof fileOrConfig === 'string') {
       config = this.parseFile(fileOrConfig);
+      baseDir = path.dirname(fileOrConfig);
     } else {
       config = fileOrConfig;
     }
@@ -161,7 +161,7 @@ export default class ConfigLoader {
 
     // Resolve extend paths and inherit their config
     const nextConfig = {};
-    const resolvedPaths = this.resolveExtendPaths(extendPaths);
+    const resolvedPaths = this.resolveExtendPaths(extendPaths, baseDir);
 
     resolvedPaths.forEach((extendPath) => {
       if (this.parsedFiles[extendPath]) {
@@ -197,6 +197,10 @@ export default class ConfigLoader {
     const ext = path.extname(filePath);
     let value;
 
+    if (!path.isAbsolute(filePath)) {
+      throw new Error('An absolute file path is required.');
+    }
+
     if (ext === '.json' || ext === '.json5') {
       value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
 
@@ -229,7 +233,7 @@ export default class ConfigLoader {
    *  - Strings that match a node module name should resolve to a config file relative to the CWD.
    *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
-  resolveExtendPaths(extendPaths: string | string[]): string[] {
+  resolveExtendPaths(extendPaths: string | string[], baseDir?: string = ''): string[] {
     return (Array.isArray(extendPaths) ? extendPaths : [extendPaths]).map((extendPath) => {
       if (typeof extendPath !== 'string') {
         throw new TypeError(
@@ -243,9 +247,9 @@ export default class ConfigLoader {
       if (path.isAbsolute(extendPath)) {
         return path.normalize(extendPath);
 
-      // Relative path, resolve with cwd
+      // Relative path, resolve with parent folder or cwd
       } else if (extendPath[0] === '.') {
-        return path.resolve(extendPath);
+        return path.resolve(baseDir || this.options.root, extendPath);
 
       // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
@@ -275,6 +279,6 @@ export default class ConfigLoader {
   ): string {
     const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
 
-    return path.resolve('node_modules', moduleName, `config/${fileName}`);
+    return path.resolve(this.options.root, 'node_modules', `${moduleName}/config/${fileName}`);
   }
 }
