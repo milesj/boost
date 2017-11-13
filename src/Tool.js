@@ -27,7 +27,11 @@ export default class Tool<T: Object> extends Emitter {
 
   debugGroups: string[] = [];
 
+  errors: string[] = [];
+
   initialized: boolean = false;
+
+  logs: string[] = [];
 
   options: ToolOptions;
 
@@ -114,6 +118,24 @@ export default class Tool<T: Object> extends Emitter {
     this.configLoader = new ConfigLoader(this.options);
     this.package = this.configLoader.loadPackageJSON();
     this.config = this.configLoader.loadConfig();
+
+    return this;
+  }
+
+  /**
+   * Add a message to the output log.
+   */
+  log(message: string): this {
+    this.logs.push(message);
+
+    return this;
+  }
+
+  /**
+   * Add a message to the logError log.
+   */
+  logError(message: string): this {
+    this.errors.push(message);
 
     return this;
   }

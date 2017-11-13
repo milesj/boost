@@ -169,6 +169,22 @@ describe('Tool', () => {
 
   describe.skip('render()');
 
+  describe('log()', () => {
+    it('adds to output log', () => {
+      tool.log('foo').log('bar');
+
+      expect(tool.logs).toEqual(['foo', 'bar']);
+    });
+  });
+
+  describe('logError()', () => {
+    it('adds to error log', () => {
+      tool.logError('foo').logError('bar');
+
+      expect(tool.errors).toEqual(['foo', 'bar']);
+    });
+  });
+
   describe('startDebugGroup()', () => {
     it('logs a message and appends a group name', () => {
       tool.config.debug = true;
