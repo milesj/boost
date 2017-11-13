@@ -56,7 +56,9 @@ export default class Tool<T: Object> extends Emitter {
     });
 
     this.chalk = chalk;
+
     this.renderer = this.options.renderer || new Renderer();
+    this.renderer.tool = this;
   }
 
   /**

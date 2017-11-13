@@ -9,6 +9,7 @@ import figures from 'figures';
 import logUpdate from 'log-update';
 import Options, { bool, number } from 'optimal';
 import Task from './Task';
+import Tool from './Tool';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -27,9 +28,13 @@ type RendererOptions = {
 export default class Renderer {
   instance: number = 0;
 
+  hasFailed: boolean = false;
+
   loader: ?TasksLoader = null;
 
   options: RendererOptions;
+
+  tool: Tool<*>;
 
   constructor(options?: Object = {}) {
     this.options = new Options(options, {
@@ -75,6 +80,7 @@ export default class Renderer {
 
     } else if (task.hasFailed()) {
       message += ` ${chalk.red('[failed]')}`;
+      this.hasFailed = true;
 
     } else if (suffix) {
       message += ` ${suffix}`;
@@ -98,6 +104,7 @@ export default class Renderer {
 
         } else if (subTask.hasFailed() && !failedTask) {
           failedTask = subTask;
+          this.hasFailed = true;
 
         } else if (subTask.hasPassed()) {
           passed += 1;
@@ -171,6 +178,8 @@ export default class Renderer {
     if (this.options.clearOutput) {
       logUpdate.clear();
     } else {
+      this.update(true);
+
       logUpdate.done();
     }
 
@@ -181,9 +190,27 @@ export default class Renderer {
   /**
    * Update and flush the output if the loader is defined.
    */
-  update() {
-    if (this.loader) {
-      logUpdate(this.render(this.loader()));
+  update(stop: boolean = false) {
+    if (!this.loader) {
+      return;
     }
+
+    let output = this.render(this.loader());
+
+    // Show additional output for the final render
+    if (stop) {
+      output += '\n';
+      output += this.tool.debugs.join('\n');
+
+      if (this.hasFailed) {
+        output += '\n';
+        output += this.tool.errors.join('\n');
+      } else {
+        output += '\n';
+        output += this.tool.logs.join('\n');
+      }
+    }
+
+    logUpdate(output);
   }
 }
