@@ -199,14 +199,14 @@ export default class Renderer {
 
     // Show additional output for the final render
     if (stop) {
-      output += '\n';
+      output += '\n\n';
       output += this.tool.debugs.join('\n');
 
       if (this.hasFailed) {
-        output += '\n';
+        output += '\n\n';
         output += this.tool.errors.join('\n');
       } else {
-        output += '\n';
+        output += '\n\n';
         output += this.tool.logs.join('\n');
       }
     }
