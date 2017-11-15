@@ -5,6 +5,7 @@
  */
 
 import Promise from 'bluebird';
+import type Renderer from './Renderer';
 import type Task from './Task';
 
 export type ToolConfig = {
@@ -17,6 +18,7 @@ export type ToolConfig = {
 export type ToolOptions = {
   appName: string,
   pluginName: string,
+  renderer: Renderer,
   root: string,
 };
 

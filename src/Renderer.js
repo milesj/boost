@@ -190,7 +190,7 @@ export default class Renderer {
   /**
    * Update and flush the output if the loader is defined.
    */
-  update(stop: boolean = false) {
+  update(stop?: boolean = false) {
     if (!this.loader) {
       return;
     }

@@ -1,0 +1,167 @@
+declare module 'boost' {
+  declare export type PackageConfig = {
+    name: string,
+    version: string,
+  };
+
+  declare export type Result = *;
+
+  declare export type ResultPromise = Promise<Result>;
+
+  declare export type ResultAccumulator<T> = (value: Result, item: T) => ResultPromise;
+
+  declare export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
+
+  declare export type TaskCallback = (value: Result, context?: Object) => Result | ResultPromise;
+
+  declare export type TasksLoader = () => Task<*>[];
+
+  declare export type ToolConfig = {
+    debug?: boolean,
+    dry?: boolean,
+    extends?: string | string[],
+    [key: string]: *,
+  };
+
+  declare export type ToolOptions = {
+    appName: string,
+    pluginName: string,
+    renderer: Renderer,
+    root: string,
+  };
+
+  declare class ConfigLoader {
+    config: ToolConfig;
+    options: ToolOptions;
+    package: PackageConfig;
+    parsedFiles: { [key: string]: boolean };
+
+    constructor(options: ToolOptions): this;
+    loadConfig(): ToolConfig;
+    loadPackageJSON(): PackageConfig;
+    parseAndExtend(fileOrConfig: string | Object): Object;
+    parseFile(filePath: string, options?: Object): Object;
+    resolveExtendPaths(extendPaths: string | string[], baseDir?: string): string[];
+    resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
+  }
+
+  declare class PluginLoader {
+    options: ToolOptions;
+    plugins: Plugin<*>[];
+
+    constructor(options: ToolOptions): this;
+    importPlugin(name: string, options?: Object): Plugin<*>;
+    importPluginFromOptions(baseOptions: Object): Plugin<*>;
+    loadPlugins(plugins: (string | Plugin<*>)[]): Plugin<*>[];
+    sortPlugins(): this;
+  }
+
+  declare export class Plugin<T: Object> {
+    moduleName: string;
+    name: string;
+    options: T;
+    priority: number;
+    tool: ?Tool;
+
+    constructor(options?: T): this;
+    bootstrap(tool: Tool): void;
+  }
+
+  declare export type RendererOptions = {
+    clearOutput: boolean,
+    refreshRate: number,
+  };
+
+  declare export class Renderer {
+    instance: number;
+    hasFailed: boolean;
+    loader: ?TasksLoader;
+    options: RendererOptions;
+    tool: Tool;
+
+    constructor(options?: Object): this;
+    indent(length: number): string;
+    render(tasks: Task<*>[]): string;
+    renderTask(task: Task<*>, level?: number, suffix?: string): string[];
+    renderStatus(task: Task<*>): string;
+    start(loader: TasksLoader): void;
+    stop(): void;
+    update(stop?: boolean): false;
+  }
+
+  declare export class Tool {
+    config: ToolConfig;
+    configLoader: ConfigLoader;
+    debugs: string[];
+    debugGroups: string[];
+    errors: string[];
+    initialized: boolean;
+    logs: string[];
+    options: ToolOptions;
+    package: PackageConfig;
+    pluginLoader: PluginLoader;
+    plugins: Plugin<*>[];
+    renderer: Renderer;
+
+    constructor(options: Object): this;
+    closeConsole(): this;
+    debug(message: string): this;
+    initialize(): this;
+    invariant(condition: boolean, message: string, pass: string, fail: string): this;
+    loadConfig(): this;
+    log(message: string): this;
+    logError(message: string): this;
+    loadPlugins(): this;
+    openConsole(loader: TasksLoader): this;
+    render(): this;
+    startDebugGroup(group: string): this;
+    stopDebugGroup(): this;
+  }
+
+  declare export class Task<T: Object> {
+    action: ?TaskCallback;
+    config: T;
+    context: Object;
+    frame: number;
+    title: string;
+    status: Status;
+    subroutines: Task<*>[];
+    subtasks: Task<*>[];
+
+    constructor(title: string, action?: ?TaskCallback, defaultConfig?: T): this;
+    hasFailed(): boolean;
+    hasPassed(): boolean;
+    isPending(): boolean;
+    isRunning(): boolean;
+    isSkipped(): boolean;
+    run(value: Result, context?: Object): ResultPromise;
+    skip(condition?: boolean): this;
+    wrap(value: *): ResultPromise;
+  }
+
+  declare export class Routine<T: Object> extends Task<T> {
+    key: string;
+    tool: Tool;
+
+    constructor(key: string, title: string, defaultConfig?: T): this;
+    bootstrap(): void;
+    configure(parent: Routine<*>): this;
+    execute(value: Result, context?: Object): ResultPromise;
+    executeCommand(command: string, args: string[], options?: Object): ResultPromise;
+    executeTask(value: Result, task: Task<*>): ResultPromise;
+    parallelizeSubroutines(value: Result): ResultPromise;
+    parallelizeTasks(value: Result): ResultPromise;
+    pipe(...routines: Routine<*>[]): this;
+    serialize<I>(initialValue: Result, items: I[], accumulator: ResultAccumulator<I>): ResultPromise;
+    serializeSubroutines(value: Result): ResultPromise;
+    serializeTasks(value: Result): ResultPromise;
+    task(title: string, action: TaskCallback, config?: Object): this;
+  }
+
+  declare export class Pipeline extends Routine<ToolConfig> {
+    tool: Tool;
+
+    constructor(tool: Tool): this;
+    loadTasks(): Routine<*>[];
+  }
+}
