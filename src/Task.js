@@ -14,12 +14,12 @@ import {
   STATUS_FAILED,
 } from './constants';
 
-import type { Config, Result, ResultPromise, Status, TaskCallback } from './types';
+import type { Result, ResultPromise, Status, TaskCallback } from './types';
 
-export default class Task {
+export default class Task<T: Object> {
   action: ?TaskCallback = null;
 
-  config: Config = {};
+  config: T;
 
   context: Object = {};
 
@@ -29,11 +29,11 @@ export default class Task {
 
   status: Status = STATUS_PENDING;
 
-  subroutines: Task[] = [];
+  subroutines: Task<*>[] = [];
 
-  subtasks: Task[] = [];
+  subtasks: Task<*>[] = [];
 
-  constructor(title: string, action?: ?TaskCallback = null, defaultConfig?: Config = {}) {
+  constructor(title: string, action?: ?TaskCallback = null, defaultConfig?: T) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }

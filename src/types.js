@@ -7,8 +7,6 @@
 import Promise from 'bluebird';
 import type Task from './Task';
 
-export type Config = Object;
-
 export type ToolConfig = {
   debug?: boolean,
   dry?: boolean,
@@ -38,7 +36,7 @@ export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
 export type TaskCallback = (value: Result, context?: Object) => Result | ResultPromise;
 
-export type TasksLoader = () => Task[];
+export type TasksLoader = () => Task<*>[];
 
 export type EventArguments = *[];
 

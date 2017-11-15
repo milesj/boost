@@ -7,12 +7,12 @@
 import Routine from './Routine';
 import Tool from './Tool';
 
-import type { Result, ResultPromise } from './types';
+import type { Result, ResultPromise, ToolConfig } from './types';
 
-export default class Pipeline<T: Object> extends Routine {
-  tool: Tool<T>;
+export default class Pipeline extends Routine<ToolConfig> {
+  tool: Tool;
 
-  constructor(tool: Tool<T>) {
+  constructor(tool: Tool) {
     super('root', 'Pipeline', tool ? tool.config : {});
 
     if (tool instanceof Tool) {

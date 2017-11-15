@@ -13,19 +13,18 @@ import isObject from './helpers/isObject';
 import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type {
-  Config,
   Result,
   ResultPromise,
   ResultAccumulator,
   TaskCallback,
 } from './types';
 
-export default class Routine extends Task {
+export default class Routine<T: Object> extends Task<T> {
   key: string = '';
 
-  tool: Tool<*>;
+  tool: Tool;
 
-  constructor(key: string, title: string, defaultConfig?: Config = {}) {
+  constructor(key: string, title: string, defaultConfig?: T) {
     super(title, null, defaultConfig);
 
     if (!key || typeof key !== 'string') {
@@ -52,7 +51,7 @@ export default class Routine extends Task {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine): this {
+  configure(parent: Routine<*>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -89,7 +88,7 @@ export default class Routine extends Task {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: Result, task: Task): ResultPromise => (
+  executeTask = (value: Result, task: Task<*>): ResultPromise => (
     this.wrap(task.run(value, this.context)).finally(() => {
       this.tool.render();
     })
@@ -116,7 +115,7 @@ export default class Routine extends Task {
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(...routines: Routine[]): this {
+  pipe(...routines: Routine<*>[]): this {
     routines.forEach((routine) => {
       if (routine instanceof Routine) {
         this.subroutines.push(routine.configure(this));
@@ -146,12 +145,12 @@ export default class Routine extends Task {
    * task being passed to the next promise in the chain. Utilize the
    * `accumulator` function to execute the list of processes.
    */
-  serialize<T>(
+  serialize<I>(
     initialValue: Result,
-    items: T[],
-    accumulator: ResultAccumulator<T>,
+    items: I[],
+    accumulator: ResultAccumulator<I>,
   ): ResultPromise {
-    return items.reduce((promise: ResultPromise, item: T) => (
+    return items.reduce((promise: ResultPromise, item: I) => (
       promise.then(value => accumulator(value, item))
     ), Promise.resolve(initialValue));
   }
@@ -173,7 +172,7 @@ export default class Routine extends Task {
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskCallback, config?: Config = {}): this {
+  task(title: string, action: TaskCallback, config?: Object = {}): this {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

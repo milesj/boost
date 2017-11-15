@@ -34,7 +34,7 @@ export default class Renderer {
 
   options: RendererOptions;
 
-  tool: Tool<*>;
+  tool: Tool;
 
   constructor(options?: Object = {}) {
     this.options = new Options(options, {
@@ -55,7 +55,7 @@ export default class Renderer {
   /**
    * Render the output by looping over all tasks in the tree.
    */
-  render(tasks: Task[]): string {
+  render(tasks: Task<*>[]): string {
     const output = [];
 
     tasks.forEach((task) => {
@@ -69,7 +69,7 @@ export default class Renderer {
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: Task, level?: number = 0, suffix?: string = ''): string[] {
+  renderTask(task: Task<*>, level?: number = 0, suffix?: string = ''): string[] {
     const output = [];
 
     // Generate the message row
@@ -133,7 +133,7 @@ export default class Renderer {
   /**
    * Render a status symbol for a task.
    */
-  renderStatus(task: Task): string {
+  renderStatus(task: Task<*>): string {
     switch (task.status) {
       case STATUS_PENDING:
         return chalk.gray(figures.bullet);

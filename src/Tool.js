@@ -16,7 +16,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 
 import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool<T: Object> extends Emitter {
+export default class Tool extends Emitter {
   chalk: typeof chalk;
 
   config: ToolConfig;
@@ -37,9 +37,9 @@ export default class Tool<T: Object> extends Emitter {
 
   package: PackageConfig;
 
-  pluginLoader: PluginLoader<T>;
+  pluginLoader: PluginLoader;
 
-  plugins: Plugin<T>[] = [];
+  plugins: Plugin<*>[] = [];
 
   renderer: Renderer;
 
@@ -143,15 +143,6 @@ export default class Tool<T: Object> extends Emitter {
   }
 
   /**
-   * Open a new CLI instance.
-   */
-  openConsole(loader: TasksLoader): this {
-    this.renderer.start(loader);
-
-    return this;
-  }
-
-  /**
    * Register plugins from the loaded configuration.
    *
    * Must be called after config has been loaded.
@@ -174,6 +165,15 @@ export default class Tool<T: Object> extends Emitter {
     this.plugins.forEach((plugin) => {
       plugin.bootstrap(this);
     });
+
+    return this;
+  }
+
+  /**
+   * Open a new CLI instance.
+   */
+  openConsole(loader: TasksLoader): this {
+    this.renderer.start(loader);
 
     return this;
   }
