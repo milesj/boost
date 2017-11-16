@@ -59,6 +59,23 @@ describe('Tool', () => {
     });
   });
 
+  describe('getPlugin()', () => {
+    it('errors if not found', () => {
+      expect(() => {
+        tool.getPlugin('foo');
+      }).toThrowError('Failed to find plugin "foo". Have you installed it?');
+    });
+
+    it('returns plugin by name', () => {
+      const plugin = new Plugin();
+      plugin.name = 'foo';
+
+      tool.plugins.push(plugin);
+
+      expect(tool.getPlugin('foo')).toBe(plugin);
+    });
+  });
+
   describe('initialize()', () => {
     it('loads config', () => {
       expect(tool.config).toEqual({});

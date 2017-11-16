@@ -84,6 +84,21 @@ export default class Tool extends Emitter {
   }
 
   /**
+   * Get a plugin by name.
+   */
+  getPlugin(name: string): Plugin<*> {
+    const plugin = this.plugins.find(p => p.name === name);
+
+    if (!plugin) {
+      throw new Error(
+        `Failed to find ${this.options.pluginName} "${name}". Have you installed it?`,
+      );
+    }
+
+    return plugin;
+  }
+
+  /**
    * Initialize the tool by loading config and plugins.
    */
   initialize(): this {
