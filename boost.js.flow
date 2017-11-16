@@ -106,6 +106,7 @@ declare module 'boost' {
     constructor(options: Object): this;
     closeConsole(): this;
     debug(message: string): this;
+    getPlugin(name: string): Plugin<*>;
     initialize(): this;
     invariant(condition: boolean, message: string, pass: string, fail: string): this;
     loadConfig(): this;
