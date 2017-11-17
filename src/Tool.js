@@ -16,7 +16,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 
 import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool extends Emitter {
+export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   chalk: typeof chalk;
 
   config: ToolConfig;
@@ -37,11 +37,11 @@ export default class Tool extends Emitter {
 
   package: PackageConfig;
 
-  pluginLoader: PluginLoader;
+  pluginLoader: PluginLoader<TP>;
 
-  plugins: Plugin<*>[] = [];
+  plugins: TP[] = [];
 
-  renderer: Renderer;
+  renderer: TR;
 
   constructor(options: Object) {
     super();
@@ -57,6 +57,7 @@ export default class Tool extends Emitter {
 
     this.chalk = chalk;
 
+    // $FlowIgnore
     this.renderer = this.options.renderer || new Renderer();
     this.renderer.tool = this;
   }
@@ -86,7 +87,7 @@ export default class Tool extends Emitter {
   /**
    * Get a plugin by name.
    */
-  getPlugin(name: string): Plugin<*> {
+  getPlugin(name: string): TP {
     const plugin = this.plugins.find(p => p.name === name);
 
     if (!plugin) {

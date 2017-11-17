@@ -22,7 +22,7 @@ import type {
 export default class Routine<T: Object> extends Task<T> {
   key: string = '';
 
-  tool: Tool;
+  tool: Tool<*, *>;
 
   constructor(key: string, title: string, defaultConfig?: T) {
     super(title, null, defaultConfig);
@@ -172,13 +172,15 @@ export default class Routine<T: Object> extends Task<T> {
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskCallback, config?: Object = {}): this {
+  task<C: Object>(title: string, action: TaskCallback, config?: C): Task<C> {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }
 
-    this.subtasks.push(new Task(title, action.bind(this), config));
+    const task = new Task(title, action.bind(this), config);
 
-    return this;
+    this.subtasks.push(task);
+
+    return task;
   }
 }

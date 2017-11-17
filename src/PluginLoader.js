@@ -12,10 +12,10 @@ import requireModule from './helpers/requireModule';
 
 import type { ToolOptions } from './types';
 
-export default class PluginLoader {
+export default class PluginLoader<TP: Plugin<*>> {
   options: ToolOptions;
 
-  plugins: Plugin<*>[] = [];
+  plugins: TP[] = [];
 
   constructor(options: ToolOptions) {
     this.options = options;
@@ -25,7 +25,7 @@ export default class PluginLoader {
    * Import a plugin class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importPlugin(name: string, options?: Object = {}): Plugin<*> {
+  importPlugin(name: string, options?: Object = {}): TP {
     const { appName, pluginName } = this.options;
     const moduleName = formatPluginModuleName(appName, pluginName, name);
     let importedPlugin;
@@ -66,7 +66,7 @@ export default class PluginLoader {
    * If loading from an object, extract the plugin name and use the remaining object
    * as options for the `Plugin` instance.
    */
-  importPluginFromOptions(baseOptions: Object): Plugin<*> {
+  importPluginFromOptions(baseOptions: Object): TP {
     const { pluginName } = this.options;
     const options = { ...baseOptions };
     const plugin = options[pluginName];
@@ -87,7 +87,7 @@ export default class PluginLoader {
    * If a plugin instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadPlugins(plugins: (string | Plugin<*>)[]): Plugin<*>[] {
+  loadPlugins(plugins: (string | TP)[]): TP[] {
     const { pluginName } = this.options;
 
     if (!plugins) {

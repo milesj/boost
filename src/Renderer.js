@@ -34,7 +34,7 @@ export default class Renderer {
 
   options: RendererOptions;
 
-  tool: Tool;
+  tool: Tool<*, *>;
 
   constructor(options?: Object = {}) {
     this.options = new Options(options, {

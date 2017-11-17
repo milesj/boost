@@ -7,12 +7,14 @@
 import Routine from './Routine';
 import Tool from './Tool';
 
+import type Plugin from './Plugin';
+import type Renderer from './Renderer';
 import type { Result, ResultPromise, ToolConfig } from './types';
 
-export default class Pipeline extends Routine<ToolConfig> {
-  tool: Tool;
+export default class Pipeline<TP: Plugin<*>, TR: Renderer> extends Routine<ToolConfig> {
+  tool: Tool<TP, TR>;
 
-  constructor(tool: Tool) {
+  constructor(tool: Tool<TP, TR>) {
     super('root', 'Pipeline', tool ? tool.config : {});
 
     if (tool instanceof Tool) {

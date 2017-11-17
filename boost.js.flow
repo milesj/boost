@@ -45,14 +45,14 @@ declare module 'boost' {
     resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
   }
 
-  declare class PluginLoader {
+  declare class PluginLoader<TP: Plugin<*>> {
     options: ToolOptions;
-    plugins: Plugin<*>[];
+    plugins: TP[];
 
     constructor(options: ToolOptions): this;
-    importPlugin(name: string, options?: Object): Plugin<*>;
-    importPluginFromOptions(baseOptions: Object): Plugin<*>;
-    loadPlugins(plugins: (string | Plugin<*>)[]): Plugin<*>[];
+    importPlugin(name: string, options?: Object): TP;
+    importPluginFromOptions(baseOptions: Object): TP;
+    loadPlugins(plugins: (string | TP)[]): TP[];
     sortPlugins(): this;
   }
 
@@ -61,10 +61,10 @@ declare module 'boost' {
     name: string;
     options: T;
     priority: number;
-    tool: ?Tool;
+    tool: ?Tool<*, *>;
 
     constructor(options?: T): this;
-    bootstrap(tool: Tool): void;
+    bootstrap(tool: Tool<*, *>): void;
   }
 
   declare export type RendererOptions = {
@@ -77,7 +77,7 @@ declare module 'boost' {
     hasFailed: boolean;
     loader: ?TasksLoader;
     options: RendererOptions;
-    tool: Tool;
+    tool: Tool<*, *>;
 
     constructor(options?: Object): this;
     indent(length: number): string;
@@ -89,7 +89,7 @@ declare module 'boost' {
     update(stop?: boolean): false;
   }
 
-  declare export class Tool {
+  declare export class Tool<TP: Plugin<*>, TR: Renderer> {
     config: ToolConfig;
     configLoader: ConfigLoader;
     debugs: string[];
@@ -99,14 +99,14 @@ declare module 'boost' {
     logs: string[];
     options: ToolOptions;
     package: PackageConfig;
-    pluginLoader: PluginLoader;
-    plugins: Plugin<*>[];
-    renderer: Renderer;
+    pluginLoader: PluginLoader<TP>;
+    plugins: TP[];
+    renderer: TR;
 
     constructor(options: Object): this;
     closeConsole(): this;
     debug(message: string): this;
-    getPlugin(name: string): Plugin<*>;
+    getPlugin(name: string): TP;
     initialize(): this;
     invariant(condition: boolean, message: string, pass: string, fail: string): this;
     loadConfig(): this;
@@ -142,7 +142,7 @@ declare module 'boost' {
 
   declare export class Routine<T: Object> extends Task<T> {
     key: string;
-    tool: Tool;
+    tool: Tool<*, *>;
 
     constructor(key: string, title: string, defaultConfig?: T): this;
     bootstrap(): void;
@@ -156,13 +156,13 @@ declare module 'boost' {
     serialize<I>(initialValue: Result, items: I[], accumulator: ResultAccumulator<I>): ResultPromise;
     serializeSubroutines(value: Result): ResultPromise;
     serializeTasks(value: Result): ResultPromise;
-    task(title: string, action: TaskCallback, config?: Object): this;
+    task<C>(title: string, action: TaskCallback, config?: C): Task<C>;
   }
 
-  declare export class Pipeline extends Routine<ToolConfig> {
-    tool: Tool;
+  declare export class Pipeline<TP: Plugin<*>, TR: Renderer> extends Routine<ToolConfig> {
+    tool: Tool<TP, TR>;
 
-    constructor(tool: Tool): this;
+    constructor(tool: Tool<TP, TR>): this;
     loadTasks(): Routine<*>[];
   }
 }
