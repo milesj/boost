@@ -48,10 +48,9 @@ describe('Routine', () => {
 
       this.tool = tool;
 
-      this
-        .task('foo', this.foo)
-        .task('bar', this.bar)
-        .task('baz', this.baz);
+      this.task('foo', this.foo);
+      this.task('bar', this.bar);
+      this.task('baz', this.baz);
     }
 
     execute(value, context) {
@@ -701,6 +700,12 @@ describe('Routine', () => {
       routine.task('foo', value => value, { foo: 'bar' });
 
       expect(routine.subtasks[0].config).toEqual({ foo: 'bar' });
+    });
+
+    it('returns a Task instance', () => {
+      const task = routine.task('foo', value => value, { foo: 'bar' });
+
+      expect(task).toBeInstanceOf(Task);
     });
   });
 });
