@@ -179,6 +179,8 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
 
     // Bootstrap each plugin with the tool
     this.plugins.forEach((plugin) => {
+      // eslint-disable-next-line no-param-reassign
+      plugin.tool = this;
       plugin.bootstrap(this);
     });
 

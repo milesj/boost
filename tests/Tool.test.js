@@ -182,6 +182,19 @@ describe('Tool', () => {
 
       expect(spy).toHaveBeenCalledWith(tool);
     });
+
+    it('bootstraps plugins with tool if bootstrap() is overridden', () => {
+      class TestPlugin extends Plugin {
+        bootstrap() {}
+      }
+
+      const plugin = new TestPlugin();
+
+      tool.config = { plugins: [plugin] };
+      tool.loadPlugins();
+
+      expect(plugin.tool).toBe(tool);
+    });
   });
 
   describe.skip('render()');
