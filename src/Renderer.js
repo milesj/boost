@@ -195,19 +195,24 @@ export default class Renderer {
       return;
     }
 
+    const { debugs, errors, logs } = this.tool;
     let output = this.render(this.loader());
 
     // Show additional output for the final render
     if (stop) {
-      output += '\n\n';
-      output += this.tool.debugs.join('\n');
+      if (debugs.length > 0) {
+        output += '\n\n';
+        output += debugs.join('\n');
+      }
 
       if (this.hasFailed) {
+        if (errors.length > 0) {
+          output += '\n\n';
+          output += errors.join('\n');
+        }
+      } else if (logs.length > 0) {
         output += '\n\n';
-        output += this.tool.errors.join('\n');
-      } else {
-        output += '\n\n';
-        output += this.tool.logs.join('\n');
+        output += logs.join('\n');
       }
     }
 
