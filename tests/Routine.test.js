@@ -426,6 +426,16 @@ describe('Routine', () => {
       expect(routine.run(123)).toBeInstanceOf(Promise);
     });
 
+    it('errors if an exit occurs', async () => {
+      routine.exit = true;
+
+      try {
+        await routine.run(123);
+      } catch (error) {
+        expect(error).toEqual(new Error('Process has been interrupted.'));
+      }
+    });
+
     it('passes the value down the promise', async () => {
       expect(await routine.run(123)).toBe(123);
     });

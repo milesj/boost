@@ -20,6 +20,8 @@ import type {
 } from './types';
 
 export default class Routine<T: Object> extends Task<T> {
+  exit: boolean = false;
+
   key: string = '';
 
   tool: Tool<*, *>;
@@ -54,6 +56,11 @@ export default class Routine<T: Object> extends Task<T> {
   configure(parent: Routine<*>): this {
     this.context = parent.context;
     this.tool = parent.tool;
+
+    // Monitor process
+    this.tool.on('exit', () => {
+      this.exit = true;
+    });
 
     // Inherit config from parent
     const config = parent.config[this.key];
@@ -132,6 +139,10 @@ export default class Routine<T: Object> extends Task<T> {
    * Trigger processes before and after execution.
    */
   run(value: Result, context?: Object = {}): ResultPromise {
+    if (this.exit) {
+      throw new Error('Process has been interrupted.');
+    }
+
     this.tool.startDebugGroup(this.key);
 
     return super.run(value, context).finally(() => {

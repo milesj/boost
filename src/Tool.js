@@ -16,6 +16,8 @@ import isEmptyObject from './helpers/isEmptyObject';
 
 import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
 
+const INTERRUPT_CODE: number = 130;
+
 export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   chalk: typeof chalk;
 
@@ -60,6 +62,12 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
     // $FlowIgnore
     this.renderer = this.options.renderer || new Renderer();
     this.renderer.tool = this;
+
+    process.on('SIGINT', () => {
+      this.emit('exit');
+
+      process.exitCode = INTERRUPT_CODE;
+    });
   }
 
   /**
