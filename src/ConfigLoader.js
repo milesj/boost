@@ -10,16 +10,12 @@ import path from 'path';
 import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
+import Config, { array, bool, string, union } from 'optimal';
 import formatPluginModuleName from './helpers/formatPluginModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import {
-  MODULE_NAME_PATTERN,
-  PLUGIN_NAME_PATTERN,
-  DEFAULT_TOOL_CONFIG,
-  DEFAULT_PACKAGE_CONFIG,
-} from './constants';
+import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
@@ -100,10 +96,17 @@ export default class ConfigLoader {
     }
 
     // Parse and extend configuration
-    this.config = {
-      ...DEFAULT_TOOL_CONFIG,
-      ...this.parseAndExtend(config),
-    };
+    this.config = new Config(this.parseAndExtend(config), {
+      debug: bool(),
+      extends: union([
+        string(),
+        array(string()),
+      ], []),
+      silent: bool(),
+    }, {
+      name: 'ConfigLoader',
+      unknown: true,
+    });
 
     return this.config;
   }
@@ -122,10 +125,13 @@ export default class ConfigLoader {
       );
     }
 
-    this.package = {
-      ...DEFAULT_PACKAGE_CONFIG,
-      ...this.parseFile(filePath),
-    };
+    this.package = new Config(this.parseFile(filePath), {
+      name: string(),
+      version: string(),
+    }, {
+      name: 'ConfigLoader',
+      unknown: true,
+    });
 
     return this.package;
   }

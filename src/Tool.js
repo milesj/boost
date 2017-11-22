@@ -13,6 +13,7 @@ import Plugin from './Plugin';
 import PluginLoader from './PluginLoader';
 import Renderer from './Renderer';
 import isEmptyObject from './helpers/isEmptyObject';
+import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
 
@@ -21,7 +22,7 @@ const INTERRUPT_CODE: number = 130;
 export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   chalk: typeof chalk;
 
-  config: ToolConfig;
+  config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
 
@@ -63,11 +64,13 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
     this.renderer = this.options.renderer || new Renderer();
     this.renderer.tool = this;
 
-    process.on('SIGINT', () => {
-      this.emit('exit');
+    if (process.env.NODE_ENV !== 'test') {
+      process.on('SIGINT', () => {
+        this.emit('exit');
 
-      process.exitCode = INTERRUPT_CODE;
-    });
+        process.exitCode = INTERRUPT_CODE;
+      });
+    }
   }
 
   /**

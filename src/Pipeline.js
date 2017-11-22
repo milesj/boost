@@ -6,6 +6,7 @@
 
 import Routine from './Routine';
 import Tool from './Tool';
+import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type Plugin from './Plugin';
 import type Renderer from './Renderer';
@@ -15,7 +16,7 @@ export default class Pipeline<TP: Plugin<*>, TR: Renderer> extends Routine<ToolC
   tool: Tool<TP, TR>;
 
   constructor(tool: Tool<TP, TR>) {
-    super('root', 'Pipeline', tool ? tool.config : {});
+    super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
 
     if (tool instanceof Tool) {
       tool.initialize();

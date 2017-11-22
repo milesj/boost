@@ -9,9 +9,9 @@ import type Renderer from './Renderer';
 import type Task from './Task';
 
 export type ToolConfig = {
-  debug?: boolean,
-  dry?: boolean,
-  extends?: string | string[],
+  debug: boolean,
+  extends: string | string[],
+  silent: boolean,
   [key: string]: *,
 };
 

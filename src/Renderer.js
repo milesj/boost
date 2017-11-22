@@ -196,7 +196,12 @@ export default class Renderer {
     }
 
     const { debugs, errors, logs } = this.tool;
-    let output = this.render(this.loader());
+    let output = '';
+
+    // Display output by default
+    if (!this.tool.config.silent) {
+      output += this.render(this.loader());
+    }
 
     // Show additional output for the final render
     if (stop) {

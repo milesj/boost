@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
-import { DEFAULT_TOOL_CONFIG, DEFAULT_PACKAGE_CONFIG } from '../src/constants';
+import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { getFixturePath, MockRenderer } from './helpers';
 
 describe('Tool', () => {
@@ -129,8 +129,8 @@ describe('Tool', () => {
       tool.loadConfig();
 
       expect(tool.package).toEqual({
-        ...DEFAULT_PACKAGE_CONFIG,
         name: 'boost',
+        version: '0.0.0',
       });
     });
 

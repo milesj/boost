@@ -147,7 +147,7 @@ describe('ConfigLoader', () => {
     it('parses package.json and merges values', () => {
       expect(loader.loadPackageJSON()).toEqual({
         name: 'boost',
-        version: '',
+        version: '0.0.0',
       });
     });
   });

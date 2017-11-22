@@ -4,7 +4,7 @@
  * @flow
  */
 
-import type { Status, ToolConfig, PackageConfig } from './types';
+import type { Status, ToolConfig } from './types';
 
 export const APP_NAME_PATTERN: RegExp = /^[-a-z]+$/;
 export const MODULE_NAME_PATTERN: RegExp = /^(@[-a-z]+\/)?[-a-z]+$/;
@@ -20,13 +20,8 @@ export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
 export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,
-  dry: false,
   extends: [],
-};
-
-export const DEFAULT_PACKAGE_CONFIG: PackageConfig = {
-  name: '',
-  version: '',
+  silent: false,
 };
 
 export const RESTRICTED_CONFIG_KEYS: string[] = Object.keys(DEFAULT_TOOL_CONFIG);
