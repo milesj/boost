@@ -1,4 +1,10 @@
 declare module 'boost' {
+  declare export type EventArguments = *[];
+
+  declare export type EventListener = (...args: EventArguments) => void;
+
+  declare export type EventNextHandler = (index: number, ...args: EventArguments) => void;
+
   declare export type PackageConfig = {
     name: string,
     version: string,
@@ -89,7 +95,29 @@ declare module 'boost' {
     update(stop?: boolean): false;
   }
 
-  declare export class Tool<TP: Plugin<*>, TR: Renderer> {
+  declare export class Event {
+    name: string;
+    next: ?EventNextHandler;
+    stopped: boolean;
+    time: number;
+    value: *;
+
+    constructor(name: string, value?: *): this;
+    stop(): void;
+  }
+
+  declare export class Emitter {
+    listeners: { [eventName: string]: Set<EventListener> };
+
+    emit(eventName: string, initialValue: Result, args?: EventArguments): Event;
+    emitCascade(eventName: string, initialValue: Result, args?: EventArguments): Event;
+    getEventNames(): string[];
+    getListeners(eventName: string): Set<EventListener>;
+    off(eventName: string, listener: EventListener): this;
+    on(eventName: string, listener: EventListener): this;
+  }
+
+  declare export class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
     config: ToolConfig;
     configLoader: ConfigLoader;
     debugs: string[];
