@@ -54,6 +54,7 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
       pluginName: string('plugin'),
       renderer: instance(Renderer).nullable(),
       root: string(process.cwd()),
+      title: string().empty(),
     }, {
       name: 'Tool',
     });

@@ -20,6 +20,7 @@ export type ToolOptions = {
   pluginName: string,
   renderer: Renderer,
   root: string,
+  title: string,
 };
 
 export type PackageConfig = {

@@ -195,11 +195,21 @@ export default class Renderer {
       return;
     }
 
-    const { debugs, errors, logs } = this.tool;
+    const {
+      debugs,
+      errors,
+      logs,
+      options,
+    } = this.tool;
     let output = '';
 
     // Display output by default
     if (!this.tool.config.silent) {
+      if (options.title) {
+        output += options.title;
+        output += '\n';
+      }
+
       output += this.render(this.loader());
     }
 
