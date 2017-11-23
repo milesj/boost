@@ -17,10 +17,10 @@ export type ToolConfig = {
 
 export type ToolOptions = {
   appName: string,
-  namespace: boolean,
   pluginName: string,
   renderer: Renderer,
   root: string,
+  scoped: boolean,
   title: string,
 };
 

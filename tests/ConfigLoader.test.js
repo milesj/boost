@@ -445,7 +445,7 @@ describe('ConfigLoader', () => {
       ]);
     });
 
-    it('resolves node modules with a namespace', () => {
+    it('resolves node modules with a scoped', () => {
       expect(loader.resolveExtendPaths(['@ns/foo-bar'])).toEqual([
         getModulePath('@ns/foo-bar', 'config/boost.preset.js'),
       ]);
@@ -457,8 +457,8 @@ describe('ConfigLoader', () => {
       ]);
     });
 
-    it('resolves plugins with namespace', () => {
-      loader.options.namespace = true;
+    it('resolves plugins with scoped', () => {
+      loader.options.scoped = true;
 
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
         getModulePath('@boost/plugin-foo', 'config/boost.preset.js'),

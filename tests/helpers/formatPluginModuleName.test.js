@@ -17,7 +17,7 @@ describe('formatPluginModuleName()', () => {
     expect(formatPluginModuleName('foo', 'plugin', 'plugin:bar')).toBe('foo-plugin-bar');
   });
 
-  it('supports namespace', () => {
+  it('supports scoped', () => {
     expect(formatPluginModuleName('foo', 'plugin', 'bar', true)).toBe('@foo/plugin-bar');
   });
 });

@@ -26,8 +26,8 @@ export default class PluginLoader<TP: Plugin<*>> {
    * with the provided options object.
    */
   importPlugin(name: string, options?: Object = {}): TP {
-    const { appName, namespace, pluginName } = this.options;
-    const moduleName = formatPluginModuleName(appName, pluginName, name, namespace);
+    const { appName, scoped, pluginName } = this.options;
+    const moduleName = formatPluginModuleName(appName, pluginName, name, scoped);
     let importedPlugin;
 
     try {

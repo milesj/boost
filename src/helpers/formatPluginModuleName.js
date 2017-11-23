@@ -11,13 +11,13 @@ export default function formatPluginModuleName(
   appName: string,
   pluginName: string,
   name: string,
-  namespace: boolean = false,
+  scoped: boolean = false,
 ): string {
   const moduleName = name.toLowerCase()
     .replace('plugin:', '')
     .replace(`${pluginName}:`, '');
 
-  if (namespace) {
+  if (scoped) {
     return `@${appName}/${pluginName}-${moduleName}`;
   }
 

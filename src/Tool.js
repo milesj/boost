@@ -51,10 +51,10 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
 
     this.options = new Options(options, {
       appName: string(),
-      namespace: bool(),
       pluginName: string('plugin'),
       renderer: instance(Renderer).nullable(),
       root: string(process.cwd()),
+      scoped: bool(),
       title: string().empty(),
     }, {
       name: 'Tool',

@@ -88,14 +88,14 @@ describe('PluginLoader', () => {
       expect(plugin.moduleName).toBe('boost-addon-definition');
     });
 
-    it('supports namespaces', () => {
-      fixtures.push(copyFixtureToMock('plugin-exported-definition', '@boost/plugin-namespace'));
-      loader.options.namespace = true;
+    it('supports scopeds', () => {
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', '@boost/plugin-scoped'));
+      loader.options.scoped = true;
 
-      const plugin = loader.importPlugin('namespace');
+      const plugin = loader.importPlugin('scoped');
 
-      expect(plugin.name).toBe('namespace');
-      expect(plugin.moduleName).toBe('@boost/plugin-namespace');
+      expect(plugin.name).toBe('scoped');
+      expect(plugin.moduleName).toBe('@boost/plugin-scoped');
     });
   });
 

@@ -31,10 +31,11 @@ declare module 'boost' {
 
   declare export type ToolOptions = {
     appName: string,
-    namespace: boolean,
     pluginName: string,
     renderer: Renderer,
     root: string,
+    scoped: boolean,
+    title: string,
   };
 
   declare class ConfigLoader {
