@@ -457,6 +457,14 @@ describe('ConfigLoader', () => {
       ]);
     });
 
+    it('resolves plugins with namespace', () => {
+      loader.options.namespace = true;
+
+      expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
+        getModulePath('@boost/plugin-foo', 'config/boost.preset.js'),
+      ]);
+    });
+
     it('resolves plugins using their full name', () => {
       expect(loader.resolveExtendPaths(['boost-plugin-foo'])).toEqual([
         getModulePath('boost-plugin-foo', 'config/boost.preset.js'),

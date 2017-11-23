@@ -247,7 +247,7 @@ export default class ConfigLoader {
         );
       }
 
-      const { appName, pluginName } = this.options;
+      const { appName, namespace, pluginName } = this.options;
 
       // Absolute path, use it directly
       if (path.isAbsolute(extendPath)) {
@@ -265,7 +265,7 @@ export default class ConfigLoader {
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
         return this.resolveModuleConfigPath(
           appName,
-          formatPluginModuleName(appName, pluginName, extendPath),
+          formatPluginModuleName(appName, pluginName, extendPath, namespace),
           true,
         );
       }

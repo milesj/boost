@@ -16,4 +16,8 @@ describe('formatPluginModuleName()', () => {
   it('removes plugin prefix', () => {
     expect(formatPluginModuleName('foo', 'plugin', 'plugin:bar')).toBe('foo-plugin-bar');
   });
+
+  it('supports namespace', () => {
+    expect(formatPluginModuleName('foo', 'plugin', 'bar', true)).toBe('@foo/plugin-bar');
+  });
 });

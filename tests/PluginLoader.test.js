@@ -87,6 +87,16 @@ describe('PluginLoader', () => {
       expect(plugin.name).toBe('definition');
       expect(plugin.moduleName).toBe('boost-addon-definition');
     });
+
+    it('supports namespaces', () => {
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', '@boost/plugin-namespace'));
+      loader.options.namespace = true;
+
+      const plugin = loader.importPlugin('namespace');
+
+      expect(plugin.name).toBe('namespace');
+      expect(plugin.moduleName).toBe('@boost/plugin-namespace');
+    });
   });
 
   describe('importPluginFromOptions()', () => {

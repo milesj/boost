@@ -11,10 +11,15 @@ export default function formatPluginModuleName(
   appName: string,
   pluginName: string,
   name: string,
+  namespace: boolean = false,
 ): string {
   const moduleName = name.toLowerCase()
     .replace('plugin:', '')
     .replace(`${pluginName}:`, '');
+
+  if (namespace) {
+    return `@${appName}/${pluginName}-${moduleName}`;
+  }
 
   return `${appName}-${pluginName}-${moduleName}`;
 }

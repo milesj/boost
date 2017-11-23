@@ -6,7 +6,7 @@
 
 import chalk from 'chalk';
 import pluralize from 'pluralize';
-import Options, { instance, string } from 'optimal';
+import Options, { bool, instance, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Emitter from './Emitter';
 import Plugin from './Plugin';
@@ -51,6 +51,7 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
 
     this.options = new Options(options, {
       appName: string(),
+      namespace: bool(),
       pluginName: string('plugin'),
       renderer: instance(Renderer).nullable(),
       root: string(process.cwd()),
