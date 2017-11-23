@@ -26,15 +26,15 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
 
   configLoader: ConfigLoader;
 
-  debugs: string[] = [];
+  debugs: *[] = [];
 
   debugGroups: string[] = [];
 
-  errors: string[] = [];
+  errors: *[] = [];
 
   initialized: boolean = false;
 
-  logs: string[] = [];
+  logs: *[] = [];
 
   options: ToolOptions;
 
@@ -86,11 +86,15 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   /**
    * Log a message only when debug is enabled.
    */
-  debug(message: string): this {
+  debug(message: *): this {
     if (this.config.debug) {
-      this.debugs.push(
-        `${chalk.blue('[debug]')} ${this.renderer.indent(this.debugGroups.length)}${message}`,
-      );
+      const prefix = `${chalk.blue('[debug]')} ${this.renderer.indent(this.debugGroups.length)}`;
+
+      if (typeof message === 'object') {
+        this.debugs.push(prefix, message);
+      } else {
+        this.debugs.push(`${prefix}${message}`);
+      }
     }
 
     return this;
@@ -155,7 +159,7 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   /**
    * Add a message to the output log.
    */
-  log(message: string): this {
+  log(message: *): this {
     this.logs.push(message);
 
     return this;
@@ -164,7 +168,7 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   /**
    * Add a message to the logError log.
    */
-  logError(message: string): this {
+  logError(message: *): this {
     this.errors.push(message);
 
     return this;

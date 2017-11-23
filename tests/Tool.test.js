@@ -180,7 +180,7 @@ describe('Tool', () => {
       tool.config = { plugins: [plugin] };
       tool.loadPlugins();
 
-      expect(spy).toHaveBeenCalledWith(tool);
+      expect(spy).toHaveBeenCalled();
     });
 
     it('bootstraps plugins with tool if bootstrap() is overridden', () => {
