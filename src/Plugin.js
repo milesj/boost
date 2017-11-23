@@ -16,13 +16,11 @@ export default class Plugin<T: Object> {
 
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
-  tool: ?Tool<*, *> = null;
+  tool: Tool<*, *>;
 
   constructor(options?: T) {
     this.options = { ...options };
   }
 
-  bootstrap(tool: Tool<*, *>) {
-    this.tool = tool;
-  }
+  bootstrap() {}
 }

@@ -67,10 +67,10 @@ declare module 'boost' {
     name: string;
     options: T;
     priority: number;
-    tool: ?Tool<*, *>;
+    tool: Tool<*, *>;
 
     constructor(options?: T): this;
-    bootstrap(tool: Tool<*, *>): void;
+    bootstrap(): void;
   }
 
   declare export type RendererOptions = {
