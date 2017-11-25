@@ -18,7 +18,7 @@ export type ToolConfig = {
 export type ToolOptions = {
   appName: string,
   pluginName: string,
-  renderer: Renderer,
+  renderer: Renderer<*>,
   root: string,
   scoped: boolean,
   title: string,
@@ -34,13 +34,11 @@ export type Result = *;
 
 export type ResultPromise = Promise<Result>;
 
-export type ResultAccumulator<T> = (value: Result, item: T) => ResultPromise;
-
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
-export type TaskCallback = (value: Result, context?: Object) => Result | ResultPromise;
+export type TaskCallback<Tx: Object> = (value: Result, context: Tx) => Result | ResultPromise;
 
-export type TasksLoader = () => Task<*>[];
+export type TasksLoader<Tx: Object> = () => Task<*, Tx>[];
 
 export type EventArguments = *[];
 

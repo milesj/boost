@@ -10,12 +10,11 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type Plugin from './Plugin';
 import type Renderer from './Renderer';
+import type Task from './Task';
 import type { Result, ResultPromise, ToolConfig } from './types';
 
-export default class Pipeline<TP: Plugin<*>, TR: Renderer> extends Routine<ToolConfig> {
-  tool: Tool<TP, TR>;
-
-  constructor(tool: Tool<TP, TR>) {
+export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolConfig, Tx> {
+  constructor(tool: Tool<Tp, Renderer<Tx>>) {
     super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
 
     if (tool instanceof Tool) {
@@ -30,13 +29,15 @@ export default class Pipeline<TP: Plugin<*>, TR: Renderer> extends Routine<ToolC
   /**
    * Load tasks to be used by the CLI renderer.
    */
-  loadTasks = () => this.subroutines;
+  loadTasks(): Task<*, Tx>[] {
+    return this.subroutines;
+  }
 
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: Result, context?: Object = {}): ResultPromise {
-    this.context = context;
+  run(initialValue: Result, context: Tx): ResultPromise {
+    this.context = context || {};
     this.tool.openConsole(this.loadTasks);
 
     return this.serializeSubroutines(initialValue).finally(() => {

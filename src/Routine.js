@@ -12,21 +12,17 @@ import Tool from './Tool';
 import isObject from './helpers/isObject';
 import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
-import type {
-  Result,
-  ResultPromise,
-  ResultAccumulator,
-  TaskCallback,
-} from './types';
+import type Renderer from './Renderer';
+import type { Result, ResultPromise, TaskCallback } from './types';
 
-export default class Routine<T: Object> extends Task<T> {
+export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   exit: boolean = false;
 
   key: string = '';
 
-  tool: Tool<*, *>;
+  tool: Tool<*, Renderer<Tx>>;
 
-  constructor(key: string, title: string, defaultConfig?: T) {
+  constructor(key: string, title: string, defaultConfig?: Tc) {
     super(title, null, defaultConfig);
 
     if (!key || typeof key !== 'string') {
@@ -53,7 +49,7 @@ export default class Routine<T: Object> extends Task<T> {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine<*>): this {
+  configure(parent: Routine<*, Tx>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -80,7 +76,7 @@ export default class Routine<T: Object> extends Task<T> {
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute(value: Result, context?: Object = {}): ResultPromise {
+  execute(value: Result, context: Tx): ResultPromise {
     return value;
   }
 
@@ -95,7 +91,7 @@ export default class Routine<T: Object> extends Task<T> {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: Result, task: Task<*>): ResultPromise => (
+  executeTask = (value: Result, task: Task<*, Tx>): ResultPromise => (
     this.wrap(task.run(value, this.context)).finally(() => {
       this.tool.render();
     })
@@ -122,7 +118,7 @@ export default class Routine<T: Object> extends Task<T> {
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(...routines: Routine<*>[]): this {
+  pipe(...routines: Routine<*, Tx>[]): this {
     routines.forEach((routine) => {
       if (routine instanceof Routine) {
         this.subroutines.push(routine.configure(this));
@@ -138,7 +134,7 @@ export default class Routine<T: Object> extends Task<T> {
   /**
    * Trigger processes before and after execution.
    */
-  run(value: Result, context?: Object = {}): ResultPromise {
+  run(value: Result, context: Tx): ResultPromise {
     if (this.exit) {
       throw new Error('Process has been interrupted.');
     }
@@ -156,12 +152,12 @@ export default class Routine<T: Object> extends Task<T> {
    * task being passed to the next promise in the chain. Utilize the
    * `accumulator` function to execute the list of processes.
    */
-  serialize<I>(
+  serialize(
     initialValue: Result,
-    items: I[],
-    accumulator: ResultAccumulator<I>,
+    items: *[],
+    accumulator: (value: Result, item: *) => ResultPromise,
   ): ResultPromise {
-    return items.reduce((promise: ResultPromise, item: I) => (
+    return items.reduce((promise: ResultPromise, item: *) => (
       promise.then(value => accumulator(value, item))
     ), Promise.resolve(initialValue));
   }
@@ -183,7 +179,7 @@ export default class Routine<T: Object> extends Task<T> {
   /**
    * Define an individual task.
    */
-  task<C: Object>(title: string, action: TaskCallback, config?: C): Task<C> {
+  task<C: Object>(title: string, action: TaskCallback<Tx>, config?: C): Task<C, Tx> {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

@@ -16,12 +16,12 @@ import {
 
 import type { Result, ResultPromise, Status, TaskCallback } from './types';
 
-export default class Task<T: Object> {
-  action: ?TaskCallback = null;
+export default class Task<Tc: Object, Tx: Object> {
+  action: ?TaskCallback<Tx> = null;
 
-  config: T;
+  config: Tc;
 
-  context: Object = {};
+  context: Tx;
 
   frame: number = 0;
 
@@ -29,11 +29,11 @@ export default class Task<T: Object> {
 
   status: Status = STATUS_PENDING;
 
-  subroutines: Task<*>[] = [];
+  subroutines: Task<*, Tx>[] = [];
 
-  subtasks: Task<*>[] = [];
+  subtasks: Task<*, Tx>[] = [];
 
-  constructor(title: string, action?: ?TaskCallback = null, defaultConfig?: T) {
+  constructor(title: string, action?: ?TaskCallback<Tx> = null, defaultConfig?: Tc) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -87,31 +87,37 @@ export default class Task<T: Object> {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(value: Result, context?: Object = {}): ResultPromise {
+  run(initialValue: Result, context: Tx): ResultPromise {
     this.context = context;
 
     if (this.isSkipped() || !this.action) {
-      return Promise.resolve(value);
+      this.status = STATUS_SKIPPED;
+
+      return Promise.resolve(initialValue);
     }
 
     this.status = STATUS_RUNNING;
 
-    // Use a callback so thrown errors are rejected
-    return new Promise((resolve) => {
-      // $FlowIgnore We check if nullable above
-      resolve(this.action(value, context));
-    }).then(
-      (result) => {
-        this.status = STATUS_PASSED;
+    return Promise.resolve(initialValue)
+      .then((value) => {
+        if (this.action) {
+          return this.action(value, context);
+        }
 
-        return result;
-      },
-      (error) => {
-        this.status = STATUS_FAILED;
+        return value;
+      })
+      .then(
+        (result) => {
+          this.status = STATUS_PASSED;
 
-        throw error;
-      },
-    );
+          return result;
+        },
+        (error) => {
+          this.status = STATUS_FAILED;
+
+          throw error;
+        },
+      );
   }
 
   /**

@@ -7,9 +7,9 @@
 import Renderer from './Renderer';
 
 export default class Console {
-  renderer: Renderer;
+  renderer: Renderer<*>;
 
-  constructor(renderer: Renderer) {
+  constructor(renderer: Renderer<*>) {
     this.renderer = renderer;
 
     // https://github.com/facebook/flow/blob/dd0603e9d8c9d5fb99a40f0b179a4d6a2b9e66b7/tsrc/main.js

@@ -9,7 +9,6 @@ import figures from 'figures';
 import logUpdate from 'log-update';
 import Options, { bool, number } from 'optimal';
 import Task from './Task';
-import Tool from './Tool';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -23,23 +22,23 @@ import type { TasksLoader } from './types';
 type RendererOptions = {
   clearOutput: boolean,
   refreshRate: number,
+  silent: boolean,
 };
 
-export default class Renderer {
+export default class Renderer<Tx: Object> {
   instance: number = 0;
 
   hasFailed: boolean = false;
 
-  loader: ?TasksLoader = null;
+  loader: ?TasksLoader<Tx> = null;
 
   options: RendererOptions;
-
-  tool: Tool<*, *>;
 
   constructor(options?: Object = {}) {
     this.options = new Options(options, {
       clearOutput: bool(),
       refreshRate: number(100), // eslint-disable-line no-magic-numbers
+      silent: bool(),
     }, {
       name: 'Renderer',
     });
@@ -55,7 +54,7 @@ export default class Renderer {
   /**
    * Render the output by looping over all tasks in the tree.
    */
-  render(tasks: Task<*>[]): string {
+  render(tasks: Task<*, Tx>[]): string {
     const output = [];
 
     tasks.forEach((task) => {
@@ -69,7 +68,7 @@ export default class Renderer {
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: Task<*>, level?: number = 0, suffix?: string = ''): string[] {
+  renderTask(task: Task<*, Tx>, level?: number = 0, suffix?: string = ''): string[] {
     const output = [];
 
     // Generate the message row
@@ -133,7 +132,7 @@ export default class Renderer {
   /**
    * Render a status symbol for a task.
    */
-  renderStatus(task: Task<*>): string {
+  renderStatus(task: Task<*, Tx>): string {
     switch (task.status) {
       case STATUS_PENDING:
         return chalk.gray(figures.bullet);
@@ -153,7 +152,7 @@ export default class Renderer {
   /**
    * Start the output process once setting the task loader.
    */
-  start(loader: TasksLoader) {
+  start(loader: TasksLoader<Tx>) {
     if (this.instance) {
       return;
     } else if (!loader || typeof loader !== 'function') {
@@ -195,41 +194,41 @@ export default class Renderer {
       return;
     }
 
-    const {
-      debugs,
-      errors,
-      logs,
-      options,
-    } = this.tool;
+    // const {
+    //   debugs,
+    //   errors,
+    //   logs,
+    //   options,
+    // } = this.tool;
     let output = '';
 
     // Display output by default
-    if (!this.tool.config.silent) {
-      if (options.title) {
-        output += options.title;
-        output += '\n';
-      }
+    if (!this.options.silent) {
+      // if (options.title) {
+      //   output += options.title;
+      //   output += '\n';
+      // }
 
       output += this.render(this.loader());
     }
-
-    // Show additional output for the final render
-    if (stop) {
-      if (debugs.length > 0) {
-        output += '\n\n';
-        output += debugs.join('\n');
-      }
-
-      if (this.hasFailed) {
-        if (errors.length > 0) {
-          output += '\n\n';
-          output += errors.join('\n');
-        }
-      } else if (logs.length > 0) {
-        output += '\n\n';
-        output += logs.join('\n');
-      }
-    }
+    //
+    // // Show additional output for the final render
+    // if (stop) {
+    //   if (debugs.length > 0) {
+    //     output += '\n\n';
+    //     output += debugs.join('\n');
+    //   }
+    //
+    //   if (this.hasFailed) {
+    //     if (errors.length > 0) {
+    //       output += '\n\n';
+    //       output += errors.join('\n');
+    //     }
+    //   } else if (logs.length > 0) {
+    //     output += '\n\n';
+    //     output += logs.join('\n');
+    //   }
+    // }
 
     logUpdate(output);
   }

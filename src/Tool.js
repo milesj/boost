@@ -17,9 +17,9 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
 
-const INTERRUPT_CODE: number = 130;
+// const INTERRUPT_CODE: number = 130;
 
-export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
+export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
   chalk: typeof chalk;
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
@@ -40,11 +40,11 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
 
   package: PackageConfig;
 
-  pluginLoader: PluginLoader<TP>;
+  pluginLoader: PluginLoader<Tp>;
 
-  plugins: TP[] = [];
+  plugins: Tp[] = [];
 
-  renderer: TR;
+  renderer: Tr;
 
   constructor(options: Object) {
     super();
@@ -64,7 +64,7 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
 
     // $FlowIgnore
     this.renderer = this.options.renderer || new Renderer();
-    this.renderer.tool = this;
+    // this.renderer.tool = this;
   }
 
   /**
@@ -96,7 +96,7 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   /**
    * Get a plugin by name.
    */
-  getPlugin(name: string): TP {
+  getPlugin(name: string): Tp {
     const plugin = this.plugins.find(p => p.name === name);
 
     if (!plugin) {
@@ -199,7 +199,8 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
   /**
    * Open a new CLI instance.
    */
-  openConsole(loader: TasksLoader): this {
+  // TODO context
+  openConsole(loader: TasksLoader<*>): this {
     this.renderer.start(loader);
 
     return this;
