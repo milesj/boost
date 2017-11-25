@@ -65,14 +65,6 @@ export default class Tool<TP: Plugin<*>, TR: Renderer> extends Emitter {
     // $FlowIgnore
     this.renderer = this.options.renderer || new Renderer();
     this.renderer.tool = this;
-
-    if (process.env.NODE_ENV !== 'test') {
-      process.on('SIGINT', () => {
-        this.emit('exit');
-
-        process.exitCode = INTERRUPT_CODE;
-      });
-    }
   }
 
   /**
