@@ -1,7 +1,7 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Tool from '../src/Tool';
-import { MockReporter } from './helpers';
+import Console from '../src/Console';
 
 jest.mock('../src/Console');
 
@@ -12,9 +12,9 @@ describe('Pipeline', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
-      reporter: new MockReporter(),
     });
     tool.config = { foo: 'bar' };
+    tool.console = new Console();
     tool.initialized = true; // Avoid loaders
 
     pipeline = new Pipeline(tool);

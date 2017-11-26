@@ -4,8 +4,8 @@ import Promise from 'bluebird';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
+import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { MockReporter } from './helpers';
 
 jest.mock('../src/Console');
 
@@ -16,9 +16,7 @@ describe('Routine', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
-      reporter: new MockReporter(),
     });
-    tool.initialized = true; // Avoid loaders
     tool.config = {
       ...DEFAULT_TOOL_CONFIG,
       baz: {
@@ -29,6 +27,8 @@ describe('Routine', () => {
         command: 'yarn run build',
       },
     };
+    tool.console = new Console();
+    tool.initialized = true; // Avoid loaders
 
     routine = new Routine('key', 'title');
     routine.configure({

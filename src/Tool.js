@@ -6,12 +6,12 @@
 
 import chalk from 'chalk';
 import pluralize from 'pluralize';
-import Options, { bool, instance, string } from 'optimal';
+import Options, { bool, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
+import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
-import PluginLoader from './PluginLoader';
 import Reporter from './Reporter';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
@@ -31,9 +31,13 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
   package: PackageConfig;
 
-  pluginLoader: PluginLoader<Tp>;
+  pluginLoader: ModuleLoader<Tp>;
 
   plugins: Tp[] = [];
+
+  reporterLoader: ModuleLoader<Tr>;
+
+  reporter: Tr;
 
   constructor(options: Object) {
     super();
@@ -41,16 +45,12 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     this.options = new Options(options, {
       appName: string(),
       pluginName: string('plugin'),
-      reporter: instance(Reporter).nullable(),
       root: string(process.cwd()),
       scoped: bool(),
       title: string().empty(),
     }, {
       name: 'Tool',
     });
-
-    // $FlowIgnore
-    this.console = new Console(this.options.reporter || new Reporter());
   }
 
   /**
@@ -89,6 +89,8 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
     this.loadConfig();
     this.loadPlugins();
+    this.loadReporter();
+    this.console = new Console(this.reporter);
     this.initialized = true;
 
     return this;
@@ -121,6 +123,77 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
   }
 
   /**
+   * Register plugins from the loaded configuration.
+   *
+   * Must be called after config has been loaded.
+   */
+  loadPlugins(): this {
+    if (this.initialized) {
+      return this;
+    }
+
+    const { pluginName } = this.options;
+    const pluralPluginName = pluralize(pluginName);
+
+    if (isEmptyObject(this.config)) {
+      throw new Error(`Cannot load ${pluralPluginName} as configuration has not been loaded.`);
+    }
+
+    this.pluginLoader = new ModuleLoader(pluginName, Plugin, this.options);
+    this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginName]);
+
+    // Sort plugins by priority
+    this.plugins.sort((a, b) => a.priority - b.priority);
+
+    // Bootstrap each plugin with the tool
+    this.plugins.forEach((plugin) => {
+      plugin.tool = this; // eslint-disable-line no-param-reassign
+      plugin.bootstrap();
+    });
+
+    return this;
+  }
+
+  /**
+   * Register a reporter from the loaded configuration.
+   *
+   * Must be called after config has been loaded.
+   */
+  loadReporter(): this {
+    if (this.initialized) {
+      return this;
+    }
+
+    if (isEmptyObject(this.config)) {
+      throw new Error('Cannot load reporter as configuration has not been loaded.');
+    }
+
+    const reporterName = this.config.reporter;
+
+    // Use native Boost reporter
+    if (!reporterName) {
+      this.reporter = new Reporter({
+        silent: this.config.silent,
+      });
+
+      return this;
+    }
+
+    // Attempt to load reporter
+    this.reporterLoader = new ModuleLoader('reporter', Reporter, this.options);
+
+    const reporters = this.reporterLoader.loadModules([reporterName]);
+
+    if (reporters.length === 0) {
+      throw new Error('Reporter failed to load. Has it been configured?');
+    }
+
+    this.reporter = reporters.pop();
+
+    return this;
+  }
+
+  /**
    * Add a message to the output log.
    */
   log(message: string): this {
@@ -134,35 +207,6 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
    */
   logError(message: string): this {
     this.console.error(message);
-
-    return this;
-  }
-
-  /**
-   * Register plugins from the loaded configuration.
-   *
-   * Must be called after config has been loaded.
-   */
-  loadPlugins(): this {
-    if (this.initialized) {
-      return this;
-    }
-
-    const pluralPluginName = pluralize(this.options.pluginName);
-
-    if (isEmptyObject(this.config)) {
-      throw new Error(`Cannot load ${pluralPluginName} as configuration has not been loaded.`);
-    }
-
-    this.pluginLoader = new PluginLoader(this.options);
-    this.plugins = this.pluginLoader.loadPlugins(this.config[pluralPluginName]);
-
-    // Bootstrap each plugin with the tool
-    this.plugins.forEach((plugin) => {
-      // eslint-disable-next-line no-param-reassign
-      plugin.tool = this;
-      plugin.bootstrap();
-    });
 
     return this;
   }

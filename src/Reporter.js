@@ -32,6 +32,10 @@ export default class Reporter<Tx: Object> {
 
   loader: ?TasksLoader<Tx> = null;
 
+  moduleName: string = '';
+
+  name: string = '';
+
   options: ReporterOptions;
 
   constructor(options?: Object = {}) {

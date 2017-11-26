@@ -5,12 +5,13 @@
  */
 
 import Promise from 'bluebird';
-import type Reporter from './Reporter';
 import type Task from './Task';
 
 export type ToolConfig = {
   debug: boolean,
   extends: string | string[],
+  plugins: string[],
+  reporter: string,
   silent: boolean,
   [key: string]: *,
 };
@@ -18,7 +19,6 @@ export type ToolConfig = {
 export type ToolOptions = {
   appName: string,
   pluginName: string,
-  reporter: Reporter<*>,
   root: string,
   scoped: boolean,
   title: string,

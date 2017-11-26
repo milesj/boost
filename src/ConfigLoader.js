@@ -98,6 +98,7 @@ export default class ConfigLoader {
     return new Config(this.parseAndExtend(config), {
       debug: bool(),
       extends: array(string()),
+      reporter: string().empty(),
       silent: bool(),
       [pluralize(pluginName)]: array(string()),
     }, {

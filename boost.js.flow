@@ -23,6 +23,8 @@ declare module 'boost' {
   declare export type ToolConfig = {
     debug: boolean,
     extends: string | string[],
+    plugins: string[],
+    reporter: string,
     silent: boolean,
     [key: string]: *,
   };
@@ -30,7 +32,6 @@ declare module 'boost' {
   declare export type ToolOptions = {
     appName: string,
     pluginName: string,
-    reporter: Reporter<*>,
     root: string,
     scoped: boolean,
     title: string,
@@ -50,15 +51,15 @@ declare module 'boost' {
     resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
   }
 
-  declare class PluginLoader<Tp: Plugin<*>> {
+  declare class ModuleLoader<Tm> {
+    classReference: Class<Tm>;
     options: ToolOptions;
-    plugins: Tp[];
+    typeName: string;
 
-    constructor(options: ToolOptions): this;
-    importPlugin(name: string, options?: Object): Tp;
-    importPluginFromOptions(baseOptions: Object): Tp;
-    loadPlugins(plugins: (string | Tp)[]): Tp[];
-    sortPlugins(): this;
+    constructor(typeName: string, classReference: Class<Tm>, options: ToolOptions): this;
+    importModule(name: string, options?: Object): Tm;
+    importModuleFromOptions(baseOptions: Object): Tm;
+    loadModules(modules: (string | Object | Tm)[]): Tm[];
   }
 
   declare export class Plugin<To: Object> {
@@ -82,6 +83,8 @@ declare module 'boost' {
     instance: number;
     hasFailed: boolean;
     loader: ?TasksLoader<Tx>;
+    moduleName: string;
+    name: string;
     options: ReporterOptions;
 
     constructor(options?: Object): this;
@@ -143,8 +146,10 @@ declare module 'boost' {
     initialized: boolean;
     options: ToolOptions;
     package: PackageConfig;
-    pluginLoader: PluginLoader<Tp>;
+    pluginLoader: ModuleLoader<Tp>;
     plugins: Tp[];
+    reporter: Tr;
+    reporterLoader: ModuleLoader<Tr>;
 
     constructor(options: Object): this;
     debug(message: string): this;
@@ -152,9 +157,10 @@ declare module 'boost' {
     initialize(): this;
     invariant(condition: boolean, message: string, pass: string, fail: string): this;
     loadConfig(): this;
+    loadPlugins(): this;
+    loadReporter(): this;
     log(message: string): this;
     logError(message: string): this;
-    loadPlugins(): this;
   }
 
   declare export class Task<Tc: Object, Tx: Object> {

@@ -1,8 +1,10 @@
 import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
+import Console from '../src/Console';
+import Reporter from '../src/Reporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { getFixturePath, MockReporter } from './helpers';
+import { getFixturePath } from './helpers';
 
 jest.mock('../src/Console');
 
@@ -12,22 +14,11 @@ describe('Tool', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
-      reporter: new MockReporter(),
       root: getFixturePath('app'),
     });
     tool.config = {};
+    tool.console = new Console();
     tool.package = {};
-  });
-
-  describe('constructor()', () => {
-    it('errors if `reporter` is not an instance of Reporter', () => {
-      expect(() => {
-        tool = new Tool({
-          appName: 'boost',
-          reporter: 123,
-        });
-      }).toThrowError('Invalid Tool option "reporter". Must be an instance of "Reporter".');
-    });
   });
 
   describe('debug()', () => {
@@ -70,12 +61,14 @@ describe('Tool', () => {
     it('loads config', () => {
       expect(tool.config).toEqual({});
       expect(tool.package).toEqual({});
+      expect(tool.reporter).toBeUndefined();
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
       expect(tool.package).not.toEqual({});
+      expect(tool.reporter).toBeDefined();
       expect(tool.initialized).toBe(true);
     });
   });
@@ -186,6 +179,52 @@ describe('Tool', () => {
       tool.loadPlugins();
 
       expect(plugin.tool).toBe(tool);
+    });
+
+    it('sorts by priority', () => {
+      const foo = new Plugin();
+      const bar = new Plugin();
+      const baz = new Plugin();
+
+      baz.priority = 1;
+      bar.priority = 2;
+      foo.priority = 3;
+
+      tool.config = { plugins: [foo, bar, baz] };
+      tool.loadPlugins();
+
+      expect(tool.plugins).toEqual([baz, bar, foo]);
+    });
+  });
+
+  describe('loadReporter()', () => {
+    it('errors if config is falsy', () => {
+      expect(() => {
+        tool.loadReporter();
+      }).toThrowError('Cannot load reporter as configuration has not been loaded.');
+    });
+
+    it('errors if config is an empty object', () => {
+      expect(() => {
+        tool.config = {};
+        tool.loadReporter();
+      }).toThrowError('Cannot load reporter as configuration has not been loaded.');
+    });
+
+    it('sets native reporter if config is empty', () => {
+      tool.config = { reporter: '' };
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeInstanceOf(Reporter);
+    });
+
+    it('loads reporter', () => {
+      const reporter = new Reporter();
+
+      tool.config = { reporter };
+      tool.loadReporter();
+
+      expect(tool.reporter).toBe(reporter);
     });
   });
 
