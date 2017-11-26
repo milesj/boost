@@ -19,20 +19,20 @@ import {
 
 import type { TasksLoader } from './types';
 
-type RendererOptions = {
+type ReporterOptions = {
   clearOutput: boolean,
   refreshRate: number,
   silent: boolean,
 };
 
-export default class Renderer<Tx: Object> {
+export default class Reporter<Tx: Object> {
   instance: number = 0;
 
   hasFailed: boolean = false;
 
   loader: ?TasksLoader<Tx> = null;
 
-  options: RendererOptions;
+  options: ReporterOptions;
 
   constructor(options?: Object = {}) {
     this.options = new Options(options, {
@@ -40,7 +40,7 @@ export default class Renderer<Tx: Object> {
       refreshRate: number(100), // eslint-disable-line no-magic-numbers
       silent: bool(),
     }, {
-      name: 'Renderer',
+      name: 'Reporter',
     });
   }
 

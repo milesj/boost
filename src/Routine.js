@@ -12,7 +12,7 @@ import Tool from './Tool';
 import isObject from './helpers/isObject';
 import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
-import type Renderer from './Renderer';
+import type Reporter from './Reporter';
 import type { Result, ResultPromise, TaskCallback } from './types';
 
 export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
@@ -20,7 +20,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
 
   key: string = '';
 
-  tool: Tool<*, Renderer<Tx>>;
+  tool: Tool<*, Reporter<Tx>>;
 
   constructor(key: string, title: string, defaultConfig?: Tc) {
     super(title, null, defaultConfig);
@@ -86,7 +86,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   executeCommand(command: string, args: string[], options?: Object = {}): ResultPromise {
     const stream = execa(command, args, options);
 
-    // Push chunks to the renderer
+    // Push chunks to the reporter
     stream.stdout.on('data', (data) => {
       this.statusText = data;
     });

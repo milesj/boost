@@ -12,13 +12,13 @@ import Console from './Console';
 import Emitter from './Emitter';
 import Plugin from './Plugin';
 import PluginLoader from './PluginLoader';
-import Renderer from './Renderer';
+import Reporter from './Reporter';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
+export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
@@ -41,7 +41,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
     this.options = new Options(options, {
       appName: string(),
       pluginName: string('plugin'),
-      renderer: instance(Renderer).nullable(),
+      reporter: instance(Reporter).nullable(),
       root: string(process.cwd()),
       scoped: bool(),
       title: string().empty(),
@@ -50,7 +50,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
     });
 
     // $FlowIgnore
-    this.console = new Console(this.options.renderer || new Renderer());
+    this.console = new Console(this.options.reporter || new Reporter());
   }
 
   /**

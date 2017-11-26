@@ -8,7 +8,7 @@ import Emitter from './Emitter';
 import Event from './Event';
 import Pipeline from './Pipeline';
 import Plugin from './Plugin';
-import Renderer from './Renderer';
+import Reporter from './Reporter';
 import Routine from './Routine';
 import Tool from './Tool';
 
@@ -17,7 +17,7 @@ export {
   Event,
   Pipeline,
   Plugin,
-  Renderer,
+  Reporter,
   Routine,
   Tool,
 };

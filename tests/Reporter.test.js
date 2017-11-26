@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import Renderer from '../src/Renderer';
+import Reporter from '../src/Reporter';
 import Task from '../src/Task';
 import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
@@ -11,11 +11,11 @@ function createTaskWithStatus(title, status) {
   return task;
 }
 
-describe('Renderer', () => {
-  let renderer;
+describe('Reporter', () => {
+  let reporter;
 
   beforeEach(() => {
-    renderer = new Renderer();
+    reporter = new Reporter();
 
     jest.useFakeTimers();
   });
@@ -26,9 +26,9 @@ describe('Renderer', () => {
 
   describe('indent()', () => {
     it('indents with spaces', () => {
-      expect(renderer.indent(0)).toBe('');
-      expect(renderer.indent(1)).toBe('    ');
-      expect(renderer.indent(3)).toBe('            ');
+      expect(reporter.indent(0)).toBe('');
+      expect(reporter.indent(1)).toBe('    ');
+      expect(reporter.indent(3)).toBe('            ');
     });
   });
 
@@ -47,7 +47,7 @@ describe('Renderer', () => {
       ];
       statusChecks.subroutines = [git];
 
-      expect(renderer.render([statusChecks])).toBe(`${chalk.green('✔')} Status checks
+      expect(reporter.render([statusChecks])).toBe(`${chalk.green('✔')} Status checks
     ${chalk.gray('⠙')} Git
         ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
     });
@@ -55,37 +55,37 @@ describe('Renderer', () => {
 
   describe('renderTask()', () => {
     it('creates a STATUS_PENDING message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_PENDING))).toEqual([
+      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_PENDING))).toEqual([
         `${chalk.gray('●')} Title`,
       ]);
     });
 
     it('creates a STATUS_RUNNING message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_RUNNING))).toEqual([
+      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_RUNNING))).toEqual([
         `${chalk.gray('⠙')} Title`,
       ]);
     });
 
     it('creates a STATUS_SKIPPED message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_SKIPPED))).toEqual([
+      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_SKIPPED))).toEqual([
         `${chalk.yellow('◌')} Title ${chalk.yellow('[skipped]')}`,
       ]);
     });
 
     it('creates a STATUS_PASSED message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_PASSED))).toEqual([
+      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_PASSED))).toEqual([
         `${chalk.green('✔')} Title`,
       ]);
     });
 
     it('creates a STATUS_FAILED message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', STATUS_FAILED))).toEqual([
+      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_FAILED))).toEqual([
         `${chalk.red('✖')} Title ${chalk.red('[failed]')}`,
       ]);
     });
 
     it('indents the message', () => {
-      expect(renderer.renderTask(createTaskWithStatus('Title', ''), 2)).toEqual([
+      expect(reporter.renderTask(createTaskWithStatus('Title', ''), 2)).toEqual([
         '         Title',
       ]);
     });
@@ -99,7 +99,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-task #3', STATUS_PENDING),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.gray('●')} Sub-task #1 ${chalk.gray('[0/3]')}`,
         ]);
@@ -113,7 +113,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
         ]);
@@ -130,7 +130,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-task #6', STATUS_SKIPPED),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.red('✖')} Sub-task #2 ${chalk.red('[failed]')}`,
         ]);
@@ -144,7 +144,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-task #3', STATUS_SKIPPED),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
         ]);
       });
@@ -157,7 +157,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-task #3', STATUS_PASSED),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.green('✔')} Title`,
         ]);
       });
@@ -170,7 +170,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-task #3', STATUS_PASSED),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.gray('●')} Sub-task #2 ${chalk.gray('[2/3]')}`,
         ]);
@@ -186,7 +186,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-routine #3', STATUS_PENDING),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.gray('●')} Sub-routine #1`,
           `    ${chalk.gray('●')} Sub-routine #2`,
@@ -202,7 +202,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.gray('⠙')} Sub-routine #1`,
           `    ${chalk.red('✖')} Sub-routine #2 ${chalk.red('[failed]')}`,
@@ -223,7 +223,7 @@ describe('Renderer', () => {
           createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
         ];
 
-        expect(renderer.renderTask(result)).toEqual([
+        expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `    ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
           `    ${chalk.gray('⠙')} Sub-routine #1`,
@@ -236,23 +236,23 @@ describe('Renderer', () => {
 
   describe('renderStatus()', () => {
     it('renders a bullet for STATUS_PENDING', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_PENDING))).toBe(chalk.gray('●'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PENDING))).toBe(chalk.gray('●'));
     });
 
     it('renders a spinner for STATUS_RUNNING', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_RUNNING))).toBe(chalk.gray('⠙'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_RUNNING))).toBe(chalk.gray('⠙'));
     });
 
     it('renders a dotted circle for STATUS_SKIPPED', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_SKIPPED))).toBe(chalk.yellow('◌'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_SKIPPED))).toBe(chalk.yellow('◌'));
     });
 
     it('renders a tick for STATUS_PASSED', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_PASSED))).toBe(chalk.green('✔'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PASSED))).toBe(chalk.green('✔'));
     });
 
     it('renders a cross for STATUS_FAILED', () => {
-      expect(renderer.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(chalk.red('✖'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(chalk.red('✖'));
     });
   });
 });

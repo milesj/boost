@@ -5,7 +5,7 @@
  */
 
 import Promise from 'bluebird';
-import type Renderer from './Renderer';
+import type Reporter from './Reporter';
 import type Task from './Task';
 
 export type ToolConfig = {
@@ -18,7 +18,7 @@ export type ToolConfig = {
 export type ToolOptions = {
   appName: string,
   pluginName: string,
-  renderer: Renderer<*>,
+  reporter: Reporter<*>,
   root: string,
   scoped: boolean,
   title: string,

@@ -5,13 +5,13 @@
  */
 
 import chalk from 'chalk';
-import Renderer from './Renderer';
+import Reporter from './Reporter';
 
 import type { TasksLoader } from './types';
 
 // const INTERRUPT_CODE: number = 130;
 
-export default class Console<Tr: Renderer<*>> {
+export default class Console<Tr: Reporter<*>> {
   debugs: string[] = [];
 
   debugGroups: string[] = [];
@@ -20,10 +20,10 @@ export default class Console<Tr: Renderer<*>> {
 
   logs: string[] = [];
 
-  renderer: Tr;
+  reporter: Tr;
 
-  constructor(renderer: Tr) {
-    this.renderer = renderer;
+  constructor(reporter: Tr) {
+    this.reporter = reporter;
 
     // https://github.com/facebook/flow/blob/dd0603e9d8c9d5fb99a40f0b179a4d6a2b9e66b7/tsrc/main.js
     // process.on('SIGINT', () => {
@@ -41,7 +41,7 @@ export default class Console<Tr: Renderer<*>> {
    * Add a message to the debug log.
    */
   debug(message: string) {
-    this.debugs.push(`${chalk.blue('[debug]')}${this.renderer.indent(this.debugGroups.length)} ${message}`);
+    this.debugs.push(`${chalk.blue('[debug]')}${this.reporter.indent(this.debugGroups.length)} ${message}`);
   }
 
   /**
@@ -76,7 +76,7 @@ export default class Console<Tr: Renderer<*>> {
    * Start a new console and begin rendering.
    */
   start(loader: TasksLoader<*>) {
-    this.renderer.start(loader);
+    this.reporter.start(loader);
   }
 
   /**
@@ -91,7 +91,7 @@ export default class Console<Tr: Renderer<*>> {
    * Stop rendering and end the console.
    */
   stop() {
-    this.renderer.stop();
+    this.reporter.stop();
   }
 
   /**
@@ -105,6 +105,6 @@ export default class Console<Tr: Renderer<*>> {
    * Force a rendering update.
    */
   update() {
-    this.renderer.update();
+    this.reporter.update();
   }
 }

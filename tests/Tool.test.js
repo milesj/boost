@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { getFixturePath, MockRenderer } from './helpers';
+import { getFixturePath, MockReporter } from './helpers';
 
 jest.mock('../src/Console');
 
@@ -12,7 +12,7 @@ describe('Tool', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
-      renderer: new MockRenderer(),
+      reporter: new MockReporter(),
       root: getFixturePath('app'),
     });
     tool.config = {};
@@ -20,13 +20,13 @@ describe('Tool', () => {
   });
 
   describe('constructor()', () => {
-    it('errors if `renderer` is not an instance of Renderer', () => {
+    it('errors if `reporter` is not an instance of Reporter', () => {
       expect(() => {
         tool = new Tool({
           appName: 'boost',
-          renderer: 123,
+          reporter: 123,
         });
-      }).toThrowError('Invalid Tool option "renderer". Must be an instance of "Renderer".');
+      }).toThrowError('Invalid Tool option "reporter". Must be an instance of "Reporter".');
     });
   });
 

@@ -30,7 +30,7 @@ declare module 'boost' {
   declare export type ToolOptions = {
     appName: string,
     pluginName: string,
-    renderer: Renderer<*>,
+    reporter: Reporter<*>,
     root: string,
     scoped: boolean,
     title: string,
@@ -73,17 +73,17 @@ declare module 'boost' {
     bootstrap(): void;
   }
 
-  declare export type RendererOptions = {
+  declare export type ReporterOptions = {
     clearOutput: boolean,
     refreshRate: number,
     silent: boolean,
   };
 
-  declare export class Renderer<Tx: Object> {
+  declare export class Reporter<Tx: Object> {
     instance: number;
     hasFailed: boolean;
     loader: ?TasksLoader<Tx>;
-    options: RendererOptions;
+    options: ReporterOptions;
 
     constructor(options?: Object): this;
     indent(length: number): string;
@@ -117,7 +117,7 @@ declare module 'boost' {
     on(eventName: string, listener: EventListener): this;
   }
 
-  declare export class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
+  declare export class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     config: ToolConfig;
     configLoader: ConfigLoader;
     debugs: string[];
@@ -129,7 +129,7 @@ declare module 'boost' {
     package: PackageConfig;
     pluginLoader: PluginLoader<Tp>;
     plugins: Tp[];
-    renderer: Tr;
+    reporter: Tr;
 
     constructor(options: Object): this;
     closeConsole(): this;
@@ -170,7 +170,7 @@ declare module 'boost' {
 
   declare export class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
     key: string;
-    tool: Tool<*, Renderer<Tx>>;
+    tool: Tool<*, Reporter<Tx>>;
 
     constructor(key: string, title: string, defaultConfig?: Tc): this;
     bootstrap(): void;
@@ -192,7 +192,7 @@ declare module 'boost' {
   }
 
   declare export class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolConfig, Tx> {
-    constructor(tool: Tool<Tp, Renderer<Tx>>): this;
+    constructor(tool: Tool<Tp, Reporter<Tx>>): this;
     loadTasks(): Task<*, Tx>[];
   }
 }

@@ -5,7 +5,7 @@ import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { MockRenderer } from './helpers';
+import { MockReporter } from './helpers';
 
 jest.mock('../src/Console');
 
@@ -16,7 +16,7 @@ describe('Routine', () => {
   beforeEach(() => {
     tool = new Tool({
       appName: 'boost',
-      renderer: new MockRenderer(),
+      reporter: new MockReporter(),
     });
     tool.initialized = true; // Avoid loaders
     tool.config = {
