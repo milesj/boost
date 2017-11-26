@@ -5,8 +5,8 @@
  */
 
 import chalk from 'chalk';
-import Reporter from './Reporter';
 
+import type Reporter from './Reporter';
 import type { TasksLoader } from './types';
 
 // const INTERRUPT_CODE: number = 130;

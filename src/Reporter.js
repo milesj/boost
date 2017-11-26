@@ -8,7 +8,6 @@ import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';
 import Options, { bool, number } from 'optimal';
-import Task from './Task';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -17,6 +16,7 @@ import {
   STATUS_FAILED,
 } from './constants';
 
+import type Task from './Task';
 import type { TasksLoader } from './types';
 
 type ReporterOptions = {

@@ -7,11 +7,11 @@
 import execa from 'execa';
 import merge from 'lodash/merge';
 import Task from './Task';
-import Tool from './Tool';
 import isObject from './helpers/isObject';
 import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type Reporter from './Reporter';
+import type Tool from './Tool';
 import type { Result, ResultPromise, TaskCallback } from './types';
 
 export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {

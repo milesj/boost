@@ -4,8 +4,9 @@
  * @flow
  */
 
-import Tool from './Tool';
 import { DEFAULT_PLUGIN_PRIORITY } from './constants';
+
+import type Tool from './Tool';
 
 export default class Plugin<To: Object> {
   moduleName: string = '';
