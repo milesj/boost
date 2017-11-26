@@ -162,7 +162,7 @@ describe('ConfigLoader', () => {
 
     it('errors if preset does not exist', () => {
       expect(() => {
-        loader.parseAndExtend({ extends: './foo.json' });
+        loader.parseAndExtend({ extends: ['./foo.json'] });
       }).toThrowError(
         `Preset configuration ${getFixturePath('app', './foo.json')} does not exist.`,
       );
@@ -170,7 +170,7 @@ describe('ConfigLoader', () => {
 
     it('errors if preset is not a file', () => {
       expect(() => {
-        loader.parseAndExtend({ extends: __dirname });
+        loader.parseAndExtend({ extends: [__dirname] });
       }).toThrowError(
         `Preset configuration ${__dirname} must be a valid file.`,
       );
@@ -186,7 +186,6 @@ describe('ConfigLoader', () => {
     });
 
     it('returns the config if `extends` is empty', () => {
-      expect(loader.parseAndExtend({ extends: '' })).toEqual({ extends: '' });
       expect(loader.parseAndExtend({ extends: [] })).toEqual({ extends: [] });
     });
 
@@ -195,7 +194,7 @@ describe('ConfigLoader', () => {
 
       expect(loader.parseAndExtend({
         foo: 'bar',
-        extends: presetPath,
+        extends: [presetPath],
       })).toEqual({
         foo: 'bar',
         preset: true,
@@ -221,11 +220,11 @@ describe('ConfigLoader', () => {
     it('extends presets recursively', () => {
       fixtures.push(createTempFileInRoot(
         'extend-recursive-a.json',
-        JSON.stringify({ a: 1, extends: './extend-recursive-b.json' }),
+        JSON.stringify({ a: 1, extends: ['./extend-recursive-b.json'] }),
       ));
       fixtures.push(createTempFileInRoot(
         'extend-recursive-b.json',
-        JSON.stringify({ b: 2, extends: './extend-recursive-c.json' }),
+        JSON.stringify({ b: 2, extends: ['./extend-recursive-c.json'] }),
       ));
       fixtures.push(createTempFileInRoot(
         'extend-recursive-c.json',
@@ -234,7 +233,7 @@ describe('ConfigLoader', () => {
 
       expect(loader.parseAndExtend({
         d: 4,
-        extends: './extend-recursive-a.json',
+        extends: ['./extend-recursive-a.json'],
       })).toEqual({
         a: 1,
         b: 2,
@@ -251,16 +250,16 @@ describe('ConfigLoader', () => {
     it('avoids circular recursion', () => {
       fixtures.push(createTempFileInRoot(
         'extend-circular-a.json',
-        JSON.stringify({ a: 1, extends: './extend-circular-b.json' }),
+        JSON.stringify({ a: 1, extends: ['./extend-circular-b.json'] }),
       ));
       fixtures.push(createTempFileInRoot(
         'extend-circular-b.json',
-        JSON.stringify({ b: 2, extends: './extend-circular-a.json' }),
+        JSON.stringify({ b: 2, extends: ['./extend-circular-a.json'] }),
       ));
 
       expect(loader.parseAndExtend({
         c: 3,
-        extends: './extend-circular-a.json',
+        extends: ['./extend-circular-a.json'],
       })).toEqual({
         a: 1,
         b: 2,
@@ -280,7 +279,7 @@ describe('ConfigLoader', () => {
 
       expect(loader.parseAndExtend({
         list: ['baz'],
-        extends: './extend-merge-arrays.json',
+        extends: ['./extend-merge-arrays.json'],
       })).toEqual({
         list: ['foo', 'bar', 'baz'],
         extends: [
@@ -297,7 +296,7 @@ describe('ConfigLoader', () => {
 
       expect(loader.parseAndExtend({
         map: { foo: 456, baz: 'wtf' },
-        extends: './extend-merge-objects.json',
+        extends: ['./extend-merge-objects.json'],
       })).toEqual({
         map: { foo: 456, bar: true, baz: 'wtf' },
         extends: [
@@ -401,10 +400,9 @@ describe('ConfigLoader', () => {
   describe('resolveExtendPaths()', () => {
     it('errors if `extends` value is not a string', () => {
       expect(() => {
-        loader.resolveExtendPaths(123);
         loader.resolveExtendPaths([123]);
       }).toThrowError(
-        'Invalid `extends` configuration value. Must be a string or an array of strings.',
+        'Invalid `extends` configuration value. Must be an array of strings.',
       );
     });
 
@@ -412,12 +410,6 @@ describe('ConfigLoader', () => {
       expect(() => {
         loader.resolveExtendPaths(['FooBarBaz']);
       }).toThrowError('Invalid `extends` configuration value "FooBarBaz".');
-    });
-
-    it('supports a single string value', () => {
-      expect(loader.resolveExtendPaths('foo-bar')).toEqual([
-        getModulePath('foo-bar', 'config/boost.preset.js'),
-      ]);
     });
 
     it('supports multiple string values using an array', () => {

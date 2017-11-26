@@ -10,7 +10,8 @@ import path from 'path';
 import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
-import Config, { array, bool, string, union } from 'optimal';
+import pluralize from 'pluralize';
+import Config, { array, bool, string } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -20,8 +21,6 @@ import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export default class ConfigLoader {
-  config: ToolConfig;
-
   options: ToolOptions;
 
   package: PackageConfig;
@@ -59,7 +58,7 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName, root } = this.options;
+    const { appName, pluginName, root } = this.options;
     const camelName = camelCase(appName);
     let config = {};
 
@@ -69,7 +68,7 @@ export default class ConfigLoader {
 
       // Extend from a preset if a string
       if (typeof config === 'string') {
-        config = { extends: config };
+        config = { extends: [config] };
       }
 
     // Locate files within a local config folder
@@ -96,19 +95,15 @@ export default class ConfigLoader {
     }
 
     // Parse and extend configuration
-    this.config = new Config(this.parseAndExtend(config), {
+    return new Config(this.parseAndExtend(config), {
       debug: bool(),
-      extends: union([
-        string(),
-        array(string()),
-      ], []),
+      extends: array(string()),
       silent: bool(),
+      [pluralize(pluginName)]: array(string()),
     }, {
       name: 'ConfigLoader',
       unknown: true,
     });
-
-    return this.config;
   }
 
   /**
@@ -239,12 +234,10 @@ export default class ConfigLoader {
    *  - Strings that match a node module name should resolve to a config file relative to the CWD.
    *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
-  resolveExtendPaths(extendPaths: string | string[], baseDir?: string = ''): string[] {
-    return (Array.isArray(extendPaths) ? extendPaths : [extendPaths]).map((extendPath) => {
+  resolveExtendPaths(extendPaths: string[], baseDir?: string = ''): string[] {
+    return extendPaths.map((extendPath) => {
       if (typeof extendPath !== 'string') {
-        throw new TypeError(
-          'Invalid `extends` configuration value. Must be a string or an array of strings.',
-        );
+        throw new TypeError('Invalid `extends` configuration value. Must be an array of strings.');
       }
 
       const { appName, scoped, pluginName } = this.options;

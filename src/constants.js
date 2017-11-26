@@ -21,6 +21,7 @@ export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,
   extends: [],
+  plugins: [],
   silent: false,
 };
 

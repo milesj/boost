@@ -37,7 +37,6 @@ declare module 'boost' {
   };
 
   declare class ConfigLoader {
-    config: ToolConfig;
     options: ToolOptions;
     package: PackageConfig;
     parsedFiles: { [key: string]: boolean };
@@ -47,7 +46,7 @@ declare module 'boost' {
     loadPackageJSON(): PackageConfig;
     parseAndExtend(fileOrConfig: string | Object): Object;
     parseFile(filePath: string, options?: Object): Object;
-    resolveExtendPaths(extendPaths: string | string[], baseDir?: string): string[];
+    resolveExtendPaths(extendPaths: string[], baseDir?: string): string[];
     resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
   }
 
