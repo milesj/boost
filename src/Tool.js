@@ -172,9 +172,8 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
     // Use native Boost reporter
     if (!reporterName) {
-      this.reporter = new Reporter({
-        silent: this.config.silent,
-      });
+      // $FlowIgnore Temporarily
+      this.reporter = new Reporter({ silent: this.config.silent });
 
       return this;
     }

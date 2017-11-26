@@ -4,6 +4,8 @@
  * @flow
  */
 
+/* eslint-disable flowtype/no-weak-types */
+
 import upperFirst from 'lodash/upperFirst';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
@@ -12,13 +14,13 @@ import requireModule from './helpers/requireModule';
 import type { ToolOptions } from './types';
 
 export default class ModuleLoader<Tm> {
-  classReference: Class<Tm>;
+  classReference: Function;
 
   options: ToolOptions;
 
   typeName: string;
 
-  constructor(typeName: string, classReference: Class<Tm>, options: ToolOptions) {
+  constructor(typeName: string, classReference: Function, options: ToolOptions) {
     this.classReference = classReference;
     this.options = options;
     this.typeName = typeName;
@@ -104,6 +106,7 @@ export default class ModuleLoader<Tm> {
         return this.importModule(module);
 
       } else if (isObject(module)) {
+        // $FlowIgnore Temporarily
         return this.importModuleFromOptions(module);
       }
 
