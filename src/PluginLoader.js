@@ -6,7 +6,7 @@
 
 import upperFirst from 'lodash/upperFirst';
 import Plugin from './Plugin';
-import formatPluginModuleName from './helpers/formatPluginModuleName';
+import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 
@@ -27,7 +27,7 @@ export default class PluginLoader<Tp: Plugin<*>> {
    */
   importPlugin(name: string, options?: Object = {}): Tp {
     const { appName, scoped, pluginName } = this.options;
-    const moduleName = formatPluginModuleName(appName, pluginName, name, scoped);
+    const moduleName = formatModuleName(appName, pluginName, name, scoped);
     let importedPlugin;
 
     try {

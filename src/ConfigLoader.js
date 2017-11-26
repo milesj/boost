@@ -11,7 +11,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import Config, { array, bool, string, union } from 'optimal';
-import formatPluginModuleName from './helpers/formatPluginModuleName';
+import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
@@ -265,7 +265,7 @@ export default class ConfigLoader {
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
         return this.resolveModuleConfigPath(
           appName,
-          formatPluginModuleName(appName, pluginName, extendPath, scoped),
+          formatModuleName(appName, pluginName, extendPath, scoped),
           true,
         );
       }

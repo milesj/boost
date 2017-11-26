@@ -7,19 +7,19 @@
 /**
  * Combine app and plugin names into a Node/NPM applicable module name.
  */
-export default function formatPluginModuleName(
+export default function formatModuleName(
   appName: string,
-  pluginName: string,
+  addonName: string,
   name: string,
   scoped: boolean = false,
 ): string {
   const moduleName = name.toLowerCase()
     .replace('plugin:', '')
-    .replace(`${pluginName}:`, '');
+    .replace(`${addonName}:`, '');
 
   if (scoped) {
-    return `@${appName}/${pluginName}-${moduleName}`;
+    return `@${appName}/${addonName}-${moduleName}`;
   }
 
-  return `${appName}-${pluginName}-${moduleName}`;
+  return `${appName}-${addonName}-${moduleName}`;
 }
