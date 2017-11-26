@@ -119,6 +119,11 @@ export default class Renderer<Tx: Object> {
       }
     }
 
+    // Show the current status output
+    if (task.statusText) {
+      output.push(`${this.indent(level + 1)}${chalk.gray(task.statusText)}`);
+    }
+
     // Show all sub-routines
     if (task.subroutines.length > 0) {
       task.subroutines.forEach((routine) => {

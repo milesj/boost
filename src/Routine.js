@@ -84,7 +84,14 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * Execute a command with the given arguments and pass the results through a promise.
    */
   executeCommand(command: string, args: string[], options?: Object = {}): ResultPromise {
-    return this.wrap(execa(command, args, options));
+    const stream = execa(command, args, options);
+
+    // Push chunks to the renderer
+    stream.stdout.on('data', (data) => {
+      this.statusText = data;
+    });
+
+    return this.wrap(stream);
   }
 
   /**

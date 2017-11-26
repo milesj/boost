@@ -29,6 +29,8 @@ export default class Task<Tc: Object, Tx: Object> {
 
   status: Status = STATUS_PENDING;
 
+  statusText: string = '';
+
   subroutines: Task<*, Tx>[] = [];
 
   subtasks: Task<*, Tx>[] = [];
