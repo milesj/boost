@@ -95,6 +95,26 @@ declare module 'boost' {
     update(stop?: boolean): false;
   }
 
+  declare export default class Console<Tr: Reporter<*>> {
+    debugs: string[];
+    debugGroups: string[];
+    errors: string[];
+    logs: string[];
+    reporter: Tr;
+
+    constructor(reporter: Tr): this;
+    debug(message: string): void;
+    displayOutput(): void;
+    displayError(error?: ?Error): void;
+    error(message: string): void;
+    log(message: string): void;
+    start(loader: TasksLoader<*>): void;
+    startDebugGroup(group: string): void;
+    stop(): void;
+    stopDebugGroup(): void;
+    update(): void;
+  }
+
   declare export class Event {
     name: string;
     next: ?EventNextHandler;
@@ -120,19 +140,14 @@ declare module 'boost' {
   declare export class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     config: ToolConfig;
     configLoader: ConfigLoader;
-    debugs: string[];
-    debugGroups: string[];
-    errors: string[];
+    console: Console<Tr>;
     initialized: boolean;
-    logs: string[];
     options: ToolOptions;
     package: PackageConfig;
     pluginLoader: PluginLoader<Tp>;
     plugins: Tp[];
-    reporter: Tr;
 
     constructor(options: Object): this;
-    closeConsole(): this;
     debug(message: string): this;
     getPlugin(name: string): Tp;
     initialize(): this;
@@ -141,10 +156,6 @@ declare module 'boost' {
     log(message: string): this;
     logError(message: string): this;
     loadPlugins(): this;
-    openConsole(loader: TasksLoader<*>): this;
-    render(): this;
-    startDebugGroup(group: string): this;
-    stopDebugGroup(): this;
   }
 
   declare export class Task<Tc: Object, Tx: Object> {
