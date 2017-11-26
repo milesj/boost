@@ -4,7 +4,6 @@
  * @flow
  */
 
-import Promise from 'bluebird';
 import type Task from './Task';
 
 export type ToolConfig = {

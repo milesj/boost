@@ -4,7 +4,6 @@
  * @flow
  */
 
-import Promise from 'bluebird';
 import execa from 'execa';
 import merge from 'lodash/merge';
 import Task from './Task';
@@ -107,7 +106,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines(value: Result): ResultPromise {
-    // $FlowIgnore Native Promise.all() type definitions do not match Bluebird
+    // $FlowIgnore Annoying to type
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -116,7 +115,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * A combination promise will be returned as the result.
    */
   parallelizeTasks(value: Result): ResultPromise {
-    // $FlowIgnore Native Promise.all() type definitions do not match Bluebird
+    // $FlowIgnore Annoying to type
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 

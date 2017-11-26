@@ -4,7 +4,6 @@
  * @flow
  */
 
-import Promise from 'bluebird';
 import { frames } from 'elegant-spinner';
 import {
   STATUS_PENDING,

@@ -4,8 +4,6 @@
  * @flow
  */
 
-/* eslint-disable promise/always-return */
-
 import Routine from './Routine';
 import Tool from './Tool';
 import { DEFAULT_TOOL_CONFIG } from './constants';
@@ -46,13 +44,19 @@ export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolCon
     cli.start(this.loadTasks);
 
     return this.serializeSubroutines(initialValue)
-      .then(() => {
+      .then((result) => {
         cli.displayOutput();
         cli.stop();
+
+        // Return so consumer may use it
+        return result;
       })
       .catch((error) => {
         cli.displayError(error);
         cli.stop();
+
+        // Do not throw as we handled it
+        return error;
       });
   }
 }

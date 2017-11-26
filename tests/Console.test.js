@@ -1,12 +1,12 @@
 import chalk from 'chalk';
 import Console from '../src/Console';
-import { MockReporter } from './helpers';
+import Reporter from '../src/Reporter';
 
 describe('Console', () => {
   let cli;
 
   beforeEach(() => {
-    cli = new Console(new MockReporter());
+    cli = new Console(new Reporter());
   });
 
   describe('debug()', () => {
