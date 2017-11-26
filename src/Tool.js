@@ -8,6 +8,7 @@ import chalk from 'chalk';
 import pluralize from 'pluralize';
 import Options, { bool, instance, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
+import Console from './Console';
 import Emitter from './Emitter';
 import Plugin from './Plugin';
 import PluginLoader from './PluginLoader';
@@ -15,26 +16,16 @@ import Renderer from './Renderer';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 
-import type { TasksLoader, ToolConfig, ToolOptions, PackageConfig } from './types';
-
-// const INTERRUPT_CODE: number = 130;
+import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
-  chalk: typeof chalk;
-
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
 
-  debugs: *[] = [];
-
-  debugGroups: string[] = [];
-
-  errors: *[] = [];
+  console: Console<Tr>;
 
   initialized: boolean = false;
-
-  logs: *[] = [];
 
   options: ToolOptions;
 
@@ -43,8 +34,6 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
   pluginLoader: PluginLoader<Tp>;
 
   plugins: Tp[] = [];
-
-  renderer: Tr;
 
   constructor(options: Object) {
     super();
@@ -60,34 +49,16 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
       name: 'Tool',
     });
 
-    this.chalk = chalk;
-
     // $FlowIgnore
-    this.renderer = this.options.renderer || new Renderer();
-    // this.renderer.tool = this;
-  }
-
-  /**
-   * Close the current CLI instance.
-   */
-  closeConsole(): this {
-    this.renderer.stop();
-
-    return this;
+    this.console = new Console(this.options.renderer || new Renderer());
   }
 
   /**
    * Log a message only when debug is enabled.
    */
-  debug(message: *): this {
+  debug(message: string): this {
     if (this.config.debug) {
-      const prefix = `${chalk.blue('[debug]')} ${this.renderer.indent(this.debugGroups.length)}`;
-
-      if (typeof message === 'object') {
-        this.debugs.push(prefix, message);
-      } else {
-        this.debugs.push(`${prefix}${message}`);
-      }
+      this.console.debug(message);
     }
 
     return this;
@@ -152,8 +123,8 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
   /**
    * Add a message to the output log.
    */
-  log(message: *): this {
-    this.logs.push(message);
+  log(message: string): this {
+    this.console.log(message);
 
     return this;
   }
@@ -161,8 +132,8 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
   /**
    * Add a message to the logError log.
    */
-  logError(message: *): this {
-    this.errors.push(message);
+  logError(message: string): this {
+    this.console.error(message);
 
     return this;
   }
@@ -192,44 +163,6 @@ export default class Tool<Tp: Plugin<*>, Tr: Renderer<*>> extends Emitter {
       plugin.tool = this;
       plugin.bootstrap();
     });
-
-    return this;
-  }
-
-  /**
-   * Open a new CLI instance.
-   */
-  // TODO context
-  openConsole(loader: TasksLoader<*>): this {
-    this.renderer.start(loader);
-
-    return this;
-  }
-
-  /**
-   * Trigger an update in the console.
-   */
-  render(): this {
-    this.renderer.update();
-
-    return this;
-  }
-
-  /**
-   * Start a debug capturing group, which will indent all incoming debug messages.
-   */
-  startDebugGroup(group: string): this {
-    this.debug(chalk.gray(`[${group}]`));
-    this.debugGroups.push(group);
-
-    return this;
-  }
-
-  /**
-   * End the current debug capturing group.
-   */
-  stopDebugGroup(): this {
-    this.debugGroups.pop();
 
     return this;
   }

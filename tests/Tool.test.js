@@ -4,6 +4,8 @@ import Plugin from '../src/Plugin';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { getFixturePath, MockRenderer } from './helpers';
 
+jest.mock('../src/Console');
+
 describe('Tool', () => {
   let tool;
 
@@ -28,34 +30,22 @@ describe('Tool', () => {
     });
   });
 
-  describe.skip('closeConsole()');
-
   describe('debug()', () => {
     it('doesnt log if debug is false', () => {
+      const spy = jest.spyOn(tool.console, 'debug');
+
       tool.debug('message');
 
-      expect(tool.debugs).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
-    it('logs if debug is true', () => {
+    it('logs to console if debug is true', () => {
+      const spy = jest.spyOn(tool.console, 'debug');
+
       tool.config.debug = true;
       tool.debug('message');
 
-      expect(tool.debugs).toEqual([
-        `${chalk.blue('[debug]')} message`,
-      ]);
-    });
-
-    it('indents when within a group', () => {
-      tool.config.debug = true;
-      tool.startDebugGroup('one').startDebugGroup('two');
-      tool.debug('message');
-
-      expect(tool.debugs).toEqual([
-        `${chalk.blue('[debug]')} ${chalk.gray('[one]')}`,
-        `${chalk.blue('[debug]')}     ${chalk.gray('[two]')}`,
-        `${chalk.blue('[debug]')}         message`,
-      ]);
+      expect(spy).toHaveBeenCalledWith('message');
     });
   });
 
@@ -92,27 +82,29 @@ describe('Tool', () => {
 
   describe('invariant()', () => {
     it('doesnt log if debug is false', () => {
+      const spy = jest.spyOn(tool.console, 'debug');
+
       tool.invariant(true, 'message', 'foo', 'bar');
 
-      expect(tool.debugs).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('logs green if true', () => {
+      const spy = jest.spyOn(tool.console, 'debug');
+
       tool.config.debug = true;
       tool.invariant(true, 'message', 'foo', 'bar');
 
-      expect(tool.debugs).toEqual([
-        `${chalk.blue('[debug]')} message: ${chalk.green('foo')}`,
-      ]);
+      expect(spy).toHaveBeenCalledWith(`message: ${chalk.green('foo')}`);
     });
 
     it('logs red if false', () => {
+      const spy = jest.spyOn(tool.console, 'debug');
+
       tool.config.debug = true;
       tool.invariant(false, 'message', 'foo', 'bar');
 
-      expect(tool.debugs).toEqual([
-        `${chalk.blue('[debug]')} message: ${chalk.red('bar')}`,
-      ]);
+      expect(spy).toHaveBeenCalledWith(`message: ${chalk.red('bar')}`);
     });
   });
 
@@ -197,46 +189,23 @@ describe('Tool', () => {
     });
   });
 
-  describe.skip('render()');
-
   describe('log()', () => {
-    it('adds to output log', () => {
-      tool.log('foo').log('bar');
+    it('passes to console', () => {
+      const spy = jest.spyOn(tool.console, 'log');
 
-      expect(tool.logs).toEqual(['foo', 'bar']);
+      tool.log('foo');
+
+      expect(spy).toHaveBeenCalledWith('foo');
     });
   });
 
   describe('logError()', () => {
-    it('adds to error log', () => {
-      tool.logError('foo').logError('bar');
+    it('passes to console', () => {
+      const spy = jest.spyOn(tool.console, 'error');
 
-      expect(tool.errors).toEqual(['foo', 'bar']);
-    });
-  });
+      tool.logError('foo');
 
-  describe('startDebugGroup()', () => {
-    it('logs a message and appends a group name', () => {
-      tool.config.debug = true;
-      tool.startDebugGroup('foo');
-
-      expect(tool.debugGroups).toEqual(['foo']);
-      expect(tool.debugs).toEqual([
-        `${chalk.blue('[debug]')} ${chalk.gray('[foo]')}`,
-      ]);
-    });
-  });
-
-  describe('stopDebugGroup()', () => {
-    it('removes the group name from the list', () => {
-      tool.config.debug = true;
-      tool.startDebugGroup('foo');
-
-      expect(tool.debugGroups).toEqual(['foo']);
-
-      tool.stopDebugGroup();
-
-      expect(tool.debugGroups).toEqual([]);
+      expect(spy).toHaveBeenCalledWith('foo');
     });
   });
 });

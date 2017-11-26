@@ -7,6 +7,8 @@ import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { MockRenderer } from './helpers';
 
+jest.mock('../src/Console');
+
 describe('Routine', () => {
   let routine;
   let tool;
@@ -136,14 +138,6 @@ describe('Routine', () => {
 
     it('returns a promise', () => {
       expect(routine.executeTask(123, task)).toBeInstanceOf(Promise);
-    });
-
-    it('renders the console', async () => {
-      const spy = jest.spyOn(routine.tool, 'render');
-
-      await routine.executeTask(123, task);
-
-      expect(spy).toBeCalled();
     });
 
     it('passes the value down the promise', async () => {
@@ -441,20 +435,20 @@ describe('Routine', () => {
     });
 
     it('triggers group start and stop', async () => {
-      const startSpy = jest.spyOn(routine.tool, 'startDebugGroup');
-      const stopSpy = jest.spyOn(routine.tool, 'stopDebugGroup');
-      const renderSpy = jest.spyOn(routine.tool, 'render');
+      const startSpy = jest.spyOn(routine.tool.console, 'startDebugGroup');
+      const stopSpy = jest.spyOn(routine.tool.console, 'stopDebugGroup');
+      const updateSpy = jest.spyOn(routine.tool.console, 'update');
 
       await routine.run(123);
 
       expect(startSpy).toBeCalledWith('key');
       expect(stopSpy).toBeCalled();
-      expect(renderSpy).toBeCalled();
+      expect(updateSpy).toBeCalled();
     });
 
     it('triggers group stop if an error occurs', async () => {
-      const stopSpy = jest.spyOn(routine.tool, 'stopDebugGroup');
-      const renderSpy = jest.spyOn(routine.tool, 'render');
+      const stopSpy = jest.spyOn(routine.tool.console, 'stopDebugGroup');
+      const updateSpy = jest.spyOn(routine.tool.console, 'update');
 
       try {
         await routine.pipe(new FailureSubRoutine('failure', 'title')).run(123);
@@ -463,7 +457,7 @@ describe('Routine', () => {
       }
 
       expect(stopSpy).toBeCalled();
-      expect(renderSpy).toBeCalled();
+      expect(updateSpy).toBeCalled();
     });
 
     it('updates status if a success', async () => {

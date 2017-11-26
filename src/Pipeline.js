@@ -4,6 +4,8 @@
  * @flow
  */
 
+/* eslint-disable promise/always-return */
+
 import Routine from './Routine';
 import Tool from './Tool';
 import { DEFAULT_TOOL_CONFIG } from './constants';
@@ -37,11 +39,20 @@ export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolCon
    * Execute all subroutines in order.
    */
   run(initialValue: Result, context: Tx): ResultPromise {
-    this.context = context || {};
-    this.tool.openConsole(this.loadTasks);
+    const { console: cli } = this.tool;
 
-    return this.serializeSubroutines(initialValue).finally(() => {
-      this.tool.closeConsole();
-    });
+    this.context = context || {};
+
+    cli.start(this.loadTasks);
+
+    return this.serializeSubroutines(initialValue)
+      .then(() => {
+        cli.displayOutput();
+        cli.stop();
+      })
+      .catch((error) => {
+        cli.displayError(error);
+        cli.stop();
+      });
   }
 }

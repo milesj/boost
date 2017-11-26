@@ -99,9 +99,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * with the provided value.
    */
   executeTask = (value: Result, task: Task<*, Tx>): ResultPromise => (
-    this.wrap(task.run(value, this.context)).finally(() => {
-      this.tool.render();
-    })
+    this.wrap(task.run(value, this.context))
   );
 
   /**
@@ -142,16 +140,27 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * Trigger processes before and after execution.
    */
   run(value: Result, context: Tx): ResultPromise {
+    const { console: cli } = this.tool;
+
     if (this.exit) {
       throw new Error('Process has been interrupted.');
     }
 
-    this.tool.startDebugGroup(this.key);
+    cli.startDebugGroup(this.key);
 
-    return super.run(value, context).finally(() => {
-      this.tool.stopDebugGroup();
-      this.tool.render();
-    });
+    return super.run(value, context)
+      .then((result) => {
+        cli.stopDebugGroup();
+        cli.update();
+
+        return result;
+      })
+      .catch((error) => {
+        cli.stopDebugGroup();
+        cli.update();
+
+        throw error;
+      });
   }
 
   /**

@@ -3,6 +3,8 @@ import Routine from '../src/Routine';
 import Tool from '../src/Tool';
 import { MockRenderer } from './helpers';
 
+jest.mock('../src/Console');
+
 describe('Pipeline', () => {
   let tool;
   let pipeline;
@@ -41,22 +43,25 @@ describe('Pipeline', () => {
   });
 
   describe('run()', () => {
-    it('closes console connection once ran', async () => {
-      const spy = jest.spyOn(pipeline.tool, 'closeConsole');
+    it('stops console and displays output', async () => {
+      const spy = jest.spyOn(pipeline.tool.console, 'displayOutput');
+      const stopSpy = jest.spyOn(pipeline.tool.console, 'stop');
 
       await pipeline.run();
 
       expect(spy).toBeCalled();
+      expect(stopSpy).toBeCalled();
     });
 
-    it('closes console connection if an error occurs', async () => {
+    it('stops console and displays error', async () => {
       class FailureRoutine extends Routine {
         execute() {
           throw new Error('Oops');
         }
       }
 
-      const spy = jest.spyOn(pipeline.tool, 'closeConsole');
+      const spy = jest.spyOn(pipeline.tool.console, 'displayError');
+      const stopSpy = jest.spyOn(pipeline.tool.console, 'stop');
 
       try {
         await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
@@ -65,6 +70,7 @@ describe('Pipeline', () => {
       }
 
       expect(spy).toBeCalled();
+      expect(stopSpy).toBeCalled();
     });
   });
 });
