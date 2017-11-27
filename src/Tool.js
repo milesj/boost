@@ -51,6 +51,16 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     }, {
       name: 'Tool',
     });
+
+    // Avoid binding listeners while testing
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+
+    // Cleanup when an exit occurs
+    process.on('exit', (code) => {
+      this.emit('exit', null, [code]);
+    });
   }
 
   /**
@@ -60,6 +70,15 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     if (this.config.debug) {
       this.console.debug(message);
     }
+
+    return this;
+  }
+
+  /**
+   * Force exit the application.
+   */
+  exit(message: string | Error, code?: number = 1): this {
+    this.console.exit(message, code);
 
     return this;
   }

@@ -3,6 +3,7 @@ import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Console from '../src/Console';
 import Reporter from '../src/Reporter';
+import ExitError from '../src/ExitError';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { getFixturePath } from './helpers';
 
@@ -37,6 +38,25 @@ describe('Tool', () => {
       tool.debug('message');
 
       expect(spy).toHaveBeenCalledWith('message');
+    });
+  });
+
+  describe('exit()', () => {
+    it('accepts a string', () => {
+      const spy = jest.spyOn(tool.console, 'exit');
+
+      tool.exit('Oops', 123);
+
+      expect(spy).toHaveBeenCalledWith('Oops', 123);
+    });
+
+    it('accepts an error', () => {
+      const spy = jest.spyOn(tool.console, 'exit');
+      const error = new ExitError('Oh nooo', 456);
+
+      tool.exit(error);
+
+      expect(spy).toHaveBeenCalledWith(error, 1);
     });
   });
 

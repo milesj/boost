@@ -97,6 +97,12 @@ declare module 'boost' {
     update(stop?: boolean): false;
   }
 
+  declare export default class ExitError extends Error {
+    code: number;
+
+    constructor(message: string, code?: number): this;
+  }
+
   declare export default class Console<Tr: Reporter<*>> {
     debugs: string[];
     debugGroups: string[];
@@ -109,6 +115,7 @@ declare module 'boost' {
     displayOutput(): void;
     displayError(error?: ?Error): void;
     error(message: string): void;
+    exit(message: string | Error, code?: number): void;
     log(message: string): void;
     start(loader: TasksLoader<*>): void;
     startDebugGroup(group: string): void;
@@ -131,8 +138,8 @@ declare module 'boost' {
   declare export class Emitter {
     listeners: { [eventName: string]: Set<EventListener> };
 
-    emit(eventName: string, initialValue: Result, args?: EventArguments): Event;
-    emitCascade(eventName: string, initialValue: Result, args?: EventArguments): Event;
+    emit(eventName: string, initialValue: *, args?: EventArguments): Event;
+    emitCascade(eventName: string, initialValue: *, args?: EventArguments): Event;
     getEventNames(): string[];
     getListeners(eventName: string): Set<EventListener>;
     off(eventName: string, listener: EventListener): this;
@@ -153,6 +160,7 @@ declare module 'boost' {
 
     constructor(options: Object): this;
     debug(message: string): this;
+    exit(message: string | Error, code?: number): this;
     getPlugin(name: string): Tp;
     initialize(): this;
     invariant(condition: boolean, message: string, pass: string, fail: string): this;

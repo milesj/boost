@@ -6,6 +6,7 @@
 
 import execa from 'execa';
 import merge from 'lodash/merge';
+import ExitError from './ExitError';
 import Task from './Task';
 import isObject from './helpers/isObject';
 import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
@@ -90,6 +91,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
       this.statusText = data;
     });
 
+    // TODO catch error codes?
     return this.wrap(stream);
   }
 
@@ -142,7 +144,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
     const { console: cli } = this.tool;
 
     if (this.exit) {
-      throw new Error('Process has been interrupted.');
+      return Promise.reject(new ExitError('Process has been interrupted.'));
     }
 
     cli.startDebugGroup(this.key);
