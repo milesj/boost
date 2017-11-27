@@ -66,6 +66,8 @@ export default class Console<Tr: Reporter<*>> {
    * Display the final output to stdout.
    */
   displayOutput() {
+    this.stop();
+
     console.log('OUT OCCURRED');
   }
 
@@ -73,6 +75,8 @@ export default class Console<Tr: Reporter<*>> {
    * Display a caught error to stderr.
    */
   displayError(error?: ?Error = null) {
+    this.stop();
+
     console.error('ERROR OCCURRED');
   }
 
@@ -80,6 +84,8 @@ export default class Console<Tr: Reporter<*>> {
    * Display an uncaught error, unhandled promise, or general forced exit to stderr.
    */
   displayExit(code: number) {
+    this.stop();
+
     console.error('EXIT OCCURRED');
   }
 

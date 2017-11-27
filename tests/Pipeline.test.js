@@ -45,12 +45,10 @@ describe('Pipeline', () => {
   describe('run()', () => {
     it('stops console and displays output', async () => {
       const spy = jest.spyOn(pipeline.tool.console, 'displayOutput');
-      const stopSpy = jest.spyOn(pipeline.tool.console, 'stop');
 
       await pipeline.run();
 
       expect(spy).toBeCalled();
-      expect(stopSpy).toBeCalled();
     });
 
     it('stops console and displays error', async () => {
@@ -61,7 +59,6 @@ describe('Pipeline', () => {
       }
 
       const spy = jest.spyOn(pipeline.tool.console, 'displayError');
-      const stopSpy = jest.spyOn(pipeline.tool.console, 'stop');
 
       try {
         await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
@@ -70,7 +67,6 @@ describe('Pipeline', () => {
       }
 
       expect(spy).toBeCalled();
-      expect(stopSpy).toBeCalled();
     });
   });
 });

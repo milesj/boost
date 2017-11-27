@@ -11,7 +11,7 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 import type Plugin from './Plugin';
 import type Reporter from './Reporter';
 import type Task from './Task';
-import type { Result, ResultPromise, ToolConfig } from './types';
+import type { ToolConfig } from './types';
 
 export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolConfig, Tx> {
   constructor(tool: Tool<Tp, Reporter<Tx>>) {
@@ -36,7 +36,7 @@ export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolCon
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: Result, context: Tx): ResultPromise {
+  run(initialValue: *, context: Tx): Promise<*> {
     const { console: cli } = this.tool;
 
     this.context = context || {};
@@ -46,14 +46,12 @@ export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolCon
     return this.serializeSubroutines(initialValue)
       .then((result) => {
         cli.displayOutput();
-        cli.stop();
 
         // Return so consumer may use it
         return result;
       })
       .catch((error) => {
         cli.displayError(error);
-        cli.stop();
 
         // Do not throw as we handled it
         return error;

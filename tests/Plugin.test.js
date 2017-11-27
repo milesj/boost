@@ -1,5 +1,4 @@
 import Plugin from '../src/Plugin';
-import { DEFAULT_PLUGIN_PRIORITY } from '../src/constants';
 
 describe('Plugin', () => {
   describe('constructor()', () => {
@@ -12,7 +11,7 @@ describe('Plugin', () => {
     it('defines a default priority', () => {
       const plugin = new Plugin();
 
-      expect(plugin.priority).toBe(DEFAULT_PLUGIN_PRIORITY);
+      expect(plugin.priority).toBe(100);
     });
   });
 });

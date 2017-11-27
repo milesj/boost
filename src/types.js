@@ -29,13 +29,9 @@ export type PackageConfig = {
   // Add others if we need them
 };
 
-export type Result = *;
-
-export type ResultPromise = Promise<Result>;
-
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
-export type TaskCallback<Tx: Object> = (value: Result, context: Tx) => Result | ResultPromise;
+export type TaskCallback<Tx: Object> = (value: *, context: Tx) => Promise<*>;
 
 export type TasksLoader<Tx: Object> = () => Task<*, Tx>[];
 

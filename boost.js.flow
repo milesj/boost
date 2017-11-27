@@ -10,13 +10,9 @@ declare module 'boost' {
     version: string,
   };
 
-  declare export type Result = *;
-
-  declare export type ResultPromise = Promise<Result>;
-
   declare export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
-  declare export type TaskCallback<Tx> = (value: Result, context: Tx) => Result | ResultPromise;
+  declare export type TaskCallback<Tx> = (value: *, context: Tx) => Promise<*>;
 
   declare export type TasksLoader<Tx> = () => Task<*, Tx>[];
 
@@ -187,9 +183,9 @@ declare module 'boost' {
     isPending(): boolean;
     isRunning(): boolean;
     isSkipped(): boolean;
-    run(value: Result, context: Tx): ResultPromise;
+    run(value: *, context: Tx): Promise<*>;
     skip(condition?: boolean): this;
-    wrap(value: *): ResultPromise;
+    wrap(value: *): Promise<*>;
   }
 
   declare export class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
@@ -199,19 +195,19 @@ declare module 'boost' {
     constructor(key: string, title: string, defaultConfig?: Tc): this;
     bootstrap(): void;
     configure(parent: Routine<*, Tx>): this;
-    execute(value: Result, context: Tx): ResultPromise;
-    executeCommand(command: string, args: string[], options?: Object): ResultPromise;
-    executeTask(value: Result, task: Task<*, Tx>): ResultPromise;
-    parallelizeSubroutines(value: Result): ResultPromise;
-    parallelizeTasks(value: Result): ResultPromise;
+    execute(value: *, context: Tx): Promise<*>;
+    executeCommand(command: string, args: string[], options?: Object): Promise<*>;
+    executeTask(value: *, task: Task<*, Tx>): Promise<*>;
+    parallelizeSubroutines(value: *): Promise<*>;
+    parallelizeTasks(value: *): Promise<*>;
     pipe(...routines: Routine<*, Tx>[]): this;
     serialize(
-      initialValue: Result,
+      initialValue: *,
       items: *[],
-      accumulator:(value: Result, item: *) => ResultPromise,
-    ): ResultPromise;
-    serializeSubroutines(value: Result): ResultPromise;
-    serializeTasks(value: Result): ResultPromise;
+      accumulator:(value: *, item: *) => Promise<*>,
+    ): Promise<*>;
+    serializeSubroutines(value: *): Promise<*>;
+    serializeTasks(value: *): Promise<*>;
     task<C>(title: string, action: TaskCallback<Tx>, config?: C): Task<C, Tx>;
   }
 

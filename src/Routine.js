@@ -13,7 +13,7 @@ import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type Reporter from './Reporter';
 import type Tool from './Tool';
-import type { Result, ResultPromise, TaskCallback } from './types';
+import type { TaskCallback } from './types';
 
 export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   exit: boolean = false;
@@ -76,14 +76,14 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute(value: Result, context: Tx): ResultPromise {
+  execute(value: *, context: Tx): Promise<*> {
     return value;
   }
 
   /**
    * Execute a command with the given arguments and pass the results through a promise.
    */
-  executeCommand(command: string, args: string[], options?: Object = {}): ResultPromise {
+  executeCommand(command: string, args: string[], options?: Object = {}): Promise<*> {
     const stream = execa(command, args, options);
 
     // Push chunks to the reporter
@@ -99,7 +99,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: Result, task: Task<*, Tx>): ResultPromise => (
+  executeTask = (value: *, task: Task<*, Tx>): Promise<*> => (
     this.wrap(task.run(value, this.context))
   );
 
@@ -107,8 +107,8 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines(value: Result): ResultPromise {
-    // $FlowIgnore Annoying to type
+  parallelizeSubroutines(value: *): Promise<*[]> {
+    // $FlowIgnore Annoying to solve
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -116,8 +116,8 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: Result): ResultPromise {
-    // $FlowIgnore Annoying to type
+  parallelizeTasks(value: *): Promise<*[]> {
+    // $FlowIgnore Annoying to solve
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 
@@ -140,7 +140,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   /**
    * Trigger processes before and after execution.
    */
-  run(value: Result, context: Tx): ResultPromise {
+  run(value: *, context: Tx): Promise<*> {
     const { console: cli } = this.tool;
 
     if (this.exit) {
@@ -170,11 +170,11 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * `accumulator` function to execute the list of processes.
    */
   serialize(
-    initialValue: Result,
+    initialValue: *,
     items: *[],
-    accumulator: (value: Result, item: *) => ResultPromise,
-  ): ResultPromise {
-    return items.reduce((promise: ResultPromise, item: *) => (
+    accumulator: (value: *, item: *) => Promise<*>,
+  ): Promise<*> {
+    return items.reduce((promise: Promise<*>, item: *) => (
       promise.then(value => accumulator(value, item))
     ), Promise.resolve(initialValue));
   }
@@ -182,14 +182,14 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines(value: Result): ResultPromise {
+  serializeSubroutines(value: *): Promise<*> {
     return this.serialize(value, this.subroutines, this.executeTask);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: Result): ResultPromise {
+  serializeTasks(value: *): Promise<*> {
     return this.serialize(value, this.subtasks, this.executeTask);
   }
 

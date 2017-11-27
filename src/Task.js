@@ -13,7 +13,7 @@ import {
   STATUS_FAILED,
 } from './constants';
 
-import type { Result, ResultPromise, Status, TaskCallback } from './types';
+import type { Status, TaskCallback } from './types';
 
 export default class Task<Tc: Object, Tx: Object> {
   action: ?TaskCallback<Tx> = null;
@@ -88,7 +88,7 @@ export default class Task<Tc: Object, Tx: Object> {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(initialValue: Result, context: Tx): ResultPromise {
+  run(initialValue: *, context: Tx): Promise<*> {
     this.context = context;
 
     if (this.isSkipped() || !this.action) {
@@ -145,7 +145,7 @@ export default class Task<Tc: Object, Tx: Object> {
   /**
    * Wrap a value in a promise if it has not already been.
    */
-  wrap(value: *): ResultPromise {
+  wrap(value: *): Promise<*> {
     return (value instanceof Promise) ? value : Promise.resolve(value);
   }
 }
