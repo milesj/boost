@@ -195,7 +195,7 @@ export default class Reporter<Tx: Object> {
   }
 
   /**
-   * Update and flush the output if the loader is defined.
+   * Update and flush the output.
    */
   update() {
     const output = this.render();

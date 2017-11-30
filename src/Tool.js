@@ -23,7 +23,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
   configLoader: ConfigLoader;
 
-  console: Console<Tr>;
+  console: Console<*, Tr>;
 
   initialized: boolean = false;
 
