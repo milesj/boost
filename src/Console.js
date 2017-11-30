@@ -7,17 +7,29 @@
 import chalk from 'chalk';
 import ExitError from './ExitError';
 
+import type Task from './Task';
 import type Reporter from './Reporter';
-import type { TasksLoader } from './types';
 
-// const INTERRUPT_CODE: number = 130;
+const DEBUG_COLORS: string[] = [
+  'white',
+  'cyan',
+  'blue',
+  'magenta',
+  'red',
+  'yellow',
+  'green',
+];
 
 export default class Console<Tr: Reporter<*>> {
   debugs: string[] = [];
 
   debugGroups: string[] = [];
 
+  debugIndex: number = -1;
+
   errors: string[] = [];
+
+  interrupted: boolean = false;
 
   logs: string[] = [];
 
@@ -31,14 +43,12 @@ export default class Console<Tr: Reporter<*>> {
       return;
     }
 
-    let interrupted = false;
     const signalHandler = () => {
-      // Exit without an error
-      if (interrupted) {
-        this.exit('Process has been terminated.', 0);
+      if (this.interrupted) {
+        this.exit('Process has been terminated.');
       } else {
-        this.log(chalk.yellow('Press Ctrl+C to exit.'));
-        interrupted = true;
+        this.log(chalk.yellow('Press Ctrl+C again to exit.'));
+        this.interrupted = true;
       }
     };
 
@@ -59,34 +69,7 @@ export default class Console<Tr: Reporter<*>> {
    * Add a message to the debug log.
    */
   debug(message: string) {
-    this.debugs.push(`${chalk.blue('[debug]')}${this.reporter.indent(this.debugGroups.length)} ${message}`);
-  }
-
-  /**
-   * Display the final output to stdout.
-   */
-  displayOutput() {
-    this.stop();
-
-    console.log('OUT OCCURRED');
-  }
-
-  /**
-   * Display a caught error to stderr.
-   */
-  displayError(error?: ?Error = null) {
-    this.stop();
-
-    console.error('ERROR OCCURRED');
-  }
-
-  /**
-   * Display an uncaught error, unhandled promise, or general forced exit to stderr.
-   */
-  displayExit(code: number) {
-    this.stop();
-
-    console.error('EXIT OCCURRED');
+    this.debugs.push(`${chalk.gray('[debug]')}${this.reporter.indent(this.debugGroups.length)} ${message}`);
   }
 
   /**
@@ -100,21 +83,29 @@ export default class Console<Tr: Reporter<*>> {
    * Force exit the application.
    */
   /* istanbul ignore next */
-  exit(message: string | Error, code?: number = 1) {
-    const error = (message instanceof Error) ? message : new ExitError(message, code);
-    const errorCode = (typeof error.code === 'number') ? error.code : code;
+  exit(message: string | Error | null, code?: number = 1) {
+    let errorCode = code;
+
+    // Null messages are always successful
+    if (message !== null) {
+      const error = (message instanceof Error) ? message : new ExitError(message, code);
+
+      if (typeof error.code === 'number') {
+        errorCode = error.code;
+      }
+    }
 
     // Show terminal cursor
-    // eslint-disable-next-line unicorn/no-hex-escape
-    this.log('\x1B[?25h');
+    this.log('\x1B[?25h'); // eslint-disable-line unicorn/no-hex-escape
 
-    // TODO, send final output
+    // Stop the renderer
+    this.stop();
 
-    // Exit the node process
-    if (process.env.NODE_ENV !== 'test') {
-      // eslint-disable-next-line unicorn/no-process-exit
-      process.exit(errorCode);
-    }
+    // Send final output
+    (code === 0 ? process.stdout : process.stderr).write(this.reporter.render(code), () => {
+      // Exit process after buffer is flushed
+      process.exit(errorCode); // eslint-disable-line unicorn/no-process-exit
+    });
   }
 
   /**
@@ -127,15 +118,30 @@ export default class Console<Tr: Reporter<*>> {
   /**
    * Start a new console and begin rendering.
    */
-  start(loader: TasksLoader<*>) {
-    this.reporter.start(loader);
+  start(tasks: Task<*, *>[]) {
+    const { debugs, errors, logs } = this;
+
+    this.reporter.start(() => ({
+      debugs,
+      errors,
+      logs,
+      tasks,
+    }));
   }
 
   /**
    * Start a debug capturing group, which will indent all incoming debug messages.
    */
   startDebugGroup(group: string) {
-    this.debug(chalk.gray(`[${group}]`));
+    this.debugIndex += 1;
+
+    if (this.debugIndex === DEBUG_COLORS.length) {
+      this.debugIndex = 0;
+    }
+
+    const color = DEBUG_COLORS[this.debugIndex];
+
+    this.debug(chalk[color](`[${group}]`));
     this.debugGroups.push(group);
   }
 
@@ -150,7 +156,15 @@ export default class Console<Tr: Reporter<*>> {
    * End the current debug capturing group.
    */
   stopDebugGroup() {
-    this.debugGroups.pop();
+    const color = DEBUG_COLORS[this.debugIndex];
+    const group = this.debugGroups.pop();
+
+    this.debug(chalk[color](`[/${group}]`));
+    this.debugIndex -= 1;
+
+    if (this.debugIndex < 0) {
+      this.debugIndex = DEBUG_COLORS.length - 1;
+    }
   }
 
   /**

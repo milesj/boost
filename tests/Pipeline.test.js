@@ -31,34 +31,23 @@ describe('Pipeline', () => {
     });
   });
 
-  describe('loadTasks()', () => {
-    it('returns an array of task results', () => {
-      const foo = new Routine('foo', 'foo');
-      const bar = new Routine('bar', 'bar');
-
-      pipeline.pipe(foo, bar);
-
-      expect(pipeline.loadTasks()).toEqual([foo, bar]);
-    });
-  });
-
   describe('run()', () => {
-    it('stops console and displays output', async () => {
-      const spy = jest.spyOn(pipeline.tool.console, 'displayOutput');
+    it('exits the console on success', async () => {
+      const spy = jest.spyOn(pipeline.tool.console, 'exit');
 
       await pipeline.run();
 
-      expect(spy).toBeCalled();
+      expect(spy).toBeCalledWith(null, 0);
     });
 
-    it('stops console and displays error', async () => {
+    it('exits the console on failure', async () => {
       class FailureRoutine extends Routine {
         execute() {
           throw new Error('Oops');
         }
       }
 
-      const spy = jest.spyOn(pipeline.tool.console, 'displayError');
+      const spy = jest.spyOn(pipeline.tool.console, 'exit');
 
       try {
         await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
@@ -66,7 +55,7 @@ describe('Pipeline', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(spy).toBeCalled();
+      expect(spy).toBeCalledWith(new Error('Oops'), 1);
     });
   });
 });

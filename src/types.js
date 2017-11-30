@@ -29,11 +29,21 @@ export type PackageConfig = {
   // Add others if we need them
 };
 
+export type ReportLoader<Tx: Object> = () => {
+  debugs: string[],
+  errors: string[],
+  logs: string[],
+  tasks: Task<*, Tx>[],
+};
+
+export type ReporterOptions = {
+  refreshRate: number,
+  silent: boolean,
+};
+
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
 export type TaskCallback<Tx: Object> = (value: *, context: Tx) => Promise<*>;
-
-export type TasksLoader<Tx: Object> = () => Task<*, Tx>[];
 
 export type EventArguments = *[];
 

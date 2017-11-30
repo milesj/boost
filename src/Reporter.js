@@ -17,20 +17,12 @@ import {
 } from './constants';
 
 import type Task from './Task';
-import type { TasksLoader } from './types';
-
-type ReporterOptions = {
-  clearOutput: boolean,
-  refreshRate: number,
-  silent: boolean,
-};
+import type { ReportLoader, ReporterOptions } from './types';
 
 export default class Reporter<Tx: Object> {
   instance: number = 0;
 
-  hasFailed: boolean = false;
-
-  loader: ?TasksLoader<Tx> = null;
+  loader: ?ReportLoader<Tx> = null;
 
   moduleName: string = '';
 
@@ -40,7 +32,6 @@ export default class Reporter<Tx: Object> {
 
   constructor(options?: Object = {}) {
     this.options = new Options(options, {
-      clearOutput: bool(),
       refreshRate: number(100), // eslint-disable-line no-magic-numbers
       silent: bool(),
     }, {
@@ -52,17 +43,38 @@ export default class Reporter<Tx: Object> {
    * Create an indentation based on the defined length.
    */
   indent(length: number): string {
-    return '    '.repeat(length);
+    return '  '.repeat(length);
   }
 
   /**
-   * Render the output by looping over all tasks in the tree.
+   * Render the output by looping over all tasks and messages.
    */
-  render(tasks: Task<*, Tx>[]): string {
-    const output = [];
+  render(code?: number = 0): string {
+    if (!this.loader) {
+      return '';
+    }
 
+    const output = [];
+    const {
+      debugs = [],
+      errors = [],
+      logs = [],
+      tasks = [],
+    } = this.loader();
+
+    // Tasks first
     tasks.forEach((task) => {
       output.push(...this.renderTask(task, 0));
+    });
+
+    // Debugs second
+    debugs.forEach((debug) => {
+      output.push(debug);
+    });
+
+    // Logs last
+    (code === 0 ? logs : errors).forEach((log) => {
+      output.push(log);
     });
 
     return output.join('\n');
@@ -83,7 +95,6 @@ export default class Reporter<Tx: Object> {
 
     } else if (task.hasFailed()) {
       message += ` ${chalk.red('[failed]')}`;
-      this.hasFailed = true;
 
     } else if (suffix) {
       message += ` ${suffix}`;
@@ -107,7 +118,6 @@ export default class Reporter<Tx: Object> {
 
         } else if (subTask.hasFailed() && !failedTask) {
           failedTask = subTask;
-          this.hasFailed = true;
 
         } else if (subTask.hasPassed()) {
           passed += 1;
@@ -161,11 +171,11 @@ export default class Reporter<Tx: Object> {
   /**
    * Start the output process once setting the task loader.
    */
-  start(loader: TasksLoader<Tx>) {
+  start(loader: ReportLoader<Tx>) {
     if (this.instance) {
       return;
     } else if (!loader || typeof loader !== 'function') {
-      throw new TypeError('A tasks loader is required to render CLI output.');
+      throw new TypeError('A loader is required to render console output.');
     }
 
     this.loader = loader;
@@ -176,69 +186,22 @@ export default class Reporter<Tx: Object> {
   }
 
   /**
-   * Stop and or clear the output process.
+   * Stop and clear the output process.
    */
   stop() {
-    // Turn off interval
     clearInterval(this.instance);
 
-    // Render the final output
-    if (this.options.clearOutput) {
-      logUpdate.clear();
-    } else {
-      this.update(true);
-
-      logUpdate.done();
-    }
-
-    // Dereference our loader
-    this.loader = null;
+    logUpdate.clear();
   }
 
   /**
    * Update and flush the output if the loader is defined.
    */
-  update(stop?: boolean = false) {
-    if (!this.loader) {
-      return;
+  update() {
+    const output = this.render();
+
+    if (output) {
+      logUpdate(output);
     }
-
-    // const {
-    //   debugs,
-    //   errors,
-    //   logs,
-    //   options,
-    // } = this.tool;
-    let output = '';
-
-    // Display output by default
-    if (!this.options.silent) {
-      // if (options.title) {
-      //   output += options.title;
-      //   output += '\n';
-      // }
-
-      output += this.render(this.loader());
-    }
-    //
-    // // Show additional output for the final render
-    // if (stop) {
-    //   if (debugs.length > 0) {
-    //     output += '\n\n';
-    //     output += debugs.join('\n');
-    //   }
-    //
-    //   if (this.hasFailed) {
-    //     if (errors.length > 0) {
-    //       output += '\n\n';
-    //       output += errors.join('\n');
-    //     }
-    //   } else if (logs.length > 0) {
-    //     output += '\n\n';
-    //     output += logs.join('\n');
-    //   }
-    // }
-
-    logUpdate(output);
   }
 }

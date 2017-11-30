@@ -27,8 +27,8 @@ describe('Reporter', () => {
   describe('indent()', () => {
     it('indents with spaces', () => {
       expect(reporter.indent(0)).toBe('');
-      expect(reporter.indent(1)).toBe('    ');
-      expect(reporter.indent(3)).toBe('            ');
+      expect(reporter.indent(1)).toBe('  ');
+      expect(reporter.indent(3)).toBe('      ');
     });
   });
 
@@ -47,9 +47,11 @@ describe('Reporter', () => {
       ];
       statusChecks.subroutines = [git];
 
-      expect(reporter.render([statusChecks])).toBe(`${chalk.green('✔')} Status checks
-    ${chalk.gray('⠙')} Git
-        ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
+      reporter.loader = () => ({ tasks: [statusChecks] });
+
+      expect(reporter.render()).toBe(`${chalk.green('✔')} Status checks
+  ${chalk.gray('⠙')} Git
+    ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
     });
   });
 
@@ -86,7 +88,7 @@ describe('Reporter', () => {
 
     it('indents the message', () => {
       expect(reporter.renderTask(createTaskWithStatus('Title', ''), 2)).toEqual([
-        '         Title',
+        '     Title',
       ]);
     });
 
@@ -101,7 +103,7 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('●')} Sub-task #1 ${chalk.gray('[0/3]')}`,
+          `  ${chalk.gray('●')} Sub-task #1 ${chalk.gray('[0/3]')}`,
         ]);
       });
 
@@ -115,7 +117,7 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
+          `  ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
         ]);
       });
 
@@ -132,7 +134,7 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.red('✖')} Sub-task #2 ${chalk.red('[failed]')}`,
+          `  ${chalk.red('✖')} Sub-task #2 ${chalk.red('[failed]')}`,
         ]);
       });
 
@@ -172,7 +174,7 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('●')} Sub-task #2 ${chalk.gray('[2/3]')}`,
+          `  ${chalk.gray('●')} Sub-task #2 ${chalk.gray('[2/3]')}`,
         ]);
       });
     });
@@ -188,9 +190,9 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('●')} Sub-routine #1`,
-          `    ${chalk.gray('●')} Sub-routine #2`,
-          `    ${chalk.gray('●')} Sub-routine #3`,
+          `  ${chalk.gray('●')} Sub-routine #1`,
+          `  ${chalk.gray('●')} Sub-routine #2`,
+          `  ${chalk.gray('●')} Sub-routine #3`,
         ]);
       });
 
@@ -204,9 +206,9 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('⠙')} Sub-routine #1`,
-          `    ${chalk.red('✖')} Sub-routine #2 ${chalk.red('[failed]')}`,
-          `    ${chalk.green('✔')} Sub-routine #3`,
+          `  ${chalk.gray('⠙')} Sub-routine #1`,
+          `  ${chalk.red('✖')} Sub-routine #2 ${chalk.red('[failed]')}`,
+          `  ${chalk.green('✔')} Sub-routine #3`,
         ]);
       });
 
@@ -225,10 +227,10 @@ describe('Reporter', () => {
 
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
-          `    ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
-          `    ${chalk.gray('⠙')} Sub-routine #1`,
-          `    ${chalk.yellow('◌')} Sub-routine #2 ${chalk.yellow('[skipped]')}`,
-          `    ${chalk.green('✔')} Sub-routine #3`,
+          `  ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
+          `  ${chalk.gray('⠙')} Sub-routine #1`,
+          `  ${chalk.yellow('◌')} Sub-routine #2 ${chalk.yellow('[skipped]')}`,
+          `  ${chalk.green('✔')} Sub-routine #3`,
         ]);
       });
     });

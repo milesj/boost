@@ -4,13 +4,14 @@
  * @flow
  */
 
+/* eslint-disable promise/always-return */
+
 import Routine from './Routine';
 import Tool from './Tool';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type Plugin from './Plugin';
 import type Reporter from './Reporter';
-import type Task from './Task';
 import type { ToolConfig } from './types';
 
 export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolConfig, Tx> {
@@ -27,13 +28,6 @@ export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolCon
   }
 
   /**
-   * Load tasks to be used by the CLI reporter.
-   */
-  loadTasks(): Task<*, Tx>[] {
-    return this.subroutines;
-  }
-
-  /**
    * Execute all subroutines in order.
    */
   run(initialValue: *, context: Tx): Promise<*> {
@@ -41,20 +35,14 @@ export default class Pipeline<Tx: Object, Tp: Plugin<*>> extends Routine<ToolCon
 
     this.context = context || {};
 
-    cli.start(this.loadTasks);
+    cli.start(this.subroutines);
 
     return this.serializeSubroutines(initialValue)
       .then((result) => {
-        cli.displayOutput();
-
-        // Return so consumer may use it
-        return result;
+        cli.exit(null, 0);
       })
       .catch((error) => {
-        cli.displayError(error);
-
-        // Do not throw as we handled it
-        return error;
+        cli.exit(error, 1);
       });
   }
 }
