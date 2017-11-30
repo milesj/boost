@@ -100,13 +100,8 @@ export default class Task<Tc: Object, Tx: Object> {
     this.status = STATUS_RUNNING;
 
     return Promise.resolve(initialValue)
-      .then((value) => {
-        if (this.action) {
-          return this.action(value, context);
-        }
-
-        return value;
-      })
+      // $FlowIgnore We check action above
+      .then(value => this.action(value, context))
       .then(
         (result) => {
           this.status = STATUS_PASSED;

@@ -1,7 +1,16 @@
 import chalk from 'chalk';
+import logUpdate from 'log-update';
 import Reporter from '../src/Reporter';
 import Task from '../src/Task';
 import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+
+jest.mock('log-update', () => {
+  const spy = jest.fn();
+  spy.clear = jest.fn();
+  spy.done = jest.fn();
+
+  return spy;
+});
 
 function createTaskWithStatus(title, status) {
   const task = new Task(title, value => value);
@@ -33,6 +42,10 @@ describe('Reporter', () => {
   });
 
   describe('render()', () => {
+    it('returns an empty string if no loader', () => {
+      expect(reporter.render()).toBe('');
+    });
+
     it('renders a results tree in a single output', () => {
       const git = createTaskWithStatus('Git', STATUS_RUNNING);
       git.subtasks = [
@@ -52,6 +65,33 @@ describe('Reporter', () => {
       expect(reporter.render()).toBe(`${chalk.green('✔')} Status checks
   ${chalk.gray('⠙')} Git
     ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
+    });
+
+    describe('with messages', () => {
+      beforeEach(() => {
+        reporter.loader = () => ({
+          debugs: ['Why doesnt this work??'],
+          errors: ['Something is broken!!'],
+          logs: ['All is good...'],
+          tasks: [createTaskWithStatus('Task', STATUS_PASSED)],
+        });
+      });
+
+      it('when code 0, renders with tasks, debugs, and logs', () => {
+        expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
+
+Why doesnt this work??
+
+All is good...`);
+      });
+
+      it('when code 1, renders with tasks, debugs, and errors', () => {
+        expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
+
+Why doesnt this work??
+
+Something is broken!!`);
+      });
     });
   });
 
@@ -196,7 +236,7 @@ describe('Reporter', () => {
         ]);
       });
 
-      it('displays different statuses', () => {
+      it('displays status text and different statuses', () => {
         const result = createTaskWithStatus('Title', STATUS_RUNNING);
         result.subroutines = [
           createTaskWithStatus('Sub-routine #1', STATUS_RUNNING),
@@ -204,10 +244,13 @@ describe('Reporter', () => {
           createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
         ];
 
+        result.subroutines[1].statusText = 'Running tests...';
+
         expect(reporter.renderTask(result)).toEqual([
           `${chalk.gray('⠙')} Title`,
           `  ${chalk.gray('⠙')} Sub-routine #1`,
           `  ${chalk.red('✖')} Sub-routine #2 ${chalk.red('[failed]')}`,
+          `    ${chalk.gray('Running tests...')}`,
           `  ${chalk.green('✔')} Sub-routine #3`,
         ]);
       });
@@ -255,6 +298,77 @@ describe('Reporter', () => {
 
     it('renders a cross for STATUS_FAILED', () => {
       expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(chalk.red('✖'));
+    });
+  });
+
+  describe('start()', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('sets an interval', () => {
+      reporter.start(() => {});
+
+      expect(setInterval.mock.calls).toHaveLength(1);
+      expect(setInterval).toHaveBeenCalledWith(expect.anything(), 100);
+    });
+
+    it('sets the loader', () => {
+      const loader = () => {};
+
+      reporter.start(loader);
+
+      expect(reporter.loader).toBe(loader);
+    });
+
+    it('doesnt set an interval if one has started', () => {
+      reporter.instance = 1;
+      reporter.start(() => {});
+
+      expect(setInterval.mock.calls).toHaveLength(0);
+    });
+
+    it('errors if loader is not a function', () => {
+      expect(() => {
+        reporter.start(123);
+      }).toThrowError('A loader is required to render console output.');
+    });
+  });
+
+  describe('stop()', () => {
+    it('clears the log output', () => {
+      reporter.stop();
+
+      expect(logUpdate.clear).toHaveBeenCalled();
+    });
+
+    it('clears the interval', () => {
+      jest.useFakeTimers();
+
+      reporter.stop();
+
+      expect(clearInterval.mock.calls).toHaveLength(1);
+
+      jest.useRealTimers();
+    });
+  });
+
+  describe('update()', () => {
+    it('doesnt update if no render data', () => {
+      reporter.update();
+
+      expect(logUpdate).not.toHaveBeenCalled();
+    });
+
+    it('logs update if something to render', () => {
+      reporter.loader = () => ({ logs: ['Foo'] });
+      reporter.update();
+
+      expect(logUpdate).toHaveBeenCalledWith('Foo');
     });
   });
 });

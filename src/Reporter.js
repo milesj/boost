@@ -63,21 +63,33 @@ export default class Reporter<Tx: Object> {
     } = this.loader();
 
     // Tasks first
-    tasks.forEach((task) => {
-      output.push(...this.renderTask(task, 0));
-    });
+    if (tasks.length > 0) {
+      tasks.forEach((task) => {
+        output.push(...this.renderTask(task, 0));
+      });
+
+      output.push('');
+    }
 
     // Debugs second
-    debugs.forEach((debug) => {
-      output.push(debug);
-    });
+    if (debugs.length > 0) {
+      debugs.forEach((debug) => {
+        output.push(debug);
+      });
 
-    // Logs last
-    (code === 0 ? logs : errors).forEach((log) => {
-      output.push(log);
-    });
+      output.push('');
+    }
 
-    return output.join('\n');
+    // Messages last
+    const messages = (code === 0 ? logs : errors);
+
+    if (messages.length > 0) {
+      messages.forEach((log) => {
+        output.push(log);
+      });
+    }
+
+    return output.join('\n').trim();
   }
 
   /**
@@ -180,9 +192,8 @@ export default class Reporter<Tx: Object> {
 
     this.loader = loader;
 
-    this.instance = setInterval(() => {
-      this.update();
-    }, this.options.refreshRate);
+    /* istanbul ignore next */
+    this.instance = setInterval(() => { this.update(); }, this.options.refreshRate);
   }
 
   /**

@@ -89,30 +89,31 @@ export default class ModuleLoader<Tm> {
   }
 
   /**
-   * Load and or instantiate modules from the typeName configuration property.
+   * Load and or instantiate a module for the `typeName` configuration property.
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModules(modules: (string | Object | Tm)[]): Tm[] {
-    if (!modules) {
-      return [];
+  loadModule(module: string | Object | Tm): Tm {
+    if (module instanceof this.classReference) {
+      return module;
+
+    } else if (typeof module === 'string') {
+      return this.importModule(module);
+
+    } else if (isObject(module)) {
+      // $FlowIgnore Temporarily
+      return this.importModuleFromOptions(module);
     }
 
-    return modules.map((module) => {
-      if (module instanceof this.classReference) {
-        return module;
+    throw new TypeError(
+      `Invalid ${this.typeName}. Must be a class instance or a module that exports a class definition.`,
+    );
+  }
 
-      } else if (typeof module === 'string') {
-        return this.importModule(module);
-
-      } else if (isObject(module)) {
-        // $FlowIgnore Temporarily
-        return this.importModuleFromOptions(module);
-      }
-
-      throw new TypeError(
-        `Invalid ${this.typeName}. Must be a class instance or a module that exports a class definition.`,
-      );
-    });
+  /**
+   * Load multiple modules.
+   */
+  loadModules(modules: (string | Object | Tm)[] = []): Tm[] {
+    return modules.map(module => this.loadModule(module));
   }
 }

@@ -133,6 +133,11 @@ describe('ModuleLoader', () => {
       }).toThrowError('Invalid plugin. Must be a class instance or a module that exports a class definition.');
     });
 
+    it('returns an empty array if no values', () => {
+      expect(loader.loadModules()).toEqual([]);
+      expect(loader.loadModules([])).toEqual([]);
+    });
+
     it('supports class instances', () => {
       const plugins = [
         createPlugin('foo'),

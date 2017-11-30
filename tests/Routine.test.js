@@ -80,6 +80,14 @@ describe('Routine', () => {
     }
   }
 
+  it('flags an exit when an exit event occurs', () => {
+    expect(routine.exit).toBe(false);
+
+    tool.emit('exit');
+
+    expect(routine.exit).toBe(true);
+  });
+
   describe('constructor()', () => {
     it('throws an error if no key is provided', () => {
       expect(() => new Routine('', 'title')).toThrowError('Routine key must be a valid unique string.');

@@ -58,6 +58,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     }
 
     // Cleanup when an exit occurs
+    /* istanbul ignore next */
     process.on('exit', (code) => {
       this.emit('exit', null, [code]);
     });
@@ -187,26 +188,18 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
       throw new Error('Cannot load reporter as configuration has not been loaded.');
     }
 
-    const reporterName = this.config.reporter;
+    const { reporter } = this.config;
+
+    // Load based on name
+    if (reporter) {
+      this.reporterLoader = new ModuleLoader('reporter', Reporter, this.options);
+      this.reporter = this.reporterLoader.loadModule(reporter);
 
     // Use native Boost reporter
-    if (!reporterName) {
+    } else {
       // $FlowIgnore Temporarily
       this.reporter = new Reporter({ silent: this.config.silent });
-
-      return this;
     }
-
-    // Attempt to load reporter
-    this.reporterLoader = new ModuleLoader('reporter', Reporter, this.options);
-
-    const reporters = this.reporterLoader.loadModules([reporterName]);
-
-    if (reporters.length === 0) {
-      throw new Error('Reporter failed to load. Has it been configured?');
-    }
-
-    this.reporter = reporters.pop();
 
     return this;
   }

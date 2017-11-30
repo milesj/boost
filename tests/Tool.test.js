@@ -231,6 +231,13 @@ describe('Tool', () => {
       }).toThrowError('Cannot load reporter as configuration has not been loaded.');
     });
 
+    it('doesnt load if initialized', () => {
+      tool.initialized = true;
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeUndefined();
+    });
+
     it('sets native reporter if config is empty', () => {
       tool.config = { reporter: '' };
       tool.loadReporter();
