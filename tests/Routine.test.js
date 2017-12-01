@@ -193,11 +193,11 @@ describe('Routine', () => {
         parallel: 'routine',
       };
 
-      routine.pipe(
-        new ContextSubRoutine('foo', 'title', { multiplier: 2 }),
-        new ContextSubRoutine('bar', 'title', { multiplier: 3 }),
-        new ContextSubRoutine('baz', 'title', { multiplier: 2 }),
-      );
+      routine
+        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
+
       routine.action = value => routine.parallelizeSubroutines(value);
 
       await routine.run(null, context);
@@ -289,16 +289,6 @@ describe('Routine', () => {
       expect(routine.subroutines).toEqual([foo, bar, baz]);
     });
 
-    it('sets subroutines via rest arguments', () => {
-      const foo = new Routine('foo', 'title');
-      const bar = new Routine('bar', 'title');
-      const baz = new Routine('baz', 'title');
-
-      routine.pipe(foo, bar, baz);
-
-      expect(routine.subroutines).toEqual([foo, bar, baz]);
-    });
-
     it('passes global configuration to all subroutines', () => {
       routine.config = routine.tool.config;
 
@@ -306,7 +296,7 @@ describe('Routine', () => {
       const bar = new Routine('bar', 'title');
       const baz = new Routine('baz', 'title');
 
-      routine.pipe(foo, bar, baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       expect(foo.global).toEqual(routine.global);
       expect(bar.global).toEqual(routine.global);
@@ -587,7 +577,7 @@ describe('Routine', () => {
       const bar = new SerializeSubsRoutine('bar', 'title', { multiplier: 3 });
       const baz = new SerializeSubsRoutine('baz', 'title', { multiplier: 1 });
 
-      routine.pipe(foo, bar, baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       expect(await routine.serializeSubroutines({ count: 6, key: '' })).toEqual({
         count: 36,
@@ -601,11 +591,11 @@ describe('Routine', () => {
         serial: 'routine',
       };
 
-      routine.pipe(
-        new ContextSubRoutine('foo', 'title', { multiplier: 2 }),
-        new ContextSubRoutine('bar', 'title', { multiplier: 3 }),
-        new ContextSubRoutine('baz', 'title', { multiplier: 2 }),
-      );
+      routine
+        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
+
       routine.action = value => routine.serializeSubroutines(value);
 
       await routine.run(null, context);

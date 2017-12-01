@@ -204,7 +204,7 @@ declare module 'boost' {
     executeTask(value: *, task: Task<Object, Tx>): Promise<*>;
     parallelizeSubroutines(value: *): Promise<*>;
     parallelizeTasks(value: *): Promise<*>;
-    pipe(...routines: Routine<Object, Tx>[]): this;
+    pipe(routine: Routine<Object, Tx>): this;
     serialize(
       initialValue: *,
       items: *[],

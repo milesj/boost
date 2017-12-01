@@ -124,15 +124,13 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(...routines: Routine<Object, Tx>[]): this {
-    routines.forEach((routine) => {
-      if (routine instanceof Routine) {
-        this.subroutines.push(routine.configure(this));
+  pipe(routine: Routine<Object, Tx>): this {
+    if (routine instanceof Routine) {
+      this.subroutines.push(routine.configure(this));
 
-      } else {
-        throw new TypeError('Routines must be an instance of `Routine`.');
-      }
-    });
+    } else {
+      throw new TypeError('Routines must be an instance of `Routine`.');
+    }
 
     return this;
   }
