@@ -15,7 +15,7 @@ import type Reporter from './Reporter';
 import type { ToolConfig } from './types';
 
 export default class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routine<ToolConfig, Tx> {
-  constructor(tool: Tool<Tp, Reporter>) {
+  constructor(tool: Tool<Tp, Reporter<Object>>) {
     super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
 
     if (tool instanceof Tool) {

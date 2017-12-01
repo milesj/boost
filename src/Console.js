@@ -21,7 +21,7 @@ const DEBUG_COLORS: string[] = [
   'green',
 ];
 
-export default class Console<Tr: Reporter> {
+export default class Console<Tr: Reporter<Object>> {
   config: ToolConfig;
 
   debugs: string[] = [];

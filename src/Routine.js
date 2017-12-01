@@ -21,7 +21,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
 
   key: string = '';
 
-  tool: Tool<*, Reporter>;
+  tool: Tool<*, Reporter<Object>>;
 
   constructor(key: string, title: string, defaultConfig?: Tc) {
     super(title, null, defaultConfig);

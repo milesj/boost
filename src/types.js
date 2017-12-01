@@ -36,10 +36,6 @@ export type ReportLoader = () => {
   tasks: Task<Object, Object>[],
 };
 
-export type ReporterOptions = {
-  refreshRate: number,
-};
-
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
 export type TaskAction<Tx: Object> = (value: *, context: Tx) => Promise<*>;

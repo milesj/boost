@@ -7,7 +7,7 @@
 import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';
-import Options, { number } from 'optimal';
+import Module from './Module';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -17,26 +17,14 @@ import {
 } from './constants';
 
 import type Task from './Task';
-import type { ReportLoader, ReporterOptions } from './types';
+import type { ReportLoader } from './types';
 
-export default class Reporter {
+const REFRESH_RATE: number = 100;
+
+export default class Reporter<To: Object = {}> extends Module<To> {
   instance: number = 0;
 
   loader: ?ReportLoader = null;
-
-  moduleName: string = '';
-
-  name: string = '';
-
-  options: ReporterOptions;
-
-  constructor(options?: Object = {}) {
-    this.options = new Options(options, {
-      refreshRate: number(100), // eslint-disable-line no-magic-numbers
-    }, {
-      name: 'Reporter',
-    });
-  }
 
   /**
    * Create an indentation based on the defined length.
@@ -194,7 +182,7 @@ export default class Reporter {
     this.loader = loader;
 
     /* istanbul ignore next */
-    this.instance = setInterval(() => { this.update(); }, this.options.refreshRate);
+    this.instance = setInterval(() => { this.update(); }, REFRESH_RATE);
   }
 
   /**

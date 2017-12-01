@@ -4,24 +4,16 @@
  * @flow
  */
 
+import Module from './Module';
+
 import type Tool from './Tool';
 
 const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
-export default class Plugin<To: Object = {}> {
-  moduleName: string = '';
-
-  name: string = '';
-
-  options: To;
-
+export default class Plugin<To: Object = {}> extends Module<To> {
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
   tool: Tool<*, *>;
-
-  constructor(options?: To) {
-    this.options = { ...options };
-  }
 
   bootstrap() {}
 }

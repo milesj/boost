@@ -18,7 +18,7 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
+export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
