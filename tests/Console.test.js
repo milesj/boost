@@ -7,7 +7,10 @@ describe('Console', () => {
   let cli;
 
   beforeEach(() => {
-    cli = new Console(new Reporter());
+    cli = new Console({
+      debug: true,
+      silent: false,
+    }, new Reporter());
   });
 
   describe('debug()', () => {

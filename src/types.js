@@ -38,7 +38,6 @@ export type ReportLoader = () => {
 
 export type ReporterOptions = {
   refreshRate: number,
-  silent: boolean,
 };
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';

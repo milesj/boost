@@ -77,7 +77,6 @@ declare module 'boost' {
 
   declare export type ReporterOptions = {
     refreshRate: number,
-    silent: boolean,
   };
 
   declare export class Reporter {
@@ -89,7 +88,7 @@ declare module 'boost' {
 
     constructor(options?: Object): this;
     indent(length: number): string;
-    render(code?: number): string;
+    render(code?: number, options?: Object): string;
     renderTask(task: Task<Object, Object>, level?: number, suffix?: string): string[];
     renderStatus(task: Task<Object, Object>): string;
     start(loader: ReportLoader): void;
@@ -104,6 +103,7 @@ declare module 'boost' {
   }
 
   declare export default class Console<Tr: Reporter> {
+    config: ToolConfig;
     debugs: string[];
     debugGroups: string[];
     debugIndex: number;
@@ -112,7 +112,7 @@ declare module 'boost' {
     logs: string[];
     reporter: Tr;
 
-    constructor(reporter: Tr): this;
+    constructor(config: ToolConfig, reporter: Tr): this;
     debug(message: string): void;
     error(message: string): void;
     exit(message: string | Error | null, code?: number): void;

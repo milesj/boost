@@ -7,7 +7,7 @@
 import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';
-import Options, { bool, number } from 'optimal';
+import Options, { number } from 'optimal';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -33,7 +33,6 @@ export default class Reporter {
   constructor(options?: Object = {}) {
     this.options = new Options(options, {
       refreshRate: number(100), // eslint-disable-line no-magic-numbers
-      silent: bool(),
     }, {
       name: 'Reporter',
     });
@@ -49,11 +48,12 @@ export default class Reporter {
   /**
    * Render the output by looping over all tasks and messages.
    */
-  render(code?: number = 0): string {
+  render(code?: number = 0, options?: Object = {}): string {
     if (!this.loader) {
       return '';
     }
 
+    const { debug = false, silent = false } = options;
     const output = [];
     const {
       debugs = [],
@@ -63,7 +63,7 @@ export default class Reporter {
     } = this.loader();
 
     // Tasks first
-    if (tasks.length > 0) {
+    if (tasks.length > 0 && !silent) {
       tasks.forEach((task) => {
         output.push(...this.renderTask(task, 0));
       });
@@ -72,16 +72,17 @@ export default class Reporter {
     }
 
     // Debugs second
-    if (debugs.length > 0) {
-      debugs.forEach((debug) => {
-        output.push(debug);
+    if (debugs.length > 0 && debug) {
+      debugs.forEach((log) => {
+        output.push(log);
       });
 
       output.push('');
     }
 
     // Messages last
-    const messages = (code === 0 ? logs : errors);
+    // eslint-disable-next-line no-nested-ternary
+    const messages = (code === 0) ? (silent ? [] : logs) : errors;
 
     if (messages.length > 0) {
       messages.forEach((log) => {

@@ -9,6 +9,7 @@ import ExitError from './ExitError';
 
 import type Task from './Task';
 import type Reporter from './Reporter';
+import type { ToolConfig } from './types';
 
 const DEBUG_COLORS: string[] = [
   'white',
@@ -21,6 +22,8 @@ const DEBUG_COLORS: string[] = [
 ];
 
 export default class Console<Tr: Reporter> {
+  config: ToolConfig;
+
   debugs: string[] = [];
 
   debugGroups: string[] = [];
@@ -35,7 +38,8 @@ export default class Console<Tr: Reporter> {
 
   reporter: Tr;
 
-  constructor(reporter: Tr) {
+  constructor(config: ToolConfig, reporter: Tr) {
+    this.config = config;
     this.reporter = reporter;
 
     // Avoid binding listeners while testing
@@ -84,6 +88,7 @@ export default class Console<Tr: Reporter> {
    */
   /* istanbul ignore next */
   exit(message: string | Error | null, code?: number = 1) {
+    const { debug, silent } = this.config;
     let errorCode = code;
 
     // Null messages are always successful
@@ -102,10 +107,16 @@ export default class Console<Tr: Reporter> {
     this.stop();
 
     // Send final output
-    (code === 0 ? process.stdout : process.stderr).write(this.reporter.render(code), () => {
-      // Exit process after buffer is flushed
-      process.exit(errorCode); // eslint-disable-line unicorn/no-process-exit
-    });
+    (code === 0 ? process.stdout : process.stderr).write(
+      this.reporter.render(code, {
+        debug,
+        silent,
+      }),
+      () => {
+        // Exit process after buffer is flushed
+        process.exit(errorCode); // eslint-disable-line unicorn/no-process-exit
+      },
+    );
   }
 
   /**

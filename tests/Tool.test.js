@@ -23,18 +23,9 @@ describe('Tool', () => {
   });
 
   describe('debug()', () => {
-    it('doesnt log if debug is false', () => {
+    it('logs to console', () => {
       const spy = jest.spyOn(tool.console, 'debug');
 
-      tool.debug('message');
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('logs to console if debug is true', () => {
-      const spy = jest.spyOn(tool.console, 'debug');
-
-      tool.config.debug = true;
       tool.debug('message');
 
       expect(spy).toHaveBeenCalledWith('message');
@@ -94,18 +85,9 @@ describe('Tool', () => {
   });
 
   describe('invariant()', () => {
-    it('doesnt log if debug is false', () => {
-      const spy = jest.spyOn(tool.console, 'debug');
-
-      tool.invariant(true, 'message', 'foo', 'bar');
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-
     it('logs green if true', () => {
       const spy = jest.spyOn(tool.console, 'debug');
 
-      tool.config.debug = true;
       tool.invariant(true, 'message', 'foo', 'bar');
 
       expect(spy).toHaveBeenCalledWith(`message: ${chalk.green('foo')}`);
@@ -114,7 +96,6 @@ describe('Tool', () => {
     it('logs red if false', () => {
       const spy = jest.spyOn(tool.console, 'debug');
 
-      tool.config.debug = true;
       tool.invariant(false, 'message', 'foo', 'bar');
 
       expect(spy).toHaveBeenCalledWith(`message: ${chalk.red('bar')}`);

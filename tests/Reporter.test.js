@@ -77,20 +77,32 @@ describe('Reporter', () => {
         });
       });
 
-      it('when code 0, renders with tasks, debugs, and logs', () => {
+      it('when code 0, renders with tasks and logs', () => {
         expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
+
+All is good...`);
+      });
+
+      it('when code 1, renders with tasks and errors', () => {
+        expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
+
+Something is broken!!`);
+      });
+
+      it('shows debugs if debug is true', () => {
+        expect(reporter.render(0, { debug: true })).toBe(`${chalk.green('✔')} Task
 
 Why doesnt this work??
 
 All is good...`);
       });
 
-      it('when code 1, renders with tasks, debugs, and errors', () => {
-        expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
+      it('hides all if silent is true', () => {
+        expect(reporter.render(0, { silent: true })).toBe('');
+      });
 
-Why doesnt this work??
-
-Something is broken!!`);
+      it('doesnt hide errors if silent is true', () => {
+        expect(reporter.render(1, { silent: true })).toBe('Something is broken!!');
       });
     });
   });

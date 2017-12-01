@@ -68,9 +68,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
    * Log a message only when debug is enabled.
    */
   debug(message: string): this {
-    if (this.config.debug) {
-      this.console.debug(message);
-    }
+    this.console.debug(message);
 
     return this;
   }
@@ -110,7 +108,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
-    this.console = new Console(this.reporter);
+    this.console = new Console(this.config, this.reporter);
     this.initialized = true;
 
     return this;
@@ -197,8 +195,8 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
 
     // Use native Boost reporter
     } else {
-      // $FlowIgnore Temporarily
-      this.reporter = new Reporter({ silent: this.config.silent });
+      // $FlowIgnore
+      this.reporter = new Reporter();
     }
 
     return this;
