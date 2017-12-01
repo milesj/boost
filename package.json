@@ -42,7 +42,8 @@
     "lodash": "^4.17.2",
     "log-update": "^2.3.0",
     "optimal": "^0.14.0",
-    "pluralize": "^7.0.0"
+    "pluralize": "^7.0.0",
+    "split": "^1.0.1"
   },
   "peerDependencies": {
     "optimal": "^0.14.0"

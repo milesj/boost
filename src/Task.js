@@ -106,6 +106,7 @@ export default class Task<Tc: Object = {}, Tx: Object = {}> {
       .then(
         (result) => {
           this.status = STATUS_PASSED;
+          this.statusText = '';
 
           return result;
         },

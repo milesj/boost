@@ -6,10 +6,11 @@
 
 import execa from 'execa';
 import merge from 'lodash/merge';
+import split from 'split';
 import ExitError from './ExitError';
 import Task from './Task';
 import isObject from './helpers/isObject';
-import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
+import { STATUS_PENDING, STATUS_RUNNING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type Reporter from './Reporter';
 import type Tool from './Tool';
@@ -87,8 +88,10 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
     const stream = execa(command, args, options);
 
     // Push chunks to the reporter
-    stream.stdout.on('data', (data) => {
-      this.statusText = data;
+    stream.stdout.pipe(split()).on('data', (line) => {
+      if (this.status === STATUS_RUNNING) {
+        this.statusText = line;
+      }
     });
 
     // TODO catch error codes?
