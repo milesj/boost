@@ -25,7 +25,7 @@ export default class ConfigLoader {
 
   package: PackageConfig;
 
-  parsedFiles: { [key: string]: boolean } = {};
+  parsedFiles: { [path: string]: boolean } = {};
 
   constructor(options: ToolOptions) {
     this.options = options;

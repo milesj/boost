@@ -19,10 +19,10 @@ import {
 import type Task from './Task';
 import type { ReportLoader, ReporterOptions } from './types';
 
-export default class Reporter<Tx: Object> {
+export default class Reporter {
   instance: number = 0;
 
-  loader: ?ReportLoader<Tx> = null;
+  loader: ?ReportLoader = null;
 
   moduleName: string = '';
 
@@ -96,7 +96,7 @@ export default class Reporter<Tx: Object> {
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: Task<*, Tx>, level?: number = 0, suffix?: string = ''): string[] {
+  renderTask(task: Task<Object, Object>, level?: number = 0, suffix?: string = ''): string[] {
     const output = [];
 
     // Generate the message row
@@ -163,7 +163,7 @@ export default class Reporter<Tx: Object> {
   /**
    * Render a status symbol for a task.
    */
-  renderStatus(task: Task<*, Tx>): string {
+  renderStatus(task: Task<Object, Object>): string {
     switch (task.status) {
       case STATUS_PENDING:
         return chalk.gray(figures.bullet);
@@ -183,7 +183,7 @@ export default class Reporter<Tx: Object> {
   /**
    * Start the output process once setting the task loader.
    */
-  start(loader: ReportLoader<Tx>) {
+  start(loader: ReportLoader) {
     if (this.instance) {
       return;
     } else if (!loader || typeof loader !== 'function') {

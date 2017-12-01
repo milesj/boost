@@ -18,12 +18,12 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
+export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
 
-  console: Console<*, Tr>;
+  console: Console<Tr>;
 
   initialized: boolean = false;
 

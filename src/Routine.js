@@ -13,14 +13,14 @@ import { STATUS_PENDING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type Reporter from './Reporter';
 import type Tool from './Tool';
-import type { TaskCallback } from './types';
+import type { TaskAction } from './types';
 
-export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
+export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, Tx> {
   exit: boolean = false;
 
   key: string = '';
 
-  tool: Tool<*, Reporter<Tx>>;
+  tool: Tool<*, Reporter>;
 
   constructor(key: string, title: string, defaultConfig?: Tc) {
     super(title, null, defaultConfig);
@@ -99,7 +99,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: *, task: Task<*, Tx>): Promise<*> => (
+  executeTask = (value: *, task: Task<Object, Tx>): Promise<*> => (
     this.wrap(task.run(value, this.context))
   );
 
@@ -124,7 +124,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(...routines: Routine<*, Tx>[]): this {
+  pipe(...routines: Routine<Object, Tx>[]): this {
     routines.forEach((routine) => {
       if (routine instanceof Routine) {
         this.subroutines.push(routine.configure(this));
@@ -196,7 +196,7 @@ export default class Routine<Tc: Object, Tx: Object> extends Task<Tc, Tx> {
   /**
    * Define an individual task.
    */
-  task<C: Object>(title: string, action: TaskCallback<Tx>, config?: C): Task<C, Tx> {
+  task(title: string, action: TaskAction<Tx>, config?: Object = {}): Task<Object, Tx> {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

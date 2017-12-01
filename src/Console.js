@@ -20,7 +20,7 @@ const DEBUG_COLORS: string[] = [
   'green',
 ];
 
-export default class Console<Tx: Object, Tr: Reporter<Tx>> {
+export default class Console<Tr: Reporter> {
   debugs: string[] = [];
 
   debugGroups: string[] = [];

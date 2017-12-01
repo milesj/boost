@@ -13,10 +13,10 @@ import {
   STATUS_FAILED,
 } from './constants';
 
-import type { Status, TaskCallback } from './types';
+import type { Status, TaskAction } from './types';
 
-export default class Task<Tc: Object, Tx: Object> {
-  action: ?TaskCallback<Tx> = null;
+export default class Task<Tc: Object = {}, Tx: Object = {}> {
+  action: ?TaskAction<Tx> = null;
 
   config: Tc;
 
@@ -30,11 +30,11 @@ export default class Task<Tc: Object, Tx: Object> {
 
   statusText: string = '';
 
-  subroutines: Task<*, Tx>[] = [];
+  subroutines: Task<Object, Tx>[] = [];
 
-  subtasks: Task<*, Tx>[] = [];
+  subtasks: Task<Object, Tx>[] = [];
 
-  constructor(title: string, action?: ?TaskCallback<Tx> = null, defaultConfig?: Tc) {
+  constructor(title: string, action?: ?TaskAction<Tx> = null, defaultConfig?: Tc) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
