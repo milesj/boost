@@ -58,7 +58,7 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName, pluginName, root } = this.options;
+    const { appName, pluginAlias, root } = this.options;
     const camelName = camelCase(appName);
     let config = {};
 
@@ -100,7 +100,7 @@ export default class ConfigLoader {
       extends: array(string()),
       reporter: string().empty(),
       silent: bool(),
-      [pluralize(pluginName)]: array(string()),
+      [pluralize(pluginAlias)]: array(string()),
     }, {
       name: 'ConfigLoader',
       unknown: true,
@@ -241,7 +241,7 @@ export default class ConfigLoader {
         throw new TypeError('Invalid `extends` configuration value. Must be an array of strings.');
       }
 
-      const { appName, scoped, pluginName } = this.options;
+      const { appName, scoped, pluginAlias } = this.options;
 
       // Absolute path, use it directly
       if (path.isAbsolute(extendPath)) {
@@ -259,7 +259,7 @@ export default class ConfigLoader {
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
         return this.resolveModuleConfigPath(
           appName,
-          formatModuleName(appName, pluginName, extendPath, scoped),
+          formatModuleName(appName, pluginAlias, extendPath, scoped),
           true,
         );
       }

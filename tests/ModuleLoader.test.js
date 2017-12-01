@@ -17,7 +17,7 @@ describe('ModuleLoader', () => {
   beforeEach(() => {
     loader = new ModuleLoader('plugin', Plugin, {
       appName: 'boost',
-      pluginName: 'plugin',
+      pluginAlias: 'plugin',
       root: getTestRoot(),
     });
 

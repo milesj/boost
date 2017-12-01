@@ -17,7 +17,7 @@ export type ToolConfig = {
 
 export type ToolOptions = {
   appName: string,
-  pluginName: string,
+  pluginAlias: string,
   root: string,
   scoped: boolean,
   title: string,

@@ -22,7 +22,7 @@ describe('ConfigLoader', () => {
   beforeEach(() => {
     loader = new ConfigLoader({
       appName: 'boost',
-      pluginName: 'plugin',
+      pluginAlias: 'plugin',
       root: getTestRoot(),
     });
 

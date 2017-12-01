@@ -44,7 +44,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
 
     this.options = new Options(options, {
       appName: string(),
-      pluginName: string('plugin'),
+      pluginAlias: string('plugin'),
       root: string(process.cwd()),
       scoped: bool(),
       title: string().empty(),
@@ -90,7 +90,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
 
     if (!plugin) {
       throw new Error(
-        `Failed to find ${this.options.pluginName} "${name}". Have you installed it?`,
+        `Failed to find ${this.options.pluginAlias} "${name}". Have you installed it?`,
       );
     }
 
@@ -150,15 +150,15 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter> extends Emitter {
       return this;
     }
 
-    const { pluginName } = this.options;
-    const pluralPluginName = pluralize(pluginName);
+    const { pluginAlias } = this.options;
+    const pluralPluginAlias = pluralize(pluginAlias);
 
     if (isEmptyObject(this.config)) {
-      throw new Error(`Cannot load ${pluralPluginName} as configuration has not been loaded.`);
+      throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
 
-    this.pluginLoader = new ModuleLoader(pluginName, Plugin, this.options);
-    this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginName]);
+    this.pluginLoader = new ModuleLoader(pluginAlias, Plugin, this.options);
+    this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
     this.plugins.sort((a, b) => a.priority - b.priority);
