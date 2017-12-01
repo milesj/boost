@@ -25,10 +25,11 @@ declare module 'boost' {
 
   declare export type ToolOptions = {
     appName: string,
+    footer: string,
+    header: string,
     pluginAlias: string,
     root: string,
     scoped: boolean,
-    title: string,
   };
 
   declare class ConfigLoader {
@@ -73,9 +74,13 @@ declare module 'boost' {
   }
 
   declare export type ReportLoader = () => {
+    debug: boolean,
     debugs: string[],
     errors: string[],
+    footer: string,
+    header: string,
     logs: string[],
+    silent: boolean,
     tasks: Task<Object, Object>[],
   };
 
@@ -84,7 +89,7 @@ declare module 'boost' {
     loader: ?ReportLoader;
 
     indent(length: number): string;
-    render(code?: number, options?: Object): string;
+    render(code?: number): string;
     renderTask(task: Task<Object, Object>, level?: number, suffix?: string): string[];
     renderStatus(task: Task<Object, Object>): string;
     start(loader: ReportLoader): void;
@@ -99,7 +104,6 @@ declare module 'boost' {
   }
 
   declare export default class Console<Tr: Reporter<Object>> {
-    config: ToolConfig;
     debugs: string[];
     debugGroups: string[];
     debugIndex: number;
@@ -108,12 +112,12 @@ declare module 'boost' {
     logs: string[];
     reporter: Tr;
 
-    constructor(config: ToolConfig, reporter: Tr): this;
+    constructor(reporter: Tr): this;
     debug(message: string): void;
     error(message: string): void;
     exit(message: string | Error | null, code?: number): void;
     log(message: string): void;
-    start(tasks: Task<*, *>[]): void;
+    start(config: ToolConfig, options: ToolOptions, tasks: Task<*, *>[]): void;
     startDebugGroup(group: string): void;
     stop(): void;
     stopDebugGroup(): void;

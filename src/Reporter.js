@@ -36,22 +36,30 @@ export default class Reporter<To: Object = {}> extends Module<To> {
   /**
    * Render the output by looping over all tasks and messages.
    */
-  render(code?: number = 0, options?: Object = {}): string {
+  render(code?: number = 0): string {
     if (!this.loader) {
       return '';
     }
 
-    const { debug = false, silent = false } = options;
-    const output = [];
     const {
+      debug = false,
       debugs = [],
       errors = [],
+      footer = '',
+      header = '',
       logs = [],
+      silent = false,
       tasks = [],
     } = this.loader();
+    const output = [];
+    const verbose = !silent;
+
+    if (header && verbose) {
+      output.push(header);
+    }
 
     // Tasks first
-    if (tasks.length > 0 && !silent) {
+    if (tasks.length > 0 && verbose) {
       tasks.forEach((task) => {
         output.push(...this.renderTask(task, 0));
       });
@@ -70,12 +78,16 @@ export default class Reporter<To: Object = {}> extends Module<To> {
 
     // Messages last
     // eslint-disable-next-line no-nested-ternary
-    const messages = (code === 0) ? (silent ? [] : logs) : errors;
+    const messages = (code === 0) ? (verbose ? logs : []) : errors;
 
     if (messages.length > 0) {
       messages.forEach((log) => {
         output.push(log);
       });
+    }
+
+    if (footer && verbose) {
+      output.push(footer);
     }
 
     return output.join('\n').trim();

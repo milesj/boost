@@ -44,10 +44,11 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     this.options = new Options(options, {
       appName: string(),
+      footer: string().empty(),
+      header: string().empty(),
       pluginAlias: string('plugin'),
       root: string(process.cwd()),
       scoped: bool(),
-      title: string().empty(),
     }, {
       name: 'Tool',
     });
@@ -108,7 +109,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
-    this.console = new Console(this.config, this.reporter);
+    this.console = new Console(this.reporter);
     this.initialized = true;
 
     return this;

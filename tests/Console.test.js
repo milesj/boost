@@ -7,10 +7,7 @@ describe('Console', () => {
   let cli;
 
   beforeEach(() => {
-    cli = new Console({
-      debug: true,
-      silent: false,
-    }, new Reporter());
+    cli = new Console(new Reporter());
   });
 
   describe('debug()', () => {
@@ -57,9 +54,39 @@ describe('Console', () => {
       const task = new Task('Foo', () => {});
 
       cli.reporter.start = spy;
-      cli.start([task]);
+      cli.start({}, {}, [task]);
 
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('passes value from tool and console', () => {
+      jest.useFakeTimers();
+
+      const task = new Task('Foo', () => {});
+
+      cli.log('log');
+      cli.error('error');
+      cli.debug('debug');
+      cli.start({
+        debug: true,
+        silent: true,
+      }, {
+        footer: 'footer',
+        header: 'header',
+      }, [task]);
+
+      expect(cli.reporter.loader()).toEqual({
+        debug: true,
+        debugs: [`${chalk.gray('[debug]')} debug`],
+        errors: ['error'],
+        footer: 'footer',
+        header: 'header',
+        logs: ['log'],
+        silent: true,
+        tasks: [task],
+      });
+
+      jest.useRealTimers();
     });
   });
 

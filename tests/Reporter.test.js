@@ -68,13 +68,20 @@ describe('Reporter', () => {
     });
 
     describe('with messages', () => {
+      let work = {};
+
       beforeEach(() => {
-        reporter.loader = () => ({
+        work = {
+          debug: false,
           debugs: ['Why doesnt this work??'],
           errors: ['Something is broken!!'],
+          footer: '',
+          header: '',
           logs: ['All is good...'],
+          silence: false,
           tasks: [createTaskWithStatus('Task', STATUS_PASSED)],
-        });
+        };
+        reporter.loader = () => work;
       });
 
       it('when code 0, renders with tasks and logs', () => {
@@ -90,7 +97,12 @@ Something is broken!!`);
       });
 
       it('shows debugs if debug is true', () => {
-        expect(reporter.render(0, { debug: true })).toBe(`${chalk.green('✔')} Task
+        reporter.loader = () => ({
+          ...work,
+          debug: true,
+        });
+
+        expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
 
 Why doesnt this work??
 
@@ -98,11 +110,35 @@ All is good...`);
       });
 
       it('hides all if silent is true', () => {
-        expect(reporter.render(0, { silent: true })).toBe('');
+        reporter.loader = () => ({
+          ...work,
+          silent: true,
+        });
+
+        expect(reporter.render(0)).toBe('');
       });
 
       it('doesnt hide errors if silent is true', () => {
-        expect(reporter.render(1, { silent: true })).toBe('Something is broken!!');
+        reporter.loader = () => ({
+          ...work,
+          silent: true,
+        });
+
+        expect(reporter.render(1)).toBe('Something is broken!!');
+      });
+
+      it('includes header and footer', () => {
+        reporter.loader = () => ({
+          ...work,
+          footer: 'FOOT',
+          header: 'HEAD',
+        });
+
+        expect(reporter.render(0)).toBe(`HEAD
+${chalk.green('✔')} Task
+
+All is good...
+FOOT`);
       });
     });
   });

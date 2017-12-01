@@ -17,10 +17,11 @@ export type ToolConfig = {
 
 export type ToolOptions = {
   appName: string,
+  footer: string,
+  header: string,
   pluginAlias: string,
   root: string,
   scoped: boolean,
-  title: string,
 };
 
 export type PackageConfig = {
@@ -30,9 +31,13 @@ export type PackageConfig = {
 };
 
 export type ReportLoader = () => {
+  debug: boolean,
   debugs: string[],
   errors: string[],
+  footer: string,
+  header: string,
   logs: string[],
+  silent: boolean,
   tasks: Task<Object, Object>[],
 };
 
