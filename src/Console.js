@@ -96,9 +96,6 @@ export default class Console<Tr: Reporter<Object>> {
       }
     }
 
-    // Show terminal cursor
-    this.log('\x1B[?25h'); // eslint-disable-line unicorn/no-hex-escape
-
     // Stop the renderer
     this.stop();
 

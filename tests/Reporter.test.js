@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import logUpdate from 'log-update';
-import Reporter from '../src/Reporter';
+import Reporter, { CURSOR } from '../src/Reporter';
 import Task from '../src/Task';
 import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
@@ -42,8 +42,8 @@ describe('Reporter', () => {
   });
 
   describe('render()', () => {
-    it('returns an empty string if no loader', () => {
-      expect(reporter.render()).toBe('');
+    it('returns cursor if no loader', () => {
+      expect(reporter.render()).toBe(CURSOR);
     });
 
     it('renders a results tree in a single output', () => {
@@ -64,7 +64,8 @@ describe('Reporter', () => {
 
       expect(reporter.render()).toBe(`${chalk.green('✔')} Status checks
   ${chalk.gray('⠙')} Git
-    ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}`);
+    ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}
+${CURSOR}`);
     });
 
     describe('with messages', () => {
@@ -87,13 +88,15 @@ describe('Reporter', () => {
       it('when code 0, renders with tasks and logs', () => {
         expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
 
-All is good...`);
+All is good...
+${CURSOR}`);
       });
 
       it('when code 1, renders with tasks and errors', () => {
         expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
 
-Something is broken!!`);
+Something is broken!!
+${CURSOR}`);
       });
 
       it('shows debugs if debug is true', () => {
@@ -106,7 +109,8 @@ Something is broken!!`);
 
 Why doesnt this work??
 
-All is good...`);
+All is good...
+${CURSOR}`);
       });
 
       it('hides all if silent is true', () => {
@@ -115,7 +119,7 @@ All is good...`);
           silent: true,
         });
 
-        expect(reporter.render(0)).toBe('');
+        expect(reporter.render(0)).toBe(CURSOR);
       });
 
       it('doesnt hide errors if silent is true', () => {
@@ -124,7 +128,8 @@ All is good...`);
           silent: true,
         });
 
-        expect(reporter.render(1)).toBe('Something is broken!!');
+        expect(reporter.render(1)).toBe(`Something is broken!!
+${CURSOR}`);
       });
 
       it('includes header and footer', () => {
@@ -138,7 +143,8 @@ All is good...`);
 ${chalk.green('✔')} Task
 
 All is good...
-FOOT`);
+FOOT
+${CURSOR}`);
       });
     });
   });
@@ -409,14 +415,14 @@ FOOT`);
     it('doesnt update if no render data', () => {
       reporter.update();
 
-      expect(logUpdate).not.toHaveBeenCalled();
+      expect(logUpdate).toHaveBeenCalledWith(CURSOR);
     });
 
     it('logs update if something to render', () => {
       reporter.loader = () => ({ logs: ['Foo'] });
       reporter.update();
 
-      expect(logUpdate).toHaveBeenCalledWith('Foo');
+      expect(logUpdate).toHaveBeenCalledWith(`Foo\n${CURSOR}`);
     });
   });
 });

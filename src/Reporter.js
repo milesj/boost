@@ -19,7 +19,8 @@ import {
 import type Task from './Task';
 import type { ReportLoader } from './types';
 
-const REFRESH_RATE: number = 100;
+export const REFRESH_RATE: number = 100;
+export const CURSOR: string = '\x1B[?25h'; // eslint-disable-line unicorn/no-hex-escape
 
 export default class Reporter<To: Object = {}> extends Module<To> {
   instance: number = 0;
@@ -38,7 +39,7 @@ export default class Reporter<To: Object = {}> extends Module<To> {
    */
   render(code?: number = 0): string {
     if (!this.loader) {
-      return '';
+      return CURSOR;
     }
 
     const {
@@ -63,17 +64,15 @@ export default class Reporter<To: Object = {}> extends Module<To> {
       tasks.forEach((task) => {
         output.push(...this.renderTask(task, 0));
       });
-
-      output.push('');
     }
 
     // Debugs second
     if (debugs.length > 0 && debug) {
-      debugs.forEach((log) => {
-        output.push(log);
-      });
-
       output.push('');
+
+      debugs.forEach((log) => {
+        output.push(this.renderMessage(log));
+      });
     }
 
     // Messages last
@@ -81,8 +80,10 @@ export default class Reporter<To: Object = {}> extends Module<To> {
     const messages = (code === 0) ? (verbose ? logs : []) : errors;
 
     if (messages.length > 0) {
+      output.push('');
+
       messages.forEach((log) => {
-        output.push(log);
+        output.push(this.renderMessage(log));
       });
     }
 
@@ -90,7 +91,17 @@ export default class Reporter<To: Object = {}> extends Module<To> {
       output.push(footer);
     }
 
+    // Show terminal cursor
+    output.push(CURSOR);
+
     return output.join('\n').trim();
+  }
+
+  /**
+   * Render a debug, log, or error message.
+   */
+  renderMessage(message: string): string {
+    return message;
   }
 
   /**
