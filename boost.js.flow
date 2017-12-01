@@ -187,7 +187,7 @@ declare module 'boost' {
     isPending(): boolean;
     isRunning(): boolean;
     isSkipped(): boolean;
-    run(value: *, context: Tx): Promise<*>;
+    run(value: *, context?: Tx): Promise<*>;
     skip(condition?: boolean): this;
     wrap(value: *): Promise<*>;
   }
@@ -199,7 +199,7 @@ declare module 'boost' {
     constructor(key: string, title: string, defaultConfig?: Tc): this;
     bootstrap(): void;
     configure(parent: Routine<*, Tx>): this;
-    execute(value: *, context: Tx): Promise<*>;
+    execute(value: *, context?: Tx): Promise<*>;
     executeCommand(command: string, args: string[], options?: Object): Promise<*>;
     executeTask(value: *, task: Task<Object, Tx>): Promise<*>;
     parallelizeSubroutines(value: *): Promise<*>;

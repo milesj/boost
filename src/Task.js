@@ -88,8 +88,9 @@ export default class Task<Tc: Object = {}, Tx: Object = {}> {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(initialValue: *, context: Tx): Promise<*> {
-    this.context = context;
+  run(initialValue: *, context?: Tx): Promise<*> {
+    // $FlowIgnore
+    this.context = context || {};
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;

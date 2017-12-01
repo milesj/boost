@@ -76,7 +76,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute(value: *, context: Tx): Promise<*> {
+  execute(value: *, context?: Tx): Promise<*> {
     return value;
   }
 
@@ -138,7 +138,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
   /**
    * Trigger processes before and after execution.
    */
-  run(value: *, context: Tx): Promise<*> {
+  run(value: *, context?: Tx): Promise<*> {
     const { console: cli } = this.tool;
 
     if (this.exit) {

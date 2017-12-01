@@ -30,9 +30,10 @@ export default class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routi
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: *, context: Tx): Promise<*> {
+  run(initialValue: *, context?: Tx): Promise<*> {
     const { console: cli } = this.tool;
 
+    // $FlowIgnore
     this.context = context || {};
 
     cli.start(this.subroutines);
