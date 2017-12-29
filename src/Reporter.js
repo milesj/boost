@@ -4,6 +4,8 @@
  * @flow
  */
 
+/* eslint-disable complexity */
+
 import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';

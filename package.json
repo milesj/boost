@@ -5,9 +5,9 @@
   "keywords": [],
   "main": "./lib/index.js",
   "scripts": {
-    "babel": "build-lib ./src -d ./lib",
+    "babel": "build-lib",
     "coverage": "run-tests --coverage",
-    "eslint": "run-linter ./src ./tests",
+    "eslint": "run-linter",
     "flow": "type-check",
     "jest": "run-tests",
     "posttest": "yarn run flow",
@@ -49,8 +49,8 @@
     "optimal": "^0.14.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.41.3",
-    "fs-extra": "^4.0.2"
+    "@milesj/build-tool-config": "0.46.0",
+    "fs-extra": "^5.0.0"
   },
   "babel": {
     "presets": "@milesj/build-tool-config/babel"
