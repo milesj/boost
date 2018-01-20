@@ -25,7 +25,7 @@ export const REFRESH_RATE: number = 100;
 export const CURSOR: string = '\x1B[?25h'; // eslint-disable-line unicorn/no-hex-escape
 
 export default class Reporter<To: Object = {}> extends Module<To> {
-  instance: number = 0;
+  instance: IntervalID;
 
   loader: ?ReportLoader = null;
 
