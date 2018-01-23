@@ -11,7 +11,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import Config, { array, bool, string } from 'optimal';
+import Config, { array, bool, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -100,7 +100,10 @@ export default class ConfigLoader {
       extends: array(string()),
       reporter: string().empty(),
       silent: bool(),
-      [pluralize(pluginAlias)]: array(string()),
+      [pluralize(pluginAlias)]: array(union([
+        string(),
+        shape({ [pluginAlias]: string() }),
+      ])),
     }, {
       name: 'ConfigLoader',
       unknown: true,

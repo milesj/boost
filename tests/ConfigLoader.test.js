@@ -81,6 +81,31 @@ describe('ConfigLoader', () => {
           foo: 'bar',
         });
       });
+
+      it('supports plugins', () => {
+        loader.package = {
+          boost: {
+            plugins: [
+              'foo',
+              {
+                plugin: 'bar',
+                option: true,
+              },
+            ],
+          },
+        };
+
+        expect(loader.loadConfig()).toEqual({
+          ...DEFAULT_TOOL_CONFIG,
+          plugins: [
+            'foo',
+            {
+              plugin: 'bar',
+              option: true,
+            },
+          ],
+        });
+      });
     });
 
     describe('from config folder', () => {
@@ -128,6 +153,21 @@ describe('ConfigLoader', () => {
         expect(loader.loadConfig()).toEqual({
           ...DEFAULT_TOOL_CONFIG,
           foo: 'bar',
+        });
+      });
+
+      it('supports plugins', () => {
+        loader.options.root = getFixturePath('app-plugin-config');
+
+        expect(loader.loadConfig()).toEqual({
+          ...DEFAULT_TOOL_CONFIG,
+          plugins: [
+            'foo',
+            {
+              plugin: 'bar',
+              option: true,
+            },
+          ],
         });
       });
     });
