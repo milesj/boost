@@ -61,7 +61,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     // Cleanup when an exit occurs
     /* istanbul ignore next */
     process.on('exit', (code) => {
-      this.emit('exit', null, [code]);
+      this.emit('exit', [code]);
     });
   }
 

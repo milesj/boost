@@ -15,7 +15,7 @@ export default class Emitter {
   /**
    * Syncronously execute listeners for the defined event and arguments.
    */
-  emit(eventName: string, initialValue: *, args?: EventArguments = []): Event {
+  emit(eventName: string, args?: EventArguments = [], initialValue?: * = null): Event {
     const event = new Event(eventName, initialValue);
 
     Array.from(this.getListeners(event.name)).some((listener) => {
@@ -31,7 +31,7 @@ export default class Emitter {
    * Syncronously execute listeners for the defined event and arguments,
    * through a chaining lyer controlled by next handlers.
    */
-  emitCascade(eventName: string, initialValue: *, args?: EventArguments = []): Event {
+  emitCascade(eventName: string, args?: EventArguments = [], initialValue?: * = null): Event {
     const event = new Event(eventName, initialValue);
     const listeners = Array.from(this.getListeners(event.name));
     let index = 0;

@@ -138,8 +138,8 @@ declare module 'boost' {
   declare export class Emitter {
     listeners: { [eventName: string]: Set<EventListener> };
 
-    emit(eventName: string, initialValue: *, args?: EventArguments): Event;
-    emitCascade(eventName: string, initialValue: *, args?: EventArguments): Event;
+    emit(eventName: string, args?: EventArguments, initialValue?: *): Event;
+    emitCascade(eventName: string, args?: EventArguments, initialValue?: *): Event;
     getEventNames(): string[];
     getListeners(eventName: string): Set<EventListener>;
     off(eventName: string, listener: EventListener): this;

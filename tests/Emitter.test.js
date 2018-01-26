@@ -32,7 +32,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event, a, b) => { output.push(a, b * 2); });
       emitter.on('foo', (event, a, b) => { output.push(a * 3, b * 4); });
       emitter.on('foo', (event, a, b) => { output.push(a * 5, b * 6); });
-      emitter.emit('foo', null, [2, 3]);
+      emitter.emit('foo', [2, 3]);
 
       expect(output).toEqual([
         2,
@@ -49,7 +49,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event) => { event.value = event.value.split('').reverse().join(''); });
       emitter.on('foo', (event) => { event.value = `${event.value}-${event.value}`; });
 
-      const event = emitter.emit('foo', 'foo');
+      const event = emitter.emit('foo', [], 'foo');
 
       expect(event.value).toBe('OOF-OOF');
     });
@@ -59,7 +59,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event, a, b, c) => { event.value.push(b.repeat(2)); });
       emitter.on('foo', (event, a, b, c) => { event.value.push(c.repeat(1)); });
 
-      const event = emitter.emit('foo', [], ['foo', 'bar', 'baz']);
+      const event = emitter.emit('foo', ['foo', 'bar', 'baz'], []);
 
       expect(event.value).toEqual([
         'foofoofoo',
@@ -96,7 +96,7 @@ describe('Emitter', () => {
       let args;
 
       emitter.on('foo', (event, ...eventArgs) => { args = eventArgs; });
-      emitter.emit('foo', null, baseArgs);
+      emitter.emit('foo', baseArgs);
 
       expect(args).toEqual(baseArgs);
     });
@@ -106,7 +106,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event) => { event.value += 1; });
       emitter.on('foo', (event) => { event.value += 1; });
 
-      const event = emitter.emit('foo', 0);
+      const event = emitter.emit('foo', [], 0);
 
       expect(event.value).toBe(3);
     });
@@ -134,7 +134,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event, a, b) => { output.push(a, b * 2); event.next(); });
       emitter.on('foo', (event, a, b) => { output.push(a * 3, b * 4); event.next(); });
       emitter.on('foo', (event, a, b) => { output.push(a * 5, b * 6); event.next(); });
-      emitter.emitCascade('foo', null, [2, 3]);
+      emitter.emitCascade('foo', [2, 3]);
 
       expect(output).toEqual([
         2,
@@ -162,7 +162,7 @@ describe('Emitter', () => {
         event.next();
       });
 
-      const event = emitter.emitCascade('foo', 'foo');
+      const event = emitter.emitCascade('foo', [], 'foo');
 
       expect(event.value).toBe('OOF-OOF');
     });
@@ -172,7 +172,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event, a, b, c) => { event.value.push(b.repeat(2)); event.next(); });
       emitter.on('foo', (event, a, b, c) => { event.value.push(c.repeat(1)); event.next(); });
 
-      const event = emitter.emitCascade('foo', [], ['foo', 'bar', 'baz']);
+      const event = emitter.emitCascade('foo', ['foo', 'bar', 'baz'], []);
 
       expect(event.value).toEqual([
         'foofoofoo',
@@ -222,7 +222,7 @@ describe('Emitter', () => {
       let args;
 
       emitter.on('foo', (event, ...eventArgs) => { args = eventArgs; event.next(); });
-      emitter.emitCascade('foo', null, baseArgs);
+      emitter.emitCascade('foo', baseArgs);
 
       expect(args).toEqual(baseArgs);
     });
@@ -232,7 +232,7 @@ describe('Emitter', () => {
       emitter.on('foo', (event) => { event.value += 1; event.next(); });
       emitter.on('foo', (event) => { event.value += 1; event.next(); });
 
-      const event = emitter.emitCascade('foo', 0);
+      const event = emitter.emitCascade('foo', [], 0);
 
       expect(event.value).toBe(3);
     });
