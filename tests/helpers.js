@@ -3,7 +3,7 @@ import path from 'path';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
-// and the `mock-fs` module was problematic.
+// and the `mock-fs` module was super painful.
 
 export function getFixturePath(fixture, file = '') {
   return path.join(__dirname, `./fixtures/${fixture}`, file);
