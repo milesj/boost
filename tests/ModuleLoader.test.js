@@ -32,7 +32,14 @@ describe('ModuleLoader', () => {
     it('errors for missing node module', () => {
       expect(() => {
         loader.importModule('missing');
-      }).toThrowError('Missing plugin module "boost-plugin-missing".');
+      }).toThrowError('Missing plugin. Attempted import in order: boost-plugin-missing');
+    });
+
+    it('errors for missing node module (with scope)', () => {
+      expect(() => {
+        loader.options.scoped = true;
+        loader.importModule('missing');
+      }).toThrowError('Missing plugin. Attempted import in order: @boost/plugin-missing, boost-plugin-missing');
     });
 
     it('errors if a non-function is exported', () => {

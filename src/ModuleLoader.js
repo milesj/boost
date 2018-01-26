@@ -33,13 +33,31 @@ export default class ModuleLoader<Tm> {
   importModule(name: string, options?: Object = {}): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.options;
-    const moduleName = formatModuleName(appName, typeName, name, scoped);
-    let importedModule;
 
-    try {
-      importedModule = requireModule(moduleName);
-    } catch (error) {
-      throw new Error(`Missing ${typeName} module "${moduleName}".`);
+    // Determine modules to attempt to load
+    const modulesToAttempt = [formatModuleName(appName, typeName, name, false)];
+    let importedModule;
+    let moduleName;
+
+    if (scoped) {
+      modulesToAttempt.unshift(formatModuleName(appName, typeName, name, true));
+    }
+
+    modulesToAttempt.some((modName) => {
+      try {
+        importedModule = requireModule(modName);
+        moduleName = modName;
+
+        return true;
+      } catch (error) {
+        return false;
+      }
+    });
+
+    if (!importedModule || !moduleName) {
+      throw new Error(
+        `Missing ${typeName}. Attempted import in order: ${modulesToAttempt.join(', ')}`,
+      );
     }
 
     // An instance was returned instead of the class definition
