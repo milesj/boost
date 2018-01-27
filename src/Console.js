@@ -36,9 +36,7 @@ export default class Console<Tr: Reporter<Object>> {
 
   reporter: Tr;
 
-  constructor(reporter: Tr) {
-    this.reporter = reporter;
-
+  constructor() {
     // Avoid binding listeners while testing
     if (process.env.NODE_ENV === 'test') {
       return;
@@ -70,9 +68,9 @@ export default class Console<Tr: Reporter<Object>> {
    * Add a message to the debug log.
    */
   debug(message: string) {
-    this.debugs.push(
-      `${chalk.gray('[debug]')}${this.reporter.indent(this.debugGroups.length)} ${message}`,
-    );
+    const indent = '  '.repeat(this.debugGroups.length);
+
+    this.debugs.push(`${chalk.gray('[debug]')}${indent} ${message}`);
   }
 
   /**

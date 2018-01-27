@@ -112,7 +112,7 @@ declare module 'boost' {
     logs: string[];
     reporter: Tr;
 
-    constructor(reporter: Tr): this;
+    constructor(): this;
     debug(message: string): void;
     error(message: string): void;
     exit(message: string | Error | null, code?: number): void;

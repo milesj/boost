@@ -106,13 +106,23 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       return this;
     }
 
+    const { appName } = this.options;
+
+    // Initialize the console first we can start debugging
+    this.console = new Console();
+    this.console.startDebugGroup('appName');
+
+    this.debug(`Initializing ${chalk.green(appName)}`);
+
+    // Being loading all the things
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
     this.initialized = true;
 
     // Start the console early so we may capture uncaught/unhandled
-    this.console = new Console(this.reporter);
+    this.console.reporter = this.reporter;
+    this.console.stopDebugGroup();
     this.console.start(this.config, this.options);
 
     return this;
@@ -137,6 +147,9 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       return this;
     }
 
+    this.debug(`Loading local ${chalk.cyan('package.json')}`);
+    this.debug('Loading config from file');
+
     this.configLoader = new ConfigLoader(this.options);
     this.package = this.configLoader.loadPackageJSON();
     this.config = this.configLoader.loadConfig();
@@ -160,6 +173,8 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     if (isEmptyObject(this.config)) {
       throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
+
+    this.debug(`Loading plugins under the alias ${chalk.yellow(pluginAlias)}`);
 
     this.pluginLoader = new ModuleLoader(pluginAlias, Plugin, this.options);
     this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
@@ -194,11 +209,15 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     // Load based on name
     if (reporter) {
+      this.debug(`Loading reporter from module ${chalk.yellow(reporter)}`);
+
       this.reporterLoader = new ModuleLoader('reporter', Reporter, this.options);
       this.reporter = this.reporterLoader.loadModule(reporter);
 
     // Use native Boost reporter
     } else {
+      this.debug(`Using native ${chalk.yellow('boost')} reporter`);
+
       // $FlowIgnore
       this.reporter = new Reporter();
     }
