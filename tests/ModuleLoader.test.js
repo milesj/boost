@@ -1,5 +1,7 @@
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
+import Tool from '../src/Tool';
+import Console from '../src/Console';
 import { getTestRoot, copyFixtureToMock } from './helpers';
 
 function createPlugin(name) {
@@ -15,11 +17,14 @@ describe('ModuleLoader', () => {
   let fixtures = [];
 
   beforeEach(() => {
-    loader = new ModuleLoader('plugin', Plugin, {
+    const tool = new Tool({
       appName: 'boost',
       pluginAlias: 'plugin',
       root: getTestRoot(),
     });
+    tool.console = new Console();
+
+    loader = new ModuleLoader(tool, 'plugin', Plugin);
 
     fixtures = [];
   });
@@ -37,7 +42,7 @@ describe('ModuleLoader', () => {
 
     it('errors for missing node module (with scope)', () => {
       expect(() => {
-        loader.options.scoped = true;
+        loader.tool.options.scoped = true;
         loader.importModule('missing');
       }).toThrowError('Missing plugin. Attempted import in order: @boost/plugin-missing, boost-plugin-missing');
     });
@@ -97,7 +102,7 @@ describe('ModuleLoader', () => {
 
     it('supports scopeds', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', '@boost/plugin-scoped'));
-      loader.options.scoped = true;
+      loader.tool.options.scoped = true;
 
       const plugin = loader.importModule('scoped');
 

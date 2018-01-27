@@ -175,9 +175,9 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
 
-    this.debug(`Loading plugins under the alias ${chalk.yellow(pluginAlias)}`);
+    this.console.startDebugGroup('plugin');
 
-    this.pluginLoader = new ModuleLoader(pluginAlias, Plugin, this.options);
+    this.pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
     this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
@@ -188,6 +188,8 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       plugin.tool = this; // eslint-disable-line no-param-reassign
       plugin.bootstrap();
     });
+
+    this.console.stopDebugGroup();
 
     return this;
   }
@@ -206,13 +208,13 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       throw new Error('Cannot load reporter as configuration has not been loaded.');
     }
 
+    this.console.startDebugGroup('reporter');
+
     const { reporter } = this.config;
 
     // Load based on name
     if (reporter) {
-      this.debug(`Loading reporter from module ${chalk.yellow(reporter)}`);
-
-      this.reporterLoader = new ModuleLoader('reporter', Reporter, this.options);
+      this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter);
       this.reporter = this.reporterLoader.loadModule(reporter);
 
     // Use native Boost reporter
@@ -222,6 +224,8 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       // $FlowIgnore
       this.reporter = new Reporter();
     }
+
+    this.console.stopDebugGroup();
 
     return this;
   }

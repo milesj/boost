@@ -56,10 +56,14 @@ declare module 'boost' {
 
   declare class ModuleLoader<Tm> {
     classReference: Class<Tm>;
-    options: ToolOptions;
+    tool: Tool<Plugin<Object>, Reporter<Object>>;
     typeName: string;
 
-    constructor(typeName: string, classReference: Class<Tm>, options: ToolOptions): this;
+    constructor(
+      tool: Tool<Plugin<Object>, Reporter<Object>>,
+      typeName: string,
+      classReference: Class<Tm>,
+    ): this;
     importModule(name: string, options?: Object): Tm;
     importModuleFromOptions(baseOptions: Object): Tm;
     loadModule(module: string | Object | Tm): Tm;
