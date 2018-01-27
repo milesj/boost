@@ -151,9 +151,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
       return Promise.reject(new ExitError('Process has been interrupted.'));
     }
 
-    this.tool.debug(
-      `Running routine ${chalk.green(this.key)} with ${this.subroutines.length} sub-routines and ${this.subtasks.length} tasks`,
-    );
+    this.tool.debug(`Executing routine ${chalk.green(this.key)}`);
 
     cli.startDebugGroup(this.key);
 

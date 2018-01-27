@@ -220,7 +220,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     // Use native Boost reporter
     } else {
-      this.debug(`Using native ${chalk.yellow('boost')} reporter`);
+      this.debug(`Using native ${chalk.green('boost')} reporter`);
 
       // $FlowIgnore
       this.reporter = new Reporter();

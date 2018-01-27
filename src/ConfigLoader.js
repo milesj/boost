@@ -64,7 +64,7 @@ export default class ConfigLoader {
     const camelName = camelCase(appName);
     let config = {};
 
-    this.tool.debug('Loading configuration');
+    this.tool.debug('Locating configuration');
 
     // Config has been defined in package.json
     if (this.package[camelName]) {
@@ -90,7 +90,7 @@ export default class ConfigLoader {
         `config/${appName}.json5`,
       ];
 
-      this.tool.debug(`Locating in order: ${fileNames.join(', ')}`);
+      this.tool.debug(`Resolving in order: ${fileNames.join(', ')}`);
 
       if (filePaths.length === 0) {
         throw new Error(
@@ -133,7 +133,7 @@ export default class ConfigLoader {
     const { root } = this.tool.options;
     const filePath = path.join(root, 'package.json');
 
-    this.tool.debug(`Loading package.json from ${chalk.cyan(root)}`);
+    this.tool.debug(`Locating package.json in ${chalk.cyan(root)}`);
 
     if (!fs.existsSync(filePath)) {
       throw new Error(
@@ -222,7 +222,7 @@ export default class ConfigLoader {
     const ext = path.extname(filePath);
     let value;
 
-    this.tool.debug(`Parsing config file ${chalk.cyan(filePath)}`);
+    this.tool.debug(`Parsing file ${chalk.cyan(filePath)}`);
 
     if (!path.isAbsolute(filePath)) {
       throw new Error('An absolute file path is required.');

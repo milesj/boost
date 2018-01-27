@@ -37,7 +37,7 @@ export default class ModuleLoader<Tm> {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
-    this.tool.debug(`Loading ${typeName} module ${chalk.yellow(name)}`);
+    this.tool.debug(`Locating ${typeName} module ${chalk.yellow(name)}`);
 
     // Determine modules to attempt to load
     const modulesToAttempt = [formatModuleName(appName, typeName, name, false)];
@@ -48,7 +48,7 @@ export default class ModuleLoader<Tm> {
       modulesToAttempt.unshift(formatModuleName(appName, typeName, name, true));
     }
 
-    this.tool.debug(`Locating in order: ${modulesToAttempt.join(', ')}`);
+    this.tool.debug(`Resolving in order: ${modulesToAttempt.join(', ')}`);
 
     modulesToAttempt.some((modName) => {
       try {
