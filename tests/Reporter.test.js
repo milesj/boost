@@ -379,11 +379,12 @@ ${CURSOR}`);
       expect(reporter.loader).toBe(loader);
     });
 
-    it('doesnt set an interval if one has started', () => {
+    it('clears interval if one has started', () => {
       reporter.instance = 1;
       reporter.start(() => {});
+      reporter.start(() => {});
 
-      expect(setInterval.mock.calls).toHaveLength(0);
+      expect(setInterval.mock.calls).toHaveLength(2);
     });
 
     it('errors if loader is not a function', () => {

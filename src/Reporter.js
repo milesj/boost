@@ -199,8 +199,10 @@ export default class Reporter<To: Object = {}> extends Module<To> {
    */
   start(loader: ReportLoader) {
     if (this.instance) {
-      return;
-    } else if (!loader || typeof loader !== 'function') {
+      clearInterval(this.instance);
+    }
+
+    if (!loader || typeof loader !== 'function') {
       throw new TypeError('A loader is required to render console output.');
     }
 
