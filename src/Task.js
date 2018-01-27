@@ -89,6 +89,7 @@ export default class Task<Tc: Object = {}, Tx: Object = {}> {
    * before and after processes.
    */
   run(initialValue: *, context?: Tx): Promise<*> {
+    // Don't spread context as to preserve references
     // $FlowIgnore
     this.context = context || {};
 

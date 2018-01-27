@@ -4,6 +4,7 @@
  * @flow
  */
 
+import chalk from 'chalk';
 import execa from 'execa';
 import merge from 'lodash/merge';
 import split from 'split';
@@ -68,6 +69,8 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
 
     // Initialize routine (this must be last!)
     this.bootstrap();
+
+    this.tool.debug(`Bootstrapping routine ${chalk.green(this.key)}`);
 
     return this;
   }
@@ -147,6 +150,10 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
     if (this.exit) {
       return Promise.reject(new ExitError('Process has been interrupted.'));
     }
+
+    this.tool.debug(
+      `Running routine ${chalk.green(this.key)} with ${this.subroutines.length} sub-routines and ${this.subtasks.length} tasks`,
+    );
 
     cli.startDebugGroup(this.key);
 

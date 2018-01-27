@@ -25,6 +25,7 @@ export default class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routi
     }
 
     this.tool = tool;
+    this.tool.debug('Instantiating pipeline');
   }
 
   /**
@@ -33,6 +34,9 @@ export default class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routi
   run(initialValue: *, context?: Tx): Promise<*> {
     const { console: cli, config, options } = this.tool;
 
+    this.tool.debug('Running pipeline');
+
+    // Don't spread context as to preserve references
     // $FlowIgnore
     this.context = context || {};
 

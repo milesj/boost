@@ -77,7 +77,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
   /**
    * Force exit the application.
    */
-  exit(message: string | Error, code?: number = 1): this {
+  exit(message: string | Error | null, code?: number = 1): this {
     this.console.exit(message, code);
 
     return this;
@@ -110,20 +110,21 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     // Initialize the console first we can start debugging
     this.console = new Console();
-    this.console.startDebugGroup(appName);
 
     this.debug(`Initializing ${chalk.green(appName)}`);
 
     // Being loading all the things
+    this.console.startDebugGroup(appName);
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
-    this.initialized = true;
-
-    // Start the console early so we may capture uncaught/unhandled
-    this.console.reporter = this.reporter;
     this.console.stopDebugGroup();
+
+    // Start the reporter early so we may capture uncaught/unhandled
+    this.console.reporter = this.reporter;
     this.console.start(this.config, this.options);
+
+    this.initialized = true;
 
     return this;
   }

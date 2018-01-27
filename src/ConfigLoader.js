@@ -70,7 +70,7 @@ export default class ConfigLoader {
     if (this.package[camelName]) {
       config = this.package[camelName];
 
-      this.tool.debug('Found in package.json');
+      this.tool.debug(`Found in package.json under "${camelName}" property`);
 
       // Extend from a preset if a string
       if (typeof config === 'string') {
@@ -84,13 +84,18 @@ export default class ConfigLoader {
         { absolute: true },
       );
 
-      this.tool.debug(`Locating in order: config/${appName}.js, config/${appName}.json, config/${appName}.json5`);
+      const fileNames = [
+        `config/${appName}.js`,
+        `config/${appName}.json`,
+        `config/${appName}.json5`,
+      ];
+
+      this.tool.debug(`Locating in order: ${fileNames.join(', ')}`);
 
       if (filePaths.length === 0) {
         throw new Error(
           'Local configuration file could not be found. ' +
-          `One of "config/${appName}.js" or "config/${appName}.json" must exist ` +
-          'relative to the project root.',
+          `One of ${fileNames.join(', ')} must exist relative to the project root.`,
         );
 
       } else if (filePaths.length !== 1) {
