@@ -109,8 +109,11 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
-    this.console = new Console(this.reporter);
     this.initialized = true;
+
+    // Start the console early so we may capture uncaught/unhandled
+    this.console = new Console(this.reporter);
+    this.console.start(this.config, this.options);
 
     return this;
   }

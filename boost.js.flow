@@ -117,7 +117,7 @@ declare module 'boost' {
     error(message: string): void;
     exit(message: string | Error | null, code?: number): void;
     log(message: string): void;
-    start(config: ToolConfig, options: ToolOptions, tasks: Task<*, *>[]): void;
+    start(config: ToolConfig, options: ToolOptions, tasks?: Task<*, *>[]): void;
     startDebugGroup(group: string): void;
     stop(): void;
     stopDebugGroup(): void;

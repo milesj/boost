@@ -57,12 +57,12 @@ export default class Console<Tr: Reporter<Object>> {
       .on('SIGINT', signalHandler)
       .on('SIGTERM', signalHandler)
       .on('uncaughtException', (error) => {
-        this.log(chalk.yellow('Uncaught exception detected!'));
-        this.exit(error.message);
+        this.error(chalk.yellow('Uncaught exception detected!'));
+        this.exit(error);
       })
       .on('unhandledRejection', (error) => {
-        this.log(chalk.yellow('Unhandled promise rejection detected!'));
-        this.exit(error.message);
+        this.error(chalk.yellow('Unhandled promise rejection detected!'));
+        this.exit(error);
       });
   }
 
@@ -70,7 +70,9 @@ export default class Console<Tr: Reporter<Object>> {
    * Add a message to the debug log.
    */
   debug(message: string) {
-    this.debugs.push(`${chalk.gray('[debug]')}${this.reporter.indent(this.debugGroups.length)} ${message}`);
+    this.debugs.push(
+      `${chalk.gray('[debug]')}${this.reporter.indent(this.debugGroups.length)} ${message}`,
+    );
   }
 
   /**
@@ -94,15 +96,21 @@ export default class Console<Tr: Reporter<Object>> {
       if (typeof error.code === 'number') {
         errorCode = error.code;
       }
+
+      // Be sure to output the message
+      this.error(chalk.red(error.stack || error.message));
     }
 
     // Stop the renderer
     this.stop();
 
     // Send final output and exit after buffer is flushed
-    (code === 0 ? process.stdout : process.stderr).write(this.reporter.render(code), () => {
-      process.exit(errorCode); // eslint-disable-line unicorn/no-process-exit
-    });
+    (errorCode === 0 ? process.stdout : process.stderr).write(
+      this.reporter.render(errorCode),
+      () => {
+        process.exit(errorCode); // eslint-disable-line unicorn/no-process-exit
+      },
+    );
   }
 
   /**
@@ -115,7 +123,7 @@ export default class Console<Tr: Reporter<Object>> {
   /**
    * Start a new console and begin rendering.
    */
-  start(config: ToolConfig, options: ToolOptions, tasks: Task<*, *>[]) {
+  start(config: ToolConfig, options: ToolOptions, tasks?: Task<*, *>[] = []) {
     const { debug, silent } = config;
     const { footer, header } = options;
     const { debugs, errors, logs } = this;
