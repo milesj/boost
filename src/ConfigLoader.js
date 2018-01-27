@@ -21,17 +21,15 @@ import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 
 import type { ToolConfig, PackageConfig } from './types';
 import type Tool from './Tool';
-import type Plugin from './Plugin';
-import type Reporter from './Reporter';
 
 export default class ConfigLoader {
   package: PackageConfig;
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: Tool<Plugin<Object>, Reporter<Object>>;
+  tool: Tool<*, *>;
 
-  constructor(tool: Tool<Plugin<Object>, Reporter<Object>>) {
+  constructor(tool: Tool<*, *>) {
     this.tool = tool;
   }
 

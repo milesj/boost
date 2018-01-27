@@ -35,9 +35,9 @@ declare module 'boost' {
   declare class ConfigLoader {
     package: PackageConfig;
     parsedFiles: { [path: string]: boolean };
-    tool: Tool<Plugin<Object>, Reporter<Object>>;
+    tool: Tool<*, *>;
 
-    constructor(tool: Tool<Plugin<Object>, Reporter<Object>>): this;
+    constructor(tool: Tool<*, *>): this;
     loadConfig(): ToolConfig;
     loadPackageJSON(): PackageConfig;
     parseAndExtend(fileOrConfig: string | Object): Object;
@@ -56,14 +56,10 @@ declare module 'boost' {
 
   declare class ModuleLoader<Tm> {
     classReference: Class<Tm>;
-    tool: Tool<Plugin<Object>, Reporter<Object>>;
+    tool: Tool<*, *>;
     typeName: string;
 
-    constructor(
-      tool: Tool<Plugin<Object>, Reporter<Object>>,
-      typeName: string,
-      classReference: Class<Tm>,
-    ): this;
+    constructor(tool: Tool<*, *>, typeName: string, classReference: Class<Tm>): this;
     importModule(name: string, options?: Object): Tm;
     importModuleFromOptions(baseOptions: Object): Tm;
     loadModule(module: string | Object | Tm): Tm;

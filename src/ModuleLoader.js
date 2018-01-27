@@ -13,21 +13,15 @@ import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 
 import type Tool from './Tool';
-import type Plugin from './Plugin';
-import type Reporter from './Reporter';
 
 export default class ModuleLoader<Tm> {
   classReference: Function;
 
-  tool: Tool<Plugin<Object>, Reporter<Object>>;
+  tool: Tool<*, *>;
 
   typeName: string;
 
-  constructor(
-    tool: Tool<Plugin<Object>, Reporter<Object>>,
-    typeName: string,
-    classReference: Function,
-  ) {
+  constructor(tool: Tool<*, *>, typeName: string, classReference: Function) {
     this.classReference = classReference;
     this.tool = tool;
     this.typeName = typeName;
