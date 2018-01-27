@@ -33,11 +33,11 @@ declare module 'boost' {
   };
 
   declare class ConfigLoader {
-    options: ToolOptions;
     package: PackageConfig;
     parsedFiles: { [path: string]: boolean };
+    tool: Tool<Plugin<Object>, Reporter<Object>>;
 
-    constructor(options: ToolOptions): this;
+    constructor(tool: Tool<Plugin<Object>, Reporter<Object>>): this;
     loadConfig(): ToolConfig;
     loadPackageJSON(): PackageConfig;
     parseAndExtend(fileOrConfig: string | Object): Object;

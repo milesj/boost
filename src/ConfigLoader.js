@@ -4,6 +4,7 @@
  * @flow
  */
 
+import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
@@ -18,17 +19,20 @@ import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 
-import type { ToolConfig, ToolOptions, PackageConfig } from './types';
+import type { ToolConfig, PackageConfig } from './types';
+import type Tool from './Tool';
+import type Plugin from './Plugin';
+import type Reporter from './Reporter';
 
 export default class ConfigLoader {
-  options: ToolOptions;
-
   package: PackageConfig;
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  constructor(options: ToolOptions) {
-    this.options = options;
+  tool: Tool<Plugin<Object>, Reporter<Object>>;
+
+  constructor(tool: Tool<Plugin<Object>, Reporter<Object>>) {
+    this.tool = tool;
   }
 
   /**
@@ -58,13 +62,17 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName, pluginAlias, root } = this.options;
+    const { appName, pluginAlias, root } = this.tool.options;
     const camelName = camelCase(appName);
     let config = {};
+
+    this.tool.debug('Loading configuration');
 
     // Config has been defined in package.json
     if (this.package[camelName]) {
       config = this.package[camelName];
+
+      this.tool.debug('Found in package.json');
 
       // Extend from a preset if a string
       if (typeof config === 'string') {
@@ -77,6 +85,8 @@ export default class ConfigLoader {
         path.join(root, `config/${appName}.{js,json,json5}`),
         { absolute: true },
       );
+
+      this.tool.debug(`Locating in order: config/${appName}.js, config/${appName}.json, config/${appName}.json5`);
 
       if (filePaths.length === 0) {
         throw new Error(
@@ -92,6 +102,8 @@ export default class ConfigLoader {
       }
 
       [config] = filePaths;
+
+      this.tool.debug(`Found in config/${path.basename(config)}`);
     }
 
     // Parse and extend configuration
@@ -115,7 +127,10 @@ export default class ConfigLoader {
    * as we require the build tool to be ran from the project root.
    */
   loadPackageJSON(): PackageConfig {
-    const filePath = path.join(this.options.root, 'package.json');
+    const { root } = this.tool.options;
+    const filePath = path.join(root, 'package.json');
+
+    this.tool.debug(`Loading package.json from ${chalk.cyan(root)}`);
 
     if (!fs.existsSync(filePath)) {
       throw new Error(
@@ -180,6 +195,8 @@ export default class ConfigLoader {
         throw new Error(`Preset configuration ${extendPath} must be a valid file.`);
       }
 
+      this.tool.debug(`Extending from file ${chalk.cyan(extendPath)}`);
+
       mergeWith(nextConfig, this.parseAndExtend(extendPath), this.handleMerge);
     });
 
@@ -201,6 +218,8 @@ export default class ConfigLoader {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value;
+
+    this.tool.debug(`Parsing config file ${chalk.cyan(filePath)}`);
 
     if (!path.isAbsolute(filePath)) {
       throw new Error('An absolute file path is required.');
@@ -244,7 +263,12 @@ export default class ConfigLoader {
         throw new TypeError('Invalid `extends` configuration value. Must be an array of strings.');
       }
 
-      const { appName, scoped, pluginAlias } = this.options;
+      const {
+        appName,
+        scoped,
+        pluginAlias,
+        root,
+      } = this.tool.options;
 
       // Absolute path, use it directly
       if (path.isAbsolute(extendPath)) {
@@ -252,7 +276,7 @@ export default class ConfigLoader {
 
       // Relative path, resolve with parent folder or cwd
       } else if (extendPath[0] === '.') {
-        return path.resolve(baseDir || this.options.root, extendPath);
+        return path.resolve(baseDir || root, extendPath);
 
       // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
@@ -282,6 +306,6 @@ export default class ConfigLoader {
   ): string {
     const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
 
-    return path.resolve(this.options.root, 'node_modules', `${moduleName}/config/${fileName}`);
+    return path.resolve(this.tool.options.root, `node_modules/${moduleName}/config/${fileName}`);
   }
 }

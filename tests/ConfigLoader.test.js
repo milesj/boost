@@ -2,6 +2,8 @@
 
 import JSON5 from 'json5';
 import ConfigLoader from '../src/ConfigLoader';
+import Tool from '../src/Tool';
+import Console from '../src/Console';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import {
   getTestRoot,
@@ -20,11 +22,14 @@ describe('ConfigLoader', () => {
   let fixtures = [];
 
   beforeEach(() => {
-    loader = new ConfigLoader({
+    const tool = new Tool({
       appName: 'boost',
       pluginAlias: 'plugin',
       root: getTestRoot(),
     });
+    tool.console = new Console();
+
+    loader = new ConfigLoader(tool);
 
     fixtures = [];
   });
@@ -114,7 +119,7 @@ describe('ConfigLoader', () => {
       });
 
       it('errors if no files found', () => {
-        loader.options.root = getFixturePath('app-no-configs');
+        loader.tool.options.root = getFixturePath('app-no-configs');
 
         expect(() => {
           loader.loadConfig();
@@ -124,7 +129,7 @@ describe('ConfigLoader', () => {
       });
 
       it('errors if too many files are found', () => {
-        loader.options.root = getFixturePath('app-multi-configs');
+        loader.tool.options.root = getFixturePath('app-multi-configs');
 
         expect(() => {
           loader.loadConfig();
@@ -138,13 +143,13 @@ describe('ConfigLoader', () => {
       });
 
       it('supports .json5 files', () => {
-        loader.options.root = getFixturePath('app-json5-config');
+        loader.tool.options.root = getFixturePath('app-json5-config');
 
         expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
 
       it('supports .js files', () => {
-        loader.options.root = getFixturePath('app-js-config');
+        loader.tool.options.root = getFixturePath('app-js-config');
 
         expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
@@ -157,7 +162,7 @@ describe('ConfigLoader', () => {
       });
 
       it('supports plugins', () => {
-        loader.options.root = getFixturePath('app-plugin-config');
+        loader.tool.options.root = getFixturePath('app-plugin-config');
 
         expect(loader.loadConfig()).toEqual({
           ...DEFAULT_TOOL_CONFIG,
@@ -175,7 +180,7 @@ describe('ConfigLoader', () => {
 
   describe('loadPackageJSON()', () => {
     it('errors if no package.json exists in current working directory', () => {
-      loader.options.root = getFixturePath('app-no-configs');
+      loader.tool.options.root = getFixturePath('app-no-configs');
 
       expect(() => {
         loader.loadPackageJSON();
@@ -490,7 +495,7 @@ describe('ConfigLoader', () => {
     });
 
     it('resolves plugins with scoped', () => {
-      loader.options.scoped = true;
+      loader.tool.options.scoped = true;
 
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
         getModulePath('@boost/plugin-foo', 'config/boost.preset.js'),

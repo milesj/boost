@@ -110,7 +110,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     // Initialize the console first we can start debugging
     this.console = new Console();
-    this.console.startDebugGroup('appName');
+    this.console.startDebugGroup(appName);
 
     this.debug(`Initializing ${chalk.green(appName)}`);
 
@@ -147,12 +147,13 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
       return this;
     }
 
-    this.debug(`Loading local ${chalk.cyan('package.json')}`);
-    this.debug('Loading config from file');
+    this.console.startDebugGroup('config');
 
-    this.configLoader = new ConfigLoader(this.options);
+    this.configLoader = new ConfigLoader(this);
     this.package = this.configLoader.loadPackageJSON();
     this.config = this.configLoader.loadConfig();
+
+    this.console.stopDebugGroup();
 
     return this;
   }
