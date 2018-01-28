@@ -55,11 +55,11 @@ export default class Console<Tr: Reporter<Object>> {
       .on('SIGINT', signalHandler)
       .on('SIGTERM', signalHandler)
       .on('uncaughtException', (error) => {
-        this.error(chalk.yellow('Uncaught exception detected!'));
+        this.debug(chalk.yellow('Uncaught exception detected!'));
         this.exit(error);
       })
       .on('unhandledRejection', (error) => {
-        this.error(chalk.yellow('Unhandled promise rejection detected!'));
+        this.debug(chalk.yellow('Unhandled promise rejection detected!'));
         this.exit(error);
       });
   }

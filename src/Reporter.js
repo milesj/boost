@@ -161,7 +161,7 @@ export default class Reporter<To: Object = {}> extends Module<To> {
 
     // Show the current status output
     if (task.statusText) {
-      output.push(`${this.indent(level + 1)}${chalk.gray(task.statusText)}`);
+      output.push(`${this.indent(level + 2)}${chalk.gray(task.statusText)}`);
     }
 
     // Show all sub-routines

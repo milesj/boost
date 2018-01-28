@@ -304,7 +304,7 @@ ${CURSOR}`);
           `${chalk.gray('⠙')} Title`,
           `  ${chalk.gray('⠙')} Sub-routine #1`,
           `  ${chalk.red('✖')} Sub-routine #2 ${chalk.red('[failed]')}`,
-          `    ${chalk.gray('Running tests...')}`,
+          `      ${chalk.gray('Running tests...')}`,
           `  ${chalk.green('✔')} Sub-routine #3`,
         ]);
       });
