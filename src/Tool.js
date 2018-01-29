@@ -19,6 +19,8 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {
+  argv: string[] = [];
+
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
@@ -39,11 +41,14 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
   reporter: Tr;
 
-  constructor(options: Object) {
+  constructor(options: Object, argv?: string[] = []) {
     super();
+
+    this.argv = argv;
 
     this.options = new Options(options, {
       appName: string(),
+      extendArgv: bool(true),
       footer: string().empty(),
       header: string().empty(),
       pluginAlias: string('plugin'),
@@ -153,6 +158,17 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     this.configLoader = new ConfigLoader(this);
     this.package = this.configLoader.loadPackageJSON();
     this.config = this.configLoader.loadConfig();
+
+    // Inherit from argv
+    if (this.options.extendArgv) {
+      this.argv.forEach((arg) => {
+        if (arg === '--debug') {
+          this.config.debug = true;
+        } else if (arg === '--silent') {
+          this.config.silent = true;
+        }
+      });
+    }
 
     this.console.stopDebugGroup();
 

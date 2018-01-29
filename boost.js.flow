@@ -158,7 +158,7 @@ declare module 'boost' {
     reporter: Tr;
     reporterLoader: ModuleLoader<Tr>;
 
-    constructor(options: Object): this;
+    constructor(options: Object, argv?: string[]): this;
     debug(message: string): this;
     exit(message: string | Error | null, code?: number): this;
     getPlugin(name: string): Tp;
