@@ -95,8 +95,13 @@ export default class Console<Tr: Reporter<Object>> {
         errorCode = error.code;
       }
 
-      // Be sure to output the message
-      this.error(chalk.red(error.stack || error.message));
+      // Be sure to output the stack if it exists.
+      // Also, we should only show this if there are no error messages,
+      // else commands that threw an error but also wrote to stderr,
+      // would show twice the output. This is tricky to handle.
+      if (this.errors.length === 0) {
+        this.error(chalk.red(error.stack || error.message));
+      }
     }
 
     // Stop the renderer
