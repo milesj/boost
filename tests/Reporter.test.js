@@ -89,6 +89,7 @@ ${CURSOR}`);
         expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
 
 All is good...
+
 ${CURSOR}`);
       });
 
@@ -96,6 +97,7 @@ ${CURSOR}`);
         expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
 
 Something is broken!!
+
 ${CURSOR}`);
       });
 
@@ -106,10 +108,10 @@ ${CURSOR}`);
         });
 
         expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
-
 Why doesnt this work??
 
 All is good...
+
 ${CURSOR}`);
       });
 
@@ -119,7 +121,9 @@ ${CURSOR}`);
           silent: true,
         });
 
-        expect(reporter.render(0)).toBe(CURSOR);
+        expect(reporter.render(0)).toBe(`All is good...
+
+${CURSOR}`);
       });
 
       it('doesnt hide errors if silent is true', () => {
@@ -129,6 +133,7 @@ ${CURSOR}`);
         });
 
         expect(reporter.render(1)).toBe(`Something is broken!!
+
 ${CURSOR}`);
       });
 
@@ -143,6 +148,7 @@ ${CURSOR}`);
 ${chalk.green('✔')} Task
 
 All is good...
+
 FOOT
 ${CURSOR}`);
       });
@@ -423,7 +429,7 @@ ${CURSOR}`);
       reporter.loader = () => ({ logs: ['Foo'] });
       reporter.update();
 
-      expect(logUpdate).toHaveBeenCalledWith(`Foo\n${CURSOR}`);
+      expect(logUpdate).toHaveBeenCalledWith(`Foo\n\n${CURSOR}`);
     });
   });
 });

@@ -70,23 +70,26 @@ export default class Reporter<To: Object = {}> extends Module<To> {
 
     // Debugs second
     if (debugs.length > 0 && debug) {
-      output.push('');
-
       debugs.forEach((log) => {
         output.push(this.renderMessage(log));
       });
     }
 
     // Messages last
-    // eslint-disable-next-line no-nested-ternary
-    const messages = (code === 0) ? (verbose ? logs : []) : errors;
+    const messages = (code === 0) ? logs : errors;
 
     if (messages.length > 0) {
-      output.push('');
+      if (messages[0] !== '') {
+        output.push('');
+      }
 
       messages.forEach((log) => {
         output.push(this.renderMessage(log));
       });
+
+      if (messages[messages.length - 1] !== '') {
+        output.push('');
+      }
     }
 
     if (footer && verbose) {
