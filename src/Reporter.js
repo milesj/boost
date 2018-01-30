@@ -70,6 +70,8 @@ export default class Reporter<To: Object = {}> extends Module<To> {
 
     // Debugs second
     if (debugs.length > 0 && debug) {
+      output.push('');
+
       debugs.forEach((log) => {
         output.push(this.renderMessage(log));
       });

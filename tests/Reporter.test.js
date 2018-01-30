@@ -108,6 +108,7 @@ ${CURSOR}`);
         });
 
         expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
+
 Why doesnt this work??
 
 All is good...
