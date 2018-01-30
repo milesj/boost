@@ -11,7 +11,7 @@ describe('Pipeline', () => {
 
   beforeEach(() => {
     tool = new Tool({
-      appName: 'boost',
+      appName: 'test-boost',
     });
     tool.config = { foo: 'bar' };
     tool.console = new Console();

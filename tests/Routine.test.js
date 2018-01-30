@@ -14,7 +14,7 @@ describe('Routine', () => {
 
   beforeEach(() => {
     tool = new Tool({
-      appName: 'boost',
+      appName: 'test-boost',
     });
     tool.config = {
       ...DEFAULT_TOOL_CONFIG,

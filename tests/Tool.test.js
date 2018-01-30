@@ -14,7 +14,7 @@ describe('Tool', () => {
 
   beforeEach(() => {
     tool = new Tool({
-      appName: 'boost',
+      appName: 'test-boost',
       root: getFixturePath('app'),
     });
     tool.config = {};
@@ -115,7 +115,7 @@ describe('Tool', () => {
       tool.loadConfig();
 
       expect(tool.package).toEqual({
-        name: 'boost',
+        name: 'test-boost-app',
         version: '0.0.0',
       });
     });

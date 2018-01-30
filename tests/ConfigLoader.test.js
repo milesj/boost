@@ -23,7 +23,7 @@ describe('ConfigLoader', () => {
 
   beforeEach(() => {
     const tool = new Tool({
-      appName: 'boost',
+      appName: 'test-boost',
       pluginAlias: 'plugin',
       root: getTestRoot(),
     });
@@ -47,7 +47,7 @@ describe('ConfigLoader', () => {
 
     describe('from package.json', () => {
       it('errors if not an object', () => {
-        loader.package = { boost: [] };
+        loader.package = { testBoost: [] };
 
         expect(() => {
           loader.loadConfig();
@@ -56,29 +56,29 @@ describe('ConfigLoader', () => {
 
       it('supports an object', () => {
         loader.package = {
-          boost: { foo: 'bar' },
+          testBoost: { foo: 'bar' },
         };
 
         expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
 
       it('supports a string and converts it to `extends`', () => {
-        fixtures.push(copyFixtureToModule('preset', 'boost-test-preset'));
+        fixtures.push(copyFixtureToModule('preset', 'test-boost-preset'));
 
         loader.package = {
-          boost: 'boost-test-preset',
+          testBoost: 'test-boost-preset',
         };
 
         expect(loader.loadConfig()).toEqual(expect.objectContaining({
           extends: [
-            getModulePath('boost-test-preset', 'config/boost.preset.js'),
+            getModulePath('test-boost-preset', 'config/test-boost.preset.js'),
           ],
         }));
       });
 
       it('merges with default config', () => {
         loader.package = {
-          boost: { foo: 'bar' },
+          testBoost: { foo: 'bar' },
         };
 
         expect(loader.loadConfig()).toEqual({
@@ -89,7 +89,7 @@ describe('ConfigLoader', () => {
 
       it('supports plugins', () => {
         loader.package = {
-          boost: {
+          testBoost: {
             plugins: [
               'foo',
               {
@@ -124,7 +124,7 @@ describe('ConfigLoader', () => {
         expect(() => {
           loader.loadConfig();
         }).toThrowError(
-          'Local configuration file could not be found. One of config/boost.js, config/boost.json, config/boost.json5 must exist relative to the project root.',
+          'Local configuration file could not be found. One of config/test-boost.js, config/test-boost.json, config/test-boost.json5 must exist relative to the project root.',
         );
       });
 
@@ -134,7 +134,7 @@ describe('ConfigLoader', () => {
         expect(() => {
           loader.loadConfig();
         }).toThrowError(
-          'Multiple "boost" configuration files found. Only 1 may exist.',
+          'Multiple "test-boost" configuration files found. Only 1 may exist.',
         );
       });
 
@@ -198,7 +198,7 @@ describe('ConfigLoader', () => {
 
     it('parses package.json and merges values', () => {
       expect(loader.loadPackageJSON()).toEqual({
-        name: 'boost',
+        name: 'test-boost-app',
         version: '0.0.0',
       });
     });
@@ -229,7 +229,7 @@ describe('ConfigLoader', () => {
     });
 
     it('parses a file path if a string is provided', () => {
-      expect(loader.parseAndExtend(getFixturePath('app', 'config/boost.json')))
+      expect(loader.parseAndExtend(getFixturePath('app', 'config/test-boost.json')))
         .toEqual({ foo: 'bar' });
     });
 
@@ -242,7 +242,7 @@ describe('ConfigLoader', () => {
     });
 
     it('extends a preset and merges objects', () => {
-      const presetPath = getFixturePath('preset', 'config/boost.preset.js');
+      const presetPath = getFixturePath('preset', 'config/test-boost.preset.js');
 
       expect(loader.parseAndExtend({
         foo: 'bar',
@@ -466,8 +466,8 @@ describe('ConfigLoader', () => {
 
     it('supports multiple string values using an array', () => {
       expect(loader.resolveExtendPaths(['foo-bar', 'plugin:foo'])).toEqual([
-        getModulePath('foo-bar', 'config/boost.preset.js'),
-        getModulePath('boost-plugin-foo', 'config/boost.preset.js'),
+        getModulePath('foo-bar', 'config/test-boost.preset.js'),
+        getModulePath('test-boost-plugin-foo', 'config/test-boost.preset.js'),
       ]);
     });
 
@@ -485,19 +485,19 @@ describe('ConfigLoader', () => {
 
     it('resolves node modules', () => {
       expect(loader.resolveExtendPaths(['foo-bar'])).toEqual([
-        getModulePath('foo-bar', 'config/boost.preset.js'),
+        getModulePath('foo-bar', 'config/test-boost.preset.js'),
       ]);
     });
 
     it('resolves node modules with a scoped', () => {
       expect(loader.resolveExtendPaths(['@ns/foo-bar'])).toEqual([
-        getModulePath('@ns/foo-bar', 'config/boost.preset.js'),
+        getModulePath('@ns/foo-bar', 'config/test-boost.preset.js'),
       ]);
     });
 
     it('resolves plugins', () => {
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
-        getModulePath('boost-plugin-foo', 'config/boost.preset.js'),
+        getModulePath('test-boost-plugin-foo', 'config/test-boost.preset.js'),
       ]);
     });
 
@@ -505,19 +505,19 @@ describe('ConfigLoader', () => {
       loader.tool.options.scoped = true;
 
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
-        getModulePath('@boost/plugin-foo', 'config/boost.preset.js'),
+        getModulePath('@test-boost/plugin-foo', 'config/test-boost.preset.js'),
       ]);
     });
 
     it('resolves plugins using their full name', () => {
-      expect(loader.resolveExtendPaths(['boost-plugin-foo'])).toEqual([
-        getModulePath('boost-plugin-foo', 'config/boost.preset.js'),
+      expect(loader.resolveExtendPaths(['test-boost-plugin-foo'])).toEqual([
+        getModulePath('test-boost-plugin-foo', 'config/test-boost.preset.js'),
       ]);
     });
 
     it('resolves plugins using their full namepaced name', () => {
-      expect(loader.resolveExtendPaths(['@ns/boost-plugin-foo'])).toEqual([
-        getModulePath('@ns/boost-plugin-foo', 'config/boost.preset.js'),
+      expect(loader.resolveExtendPaths(['@ns/test-test-boost-plugin-foo'])).toEqual([
+        getModulePath('@ns/test-test-boost-plugin-foo', 'config/test-boost.preset.js'),
       ]);
     });
   });
