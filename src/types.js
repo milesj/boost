@@ -17,6 +17,8 @@ export type ToolConfig = {
 
 export type ToolOptions = {
   appName: string,
+  configFolder: string,
+  extendArgv: string,
   footer: string,
   header: string,
   pluginAlias: string,

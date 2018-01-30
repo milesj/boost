@@ -60,7 +60,12 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName, pluginAlias, root } = this.tool.options;
+    const {
+      appName,
+      configFolder,
+      pluginAlias,
+      root,
+    } = this.tool.options;
     const camelName = camelCase(appName);
     let config = {};
 
@@ -80,14 +85,14 @@ export default class ConfigLoader {
     // Locate files within a local config folder
     } else {
       const filePaths = glob.sync(
-        path.join(root, `config/${appName}.{js,json,json5}`),
+        path.join(root, configFolder, `${appName}.{js,json,json5}`),
         { absolute: true },
       );
 
       const fileNames = [
-        `config/${appName}.js`,
-        `config/${appName}.json`,
-        `config/${appName}.json5`,
+        path.join(configFolder, `${appName}.js`),
+        path.join(configFolder, `${appName}.json`),
+        path.join(configFolder, `${appName}.json5`),
       ];
 
       this.tool.debug(`Resolving in order: ${fileNames.join(', ')}`);
@@ -106,7 +111,7 @@ export default class ConfigLoader {
 
       [config] = filePaths;
 
-      this.tool.debug(`Found in config/${path.basename(config)}`);
+      this.tool.debug(`Found ${path.basename(config)}`);
     }
 
     // Parse and extend configuration
@@ -308,7 +313,14 @@ export default class ConfigLoader {
     ext?: string = 'js',
   ): string {
     const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
+    const { configFolder } = this.tool.options;
 
-    return path.resolve(this.tool.options.root, `node_modules/${moduleName}/config/${fileName}`);
+    return path.resolve(
+      this.tool.options.root,
+      'node_modules',
+      moduleName,
+      configFolder,
+      fileName,
+    );
   }
 }

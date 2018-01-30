@@ -47,7 +47,8 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     this.argv = argv;
 
     this.options = new Options(options, {
-      appName: string(),
+      appName: string().required(),
+      configFolder: string('./config'),
       extendArgv: bool(true),
       footer: string().empty(),
       header: string().empty(),

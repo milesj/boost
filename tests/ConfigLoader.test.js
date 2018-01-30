@@ -175,6 +175,13 @@ describe('ConfigLoader', () => {
           ],
         });
       });
+
+      it('supports custom folder name', () => {
+        loader.tool.options.configFolder = './configs';
+        loader.tool.options.root = getFixturePath('app-folder-name');
+
+        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+      });
     });
   });
 
