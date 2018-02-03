@@ -150,7 +150,7 @@ export default class Reporter<To: Object = {}> extends Module<To> {
         } else if (subTask.hasFailed() && !failedTask) {
           failedTask = subTask;
 
-        } else if (subTask.hasPassed()) {
+        } else if (subTask.hasPassed() || subTask.isSkipped()) {
           passed += 1;
         }
       });
