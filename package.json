@@ -1,6 +1,6 @@
 {
   "name": "boost",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
   "main": "./lib/index.js",
