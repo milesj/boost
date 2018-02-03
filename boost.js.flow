@@ -32,7 +32,7 @@ declare module 'boost' {
     scoped: boolean,
   };
 
-  declare class ConfigLoader {
+  declare export class ConfigLoader {
     package: PackageConfig;
     parsedFiles: { [path: string]: boolean };
     tool: Tool<*, *>;
@@ -46,7 +46,7 @@ declare module 'boost' {
     resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
   }
 
-  declare class Module<To: Object = {}> {
+  declare export class Module<To: Object = {}> {
     moduleName: string;
     name: string;
     options: To;
@@ -54,7 +54,7 @@ declare module 'boost' {
     constructor(options?: To): this;
   }
 
-  declare class ModuleLoader<Tm> {
+  declare export class ModuleLoader<Tm> {
     classReference: Class<Tm>;
     tool: Tool<*, *>;
     typeName: string;
