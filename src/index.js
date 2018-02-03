@@ -7,6 +7,8 @@
 import Emitter from './Emitter';
 import Event from './Event';
 import ExitError from './ExitError';
+import Module from './Module';
+import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
@@ -17,6 +19,8 @@ export {
   Emitter,
   Event,
   ExitError,
+  Module,
+  ModuleLoader,
   Pipeline,
   Plugin,
   Reporter,
