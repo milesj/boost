@@ -7,6 +7,7 @@
 /* eslint-disable flowtype/no-weak-types */
 
 import chalk from 'chalk';
+import path from 'path';
 import upperFirst from 'lodash/upperFirst';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
@@ -37,18 +38,31 @@ export default class ModuleLoader<Tm> {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
-    this.tool.debug(`Locating ${typeName} module ${chalk.yellow(name)}`);
-
     // Determine modules to attempt to load
-    const modulesToAttempt = [formatModuleName(appName, typeName, name, false)];
+    const modulesToAttempt = [];
+    let isFilePath = false;
     let importedModule;
     let moduleName;
 
-    if (scoped) {
-      modulesToAttempt.unshift(formatModuleName(appName, typeName, name, true));
-    }
+    // File path
+    if (name.match(/^\.|\/|\\|[A-Z]:/)) {
+      this.tool.debug(`Locating ${typeName} from path ${chalk.cyan(name)}`);
 
-    this.tool.debug(`Resolving in order: ${modulesToAttempt.join(', ')}`);
+      modulesToAttempt.push(path.normalize(name));
+      isFilePath = true;
+
+    // Module name
+    } else {
+      this.tool.debug(`Locating ${typeName} module ${chalk.yellow(name)}`);
+
+      modulesToAttempt.push(formatModuleName(appName, typeName, name, false));
+
+      if (scoped) {
+        modulesToAttempt.unshift(formatModuleName(appName, typeName, name, true));
+      }
+
+      this.tool.debug(`Resolving in order: ${modulesToAttempt.join(', ')}`);
+    }
 
     modulesToAttempt.some((modName) => {
       try {
@@ -87,10 +101,15 @@ export default class ModuleLoader<Tm> {
       throw new TypeError(`${upperFirst(typeName)} exported from "${moduleName}" is invalid.`);
     }
 
-    this.tool.debug(`Found with ${chalk.yellow(moduleName)}`);
+    if (isFilePath) {
+      this.tool.debug(`Found with ${chalk.cyan(moduleName)}`);
 
-    module.name = name;
-    module.moduleName = moduleName;
+    } else {
+      this.tool.debug(`Found with ${chalk.yellow(moduleName)}`);
+
+      module.name = name;
+      module.moduleName = moduleName;
+    }
 
     return module;
   }

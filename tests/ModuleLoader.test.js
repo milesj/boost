@@ -2,7 +2,7 @@ import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
 import Tool from '../src/Tool';
 import Console from '../src/Console';
-import { getTestRoot, copyFixtureToMock } from './helpers';
+import { getFixturePath, getTestRoot, copyFixtureToMock } from './helpers';
 
 function createPlugin(name) {
   const plugin = new Plugin();
@@ -87,6 +87,16 @@ describe('ModuleLoader', () => {
       expect(plugin).toBeInstanceOf(Plugin);
       expect(plugin.name).toBe('definition');
       expect(plugin.moduleName).toBe('test-boost-plugin-definition');
+    });
+
+    it('imports using a file path', () => {
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition'));
+
+      const plugin = loader.importModule(getFixturePath('plugin-exported-definition'));
+
+      expect(plugin).toBeInstanceOf(Plugin);
+      expect(plugin.name).toBe('');
+      expect(plugin.moduleName).toBe('');
     });
 
     it('can customize type name', () => {
