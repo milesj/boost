@@ -137,13 +137,17 @@ declare module 'boost' {
 
   declare export class Emitter {
     listeners: { [eventName: string]: Set<EventListener> };
+    namespace: string;
 
-    emit(eventName: string, args?: EventArguments, initialValue?: *): Event;
-    emitCascade(eventName: string, args?: EventArguments, initialValue?: *): Event;
+    createEventName(name: string): string;
+    emit(name: string, args?: EventArguments, initialValue?: *): Event;
+    emitCascade(name: string, args?: EventArguments, initialValue?: *): Event;
     getEventNames(): string[];
     getListeners(eventName: string): Set<EventListener>;
     off(eventName: string, listener: EventListener): this;
     on(eventName: string, listener: EventListener): this;
+    setEventNamespace(namespace: string): this;
+    removeEventNamespace(): this;
   }
 
   declare export class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {

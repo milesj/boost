@@ -12,11 +12,24 @@ import type { EventArguments, EventListener } from './types';
 export default class Emitter {
   listeners: { [eventName: string]: Set<EventListener> } = {};
 
+  namespace: string = '';
+
+  /**
+   * Create an event name with optional namespace.
+   */
+  createEventName(name: string): string {
+    if (this.namespace && !name.startsWith(this.namespace)) {
+      return `${this.namespace}.${name}`;
+    }
+
+    return name;
+  }
+
   /**
    * Syncronously execute listeners for the defined event and arguments.
    */
-  emit(eventName: string, args?: EventArguments = [], initialValue?: * = null): Event {
-    const event = new Event(eventName, initialValue);
+  emit(name: string, args?: EventArguments = [], initialValue?: * = null): Event {
+    const event = new Event(this.createEventName(name), initialValue);
 
     Array.from(this.getListeners(event.name)).some((listener) => {
       listener(event, ...args);
@@ -31,8 +44,8 @@ export default class Emitter {
    * Syncronously execute listeners for the defined event and arguments,
    * through a chaining lyer controlled by next handlers.
    */
-  emitCascade(eventName: string, args?: EventArguments = [], initialValue?: * = null): Event {
-    const event = new Event(eventName, initialValue);
+  emitCascade(name: string, args?: EventArguments = [], initialValue?: * = null): Event {
+    const event = new Event(this.createEventName(name), initialValue);
     const listeners = Array.from(this.getListeners(event.name));
     let index = 0;
 
@@ -75,7 +88,7 @@ export default class Emitter {
     if (!eventName.match(APP_NAME_PATTERN)) {
       throw new Error(
         `Invalid event name "${eventName}". ` +
-        'May only contain dashes and lowercase characters.',
+        'May only contain dashes, periods, and lowercase characters.',
       );
     }
 
@@ -104,6 +117,24 @@ export default class Emitter {
     }
 
     this.getListeners(eventName).add(listener);
+
+    return this;
+  }
+
+  /**
+   * Set the namespace.
+   */
+  setEventNamespace(namespace: string): this {
+    this.namespace = namespace;
+
+    return this;
+  }
+
+  /**
+   * Remove the namespace.
+   */
+  removeEventNamespace(): this {
+    this.namespace = '';
 
     return this;
   }

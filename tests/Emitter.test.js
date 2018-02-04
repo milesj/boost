@@ -10,6 +10,36 @@ describe('Emitter', () => {
     emitter = new Emitter();
   });
 
+  it('toggles event namespace', () => {
+    expect(emitter.namespace).toBe('');
+
+    emitter.setEventNamespace('ns');
+
+    expect(emitter.namespace).toBe('ns');
+
+    emitter.removeEventNamespace();
+
+    expect(emitter.namespace).toBe('');
+  });
+
+  describe('createEventName()', () => {
+    it('returns name as-is if no namespace', () => {
+      expect(emitter.createEventName('foo')).toBe('foo');
+    });
+
+    it('prepends namespace', () => {
+      emitter.setEventNamespace('ns');
+
+      expect(emitter.createEventName('foo')).toBe('ns.foo');
+    });
+
+    it('doesnt prepend namespace if already prefixed', () => {
+      emitter.setEventNamespace('ns');
+
+      expect(emitter.createEventName('ns.foo')).toBe('ns.foo');
+    });
+  });
+
   describe('emit()', () => {
     it('returns an event object', () => {
       expect(emitter.emit('foo')).toBeInstanceOf(Event);
@@ -109,6 +139,34 @@ describe('Emitter', () => {
       const event = emitter.emit('foo', [], 0);
 
       expect(event.value).toBe(3);
+    });
+
+    describe('with namespace', () => {
+      beforeEach(() => {
+        emitter.setEventNamespace('ns');
+      });
+
+      afterEach(() => {
+        emitter.removeEventNamespace();
+      });
+
+      it('returns an event object', () => {
+        const event = emitter.emit('foo');
+
+        expect(event).toBeInstanceOf(Event);
+        expect(event.name).toBe('ns.foo');
+      });
+
+      it('executes listeners in order', () => {
+        let output = '';
+
+        emitter.on('ns.foo', () => { output += 'A'; });
+        emitter.on('ns.foo', () => { output += 'B'; });
+        emitter.on('ns.foo', () => { output += 'C'; });
+        emitter.emit('foo');
+
+        expect(output).toBe('ABC');
+      });
     });
   });
 
@@ -236,6 +294,34 @@ describe('Emitter', () => {
 
       expect(event.value).toBe(3);
     });
+
+    describe('with namespace', () => {
+      beforeEach(() => {
+        emitter.setEventNamespace('ns');
+      });
+
+      afterEach(() => {
+        emitter.removeEventNamespace();
+      });
+
+      it('returns an event object', () => {
+        const event = emitter.emitCascade('foo');
+
+        expect(event).toBeInstanceOf(Event);
+        expect(event.name).toBe('ns.foo');
+      });
+
+      it('executes listeners in order', () => {
+        let output = '';
+
+        emitter.on('ns.foo', (event) => { output += 'A'; event.next(); });
+        emitter.on('ns.foo', (event) => { output += 'B'; event.next(); });
+        emitter.on('ns.foo', (event) => { output += 'C'; event.next(); });
+        emitter.emitCascade('foo');
+
+        expect(output).toBe('ABC');
+      });
+    });
   });
 
   describe('getEventNames()', () => {
@@ -243,15 +329,16 @@ describe('Emitter', () => {
       emitter.getListeners('foo');
       emitter.getListeners('bar');
       emitter.getListeners('baz');
+      emitter.getListeners('ns.qux');
 
-      expect(emitter.getEventNames()).toEqual(['foo', 'bar', 'baz']);
+      expect(emitter.getEventNames()).toEqual(['foo', 'bar', 'baz', 'ns.qux']);
     });
   });
 
   describe('getListeners()', () => {
     it('errors if name contains invalid characters', () => {
-      expect(() => emitter.getListeners('foo.bar'))
-        .toThrowError('Invalid event name "foo.bar". May only contain dashes and lowercase characters.');
+      expect(() => emitter.getListeners('foo+bar'))
+        .toThrowError('Invalid event name "foo+bar". May only contain dashes, periods, and lowercase characters.');
     });
 
     it('creates the listeners set if it does not exist', () => {
