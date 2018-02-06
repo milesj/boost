@@ -7,8 +7,7 @@ describe('Console', () => {
   let cli;
 
   beforeEach(() => {
-    cli = new Console();
-    cli.reporter = new Reporter();
+    cli = new Console(new Reporter());
   });
 
   describe('debug()', () => {
@@ -65,16 +64,17 @@ describe('Console', () => {
 
       const task = new Task('Foo', () => {});
 
+      cli.options = {
+        debug: true,
+        footer: 'footer',
+        header: 'header',
+        silent: true,
+      };
+
       cli.log('log');
       cli.error('error');
       cli.debug('debug');
-      cli.start({
-        debug: true,
-        silent: true,
-      }, {
-        footer: 'footer',
-        header: 'header',
-      }, [task]);
+      cli.start([task]);
 
       expect(cli.reporter.loader()).toEqual({
         debug: true,

@@ -149,7 +149,6 @@ export default class ConfigLoader {
 
     this.package = new Config(this.parseFile(filePath), {
       name: string(),
-      version: string(),
     }, {
       name: 'ConfigLoader',
       unknown: true,

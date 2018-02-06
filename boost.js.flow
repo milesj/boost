@@ -1,4 +1,11 @@
 declare module 'boost' {
+  declare export type ConsoleOptions = {
+    debug: boolean,
+    footer: string,
+    header: string,
+    silent: boolean,
+  };
+
   declare export type EventArguments = *[];
 
   declare export type EventListener = (...args: EventArguments) => void;
@@ -110,14 +117,15 @@ declare module 'boost' {
     errors: string[];
     interrupted: boolean;
     logs: string[];
+    options: ConsoleOptions;
     reporter: Tr;
 
-    constructor(): this;
+    constructor(reporter: Tr, options?: Object): this;
     debug(message: string): void;
     error(message: string): void;
     exit(message: string | Error | null, code?: number): void;
     log(message: string): void;
-    start(config: ToolConfig, options: ToolOptions, tasks?: Task<*, *>[]): void;
+    start(tasks?: Task<*, *>[]): void;
     startDebugGroup(group: string): void;
     stop(): void;
     stopDebugGroup(): void;
@@ -151,6 +159,7 @@ declare module 'boost' {
   }
 
   declare export class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {
+    argv: string[];
     config: ToolConfig;
     configLoader: ConfigLoader;
     console: Console<Tr>;
@@ -159,8 +168,6 @@ declare module 'boost' {
     package: PackageConfig;
     pluginLoader: ModuleLoader<Tp>;
     plugins: Tp[];
-    reporter: Tr;
-    reporterLoader: ModuleLoader<Tr>;
 
     constructor(options: Object, argv?: string[]): this;
     debug(message: string): this;

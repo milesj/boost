@@ -5,11 +5,12 @@
  */
 
 import chalk from 'chalk';
+import Config, { bool, string } from 'optimal';
 import ExitError from './ExitError';
 
 import type Task from './Task';
 import type Reporter from './Reporter';
-import type { ToolConfig, ToolOptions } from './types';
+import type { ConsoleOptions } from './types';
 
 const DEBUG_COLORS: string[] = [
   'white',
@@ -34,13 +35,26 @@ export default class Console<Tr: Reporter<Object>> {
 
   logs: string[] = [];
 
+  options: ConsoleOptions;
+
   reporter: Tr;
 
-  constructor() {
+  constructor(reporter: Tr, options?: Object = {}) {
+    this.reporter = reporter;
+    this.options = new Config(options, {
+      debug: bool(),
+      footer: string().empty(),
+      header: string().empty(),
+      silent: bool(),
+    });
+
     // Avoid binding listeners while testing
     if (process.env.NODE_ENV === 'test') {
       return;
     }
+
+    // Start early so we may capture uncaught/unhandled
+    this.start();
 
     const signalHandler = () => {
       if (this.interrupted) {
@@ -126,19 +140,14 @@ export default class Console<Tr: Reporter<Object>> {
   /**
    * Start a new console and begin rendering.
    */
-  start(config: ToolConfig, options: ToolOptions, tasks?: Task<*, *>[] = []) {
-    const { debug, silent } = config;
-    const { footer, header } = options;
+  start(tasks?: Task<*, *>[] = []) {
     const { debugs, errors, logs } = this;
 
     this.reporter.start(() => ({
-      debug,
+      ...this.options,
       debugs,
       errors,
-      footer,
-      header,
       logs,
-      silent,
       tasks,
     }));
   }

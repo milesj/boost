@@ -19,7 +19,7 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {
-  argv: string[] = [];
+  argv: string[];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
@@ -37,26 +37,26 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
   plugins: Tp[] = [];
 
-  reporterLoader: ModuleLoader<Tr>;
-
-  reporter: Tr;
-
-  constructor(options: Object, argv?: string[] = []) {
+  constructor({ footer, header, ...options }: Object, argv?: string[] = []) {
     super();
 
     this.argv = argv;
-
     this.options = new Options(options, {
       appName: string().required(),
       configFolder: string('./config'),
       extendArgv: bool(true),
-      footer: string().empty(),
-      header: string().empty(),
       pluginAlias: string('plugin'),
       root: string(process.cwd()),
       scoped: bool(),
     }, {
       name: 'Tool',
+    });
+
+    // Initialize the console first we can start debugging
+    // $FlowIgnore Why's it failing?
+    this.console = new Console(new Reporter(), {
+      footer,
+      header,
     });
 
     // Avoid binding listeners while testing
@@ -114,21 +114,13 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     const { appName } = this.options;
 
-    // Initialize the console first we can start debugging
-    this.console = new Console();
-
     this.debug(`Initializing ${chalk.green(appName)}`);
 
-    // Being loading all the things
     this.console.startDebugGroup(appName);
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
     this.console.stopDebugGroup();
-
-    // Start the reporter early so we may capture uncaught/unhandled
-    this.console.reporter = this.reporter;
-    this.console.start(this.config, this.options);
 
     this.initialized = true;
 
@@ -163,10 +155,11 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     // Inherit from argv
     if (this.options.extendArgv) {
       this.argv.forEach((arg) => {
-        if (arg === '--debug') {
-          this.config.debug = true;
-        } else if (arg === '--silent') {
-          this.config.silent = true;
+        if (arg === '--debug' || arg === '--silent') {
+          const name = arg.slice(2);
+
+          this.config[name] = true;
+          this.console.options[name] = true;
         }
       });
     }
@@ -232,15 +225,11 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     // Load based on name
     if (reporter) {
-      this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter);
-      this.reporter = this.reporterLoader.loadModule(reporter);
+      this.console.reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporter);
 
     // Use native Boost reporter
     } else {
       this.debug(`Using native ${chalk.green('boost')} reporter`);
-
-      // $FlowIgnore
-      this.reporter = new Reporter();
     }
 
     this.console.stopDebugGroup();

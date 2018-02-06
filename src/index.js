@@ -4,6 +4,7 @@
  * @flow
  */
 
+import ConfigLoader from './ConfigLoader';
 import Emitter from './Emitter';
 import Event from './Event';
 import ExitError from './ExitError';
@@ -16,6 +17,7 @@ import Routine from './Routine';
 import Tool from './Tool';
 
 export {
+  ConfigLoader,
   Emitter,
   Event,
   ExitError,

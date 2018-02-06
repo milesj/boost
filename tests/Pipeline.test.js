@@ -1,9 +1,6 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Tool from '../src/Tool';
-import Console from '../src/Console';
-
-jest.mock('../src/Console');
 
 describe('Pipeline', () => {
   let tool;
@@ -14,7 +11,6 @@ describe('Pipeline', () => {
       appName: 'test-boost',
     });
     tool.config = { foo: 'bar' };
-    tool.console = new Console();
     tool.initialized = true; // Avoid loaders
 
     pipeline = new Pipeline(tool);

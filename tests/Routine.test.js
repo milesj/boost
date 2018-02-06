@@ -3,10 +3,7 @@
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
-import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
-
-jest.mock('../src/Console');
 
 describe('Routine', () => {
   let routine;
@@ -26,7 +23,6 @@ describe('Routine', () => {
         command: 'yarn run build',
       },
     };
-    tool.console = new Console();
     tool.initialized = true; // Avoid loaders
 
     routine = new Routine('key', 'title');

@@ -6,6 +6,13 @@
 
 import type Task from './Task';
 
+export type ConsoleOptions = {
+  debug: boolean,
+  footer: string,
+  header: string,
+  silent: boolean,
+};
+
 export type ToolConfig = {
   debug: boolean,
   extends: string | string[],

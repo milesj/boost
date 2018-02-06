@@ -1,13 +1,10 @@
 import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
-import Console from '../src/Console';
 import Reporter from '../src/Reporter';
 import ExitError from '../src/ExitError';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { getFixturePath } from './helpers';
-
-jest.mock('../src/Console');
 
 describe('Tool', () => {
   let tool;
@@ -18,7 +15,6 @@ describe('Tool', () => {
       root: getFixturePath('app'),
     });
     tool.config = {};
-    tool.console = new Console();
     tool.package = {};
   });
 
@@ -72,14 +68,12 @@ describe('Tool', () => {
     it('loads config', () => {
       expect(tool.config).toEqual({});
       expect(tool.package).toEqual({});
-      expect(tool.reporter).toBeUndefined();
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
       expect(tool.package).not.toEqual({});
-      expect(tool.reporter).toBeDefined();
       expect(tool.initialized).toBe(true);
     });
   });
@@ -229,27 +223,13 @@ describe('Tool', () => {
       }).toThrowError('Cannot load reporter as configuration has not been loaded.');
     });
 
-    it('doesnt load if initialized', () => {
-      tool.initialized = true;
-      tool.loadReporter();
-
-      expect(tool.reporter).toBeUndefined();
-    });
-
-    it('sets native reporter if config is empty', () => {
-      tool.config = { reporter: '' };
-      tool.loadReporter();
-
-      expect(tool.reporter).toBeInstanceOf(Reporter);
-    });
-
     it('loads reporter', () => {
       const reporter = new Reporter();
 
       tool.config = { reporter };
       tool.loadReporter();
 
-      expect(tool.reporter).toBe(reporter);
+      expect(tool.console.reporter).toBe(reporter);
     });
   });
 

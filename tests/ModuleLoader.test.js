@@ -1,7 +1,6 @@
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
 import Tool from '../src/Tool';
-import Console from '../src/Console';
 import { getFixturePath, getTestRoot, copyFixtureToMock } from './helpers';
 
 function createPlugin(name) {
@@ -22,7 +21,6 @@ describe('ModuleLoader', () => {
       pluginAlias: 'plugin',
       root: getTestRoot(),
     });
-    tool.console = new Console();
 
     loader = new ModuleLoader(tool, 'plugin', Plugin);
 
