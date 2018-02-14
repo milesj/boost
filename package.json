@@ -4,17 +4,21 @@
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
   "main": "./lib/index.js",
+  "module": "./esm/index.js",
   "scripts": {
-    "babel": "build-lib",
-    "coverage": "run-tests --coverage",
-    "eslint": "run-linter",
-    "flow": "type-check",
-    "jest": "run-tests",
-    "posttest": "yarn run flow",
-    "pretest": "yarn run eslint",
+    "babel": "yarn run babel:cjs && yarn run babel:esm",
+    "babel:cjs": "beemo babel ./src --out-dir ./lib --copy-files --cjs",
+    "babel:esm": "beemo babel ./src --out-dir ./esm --copy-files --esm",
+    "coverage": "yarn run jest --coverage",
+    "eslint": "beemo eslint --color --report-unused-disable-directives ./src ./tests",
+    "flow": "beemo flow check",
+    "jest": "beemo jest --colors --logHeapUsage",
+    "posttest": "yarn run flow --silent",
+    "pretest": "yarn run eslint --silent",
     "preversion": "yarn test",
-    "test": "yarn run jest",
-    "postversion": "yarn run babel"
+    "test": "yarn run jest --silent",
+    "postversion": "yarn run babel",
+    "prettier": "beemo prettier --write ./README.md \"./{bin,src,tests}/**/*.js\" \"./*.{md,json}\""
   },
   "repository": {
     "type": "git",
@@ -33,7 +37,7 @@
     "node": ">=6.5.0"
   },
   "dependencies": {
-    "chalk": "^2.3.0",
+    "chalk": "^2.3.1",
     "elegant-spinner": "^1.0.1",
     "execa": "^0.9.0",
     "figures": "^2.0.0",
@@ -49,19 +53,17 @@
     "optimal": "^0.14.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.50.0",
+    "@milesj/build-tool-config": "0.62.1",
     "fs-extra": "^5.0.0"
   },
-  "babel": {
-    "presets": "@milesj/build-tool-config/babel"
-  },
-  "eslintConfig": {
-    "extends": "./node_modules/@milesj/build-tool-config/eslint.js"
-  },
-  "eslintIgnore": [
-    "esm/",
-    "lib/",
-    "*.min.js",
-    "*.map"
-  ]
+  "beemo": {
+    "module": "@milesj/build-tool-config",
+    "drivers": [
+      "babel",
+      "eslint",
+      "flow",
+      "jest",
+      "prettier"
+    ]
+  }
 }

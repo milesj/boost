@@ -1,7 +1,6 @@
 # Logs
 logs/
 *.log
-npm-debug.log*
 
 # Cache
 .eslintcache
@@ -18,3 +17,12 @@ node_modules/
 # Custom
 tests/bundle.min.js
 *.map
+
+# Configs
+.babelrc
+.eslintrc.json
+.eslintignore
+.flowconfig
+jest.json
+.prettierrc.json
+webpack.config.js
