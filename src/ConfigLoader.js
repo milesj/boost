@@ -62,6 +62,7 @@ export default class ConfigLoader {
 
     const {
       appName,
+      configBlueprint,
       configFolder,
       pluginAlias,
       root,
@@ -116,6 +117,7 @@ export default class ConfigLoader {
 
     // Parse and extend configuration
     return new Config(this.parseAndExtend(config), {
+      ...configBlueprint,
       debug: bool(),
       extends: array(string()),
       reporter: string().empty(),

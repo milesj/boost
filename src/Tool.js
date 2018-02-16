@@ -6,7 +6,7 @@
 
 import chalk from 'chalk';
 import pluralize from 'pluralize';
-import Options, { bool, string } from 'optimal';
+import Options, { bool, object, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
@@ -43,6 +43,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     this.argv = argv;
     this.options = new Options(options, {
       appName: string().required(),
+      configBlueprint: object(),
       configFolder: string('./configs'),
       extendArgv: bool(true),
       pluginAlias: string('plugin'),

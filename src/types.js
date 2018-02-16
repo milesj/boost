@@ -4,6 +4,7 @@
  * @flow
  */
 
+import type { Blueprint } from 'optimal';
 import type Task from './Task';
 
 export type ConsoleOptions = {|
@@ -24,6 +25,7 @@ export type ToolConfig = {
 
 export type ToolOptions = {|
   appName: string,
+  configBlueprint: Blueprint,
   configFolder: string,
   extendArgv: string,
   footer: string,

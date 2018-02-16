@@ -1,6 +1,7 @@
 /* eslint-disable sort-keys */
 
 import JSON5 from 'json5';
+import { number } from 'optimal';
 import ConfigLoader from '../src/ConfigLoader';
 import Tool from '../src/Tool';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
@@ -108,6 +109,19 @@ describe('ConfigLoader', () => {
             },
           ],
         });
+      });
+
+      it('supports custom blueprint', () => {
+        loader.package = {
+          testBoost: { foo: 'bar' },
+        };
+        loader.tool.options.configBlueprint = {
+          foo: number(),
+        };
+
+        expect(() => {
+          loader.loadConfig();
+        }).toThrowError('Invalid ConfigLoader option "foo". Must be a number.');
       });
     });
 
