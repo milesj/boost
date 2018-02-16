@@ -62,8 +62,17 @@
       "babel",
       "eslint",
       "flow",
-      "jest",
+      {
+        "driver": "jest",
+        "env": { "NODE_ENV": "test" }
+      },
       "prettier"
-    ]
+    ],
+    "flow": {
+      "libs": [
+        "./boost.js.flow",
+        "./node_modules/optimal/optimal.js.flow"
+      ]
+    }
   }
 }

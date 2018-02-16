@@ -24,7 +24,7 @@ import type { ReportLoader } from './types';
 export const REFRESH_RATE: number = 100;
 export const CURSOR: string = '\x1B[?25h'; // eslint-disable-line unicorn/no-hex-escape
 
-export default class Reporter<To: Object = {}> extends Module<To> {
+export default class Reporter<To> extends Module<To> {
   instance: IntervalID;
 
   loader: ?ReportLoader = null;
@@ -115,7 +115,7 @@ export default class Reporter<To: Object = {}> extends Module<To> {
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: Task<Object, Object>, level?: number = 0, suffix?: string = ''): string[] {
+  renderTask(task: Task<*, *>, level?: number = 0, suffix?: string = ''): string[] {
     const output = [];
 
     // Generate the message row
@@ -182,7 +182,7 @@ export default class Reporter<To: Object = {}> extends Module<To> {
   /**
    * Render a status symbol for a task.
    */
-  renderStatus(task: Task<Object, Object>): string {
+  renderStatus(task: Task<*, *>): string {
     switch (task.status) {
       case STATUS_PENDING:
         return chalk.gray(figures.bullet);

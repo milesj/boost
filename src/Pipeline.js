@@ -14,8 +14,8 @@ import type Plugin from './Plugin';
 import type Reporter from './Reporter';
 import type { ToolConfig } from './types';
 
-export default class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routine<ToolConfig, Tx> {
-  constructor(tool: Tool<Tp, Reporter<Object>>) {
+export default class Pipeline<Tp: Plugin<*>, Tx> extends Routine<ToolConfig, Tx> {
+  constructor(tool: Tool<Tp, Reporter<*>>) {
     super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
 
     if (tool instanceof Tool) {
@@ -31,14 +31,12 @@ export default class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routi
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: *, context?: Tx): Promise<*> {
+  run(initialValue: *, context: Tx): Promise<*> {
     const { console: cli } = this.tool;
 
     this.tool.debug('Running pipeline');
 
-    // Don't spread context as to preserve references
-    // $FlowIgnore
-    this.context = context || {};
+    this.context = context;
 
     cli.start(this.subroutines);
 

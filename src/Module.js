@@ -4,7 +4,7 @@
  * @flow
  */
 
-export default class Module<To: Object = {}> {
+export default class Module<To> {
   moduleName: string = '';
 
   name: string = '';

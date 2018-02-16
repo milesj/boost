@@ -6,12 +6,12 @@
 
 import type Task from './Task';
 
-export type ConsoleOptions = {
+export type ConsoleOptions = {|
   debug: boolean,
   footer: string,
   header: string,
   silent: boolean,
-};
+|};
 
 export type ToolConfig = {
   debug: boolean,
@@ -22,7 +22,7 @@ export type ToolConfig = {
   [key: string]: *,
 };
 
-export type ToolOptions = {
+export type ToolOptions = {|
   appName: string,
   configFolder: string,
   extendArgv: string,
@@ -31,7 +31,7 @@ export type ToolOptions = {
   pluginAlias: string,
   root: string,
   scoped: boolean,
-};
+|};
 
 export type PackageConfig = {
   name: string,
@@ -39,7 +39,7 @@ export type PackageConfig = {
   // Add others if we need them
 };
 
-export type ReportLoader = () => {
+export type ReportLoader = () => {|
   debug: boolean,
   debugs: string[],
   errors: string[],
@@ -47,15 +47,45 @@ export type ReportLoader = () => {
   header: string,
   logs: string[],
   silent: boolean,
-  tasks: Task<Object, Object>[],
-};
+  tasks: Task<*, *>[],
+|};
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
-export type TaskAction<Tx: Object> = (value: *, context: Tx) => Promise<*>;
+export type TaskAction<Tx> = (value: *, context: Tx) => Promise<*>;
 
 export type EventArguments = *[];
 
 export type EventListener = (...args: EventArguments) => void;
 
 export type EventNextHandler = (index: number, ...args: EventArguments) => void;
+
+export type ExecaOptions = {|
+  argv0?: string,
+  cleanup?: boolean,
+  cwd?: string,
+  detached?: boolean,
+  encoding?: string,
+  env?: { [key: string]: string },
+  extendEnv?: boolean,
+  gid?: number,
+  input?: string | Buffer,
+  killSignal?: string | number,
+  localDir?: string,
+  maxBuffer?: number,
+  preferLocal?: boolean,
+  reject?: boolean,
+  shell?: boolean | string,
+  stderr?: string | number | stream$Duplex,
+  stdin?: string | number | stream$Duplex,
+  stdio?: string,
+  stdout?: string | number | stream$Duplex,
+  stripEof?: boolean,
+  timeout?: number,
+  uid?: number,
+  windowsVerbatimArguments?: boolean,
+|};
+
+export type ConfigStruct = { [key: string]: * };
+
+export type OptionsStruct = { [key: string]: * };

@@ -4,8 +4,6 @@
  * @flow
  */
 
-/* eslint-disable flowtype/no-weak-types */
-
 import chalk from 'chalk';
 import path from 'path';
 import upperFirst from 'lodash/upperFirst';
@@ -14,15 +12,16 @@ import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 
 import type Tool from './Tool';
+import type { OptionsStruct } from './types';
 
 export default class ModuleLoader<Tm> {
-  classReference: Function;
+  classReference: Class<Tm>;
 
   tool: Tool<*, *>;
 
   typeName: string;
 
-  constructor(tool: Tool<*, *>, typeName: string, classReference: Function) {
+  constructor(tool: Tool<*, *>, typeName: string, classReference: Class<Tm>) {
     this.classReference = classReference;
     this.tool = tool;
     this.typeName = typeName;
@@ -34,7 +33,7 @@ export default class ModuleLoader<Tm> {
    * Import a class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importModule(name: string, options?: Object = {}): Tm {
+  importModule(name: string, options?: OptionsStruct = {}): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
@@ -118,7 +117,7 @@ export default class ModuleLoader<Tm> {
    * If loading from an object, extract the module name and use the remaining object
    * as options for the class instance.
    */
-  importModuleFromOptions(baseOptions: Object): Tm {
+  importModuleFromOptions(baseOptions: OptionsStruct): Tm {
     const { typeName } = this;
     const options = { ...baseOptions };
     const module = options[typeName];
@@ -139,7 +138,7 @@ export default class ModuleLoader<Tm> {
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModule(module: string | Object | Tm): Tm {
+  loadModule(module: string | OptionsStruct | Tm): Tm {
     if (module instanceof this.classReference) {
       return module;
 
@@ -147,7 +146,7 @@ export default class ModuleLoader<Tm> {
       return this.importModule(module);
 
     } else if (isObject(module)) {
-      // $FlowIgnore Temporarily
+      // $FlowFixMe
       return this.importModuleFromOptions(module);
     }
 
@@ -159,7 +158,7 @@ export default class ModuleLoader<Tm> {
   /**
    * Load multiple modules.
    */
-  loadModules(modules: (string | Object | Tm)[] = []): Tm[] {
+  loadModules(modules: (string | OptionsStruct | Tm)[] = []): Tm[] {
     return modules.map(module => this.loadModule(module));
   }
 }

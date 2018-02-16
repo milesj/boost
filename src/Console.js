@@ -22,7 +22,7 @@ const DEBUG_COLORS: string[] = [
   'green',
 ];
 
-export default class Console<Tr: Reporter<Object>> {
+export default class Console<Tr: Reporter<*>> {
   debugs: string[] = [];
 
   debugGroups: string[] = [];
@@ -39,7 +39,7 @@ export default class Console<Tr: Reporter<Object>> {
 
   reporter: Tr;
 
-  constructor(reporter: Tr, options?: Object = {}) {
+  constructor(reporter: Tr, options?: $Shape<ConsoleOptions> = {}) {
     this.reporter = reporter;
     this.options = new Config(options, {
       debug: bool(),

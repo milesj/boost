@@ -15,7 +15,7 @@ import {
 
 import type { Status, TaskAction } from './types';
 
-export default class Task<Tc: Object = {}, Tx: Object = {}> {
+export default class Task<Tc, Tx> {
   action: ?TaskAction<Tx> = null;
 
   config: Tc;
@@ -30,9 +30,9 @@ export default class Task<Tc: Object = {}, Tx: Object = {}> {
 
   statusText: string = '';
 
-  subroutines: Task<Object, Tx>[] = [];
+  subroutines: Task<*, Tx>[] = [];
 
-  subtasks: Task<Object, Tx>[] = [];
+  subtasks: Task<*, Tx>[] = [];
 
   constructor(title: string, action?: ?TaskAction<Tx> = null, defaultConfig?: Tc) {
     if (!title || typeof title !== 'string') {
@@ -88,10 +88,10 @@ export default class Task<Tc: Object = {}, Tx: Object = {}> {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(initialValue: *, context?: Tx): Promise<*> {
+  run(initialValue: *, context: Tx): Promise<*> {
     // Don't spread context as to preserve references
     // $FlowIgnore
-    this.context = context || {};
+    this.context = context;
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;
@@ -102,7 +102,7 @@ export default class Task<Tc: Object = {}, Tx: Object = {}> {
     this.status = STATUS_RUNNING;
 
     return Promise.resolve(initialValue)
-      // $FlowIgnore We check action above
+      // $FlowFixMe We check action above
       .then(value => this.action(value, context))
       .then(
         (result) => {

@@ -18,7 +18,7 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 
 import type { ToolConfig, ToolOptions, PackageConfig } from './types';
 
-export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {
+export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
   argv: string[];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
@@ -37,7 +37,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
   plugins: Tp[] = [];
 
-  constructor({ footer, header, ...options }: Object, argv?: string[] = []) {
+  constructor({ footer, header, ...options }: $Shape<ToolOptions>, argv?: string[] = []) {
     super();
 
     this.argv = argv;
@@ -53,7 +53,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
     });
 
     // Initialize the console first we can start debugging
-    // $FlowIgnore Why's it failing?
+    // $FlowFixMe Why's it failing?
     this.console = new Console(new Reporter(), {
       footer,
       header,
@@ -188,6 +188,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     this.console.startDebugGroup('plugin');
 
+    // $FlowFixMe
     this.pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
     this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
@@ -225,6 +226,7 @@ export default class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emit
 
     // Load based on name
     if (reporter) {
+      // $FlowFixMe
       this.console.reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporter);
 
     // Use native Boost reporter

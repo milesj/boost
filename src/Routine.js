@@ -15,14 +15,14 @@ import { STATUS_PENDING, STATUS_RUNNING, RESTRICTED_CONFIG_KEYS } from './consta
 
 import type Reporter from './Reporter';
 import type Tool from './Tool';
-import type { TaskAction } from './types';
+import type { TaskAction, ExecaOptions } from './types';
 
-export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, Tx> {
+export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   exit: boolean = false;
 
   key: string = '';
 
-  tool: Tool<*, Reporter<Object>>;
+  tool: Tool<*, Reporter<*>>;
 
   constructor(key: string, title: string, defaultConfig?: Tc) {
     super(title, null, defaultConfig);
@@ -64,6 +64,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
     const config = parent.config[this.key];
 
     if (isObject(config)) {
+      // $FlowFixMe Lodash uses `Object`
       merge(this.config, config);
     }
 
@@ -87,7 +88,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
   /**
    * Execute a command with the given arguments and pass the results through a promise.
    */
-  executeCommand(command: string, args: string[], options?: Object = {}): Promise<*> {
+  executeCommand(command: string, args: string[], options?: $Shape<ExecaOptions> = {}): Promise<*> {
     const stream = execa(command, args, options);
 
     // Push chunks to the reporter
@@ -97,7 +98,6 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
       }
     });
 
-    // TODO catch error codes?
     return this.wrap(stream);
   }
 
@@ -105,7 +105,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: *, task: Task<Object, Tx>): Promise<*> => (
+  executeTask = (value: *, task: Task<*, Tx>): Promise<*> => (
     this.wrap(task.run(value, this.context))
   );
 
@@ -114,7 +114,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines(value: *): Promise<*[]> {
-    // $FlowIgnore Annoying to solve
+    // $FlowFixMe Annoying to solve
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -123,14 +123,14 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
    * A combination promise will be returned as the result.
    */
   parallelizeTasks(value: *): Promise<*[]> {
-    // $FlowIgnore Annoying to solve
+    // $FlowFixMe Annoying to solve
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(routine: Routine<Object, Tx>): this {
+  pipe(routine: Routine<*, Tx>): this {
     if (routine instanceof Routine) {
       this.subroutines.push(routine.configure(this));
 
@@ -144,7 +144,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
   /**
    * Trigger processes before and after execution.
    */
-  run(value: *, context?: Tx): Promise<*> {
+  run(value: *, context: Tx): Promise<*> {
     const { console: cli } = this.tool;
 
     if (this.exit) {
@@ -202,7 +202,7 @@ export default class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, 
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskAction<Tx>, config?: Object = {}): Task<Object, Tx> {
+  task<C>(title: string, action: TaskAction<Tx>, config?: C): Task<C, Tx> {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

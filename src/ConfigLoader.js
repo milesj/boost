@@ -19,7 +19,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 
-import type { ToolConfig, PackageConfig } from './types';
+import type { ToolConfig, PackageConfig, ConfigStruct, OptionsStruct } from './types';
 import type Tool from './Tool';
 
 export default class ConfigLoader {
@@ -162,7 +162,7 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: string | Object): Object {
+  parseAndExtend(fileOrConfig: string | ConfigStruct): ConfigStruct {
     let config;
     let baseDir = '';
 
@@ -221,7 +221,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, options?: Object = {}): Object {
+  parseFile(filePath: string, options?: OptionsStruct = {}): ConfigStruct {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value;
