@@ -1,4 +1,6 @@
 declare module 'boost' {
+  import type { Blueprint } from 'optimal';
+
   declare export type ConfigStruct = { [key: string]: * };
 
   declare export type OptionsStruct = { [key: string]: * };
@@ -62,6 +64,9 @@ declare module 'boost' {
 
   declare export type ToolOptions = {|
     appName: string,
+    configBlueprint: Blueprint,
+    configFolder: string,
+    extendArgv: string,
     footer: string,
     header: string,
     pluginAlias: string,
