@@ -1,10 +1,40 @@
 declare module 'boost' {
-  declare export type ConsoleOptions = {
+  declare export type ConfigStruct = { [key: string]: * };
+
+  declare export type OptionsStruct = { [key: string]: * };
+
+  declare export type ExecaOptions = {|
+    argv0?: string,
+    cleanup?: boolean,
+    cwd?: string,
+    detached?: boolean,
+    encoding?: string,
+    env?: { [key: string]: string },
+    extendEnv?: boolean,
+    gid?: number,
+    input?: string | Buffer,
+    killSignal?: string | number,
+    localDir?: string,
+    maxBuffer?: number,
+    preferLocal?: boolean,
+    reject?: boolean,
+    shell?: boolean | string,
+    stderr?: string | number | stream$Duplex,
+    stdin?: string | number | stream$Duplex,
+    stdio?: string,
+    stdout?: string | number | stream$Duplex,
+    stripEof?: boolean,
+    timeout?: number,
+    uid?: number,
+    windowsVerbatimArguments?: boolean,
+  |};
+
+  declare export type ConsoleOptions = {|
     debug: boolean,
     footer: string,
     header: string,
     silent: boolean,
-  };
+  |};
 
   declare export type EventArguments = *[];
 
@@ -30,14 +60,14 @@ declare module 'boost' {
     [key: string]: *,
   };
 
-  declare export type ToolOptions = {
+  declare export type ToolOptions = {|
     appName: string,
     footer: string,
     header: string,
     pluginAlias: string,
     root: string,
     scoped: boolean,
-  };
+  |};
 
   declare export class ConfigLoader {
     package: PackageConfig;
@@ -47,13 +77,13 @@ declare module 'boost' {
     constructor(tool: Tool<*, *>): this;
     loadConfig(): ToolConfig;
     loadPackageJSON(): PackageConfig;
-    parseAndExtend(fileOrConfig: string | Object): Object;
-    parseFile(filePath: string, options?: Object): Object;
+    parseAndExtend(fileOrConfig: string | ConfigStruct): ConfigStruct;
+    parseFile(filePath: string, options?: OptionsStruct): OptionsStruct;
     resolveExtendPaths(extendPaths: string[], baseDir?: string): string[];
     resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
   }
 
-  declare export class Module<To: Object = {}> {
+  declare export class Module<To> {
     moduleName: string;
     name: string;
     options: To;
@@ -67,20 +97,20 @@ declare module 'boost' {
     typeName: string;
 
     constructor(tool: Tool<*, *>, typeName: string, classReference: Class<Tm>): this;
-    importModule(name: string, options?: Object): Tm;
-    importModuleFromOptions(baseOptions: Object): Tm;
-    loadModule(module: string | Object | Tm): Tm;
-    loadModules(modules: (string | Object | Tm)[]): Tm[];
+    importModule(name: string, options?: OptionsStruct): Tm;
+    importModuleFromOptions(baseOptions: OptionsStruct): Tm;
+    loadModule(module: string | OptionsStruct | Tm): Tm;
+    loadModules(modules: (string | OptionsStruct | Tm)[]): Tm[];
   }
 
-  declare export class Plugin<To: Object = {}> extends Module<To> {
+  declare export class Plugin<To> extends Module<To> {
     priority: number;
     tool: Tool<*, *>;
 
     bootstrap(): void;
   }
 
-  declare export type ReportLoader = () => {
+  declare export type ReportLoader = () => {|
     debug: boolean,
     debugs: string[],
     errors: string[],
@@ -88,17 +118,17 @@ declare module 'boost' {
     header: string,
     logs: string[],
     silent: boolean,
-    tasks: Task<Object, Object>[],
-  };
+    tasks: Task<*, *>[],
+  |};
 
-  declare export class Reporter<To: Object = {}> extends Module<To> {
+  declare export class Reporter<To> extends Module<To> {
     instance: number;
     loader: ?ReportLoader;
 
     indent(length: number): string;
     render(code?: number): string;
-    renderTask(task: Task<Object, Object>, level?: number, suffix?: string): string[];
-    renderStatus(task: Task<Object, Object>): string;
+    renderTask(task: Task<*, *>, level?: number, suffix?: string): string[];
+    renderStatus(task: Task<*, *>): string;
     start(loader: ReportLoader): void;
     stop(): void;
     update(): void;
@@ -110,7 +140,7 @@ declare module 'boost' {
     constructor(message: string, code?: number): this;
   }
 
-  declare export default class Console<Tr: Reporter<Object>> {
+  declare export default class Console<Tr: Reporter<*>> {
     debugs: string[];
     debugGroups: string[];
     debugIndex: number;
@@ -120,7 +150,7 @@ declare module 'boost' {
     options: ConsoleOptions;
     reporter: Tr;
 
-    constructor(reporter: Tr, options?: Object): this;
+    constructor(reporter: Tr, options?: $Shape<ConsoleOptions>): this;
     debug(message: string): void;
     error(message: string): void;
     exit(message: string | Error | null, code?: number): void;
@@ -158,7 +188,7 @@ declare module 'boost' {
     removeEventNamespace(): this;
   }
 
-  declare export class Tool<Tp: Plugin<Object>, Tr: Reporter<Object>> extends Emitter {
+  declare export class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     argv: string[];
     config: ToolConfig;
     configLoader: ConfigLoader;
@@ -169,7 +199,7 @@ declare module 'boost' {
     pluginLoader: ModuleLoader<Tp>;
     plugins: Tp[];
 
-    constructor(options: Object, argv?: string[]): this;
+    constructor(options: $Shape<ToolOptions>, argv?: string[]): this;
     debug(message: string): this;
     exit(message: string | Error | null, code?: number): this;
     getPlugin(name: string): Tp;
@@ -182,15 +212,15 @@ declare module 'boost' {
     logError(message: string): this;
   }
 
-  declare export class Task<Tc: Object = {}, Tx: Object = {}> {
+  declare export class Task<Tc, Tx> {
     action: ?TaskAction<Tx>;
     config: Tc;
     context: Tx;
     frame: number;
     title: string;
     status: Status;
-    subroutines: Task<Object, Tx>[];
-    subtasks: Task<Object, Tx>[];
+    subroutines: Task<*, Tx>[];
+    subtasks: Task<*, Tx>[];
 
     constructor(title: string, action?: ?TaskAction<Tx>, defaultConfig?: Tc): this;
     hasFailed(): boolean;
@@ -198,24 +228,24 @@ declare module 'boost' {
     isPending(): boolean;
     isRunning(): boolean;
     isSkipped(): boolean;
-    run(value: *, context?: Tx): Promise<*>;
+    run(value: *, context: Tx): Promise<*>;
     skip(condition?: boolean): this;
     wrap(value: *): Promise<*>;
   }
 
-  declare export class Routine<Tc: Object = {}, Tx: Object = {}> extends Task<Tc, Tx> {
+  declare export class Routine<Tc, Tx> extends Task<Tc, Tx> {
     key: string;
-    tool: Tool<*, Reporter<Object>>;
+    tool: Tool<*, Reporter<*>>;
 
     constructor(key: string, title: string, defaultConfig?: Tc): this;
     bootstrap(): void;
     configure(parent: Routine<*, Tx>): this;
     execute(value: *, context?: Tx): Promise<*>;
-    executeCommand(command: string, args: string[], options?: Object): Promise<*>;
-    executeTask(value: *, task: Task<Object, Tx>): Promise<*>;
+    executeCommand(command: string, args: string[], options?: $Shape<ExecaOptions>): Promise<*>;
+    executeTask(value: *, task: Task<*, Tx>): Promise<*>;
     parallelizeSubroutines(value: *): Promise<*>;
     parallelizeTasks(value: *): Promise<*>;
-    pipe(routine: Routine<Object, Tx>): this;
+    pipe(routine: Routine<*, Tx>): this;
     serialize(
       initialValue: *,
       items: *[],
@@ -223,10 +253,10 @@ declare module 'boost' {
     ): Promise<*>;
     serializeSubroutines(value: *): Promise<*>;
     serializeTasks(value: *): Promise<*>;
-    task(title: string, action: TaskAction<Tx>, config?: Object): Task<Object, Tx>;
+    task<C>(title: string, action: TaskAction<Tx>, config?: C): Task<C, Tx>;
   }
 
-  declare export class Pipeline<Tp: Plugin<Object>, Tx: Object = {}> extends Routine<ToolConfig, Tx> {
-    constructor(tool: Tool<Tp, Reporter<Object>>): this;
+  declare export class Pipeline<Tp: Plugin<*>, Tx> extends Routine<ToolConfig, Tx> {
+    constructor(tool: Tool<Tp, Reporter<*>>): this;
   }
 }

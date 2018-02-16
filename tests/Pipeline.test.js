@@ -43,7 +43,9 @@ describe('Pipeline', () => {
         }
       }
 
-      const spy = jest.spyOn(pipeline.tool.console, 'exit');
+      const spy = jest.fn();
+
+      pipeline.tool.console.exit = spy;
 
       try {
         await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
