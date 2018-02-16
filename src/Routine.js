@@ -6,11 +6,9 @@
 
 import chalk from 'chalk';
 import execa from 'execa';
-import merge from 'lodash/merge';
 import split from 'split';
 import ExitError from './ExitError';
 import Task from './Task';
-import isObject from './helpers/isObject';
 import { STATUS_PENDING, STATUS_RUNNING, RESTRICTED_CONFIG_KEYS } from './constants';
 
 import type Reporter from './Reporter';
@@ -59,14 +57,6 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
     this.tool.on('exit', () => {
       this.exit = true;
     });
-
-    // Inherit config from parent
-    const config = parent.config[this.key];
-
-    if (isObject(config)) {
-      // $FlowFixMe Lodash uses `Object`
-      merge(this.config, config);
-    }
 
     // Initialize routine (this must be last!)
     this.bootstrap();
