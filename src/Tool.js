@@ -43,7 +43,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     this.argv = argv;
     this.options = new Options(options, {
       appName: string().required(),
-      configFolder: string('./config'),
+      configFolder: string('./configs'),
       extendArgv: bool(true),
       pluginAlias: string('plugin'),
       root: string(process.cwd()),
