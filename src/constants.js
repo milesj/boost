@@ -23,5 +23,3 @@ export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   reporter: '',
   silent: false,
 };
-
-export const RESTRICTED_CONFIG_KEYS: string[] = Object.keys(DEFAULT_TOOL_CONFIG);

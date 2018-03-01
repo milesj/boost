@@ -9,7 +9,7 @@ import execa from 'execa';
 import split from 'split';
 import ExitError from './ExitError';
 import Task from './Task';
-import { STATUS_PENDING, STATUS_RUNNING, RESTRICTED_CONFIG_KEYS } from './constants';
+import { STATUS_PENDING, STATUS_RUNNING } from './constants';
 
 import type Reporter from './Reporter';
 import type Tool from './Tool';
@@ -27,9 +27,6 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
 
     if (!key || typeof key !== 'string') {
       throw new Error('Routine key must be a valid unique string.');
-
-    } else if (RESTRICTED_CONFIG_KEYS.includes(key)) {
-      throw new Error(`Invalid routine key "${key}". This key is reserved.`);
     }
 
     this.key = key;
