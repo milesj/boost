@@ -1,5 +1,3 @@
-/* eslint-disable sort-keys */
-
 import JSON5 from 'json5';
 import { number } from 'optimal';
 import ConfigLoader from '../src/ConfigLoader';

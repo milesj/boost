@@ -39,10 +39,12 @@ export default class ConfigLoader {
    */
   handleMerge(target: *, source: *): * {
     if (Array.isArray(target) && Array.isArray(source)) {
-      return Array.from(new Set([
-        ...target,
-        ...source,
-      ]));
+      return [
+        ...new Set([
+          ...target,
+          ...source,
+        ]),
+      ];
     }
 
     // Defer to lodash

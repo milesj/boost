@@ -31,7 +31,7 @@ export default class Emitter {
   emit(name: string, args?: EventArguments = [], initialValue?: * = null): Event {
     const event = new Event(this.createEventName(name), initialValue);
 
-    Array.from(this.getListeners(event.name)).some((listener) => {
+    [...this.getListeners(event.name)].some((listener) => {
       listener(event, ...args);
 
       return event.stopped;
@@ -46,7 +46,7 @@ export default class Emitter {
    */
   emitCascade(name: string, args?: EventArguments = [], initialValue?: * = null): Event {
     const event = new Event(this.createEventName(name), initialValue);
-    const listeners = Array.from(this.getListeners(event.name));
+    const listeners = [...this.getListeners(event.name)];
     let index = 0;
 
     if (listeners.length === 0) {
