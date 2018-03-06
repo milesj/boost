@@ -93,10 +93,6 @@ describe('Routine', () => {
       expect(() => new Routine(123, 'title')).toThrowError('Routine key must be a valid unique string.');
     });
 
-    it('throws an error if key is reserved', () => {
-      expect(() => new Routine('extends', 'title')).toThrowError('Invalid routine key "extends". This key is reserved.');
-    });
-
     it('inherits default config', () => {
       routine = new Routine('key', 'title', { foo: 123 });
 

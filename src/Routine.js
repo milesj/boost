@@ -75,7 +75,13 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   /**
    * Execute a command with the given arguments and pass the results through a promise.
    */
-  executeCommand(command: string, args: string[], options?: $Shape<ExecaOptions> = {}): Promise<*> {
+  executeCommand(
+    command: string,
+    args: string[],
+    options?: $Shape<ExecaOptions> = {},
+    // eslint-disable-next-line camelcase
+    callback?: ?((process: child_process$ChildProcess) => void) = null,
+  ): Promise<*> {
     const stream = execa(command, args, options);
 
     // Push chunks to the reporter
@@ -84,6 +90,11 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
         this.statusText = line;
       }
     });
+
+    // Allow consumer to wrap functionality
+    if (typeof callback === 'function') {
+      callback(stream);
+    }
 
     return this.wrap(stream);
   }
