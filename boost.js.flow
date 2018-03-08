@@ -246,7 +246,12 @@ declare module 'boost' {
     bootstrap(): void;
     configure(parent: Routine<*, Tx>): this;
     execute(value: *, context?: Tx): Promise<*>;
-    executeCommand(command: string, args: string[], options?: $Shape<ExecaOptions>): Promise<*>;
+    executeCommand(
+      command: string,
+      args: string[],
+      options?: $Shape<ExecaOptions>,
+      callback?: ?(process: child_process$ChildProcess) => void,
+    ): Promise<*>;
     executeTask(value: *, task: Task<*, Tx>): Promise<*>;
     parallelizeSubroutines(value: *): Promise<*>;
     parallelizeTasks(value: *): Promise<*>;
