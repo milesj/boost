@@ -15,7 +15,6 @@
     "jest": "beemo jest --colors --logHeapUsage",
     "posttest": "yarn run flow --silent",
     "pretest": "yarn run eslint --silent",
-    "preversion": "yarn test",
     "test": "yarn run jest --silent",
     "postversion": "yarn run babel",
     "prettier": "beemo prettier --write ./README.md \"./{bin,src,tests}/**/*.js\" \"./*.{md,json}\""
