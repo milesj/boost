@@ -125,7 +125,7 @@ export default class Console<Tr: Reporter<*>> {
     (errorCode === 0 ? process.stdout : process.stderr).write(
       this.reporter.render(errorCode),
       () => {
-        process.exit(errorCode); // eslint-disable-line unicorn/no-process-exit
+        process.exitCode = errorCode;
       },
     );
   }
