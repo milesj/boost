@@ -1,3 +1,4 @@
+_book/
 coverage/
 flow-typed/
 src/
@@ -10,7 +11,7 @@ tests/
 .flowconfig
 .gitignore
 .npmignore
-.prettierrc.json
+.prettierrc
 .travis.yml
 .yarnclean
 jest.json

@@ -9,6 +9,7 @@ logs/
 .yarnclean
 
 # Directories
+_book/
 coverage/
 esm/
 lib/
@@ -20,9 +21,9 @@ tests/bundle.min.js
 
 # Configs
 .babelrc
-.eslintrc.json
+.eslintrc
 .eslintignore
 .flowconfig
 jest.json
-.prettierrc.json
+.prettierrc
 webpack.config.js

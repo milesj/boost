@@ -83,6 +83,7 @@ export type ExecaOptions = {|
   stdio?: string,
   stdout?: string | number | stream$Duplex,
   stripEof?: boolean,
+  sync?: boolean, // Boost
   timeout?: number,
   uid?: number,
   windowsVerbatimArguments?: boolean,

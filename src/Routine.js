@@ -82,14 +82,18 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
     // eslint-disable-next-line camelcase
     callback?: ?((process: child_process$ChildProcess) => void) = null,
   ): Promise<*> {
-    const stream = execa(command, args, options);
+    const stream = options.sync
+      ? execa.sync(command, args, options)
+      : execa(command, args, options);
 
     // Push chunks to the reporter
-    stream.stdout.pipe(split()).on('data', (line) => {
-      if (this.status === STATUS_RUNNING) {
-        this.statusText = line;
-      }
-    });
+    if (!options.sync) {
+      stream.stdout.pipe(split()).on('data', (line) => {
+        if (this.status === STATUS_RUNNING) {
+          this.statusText = line;
+        }
+      });
+    }
 
     // Allow consumer to wrap functionality
     if (typeof callback === 'function') {
