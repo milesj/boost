@@ -1,13 +1,11 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
 import Event from './Event';
 import { APP_NAME_PATTERN } from './constants';
-
-import type { EventArguments, EventListener } from './types';
+import { EventArguments, EventListener } from './types';
 
 export default class Emitter {
   listeners: { [eventName: string]: Set<EventListener> } = {};
@@ -28,10 +26,10 @@ export default class Emitter {
   /**
    * Syncronously execute listeners for the defined event and arguments.
    */
-  emit(name: string, args?: EventArguments = [], initialValue?: * = null): Event {
+  emit(name: string, args: EventArguments = [], initialValue: any = null): Event {
     const event = new Event(this.createEventName(name), initialValue);
 
-    [...this.getListeners(event.name)].some((listener) => {
+    Array.from(this.getListeners(event.name)).some((listener) => {
       listener(event, ...args);
 
       return event.stopped;
@@ -44,9 +42,9 @@ export default class Emitter {
    * Syncronously execute listeners for the defined event and arguments,
    * through a chaining lyer controlled by next handlers.
    */
-  emitCascade(name: string, args?: EventArguments = [], initialValue?: * = null): Event {
+  emitCascade(name: string, args: EventArguments = [], initialValue: any = null): Event {
     const event = new Event(this.createEventName(name), initialValue);
-    const listeners = [...this.getListeners(event.name)];
+    const listeners = Array.from(this.getListeners(event.name));
     let index = 0;
 
     if (listeners.length === 0) {

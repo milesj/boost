@@ -4,6 +4,7 @@
  * @flow
  */
 
+// TODO
 export default class Module<To> {
   moduleName: string = '';
 
@@ -11,7 +12,10 @@ export default class Module<To> {
 
   options: To;
 
-  constructor(options?: To) {
-    this.options = { ...options };
+  constructor(options: To) {
+    this.options = {
+      // @ts-ignore
+      ...options,
+    };
   }
 }

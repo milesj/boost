@@ -4,20 +4,18 @@
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
   "main": "./lib/index.js",
-  "module": "./esm/index.js",
   "scripts": {
-    "babel": "yarn run babel:cjs && yarn run babel:esm",
-    "babel:cjs": "beemo babel ./src --out-dir ./lib --copy-files --cjs",
-    "babel:esm": "beemo babel ./src --out-dir ./esm --copy-files --esm",
+    "build": "beemo typescript",
     "coverage": "yarn run jest --coverage",
-    "eslint": "beemo eslint --color --report-unused-disable-directives ./src ./tests",
-    "flow": "beemo flow check",
-    "jest": "beemo jest --colors --logHeapUsage",
-    "posttest": "yarn run flow --silent",
-    "pretest": "yarn run eslint --silent",
+    "eslint": "beemo eslint",
+    "jest": "beemo jest",
+    "posttest": "yarn run eslint --silent",
+    "pretest": "yarn run type --silent",
     "test": "yarn run jest --silent",
-    "postversion": "yarn run babel",
-    "prettier": "beemo prettier --write ./README.md \"./{bin,src,tests}/**/*.js\" \"./*.{md,json}\""
+    "postversion": "yarn run build",
+    "prettier": "beemo prettier",
+    "type": "beemo typescript --noEmit",
+    "preversion": "yarn test"
   },
   "repository": {
     "type": "git",
@@ -41,18 +39,18 @@
     "execa": "^0.10.0",
     "figures": "^2.0.0",
     "glob": "^7.1.2",
-    "json5": "^1.0.0",
+    "json5": "^1.0.1",
     "lodash": "^4.17.5",
     "log-update": "^2.3.0",
-    "optimal": "^0.14.0",
+    "optimal": "^0.16.0",
     "pluralize": "^7.0.0",
     "split": "^1.0.1"
   },
   "peerDependencies": {
-    "optimal": "^0.14.0"
+    "optimal": "^0.16.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.67.1",
+    "@milesj/build-tool-config": "0.76.0",
     "fs-extra": "^5.0.0"
   },
   "beemo": {
@@ -60,20 +58,14 @@
     "drivers": [
       "babel",
       "eslint",
-      "flow",
       {
         "driver": "jest",
         "env": {
           "NODE_ENV": "test"
         }
       },
-      "prettier"
-    ],
-    "flow": {
-      "libs": [
-        "./boost.js.flow",
-        "./node_modules/optimal/optimal.js.flow"
-      ]
-    }
+      "prettier",
+      "typescript"
+    ]
   }
 }
