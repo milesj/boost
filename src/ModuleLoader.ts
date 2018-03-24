@@ -1,7 +1,6 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
 import chalk from 'chalk';
@@ -10,18 +9,17 @@ import upperFirst from 'lodash/upperFirst';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
-
-import type Tool from './Tool';
-import type { OptionsStruct } from './types';
+import Tool from './Tool';
+import { OptionsStruct } from './types';
 
 export default class ModuleLoader<Tm> {
-  classReference: Class<Tm>;
+  classReference: Function;
 
-  tool: Tool<*, *>;
+  tool: Tool<object, object>;
 
   typeName: string;
 
-  constructor(tool: Tool<*, *>, typeName: string, classReference: Class<Tm>) {
+  constructor(tool: Tool<object, object>, typeName: string, classReference: Function) {
     this.classReference = classReference;
     this.tool = tool;
     this.typeName = typeName;
@@ -33,14 +31,14 @@ export default class ModuleLoader<Tm> {
    * Import a class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importModule(name: string, options?: OptionsStruct = {}): Tm {
+  importModule(name: string, options: OptionsStruct = {}): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
     // Determine modules to attempt to load
     const modulesToAttempt = [];
     let isFilePath = false;
-    let importedModule;
+    let importedModule = null;
     let moduleName;
 
     // File path
@@ -146,7 +144,6 @@ export default class ModuleLoader<Tm> {
       return this.importModule(module);
 
     } else if (isObject(module)) {
-      // $FlowFixMe
       return this.importModuleFromOptions(module);
     }
 

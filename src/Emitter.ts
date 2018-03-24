@@ -7,7 +7,13 @@ import Event from './Event';
 import { APP_NAME_PATTERN } from './constants';
 import { EventArguments, EventListener } from './types';
 
-export default class Emitter {
+export interface EmitterInterface {
+  emit(name: string, args: EventArguments, initialValue: any): Event;
+  off(eventName: string, listener: EventListener): this;
+  on(eventName: string, listener: EventListener): this;
+}
+
+export default class Emitter implements EmitterInterface {
   listeners: { [eventName: string]: Set<EventListener> } = {};
 
   namespace: string = '';

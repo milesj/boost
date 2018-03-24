@@ -1,19 +1,22 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
+import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
-import execa from 'execa';
+import execa, { Options as ExecaOptions } from 'execa';
 import split from 'split';
 import ExitError from './ExitError';
+import Reporter from './Reporter';
 import Task from './Task';
+import Tool from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
+import { TaskAction } from './types';
 
-import type Reporter from './Reporter';
-import type Tool from './Tool';
-import type { TaskAction, ExecaOptions } from './types';
+interface CommandOptions {
+  sync?: boolean;
+}
 
 export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   exit: boolean = false;
@@ -46,7 +49,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine<*, Tx>): this {
+  configure(parent: Routine<object, Tx>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -68,8 +71,8 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute(value: *, context?: Tx): Promise<*> {
-    return value;
+  execute<T>(value: T, context?: Tx): Promise<T> {
+    return this.wrap(value);
   }
 
   /**
@@ -78,9 +81,8 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   executeCommand(
     command: string,
     args: string[],
-    options?: $Shape<ExecaOptions> = {},
-    // eslint-disable-next-line camelcase
-    callback?: ?((process: child_process$ChildProcess) => void) = null,
+    options: ExecaOptions & CommandOptions = {},
+    callback: ((process: ChildProcess) => void) | null = null,
   ): Promise<*> {
     const stream = options.sync
       ? execa.sync(command, args, options)
@@ -88,7 +90,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
 
     // Push chunks to the reporter
     if (!options.sync) {
-      stream.stdout.pipe(split()).on('data', (line) => {
+      stream.stdout.pipe(split()).on('data', (line: string) => {
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
         }
@@ -107,7 +109,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: *, task: Task<*, Tx>): Promise<*> => (
+  executeTask = (value: any, task: Task<*, Tx>): Promise<any> => (
     this.wrap(task.run(value, this.context))
   );
 
@@ -115,8 +117,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines(value: *): Promise<*[]> {
-    // $FlowFixMe Annoying to solve
+  parallelizeSubroutines(value: any): Promise<any[]> {
     return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
   }
 
@@ -124,15 +125,14 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: *): Promise<*[]> {
-    // $FlowFixMe Annoying to solve
+  parallelizeTasks(value: any): Promise<any[]> {
     return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
   }
 
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(routine: Routine<*, Tx>): this {
+  pipe(routine: Routine<object, Tx>): this {
     if (routine instanceof Routine) {
       this.subroutines.push(routine.configure(this));
 
@@ -146,7 +146,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   /**
    * Trigger processes before and after execution.
    */
-  run(value: *, context: Tx): Promise<*> {
+  run(value: any, context: Tx): Promise<any> {
     const { console: cli } = this.tool;
 
     if (this.exit) {
@@ -178,11 +178,11 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
    * `accumulator` function to execute the list of processes.
    */
   serialize(
-    initialValue: *,
-    items: *[],
-    accumulator: (value: *, item: *) => Promise<*>,
-  ): Promise<*> {
-    return items.reduce((promise: Promise<*>, item: *) => (
+    initialValue: any,
+    items: any[],
+    accumulator: (value: any, item: any) => Promise<any>,
+  ): Promise<any> {
+    return items.reduce((promise: Promise<any>, item: any) => (
       promise.then(value => accumulator(value, item))
     ), Promise.resolve(initialValue));
   }
@@ -190,14 +190,14 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines(value: *): Promise<*> {
+  serializeSubroutines(value: any): Promise<any> {
     return this.serialize(value, this.subroutines, this.executeTask);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: *): Promise<*> {
+  serializeTasks(value: any): Promise<any> {
     return this.serialize(value, this.subtasks, this.executeTask);
   }
 

@@ -1,18 +1,27 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
 import chalk from 'chalk';
-import Config, { bool, string } from 'optimal';
+import optimal, { bool, string } from 'optimal';
 import ExitError from './ExitError';
+import Task from './Task';
+import { ReporterInterface } from './Reporter';
+import { ConsoleOptions, Partial } from './types';
 
-import type Task from './Task';
-import type Reporter from './Reporter';
-import type { ConsoleOptions } from './types';
+export interface ConsoleInterface {
+  options: ConsoleOptions;
+  reporter: ReporterInterface;
+  debug(message: string): void;
+  error(message: string): void;
+  exit(message: string): void;
+  log(message: string): void;
+  startDebugGroup(group: string): void;
+  stopDebugGroup(): void;
+}
 
-const DEBUG_COLORS: string[] = [
+export const DEBUG_COLORS: string[] = [
   'white',
   'cyan',
   'blue',
@@ -22,7 +31,7 @@ const DEBUG_COLORS: string[] = [
   'green',
 ];
 
-export default class Console<Tr: Reporter<*>> {
+export default class Console<Tr extends ReporterInterface> implements ConsoleInterface {
   debugs: string[] = [];
 
   debugGroups: string[] = [];
@@ -39,9 +48,9 @@ export default class Console<Tr: Reporter<*>> {
 
   reporter: Tr;
 
-  constructor(reporter: Tr, options?: $Shape<ConsoleOptions> = {}) {
+  constructor(reporter: Tr, options: Partial<ConsoleOptions> = {}) {
     this.reporter = reporter;
-    this.options = new Config(options, {
+    this.options = optimal(options, {
       debug: bool(),
       footer: string().empty(),
       header: string().empty(),
@@ -98,14 +107,14 @@ export default class Console<Tr: Reporter<*>> {
    * Force exit the application.
    */
   /* istanbul ignore next */
-  exit(message: string | Error | null, code?: number = 1) {
+  exit(message: string | Error | null, code: number = 1) {
     let errorCode = code;
 
     // Null messages are always successful
     if (message !== null) {
       const error = (message instanceof Error) ? message : new ExitError(message, code);
 
-      if (typeof error.code === 'number') {
+      if (error instanceof ExitError && typeof error.code === 'number') {
         errorCode = error.code;
       }
 
@@ -140,7 +149,7 @@ export default class Console<Tr: Reporter<*>> {
   /**
    * Start a new console and begin rendering.
    */
-  start(tasks?: Task<*, *>[] = []) {
+  start(tasks: Task<object, object>[] = []) {
     const { debugs, errors, logs } = this;
 
     this.reporter.start(() => ({

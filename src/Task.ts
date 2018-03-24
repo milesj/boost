@@ -1,7 +1,6 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
 import { frames } from 'elegant-spinner';
@@ -12,11 +11,14 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
+import { Status, TaskAction } from './types';
 
-import type { Status, TaskAction } from './types';
+export interface TaskInterface {
 
-export default class Task<Tc, Tx> {
-  action: ?TaskAction<Tx> = null;
+}
+
+export default class Task<Tc extends object, Tx extends object> implements TaskInterface {
+  action: TaskAction<Tx> | null = null;
 
   config: Tc;
 
@@ -30,11 +32,11 @@ export default class Task<Tc, Tx> {
 
   statusText: string = '';
 
-  subroutines: Task<*, Tx>[] = [];
+  subroutines: Task<object, Tx>[] = [];
 
-  subtasks: Task<*, Tx>[] = [];
+  subtasks: Task<object, Tx>[] = [];
 
-  constructor(title: string, action?: ?TaskAction<Tx> = null, defaultConfig?: Tc) {
+  constructor(title: string, action: TaskAction<Tx> | null = null, defaultConfig?: Tc) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -88,9 +90,8 @@ export default class Task<Tc, Tx> {
    * Run the current task by executing it and performing any
    * before and after processes.
    */
-  run(initialValue: *, context: Tx): Promise<*> {
+  run(initialValue: any, context: Tx): Promise<any> {
     // Don't spread context as to preserve references
-    // $FlowIgnore
     this.context = context;
 
     if (this.isSkipped() || !this.action) {
@@ -102,7 +103,7 @@ export default class Task<Tc, Tx> {
     this.status = STATUS_RUNNING;
 
     return Promise.resolve(initialValue)
-      // $FlowFixMe We check action above
+      // @ts-ignore
       .then(value => this.action(value, context))
       .then(
         (result) => {
@@ -122,7 +123,7 @@ export default class Task<Tc, Tx> {
   /**
    * Mark a task as skipped if the condition is true.
    */
-  skip(condition?: boolean = true): this {
+  skip(condition: boolean = true): this {
     if (condition) {
       this.status = STATUS_SKIPPED;
     }
@@ -143,7 +144,7 @@ export default class Task<Tc, Tx> {
   /**
    * Wrap a value in a promise if it has not already been.
    */
-  wrap(value: *): Promise<*> {
+  wrap<T>(value: T | Promise<T>): Promise<T> {
     return (value instanceof Promise) ? value : Promise.resolve(value);
   }
 }

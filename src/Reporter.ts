@@ -1,7 +1,6 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
 /* eslint-disable complexity */
@@ -10,6 +9,7 @@ import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';
 import Module from './Module';
+import Task from './Task';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -17,17 +17,22 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
-
-import type Task from './Task';
-import type { ReportLoader } from './types';
+import { ReportLoader } from './types';
 
 export const REFRESH_RATE: number = 100;
 export const CURSOR: string = '\x1B[?25h'; // eslint-disable-line unicorn/no-hex-escape
 
-export default class Reporter<To> extends Module<To> {
-  instance: IntervalID;
+export interface ReporterInterface {
+  render(code: number): string;
+  start(loader: ReportLoader): this;
+  stop(): this;
+  update(): this;
+}
 
-  loader: ?ReportLoader = null;
+export default class Reporter<To extends object> extends Module<To> implements ReporterInterface {
+  instance: Timer = 0;
+
+  loader: ReportLoader | null = null;
 
   /**
    * Create an indentation based on the defined length.
@@ -39,7 +44,7 @@ export default class Reporter<To> extends Module<To> {
   /**
    * Render the output by looping over all tasks and messages.
    */
-  render(code?: number = 0): string {
+  render(code: number = 0): string {
     if (!this.loader) {
       return CURSOR;
     }
@@ -54,7 +59,7 @@ export default class Reporter<To> extends Module<To> {
       silent = false,
       tasks = [],
     } = this.loader();
-    const output = [];
+    const output: string[] = [];
     const verbose = !silent;
 
     if (header && verbose) {
@@ -115,8 +120,8 @@ export default class Reporter<To> extends Module<To> {
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: Task<*, *>, level?: number = 0, suffix?: string = ''): string[] {
-    const output = [];
+  renderTask(task: UntypedTask, level: number = 0, suffix: string = ''): string[] {
+    const output: string[] = [];
 
     // Generate the message row
     let message = `${this.indent(level)}${this.renderStatus(task)} ${task.title}`;
@@ -135,9 +140,9 @@ export default class Reporter<To> extends Module<To> {
 
     // Show only one sub-task at a time
     if (task.subtasks.length > 0) {
-      let pendingTask;
-      let runningTask;
-      let failedTask;
+      let pendingTask: UntypedTask | null = null;
+      let runningTask: UntypedTask | null = null;
+      let failedTask: UntypedTask | null = null;
       let passed = 0;
 
       task.subtasks.forEach((subTask) => {
@@ -182,7 +187,7 @@ export default class Reporter<To> extends Module<To> {
   /**
    * Render a status symbol for a task.
    */
-  renderStatus(task: Task<*, *>): string {
+  renderStatus(task: UntypedTask): string {
     switch (task.status) {
       case STATUS_PENDING:
         return chalk.gray(figures.bullet);
@@ -202,7 +207,7 @@ export default class Reporter<To> extends Module<To> {
   /**
    * Start the output process once setting the task loader.
    */
-  start(loader: ReportLoader) {
+  start(loader: ReportLoader): this {
     if (this.instance) {
       clearInterval(this.instance);
     }
@@ -215,25 +220,31 @@ export default class Reporter<To> extends Module<To> {
 
     /* istanbul ignore next */
     this.instance = setInterval(() => { this.update(); }, REFRESH_RATE);
+
+    return this;
   }
 
   /**
    * Stop and clear the output process.
    */
-  stop() {
+  stop(): this {
     clearInterval(this.instance);
 
     logUpdate.clear();
+
+    return this;
   }
 
   /**
    * Update and flush the output.
    */
-  update() {
+  update(): this {
     const output = this.render();
 
     if (output) {
       logUpdate(output);
     }
+
+    return this;
   }
 }

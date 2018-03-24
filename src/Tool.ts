@@ -1,31 +1,35 @@
 /**
  * @copyright   2017, Miles Johnson
  * @license     https://opensource.org/licenses/MIT
- * @flow
  */
 
 import chalk from 'chalk';
 import pluralize from 'pluralize';
 import Options, { bool, object, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
-import Console from './Console';
-import Emitter from './Emitter';
+import Console, { ConsoleInterface } from './Console';
+import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
-import Plugin from './Plugin';
-import Reporter from './Reporter';
+import Plugin, { PluginInterface } from './Plugin';
+import Reporter, { ReporterInterface } from './Reporter';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
+import { ToolConfig, ToolOptions, PackageConfig } from './types';
 
-import type { ToolConfig, ToolOptions, PackageConfig } from './types';
+export interface ToolInterface extends EmitterInterface {
+  console: ConsoleInterface;
+  options: ToolOptions;
+  debug(message: string): this;
+}
 
-export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
+export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter implements ToolInterface {
   argv: string[];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   configLoader: ConfigLoader;
 
-  console: Console<Tr>;
+  console: ConsoleInterface;
 
   initialized: boolean = false;
 
@@ -37,7 +41,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
   plugins: Tp[] = [];
 
-  constructor({ footer, header, ...options }: $Shape<ToolOptions>, argv?: string[] = []) {
+  constructor({ footer, header, ...options }: $Shape<ToolOptions>, argv: string[] = []) {
     super();
 
     this.argv = argv;
@@ -54,7 +58,6 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
     });
 
     // Initialize the console first we can start debugging
-    // $FlowFixMe Why's it failing?
     this.console = new Console(new Reporter(), {
       footer,
       header,
@@ -84,7 +87,7 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code?: number = 1): this {
+  exit(message: string | Error | null, code: number = 1): this {
     this.console.exit(message, code);
 
     return this;
@@ -189,7 +192,6 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
     this.console.startDebugGroup('plugin');
 
-    // $FlowFixMe
     this.pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
     this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
@@ -227,7 +229,6 @@ export default class Tool<Tp: Plugin<*>, Tr: Reporter<*>> extends Emitter {
 
     // Load based on name
     if (reporter) {
-      // $FlowFixMe
       this.console.reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporter);
 
     // Use native Boost reporter

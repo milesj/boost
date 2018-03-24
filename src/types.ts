@@ -3,17 +3,21 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Blueprint } from 'optimal';
+import { Blueprint, Options } from 'optimal';
 import Task from './Task';
 
-export interface ConsoleOptions {
+export type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+
+export interface ConsoleOptions extends Options {
   debug: boolean,
   footer: string,
   header: string,
   silent: boolean,
 };
 
-export interface ToolConfig {
+export interface ToolConfig extends Options {
   debug: boolean,
   extends: string | string[],
   plugins: string[],
@@ -22,7 +26,7 @@ export interface ToolConfig {
   [key: string]: any,
 }
 
-export interface ToolOptions {
+export interface ToolOptions extends Options {
   appName: string,
   configBlueprint: Blueprint,
   configFolder: string,
@@ -62,38 +66,3 @@ export type EventArguments = any[];
 export type EventListener = (...args: EventArguments) => void;
 
 export type EventNextHandler = (index: number, ...args: EventArguments) => void;
-
-// export type ExecaOptions = {|
-//   argv0?: string,
-//   cleanup?: boolean,
-//   cwd?: string,
-//   detached?: boolean,
-//   encoding?: string,
-//   env?: { [key: string]: string },
-//   extendEnv?: boolean,
-//   gid?: number,
-//   input?: string | Buffer,
-//   killSignal?: string | number,
-//   localDir?: string,
-//   maxBuffer?: number,
-//   preferLocal?: boolean,
-//   reject?: boolean,
-//   shell?: boolean | string,
-//   stderr?: string | number | stream$Duplex,
-//   stdin?: string | number | stream$Duplex,
-//   stdio?: string,
-//   stdout?: string | number | stream$Duplex,
-//   stripEof?: boolean,
-//   sync?: boolean, // Boost
-//   timeout?: number,
-//   uid?: number,
-//   windowsVerbatimArguments?: boolean,
-// |};
-
-export interface ConfigBag {
-  [key: string]: any,
-}
-
-export interface OptionsBag {
-  [key: string]: any,
-}

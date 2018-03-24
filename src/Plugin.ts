@@ -4,14 +4,19 @@
  */
 
 import Module from './Module';
-import Tool from './Tool';
+import { ToolInterface } from './Tool';
 
-const DEFAULT_PLUGIN_PRIORITY: number = 100;
+export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
-export default class Plugin<To> extends Module<To> {
+export interface PluginInterface {
+  tool: ToolInterface;
+  bootstrap(): void;
+}
+
+export default class Plugin<To extends object> extends Module<To> {
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
-  tool: Tool<object, object>;
+  tool: ToolInterface | null = null;
 
   bootstrap() {}
 }
