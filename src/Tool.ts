@@ -78,7 +78,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       enableDebug(this.options.appName);
     }
 
-    // Custom debug logger for this routine
+    // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
 
     // Initialize the console first so we can start logging

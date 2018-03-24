@@ -23,10 +23,13 @@ describe('Tool', () => {
 
   describe('constructor()', () => {
     it('enables debug if --debug is passed', () => {
-      tool = new Tool({
-        appName: 'test-boost',
-        root: getFixturePath('app'),
-      }, ['--debug']);
+      tool = new Tool(
+        {
+          appName: 'test-boost',
+          root: getFixturePath('app'),
+        },
+        ['--debug'],
+      );
 
       expect(enableDebug).toHaveBeenCalledWith('test-boost');
     });

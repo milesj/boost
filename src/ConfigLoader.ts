@@ -217,7 +217,7 @@ export default class ConfigLoader {
   parseFile(filePath: string, options: Options = {}): Config {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
-    let value;
+    let value: any = null;
 
     this.debug('Parsing file %s', chalk.cyan(filePath));
 

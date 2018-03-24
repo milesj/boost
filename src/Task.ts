@@ -12,7 +12,7 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
-import { Context, Status, TaskAction } from './types';
+import { Context, Status, Partial } from './types';
 
 export interface TaskInterface {
   status: Status;
@@ -25,18 +25,21 @@ export interface TaskInterface {
   isSkipped(): boolean;
   hasFailed(): boolean;
   hasPassed(): boolean;
-  run(initialValue: any, context: any): Promise<any>;
+  run<T>(context: any, initialValue?: T | null): Promise<T | null>;
   spinner(): string;
 }
+
+export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
 
 export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
   action: TaskAction<Tx> | null = null;
 
-  context?: Tx;
+  // @ts-ignore Set after instantiation
+  context: Tx;
 
   frame: number = 0;
 
-  options: Options;
+  options: To;
 
   title: string = '';
 
@@ -48,7 +51,7 @@ export default class Task<To extends Options, Tx extends Context> implements Tas
 
   subtasks: TaskInterface[] = [];
 
-  constructor(title: string, action: TaskAction<Tx> | null = null, options?: To) {
+  constructor(title: string, action: TaskAction<Tx> | null = null, options: Partial<To> = {}) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -102,10 +105,9 @@ export default class Task<To extends Options, Tx extends Context> implements Tas
   }
 
   /**
-   * Run the current task by executing it and performing any
-   * before and after processes.
+   * Run the current task by executing it and performing any before and after processes.
    */
-  run(initialValue: any, context: Tx): Promise<any> {
+  run<T>(context: Tx, initialValue: T | null = null): Promise<T | null> {
     // Don't spread context as to preserve references
     this.context = context;
 
@@ -120,7 +122,7 @@ export default class Task<To extends Options, Tx extends Context> implements Tas
     return (
       Promise.resolve(initialValue)
         // @ts-ignore
-        .then(value => this.action(value, context))
+        .then(value => this.action(context, value))
         .then(
           result => {
             this.status = STATUS_PASSED;

@@ -3,8 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable promise/always-return */
-
 import Routine from './Routine';
 import Tool, { ToolInterface } from './Tool';
 import { PluginInterface } from './Plugin';
@@ -30,7 +28,7 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
   /**
    * Execute all subroutines in order.
    */
-  run(initialValue: any, context: Tx): Promise<any> {
+  run<T>(context: Tx, initialValue: T | null = null): Promise<T | null> {
     const { console: cli } = this.tool;
 
     this.tool.debug('Running pipeline');
@@ -42,9 +40,14 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
     return this.serializeSubroutines(initialValue)
       .then(result => {
         cli.exit(null, 0);
+
+        return result;
       })
       .catch(error => {
         cli.exit(error, 1);
+
+        // Handled above by the console
+        return error;
       });
   }
 }

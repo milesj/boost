@@ -11,7 +11,7 @@ describe('Task', () => {
   let task;
 
   beforeEach(() => {
-    task = new Task('title', value => value * 2);
+    task = new Task('title', (con, value) => value * 2);
   });
 
   describe('constructor()', () => {
@@ -97,7 +97,7 @@ describe('Task', () => {
   describe('run()', () => {
     it('resolves a value with the action', async () => {
       try {
-        expect(await task.run(123)).toBe(246);
+        expect(await task.run({}, 123)).toBe(246);
         expect(task.status).toBe(STATUS_PASSED);
       } catch (error) {
         expect(true).toBe(false); // Would fail
@@ -108,7 +108,7 @@ describe('Task', () => {
       try {
         task.status = STATUS_SKIPPED;
 
-        expect(await task.run(123)).toBe(123);
+        expect(await task.run({}, 123)).toBe(123);
       } catch (error) {
         expect(true).toBe(false); // Would fail
       }
@@ -120,7 +120,7 @@ describe('Task', () => {
           throw new Error('Oops');
         };
 
-        await task.run(123);
+        await task.run({}, 123);
 
         expect(true).toBe(false); // Would fail
       } catch (error) {
@@ -132,20 +132,20 @@ describe('Task', () => {
     it('passes the value through when no action exists', async () => {
       task.action = null;
 
-      expect(await task.run(123)).toBe(123);
+      expect(await task.run({}, 123)).toBe(123);
     });
 
     it('passes a context to the action', async () => {
       const context = { count: 1 };
 
       /* eslint-disable no-param-reassign */
-      task.action = (value, con) => {
+      task.action = (con, value) => {
         con.count += 1;
         con.foo = 'bar';
       };
       /* eslint-enable */
 
-      await task.run(123, context);
+      await task.run(context, 123);
 
       expect(context).toEqual({
         count: 2,

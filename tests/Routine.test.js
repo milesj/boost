@@ -58,26 +58,26 @@ describe('Routine', () => {
       this.task('baz', this.baz);
     }
 
-    execute(value, context) {
+    execute(context, value) {
       context.count *= this.options.multiplier;
       context[this.key] = true;
 
       return value;
     }
 
-    foo(value, context) {
+    foo(context, value) {
       context.foo = 123;
 
       return value;
     }
 
-    bar(value, context) {
+    bar(context, value) {
       context.bar = 456;
 
       return value;
     }
 
-    baz(value, context) {
+    baz(context, value) {
       context.baz = 789;
 
       return value;
@@ -155,19 +155,19 @@ describe('Routine', () => {
     let task;
 
     beforeEach(() => {
-      task = new Task('title', value => value * 3);
+      task = new Task('title', (con, value) => value * 3);
     });
 
     it('returns a promise', () => {
-      expect(routine.executeTask(123, task)).toBeInstanceOf(Promise);
+      expect(routine.executeTask(task, 123)).toBeInstanceOf(Promise);
     });
 
     it('passes the value down the promise', async () => {
-      expect(await routine.executeTask(123, task)).toBe(369);
+      expect(await routine.executeTask(task, 123)).toBe(369);
     });
 
     it('updates status if a success', async () => {
-      await routine.executeTask(123, task);
+      await routine.executeTask(task, 123);
 
       expect(task.status).toBe(STATUS_PASSED);
     });
@@ -178,7 +178,7 @@ describe('Routine', () => {
       });
 
       try {
-        await routine.executeTask(123, task);
+        await routine.executeTask(task, 123);
       } catch (error) {
         expect(error).toEqual(new Error('Oops'));
       }
@@ -213,9 +213,9 @@ describe('Routine', () => {
         .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = value => routine.parallelizeSubroutines(value);
+      routine.action = (con, value) => routine.parallelizeSubroutines(value);
 
-      await routine.run(null, context);
+      await routine.run(context);
 
       expect(context).toEqual({
         bar: true,
@@ -237,7 +237,7 @@ describe('Routine', () => {
         this.debug = () => {};
       }
 
-      foo(value) {
+      foo(context, value) {
         return `${value}-foo`;
       }
 
@@ -263,8 +263,8 @@ describe('Routine', () => {
     });
 
     it('supports normal functions', async () => {
-      routine.task('upper', value => value.toUpperCase());
-      routine.task('dupe', value => `${value}${value}`);
+      routine.task('upper', (context, value) => value.toUpperCase());
+      routine.task('dupe', (context, value) => `${value}${value}`);
 
       expect(await routine.parallelizeTasks('abc')).toEqual(['ABC', 'abcabc']);
     });
@@ -273,9 +273,9 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextSubRoutine('context', 'title');
-      routine.action = value => routine.parallelizeTasks(value);
+      routine.action = (con, value) => routine.parallelizeTasks(value);
 
-      await routine.run(null, context);
+      await routine.run(context);
 
       expect(context).toEqual({
         bar: 456,
@@ -316,25 +316,25 @@ describe('Routine', () => {
 
   describe('run()', () => {
     it('returns a promise', () => {
-      expect(routine.run(123)).toBeInstanceOf(Promise);
+      expect(routine.run({}, 123)).toBeInstanceOf(Promise);
     });
 
     it('errors if an exit occurs', async () => {
       routine.exit = true;
 
       try {
-        await routine.run(123);
+        await routine.run({}, 123);
       } catch (error) {
         expect(error).toEqual(new Error('Process has been interrupted.'));
       }
     });
 
     it('passes the value down the promise', async () => {
-      expect(await routine.run(123)).toBe(123);
+      expect(await routine.run({}, 123)).toBe(123);
     });
 
     it('updates status if a success', async () => {
-      await routine.run(123);
+      await routine.run({}, 123);
 
       expect(routine.status).toBe(STATUS_PASSED);
     });
@@ -345,7 +345,7 @@ describe('Routine', () => {
       };
 
       try {
-        await routine.run(123);
+        await routine.run({}, 123);
       } catch (error) {
         expect(error).toEqual(new Error('Failure'));
       }
@@ -356,29 +356,29 @@ describe('Routine', () => {
 
   describe('serialize()', () => {
     it('returns initial value if no processes', async () => {
-      expect(await routine.serialize(123, [])).toBe(123);
+      expect(await routine.serialize([], 123)).toBe(123);
     });
 
     it('passes strings down the chain in order', async () => {
-      expect(await routine.serialize('', ['foo', 'bar', 'baz'], (prev, next) => prev + next)).toBe(
+      expect(await routine.serialize(['foo', 'bar', 'baz'], '', (next, prev) => prev + next)).toBe(
         'foobarbaz',
       );
     });
 
     it('passes numbers down the chain in order', async () => {
-      expect(await routine.serialize(0, [1, 2, 3], (prev, next) => prev + next * 2)).toBe(12);
+      expect(await routine.serialize([1, 2, 3], 0, (next, prev) => prev + next * 2)).toBe(12);
     });
 
     it('passes promises down the chain in order', async () => {
       expect(
         await routine.serialize(
-          [],
           [
             value => Promise.resolve([...value, 'foo']),
             value => Promise.resolve(['bar', ...value]),
             value => Promise.resolve(value.concat(['baz'])),
           ],
-          (value, func) => func(value),
+          [],
+          (func, value) => func(value),
         ),
       ).toEqual(['bar', 'foo', 'baz']);
     });
@@ -394,9 +394,9 @@ describe('Routine', () => {
 
       try {
         await routine.serialize(
-          [],
           [incCount, incCount, () => Promise.reject(new Error('Abort')), incCount, incCount],
-          (value, func) => func(value),
+          [],
+          (func, value) => func(value),
         );
       } catch (error) {
         expect(error).toEqual(new Error('Abort'));
@@ -407,7 +407,6 @@ describe('Routine', () => {
 
     it('handles buffers', async () => {
       const result = await routine.serialize(
-        Buffer.alloc(9),
         [
           buffer => {
             buffer.write('foo', 0, 3);
@@ -425,7 +424,8 @@ describe('Routine', () => {
             return buffer;
           },
         ],
-        (buffer, func) => func(buffer),
+        Buffer.alloc(9),
+        (func, buffer) => func(buffer),
       );
 
       expect(result.toString('utf8')).toBe('foobarbaz');
@@ -441,7 +441,7 @@ describe('Routine', () => {
         this.debug = () => {};
       }
 
-      execute(value) {
+      execute(context, value) {
         return Promise.resolve({
           count: value.count * this.options.multiplier,
           key: value.key + this.key,
@@ -482,9 +482,9 @@ describe('Routine', () => {
         .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = value => routine.serializeSubroutines(value);
+      routine.action = (con, value) => routine.serializeSubroutines(value);
 
-      await routine.run(null, context);
+      await routine.run(context);
 
       expect(context).toEqual({
         bar: true,
@@ -506,11 +506,11 @@ describe('Routine', () => {
         this.debug = () => {};
       }
 
-      duplicate(value) {
+      duplicate(context, value) {
         return `${value}${value}`;
       }
 
-      upperCase(value) {
+      upperCase(context, value) {
         return value.toUpperCase();
       }
     }
@@ -530,8 +530,8 @@ describe('Routine', () => {
     });
 
     it('supports normal functions', async () => {
-      routine.task('upper', value => value.toUpperCase());
-      routine.task('dupe', value => `${value}${value}`);
+      routine.task('upper', (context, value) => value.toUpperCase());
+      routine.task('dupe', (context, value) => `${value}${value}`);
 
       expect(await routine.serializeTasks('foo')).toBe('FOOFOO');
     });
@@ -540,9 +540,9 @@ describe('Routine', () => {
       const context = { serial: 'task' };
 
       routine = new ContextSubRoutine('context', 'title');
-      routine.action = value => routine.serializeTasks(value);
+      routine.action = (con, value) => routine.serializeTasks(value);
 
-      await routine.run(null, context);
+      await routine.run(context);
 
       expect(context).toEqual({
         bar: 456,
@@ -580,7 +580,7 @@ describe('Routine', () => {
         ({ config } = this);
       });
 
-      await routine.executeTask(null, routine.subtasks[0]);
+      await routine.executeTask(routine.subtasks[0]);
 
       expect(config).toEqual(routine.config);
     });

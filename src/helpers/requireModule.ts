@@ -6,7 +6,7 @@
 /**
  * Import a module and handle default exports correctly.
  */
-export default function requireModule(path: string): any {
+export default function requireModule<T>(path: string): T {
   let value = require(path); // eslint-disable-line
 
   // Support Babel compiled files

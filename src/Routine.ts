@@ -17,10 +17,10 @@ import { Readable } from 'stream';
 import { Options } from 'optimal';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
-import Task, { TaskInterface } from './Task';
+import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Context, TaskAction } from './types';
+import { Context, Partial } from './types';
 
 export interface CommandOptions {
   sync?: boolean;
@@ -37,7 +37,7 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
   // @ts-ignore Set after instantiation
   tool: ToolInterface;
 
-  constructor(key: string, title: string, options?: To) {
+  constructor(key: string, title: string, options: Partial<To> = {}) {
     super(title, null, options);
 
     if (!key || typeof key !== 'string') {
@@ -70,12 +70,12 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
       this.exit = true;
     });
 
-    // Initialize routine (this must be last!)
-    this.bootstrap();
-
-    // Custom debug logger for this routine
+    // Custom debugger for this routine
     this.debug = this.tool.createDebugger('routine', this.key);
     this.debug('Bootstrapping routine %s', chalk.green(this.key));
+
+    // Initialize routine (this must be last!)
+    this.bootstrap();
 
     return this;
   }
@@ -85,7 +85,7 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute<T>(value: T, context: Tx): Promise<T> {
+  execute<T>(context: Tx, value: T | null = null): Promise<T | null> {
     return this.wrap(value);
   }
 
@@ -125,23 +125,24 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: any, task: TaskInterface): Promise<any> =>
-    this.wrap(task.run(value, this.context));
+  executeTask<T>(task: TaskInterface, value: T | null = null): Promise<T | null> {
+    return this.wrap(task.run(this.context, value));
+  }
 
   /**
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines(value: any): Promise<any[]> {
-    return Promise.all(this.subroutines.map(routine => this.executeTask(value, routine)));
+  parallelizeSubroutines<T>(value: T | null = null): Promise<(T | null)[]> {
+    return Promise.all(this.subroutines.map(routine => this.executeTask(routine, value)));
   }
 
   /**
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks(value: any): Promise<any[]> {
-    return Promise.all(this.subtasks.map(task => this.executeTask(value, task)));
+  parallelizeTasks<T>(value: T | null = null): Promise<(T | null)[]> {
+    return Promise.all(this.subtasks.map(task => this.executeTask(task, value)));
   }
 
   /**
@@ -160,7 +161,7 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
   /**
    * Trigger processes before and after execution.
    */
-  run(value: any, context: Tx): Promise<any> {
+  run<T>(context: Tx, value: T | null = null): Promise<T | null> {
     if (this.exit) {
       return Promise.reject(new ExitError('Process has been interrupted.'));
     }
@@ -168,7 +169,7 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
     this.debug('Executing routine %s', chalk.green(this.key));
 
     return super
-      .run(value, context)
+      .run(context, value)
       .then(result => {
         this.tool.console.update();
 
@@ -186,13 +187,13 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
    * task being passed to the next promise in the chain. Utilize the
    * `accumulator` function to execute the list of processes.
    */
-  serialize(
-    initialValue: any,
-    items: any[],
-    accumulator: (value: any, item: any) => Promise<any>,
-  ): Promise<any> {
-    return items.reduce(
-      (promise: Promise<any>, item: any) => promise.then(value => accumulator(value, item)),
+  serialize<T>(
+    tasks: TaskInterface[],
+    initialValue: T | null = null,
+    accumulator: (task: TaskInterface, value: T | null) => Promise<T | null>,
+  ): Promise<T | null> {
+    return tasks.reduce(
+      (promise, task) => promise.then(value => accumulator(task, value)),
       Promise.resolve(initialValue),
     );
   }
@@ -200,21 +201,21 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines(value: any): Promise<any> {
-    return this.serialize(value, this.subroutines, this.executeTask);
+  serializeSubroutines<T>(value: T | null = null): Promise<T | null> {
+    return this.serialize(this.subroutines, value, (task, val) => this.executeTask(task, val));
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks(value: any): Promise<any> {
-    return this.serialize(value, this.subtasks, this.executeTask);
+  serializeTasks<T>(value: T | null = null): Promise<T | null> {
+    return this.serialize(this.subtasks, value, (task, val) => this.executeTask(task, val));
   }
 
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskAction<Tx>, options?: Options): TaskInterface {
+  task(title: string, action: TaskAction<Tx>, options: Options = {}): TaskInterface {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

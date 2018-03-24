@@ -11,7 +11,7 @@ declare module 'boost/lib/helpers/isEmptyObject' {
 
 }
 declare module 'boost/lib/helpers/requireModule' {
-  export default function requireModule(path: string): any;
+  export default function requireModule<T>(path: string): T;
 
 }
 declare module 'boost/lib/ExitError' {
@@ -70,7 +70,6 @@ declare module 'boost/lib/types' {
   }
   export type ReportLoader = () => ReportParams;
   export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
-  export type TaskAction<Tx extends Context> = (value: any, context: Tx) => any | Promise<any>;
   export type EventArguments = any[];
   export type EventListener = (...args: EventArguments) => void;
   export type EventNextHandler = (index: number, ...args: EventArguments) => void;
@@ -91,7 +90,7 @@ declare module 'boost/lib/constants' {
 }
 declare module 'boost/lib/Task' {
   import { Options } from 'optimal';
-  import { Context, Status, TaskAction } from 'boost/lib/types';
+  import { Context, Status, Partial } from 'boost/lib/types';
   export interface TaskInterface {
       status: Status;
       statusText: string;
@@ -103,26 +102,27 @@ declare module 'boost/lib/Task' {
       isSkipped(): boolean;
       hasFailed(): boolean;
       hasPassed(): boolean;
-      run(initialValue: any, context: any): Promise<any>;
+      run<T>(context: any, initialValue?: T | null): Promise<T | null>;
       spinner(): string;
   }
+  export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
   export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
       action: TaskAction<Tx> | null;
-      context?: Tx;
+      context: Tx;
       frame: number;
-      options: Options;
+      options: To;
       title: string;
       status: Status;
       statusText: string;
       subroutines: TaskInterface[];
       subtasks: TaskInterface[];
-      constructor(title: string, action?: TaskAction<Tx> | null, options?: To);
+      constructor(title: string, action?: TaskAction<Tx> | null, options?: Partial<To>);
       hasFailed(): boolean;
       hasPassed(): boolean;
       isPending(): boolean;
       isRunning(): boolean;
       isSkipped(): boolean;
-      run(initialValue: any, context: Tx): Promise<any>;
+      run<T>(context: Tx, initialValue?: T | null): Promise<T | null>;
       skip(condition?: boolean): this;
       spinner(): string;
       wrap<T>(value: T | Promise<T>): Promise<T>;
@@ -276,6 +276,10 @@ declare module 'boost/lib/Plugin' {
   }
 
 }
+declare module 'boost/lib/helpers/enableDebug' {
+  export default function enableDebug(namespace: string): void;
+
+}
 declare module 'boost/lib/Tool' {
   /// <reference types="debug" />
   import debug from 'debug';
@@ -350,9 +354,9 @@ declare module 'boost/lib/Routine' {
   import debug from 'debug';
   import { Options as ExecaOptions, SyncOptions as ExecaSyncOptions, ExecaChildProcess, ExecaReturns } from 'execa';
   import { Options } from 'optimal';
-  import Task, { TaskInterface } from 'boost/lib/Task';
+  import Task, { TaskAction, TaskInterface } from 'boost/lib/Task';
   import { ToolInterface } from 'boost/lib/Tool';
-  import { Context, TaskAction } from 'boost/lib/types';
+  import { Context, Partial } from 'boost/lib/types';
   export interface CommandOptions {
       sync?: boolean;
   }
@@ -361,19 +365,19 @@ declare module 'boost/lib/Routine' {
       debug: debug.IDebugger;
       key: string;
       tool: ToolInterface;
-      constructor(key: string, title: string, options?: To);
+      constructor(key: string, title: string, options?: Partial<To>);
       bootstrap(): void;
       configure(parent: Routine<Options, Tx>): this;
-      execute<T>(value: T, context: Tx): Promise<T>;
+      execute<T>(context: Tx, value?: T | null): Promise<T | null>;
       executeCommand(command: string, args: string[], options?: (ExecaOptions | ExecaSyncOptions) & CommandOptions, callback?: ((process: ExecaChildProcess) => void) | null): Promise<ExecaReturns>;
-      executeTask: (value: any, task: TaskInterface) => Promise<any>;
-      parallelizeSubroutines(value: any): Promise<any[]>;
-      parallelizeTasks(value: any): Promise<any[]>;
+      executeTask<T>(task: TaskInterface, value?: T | null): Promise<T | null>;
+      parallelizeSubroutines<T>(value?: T | null): Promise<(T | null)[]>;
+      parallelizeTasks<T>(value?: T | null): Promise<(T | null)[]>;
       pipe(routine: TaskInterface): this;
-      run(value: any, context: Tx): Promise<any>;
-      serialize(initialValue: any, items: any[], accumulator: (value: any, item: any) => Promise<any>): Promise<any>;
-      serializeSubroutines(value: any): Promise<any>;
-      serializeTasks(value: any): Promise<any>;
+      run<T>(context: Tx, value?: T | null): Promise<T | null>;
+      serialize<T>(tasks: TaskInterface[], initialValue: T | null | undefined, accumulator: (task: TaskInterface, value: T | null) => Promise<T | null>): Promise<T | null>;
+      serializeSubroutines<T>(value?: T | null): Promise<T | null>;
+      serializeTasks<T>(value?: T | null): Promise<T | null>;
       task(title: string, action: TaskAction<Tx>, options?: Options): TaskInterface;
   }
 
@@ -385,7 +389,7 @@ declare module 'boost/lib/Pipeline' {
   import { Context, ToolConfig } from 'boost/lib/types';
   export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<ToolConfig, Tx> {
       constructor(tool: ToolInterface);
-      run(initialValue: any, context: Tx): Promise<any>;
+      run<T>(context: Tx, initialValue?: T | null): Promise<T | null>;
   }
 
 }
