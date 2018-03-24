@@ -12,7 +12,8 @@ export default function formatModuleName(
   name: string,
   scoped: boolean = false,
 ): string {
-  const moduleName = name.toLowerCase()
+  const moduleName = name
+    .toLowerCase()
     .replace('plugin:', '')
     .replace(`${addonName}:`, '');
 

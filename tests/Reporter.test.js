@@ -2,7 +2,13 @@ import chalk from 'chalk';
 import logUpdate from 'log-update';
 import Reporter, { CURSOR } from '../src/Reporter';
 import Task from '../src/Task';
-import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+import {
+  STATUS_PENDING,
+  STATUS_RUNNING,
+  STATUS_SKIPPED,
+  STATUS_PASSED,
+  STATUS_FAILED,
+} from '../src/constants';
 
 jest.mock('log-update', () => {
   const spy = jest.fn();
@@ -188,9 +194,7 @@ ${CURSOR}`);
     });
 
     it('indents the message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', ''), 2)).toEqual([
-        '     Title',
-      ]);
+      expect(reporter.renderTask(createTaskWithStatus('Title', ''), 2)).toEqual(['     Title']);
     });
 
     describe('with tasks', () => {
@@ -247,9 +251,7 @@ ${CURSOR}`);
           createTaskWithStatus('Sub-task #3', STATUS_SKIPPED),
         ];
 
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-        ]);
+        expect(reporter.renderTask(result)).toEqual([`${chalk.gray('⠙')} Title`]);
       });
 
       it('does not display tasks if parent isnt STATUS_RUNNING', () => {
@@ -260,9 +262,7 @@ ${CURSOR}`);
           createTaskWithStatus('Sub-task #3', STATUS_PASSED),
         ];
 
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.green('✔')} Title`,
-        ]);
+        expect(reporter.renderTask(result)).toEqual([`${chalk.green('✔')} Title`]);
       });
 
       it('increases count for STATUS_PASSED tasks', () => {
@@ -342,23 +342,33 @@ ${CURSOR}`);
 
   describe('renderStatus()', () => {
     it('renders a bullet for STATUS_PENDING', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PENDING))).toBe(chalk.gray('●'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PENDING))).toBe(
+        chalk.gray('●'),
+      );
     });
 
     it('renders a spinner for STATUS_RUNNING', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_RUNNING))).toBe(chalk.gray('⠙'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_RUNNING))).toBe(
+        chalk.gray('⠙'),
+      );
     });
 
     it('renders a dotted circle for STATUS_SKIPPED', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_SKIPPED))).toBe(chalk.yellow('◌'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_SKIPPED))).toBe(
+        chalk.yellow('◌'),
+      );
     });
 
     it('renders a tick for STATUS_PASSED', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PASSED))).toBe(chalk.green('✔'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PASSED))).toBe(
+        chalk.green('✔'),
+      );
     });
 
     it('renders a cross for STATUS_FAILED', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(chalk.red('✖'));
+      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(
+        chalk.red('✖'),
+      );
     });
   });
 

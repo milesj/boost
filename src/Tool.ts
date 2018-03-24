@@ -26,7 +26,8 @@ export interface ToolInterface extends EmitterInterface {
   debug(message: string): this;
 }
 
-export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter implements ToolInterface {
+export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
+  implements ToolInterface {
   argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
@@ -51,17 +52,21 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     super();
 
     this.argv = argv;
-    this.options = optimal(options, {
-      appName: string().required(),
-      configBlueprint: object(),
-      configFolder: string('./configs'),
-      extendArgv: bool(true),
-      pluginAlias: string('plugin'),
-      root: string(process.cwd()),
-      scoped: bool(),
-    }, {
-      name: 'Tool',
-    });
+    this.options = optimal(
+      options,
+      {
+        appName: string().required(),
+        configBlueprint: object(),
+        configFolder: string('./configs'),
+        extendArgv: bool(true),
+        pluginAlias: string('plugin'),
+        root: string(process.cwd()),
+        scoped: bool(),
+      },
+      {
+        name: 'Tool',
+      },
+    );
 
     // Initialize the console first we can start debugging
     this.console = new Console(new Reporter(), {
@@ -76,7 +81,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
-    process.on('exit', (code) => {
+    process.on('exit', code => {
       this.emit('exit', [code]);
     });
   }
@@ -164,7 +169,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     // Inherit from argv
     if (this.options.extendArgv) {
-      this.argv.forEach((arg) => {
+      this.argv.forEach(arg => {
         if (arg === '--debug' || arg === '--silent') {
           const name = arg.slice(2);
 
@@ -205,7 +210,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     this.plugins.sort((a, b) => a.priority - b.priority);
 
     // Bootstrap each plugin with the tool
-    this.plugins.forEach((plugin) => {
+    this.plugins.forEach(plugin => {
       plugin.tool = this; // eslint-disable-line no-param-reassign
       plugin.bootstrap();
     });
@@ -237,7 +242,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     if (reporter) {
       this.console.reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporter);
 
-    // Use native Boost reporter
+      // Use native Boost reporter
     } else {
       this.debug(`Using native ${chalk.green('boost')} reporter`);
     }

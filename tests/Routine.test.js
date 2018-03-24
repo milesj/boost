@@ -86,11 +86,15 @@ describe('Routine', () => {
 
   describe('constructor()', () => {
     it('throws an error if no key is provided', () => {
-      expect(() => new Routine('', 'title')).toThrowError('Routine key must be a valid unique string.');
+      expect(() => new Routine('', 'title')).toThrowError(
+        'Routine key must be a valid unique string.',
+      );
     });
 
     it('throws an error if key is not a string', () => {
-      expect(() => new Routine(123, 'title')).toThrowError('Routine key must be a valid unique string.');
+      expect(() => new Routine(123, 'title')).toThrowError(
+        'Routine key must be a valid unique string.',
+      );
     });
 
     it('inherits default config', () => {
@@ -123,13 +127,13 @@ describe('Routine', () => {
 
   describe('executeCommand()', () => {
     it('runs a local command and captures output', async () => {
-      expect((await routine.executeCommand('yarn', ['-v'])).stdout)
-        .toMatch(/^\d+\.\d+\.\d+$/);
+      expect((await routine.executeCommand('yarn', ['-v'])).stdout).toMatch(/^\d+\.\d+\.\d+$/);
     });
 
     it('runs a local command synchronously', async () => {
-      expect((await routine.executeCommand('yarn', ['-v'], { sync: true })).stdout)
-        .toMatch(/^\d+\.\d+\.\d+$/);
+      expect((await routine.executeCommand('yarn', ['-v'], { sync: true })).stdout).toMatch(
+        /^\d+\.\d+\.\d+$/,
+      );
     });
   });
 
@@ -247,10 +251,7 @@ describe('Routine', () => {
       routine.task('upper', value => value.toUpperCase());
       routine.task('dupe', value => `${value}${value}`);
 
-      expect(await routine.parallelizeTasks('abc')).toEqual([
-        'ABC',
-        'abcabc',
-      ]);
+      expect(await routine.parallelizeTasks('abc')).toEqual(['ABC', 'abcabc']);
     });
 
     it('passes context through tasks when ran', async () => {
@@ -281,7 +282,10 @@ describe('Routine', () => {
       const bar = new Routine('bar', 'title');
       const baz = new Routine('baz', 'title');
 
-      routine.pipe(foo).pipe(bar).pipe(baz);
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
 
       expect(routine.subroutines).toEqual([foo, bar, baz]);
     });
@@ -367,23 +371,27 @@ describe('Routine', () => {
     });
 
     it('passes strings down the chain in order', async () => {
-      expect(await routine.serialize('', ['foo', 'bar', 'baz'], (prev, next) => prev + next)).toBe('foobarbaz');
+      expect(await routine.serialize('', ['foo', 'bar', 'baz'], (prev, next) => prev + next)).toBe(
+        'foobarbaz',
+      );
     });
 
     it('passes numbers down the chain in order', async () => {
-      expect(await routine.serialize(0, [1, 2, 3], (prev, next) => prev + (next * 2))).toBe(12);
+      expect(await routine.serialize(0, [1, 2, 3], (prev, next) => prev + next * 2)).toBe(12);
     });
 
     it('passes promises down the chain in order', async () => {
-      expect(await routine.serialize([], [
-        value => Promise.resolve([...value, 'foo']),
-        value => Promise.resolve(['bar', ...value]),
-        value => Promise.resolve(value.concat(['baz'])),
-      ], (value, func) => func(value))).toEqual([
-        'bar',
-        'foo',
-        'baz',
-      ]);
+      expect(
+        await routine.serialize(
+          [],
+          [
+            value => Promise.resolve([...value, 'foo']),
+            value => Promise.resolve(['bar', ...value]),
+            value => Promise.resolve(value.concat(['baz'])),
+          ],
+          (value, func) => func(value),
+        ),
+      ).toEqual(['bar', 'foo', 'baz']);
     });
 
     it('aborts early if an error occurs', async () => {
@@ -396,13 +404,11 @@ describe('Routine', () => {
       }
 
       try {
-        await routine.serialize([], [
-          incCount,
-          incCount,
-          () => Promise.reject(new Error('Abort')),
-          incCount,
-          incCount,
-        ], (value, func) => func(value));
+        await routine.serialize(
+          [],
+          [incCount, incCount, () => Promise.reject(new Error('Abort')), incCount, incCount],
+          (value, func) => func(value),
+        );
       } catch (error) {
         expect(error).toEqual(new Error('Abort'));
       }
@@ -411,23 +417,27 @@ describe('Routine', () => {
     });
 
     it('handles buffers', async () => {
-      const result = await routine.serialize(Buffer.alloc(9), [
-        (buffer) => {
-          buffer.write('foo', 0, 3);
+      const result = await routine.serialize(
+        Buffer.alloc(9),
+        [
+          buffer => {
+            buffer.write('foo', 0, 3);
 
-          return buffer;
-        },
-        (buffer) => {
-          buffer.write('bar', 3, 3);
+            return buffer;
+          },
+          buffer => {
+            buffer.write('bar', 3, 3);
 
-          return buffer;
-        },
-        (buffer) => {
-          buffer.write('baz', 6, 3);
+            return buffer;
+          },
+          buffer => {
+            buffer.write('baz', 6, 3);
 
-          return buffer;
-        },
-      ], (buffer, func) => func(buffer));
+            return buffer;
+          },
+        ],
+        (buffer, func) => func(buffer),
+      );
 
       expect(result.toString('utf8')).toBe('foobarbaz');
     });
@@ -460,7 +470,10 @@ describe('Routine', () => {
       const bar = new SerializeSubsRoutine('bar', 'title', { multiplier: 3 });
       const baz = new SerializeSubsRoutine('baz', 'title', { multiplier: 1 });
 
-      routine.pipe(foo).pipe(bar).pipe(baz);
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
 
       expect(await routine.serializeSubroutines({ count: 6, key: '' })).toEqual({
         count: 36,

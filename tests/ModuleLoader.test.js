@@ -42,7 +42,9 @@ describe('ModuleLoader', () => {
       expect(() => {
         loader.tool.options.scoped = true;
         loader.importModule('missing');
-      }).toThrowError('Missing plugin. Attempted import in order: @test-boost/plugin-missing, test-boost-plugin-missing');
+      }).toThrowError(
+        'Missing plugin. Attempted import in order: @test-boost/plugin-missing, test-boost-plugin-missing',
+      );
     });
 
     it('errors if a non-function is exported', () => {
@@ -66,19 +68,27 @@ describe('ModuleLoader', () => {
 
       expect(() => {
         loader.importModule('instance');
-      }).toThrowError('A plugin class instance was exported from "test-boost-plugin-instance". Test-boost requires a plugin class definition to be exported.');
+      }).toThrowError(
+        'A plugin class instance was exported from "test-boost-plugin-instance". Test-boost requires a plugin class definition to be exported.',
+      );
     });
 
     it('errors if a non-plugin instance is exported', () => {
-      fixtures.push(copyFixtureToMock('plugin-exported-nonplugin-instance', 'test-boost-plugin-nonplugin'));
+      fixtures.push(
+        copyFixtureToMock('plugin-exported-nonplugin-instance', 'test-boost-plugin-nonplugin'),
+      );
 
       expect(() => {
         loader.importModule('nonplugin');
-      }).toThrowError('Invalid plugin class definition exported from "test-boost-plugin-nonplugin".');
+      }).toThrowError(
+        'Invalid plugin class definition exported from "test-boost-plugin-nonplugin".',
+      );
     });
 
     it('imports and instantiates a plugin', () => {
-      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition'));
+      fixtures.push(
+        copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition'),
+      );
 
       const plugin = loader.importModule('definition');
 
@@ -88,7 +98,9 @@ describe('ModuleLoader', () => {
     });
 
     it('imports using a file path', () => {
-      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition'));
+      fixtures.push(
+        copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition'),
+      );
 
       const plugin = loader.importModule(getFixturePath('plugin-exported-definition'));
 
@@ -133,7 +145,9 @@ describe('ModuleLoader', () => {
     });
 
     it('imports and instantiates a plugin with options', () => {
-      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition-with-opts'));
+      fixtures.push(
+        copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition-with-opts'),
+      );
 
       const plugin = loader.importModuleFromOptions({
         foo: 'bar',
@@ -150,7 +164,9 @@ describe('ModuleLoader', () => {
     it('errors if an unsupported value is passed', () => {
       expect(() => {
         loader.loadModules([123]);
-      }).toThrowError('Invalid plugin. Must be a class instance or a module that exports a class definition.');
+      }).toThrowError(
+        'Invalid plugin. Must be a class instance or a module that exports a class definition.',
+      );
     });
 
     it('returns an empty array if no values', () => {
@@ -159,11 +175,7 @@ describe('ModuleLoader', () => {
     });
 
     it('supports class instances', () => {
-      const plugins = [
-        createPlugin('foo'),
-        createPlugin('bar'),
-        createPlugin('baz'),
-      ];
+      const plugins = [createPlugin('foo'), createPlugin('bar'), createPlugin('baz')];
 
       expect(loader.loadModules(plugins)).toEqual(plugins);
     });
@@ -173,11 +185,7 @@ describe('ModuleLoader', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-bar'));
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-baz'));
 
-      expect(loader.loadModules([
-        'foo',
-        'bar',
-        'baz',
-      ])).toEqual([
+      expect(loader.loadModules(['foo', 'bar', 'baz'])).toEqual([
         createPlugin('foo'),
         createPlugin('bar'),
         createPlugin('baz'),
@@ -189,26 +197,16 @@ describe('ModuleLoader', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-bar'));
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-baz'));
 
-      expect(loader.loadModules([
-        { plugin: 'foo' },
-        { plugin: 'bar' },
-        { plugin: 'baz' },
-      ])).toEqual([
-        createPlugin('foo'),
-        createPlugin('bar'),
-        createPlugin('baz'),
-      ]);
+      expect(loader.loadModules([{ plugin: 'foo' }, { plugin: 'bar' }, { plugin: 'baz' }])).toEqual(
+        [createPlugin('foo'), createPlugin('bar'), createPlugin('baz')],
+      );
     });
 
     it('supports all 3 at once', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-bar'));
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-baz'));
 
-      expect(loader.loadModules([
-        createPlugin('foo'),
-        'bar',
-        { plugin: 'baz' },
-      ])).toEqual([
+      expect(loader.loadModules([createPlugin('foo'), 'bar', { plugin: 'baz' }])).toEqual([
         createPlugin('foo'),
         createPlugin('bar'),
         createPlugin('baz'),

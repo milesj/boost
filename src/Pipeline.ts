@@ -12,7 +12,10 @@ import Reporter from './Reporter';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 import { Context, ToolConfig } from './types';
 
-export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<ToolConfig, Tx> {
+export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<
+  ToolConfig,
+  Tx
+> {
   constructor(tool: ToolInterface) {
     super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
 
@@ -39,10 +42,10 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
     cli.start(this.subroutines);
 
     return this.serializeSubroutines(initialValue)
-      .then((result) => {
+      .then(result => {
         cli.exit(null, 0);
       })
-      .catch((error) => {
+      .catch(error => {
         cli.exit(error, 1);
       });
   }

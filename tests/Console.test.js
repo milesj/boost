@@ -14,9 +14,7 @@ describe('Console', () => {
     it('adds to debug log', () => {
       cli.debug('message');
 
-      expect(cli.debugs).toEqual([
-        `${chalk.gray('[debug]')} message`,
-      ]);
+      expect(cli.debugs).toEqual([`${chalk.gray('[debug]')} message`]);
     });
 
     it('indents when within a group', () => {
@@ -96,9 +94,7 @@ describe('Console', () => {
       cli.startDebugGroup('foo');
 
       expect(cli.debugGroups).toEqual(['foo']);
-      expect(cli.debugs).toEqual([
-        `${chalk.gray('[debug]')} ${chalk.white('[foo]')}`,
-      ]);
+      expect(cli.debugs).toEqual([`${chalk.gray('[debug]')} ${chalk.white('[foo]')}`]);
     });
 
     it('cycles through all colors', () => {

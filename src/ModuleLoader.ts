@@ -51,7 +51,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
       modulesToAttempt.push(path.normalize(name));
       isFilePath = true;
 
-    // Module name
+      // Module name
     } else {
       this.tool.debug(`Locating ${typeName} module ${chalk.yellow(name)}`);
 
@@ -64,7 +64,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
       this.tool.debug(`Resolving in order: ${modulesToAttempt.join(', ')}`);
     }
 
-    modulesToAttempt.some((modName) => {
+    modulesToAttempt.some(modName => {
       try {
         importedModule = requireModule(modName);
         moduleName = modName;
@@ -85,13 +85,10 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     if (importedModule instanceof this.classReference) {
       throw new TypeError(
         `A ${typeName} class instance was exported from "${moduleName}". ` +
-        `${upperFirst(appName)} requires a ${typeName} class definition to be exported.`,
+          `${upperFirst(appName)} requires a ${typeName} class definition to be exported.`,
       );
-
     } else if (typeof importedModule !== 'function') {
-      throw new TypeError(
-        `Invalid ${typeName} class definition exported from "${moduleName}".`,
-      );
+      throw new TypeError(`Invalid ${typeName} class definition exported from "${moduleName}".`);
     }
 
     const ModuleClass = importedModule as Constructor<Tm>;
@@ -103,7 +100,6 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
 
     if (isFilePath) {
       this.tool.debug(`Found with ${chalk.cyan(moduleName)}`);
-
     } else {
       this.tool.debug(`Found with ${chalk.yellow(moduleName)}`);
 
@@ -142,16 +138,16 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
   loadModule(module: string | Options | Tm): Tm {
     if (module instanceof this.classReference) {
       return module;
-
     } else if (typeof module === 'string') {
       return this.importModule(module);
-
     } else if (isObject(module)) {
       return this.importModuleFromOptions(module);
     }
 
     throw new TypeError(
-      `Invalid ${this.typeName}. Must be a class instance or a module that exports a class definition.`,
+      `Invalid ${
+        this.typeName
+      }. Must be a class instance or a module that exports a class definition.`,
     );
   }
 

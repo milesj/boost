@@ -69,7 +69,7 @@ export default class Reporter<To extends Options> extends Module<To> implements 
 
     // Tasks first
     if (tasks.length > 0 && verbose) {
-      tasks.forEach((task) => {
+      tasks.forEach(task => {
         output.push(...this.renderTask(task, 0));
       });
     }
@@ -78,20 +78,20 @@ export default class Reporter<To extends Options> extends Module<To> implements 
     if (debugs.length > 0 && debug) {
       output.push('');
 
-      debugs.forEach((log) => {
+      debugs.forEach(log => {
         output.push(this.renderMessage(log));
       });
     }
 
     // Messages last
-    const messages = (code === 0) ? logs : errors;
+    const messages = code === 0 ? logs : errors;
 
     if (messages.length > 0) {
       if (messages[0] !== '') {
         output.push('');
       }
 
-      messages.forEach((log) => {
+      messages.forEach(log => {
         output.push(this.renderMessage(log));
       });
 
@@ -129,10 +129,8 @@ export default class Reporter<To extends Options> extends Module<To> implements 
 
     if (task.isSkipped()) {
       message += ` ${chalk.yellow('[skipped]')}`;
-
     } else if (task.hasFailed()) {
       message += ` ${chalk.red('[failed]')}`;
-
     } else if (suffix) {
       message += ` ${suffix}`;
     }
@@ -146,16 +144,13 @@ export default class Reporter<To extends Options> extends Module<To> implements 
       let failedTask: TaskInterface | null = null;
       let passed = 0;
 
-      task.subtasks.forEach((subTask) => {
+      task.subtasks.forEach(subTask => {
         if (subTask.isPending() && !pendingTask) {
           pendingTask = subTask;
-
         } else if (subTask.isRunning() && !runningTask) {
           runningTask = subTask;
-
         } else if (subTask.hasFailed() && !failedTask) {
           failedTask = subTask;
-
         } else if (subTask.hasPassed() || subTask.isSkipped()) {
           passed += 1;
         }
@@ -177,7 +172,7 @@ export default class Reporter<To extends Options> extends Module<To> implements 
 
     // Show all sub-routines
     if (task.subroutines.length > 0) {
-      task.subroutines.forEach((routine) => {
+      task.subroutines.forEach(routine => {
         output.push(...this.renderTask(routine, level + 1));
       });
     }
@@ -220,7 +215,9 @@ export default class Reporter<To extends Options> extends Module<To> implements 
     this.loader = loader;
 
     /* istanbul ignore next */
-    this.instance = setInterval(() => { this.update(); }, REFRESH_RATE);
+    this.instance = setInterval(() => {
+      this.update();
+    }, REFRESH_RATE);
 
     return this;
   }

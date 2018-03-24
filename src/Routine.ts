@@ -5,7 +5,12 @@
 
 import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
-import execa, { Options as ExecaOptions, SyncOptions as ExecaSyncOptions, ExecaChildProcess, ExecaReturns } from 'execa';
+import execa, {
+  Options as ExecaOptions,
+  SyncOptions as ExecaSyncOptions,
+  ExecaChildProcess,
+  ExecaReturns,
+} from 'execa';
 import split from 'split';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
@@ -111,9 +116,8 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: any, task: TaskInterface): Promise<any> => (
-    this.wrap(task.run(value, this.context))
-  );
+  executeTask = (value: any, task: TaskInterface): Promise<any> =>
+    this.wrap(task.run(value, this.context));
 
   /**
    * Execute subroutines in parralel with a value being passed to each subroutine.
@@ -137,7 +141,6 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
   pipe(routine: TaskInterface): this {
     if (routine instanceof Routine) {
       this.subroutines.push(routine.configure(this));
-
     } else {
       throw new TypeError('Routines must be an instance of `Routine`.');
     }
@@ -159,14 +162,15 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
 
     cli.startDebugGroup(this.key);
 
-    return super.run(value, context)
-      .then((result) => {
+    return super
+      .run(value, context)
+      .then(result => {
         cli.stopDebugGroup();
         cli.update();
 
         return result;
       })
-      .catch((error) => {
+      .catch(error => {
         cli.stopDebugGroup();
         cli.update();
 
@@ -184,9 +188,10 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
     items: any[],
     accumulator: (value: any, item: any) => Promise<any>,
   ): Promise<any> {
-    return items.reduce((promise: Promise<any>, item: any) => (
-      promise.then(value => accumulator(value, item))
-    ), Promise.resolve(initialValue));
+    return items.reduce(
+      (promise: Promise<any>, item: any) => promise.then(value => accumulator(value, item)),
+      Promise.resolve(initialValue),
+    );
   }
 
   /**

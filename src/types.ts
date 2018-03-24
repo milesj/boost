@@ -6,9 +6,7 @@
 import { Blueprint, Options } from 'optimal';
 import { TaskInterface } from './Task';
 
-export type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
+export type Partial<T> = { [P in keyof T]?: T[P] };
 
 export interface Context {
   [key: string]: any;
@@ -17,46 +15,46 @@ export interface Context {
 export interface Config extends Options {}
 
 export interface ConsoleOptions extends Options {
-  debug: boolean,
-  footer: string,
-  header: string,
-  silent: boolean,
-};
+  debug: boolean;
+  footer: string;
+  header: string;
+  silent: boolean;
+}
 
 export interface ToolConfig extends Config {
-  debug: boolean,
-  extends: string | string[],
-  plugins: string[],
-  reporter: string,
-  silent: boolean,
-  [key: string]: any,
+  debug: boolean;
+  extends: string | string[];
+  plugins: string[];
+  reporter: string;
+  silent: boolean;
+  [key: string]: any;
 }
 
 export interface ToolOptions extends Options {
-  appName: string,
-  configBlueprint: Blueprint,
-  configFolder: string,
-  extendArgv: string,
-  footer: string,
-  header: string,
-  pluginAlias: string,
-  root: string,
-  scoped: boolean,
-};
+  appName: string;
+  configBlueprint: Blueprint;
+  configFolder: string;
+  extendArgv: string;
+  footer: string;
+  header: string;
+  pluginAlias: string;
+  root: string;
+  scoped: boolean;
+}
 
 export interface PackageConfig extends Config {
-  name: string,
+  name: string;
 }
 
 export interface ReportParams {
-  debug: boolean,
-  debugs: string[],
-  errors: string[],
-  footer: string,
-  header: string,
-  logs: string[],
-  silent: boolean,
-  tasks: TaskInterface[],
+  debug: boolean;
+  debugs: string[];
+  errors: string[];
+  footer: string;
+  header: string;
+  logs: string[];
+  silent: boolean;
+  tasks: TaskInterface[];
 }
 
 export type ReportLoader = () => ReportParams;

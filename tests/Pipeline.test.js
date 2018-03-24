@@ -18,8 +18,9 @@ describe('Pipeline', () => {
 
   describe('constructor()', () => {
     it('errors if no tool is passed', () => {
-      expect(() => new Pipeline())
-        .toThrowError('A build `Tool` instance is required to operate the pipeline.');
+      expect(() => new Pipeline()).toThrowError(
+        'A build `Tool` instance is required to operate the pipeline.',
+      );
     });
 
     it('inherits config from tool', () => {

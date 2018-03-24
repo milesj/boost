@@ -17,7 +17,7 @@ export interface TaskInterface {
   status: Status;
   statusText: string;
   subroutines: TaskInterface[];
-  subtasks: TaskInterface[]
+  subtasks: TaskInterface[];
   title: string;
   isPending(): boolean;
   isRunning(): boolean;
@@ -66,35 +66,35 @@ export default class Task<Tc extends object, Tx extends Context> implements Task
    * Return true if the task failed when executing.
    */
   hasFailed(): boolean {
-    return (this.status === STATUS_FAILED);
+    return this.status === STATUS_FAILED;
   }
 
   /**
    * Return true if the task executed successfully.
    */
   hasPassed(): boolean {
-    return (this.status === STATUS_PASSED);
+    return this.status === STATUS_PASSED;
   }
 
   /**
    * Return true if the task has not been executed yet.
    */
   isPending(): boolean {
-    return (this.status === STATUS_PENDING);
+    return this.status === STATUS_PENDING;
   }
 
   /**
    * Return true if the task is currently running.
    */
   isRunning(): boolean {
-    return (this.status === STATUS_RUNNING);
+    return this.status === STATUS_RUNNING;
   }
 
   /**
    * Return true if the task was or will be skipped.
    */
   isSkipped(): boolean {
-    return (this.status === STATUS_SKIPPED);
+    return this.status === STATUS_SKIPPED;
   }
 
   /**
@@ -113,22 +113,24 @@ export default class Task<Tc extends object, Tx extends Context> implements Task
 
     this.status = STATUS_RUNNING;
 
-    return Promise.resolve(initialValue)
-      // @ts-ignore
-      .then(value => this.action(value, context))
-      .then(
-        (result) => {
-          this.status = STATUS_PASSED;
-          this.statusText = '';
+    return (
+      Promise.resolve(initialValue)
+        // @ts-ignore
+        .then(value => this.action(value, context))
+        .then(
+          result => {
+            this.status = STATUS_PASSED;
+            this.statusText = '';
 
-          return result;
-        },
-        (error) => {
-          this.status = STATUS_FAILED;
+            return result;
+          },
+          error => {
+            this.status = STATUS_FAILED;
 
-          throw error;
-        },
-      );
+            throw error;
+          },
+        )
+    );
   }
 
   /**
@@ -156,6 +158,6 @@ export default class Task<Tc extends object, Tx extends Context> implements Task
    * Wrap a value in a promise if it has not already been.
    */
   wrap<T>(value: T | Promise<T>): Promise<T> {
-    return (value instanceof Promise) ? value : Promise.resolve(value);
+    return value instanceof Promise ? value : Promise.resolve(value);
   }
 }

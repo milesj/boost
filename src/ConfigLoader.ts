@@ -37,10 +37,7 @@ export default class ConfigLoader {
    */
   handleMerge(target: any, source: any): any {
     if (Array.isArray(target) && Array.isArray(source)) {
-      return Array.from(new Set([
-        ...target,
-        ...source,
-      ]));
+      return Array.from(new Set([...target, ...source]));
     }
 
     // Defer to lodash
@@ -58,13 +55,7 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const {
-      appName,
-      configBlueprint,
-      configFolder,
-      pluginAlias,
-      root,
-    } = this.tool.options;
+    const { appName, configBlueprint, configFolder, pluginAlias, root } = this.tool.options;
     const camelName = camelCase(appName);
     let config = {};
 
@@ -81,12 +72,11 @@ export default class ConfigLoader {
         config = { extends: [config] };
       }
 
-    // Locate files within a local config folder
+      // Locate files within a local config folder
     } else {
-      const filePaths = glob.sync(
-        path.join(root, configFolder, `${appName}.{js,json,json5}`),
-        { absolute: true },
-      );
+      const filePaths = glob.sync(path.join(root, configFolder, `${appName}.{js,json,json5}`), {
+        absolute: true,
+      });
 
       const fileNames = [
         path.join(configFolder, `${appName}.js`),
@@ -99,13 +89,10 @@ export default class ConfigLoader {
       if (filePaths.length === 0) {
         throw new Error(
           'Local configuration file could not be found. ' +
-          `One of ${fileNames.join(', ')} must exist relative to the project root.`,
+            `One of ${fileNames.join(', ')} must exist relative to the project root.`,
         );
-
       } else if (filePaths.length !== 1) {
-        throw new Error(
-          `Multiple "${appName}" configuration files found. Only 1 may exist.`,
-        );
+        throw new Error(`Multiple "${appName}" configuration files found. Only 1 may exist.`);
       }
 
       [config] = filePaths;
@@ -114,20 +101,21 @@ export default class ConfigLoader {
     }
 
     // Parse and extend configuration
-    return optimal(this.parseAndExtend(config), {
-      ...configBlueprint,
-      debug: bool(),
-      extends: array(string()),
-      reporter: string().empty(),
-      silent: bool(),
-      [pluralize(pluginAlias)]: array(union([
-        string(),
-        shape({ [pluginAlias]: string() }),
-      ])),
-    }, {
-      name: 'ConfigLoader',
-      unknown: true,
-    });
+    return optimal(
+      this.parseAndExtend(config),
+      {
+        ...configBlueprint,
+        debug: bool(),
+        extends: array(string()),
+        reporter: string().empty(),
+        silent: bool(),
+        [pluralize(pluginAlias)]: array(union([string(), shape({ [pluginAlias]: string() })])),
+      },
+      {
+        name: 'ConfigLoader',
+        unknown: true,
+      },
+    );
   }
 
   /**
@@ -143,16 +131,20 @@ export default class ConfigLoader {
     if (!fs.existsSync(filePath)) {
       throw new Error(
         'Local "package.json" could not be found. ' +
-        'Please run the command in your project\'s root.',
+          "Please run the command in your project's root.",
       );
     }
 
-    this.package = optimal(this.parseFile(filePath), {
-      name: string(),
-    }, {
-      name: 'ConfigLoader',
-      unknown: true,
-    });
+    this.package = optimal(
+      this.parseFile(filePath),
+      {
+        name: string(),
+      },
+      {
+        name: 'ConfigLoader',
+        unknown: true,
+      },
+    );
 
     return this.package;
   }
@@ -190,14 +182,13 @@ export default class ConfigLoader {
     const nextConfig = {};
     const resolvedPaths = this.resolveExtendPaths(extendPaths, baseDir);
 
-    resolvedPaths.forEach((extendPath) => {
+    resolvedPaths.forEach(extendPath => {
       if (this.parsedFiles[extendPath]) {
         return;
       }
 
       if (!fs.existsSync(extendPath)) {
         throw new Error(`Preset configuration ${extendPath} does not exist.`);
-
       } else if (!fs.statSync(extendPath).isFile()) {
         throw new Error(`Preset configuration ${extendPath} must be a valid file.`);
       }
@@ -234,14 +225,12 @@ export default class ConfigLoader {
 
     if (ext === '.json' || ext === '.json5') {
       value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
-
     } else if (ext === '.js') {
       value = requireModule(filePath);
 
       if (typeof value === 'function') {
         value = value(options);
       }
-
     } else {
       throw new Error(`Unsupported configuration file format "${name}".`);
     }
@@ -265,31 +254,26 @@ export default class ConfigLoader {
    *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
   resolveExtendPaths(extendPaths: string[], baseDir: string = ''): string[] {
-    return extendPaths.map((extendPath) => {
+    return extendPaths.map(extendPath => {
       if (typeof extendPath !== 'string') {
         throw new TypeError('Invalid `extends` configuration value. Must be an array of strings.');
       }
 
-      const {
-        appName,
-        scoped,
-        pluginAlias,
-        root,
-      } = this.tool.options;
+      const { appName, scoped, pluginAlias, root } = this.tool.options;
 
       // Absolute path, use it directly
       if (path.isAbsolute(extendPath)) {
         return path.normalize(extendPath);
 
-      // Relative path, resolve with parent folder or cwd
+        // Relative path, resolve with parent folder or cwd
       } else if (extendPath[0] === '.') {
         return path.resolve(baseDir || root, extendPath);
 
-      // Node module, resolve to a config file
+        // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
         return this.resolveModuleConfigPath(appName, extendPath, true);
 
-      // Plugin, resolve to a node module
+        // Plugin, resolve to a node module
       } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
         return this.resolveModuleConfigPath(
           appName,
@@ -314,12 +298,6 @@ export default class ConfigLoader {
     const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
     const { configFolder } = this.tool.options;
 
-    return path.resolve(
-      this.tool.options.root,
-      'node_modules',
-      moduleName,
-      configFolder,
-      fileName,
-    );
+    return path.resolve(this.tool.options.root, 'node_modules', moduleName, configFolder, fileName);
   }
 }

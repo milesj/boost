@@ -35,7 +35,7 @@ export default class Emitter implements EmitterInterface {
   emit(name: string, args: EventArguments = [], initialValue: any = null): Event {
     const event = new Event(this.createEventName(name), initialValue);
 
-    Array.from(this.getListeners(event.name)).some((listener) => {
+    Array.from(this.getListeners(event.name)).some(listener => {
       listener(event, ...args);
 
       return event.stopped;
@@ -92,7 +92,7 @@ export default class Emitter implements EmitterInterface {
     if (!eventName.match(APP_NAME_PATTERN)) {
       throw new Error(
         `Invalid event name "${eventName}". ` +
-        'May only contain dashes, periods, and lowercase characters.',
+          'May only contain dashes, periods, and lowercase characters.',
       );
     }
 

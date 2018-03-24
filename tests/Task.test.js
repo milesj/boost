@@ -1,5 +1,11 @@
 import Task from '../src/Task';
-import { STATUS_PENDING, STATUS_RUNNING, STATUS_SKIPPED, STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+import {
+  STATUS_PENDING,
+  STATUS_RUNNING,
+  STATUS_SKIPPED,
+  STATUS_PASSED,
+  STATUS_FAILED,
+} from '../src/constants';
 
 describe('Task', () => {
   let task;

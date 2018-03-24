@@ -66,11 +66,11 @@ describe('ConfigLoader', () => {
           testBoost: 'test-boost-preset',
         };
 
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({
-          extends: [
-            getModulePath('test-boost-preset', 'configs/test-boost.preset.js'),
-          ],
-        }));
+        expect(loader.loadConfig()).toEqual(
+          expect.objectContaining({
+            extends: [getModulePath('test-boost-preset', 'configs/test-boost.preset.js')],
+          }),
+        );
       });
 
       it('merges with default config', () => {
@@ -143,9 +143,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError(
-          'Multiple "test-boost" configuration files found. Only 1 may exist.',
-        );
+        }).toThrowError('Multiple "test-boost" configuration files found. Only 1 may exist.');
       });
 
       it('supports .json files', () => {
@@ -233,14 +231,13 @@ describe('ConfigLoader', () => {
     it('errors if preset is not a file', () => {
       expect(() => {
         loader.parseAndExtend({ extends: [__dirname] });
-      }).toThrowError(
-        `Preset configuration ${__dirname} must be a valid file.`,
-      );
+      }).toThrowError(`Preset configuration ${__dirname} must be a valid file.`);
     });
 
     it('parses a file path if a string is provided', () => {
-      expect(loader.parseAndExtend(getFixturePath('app', 'configs/test-boost.json')))
-        .toEqual({ foo: 'bar' });
+      expect(loader.parseAndExtend(getFixturePath('app', 'configs/test-boost.json'))).toEqual({
+        foo: 'bar',
+      });
     });
 
     it('returns the config as is if no `extends`', () => {
@@ -254,10 +251,12 @@ describe('ConfigLoader', () => {
     it('extends a preset and merges objects', () => {
       const presetPath = getFixturePath('preset', 'configs/test-boost.preset.js');
 
-      expect(loader.parseAndExtend({
-        foo: 'bar',
-        extends: [presetPath],
-      })).toEqual({
+      expect(
+        loader.parseAndExtend({
+          foo: 'bar',
+          extends: [presetPath],
+        }),
+      ).toEqual({
         foo: 'bar',
         preset: true,
         extends: [presetPath],
@@ -269,9 +268,11 @@ describe('ConfigLoader', () => {
       const presetBar = getFixturePath('preset', 'configs/bar.preset.js');
       const presetBaz = getFixturePath('preset', 'configs/baz.preset.js');
 
-      expect(loader.parseAndExtend({
-        extends: [presetFoo, presetBar, presetBaz],
-      })).toEqual({
+      expect(
+        loader.parseAndExtend({
+          extends: [presetFoo, presetBar, presetBaz],
+        }),
+      ).toEqual({
         foo: 1,
         bar: 2,
         baz: 3,
@@ -280,23 +281,26 @@ describe('ConfigLoader', () => {
     });
 
     it('extends presets recursively', () => {
-      fixtures.push(createTempFileInRoot(
-        'extend-recursive-a.json',
-        JSON.stringify({ a: 1, extends: ['./extend-recursive-b.json'] }),
-      ));
-      fixtures.push(createTempFileInRoot(
-        'extend-recursive-b.json',
-        JSON.stringify({ b: 2, extends: ['./extend-recursive-c.json'] }),
-      ));
-      fixtures.push(createTempFileInRoot(
-        'extend-recursive-c.json',
-        JSON.stringify({ c: 3 }),
-      ));
+      fixtures.push(
+        createTempFileInRoot(
+          'extend-recursive-a.json',
+          JSON.stringify({ a: 1, extends: ['./extend-recursive-b.json'] }),
+        ),
+      );
+      fixtures.push(
+        createTempFileInRoot(
+          'extend-recursive-b.json',
+          JSON.stringify({ b: 2, extends: ['./extend-recursive-c.json'] }),
+        ),
+      );
+      fixtures.push(createTempFileInRoot('extend-recursive-c.json', JSON.stringify({ c: 3 })));
 
-      expect(loader.parseAndExtend({
-        d: 4,
-        extends: ['./extend-recursive-a.json'],
-      })).toEqual({
+      expect(
+        loader.parseAndExtend({
+          d: 4,
+          extends: ['./extend-recursive-a.json'],
+        }),
+      ).toEqual({
         a: 1,
         b: 2,
         c: 3,
@@ -310,19 +314,25 @@ describe('ConfigLoader', () => {
     });
 
     it('avoids circular recursion', () => {
-      fixtures.push(createTempFileInRoot(
-        'extend-circular-a.json',
-        JSON.stringify({ a: 1, extends: ['./extend-circular-b.json'] }),
-      ));
-      fixtures.push(createTempFileInRoot(
-        'extend-circular-b.json',
-        JSON.stringify({ b: 2, extends: ['./extend-circular-a.json'] }),
-      ));
+      fixtures.push(
+        createTempFileInRoot(
+          'extend-circular-a.json',
+          JSON.stringify({ a: 1, extends: ['./extend-circular-b.json'] }),
+        ),
+      );
+      fixtures.push(
+        createTempFileInRoot(
+          'extend-circular-b.json',
+          JSON.stringify({ b: 2, extends: ['./extend-circular-a.json'] }),
+        ),
+      );
 
-      expect(loader.parseAndExtend({
-        c: 3,
-        extends: ['./extend-circular-a.json'],
-      })).toEqual({
+      expect(
+        loader.parseAndExtend({
+          c: 3,
+          extends: ['./extend-circular-a.json'],
+        }),
+      ).toEqual({
         a: 1,
         b: 2,
         c: 3,
@@ -334,36 +344,37 @@ describe('ConfigLoader', () => {
     });
 
     it('concatenates and uniquifys arrays', () => {
-      fixtures.push(createTempFileInRoot(
-        'extend-merge-arrays.json',
-        JSON.stringify({ list: ['foo', 'bar'] }),
-      ));
+      fixtures.push(
+        createTempFileInRoot('extend-merge-arrays.json', JSON.stringify({ list: ['foo', 'bar'] })),
+      );
 
-      expect(loader.parseAndExtend({
-        list: ['baz'],
-        extends: ['./extend-merge-arrays.json'],
-      })).toEqual({
+      expect(
+        loader.parseAndExtend({
+          list: ['baz'],
+          extends: ['./extend-merge-arrays.json'],
+        }),
+      ).toEqual({
         list: ['foo', 'bar', 'baz'],
-        extends: [
-          getFixturePath('app', './extend-merge-arrays.json'),
-        ],
+        extends: [getFixturePath('app', './extend-merge-arrays.json')],
       });
     });
 
     it('merges objects', () => {
-      fixtures.push(createTempFileInRoot(
-        'extend-merge-objects.json',
-        JSON.stringify({ map: { foo: 123, bar: true } }),
-      ));
+      fixtures.push(
+        createTempFileInRoot(
+          'extend-merge-objects.json',
+          JSON.stringify({ map: { foo: 123, bar: true } }),
+        ),
+      );
 
-      expect(loader.parseAndExtend({
-        map: { foo: 456, baz: 'wtf' },
-        extends: ['./extend-merge-objects.json'],
-      })).toEqual({
+      expect(
+        loader.parseAndExtend({
+          map: { foo: 456, baz: 'wtf' },
+          extends: ['./extend-merge-objects.json'],
+        }),
+      ).toEqual({
         map: { foo: 456, bar: true, baz: 'wtf' },
-        extends: [
-          getFixturePath('app', './extend-merge-objects.json'),
-        ],
+        extends: [getFixturePath('app', './extend-merge-objects.json')],
       });
     });
   });
@@ -429,28 +440,34 @@ describe('ConfigLoader', () => {
     });
 
     it('parses .js files and handles babel default exports', () => {
-      fixtures.push(createTempFileInRoot('test-default.js', createJavascriptFile({
-        __esModule: true,
-        default: { name: 'foo' },
-      })));
+      fixtures.push(
+        createTempFileInRoot(
+          'test-default.js',
+          createJavascriptFile({
+            __esModule: true,
+            default: { name: 'foo' },
+          }),
+        ),
+      );
 
       expect(loader.parseFile(getFixturePath('app', 'test-default.js'))).toEqual({ name: 'foo' });
     });
 
     it('parses .js files that return functions', () => {
-      fixtures.push(createTempFileInRoot(
-        'test-func.js',
-        'module.exports = () => { return { name: "foo" }; };',
-      ));
+      fixtures.push(
+        createTempFileInRoot('test-func.js', 'module.exports = () => { return { name: "foo" }; };'),
+      );
 
       expect(loader.parseFile(getFixturePath('app', 'test-func.js'))).toEqual({ name: 'foo' });
     });
 
     it('parses .js files that return functions with options passed', () => {
-      fixtures.push(createTempFileInRoot(
-        'test-func-opts.js',
-        'module.exports = opts => Object.assign({ name: "foo" }, opts);',
-      ));
+      fixtures.push(
+        createTempFileInRoot(
+          'test-func-opts.js',
+          'module.exports = opts => Object.assign({ name: "foo" }, opts);',
+        ),
+      );
 
       expect(loader.parseFile(getFixturePath('app', 'test-func-opts.js'), { version: 1 })).toEqual({
         name: 'foo',
@@ -463,9 +480,7 @@ describe('ConfigLoader', () => {
     it('errors if `extends` value is not a string', () => {
       expect(() => {
         loader.resolveExtendPaths([123]);
-      }).toThrowError(
-        'Invalid `extends` configuration value. Must be an array of strings.',
-      );
+      }).toThrowError('Invalid `extends` configuration value. Must be an array of strings.');
     });
 
     it('errors for an invalid extend path', () => {
@@ -534,18 +549,21 @@ describe('ConfigLoader', () => {
 
   describe('resolveModuleConfigPath()', () => {
     it('returns file path with correct naming', () => {
-      expect(loader.resolveModuleConfigPath('foo', 'bar'))
-        .toBe(getModulePath('bar', 'configs/foo.js'));
+      expect(loader.resolveModuleConfigPath('foo', 'bar')).toBe(
+        getModulePath('bar', 'configs/foo.js'),
+      );
     });
 
     it('can flag as preset', () => {
-      expect(loader.resolveModuleConfigPath('foo', 'bar', true))
-        .toBe(getModulePath('bar', 'configs/foo.preset.js'));
+      expect(loader.resolveModuleConfigPath('foo', 'bar', true)).toBe(
+        getModulePath('bar', 'configs/foo.preset.js'),
+      );
     });
 
     it('can change the extension', () => {
-      expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json'))
-        .toBe(getModulePath('bar', 'configs/foo.preset.json'));
+      expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json')).toBe(
+        getModulePath('bar', 'configs/foo.preset.json'),
+      );
     });
   });
 });

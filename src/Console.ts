@@ -79,11 +79,11 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
     process
       .on('SIGINT', signalHandler)
       .on('SIGTERM', signalHandler)
-      .on('uncaughtException', (error) => {
+      .on('uncaughtException', error => {
         this.debug(chalk.yellow('Uncaught exception detected!'));
         this.exit(error);
       })
-      .on('unhandledRejection', (error) => {
+      .on('unhandledRejection', error => {
         this.debug(chalk.yellow('Unhandled promise rejection detected!'));
         this.exit(error);
       });
@@ -114,7 +114,7 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
 
     // Null messages are always successful
     if (message !== null) {
-      const error = (message instanceof Error) ? message : new ExitError(message, code);
+      const error = message instanceof Error ? message : new ExitError(message, code);
 
       if (error instanceof ExitError && typeof error.code === 'number') {
         errorCode = error.code;

@@ -48,9 +48,15 @@ describe('Emitter', () => {
     it('executes listeners in order', () => {
       let output = '';
 
-      emitter.on('foo', () => { output += 'A'; });
-      emitter.on('foo', () => { output += 'B'; });
-      emitter.on('foo', () => { output += 'C'; });
+      emitter.on('foo', () => {
+        output += 'A';
+      });
+      emitter.on('foo', () => {
+        output += 'B';
+      });
+      emitter.on('foo', () => {
+        output += 'C';
+      });
       emitter.emit('foo');
 
       expect(output).toBe('ABC');
@@ -59,25 +65,33 @@ describe('Emitter', () => {
     it('executes listeners syncronously with arguments', () => {
       const output = [];
 
-      emitter.on('foo', (event, a, b) => { output.push(a, b * 2); });
-      emitter.on('foo', (event, a, b) => { output.push(a * 3, b * 4); });
-      emitter.on('foo', (event, a, b) => { output.push(a * 5, b * 6); });
+      emitter.on('foo', (event, a, b) => {
+        output.push(a, b * 2);
+      });
+      emitter.on('foo', (event, a, b) => {
+        output.push(a * 3, b * 4);
+      });
+      emitter.on('foo', (event, a, b) => {
+        output.push(a * 5, b * 6);
+      });
       emitter.emit('foo', [2, 3]);
 
-      expect(output).toEqual([
-        2,
-        6,
-        6,
-        12,
-        10,
-        18,
-      ]);
+      expect(output).toEqual([2, 6, 6, 12, 10, 18]);
     });
 
     it('executes listeners syncronously while passing values to each', () => {
-      emitter.on('foo', (event) => { event.value = event.value.toUpperCase(); });
-      emitter.on('foo', (event) => { event.value = event.value.split('').reverse().join(''); });
-      emitter.on('foo', (event) => { event.value = `${event.value}-${event.value}`; });
+      emitter.on('foo', event => {
+        event.value = event.value.toUpperCase();
+      });
+      emitter.on('foo', event => {
+        event.value = event.value
+          .split('')
+          .reverse()
+          .join('');
+      });
+      emitter.on('foo', event => {
+        event.value = `${event.value}-${event.value}`;
+      });
 
       const event = emitter.emit('foo', [], 'foo');
 
@@ -85,25 +99,33 @@ describe('Emitter', () => {
     });
 
     it('executes listeners syncronously with arguments while passing values to each', () => {
-      emitter.on('foo', (event, a, b, c) => { event.value.push(a.repeat(3)); });
-      emitter.on('foo', (event, a, b, c) => { event.value.push(b.repeat(2)); });
-      emitter.on('foo', (event, a, b, c) => { event.value.push(c.repeat(1)); });
+      emitter.on('foo', (event, a, b, c) => {
+        event.value.push(a.repeat(3));
+      });
+      emitter.on('foo', (event, a, b, c) => {
+        event.value.push(b.repeat(2));
+      });
+      emitter.on('foo', (event, a, b, c) => {
+        event.value.push(c.repeat(1));
+      });
 
       const event = emitter.emit('foo', ['foo', 'bar', 'baz'], []);
 
-      expect(event.value).toEqual([
-        'foofoofoo',
-        'barbar',
-        'baz',
-      ]);
+      expect(event.value).toEqual(['foofoofoo', 'barbar', 'baz']);
     });
 
     it('execution can be stopped', () => {
       let count = 0;
 
-      emitter.on('foo', () => { count += 1; });
-      emitter.on('foo', (event) => { event.stop(); });
-      emitter.on('foo', () => { count += 1; });
+      emitter.on('foo', () => {
+        count += 1;
+      });
+      emitter.on('foo', event => {
+        event.stop();
+      });
+      emitter.on('foo', () => {
+        count += 1;
+      });
       emitter.emit('foo');
 
       expect(count).toBe(1);
@@ -112,7 +134,9 @@ describe('Emitter', () => {
     it('passes event to listeners', () => {
       let event;
 
-      emitter.on('foo', (e) => { event = e; });
+      emitter.on('foo', e => {
+        event = e;
+      });
       emitter.emit('foo');
 
       const actualEvent = new Event('foo');
@@ -125,16 +149,24 @@ describe('Emitter', () => {
       const baseArgs = [1, 2, 3];
       let args;
 
-      emitter.on('foo', (event, ...eventArgs) => { args = eventArgs; });
+      emitter.on('foo', (event, ...eventArgs) => {
+        args = eventArgs;
+      });
       emitter.emit('foo', baseArgs);
 
       expect(args).toEqual(baseArgs);
     });
 
     it('passes value by modifying event object', () => {
-      emitter.on('foo', (event) => { event.value += 1; });
-      emitter.on('foo', (event) => { event.value += 1; });
-      emitter.on('foo', (event) => { event.value += 1; });
+      emitter.on('foo', event => {
+        event.value += 1;
+      });
+      emitter.on('foo', event => {
+        event.value += 1;
+      });
+      emitter.on('foo', event => {
+        event.value += 1;
+      });
 
       const event = emitter.emit('foo', [], 0);
 
@@ -160,9 +192,15 @@ describe('Emitter', () => {
       it('executes listeners in order', () => {
         let output = '';
 
-        emitter.on('ns.foo', () => { output += 'A'; });
-        emitter.on('ns.foo', () => { output += 'B'; });
-        emitter.on('ns.foo', () => { output += 'C'; });
+        emitter.on('ns.foo', () => {
+          output += 'A';
+        });
+        emitter.on('ns.foo', () => {
+          output += 'B';
+        });
+        emitter.on('ns.foo', () => {
+          output += 'C';
+        });
         emitter.emit('foo');
 
         expect(output).toBe('ABC');
@@ -178,9 +216,18 @@ describe('Emitter', () => {
     it('executes listeners in order', () => {
       let output = '';
 
-      emitter.on('foo', (event) => { output += 'A'; event.next(); });
-      emitter.on('foo', (event) => { output += 'B'; event.next(); });
-      emitter.on('foo', (event) => { output += 'C'; event.next(); });
+      emitter.on('foo', event => {
+        output += 'A';
+        event.next();
+      });
+      emitter.on('foo', event => {
+        output += 'B';
+        event.next();
+      });
+      emitter.on('foo', event => {
+        output += 'C';
+        event.next();
+      });
       emitter.emitCascade('foo');
 
       expect(output).toBe('ABC');
@@ -189,33 +236,38 @@ describe('Emitter', () => {
     it('executes listeners asyncronously with arguments', () => {
       const output = [];
 
-      emitter.on('foo', (event, a, b) => { output.push(a, b * 2); event.next(); });
-      emitter.on('foo', (event, a, b) => { output.push(a * 3, b * 4); event.next(); });
-      emitter.on('foo', (event, a, b) => { output.push(a * 5, b * 6); event.next(); });
+      emitter.on('foo', (event, a, b) => {
+        output.push(a, b * 2);
+        event.next();
+      });
+      emitter.on('foo', (event, a, b) => {
+        output.push(a * 3, b * 4);
+        event.next();
+      });
+      emitter.on('foo', (event, a, b) => {
+        output.push(a * 5, b * 6);
+        event.next();
+      });
       emitter.emitCascade('foo', [2, 3]);
 
-      expect(output).toEqual([
-        2,
-        6,
-        6,
-        12,
-        10,
-        18,
-      ]);
+      expect(output).toEqual([2, 6, 6, 12, 10, 18]);
     });
 
     it('executes listeners asyncronously while passing values to each', () => {
-      emitter.on('foo', (event) => {
+      emitter.on('foo', event => {
         event.value = event.value.toUpperCase();
         event.next();
       });
 
-      emitter.on('foo', (event) => {
-        event.value = event.value.split('').reverse().join('');
+      emitter.on('foo', event => {
+        event.value = event.value
+          .split('')
+          .reverse()
+          .join('');
         event.next();
       });
 
-      emitter.on('foo', (event) => {
+      emitter.on('foo', event => {
         event.value = `${event.value}-${event.value}`;
         event.next();
       });
@@ -226,25 +278,39 @@ describe('Emitter', () => {
     });
 
     it('executes listeners syncronously with arguments while passing values to each', () => {
-      emitter.on('foo', (event, a, b, c) => { event.value.push(a.repeat(3)); event.next(); });
-      emitter.on('foo', (event, a, b, c) => { event.value.push(b.repeat(2)); event.next(); });
-      emitter.on('foo', (event, a, b, c) => { event.value.push(c.repeat(1)); event.next(); });
+      emitter.on('foo', (event, a, b, c) => {
+        event.value.push(a.repeat(3));
+        event.next();
+      });
+      emitter.on('foo', (event, a, b, c) => {
+        event.value.push(b.repeat(2));
+        event.next();
+      });
+      emitter.on('foo', (event, a, b, c) => {
+        event.value.push(c.repeat(1));
+        event.next();
+      });
 
       const event = emitter.emitCascade('foo', ['foo', 'bar', 'baz'], []);
 
-      expect(event.value).toEqual([
-        'foofoofoo',
-        'barbar',
-        'baz',
-      ]);
+      expect(event.value).toEqual(['foofoofoo', 'barbar', 'baz']);
     });
 
     it('execution can be stopped with stop', () => {
       let count = 0;
 
-      emitter.on('foo', (event) => { count += 1; event.next(); });
-      emitter.on('foo', (event) => { event.stop(); event.next(); });
-      emitter.on('foo', (event) => { count += 1; event.next(); });
+      emitter.on('foo', event => {
+        count += 1;
+        event.next();
+      });
+      emitter.on('foo', event => {
+        event.stop();
+        event.next();
+      });
+      emitter.on('foo', event => {
+        count += 1;
+        event.next();
+      });
       emitter.emitCascade('foo');
 
       expect(count).toBe(1);
@@ -253,9 +319,17 @@ describe('Emitter', () => {
     it('execution can be stopped by not calling next', () => {
       let count = 0;
 
-      emitter.on('foo', (event) => { count += 1; event.next(); });
-      emitter.on('foo', (event) => { count += 1; });
-      emitter.on('foo', (event) => { count += 1; event.next(); });
+      emitter.on('foo', event => {
+        count += 1;
+        event.next();
+      });
+      emitter.on('foo', event => {
+        count += 1;
+      });
+      emitter.on('foo', event => {
+        count += 1;
+        event.next();
+      });
       emitter.emitCascade('foo');
 
       expect(count).toBe(2);
@@ -264,7 +338,10 @@ describe('Emitter', () => {
     it('passes event to listeners', () => {
       let event;
 
-      emitter.on('foo', (e) => { event = e; event.next(); });
+      emitter.on('foo', e => {
+        event = e;
+        event.next();
+      });
       emitter.emitCascade('foo');
 
       const actualEvent = new Event('foo');
@@ -279,16 +356,28 @@ describe('Emitter', () => {
       const baseArgs = [1, 2, 3];
       let args;
 
-      emitter.on('foo', (event, ...eventArgs) => { args = eventArgs; event.next(); });
+      emitter.on('foo', (event, ...eventArgs) => {
+        args = eventArgs;
+        event.next();
+      });
       emitter.emitCascade('foo', baseArgs);
 
       expect(args).toEqual(baseArgs);
     });
 
     it('passes value by modifying event object', () => {
-      emitter.on('foo', (event) => { event.value += 1; event.next(); });
-      emitter.on('foo', (event) => { event.value += 1; event.next(); });
-      emitter.on('foo', (event) => { event.value += 1; event.next(); });
+      emitter.on('foo', event => {
+        event.value += 1;
+        event.next();
+      });
+      emitter.on('foo', event => {
+        event.value += 1;
+        event.next();
+      });
+      emitter.on('foo', event => {
+        event.value += 1;
+        event.next();
+      });
 
       const event = emitter.emitCascade('foo', [], 0);
 
@@ -314,9 +403,18 @@ describe('Emitter', () => {
       it('executes listeners in order', () => {
         let output = '';
 
-        emitter.on('ns.foo', (event) => { output += 'A'; event.next(); });
-        emitter.on('ns.foo', (event) => { output += 'B'; event.next(); });
-        emitter.on('ns.foo', (event) => { output += 'C'; event.next(); });
+        emitter.on('ns.foo', event => {
+          output += 'A';
+          event.next();
+        });
+        emitter.on('ns.foo', event => {
+          output += 'B';
+          event.next();
+        });
+        emitter.on('ns.foo', event => {
+          output += 'C';
+          event.next();
+        });
         emitter.emitCascade('foo');
 
         expect(output).toBe('ABC');
@@ -337,8 +435,9 @@ describe('Emitter', () => {
 
   describe('getListeners()', () => {
     it('errors if name contains invalid characters', () => {
-      expect(() => emitter.getListeners('foo+bar'))
-        .toThrowError('Invalid event name "foo+bar". May only contain dashes, periods, and lowercase characters.');
+      expect(() => emitter.getListeners('foo+bar')).toThrowError(
+        'Invalid event name "foo+bar". May only contain dashes, periods, and lowercase characters.',
+      );
     });
 
     it('creates the listeners set if it does not exist', () => {
