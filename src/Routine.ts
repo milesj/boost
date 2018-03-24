@@ -5,7 +5,7 @@
 
 import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
-import execa, { Options as ExecaOptions, ExecaReturns } from 'execa';
+import execa, { Options as ExecaOptions, SyncOptions as ExecaSyncOptions, ExecaChildProcess, ExecaReturns } from 'execa';
 import split from 'split';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
@@ -14,7 +14,7 @@ import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
 import { Context, TaskAction } from './types';
 
-interface CommandOptions {
+export interface CommandOptions {
   sync?: boolean;
 }
 
@@ -82,15 +82,16 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
   executeCommand(
     command: string,
     args: string[],
-    options: ExecaOptions & CommandOptions = {},
-    callback: ((process: ChildProcess) => void) | null = null,
+    options: (ExecaOptions | ExecaSyncOptions) & CommandOptions = {},
+    callback: ((process: ExecaChildProcess) => void) | null = null,
   ): Promise<ExecaReturns> {
     const stream = options.sync
-      ? execa.sync(command, args, options)
+      ? execa.sync(command, args, options as ExecaSyncOptions)
       : execa(command, args, options);
 
     // Push chunks to the reporter
     if (!options.sync) {
+      // @ts-ignore Not defined by execa
       stream.stdout.pipe(split()).on('data', (line: string) => {
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
@@ -100,7 +101,7 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
 
     // Allow consumer to wrap functionality
     if (typeof callback === 'function') {
-      callback(stream);
+      callback(stream as ExecaChildProcess);
     }
 
     return this.wrap(stream);
@@ -205,7 +206,7 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
   /**
    * Define an individual task.
    */
-  task<C extends object>(title: string, action: TaskAction<Tx>, config?: C): TaskInterface {
+  task(title: string, action: TaskAction<Tx>, config?: object): TaskInterface {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

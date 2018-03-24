@@ -54,8 +54,12 @@
     "@types/chalk": "^2.2.0",
     "@types/execa": "^0.9.0",
     "@types/figures": "^2.0.0",
+    "@types/glob": "^5.0.35",
+    "@types/json5": "^0.0.29",
     "@types/lodash": "^4.14.106",
     "@types/log-update": "^2.0.0",
+    "@types/pluralize": "^0.0.28",
+    "@types/split": "^0.3.28",
     "fs-extra": "^5.0.0"
   },
   "beemo": {

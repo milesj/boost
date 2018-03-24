@@ -17,6 +17,7 @@ export interface ConsoleInterface {
   error(message: string): void;
   exit(message: string | Error | null, code: number): void;
   log(message: string): void;
+  start(tasks: TaskInterface[]): void;
   startDebugGroup(group: string): void;
   stopDebugGroup(): void;
   update(): void;

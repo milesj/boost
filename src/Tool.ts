@@ -31,6 +31,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
+  // @ts-ignore Set after instantiation
   configLoader: ConfigLoader;
 
   console: ConsoleInterface;
@@ -41,6 +42,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
   package: PackageConfig = { name: '' };
 
+  // @ts-ignore Set after instantiation
   pluginLoader: ModuleLoader<Tp>;
 
   plugins: Tp[] = [];

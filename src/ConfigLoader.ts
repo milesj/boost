@@ -11,24 +11,23 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import Config, { array, bool, shape, string, union } from 'optimal';
+import optimal, { array, bool, shape, string, union, Options } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
+import { ToolInterface } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-
-import type { ToolConfig, PackageConfig, ConfigStruct, OptionsStruct } from './types';
-import type Tool from './Tool';
+import { Config, ToolConfig, PackageConfig } from './types';
 
 export default class ConfigLoader {
-  package: PackageConfig;
+  package: PackageConfig = { name: '' };
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: Tool<*, *>;
+  tool: ToolInterface;
 
-  constructor(tool: Tool<*, *>) {
+  constructor(tool: ToolInterface) {
     this.tool = tool;
   }
 
@@ -36,14 +35,12 @@ export default class ConfigLoader {
    * Handle special cases when merging 2 configuration values.
    * If the target and source are both arrays, concatenate them.
    */
-  handleMerge(target: *, source: *): * {
+  handleMerge(target: any, source: any): any {
     if (Array.isArray(target) && Array.isArray(source)) {
-      return [
-        ...new Set([
-          ...target,
-          ...source,
-        ]),
-      ];
+      return Array.from(new Set([
+        ...target,
+        ...source,
+      ]));
     }
 
     // Defer to lodash
@@ -113,11 +110,11 @@ export default class ConfigLoader {
 
       [config] = filePaths;
 
-      this.tool.debug(`Found ${path.basename(config)}`);
+      this.tool.debug(`Found ${path.basename(String(config))}`);
     }
 
     // Parse and extend configuration
-    return new Config(this.parseAndExtend(config), {
+    return optimal(this.parseAndExtend(config), {
       ...configBlueprint,
       debug: bool(),
       extends: array(string()),
@@ -150,7 +147,7 @@ export default class ConfigLoader {
       );
     }
 
-    this.package = new Config(this.parseFile(filePath), {
+    this.package = optimal(this.parseFile(filePath), {
       name: string(),
     }, {
       name: 'ConfigLoader',
@@ -165,7 +162,7 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: string | ConfigStruct): ConfigStruct {
+  parseAndExtend(fileOrConfig: string | Config): Config {
     let config;
     let baseDir = '';
 
@@ -224,7 +221,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, options?: OptionsStruct = {}): ConfigStruct {
+  parseFile(filePath: string, options: Options = {}): Config {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value;
@@ -267,7 +264,7 @@ export default class ConfigLoader {
    *  - Strings that match a node module name should resolve to a config file relative to the CWD.
    *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
-  resolveExtendPaths(extendPaths: string[], baseDir?: string = ''): string[] {
+  resolveExtendPaths(extendPaths: string[], baseDir: string = ''): string[] {
     return extendPaths.map((extendPath) => {
       if (typeof extendPath !== 'string') {
         throw new TypeError('Invalid `extends` configuration value. Must be an array of strings.');
@@ -311,8 +308,8 @@ export default class ConfigLoader {
   resolveModuleConfigPath(
     appName: string,
     moduleName: string,
-    preset?: boolean = false,
-    ext?: string = 'js',
+    preset: boolean = false,
+    ext: string = 'js',
   ): string {
     const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
     const { configFolder } = this.tool.options;

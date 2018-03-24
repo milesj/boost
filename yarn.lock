@@ -130,6 +130,10 @@
     "@types/cheerio" "*"
     "@types/react" "*"
 
+"@types/events@*":
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
+
 "@types/execa@^0.9.0":
   version "0.9.0"
   resolved "https://registry.npmjs.org/@types/execa/-/execa-0.9.0.tgz#9b025d2755f17e80beaf9368c3f4f319d8b0fb93"
@@ -140,9 +144,21 @@
   version "2.0.0"
   resolved "https://registry.npmjs.org/@types/figures/-/figures-2.0.0.tgz#e624a9ad71db49b9c8b9bbd59fe1ad04c443913c"
 
+"@types/glob@^5.0.35":
+  version "5.0.35"
+  resolved "https://registry.npmjs.org/@types/glob/-/glob-5.0.35.tgz#1ae151c802cece940443b5ac246925c85189f32a"
+  dependencies:
+    "@types/events" "*"
+    "@types/minimatch" "*"
+    "@types/node" "*"
+
 "@types/jest@^22.2.2":
   version "22.2.2"
   resolved "https://registry.npmjs.org/@types/jest/-/jest-22.2.2.tgz#afe5dacbd00d65325f52da0ed3e76e259629ac9d"
+
+"@types/json5@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
 
 "@types/lodash@^4.14.106":
   version "4.14.106"
@@ -154,6 +170,10 @@
   dependencies:
     "@types/node" "*"
 
+"@types/minimatch@*":
+  version "3.0.3"
+  resolved "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
+
 "@types/node@*":
   version "8.0.53"
   resolved "https://registry.npmjs.org/@types/node/-/node-8.0.53.tgz#396b35af826fa66aad472c8cb7b8d5e277f4e6d8"
@@ -162,9 +182,19 @@
   version "9.6.0"
   resolved "https://registry.npmjs.org/@types/node/-/node-9.6.0.tgz#d3480ee666df9784b1001a1872a2f6ccefb6c2d7"
 
+"@types/pluralize@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.npmjs.org/@types/pluralize/-/pluralize-0.0.28.tgz#daf46f90fdaa6172600bfeac81e46065177f03ea"
+
 "@types/react@*", "@types/react@^16.0.40":
   version "16.0.40"
   resolved "https://registry.npmjs.org/@types/react/-/react-16.0.40.tgz#caabc2296886f40b67f6fc80f0f3464476461df9"
+
+"@types/split@^0.3.28":
+  version "0.3.28"
+  resolved "https://registry.npmjs.org/@types/split/-/split-0.3.28.tgz#66d0361dbd9715b093d6b27a4c9985daadccc9ec"
+  dependencies:
+    "@types/node" "*"
 
 JSONStream@~1.3.1:
   version "1.3.2"

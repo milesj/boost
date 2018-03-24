@@ -14,6 +14,8 @@ export interface Context {
   [key: string]: any;
 }
 
+export interface Config extends Options {}
+
 export interface ConsoleOptions extends Options {
   debug: boolean,
   footer: string,
@@ -21,7 +23,7 @@ export interface ConsoleOptions extends Options {
   silent: boolean,
 };
 
-export interface ToolConfig extends Options {
+export interface ToolConfig extends Config {
   debug: boolean,
   extends: string | string[],
   plugins: string[],
@@ -42,7 +44,7 @@ export interface ToolOptions extends Options {
   scoped: boolean,
 };
 
-export interface PackageConfig {
+export interface PackageConfig extends Config {
   name: string,
 }
 
