@@ -6,7 +6,7 @@
 import chalk from 'chalk';
 import optimal, { bool, string } from 'optimal';
 import ExitError from './ExitError';
-import Task from './Task';
+import { TaskInterface } from './Task';
 import { ReporterInterface } from './Reporter';
 import { ConsoleOptions, Partial } from './types';
 
@@ -15,10 +15,11 @@ export interface ConsoleInterface {
   reporter: ReporterInterface;
   debug(message: string): void;
   error(message: string): void;
-  exit(message: string): void;
+  exit(message: string | Error | null, code: number): void;
   log(message: string): void;
   startDebugGroup(group: string): void;
   stopDebugGroup(): void;
+  update(): void;
 }
 
 export const DEBUG_COLORS: string[] = [
@@ -149,7 +150,7 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
   /**
    * Start a new console and begin rendering.
    */
-  start(tasks: Task<object, object>[] = []) {
+  start(tasks: TaskInterface[] = []) {
     const { debugs, errors, logs } = this;
 
     this.reporter.start(() => ({

@@ -5,7 +5,7 @@
 
 import chalk from 'chalk';
 import pluralize from 'pluralize';
-import Options, { bool, object, string } from 'optimal';
+import optimal, { bool, object, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Console, { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
@@ -14,16 +14,20 @@ import Plugin, { PluginInterface } from './Plugin';
 import Reporter, { ReporterInterface } from './Reporter';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { ToolConfig, ToolOptions, PackageConfig } from './types';
+import { ToolConfig, ToolOptions, PackageConfig, Partial } from './types';
 
 export interface ToolInterface extends EmitterInterface {
+  argv: string[];
+  config: ToolConfig;
   console: ConsoleInterface;
   options: ToolOptions;
+  package: PackageConfig;
+  plugins: PluginInterface[];
   debug(message: string): this;
 }
 
 export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter implements ToolInterface {
-  argv: string[];
+  argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
@@ -35,17 +39,17 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
   options: ToolOptions;
 
-  package: PackageConfig;
+  package: PackageConfig = { name: '' };
 
   pluginLoader: ModuleLoader<Tp>;
 
   plugins: Tp[] = [];
 
-  constructor({ footer, header, ...options }: $Shape<ToolOptions>, argv: string[] = []) {
+  constructor({ footer, header, ...options }: Partial<ToolOptions>, argv: string[] = []) {
     super();
 
     this.argv = argv;
-    this.options = new Options(options, {
+    this.options = optimal(options, {
       appName: string().required(),
       configBlueprint: object(),
       configFolder: string('./configs'),

@@ -8,8 +8,9 @@
 import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';
-import Module from './Module';
-import Task from './Task';
+import { Options } from 'optimal';
+import Module, { ModuleInterface } from './Module';
+import { TaskInterface } from './Task';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -22,14 +23,14 @@ import { ReportLoader } from './types';
 export const REFRESH_RATE: number = 100;
 export const CURSOR: string = '\x1B[?25h'; // eslint-disable-line unicorn/no-hex-escape
 
-export interface ReporterInterface {
+export interface ReporterInterface extends ModuleInterface {
   render(code: number): string;
   start(loader: ReportLoader): this;
   stop(): this;
   update(): this;
 }
 
-export default class Reporter<To extends object> extends Module<To> implements ReporterInterface {
+export default class Reporter<To extends Options> extends Module<To> implements ReporterInterface {
   instance: Timer = 0;
 
   loader: ReportLoader | null = null;
@@ -120,7 +121,7 @@ export default class Reporter<To extends object> extends Module<To> implements R
    * Render a single task including its title and status.
    * If sub-tasks or sub-routines exist, render them recursively.
    */
-  renderTask(task: UntypedTask, level: number = 0, suffix: string = ''): string[] {
+  renderTask(task: TaskInterface, level: number = 0, suffix: string = ''): string[] {
     const output: string[] = [];
 
     // Generate the message row
@@ -140,9 +141,9 @@ export default class Reporter<To extends object> extends Module<To> implements R
 
     // Show only one sub-task at a time
     if (task.subtasks.length > 0) {
-      let pendingTask: UntypedTask | null = null;
-      let runningTask: UntypedTask | null = null;
-      let failedTask: UntypedTask | null = null;
+      let pendingTask: TaskInterface | null = null;
+      let runningTask: TaskInterface | null = null;
+      let failedTask: TaskInterface | null = null;
       let passed = 0;
 
       task.subtasks.forEach((subTask) => {
@@ -187,7 +188,7 @@ export default class Reporter<To extends object> extends Module<To> implements R
   /**
    * Render a status symbol for a task.
    */
-  renderStatus(task: UntypedTask): string {
+  renderStatus(task: TaskInterface): string {
     switch (task.status) {
       case STATUS_PENDING:
         return chalk.gray(figures.bullet);

@@ -3,20 +3,23 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Module from './Module';
+import { Options } from 'optimal';
+import Module, { ModuleInterface } from './Module';
 import { ToolInterface } from './Tool';
 
 export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
-export interface PluginInterface {
+export interface PluginInterface extends ModuleInterface {
+  priority: number;
   tool: ToolInterface;
   bootstrap(): void;
 }
 
-export default class Plugin<To extends object> extends Module<To> {
+export default class Plugin<To extends Options> extends Module<To> implements PluginInterface {
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
-  tool: ToolInterface | null = null;
+  // @ts-ignore Set after instantiation
+  tool: ToolInterface;
 
   bootstrap() {}
 }

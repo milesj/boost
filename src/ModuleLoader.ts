@@ -6,20 +6,23 @@
 import chalk from 'chalk';
 import path from 'path';
 import upperFirst from 'lodash/upperFirst';
+import { Options } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
-import Tool from './Tool';
-import { OptionsStruct } from './types';
+import { ModuleInterface } from './Module';
+import { ToolInterface } from './Tool';
 
-export default class ModuleLoader<Tm> {
-  classReference: Function;
+export type Constructor<T> = new (...args: any[]) => T;
 
-  tool: Tool<object, object>;
+export default class ModuleLoader<Tm extends ModuleInterface> {
+  classReference: Constructor<Tm>;
+
+  tool: ToolInterface;
 
   typeName: string;
 
-  constructor(tool: Tool<object, object>, typeName: string, classReference: Function) {
+  constructor(tool: ToolInterface, typeName: string, classReference: Constructor<Tm>) {
     this.classReference = classReference;
     this.tool = tool;
     this.typeName = typeName;
@@ -31,14 +34,14 @@ export default class ModuleLoader<Tm> {
    * Import a class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importModule(name: string, options: OptionsStruct = {}): Tm {
+  importModule(name: string, options: Options = {}): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
     // Determine modules to attempt to load
     const modulesToAttempt = [];
     let isFilePath = false;
-    let importedModule = null;
+    let importedModule: any = null;
     let moduleName;
 
     // File path
@@ -91,7 +94,7 @@ export default class ModuleLoader<Tm> {
       );
     }
 
-    const ModuleClass = importedModule;
+    const ModuleClass = importedModule as Constructor<Tm>;
     const module = new ModuleClass(options);
 
     if (!(module instanceof this.classReference)) {
@@ -115,7 +118,7 @@ export default class ModuleLoader<Tm> {
    * If loading from an object, extract the module name and use the remaining object
    * as options for the class instance.
    */
-  importModuleFromOptions(baseOptions: OptionsStruct): Tm {
+  importModuleFromOptions(baseOptions: Options): Tm {
     const { typeName } = this;
     const options = { ...baseOptions };
     const module = options[typeName];
@@ -136,7 +139,7 @@ export default class ModuleLoader<Tm> {
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModule(module: string | OptionsStruct | Tm): Tm {
+  loadModule(module: string | Options | Tm): Tm {
     if (module instanceof this.classReference) {
       return module;
 
@@ -155,7 +158,7 @@ export default class ModuleLoader<Tm> {
   /**
    * Load multiple modules.
    */
-  loadModules(modules: (string | OptionsStruct | Tm)[] = []): Tm[] {
+  loadModules(modules: (string | Options | Tm)[] = []): Tm[] {
     return modules.map(module => this.loadModule(module));
   }
 }

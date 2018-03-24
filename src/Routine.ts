@@ -5,25 +5,26 @@
 
 import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
-import execa, { Options as ExecaOptions } from 'execa';
+import execa, { Options as ExecaOptions, ExecaReturns } from 'execa';
 import split from 'split';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
-import Task from './Task';
-import Tool from './Tool';
+import Task, { TaskInterface } from './Task';
+import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { TaskAction } from './types';
+import { Context, TaskAction } from './types';
 
 interface CommandOptions {
   sync?: boolean;
 }
 
-export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
+export default class Routine<Tc extends object, Tx extends Context> extends Task<Tc, Tx> {
   exit: boolean = false;
 
   key: string = '';
 
-  tool: Tool<*, Reporter<*>>;
+  // @ts-ignore Set after instantiation
+  tool: ToolInterface;
 
   constructor(key: string, title: string, defaultConfig?: Tc) {
     super(title, null, defaultConfig);
@@ -83,7 +84,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
     args: string[],
     options: ExecaOptions & CommandOptions = {},
     callback: ((process: ChildProcess) => void) | null = null,
-  ): Promise<*> {
+  ): Promise<ExecaReturns> {
     const stream = options.sync
       ? execa.sync(command, args, options)
       : execa(command, args, options);
@@ -109,7 +110,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask = (value: any, task: Task<*, Tx>): Promise<any> => (
+  executeTask = (value: any, task: TaskInterface): Promise<any> => (
     this.wrap(task.run(value, this.context))
   );
 
@@ -132,7 +133,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   /**
    * Add a new subroutine within this routine.
    */
-  pipe(routine: Routine<object, Tx>): this {
+  pipe(routine: TaskInterface): this {
     if (routine instanceof Routine) {
       this.subroutines.push(routine.configure(this));
 
@@ -204,7 +205,7 @@ export default class Routine<Tc, Tx> extends Task<Tc, Tx> {
   /**
    * Define an individual task.
    */
-  task<C>(title: string, action: TaskAction<Tx>, config?: C): Task<C, Tx> {
+  task<C extends object>(title: string, action: TaskAction<Tx>, config?: C): TaskInterface {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

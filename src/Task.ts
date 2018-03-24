@@ -11,13 +11,24 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
-import { Status, TaskAction } from './types';
+import { Context, Status, TaskAction } from './types';
 
 export interface TaskInterface {
-
+  status: Status;
+  statusText: string;
+  subroutines: TaskInterface[];
+  subtasks: TaskInterface[]
+  title: string;
+  isPending(): boolean;
+  isRunning(): boolean;
+  isSkipped(): boolean;
+  hasFailed(): boolean;
+  hasPassed(): boolean;
+  run(initialValue: any, context: any): Promise<any>;
+  spinner(): string;
 }
 
-export default class Task<Tc extends object, Tx extends object> implements TaskInterface {
+export default class Task<Tc extends object, Tx extends Context> implements TaskInterface {
   action: TaskAction<Tx> | null = null;
 
   config: Tc;

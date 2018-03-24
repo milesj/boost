@@ -4,11 +4,15 @@
  */
 
 import { Blueprint, Options } from 'optimal';
-import Task from './Task';
+import { TaskInterface } from './Task';
 
 export type Partial<T> = {
   [P in keyof T]?: T[P];
 };
+
+export interface Context {
+  [key: string]: any;
+}
 
 export interface ConsoleOptions extends Options {
   debug: boolean,
@@ -40,8 +44,6 @@ export interface ToolOptions extends Options {
 
 export interface PackageConfig {
   name: string,
-  version: string,
-  // Add others if we need them
 }
 
 export interface ReportParams {
@@ -52,7 +54,7 @@ export interface ReportParams {
   header: string,
   logs: string[],
   silent: boolean,
-  tasks: Task<object, object>[],
+  tasks: TaskInterface[],
 }
 
 export type ReportLoader = () => ReportParams;

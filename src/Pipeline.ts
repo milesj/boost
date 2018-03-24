@@ -6,14 +6,14 @@
 /* eslint-disable promise/always-return */
 
 import Routine from './Routine';
-import Tool from './Tool';
-import Plugin from './Plugin';
+import Tool, { ToolInterface } from './Tool';
+import { PluginInterface } from './Plugin';
 import Reporter from './Reporter';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { ToolConfig } from './types';
+import { Context, ToolConfig } from './types';
 
-export default class Pipeline<Tp extends Plugin<object>, Tx> extends Routine<ToolConfig, Tx> {
-  constructor(tool: Tool<Tp, Reporter<object>>) {
+export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<ToolConfig, Tx> {
+  constructor(tool: ToolInterface) {
     super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
 
     if (tool instanceof Tool) {
