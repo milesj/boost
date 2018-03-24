@@ -5,17 +5,21 @@
   "keywords": [],
   "main": "./lib/index.js",
   "scripts": {
-    "build": "beemo typescript",
+    "babel": "beemo typescript --node",
+    "build": "yarn run babel && yarn run build:dts",
+    "build:dts": "beemo run-script generate-dts",
+    "clean": "rimraf ./{lib,esm}/",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
-    "posttest": "yarn run eslint --silent",
-    "pretest": "yarn run type --silent",
-    "test": "yarn run jest --silent",
-    "postversion": "yarn run build",
+    "package": "yarn run clean && yarn run build && yarn test",
     "prettier": "beemo prettier",
+    "pretest": "yarn run type",
+    "test": "yarn run jest",
+    "posttest": "yarn run eslint",
     "type": "beemo typescript --noEmit",
-    "preversion": "yarn test"
+    "prerelease": "yarn run package",
+    "release": "np --yolo"
   },
   "repository": {
     "type": "git",
@@ -42,7 +46,7 @@
     "json5": "^1.0.1",
     "lodash": "^4.17.5",
     "log-update": "^2.3.0",
-    "optimal": "^0.17.1",
+    "optimal": "^0.17.3",
     "pluralize": "^7.0.0",
     "split": "^1.0.1"
   },
@@ -50,7 +54,7 @@
     "optimal": "^0.16.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.76.2",
+    "@milesj/build-tool-config": "0.78.0",
     "@types/chalk": "^2.2.0",
     "@types/execa": "^0.9.0",
     "@types/figures": "^2.0.0",
