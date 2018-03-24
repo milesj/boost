@@ -18,16 +18,19 @@ export type Constructor<T> = new (...args: any[]) => T;
 export default class ModuleLoader<Tm extends ModuleInterface> {
   classReference: Constructor<Tm>;
 
+  debug: debug.IDebugger;
+
   tool: ToolInterface;
 
   typeName: string;
 
   constructor(tool: ToolInterface, typeName: string, classReference: Constructor<Tm>) {
     this.classReference = classReference;
+    this.debug = tool.createDebugger(`${typeName}-loader`);
     this.tool = tool;
     this.typeName = typeName;
 
-    this.tool.debug(`Using alias ${chalk.green(typeName)}`);
+    this.debug('Using alias %s', chalk.green(typeName));
   }
 
   /**
@@ -46,14 +49,14 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
 
     // File path
     if (name.match(/^\.|\/|\\|[A-Z]:/)) {
-      this.tool.debug(`Locating ${typeName} from path ${chalk.cyan(name)}`);
+      this.debug('Locating %s from path %s', typeName, chalk.cyan(name));
 
       modulesToAttempt.push(path.normalize(name));
       isFilePath = true;
 
       // Module name
     } else {
-      this.tool.debug(`Locating ${typeName} module ${chalk.yellow(name)}`);
+      this.debug('Locating %s module %s', typeName, chalk.yellow(name));
 
       modulesToAttempt.push(formatModuleName(appName, typeName, name, false));
 
@@ -61,7 +64,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
         modulesToAttempt.unshift(formatModuleName(appName, typeName, name, true));
       }
 
-      this.tool.debug(`Resolving in order: ${modulesToAttempt.join(', ')}`);
+      this.debug('Resolving in order: %s', modulesToAttempt.join(', '));
     }
 
     modulesToAttempt.some(modName => {
@@ -99,9 +102,9 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     }
 
     if (isFilePath) {
-      this.tool.debug(`Found with ${chalk.cyan(moduleName)}`);
+      this.debug('Found with %s', chalk.cyan(moduleName));
     } else {
-      this.tool.debug(`Found with ${chalk.yellow(moduleName)}`);
+      this.debug('Found with %s', chalk.yellow(moduleName));
 
       module.name = name;
       module.moduleName = moduleName;

@@ -34,7 +34,6 @@ declare module 'boost/lib/types' {
       [key: string]: any;
   }
   export interface ConsoleOptions extends Options {
-      debug: boolean;
       footer: string;
       header: string;
       silent: boolean;
@@ -62,8 +61,6 @@ declare module 'boost/lib/types' {
       name: string;
   }
   export interface ReportParams {
-      debug: boolean;
-      debugs: string[];
       errors: string[];
       footer: string;
       header: string;
@@ -182,34 +179,25 @@ declare module 'boost/lib/Console' {
   export interface ConsoleInterface {
       options: ConsoleOptions;
       reporter: ReporterInterface;
-      debug(message: string): void;
       error(message: string): void;
       exit(message: string | Error | null, code: number): void;
       log(message: string): void;
       start(tasks: TaskInterface[]): void;
-      startDebugGroup(group: string): void;
-      stopDebugGroup(): void;
       update(): void;
   }
   export const DEBUG_COLORS: string[];
   export default class Console<Tr extends ReporterInterface> implements ConsoleInterface {
-      debugs: string[];
-      debugGroups: string[];
-      debugIndex: number;
       errors: string[];
       interrupted: boolean;
       logs: string[];
       options: ConsoleOptions;
       reporter: Tr;
       constructor(reporter: Tr, options?: Partial<ConsoleOptions>);
-      debug(message: string): void;
       error(message: string): void;
       exit(message: string | Error | null, code?: number): void;
       log(message: string): void;
       start(tasks?: TaskInterface[]): void;
-      startDebugGroup(group: string): void;
       stop(): void;
-      stopDebugGroup(): void;
       update(): void;
   }
 
@@ -253,12 +241,14 @@ declare module 'boost/lib/Emitter' {
 
 }
 declare module 'boost/lib/ModuleLoader' {
+  /// <reference types="debug" />
   import { Options } from 'optimal';
   import { ModuleInterface } from 'boost/lib/Module';
   import { ToolInterface } from 'boost/lib/Tool';
   export type Constructor<T> = new (...args: any[]) => T;
   export default class ModuleLoader<Tm extends ModuleInterface> {
       classReference: Constructor<Tm>;
+      debug: debug.IDebugger;
       tool: ToolInterface;
       typeName: string;
       constructor(tool: ToolInterface, typeName: string, classReference: Constructor<Tm>);
@@ -287,6 +277,8 @@ declare module 'boost/lib/Plugin' {
 
 }
 declare module 'boost/lib/Tool' {
+  /// <reference types="debug" />
+  import debug from 'debug';
   import ConfigLoader from 'boost/lib/ConfigLoader';
   import { ConsoleInterface } from 'boost/lib/Console';
   import Emitter, { EmitterInterface } from 'boost/lib/Emitter';
@@ -298,23 +290,25 @@ declare module 'boost/lib/Tool' {
       argv: string[];
       config: ToolConfig;
       console: ConsoleInterface;
+      debug: debug.IDebugger;
       options: ToolOptions;
       package: PackageConfig;
       plugins: PluginInterface[];
-      debug(message: string): this;
+      createDebugger(...namespaces: string[]): debug.IDebugger;
   }
   export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter implements ToolInterface {
       argv: string[];
       config: ToolConfig;
       configLoader: ConfigLoader;
       console: ConsoleInterface;
+      debug: debug.IDebugger;
       initialized: boolean;
       options: ToolOptions;
       package: PackageConfig;
       pluginLoader: ModuleLoader<Tp>;
       plugins: Tp[];
       constructor({footer, header, ...options}: Partial<ToolOptions>, argv?: string[]);
-      debug(message: string): this;
+      createDebugger(...namespaces: string[]): debug.IDebugger;
       exit(message: string | Error | null, code?: number): this;
       getPlugin(name: string): Tp;
       initialize(): this;
@@ -328,10 +322,12 @@ declare module 'boost/lib/Tool' {
 
 }
 declare module 'boost/lib/ConfigLoader' {
+  /// <reference types="debug" />
   import { Options } from 'optimal';
   import { ToolInterface } from 'boost/lib/Tool';
   import { Config, ToolConfig, PackageConfig } from 'boost/lib/types';
   export default class ConfigLoader {
+      debug: debug.IDebugger;
       package: PackageConfig;
       parsedFiles: {
           [path: string]: boolean;
@@ -349,7 +345,9 @@ declare module 'boost/lib/ConfigLoader' {
 
 }
 declare module 'boost/lib/Routine' {
+  /// <reference types="debug" />
   /// <reference types="execa" />
+  import debug from 'debug';
   import { Options as ExecaOptions, SyncOptions as ExecaSyncOptions, ExecaChildProcess, ExecaReturns } from 'execa';
   import { Options } from 'optimal';
   import Task, { TaskInterface } from 'boost/lib/Task';
@@ -360,6 +358,7 @@ declare module 'boost/lib/Routine' {
   }
   export default class Routine<To extends Options, Tx extends Context> extends Task<To, Tx> {
       exit: boolean;
+      debug: debug.IDebugger;
       key: string;
       tool: ToolInterface;
       constructor(key: string, title: string, options?: To);

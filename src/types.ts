@@ -17,7 +17,6 @@ export interface Config {
 }
 
 export interface ConsoleOptions extends Options {
-  debug: boolean;
   footer: string;
   header: string;
   silent: boolean;
@@ -49,8 +48,6 @@ export interface PackageConfig extends Config {
 }
 
 export interface ReportParams {
-  debug: boolean;
-  debugs: string[];
   errors: string[];
   footer: string;
   header: string;

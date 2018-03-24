@@ -5,6 +5,7 @@
 
 import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
+import debug from 'debug';
 import execa, {
   Options as ExecaOptions,
   SyncOptions as ExecaSyncOptions,
@@ -12,6 +13,7 @@ import execa, {
   ExecaReturns,
 } from 'execa';
 import split from 'split';
+import { Readable } from 'stream';
 import { Options } from 'optimal';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
@@ -26,6 +28,9 @@ export interface CommandOptions {
 
 export default class Routine<To extends Options, Tx extends Context> extends Task<To, Tx> {
   exit: boolean = false;
+
+  // @ts-ignore Set after instantiation
+  debug: debug.IDebugger;
 
   key: string = '';
 
@@ -68,7 +73,9 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
     // Initialize routine (this must be last!)
     this.bootstrap();
 
-    this.tool.debug(`Bootstrapping routine ${chalk.green(this.key)}`);
+    // Custom debug logger for this routine
+    this.debug = this.tool.createDebugger('routine', this.key);
+    this.debug('Bootstrapping routine %s', chalk.green(this.key));
 
     return this;
   }
@@ -97,8 +104,9 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
 
     // Push chunks to the reporter
     if (!options.sync) {
-      // @ts-ignore Not defined by execa
-      stream.stdout.pipe(split()).on('data', (line: string) => {
+      const out = stream.stdout as Readable;
+
+      out.pipe(split()).on('data', (line: string) => {
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
         }
@@ -153,27 +161,21 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
    * Trigger processes before and after execution.
    */
   run(value: any, context: Tx): Promise<any> {
-    const { console: cli } = this.tool;
-
     if (this.exit) {
       return Promise.reject(new ExitError('Process has been interrupted.'));
     }
 
-    this.tool.debug(`Executing routine ${chalk.green(this.key)}`);
-
-    cli.startDebugGroup(this.key);
+    this.debug('Executing routine %s', chalk.green(this.key));
 
     return super
       .run(value, context)
       .then(result => {
-        cli.stopDebugGroup();
-        cli.update();
+        this.tool.console.update();
 
         return result;
       })
       .catch(error => {
-        cli.stopDebugGroup();
-        cli.update();
+        this.tool.console.update();
 
         throw error;
       });

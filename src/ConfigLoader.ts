@@ -21,6 +21,8 @@ import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { Config, ToolConfig, PackageConfig } from './types';
 
 export default class ConfigLoader {
+  debug: debug.IDebugger;
+
   package: PackageConfig = { name: '' };
 
   parsedFiles: { [path: string]: boolean } = {};
@@ -28,6 +30,7 @@ export default class ConfigLoader {
   tool: ToolInterface;
 
   constructor(tool: ToolInterface) {
+    this.debug = tool.createDebugger(`config-loader`);
     this.tool = tool;
   }
 
@@ -59,13 +62,13 @@ export default class ConfigLoader {
     const camelName = camelCase(appName);
     let config = {};
 
-    this.tool.debug('Locating configuration');
+    this.debug('Locating configuration');
 
     // Config has been defined in package.json
     if (this.package[camelName]) {
       config = this.package[camelName];
 
-      this.tool.debug(`Found in package.json under "${camelName}" property`);
+      this.debug('Found in package.json under "%s" property', camelName);
 
       // Extend from a preset if a string
       if (typeof config === 'string') {
@@ -84,7 +87,7 @@ export default class ConfigLoader {
         path.join(configFolder, `${appName}.json5`),
       ];
 
-      this.tool.debug(`Resolving in order: ${fileNames.join(', ')}`);
+      this.debug('Resolving in order: %s', fileNames.join(', '));
 
       if (filePaths.length === 0) {
         throw new Error(
@@ -97,7 +100,7 @@ export default class ConfigLoader {
 
       [config] = filePaths;
 
-      this.tool.debug(`Found ${path.basename(String(config))}`);
+      this.debug('Found %s', path.basename(String(config)));
     }
 
     // Parse and extend configuration
@@ -126,12 +129,11 @@ export default class ConfigLoader {
     const { root } = this.tool.options;
     const filePath = path.join(root, 'package.json');
 
-    this.tool.debug(`Locating package.json in ${chalk.cyan(root)}`);
+    this.debug('Locating package.json in %s', chalk.cyan(root));
 
     if (!fs.existsSync(filePath)) {
       throw new Error(
-        'Local "package.json" could not be found. ' +
-          "Please run the command in your project's root.",
+        'Local "package.json" could not be found. Please run the command in your project\'s root.',
       );
     }
 
@@ -193,7 +195,7 @@ export default class ConfigLoader {
         throw new Error(`Preset configuration ${extendPath} must be a valid file.`);
       }
 
-      this.tool.debug(`Extending from file ${chalk.cyan(extendPath)}`);
+      this.debug('Extending from file %s', chalk.cyan(extendPath));
 
       mergeWith(nextConfig, this.parseAndExtend(extendPath), this.handleMerge);
     });
@@ -217,7 +219,7 @@ export default class ConfigLoader {
     const ext = path.extname(filePath);
     let value;
 
-    this.tool.debug(`Parsing file ${chalk.cyan(filePath)}`);
+    this.debug('Parsing file %s', chalk.cyan(filePath));
 
     if (!path.isAbsolute(filePath)) {
       throw new Error('An absolute file path is required.');

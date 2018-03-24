@@ -31,9 +31,16 @@ describe('Routine', () => {
       context: {},
       tool,
     });
+    routine.debug = () => {};
   });
 
   class FailureSubRoutine extends Routine {
+    constructor(...args) {
+      super(...args);
+
+      this.debug = () => {};
+    }
+
     execute() {
       throw new Error('Failure');
     }
@@ -44,6 +51,7 @@ describe('Routine', () => {
       super(...args);
 
       this.tool = tool;
+      this.debug = () => {};
 
       this.task('foo', this.foo);
       this.task('bar', this.bar);
@@ -109,6 +117,12 @@ describe('Routine', () => {
       let config = {};
 
       class BootstrapRoutine extends Routine {
+        constructor(...args) {
+          super(...args);
+
+          this.debug = () => {};
+        }
+
         bootstrap() {
           ({ config } = this.tool);
         }
@@ -220,6 +234,7 @@ describe('Routine', () => {
         super(...args);
 
         this.tool = tool;
+        this.debug = () => {};
       }
 
       foo(value) {
@@ -316,32 +331,6 @@ describe('Routine', () => {
 
     it('passes the value down the promise', async () => {
       expect(await routine.run(123)).toBe(123);
-    });
-
-    it('triggers group start and stop', async () => {
-      const startSpy = jest.spyOn(routine.tool.console, 'startDebugGroup');
-      const stopSpy = jest.spyOn(routine.tool.console, 'stopDebugGroup');
-      const updateSpy = jest.spyOn(routine.tool.console, 'update');
-
-      await routine.run(123);
-
-      expect(startSpy).toBeCalledWith('key');
-      expect(stopSpy).toBeCalled();
-      expect(updateSpy).toBeCalled();
-    });
-
-    it('triggers group stop if an error occurs', async () => {
-      const stopSpy = jest.spyOn(routine.tool.console, 'stopDebugGroup');
-      const updateSpy = jest.spyOn(routine.tool.console, 'update');
-
-      try {
-        await routine.pipe(new FailureSubRoutine('failure', 'title')).run(123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Failure'));
-      }
-
-      expect(stopSpy).toBeCalled();
-      expect(updateSpy).toBeCalled();
     });
 
     it('updates status if a success', async () => {
@@ -449,6 +438,7 @@ describe('Routine', () => {
         super(...args);
 
         this.tool = tool;
+        this.debug = () => {};
       }
 
       execute(value) {
@@ -513,6 +503,7 @@ describe('Routine', () => {
         super(...args);
 
         this.tool = tool;
+        this.debug = () => {};
       }
 
       duplicate(value) {

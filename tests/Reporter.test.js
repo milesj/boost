@@ -79,8 +79,6 @@ ${CURSOR}`);
 
       beforeEach(() => {
         work = {
-          debug: false,
-          debugs: ['Why doesnt this work??'],
           errors: ['Something is broken!!'],
           footer: '',
           header: '',
@@ -103,21 +101,6 @@ ${CURSOR}`);
         expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
 
 Something is broken!!
-
-${CURSOR}`);
-      });
-
-      it('shows debugs if debug is true', () => {
-        reporter.loader = () => ({
-          ...work,
-          debug: true,
-        });
-
-        expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
-
-Why doesnt this work??
-
-All is good...
 
 ${CURSOR}`);
       });

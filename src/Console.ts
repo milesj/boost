@@ -13,13 +13,10 @@ import { ConsoleOptions, Partial } from './types';
 export interface ConsoleInterface {
   options: ConsoleOptions;
   reporter: ReporterInterface;
-  debug(message: string): void;
   error(message: string): void;
   exit(message: string | Error | null, code: number): void;
   log(message: string): void;
   start(tasks: TaskInterface[]): void;
-  startDebugGroup(group: string): void;
-  stopDebugGroup(): void;
   update(): void;
 }
 
@@ -34,12 +31,6 @@ export const DEBUG_COLORS: string[] = [
 ];
 
 export default class Console<Tr extends ReporterInterface> implements ConsoleInterface {
-  debugs: string[] = [];
-
-  debugGroups: string[] = [];
-
-  debugIndex: number = -1;
-
   errors: string[] = [];
 
   interrupted: boolean = false;
@@ -53,7 +44,6 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
   constructor(reporter: Tr, options: Partial<ConsoleOptions> = {}) {
     this.reporter = reporter;
     this.options = optimal(options, {
-      debug: bool(),
       footer: string().empty(),
       header: string().empty(),
       silent: bool(),
@@ -80,22 +70,13 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
       .on('SIGINT', signalHandler)
       .on('SIGTERM', signalHandler)
       .on('uncaughtException', error => {
-        this.debug(chalk.yellow('Uncaught exception detected!'));
+        this.error(chalk.yellow('Uncaught exception detected!'));
         this.exit(error);
       })
       .on('unhandledRejection', error => {
-        this.debug(chalk.yellow('Unhandled promise rejection detected!'));
+        this.error(chalk.yellow('Unhandled promise rejection detected!'));
         this.exit(error);
       });
-  }
-
-  /**
-   * Add a message to the debug log.
-   */
-  debug(message: string) {
-    const indent = '  '.repeat(this.debugGroups.length);
-
-    this.debugs.push(`${chalk.gray('[debug]')}${indent} ${message}`);
   }
 
   /**
@@ -152,11 +133,10 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
    * Start a new console and begin rendering.
    */
   start(tasks: TaskInterface[] = []) {
-    const { debugs, errors, logs } = this;
+    const { errors, logs } = this;
 
     this.reporter.start(() => ({
       ...this.options,
-      debugs,
       errors,
       logs,
       tasks,
@@ -164,43 +144,10 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
   }
 
   /**
-   * Start a debug capturing group, which will indent all incoming debug messages.
-   */
-  startDebugGroup(group: string) {
-    this.debugIndex += 1;
-
-    if (this.debugIndex === DEBUG_COLORS.length) {
-      this.debugIndex = 0;
-    }
-
-    const color = DEBUG_COLORS[this.debugIndex];
-
-    // @ts-ignore
-    this.debug(chalk[color](`[${group}]`));
-    this.debugGroups.push(group);
-  }
-
-  /**
    * Stop rendering and end the console.
    */
   stop() {
     this.reporter.stop();
-  }
-
-  /**
-   * End the current debug capturing group.
-   */
-  stopDebugGroup() {
-    const color = DEBUG_COLORS[this.debugIndex];
-    const group = this.debugGroups.pop();
-
-    // @ts-ignore
-    this.debug(chalk[color](`[/${group}]`));
-    this.debugIndex -= 1;
-
-    if (this.debugIndex < 0) {
-      this.debugIndex = DEBUG_COLORS.length - 1;
-    }
   }
 
   /**

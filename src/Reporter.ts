@@ -51,8 +51,6 @@ export default class Reporter<To extends Options> extends Module<To> implements 
     }
 
     const {
-      debug = false,
-      debugs = [],
       errors = [],
       footer = '',
       header = '',
@@ -71,15 +69,6 @@ export default class Reporter<To extends Options> extends Module<To> implements 
     if (tasks.length > 0 && verbose) {
       tasks.forEach(task => {
         output.push(...this.renderTask(task, 0));
-      });
-    }
-
-    // Debugs second
-    if (debugs.length > 0 && debug) {
-      output.push('');
-
-      debugs.forEach(log => {
-        output.push(this.renderMessage(log));
       });
     }
 
@@ -111,7 +100,7 @@ export default class Reporter<To extends Options> extends Module<To> implements 
   }
 
   /**
-   * Render a debug, log, or error message.
+   * Render a log or error message.
    */
   renderMessage(message: string): string {
     return message;

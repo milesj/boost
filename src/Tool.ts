@@ -4,6 +4,7 @@
  */
 
 import chalk from 'chalk';
+import debug from 'debug';
 import pluralize from 'pluralize';
 import optimal, { bool, object, string } from 'optimal';
 import ConfigLoader from './ConfigLoader';
@@ -20,10 +21,11 @@ export interface ToolInterface extends EmitterInterface {
   argv: string[];
   config: ToolConfig;
   console: ConsoleInterface;
+  debug: debug.IDebugger;
   options: ToolOptions;
   package: PackageConfig;
   plugins: PluginInterface[];
-  debug(message: string): this;
+  createDebugger(...namespaces: string[]): debug.IDebugger;
 }
 
 export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
@@ -36,6 +38,8 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   configLoader: ConfigLoader;
 
   console: ConsoleInterface;
+
+  debug: debug.IDebugger;
 
   initialized: boolean = false;
 
@@ -68,7 +72,10 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       },
     );
 
-    // Initialize the console first we can start debugging
+    // Custom debug logger for this routine
+    this.debug = this.createDebugger('core');
+
+    // Initialize the console first we can start logging
     this.console = new Console(new Reporter(), {
       footer,
       header,
@@ -87,12 +94,10 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   }
 
   /**
-   * Log a message only when debug is enabled.
+   * Create a debugger with a namespace.
    */
-  debug(message: string): this {
-    this.console.debug(message);
-
-    return this;
+  createDebugger(...namespaces: string[]): debug.IDebugger {
+    return debug(`${this.options.appName}:${namespaces.join(':')}`);
   }
 
   /**
@@ -129,13 +134,11 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     const { appName } = this.options;
 
-    this.debug(`Initializing ${chalk.green(appName)}`);
+    this.debug('Initializing %s', chalk.green(appName));
 
-    this.console.startDebugGroup(appName);
     this.loadConfig();
     this.loadPlugins();
     this.loadReporter();
-    this.console.stopDebugGroup();
 
     this.initialized = true;
 
@@ -146,7 +149,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
    * Logs a debug message based on a conditional.
    */
   invariant(condition: boolean, message: string, pass: string, fail: string): this {
-    this.debug(`${message}: ${condition ? chalk.green(pass) : chalk.red(fail)}`);
+    this.debug('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
 
     return this;
   }
@@ -160,8 +163,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     if (this.initialized) {
       return this;
     }
-
-    this.console.startDebugGroup('config');
 
     this.configLoader = new ConfigLoader(this);
     this.package = this.configLoader.loadPackageJSON();
@@ -178,8 +179,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
         }
       });
     }
-
-    this.console.stopDebugGroup();
 
     return this;
   }
@@ -201,8 +200,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
 
-    this.console.startDebugGroup('plugin');
-
     // @ts-ignore Not sure why this is failing
     const loader: ModuleLoader<Tp> = new ModuleLoader(this, pluginAlias, Plugin);
 
@@ -217,8 +214,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       plugin.tool = this; // eslint-disable-line no-param-reassign
       plugin.bootstrap();
     });
-
-    this.console.stopDebugGroup();
 
     return this;
   }
@@ -237,8 +232,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       throw new Error('Cannot load reporter as configuration has not been loaded.');
     }
 
-    this.console.startDebugGroup('reporter');
-
     const { reporter } = this.config;
 
     // Load based on name
@@ -251,8 +244,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     } else {
       this.debug(`Using native ${chalk.green('boost')} reporter`);
     }
-
-    this.console.stopDebugGroup();
 
     return this;
   }
