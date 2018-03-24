@@ -22,10 +22,6 @@ describe('Pipeline', () => {
         'A build `Tool` instance is required to operate the pipeline.',
       );
     });
-
-    it('inherits config from tool', () => {
-      expect(pipeline.config).toEqual({ foo: 'bar' });
-    });
   });
 
   describe('run()', () => {

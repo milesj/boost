@@ -12,7 +12,9 @@ export interface Context {
   [key: string]: any;
 }
 
-export interface Config extends Options {}
+export interface Config {
+  [key: string]: any;
+}
 
 export interface ConsoleOptions extends Options {
   debug: boolean;
@@ -61,7 +63,7 @@ export type ReportLoader = () => ReportParams;
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
-export type TaskAction<Tx> = (value: any, context: Tx) => any | Promise<any>;
+export type TaskAction<Tx extends Context> = (value: any, context: Tx) => any | Promise<any>;
 
 export type EventArguments = any[];
 

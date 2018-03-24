@@ -51,7 +51,7 @@ export default class ConfigLoader {
    * Support both JSON and JS file formats by globbing the config directory.
    */
   loadConfig(): ToolConfig {
-    if (isEmptyObject(this.package)) {
+    if (isEmptyObject(this.package) || !this.package.name) {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 

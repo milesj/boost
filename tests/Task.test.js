@@ -37,10 +37,10 @@ describe('Task', () => {
       expect(task.isSkipped()).toBe(true);
     });
 
-    it('inherits default config', () => {
+    it('inherits default options', () => {
       task = new Task('title', value => value, { foo: 'bar' });
 
-      expect(task.config).toEqual({ foo: 'bar' });
+      expect(task.options).toEqual({ foo: 'bar' });
     });
   });
 

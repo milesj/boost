@@ -4,6 +4,7 @@
  */
 
 import { frames } from 'elegant-spinner';
+import { Options } from 'optimal';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -28,14 +29,14 @@ export interface TaskInterface {
   spinner(): string;
 }
 
-export default class Task<Tc extends object, Tx extends Context> implements TaskInterface {
+export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
   action: TaskAction<Tx> | null = null;
 
-  config: Tc;
-
-  context: Tx;
+  context?: Tx;
 
   frame: number = 0;
+
+  options: Options;
 
   title: string = '';
 
@@ -43,11 +44,11 @@ export default class Task<Tc extends object, Tx extends Context> implements Task
 
   statusText: string = '';
 
-  subroutines: Task<object, Tx>[] = [];
+  subroutines: TaskInterface[] = [];
 
-  subtasks: Task<object, Tx>[] = [];
+  subtasks: TaskInterface[] = [];
 
-  constructor(title: string, action: TaskAction<Tx> | null = null, defaultConfig?: Tc) {
+  constructor(title: string, action: TaskAction<Tx> | null = null, options?: To) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -57,7 +58,10 @@ export default class Task<Tc extends object, Tx extends Context> implements Task
     }
 
     this.action = action;
-    this.config = { ...defaultConfig };
+    this.options = {
+      // @ts-ignore
+      ...options,
+    };
     this.status = action ? STATUS_PENDING : STATUS_SKIPPED;
     this.title = title;
   }

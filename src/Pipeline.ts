@@ -8,8 +8,6 @@
 import Routine from './Routine';
 import Tool, { ToolInterface } from './Tool';
 import { PluginInterface } from './Plugin';
-import Reporter from './Reporter';
-import { DEFAULT_TOOL_CONFIG } from './constants';
 import { Context, ToolConfig } from './types';
 
 export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<
@@ -17,7 +15,7 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
   Tx
 > {
   constructor(tool: ToolInterface) {
-    super('root', 'Pipeline', tool ? tool.config : { ...DEFAULT_TOOL_CONFIG });
+    super('root', 'Pipeline');
 
     if (tool instanceof Tool) {
       tool.initialize();

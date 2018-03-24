@@ -31,7 +31,7 @@ export interface ReporterInterface extends ModuleInterface {
 }
 
 export default class Reporter<To extends Options> extends Module<To> implements ReporterInterface {
-  instance: Timer = 0;
+  instance?: NodeJS.Timer;
 
   loader: ReportLoader | null = null;
 
@@ -226,7 +226,9 @@ export default class Reporter<To extends Options> extends Module<To> implements 
    * Stop and clear the output process.
    */
   stop(): this {
-    clearInterval(this.instance);
+    if (this.instance) {
+      clearInterval(this.instance);
+    }
 
     logUpdate.clear();
 

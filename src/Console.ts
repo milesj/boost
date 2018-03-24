@@ -175,6 +175,7 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
 
     const color = DEBUG_COLORS[this.debugIndex];
 
+    // @ts-ignore
     this.debug(chalk[color](`[${group}]`));
     this.debugGroups.push(group);
   }
@@ -193,6 +194,7 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
     const color = DEBUG_COLORS[this.debugIndex];
     const group = this.debugGroups.pop();
 
+    // @ts-ignore
     this.debug(chalk[color](`[/${group}]`));
     this.debugIndex -= 1;
 

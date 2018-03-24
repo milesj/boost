@@ -51,7 +51,7 @@ describe('Routine', () => {
     }
 
     execute(value, context) {
-      context.count *= this.config.multiplier;
+      context.count *= this.options.multiplier;
       context[this.key] = true;
 
       return value;
@@ -97,10 +97,10 @@ describe('Routine', () => {
       );
     });
 
-    it('inherits default config', () => {
+    it('inherits default options', () => {
       routine = new Routine('key', 'title', { foo: 123 });
 
-      expect(routine.config).toEqual({ foo: 123 });
+      expect(routine.options).toEqual({ foo: 123 });
     });
   });
 
@@ -453,7 +453,7 @@ describe('Routine', () => {
 
       execute(value) {
         return Promise.resolve({
-          count: value.count * this.config.multiplier,
+          count: value.count * this.options.multiplier,
           key: value.key + this.key,
         });
       }
@@ -585,6 +585,7 @@ describe('Routine', () => {
       let config;
 
       routine.task('foo', function foo() {
+        // eslint-disable-next-line babel/no-invalid-this
         ({ config } = this);
       });
 
@@ -593,13 +594,13 @@ describe('Routine', () => {
       expect(config).toEqual(routine.config);
     });
 
-    it('defines the config for the task', () => {
+    it('defines the options for the task', () => {
       routine.task('foo', value => value, { foo: 'bar' });
 
-      expect(routine.subtasks[0].config).toEqual({ foo: 'bar' });
+      expect(routine.subtasks[0].options).toEqual({ foo: 'bar' });
     });
 
-    it('returns a Task instance', () => {
+    it('returns a `Task` instance', () => {
       const task = routine.task('foo', value => value, { foo: 'bar' });
 
       expect(task).toBeInstanceOf(Task);

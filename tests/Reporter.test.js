@@ -423,6 +423,11 @@ ${CURSOR}`);
 
       reporter.stop();
 
+      expect(clearInterval.mock.calls).toHaveLength(0);
+
+      reporter.instance = 1;
+      reporter.stop();
+
       expect(clearInterval.mock.calls).toHaveLength(1);
 
       jest.useRealTimers();

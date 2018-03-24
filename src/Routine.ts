@@ -12,6 +12,7 @@ import execa, {
   ExecaReturns,
 } from 'execa';
 import split from 'split';
+import { Options } from 'optimal';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
 import Task, { TaskInterface } from './Task';
@@ -23,7 +24,7 @@ export interface CommandOptions {
   sync?: boolean;
 }
 
-export default class Routine<Tc extends object, Tx extends Context> extends Task<Tc, Tx> {
+export default class Routine<To extends Options, Tx extends Context> extends Task<To, Tx> {
   exit: boolean = false;
 
   key: string = '';
@@ -31,8 +32,8 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
   // @ts-ignore Set after instantiation
   tool: ToolInterface;
 
-  constructor(key: string, title: string, defaultConfig?: Tc) {
-    super(title, null, defaultConfig);
+  constructor(key: string, title: string, options?: To) {
+    super(title, null, options);
 
     if (!key || typeof key !== 'string') {
       throw new Error('Routine key must be a valid unique string.');
@@ -55,7 +56,7 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine<object, Tx>): this {
+  configure(parent: Routine<Options, Tx>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -77,7 +78,7 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute<T>(value: T, context?: Tx): Promise<T> {
+  execute<T>(value: T, context: Tx): Promise<T> {
     return this.wrap(value);
   }
 
@@ -211,12 +212,12 @@ export default class Routine<Tc extends object, Tx extends Context> extends Task
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskAction<Tx>, config?: object): TaskInterface {
+  task(title: string, action: TaskAction<Tx>, options?: Options): TaskInterface {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }
 
-    const task = new Task(title, action.bind(this), config);
+    const task = new Task(title, action.bind(this), options);
 
     this.subtasks.push(task);
 

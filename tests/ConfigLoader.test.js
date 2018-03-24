@@ -44,7 +44,10 @@ describe('ConfigLoader', () => {
 
     describe('from package.json', () => {
       it('errors if not an object', () => {
-        loader.package = { testBoost: [] };
+        loader.package = {
+          name: 'boost',
+          testBoost: [],
+        };
 
         expect(() => {
           loader.loadConfig();
@@ -53,6 +56,7 @@ describe('ConfigLoader', () => {
 
       it('supports an object', () => {
         loader.package = {
+          name: 'boost',
           testBoost: { foo: 'bar' },
         };
 
@@ -63,6 +67,7 @@ describe('ConfigLoader', () => {
         fixtures.push(copyFixtureToModule('preset', 'test-boost-preset'));
 
         loader.package = {
+          name: 'boost',
           testBoost: 'test-boost-preset',
         };
 
@@ -75,6 +80,7 @@ describe('ConfigLoader', () => {
 
       it('merges with default config', () => {
         loader.package = {
+          name: 'boost',
           testBoost: { foo: 'bar' },
         };
 
@@ -86,6 +92,7 @@ describe('ConfigLoader', () => {
 
       it('supports plugins', () => {
         loader.package = {
+          name: 'boost',
           testBoost: {
             plugins: [
               'foo',
@@ -111,6 +118,7 @@ describe('ConfigLoader', () => {
 
       it('supports custom blueprint', () => {
         loader.package = {
+          name: 'boost',
           testBoost: { foo: 'bar' },
         };
         loader.tool.options.configBlueprint = {

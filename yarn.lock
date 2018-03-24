@@ -54,9 +54,9 @@
   version "0.5.0"
   resolved "https://registry.npmjs.org/@beemo/driver-typescript/-/driver-typescript-0.5.0.tgz#800647121a81d9eb29c2c35e7de0765d572d98dc"
 
-"@milesj/build-tool-config@0.76.1":
-  version "0.76.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.76.1.tgz#9e72de76c86bf0ee63fc32da8c1736ee5ac99315"
+"@milesj/build-tool-config@0.76.2":
+  version "0.76.2"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.76.2.tgz#41708276e46e4a017c35b3d57d06ad3b6535461f"
   dependencies:
     "@beemo/cli" "^0.16.0"
     "@beemo/core" "^0.16.0"
@@ -5910,9 +5910,9 @@ optimal@^0.14.0:
   dependencies:
     babel-runtime "^6.25.0"
 
-optimal@^0.17.0:
-  version "0.17.0"
-  resolved "https://registry.npmjs.org/optimal/-/optimal-0.17.0.tgz#876c81c4e76a4f8a259238b995a311c407725bd9"
+optimal@^0.17.1:
+  version "0.17.1"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-0.17.1.tgz#0102587cc9b25d8ceceb564726e93806b0aaae57"
   dependencies:
     babel-runtime "^6.26.0"
 

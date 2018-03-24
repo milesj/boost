@@ -4,6 +4,7 @@
  */
 
 import { Options } from 'optimal';
+import { Partial } from './types';
 
 export interface ModuleInterface {
   moduleName: string;
@@ -17,7 +18,7 @@ export default class Module<To extends Options> implements ModuleInterface {
 
   options: To;
 
-  constructor(options?: To) {
+  constructor(options: Partial<To> = {}) {
     this.options = {
       // @ts-ignore
       ...options,

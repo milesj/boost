@@ -203,7 +203,10 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     this.console.startDebugGroup('plugin');
 
-    this.pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
+    // @ts-ignore Not sure why this is failing
+    const loader: ModuleLoader<Tp> = new ModuleLoader(this, pluginAlias, Plugin);
+
+    this.pluginLoader = loader;
     this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
@@ -240,7 +243,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     // Load based on name
     if (reporter) {
-      this.console.reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporter);
+      const loader: ModuleLoader<ReporterInterface> = new ModuleLoader(this, 'reporter', Reporter);
+
+      this.console.reporter = loader.loadModule(reporter);
 
       // Use native Boost reporter
     } else {
