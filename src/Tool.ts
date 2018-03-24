@@ -13,6 +13,7 @@ import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
 import Reporter, { ReporterInterface } from './Reporter';
+import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 import { ToolConfig, ToolOptions, PackageConfig, Partial } from './types';
@@ -72,10 +73,15 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       },
     );
 
+    // Enable debugging as early as possible
+    if (argv.includes('--debug')) {
+      enableDebug(this.options.appName);
+    }
+
     // Custom debug logger for this routine
     this.debug = this.createDebugger('core');
 
-    // Initialize the console first we can start logging
+    // Initialize the console first so we can start logging
     this.console = new Console(new Reporter(), {
       footer,
       header,
@@ -178,6 +184,12 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
           this.console.options[name] = true;
         }
       });
+    }
+
+    // Enable debugging if defined in the config
+    // This happens a little too late, but oh well
+    if (this.config.debug) {
+      enableDebug(this.options.appName);
     }
 
     return this;

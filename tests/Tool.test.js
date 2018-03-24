@@ -4,7 +4,10 @@ import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import ExitError from '../src/ExitError';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
+import enableDebug from '../src/helpers/enableDebug';
 import { getFixturePath } from './helpers';
+
+jest.mock('../src/helpers/enableDebug');
 
 describe('Tool', () => {
   let tool;
@@ -16,6 +19,17 @@ describe('Tool', () => {
     });
     tool.config = {};
     tool.package = {};
+  });
+
+  describe('constructor()', () => {
+    it('enables debug if --debug is passed', () => {
+      tool = new Tool({
+        appName: 'test-boost',
+        root: getFixturePath('app'),
+      }, ['--debug']);
+
+      expect(enableDebug).toHaveBeenCalledWith('test-boost');
+    });
   });
 
   describe('debug()', () => {
@@ -138,6 +152,13 @@ describe('Tool', () => {
 
       expect(tool.config.debug).toBe(false);
       expect(tool.config.silent).toBe(false);
+    });
+
+    it('enables debug if debug config is true', () => {
+      tool.argv = ['--debug'];
+      tool.loadConfig();
+
+      expect(enableDebug).toHaveBeenCalledWith('test-boost');
     });
   });
 
