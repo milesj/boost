@@ -218,13 +218,12 @@ declare module 'boost/lib/Console' {
   export interface ConsoleInterface extends EmitterInterface {
       options: ConsoleOptions;
       reporter: ReporterInterface;
-      error(message: string): void;
+      error(message: string, ...args: any[]): void;
       exit(message: string | Error | null, code: number): void;
-      log(message: string): void;
+      log(message: string, ...args: any[]): void;
       start(tasks: TaskInterface[]): void;
       update(): void;
   }
-  export const DEBUG_COLORS: string[];
   export default class Console<Tr extends ReporterInterface> extends Emitter implements ConsoleInterface {
       errors: string[];
       interrupted: boolean;
@@ -232,9 +231,9 @@ declare module 'boost/lib/Console' {
       options: ConsoleOptions;
       reporter: Tr;
       constructor(reporter: Tr, options?: Partial<ConsoleOptions>);
-      error(message: string): void;
+      error(message: string, ...args: any[]): void;
       exit(message: string | Error | null, code?: number): void;
-      log(message: string): void;
+      log(message: string, ...args: any[]): void;
       start(tasks?: TaskInterface[]): void;
       stop(): void;
       update(): void;
@@ -300,6 +299,8 @@ declare module 'boost/lib/Tool' {
       package: PackageConfig;
       plugins: PluginInterface[];
       createDebugger(...namespaces: string[]): debug.IDebugger;
+      log(message: string, ...args: any[]): this;
+      logError(message: string, ...args: any[]): this;
   }
   export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter implements ToolInterface {
       argv: string[];
@@ -321,8 +322,8 @@ declare module 'boost/lib/Tool' {
       loadConfig(): this;
       loadPlugins(): this;
       loadReporter(): this;
-      log(message: string): this;
-      logError(message: string): this;
+      log(message: string, ...args: any[]): this;
+      logError(message: string, ...args: any[]): this;
   }
 
 }
