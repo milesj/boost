@@ -16,6 +16,18 @@ describe('Console', () => {
 
       expect(cli.logs).toEqual(['foo']);
     });
+
+    it('supports formatting', () => {
+      cli.log('%s', 'foo');
+
+      expect(cli.logs).toEqual(['foo']);
+    });
+
+    it('handles objects and arrays', () => {
+      cli.log('%o %O', { foo: 'bar' }, ['baz', 123]);
+
+      expect(cli.logs).toMatchSnapshot();
+    });
   });
 
   describe('error()', () => {
@@ -23,6 +35,18 @@ describe('Console', () => {
       cli.error('foo');
 
       expect(cli.errors).toEqual(['foo']);
+    });
+
+    it('supports formatting', () => {
+      cli.error('%s', 'foo');
+
+      expect(cli.errors).toEqual(['foo']);
+    });
+
+    it('handles objects and arrays', () => {
+      cli.error('%o %O', { foo: 'bar' }, ['baz', 123]);
+
+      expect(cli.errors).toMatchSnapshot();
     });
   });
 

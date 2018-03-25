@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Console error() handles objects and arrays 1`] = `
+Array [
+  "{ foo: 'bar' } [ 'baz', 123 ]",
+]
+`;
+
+exports[`Console log() handles objects and arrays 1`] = `
+Array [
+  "{ foo: 'bar' } [ 'baz', 123 ]",
+]
+`;

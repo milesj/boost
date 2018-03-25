@@ -27,6 +27,8 @@ export interface ToolInterface extends EmitterInterface {
   package: PackageConfig;
   plugins: PluginInterface[];
   createDebugger(...namespaces: string[]): debug.IDebugger;
+  log(message: string, ...args: any[]): this;
+  logError(message: string, ...args: any[]): this;
 }
 
 export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
@@ -263,8 +265,8 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   /**
    * Add a message to the output log.
    */
-  log(message: string): this {
-    this.console.log(message);
+  log(message: string, ...args: any[]): this {
+    this.console.log(message, ...args);
 
     return this;
   }
@@ -272,8 +274,8 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   /**
    * Add a message to the logError log.
    */
-  logError(message: string): this {
-    this.console.error(message);
+  logError(message: string, ...args: any[]): this {
+    this.console.error(message, ...args);
 
     return this;
   }

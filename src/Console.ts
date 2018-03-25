@@ -5,6 +5,7 @@
 
 import chalk from 'chalk';
 import optimal, { bool, string } from 'optimal';
+import util from 'util';
 import Emitter, { EmitterInterface } from './Emitter';
 import ExitError from './ExitError';
 import { TaskInterface } from './Task';
@@ -14,22 +15,12 @@ import { ConsoleOptions, Partial } from './types';
 export interface ConsoleInterface extends EmitterInterface {
   options: ConsoleOptions;
   reporter: ReporterInterface;
-  error(message: string): void;
+  error(message: string, ...args: any[]): void;
   exit(message: string | Error | null, code: number): void;
-  log(message: string): void;
+  log(message: string, ...args: any[]): void;
   start(tasks: TaskInterface[]): void;
   update(): void;
 }
-
-export const DEBUG_COLORS: string[] = [
-  'white',
-  'cyan',
-  'blue',
-  'magenta',
-  'red',
-  'yellow',
-  'green',
-];
 
 export default class Console<Tr extends ReporterInterface> extends Emitter
   implements ConsoleInterface {
@@ -86,8 +77,8 @@ export default class Console<Tr extends ReporterInterface> extends Emitter
   /**
    * Add a message to the error log.
    */
-  error(message: string) {
-    this.errors.push(message);
+  error(message: string, ...args: any[]) {
+    this.errors.push(util.format(message, ...args));
   }
 
   /**
@@ -129,8 +120,8 @@ export default class Console<Tr extends ReporterInterface> extends Emitter
   /**
    * Add a message to the output log.
    */
-  log(message: string) {
-    this.logs.push(message);
+  log(message: string, ...args: any[]) {
+    this.logs.push(util.format(message, ...args));
   }
 
   /**
