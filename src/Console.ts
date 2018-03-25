@@ -5,12 +5,13 @@
 
 import chalk from 'chalk';
 import optimal, { bool, string } from 'optimal';
+import Emitter, { EmitterInterface } from './Emitter';
 import ExitError from './ExitError';
 import { TaskInterface } from './Task';
 import { ReporterInterface } from './Reporter';
 import { ConsoleOptions, Partial } from './types';
 
-export interface ConsoleInterface {
+export interface ConsoleInterface extends EmitterInterface {
   options: ConsoleOptions;
   reporter: ReporterInterface;
   error(message: string): void;
@@ -30,7 +31,8 @@ export const DEBUG_COLORS: string[] = [
   'green',
 ];
 
-export default class Console<Tr extends ReporterInterface> implements ConsoleInterface {
+export default class Console<Tr extends ReporterInterface> extends Emitter
+  implements ConsoleInterface {
   errors: string[] = [];
 
   interrupted: boolean = false;
@@ -42,6 +44,8 @@ export default class Console<Tr extends ReporterInterface> implements ConsoleInt
   reporter: Tr;
 
   constructor(reporter: Tr, options: Partial<ConsoleOptions> = {}) {
+    super();
+
     this.reporter = reporter;
     this.options = optimal(options, {
       footer: string().empty(),

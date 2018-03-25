@@ -14,10 +14,57 @@ declare module 'boost/lib/helpers/requireModule' {
   export default function requireModule<T>(path: string): T;
 
 }
-declare module 'boost/lib/ExitError' {
-  export default class ExitError extends Error {
-      code: number;
-      constructor(message: string, code?: number);
+declare module 'boost/lib/constants' {
+  import { Status, ToolConfig } from 'boost/lib/types';
+  export const APP_NAME_PATTERN: RegExp;
+  export const MODULE_NAME_PATTERN: RegExp;
+  export const PLUGIN_NAME_PATTERN: RegExp;
+  export const STATUS_PENDING: Status;
+  export const STATUS_RUNNING: Status;
+  export const STATUS_SKIPPED: Status;
+  export const STATUS_PASSED: Status;
+  export const STATUS_FAILED: Status;
+  export const DEFAULT_TOOL_CONFIG: ToolConfig;
+
+}
+declare module 'boost/lib/Task' {
+  import { Options } from 'optimal';
+  import { Context, Status, Partial } from 'boost/lib/types';
+  export interface TaskInterface {
+      status: Status;
+      statusText: string;
+      subroutines: TaskInterface[];
+      subtasks: TaskInterface[];
+      title: string;
+      isPending(): boolean;
+      isRunning(): boolean;
+      isSkipped(): boolean;
+      hasFailed(): boolean;
+      hasPassed(): boolean;
+      run<T>(context: any, initialValue?: T | null): Promise<T | null>;
+      spinner(): string;
+  }
+  export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
+  export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
+      action: TaskAction<Tx> | null;
+      context: Tx;
+      frame: number;
+      options: To;
+      title: string;
+      status: Status;
+      statusText: string;
+      subroutines: TaskInterface[];
+      subtasks: TaskInterface[];
+      constructor(title: string, action?: TaskAction<Tx> | null, options?: Partial<To>);
+      hasFailed(): boolean;
+      hasPassed(): boolean;
+      isPending(): boolean;
+      isRunning(): boolean;
+      isSkipped(): boolean;
+      run<T>(context: Tx, initialValue?: T | null): Promise<T | null>;
+      skip(condition?: boolean): this;
+      spinner(): string;
+      wrap<T>(value: T | Promise<T>): Promise<T>;
   }
 
 }
@@ -75,57 +122,48 @@ declare module 'boost/lib/types' {
   export type EventNextHandler = (index: number, ...args: EventArguments) => void;
 
 }
-declare module 'boost/lib/constants' {
-  import { Status, ToolConfig } from 'boost/lib/types';
-  export const APP_NAME_PATTERN: RegExp;
-  export const MODULE_NAME_PATTERN: RegExp;
-  export const PLUGIN_NAME_PATTERN: RegExp;
-  export const STATUS_PENDING: Status;
-  export const STATUS_RUNNING: Status;
-  export const STATUS_SKIPPED: Status;
-  export const STATUS_PASSED: Status;
-  export const STATUS_FAILED: Status;
-  export const DEFAULT_TOOL_CONFIG: ToolConfig;
+declare module 'boost/lib/Event' {
+  import { EventNextHandler } from 'boost/lib/types';
+  export default class Event {
+      name: string;
+      next: EventNextHandler | null;
+      stopped: boolean;
+      time: number;
+      value: any;
+      constructor(name: string, value?: any);
+      stop(): void;
+  }
 
 }
-declare module 'boost/lib/Task' {
-  import { Options } from 'optimal';
-  import { Context, Status, Partial } from 'boost/lib/types';
-  export interface TaskInterface {
-      status: Status;
-      statusText: string;
-      subroutines: TaskInterface[];
-      subtasks: TaskInterface[];
-      title: string;
-      isPending(): boolean;
-      isRunning(): boolean;
-      isSkipped(): boolean;
-      hasFailed(): boolean;
-      hasPassed(): boolean;
-      run<T>(context: any, initialValue?: T | null): Promise<T | null>;
-      spinner(): string;
+declare module 'boost/lib/Emitter' {
+  import Event from 'boost/lib/Event';
+  import { EventArguments, EventListener } from 'boost/lib/types';
+  export interface EmitterInterface {
+      emit(name: string, args: EventArguments, initialValue: any): Event;
+      off(eventName: string, listener: EventListener): this;
+      on(eventName: string, listener: EventListener): this;
   }
-  export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
-  export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
-      action: TaskAction<Tx> | null;
-      context: Tx;
-      frame: number;
-      options: To;
-      title: string;
-      status: Status;
-      statusText: string;
-      subroutines: TaskInterface[];
-      subtasks: TaskInterface[];
-      constructor(title: string, action?: TaskAction<Tx> | null, options?: Partial<To>);
-      hasFailed(): boolean;
-      hasPassed(): boolean;
-      isPending(): boolean;
-      isRunning(): boolean;
-      isSkipped(): boolean;
-      run<T>(context: Tx, initialValue?: T | null): Promise<T | null>;
-      skip(condition?: boolean): this;
-      spinner(): string;
-      wrap<T>(value: T | Promise<T>): Promise<T>;
+  export default class Emitter implements EmitterInterface {
+      listeners: {
+          [eventName: string]: Set<EventListener>;
+      };
+      namespace: string;
+      createEventName(name: string): string;
+      emit(name: string, args?: EventArguments, initialValue?: any): Event;
+      emitCascade(name: string, args?: EventArguments, initialValue?: any): Event;
+      getEventNames(): string[];
+      getListeners(eventName: string): Set<EventListener>;
+      off(eventName: string, listener: EventListener): this;
+      on(eventName: string, listener: EventListener): this;
+      setEventNamespace(namespace: string): this;
+      removeEventNamespace(): this;
+  }
+
+}
+declare module 'boost/lib/ExitError' {
+  export default class ExitError extends Error {
+      code: number;
+      constructor(message: string, code?: number);
   }
 
 }
@@ -173,10 +211,11 @@ declare module 'boost/lib/Reporter' {
 
 }
 declare module 'boost/lib/Console' {
+  import Emitter, { EmitterInterface } from 'boost/lib/Emitter';
   import { TaskInterface } from 'boost/lib/Task';
   import { ReporterInterface } from 'boost/lib/Reporter';
   import { ConsoleOptions, Partial } from 'boost/lib/types';
-  export interface ConsoleInterface {
+  export interface ConsoleInterface extends EmitterInterface {
       options: ConsoleOptions;
       reporter: ReporterInterface;
       error(message: string): void;
@@ -186,7 +225,7 @@ declare module 'boost/lib/Console' {
       update(): void;
   }
   export const DEBUG_COLORS: string[];
-  export default class Console<Tr extends ReporterInterface> implements ConsoleInterface {
+  export default class Console<Tr extends ReporterInterface> extends Emitter implements ConsoleInterface {
       errors: string[];
       interrupted: boolean;
       logs: string[];
@@ -199,44 +238,6 @@ declare module 'boost/lib/Console' {
       start(tasks?: TaskInterface[]): void;
       stop(): void;
       update(): void;
-  }
-
-}
-declare module 'boost/lib/Event' {
-  import { EventNextHandler } from 'boost/lib/types';
-  export default class Event {
-      name: string;
-      next: EventNextHandler | null;
-      stopped: boolean;
-      time: number;
-      value: any;
-      constructor(name: string, value?: any);
-      stop(): void;
-  }
-
-}
-declare module 'boost/lib/Emitter' {
-  import Event from 'boost/lib/Event';
-  import { EventArguments, EventListener } from 'boost/lib/types';
-  export interface EmitterInterface {
-      emit(name: string, args: EventArguments, initialValue: any): Event;
-      off(eventName: string, listener: EventListener): this;
-      on(eventName: string, listener: EventListener): this;
-  }
-  export default class Emitter implements EmitterInterface {
-      listeners: {
-          [eventName: string]: Set<EventListener>;
-      };
-      namespace: string;
-      createEventName(name: string): string;
-      emit(name: string, args?: EventArguments, initialValue?: any): Event;
-      emitCascade(name: string, args?: EventArguments, initialValue?: any): Event;
-      getEventNames(): string[];
-      getListeners(eventName: string): Set<EventListener>;
-      off(eventName: string, listener: EventListener): this;
-      on(eventName: string, listener: EventListener): this;
-      setEventNamespace(namespace: string): this;
-      removeEventNamespace(): this;
   }
 
 }
@@ -395,17 +396,18 @@ declare module 'boost/lib/Pipeline' {
 }
 declare module 'boost' {
   import ConfigLoader from 'boost/lib/ConfigLoader';
-  import Emitter from 'boost/lib/Emitter';
+  import { ConsoleInterface } from 'boost/lib/Console';
+  import Emitter, { EmitterInterface } from 'boost/lib/Emitter';
   import Event from 'boost/lib/Event';
   import ExitError from 'boost/lib/ExitError';
-  import Module from 'boost/lib/Module';
+  import Module, { ModuleInterface } from 'boost/lib/Module';
   import ModuleLoader from 'boost/lib/ModuleLoader';
   import Pipeline from 'boost/lib/Pipeline';
-  import Plugin from 'boost/lib/Plugin';
-  import Reporter from 'boost/lib/Reporter';
+  import Plugin, { PluginInterface } from 'boost/lib/Plugin';
+  import Reporter, { ReporterInterface } from 'boost/lib/Reporter';
   import Routine from 'boost/lib/Routine';
-  import Tool from 'boost/lib/Tool';
-  export { ConfigLoader, Emitter, Event, ExitError, Module, ModuleLoader, Pipeline, Plugin, Reporter, Routine, Tool };
+  import Tool, { ToolInterface } from 'boost/lib/Tool';
+  export { ConfigLoader, ConsoleInterface, Emitter, EmitterInterface, Event, ExitError, Module, ModuleInterface, ModuleLoader, Pipeline, Plugin, PluginInterface, Reporter, ReporterInterface, Routine, Tool, ToolInterface };
 
 }
 declare module 'elegant-spinner' {

@@ -4,27 +4,35 @@
  */
 
 import ConfigLoader from './ConfigLoader';
-import Emitter from './Emitter';
+import { ConsoleInterface } from './Console';
+import Emitter, { EmitterInterface } from './Emitter';
 import Event from './Event';
 import ExitError from './ExitError';
-import Module from './Module';
+import Module, { ModuleInterface } from './Module';
 import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
-import Plugin from './Plugin';
-import Reporter from './Reporter';
+import Plugin, { PluginInterface } from './Plugin';
+import Reporter, { ReporterInterface } from './Reporter';
 import Routine from './Routine';
-import Tool from './Tool';
+import { TaskInterface } from './Task';
+import Tool, { ToolInterface } from './Tool';
 
 export {
   ConfigLoader,
+  ConsoleInterface,
   Emitter,
+  EmitterInterface,
   Event,
   ExitError,
   Module,
+  ModuleInterface,
   ModuleLoader,
   Pipeline,
   Plugin,
+  PluginInterface,
   Reporter,
+  ReporterInterface,
   Routine,
   Tool,
+  ToolInterface,
 };
