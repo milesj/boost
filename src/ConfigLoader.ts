@@ -11,14 +11,14 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import optimal, { array, bool, shape, string, union, Options } from 'optimal';
+import optimal, { array, bool, shape, string, union, Struct } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import { ToolInterface } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { Config, ToolConfig, PackageConfig } from './types';
+import { ToolConfig, PackageConfig } from './types';
 
 export default class ConfigLoader {
   debug: debug.IDebugger;
@@ -156,7 +156,7 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: string | Config): Config {
+  parseAndExtend(fileOrConfig: string | Struct): Struct {
     let config;
     let baseDir = '';
 
@@ -214,7 +214,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, options: Options = {}): Config {
+  parseFile(filePath: string, options: Struct = {}): Struct {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value: any = null;

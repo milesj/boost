@@ -54,9 +54,9 @@
   version "0.5.0"
   resolved "https://registry.npmjs.org/@beemo/driver-typescript/-/driver-typescript-0.5.0.tgz#800647121a81d9eb29c2c35e7de0765d572d98dc"
 
-"@milesj/build-tool-config@0.78.1":
-  version "0.78.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.78.1.tgz#926b1535395a85f56541f4f125effbce3437a08c"
+"@milesj/build-tool-config@0.79.0":
+  version "0.79.0"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.79.0.tgz#65e4fe8ea8c630de193ad9451366746794441e99"
   dependencies:
     "@beemo/cli" "^0.16.0"
     "@beemo/core" "^0.16.0"
@@ -68,7 +68,7 @@
     "@types/enzyme" "^3.1.9"
     "@types/jest" "^22.2.2"
     "@types/node" "^9.6.0"
-    "@types/react" "^16.0.40"
+    "@types/react" "^16.0.41"
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
     babel-jest "^22.4.3"
@@ -191,9 +191,13 @@
   version "0.0.28"
   resolved "https://registry.npmjs.org/@types/pluralize/-/pluralize-0.0.28.tgz#daf46f90fdaa6172600bfeac81e46065177f03ea"
 
-"@types/react@*", "@types/react@^16.0.40":
+"@types/react@*":
   version "16.0.40"
   resolved "https://registry.npmjs.org/@types/react/-/react-16.0.40.tgz#caabc2296886f40b67f6fc80f0f3464476461df9"
+
+"@types/react@^16.0.41":
+  version "16.0.41"
+  resolved "https://registry.npmjs.org/@types/react/-/react-16.0.41.tgz#72146737f4d439dc95a53315de4bfb43ac8542ca"
 
 "@types/split@^0.3.28":
   version "0.3.28"
@@ -6206,9 +6210,9 @@ optimal@^0.14.0:
   dependencies:
     babel-runtime "^6.25.0"
 
-optimal@^0.17.3:
-  version "0.17.3"
-  resolved "https://registry.npmjs.org/optimal/-/optimal-0.17.3.tgz#c7d6ee76a24cac57c612bde8af51c960e5949d1c"
+optimal@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-0.18.0.tgz#fe1c8a9b3b3dedf881b3762cd8d5e0d0f2f00c87"
   dependencies:
     babel-runtime "^6.26.0"
 

@@ -127,7 +127,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError('Invalid ConfigLoader option "foo". Must be a number.');
+        }).toThrowError('Invalid ConfigLoader field "foo". Must be a number.');
       });
     });
 

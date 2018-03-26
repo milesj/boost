@@ -8,7 +8,7 @@
 import chalk from 'chalk';
 import figures from 'figures';
 import logUpdate from 'log-update';
-import { Options } from 'optimal';
+import { Struct } from 'optimal';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
 import {
@@ -30,7 +30,7 @@ export interface ReporterInterface extends ModuleInterface {
   update(): this;
 }
 
-export default class Reporter<To extends Options> extends Module<To> implements ReporterInterface {
+export default class Reporter<To extends Struct> extends Module<To> implements ReporterInterface {
   instance?: NodeJS.Timer;
 
   loader: ReportLoader | null = null;

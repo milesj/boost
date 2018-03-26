@@ -6,7 +6,7 @@
 import chalk from 'chalk';
 import path from 'path';
 import upperFirst from 'lodash/upperFirst';
-import { Options } from 'optimal';
+import { Struct } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
@@ -37,7 +37,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * Import a class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importModule(name: string, options: Options = {}): Tm {
+  importModule(name: string, options: Struct = {}): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
@@ -117,7 +117,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If loading from an object, extract the module name and use the remaining object
    * as options for the class instance.
    */
-  importModuleFromOptions(baseOptions: Options): Tm {
+  importModuleFromOptions(baseOptions: Struct): Tm {
     const { typeName } = this;
     const options = { ...baseOptions };
     const module = options[typeName];
@@ -138,7 +138,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModule(module: string | Options | Tm): Tm {
+  loadModule(module: string | Struct | Tm): Tm {
     if (module instanceof this.classReference) {
       return module;
     } else if (typeof module === 'string') {
@@ -157,7 +157,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
   /**
    * Load multiple modules.
    */
-  loadModules(modules: (string | Options | Tm)[] = []): Tm[] {
+  loadModules(modules: (string | Struct | Tm)[] = []): Tm[] {
     return modules.map(module => this.loadModule(module));
   }
 }

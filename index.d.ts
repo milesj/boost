@@ -28,7 +28,7 @@ declare module 'boost/lib/constants' {
 
 }
 declare module 'boost/lib/Task' {
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import { Context, Status, Partial } from 'boost/lib/types';
   export interface TaskInterface {
       status: Status;
@@ -45,7 +45,7 @@ declare module 'boost/lib/Task' {
       spinner(): string;
   }
   export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
-  export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
+  export default class Task<To extends Struct, Tx extends Context> implements TaskInterface {
       action: TaskAction<Tx> | null;
       context: Tx;
       frame: number;
@@ -69,7 +69,7 @@ declare module 'boost/lib/Task' {
 
 }
 declare module 'boost/lib/types' {
-  import { Blueprint, Options } from 'optimal';
+  import { Blueprint, Struct } from 'optimal';
   import { TaskInterface } from 'boost/lib/Task';
   export type Partial<T> = {
       [P in keyof T]?: T[P];
@@ -77,15 +77,12 @@ declare module 'boost/lib/types' {
   export interface Context {
       [key: string]: any;
   }
-  export interface Config {
-      [key: string]: any;
-  }
-  export interface ConsoleOptions extends Options {
+  export interface ConsoleOptions extends Struct {
       footer: string;
       header: string;
       silent: boolean;
   }
-  export interface ToolConfig extends Config {
+  export interface ToolConfig extends Struct {
       debug: boolean;
       extends: string | string[];
       plugins: string[];
@@ -93,7 +90,7 @@ declare module 'boost/lib/types' {
       silent: boolean;
       [key: string]: any;
   }
-  export interface ToolOptions extends Options {
+  export interface ToolOptions extends Struct {
       appName: string;
       configBlueprint: Blueprint;
       configFolder: string;
@@ -104,7 +101,7 @@ declare module 'boost/lib/types' {
       root: string;
       scoped: boolean;
   }
-  export interface PackageConfig extends Config {
+  export interface PackageConfig extends Struct {
       name: string;
   }
   export interface ReportParams {
@@ -168,13 +165,13 @@ declare module 'boost/lib/ExitError' {
 
 }
 declare module 'boost/lib/Module' {
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import { Partial } from 'boost/lib/types';
   export interface ModuleInterface {
       moduleName: string;
       name: string;
   }
-  export default class Module<To extends Options> implements ModuleInterface {
+  export default class Module<To extends Struct> implements ModuleInterface {
       moduleName: string;
       name: string;
       options: To;
@@ -184,7 +181,7 @@ declare module 'boost/lib/Module' {
 }
 declare module 'boost/lib/Reporter' {
   /// <reference types="node" />
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import Module, { ModuleInterface } from 'boost/lib/Module';
   import { TaskInterface } from 'boost/lib/Task';
   import { ReportLoader } from 'boost/lib/types';
@@ -196,7 +193,7 @@ declare module 'boost/lib/Reporter' {
       stop(): this;
       update(): this;
   }
-  export default class Reporter<To extends Options> extends Module<To> implements ReporterInterface {
+  export default class Reporter<To extends Struct> extends Module<To> implements ReporterInterface {
       instance?: NodeJS.Timer;
       loader: ReportLoader | null;
       indent(length: number): string;
@@ -242,7 +239,7 @@ declare module 'boost/lib/Console' {
 }
 declare module 'boost/lib/ModuleLoader' {
   /// <reference types="debug" />
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import { ModuleInterface } from 'boost/lib/Module';
   import { ToolInterface } from 'boost/lib/Tool';
   export type Constructor<T> = new (...args: any[]) => T;
@@ -252,15 +249,15 @@ declare module 'boost/lib/ModuleLoader' {
       tool: ToolInterface;
       typeName: string;
       constructor(tool: ToolInterface, typeName: string, classReference: Constructor<Tm>);
-      importModule(name: string, options?: Options): Tm;
-      importModuleFromOptions(baseOptions: Options): Tm;
-      loadModule(module: string | Options | Tm): Tm;
-      loadModules(modules?: (string | Options | Tm)[]): Tm[];
+      importModule(name: string, options?: Struct): Tm;
+      importModuleFromOptions(baseOptions: Struct): Tm;
+      loadModule(module: string | Struct | Tm): Tm;
+      loadModules(modules?: (string | Struct | Tm)[]): Tm[];
   }
 
 }
 declare module 'boost/lib/Plugin' {
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import Module, { ModuleInterface } from 'boost/lib/Module';
   import { ToolInterface } from 'boost/lib/Tool';
   export const DEFAULT_PLUGIN_PRIORITY: number;
@@ -269,7 +266,7 @@ declare module 'boost/lib/Plugin' {
       tool: ToolInterface;
       bootstrap(): void;
   }
-  export default class Plugin<To extends Options> extends Module<To> implements PluginInterface {
+  export default class Plugin<To extends Struct> extends Module<To> implements PluginInterface {
       priority: number;
       tool: ToolInterface;
       bootstrap(): void;
@@ -329,9 +326,9 @@ declare module 'boost/lib/Tool' {
 }
 declare module 'boost/lib/ConfigLoader' {
   /// <reference types="debug" />
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import { ToolInterface } from 'boost/lib/Tool';
-  import { Config, ToolConfig, PackageConfig } from 'boost/lib/types';
+  import { ToolConfig, PackageConfig } from 'boost/lib/types';
   export default class ConfigLoader {
       debug: debug.IDebugger;
       package: PackageConfig;
@@ -343,8 +340,8 @@ declare module 'boost/lib/ConfigLoader' {
       handleMerge(target: any, source: any): any;
       loadConfig(): ToolConfig;
       loadPackageJSON(): PackageConfig;
-      parseAndExtend(fileOrConfig: string | Config): Config;
-      parseFile(filePath: string, options?: Options): Config;
+      parseAndExtend(fileOrConfig: string | Struct): Struct;
+      parseFile(filePath: string, options?: Struct): Struct;
       resolveExtendPaths(extendPaths: string[], baseDir?: string): string[];
       resolveModuleConfigPath(appName: string, moduleName: string, preset?: boolean, ext?: string): string;
   }
@@ -355,21 +352,21 @@ declare module 'boost/lib/Routine' {
   /// <reference types="execa" />
   import debug from 'debug';
   import { Options as ExecaOptions, SyncOptions as ExecaSyncOptions, ExecaChildProcess, ExecaReturns } from 'execa';
-  import { Options } from 'optimal';
+  import { Struct } from 'optimal';
   import Task, { TaskAction, TaskInterface } from 'boost/lib/Task';
   import { ToolInterface } from 'boost/lib/Tool';
   import { Context, Partial } from 'boost/lib/types';
-  export interface CommandOptions {
+  export interface CommandOptions extends Struct {
       sync?: boolean;
   }
-  export default class Routine<To extends Options, Tx extends Context> extends Task<To, Tx> {
+  export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx> {
       exit: boolean;
       debug: debug.IDebugger;
       key: string;
       tool: ToolInterface;
       constructor(key: string, title: string, options?: Partial<To>);
       bootstrap(): void;
-      configure(parent: Routine<Options, Tx>): this;
+      configure(parent: Routine<Struct, Tx>): this;
       execute<T>(context: Tx, value?: T | null): Promise<T | null>;
       executeCommand(command: string, args: string[], options?: (ExecaOptions | ExecaSyncOptions) & CommandOptions, callback?: ((process: ExecaChildProcess) => void) | null): Promise<ExecaReturns>;
       executeTask<T>(task: TaskInterface, value?: T | null): Promise<T | null>;
@@ -380,7 +377,7 @@ declare module 'boost/lib/Routine' {
       serialize<T>(tasks: TaskInterface[], initialValue: T | null | undefined, accumulator: (task: TaskInterface, value: T | null) => Promise<T | null>): Promise<T | null>;
       serializeSubroutines<T>(value?: T | null): Promise<T | null>;
       serializeTasks<T>(value?: T | null): Promise<T | null>;
-      task(title: string, action: TaskAction<Tx>, options?: Options): TaskInterface;
+      task(title: string, action: TaskAction<Tx>, options?: Struct): TaskInterface;
   }
 
 }

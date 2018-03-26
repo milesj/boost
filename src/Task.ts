@@ -4,7 +4,7 @@
  */
 
 import { frames } from 'elegant-spinner';
-import { Options } from 'optimal';
+import { Struct } from 'optimal';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -31,7 +31,7 @@ export interface TaskInterface {
 
 export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
 
-export default class Task<To extends Options, Tx extends Context> implements TaskInterface {
+export default class Task<To extends Struct, Tx extends Context> implements TaskInterface {
   action: TaskAction<Tx> | null = null;
 
   // @ts-ignore Set after instantiation

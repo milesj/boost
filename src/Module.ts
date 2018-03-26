@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Options } from 'optimal';
+import { Struct } from 'optimal';
 import { Partial } from './types';
 
 export interface ModuleInterface {
@@ -11,7 +11,7 @@ export interface ModuleInterface {
   name: string;
 }
 
-export default class Module<To extends Options> implements ModuleInterface {
+export default class Module<To extends Struct> implements ModuleInterface {
   moduleName: string = '';
 
   name: string = '';

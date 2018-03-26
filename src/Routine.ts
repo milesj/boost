@@ -14,7 +14,7 @@ import execa, {
 } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';
-import { Options } from 'optimal';
+import { Struct } from 'optimal';
 import ExitError from './ExitError';
 import Reporter from './Reporter';
 import Task, { TaskAction, TaskInterface } from './Task';
@@ -22,11 +22,11 @@ import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
 import { Context, Partial } from './types';
 
-export interface CommandOptions {
+export interface CommandOptions extends Struct {
   sync?: boolean;
 }
 
-export default class Routine<To extends Options, Tx extends Context> extends Task<To, Tx> {
+export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx> {
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
@@ -61,7 +61,7 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine<Options, Tx>): this {
+  configure(parent: Routine<Struct, Tx>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -215,7 +215,7 @@ export default class Routine<To extends Options, Tx extends Context> extends Tas
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskAction<Tx>, options: Options = {}): TaskInterface {
+  task(title: string, action: TaskAction<Tx>, options: Struct = {}): TaskInterface {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }

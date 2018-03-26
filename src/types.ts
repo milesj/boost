@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Blueprint, Options } from 'optimal';
+import { Blueprint, Struct } from 'optimal';
 import { TaskInterface } from './Task';
 
 export type Partial<T> = { [P in keyof T]?: T[P] };
@@ -12,17 +12,13 @@ export interface Context {
   [key: string]: any;
 }
 
-export interface Config {
-  [key: string]: any;
-}
-
-export interface ConsoleOptions extends Options {
+export interface ConsoleOptions extends Struct {
   footer: string;
   header: string;
   silent: boolean;
 }
 
-export interface ToolConfig extends Config {
+export interface ToolConfig extends Struct {
   debug: boolean;
   extends: string | string[];
   plugins: string[];
@@ -31,7 +27,7 @@ export interface ToolConfig extends Config {
   [key: string]: any;
 }
 
-export interface ToolOptions extends Options {
+export interface ToolOptions extends Struct {
   appName: string;
   configBlueprint: Blueprint;
   configFolder: string;
@@ -43,7 +39,7 @@ export interface ToolOptions extends Options {
   scoped: boolean;
 }
 
-export interface PackageConfig extends Config {
+export interface PackageConfig extends Struct {
   name: string;
 }
 
