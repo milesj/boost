@@ -54,9 +54,9 @@
   version "0.5.0"
   resolved "https://registry.npmjs.org/@beemo/driver-typescript/-/driver-typescript-0.5.0.tgz#800647121a81d9eb29c2c35e7de0765d572d98dc"
 
-"@milesj/build-tool-config@0.79.0":
-  version "0.79.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.79.0.tgz#65e4fe8ea8c630de193ad9451366746794441e99"
+"@milesj/build-tool-config@0.80.0":
+  version "0.80.0"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.80.0.tgz#74ca2b33ac4c1cbab5f0cde9fc3128e49e5f9d44"
   dependencies:
     "@beemo/cli" "^0.16.0"
     "@beemo/core" "^0.16.0"
@@ -67,7 +67,6 @@
     "@beemo/driver-typescript" "^0.5.0"
     "@types/enzyme" "^3.1.9"
     "@types/jest" "^22.2.2"
-    "@types/node" "^9.6.0"
     "@types/react" "^16.0.41"
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
@@ -88,14 +87,14 @@
     eslint "^4.19.1"
     eslint-config-airbnb "^16.1.0"
     eslint-config-prettier "^2.9.0"
-    eslint-plugin-babel "^4.1.2"
+    eslint-plugin-babel "^5.0.0"
     eslint-plugin-compat "^2.2.0"
-    eslint-plugin-import "^2.9.0"
+    eslint-plugin-import "^2.10.0"
     eslint-plugin-jest "^21.15.0"
     eslint-plugin-jsx-a11y "^6.0.3"
     eslint-plugin-promise "^3.7.0"
     eslint-plugin-react "^7.7.0"
-    eslint-plugin-typescript "^0.10.0"
+    eslint-plugin-typescript "^0.11.0"
     eslint-plugin-unicorn "^4.0.2"
     execa "^0.10.0"
     fs-extra "^5.0.0"
@@ -112,7 +111,7 @@
     typescript "^2.7.2"
     typescript-eslint-parser "^14.0.0"
     uglifyjs-webpack-plugin "1.2.4"
-    webpack "^4.2.0"
+    webpack "^4.5.0"
 
 "@types/chalk@^2.2.0":
   version "2.2.0"
@@ -182,10 +181,6 @@
 "@types/node@*":
   version "8.0.53"
   resolved "https://registry.npmjs.org/@types/node/-/node-8.0.53.tgz#396b35af826fa66aad472c8cb7b8d5e277f4e6d8"
-
-"@types/node@^9.6.0":
-  version "9.6.0"
-  resolved "https://registry.npmjs.org/@types/node/-/node-9.6.0.tgz#d3480ee666df9784b1001a1872a2f6ccefb6c2d7"
 
 "@types/pluralize@^0.0.28":
   version "0.0.28"
@@ -2673,16 +2668,18 @@ eslint-import-resolver-node@^0.3.1:
     debug "^2.6.8"
     resolve "^1.2.0"
 
-eslint-module-utils@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.npmjs.org/eslint-module-utils/-/eslint-module-utils-2.1.1.tgz#abaec824177613b8a95b299639e1b6facf473449"
+eslint-module-utils@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/eslint-module-utils/-/eslint-module-utils-2.2.0.tgz#b270362cd88b1a48ad308976ce7fa54e98411746"
   dependencies:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-babel@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.npmjs.org/eslint-plugin-babel/-/eslint-plugin-babel-4.1.2.tgz#79202a0e35757dd92780919b2336f1fa2fe53c1e"
+eslint-plugin-babel@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/eslint-plugin-babel/-/eslint-plugin-babel-5.0.0.tgz#57c082f89bfc67f535757a8a939617667c3c5c97"
+  dependencies:
+    eslint-rule-composer "^0.1.1"
 
 eslint-plugin-compat@^2.2.0:
   version "2.2.0"
@@ -2694,16 +2691,16 @@ eslint-plugin-compat@^2.2.0:
     mdn-browser-compat-data "^0.0.20"
     requireindex "^1.1.0"
 
-eslint-plugin-import@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.npmjs.org/eslint-plugin-import/-/eslint-plugin-import-2.9.0.tgz#26002efbfca5989b7288ac047508bd24f217b169"
+eslint-plugin-import@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.npmjs.org/eslint-plugin-import/-/eslint-plugin-import-2.10.0.tgz#fa09083d5a75288df9c6c7d09fe12255985655e7"
   dependencies:
     builtin-modules "^1.1.1"
     contains-path "^0.1.0"
     debug "^2.6.8"
     doctrine "1.5.0"
     eslint-import-resolver-node "^0.3.1"
-    eslint-module-utils "^2.1.1"
+    eslint-module-utils "^2.2.0"
     has "^1.0.1"
     lodash "^4.17.4"
     minimatch "^3.0.3"
@@ -2738,9 +2735,9 @@ eslint-plugin-react@^7.7.0:
     jsx-ast-utils "^2.0.1"
     prop-types "^15.6.0"
 
-eslint-plugin-typescript@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.npmjs.org/eslint-plugin-typescript/-/eslint-plugin-typescript-0.10.0.tgz#009a8fcaf0ec7bf68f6fb71576df0d84ebd0b114"
+eslint-plugin-typescript@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.npmjs.org/eslint-plugin-typescript/-/eslint-plugin-typescript-0.11.0.tgz#a8480beeac1634271737e0ff8af32d9119b0d272"
   dependencies:
     requireindex "~1.1.0"
 
@@ -2760,6 +2757,10 @@ eslint-plugin-unicorn@^4.0.2:
 eslint-restricted-globals@^0.1.1:
   version "0.1.1"
   resolved "https://registry.npmjs.org/eslint-restricted-globals/-/eslint-restricted-globals-0.1.1.tgz#35f0d5cbc64c2e3ed62e93b4b1a7af05ba7ed4d7"
+
+eslint-rule-composer@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/eslint-rule-composer/-/eslint-rule-composer-0.1.1.tgz#479dfd4e93d7f2777499a35ce9be76403c8e982a"
 
 eslint-scope@^3.7.1:
   version "3.7.1"
@@ -8138,7 +8139,7 @@ uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
 
-uglifyjs-webpack-plugin@1.2.4, uglifyjs-webpack-plugin@^1.1.1:
+uglifyjs-webpack-plugin@1.2.4, uglifyjs-webpack-plugin@^1.2.4:
   version "1.2.4"
   resolved "https://registry.npmjs.org/uglifyjs-webpack-plugin/-/uglifyjs-webpack-plugin-1.2.4.tgz#5eec941b2e9b8538be0a20fc6eda25b14c7c1043"
   dependencies:
@@ -8394,9 +8395,9 @@ webpack-sources@^1.0.1, webpack-sources@^1.1.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.npmjs.org/webpack/-/webpack-4.2.0.tgz#a4f80807651a0e611bb09609600dc266262efcc1"
+webpack@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npmjs.org/webpack/-/webpack-4.5.0.tgz#1e6f71e148ead02be265ff2879c9cd6bb30b8848"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^3.0.0"
@@ -8414,7 +8415,7 @@ webpack@^4.2.0:
     node-libs-browser "^2.0.0"
     schema-utils "^0.4.2"
     tapable "^1.0.0"
-    uglifyjs-webpack-plugin "^1.1.1"
+    uglifyjs-webpack-plugin "^1.2.4"
     watchpack "^1.5.0"
     webpack-sources "^1.0.1"
 
