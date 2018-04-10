@@ -22,11 +22,11 @@ export interface ToolInterface extends EmitterInterface {
   argv: string[];
   config: ToolConfig;
   console: ConsoleInterface;
-  debug: debug.IDebugger;
   options: ToolOptions;
   package: PackageConfig;
   plugins: PluginInterface[];
   createDebugger(...namespaces: string[]): debug.IDebugger;
+  debug(message: string, ...args: any[]): this;
   log(message: string, ...args: any[]): this;
   logError(message: string, ...args: any[]): this;
 }
@@ -42,7 +42,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
   console: ConsoleInterface;
 
-  debug: debug.IDebugger;
+  debugger: debug.IDebugger;
 
   initialized: boolean = false;
 
@@ -81,7 +81,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     // Core debugger for the entire tool
-    this.debug = this.createDebugger('core');
+    this.debugger = this.createDebugger('core');
 
     // Initialize the console first so we can start logging
     this.console = new Console(new Reporter(), {
@@ -106,6 +106,15 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
    */
   createDebugger(...namespaces: string[]): debug.IDebugger {
     return debug(`${this.options.appName}:${namespaces.join(':')}`);
+  }
+
+  /**
+   * Log a debug message.
+   */
+  debug(message: string, ...args: any[]): this {
+    this.debugger(message, ...args);
+
+    return this;
   }
 
   /**

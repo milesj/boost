@@ -353,7 +353,10 @@ describe('ConfigLoader', () => {
 
     it('concatenates and uniquifys arrays', () => {
       fixtures.push(
-        createTempFileInRoot('extend-merge-arrays.json', JSON.stringify({ list: ['foo', 'bar'] })),
+        createTempFileInRoot(
+          'extend-merge-arrays.json',
+          JSON.stringify({ list: ['foo', 'bar', 'baz'] }),
+        ),
       );
 
       expect(
