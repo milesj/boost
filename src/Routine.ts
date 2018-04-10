@@ -20,7 +20,7 @@ import Reporter from './Reporter';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Context, Partial } from './types';
+import { Context } from './types';
 
 export interface CommandOptions extends Struct {
   sync?: boolean;

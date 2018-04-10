@@ -6,8 +6,6 @@
 import { Blueprint, Struct } from 'optimal';
 import { TaskInterface } from './Task';
 
-export type Partial<T> = { [P in keyof T]?: T[P] };
-
 export interface Context {
   [key: string]: any;
 }

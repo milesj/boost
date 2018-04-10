@@ -16,7 +16,7 @@ import Reporter, { ReporterInterface } from './Reporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { ToolConfig, ToolOptions, PackageConfig, Partial } from './types';
+import { ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export interface ToolInterface extends EmitterInterface {
   argv: string[];

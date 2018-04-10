@@ -10,7 +10,7 @@ import Emitter, { EmitterInterface } from './Emitter';
 import ExitError from './ExitError';
 import { TaskInterface } from './Task';
 import { ReporterInterface } from './Reporter';
-import { ConsoleOptions, Partial } from './types';
+import { ConsoleOptions } from './types';
 
 export interface ConsoleInterface extends EmitterInterface {
   options: ConsoleOptions;

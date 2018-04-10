@@ -29,7 +29,7 @@ declare module 'boost/lib/constants' {
 }
 declare module 'boost/lib/Task' {
   import { Struct } from 'optimal';
-  import { Context, Status, Partial } from 'boost/lib/types';
+  import { Context, Status } from 'boost/lib/types';
   export interface TaskInterface {
       status: Status;
       statusText: string;
@@ -71,9 +71,6 @@ declare module 'boost/lib/Task' {
 declare module 'boost/lib/types' {
   import { Blueprint, Struct } from 'optimal';
   import { TaskInterface } from 'boost/lib/Task';
-  export type Partial<T> = {
-      [P in keyof T]?: T[P];
-  };
   export interface Context {
       [key: string]: any;
   }
@@ -166,7 +163,6 @@ declare module 'boost/lib/ExitError' {
 }
 declare module 'boost/lib/Module' {
   import { Struct } from 'optimal';
-  import { Partial } from 'boost/lib/types';
   export interface ModuleInterface {
       moduleName: string;
       name: string;
@@ -211,7 +207,7 @@ declare module 'boost/lib/Console' {
   import Emitter, { EmitterInterface } from 'boost/lib/Emitter';
   import { TaskInterface } from 'boost/lib/Task';
   import { ReporterInterface } from 'boost/lib/Reporter';
-  import { ConsoleOptions, Partial } from 'boost/lib/types';
+  import { ConsoleOptions } from 'boost/lib/types';
   export interface ConsoleInterface extends EmitterInterface {
       options: ConsoleOptions;
       reporter: ReporterInterface;
@@ -286,7 +282,7 @@ declare module 'boost/lib/Tool' {
   import ModuleLoader from 'boost/lib/ModuleLoader';
   import { PluginInterface } from 'boost/lib/Plugin';
   import { ReporterInterface } from 'boost/lib/Reporter';
-  import { ToolConfig, ToolOptions, PackageConfig, Partial } from 'boost/lib/types';
+  import { ToolConfig, ToolOptions, PackageConfig } from 'boost/lib/types';
   export interface ToolInterface extends EmitterInterface {
       argv: string[];
       config: ToolConfig;
@@ -355,7 +351,7 @@ declare module 'boost/lib/Routine' {
   import { Struct } from 'optimal';
   import Task, { TaskAction, TaskInterface } from 'boost/lib/Task';
   import { ToolInterface } from 'boost/lib/Tool';
-  import { Context, Partial } from 'boost/lib/types';
+  import { Context } from 'boost/lib/types';
   export interface CommandOptions extends Struct {
       sync?: boolean;
   }
@@ -406,6 +402,7 @@ declare module 'boost' {
   import Routine from 'boost/lib/Routine';
   import Tool, { ToolInterface } from 'boost/lib/Tool';
   export { ConfigLoader, ConsoleInterface, Emitter, EmitterInterface, Event, ExitError, Module, ModuleInterface, ModuleLoader, Pipeline, Plugin, PluginInterface, Reporter, ReporterInterface, Routine, Tool, ToolInterface };
+  export { Context, ConsoleOptions, ToolConfig, ToolOptions, PackageConfig, ReportParams, ReportLoader, Status, EventArguments, EventListener, EventNextHandler } from 'boost/lib/types';
 
 }
 declare module 'elegant-spinner' {

@@ -12,7 +12,7 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
-import { Context, Status, Partial } from './types';
+import { Context, Status } from './types';
 
 export interface TaskInterface {
   status: Status;

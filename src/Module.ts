@@ -4,7 +4,6 @@
  */
 
 import { Struct } from 'optimal';
-import { Partial } from './types';
 
 export interface ModuleInterface {
   moduleName: string;
