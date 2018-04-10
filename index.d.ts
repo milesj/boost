@@ -287,11 +287,11 @@ declare module 'boost/lib/Tool' {
       argv: string[];
       config: ToolConfig;
       console: ConsoleInterface;
-      debug: debug.IDebugger;
       options: ToolOptions;
       package: PackageConfig;
       plugins: PluginInterface[];
       createDebugger(...namespaces: string[]): debug.IDebugger;
+      debug(message: string, ...args: any[]): this;
       log(message: string, ...args: any[]): this;
       logError(message: string, ...args: any[]): this;
   }
@@ -300,7 +300,7 @@ declare module 'boost/lib/Tool' {
       config: ToolConfig;
       configLoader: ConfigLoader;
       console: ConsoleInterface;
-      debug: debug.IDebugger;
+      debugger: debug.IDebugger;
       initialized: boolean;
       options: ToolOptions;
       package: PackageConfig;
@@ -308,6 +308,7 @@ declare module 'boost/lib/Tool' {
       plugins: Tp[];
       constructor({footer, header, ...options}: Partial<ToolOptions>, argv?: string[]);
       createDebugger(...namespaces: string[]): debug.IDebugger;
+      debug(message: string, ...args: any[]): this;
       exit(message: string | Error | null, code?: number): this;
       getPlugin(name: string): Tp;
       initialize(): this;
