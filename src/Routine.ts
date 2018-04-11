@@ -85,7 +85,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute<T>(context: Tx, value: T | null = null): Promise<T | null> {
+  execute<T>(context: Tx, value: T | null = null): Promise<any> {
     return this.wrap(value);
   }
 
@@ -125,7 +125,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask<T>(task: TaskInterface, value: T | null = null): Promise<T | null> {
+  executeTask<T>(task: TaskInterface, value: T | null = null): Promise<any> {
     return this.wrap(task.run(this.context, value));
   }
 
@@ -133,7 +133,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines<T>(value: T | null = null): Promise<(T | null)[]> {
+  parallelizeSubroutines<T>(value: T | null = null): Promise<any> {
     return Promise.all(this.subroutines.map(routine => this.executeTask(routine, value)));
   }
 
@@ -141,7 +141,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks<T>(value: T | null = null): Promise<(T | null)[]> {
+  parallelizeTasks<T>(value: T | null = null): Promise<any> {
     return Promise.all(this.subtasks.map(task => this.executeTask(task, value)));
   }
 
@@ -161,7 +161,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Trigger processes before and after execution.
    */
-  run<T>(context: Tx, value: T | null = null): Promise<T | null> {
+  run<T>(context: Tx, value: T | null = null): Promise<any> {
     if (this.exit) {
       return Promise.reject(new ExitError('Process has been interrupted.'));
     }
@@ -190,8 +190,8 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   serialize<T>(
     tasks: TaskInterface[],
     initialValue: T | null = null,
-    accumulator: (task: TaskInterface, value: T | null) => Promise<T | null>,
-  ): Promise<T | null> {
+    accumulator: (task: TaskInterface, value: T | null) => Promise<any>,
+  ): Promise<any> {
     return tasks.reduce(
       (promise, task) => promise.then(value => accumulator(task, value)),
       Promise.resolve(initialValue),
@@ -201,14 +201,14 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines<T>(value: T | null = null): Promise<T | null> {
+  serializeSubroutines<T>(value: T | null = null): Promise<any> {
     return this.serialize(this.subroutines, value, (task, val) => this.executeTask(task, val));
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks<T>(value: T | null = null): Promise<T | null> {
+  serializeTasks<T>(value: T | null = null): Promise<any> {
     return this.serialize(this.subtasks, value, (task, val) => this.executeTask(task, val));
   }
 

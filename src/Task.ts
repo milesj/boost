@@ -25,7 +25,8 @@ export interface TaskInterface {
   isSkipped(): boolean;
   hasFailed(): boolean;
   hasPassed(): boolean;
-  run<T>(context: any, initialValue?: T | null): Promise<T | null>;
+  run<T>(context: any, initialValue?: T | null): Promise<any>;
+  skip(condition?: boolean): this;
   spinner(): string;
 }
 
@@ -107,7 +108,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
   /**
    * Run the current task by executing it and performing any before and after processes.
    */
-  run<T>(context: Tx, initialValue: T | null = null): Promise<T | null> {
+  run<T>(context: Tx, initialValue: T | null = null): Promise<any> {
     // Don't spread context as to preserve references
     this.context = context;
 
@@ -163,7 +164,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
   /**
    * Wrap a value in a promise if it has not already been.
    */
-  wrap<T>(value: T | Promise<T>): Promise<T> {
+  wrap<T>(value: T): Promise<any> {
     return value instanceof Promise ? value : Promise.resolve(value);
   }
 }

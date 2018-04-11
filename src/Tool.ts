@@ -27,8 +27,10 @@ export interface ToolInterface extends EmitterInterface {
   plugins: PluginInterface[];
   createDebugger(...namespaces: string[]): debug.IDebugger;
   debug(message: string, ...args: any[]): this;
+  invariant(condition: boolean, message: string, pass: string, fail: string): this;
   log(message: string, ...args: any[]): this;
   logError(message: string, ...args: any[]): this;
+  getPlugin(name: string): PluginInterface;
 }
 
 export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
@@ -36,9 +38,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
-
-  // @ts-ignore Set after instantiation
-  configLoader: ConfigLoader;
 
   console: ConsoleInterface;
 
@@ -49,9 +48,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   options: ToolOptions;
 
   package: PackageConfig = { name: '' };
-
-  // @ts-ignore Set after instantiation
-  pluginLoader: ModuleLoader<Tp>;
 
   plugins: Tp[] = [];
 
@@ -181,9 +177,10 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       return this;
     }
 
-    this.configLoader = new ConfigLoader(this);
-    this.package = this.configLoader.loadPackageJSON();
-    this.config = this.configLoader.loadConfig();
+    const configLoader = new ConfigLoader(this);
+
+    this.package = configLoader.loadPackageJSON();
+    this.config = configLoader.loadConfig();
 
     // Inherit from argv
     if (this.options.extendArgv) {
@@ -224,10 +221,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     // @ts-ignore Not sure why this is failing
-    const loader: ModuleLoader<Tp> = new ModuleLoader(this, pluginAlias, Plugin);
+    const pluginLoader: ModuleLoader<Tp> = new ModuleLoader(this, pluginAlias, Plugin);
 
-    this.pluginLoader = loader;
-    this.plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
+    this.plugins = pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
     this.plugins.sort((a, b) => a.priority - b.priority);
