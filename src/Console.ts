@@ -18,7 +18,8 @@ export interface ConsoleInterface extends EmitterInterface {
   error(message: string, ...args: any[]): void;
   exit(message: string | Error | null, code: number): void;
   log(message: string, ...args: any[]): void;
-  start(tasks: TaskInterface[]): void;
+  start(tasks?: TaskInterface[]): void;
+  stop(): void;
   update(): void;
 }
 

@@ -11,6 +11,8 @@ export interface EmitterInterface {
   emit(name: string, args: EventArguments, initialValue?: any): Event;
   off(eventName: string, listener: EventListener): this;
   on(eventName: string, listener: EventListener): this;
+  setEventNamespace(namespace: string): this;
+  removeEventNamespace(): this;
 }
 
 export default class Emitter implements EmitterInterface {

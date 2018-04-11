@@ -20,6 +20,8 @@ import { ToolInterface } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { ToolConfig, PackageConfig } from './types';
 
+type PossibleConfig = string | Struct;
+
 export default class ConfigLoader {
   debug: debug.IDebugger;
 
@@ -32,6 +34,65 @@ export default class ConfigLoader {
   constructor(tool: ToolInterface) {
     this.debug = tool.createDebugger(`config-loader`);
     this.tool = tool;
+  }
+
+  /**
+   * Find the config in the package.json block under the application name.
+   */
+  findConfigInPackageJSON(pkg: PackageConfig): PossibleConfig | null {
+    const camelName = camelCase(this.tool.options.appName);
+    const config = pkg[camelName];
+
+    this.tool.invariant(
+      !!config,
+      `Looking in package.json under "${camelName}" property`,
+      'Found',
+      'Not found',
+    );
+
+    if (!config) {
+      return null;
+    }
+
+    // Extend from a preset if a string
+    if (typeof config === 'string') {
+      return { extends: [config] };
+    }
+
+    return config;
+  }
+
+  /**
+   * Find the config using local files commonly located in a configs/ folder.
+   */
+  findConfigInLocalFiles(root: string): PossibleConfig | null {
+    const { appName, configFolder } = this.tool.options;
+    const configPaths = glob.sync(path.join(root, configFolder, `${appName}.{js,json,json5}`), {
+      absolute: true,
+    });
+
+    this.tool.invariant(
+      configPaths.length === 1,
+      `Looking for local config file in order: ${configPaths.join(', ')}`,
+      'Found',
+      'Not found',
+    );
+
+    if (configPaths.length === 1) {
+      this.debug('Found %s', path.basename(configPaths[0]));
+
+      return configPaths[0];
+    }
+
+    if (configPaths.length > 1) {
+      throw new Error(`Multiple "${appName}" configuration files found. Only 1 may exist.`);
+    }
+
+    return null;
+  }
+
+  findConfigInWorkspaceRoot(): PossibleConfig | null {
+    return null;
   }
 
   /**
@@ -58,49 +119,21 @@ export default class ConfigLoader {
       throw new Error('Cannot load configuration as "package.json" has not been loaded.');
     }
 
-    const { appName, configBlueprint, configFolder, pluginAlias, root } = this.tool.options;
-    const camelName = camelCase(appName);
-    let config = {};
-
     this.debug('Locating configuration');
 
-    // Config has been defined in package.json
-    if (this.package[camelName]) {
-      config = this.package[camelName];
+    const { configBlueprint, pluginAlias, root } = this.tool.options;
+    let config = this.findConfigInPackageJSON(this.package);
 
-      this.debug('Found in package.json under "%s" property', camelName);
+    if (!config) {
+      config = this.findConfigInLocalFiles(root);
+    }
 
-      // Extend from a preset if a string
-      if (typeof config === 'string') {
-        config = { extends: [config] };
-      }
+    if (!config) {
+      config = this.findConfigInWorkspaceRoot();
+    }
 
-      // Locate files within a local config folder
-    } else {
-      const filePaths = glob.sync(path.join(root, configFolder, `${appName}.{js,json,json5}`), {
-        absolute: true,
-      });
-
-      const fileNames = [
-        path.join(configFolder, `${appName}.js`),
-        path.join(configFolder, `${appName}.json`),
-        path.join(configFolder, `${appName}.json5`),
-      ];
-
-      this.debug('Resolving in order: %s', fileNames.join(', '));
-
-      if (filePaths.length === 0) {
-        throw new Error(
-          'Local configuration file could not be found. ' +
-            `One of ${fileNames.join(', ')} must exist relative to the project root.`,
-        );
-      } else if (filePaths.length !== 1) {
-        throw new Error(`Multiple "${appName}" configuration files found. Only 1 may exist.`);
-      }
-
-      [config] = filePaths;
-
-      this.debug('Found %s', path.basename(String(config)));
+    if (!config) {
+      throw new Error('Local configuration file or package.json property could not be found.');
     }
 
     // Parse and extend configuration
@@ -156,7 +189,7 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: string | Struct): Struct {
+  parseAndExtend(fileOrConfig: PossibleConfig): Struct {
     let config;
     let baseDir = '';
 

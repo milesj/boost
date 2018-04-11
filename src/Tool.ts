@@ -27,6 +27,7 @@ export interface ToolInterface extends EmitterInterface {
   plugins: PluginInterface[];
   createDebugger(...namespaces: string[]): debug.IDebugger;
   debug(message: string, ...args: any[]): this;
+  initialize(): this;
   invariant(condition: boolean, message: string, pass: string, fail: string): this;
   log(message: string, ...args: any[]): this;
   logError(message: string, ...args: any[]): this;
