@@ -20,7 +20,7 @@ import { ToolInterface } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { ToolConfig, PackageConfig } from './types';
 
-type PossibleConfig = string | Struct;
+export type ConfigPathOrStruct = string | Struct;
 
 export default class ConfigLoader {
   debug: debug.IDebugger;
@@ -39,7 +39,7 @@ export default class ConfigLoader {
   /**
    * Find the config in the package.json block under the application name.
    */
-  findConfigInPackageJSON(pkg: PackageConfig): PossibleConfig | null {
+  findConfigInPackageJSON(pkg: PackageConfig): ConfigPathOrStruct | null {
     const camelName = camelCase(this.tool.options.appName);
     const config = pkg[camelName];
 
@@ -65,7 +65,7 @@ export default class ConfigLoader {
   /**
    * Find the config using local files commonly located in a configs/ folder.
    */
-  findConfigInLocalFiles(root: string): PossibleConfig | null {
+  findConfigInLocalFiles(root: string): ConfigPathOrStruct | null {
     const { appName, configFolder } = this.tool.options;
     const configPaths = glob.sync(path.join(root, configFolder, `${appName}.{js,json,json5}`), {
       absolute: true,
@@ -95,7 +95,7 @@ export default class ConfigLoader {
    * Find the config within the root when in a workspace.
    */
   // eslint-disable-next-line complexity
-  findConfigInWorkspaceRoot(root: string): PossibleConfig | null {
+  findConfigInWorkspaceRoot(root: string): ConfigPathOrStruct | null {
     let currentDir = path.dirname(root);
 
     if (currentDir.includes('node_modules')) {
@@ -261,7 +261,7 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: PossibleConfig): Struct {
+  parseAndExtend(fileOrConfig: ConfigPathOrStruct): Struct {
     let config;
     let baseDir = '';
 
