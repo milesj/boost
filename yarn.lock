@@ -54,9 +54,9 @@
   version "0.5.0"
   resolved "https://registry.npmjs.org/@beemo/driver-typescript/-/driver-typescript-0.5.0.tgz#800647121a81d9eb29c2c35e7de0765d572d98dc"
 
-"@milesj/build-tool-config@0.82.2":
-  version "0.82.2"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.82.2.tgz#9b57c0bb8fed8a0e975b1918d35b91bdbabb118a"
+"@milesj/build-tool-config@0.84.1":
+  version "0.84.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.84.1.tgz#df3763efff2fbfa1af30285515d9f302880b48a5"
   dependencies:
     "@beemo/cli" "^0.16.0"
     "@beemo/core" "^0.16.0"
@@ -65,9 +65,7 @@
     "@beemo/driver-jest" "^0.16.0"
     "@beemo/driver-prettier" "^0.16.0"
     "@beemo/driver-typescript" "^0.5.0"
-    "@types/enzyme" "^3.1.9"
-    "@types/jest" "^22.2.2"
-    "@types/react" "^16.0.41"
+    "@types/jest" "^22.2.3"
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
     babel-jest "^22.4.3"
@@ -81,7 +79,6 @@
     babel-preset-stage-2 "^6.24.1"
     babel-runtime "^6.26.0"
     clean-webpack-plugin "^0.1.19"
-    dts-generator "^2.1.0"
     enzyme "^3.3.0"
     enzyme-adapter-react-16 "^1.1.1"
     eslint "^4.19.1"
@@ -95,14 +92,14 @@
     eslint-plugin-promise "^3.7.0"
     eslint-plugin-react "^7.7.0"
     eslint-plugin-typescript "^0.11.0"
-    eslint-plugin-unicorn "^4.0.2"
+    eslint-plugin-unicorn "^4.0.3"
     execa "^0.10.0"
     fs-extra "^5.0.0"
     gitbook-cli "^2.3.2"
     jest "^22.4.3"
     jest-runner-eslint "^0.4.0"
     np "^2.20.1"
-    prettier "^1.11.1"
+    prettier "^1.12.0"
     react "^16.2.0"
     react-dom "^16.2.0"
     react-test-renderer "^16.2.0"
@@ -119,20 +116,9 @@
   dependencies:
     chalk "*"
 
-"@types/cheerio@*":
-  version "0.22.7"
-  resolved "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.7.tgz#4a92eafedfb2b9f4437d3a4410006d81114c66ce"
-
 "@types/debug@^0.0.30":
   version "0.0.30"
   resolved "https://registry.npmjs.org/@types/debug/-/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
-
-"@types/enzyme@^3.1.9":
-  version "3.1.9"
-  resolved "https://registry.npmjs.org/@types/enzyme/-/enzyme-3.1.9.tgz#fbd97f3beb7cad76fc9c6f04c97d77f4834522ef"
-  dependencies:
-    "@types/cheerio" "*"
-    "@types/react" "*"
 
 "@types/events@*":
   version "1.2.0"
@@ -156,9 +142,9 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/jest@^22.2.2":
-  version "22.2.2"
-  resolved "https://registry.npmjs.org/@types/jest/-/jest-22.2.2.tgz#afe5dacbd00d65325f52da0ed3e76e259629ac9d"
+"@types/jest@^22.2.3":
+  version "22.2.3"
+  resolved "https://registry.npmjs.org/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
 
 "@types/json5@^0.0.29":
   version "0.0.29"
@@ -185,14 +171,6 @@
 "@types/pluralize@^0.0.28":
   version "0.0.28"
   resolved "https://registry.npmjs.org/@types/pluralize/-/pluralize-0.0.28.tgz#daf46f90fdaa6172600bfeac81e46065177f03ea"
-
-"@types/react@*":
-  version "16.0.40"
-  resolved "https://registry.npmjs.org/@types/react/-/react-16.0.40.tgz#caabc2296886f40b67f6fc80f0f3464476461df9"
-
-"@types/react@^16.0.41":
-  version "16.0.41"
-  resolved "https://registry.npmjs.org/@types/react/-/react-16.0.41.tgz#72146737f4d439dc95a53315de4bfb43ac8542ca"
 
 "@types/split@^0.3.28":
   version "0.3.28"
@@ -1345,10 +1323,6 @@ block-stream@*, block-stream@0.0.9:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@3.3.3:
-  version "3.3.3"
-  resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.3.3.tgz#cf96a45d77b9a97a43c46a365c4619f62bf976d0"
-
 bluebird@^3.4.1, bluebird@^3.5.0, bluebird@^3.5.1, bluebird@~3.5.0:
   version "3.5.1"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
@@ -2439,14 +2413,6 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
-dts-generator@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/dts-generator/-/dts-generator-2.1.0.tgz#039b87a4f5f847b3b8ef00ddee3eb09545decefe"
-  dependencies:
-    bluebird "3.3.3"
-    glob "7.0.0"
-    mkdirp "0.5.1"
-
 duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npmjs.org/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
@@ -2741,9 +2707,9 @@ eslint-plugin-typescript@^0.11.0:
   dependencies:
     requireindex "~1.1.0"
 
-eslint-plugin-unicorn@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npmjs.org/eslint-plugin-unicorn/-/eslint-plugin-unicorn-4.0.2.tgz#845de915e7a975f15779466fc92cc01973bbf103"
+eslint-plugin-unicorn@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.npmjs.org/eslint-plugin-unicorn/-/eslint-plugin-unicorn-4.0.3.tgz#7e9998711bf237809ed1881a51a77000b2f40586"
   dependencies:
     clean-regexp "^1.0.0"
     eslint-ast-utils "^1.0.0"
@@ -3524,16 +3490,6 @@ glob2base@^0.0.12:
   resolved "https://registry.npmjs.org/glob2base/-/glob2base-0.0.12.tgz#9d419b3e28f12e83a362164a277055922c9c0d56"
   dependencies:
     find-index "^0.1.1"
-
-glob@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/glob/-/glob-7.0.0.tgz#3b20a357fffcf46bb384aed6f8ae9a647fdb6ac4"
-  dependencies:
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "2 || 3"
-    once "^1.3.0"
-    path-is-absolute "^1.0.0"
 
 glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2, glob@~7.1.2:
   version "7.1.2"
@@ -5474,7 +5430,7 @@ minimalistic-crypto-utils@^1.0.0, minimalistic-crypto-utils@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
 
-"minimatch@2 || 3", minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4, minimatch@~3.0.3:
+minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4, minimatch@~3.0.3:
   version "3.0.4"
   resolved "https://registry.npmjs.org/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
@@ -5551,7 +5507,7 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@~0.5.1:
+"mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@~0.5.1:
   version "0.5.1"
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
@@ -6537,9 +6493,9 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-prettier@^1.11.1:
-  version "1.11.1"
-  resolved "https://registry.npmjs.org/prettier/-/prettier-1.11.1.tgz#61e43fc4cd44e68f2b0dfc2c38cd4bb0fccdcc75"
+prettier@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-1.12.0.tgz#d26fc5894b9230de97629b39cae225b503724ce8"
 
 pretty-format@^22.4.0:
   version "22.4.0"

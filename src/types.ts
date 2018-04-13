@@ -35,6 +35,7 @@ export interface ToolOptions extends Struct {
   pluginAlias: string;
   root: string;
   scoped: boolean;
+  workspaceRoot: string;
 }
 
 export interface PackageConfig extends Struct {

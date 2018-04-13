@@ -113,6 +113,12 @@ describe('ConfigLoader', () => {
         loader.findConfigInWorkspaceRoot(getFixturePath('workspace-lerna', './packages/foo')),
       ).toEqual({ lerna: true });
     });
+
+    it('sets workspace root if match found', () => {
+      loader.findConfigInWorkspaceRoot(getFixturePath('workspace-yarn', './packages/foo'));
+
+      expect(loader.workspaceRoot).toEqual(getFixturePath('workspace-yarn'));
+    });
   });
 
   describe('loadConfig()', () => {

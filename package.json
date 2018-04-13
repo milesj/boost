@@ -6,7 +6,7 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "babel": "beemo typescript --node --declaration",
+    "babel": "beemo typescript --node",
     "build": "yarn run babel",
     "clean": "rimraf ./{lib,esm}/",
     "coverage": "yarn run jest --coverage",
@@ -65,7 +65,7 @@
     "optimal": "^0.19.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.82.2",
+    "@milesj/build-tool-config": "0.84.1",
     "fs-extra": "^5.0.0"
   },
   "beemo": {

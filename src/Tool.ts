@@ -66,6 +66,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
         pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
+        workspaceRoot: string().empty(),
       },
       {
         name: 'Tool',
@@ -182,6 +183,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     this.package = configLoader.loadPackageJSON();
     this.config = configLoader.loadConfig();
+
+    // Inherit workspace root if found
+    this.options.workspaceRoot = configLoader.workspaceRoot;
 
     // Inherit from argv
     if (this.options.extendArgv) {
