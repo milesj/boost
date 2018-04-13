@@ -91,8 +91,85 @@ export default class ConfigLoader {
     return null;
   }
 
-  findConfigInWorkspaceRoot(): PossibleConfig | null {
-    return null;
+  /**
+   * Find the config within the root when in a workspace.
+   */
+  // eslint-disable-next-line complexity
+  findConfigInWorkspaceRoot(root: string): PossibleConfig | null {
+    let currentDir = path.dirname(root);
+
+    if (currentDir.includes('node_modules')) {
+      return null;
+    }
+
+    this.tool.debug('Detecting if in a workspace');
+
+    let workspaceRoot = '';
+    let workspacePackage: any = {};
+    let workspacePatterns = [];
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (!currentDir || currentDir === '.' || currentDir === '/') {
+        break;
+      }
+
+      const pkgPath = path.join(currentDir, 'package.json');
+      const lernaPath = path.join(currentDir, 'lerna.json');
+
+      // Yarn
+      if (fs.existsSync(pkgPath)) {
+        workspacePackage = this.parseFile(pkgPath);
+
+        if (workspacePackage.workspaces) {
+          workspaceRoot = currentDir;
+          workspacePatterns = workspacePackage.workspaces;
+
+          break;
+        }
+      }
+
+      // Lerna
+      if (workspacePackage && fs.existsSync(lernaPath)) {
+        const lerna = this.parseFile(lernaPath);
+
+        if (lerna.packages) {
+          workspaceRoot = currentDir;
+          workspacePatterns = lerna.packages;
+
+          break;
+        }
+      }
+
+      currentDir = path.dirname(currentDir);
+    }
+
+    if (!workspaceRoot) {
+      this.tool.debug('No workspace found');
+
+      return null;
+    }
+
+    const match = workspacePatterns.some(
+      (pattern: string) => !!root.match(new RegExp(path.join(workspaceRoot, pattern))),
+    );
+
+    this.tool.invariant(
+      match,
+      `Matching patterns: ${workspacePatterns.join(', ')}`,
+      'Match found',
+      'Invalid workspace package',
+    );
+
+    if (!match) {
+      return null;
+    }
+
+    return (
+      this.findConfigInPackageJSON(workspacePackage) ||
+      this.findConfigInLocalFiles(workspaceRoot) ||
+      null
+    );
   }
 
   /**
@@ -122,15 +199,10 @@ export default class ConfigLoader {
     this.debug('Locating configuration');
 
     const { configBlueprint, pluginAlias, root } = this.tool.options;
-    let config = this.findConfigInPackageJSON(this.package);
-
-    if (!config) {
-      config = this.findConfigInLocalFiles(root);
-    }
-
-    if (!config) {
-      config = this.findConfigInWorkspaceRoot();
-    }
+    const config =
+      this.findConfigInPackageJSON(this.package) ||
+      this.findConfigInLocalFiles(root) ||
+      this.findConfigInWorkspaceRoot(root);
 
     if (!config) {
       throw new Error('Local configuration file or package.json property could not be found.');

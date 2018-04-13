@@ -35,6 +35,86 @@ describe('ConfigLoader', () => {
     fixtures.forEach(remove => remove());
   });
 
+  describe('findConfigInPackageJSON()', () => {
+    it('returns null if not found', () => {
+      expect(loader.findConfigInPackageJSON({})).toBeNull();
+    });
+
+    it('returns object if found', () => {
+      expect(
+        loader.findConfigInPackageJSON({
+          testBoost: {
+            foo: 'bar',
+          },
+        }),
+      ).toEqual({
+        foo: 'bar',
+      });
+    });
+
+    it('returns extends object if a string is passed', () => {
+      expect(
+        loader.findConfigInPackageJSON({
+          testBoost: './foo.json',
+        }),
+      ).toEqual({
+        extends: ['./foo.json'],
+      });
+    });
+  });
+
+  describe('findConfigInLocalFiles()', () => {
+    beforeEach(() => {
+      loader.package = { name: 'foo' };
+    });
+
+    it('returns null when no files found', () => {
+      expect(loader.findConfigInLocalFiles(getFixturePath('app-no-configs'))).toBeNull();
+    });
+
+    it('errors if too many files are found', () => {
+      expect(() => {
+        loader.findConfigInLocalFiles(getFixturePath('app-multi-configs'));
+      }).toThrowError('Multiple "test-boost" configuration files found. Only 1 may exist.');
+    });
+
+    it('returns file path if found', () => {
+      expect(loader.findConfigInLocalFiles(loader.tool.options.root)).toBe(
+        getFixturePath('app', './configs/test-boost.json'),
+      );
+    });
+  });
+
+  describe('findConfigInWorkspaceRoot()', () => {
+    it('returns null if node modules path detected', () => {
+      expect(loader.findConfigInWorkspaceRoot('/path/node_modules/path')).toBeNull();
+    });
+
+    it('returns null when workspace root found and pattern does not match', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-mismatch', './packages/foo')),
+      ).toBeNull();
+    });
+
+    it('returns null when workspace root found and no config file', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-mismatch', './packages/foo')),
+      ).toBeNull();
+    });
+
+    it('loads config when using yarn workspaces (using config file)', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-yarn', './packages/foo')),
+      ).toEqual(getFixturePath('workspace-yarn', './configs/test-boost.js'));
+    });
+
+    it('loads config when using lerna workspaces (using package.json)', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-lerna', './packages/foo')),
+      ).toEqual({ lerna: true });
+    });
+  });
+
   describe('loadConfig()', () => {
     it('errors if package.json has not been loaded', () => {
       expect(() => {
@@ -141,9 +221,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError(
-          'Local configuration file could not be found. One of configs/test-boost.js, configs/test-boost.json, configs/test-boost.json5 must exist relative to the project root.',
-        );
+        }).toThrowError('Local configuration file or package.json property could not be found.');
       });
 
       it('errors if too many files are found', () => {

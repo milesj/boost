@@ -1,0 +1,7 @@
+{
+  "name": "test-boost-workspace-lerna",
+  "version": "0.0.0",
+  "testBoost": {
+    "lerna": true
+  }
+}
