@@ -3,7 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { frames } from 'elegant-spinner';
 import { Struct } from 'optimal';
 import {
   STATUS_PENDING,
@@ -27,7 +26,6 @@ export interface TaskInterface {
   hasPassed(): boolean;
   run<T>(context: any, initialValue?: T | null): Promise<any>;
   skip(condition?: boolean): this;
-  spinner(): string;
 }
 
 export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
@@ -149,16 +147,6 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
     }
 
     return this;
-  }
-
-  /**
-   * Create a spinner and update the frames each call.
-   */
-  spinner(): string {
-    // eslint-disable-next-line no-plusplus
-    this.frame = ++this.frame % frames.length;
-
-    return frames[this.frame];
   }
 
   /**

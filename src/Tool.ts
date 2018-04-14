@@ -29,8 +29,6 @@ export interface ToolInterface extends EmitterInterface {
   debug(message: string, ...args: any[]): this;
   initialize(): this;
   invariant(condition: boolean, message: string, pass: string, fail: string): this;
-  log(message: string, ...args: any[]): this;
-  logError(message: string, ...args: any[]): this;
   getPlugin(name: string): PluginInterface;
 }
 
@@ -82,7 +80,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     this.debugger = this.createDebugger('core');
 
     // Initialize the console first so we can start logging
-    this.console = new Console(new Reporter(), {
+    this.console = new Console({
       footer,
       header,
     });
@@ -256,36 +254,20 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       throw new Error('Cannot load reporter as configuration has not been loaded.');
     }
 
-    const { reporter } = this.config;
+    const { reporter: reporterName } = this.config;
 
     // Load based on name
-    if (reporter) {
+    if (reporterName) {
       const loader: ModuleLoader<ReporterInterface> = new ModuleLoader(this, 'reporter', Reporter);
+      const reporter = loader.loadModule(reporterName);
 
-      this.console.reporter = loader.loadModule(reporter);
+      reporter.bootstrap(this.console);
+      this.console.reporter = reporter;
 
       // Use native Boost reporter
     } else {
       this.debug(`Using native ${chalk.green('boost')} reporter`);
     }
-
-    return this;
-  }
-
-  /**
-   * Add a message to the output log.
-   */
-  log(message: string, ...args: any[]): this {
-    this.console.log(message, ...args);
-
-    return this;
-  }
-
-  /**
-   * Add a message to the logError log.
-   */
-  logError(message: string, ...args: any[]): this {
-    this.console.error(message, ...args);
 
     return this;
   }

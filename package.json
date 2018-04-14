@@ -50,7 +50,6 @@
     "@types/split": "^0.3.28",
     "chalk": "^2.3.2",
     "debug": "^3.1.0",
-    "elegant-spinner": "^1.0.1",
     "execa": "^0.10.0",
     "figures": "^2.0.0",
     "glob": "^7.1.2",

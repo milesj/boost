@@ -36,14 +36,17 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
     this.context = context;
 
     cli.start(this.subroutines);
+    cli.emit('start');
 
     return this.serializeSubroutines(initialValue)
       .then(result => {
+        cli.emit('stop');
         cli.exit(null, 0);
 
         return result;
       })
       .catch(error => {
+        cli.emit('stop', [error]);
         cli.exit(error, 1);
 
         // Handled above by the console

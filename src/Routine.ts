@@ -126,7 +126,19 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * with the provided value.
    */
   executeTask<T>(task: TaskInterface, value: T | null = null): Promise<any> {
-    return this.wrap(task.run(this.context, value));
+    this.tool.console.emit('task', [task, value]);
+
+    return this.wrap(task.run(this.context, value))
+      .then(result => {
+        this.tool.console.emit('task.pass', [task, result]);
+
+        return result;
+      })
+      .catch(error => {
+        this.tool.console.emit('task.fail', [task, error]);
+
+        throw error;
+      });
   }
 
   /**
@@ -168,15 +180,17 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
     this.debug('Executing routine %s', chalk.green(this.key));
 
+    this.tool.console.emit('routine', [this, value]);
+
     return super
       .run(context, value)
       .then(result => {
-        this.tool.console.update();
+        this.tool.console.emit('routine.pass', [this, result]);
 
         return result;
       })
       .catch(error => {
-        this.tool.console.update();
+        this.tool.console.emit('routine.fail', [this, error]);
 
         throw error;
       });
