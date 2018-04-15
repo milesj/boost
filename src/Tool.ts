@@ -117,7 +117,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
    * Force exit the application.
    */
   exit(message: string | Error | null, code: number = 1): this {
-    this.console.exit(message, code);
+    // this.console.exit(message, code);
 
     return this;
   }
@@ -255,18 +255,25 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     const { reporter: reporterName } = this.config;
+    let reporter = null;
 
     // Load based on name
     if (reporterName) {
-      const loader: ModuleLoader<ReporterInterface> = new ModuleLoader(this, 'reporter', Reporter);
-      const reporter = loader.loadModule(reporterName);
+      reporter = new ModuleLoader<ReporterInterface>(this, 'reporter', Reporter).loadModule(
+        reporterName,
+      );
 
-      reporter.bootstrap(this.console);
       this.console.reporter = reporter;
 
       // Use native Boost reporter
     } else {
+      reporter = new Reporter();
+
       this.debug(`Using native ${chalk.green('boost')} reporter`);
+    }
+
+    if (reporter) {
+      reporter.bootstrap(this.console);
     }
 
     return this;

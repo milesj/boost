@@ -16,7 +16,6 @@ import split from 'split';
 import { Readable } from 'stream';
 import { Struct } from 'optimal';
 import ExitError from './ExitError';
-import Reporter from './Reporter';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
@@ -109,6 +108,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       out.pipe(split()).on('data', (line: string) => {
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
+          this.tool.console.emit('command.data', [line]);
         }
       });
     }
@@ -122,20 +122,29 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
+   * Execute a sub-routine with the provided value.
+   */
+  executeSubroutine<T>(task: TaskInterface, value: T | null = null): Promise<any> {
+    return this.wrap(task.run(this.context, value));
+  }
+
+  /**
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
   executeTask<T>(task: TaskInterface, value: T | null = null): Promise<any> {
-    this.tool.console.emit('task', [task, value]);
+    const { console: cli } = this.tool;
+
+    cli.emit('task', [task, value]);
 
     return this.wrap(task.run(this.context, value))
       .then(result => {
-        this.tool.console.emit('task.pass', [task, result]);
+        cli.emit('task.pass', [task, result]);
 
         return result;
       })
       .catch(error => {
-        this.tool.console.emit('task.fail', [task, error]);
+        cli.emit('task.fail', [task, error]);
 
         throw error;
       });
@@ -146,7 +155,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines<T>(value: T | null = null): Promise<any> {
-    return Promise.all(this.subroutines.map(routine => this.executeTask(routine, value)));
+    return Promise.all(this.subroutines.map(routine => this.executeSubroutine(routine, value)));
   }
 
   /**
@@ -180,17 +189,19 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
     this.debug('Executing routine %s', chalk.green(this.key));
 
-    this.tool.console.emit('routine', [this, value]);
+    const { console: cli } = this.tool;
+
+    cli.emit('routine', [this, value]);
 
     return super
       .run(context, value)
       .then(result => {
-        this.tool.console.emit('routine.pass', [this, result]);
+        cli.emit('routine.pass', [this, result]);
 
         return result;
       })
       .catch(error => {
-        this.tool.console.emit('routine.fail', [this, error]);
+        cli.emit('routine.fail', [this, error]);
 
         throw error;
       });
@@ -216,7 +227,9 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in sequential (serial) order.
    */
   serializeSubroutines<T>(value: T | null = null): Promise<any> {
-    return this.serialize(this.subroutines, value, (task, val) => this.executeTask(task, val));
+    return this.serialize(this.subroutines, value, (task, val) =>
+      this.executeSubroutine(task, val),
+    );
   }
 
   /**
