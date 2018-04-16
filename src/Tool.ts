@@ -13,6 +13,7 @@ import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
 import Reporter, { ReporterInterface } from './Reporter';
+import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
@@ -263,16 +264,16 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
         reporterName,
       );
 
-      this.console.reporter = reporter;
-
       // Use native Boost reporter
     } else {
-      reporter = new Reporter();
+      reporter = new DefaultReporter();
 
       this.debug(`Using native ${chalk.green('boost')} reporter`);
     }
 
     if (reporter) {
+      this.console.reporter = reporter;
+
       reporter.bootstrap(this.console);
     }
 

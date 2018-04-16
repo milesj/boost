@@ -25,13 +25,22 @@ export interface CommandOptions extends Struct {
   sync?: boolean;
 }
 
-export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx> {
+export interface RoutineInterface extends TaskInterface {
+  key: string;
+  subroutines: RoutineInterface[];
+  tool: ToolInterface;
+}
+
+export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx>
+  implements RoutineInterface {
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
   debug: debug.IDebugger;
 
   key: string = '';
+
+  subroutines: RoutineInterface[] = [];
 
   // @ts-ignore Set after instantiation
   tool: ToolInterface;

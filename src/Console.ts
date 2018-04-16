@@ -6,11 +6,13 @@
 import Emitter, { EmitterInterface } from './Emitter';
 import { ReporterInterface } from './Reporter';
 
-export interface ConsoleOptions {}
+export interface ConsoleOptions {
+  [key: string]: any;
+}
 
 export interface ConsoleInterface extends EmitterInterface {
   options: ConsoleOptions;
-  reporter: ReporterInterface;
+  reporter?: ReporterInterface;
   // error(message: string, ...args: any[]): void;
   // exit(message: string | Error | null, code: number): void;
   // log(message: string, ...args: any[]): void;
@@ -20,5 +22,11 @@ export interface ConsoleInterface extends EmitterInterface {
 }
 
 export default class Console extends Emitter {
-  // constructor(parameters) {}
+  options: ConsoleOptions = {};
+
+  reporter?: ReporterInterface;
+
+  constructor(options: ConsoleOptions = {}) {
+    super();
+  }
 }

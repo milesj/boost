@@ -16,7 +16,6 @@ import { Context, Status } from './types';
 export interface TaskInterface {
   status: Status;
   statusText: string;
-  subroutines: TaskInterface[];
   subtasks: TaskInterface[];
   title: string;
   isPending(): boolean;
@@ -45,8 +44,6 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
   status: Status = STATUS_PENDING;
 
   statusText: string = '';
-
-  subroutines: TaskInterface[] = [];
 
   subtasks: TaskInterface[] = [];
 

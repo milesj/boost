@@ -17,7 +17,7 @@ class MultiTaskRoutine extends Routine {
 
   delayedTask() {
     return new Promise(resolve => {
-      setTimeout(resolve, random(1000, 250));
+      setTimeout(resolve, random(750, 250));
     });
   }
 }
@@ -30,6 +30,6 @@ const tool = new Tool(
 );
 
 new Pipeline(tool)
-  .pipe(new MultiTaskRoutine('multi1', 'Multi-task routine #1'))
-  .pipe(new MultiTaskRoutine('multi2', 'Multi-task routine #2'))
+  .pipe(new MultiTaskRoutine('multi', 'Multi-task routine #1'))
+  .pipe(new MultiTaskRoutine('many', 'Multi-task routine #2'))
   .run({});
