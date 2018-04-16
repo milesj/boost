@@ -130,10 +130,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/figures@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@types/figures/-/figures-2.0.0.tgz#e624a9ad71db49b9c8b9bbd59fe1ad04c443913c"
-
 "@types/glob@^5.0.35":
   version "5.0.35"
   resolved "https://registry.npmjs.org/@types/glob/-/glob-5.0.35.tgz#1ae151c802cece940443b5ac246925c85189f32a"
@@ -153,12 +149,6 @@
 "@types/lodash@^4.14.106":
   version "4.14.106"
   resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.106.tgz#6093e9a02aa567ddecfe9afadca89e53e5dce4dd"
-
-"@types/log-update@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@types/log-update/-/log-update-2.0.0.tgz#ba8996a25251e8f5aee355194c352f13741c96d7"
-  dependencies:
-    "@types/node" "*"
 
 "@types/minimatch@*":
   version "3.0.3"

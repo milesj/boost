@@ -7,47 +7,25 @@ import rl from 'readline';
 import chalk from 'chalk';
 import { ConsoleInterface } from './Console';
 import Reporter from './Reporter';
-import { RoutineInterface } from './Routine';
-import { TaskInterface } from './Task';
+import Routine, { RoutineInterface } from './Routine';
+import Task, { TaskInterface } from './Task';
 
 export default class DefaultReporter extends Reporter {
   depth: number = 0;
+
+  lines: (TaskInterface | RoutineInterface)[] = [];
 
   keyLengths: { [depth: number]: number } = {};
 
   bootstrap(cli: ConsoleInterface) {
     super.bootstrap(cli);
 
-    const maxLines = process.stdout.rows;
-
-    cli.on('start', (event, routines: RoutineInterface[]) => {
-      this.calculateKeyLengths(routines);
-      this.hideCursor();
-    });
-
-    cli.on('stop', () => {
-      this.showCursor();
-    });
-
-    cli.on('task', (event, task) => {
-      // console.log(chalk.gray(task.title));
-    });
-
-    cli.on('task.pass', (event, task) => {
-      // this.moveToStartOfLine(maxLines);
-      // this.clearLine();
-    });
-
-    cli.on('task.fail', (event, task) => {
-      // this.moveToStartOfLine(maxLines);
-      // this.clearLine();
-    });
-
-    cli.on('routine', (event, routine: RoutineInterface) => {
-      console.log(this.renderLine(routine));
-      this.depth += 1;
-    });
-
+    cli.on('start', this.handleStart);
+    cli.on('stop', this.handleStop);
+    cli.on('task', this.handleTask);
+    cli.on('task.pass', this.handleTaskComplete);
+    cli.on('task.fail', this.handleTaskComplete);
+    cli.on('routine', this.handleRoutine);
     cli.on('routine.pass', this.handleRoutineComplete);
     cli.on('routine.fail', this.handleRoutineComplete);
   }
@@ -72,17 +50,18 @@ export default class DefaultReporter extends Reporter {
     return tasks.reduce((sum, task) => (task.hasPassed() || task.isSkipped() ? sum + 1 : sum), 0);
   }
 
-  getLineTitle(routine: RoutineInterface): string {
-    const { title, subtasks } = routine;
-    let line = title;
+  /**
+   * Return the task title with additional metadata.
+   */
+  getLineTitle(task: TaskInterface): string {
+    const { subtasks } = task;
+    let line = task.statusText || task.title;
 
-    if (routine.isSkipped()) {
+    if (task.isSkipped()) {
       line += chalk.yellow(' [skipped]');
-    } else if (routine.hasFailed()) {
+    } else if (task.hasFailed()) {
       line += chalk.red(' [failed]');
-    }
-
-    if (subtasks.length > 0) {
+    } else if (subtasks.length > 0) {
       line += chalk.gray(` [${this.calculateTaskCompletion(subtasks)}/${subtasks.length}]`);
     }
 
@@ -104,19 +83,84 @@ export default class DefaultReporter extends Reporter {
     return 'white';
   }
 
-  handleRoutineComplete = (event: any, routine: RoutineInterface) => {
-    rl.clearLine(process.stdout, 0);
-    rl.cursorTo(process.stdout, 0);
-
-    console.log(this.renderLine(routine));
-    this.depth -= 1;
+  handleStart = (event: any, routines: RoutineInterface[]) => {
+    this.calculateKeyLengths(routines);
   };
 
-  renderLine(routine: RoutineInterface): string {
-    // console.log('d=', this.depth);
-    const key = routine.key.toUpperCase().padEnd(this.keyLengths[this.depth]);
+  handleStop = (event: any, error: Error) => {
+    if (error) {
+      this.renderError(error);
+    }
+  };
+
+  /**
+   * When a task is running, render the title as the last line.
+   */
+  handleTask = (event: any, task: TaskInterface) => {
+    // First task for the current routine
+    if (this.lines[0] instanceof Routine) {
+      this.lines.unshift(task);
+
+      // Replace the previous task with a new task
+    } else {
+      this.lines[0] = task;
+      this.clearLastLine();
+    }
+
+    // Re-render the routine to update passed count
+    this.clearLastLine();
+    this.renderRoutineLine(this.lines[1] as RoutineInterface, this.depth - 1);
+
+    // Render the current task
+    this.renderTaskLine(task);
+  };
+
+  /**
+   * When a task is complete, remove the task output and re-render the routine.
+   */
+  handleTaskComplete = (event: any, task: TaskInterface) => {
+    // Remove previous lines
+    this.lines.shift();
+    this.clearLastLine(); // Task
+    this.clearLastLine(); // Routine
+
+    // Re-render the routine
+    this.renderRoutineLine(this.lines[0] as RoutineInterface, this.depth);
+  };
+
+  /**
+   * When a routine begins, output the status, title, and number of tasks that have ran.
+   */
+  handleRoutine = (event: any, routine: RoutineInterface) => {
+    this.renderRoutineLine(routine, this.depth);
+    this.lines.unshift(routine);
+    this.depth += 1;
+  };
+
+  /**
+   * When a routine is complete, update the status and task ran count.
+   */
+  handleRoutineComplete = (event: any, routine: RoutineInterface) => {
+    this.depth -= 1;
+
+    // Clear sub-routines after they have ran
+    routine.subroutines.forEach(() => {
+      this.clearLastLine();
+    });
+
+    // Re-render the routine line
+    this.clearLastLine();
+    this.renderRoutineLine(routine, this.depth);
+  };
+
+  renderTaskLine(task: TaskInterface) {
+    console.log(chalk.gray(this.getLineTitle(task)));
+  }
+
+  renderRoutineLine(routine: RoutineInterface, depth: number) {
+    const key = routine.key.toUpperCase().padEnd(this.keyLengths[depth]);
     const status = chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
 
-    return `${status} ${this.getLineTitle(routine)}`;
+    console.log(`${this.indent(depth)}${status} ${this.getLineTitle(routine)}`);
   }
 }

@@ -12,7 +12,7 @@ import Console, { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
-import Reporter, { ReporterInterface } from './Reporter';
+import Reporter from './Reporter';
 import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -33,8 +33,7 @@ export interface ToolInterface extends EmitterInterface {
   getPlugin(name: string): PluginInterface;
 }
 
-export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
-  implements ToolInterface {
+export default class Tool<Tp extends PluginInterface> extends Emitter implements ToolInterface {
   argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
@@ -118,7 +117,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
    * Force exit the application.
    */
   exit(message: string | Error | null, code: number = 1): this {
-    // this.console.exit(message, code);
+    this.console.exit(message, code);
 
     return this;
   }
@@ -260,11 +259,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     // Load based on name
     if (reporterName) {
-      reporter = new ModuleLoader<ReporterInterface>(this, 'reporter', Reporter).loadModule(
-        reporterName,
-      );
+      reporter = new ModuleLoader<Reporter>(this, 'reporter', Reporter).loadModule(reporterName);
 
-      // Use native Boost reporter
+      // Use default Boost reporter
     } else {
       reporter = new DefaultReporter();
 
@@ -272,8 +269,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     if (reporter) {
-      this.console.reporter = reporter;
-
       reporter.bootstrap(this.console);
     }
 

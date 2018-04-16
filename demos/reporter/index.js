@@ -9,7 +9,7 @@ function random(max = 15, min = 5) {
 class MultiTaskRoutine extends Routine {
   execute() {
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
-      this.task(`Running task #${index}`, this.delayedTask);
+      this.task(`Running task #${index}`, this.delayedTask).skip(index % 6 === 0);
     });
 
     return this.serializeTasks();

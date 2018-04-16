@@ -5,25 +5,17 @@
 
 /* eslint-disable unicorn/no-hex-escape, unicorn/escape-case */
 
+import rl from 'readline';
 import { Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
+import chalk from 'chalk';
 
 export const { isTTY } = process.stdout;
 
-export interface ReporterInterface extends ModuleInterface {
-  bootstrap(console: ConsoleInterface): void;
-  clear(): this;
-  clearLine(): this;
-  hideCursor(): this;
-  indent(length: number): string;
-  moveToStartOfLine(): this;
-  out(message: string): this;
-  showCursor(): this;
-}
-
-export default class Reporter<To extends Struct = {}> extends Module<To> {
+export default class Reporter<To extends Struct = {}> extends Module<To>
+  implements ModuleInterface {
   restoreCursorOnExit: boolean = false;
 
   start: number = 0;
@@ -57,10 +49,10 @@ export default class Reporter<To extends Struct = {}> extends Module<To> {
   /**
    * Clear the last console line.
    */
-  clearLine(): this {
+  clearLastLine(): this {
     if (isTTY) {
-      // @ts-ignore
-      process.stdout.clearLine();
+      rl.moveCursor(process.stdout, 0, -1);
+      rl.clearLine(process.stdout, 0);
     }
 
     return this;
@@ -94,12 +86,12 @@ export default class Reporter<To extends Struct = {}> extends Module<To> {
   }
 
   /**
-   * Move cursor to start of console line.
+   * Move cursor to the last console line (where commands are input).
    */
-  moveToStartOfLine(line: number = 0): this {
-    // if (isTTY) {
-    //   readline.cursorTo(process.stdout, line, 0);
-    // }
+  moveToLastLine(): this {
+    if (isTTY) {
+      rl.cursorTo(process.stdout, 0, process.stdout.rows);
+    }
 
     return this;
   }
@@ -111,6 +103,10 @@ export default class Reporter<To extends Struct = {}> extends Module<To> {
     process.stdout.write(message);
 
     return this;
+  }
+
+  renderError(error: Error): void {
+    console.log(chalk.red(String(error.stack)));
   }
 
   /**
