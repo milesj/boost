@@ -3,24 +3,38 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable unicorn/no-hex-escape, unicorn/escape-case */
+/* eslint-disable unicorn/no-hex-escape */
 
 import rl from 'readline';
+import chalk from 'chalk';
 import { Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
-import chalk from 'chalk';
 
-export const { isTTY } = process.stdout;
+const DEBOUNCE_MS = 25;
 
-export default class Reporter<To extends Struct = {}> extends Module<To>
+export default class Reporter<T, To extends Struct = {}> extends Module<To>
   implements ModuleInterface {
+  hasOutput: boolean = false;
+
+  lines: T[] = [];
+
+  renderScheduled: boolean = false;
+
   restoreCursorOnExit: boolean = false;
 
   start: number = 0;
 
   stop: number = 0;
+
+  stream: NodeJS.WriteStream;
+
+  constructor(options: Partial<To> = {}) {
+    super(options);
+
+    this.stream = process.stdout;
+  }
 
   /**
    * Register console listeners.
@@ -30,30 +44,68 @@ export default class Reporter<To extends Struct = {}> extends Module<To>
       this.start = Date.now();
     });
 
-    cli.on('stop', () => {
+    cli.on('stop', (event: any, error: Error) => {
       this.stop = Date.now();
+
+      if (error) {
+        this.renderError(error);
+      }
     });
   }
 
   /**
-   * Clear the entire console.
+   * Add a line to be rendered.
    */
-  clear(): this {
-    if (isTTY) {
-      this.out('\x1Bc');
-    }
+  addLine(line: T): this {
+    this.clearLinesOutput();
+    this.lines.push(line);
 
     return this;
   }
 
   /**
-   * Clear the last console line.
+   * Clear the entire console.
    */
-  clearLastLine(): this {
-    if (isTTY) {
-      rl.moveCursor(process.stdout, 0, -1);
-      rl.clearLine(process.stdout, 0);
+  clearOutput(): this {
+    if (this.stream.isTTY) {
+      this.log('\x1Bc');
     }
+
+    this.hasOutput = false;
+
+    return this;
+  }
+
+  /**
+   * Clear defined lines from the console.
+   */
+  clearLinesOutput(): this {
+    if (!this.stream.isTTY || !this.hasOutput) {
+      return this;
+    }
+
+    this.resetCursor();
+    this.log('\x1B[1A\x1B[K'.repeat(this.lines.length));
+    this.hasOutput = false;
+
+    return this;
+  }
+
+  /**
+   * Debounce the render as to avoid tearing.
+   */
+  debounceRender(): this {
+    if (this.renderScheduled) {
+      return this;
+    }
+
+    this.renderScheduled = true;
+
+    setTimeout(() => {
+      this.render();
+      this.hasOutput = true;
+      this.renderScheduled = false;
+    }, DEBOUNCE_MS);
 
     return this;
   }
@@ -62,7 +114,7 @@ export default class Reporter<To extends Struct = {}> extends Module<To>
    * Hide the console cursor.
    */
   hideCursor(): this {
-    if (!isTTY) {
+    if (!this.stream.isTTY) {
       return this;
     }
 
@@ -72,7 +124,7 @@ export default class Reporter<To extends Struct = {}> extends Module<To>
       });
     }
 
-    this.out('\u001b[?25l');
+    this.log('\x1B[?25l');
     this.restoreCursorOnExit = true;
 
     return this;
@@ -82,39 +134,61 @@ export default class Reporter<To extends Struct = {}> extends Module<To>
    * Create an indentation based on the defined length.
    */
   indent(length: number = 0): string {
-    return '  '.repeat(length);
+    return ' '.repeat(length);
   }
 
   /**
-   * Move cursor to the last console line (where commands are input).
+   * Log a message to `stdout` without a trailing newline or formatting.
    */
-  moveToLastLine(): this {
-    if (isTTY) {
-      rl.cursorTo(process.stdout, 0, process.stdout.rows);
+  log(message: string): this {
+    this.stream.write(message);
+
+    return this;
+  }
+
+  /**
+   * Remove a line to be rendered.
+   */
+  removeLine(callback: (item: T) => boolean): this {
+    this.clearLinesOutput();
+    this.lines = this.lines.filter(line => !callback(line));
+
+    return this;
+  }
+
+  /**
+   * Render output.
+   */
+  render() {
+    this.lines.forEach(line => {
+      this.log(`${line}\n`);
+    });
+  }
+
+  /**
+   * Render an error and it's stack. TODO
+   */
+  renderError(error: Error): void {
+    this.log(chalk.red(String(error.stack)));
+  }
+
+  /**
+   * Reset the cursor back to the bottom of the console.
+   */
+  resetCursor(): this {
+    if (this.stream.isTTY) {
+      rl.cursorTo(this.stream, 0, this.stream.rows);
     }
 
     return this;
   }
 
   /**
-   * Log a message to `stdout` without a trailing newline or formatting.
-   */
-  out(message: string): this {
-    process.stdout.write(message);
-
-    return this;
-  }
-
-  renderError(error: Error): void {
-    console.log(chalk.red(String(error.stack)));
-  }
-
-  /**
    * Show the console cursor.
    */
   showCursor(): this {
-    if (isTTY) {
-      this.out('\u001b[?25h');
+    if (this.stream.isTTY) {
+      this.log('\x1B[?25h');
     }
 
     return this;

@@ -10,10 +10,13 @@ import Reporter from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
 import Task, { TaskInterface } from './Task';
 
-export default class DefaultReporter extends Reporter {
-  depth: number = 0;
+export interface Line {
+  depth: number;
+  task: TaskInterface;
+}
 
-  lines: (TaskInterface | RoutineInterface)[] = [];
+export default class DefaultReporter extends Reporter<Line> {
+  depth: number = 0;
 
   keyLengths: { [depth: number]: number } = {};
 
@@ -21,7 +24,6 @@ export default class DefaultReporter extends Reporter {
     super.bootstrap(cli);
 
     cli.on('start', this.handleStart);
-    cli.on('stop', this.handleStop);
     cli.on('task', this.handleTask);
     cli.on('task.pass', this.handleTaskComplete);
     cli.on('task.fail', this.handleTaskComplete);
@@ -87,80 +89,59 @@ export default class DefaultReporter extends Reporter {
     this.calculateKeyLengths(routines);
   };
 
-  handleStop = (event: any, error: Error) => {
-    if (error) {
-      this.renderError(error);
-    }
-  };
-
-  /**
-   * When a task is running, render the title as the last line.
-   */
   handleTask = (event: any, task: TaskInterface) => {
-    // First task for the current routine
-    if (this.lines[0] instanceof Routine) {
-      this.lines.unshift(task);
-
-      // Replace the previous task with a new task
-    } else {
-      this.lines[0] = task;
-      this.clearLastLine();
-    }
-
-    // Re-render the routine to update passed count
-    this.clearLastLine();
-    this.renderRoutineLine(this.lines[1] as RoutineInterface, this.depth - 1);
-
-    // Render the current task
-    this.renderTaskLine(task);
+    this.addLine({
+      depth: this.depth - 1,
+      task,
+    });
+    this.debounceRender();
   };
 
-  /**
-   * When a task is complete, remove the task output and re-render the routine.
-   */
   handleTaskComplete = (event: any, task: TaskInterface) => {
-    // Remove previous lines
-    this.lines.shift();
-    this.clearLastLine(); // Task
-    this.clearLastLine(); // Routine
-
-    // Re-render the routine
-    this.renderRoutineLine(this.lines[0] as RoutineInterface, this.depth);
+    this.removeLine(line => line.task === task);
+    this.debounceRender();
   };
 
-  /**
-   * When a routine begins, output the status, title, and number of tasks that have ran.
-   */
   handleRoutine = (event: any, routine: RoutineInterface) => {
-    this.renderRoutineLine(routine, this.depth);
-    this.lines.unshift(routine);
+    this.addLine({
+      depth: this.depth,
+      task: routine,
+    });
+    this.debounceRender();
+
     this.depth += 1;
   };
 
-  /**
-   * When a routine is complete, update the status and task ran count.
-   */
   handleRoutineComplete = (event: any, routine: RoutineInterface) => {
     this.depth -= 1;
 
-    // Clear sub-routines after they have ran
-    routine.subroutines.forEach(() => {
-      this.clearLastLine();
-    });
+    if (this.depth > 0) {
+      this.removeLine(line => line.task === routine);
+    }
 
-    // Re-render the routine line
-    this.clearLastLine();
-    this.renderRoutineLine(routine, this.depth);
+    this.debounceRender();
   };
 
-  renderTaskLine(task: TaskInterface) {
-    console.log(chalk.gray(this.getLineTitle(task)));
+  render() {
+    this.lines.forEach(line => {
+      if (line.task instanceof Routine) {
+        this.renderRoutineLine(line.task, line.depth);
+      } else {
+        this.renderTaskLine(line.task, line.depth);
+      }
+    });
+  }
+
+  renderTaskLine(task: TaskInterface, depth: number) {
+    const indent = this.indent(this.keyLengths[depth] + 2);
+
+    this.log(chalk.gray(`${indent} ${this.getLineTitle(task)}\n`));
   }
 
   renderRoutineLine(routine: RoutineInterface, depth: number) {
     const key = routine.key.toUpperCase().padEnd(this.keyLengths[depth]);
     const status = chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
 
-    console.log(`${this.indent(depth)}${status} ${this.getLineTitle(routine)}`);
+    this.log(`${status} ${this.getLineTitle(routine)}\n`);
   }
 }

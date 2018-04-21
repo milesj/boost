@@ -31,5 +31,6 @@ const tool = new Tool(
 
 new Pipeline(tool)
   .pipe(new MultiTaskRoutine('multi', 'Multi-task routine #1'))
-  .pipe(new MultiTaskRoutine('many', 'Multi-task routine #2'))
+  .pipe(new MultiTaskRoutine('skip', 'Multi-task routine #2').skip(true))
+  .pipe(new MultiTaskRoutine('many', 'Multi-task routine #3'))
   .run({});

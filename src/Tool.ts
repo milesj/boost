@@ -259,7 +259,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     // Load based on name
     if (reporterName) {
-      reporter = new ModuleLoader<Reporter>(this, 'reporter', Reporter).loadModule(reporterName);
+      reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporterName);
 
       // Use default Boost reporter
     } else {
