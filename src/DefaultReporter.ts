@@ -31,6 +31,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     cli.on('routine', this.handleRoutine);
     cli.on('routine.pass', this.handleRoutineComplete);
     cli.on('routine.fail', this.handleRoutineComplete);
+    cli.on('command.data', this.handleCommand);
   }
 
   /**
@@ -89,6 +90,10 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
 
   handleStart = (event: any, routines: RoutineInterface[]) => {
     this.calculateKeyLengths(routines);
+  };
+
+  handleCommand = () => {
+    this.debounceRender();
   };
 
   handleTask = (event: any, task: TaskInterface) => {

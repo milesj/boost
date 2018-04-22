@@ -65,11 +65,15 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
         clearTimeout(this.renderTimer);
       }
 
+      if (this.hasOutput) {
+        this.clearLinesOutput();
+      }
+
+      this.render();
+
       if (error) {
         this.renderError(error);
       } else {
-        this.clearLinesOutput();
-        this.render();
         this.renderFooter();
       }
     });
@@ -107,7 +111,15 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     }
 
     this.resetCursor();
-    this.log('\x1B[1A\x1B[K'.repeat(this.lines.length));
+
+    // This clears both stderr and stdout while we only want 1 stream
+    // this.log('\x1B[1A\x1B[K'.repeat(this.lines.length));
+
+    this.lines.forEach(() => {
+      rl.moveCursor(this.stream, 0, -1);
+      rl.clearLine(this.stream, 0);
+    });
+
     this.hasOutput = false;
 
     return this;
@@ -192,7 +204,17 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Render an error and it's stack. TODO
    */
   renderError(error: Error): void {
-    this.log(chalk.red(String(error.stack)));
+    console.error('');
+    console.error(chalk.red.bold(error.message));
+
+    // Remove message line from stack
+    if (error.stack) {
+      const stack = error.stack.split('\n');
+
+      console.error(chalk.gray(stack.slice(1).join('\n')));
+    }
+
+    console.error('');
   }
 
   /**

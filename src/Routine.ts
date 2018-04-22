@@ -108,6 +108,8 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       ? execa.sync(command, args, options as ExecaSyncOptions)
       : execa(command, args, options);
 
+    this.tool.console.emit('command', [command, this]);
+
     // Push chunks to the reporter
     if (!options.sync) {
       const out = stream.stdout as Readable;
@@ -115,7 +117,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       out.pipe(split()).on('data', (line: string) => {
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
-          this.tool.console.emit('command.data', [line]);
+          this.tool.console.emit('command.data', [command, line, this]);
         }
       });
     }

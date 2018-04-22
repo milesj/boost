@@ -11,40 +11,37 @@ export interface ConsoleInterface extends EmitterInterface {
 }
 
 export default class Console extends Emitter {
-  interrupted: boolean = false;
-
   constructor() {
     super();
 
     // Avoid binding listeners while testing
-    if (process.env.NODE_ENV === 'test') {
-      return;
+    if (process.env.NODE_ENV !== 'test') {
+      process
+        .on('SIGINT', this.handleSignal)
+        .on('SIGTERM', this.handleSignal)
+        .on('uncaughtException', this.handleFailure)
+        .on('unhandledRejection', this.handleFailure);
     }
-
-    const signalHandler = () => {
-      if (this.interrupted) {
-        this.exit('Process has been terminated.');
-      } else {
-        console.log(chalk.yellow('Press Ctrl+C again to exit.'));
-        this.interrupted = true;
-      }
-    };
-
-    process
-      .on('SIGINT', signalHandler)
-      .on('SIGTERM', signalHandler)
-      .on('uncaughtException', error => {
-        this.exit(error);
-      })
-      .on('unhandledRejection', error => {
-        this.exit(error);
-      });
   }
+
+  /**
+   * Handle uncaught exceptions and unhandled rejections that bubble up.
+   */
+  handleFailure = (error: Error) => {
+    this.exit(error, 1, true);
+  };
+
+  /**
+   * Handle SIGINT and SIGTERM interruptions.
+   */
+  handleSignal = () => {
+    this.exit('Process has been terminated.', 1, true);
+  };
 
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code: number = 1) {
+  exit(message: string | Error | null, code: number = 1, force: boolean = false) {
     let error = null;
 
     if (message !== null) {
@@ -53,6 +50,11 @@ export default class Console extends Emitter {
 
     this.emit('stop', [error, code]);
 
-    process.exitCode = code;
+    if (force) {
+      // eslint-disable-next-line unicorn/no-process-exit
+      process.exit(code);
+    } else {
+      process.exitCode = code;
+    }
   }
 }

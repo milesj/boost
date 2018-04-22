@@ -8,6 +8,10 @@ function random(max = 10, min = 3) {
 
 class MultiTaskRoutine extends Routine {
   execute() {
+    if (this.options.error) {
+      throw new Error('Oops!');
+    }
+
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
       this.task(`Running task #${index}`, this.delayedTask).skip(index % 6 === 0);
     });
@@ -32,6 +36,7 @@ const tool = new Tool(
 
 new Pipeline(tool)
   .pipe(new MultiTaskRoutine('multi', 'Multi-task routine #1'))
+  .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
   .pipe(new MultiTaskRoutine('skip', 'Multi-task routine #2').skip(true))
   .pipe(new MultiTaskRoutine('many', 'Multi-task routine #3 '.repeat(10)))
   .run({});
