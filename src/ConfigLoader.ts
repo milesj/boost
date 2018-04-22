@@ -18,12 +18,12 @@ import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import { ToolInterface } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { ToolConfig, PackageConfig } from './types';
+import { Debugger, ToolConfig, PackageConfig } from './types';
 
 export type ConfigPathOrStruct = string | Struct;
 
 export default class ConfigLoader {
-  debug: debug.IDebugger;
+  debug: Debugger;
 
   package: PackageConfig = { name: '' };
 
@@ -34,7 +34,7 @@ export default class ConfigLoader {
   workspaceRoot: string = '';
 
   constructor(tool: ToolInterface) {
-    this.debug = tool.createDebugger(`config-loader`);
+    this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
   }
 
@@ -45,9 +45,9 @@ export default class ConfigLoader {
     const camelName = camelCase(this.tool.options.appName);
     const config = pkg[camelName];
 
-    this.tool.invariant(
+    this.debug.invariant(
       !!config,
-      `Looking in package.json under "${camelName}" property`,
+      `Looking in package.json under ${chalk.yellow(camelName)} property`,
       'Found',
       'Not found',
     );
@@ -73,9 +73,9 @@ export default class ConfigLoader {
       absolute: true,
     });
 
-    this.tool.invariant(
+    this.debug.invariant(
       configPaths.length === 1,
-      `Looking for local config file in order: ${configPaths.join(', ')}`,
+      `Looking for local config file in order: ${configPaths.map(p => chalk.cyan(p)).join(', ')}`,
       'Found',
       'Not found',
     );
@@ -104,11 +104,11 @@ export default class ConfigLoader {
       return null;
     }
 
-    this.tool.debug('Detecting if in a workspace');
+    this.debug('Detecting if in a workspace');
 
     let workspaceRoot = '';
     let workspacePackage: any = {};
-    let workspacePatterns = [];
+    let workspacePatterns: string[] = [];
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -147,7 +147,7 @@ export default class ConfigLoader {
     }
 
     if (!workspaceRoot) {
-      this.tool.debug('No workspace found');
+      this.debug('No workspace found');
 
       return null;
     }
@@ -156,9 +156,9 @@ export default class ConfigLoader {
       (pattern: string) => !!root.match(new RegExp(path.join(workspaceRoot, pattern))),
     );
 
-    this.tool.invariant(
+    this.debug.invariant(
       match,
-      `Matching patterns: ${workspacePatterns.join(', ')}`,
+      `Matching patterns: ${workspacePatterns.map(p => chalk.cyan(p)).join(', ')}`,
       'Match found',
       'Invalid workspace package',
     );

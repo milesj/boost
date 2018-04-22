@@ -5,7 +5,6 @@
 
 import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
-import debug from 'debug';
 import execa, {
   Options as ExecaOptions,
   SyncOptions as ExecaSyncOptions,
@@ -18,7 +17,7 @@ import { Struct } from 'optimal';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Context } from './types';
+import { Debugger, Context } from './types';
 
 export interface CommandOptions extends Struct {
   sync?: boolean;
@@ -35,7 +34,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
-  debug: debug.IDebugger;
+  debug: Debugger;
 
   key: string = '';
 
@@ -79,7 +78,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
     // Custom debugger for this routine
     this.debug = this.tool.createDebugger('routine', this.key);
-    this.debug('Bootstrapping routine %s', chalk.green(this.key));
+    this.debug('Bootstrapping routine');
 
     // Initialize routine (this must be last!)
     this.bootstrap();
@@ -195,7 +194,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       return Promise.reject(new Error('Process has been interrupted.'));
     }
 
-    this.debug('Executing routine %s', chalk.green(this.key));
+    this.debug('Executing routine');
 
     const { console: cli } = this.tool;
 

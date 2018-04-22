@@ -5,6 +5,7 @@
 
 import rl from 'readline';
 import chalk from 'chalk';
+import cliTruncate from 'cli-truncate';
 import { ConsoleInterface } from './Console';
 import Reporter, { ReporterOptions } from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
@@ -55,19 +56,20 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   /**
    * Return the task title with additional metadata.
    */
-  getLineTitle(task: TaskInterface): string {
+  getLineTitle(task: TaskInterface, spacing: number = 0): string {
     const { subtasks } = task;
-    let line = task.statusText || task.title;
+    const title = task.statusText || task.title;
+    let status = '';
 
     if (task.isSkipped()) {
-      line += chalk.yellow(' [skipped]');
+      status += chalk.yellow(' [skipped]');
     } else if (task.hasFailed()) {
-      line += chalk.red(' [failed]');
+      status += chalk.red(' [failed]');
     } else if (subtasks.length > 0) {
-      line += chalk.gray(` [${this.calculateTaskCompletion(subtasks)}/${subtasks.length}]`);
+      status += chalk.gray(` [${this.calculateTaskCompletion(subtasks)}/${subtasks.length}]`);
     }
 
-    return line;
+    return cliTruncate(title, (this.stream.columns || 0) - spacing - status.length) + status;
   }
 
   /**
@@ -135,13 +137,13 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   renderTaskLine(task: TaskInterface, depth: number) {
     const indent = this.indent(this.keyLengths[depth] + 2);
 
-    this.log(chalk.gray(`${indent} ${this.getLineTitle(task)}`), 1);
+    this.log(chalk.gray(`${indent} ${this.getLineTitle(task, indent.length + 1)}`), 1);
   }
 
   renderRoutineLine(routine: RoutineInterface, depth: number) {
     const key = routine.key.toUpperCase().padEnd(this.keyLengths[depth]);
     const status = chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
 
-    this.log(`${status} ${this.getLineTitle(routine)}`, 1);
+    this.log(`${status} ${this.getLineTitle(routine, key.length + 3)}`, 1);
   }
 }

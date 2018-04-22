@@ -18,19 +18,18 @@ import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import isObject from './helpers/isObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { ToolConfig, ToolOptions, PackageConfig } from './types';
+import { Debugger, ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export interface ToolInterface extends EmitterInterface {
   argv: string[];
   config: ToolConfig;
   console: ConsoleInterface;
+  debug: Debugger;
   options: ToolOptions;
   package: PackageConfig;
   plugins: PluginInterface[];
-  createDebugger(...namespaces: string[]): debug.IDebugger;
-  debug(message: string, ...args: any[]): this;
+  createDebugger(...namespaces: string[]): Debugger;
   initialize(): this;
-  invariant(condition: boolean, message: string, pass: string, fail: string): this;
   getPlugin(name: string): PluginInterface;
 }
 
@@ -41,7 +40,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
   console: ConsoleInterface;
 
-  debugger: debug.IDebugger;
+  debug: Debugger;
 
   initialized: boolean = false;
 
@@ -79,7 +78,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     }
 
     // Core debugger for the entire tool
-    this.debugger = this.createDebugger('core');
+    this.debug = this.createDebugger('core');
 
     // Initialize the console first so we can start logging
     this.console = new Console();
@@ -96,17 +95,14 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
   /**
    * Create a debugger with a namespace.
    */
-  createDebugger(...namespaces: string[]): debug.IDebugger {
-    return debug(`${this.options.appName}:${namespaces.join(':')}`);
-  }
+  createDebugger(...namespaces: string[]): Debugger {
+    const handler = debug(`${this.options.appName}:${namespaces.join(':')}`) as Debugger;
 
-  /**
-   * Log a debug message.
-   */
-  debug(message: string, ...args: any[]): this {
-    this.debugger(message, ...args);
+    handler.invariant = (condition: boolean, message: string, pass: string, fail) => {
+      handler('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
+    };
 
-    return this;
+    return handler;
   }
 
   /**
@@ -150,15 +146,6 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     this.loadReporter();
 
     this.initialized = true;
-
-    return this;
-  }
-
-  /**
-   * Logs a debug message based on a conditional.
-   */
-  invariant(condition: boolean, message: string, pass: string, fail: string): this {
-    this.debug('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
 
     return this;
   }
@@ -250,6 +237,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     }
 
     const { reporter: reporterName } = this.config;
+    const loader = new ModuleLoader(this, 'reporter', Reporter);
     const options = {
       footer: this.options.footer,
       silent: this.config.silent,
@@ -258,7 +246,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     // Load based on name
     if (reporterName) {
-      reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(
+      reporter = loader.loadModule(
         isObject(reporterName)
           ? {
               // @ts-ignore
@@ -270,17 +258,19 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
               reporter: reporterName,
             },
       );
+    }
 
-      // Use default Boost reporter
-    } else {
+    // Use default Boost reporter
+    if (!reporter) {
+      loader.debug('Using default %s reporter', chalk.yellow('boost'));
+
       reporter = new DefaultReporter(options);
-
-      this.debug(`Using native ${chalk.green('boost')} reporter`);
     }
 
-    if (reporter) {
-      reporter.bootstrap(this.console);
-    }
+    // Bootstrap console events
+    loader.debug('Bootstrapping reporter with console environment');
+
+    reporter.bootstrap(this.console);
 
     return this;
   }

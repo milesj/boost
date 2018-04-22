@@ -3,8 +3,13 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import debug from 'debug';
 import { Blueprint, Struct } from 'optimal';
 import { TaskInterface } from './Task';
+
+export interface Debugger extends debug.IDebugger {
+  invariant(condition: boolean, message: string, pass: string, fail: string): void;
+}
 
 export interface Context {
   [key: string]: any;
