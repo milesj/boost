@@ -30,7 +30,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     this.tool = tool;
     this.typeName = typeName;
 
-    this.debug('Using alias %s', chalk.green(typeName));
+    this.debug('Loading module(s) using alias %s', chalk.green(typeName));
   }
 
   /**

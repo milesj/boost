@@ -7,31 +7,45 @@
 
 import rl from 'readline';
 import chalk from 'chalk';
-import { Struct } from 'optimal';
+import optimal, { bool, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
 
 const DEBOUNCE_MS = 25;
 
-export default class Reporter<T, To extends Struct = {}> extends Module<To>
+export interface ReporterOptions extends Struct {
+  footer: string;
+  silent: boolean;
+}
+
+export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   implements ModuleInterface {
   hasOutput: boolean = false;
 
   lines: T[] = [];
 
+  options: To;
+
   renderScheduled: boolean = false;
+
+  renderTimer?: NodeJS.Timer;
 
   restoreCursorOnExit: boolean = false;
 
-  start: number = 0;
+  startTime: number = 0;
 
-  stop: number = 0;
+  stopTime: number = 0;
 
   stream: NodeJS.WriteStream;
 
   constructor(options: Partial<To> = {}) {
     super(options);
+
+    this.options = optimal(options, {
+      footer: string().empty(),
+      silent: bool(),
+    });
 
     this.stream = process.stdout;
   }
@@ -41,14 +55,22 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
    */
   bootstrap(cli: ConsoleInterface) {
     cli.on('start', () => {
-      this.start = Date.now();
+      this.startTime = Date.now();
     });
 
     cli.on('stop', (event: any, error: Error) => {
-      this.stop = Date.now();
+      this.stopTime = Date.now();
+
+      if (this.renderTimer) {
+        clearTimeout(this.renderTimer);
+      }
 
       if (error) {
         this.renderError(error);
+      } else {
+        this.clearLinesOutput();
+        this.render();
+        this.renderFooter();
       }
     });
   }
@@ -100,8 +122,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
     }
 
     this.renderScheduled = true;
-
-    setTimeout(() => {
+    this.renderTimer = setTimeout(() => {
       this.render();
       this.hasOutput = true;
       this.renderScheduled = false;
@@ -140,8 +161,10 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
   /**
    * Log a message to `stdout` without a trailing newline or formatting.
    */
-  log(message: string): this {
-    this.stream.write(message);
+  log(message: string, nl: number = 0): this {
+    if (!this.options.silent) {
+      this.stream.write(message + '\n'.repeat(nl));
+    }
 
     return this;
   }
@@ -161,7 +184,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
    */
   render() {
     this.lines.forEach(line => {
-      this.log(`${line}\n`);
+      this.log(String(line), 1);
     });
   }
 
@@ -170,6 +193,21 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
    */
   renderError(error: Error): void {
     this.log(chalk.red(String(error.stack)));
+  }
+
+  /**
+   * Render a footer after all other output.
+   */
+  renderFooter() {
+    const { footer } = this.options;
+    // eslint-disable-next-line no-magic-numbers
+    const time = ((this.stopTime - this.startTime) / 1000).toFixed(2);
+
+    if (footer) {
+      this.log(`${footer} ${chalk.gray(`(${time}s)`)}`, 1);
+    } else {
+      this.log(chalk.gray(`Ran in ${time}s`), 1);
+    }
   }
 
   /**

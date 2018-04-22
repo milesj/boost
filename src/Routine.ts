@@ -15,7 +15,6 @@ import execa, {
 import split from 'split';
 import { Readable } from 'stream';
 import { Struct } from 'optimal';
-import ExitError from './ExitError';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
@@ -193,7 +192,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    */
   run<T>(context: Tx, value: T | null = null): Promise<any> {
     if (this.exit) {
-      return Promise.reject(new ExitError('Process has been interrupted.'));
+      return Promise.reject(new Error('Process has been interrupted.'));
     }
 
     this.debug('Executing routine %s', chalk.green(this.key));

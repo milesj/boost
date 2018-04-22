@@ -3,6 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import debug from 'debug';
+
 export default function enableDebug(namespace: string) {
   const { DEBUG } = process.env;
   const flag = `${namespace}:*`;
@@ -16,4 +18,6 @@ export default function enableDebug(namespace: string) {
   } else {
     process.env.DEBUG = flag;
   }
+
+  debug.enabled(flag);
 }

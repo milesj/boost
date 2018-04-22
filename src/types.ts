@@ -10,17 +10,21 @@ export interface Context {
   [key: string]: any;
 }
 
-export interface ConsoleOptions extends Struct {
-  footer: string;
-  header: string;
-  silent: boolean;
+export interface PluginConfig {
+  plugin: string;
+  [key: string]: any;
+}
+
+export interface ReporterConfig {
+  reporter: string;
+  [key: string]: any;
 }
 
 export interface ToolConfig extends Struct {
   debug: boolean;
   extends: string | string[];
-  plugins: string[];
-  reporter: string;
+  plugins: (string | PluginConfig)[];
+  reporter: string | ReporterConfig;
   silent: boolean;
   [key: string]: any;
 }
@@ -31,7 +35,6 @@ export interface ToolOptions extends Struct {
   configFolder: string;
   extendArgv: string;
   footer: string;
-  header: string;
   pluginAlias: string;
   root: string;
   scoped: boolean;
@@ -41,17 +44,6 @@ export interface ToolOptions extends Struct {
 export interface PackageConfig extends Struct {
   name: string;
 }
-
-export interface ReportParams {
-  errors: string[];
-  footer: string;
-  header: string;
-  logs: string[];
-  silent: boolean;
-  tasks: TaskInterface[];
-}
-
-export type ReportLoader = () => ReportParams;
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 

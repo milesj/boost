@@ -16,6 +16,7 @@ import Reporter from './Reporter';
 import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
+import isObject from './helpers/isObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 import { ToolConfig, ToolOptions, PackageConfig } from './types';
 
@@ -50,7 +51,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
   plugins: Tp[] = [];
 
-  constructor({ footer, header, ...options }: Partial<ToolOptions>, argv: string[] = []) {
+  constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
 
     this.argv = argv;
@@ -61,6 +62,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
         configBlueprint: object(),
         configFolder: string('./configs'),
         extendArgv: bool(true),
+        footer: string().empty(),
         pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
@@ -80,21 +82,15 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     this.debugger = this.createDebugger('core');
 
     // Initialize the console first so we can start logging
-    this.console = new Console({
-      footer,
-      header,
-    });
-
-    // Avoid binding listeners while testing
-    if (process.env.NODE_ENV === 'test') {
-      return;
-    }
+    this.console = new Console();
 
     // Cleanup when an exit occurs
-    /* istanbul ignore next */
-    process.on('exit', code => {
-      this.emit('exit', [code]);
-    });
+    if (process.env.NODE_ENV === 'test') {
+      /* istanbul ignore next */
+      process.on('exit', code => {
+        this.emit('exit', [code]);
+      });
+    }
   }
 
   /**
@@ -192,7 +188,6 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
           const name = arg.slice(2);
 
           this.config[name] = true;
-          this.console.options[name] = true;
         }
       });
     }
@@ -223,9 +218,9 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
       throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
 
-    // @ts-ignore Not sure why this is failing
-    const pluginLoader: ModuleLoader<Tp> = new ModuleLoader(this, pluginAlias, Plugin);
+    const pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
 
+    // @ts-ignore
     this.plugins = pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
@@ -255,15 +250,30 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     }
 
     const { reporter: reporterName } = this.config;
+    const options = {
+      footer: this.options.footer,
+      silent: this.config.silent,
+    };
     let reporter = null;
 
     // Load based on name
     if (reporterName) {
-      reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(reporterName);
+      reporter = new ModuleLoader(this, 'reporter', Reporter).loadModule(
+        isObject(reporterName)
+          ? {
+              // @ts-ignore
+              ...reporterName,
+              ...options,
+            }
+          : {
+              ...options,
+              reporter: reporterName,
+            },
+      );
 
       // Use default Boost reporter
     } else {
-      reporter = new DefaultReporter();
+      reporter = new DefaultReporter(options);
 
       this.debug(`Using native ${chalk.green('boost')} reporter`);
     }

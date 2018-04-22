@@ -2,7 +2,7 @@
 
 const { Tool, Pipeline, Routine } = require('../../lib');
 
-function random(max = 15, min = 5) {
+function random(max = 10, min = 3) {
   return Math.floor(Math.random() * max) + min;
 }
 
@@ -25,6 +25,7 @@ class MultiTaskRoutine extends Routine {
 const tool = new Tool(
   {
     appName: 'demos-reporter',
+    footer: 'Powered by Boost',
   },
   process.argv.slice(2),
 );

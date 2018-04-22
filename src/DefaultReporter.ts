@@ -6,7 +6,7 @@
 import rl from 'readline';
 import chalk from 'chalk';
 import { ConsoleInterface } from './Console';
-import Reporter from './Reporter';
+import Reporter, { ReporterOptions } from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
 import Task, { TaskInterface } from './Task';
 
@@ -15,7 +15,7 @@ export interface Line {
   task: TaskInterface;
 }
 
-export default class DefaultReporter extends Reporter<Line> {
+export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   depth: number = 0;
 
   keyLengths: { [depth: number]: number } = {};
@@ -135,13 +135,13 @@ export default class DefaultReporter extends Reporter<Line> {
   renderTaskLine(task: TaskInterface, depth: number) {
     const indent = this.indent(this.keyLengths[depth] + 2);
 
-    this.log(chalk.gray(`${indent} ${this.getLineTitle(task)}\n`));
+    this.log(chalk.gray(`${indent} ${this.getLineTitle(task)}`), 1);
   }
 
   renderRoutineLine(routine: RoutineInterface, depth: number) {
     const key = routine.key.toUpperCase().padEnd(this.keyLengths[depth]);
     const status = chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
 
-    this.log(`${status} ${this.getLineTitle(routine)}\n`);
+    this.log(`${status} ${this.getLineTitle(routine)}`, 1);
   }
 }

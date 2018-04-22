@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
-import ExitError from '../src/ExitError';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
 import { getFixturePath } from './helpers';
@@ -56,7 +55,7 @@ describe('Tool', () => {
 
     it('accepts an error', () => {
       const spy = jest.spyOn(tool.console, 'exit');
-      const error = new ExitError('Oh nooo', 456);
+      const error = new Error('Oh nooo', 456);
 
       tool.exit(error);
 

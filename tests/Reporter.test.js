@@ -81,7 +81,6 @@ ${CURSOR}`);
         work = {
           errors: ['Something is broken!!'],
           footer: '',
-          header: '',
           logs: ['All is good...'],
           silence: false,
           tasks: [createTaskWithStatus('Task', STATUS_PASSED)],
@@ -124,22 +123,6 @@ ${CURSOR}`);
 
         expect(reporter.render(1)).toBe(`Something is broken!!
 
-${CURSOR}`);
-      });
-
-      it('includes header and footer', () => {
-        reporter.loader = () => ({
-          ...work,
-          footer: 'FOOT',
-          header: 'HEAD',
-        });
-
-        expect(reporter.render(0)).toBe(`HEAD
-${chalk.green('✔')} Task
-
-All is good...
-
-FOOT
 ${CURSOR}`);
       });
     });

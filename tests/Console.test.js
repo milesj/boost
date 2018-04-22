@@ -68,7 +68,6 @@ describe('Console', () => {
 
       cli.options = {
         footer: 'footer',
-        header: 'header',
         silent: true,
       };
 
@@ -79,7 +78,6 @@ describe('Console', () => {
       expect(cli.reporter.loader()).toEqual({
         errors: ['error'],
         footer: 'footer',
-        header: 'header',
         logs: ['log'],
         silent: true,
         tasks: [task],
