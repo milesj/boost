@@ -57,8 +57,9 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   /**
    * Return the task title with additional metadata.
    */
-  getLineTitle(task: TaskInterface, spacing: number = 0): string {
-    const { subtasks } = task;
+  getLineTitle(task: TaskInterface | RoutineInterface, spacing: number = 0): string {
+    // @ts-ignore
+    const { subtasks = [], subroutines = [] } = task;
     const title = task.statusText || task.title;
     let status = '';
 
@@ -68,9 +69,11 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       status += chalk.red(' [failed]');
     } else if (subtasks.length > 0) {
       status += chalk.gray(` [${this.calculateTaskCompletion(subtasks)}/${subtasks.length}]`);
+    } else if (subroutines.length > 0) {
+      status += chalk.gray(` [${this.calculateTaskCompletion(subroutines)}/${subroutines.length}]`);
     }
 
-    return cliTruncate(title, (this.stream.columns || 0) - spacing - status.length) + status;
+    return cliTruncate(title, (process.stdout.columns || 0) - spacing - status.length) + status;
   }
 
   /**
@@ -122,7 +125,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   handleRoutineComplete = (event: any, routine: RoutineInterface) => {
     this.depth -= 1;
 
-    if (this.depth > 0) {
+    if (this.depth > 0 && !this.options.verbose) {
       this.removeLine(line => line.task === routine);
     }
 
@@ -140,15 +143,26 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   }
 
   renderTaskLine(task: TaskInterface, depth: number) {
-    const indent = this.indent(this.keyLengths[depth] + 2);
+    const indent = depth * 2 + this.keyLengths[depth] + 2;
 
-    this.log(chalk.gray(`${indent} ${this.getLineTitle(task, indent.length + 1)}`), 1);
+    this.log(chalk.gray(`${this.indent(indent)} ${this.getLineTitle(task, indent + 1)}`), 1);
   }
 
   renderRoutineLine(routine: RoutineInterface, depth: number) {
+    const indent = depth * 2;
     const key = routine.key.toUpperCase().padEnd(this.keyLengths[depth]);
-    const status = chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
+    let output = '';
 
-    this.log(`${status} ${this.getLineTitle(routine, key.length + 3)}`, 1);
+    if (depth > 0) {
+      output += this.indent(indent - 2);
+      output += chalk.gray('└');
+      output += ' ';
+    }
+
+    output += chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
+    output += ' ';
+    output += this.getLineTitle(routine, indent + key.length + 3);
+
+    this.log(output, 1);
   }
 }

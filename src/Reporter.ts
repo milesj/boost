@@ -7,25 +7,38 @@
 
 import rl from 'readline';
 import chalk from 'chalk';
-import optimal, { bool, string, Struct } from 'optimal';
+import optimal, { bool, number, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
 
-const DEBOUNCE_MS = 25;
+const REFRESH_RATE = 100;
+
+export interface WrappedStream {
+  isTTY: boolean;
+  write(message: string): void;
+}
 
 export interface ReporterOptions extends Struct {
   footer: string;
+  refreshRate: number;
   silent: boolean;
+  verbose: boolean;
 }
 
 export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   implements ModuleInterface {
-  hasOutput: boolean = false;
+  bufferedOutput: (() => void)[] = [];
+
+  err: WrappedStream;
+
+  lastOutputHeight: number = 0;
 
   lines: T[] = [];
 
   options: To;
+
+  out: WrappedStream;
 
   renderScheduled: boolean = false;
 
@@ -37,17 +50,18 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   stopTime: number = 0;
 
-  stream: NodeJS.WriteStream;
-
   constructor(options: Partial<To> = {}) {
     super(options);
 
     this.options = optimal(options, {
       footer: string().empty(),
+      refreshRate: number(REFRESH_RATE),
       silent: bool(),
+      verbose: bool(),
     });
 
-    this.stream = process.stdout;
+    this.err = this.wrapStream(process.stderr);
+    this.out = this.wrapStream(process.stdout);
   }
 
   /**
@@ -65,10 +79,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
         clearTimeout(this.renderTimer);
       }
 
-      if (this.hasOutput) {
-        this.clearLinesOutput();
-      }
-
+      this.clearLinesOutput();
       this.render();
 
       if (error) {
@@ -83,7 +94,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Add a line to be rendered.
    */
   addLine(line: T): this {
-    this.clearLinesOutput();
     this.lines.push(line);
 
     return this;
@@ -93,11 +103,11 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Clear the entire console.
    */
   clearOutput(): this {
-    if (this.stream.isTTY) {
+    if (this.out.isTTY) {
       this.log('\x1Bc');
     }
 
-    this.hasOutput = false;
+    this.lastOutputHeight = 0;
 
     return this;
   }
@@ -106,21 +116,14 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Clear defined lines from the console.
    */
   clearLinesOutput(): this {
-    if (!this.stream.isTTY || !this.hasOutput) {
+    if (!this.out.isTTY) {
       return this;
     }
 
     this.resetCursor();
-
-    // This clears both stderr and stdout while we only want 1 stream
-    // this.log('\x1B[1A\x1B[K'.repeat(this.lines.length));
-
-    this.lines.forEach(() => {
-      rl.moveCursor(this.stream, 0, -1);
-      rl.clearLine(this.stream, 0);
-    });
-
-    this.hasOutput = false;
+    this.log('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.flushBufferedOutput();
+    this.lastOutputHeight = 0;
 
     return this;
   }
@@ -135,10 +138,21 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
     this.renderScheduled = true;
     this.renderTimer = setTimeout(() => {
+      this.clearLinesOutput();
       this.render();
-      this.hasOutput = true;
       this.renderScheduled = false;
-    }, DEBOUNCE_MS);
+    }, this.options.refreshRate);
+
+    return this;
+  }
+
+  /**
+   * Flush buffered output after clearing lines rendered by the reporter.
+   */
+  flushBufferedOutput(): this {
+    this.bufferedOutput.forEach(buffer => {
+      buffer();
+    });
 
     return this;
   }
@@ -147,7 +161,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Hide the console cursor.
    */
   hideCursor(): this {
-    if (!this.stream.isTTY) {
+    if (!this.out.isTTY) {
       return this;
     }
 
@@ -175,7 +189,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   log(message: string, nl: number = 0): this {
     if (!this.options.silent) {
-      this.stream.write(message + '\n'.repeat(nl));
+      this.out.write(message + '\n'.repeat(nl));
+      this.lastOutputHeight += nl;
     }
 
     return this;
@@ -185,7 +200,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Remove a line to be rendered.
    */
   removeLine(callback: (item: T) => boolean): this {
-    this.clearLinesOutput();
     this.lines = this.lines.filter(line => !callback(line));
 
     return this;
@@ -204,17 +218,23 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Render an error and it's stack. TODO
    */
   renderError(error: Error): void {
-    console.error('');
-    console.error(chalk.red.bold(error.message));
+    const message = chalk.red.bold(error.message);
+
+    this.err.write(`\n${message}\n`);
 
     // Remove message line from stack
     if (error.stack) {
-      const stack = error.stack.split('\n');
+      const stack = chalk.gray(
+        error.stack
+          .split('\n')
+          .slice(1)
+          .join('\n'),
+      );
 
-      console.error(chalk.gray(stack.slice(1).join('\n')));
+      this.err.write(`\n${stack}\n`);
     }
 
-    console.error('');
+    this.err.write('\n');
   }
 
   /**
@@ -236,8 +256,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    if (this.stream.isTTY) {
-      rl.cursorTo(this.stream, 0, this.stream.rows);
+    if (this.out.isTTY) {
+      this.log(`\x1B[${process.stdout.rows};0H`);
     }
 
     return this;
@@ -247,10 +267,41 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Show the console cursor.
    */
   showCursor(): this {
-    if (this.stream.isTTY) {
+    if (this.out.isTTY) {
       this.log('\x1B[?25h');
     }
 
     return this;
+  }
+
+  /**
+   * Wrap a stream and buffer the output as to not collide with our reporter.
+   */
+  wrapStream(stream: NodeJS.WriteStream): WrappedStream {
+    const originalWrite = stream.write.bind(stream);
+    let buffer: string[] = [];
+
+    const flushBuffer = () => {
+      const output = buffer.join('');
+      buffer = [];
+
+      if (output) {
+        originalWrite(output);
+      }
+    };
+
+    this.bufferedOutput.push(flushBuffer);
+
+    // eslint-disable-next-line no-param-reassign
+    stream.write = (chunk: string) => {
+      buffer.push(String(chunk));
+
+      return true;
+    };
+
+    return {
+      isTTY: stream.isTTY || false,
+      write: originalWrite,
+    };
   }
 }
