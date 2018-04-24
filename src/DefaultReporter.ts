@@ -55,31 +55,32 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   /**
    * Return the task title with additional metadata.
    */
-  getLineTitle(task: TaskInterface | RoutineInterface, spacing: number = 0): string {
+  getLineTitle(task: TaskInterface | RoutineInterface, usedColumns: number = 0): string {
+    const { verbose } = this.options;
     // @ts-ignore
     const { subtasks = [], subroutines = [] } = task;
     const title = task.statusText ? chalk.gray(task.statusText) : task.title;
-    let status = '';
+    const status = [];
 
     if (task.isSkipped()) {
-      status += chalk.yellow('skipped');
+      status.push(chalk.yellow('skipped'));
     } else if (task.hasFailed()) {
-      status += chalk.red('failed');
+      status.push(chalk.red('failed'));
     } else if (subtasks.length > 0) {
-      status += chalk.gray(`${this.calculateTaskCompletion(subtasks)}/${subtasks.length}`);
+      status.push(chalk.gray(`${this.calculateTaskCompletion(subtasks)}/${subtasks.length}`));
     } else if (subroutines.length > 0) {
-      status += chalk.gray(`${this.calculateTaskCompletion(subroutines)}/${subroutines.length}`);
+      status.push(chalk.gray(`${this.calculateTaskCompletion(subroutines)}/${subroutines.length}`));
     }
 
-    if (task.hasPassed()) {
-      status += `, ${this.getElapsedTime(task.startTime, task.stopTime)}`;
+    if (task.hasPassed() && verbose >= 2) {
+      status.push(this.getElapsedTime(task.startTime, task.stopTime));
     }
 
-    if (status) {
-      status = chalk.gray(` [${status}]`);
-    }
+    const columns = process.stdout.columns || 0;
+    const fullStatus =
+      status.length > 0 && verbose >= 1 ? chalk.gray(` [${status.join(', ')}]`) : '';
 
-    return cliTruncate(title, (process.stdout.columns || 0) - spacing - status.length) + status;
+    return cliTruncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
   }
 
   /**
@@ -131,9 +132,9 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   handleRoutineComplete = (event: any, routine: RoutineInterface) => {
     this.depth -= 1;
 
-    // if (this.depth > 0) && !this.options.verbose) {
-    //   this.removeLine(line => line.task === routine);
-    // }
+    if (this.depth > 0 && this.options.verbose < 3) {
+      this.removeLine(line => line.task === routine);
+    }
 
     this.debounceRender();
   };

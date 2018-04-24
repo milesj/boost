@@ -246,21 +246,18 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     // Load based on name
     if (reporterName) {
-      reporter = loader.loadModule(
-        isObject(reporterName)
-          ? {
-              // @ts-ignore
-              ...reporterName,
-              ...options,
-            }
-          : {
-              ...options,
-              reporter: reporterName,
-            },
-      );
+      if (isObject(reporterName)) {
+        reporter = loader.importModuleFromOptions({
+          // @ts-ignore
+          ...reporterName,
+          ...options,
+        });
+      } else {
+        reporter = loader.importModule(String(reporterName), options);
+      }
     }
 
-    // Use default Boost reporter
+    // Use default reporter
     if (!reporter) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
