@@ -58,7 +58,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   getLineTitle(task: TaskInterface | RoutineInterface, spacing: number = 0): string {
     // @ts-ignore
     const { subtasks = [], subroutines = [] } = task;
-    const title = task.statusText || task.title;
+    const title = task.statusText ? chalk.gray(task.statusText) : task.title;
     let status = '';
 
     if (task.isSkipped()) {

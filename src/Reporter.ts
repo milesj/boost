@@ -55,13 +55,20 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   constructor(options: Partial<To> = {}) {
     super(options);
 
-    this.options = optimal(options, {
-      footer: string().empty(),
-      refreshRate: number(REFRESH_RATE),
-      silent: bool(),
-      slowThreshold: number(SLOW_THRESHOLD),
-      verbose: bool(),
-    });
+    this.options = optimal(
+      options,
+      {
+        footer: string().empty(),
+        refreshRate: number(REFRESH_RATE),
+        silent: bool(),
+        slowThreshold: number(SLOW_THRESHOLD),
+        verbose: bool(),
+      },
+      {
+        name: this.constructor.name,
+        unknown: true,
+      },
+    );
 
     this.err = this.wrapStream(process.stderr);
     this.out = this.wrapStream(process.stdout);
