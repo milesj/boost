@@ -19,7 +19,7 @@ export interface Line {
 export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   depth: number = 0;
 
-  keyLengths: { [depth: number]: number } = {};
+  keyLength: number = 0;
 
   bootstrap(cli: ConsoleInterface) {
     super.bootstrap(cli);
@@ -37,14 +37,12 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   /**
    * Calculate the max string length for routine key's at every depth.
    */
-  calculateKeyLengths(routines: RoutineInterface[], depth: number = 0) {
-    this.keyLengths[depth] = routines.reduce((sum: number, routine: RoutineInterface) => {
-      if (routine.subroutines.length > 0) {
-        this.calculateKeyLengths(routine.subroutines, depth + 1);
-      }
-
-      return Math.max(routine.key.length, sum);
-    }, 0);
+  calculateKeyLength(routines: RoutineInterface[]): number {
+    return routines.reduce(
+      (sum: number, routine: RoutineInterface) =>
+        Math.max(sum, routine.key.length, this.calculateKeyLength(routine.subroutines)),
+      0,
+    );
   }
 
   /**
@@ -64,13 +62,21 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     let status = '';
 
     if (task.isSkipped()) {
-      status += chalk.yellow(' [skipped]');
+      status += chalk.yellow('skipped');
     } else if (task.hasFailed()) {
-      status += chalk.red(' [failed]');
+      status += chalk.red('failed');
     } else if (subtasks.length > 0) {
-      status += chalk.gray(` [${this.calculateTaskCompletion(subtasks)}/${subtasks.length}]`);
+      status += chalk.gray(`${this.calculateTaskCompletion(subtasks)}/${subtasks.length}`);
     } else if (subroutines.length > 0) {
-      status += chalk.gray(` [${this.calculateTaskCompletion(subroutines)}/${subroutines.length}]`);
+      status += chalk.gray(`${this.calculateTaskCompletion(subroutines)}/${subroutines.length}`);
+    }
+
+    if (task.hasPassed()) {
+      status += `, ${this.getElapsedTime(task.startTime, task.stopTime)}`;
+    }
+
+    if (status) {
+      status = chalk.gray(` [${status}]`);
     }
 
     return cliTruncate(title, (process.stdout.columns || 0) - spacing - status.length) + status;
@@ -92,7 +98,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   }
 
   handleStart = (event: any, routines: RoutineInterface[]) => {
-    this.calculateKeyLengths(routines);
+    this.keyLength = this.calculateKeyLength(routines);
   };
 
   handleCommand = () => {
@@ -125,9 +131,9 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   handleRoutineComplete = (event: any, routine: RoutineInterface) => {
     this.depth -= 1;
 
-    if (this.depth > 0 && !this.options.verbose) {
-      this.removeLine(line => line.task === routine);
-    }
+    // if (this.depth > 0) && !this.options.verbose) {
+    //   this.removeLine(line => line.task === routine);
+    // }
 
     this.debounceRender();
   };
@@ -143,24 +149,30 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   }
 
   renderTaskLine(task: TaskInterface, depth: number) {
-    const indent = depth * 2 + this.keyLengths[depth] + 2;
+    const indent = depth * 2 + this.keyLength + 2;
 
     this.log(chalk.gray(`${this.indent(indent)} ${this.getLineTitle(task, indent + 1)}`), 1);
   }
 
   renderRoutineLine(routine: RoutineInterface, depth: number) {
     const indent = depth * 2;
-    const key = routine.key.toUpperCase().padEnd(this.keyLengths[depth]);
+    const key = routine.key.toUpperCase().padEnd(this.keyLength);
     let output = '';
 
+    // Status
+    output += chalk.supportsColor
+      ? chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `)
+      : `[${key}]`;
+    output += ' ';
+
+    // Tree
     if (depth > 0) {
       output += this.indent(indent - 2);
       output += chalk.gray('└');
       output += ' ';
     }
 
-    output += chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `);
-    output += ' ';
+    // Title
     output += this.getLineTitle(routine, indent + key.length + 3);
 
     this.log(output, 1);

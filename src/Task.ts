@@ -14,8 +14,10 @@ import {
 import { Context, Status } from './types';
 
 export interface TaskInterface {
+  startTime: number;
   status: Status;
   statusText: string;
+  stopTime: number;
   subtasks: TaskInterface[];
   title: string;
   isPending(): boolean;
@@ -41,9 +43,13 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
 
   title: string = '';
 
+  startTime: number = 0;
+
   status: Status = STATUS_PENDING;
 
   statusText: string = '';
+
+  stopTime: number = 0;
 
   subtasks: TaskInterface[] = [];
 
@@ -114,6 +120,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
     }
 
     this.status = STATUS_RUNNING;
+    this.startTime = Date.now();
 
     return (
       Promise.resolve(initialValue)
@@ -122,12 +129,14 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
         .then(
           result => {
             this.status = STATUS_PASSED;
+            this.stopTime = Date.now();
             this.statusText = '';
 
             return result;
           },
           error => {
             this.status = STATUS_FAILED;
+            this.stopTime = Date.now();
 
             throw error;
           },

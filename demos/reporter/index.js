@@ -8,16 +8,16 @@ function random(max = 10, min = 3) {
 
 class MultiTaskRoutine extends Routine {
   bootstrap() {
-    if (this.options.error) {
-      throw new Error('Oops!');
-    }
-
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
       this.task(`Running task #${index}`, this.delayedTask).skip(index % 6 === 0);
     });
   }
 
   execute() {
+    if (this.options.error) {
+      throw new Error('Oops!');
+    }
+
     // return this.parallelizeTasks();
     return this.serializeTasks();
   }
@@ -34,6 +34,10 @@ class MultiRoutine extends Routine {
     Array.from({ length: random(1, 3) }, (v, i) => i).forEach(index => {
       this.pipe(new MultiTaskRoutine(`sub${index}`, `Subroutine #${index}`));
     });
+
+    if (this.options.deep) {
+      this.pipe(new MultiRoutine('deepsub', 'Deeply nested sub-routine'));
+    }
   }
 
   execute() {
@@ -50,9 +54,9 @@ const tool = new Tool(
 );
 
 new Pipeline(tool)
-  // .pipe(new MultiTaskRoutine('multi', 'Multi-task routine #1'))
+  .pipe(new MultiTaskRoutine('multiple', 'Multi-task routine #1'))
   // .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
-  .pipe(new MultiTaskRoutine('skip', 'Multi-task routine #2').skip(true))
-  .pipe(new MultiRoutine('subs', 'Multi-subroutines'))
-  .pipe(new MultiTaskRoutine('many', 'Multi-task routine #3'))
+  .pipe(new MultiTaskRoutine('skipped', 'Multi-task routine #2').skip(true))
+  .pipe(new MultiRoutine('subs', 'Multi-subroutines', { deep: true }))
+  .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3'))
   .run({});

@@ -12,7 +12,8 @@ import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
 
-const REFRESH_RATE = 100;
+export const REFRESH_RATE = 100;
+export const SLOW_THRESHOLD = 10000; // ms
 
 export interface WrappedStream {
   isTTY: boolean;
@@ -23,6 +24,7 @@ export interface ReporterOptions extends Struct {
   footer: string;
   refreshRate: number;
   silent: boolean;
+  slowThreshold: number;
   verbose: boolean;
 }
 
@@ -57,6 +59,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
       footer: string().empty(),
       refreshRate: number(REFRESH_RATE),
       silent: bool(),
+      slowThreshold: number(SLOW_THRESHOLD),
       verbose: bool(),
     });
 
@@ -74,19 +77,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
     cli.on('stop', (event: any, error: Error) => {
       this.stopTime = Date.now();
-
-      if (this.renderTimer) {
-        clearTimeout(this.renderTimer);
-      }
-
-      this.clearLinesOutput();
-      this.render();
-
-      if (error) {
-        this.renderError(error);
-      } else {
-        this.renderFooter();
-      }
+      this.renderFinalOutput(error);
     });
   }
 
@@ -155,6 +146,19 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     });
 
     return this;
+  }
+
+  /**
+   * Calculate the elapsed time and highlight as red if over the threshold.
+   */
+  getElapsedTime(start: number, stop: number, highlight: boolean = true): string {
+    const time = stop - start;
+    const isSlow = time > this.options.slowThreshold;
+
+    // eslint-disable-next-line no-magic-numbers
+    const elapsed = `${(time / 1000).toFixed(2)}s`;
+
+    return isSlow && highlight ? chalk.red(elapsed) : elapsed;
   }
 
   /**
@@ -238,17 +242,34 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
+   * Render the final output when an error occurs, or when all routines are complete.
+   */
+  renderFinalOutput(error?: Error | null) {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+    }
+
+    this.clearLinesOutput();
+    this.render();
+
+    if (error) {
+      this.renderError(error);
+    } else {
+      this.renderFooter();
+    }
+  }
+
+  /**
    * Render a footer after all other output.
    */
   renderFooter() {
     const { footer } = this.options;
-    // eslint-disable-next-line no-magic-numbers
-    const time = ((this.stopTime - this.startTime) / 1000).toFixed(2);
+    const time = this.getElapsedTime(this.startTime, this.stopTime, false);
 
     if (footer) {
-      this.log(`${footer} ${chalk.gray(`(${time}s)`)}`, 1);
+      this.log(`${footer} ${chalk.gray(`(${time})`)}`, 1);
     } else {
-      this.log(chalk.gray(`Ran in ${time}s`), 1);
+      this.log(chalk.gray(`Ran in ${time}`), 1);
     }
   }
 
