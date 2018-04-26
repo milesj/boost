@@ -76,7 +76,8 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       status.push(this.getElapsedTime(task.startTime, task.stopTime));
     }
 
-    const columns = process.stdout.columns || 0;
+    // eslint-disable-next-line no-magic-numbers
+    const columns = process.stdout.columns || 80;
     const fullStatus =
       status.length > 0 && verbose >= 1 ? chalk.gray(` [${status.join(', ')}]`) : '';
 
@@ -95,7 +96,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       return 'red';
     }
 
-    return 'white';
+    return 'gray';
   }
 
   handleStart = (event: any, routines: RoutineInterface[]) => {

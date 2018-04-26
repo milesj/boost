@@ -16,8 +16,7 @@ export const REFRESH_RATE = 100;
 export const SLOW_THRESHOLD = 10000; // ms
 
 export interface WrappedStream {
-  isTTY: boolean;
-  write(message: string): void;
+  (message: string): boolean;
 }
 
 export interface ReporterOptions extends Struct {
@@ -30,7 +29,9 @@ export interface ReporterOptions extends Struct {
 
 export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   implements ModuleInterface {
-  bufferedOutput: (() => void)[] = [];
+  bufferedOutput: string = '';
+
+  bufferedStreams: (() => void)[] = [];
 
   err: WrappedStream;
 
@@ -84,7 +85,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
     cli.on('stop', (event: any, error: Error) => {
       this.stopTime = Date.now();
-      this.renderFinalOutput(error);
+      this.displayFinalOutput(error);
     });
   }
 
@@ -101,10 +102,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Clear the entire console.
    */
   clearOutput(): this {
-    if (this.out.isTTY) {
-      this.log('\x1Bc');
-    }
-
+    this.out('\x1Bc');
     this.lastOutputHeight = 0;
 
     return this;
@@ -114,13 +112,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Clear defined lines from the console.
    */
   clearLinesOutput(): this {
-    if (!this.out.isTTY) {
-      return this;
-    }
-
-    this.resetCursor();
-    this.log('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
-    this.flushBufferedOutput();
+    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
     this.lastOutputHeight = 0;
 
     return this;
@@ -135,20 +127,82 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     }
 
     this.renderScheduled = true;
-    this.renderTimer = setTimeout(() => {
-      this.clearLinesOutput();
-      this.render();
-      this.renderScheduled = false;
-    }, this.options.refreshRate);
+    this.renderTimer = setTimeout(this.handleRender, this.options.refreshRate);
 
     return this;
   }
 
   /**
-   * Flush buffered output after clearing lines rendered by the reporter.
+   * Display an error and it's stack.
+   */
+  displayError(error: Error): void {
+    this.err(`\n${chalk.red.bold(error.message)}\n`);
+
+    // Remove message line from stack
+    if (error.stack) {
+      const stack = chalk.gray(
+        error.stack
+          .split('\n')
+          .slice(1)
+          .join('\n'),
+      );
+
+      this.err(`\n${stack}\n`);
+    }
+
+    this.err('\n');
+  }
+
+  /**
+   * Display the final output when an error occurs, or when all routines are complete.
+   */
+  displayFinalOutput(error?: Error | null) {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+    }
+
+    this.handleRender();
+
+    if (error) {
+      this.displayError(error);
+    } else {
+      this.displayFooter();
+    }
+  }
+
+  /**
+   * Display a footer after all other output.
+   */
+  displayFooter() {
+    const { footer } = this.options;
+    const time = this.getElapsedTime(this.startTime, this.stopTime, false);
+
+    if (footer) {
+      this.out(`${footer} ${chalk.gray(`(${time})`)}\n`);
+    } else {
+      this.out(chalk.gray(`Ran in ${time}\n`));
+    }
+  }
+
+  /**
+   * Flush buffered output that has been logged.
    */
   flushBufferedOutput(): this {
-    this.bufferedOutput.forEach(buffer => {
+    const lines = this.bufferedOutput;
+
+    this.out(lines);
+
+    this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
+    this.bufferedOutput = '';
+
+    return this;
+  }
+
+  /**
+   * Flush buffered streams output after clearing lines rendered by the reporter.
+   */
+  flushBufferedStreams(): this {
+    this.bufferedStreams.forEach(buffer => {
       buffer();
     });
 
@@ -169,21 +223,29 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
+   * Handle the entire rendering and flushing process.
+   */
+  handleRender = () => {
+    this.clearLinesOutput();
+    this.flushBufferedStreams();
+    this.render();
+    this.flushBufferedOutput();
+    this.renderScheduled = false;
+  };
+
+  /**
    * Hide the console cursor.
    */
   hideCursor(): this {
-    if (!this.out.isTTY) {
-      return this;
-    }
+    this.out('\x1B[?25l');
 
     if (!this.restoreCursorOnExit) {
+      this.restoreCursorOnExit = true;
+
       process.on('exit', () => {
         this.showCursor();
       });
     }
-
-    this.log('\x1B[?25l');
-    this.restoreCursorOnExit = true;
 
     return this;
   }
@@ -200,8 +262,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   log(message: string, nl: number = 0): this {
     if (!this.options.silent) {
-      this.out.write(message + '\n'.repeat(nl));
-      this.lastOutputHeight += nl;
+      this.bufferedOutput += message + '\n'.repeat(nl);
     }
 
     return this;
@@ -226,67 +287,10 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
-   * Render an error and it's stack. TODO
-   */
-  renderError(error: Error): void {
-    const message = chalk.red.bold(error.message);
-
-    this.err.write(`\n${message}\n`);
-
-    // Remove message line from stack
-    if (error.stack) {
-      const stack = chalk.gray(
-        error.stack
-          .split('\n')
-          .slice(1)
-          .join('\n'),
-      );
-
-      this.err.write(`\n${stack}\n`);
-    }
-
-    this.err.write('\n');
-  }
-
-  /**
-   * Render the final output when an error occurs, or when all routines are complete.
-   */
-  renderFinalOutput(error?: Error | null) {
-    if (this.renderTimer) {
-      clearTimeout(this.renderTimer);
-    }
-
-    this.clearLinesOutput();
-    this.render();
-
-    if (error) {
-      this.renderError(error);
-    } else {
-      this.renderFooter();
-    }
-  }
-
-  /**
-   * Render a footer after all other output.
-   */
-  renderFooter() {
-    const { footer } = this.options;
-    const time = this.getElapsedTime(this.startTime, this.stopTime, false);
-
-    if (footer) {
-      this.log(`${footer} ${chalk.gray(`(${time})`)}`, 1);
-    } else {
-      this.log(chalk.gray(`Ran in ${time}`), 1);
-    }
-  }
-
-  /**
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    if (this.out.isTTY) {
-      this.log(`\x1B[${process.stdout.rows};0H`);
-    }
+    this.out(`\x1B[${process.stdout.rows};0H`);
 
     return this;
   }
@@ -295,9 +299,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Show the console cursor.
    */
   showCursor(): this {
-    if (this.out.isTTY) {
-      this.log('\x1B[?25h');
-    }
+    this.out('\x1B[?25h');
 
     return this;
   }
@@ -307,29 +309,33 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   wrapStream(stream: NodeJS.WriteStream): WrappedStream {
     const originalWrite = stream.write.bind(stream);
-    let buffer: string[] = [];
+    let buffer = '';
 
-    const flushBuffer = () => {
-      const output = buffer.join('');
-      buffer = [];
-
-      if (output) {
-        originalWrite(output);
+    const write = (message: string) => {
+      if (stream.isTTY) {
+        originalWrite(message);
       }
-    };
-
-    this.bufferedOutput.push(flushBuffer);
-
-    // eslint-disable-next-line no-param-reassign
-    stream.write = (chunk: string) => {
-      buffer.push(String(chunk));
 
       return true;
     };
 
-    return {
-      isTTY: stream.isTTY || false,
-      write: originalWrite,
+    const flushBuffer = () => {
+      if (buffer) {
+        originalWrite(buffer);
+      }
+
+      buffer = '';
     };
+
+    this.bufferedStreams.push(flushBuffer);
+
+    // eslint-disable-next-line no-param-reassign
+    stream.write = (chunk: string) => {
+      buffer += String(chunk);
+
+      return true;
+    };
+
+    return write;
   }
 }

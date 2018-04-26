@@ -18,8 +18,8 @@ class MultiTaskRoutine extends Routine {
       throw new Error('Oops!');
     }
 
-    // return this.parallelizeTasks();
-    return this.serializeTasks();
+    return this.parallelizeTasks();
+    // return this.serializeTasks();
   }
 
   delayedTask() {
@@ -58,5 +58,5 @@ new Pipeline(tool)
   // .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
   .pipe(new MultiTaskRoutine('skipped', 'Multi-task routine #2').skip(true))
   .pipe(new MultiRoutine('subs', 'Multi-subroutines', { deep: true }))
-  .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3'))
+  // .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3'))
   .run({});
