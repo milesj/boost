@@ -25,12 +25,26 @@ describe('Pipeline', () => {
   });
 
   describe('run()', () => {
-    it('exits the console on success', async () => {
-      const spy = jest.spyOn(pipeline.tool.console, 'exit');
+    it('starts console with subroutine', async () => {
+      const spy = jest.fn();
+      const routine = new Routine('key', 'title');
+
+      pipeline.tool.console.emit = spy;
+      pipeline.pipe(routine);
 
       await pipeline.run();
 
-      expect(spy).toBeCalledWith(null, 0);
+      expect(spy).toHaveBeenCalledWith('start', [[routine]]);
+    });
+
+    it('exits the console on success', async () => {
+      const spy = jest.fn();
+
+      pipeline.tool.console.exit = spy;
+
+      await pipeline.run();
+
+      expect(spy).toHaveBeenCalledWith(null, 0);
     });
 
     it('exits the console on failure', async () => {
@@ -50,7 +64,7 @@ describe('Pipeline', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(spy).toBeCalledWith(new Error('Oops'), 1);
+      expect(spy).toHaveBeenCalledWith(new Error('Oops'), 1);
     });
   });
 });

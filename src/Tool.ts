@@ -84,7 +84,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     this.console = new Console();
 
     // Cleanup when an exit occurs
-    if (process.env.NODE_ENV === 'test') {
+    if (process.env.NODE_ENV !== 'test') {
       /* istanbul ignore next */
       process.on('exit', code => {
         this.emit('exit', [code]);

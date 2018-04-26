@@ -172,15 +172,6 @@ describe('Task', () => {
     });
   });
 
-  describe('spinner()', () => {
-    it('increases frames each call', () => {
-      expect(task.spinner()).toBe('⠙');
-      expect(task.spinner()).toBe('⠹');
-      expect(task.spinner()).toBe('⠸');
-      expect(task.spinner()).toBe('⠼');
-    });
-  });
-
   describe('wrap()', () => {
     it('wraps the value in a promise', () => {
       expect(task.wrap(123)).toBeInstanceOf(Promise);

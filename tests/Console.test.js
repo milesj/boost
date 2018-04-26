@@ -1,111 +1,66 @@
 import chalk from 'chalk';
 import Console from '../src/Console';
-import Reporter from '../src/Reporter';
-import Task from '../src/Task';
 
 describe('Console', () => {
   let cli;
 
   beforeEach(() => {
-    cli = new Console(new Reporter());
+    cli = new Console();
   });
 
-  describe('log()', () => {
-    it('adds to output log', () => {
-      cli.log('foo');
+  describe('handleFailure()', () => {
+    it('calls exit with error', () => {
+      const error = new Error('Oops');
 
-      expect(cli.logs).toEqual(['foo']);
-    });
+      cli.exit = jest.fn();
+      cli.handleFailure(error);
 
-    it('supports formatting', () => {
-      cli.log('%s', 'foo');
-
-      expect(cli.logs).toEqual(['foo']);
-    });
-
-    it('handles objects and arrays', () => {
-      cli.log('%o %O', { foo: 'bar' }, ['baz', 123]);
-
-      expect(cli.logs).toMatchSnapshot();
+      expect(cli.exit).toHaveBeenCalledWith(error, 1, true);
     });
   });
 
-  describe('error()', () => {
-    it('adds to error log', () => {
-      cli.error('foo');
+  describe('handleSignal()', () => {
+    it('calls exit with error', () => {
+      cli.exit = jest.fn();
+      cli.handleSignal();
 
-      expect(cli.errors).toEqual(['foo']);
-    });
-
-    it('supports formatting', () => {
-      cli.error('%s', 'foo');
-
-      expect(cli.errors).toEqual(['foo']);
-    });
-
-    it('handles objects and arrays', () => {
-      cli.error('%o %O', { foo: 'bar' }, ['baz', 123]);
-
-      expect(cli.errors).toMatchSnapshot();
+      expect(cli.exit).toHaveBeenCalledWith('Process has been terminated.', 1, true);
     });
   });
 
-  describe('start()', () => {
-    it('calls start on the reporter', () => {
-      const spy = jest.fn();
-      const task = new Task('Foo', () => {});
+  describe('exit()', () => {
+    const oldExit = process.exit.bind(process);
 
-      cli.reporter.start = spy;
-      cli.start({}, {}, [task]);
-
-      expect(spy).toHaveBeenCalled();
+    beforeEach(() => {
+      process.exit = jest.fn();
+      cli.emit = jest.fn();
     });
 
-    it('passes value from tool and console', () => {
-      jest.useFakeTimers();
-
-      const task = new Task('Foo', () => {});
-
-      cli.options = {
-        footer: 'footer',
-        silent: true,
-      };
-
-      cli.log('log');
-      cli.error('error');
-      cli.start([task]);
-
-      expect(cli.reporter.loader()).toEqual({
-        errors: ['error'],
-        footer: 'footer',
-        logs: ['log'],
-        silent: true,
-        tasks: [task],
-      });
-
-      jest.useRealTimers();
+    afterEach(() => {
+      process.exit = oldExit;
     });
-  });
 
-  describe('stop()', () => {
-    it('calls stop on the reporter', () => {
-      const spy = jest.fn();
+    it('calls `stop` with null', () => {
+      cli.exit(null, 2, true);
 
-      cli.reporter.stop = spy;
-      cli.stop();
-
-      expect(spy).toHaveBeenCalled();
+      expect(process.exit).toHaveBeenCalledWith(2);
+      expect(cli.emit).toHaveBeenCalledWith('stop', [null, 2]);
     });
-  });
 
-  describe('update()', () => {
-    it('calls update on the reporter', () => {
-      const spy = jest.fn();
+    it('calls `stop` with string', () => {
+      cli.exit('Oops', 2, true);
 
-      cli.reporter.update = spy;
-      cli.update();
+      expect(process.exit).toHaveBeenCalledWith(2);
+      expect(cli.emit).toHaveBeenCalledWith('stop', [new Error('Oops'), 2]);
+    });
 
-      expect(spy).toHaveBeenCalled();
+    it('calls `stop` with error', () => {
+      const error = new Error('Oops');
+
+      cli.exit(error, 2, true);
+
+      expect(process.exit).toHaveBeenCalledWith(2);
+      expect(cli.emit).toHaveBeenCalledWith('stop', [error, 2]);
     });
   });
 });

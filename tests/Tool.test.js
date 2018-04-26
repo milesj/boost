@@ -7,6 +7,7 @@ import enableDebug from '../src/helpers/enableDebug';
 import { getFixturePath } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
+jest.mock('../src/Reporter');
 
 describe('Tool', () => {
   let tool;
@@ -34,34 +35,46 @@ describe('Tool', () => {
     });
   });
 
-  describe('debug()', () => {
-    it('logs to debugger', () => {
-      const spy = jest.spyOn(tool, 'debug');
+  // describe('debug()', () => {
+  //   describe('invariant', () => {
+  //     it('logs green if true', () => {
+  //       const spy = jest.spyOn(tool, 'debug');
 
-      tool.debug('message');
+  //       tool.debug.invariant(true, 'message', 'foo', 'bar');
 
-      expect(spy).toHaveBeenCalledWith('message');
-    });
-  });
+  //       expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.green('foo'));
+  //     });
 
-  describe('exit()', () => {
-    it('accepts a string', () => {
-      const spy = jest.spyOn(tool.console, 'exit');
+  //     it('logs red if false', () => {
+  //       const spy = jest.spyOn(tool, 'debug');
 
-      tool.exit('Oops', 123);
+  //       tool.debug.invariant(false, 'message', 'foo', 'bar');
 
-      expect(spy).toHaveBeenCalledWith('Oops', 123);
-    });
+  //       expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.red('bar'));
+  //     });
+  //   });
+  // });
 
-    it('accepts an error', () => {
-      const spy = jest.spyOn(tool.console, 'exit');
-      const error = new Error('Oh nooo', 456);
+  // describe('exit()', () => {
+  //   it('accepts a string', () => {
+  //     const spy = jest.fn();
 
-      tool.exit(error);
+  //     tool.console.exit = spy;
+  //     tool.exit('Oops', 123);
 
-      expect(spy).toHaveBeenCalledWith(error, 1);
-    });
-  });
+  //     expect(spy).toHaveBeenCalledWith('Oops', 123);
+  //   });
+
+  //   it('accepts an error', () => {
+  //     const error = new Error('Oh nooo', 456);
+  //     const spy = jest.fn();
+
+  //     tool.console.exit = spy;
+  //     tool.exit(error);
+
+  //     expect(spy).toHaveBeenCalledWith(error, 1);
+  //   });
+  // });
 
   describe('getPlugin()', () => {
     it('errors if not found', () => {
@@ -91,24 +104,6 @@ describe('Tool', () => {
       expect(tool.config).not.toEqual({});
       expect(tool.package).not.toEqual({});
       expect(tool.initialized).toBe(true);
-    });
-  });
-
-  describe('invariant()', () => {
-    it('logs green if true', () => {
-      const spy = jest.spyOn(tool, 'debug');
-
-      tool.invariant(true, 'message', 'foo', 'bar');
-
-      expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.green('foo'));
-    });
-
-    it('logs red if false', () => {
-      const spy = jest.spyOn(tool, 'debug');
-
-      tool.invariant(false, 'message', 'foo', 'bar');
-
-      expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.red('bar'));
     });
   });
 
@@ -244,35 +239,6 @@ describe('Tool', () => {
         tool.config = {};
         tool.loadReporter();
       }).toThrowError('Cannot load reporter as configuration has not been loaded.');
-    });
-
-    it('loads reporter', () => {
-      const reporter = new Reporter();
-
-      tool.config = { reporter };
-      tool.loadReporter();
-
-      expect(tool.console.reporter).toBe(reporter);
-    });
-  });
-
-  describe('log()', () => {
-    it('passes to console', () => {
-      const spy = jest.spyOn(tool.console, 'log');
-
-      tool.log('foo');
-
-      expect(spy).toHaveBeenCalledWith('foo');
-    });
-  });
-
-  describe('logError()', () => {
-    it('passes to console', () => {
-      const spy = jest.spyOn(tool.console, 'error');
-
-      tool.logError('foo');
-
-      expect(spy).toHaveBeenCalledWith('foo');
     });
   });
 });
