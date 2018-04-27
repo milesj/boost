@@ -185,6 +185,36 @@ describe('Routine', () => {
 
       expect(task.status).toBe(STATUS_FAILED);
     });
+
+    it('emits console events if a success', async () => {
+      const spy = jest.fn();
+
+      routine.tool.console.emit = spy;
+
+      await routine.executeTask(task, 123);
+
+      expect(spy).toHaveBeenCalledWith('task', [task, 123]);
+      expect(spy).toHaveBeenCalledWith('task.pass', [task, 369]);
+    });
+
+    it('emits console events if a failure', async () => {
+      const spy = jest.fn();
+
+      routine.tool.console.emit = spy;
+
+      task = new Task('title', () => {
+        throw new Error('Oops');
+      });
+
+      try {
+        await routine.executeTask(task, 123);
+      } catch (error) {
+        expect(error).toEqual(new Error('Oops'));
+      }
+
+      expect(spy).toHaveBeenCalledWith('task', [task, 123]);
+      expect(spy).toHaveBeenCalledWith('task.fail', [task, new Error('Oops')]);
+    });
   });
 
   describe('parallelizeSubroutines()', () => {
@@ -351,6 +381,36 @@ describe('Routine', () => {
       }
 
       expect(routine.status).toBe(STATUS_FAILED);
+    });
+
+    it('emits console events if a success', async () => {
+      const spy = jest.fn();
+
+      routine.tool.console.emit = spy;
+
+      await routine.run({}, 123);
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123]);
+      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123]);
+    });
+
+    it('emits console events if a failure', async () => {
+      const spy = jest.fn();
+
+      routine.tool.console.emit = spy;
+
+      routine.action = () => {
+        throw new Error('Failure');
+      };
+
+      try {
+        await routine.run({}, 123);
+      } catch (error) {
+        expect(error).toEqual(new Error('Failure'));
+      }
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123]);
+      expect(spy).toHaveBeenCalledWith('routine.fail', [routine, new Error('Failure')]);
     });
   });
 

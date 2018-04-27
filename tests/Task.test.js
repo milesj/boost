@@ -152,6 +152,28 @@ describe('Task', () => {
         foo: 'bar',
       });
     });
+
+    it('sets times on success', async () => {
+      await task.run({}, 123);
+
+      expect(task.startTime).not.toBe(0);
+      expect(task.stopTime).not.toBe(0);
+    });
+
+    it('sets times on failure', async () => {
+      try {
+        task.action = () => {
+          throw new Error('Oops');
+        };
+
+        await task.run({}, 123);
+      } catch (error) {
+        // Skip
+      }
+
+      expect(task.startTime).not.toBe(0);
+      expect(task.stopTime).not.toBe(0);
+    });
   });
 
   describe('skip()', () => {
