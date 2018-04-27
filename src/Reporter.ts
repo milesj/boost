@@ -200,9 +200,11 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   flushBufferedOutput(): this {
     const lines = this.bufferedOutput;
 
-    this.out(lines);
+    if (lines) {
+      this.out(lines);
+      this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
+    }
 
-    this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
     this.bufferedOutput = '';
 
     return this;
