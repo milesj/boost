@@ -12,7 +12,7 @@ import Console, { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
-import Reporter from './Reporter';
+import Reporter, { ReporterInterface } from './Reporter';
 import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -50,6 +50,8 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
   plugins: Tp[] = [];
 
+  reporter: ReporterInterface | null = null;
+
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
 
@@ -84,8 +86,8 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     this.console = new Console();
 
     // Cleanup when an exit occurs
+    /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
-      /* istanbul ignore next */
       process.on('exit', code => {
         this.emit('exit', [code]);
       });
@@ -120,13 +122,11 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
   getPlugin(name: string): Tp {
     const plugin = this.plugins.find(p => p.name === name);
 
-    if (!plugin) {
-      throw new Error(
-        `Failed to find ${this.options.pluginAlias} "${name}". Have you installed it?`,
-      );
+    if (plugin) {
+      return plugin;
     }
 
-    return plugin;
+    throw new Error(`Failed to find ${this.options.pluginAlias} "${name}". Have you installed it?`);
   }
 
   /**
@@ -268,6 +268,8 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     loader.debug('Bootstrapping reporter with console environment');
 
     reporter.bootstrap(this.console);
+
+    this.reporter = reporter;
 
     return this;
   }

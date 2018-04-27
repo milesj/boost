@@ -11,7 +11,7 @@ import Module, { ModuleInterface } from './Module';
 import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
 import Plugin, { PluginInterface } from './Plugin';
-import Reporter from './Reporter';
+import Reporter, { ReporterInterface } from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
 import { TaskInterface } from './Task';
 import Tool, { ToolInterface } from './Tool';
@@ -29,6 +29,7 @@ export {
   Plugin,
   PluginInterface,
   Reporter,
+  ReporterInterface,
   Routine,
   RoutineInterface,
   Tool,

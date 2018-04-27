@@ -2,12 +2,12 @@ import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
+import DefaultReporter from '../src/DefaultReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath } from './helpers';
+import { getFixturePath, copyFixtureToMock } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
-jest.mock('../src/Reporter');
 
 describe('Tool', () => {
   let tool;
@@ -35,46 +35,41 @@ describe('Tool', () => {
     });
   });
 
-  // describe('debug()', () => {
-  //   describe('invariant', () => {
-  //     it('logs green if true', () => {
-  //       const spy = jest.spyOn(tool, 'debug');
+  describe('createDebugger()', () => {
+    it('returns a debug function', () => {
+      const debug = tool.createDebugger('foo');
 
-  //       tool.debug.invariant(true, 'message', 'foo', 'bar');
+      expect(typeof debug).toBe('function');
+      expect(debug.namespace).toBe('test-boost:foo');
+    });
 
-  //       expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.green('foo'));
-  //     });
+    it('provides an invariant function', () => {
+      const debug = tool.createDebugger('foo');
 
-  //     it('logs red if false', () => {
-  //       const spy = jest.spyOn(tool, 'debug');
+      expect(typeof debug.invariant).toBe('function');
+    });
+  });
 
-  //       tool.debug.invariant(false, 'message', 'foo', 'bar');
+  describe('exit()', () => {
+    it('accepts a string', () => {
+      const spy = jest.fn();
 
-  //       expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.red('bar'));
-  //     });
-  //   });
-  // });
+      tool.console.exit = spy;
+      tool.exit('Oops', 123);
 
-  // describe('exit()', () => {
-  //   it('accepts a string', () => {
-  //     const spy = jest.fn();
+      expect(spy).toHaveBeenCalledWith('Oops', 123);
+    });
 
-  //     tool.console.exit = spy;
-  //     tool.exit('Oops', 123);
+    it('accepts an error', () => {
+      const error = new Error('Oh nooo', 456);
+      const spy = jest.fn();
 
-  //     expect(spy).toHaveBeenCalledWith('Oops', 123);
-  //   });
+      tool.console.exit = spy;
+      tool.exit(error);
 
-  //   it('accepts an error', () => {
-  //     const error = new Error('Oh nooo', 456);
-  //     const spy = jest.fn();
-
-  //     tool.console.exit = spy;
-  //     tool.exit(error);
-
-  //     expect(spy).toHaveBeenCalledWith(error, 1);
-  //   });
-  // });
+      expect(spy).toHaveBeenCalledWith(error, 1);
+    });
+  });
 
   describe('getPlugin()', () => {
     it('errors if not found', () => {
@@ -239,6 +234,61 @@ describe('Tool', () => {
         tool.config = {};
         tool.loadReporter();
       }).toThrowError('Cannot load reporter as configuration has not been loaded.');
+    });
+
+    it('doesnt load if initialized', () => {
+      tool.initialized = true;
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeNull();
+    });
+
+    it('loads default reporter if config not set', () => {
+      tool.config = { reporter: '' };
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeInstanceOf(DefaultReporter);
+    });
+
+    it('loads reporter using a string', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
+
+      tool.config = { reporter: 'foo' };
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeInstanceOf(Reporter);
+      expect(tool.reporter.name).toBe('foo');
+      expect(tool.reporter.moduleName).toBe('test-boost-reporter-foo');
+
+      unmock();
+    });
+
+    it('loads reporter using an object', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
+
+      tool.config = { reporter: { reporter: 'bar' } };
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeInstanceOf(Reporter);
+      expect(tool.reporter.name).toBe('bar');
+      expect(tool.reporter.moduleName).toBe('test-boost-reporter-bar');
+
+      unmock();
+    });
+
+    it('passes options to reporter', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
+
+      tool.options.footer = 'Powered by Boost';
+      tool.config = { reporter: 'baz', silent: true };
+      tool.loadReporter();
+
+      const { reporter } = tool;
+
+      expect(reporter.options.footer).toBe('Powered by Boost');
+      expect(reporter.options.silent).toBe(true);
+
+      unmock();
     });
   });
 });

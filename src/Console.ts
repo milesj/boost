@@ -15,6 +15,7 @@ export default class Console extends Emitter {
     super();
 
     // Avoid binding listeners while testing
+    /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
       process
         .on('SIGINT', this.handleSignal)

@@ -27,8 +27,13 @@ export interface ReporterOptions extends Struct {
   verbose: 0 | 1 | 2 | 3;
 }
 
+export interface ReporterInterface extends ModuleInterface {
+  err: WrappedStream;
+  out: WrappedStream;
+}
+
 export default class Reporter<T, To extends ReporterOptions> extends Module<To>
-  implements ModuleInterface {
+  implements ReporterInterface {
   bufferedOutput: string = '';
 
   bufferedStreams: (() => void)[] = [];
@@ -71,8 +76,13 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
       },
     );
 
-    this.err = this.wrapStream(process.stderr);
-    this.out = this.wrapStream(process.stdout);
+    if (process.env.NODE_ENV === 'test') {
+      this.err = process.stderr.write.bind(process.stderr);
+      this.out = process.stdout.write.bind(process.stdout);
+    } else {
+      this.err = this.wrapStream(process.stderr);
+      this.out = this.wrapStream(process.stdout);
+    }
   }
 
   /**
