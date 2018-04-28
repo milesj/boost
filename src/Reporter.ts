@@ -76,27 +76,16 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
       },
     );
 
-    if (process.env.NODE_ENV === 'test') {
-      this.err = process.stderr.write.bind(process.stderr);
-      this.out = process.stdout.write.bind(process.stdout);
-    } else {
-      this.err = this.wrapStream(process.stderr);
-      this.out = this.wrapStream(process.stdout);
-    }
+    this.err = this.wrapStream(process.stderr);
+    this.out = this.wrapStream(process.stdout);
   }
 
   /**
    * Register console listeners.
    */
   bootstrap(cli: ConsoleInterface) {
-    cli.on('start', () => {
-      this.startTime = Date.now();
-    });
-
-    cli.on('stop', (event: any, error: Error) => {
-      this.stopTime = Date.now();
-      this.displayFinalOutput(error);
-    });
+    cli.on('start', this.handleBaseStart);
+    cli.on('stop', this.handleBaseStop);
   }
 
   /**
@@ -246,6 +235,21 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   };
 
   /**
+   * Set start time.
+   */
+  handleBaseStart = () => {
+    this.startTime = Date.now();
+  };
+
+  /**
+   * Set stop time and render.
+   */
+  handleBaseStop = (event: any, error: Error | null) => {
+    this.stopTime = Date.now();
+    this.displayFinalOutput(error);
+  };
+
+  /**
    * Hide the console cursor.
    */
   hideCursor(): this {
@@ -254,6 +258,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     if (!this.restoreCursorOnExit) {
       this.restoreCursorOnExit = true;
 
+      /* istanbul ignore next */
       process.on('exit', () => {
         this.showCursor();
       });
@@ -319,8 +324,14 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   /**
    * Wrap a stream and buffer the output as to not collide with our reporter.
    */
+  /* istanbul ignore next */
   wrapStream(stream: NodeJS.WriteStream): WrappedStream {
     const originalWrite = stream.write.bind(stream);
+
+    if (process.env.NODE_ENV === 'test') {
+      return originalWrite;
+    }
+
     let buffer = '';
 
     const write = (message: string) => {

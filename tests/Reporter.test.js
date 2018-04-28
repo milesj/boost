@@ -219,6 +219,30 @@ describe('Reporter', () => {
     });
   });
 
+  describe('handleBaseStart()', () => {
+    it('sets start time', () => {
+      reporter.handleBaseStart();
+
+      expect(reporter.startTime).not.toBe(0);
+    });
+  });
+
+  describe('handleBaseStop()', () => {
+    it('sets stop time', () => {
+      reporter.handleBaseStop();
+
+      expect(reporter.stopTime).not.toBe(0);
+    });
+
+    it('displays final output', () => {
+      const spy = jest.spyOn(reporter, 'displayFinalOutput');
+
+      reporter.handleBaseStop(null, new Error());
+
+      expect(spy).toHaveBeenCalledWith(new Error());
+    });
+  });
+
   describe('hideCursor()', () => {
     it('writes ansi escape code', () => {
       reporter.hideCursor();

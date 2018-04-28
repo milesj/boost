@@ -43,16 +43,16 @@
     "@types/execa": "^0.9.0",
     "@types/glob": "^5.0.35",
     "@types/json5": "^0.0.29",
-    "@types/lodash": "^4.14.107",
+    "@types/lodash": "^4.14.108",
     "@types/pluralize": "^0.0.28",
     "@types/split": "^0.3.28",
-    "chalk": "^2.4.0",
+    "chalk": "^2.4.1",
     "cli-truncate": "^1.1.0",
     "debug": "^3.1.0",
     "execa": "^0.10.0",
     "glob": "^7.1.2",
     "json5": "^1.0.1",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.10",
     "optimal": "^0.19.0",
     "pluralize": "^7.0.0",
     "split": "^1.0.1"
@@ -61,7 +61,7 @@
     "optimal": "^0.19.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.86.0",
+    "@milesj/build-tool-config": "0.87.0",
     "fs-extra": "^5.0.0"
   },
   "beemo": {
