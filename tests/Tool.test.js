@@ -291,4 +291,26 @@ describe('Tool', () => {
       unmock();
     });
   });
+
+  describe('log()', () => {
+    it('sends log to console', () => {
+      const spy = jest.fn();
+
+      tool.console.emit = spy;
+      tool.log('Some message: %s', 'foo');
+
+      expect(spy).toHaveBeenCalledWith('log', ['Some message: foo', 'Some message: %s', ['foo']]);
+    });
+  });
+
+  describe('logError()', () => {
+    it('sends error to console', () => {
+      const spy = jest.fn();
+
+      tool.console.emit = spy;
+      tool.logError('Some error: %s', 'foo');
+
+      expect(spy).toHaveBeenCalledWith('log.error', ['Some error: foo', 'Some error: %s', ['foo']]);
+    });
+  });
 });

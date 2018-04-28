@@ -40,9 +40,13 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   err: WrappedStream;
 
+  errorLogs: string[] = [];
+
   lastOutputHeight: number = 0;
 
   lines: T[] = [];
+
+  logs: string[] = [];
 
   options: To;
 
@@ -86,6 +90,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   bootstrap(cli: ConsoleInterface) {
     cli.on('start', this.handleBaseStart);
     cli.on('stop', this.handleBaseStop);
+    cli.on('log', this.handleLogMessage);
+    cli.on('log.error', this.handleErrorMessage);
   }
 
   /**
@@ -163,9 +169,20 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     this.handleRender();
 
     if (error) {
+      this.displayLogs(this.errorLogs);
       this.displayError(error);
     } else {
+      this.displayLogs(this.logs);
       this.displayFooter();
+    }
+  }
+
+  /**
+   * Display logs in the final output.
+   */
+  displayLogs(logs: string[]) {
+    if (logs.length > 0) {
+      this.out(`\n\n${logs.join('\n')}\n\n`);
     }
   }
 
@@ -247,6 +264,20 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   handleBaseStop = (error: Error | null) => {
     this.stopTime = Date.now();
     this.displayFinalOutput(error);
+  };
+
+  /**
+   * Store the log.
+   */
+  handleLogMessage = (message: string) => {
+    this.logs.push(message);
+  };
+
+  /**
+   * Store the error.
+   */
+  handleErrorMessage = (message: string) => {
+    this.errorLogs.push(message);
   };
 
   /**

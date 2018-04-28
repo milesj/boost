@@ -3,6 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
 import pluralize from 'pluralize';
@@ -43,6 +44,8 @@ export interface ToolInterface extends EmitterInterface {
   createDebugger(...namespaces: string[]): Debugger;
   initialize(): this;
   getPlugin(name: string): PluginInterface;
+  log(message: string, ...args: any[]): this;
+  logError(message: string, ...args: any[]): this;
 }
 
 export default class Tool<Tp extends PluginInterface> extends Emitter implements ToolInterface {
@@ -282,6 +285,24 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     reporter.bootstrap(this.console);
 
     this.reporter = reporter;
+
+    return this;
+  }
+
+  /**
+   * Log a message to the console to display on success.
+   */
+  log(message: string, ...args: any[]): this {
+    this.console.emit('log', [util.format(message, ...args), message, args]);
+
+    return this;
+  }
+
+  /**
+   * Log an error to the console to display on failure.
+   */
+  logError(message: string, ...args: any[]): this {
+    this.console.emit('log.error', [util.format(message, ...args), message, args]);
 
     return this;
   }

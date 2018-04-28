@@ -20,6 +20,8 @@ describe('Reporter', () => {
 
       expect(cli.on).toHaveBeenCalledWith('start', expect.anything());
       expect(cli.on).toHaveBeenCalledWith('stop', expect.anything());
+      expect(cli.on).toHaveBeenCalledWith('log', expect.anything());
+      expect(cli.on).toHaveBeenCalledWith('log.error', expect.anything());
     });
   });
 
@@ -149,6 +151,40 @@ describe('Reporter', () => {
 
       expect(spy).toHaveBeenCalled();
     });
+
+    it('displays logs on success', () => {
+      reporter.logs.push('foo');
+
+      const spy = jest.spyOn(reporter, 'displayLogs');
+
+      reporter.displayFinalOutput();
+
+      expect(spy).toHaveBeenCalledWith(['foo']);
+    });
+
+    it('displays error logs on failure', () => {
+      reporter.errorLogs.push('foo');
+
+      const spy = jest.spyOn(reporter, 'displayLogs');
+
+      reporter.displayFinalOutput(new Error('Oops'));
+
+      expect(spy).toHaveBeenCalledWith(['foo']);
+    });
+  });
+
+  describe('displayLogs()', () => {
+    it('displays nothing if no logs', () => {
+      reporter.displayLogs([]);
+
+      expect(reporter.out).not.toHaveBeenCalled();
+    });
+
+    it('displays the logs', () => {
+      reporter.displayLogs(['foo', 'bar']);
+
+      expect(reporter.out).toHaveBeenCalledWith('\n\nfoo\nbar\n\n');
+    });
   });
 
   describe('displayFooter()', () => {
@@ -240,6 +276,26 @@ describe('Reporter', () => {
       reporter.handleBaseStop(new Error());
 
       expect(spy).toHaveBeenCalledWith(new Error());
+    });
+  });
+
+  describe('handleLogMessage()', () => {
+    it('adds a log', () => {
+      expect(reporter.logs).toEqual([]);
+
+      reporter.handleLogMessage('foo');
+
+      expect(reporter.logs).toEqual(['foo']);
+    });
+  });
+
+  describe('handleErrorMessage()', () => {
+    it('adds a log', () => {
+      expect(reporter.errorLogs).toEqual([]);
+
+      reporter.handleErrorMessage('foo');
+
+      expect(reporter.errorLogs).toEqual(['foo']);
     });
   });
 
