@@ -5,7 +5,6 @@
 
 import debug from 'debug';
 import { Blueprint, Struct } from 'optimal';
-import { TaskInterface } from './Task';
 
 export interface Debugger extends debug.IDebugger {
   invariant(condition: boolean, message: string, pass: string, fail: string): void;
@@ -32,18 +31,6 @@ export interface ToolConfig extends Struct {
   reporter: string | ReporterConfig;
   silent: boolean;
   [key: string]: any;
-}
-
-export interface ToolOptions extends Struct {
-  appName: string;
-  configBlueprint: Blueprint;
-  configFolder: string;
-  extendArgv: string;
-  footer: string;
-  pluginAlias: string;
-  root: string;
-  scoped: boolean;
-  workspaceRoot: string;
 }
 
 export interface PackageConfig extends Struct {

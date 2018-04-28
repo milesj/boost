@@ -6,7 +6,7 @@
 import chalk from 'chalk';
 import debug from 'debug';
 import pluralize from 'pluralize';
-import optimal, { bool, object, string } from 'optimal';
+import optimal, { bool, object, string, Blueprint, Struct } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Console, { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
@@ -18,7 +18,19 @@ import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import isObject from './helpers/isObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { Debugger, ToolConfig, ToolOptions, PackageConfig } from './types';
+import { Debugger, ToolConfig, PackageConfig } from './types';
+
+export interface ToolOptions extends Struct {
+  appName: string;
+  configBlueprint: Blueprint;
+  configFolder: string;
+  extendArgv: string;
+  footer: string;
+  pluginAlias: string;
+  root: string;
+  scoped: boolean;
+  workspaceRoot: string;
+}
 
 export interface ToolInterface extends EmitterInterface {
   argv: string[];
