@@ -3,12 +3,14 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Event from './Event';
 import { APP_NAME_PATTERN } from './constants';
-import { EventArguments, EventListener } from './types';
+
+export type EventArguments = any[];
+
+export type EventListener = (...args: EventArguments) => false | void;
 
 export interface EmitterInterface {
-  emit(name: string, args?: EventArguments, initialValue?: any): Event;
+  emit(name: string, args?: EventArguments): this;
   off(eventName: string, listener: EventListener): this;
   on(eventName: string, listener: EventListener): this;
   setEventNamespace(namespace: string): this;
@@ -34,51 +36,29 @@ export default class Emitter implements EmitterInterface {
   /**
    * Syncronously execute listeners for the defined event and arguments.
    */
-  emit(name: string, args: EventArguments = [], initialValue: any = null): Event {
-    const event = new Event(this.createEventName(name), initialValue);
+  emit(name: string, args: EventArguments = []): this {
+    Array.from(this.getListeners(this.createEventName(name))).some(
+      listener => listener(...args) === false,
+    );
 
-    Array.from(this.getListeners(event.name)).some(listener => {
-      listener(event, ...args);
-
-      return event.stopped;
-    });
-
-    return event;
+    return this;
   }
 
   /**
    * Syncronously execute listeners for the defined event and arguments,
-   * through a chaining lyer controlled by next handlers.
+   * with the ability to intercept and abort early with a value.
    */
-  emitCascade(name: string, args: EventArguments = [], initialValue: any = null): Event {
-    const event = new Event(this.createEventName(name), initialValue);
-    const listeners = Array.from(this.getListeners(event.name));
-    let index = 0;
+  // emitCascade<T>(name: string, args: EventArguments = []): T | void {
+  //   let value;
 
-    if (listeners.length === 0) {
-      return event;
-    }
+  //   Array.from(this.getListeners(this.createEventName(name))).some(listener => {
+  //     value = listener(...args);
 
-    // Handler passed to each listener
-    function next(nextIndex: number, ...nextEventArguments: EventArguments) {
-      index = nextIndex;
-      const listener = listeners[index];
+  //     return typeof value !== 'undefined';
+  //   });
 
-      if (!listener || event.stopped) {
-        return;
-      }
-
-      // Set the next handler
-      event.next = () => next(index + 1, ...nextEventArguments);
-
-      listener(event, ...nextEventArguments);
-    }
-
-    // Execute the first listener
-    next(0, ...args);
-
-    return event;
-  }
+  //   return value;
+  // }
 
   /**
    * Return all event names with registered listeners.

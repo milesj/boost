@@ -51,9 +51,3 @@ export interface PackageConfig extends Struct {
 }
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
-
-export type EventArguments = any[];
-
-export type EventListener = (...args: EventArguments) => void;
-
-export type EventNextHandler = (index: number, ...args: EventArguments) => void;

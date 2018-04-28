@@ -6,7 +6,6 @@
 import ConfigLoader from './ConfigLoader';
 import { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
-import Event from './Event';
 import Module, { ModuleInterface } from './Module';
 import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
@@ -21,7 +20,6 @@ export {
   ConsoleInterface,
   Emitter,
   EmitterInterface,
-  Event,
   Module,
   ModuleInterface,
   ModuleLoader,

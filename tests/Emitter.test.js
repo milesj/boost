@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-
-import Event from '../src/Event';
 import Emitter from '../src/Emitter';
 
 describe('Emitter', () => {
@@ -41,10 +38,6 @@ describe('Emitter', () => {
   });
 
   describe('emit()', () => {
-    it('returns an event object', () => {
-      expect(emitter.emit('foo')).toBeInstanceOf(Event);
-    });
-
     it('executes listeners in order', () => {
       let output = '';
 
@@ -65,13 +58,13 @@ describe('Emitter', () => {
     it('executes listeners syncronously with arguments', () => {
       const output = [];
 
-      emitter.on('foo', (event, a, b) => {
+      emitter.on('foo', (a, b) => {
         output.push(a, b * 2);
       });
-      emitter.on('foo', (event, a, b) => {
+      emitter.on('foo', (a, b) => {
         output.push(a * 3, b * 4);
       });
-      emitter.on('foo', (event, a, b) => {
+      emitter.on('foo', (a, b) => {
         output.push(a * 5, b * 6);
       });
       emitter.emit('foo', [2, 3]);
@@ -80,38 +73,42 @@ describe('Emitter', () => {
     });
 
     it('executes listeners syncronously while passing values to each', () => {
-      emitter.on('foo', event => {
-        event.value = event.value.toUpperCase();
+      let value = 'foo';
+
+      emitter.on('foo', () => {
+        value = value.toUpperCase();
       });
-      emitter.on('foo', event => {
-        event.value = event.value
+      emitter.on('foo', () => {
+        value = value
           .split('')
           .reverse()
           .join('');
       });
-      emitter.on('foo', event => {
-        event.value = `${event.value}-${event.value}`;
+      emitter.on('foo', () => {
+        value = `${value}-${value}`;
       });
 
-      const event = emitter.emit('foo', [], 'foo');
+      emitter.emit('foo');
 
-      expect(event.value).toBe('OOF-OOF');
+      expect(value).toBe('OOF-OOF');
     });
 
     it('executes listeners syncronously with arguments while passing values to each', () => {
-      emitter.on('foo', (event, a, b, c) => {
-        event.value.push(a.repeat(3));
+      const value = [];
+
+      emitter.on('foo', (a, b, c) => {
+        value.push(a.repeat(3));
       });
-      emitter.on('foo', (event, a, b, c) => {
-        event.value.push(b.repeat(2));
+      emitter.on('foo', (a, b, c) => {
+        value.push(b.repeat(2));
       });
-      emitter.on('foo', (event, a, b, c) => {
-        event.value.push(c.repeat(1));
+      emitter.on('foo', (a, b, c) => {
+        value.push(c.repeat(1));
       });
 
-      const event = emitter.emit('foo', ['foo', 'bar', 'baz'], []);
+      emitter.emit('foo', ['foo', 'bar', 'baz']);
 
-      expect(event.value).toEqual(['foofoofoo', 'barbar', 'baz']);
+      expect(value).toEqual(['foofoofoo', 'barbar', 'baz']);
     });
 
     it('execution can be stopped', () => {
@@ -120,9 +117,7 @@ describe('Emitter', () => {
       emitter.on('foo', () => {
         count += 1;
       });
-      emitter.on('foo', event => {
-        event.stop();
-      });
+      emitter.on('foo', () => false);
       emitter.on('foo', () => {
         count += 1;
       });
@@ -131,25 +126,11 @@ describe('Emitter', () => {
       expect(count).toBe(1);
     });
 
-    it('passes event to listeners', () => {
-      let event;
-
-      emitter.on('foo', e => {
-        event = e;
-      });
-      emitter.emit('foo');
-
-      const actualEvent = new Event('foo');
-      actualEvent.time = event.time;
-
-      expect(event).toEqual(actualEvent);
-    });
-
     it('passes arguments to listeners', () => {
       const baseArgs = [1, 2, 3];
       let args;
 
-      emitter.on('foo', (event, ...eventArgs) => {
+      emitter.on('foo', (...eventArgs) => {
         args = eventArgs;
       });
       emitter.emit('foo', baseArgs);
@@ -158,19 +139,21 @@ describe('Emitter', () => {
     });
 
     it('passes value by modifying event object', () => {
-      emitter.on('foo', event => {
-        event.value += 1;
+      let value = 0;
+
+      emitter.on('foo', () => {
+        value += 1;
       });
-      emitter.on('foo', event => {
-        event.value += 1;
+      emitter.on('foo', () => {
+        value += 1;
       });
-      emitter.on('foo', event => {
-        event.value += 1;
+      emitter.on('foo', () => {
+        value += 1;
       });
 
-      const event = emitter.emit('foo', [], 0);
+      emitter.emit('foo');
 
-      expect(event.value).toBe(3);
+      expect(value).toBe(3);
     });
 
     describe('with namespace', () => {
@@ -180,13 +163,6 @@ describe('Emitter', () => {
 
       afterEach(() => {
         emitter.removeEventNamespace();
-      });
-
-      it('returns an event object', () => {
-        const event = emitter.emit('foo');
-
-        expect(event).toBeInstanceOf(Event);
-        expect(event.name).toBe('ns.foo');
       });
 
       it('executes listeners in order', () => {
@@ -202,220 +178,6 @@ describe('Emitter', () => {
           output += 'C';
         });
         emitter.emit('foo');
-
-        expect(output).toBe('ABC');
-      });
-    });
-  });
-
-  describe('emitCascade()', () => {
-    it('returns an event object', () => {
-      expect(emitter.emitCascade('foo')).toBeInstanceOf(Event);
-    });
-
-    it('executes listeners in order', () => {
-      let output = '';
-
-      emitter.on('foo', event => {
-        output += 'A';
-        event.next();
-      });
-      emitter.on('foo', event => {
-        output += 'B';
-        event.next();
-      });
-      emitter.on('foo', event => {
-        output += 'C';
-        event.next();
-      });
-      emitter.emitCascade('foo');
-
-      expect(output).toBe('ABC');
-    });
-
-    it('executes listeners asyncronously with arguments', () => {
-      const output = [];
-
-      emitter.on('foo', (event, a, b) => {
-        output.push(a, b * 2);
-        event.next();
-      });
-      emitter.on('foo', (event, a, b) => {
-        output.push(a * 3, b * 4);
-        event.next();
-      });
-      emitter.on('foo', (event, a, b) => {
-        output.push(a * 5, b * 6);
-        event.next();
-      });
-      emitter.emitCascade('foo', [2, 3]);
-
-      expect(output).toEqual([2, 6, 6, 12, 10, 18]);
-    });
-
-    it('executes listeners asyncronously while passing values to each', () => {
-      emitter.on('foo', event => {
-        event.value = event.value.toUpperCase();
-        event.next();
-      });
-
-      emitter.on('foo', event => {
-        event.value = event.value
-          .split('')
-          .reverse()
-          .join('');
-        event.next();
-      });
-
-      emitter.on('foo', event => {
-        event.value = `${event.value}-${event.value}`;
-        event.next();
-      });
-
-      const event = emitter.emitCascade('foo', [], 'foo');
-
-      expect(event.value).toBe('OOF-OOF');
-    });
-
-    it('executes listeners syncronously with arguments while passing values to each', () => {
-      emitter.on('foo', (event, a, b, c) => {
-        event.value.push(a.repeat(3));
-        event.next();
-      });
-      emitter.on('foo', (event, a, b, c) => {
-        event.value.push(b.repeat(2));
-        event.next();
-      });
-      emitter.on('foo', (event, a, b, c) => {
-        event.value.push(c.repeat(1));
-        event.next();
-      });
-
-      const event = emitter.emitCascade('foo', ['foo', 'bar', 'baz'], []);
-
-      expect(event.value).toEqual(['foofoofoo', 'barbar', 'baz']);
-    });
-
-    it('execution can be stopped with stop', () => {
-      let count = 0;
-
-      emitter.on('foo', event => {
-        count += 1;
-        event.next();
-      });
-      emitter.on('foo', event => {
-        event.stop();
-        event.next();
-      });
-      emitter.on('foo', event => {
-        count += 1;
-        event.next();
-      });
-      emitter.emitCascade('foo');
-
-      expect(count).toBe(1);
-    });
-
-    it('execution can be stopped by not calling next', () => {
-      let count = 0;
-
-      emitter.on('foo', event => {
-        count += 1;
-        event.next();
-      });
-      emitter.on('foo', event => {
-        count += 1;
-      });
-      emitter.on('foo', event => {
-        count += 1;
-        event.next();
-      });
-      emitter.emitCascade('foo');
-
-      expect(count).toBe(2);
-    });
-
-    it('passes event to listeners', () => {
-      let event;
-
-      emitter.on('foo', e => {
-        event = e;
-        event.next();
-      });
-      emitter.emitCascade('foo');
-
-      const actualEvent = new Event('foo');
-
-      actualEvent.time = event.time;
-      event.next = null;
-
-      expect(event).toEqual(actualEvent);
-    });
-
-    it('passes arguments to listeners', () => {
-      const baseArgs = [1, 2, 3];
-      let args;
-
-      emitter.on('foo', (event, ...eventArgs) => {
-        args = eventArgs;
-        event.next();
-      });
-      emitter.emitCascade('foo', baseArgs);
-
-      expect(args).toEqual(baseArgs);
-    });
-
-    it('passes value by modifying event object', () => {
-      emitter.on('foo', event => {
-        event.value += 1;
-        event.next();
-      });
-      emitter.on('foo', event => {
-        event.value += 1;
-        event.next();
-      });
-      emitter.on('foo', event => {
-        event.value += 1;
-        event.next();
-      });
-
-      const event = emitter.emitCascade('foo', [], 0);
-
-      expect(event.value).toBe(3);
-    });
-
-    describe('with namespace', () => {
-      beforeEach(() => {
-        emitter.setEventNamespace('ns');
-      });
-
-      afterEach(() => {
-        emitter.removeEventNamespace();
-      });
-
-      it('returns an event object', () => {
-        const event = emitter.emitCascade('foo');
-
-        expect(event).toBeInstanceOf(Event);
-        expect(event.name).toBe('ns.foo');
-      });
-
-      it('executes listeners in order', () => {
-        let output = '';
-
-        emitter.on('ns.foo', event => {
-          output += 'A';
-          event.next();
-        });
-        emitter.on('ns.foo', event => {
-          output += 'B';
-          event.next();
-        });
-        emitter.on('ns.foo', event => {
-          output += 'C';
-          event.next();
-        });
-        emitter.emitCascade('foo');
 
         expect(output).toBe('ABC');
       });
