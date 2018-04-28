@@ -18,8 +18,8 @@ class MultiTaskRoutine extends Routine {
       throw new Error('Oops!');
     }
 
-    // return this.parallelizeTasks();
-    return this.serializeTasks();
+    return this.parallelizeTasks();
+    // return this.serializeTasks();
   }
 
   delayedTask() {

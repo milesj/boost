@@ -99,7 +99,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     return 'gray';
   }
 
-  handleStart = (event: any, routines: RoutineInterface[]) => {
+  handleStart = (routines: RoutineInterface[]) => {
     this.keyLength = this.calculateKeyLength(routines);
   };
 
@@ -107,7 +107,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     this.debounceRender();
   };
 
-  handleTask = (event: any, task: TaskInterface) => {
+  handleTask = (task: TaskInterface) => {
     this.addLine({
       depth: this.depth - 1,
       task,
@@ -115,12 +115,12 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     this.debounceRender();
   };
 
-  handleTaskComplete = (event: any, task: TaskInterface) => {
+  handleTaskComplete = (task: TaskInterface) => {
     this.removeLine(line => line.task === task);
     this.debounceRender();
   };
 
-  handleRoutine = (event: any, routine: RoutineInterface) => {
+  handleRoutine = (routine: RoutineInterface) => {
     this.addLine({
       depth: this.depth,
       task: routine,
@@ -130,7 +130,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     this.depth += 1;
   };
 
-  handleRoutineComplete = (event: any, routine: RoutineInterface) => {
+  handleRoutineComplete = (routine: RoutineInterface) => {
     this.depth -= 1;
 
     if (this.depth > 0 && this.options.verbose < 3) {

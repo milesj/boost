@@ -237,7 +237,7 @@ describe('Reporter', () => {
     it('displays final output', () => {
       const spy = jest.spyOn(reporter, 'displayFinalOutput');
 
-      reporter.handleBaseStop(null, new Error());
+      reporter.handleBaseStop(new Error());
 
       expect(spy).toHaveBeenCalledWith(new Error());
     });

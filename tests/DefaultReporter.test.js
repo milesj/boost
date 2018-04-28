@@ -320,7 +320,7 @@ describe('DefaultReporter', () => {
 
   describe('handleStart()', () => {
     it('sets key length', () => {
-      reporter.handleStart({}, [
+      reporter.handleStart([
         new Routine('foo', 'title'),
         new Routine('barbar', 'title'),
         new Routine('bazs', 'title'),
@@ -340,7 +340,7 @@ describe('DefaultReporter', () => {
 
   describe('handleTask()', () => {
     it('debounces render', () => {
-      reporter.handleTask({}, new Task('task'));
+      reporter.handleTask(new Task('task'));
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -348,7 +348,7 @@ describe('DefaultReporter', () => {
     it('adds the task as a line', () => {
       const task = new Task('task');
 
-      reporter.handleTask({}, task);
+      reporter.handleTask(task);
 
       expect(reporter.lines).toEqual([{ depth: -1, task }]);
     });
@@ -356,7 +356,7 @@ describe('DefaultReporter', () => {
 
   describe('handleTaskComplete()', () => {
     it('debounces render', () => {
-      reporter.handleTaskComplete({}, new Task('task'));
+      reporter.handleTaskComplete(new Task('task'));
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -365,7 +365,7 @@ describe('DefaultReporter', () => {
       const task = new Task('task');
 
       reporter.lines = [{ depth: -1, task }];
-      reporter.handleTaskComplete({}, task);
+      reporter.handleTaskComplete(task);
 
       expect(reporter.lines).toEqual([]);
     });
@@ -373,7 +373,7 @@ describe('DefaultReporter', () => {
 
   describe('handleRoutine()', () => {
     it('debounces render', () => {
-      reporter.handleRoutine({}, new Routine('key', 'title'));
+      reporter.handleRoutine(new Routine('key', 'title'));
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -381,7 +381,7 @@ describe('DefaultReporter', () => {
     it('adds the routine as a line', () => {
       const routine = new Routine('key', 'title');
 
-      reporter.handleRoutine({}, routine);
+      reporter.handleRoutine(routine);
 
       expect(reporter.lines).toEqual([{ depth: 0, task: routine }]);
     });
@@ -389,7 +389,7 @@ describe('DefaultReporter', () => {
     it('increases depth', () => {
       expect(reporter.depth).toBe(0);
 
-      reporter.handleRoutine({}, new Routine('key', 'title'));
+      reporter.handleRoutine(new Routine('key', 'title'));
 
       expect(reporter.depth).toBe(1);
     });
@@ -397,7 +397,7 @@ describe('DefaultReporter', () => {
 
   describe('handleRoutineComplete()', () => {
     it('debounces render', () => {
-      reporter.handleRoutineComplete({}, new Routine('key', 'title'));
+      reporter.handleRoutineComplete(new Routine('key', 'title'));
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -408,7 +408,7 @@ describe('DefaultReporter', () => {
       reporter.lines = [{ depth: 0, task: routine }];
       reporter.depth = 2;
 
-      reporter.handleRoutineComplete({}, routine);
+      reporter.handleRoutineComplete(routine);
 
       expect(reporter.lines).toEqual([]);
     });
@@ -419,7 +419,7 @@ describe('DefaultReporter', () => {
       reporter.lines = [{ depth: 0, task: routine }];
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete({}, routine);
+      reporter.handleRoutineComplete(routine);
 
       expect(reporter.lines).toEqual([{ depth: 0, task: routine }]);
     });
@@ -431,7 +431,7 @@ describe('DefaultReporter', () => {
       reporter.depth = 2;
       reporter.options.verbose = 3;
 
-      reporter.handleRoutineComplete({}, routine);
+      reporter.handleRoutineComplete(routine);
 
       expect(reporter.lines).toEqual([{ depth: 0, task: routine }]);
     });
@@ -439,7 +439,7 @@ describe('DefaultReporter', () => {
     it('decreses depth', () => {
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete({}, new Routine('key', 'title'));
+      reporter.handleRoutineComplete(new Routine('key', 'title'));
 
       expect(reporter.depth).toBe(0);
     });

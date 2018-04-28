@@ -244,7 +244,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   /**
    * Set stop time and render.
    */
-  handleBaseStop = (event: any, error: Error | null) => {
+  handleBaseStop = (error: Error | null) => {
     this.stopTime = Date.now();
     this.displayFinalOutput(error);
   };
