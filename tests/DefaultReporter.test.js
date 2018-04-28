@@ -500,10 +500,9 @@ describe('DefaultReporter', () => {
     it('supports no color', () => {
       chalk.supportsColor = false;
       reporter.renderRoutineLine(new Routine('foo', 'This is a routine'), 0);
+      chalk.supportsColor = true;
 
       expect(reporter.bufferedOutput).toBe('[FOO] This is a routine\n');
-
-      chalk.supportsColor = true;
     });
 
     it('pads with key length', () => {
