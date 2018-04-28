@@ -149,6 +149,14 @@ describe('Routine', () => {
         /^\d+\.\d+\.\d+$/,
       );
     });
+
+    it('calls callback with stream', async () => {
+      const spy = jest.fn();
+
+      await routine.executeCommand('yarn', ['-v'], {}, spy);
+
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('executeTask()', () => {

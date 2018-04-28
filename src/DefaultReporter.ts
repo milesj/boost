@@ -67,9 +67,9 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     } else if (task.hasFailed()) {
       status.push(chalk.red('failed'));
     } else if (subtasks.length > 0) {
-      status.push(chalk.gray(`${this.calculateTaskCompletion(subtasks)}/${subtasks.length}`));
+      status.push(`${this.calculateTaskCompletion(subtasks)}/${subtasks.length}`);
     } else if (subroutines.length > 0) {
-      status.push(chalk.gray(`${this.calculateTaskCompletion(subroutines)}/${subroutines.length}`));
+      status.push(`${this.calculateTaskCompletion(subroutines)}/${subroutines.length}`);
     }
 
     if (task.hasPassed() && verbose >= 2) {

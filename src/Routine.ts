@@ -115,6 +115,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       const out = stream.stdout as Readable;
 
       out.pipe(split()).on('data', (line: string) => {
+        /* istanbul ignore next */
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
           this.tool.console.emit('command.data', [command, line, this]);
