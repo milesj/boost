@@ -2,10 +2,10 @@ import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
-import ExitError from '../src/ExitError';
+import DefaultReporter from '../src/DefaultReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath } from './helpers';
+import { getFixturePath, copyFixtureToMock } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
 
@@ -35,29 +35,36 @@ describe('Tool', () => {
     });
   });
 
-  describe('debug()', () => {
-    it('logs to debugger', () => {
-      const spy = jest.spyOn(tool, 'debug');
+  describe('createDebugger()', () => {
+    it('returns a debug function', () => {
+      const debug = tool.createDebugger('foo');
 
-      tool.debug('message');
+      expect(typeof debug).toBe('function');
+      expect(debug.namespace).toBe('test-boost:foo');
+    });
 
-      expect(spy).toHaveBeenCalledWith('message');
+    it('provides an invariant function', () => {
+      const debug = tool.createDebugger('foo');
+
+      expect(typeof debug.invariant).toBe('function');
     });
   });
 
   describe('exit()', () => {
     it('accepts a string', () => {
-      const spy = jest.spyOn(tool.console, 'exit');
+      const spy = jest.fn();
 
+      tool.console.exit = spy;
       tool.exit('Oops', 123);
 
       expect(spy).toHaveBeenCalledWith('Oops', 123);
     });
 
     it('accepts an error', () => {
-      const spy = jest.spyOn(tool.console, 'exit');
-      const error = new ExitError('Oh nooo', 456);
+      const error = new Error('Oh nooo', 456);
+      const spy = jest.fn();
 
+      tool.console.exit = spy;
       tool.exit(error);
 
       expect(spy).toHaveBeenCalledWith(error, 1);
@@ -92,24 +99,6 @@ describe('Tool', () => {
       expect(tool.config).not.toEqual({});
       expect(tool.package).not.toEqual({});
       expect(tool.initialized).toBe(true);
-    });
-  });
-
-  describe('invariant()', () => {
-    it('logs green if true', () => {
-      const spy = jest.spyOn(tool, 'debug');
-
-      tool.invariant(true, 'message', 'foo', 'bar');
-
-      expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.green('foo'));
-    });
-
-    it('logs red if false', () => {
-      const spy = jest.spyOn(tool, 'debug');
-
-      tool.invariant(false, 'message', 'foo', 'bar');
-
-      expect(spy).toHaveBeenCalledWith('%s: %s', 'message', chalk.red('bar'));
     });
   });
 
@@ -247,33 +236,59 @@ describe('Tool', () => {
       }).toThrowError('Cannot load reporter as configuration has not been loaded.');
     });
 
-    it('loads reporter', () => {
-      const reporter = new Reporter();
-
-      tool.config = { reporter };
+    it('doesnt load if initialized', () => {
+      tool.initialized = true;
       tool.loadReporter();
 
-      expect(tool.console.reporter).toBe(reporter);
+      expect(tool.reporter).toBeNull();
     });
-  });
 
-  describe('log()', () => {
-    it('passes to console', () => {
-      const spy = jest.spyOn(tool.console, 'log');
+    it('loads default reporter if config not set', () => {
+      tool.config = { reporter: '' };
+      tool.loadReporter();
 
-      tool.log('foo');
-
-      expect(spy).toHaveBeenCalledWith('foo');
+      expect(tool.reporter).toBeInstanceOf(DefaultReporter);
     });
-  });
 
-  describe('logError()', () => {
-    it('passes to console', () => {
-      const spy = jest.spyOn(tool.console, 'error');
+    it('loads reporter using a string', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.logError('foo');
+      tool.config = { reporter: 'foo' };
+      tool.loadReporter();
 
-      expect(spy).toHaveBeenCalledWith('foo');
+      expect(tool.reporter).toBeInstanceOf(Reporter);
+      expect(tool.reporter.name).toBe('foo');
+      expect(tool.reporter.moduleName).toBe('test-boost-reporter-foo');
+
+      unmock();
+    });
+
+    it('loads reporter using an object', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
+
+      tool.config = { reporter: { reporter: 'bar' } };
+      tool.loadReporter();
+
+      expect(tool.reporter).toBeInstanceOf(Reporter);
+      expect(tool.reporter.name).toBe('bar');
+      expect(tool.reporter.moduleName).toBe('test-boost-reporter-bar');
+
+      unmock();
+    });
+
+    it('passes options to reporter', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
+
+      tool.options.footer = 'Powered by Boost';
+      tool.config = { reporter: 'baz', silent: true };
+      tool.loadReporter();
+
+      const { reporter } = tool;
+
+      expect(reporter.options.footer).toBe('Powered by Boost');
+      expect(reporter.options.silent).toBe(true);
+
+      unmock();
     });
   });
 });

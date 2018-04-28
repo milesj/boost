@@ -3,237 +3,362 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable complexity */
+/* eslint-disable unicorn/no-hex-escape */
 
+import rl from 'readline';
 import chalk from 'chalk';
-import figures from 'figures';
-import logUpdate from 'log-update';
-import { Struct } from 'optimal';
+import optimal, { bool, number, string, Struct } from 'optimal';
+import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
-import {
-  STATUS_PENDING,
-  STATUS_RUNNING,
-  STATUS_SKIPPED,
-  STATUS_PASSED,
-  STATUS_FAILED,
-} from './constants';
-import { ReportLoader } from './types';
 
-export const REFRESH_RATE: number = 100;
-export const CURSOR: string = '\x1B[?25h'; // eslint-disable-line unicorn/no-hex-escape
+export const REFRESH_RATE = 100;
+export const SLOW_THRESHOLD = 10000; // ms
 
-export interface ReporterInterface extends ModuleInterface {
-  render(code: number): string;
-  start(loader: ReportLoader): this;
-  stop(): this;
-  update(): this;
+export interface WrappedStream {
+  (message: string): boolean;
 }
 
-export default class Reporter<To extends Struct> extends Module<To> implements ReporterInterface {
-  instance?: NodeJS.Timer;
+export interface ReporterOptions extends Struct {
+  footer: string;
+  refreshRate: number;
+  silent: boolean;
+  slowThreshold: number;
+  verbose: 0 | 1 | 2 | 3;
+}
 
-  loader: ReportLoader | null = null;
+export interface ReporterInterface extends ModuleInterface {
+  err: WrappedStream;
+  out: WrappedStream;
+}
+
+export default class Reporter<T, To extends ReporterOptions> extends Module<To>
+  implements ReporterInterface {
+  bufferedOutput: string = '';
+
+  bufferedStreams: (() => void)[] = [];
+
+  err: WrappedStream;
+
+  lastOutputHeight: number = 0;
+
+  lines: T[] = [];
+
+  options: To;
+
+  out: WrappedStream;
+
+  renderScheduled: boolean = false;
+
+  renderTimer?: NodeJS.Timer;
+
+  restoreCursorOnExit: boolean = false;
+
+  startTime: number = 0;
+
+  stopTime: number = 0;
+
+  constructor(options: Partial<To> = {}) {
+    super(options);
+
+    this.options = optimal(
+      options,
+      {
+        footer: string().empty(),
+        refreshRate: number(REFRESH_RATE),
+        silent: bool(),
+        slowThreshold: number(SLOW_THRESHOLD),
+        verbose: number(0).between(0, 3, true),
+      },
+      {
+        name: this.constructor.name,
+        unknown: true,
+      },
+    );
+
+    this.err = this.wrapStream(process.stderr);
+    this.out = this.wrapStream(process.stdout);
+  }
+
+  /**
+   * Register console listeners.
+   */
+  bootstrap(cli: ConsoleInterface) {
+    cli.on('start', this.handleBaseStart);
+    cli.on('stop', this.handleBaseStop);
+  }
+
+  /**
+   * Add a line to be rendered.
+   */
+  addLine(line: T): this {
+    this.lines.push(line);
+
+    return this;
+  }
+
+  /**
+   * Clear the entire console.
+   */
+  clearOutput(): this {
+    this.out('\x1Bc');
+    this.lastOutputHeight = 0;
+
+    return this;
+  }
+
+  /**
+   * Clear defined lines from the console.
+   */
+  clearLinesOutput(): this {
+    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.lastOutputHeight = 0;
+
+    return this;
+  }
+
+  /**
+   * Debounce the render as to avoid tearing.
+   */
+  debounceRender(): this {
+    if (this.renderScheduled) {
+      return this;
+    }
+
+    this.renderScheduled = true;
+    this.renderTimer = setTimeout(this.handleRender, this.options.refreshRate);
+
+    return this;
+  }
+
+  /**
+   * Display an error and it's stack.
+   */
+  displayError(error: Error): void {
+    this.err(`\n${chalk.red.bold(error.message)}\n`);
+
+    // Remove message line from stack
+    if (error.stack) {
+      const stack = chalk.gray(
+        error.stack
+          .split('\n')
+          .slice(1)
+          .join('\n'),
+      );
+
+      this.err(`\n${stack}\n`);
+    }
+
+    this.err('\n');
+  }
+
+  /**
+   * Display the final output when an error occurs, or when all routines are complete.
+   */
+  displayFinalOutput(error?: Error | null) {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+    }
+
+    this.handleRender();
+
+    if (error) {
+      this.displayError(error);
+    } else {
+      this.displayFooter();
+    }
+  }
+
+  /**
+   * Display a footer after all other output.
+   */
+  displayFooter() {
+    const { footer } = this.options;
+    const time = this.getElapsedTime(this.startTime, this.stopTime, false);
+
+    if (footer) {
+      this.out(`${footer} ${chalk.gray(`(${time})`)}\n`);
+    } else {
+      this.out(chalk.gray(`Ran in ${time}\n`));
+    }
+  }
+
+  /**
+   * Flush buffered output that has been logged.
+   */
+  flushBufferedOutput(): this {
+    const lines = this.bufferedOutput;
+
+    if (lines) {
+      this.out(lines);
+      this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
+    }
+
+    this.bufferedOutput = '';
+
+    return this;
+  }
+
+  /**
+   * Flush buffered streams output after clearing lines rendered by the reporter.
+   */
+  flushBufferedStreams(): this {
+    this.bufferedStreams.forEach(buffer => {
+      buffer();
+    });
+
+    return this;
+  }
+
+  /**
+   * Calculate the elapsed time and highlight as red if over the threshold.
+   */
+  getElapsedTime(start: number, stop: number, highlight: boolean = true): string {
+    const time = stop - start;
+    const isSlow = time > this.options.slowThreshold;
+
+    // eslint-disable-next-line no-magic-numbers
+    const elapsed = `${(time / 1000).toFixed(2)}s`;
+
+    return isSlow && highlight ? chalk.red(elapsed) : elapsed;
+  }
+
+  /**
+   * Handle the entire rendering and flushing process.
+   */
+  handleRender = () => {
+    this.clearLinesOutput();
+    this.flushBufferedStreams();
+    this.render();
+    this.flushBufferedOutput();
+    this.renderScheduled = false;
+  };
+
+  /**
+   * Set start time.
+   */
+  handleBaseStart = () => {
+    this.startTime = Date.now();
+  };
+
+  /**
+   * Set stop time and render.
+   */
+  handleBaseStop = (event: any, error: Error | null) => {
+    this.stopTime = Date.now();
+    this.displayFinalOutput(error);
+  };
+
+  /**
+   * Hide the console cursor.
+   */
+  hideCursor(): this {
+    this.out('\x1B[?25l');
+
+    if (!this.restoreCursorOnExit) {
+      this.restoreCursorOnExit = true;
+
+      /* istanbul ignore next */
+      process.on('exit', () => {
+        this.showCursor();
+      });
+    }
+
+    return this;
+  }
 
   /**
    * Create an indentation based on the defined length.
    */
-  indent(length: number): string {
-    return '  '.repeat(length);
+  indent(length: number = 0): string {
+    return ' '.repeat(length);
   }
 
   /**
-   * Render the output by looping over all tasks and messages.
+   * Log a message to `stdout` without a trailing newline or formatting.
    */
-  render(code: number = 0): string {
-    if (!this.loader) {
-      return CURSOR;
+  log(message: string, nl: number = 0): this {
+    if (!this.options.silent) {
+      this.bufferedOutput += message + '\n'.repeat(nl);
     }
-
-    const {
-      errors = [],
-      footer = '',
-      header = '',
-      logs = [],
-      silent = false,
-      tasks = [],
-    } = this.loader();
-    const output: string[] = [];
-    const verbose = !silent;
-
-    if (header && verbose) {
-      output.push(header);
-    }
-
-    // Tasks first
-    if (tasks.length > 0 && verbose) {
-      tasks.forEach(task => {
-        output.push(...this.renderTask(task, 0));
-      });
-    }
-
-    // Messages last
-    const messages = code === 0 ? logs : errors;
-
-    if (messages.length > 0) {
-      if (messages[0] !== '') {
-        output.push('');
-      }
-
-      messages.forEach(log => {
-        output.push(this.renderMessage(log));
-      });
-
-      if (messages[messages.length - 1] !== '') {
-        output.push('');
-      }
-    }
-
-    if (footer && verbose) {
-      output.push(footer);
-    }
-
-    // Show terminal cursor
-    output.push(CURSOR);
-
-    return output.join('\n').trim();
-  }
-
-  /**
-   * Render a log or error message.
-   */
-  renderMessage(message: string): string {
-    return message;
-  }
-
-  /**
-   * Render a single task including its title and status.
-   * If sub-tasks or sub-routines exist, render them recursively.
-   */
-  renderTask(task: TaskInterface, level: number = 0, suffix: string = ''): string[] {
-    const output: string[] = [];
-
-    // Generate the message row
-    let message = `${this.indent(level)}${this.renderStatus(task)} ${task.title}`;
-
-    if (task.isSkipped()) {
-      message += ` ${chalk.yellow('[skipped]')}`;
-    } else if (task.hasFailed()) {
-      message += ` ${chalk.red('[failed]')}`;
-    } else if (suffix) {
-      message += ` ${suffix}`;
-    }
-
-    output.push(message);
-
-    // Show only one sub-task at a time
-    if (task.subtasks.length > 0) {
-      let pendingTask: TaskInterface | null = null;
-      let runningTask: TaskInterface | null = null;
-      let failedTask: TaskInterface | null = null;
-      let passed = 0;
-
-      task.subtasks.forEach(subTask => {
-        if (subTask.isPending() && !pendingTask) {
-          pendingTask = subTask;
-        } else if (subTask.isRunning() && !runningTask) {
-          runningTask = subTask;
-        } else if (subTask.hasFailed() && !failedTask) {
-          failedTask = subTask;
-        } else if (subTask.hasPassed() || subTask.isSkipped()) {
-          passed += 1;
-        }
-      });
-
-      const activeTask = failedTask || runningTask || pendingTask;
-      const taskSuffix = chalk.gray(`[${passed}/${task.subtasks.length}]`);
-
-      // Only show if the parent is running or a task failed
-      if (activeTask && (task.isRunning() || failedTask)) {
-        output.push(...this.renderTask(activeTask, level + 1, taskSuffix));
-      }
-    }
-
-    // Show the current status output
-    if (task.statusText) {
-      output.push(`${this.indent(level + 2)}${chalk.gray(task.statusText)}`);
-    }
-
-    // Show all sub-routines
-    if (task.subroutines.length > 0) {
-      task.subroutines.forEach(routine => {
-        output.push(...this.renderTask(routine, level + 1));
-      });
-    }
-
-    return output;
-  }
-
-  /**
-   * Render a status symbol for a task.
-   */
-  renderStatus(task: TaskInterface): string {
-    switch (task.status) {
-      case STATUS_PENDING:
-        return chalk.gray(figures.bullet);
-      case STATUS_RUNNING:
-        return chalk.gray(task.spinner());
-      case STATUS_SKIPPED:
-        return chalk.yellow(figures.circleDotted);
-      case STATUS_PASSED:
-        return chalk.green(figures.tick);
-      case STATUS_FAILED:
-        return chalk.red(figures.cross);
-      default:
-        return '';
-    }
-  }
-
-  /**
-   * Start the output process once setting the task loader.
-   */
-  start(loader: ReportLoader): this {
-    if (this.instance) {
-      clearInterval(this.instance);
-    }
-
-    if (!loader || typeof loader !== 'function') {
-      throw new TypeError('A loader is required to render console output.');
-    }
-
-    this.loader = loader;
-
-    /* istanbul ignore next */
-    this.instance = setInterval(() => {
-      this.update();
-    }, REFRESH_RATE);
 
     return this;
   }
 
   /**
-   * Stop and clear the output process.
+   * Remove a line to be rendered.
    */
-  stop(): this {
-    if (this.instance) {
-      clearInterval(this.instance);
-    }
-
-    logUpdate.clear();
+  removeLine(callback: (item: T) => boolean): this {
+    this.lines = this.lines.filter(line => !callback(line));
 
     return this;
   }
 
   /**
-   * Update and flush the output.
+   * Render output.
    */
-  update(): this {
-    const output = this.render();
+  render() {
+    this.lines.forEach(line => {
+      this.log(String(line), 1);
+    });
+  }
 
-    if (output) {
-      logUpdate(output);
-    }
+  /**
+   * Reset the cursor back to the bottom of the console.
+   */
+  resetCursor(): this {
+    this.out(`\x1B[${process.stdout.rows};0H`);
 
     return this;
+  }
+
+  /**
+   * Show the console cursor.
+   */
+  showCursor(): this {
+    this.out('\x1B[?25h');
+
+    return this;
+  }
+
+  /**
+   * Wrap a stream and buffer the output as to not collide with our reporter.
+   */
+  /* istanbul ignore next */
+  wrapStream(stream: NodeJS.WriteStream): WrappedStream {
+    const originalWrite = stream.write.bind(stream);
+
+    if (process.env.NODE_ENV === 'test') {
+      return originalWrite;
+    }
+
+    let buffer = '';
+
+    const write = (message: string) => {
+      if (stream.isTTY) {
+        originalWrite(message);
+      }
+
+      return true;
+    };
+
+    const flushBuffer = () => {
+      if (buffer) {
+        originalWrite(buffer);
+      }
+
+      buffer = '';
+    };
+
+    this.bufferedStreams.push(flushBuffer);
+
+    // eslint-disable-next-line no-param-reassign
+    stream.write = (chunk: string) => {
+      buffer += String(chunk);
+
+      return true;
+    };
+
+    return write;
   }
 }

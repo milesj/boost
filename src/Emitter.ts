@@ -8,7 +8,7 @@ import { APP_NAME_PATTERN } from './constants';
 import { EventArguments, EventListener } from './types';
 
 export interface EmitterInterface {
-  emit(name: string, args: EventArguments, initialValue?: any): Event;
+  emit(name: string, args?: EventArguments, initialValue?: any): Event;
   off(eventName: string, listener: EventListener): this;
   on(eventName: string, listener: EventListener): this;
   setEventNamespace(namespace: string): this;

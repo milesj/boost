@@ -1,434 +1,319 @@
+/* eslint-disable unicorn/no-hex-escape */
+
 import chalk from 'chalk';
-import logUpdate from 'log-update';
-import Reporter, { CURSOR } from '../src/Reporter';
-import Task from '../src/Task';
-import {
-  STATUS_PENDING,
-  STATUS_RUNNING,
-  STATUS_SKIPPED,
-  STATUS_PASSED,
-  STATUS_FAILED,
-} from '../src/constants';
-
-jest.mock('log-update', () => {
-  const spy = jest.fn();
-  spy.clear = jest.fn();
-  spy.done = jest.fn();
-
-  return spy;
-});
-
-function createTaskWithStatus(title, status) {
-  const task = new Task(title, value => value);
-
-  task.status = status;
-
-  return task;
-}
+import Reporter from '../src/Reporter';
 
 describe('Reporter', () => {
   let reporter;
 
   beforeEach(() => {
     reporter = new Reporter();
-
-    jest.useFakeTimers();
+    reporter.err = jest.fn();
+    reporter.out = jest.fn();
   });
 
-  afterEach(() => {
-    jest.useRealTimers();
+  describe('bootstrap()', () => {
+    it('sets start and stop events', () => {
+      const cli = { on: jest.fn() };
+
+      reporter.bootstrap(cli);
+
+      expect(cli.on).toHaveBeenCalledWith('start', expect.anything());
+      expect(cli.on).toHaveBeenCalledWith('stop', expect.anything());
+    });
+  });
+
+  describe('addLine()', () => {
+    it('adds a line to the list', () => {
+      expect(reporter.lines).toEqual([]);
+
+      reporter.addLine('foo');
+
+      expect(reporter.lines).toEqual(['foo']);
+    });
+  });
+
+  describe('clearOutput()', () => {
+    it('writes ansi escape code', () => {
+      reporter.clearOutput();
+
+      expect(reporter.out).toHaveBeenCalledWith('\x1Bc');
+    });
+
+    it('resets last output height', () => {
+      reporter.lastOutputHeight = 10;
+      reporter.clearOutput();
+
+      expect(reporter.lastOutputHeight).toBe(0);
+    });
+  });
+
+  describe('clearLinesOutput()', () => {
+    it('writes ansi escape code for each line height', () => {
+      reporter.lastOutputHeight = 10;
+      reporter.clearLinesOutput();
+
+      expect(reporter.out).toHaveBeenCalledWith('\x1B[1A\x1B[K'.repeat(10));
+    });
+
+    it('resets last output height', () => {
+      reporter.lastOutputHeight = 10;
+      reporter.clearLinesOutput();
+
+      expect(reporter.lastOutputHeight).toBe(0);
+    });
+  });
+
+  describe('debounceRender()', () => {
+    let spy;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      spy = jest.spyOn(global, 'setTimeout');
+    });
+
+    afterEach(() => {
+      spy.mockRestore();
+      jest.useRealTimers();
+    });
+
+    it('schedules a timer', () => {
+      expect(reporter.renderScheduled).toBe(false);
+
+      reporter.debounceRender();
+
+      expect(reporter.renderScheduled).toBe(true);
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('doesnt schedule if already set', () => {
+      reporter.debounceRender();
+      reporter.debounceRender();
+      reporter.debounceRender();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('displayError()', () => {
+    it('writes to stderr', () => {
+      reporter.displayError(new Error('Oops'));
+
+      expect(reporter.err).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('displayFinalOutput()', () => {
+    let clearSpy;
+
+    beforeEach(() => {
+      clearSpy = jest.spyOn(global, 'clearTimeout');
+    });
+
+    afterEach(() => {
+      clearSpy.mockRestore();
+    });
+
+    it('calls clearTimeout if timer set', () => {
+      reporter.displayFinalOutput();
+
+      expect(clearSpy).not.toHaveBeenCalled();
+
+      reporter.renderTimer = 1;
+      reporter.displayFinalOutput();
+
+      expect(clearSpy).toHaveBeenCalledWith(1);
+    });
+
+    it('triggers final render', () => {
+      const spy = jest.spyOn(reporter, 'handleRender');
+
+      reporter.displayFinalOutput();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('displays error if provided', () => {
+      const spy = jest.spyOn(reporter, 'displayError');
+      const error = new Error('Oops');
+
+      reporter.displayFinalOutput(error);
+
+      expect(spy).toHaveBeenCalledWith(error);
+    });
+
+    it('displays footer if no error provided', () => {
+      const spy = jest.spyOn(reporter, 'displayFooter');
+
+      reporter.displayFinalOutput();
+
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('displayFooter()', () => {
+    it('displays default message', () => {
+      reporter.displayFooter();
+
+      expect(reporter.out).toHaveBeenCalledWith(expect.stringContaining('Ran in 0.00s'));
+    });
+
+    it('displays custom footer message', () => {
+      reporter.options.footer = 'Powered by Boost';
+      reporter.displayFooter();
+
+      expect(reporter.out).toHaveBeenCalledWith(expect.stringContaining('Powered by Boost'));
+    });
+  });
+
+  describe('flushBufferedOutput()', () => {
+    it('doesnt output if no buffer', () => {
+      reporter.flushBufferedOutput();
+
+      expect(reporter.out).not.toHaveBeenCalled();
+    });
+
+    it('output if buffer is not empty', () => {
+      reporter.bufferedOutput = 'foo\nbar\nbaz';
+      reporter.flushBufferedOutput();
+
+      expect(reporter.out).toHaveBeenCalledWith('foo\nbar\nbaz');
+    });
+
+    it('sets last output height', () => {
+      reporter.bufferedOutput = 'foo\nbar\nbaz';
+      reporter.flushBufferedOutput();
+
+      expect(reporter.lastOutputHeight).toBe(2);
+    });
+  });
+
+  describe('flushBufferedStreams()', () => {
+    it('calls all buffer callbacks', () => {
+      const spy1 = jest.fn();
+      const spy2 = jest.fn();
+
+      reporter.bufferedStreams.push(spy1, spy2);
+      reporter.flushBufferedStreams();
+
+      expect(spy1).toHaveBeenCalled();
+      expect(spy2).toHaveBeenCalled();
+    });
+  });
+
+  describe('getElapsedTime()', () => {
+    it('returns numbers in seconds', () => {
+      expect(reporter.getElapsedTime(1000, 5000)).toBe('4.00s');
+    });
+
+    it('colors red if higher than slow threshold', () => {
+      reporter.options.slowThreshold = 3000;
+
+      expect(reporter.getElapsedTime(1000, 5000)).toBe(chalk.red('4.00s'));
+    });
+
+    it('doesnt color if highlight is false', () => {
+      reporter.options.slowThreshold = 3000;
+
+      expect(reporter.getElapsedTime(1000, 5000, false)).toBe('4.00s');
+    });
+  });
+
+  describe('handleBaseStart()', () => {
+    it('sets start time', () => {
+      reporter.handleBaseStart();
+
+      expect(reporter.startTime).not.toBe(0);
+    });
+  });
+
+  describe('handleBaseStop()', () => {
+    it('sets stop time', () => {
+      reporter.handleBaseStop();
+
+      expect(reporter.stopTime).not.toBe(0);
+    });
+
+    it('displays final output', () => {
+      const spy = jest.spyOn(reporter, 'displayFinalOutput');
+
+      reporter.handleBaseStop(null, new Error());
+
+      expect(spy).toHaveBeenCalledWith(new Error());
+    });
+  });
+
+  describe('hideCursor()', () => {
+    it('writes ansi escape code', () => {
+      reporter.hideCursor();
+
+      expect(reporter.out).toHaveBeenCalledWith('\x1B[?25l');
+    });
   });
 
   describe('indent()', () => {
-    it('indents with spaces', () => {
-      expect(reporter.indent(0)).toBe('');
-      expect(reporter.indent(1)).toBe('  ');
-      expect(reporter.indent(3)).toBe('      ');
+    it('indents based on length', () => {
+      expect(reporter.indent()).toBe('');
+      expect(reporter.indent(1)).toBe(' ');
+      expect(reporter.indent(3)).toBe('   ');
+    });
+  });
+
+  describe('log()', () => {
+    it('adds to buffered output', () => {
+      reporter.log('foo');
+      reporter.log('bar');
+
+      expect(reporter.bufferedOutput).toBe('foobar');
+    });
+
+    it('can control newlines', () => {
+      reporter.log('foo', 1);
+      reporter.log('bar', 2);
+
+      expect(reporter.bufferedOutput).toBe('foo\nbar\n\n');
+    });
+
+    it('doesnt log if silent', () => {
+      reporter.options.silent = true;
+      reporter.log('foo');
+      reporter.log('bar');
+
+      expect(reporter.bufferedOutput).toBe('');
+    });
+  });
+
+  describe('removeLine()', () => {
+    it('removes a line', () => {
+      reporter.lines.push('foo', 'bar', 'baz');
+      reporter.removeLine(line => line === 'foo');
+
+      expect(reporter.lines).toEqual(['bar', 'baz']);
     });
   });
 
   describe('render()', () => {
-    it('returns cursor if no loader', () => {
-      expect(reporter.render()).toBe(CURSOR);
-    });
+    it('logs each line', () => {
+      reporter.lines.push('foo', 'bar', 'baz');
+      reporter.render();
 
-    it('renders a results tree in a single output', () => {
-      const git = createTaskWithStatus('Git', STATUS_RUNNING);
-      git.subtasks = [
-        createTaskWithStatus('Checking current branch', STATUS_PASSED),
-        createTaskWithStatus('Checking for local changes', STATUS_PASSED),
-        createTaskWithStatus('Checking for remote changes', STATUS_RUNNING),
-      ];
-
-      const statusChecks = createTaskWithStatus('Status checks', STATUS_PASSED);
-      statusChecks.subtasks = [
-        createTaskWithStatus('Checking for vulnerable dependencies', STATUS_PENDING),
-      ];
-      statusChecks.subroutines = [git];
-
-      reporter.loader = () => ({ tasks: [statusChecks] });
-
-      expect(reporter.render()).toBe(`${chalk.green('✔')} Status checks
-  ${chalk.gray('⠙')} Git
-    ${chalk.gray('⠙')} Checking for remote changes ${chalk.gray('[2/3]')}
-${CURSOR}`);
-    });
-
-    describe('with messages', () => {
-      let work = {};
-
-      beforeEach(() => {
-        work = {
-          errors: ['Something is broken!!'],
-          footer: '',
-          header: '',
-          logs: ['All is good...'],
-          silence: false,
-          tasks: [createTaskWithStatus('Task', STATUS_PASSED)],
-        };
-        reporter.loader = () => work;
-      });
-
-      it('when code 0, renders with tasks and logs', () => {
-        expect(reporter.render(0)).toBe(`${chalk.green('✔')} Task
-
-All is good...
-
-${CURSOR}`);
-      });
-
-      it('when code 1, renders with tasks and errors', () => {
-        expect(reporter.render(1)).toBe(`${chalk.green('✔')} Task
-
-Something is broken!!
-
-${CURSOR}`);
-      });
-
-      it('hides all if silent is true', () => {
-        reporter.loader = () => ({
-          ...work,
-          silent: true,
-        });
-
-        expect(reporter.render(0)).toBe(`All is good...
-
-${CURSOR}`);
-      });
-
-      it('doesnt hide errors if silent is true', () => {
-        reporter.loader = () => ({
-          ...work,
-          silent: true,
-        });
-
-        expect(reporter.render(1)).toBe(`Something is broken!!
-
-${CURSOR}`);
-      });
-
-      it('includes header and footer', () => {
-        reporter.loader = () => ({
-          ...work,
-          footer: 'FOOT',
-          header: 'HEAD',
-        });
-
-        expect(reporter.render(0)).toBe(`HEAD
-${chalk.green('✔')} Task
-
-All is good...
-
-FOOT
-${CURSOR}`);
-      });
+      expect(reporter.bufferedOutput).toBe('foo\nbar\nbaz\n');
     });
   });
 
-  describe('renderTask()', () => {
-    it('creates a STATUS_PENDING message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_PENDING))).toEqual([
-        `${chalk.gray('●')} Title`,
-      ]);
-    });
+  describe('resetCursor()', () => {
+    it('writes ansi escape code', () => {
+      reporter.resetCursor();
 
-    it('creates a STATUS_RUNNING message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_RUNNING))).toEqual([
-        `${chalk.gray('⠙')} Title`,
-      ]);
-    });
-
-    it('creates a STATUS_SKIPPED message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_SKIPPED))).toEqual([
-        `${chalk.yellow('◌')} Title ${chalk.yellow('[skipped]')}`,
-      ]);
-    });
-
-    it('creates a STATUS_PASSED message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_PASSED))).toEqual([
-        `${chalk.green('✔')} Title`,
-      ]);
-    });
-
-    it('creates a STATUS_FAILED message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', STATUS_FAILED))).toEqual([
-        `${chalk.red('✖')} Title ${chalk.red('[failed]')}`,
-      ]);
-    });
-
-    it('indents the message', () => {
-      expect(reporter.renderTask(createTaskWithStatus('Title', ''), 2)).toEqual(['     Title']);
-    });
-
-    describe('with tasks', () => {
-      it('displays STATUS_PENDING tasks', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #3', STATUS_PENDING),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.gray('●')} Sub-task #1 ${chalk.gray('[0/3]')}`,
-        ]);
-      });
-
-      it('displays STATUS_RUNNING tasks over STATUS_PENDING tasks', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
-        ]);
-      });
-
-      it('displays STATUS_FAILED tasks over all others', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PASSED),
-          createTaskWithStatus('Sub-task #2', STATUS_FAILED),
-          createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
-          createTaskWithStatus('Sub-task #4', STATUS_FAILED),
-          createTaskWithStatus('Sub-task #5', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #6', STATUS_SKIPPED),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.red('✖')} Sub-task #2 ${chalk.red('[failed]')}`,
-        ]);
-      });
-
-      it('does not display STATUS_SKIPPED or STATUS_PASSED tasks', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PASSED),
-          createTaskWithStatus('Sub-task #2', STATUS_SKIPPED),
-          createTaskWithStatus('Sub-task #3', STATUS_SKIPPED),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([`${chalk.gray('⠙')} Title`]);
-      });
-
-      it('does not display tasks if parent isnt STATUS_RUNNING', () => {
-        const result = createTaskWithStatus('Title', STATUS_PASSED);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #2', STATUS_RUNNING),
-          createTaskWithStatus('Sub-task #3', STATUS_PASSED),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([`${chalk.green('✔')} Title`]);
-      });
-
-      it('increases count for STATUS_PASSED tasks', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PASSED),
-          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #3', STATUS_PASSED),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.gray('●')} Sub-task #2 ${chalk.gray('[2/3]')}`,
-        ]);
-      });
-    });
-
-    describe('with subroutines', () => {
-      it('displays all sub-routines', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subroutines = [
-          createTaskWithStatus('Sub-routine #1', STATUS_PENDING),
-          createTaskWithStatus('Sub-routine #2', STATUS_PENDING),
-          createTaskWithStatus('Sub-routine #3', STATUS_PENDING),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.gray('●')} Sub-routine #1`,
-          `  ${chalk.gray('●')} Sub-routine #2`,
-          `  ${chalk.gray('●')} Sub-routine #3`,
-        ]);
-      });
-
-      it('displays status text and different statuses', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subroutines = [
-          createTaskWithStatus('Sub-routine #1', STATUS_RUNNING),
-          createTaskWithStatus('Sub-routine #2', STATUS_FAILED),
-          createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
-        ];
-
-        result.subroutines[1].statusText = 'Running tests...';
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.gray('⠙')} Sub-routine #1`,
-          `  ${chalk.red('✖')} Sub-routine #2 ${chalk.red('[failed]')}`,
-          `      ${chalk.gray('Running tests...')}`,
-          `  ${chalk.green('✔')} Sub-routine #3`,
-        ]);
-      });
-
-      it('displays tasks above sub-routines', () => {
-        const result = createTaskWithStatus('Title', STATUS_RUNNING);
-        result.subtasks = [
-          createTaskWithStatus('Sub-task #1', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #2', STATUS_PENDING),
-          createTaskWithStatus('Sub-task #3', STATUS_RUNNING),
-        ];
-        result.subroutines = [
-          createTaskWithStatus('Sub-routine #1', STATUS_RUNNING),
-          createTaskWithStatus('Sub-routine #2', STATUS_SKIPPED),
-          createTaskWithStatus('Sub-routine #3', STATUS_PASSED),
-        ];
-
-        expect(reporter.renderTask(result)).toEqual([
-          `${chalk.gray('⠙')} Title`,
-          `  ${chalk.gray('⠙')} Sub-task #3 ${chalk.gray('[0/3]')}`,
-          `  ${chalk.gray('⠙')} Sub-routine #1`,
-          `  ${chalk.yellow('◌')} Sub-routine #2 ${chalk.yellow('[skipped]')}`,
-          `  ${chalk.green('✔')} Sub-routine #3`,
-        ]);
-      });
+      expect(reporter.out).toHaveBeenCalledWith(expect.stringContaining('0H'));
     });
   });
 
-  describe('renderStatus()', () => {
-    it('renders a bullet for STATUS_PENDING', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PENDING))).toBe(
-        chalk.gray('●'),
-      );
-    });
+  describe('showCursor()', () => {
+    it('writes ansi escape code', () => {
+      reporter.showCursor();
 
-    it('renders a spinner for STATUS_RUNNING', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_RUNNING))).toBe(
-        chalk.gray('⠙'),
-      );
-    });
-
-    it('renders a dotted circle for STATUS_SKIPPED', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_SKIPPED))).toBe(
-        chalk.yellow('◌'),
-      );
-    });
-
-    it('renders a tick for STATUS_PASSED', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_PASSED))).toBe(
-        chalk.green('✔'),
-      );
-    });
-
-    it('renders a cross for STATUS_FAILED', () => {
-      expect(reporter.renderStatus(createTaskWithStatus('title', STATUS_FAILED))).toBe(
-        chalk.red('✖'),
-      );
-    });
-  });
-
-  describe('start()', () => {
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
-    it('sets an interval', () => {
-      reporter.start(() => {});
-
-      expect(setInterval.mock.calls).toHaveLength(1);
-      expect(setInterval).toHaveBeenCalledWith(expect.anything(), 100);
-    });
-
-    it('sets the loader', () => {
-      const loader = () => {};
-
-      reporter.start(loader);
-
-      expect(reporter.loader).toBe(loader);
-    });
-
-    it('clears interval if one has started', () => {
-      reporter.instance = 1;
-      reporter.start(() => {});
-      reporter.start(() => {});
-
-      expect(setInterval.mock.calls).toHaveLength(2);
-    });
-
-    it('errors if loader is not a function', () => {
-      expect(() => {
-        reporter.start(123);
-      }).toThrowError('A loader is required to render console output.');
-    });
-  });
-
-  describe('stop()', () => {
-    it('clears the log output', () => {
-      reporter.stop();
-
-      expect(logUpdate.clear).toHaveBeenCalled();
-    });
-
-    it('clears the interval', () => {
-      jest.useFakeTimers();
-
-      reporter.stop();
-
-      expect(clearInterval.mock.calls).toHaveLength(0);
-
-      reporter.instance = 1;
-      reporter.stop();
-
-      expect(clearInterval.mock.calls).toHaveLength(1);
-
-      jest.useRealTimers();
-    });
-  });
-
-  describe('update()', () => {
-    it('doesnt update if no render data', () => {
-      reporter.update();
-
-      expect(logUpdate).toHaveBeenCalledWith(CURSOR);
-    });
-
-    it('logs update if something to render', () => {
-      reporter.loader = () => ({ logs: ['Foo'] });
-      reporter.update();
-
-      expect(logUpdate).toHaveBeenCalledWith(`Foo\n\n${CURSOR}`);
+      expect(reporter.out).toHaveBeenCalledWith('\x1B[?25h');
     });
   });
 });

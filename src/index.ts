@@ -7,13 +7,12 @@ import ConfigLoader from './ConfigLoader';
 import { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
 import Event from './Event';
-import ExitError from './ExitError';
 import Module, { ModuleInterface } from './Module';
 import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
 import Plugin, { PluginInterface } from './Plugin';
 import Reporter, { ReporterInterface } from './Reporter';
-import Routine from './Routine';
+import Routine, { RoutineInterface } from './Routine';
 import { TaskInterface } from './Task';
 import Tool, { ToolInterface } from './Tool';
 
@@ -23,7 +22,6 @@ export {
   Emitter,
   EmitterInterface,
   Event,
-  ExitError,
   Module,
   ModuleInterface,
   ModuleLoader,
@@ -33,6 +31,7 @@ export {
   Reporter,
   ReporterInterface,
   Routine,
+  RoutineInterface,
   Tool,
   ToolInterface,
 };

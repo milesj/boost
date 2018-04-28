@@ -1,6 +1,6 @@
 {
   "name": "boost",
-  "version": "0.43.0",
+  "version": "0.44.0",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [],
   "main": "./lib/index.js",
@@ -41,22 +41,18 @@
     "@types/chalk": "^2.2.0",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.9.0",
-    "@types/figures": "^2.0.0",
     "@types/glob": "^5.0.35",
     "@types/json5": "^0.0.29",
-    "@types/lodash": "^4.14.106",
-    "@types/log-update": "^2.0.0",
+    "@types/lodash": "^4.14.108",
     "@types/pluralize": "^0.0.28",
     "@types/split": "^0.3.28",
-    "chalk": "^2.3.2",
+    "chalk": "^2.4.1",
+    "cli-truncate": "^1.1.0",
     "debug": "^3.1.0",
-    "elegant-spinner": "^1.0.1",
     "execa": "^0.10.0",
-    "figures": "^2.0.0",
     "glob": "^7.1.2",
     "json5": "^1.0.1",
-    "lodash": "^4.17.5",
-    "log-update": "^2.3.0",
+    "lodash": "^4.17.10",
     "optimal": "^0.19.0",
     "pluralize": "^7.0.0",
     "split": "^1.0.1"
@@ -65,7 +61,7 @@
     "optimal": "^0.19.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.84.1",
+    "@milesj/build-tool-config": "0.87.0",
     "fs-extra": "^5.0.0"
   },
   "beemo": {

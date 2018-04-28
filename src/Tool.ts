@@ -13,36 +13,34 @@ import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
 import Reporter, { ReporterInterface } from './Reporter';
+import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
+import isObject from './helpers/isObject';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { ToolConfig, ToolOptions, PackageConfig } from './types';
+import { Debugger, ToolConfig, ToolOptions, PackageConfig } from './types';
 
 export interface ToolInterface extends EmitterInterface {
   argv: string[];
   config: ToolConfig;
   console: ConsoleInterface;
+  debug: Debugger;
   options: ToolOptions;
   package: PackageConfig;
   plugins: PluginInterface[];
-  createDebugger(...namespaces: string[]): debug.IDebugger;
-  debug(message: string, ...args: any[]): this;
+  createDebugger(...namespaces: string[]): Debugger;
   initialize(): this;
-  invariant(condition: boolean, message: string, pass: string, fail: string): this;
-  log(message: string, ...args: any[]): this;
-  logError(message: string, ...args: any[]): this;
   getPlugin(name: string): PluginInterface;
 }
 
-export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
-  implements ToolInterface {
+export default class Tool<Tp extends PluginInterface> extends Emitter implements ToolInterface {
   argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
   console: ConsoleInterface;
 
-  debugger: debug.IDebugger;
+  debug: Debugger;
 
   initialized: boolean = false;
 
@@ -52,7 +50,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
   plugins: Tp[] = [];
 
-  constructor({ footer, header, ...options }: Partial<ToolOptions>, argv: string[] = []) {
+  reporter: ReporterInterface | null = null;
+
+  constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
 
     this.argv = argv;
@@ -63,6 +63,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
         configBlueprint: object(),
         configFolder: string('./configs'),
         extendArgv: bool(true),
+        footer: string().empty(),
         pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
@@ -79,40 +80,31 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     // Core debugger for the entire tool
-    this.debugger = this.createDebugger('core');
+    this.debug = this.createDebugger('core');
 
     // Initialize the console first so we can start logging
-    this.console = new Console(new Reporter(), {
-      footer,
-      header,
-    });
-
-    // Avoid binding listeners while testing
-    if (process.env.NODE_ENV === 'test') {
-      return;
-    }
+    this.console = new Console();
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
-    process.on('exit', code => {
-      this.emit('exit', [code]);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      process.on('exit', code => {
+        this.emit('exit', [code]);
+      });
+    }
   }
 
   /**
    * Create a debugger with a namespace.
    */
-  createDebugger(...namespaces: string[]): debug.IDebugger {
-    return debug(`${this.options.appName}:${namespaces.join(':')}`);
-  }
+  createDebugger(...namespaces: string[]): Debugger {
+    const handler = debug(`${this.options.appName}:${namespaces.join(':')}`) as Debugger;
 
-  /**
-   * Log a debug message.
-   */
-  debug(message: string, ...args: any[]): this {
-    this.debugger(message, ...args);
+    handler.invariant = (condition: boolean, message: string, pass: string, fail) => {
+      handler('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
+    };
 
-    return this;
+    return handler;
   }
 
   /**
@@ -130,13 +122,11 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   getPlugin(name: string): Tp {
     const plugin = this.plugins.find(p => p.name === name);
 
-    if (!plugin) {
-      throw new Error(
-        `Failed to find ${this.options.pluginAlias} "${name}". Have you installed it?`,
-      );
+    if (plugin) {
+      return plugin;
     }
 
-    return plugin;
+    throw new Error(`Failed to find ${this.options.pluginAlias} "${name}". Have you installed it?`);
   }
 
   /**
@@ -156,15 +146,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     this.loadReporter();
 
     this.initialized = true;
-
-    return this;
-  }
-
-  /**
-   * Logs a debug message based on a conditional.
-   */
-  invariant(condition: boolean, message: string, pass: string, fail: string): this {
-    this.debug('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
 
     return this;
   }
@@ -194,7 +175,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
           const name = arg.slice(2);
 
           this.config[name] = true;
-          this.console.options[name] = true;
         }
       });
     }
@@ -225,9 +205,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
 
-    // @ts-ignore Not sure why this is failing
-    const pluginLoader: ModuleLoader<Tp> = new ModuleLoader(this, pluginAlias, Plugin);
+    const pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
 
+    // @ts-ignore
     this.plugins = pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
@@ -256,36 +236,40 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
       throw new Error('Cannot load reporter as configuration has not been loaded.');
     }
 
-    const { reporter } = this.config;
+    const { reporter: reporterName } = this.config;
+    const loader = new ModuleLoader(this, 'reporter', Reporter);
+    const options = {
+      footer: this.options.footer,
+      silent: this.config.silent,
+    };
+    let reporter = null;
 
     // Load based on name
-    if (reporter) {
-      const loader: ModuleLoader<ReporterInterface> = new ModuleLoader(this, 'reporter', Reporter);
-
-      this.console.reporter = loader.loadModule(reporter);
-
-      // Use native Boost reporter
-    } else {
-      this.debug(`Using native ${chalk.green('boost')} reporter`);
+    if (reporterName) {
+      if (isObject(reporterName)) {
+        reporter = loader.importModuleFromOptions({
+          // @ts-ignore
+          ...reporterName,
+          ...options,
+        });
+      } else {
+        reporter = loader.importModule(String(reporterName), options);
+      }
     }
 
-    return this;
-  }
+    // Use default reporter
+    if (!reporter) {
+      loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-  /**
-   * Add a message to the output log.
-   */
-  log(message: string, ...args: any[]): this {
-    this.console.log(message, ...args);
+      reporter = new DefaultReporter(options);
+    }
 
-    return this;
-  }
+    // Bootstrap console events
+    loader.debug('Bootstrapping reporter with console environment');
 
-  /**
-   * Add a message to the logError log.
-   */
-  logError(message: string, ...args: any[]): this {
-    this.console.error(message, ...args);
+    reporter.bootstrap(this.console);
+
+    this.reporter = reporter;
 
     return this;
   }

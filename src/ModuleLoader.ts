@@ -6,19 +6,21 @@
 import chalk from 'chalk';
 import path from 'path';
 import upperFirst from 'lodash/upperFirst';
+import pluralize from 'pluralize';
 import { Struct } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 import { ModuleInterface } from './Module';
 import { ToolInterface } from './Tool';
+import { Debugger } from './types';
 
 export type Constructor<T> = new (...args: any[]) => T;
 
 export default class ModuleLoader<Tm extends ModuleInterface> {
   classReference: Constructor<Tm>;
 
-  debug: debug.IDebugger;
+  debug: Debugger;
 
   tool: ToolInterface;
 
@@ -30,7 +32,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     this.tool = tool;
     this.typeName = typeName;
 
-    this.debug('Using alias %s', chalk.green(typeName));
+    this.debug('Loading %s', chalk.green(pluralize(typeName)));
   }
 
   /**
@@ -102,9 +104,9 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     }
 
     if (isFilePath) {
-      this.debug('Found with %s', chalk.cyan(moduleName));
+      this.debug('Found with file path %s', chalk.cyan(moduleName));
     } else {
-      this.debug('Found with %s', chalk.yellow(moduleName));
+      this.debug('Found with module %s', chalk.yellow(moduleName));
 
       module.name = name;
       module.moduleName = moduleName;

@@ -3,7 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { frames } from 'elegant-spinner';
 import { Struct } from 'optimal';
 import {
   STATUS_PENDING,
@@ -15,9 +14,10 @@ import {
 import { Context, Status } from './types';
 
 export interface TaskInterface {
+  startTime: number;
   status: Status;
   statusText: string;
-  subroutines: TaskInterface[];
+  stopTime: number;
   subtasks: TaskInterface[];
   title: string;
   isPending(): boolean;
@@ -27,7 +27,6 @@ export interface TaskInterface {
   hasPassed(): boolean;
   run<T>(context: any, initialValue?: T | null): Promise<any>;
   skip(condition?: boolean): this;
-  spinner(): string;
 }
 
 export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
@@ -44,11 +43,13 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
 
   title: string = '';
 
+  startTime: number = 0;
+
   status: Status = STATUS_PENDING;
 
   statusText: string = '';
 
-  subroutines: TaskInterface[] = [];
+  stopTime: number = 0;
 
   subtasks: TaskInterface[] = [];
 
@@ -119,6 +120,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
     }
 
     this.status = STATUS_RUNNING;
+    this.startTime = Date.now();
 
     return (
       Promise.resolve(initialValue)
@@ -127,12 +129,14 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
         .then(
           result => {
             this.status = STATUS_PASSED;
+            this.stopTime = Date.now();
             this.statusText = '';
 
             return result;
           },
           error => {
             this.status = STATUS_FAILED;
+            this.stopTime = Date.now();
 
             throw error;
           },
@@ -149,16 +153,6 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
     }
 
     return this;
-  }
-
-  /**
-   * Create a spinner and update the frames each call.
-   */
-  spinner(): string {
-    // eslint-disable-next-line no-plusplus
-    this.frame = ++this.frame % frames.length;
-
-    return frames[this.frame];
   }
 
   /**

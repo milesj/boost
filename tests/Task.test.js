@@ -152,6 +152,28 @@ describe('Task', () => {
         foo: 'bar',
       });
     });
+
+    it('sets times on success', async () => {
+      await task.run({}, 123);
+
+      expect(task.startTime).not.toBe(0);
+      expect(task.stopTime).not.toBe(0);
+    });
+
+    it('sets times on failure', async () => {
+      try {
+        task.action = () => {
+          throw new Error('Oops');
+        };
+
+        await task.run({}, 123);
+      } catch (error) {
+        // Skip
+      }
+
+      expect(task.startTime).not.toBe(0);
+      expect(task.stopTime).not.toBe(0);
+    });
   });
 
   describe('skip()', () => {
@@ -169,15 +191,6 @@ describe('Task', () => {
       task.skip(1 === 2);
 
       expect(task.status).toBe(STATUS_PENDING);
-    });
-  });
-
-  describe('spinner()', () => {
-    it('increases frames each call', () => {
-      expect(task.spinner()).toBe('⠙');
-      expect(task.spinner()).toBe('⠹');
-      expect(task.spinner()).toBe('⠸');
-      expect(task.spinner()).toBe('⠼');
     });
   });
 

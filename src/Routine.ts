@@ -5,7 +5,6 @@
 
 import { ChildProcess } from 'child_process';
 import chalk from 'chalk';
-import debug from 'debug';
 import execa, {
   Options as ExecaOptions,
   SyncOptions as ExecaSyncOptions,
@@ -15,24 +14,31 @@ import execa, {
 import split from 'split';
 import { Readable } from 'stream';
 import { Struct } from 'optimal';
-import ExitError from './ExitError';
-import Reporter from './Reporter';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Context } from './types';
+import { Debugger, Context } from './types';
 
 export interface CommandOptions extends Struct {
   sync?: boolean;
 }
 
-export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx> {
+export interface RoutineInterface extends TaskInterface {
+  key: string;
+  subroutines: RoutineInterface[];
+  tool: ToolInterface;
+}
+
+export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx>
+  implements RoutineInterface {
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
-  debug: debug.IDebugger;
+  debug: Debugger;
 
   key: string = '';
+
+  subroutines: RoutineInterface[] = [];
 
   // @ts-ignore Set after instantiation
   tool: ToolInterface;
@@ -72,7 +78,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
     // Custom debugger for this routine
     this.debug = this.tool.createDebugger('routine', this.key);
-    this.debug('Bootstrapping routine %s', chalk.green(this.key));
+    this.debug('Bootstrapping routine');
 
     // Initialize routine (this must be last!)
     this.bootstrap();
@@ -102,6 +108,8 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       ? execa.sync(command, args, options as ExecaSyncOptions)
       : execa(command, args, options);
 
+    this.tool.console.emit('command', [command, this]);
+
     // Push chunks to the reporter
     if (!options.sync) {
       const out = stream.stdout as Readable;
@@ -109,6 +117,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       out.pipe(split()).on('data', (line: string) => {
         if (this.status === STATUS_RUNNING) {
           this.statusText = line;
+          this.tool.console.emit('command.data', [command, line, this]);
         }
       });
     }
@@ -122,11 +131,32 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
+   * Execute a sub-routine with the provided value.
+   */
+  executeSubroutine<T>(task: TaskInterface, value: T | null = null): Promise<any> {
+    return this.wrap(task.run(this.context, value));
+  }
+
+  /**
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
   executeTask<T>(task: TaskInterface, value: T | null = null): Promise<any> {
-    return this.wrap(task.run(this.context, value));
+    const { console: cli } = this.tool;
+
+    cli.emit('task', [task, value]);
+
+    return this.wrap(task.run(this.context, value))
+      .then(result => {
+        cli.emit('task.pass', [task, result]);
+
+        return result;
+      })
+      .catch(error => {
+        cli.emit('task.fail', [task, error]);
+
+        throw error;
+      });
   }
 
   /**
@@ -134,7 +164,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines<T>(value: T | null = null): Promise<any> {
-    return Promise.all(this.subroutines.map(routine => this.executeTask(routine, value)));
+    return Promise.all(this.subroutines.map(routine => this.executeSubroutine(routine, value)));
   }
 
   /**
@@ -163,20 +193,24 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    */
   run<T>(context: Tx, value: T | null = null): Promise<any> {
     if (this.exit) {
-      return Promise.reject(new ExitError('Process has been interrupted.'));
+      return Promise.reject(new Error('Process has been interrupted.'));
     }
 
-    this.debug('Executing routine %s', chalk.green(this.key));
+    this.debug('Executing routine');
+
+    const { console: cli } = this.tool;
+
+    cli.emit('routine', [this, value]);
 
     return super
       .run(context, value)
       .then(result => {
-        this.tool.console.update();
+        cli.emit('routine.pass', [this, result]);
 
         return result;
       })
       .catch(error => {
-        this.tool.console.update();
+        cli.emit('routine.fail', [this, error]);
 
         throw error;
       });
@@ -202,7 +236,9 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in sequential (serial) order.
    */
   serializeSubroutines<T>(value: T | null = null): Promise<any> {
-    return this.serialize(this.subroutines, value, (task, val) => this.executeTask(task, val));
+    return this.serialize(this.subroutines, value, (task, val) =>
+      this.executeSubroutine(task, val),
+    );
   }
 
   /**
