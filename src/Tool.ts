@@ -13,7 +13,7 @@ import Console, { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
-import Reporter, { ReporterInterface } from './Reporter';
+import Reporter, { ReporterInterface, ReporterOptions } from './Reporter';
 import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -25,8 +25,7 @@ export interface ToolOptions extends Struct {
   appName: string;
   configBlueprint: Blueprint;
   configFolder: string;
-  extendArgv: string;
-  footer: string;
+  console: Partial<ReporterOptions>;
   pluginAlias: string;
   root: string;
   scoped: boolean;
@@ -77,8 +76,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
         appName: string().required(),
         configBlueprint: object(),
         configFolder: string('./configs'),
-        extendArgv: bool(true),
-        footer: string().empty(),
+        console: object(),
         pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
@@ -184,15 +182,13 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     this.options.workspaceRoot = configLoader.workspaceRoot;
 
     // Inherit from argv
-    if (this.options.extendArgv) {
-      this.argv.forEach(arg => {
-        if (arg === '--debug' || arg === '--silent') {
-          const name = arg.slice(2);
+    this.argv.forEach(arg => {
+      if (arg === '--debug') {
+        const name = arg.slice(2);
 
-          this.config[name] = true;
-        }
-      });
-    }
+        this.config[name] = true;
+      }
+    });
 
     // Enable debugging if defined in the config
     // This happens a little too late, but oh well
@@ -253,10 +249,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     const { reporter: reporterName } = this.config;
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const options = {
-      footer: this.options.footer,
-      silent: this.config.silent,
-    };
+    const options = this.options.console;
     let reporter = null;
 
     // Load based on name

@@ -130,20 +130,10 @@ describe('Tool', () => {
     });
 
     it('extends from argv', () => {
-      tool.argv = ['--debug', '--silent'];
+      tool.argv = ['--debug'];
       tool.loadConfig();
 
       expect(tool.config.debug).toBe(true);
-      expect(tool.config.silent).toBe(true);
-    });
-
-    it('doesnt extend from argv if disabled', () => {
-      tool.argv = ['--debug', '--silent'];
-      tool.options.extendArgv = false;
-      tool.loadConfig();
-
-      expect(tool.config.debug).toBe(false);
-      expect(tool.config.silent).toBe(false);
     });
 
     it('enables debug if debug config is true', () => {
@@ -279,8 +269,11 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.options.footer = 'Powered by Boost';
-      tool.config = { reporter: 'baz', silent: true };
+      tool.options.console = {
+        footer: 'Powered by Boost',
+        silent: true,
+      };
+      tool.config = { reporter: 'baz' };
       tool.loadReporter();
 
       const { reporter } = tool;

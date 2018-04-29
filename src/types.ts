@@ -30,7 +30,6 @@ export interface ToolConfig extends Struct {
   extends: string | string[];
   plugins: (string | PluginConfig)[];
   reporter: string | ReporterConfig;
-  silent: boolean;
   [key: string]: any;
 }
 
