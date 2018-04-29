@@ -323,7 +323,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, options: Struct = {}): Struct {
+  parseFile(filePath: string, args: any[] = []): Struct {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value: any = null;
@@ -340,7 +340,7 @@ export default class ConfigLoader {
       value = requireModule(filePath);
 
       if (typeof value === 'function') {
-        value = value(options);
+        value = value(...args);
       }
     } else {
       throw new Error(`Unsupported configuration file format "${name}".`);

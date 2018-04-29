@@ -560,12 +560,15 @@ describe('ConfigLoader', () => {
       fixtures.push(
         createTempFileInRoot(
           'test-func-opts.js',
-          'module.exports = opts => Object.assign({ name: "foo" }, opts);',
+          'module.exports = (opts, count) => Object.assign({ name: "foo", count }, opts);',
         ),
       );
 
-      expect(loader.parseFile(getFixturePath('app', 'test-func-opts.js'), { version: 1 })).toEqual({
+      expect(
+        loader.parseFile(getFixturePath('app', 'test-func-opts.js'), [{ version: 1 }, 123]),
+      ).toEqual({
         name: 'foo',
+        count: 123,
         version: 1,
       });
     });
