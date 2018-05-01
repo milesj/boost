@@ -171,6 +171,16 @@ describe('Reporter', () => {
 
       expect(spy).toHaveBeenCalledWith(['foo']);
     });
+
+    it('displays error logs over error', () => {
+      reporter.errorLogs.push('foo');
+
+      const spy = jest.spyOn(reporter, 'displayError');
+
+      reporter.displayFinalOutput(new Error('Oops'));
+
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   describe('displayLogs()', () => {

@@ -168,9 +168,16 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
     this.handleRender();
 
-    if (error) {
+    // Manually triggered errors should take precedence
+    if (this.errorLogs.length > 0) {
       this.displayLogs(this.errorLogs);
+      this.displayFooter();
+
+      // System errors (uncaught, unhandled, etc) should be isolated
+    } else if (error) {
       this.displayError(error);
+
+      // Everything went alright
     } else {
       this.displayLogs(this.logs);
       this.displayFooter();
