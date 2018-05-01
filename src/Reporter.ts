@@ -38,7 +38,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   bufferedStreams: (() => void)[] = [];
 
-  // @ts-ignore
   err: WrappedStream;
 
   errorLogs: string[] = [];
@@ -51,7 +50,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   options: To;
 
-  // @ts-ignore
   out: WrappedStream;
 
   renderScheduled: boolean = false;
@@ -81,6 +79,9 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
         unknown: true,
       },
     );
+
+    this.err = process.stderr.write.bind(process.stderr);
+    this.out = process.stdout.write.bind(process.stdout);
   }
 
   /**
