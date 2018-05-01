@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable unicorn/no-hex-escape */
+/* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
 import rl from 'readline';
 import chalk from 'chalk';
@@ -38,6 +38,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   bufferedStreams: (() => void)[] = [];
 
+  // @ts-ignore
   err: WrappedStream;
 
   errorLogs: string[] = [];
@@ -50,6 +51,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   options: To;
 
+  // @ts-ignore
   out: WrappedStream;
 
   renderScheduled: boolean = false;
@@ -79,9 +81,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
         unknown: true,
       },
     );
-
-    this.err = this.wrapStream(process.stderr);
-    this.out = this.wrapStream(process.stdout);
   }
 
   /**
@@ -256,6 +255,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   handleBaseStart = () => {
     this.startTime = Date.now();
+    this.err = this.wrapStream(process.stderr);
+    this.out = this.wrapStream(process.stdout);
   };
 
   /**
@@ -264,6 +265,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   handleBaseStop = (error: Error | null) => {
     this.stopTime = Date.now();
     this.displayFinalOutput(error);
+    this.unwrapStream(process.stderr);
+    this.unwrapStream(process.stdout);
   };
 
   /**
@@ -353,6 +356,16 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
+   * Unwrap a stream and reset it back to normal.
+   */
+  unwrapStream(stream: NodeJS.WriteStream): void {
+    if (process.env.NODE_ENV !== 'test') {
+      // @ts-ignore
+      stream.write = stream.originalWrite;
+    }
+  }
+
+  /**
    * Wrap a stream and buffer the output as to not collide with our reporter.
    */
   /* istanbul ignore next */
@@ -383,12 +396,14 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
     this.bufferedStreams.push(flushBuffer);
 
-    // eslint-disable-next-line no-param-reassign
     stream.write = (chunk: string) => {
       buffer += String(chunk);
 
       return true;
     };
+
+    // @ts-ignore
+    stream.originalWrite = originalWrite;
 
     return write;
   }
