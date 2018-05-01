@@ -22,6 +22,12 @@ describe('Pipeline', () => {
         'A build `Tool` instance is required to operate the pipeline.',
       );
     });
+
+    it('sets the context', () => {
+      pipeline = new Pipeline(tool, { foo: 'bar' });
+
+      expect(pipeline.context).toEqual({ foo: 'bar' });
+    });
   });
 
   describe('run()', () => {

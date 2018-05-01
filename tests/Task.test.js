@@ -176,6 +176,14 @@ describe('Task', () => {
     });
   });
 
+  describe('setContext()', () => {
+    it('sets the context', () => {
+      task.setContext({ foo: 'bar' });
+
+      expect(task.context).toEqual({ foo: 'bar' });
+    });
+  });
+
   describe('skip()', () => {
     it('marks a task as STATUS_SKIPPED', () => {
       expect(task.status).toBe(STATUS_PENDING);

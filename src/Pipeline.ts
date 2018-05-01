@@ -12,7 +12,7 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
   ToolConfig,
   Tx
 > {
-  constructor(tool: ToolInterface) {
+  constructor(tool: ToolInterface, context?: Tx) {
     super('root', 'Pipeline');
 
     if (tool instanceof Tool) {
@@ -23,17 +23,19 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
 
     this.tool = tool;
     this.tool.debug('Instantiating pipeline');
+
+    if (context) {
+      this.setContext(context);
+    }
   }
 
   /**
    * Execute all subroutines in order.
    */
-  run<T>(context: Tx, initialValue: T | null = null): Promise<any> {
+  run<T>(initialValue: T | null = null): Promise<any> {
     const { console: cli } = this.tool;
 
     this.tool.debug('Running pipeline');
-
-    this.context = context;
 
     cli.emit('start', [this.subroutines]);
 

@@ -110,8 +110,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
    * Run the current task by executing it and performing any before and after processes.
    */
   run<T>(context: Tx, initialValue: T | null = null): Promise<any> {
-    // Don't spread context as to preserve references
-    this.context = context;
+    this.setContext(context);
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;
@@ -142,6 +141,15 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
           },
         )
     );
+  }
+
+  /**
+   * Set the context to be passed around.
+   */
+  setContext(context: Tx): this {
+    this.context = context;
+
+    return this;
   }
 
   /**
