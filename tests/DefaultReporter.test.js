@@ -393,6 +393,14 @@ describe('DefaultReporter', () => {
 
       expect(reporter.depth).toBe(1);
     });
+
+    it('doesnt increase depth if ran as parallel', () => {
+      expect(reporter.depth).toBe(0);
+
+      reporter.handleRoutine(new Routine('key', 'title'), null, true);
+
+      expect(reporter.depth).toBe(0);
+    });
   });
 
   describe('handleRoutineComplete()', () => {
@@ -443,6 +451,14 @@ describe('DefaultReporter', () => {
       reporter.handleRoutineComplete(new Routine('key', 'title'));
 
       expect(reporter.depth).toBe(0);
+    });
+
+    it('doesnt decrese depth if ran as parallel', () => {
+      reporter.depth = 1;
+
+      reporter.handleRoutineComplete(new Routine('key', 'title'), null, true);
+
+      expect(reporter.depth).toBe(1);
     });
   });
 

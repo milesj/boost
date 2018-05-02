@@ -124,18 +124,22 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     this.debounceRender();
   };
 
-  handleRoutine = (routine: RoutineInterface) => {
+  handleRoutine = (routine: RoutineInterface, value: any, wasParallel: boolean) => {
     this.addLine({
       depth: this.depth,
       task: routine,
     });
     this.debounceRender();
 
-    this.depth += 1;
+    if (!wasParallel) {
+      this.depth += 1;
+    }
   };
 
-  handleRoutineComplete = (routine: RoutineInterface) => {
-    this.depth -= 1;
+  handleRoutineComplete = (routine: RoutineInterface, result: any, wasParallel: boolean) => {
+    if (!wasParallel) {
+      this.depth -= 1;
+    }
 
     if (this.depth > 0 && this.options.verbose < 3) {
       this.removeLine(line => line.task === routine);
