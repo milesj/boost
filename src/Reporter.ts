@@ -72,7 +72,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
         refreshRate: number(REFRESH_RATE),
         silent: bool(),
         slowThreshold: number(SLOW_THRESHOLD),
-        verbose: number(0).between(0, 3, true),
+        verbose: number(3).between(0, 3, true),
       },
       {
         name: this.constructor.name,

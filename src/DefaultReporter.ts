@@ -37,10 +37,14 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   /**
    * Calculate the max string length for routine key's at every depth.
    */
-  calculateKeyLength(routines: RoutineInterface[]): number {
+  calculateKeyLength(routines: RoutineInterface[], depth: number = 0): number {
     return routines.reduce(
       (sum: number, routine: RoutineInterface) =>
-        Math.max(sum, routine.key.length, this.calculateKeyLength(routine.subroutines)),
+        Math.max(
+          sum,
+          routine.key.length + depth,
+          this.calculateKeyLength(routine.subroutines, depth + 1),
+        ),
       0,
     );
   }
@@ -158,7 +162,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
 
   renderRoutineLine(routine: RoutineInterface, depth: number) {
     const indent = depth * 2;
-    const key = routine.key.toUpperCase().padEnd(this.keyLength);
+    const key = this.indent(depth) + routine.key.toUpperCase().padEnd(this.keyLength - depth);
     let output = '';
 
     // Status

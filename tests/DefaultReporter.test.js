@@ -54,7 +54,7 @@ describe('DefaultReporter', () => {
         new Routine('bazs', 'title'),
       ]);
 
-      expect(length).toBe(12);
+      expect(length).toBe(13);
     });
   });
 
@@ -402,9 +402,10 @@ describe('DefaultReporter', () => {
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
 
-    it('removes routine from lines if depth greater than 0', () => {
+    it('removes routine from lines if depth greater than 0 and verbose < 3', () => {
       const routine = new Routine('key', 'title');
 
+      reporter.options.verbose = 2;
       reporter.lines = [{ depth: 0, task: routine }];
       reporter.depth = 2;
 
@@ -518,7 +519,7 @@ describe('DefaultReporter', () => {
       reporter.renderRoutineLine(new Routine('foo', 'This is a routine'), 3);
 
       expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')}     ${chalk.gray(
+        `${chalk.reset.bold.black.bgKeyword('gray')('    FOO ')}     ${chalk.gray(
           '└',
         )} This is a routine\n`,
       );

@@ -18,8 +18,7 @@ class MultiTaskRoutine extends Routine {
       throw new Error('Oops!');
     }
 
-    return this.parallelizeTasks();
-    // return this.serializeTasks();
+    return this.options.parallel ? this.parallelizeTasks() : this.serializeTasks();
   }
 
   delayedTask() {
@@ -31,7 +30,7 @@ class MultiTaskRoutine extends Routine {
 
 class MultiRoutine extends Routine {
   bootstrap() {
-    Array.from({ length: random(1, 3) }, (v, i) => i).forEach(index => {
+    Array.from({ length: random() }, (v, i) => i).forEach(index => {
       this.pipe(new MultiTaskRoutine(`sub${index}`, `Subroutine #${index}`));
     });
 
@@ -41,7 +40,7 @@ class MultiRoutine extends Routine {
   }
 
   execute() {
-    return this.serializeSubroutines();
+    return this.options.parallel ? this.parallelizeSubroutines() : this.serializeSubroutines();
   }
 }
 
@@ -57,6 +56,7 @@ new Pipeline(tool)
   .pipe(new MultiTaskRoutine('multiple', 'Multi-task routine #1'))
   // .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
   .pipe(new MultiTaskRoutine('skipped', 'Multi-task routine #2').skip(true))
-  .pipe(new MultiRoutine('subs', 'Multi-subroutines', { deep: true }))
+  // .pipe(new MultiRoutine('subs', 'Multi-subroutines', { deep: true }))
+  .pipe(new MultiRoutine('parallel', 'Parallel subroutines', { parallel: true }))
   // .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3'))
   .run({});
