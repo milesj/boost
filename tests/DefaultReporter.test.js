@@ -345,12 +345,24 @@ describe('DefaultReporter', () => {
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
 
-    it('adds the task as a line', () => {
+    it('adds the task to the routine', () => {
+      const routine = new Routine('key', 'title');
       const task = new Task('task');
 
-      reporter.handleTask(task);
+      reporter.lines = [{ depth: 0, routine, tasks: [] }];
+      reporter.handleTask(task, routine);
 
-      expect(reporter.lines).toEqual([{ depth: -1, task }]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [task] }]);
+    });
+
+    it('doesnt add the task if routine was not found', () => {
+      const routine = new Routine('key', 'title');
+      const task = new Task('task');
+
+      reporter.lines = [];
+      reporter.handleTask(task, routine);
+
+      expect(reporter.lines).toEqual([]);
     });
   });
 
@@ -361,13 +373,14 @@ describe('DefaultReporter', () => {
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
 
-    it('removes the task from lines', () => {
+    it('removes the task from the routine', () => {
+      const routine = new Routine('key', 'title');
       const task = new Task('task');
 
-      reporter.lines = [{ depth: -1, task }];
-      reporter.handleTaskComplete(task);
+      reporter.lines = [{ depth: 0, routine, tasks: [task] }];
+      reporter.handleTaskComplete(task, routine);
 
-      expect(reporter.lines).toEqual([]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
   });
 
@@ -383,7 +396,7 @@ describe('DefaultReporter', () => {
 
       reporter.handleRoutine(routine);
 
-      expect(reporter.lines).toEqual([{ depth: 0, task: routine }]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
 
     it('increases depth', () => {
@@ -414,7 +427,7 @@ describe('DefaultReporter', () => {
       const routine = new Routine('key', 'title');
 
       reporter.options.verbose = 2;
-      reporter.lines = [{ depth: 0, task: routine }];
+      reporter.lines = [{ depth: 0, routine }];
       reporter.depth = 2;
 
       reporter.handleRoutineComplete(routine);
@@ -425,24 +438,24 @@ describe('DefaultReporter', () => {
     it('doesnt remove line if depth becomes 0', () => {
       const routine = new Routine('key', 'title');
 
-      reporter.lines = [{ depth: 0, task: routine }];
+      reporter.lines = [{ depth: 0, routine }];
       reporter.depth = 1;
 
       reporter.handleRoutineComplete(routine);
 
-      expect(reporter.lines).toEqual([{ depth: 0, task: routine }]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine }]);
     });
 
     it('doesnt remove line if verbose is 3', () => {
       const routine = new Routine('key', 'title');
 
-      reporter.lines = [{ depth: 0, task: routine }];
+      reporter.lines = [{ depth: 0, routine }];
       reporter.depth = 2;
       reporter.options.verbose = 3;
 
       reporter.handleRoutineComplete(routine);
 
-      expect(reporter.lines).toEqual([{ depth: 0, task: routine }]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine }]);
     });
 
     it('decreses depth', () => {
@@ -466,12 +479,14 @@ describe('DefaultReporter', () => {
     it('writes to buffer', () => {
       reporter.addLine({
         depth: 0,
-        task: new Routine('foo', 'This is a routine'),
+        routine: new Routine('foo', 'This is a routine'),
+        tasks: [new Task('This is a task', () => {})],
       });
 
       reporter.addLine({
         depth: 0,
-        task: new Task('This is a task', () => {}),
+        routine: new Routine('bar', 'This is a routine with no tasks'),
+        tasks: [],
       });
 
       reporter.render();
@@ -479,7 +494,8 @@ describe('DefaultReporter', () => {
       expect(reporter.bufferedOutput).toBe(
         `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')} This is a routine\n` +
           chalk.gray('   This is a task') +
-          '\n',
+          '\n' +
+          `${chalk.reset.bold.black.bgKeyword('gray')(' BAR ')} This is a routine with no tasks\n`,
       );
     });
   });

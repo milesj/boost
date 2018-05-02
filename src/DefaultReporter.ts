@@ -13,7 +13,8 @@ import Task, { TaskInterface } from './Task';
 
 export interface Line {
   depth: number;
-  task: TaskInterface;
+  routine: RoutineInterface;
+  tasks: TaskInterface[];
 }
 
 export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
@@ -111,24 +112,33 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     this.debounceRender();
   };
 
-  handleTask = (task: TaskInterface) => {
-    this.addLine({
-      depth: this.depth - 1,
-      task,
-    });
+  handleTask = (task: TaskInterface, routine: RoutineInterface) => {
+    const line = this.findLine(row => row.routine === routine);
+
+    if (line) {
+      line.tasks.push(task);
+    }
+
     this.debounceRender();
   };
 
-  handleTaskComplete = (task: TaskInterface) => {
-    this.removeLine(line => line.task === task);
+  handleTaskComplete = (task: TaskInterface, routine: RoutineInterface) => {
+    const line = this.findLine(row => row.routine === routine);
+
+    if (line) {
+      line.tasks = line.tasks.filter(t => t !== task);
+    }
+
     this.debounceRender();
   };
 
   handleRoutine = (routine: RoutineInterface, value: any, wasParallel: boolean) => {
     this.addLine({
       depth: this.depth,
-      task: routine,
+      routine,
+      tasks: [],
     });
+
     this.debounceRender();
 
     if (!wasParallel) {
@@ -142,7 +152,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     }
 
     if (this.depth > 0 && this.options.verbose < 3) {
-      this.removeLine(line => line.task === routine);
+      this.removeLine(line => line.routine === routine);
     }
 
     this.debounceRender();
@@ -150,11 +160,11 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
 
   render() {
     this.lines.forEach(line => {
-      if (line.task instanceof Routine) {
-        this.renderRoutineLine(line.task, line.depth);
-      } else {
-        this.renderTaskLine(line.task, line.depth);
-      }
+      this.renderRoutineLine(line.routine, line.depth);
+
+      line.tasks.forEach(task => {
+        this.renderTaskLine(task, line.depth);
+      });
     });
   }
 

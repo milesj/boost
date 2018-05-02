@@ -212,6 +212,18 @@ describe('Reporter', () => {
     });
   });
 
+  describe('findLine()', () => {
+    it('returns undefined if not found', () => {
+      expect(reporter.findLine(line => line === 'foo')).toBeUndefined();
+    });
+
+    it('returns the line', () => {
+      reporter.lines.push('foo');
+
+      expect(reporter.findLine(line => line === 'foo')).toBe('foo');
+    });
+  });
+
   describe('flushBufferedOutput()', () => {
     it('doesnt output if no buffer', () => {
       reporter.flushBufferedOutput();

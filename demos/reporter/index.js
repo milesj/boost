@@ -35,7 +35,7 @@ class MultiRoutine extends Routine {
     });
 
     if (this.options.deep) {
-      this.pipe(new MultiRoutine('deepsub', 'Deeply nested sub-routine'));
+      this.pipe(new MultiRoutine('deepsub', 'Deeply nested sub-routine', { parallel: true }));
     }
   }
 
@@ -54,9 +54,9 @@ const tool = new Tool(
 
 new Pipeline(tool)
   .pipe(new MultiTaskRoutine('multiple', 'Multi-task routine #1'))
+  .pipe(new MultiRoutine('parallel', 'Parallel subroutines', { parallel: true }))
+  .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3', { parallel: true }))
   // .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
   .pipe(new MultiTaskRoutine('skipped', 'Multi-task routine #2').skip(true))
-  // .pipe(new MultiRoutine('subs', 'Multi-subroutines', { deep: true }))
-  .pipe(new MultiRoutine('parallel', 'Parallel subroutines', { parallel: true }))
-  // .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3'))
+  .pipe(new MultiRoutine('subs', 'Multi-subroutines', { deep: true }))
   .run({});

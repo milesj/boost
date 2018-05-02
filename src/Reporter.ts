@@ -208,6 +208,13 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
+   * Find a line using a callback
+   */
+  findLine(callback: (item: T) => boolean): T | undefined {
+    return this.lines.find(line => callback(line));
+  }
+
+  /**
    * Flush buffered output that has been logged.
    */
   flushBufferedOutput(): this {
