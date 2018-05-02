@@ -145,16 +145,16 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   executeTask<T>(task: TaskInterface, value: T | null = null): Promise<any> {
     const { console: cli } = this.tool;
 
-    cli.emit('task', [task, value]);
+    cli.emit('task', [task, this, value]);
 
     return this.wrap(task.run(this.context, value))
       .then(result => {
-        cli.emit('task.pass', [task, result]);
+        cli.emit('task.pass', [task, this, result]);
 
         return result;
       })
       .catch(error => {
-        cli.emit('task.fail', [task, error]);
+        cli.emit('task.fail', [task, this, error]);
 
         throw error;
       });

@@ -201,8 +201,8 @@ describe('Routine', () => {
 
       await routine.executeTask(task, 123);
 
-      expect(spy).toHaveBeenCalledWith('task', [task, 123]);
-      expect(spy).toHaveBeenCalledWith('task.pass', [task, 369]);
+      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123]);
+      expect(spy).toHaveBeenCalledWith('task.pass', [task, routine, 369]);
     });
 
     it('emits console events if a failure', async () => {
@@ -220,8 +220,8 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(spy).toHaveBeenCalledWith('task', [task, 123]);
-      expect(spy).toHaveBeenCalledWith('task.fail', [task, new Error('Oops')]);
+      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123]);
+      expect(spy).toHaveBeenCalledWith('task.fail', [task, routine, new Error('Oops')]);
     });
   });
 
