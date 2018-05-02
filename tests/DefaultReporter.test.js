@@ -1,5 +1,3 @@
-/* eslint-disable prefer-template */
-
 import chalk from 'chalk';
 import DefaultReporter from '../src/DefaultReporter';
 import Routine from '../src/Routine';
@@ -489,72 +487,84 @@ describe('DefaultReporter', () => {
         tasks: [],
       });
 
+      reporter.keyLength = 3;
       reporter.render();
 
       expect(reporter.bufferedOutput).toBe(
         `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')} This is a routine\n` +
-          chalk.gray('   This is a task') +
-          '\n' +
+          `${chalk.reset.bold.black.bgKeyword('gray')('     ')} ${chalk.gray('This is a task')}\n` +
           `${chalk.reset.bold.black.bgKeyword('gray')(' BAR ')} This is a routine with no tasks\n`,
       );
     });
   });
 
-  describe('renderTaskLine()', () => {
-    it('writes to buffer', () => {
-      reporter.renderTaskLine(new Task('This is a task', () => {}), 0);
+  describe('renderLine()', () => {
+    describe('routine', () => {
+      it('writes to buffer', () => {
+        reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
-      expect(reporter.bufferedOutput).toBe(chalk.gray('   This is a task') + '\n');
+        expect(reporter.bufferedOutput).toBe(
+          `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')} This is a routine\n`,
+        );
+      });
+
+      it('pads with key length', () => {
+        reporter.keyLength = 5;
+        reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
+
+        expect(reporter.bufferedOutput).toBe(
+          `${chalk.reset.bold.black.bgKeyword('gray')(' FOO   ')} This is a routine\n`,
+        );
+      });
+
+      it('indents with a higher depth', () => {
+        reporter.renderLine(new Routine('foo', 'This is a routine'), null, 3);
+
+        expect(reporter.bufferedOutput).toBe(
+          `${chalk.reset.bold.black.bgKeyword('gray')('    FOO ')}     ${chalk.gray(
+            '└',
+          )} This is a routine\n`,
+        );
+      });
     });
 
-    it('indents with depth', () => {
-      reporter.renderTaskLine(new Task('This is a task', () => {}), 3);
+    describe('task', () => {
+      let routine;
+      let task;
 
-      expect(reporter.bufferedOutput).toBe(chalk.gray('         This is a task') + '\n');
-    });
+      beforeEach(() => {
+        routine = new Routine('foo', 'This is a routine');
+        task = new Task('This is a task', () => {});
+      });
 
-    it('indents with key length', () => {
-      reporter.keyLength = 5;
-      reporter.renderTaskLine(new Task('This is a task', () => {}), 0);
+      it('writes to buffer', () => {
+        reporter.renderLine(routine, task, 0);
 
-      expect(reporter.bufferedOutput).toBe(chalk.gray('        This is a task') + '\n');
-    });
-  });
+        expect(reporter.bufferedOutput).toBe(
+          `${chalk.reset.bold.black.bgKeyword('gray')('  ')} ${chalk.gray('This is a task')}\n`,
+        );
+      });
 
-  describe('renderRoutineLine()', () => {
-    it('writes to buffer', () => {
-      reporter.renderRoutineLine(new Routine('foo', 'This is a routine'), 0);
+      it('pads with key length', () => {
+        reporter.keyLength = 5;
+        reporter.renderLine(routine, task, 0);
 
-      expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')} This is a routine\n`,
-      );
-    });
+        expect(reporter.bufferedOutput).toBe(
+          `${chalk.reset.bold.black.bgKeyword('gray')('       ')} ${chalk.gray(
+            'This is a task',
+          )}\n`,
+        );
+      });
 
-    it('supports no color', () => {
-      chalk.supportsColor = false;
-      reporter.renderRoutineLine(new Routine('foo', 'This is a routine'), 0);
-      chalk.supportsColor = true;
+      it('indents with a higher depth', () => {
+        reporter.renderLine(routine, task, 3);
 
-      expect(reporter.bufferedOutput).toBe('[FOO] This is a routine\n');
-    });
-
-    it('pads with key length', () => {
-      reporter.keyLength = 5;
-      reporter.renderRoutineLine(new Routine('foo', 'This is a routine'), 0);
-
-      expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.black.bgKeyword('gray')(' FOO   ')} This is a routine\n`,
-      );
-    });
-
-    it('indents with a higher depth', () => {
-      reporter.renderRoutineLine(new Routine('foo', 'This is a routine'), 3);
-
-      expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.black.bgKeyword('gray')('    FOO ')}     ${chalk.gray(
-          '└',
-        )} This is a routine\n`,
-      );
+        expect(reporter.bufferedOutput).toBe(
+          `${chalk.reset.bold.black.bgKeyword('gray')('     ')}       ${chalk.gray(
+            'This is a task',
+          )}\n`,
+        );
+      });
     });
   });
 });

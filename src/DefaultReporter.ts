@@ -159,24 +159,19 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   };
 
   render() {
-    this.lines.forEach(line => {
-      this.renderRoutineLine(line.routine, line.depth);
+    this.lines.forEach(({ routine, tasks, depth }) => {
+      this.renderLine(routine, null, depth);
 
-      line.tasks.forEach(task => {
-        this.renderTaskLine(task, line.depth);
+      tasks.forEach(task => {
+        this.renderLine(routine, task, depth);
       });
     });
   }
 
-  renderTaskLine(task: TaskInterface, depth: number) {
-    const indent = depth * 2 + this.keyLength + 2;
-
-    this.log(chalk.gray(`${this.indent(indent)} ${this.getLineTitle(task, indent + 1)}`), 1);
-  }
-
-  renderRoutineLine(routine: RoutineInterface, depth: number) {
+  renderLine(routine: RoutineInterface, task: TaskInterface | null, depth: number) {
     const indent = depth * 2;
-    const key = this.indent(depth) + routine.key.toUpperCase().padEnd(this.keyLength - depth);
+    const key =
+      this.indent(depth) + (task ? '' : routine.key.toUpperCase()).padEnd(this.keyLength - depth);
     let output = '';
 
     // Status
@@ -187,13 +182,23 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
 
     // Tree
     if (depth > 0) {
-      output += this.indent(indent - 2);
-      output += chalk.gray('└');
-      output += ' ';
+      if (task) {
+        output += this.indent(indent);
+      } else {
+        output += this.indent(indent - 2);
+        output += chalk.gray('└');
+        output += ' ';
+      }
     }
 
     // Title
-    output += this.getLineTitle(routine, indent + key.length + 3);
+    const usedColumns = indent + key.length + 2;
+
+    if (task) {
+      output += chalk.gray(this.getLineTitle(task, usedColumns));
+    } else {
+      output += this.getLineTitle(routine, usedColumns);
+    }
 
     this.log(output, 1);
   }
