@@ -201,8 +201,8 @@ describe('Routine', () => {
 
       await routine.executeTask(task, 123);
 
-      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123]);
-      expect(spy).toHaveBeenCalledWith('task.pass', [task, routine, 369]);
+      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('task.pass', [task, routine, 369, false]);
     });
 
     it('emits console events if a failure', async () => {
@@ -220,8 +220,19 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123]);
-      expect(spy).toHaveBeenCalledWith('task.fail', [task, routine, new Error('Oops')]);
+      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('task.fail', [task, routine, new Error('Oops'), false]);
+    });
+
+    it('emits console events with parallel flag', async () => {
+      const spy = jest.fn();
+
+      routine.tool.console.emit = spy;
+
+      await routine.executeTask(task, 123, true);
+
+      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123, true]);
+      expect(spy).toHaveBeenCalledWith('task.pass', [task, routine, 369, true]);
     });
   });
 
@@ -263,6 +274,19 @@ describe('Routine', () => {
         parallel: 'routine',
       });
       expect(routine.context).toBe(context);
+    });
+
+    it('calls `executeSubroutine` with correct args', async () => {
+      const spy = jest.fn();
+      const sub = new ContextSubRoutine('foo', 'title', { multiplier: 1 });
+
+      routine.pipe(sub);
+      routine.action = (con, value) => routine.parallelizeSubroutines(value);
+      routine.executeSubroutine = spy;
+
+      await routine.run();
+
+      expect(spy).toHaveBeenCalledWith(sub, null, true);
     });
   });
 
@@ -322,6 +346,20 @@ describe('Routine', () => {
         parallel: 'task',
       });
       expect(routine.context).toBe(context);
+    });
+
+    it('calls `executeTask` with correct args', async () => {
+      const spy = jest.fn();
+
+      routine = new ContextSubRoutine('context', 'title');
+      routine.action = (con, value) => routine.parallelizeTasks(value);
+      routine.executeTask = spy;
+
+      await routine.run();
+
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], null, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], null, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], null, true);
     });
   });
 
@@ -398,8 +436,8 @@ describe('Routine', () => {
 
       await routine.run({}, 123);
 
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123]);
-      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123]);
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, false]);
     });
 
     it('emits console events if a failure', async () => {
@@ -417,8 +455,19 @@ describe('Routine', () => {
         expect(error).toEqual(new Error('Failure'));
       }
 
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123]);
-      expect(spy).toHaveBeenCalledWith('routine.fail', [routine, new Error('Failure')]);
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('routine.fail', [routine, new Error('Failure'), false]);
+    });
+
+    it('emits console with parallel flags', async () => {
+      const spy = jest.fn();
+
+      routine.tool.console.emit = spy;
+
+      await routine.run({}, 123, true);
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, true]);
+      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, true]);
     });
   });
 

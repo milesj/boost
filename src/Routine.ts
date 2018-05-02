@@ -27,6 +27,7 @@ export interface RoutineInterface extends TaskInterface {
   key: string;
   subroutines: RoutineInterface[];
   tool: ToolInterface;
+  run<T>(context: any, initialValue?: T | null, wasParallel?: boolean): Promise<any>;
 }
 
 export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx>
@@ -134,27 +135,35 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute a sub-routine with the provided value.
    */
-  executeSubroutine<T>(task: TaskInterface, value: T | null = null): Promise<any> {
-    return this.wrap(task.run(this.context, value));
+  executeSubroutine<T>(
+    routine: RoutineInterface,
+    value: T | null = null,
+    wasParallel: boolean = false,
+  ): Promise<any> {
+    return this.wrap(routine.run(this.context, value, wasParallel));
   }
 
   /**
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask<T>(task: TaskInterface, value: T | null = null): Promise<any> {
+  executeTask<T>(
+    task: TaskInterface,
+    value: T | null = null,
+    wasParallel: boolean = false,
+  ): Promise<any> {
     const { console: cli } = this.tool;
 
-    cli.emit('task', [task, this, value]);
+    cli.emit('task', [task, this, value, wasParallel]);
 
     return this.wrap(task.run(this.context, value))
       .then(result => {
-        cli.emit('task.pass', [task, this, result]);
+        cli.emit('task.pass', [task, this, result, wasParallel]);
 
         return result;
       })
       .catch(error => {
-        cli.emit('task.fail', [task, this, error]);
+        cli.emit('task.fail', [task, this, error, wasParallel]);
 
         throw error;
       });
@@ -165,7 +174,9 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * A combination promise will be returned as the result.
    */
   parallelizeSubroutines<T>(value: T | null = null): Promise<any> {
-    return Promise.all(this.subroutines.map(routine => this.executeSubroutine(routine, value)));
+    return Promise.all(
+      this.subroutines.map(routine => this.executeSubroutine(routine, value, true)),
+    );
   }
 
   /**
@@ -173,7 +184,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * A combination promise will be returned as the result.
    */
   parallelizeTasks<T>(value: T | null = null): Promise<any> {
-    return Promise.all(this.subtasks.map(task => this.executeTask(task, value)));
+    return Promise.all(this.subtasks.map(task => this.executeTask(task, value, true)));
   }
 
   /**
@@ -192,7 +203,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Trigger processes before and after execution.
    */
-  run<T>(context: Tx, value: T | null = null): Promise<any> {
+  run<T>(context: Tx, value: T | null = null, wasParallel: boolean = false): Promise<any> {
     if (this.exit) {
       return Promise.reject(new Error('Process has been interrupted.'));
     }
@@ -201,17 +212,17 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
     const { console: cli } = this.tool;
 
-    cli.emit('routine', [this, value]);
+    cli.emit('routine', [this, value, wasParallel]);
 
     return super
       .run(context, value)
       .then(result => {
-        cli.emit('routine.pass', [this, result]);
+        cli.emit('routine.pass', [this, result, wasParallel]);
 
         return result;
       })
       .catch(error => {
-        cli.emit('routine.fail', [this, error]);
+        cli.emit('routine.fail', [this, error, wasParallel]);
 
         throw error;
       });
@@ -222,10 +233,10 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * task being passed to the next promise in the chain. Utilize the
    * `accumulator` function to execute the list of processes.
    */
-  serialize<T>(
-    tasks: TaskInterface[],
+  serialize<T, T2 extends TaskInterface>(
+    tasks: T2[],
     initialValue: T | null = null,
-    accumulator: (task: TaskInterface, value: T | null) => Promise<any>,
+    accumulator: (task: T2, value: T | null) => Promise<any>,
   ): Promise<any> {
     return tasks.reduce(
       (promise, task) => promise.then(value => accumulator(task, value)),
@@ -237,8 +248,8 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in sequential (serial) order.
    */
   serializeSubroutines<T>(value: T | null = null): Promise<any> {
-    return this.serialize(this.subroutines, value, (task, val) =>
-      this.executeSubroutine(task, val),
+    return this.serialize(this.subroutines, value, (routine, val) =>
+      this.executeSubroutine(routine, val),
     );
   }
 
