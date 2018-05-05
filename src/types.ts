@@ -38,3 +38,8 @@ export interface PackageConfig extends Struct {
 }
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
+
+export interface SynchronizedResponse {
+  errors: Error[];
+  results: any[];
+}

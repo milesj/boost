@@ -17,12 +17,7 @@ import { Struct } from 'optimal';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Debugger, Context } from './types';
-
-export interface SyncedResponse {
-  errors: Error[];
-  results: any[];
-}
+import { Debugger, Context, SynchronizedResponse } from './types';
 
 export interface CommandOptions extends Struct {
   sync?: boolean;
@@ -181,7 +176,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   parallelizeSubroutines<T>(
     value: T | null = null,
     synchronize: boolean = false,
-  ): Promise<any[] | SyncedResponse> {
+  ): Promise<any[] | SynchronizedResponse> {
     const promises = Promise.all(
       this.subroutines.map(routine => {
         const promise = this.executeSubroutine(routine, value, true);
@@ -204,7 +199,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   parallelizeTasks<T>(
     value: T | null = null,
     synchronize: boolean = false,
-  ): Promise<any[] | SyncedResponse> {
+  ): Promise<any[] | SynchronizedResponse> {
     const promises = Promise.all(
       this.subtasks.map(task => {
         const promise = this.executeTask(task, value, true);
@@ -296,7 +291,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Synchronize parallel promises and partition errors and results into separate collections.
    */
-  syncParallelPromises(promises: Promise<any[]>): Promise<SyncedResponse> {
+  syncParallelPromises(promises: Promise<any[]>): Promise<SynchronizedResponse> {
     return promises.then((responses: any) => {
       const results: any[] = [];
       const errors: Error[] = [];
