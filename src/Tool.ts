@@ -30,7 +30,6 @@ export interface ToolOptions extends Struct {
   root: string;
   scoped: boolean;
   workspaceRoot: string;
-  workspaces: string[];
 }
 
 export interface ToolInterface extends EmitterInterface {
@@ -82,7 +81,6 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
         root: string(process.cwd()),
         scoped: bool(),
         workspaceRoot: string().empty(),
-        workspaces: array(string()),
       },
       {
         name: 'Tool',
@@ -182,7 +180,6 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     // Inherit workspace metadata if found
     this.options.workspaceRoot = configLoader.workspaceRoot;
-    this.options.workspaces = configLoader.workspaces;
 
     // Inherit from argv
     this.argv.forEach(arg => {

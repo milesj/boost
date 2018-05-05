@@ -33,8 +33,6 @@ export default class ConfigLoader {
 
   workspaceRoot: string = '';
 
-  workspaces: string[] = [];
-
   constructor(tool: ToolInterface) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
@@ -175,7 +173,6 @@ export default class ConfigLoader {
     }
 
     this.workspaceRoot = workspaceRoot;
-    this.workspaces = workspacePatterns;
 
     return (
       this.findConfigInPackageJSON(workspacePackage) ||

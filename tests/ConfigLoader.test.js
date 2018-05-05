@@ -127,12 +127,6 @@ describe('ConfigLoader', () => {
 
       expect(loader.workspaceRoot).toEqual(getFixturePath('workspace-yarn'));
     });
-
-    it('sets workspace paths if match found', () => {
-      loader.findConfigInWorkspaceRoot(getFixturePath('workspace-yarn', './packages/foo'));
-
-      expect(loader.workspaces).toEqual(['packages/*']);
-    });
   });
 
   describe('loadConfig()', () => {
