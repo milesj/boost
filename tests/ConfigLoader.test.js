@@ -108,6 +108,14 @@ describe('ConfigLoader', () => {
       ).toEqual(getFixturePath('workspace-yarn', './configs/test-boost.js'));
     });
 
+    it('loads config when using yarn workspaces with nohoist (using config file)', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(
+          getFixturePath('workspace-yarn-nohoist', './packages/foo'),
+        ),
+      ).toEqual(getFixturePath('workspace-yarn-nohoist', './configs/test-boost.js'));
+    });
+
     it('loads config when using lerna workspaces (using package.json)', () => {
       expect(
         loader.findConfigInWorkspaceRoot(getFixturePath('workspace-lerna', './packages/foo')),
@@ -118,6 +126,12 @@ describe('ConfigLoader', () => {
       loader.findConfigInWorkspaceRoot(getFixturePath('workspace-yarn', './packages/foo'));
 
       expect(loader.workspaceRoot).toEqual(getFixturePath('workspace-yarn'));
+    });
+
+    it('sets workspace paths if match found', () => {
+      loader.findConfigInWorkspaceRoot(getFixturePath('workspace-yarn', './packages/foo'));
+
+      expect(loader.workspaces).toEqual(['packages/*']);
     });
   });
 

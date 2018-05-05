@@ -1,0 +1,5 @@
+{
+  "name": "test-boost-workspace-yarn-nohoist",
+  "version": "0.0.0",
+  "workspaces": ["packages/*"]
+}

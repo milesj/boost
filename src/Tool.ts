@@ -7,7 +7,7 @@ import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
 import pluralize from 'pluralize';
-import optimal, { bool, object, string, Blueprint, Struct } from 'optimal';
+import optimal, { array, bool, object, string, Blueprint, Struct } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Console, { ConsoleInterface } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
@@ -30,6 +30,7 @@ export interface ToolOptions extends Struct {
   root: string;
   scoped: boolean;
   workspaceRoot: string;
+  workspaces: string[];
 }
 
 export interface ToolInterface extends EmitterInterface {
@@ -81,6 +82,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
         root: string(process.cwd()),
         scoped: bool(),
         workspaceRoot: string().empty(),
+        workspaces: array(string()),
       },
       {
         name: 'Tool',
@@ -178,8 +180,9 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     this.package = configLoader.loadPackageJSON();
     this.config = configLoader.loadConfig();
 
-    // Inherit workspace root if found
+    // Inherit workspace metadata if found
     this.options.workspaceRoot = configLoader.workspaceRoot;
+    this.options.workspaces = configLoader.workspaces;
 
     // Inherit from argv
     this.argv.forEach(arg => {

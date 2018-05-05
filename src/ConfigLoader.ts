@@ -33,6 +33,8 @@ export default class ConfigLoader {
 
   workspaceRoot: string = '';
 
+  workspaces: string[] = [];
+
   constructor(tool: ToolInterface) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
@@ -124,8 +126,13 @@ export default class ConfigLoader {
         workspacePackage = this.parseFile(pkgPath);
 
         if (workspacePackage.workspaces) {
-          workspaceRoot = currentDir;
-          workspacePatterns = workspacePackage.workspaces;
+          if (Array.isArray(workspacePackage.workspaces)) {
+            workspaceRoot = currentDir;
+            workspacePatterns = workspacePackage.workspaces;
+          } else if (Array.isArray(workspacePackage.workspaces.packages)) {
+            workspaceRoot = currentDir;
+            workspacePatterns = workspacePackage.workspaces.packages;
+          }
 
           break;
         }
@@ -135,7 +142,7 @@ export default class ConfigLoader {
       if (workspacePackage && fs.existsSync(lernaPath)) {
         const lerna = this.parseFile(lernaPath);
 
-        if (lerna.packages) {
+        if (Array.isArray(lerna.packages)) {
           workspaceRoot = currentDir;
           workspacePatterns = lerna.packages;
 
@@ -168,6 +175,7 @@ export default class ConfigLoader {
     }
 
     this.workspaceRoot = workspaceRoot;
+    this.workspaces = workspacePatterns;
 
     return (
       this.findConfigInPackageJSON(workspacePackage) ||
