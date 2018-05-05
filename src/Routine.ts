@@ -19,6 +19,11 @@ import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
 import { Debugger, Context } from './types';
 
+export interface SyncedResponse {
+  errors: Error[];
+  results: any[];
+}
+
 export interface CommandOptions extends Struct {
   sync?: boolean;
 }
@@ -173,18 +178,46 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines<T>(value: T | null = null): Promise<any> {
-    return Promise.all(
-      this.subroutines.map(routine => this.executeSubroutine(routine, value, true)),
+  parallelizeSubroutines<T>(
+    value: T | null = null,
+    synchronize: boolean = false,
+  ): Promise<any[] | SyncedResponse> {
+    const promises = Promise.all(
+      this.subroutines.map(routine => {
+        const promise = this.executeSubroutine(routine, value, true);
+
+        if (synchronize) {
+          return promise.catch(error => error);
+        }
+
+        return promise;
+      }),
     );
+
+    return synchronize ? this.syncParallelPromises(promises) : promises;
   }
 
   /**
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks<T>(value: T | null = null): Promise<any> {
-    return Promise.all(this.subtasks.map(task => this.executeTask(task, value, true)));
+  parallelizeTasks<T>(
+    value: T | null = null,
+    synchronize: boolean = false,
+  ): Promise<any[] | SyncedResponse> {
+    const promises = Promise.all(
+      this.subtasks.map(task => {
+        const promise = this.executeTask(task, value, true);
+
+        if (synchronize) {
+          return promise.catch(error => error);
+        }
+
+        return promise;
+      }),
+    );
+
+    return synchronize ? this.syncParallelPromises(promises) : promises;
   }
 
   /**
@@ -258,6 +291,26 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    */
   serializeTasks<T>(value: T | null = null): Promise<any> {
     return this.serialize(this.subtasks, value, (task, val) => this.executeTask(task, val));
+  }
+
+  /**
+   * Synchronize parallel promises and partition errors and results into separate collections.
+   */
+  syncParallelPromises(promises: Promise<any[]>): Promise<SyncedResponse> {
+    return promises.then((responses: any) => {
+      const results: any[] = [];
+      const errors: Error[] = [];
+
+      responses.forEach((response: any) => {
+        if (response instanceof Error) {
+          errors.push(response);
+        } else {
+          results.push(response);
+        }
+      });
+
+      return Promise.resolve({ errors, results });
+    });
   }
 
   /**

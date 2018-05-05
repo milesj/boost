@@ -62,7 +62,7 @@ describe('Routine', () => {
       context.count *= this.options.multiplier;
       context[this.key] = true;
 
-      return value;
+      return this.options.return ? this.key : value;
     }
 
     foo(context, value) {
@@ -288,6 +288,27 @@ describe('Routine', () => {
 
       expect(spy).toHaveBeenCalledWith(sub, null, true);
     });
+
+    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
+      const context = { count: 1 };
+
+      routine
+        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 2, return: true }))
+        .pipe(new FailureSubRoutine('err', 'title'))
+        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextSubRoutine('qux', 'title', { multiplier: 2, return: true }));
+
+      routine.action = () => routine.parallelizeSubroutines(0, true);
+
+      const response = await routine.run(context);
+
+      expect(context.count).toBe(16);
+      expect(response).toEqual({
+        errors: [new Error('Failure')],
+        results: ['foo', 'bar', 'baz', 'qux'],
+      });
+    });
   });
 
   describe('parallelizeTasks()', () => {
@@ -360,6 +381,42 @@ describe('Routine', () => {
       expect(spy).toHaveBeenCalledWith(routine.subtasks[0], null, true);
       expect(spy).toHaveBeenCalledWith(routine.subtasks[1], null, true);
       expect(spy).toHaveBeenCalledWith(routine.subtasks[2], null, true);
+    });
+
+    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
+      let count = 0;
+
+      routine.task('foo', () => {
+        count += 1;
+
+        return 'foo';
+      });
+      routine.task('bar', () => {
+        count += 1;
+
+        return 'bar';
+      });
+      routine.task('err', () => new Error('Failure'));
+      routine.task('baz', () => {
+        count += 1;
+
+        return 'baz';
+      });
+      routine.task('qux', () => {
+        count += 1;
+
+        return 'qux';
+      });
+
+      routine.action = () => routine.parallelizeTasks(0, true);
+
+      const response = await routine.run();
+
+      expect(count).toBe(4);
+      expect(response).toEqual({
+        errors: [new Error('Failure')],
+        results: ['foo', 'bar', 'baz', 'qux'],
+      });
     });
   });
 
@@ -668,6 +725,25 @@ describe('Routine', () => {
         serial: 'task',
       });
       expect(routine.context).toBe(context);
+    });
+  });
+
+  describe('syncParallelPromises()', () => {
+    it('separates errors and results', async () => {
+      const response = await routine.syncParallelPromises(
+        Promise.all([
+          Promise.resolve(123),
+          Promise.resolve(456),
+          Promise.resolve(new Error('Foo')),
+          Promise.resolve(789),
+          Promise.resolve(321),
+        ]),
+      );
+
+      expect(response).toEqual({
+        errors: [new Error('Foo')],
+        results: [123, 456, 789, 321],
+      });
     });
   });
 
