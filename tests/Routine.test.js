@@ -288,27 +288,6 @@ describe('Routine', () => {
 
       expect(spy).toHaveBeenCalledWith(sub, null, true);
     });
-
-    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
-      const context = { count: 1 };
-
-      routine
-        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2, return: true }))
-        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 2, return: true }))
-        .pipe(new FailureSubRoutine('err', 'title'))
-        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2, return: true }))
-        .pipe(new ContextSubRoutine('qux', 'title', { multiplier: 2, return: true }));
-
-      routine.action = () => routine.parallelizeSubroutines(0, true);
-
-      const response = await routine.run(context);
-
-      expect(context.count).toBe(16);
-      expect(response).toEqual({
-        errors: [new Error('Failure')],
-        results: ['foo', 'bar', 'baz', 'qux'],
-      });
-    });
   });
 
   describe('parallelizeTasks()', () => {
@@ -381,42 +360,6 @@ describe('Routine', () => {
       expect(spy).toHaveBeenCalledWith(routine.subtasks[0], null, true);
       expect(spy).toHaveBeenCalledWith(routine.subtasks[1], null, true);
       expect(spy).toHaveBeenCalledWith(routine.subtasks[2], null, true);
-    });
-
-    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
-      let count = 0;
-
-      routine.task('foo', () => {
-        count += 1;
-
-        return 'foo';
-      });
-      routine.task('bar', () => {
-        count += 1;
-
-        return 'bar';
-      });
-      routine.task('err', () => new Error('Failure'));
-      routine.task('baz', () => {
-        count += 1;
-
-        return 'baz';
-      });
-      routine.task('qux', () => {
-        count += 1;
-
-        return 'qux';
-      });
-
-      routine.action = () => routine.parallelizeTasks(0, true);
-
-      const response = await routine.run();
-
-      expect(count).toBe(4);
-      expect(response).toEqual({
-        errors: [new Error('Failure')],
-        results: ['foo', 'bar', 'baz', 'qux'],
-      });
     });
   });
 
@@ -728,21 +671,167 @@ describe('Routine', () => {
     });
   });
 
-  describe('syncParallelPromises()', () => {
+  describe('synchronize()', () => {
     it('separates errors and results', async () => {
-      const response = await routine.syncParallelPromises(
-        Promise.all([
-          Promise.resolve(123),
-          Promise.resolve(456),
-          Promise.resolve(new Error('Foo')),
-          Promise.resolve(789),
-          Promise.resolve(321),
-        ]),
-      );
+      const response = await routine.synchronize([
+        Promise.resolve(123),
+        Promise.resolve(456),
+        Promise.resolve(new Error('Foo')),
+        Promise.resolve(789),
+        Promise.resolve(321),
+      ]);
 
       expect(response).toEqual({
         errors: [new Error('Foo')],
         results: [123, 456, 789, 321],
+      });
+    });
+  });
+
+  describe('synchronizeSubroutines()', () => {
+    it('returns a resolved promise if no subroutines exist', async () => {
+      expect(await routine.synchronizeSubroutines('abc')).toEqual({ results: [], errors: [] });
+    });
+
+    it('passes context through routines when ran', async () => {
+      const context = {
+        count: 3,
+        parallel: 'routine',
+      };
+
+      routine
+        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
+
+      routine.action = (con, value) => routine.synchronizeSubroutines(value);
+
+      await routine.run(context);
+
+      expect(context).toEqual({
+        bar: true,
+        baz: true,
+        count: 36,
+        foo: true,
+        parallel: 'routine',
+      });
+      expect(routine.context).toBe(context);
+    });
+
+    it('calls `executeSubroutine` with correct args', async () => {
+      const spy = jest.fn(() => Promise.resolve());
+      const sub = new ContextSubRoutine('foo', 'title', { multiplier: 1 });
+
+      routine.pipe(sub);
+      routine.action = (con, value) => routine.synchronizeSubroutines(value);
+      routine.executeSubroutine = spy;
+
+      await routine.run();
+
+      expect(spy).toHaveBeenCalledWith(sub, null, true);
+    });
+
+    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
+      const context = { count: 1 };
+
+      routine
+        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 2, return: true }))
+        .pipe(new FailureSubRoutine('err', 'title'))
+        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextSubRoutine('qux', 'title', { multiplier: 2, return: true }));
+
+      routine.action = () => routine.synchronizeSubroutines();
+
+      const response = await routine.run(context);
+
+      expect(context.count).toBe(16);
+      expect(response).toEqual({
+        errors: [new Error('Failure')],
+        results: ['foo', 'bar', 'baz', 'qux'],
+      });
+    });
+  });
+
+  describe('synchronizeTasks()', () => {
+    it('returns a resolved promise if no tasks exist', async () => {
+      expect(await routine.synchronizeTasks('abc')).toEqual({ results: [], errors: [] });
+    });
+
+    it('supports normal functions', async () => {
+      routine.task('upper', (context, value) => value.toUpperCase());
+      routine.task('dupe', (context, value) => `${value}${value}`);
+
+      expect(await routine.synchronizeTasks('abc')).toEqual({
+        results: ['ABC', 'abcabc'],
+        errors: [],
+      });
+    });
+
+    it('passes context through tasks when ran', async () => {
+      const context = { parallel: 'task' };
+
+      routine = new ContextSubRoutine('context', 'title');
+      routine.action = (con, value) => routine.synchronizeTasks(value);
+
+      await routine.run(context);
+
+      expect(context).toEqual({
+        bar: 456,
+        baz: 789,
+        foo: 123,
+        parallel: 'task',
+      });
+      expect(routine.context).toBe(context);
+    });
+
+    it('calls `executeTask` with correct args', async () => {
+      const spy = jest.fn(() => Promise.resolve());
+
+      routine = new ContextSubRoutine('context', 'title');
+      routine.action = (con, value) => routine.synchronizeTasks(value);
+      routine.executeTask = spy;
+
+      await routine.run();
+
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], null, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], null, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], null, true);
+    });
+
+    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
+      let count = 0;
+
+      routine.task('foo', () => {
+        count += 1;
+
+        return 'foo';
+      });
+      routine.task('bar', () => {
+        count += 1;
+
+        return 'bar';
+      });
+      routine.task('err', () => new Error('Failure'));
+      routine.task('baz', () => {
+        count += 1;
+
+        return 'baz';
+      });
+      routine.task('qux', () => {
+        count += 1;
+
+        return 'qux';
+      });
+
+      routine.action = () => routine.synchronizeTasks();
+
+      const response = await routine.run();
+
+      expect(count).toBe(4);
+      expect(response).toEqual({
+        errors: [new Error('Failure')],
+        results: ['foo', 'bar', 'baz', 'qux'],
       });
     });
   });

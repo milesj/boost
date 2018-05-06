@@ -173,46 +173,18 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines<T>(
-    value: T | null = null,
-    synchronize: boolean = false,
-  ): Promise<any[] | SynchronizedResponse> {
-    const promises = Promise.all(
-      this.subroutines.map(routine => {
-        const promise = this.executeSubroutine(routine, value, true);
-
-        if (synchronize) {
-          return promise.catch(error => error);
-        }
-
-        return promise;
-      }),
+  parallelizeSubroutines<T>(value: T | null = null): Promise<any[]> {
+    return Promise.all(
+      this.subroutines.map(routine => this.executeSubroutine(routine, value, true)),
     );
-
-    return synchronize ? this.syncParallelPromises(promises) : promises;
   }
 
   /**
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks<T>(
-    value: T | null = null,
-    synchronize: boolean = false,
-  ): Promise<any[] | SynchronizedResponse> {
-    const promises = Promise.all(
-      this.subtasks.map(task => {
-        const promise = this.executeTask(task, value, true);
-
-        if (synchronize) {
-          return promise.catch(error => error);
-        }
-
-        return promise;
-      }),
-    );
-
-    return synchronize ? this.syncParallelPromises(promises) : promises;
+  parallelizeTasks<T>(value: T | null = null): Promise<any[]> {
+    return Promise.all(this.subtasks.map(task => this.executeTask(task, value, true)));
   }
 
   /**
@@ -257,22 +229,6 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
-   * Execute processes in sequential order with the output of each
-   * task being passed to the next promise in the chain. Utilize the
-   * `accumulator` function to execute the list of processes.
-   */
-  serialize<T, T2 extends TaskInterface>(
-    tasks: T2[],
-    initialValue: T | null = null,
-    accumulator: (task: T2, value: T | null) => Promise<any>,
-  ): Promise<any> {
-    return tasks.reduce(
-      (promise, task) => promise.then(value => accumulator(task, value)),
-      Promise.resolve(initialValue),
-    );
-  }
-
-  /**
    * Execute subroutines in sequential (serial) order.
    */
   serializeSubroutines<T>(value: T | null = null): Promise<any> {
@@ -289,23 +245,25 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
-   * Synchronize parallel promises and partition errors and results into separate collections.
+   * Execute subroutines in parralel with a value being passed to each subroutine.
+   * Subroutines will synchronize regardless of race conditions and errors.
    */
-  syncParallelPromises(promises: Promise<any[]>): Promise<SynchronizedResponse> {
-    return promises.then((responses: any) => {
-      const results: any[] = [];
-      const errors: Error[] = [];
+  synchronizeSubroutines<T>(value: T | null = null): Promise<any[] | SynchronizedResponse> {
+    return this.synchronize(
+      this.subroutines.map(routine =>
+        this.executeSubroutine(routine, value, true).catch(error => error),
+      ),
+    );
+  }
 
-      responses.forEach((response: any) => {
-        if (response instanceof Error) {
-          errors.push(response);
-        } else {
-          results.push(response);
-        }
-      });
-
-      return Promise.resolve({ errors, results });
-    });
+  /**
+   * Execute tasks in parralel with a value being passed to each task.
+   * Tasks will synchronize regardless of race conditions and errors.
+   */
+  synchronizeTasks<T>(value: T | null = null): Promise<any[] | SynchronizedResponse> {
+    return this.synchronize(
+      this.subtasks.map(task => this.executeTask(task, value, true).catch(error => error)),
+    );
   }
 
   /**
@@ -321,5 +279,41 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
     this.subtasks.push(task);
 
     return task;
+  }
+
+  /**
+   * Execute processes in sequential order with the output of each
+   * task being passed to the next promise in the chain. Utilize the
+   * `accumulator` function to execute the list of processes.
+   */
+  private serialize<T, T2 extends TaskInterface>(
+    tasks: T2[],
+    initialValue: T | null = null,
+    accumulator: (task: T2, value: T | null) => Promise<any>,
+  ): Promise<any> {
+    return tasks.reduce(
+      (promise, task) => promise.then(value => accumulator(task, value)),
+      Promise.resolve(initialValue),
+    );
+  }
+
+  /**
+   * Synchronize parallel promises and partition errors and results into separate collections.
+   */
+  private synchronize(promises: Promise<any>[]): Promise<SynchronizedResponse> {
+    return Promise.all(promises).then((responses: any) => {
+      const results: any[] = [];
+      const errors: Error[] = [];
+
+      responses.forEach((response: any) => {
+        if (response instanceof Error) {
+          errors.push(response);
+        } else {
+          results.push(response);
+        }
+      });
+
+      return Promise.resolve({ errors, results });
+    });
   }
 }
