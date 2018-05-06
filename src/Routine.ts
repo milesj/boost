@@ -21,6 +21,8 @@ import { Debugger, Context, SynchronizedResponse } from './types';
 
 export interface CommandOptions extends Struct {
   sync?: boolean;
+  task?: TaskInterface;
+  wrap?: (process: ExecaChildProcess) => void;
 }
 
 export interface RoutineInterface extends TaskInterface {
@@ -103,7 +105,6 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
     command: string,
     args: string[],
     options: (ExecaOptions | ExecaSyncOptions) & CommandOptions = {},
-    callback: ((process: ExecaChildProcess) => void) | null = null,
   ): Promise<ExecaReturns> {
     const stream = options.sync
       ? execa.sync(command, args, options as ExecaSyncOptions)
@@ -114,19 +115,20 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
     // Push chunks to the reporter
     if (!options.sync) {
       const out = stream.stdout as Readable;
+      const task = options.task || this;
 
       out.pipe(split()).on('data', (line: string) => {
         /* istanbul ignore next */
-        if (this.status === STATUS_RUNNING) {
-          this.statusText = line;
+        if (task.status === STATUS_RUNNING) {
+          task.statusText = line;
           this.tool.console.emit('command.data', [command, line, this]);
         }
       });
     }
 
     // Allow consumer to wrap functionality
-    if (typeof callback === 'function') {
-      callback(stream as ExecaChildProcess);
+    if (typeof options.wrap === 'function') {
+      options.wrap(stream as ExecaChildProcess);
     }
 
     return this.wrap(stream);

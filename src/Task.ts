@@ -124,7 +124,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
     return (
       Promise.resolve(initialValue)
         // @ts-ignore
-        .then(value => this.action(context, value))
+        .then(value => this.action(context, value, this))
         .then(
           result => {
             this.status = STATUS_PASSED;

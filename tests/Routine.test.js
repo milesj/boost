@@ -153,7 +153,7 @@ describe('Routine', () => {
     it('calls callback with stream', async () => {
       const spy = jest.fn();
 
-      await routine.executeCommand('yarn', ['-v'], {}, spy);
+      await routine.executeCommand('yarn', ['-v'], { wrap: spy });
 
       expect(spy).toHaveBeenCalled();
     });
@@ -468,6 +468,16 @@ describe('Routine', () => {
 
       expect(spy).toHaveBeenCalledWith('routine', [routine, 123, true]);
       expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, true]);
+    });
+
+    it('passes task as 3rd argument to action', async () => {
+      const spy = jest.fn();
+
+      routine.action = spy;
+
+      await routine.run({}, 123);
+
+      expect(spy).toHaveBeenCalledWith({}, 123, routine);
     });
   });
 

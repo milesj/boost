@@ -174,6 +174,16 @@ describe('Task', () => {
       expect(task.startTime).not.toBe(0);
       expect(task.stopTime).not.toBe(0);
     });
+
+    it('passes task as 3rd argument to action', async () => {
+      const spy = jest.fn();
+
+      task.action = spy;
+
+      await task.run({}, 123);
+
+      expect(spy).toHaveBeenCalledWith({}, 123, task);
+    });
   });
 
   describe('setContext()', () => {
