@@ -250,7 +250,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * Subroutines will synchronize regardless of race conditions and errors.
    */
-  synchronizeSubroutines<T>(value: T | null = null): Promise<any[] | SynchronizedResponse> {
+  synchronizeSubroutines<T>(value: T | null = null): Promise<SynchronizedResponse> {
     return this.synchronize(
       this.subroutines.map(routine =>
         this.executeSubroutine(routine, value, true).catch(error => error),
@@ -262,7 +262,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute tasks in parralel with a value being passed to each task.
    * Tasks will synchronize regardless of race conditions and errors.
    */
-  synchronizeTasks<T>(value: T | null = null): Promise<any[] | SynchronizedResponse> {
+  synchronizeTasks<T>(value: T | null = null): Promise<SynchronizedResponse> {
     return this.synchronize(
       this.subtasks.map(task => this.executeTask(task, value, true).catch(error => error)),
     );
