@@ -29,7 +29,11 @@ export interface TaskInterface {
   skip(condition?: boolean): this;
 }
 
-export type TaskAction<Tx extends Context> = (context: Tx, value: any) => any | Promise<any>;
+export type TaskAction<Tx extends Context> = (
+  context: Tx,
+  value: any,
+  task: TaskInterface,
+) => any | Promise<any>;
 
 export default class Task<To extends Struct, Tx extends Context> implements TaskInterface {
   action: TaskAction<Tx> | null = null;
