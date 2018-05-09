@@ -491,9 +491,9 @@ describe('DefaultReporter', () => {
       reporter.render();
 
       expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')} This is a routine\n` +
-          `${chalk.reset.bold.black.bgKeyword('gray')('     ')} ${chalk.gray('This is a task')}\n` +
-          `${chalk.reset.bold.black.bgKeyword('gray')(' BAR ')} This is a routine with no tasks\n`,
+        `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine\n` +
+          `${chalk.reset.bold.keyword('gray')('   ')}  ${chalk.gray('This is a task')}\n` +
+          `${chalk.reset.bold.keyword('gray')('BAR')}  This is a routine with no tasks\n`,
       );
     });
   });
@@ -504,7 +504,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.black.bgKeyword('gray')(' FOO ')} This is a routine\n`,
+          `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine\n`,
         );
       });
 
@@ -513,7 +513,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.black.bgKeyword('gray')(' FOO   ')} This is a routine\n`,
+          `${chalk.reset.bold.keyword('gray')('FOO  ')}  This is a routine\n`,
         );
       });
 
@@ -521,7 +521,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 3);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.black.bgKeyword('gray')('    FOO ')}     ${chalk.gray(
+          `${chalk.reset.bold.keyword('gray')('   FOO')}      ${chalk.gray(
             '└',
           )} This is a routine\n`,
         );
@@ -541,7 +541,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(routine, task, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.black.bgKeyword('gray')('  ')} ${chalk.gray('This is a task')}\n`,
+          `${chalk.reset.bold.keyword('gray')('')}  ${chalk.gray('This is a task')}\n`,
         );
       });
 
@@ -550,9 +550,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(routine, task, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.black.bgKeyword('gray')('       ')} ${chalk.gray(
-            'This is a task',
-          )}\n`,
+          `${chalk.reset.bold.keyword('gray')('     ')}  ${chalk.gray('This is a task')}\n`,
         );
       });
 
@@ -560,9 +558,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(routine, task, 3);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.black.bgKeyword('gray')('     ')}       ${chalk.gray(
-            'This is a task',
-          )}\n`,
+          `${chalk.reset.bold.keyword('gray')('   ')}        ${chalk.gray('This is a task')}\n`,
         );
       });
     });

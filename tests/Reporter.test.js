@@ -193,7 +193,7 @@ describe('Reporter', () => {
     it('displays the logs', () => {
       reporter.displayLogs(['foo', 'bar']);
 
-      expect(reporter.out).toHaveBeenCalledWith('\n\nfoo\nbar\n\n');
+      expect(reporter.out).toHaveBeenCalledWith('\nfoo\nbar\n');
     });
   });
 

@@ -1,6 +1,7 @@
 *.log
 _book/
 coverage/
+demos/
 src/
 tests/
 .babelrc

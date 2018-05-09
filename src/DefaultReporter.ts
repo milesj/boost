@@ -176,9 +176,9 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
 
     // Status
     output += chalk.supportsColor
-      ? chalk.reset.bold.black.bgKeyword(this.getStatusColor(routine))(` ${key} `)
-      : `[${key}]`;
-    output += ' ';
+      ? chalk.reset.bold.keyword(this.getStatusColor(routine))(key)
+      : key;
+    output += '  ';
 
     // Tree
     if (depth > 0) {
@@ -192,7 +192,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     }
 
     // Title
-    const usedColumns = indent + key.length + 2;
+    const usedColumns = indent + key.length;
 
     if (task) {
       output += chalk.gray(this.getLineTitle(task, usedColumns));

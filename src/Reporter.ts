@@ -152,7 +152,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
           .join('\n'),
       );
 
-      this.err(`\n${stack}\n`);
+      this.err(`${stack}\n`);
     }
 
     this.err('\n');
@@ -189,7 +189,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   displayLogs(logs: string[]) {
     if (logs.length > 0) {
-      this.out(`\n\n${logs.join('\n')}\n\n`);
+      this.out(`\n${logs.join('\n')}\n`);
     }
   }
 
