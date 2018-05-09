@@ -33,6 +33,7 @@ export {
   ReporterOptions,
   Routine,
   RoutineInterface,
+  TaskInterface,
   Tool,
   ToolInterface,
   ToolOptions,
