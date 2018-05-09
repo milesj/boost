@@ -94,7 +94,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * This method *must* be overridden in a subclass.
    */
   /* istanbul ignore next */
-  execute<T>(context: Tx, value: T | null = null): Promise<any> {
+  execute<T>(context: Tx, value?: T): Promise<any> {
     return this.wrap(value);
   }
 
@@ -139,7 +139,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    */
   executeSubroutine<T>(
     routine: RoutineInterface,
-    value: T | null = null,
+    value?: T,
     wasParallel: boolean = false,
   ): Promise<any> {
     return this.wrap(routine.run(this.context, value, wasParallel));
@@ -149,11 +149,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute a task, a method in the current routine, or a function,
    * with the provided value.
    */
-  executeTask<T>(
-    task: TaskInterface,
-    value: T | null = null,
-    wasParallel: boolean = false,
-  ): Promise<any> {
+  executeTask<T>(task: TaskInterface, value?: T, wasParallel: boolean = false): Promise<any> {
     const { console: cli } = this.tool;
 
     cli.emit('task', [task, this, value, wasParallel]);
@@ -175,7 +171,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines<T>(value: T | null = null): Promise<any[]> {
+  parallelizeSubroutines<T>(value?: T): Promise<any[]> {
     return Promise.all(
       this.subroutines.map(routine => this.executeSubroutine(routine, value, true)),
     );
@@ -185,7 +181,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks<T>(value: T | null = null): Promise<any[]> {
+  parallelizeTasks<T>(value?: T): Promise<any[]> {
     return Promise.all(this.subtasks.map(task => this.executeTask(task, value, true)));
   }
 
@@ -205,7 +201,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Trigger processes before and after execution.
    */
-  run<T>(context: Tx, value: T | null = null, wasParallel: boolean = false): Promise<any> {
+  run<T>(context: Tx, value?: T, wasParallel: boolean = false): Promise<any> {
     if (this.exit) {
       return Promise.reject(new Error('Process has been interrupted.'));
     }
@@ -233,24 +229,26 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute subroutines in sequential (serial) order.
    */
-  serializeSubroutines<T>(value: T | null = null): Promise<any> {
-    return this.serialize(this.subroutines, value, (routine, val) =>
-      this.executeSubroutine(routine, val),
+  serializeSubroutines<T>(value?: T): Promise<any> {
+    return this.serialize(
+      this.subroutines,
+      (routine, val) => this.executeSubroutine(routine, val),
+      value,
     );
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks<T>(value: T | null = null): Promise<any> {
-    return this.serialize(this.subtasks, value, (task, val) => this.executeTask(task, val));
+  serializeTasks<T>(value?: T): Promise<any> {
+    return this.serialize(this.subtasks, (task, val) => this.executeTask(task, val), value);
   }
 
   /**
    * Execute subroutines in parralel with a value being passed to each subroutine.
    * Subroutines will synchronize regardless of race conditions and errors.
    */
-  synchronizeSubroutines<T>(value: T | null = null): Promise<SynchronizedResponse> {
+  synchronizeSubroutines<T>(value?: T): Promise<SynchronizedResponse> {
     return this.synchronize(
       this.subroutines.map(routine =>
         this.executeSubroutine(routine, value, true).catch(error => error),
@@ -262,7 +260,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute tasks in parralel with a value being passed to each task.
    * Tasks will synchronize regardless of race conditions and errors.
    */
-  synchronizeTasks<T>(value: T | null = null): Promise<SynchronizedResponse> {
+  synchronizeTasks<T>(value?: T): Promise<SynchronizedResponse> {
     return this.synchronize(
       this.subtasks.map(task => this.executeTask(task, value, true).catch(error => error)),
     );
@@ -290,8 +288,8 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    */
   private serialize<T, T2 extends TaskInterface>(
     tasks: T2[],
-    initialValue: T | null = null,
-    accumulator: (task: T2, value: T | null) => Promise<any>,
+    accumulator: (task: T2, value?: T) => Promise<any>,
+    initialValue?: T,
   ): Promise<any> {
     return tasks.reduce(
       (promise, task) => promise.then(value => accumulator(task, value)),

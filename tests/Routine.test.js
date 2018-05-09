@@ -286,7 +286,7 @@ describe('Routine', () => {
 
       await routine.run();
 
-      expect(spy).toHaveBeenCalledWith(sub, null, true);
+      expect(spy).toHaveBeenCalledWith(sub, undefined, true);
     });
   });
 
@@ -357,9 +357,9 @@ describe('Routine', () => {
 
       await routine.run();
 
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], null, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], null, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], null, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], undefined, true);
     });
   });
 
@@ -483,17 +483,17 @@ describe('Routine', () => {
 
   describe('serialize()', () => {
     it('returns initial value if no processes', async () => {
-      expect(await routine.serialize([], 123)).toBe(123);
+      expect(await routine.serialize([], () => {}, 123)).toBe(123);
     });
 
     it('passes strings down the chain in order', async () => {
-      expect(await routine.serialize(['foo', 'bar', 'baz'], '', (next, prev) => prev + next)).toBe(
+      expect(await routine.serialize(['foo', 'bar', 'baz'], (next, prev) => prev + next, '')).toBe(
         'foobarbaz',
       );
     });
 
     it('passes numbers down the chain in order', async () => {
-      expect(await routine.serialize([1, 2, 3], 0, (next, prev) => prev + next * 2)).toBe(12);
+      expect(await routine.serialize([1, 2, 3], (next, prev) => prev + next * 2, 0)).toBe(12);
     });
 
     it('passes promises down the chain in order', async () => {
@@ -504,8 +504,8 @@ describe('Routine', () => {
             value => Promise.resolve(['bar', ...value]),
             value => Promise.resolve(value.concat(['baz'])),
           ],
-          [],
           (func, value) => func(value),
+          [],
         ),
       ).toEqual(['bar', 'foo', 'baz']);
     });
@@ -522,8 +522,8 @@ describe('Routine', () => {
       try {
         await routine.serialize(
           [incCount, incCount, () => Promise.reject(new Error('Abort')), incCount, incCount],
-          [],
           (func, value) => func(value),
+          [],
         );
       } catch (error) {
         expect(error).toEqual(new Error('Abort'));
@@ -551,8 +551,8 @@ describe('Routine', () => {
             return buffer;
           },
         ],
-        Buffer.alloc(9),
         (func, buffer) => func(buffer),
+        Buffer.alloc(9),
       );
 
       expect(result.toString('utf8')).toBe('foobarbaz');
@@ -738,7 +738,7 @@ describe('Routine', () => {
 
       await routine.run();
 
-      expect(spy).toHaveBeenCalledWith(sub, null, true);
+      expect(spy).toHaveBeenCalledWith(sub, undefined, true);
     });
 
     it('synchronizes promises, collects errors, and lets all promises finish', async () => {
@@ -804,9 +804,9 @@ describe('Routine', () => {
 
       await routine.run();
 
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], null, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], null, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], null, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], undefined, true);
     });
 
     it('synchronizes promises, collects errors, and lets all promises finish', async () => {

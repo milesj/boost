@@ -32,7 +32,7 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
   /**
    * Execute all subroutines in order.
    */
-  run<T>(initialValue: T | null = null): Promise<any> {
+  run<T>(initialValue?: T): Promise<any> {
     const { console: cli } = this.tool;
 
     this.tool.debug('Running pipeline');
