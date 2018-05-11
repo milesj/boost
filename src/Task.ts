@@ -18,7 +18,7 @@ export interface TaskInterface {
   status: Status;
   statusText: string;
   stopTime: number;
-  subtasks: TaskInterface[];
+  tasks: TaskInterface[];
   title: string;
   isPending(): boolean;
   isRunning(): boolean;
@@ -55,7 +55,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
 
   stopTime: number = 0;
 
-  subtasks: TaskInterface[] = [];
+  tasks: TaskInterface[] = [];
 
   constructor(title: string, action: TaskAction<Tx> | null = null, options: Partial<To> = {}) {
     if (!title || typeof title !== 'string') {

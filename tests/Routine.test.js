@@ -34,7 +34,7 @@ describe('Routine', () => {
     routine.debug = () => {};
   });
 
-  class FailureSubRoutine extends Routine {
+  class FailureRoutine extends Routine {
     constructor(...args) {
       super(...args);
 
@@ -46,7 +46,7 @@ describe('Routine', () => {
     }
   }
 
-  class ContextSubRoutine extends Routine {
+  class ContextRoutine extends Routine {
     constructor(...args) {
       super(...args);
 
@@ -236,16 +236,16 @@ describe('Routine', () => {
     });
   });
 
-  describe('parallelizeSubroutines()', () => {
-    it('returns a resolved promise if no subroutines exist', async () => {
-      expect(await routine.parallelizeSubroutines('abc')).toEqual([]);
+  describe('parallelizeRoutines()', () => {
+    it('returns a resolved promise if no routines exist', async () => {
+      expect(await routine.parallelizeRoutines('abc')).toEqual([]);
     });
 
     it('captures and rethrows errors that occur down the chain', async () => {
-      routine.pipe(new FailureSubRoutine('failure', 'title'));
+      routine.pipe(new FailureRoutine('failure', 'title'));
 
       try {
-        await routine.parallelizeSubroutines('abc');
+        await routine.parallelizeRoutines('abc');
       } catch (error) {
         expect(error).toEqual(new Error('Failure'));
       }
@@ -258,11 +258,11 @@ describe('Routine', () => {
       };
 
       routine
-        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2 }))
-        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
-        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
+        .pipe(new ContextRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.parallelizeSubroutines(value);
+      routine.action = (con, value) => routine.parallelizeRoutines(value);
 
       await routine.run(context);
 
@@ -276,17 +276,36 @@ describe('Routine', () => {
       expect(routine.context).toBe(context);
     });
 
-    it('calls `executeSubroutine` with correct args', async () => {
+    it('calls `executeRoutine` with correct args', async () => {
       const spy = jest.fn();
-      const sub = new ContextSubRoutine('foo', 'title', { multiplier: 1 });
+      const sub = new ContextRoutine('foo', 'title', { multiplier: 1 });
 
       routine.pipe(sub);
-      routine.action = (con, value) => routine.parallelizeSubroutines(value);
-      routine.executeSubroutine = spy;
+      routine.action = (con, value) => routine.parallelizeRoutines(value);
+      routine.executeRoutine = spy;
 
       await routine.run();
 
       expect(spy).toHaveBeenCalledWith(sub, undefined, true);
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
+
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
+
+      routine.action = (con, value) => routine.parallelizeRoutines(value, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
     });
   });
 
@@ -334,7 +353,7 @@ describe('Routine', () => {
     it('passes context through tasks when ran', async () => {
       const context = { parallel: 'task' };
 
-      routine = new ContextSubRoutine('context', 'title');
+      routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.parallelizeTasks(value);
 
       await routine.run(context);
@@ -351,15 +370,29 @@ describe('Routine', () => {
     it('calls `executeTask` with correct args', async () => {
       const spy = jest.fn();
 
-      routine = new ContextSubRoutine('context', 'title');
+      routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.parallelizeTasks(value);
       routine.executeTask = spy;
 
       await routine.run();
 
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.tasks[0], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.tasks[1], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.tasks[2], undefined, true);
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = routine.task('title', () => {});
+      const bar = routine.task('title', () => {});
+      const baz = routine.task('title', () => {});
+
+      routine.action = (con, value) => routine.parallelizeTasks(value, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
     });
   });
 
@@ -368,7 +401,7 @@ describe('Routine', () => {
       expect(() => routine.pipe('foo')).toThrowError('a');
     });
 
-    it('sets subroutines in order', () => {
+    it('sets routines in order', () => {
       const foo = new Routine('foo', 'title');
       const bar = new Routine('bar', 'title');
       const baz = new Routine('baz', 'title');
@@ -378,7 +411,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      expect(routine.subroutines).toEqual([foo, bar, baz]);
+      expect(routine.routines).toEqual([foo, bar, baz]);
     });
 
     it('inherits console from parent routine', () => {
@@ -559,7 +592,7 @@ describe('Routine', () => {
     });
   });
 
-  describe('serializeSubroutines()', () => {
+  describe('serializeRoutines()', () => {
     class SerializeSubsRoutine extends Routine {
       constructor(...args) {
         super(...args);
@@ -579,10 +612,10 @@ describe('Routine', () => {
     it('returns initial value if no tasks', async () => {
       routine = new SerializeSubsRoutine('key', 'title');
 
-      expect(await routine.serializeSubroutines(123)).toBe(123);
+      expect(await routine.serializeRoutines(123)).toBe(123);
     });
 
-    it('executes all chained subroutines in sequential order', async () => {
+    it('executes all chained routines in sequential order', async () => {
       const foo = new SerializeSubsRoutine('foo', 'title', { multiplier: 2 });
       const bar = new SerializeSubsRoutine('bar', 'title', { multiplier: 3 });
       const baz = new SerializeSubsRoutine('baz', 'title', { multiplier: 1 });
@@ -592,7 +625,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      expect(await routine.serializeSubroutines({ count: 6, key: '' })).toEqual({
+      expect(await routine.serializeRoutines({ count: 6, key: '' })).toEqual({
         count: 36,
         key: 'foobarbaz',
       });
@@ -605,11 +638,11 @@ describe('Routine', () => {
       };
 
       routine
-        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2 }))
-        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
-        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
+        .pipe(new ContextRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.serializeSubroutines(value);
+      routine.action = (con, value) => routine.serializeRoutines(value);
 
       await routine.run(context);
 
@@ -621,6 +654,25 @@ describe('Routine', () => {
         serial: 'routine',
       });
       expect(routine.context).toBe(context);
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
+
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
+
+      routine.action = (con, value) => routine.serializeRoutines(value, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
     });
   });
 
@@ -666,7 +718,7 @@ describe('Routine', () => {
     it('passes context through tasks when ran', async () => {
       const context = { serial: 'task' };
 
-      routine = new ContextSubRoutine('context', 'title');
+      routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.serializeTasks(value);
 
       await routine.run(context);
@@ -678,6 +730,20 @@ describe('Routine', () => {
         serial: 'task',
       });
       expect(routine.context).toBe(context);
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = routine.task('title', () => {});
+      const bar = routine.task('title', () => {});
+      const baz = routine.task('title', () => {});
+
+      routine.action = (con, value) => routine.serializeTasks(value, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
     });
   });
 
@@ -698,9 +764,9 @@ describe('Routine', () => {
     });
   });
 
-  describe('synchronizeSubroutines()', () => {
-    it('returns a resolved promise if no subroutines exist', async () => {
-      expect(await routine.synchronizeSubroutines('abc')).toEqual({ results: [], errors: [] });
+  describe('synchronizeRoutines()', () => {
+    it('returns a resolved promise if no routines exist', async () => {
+      expect(await routine.synchronizeRoutines('abc')).toEqual({ results: [], errors: [] });
     });
 
     it('passes context through routines when ran', async () => {
@@ -710,11 +776,11 @@ describe('Routine', () => {
       };
 
       routine
-        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2 }))
-        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 3 }))
-        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2 }));
+        .pipe(new ContextRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.synchronizeSubroutines(value);
+      routine.action = (con, value) => routine.synchronizeRoutines(value);
 
       await routine.run(context);
 
@@ -728,13 +794,13 @@ describe('Routine', () => {
       expect(routine.context).toBe(context);
     });
 
-    it('calls `executeSubroutine` with correct args', async () => {
+    it('calls `executeRoutine` with correct args', async () => {
       const spy = jest.fn(() => Promise.resolve());
-      const sub = new ContextSubRoutine('foo', 'title', { multiplier: 1 });
+      const sub = new ContextRoutine('foo', 'title', { multiplier: 1 });
 
       routine.pipe(sub);
-      routine.action = (con, value) => routine.synchronizeSubroutines(value);
-      routine.executeSubroutine = spy;
+      routine.action = (con, value) => routine.synchronizeRoutines(value);
+      routine.executeRoutine = spy;
 
       await routine.run();
 
@@ -745,13 +811,13 @@ describe('Routine', () => {
       const context = { count: 1 };
 
       routine
-        .pipe(new ContextSubRoutine('foo', 'title', { multiplier: 2, return: true }))
-        .pipe(new ContextSubRoutine('bar', 'title', { multiplier: 2, return: true }))
-        .pipe(new FailureSubRoutine('err', 'title'))
-        .pipe(new ContextSubRoutine('baz', 'title', { multiplier: 2, return: true }))
-        .pipe(new ContextSubRoutine('qux', 'title', { multiplier: 2, return: true }));
+        .pipe(new ContextRoutine('foo', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextRoutine('bar', 'title', { multiplier: 2, return: true }))
+        .pipe(new FailureRoutine('err', 'title'))
+        .pipe(new ContextRoutine('baz', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextRoutine('qux', 'title', { multiplier: 2, return: true }));
 
-      routine.action = () => routine.synchronizeSubroutines();
+      routine.action = () => routine.synchronizeRoutines();
 
       const response = await routine.run(context);
 
@@ -760,6 +826,25 @@ describe('Routine', () => {
         errors: [new Error('Failure')],
         results: ['foo', 'bar', 'baz', 'qux'],
       });
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = new Routine('foo', 'title');
+      const bar = new Routine('bar', 'title');
+      const baz = new Routine('baz', 'title');
+
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
+
+      routine.action = (con, value) => routine.synchronizeRoutines(value, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
     });
   });
 
@@ -781,7 +866,7 @@ describe('Routine', () => {
     it('passes context through tasks when ran', async () => {
       const context = { parallel: 'task' };
 
-      routine = new ContextSubRoutine('context', 'title');
+      routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.synchronizeTasks(value);
 
       await routine.run(context);
@@ -798,15 +883,15 @@ describe('Routine', () => {
     it('calls `executeTask` with correct args', async () => {
       const spy = jest.fn(() => Promise.resolve());
 
-      routine = new ContextSubRoutine('context', 'title');
+      routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.synchronizeTasks(value);
       routine.executeTask = spy;
 
       await routine.run();
 
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[0], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[1], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.subtasks[2], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.tasks[0], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.tasks[1], undefined, true);
+      expect(spy).toHaveBeenCalledWith(routine.tasks[2], undefined, true);
     });
 
     it('synchronizes promises, collects errors, and lets all promises finish', async () => {
@@ -844,6 +929,20 @@ describe('Routine', () => {
         results: ['foo', 'bar', 'baz', 'qux'],
       });
     });
+
+    it('can run a specific list of routines', async () => {
+      const foo = routine.task('title', () => {});
+      const bar = routine.task('title', () => {});
+      const baz = routine.task('title', () => {});
+
+      routine.action = (con, value) => routine.synchronizeTasks(value, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
+    });
   });
 
   describe('task()', () => {
@@ -854,14 +953,14 @@ describe('Routine', () => {
     });
 
     it('maps `Task` objects', () => {
-      expect(routine.subtasks).toHaveLength(0);
+      expect(routine.tasks).toHaveLength(0);
 
       routine.task('foo', value => value);
       routine.task('bar', value => value);
 
-      expect(routine.subtasks).toHaveLength(2);
-      expect(routine.subtasks[0]).toBeInstanceOf(Task);
-      expect(routine.subtasks[1]).toBeInstanceOf(Task);
+      expect(routine.tasks).toHaveLength(2);
+      expect(routine.tasks[0]).toBeInstanceOf(Task);
+      expect(routine.tasks[1]).toBeInstanceOf(Task);
     });
 
     it('binds the action function to the routine', async () => {
@@ -872,7 +971,7 @@ describe('Routine', () => {
         ({ config } = this);
       });
 
-      await routine.executeTask(routine.subtasks[0]);
+      await routine.executeTask(routine.tasks[0]);
 
       expect(config).toEqual(routine.config);
     });
@@ -880,7 +979,7 @@ describe('Routine', () => {
     it('defines the options for the task', () => {
       routine.task('foo', value => value, { foo: 'bar' });
 
-      expect(routine.subtasks[0].options).toEqual({ foo: 'bar' });
+      expect(routine.tasks[0].options).toEqual({ foo: 'bar' });
     });
 
     it('returns a `Task` instance', () => {

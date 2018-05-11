@@ -31,7 +31,7 @@ describe('Pipeline', () => {
   });
 
   describe('run()', () => {
-    it('starts console with subroutine', async () => {
+    it('starts console with routine', async () => {
       const spy = jest.fn();
       const routine = new Routine('key', 'title');
 

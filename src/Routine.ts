@@ -27,7 +27,7 @@ export interface CommandOptions extends Struct {
 
 export interface RoutineInterface extends TaskInterface {
   key: string;
-  subroutines: RoutineInterface[];
+  routines: RoutineInterface[];
   tool: ToolInterface;
   run<T>(context: any, initialValue?: T | null, wasParallel?: boolean): Promise<any>;
 }
@@ -41,7 +41,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
   key: string = '';
 
-  subroutines: RoutineInterface[] = [];
+  routines: RoutineInterface[] = [];
 
   // @ts-ignore Set after instantiation
   tool: ToolInterface;
@@ -137,7 +137,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute a sub-routine with the provided value.
    */
-  executeSubroutine<T>(
+  executeRoutine<T>(
     routine: RoutineInterface,
     value?: T,
     wasParallel: boolean = false,
@@ -168,12 +168,12 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
-   * Execute subroutines in parralel with a value being passed to each subroutine.
+   * Execute sub-routines in parralel with a value being passed to each sub-routine.
    * A combination promise will be returned as the result.
    */
-  parallelizeSubroutines<T>(value?: T): Promise<any[]> {
+  parallelizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<any[]> {
     return Promise.all(
-      this.subroutines.map(routine => this.executeSubroutine(routine, value, true)),
+      (routines || this.routines).map(routine => this.executeRoutine(routine, value, true)),
     );
   }
 
@@ -181,16 +181,16 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute tasks in parralel with a value being passed to each task.
    * A combination promise will be returned as the result.
    */
-  parallelizeTasks<T>(value?: T): Promise<any[]> {
-    return Promise.all(this.subtasks.map(task => this.executeTask(task, value, true)));
+  parallelizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<any[]> {
+    return Promise.all((tasks || this.tasks).map(task => this.executeTask(task, value, true)));
   }
 
   /**
-   * Add a new subroutine within this routine.
+   * Add a new sub-routine within this routine.
    */
-  pipe(routine: TaskInterface): this {
+  pipe(routine: RoutineInterface): this {
     if (routine instanceof Routine) {
-      this.subroutines.push(routine.configure(this));
+      this.routines.push(routine.configure(this));
     } else {
       throw new TypeError('Routines must be an instance of `Routine`.');
     }
@@ -227,12 +227,12 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
-   * Execute subroutines in sequential (serial) order.
+   * Execute sub-routines in sequential (serial) order.
    */
-  serializeSubroutines<T>(value?: T): Promise<any> {
+  serializeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<any> {
     return this.serialize(
-      this.subroutines,
-      (routine, val) => this.executeSubroutine(routine, val),
+      routines || this.routines,
+      (routine, val) => this.executeRoutine(routine, val),
       value,
     );
   }
@@ -240,18 +240,18 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks<T>(value?: T): Promise<any> {
-    return this.serialize(this.subtasks, (task, val) => this.executeTask(task, val), value);
+  serializeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<any> {
+    return this.serialize(tasks || this.tasks, (task, val) => this.executeTask(task, val), value);
   }
 
   /**
-   * Execute subroutines in parralel with a value being passed to each subroutine.
-   * Subroutines will synchronize regardless of race conditions and errors.
+   * Execute sub-routines in parralel with a value being passed to each sub-routine.
+   * Sub-routines will synchronize regardless of race conditions and errors.
    */
-  synchronizeSubroutines<T>(value?: T): Promise<SynchronizedResponse> {
+  synchronizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<SynchronizedResponse> {
     return this.synchronize(
-      this.subroutines.map(routine =>
-        this.executeSubroutine(routine, value, true).catch(error => error),
+      (routines || this.routines).map(routine =>
+        this.executeRoutine(routine, value, true).catch(error => error),
       ),
     );
   }
@@ -260,23 +260,23 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute tasks in parralel with a value being passed to each task.
    * Tasks will synchronize regardless of race conditions and errors.
    */
-  synchronizeTasks<T>(value?: T): Promise<SynchronizedResponse> {
+  synchronizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<SynchronizedResponse> {
     return this.synchronize(
-      this.subtasks.map(task => this.executeTask(task, value, true).catch(error => error)),
+      (tasks || this.tasks).map(task => this.executeTask(task, value, true).catch(error => error)),
     );
   }
 
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskAction<Tx>, options: Struct = {}): TaskInterface {
+  task<Tp extends Struct>(title: string, action: TaskAction<Tx>, options?: Tp): TaskInterface {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }
 
     const task = new Task(title, action.bind(this), options);
 
-    this.subtasks.push(task);
+    this.tasks.push(task);
 
     return task;
   }

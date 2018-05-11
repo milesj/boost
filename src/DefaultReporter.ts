@@ -44,7 +44,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
         Math.max(
           sum,
           routine.key.length + depth,
-          this.calculateKeyLength(routine.subroutines, depth + 1),
+          this.calculateKeyLength(routine.routines, depth + 1),
         ),
       0,
     );
@@ -63,7 +63,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   getLineTitle(task: TaskInterface | RoutineInterface, usedColumns: number = 0): string {
     const { verbose } = this.options;
     // @ts-ignore
-    const { subtasks = [], subroutines = [] } = task;
+    const { tasks = [], routines = [] } = task;
     const title = task.statusText ? chalk.gray(task.statusText) : task.title;
     const status = [];
 
@@ -71,10 +71,10 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       status.push(chalk.yellow('skipped'));
     } else if (task.hasFailed()) {
       status.push(chalk.red('failed'));
-    } else if (subtasks.length > 0) {
-      status.push(`${this.calculateTaskCompletion(subtasks)}/${subtasks.length}`);
-    } else if (subroutines.length > 0) {
-      status.push(`${this.calculateTaskCompletion(subroutines)}/${subroutines.length}`);
+    } else if (tasks.length > 0) {
+      status.push(`${this.calculateTaskCompletion(tasks)}/${tasks.length}`);
+    } else if (routines.length > 0) {
+      status.push(`${this.calculateTaskCompletion(routines)}/${routines.length}`);
     }
 
     if (task.hasPassed() && verbose >= 2) {

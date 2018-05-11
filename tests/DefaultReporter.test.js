@@ -44,7 +44,7 @@ describe('DefaultReporter', () => {
 
     it('checks all depths', () => {
       const routine = new Routine('barbar', 'title');
-      routine.subroutines.push(new Routine('superlongkey', 'title'));
+      routine.routines.push(new Routine('superlongkey', 'title'));
 
       const length = reporter.calculateKeyLength([
         new Routine('foo', 'title'),
@@ -144,11 +144,11 @@ describe('DefaultReporter', () => {
         );
       });
 
-      it('shows subtasks count if verbose >= 1', () => {
+      it('shows tasks count if verbose >= 1', () => {
         reporter.options.verbose = 1;
 
         const task = new Task('This is a task', () => {});
-        task.subtasks.push(new Task('Subtask'));
+        task.tasks.push(new Task('Subtask'));
 
         expect(reporter.getLineTitle(task)).toBe(`This is a task${chalk.gray(' [1/1]')}`);
       });
@@ -168,7 +168,7 @@ describe('DefaultReporter', () => {
         reporter.options.verbose = 2;
 
         const task = new Task('This is a task', () => {});
-        task.subtasks.push(new Task('Subtask'));
+        task.tasks.push(new Task('Subtask'));
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;
@@ -180,7 +180,7 @@ describe('DefaultReporter', () => {
         reporter.options.verbose = 0;
 
         const task = new Task('This is a task', () => {});
-        task.subtasks.push(new Task('Subtask'));
+        task.tasks.push(new Task('Subtask'));
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;
@@ -240,11 +240,11 @@ describe('DefaultReporter', () => {
         );
       });
 
-      it('shows subtasks count if verbose >= 1', () => {
+      it('shows tasks count if verbose >= 1', () => {
         reporter.options.verbose = 1;
 
         const task = new Routine('foo', 'This is a routine');
-        task.subroutines.push(new Routine('bar', 'Subroutine'));
+        task.routines.push(new Routine('bar', 'Routine'));
 
         expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0/1]')}`);
       });
@@ -264,7 +264,7 @@ describe('DefaultReporter', () => {
         reporter.options.verbose = 2;
 
         const task = new Routine('foo', 'This is a routine');
-        task.subroutines.push(new Routine('bar', 'Subroutine'));
+        task.routines.push(new Routine('bar', 'Routine'));
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;
@@ -276,7 +276,7 @@ describe('DefaultReporter', () => {
         reporter.options.verbose = 0;
 
         const task = new Routine('foo', 'This is a routine');
-        task.subroutines.push(new Routine('bar', 'Subroutine'));
+        task.routines.push(new Routine('bar', 'Routine'));
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;

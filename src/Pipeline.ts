@@ -30,16 +30,16 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
   }
 
   /**
-   * Execute all subroutines in order.
+   * Execute all sub-routines in order.
    */
   run<T>(initialValue?: T): Promise<any> {
     const { console: cli } = this.tool;
 
     this.tool.debug('Running pipeline');
 
-    cli.emit('start', [this.subroutines]);
+    cli.emit('start', [this.routines]);
 
-    return this.serializeSubroutines(initialValue)
+    return this.serializeRoutines(initialValue)
       .then(result => {
         cli.exit(null, 0);
 
