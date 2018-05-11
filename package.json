@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@milesj/build-tool-config": "0.87.0",
-    "fs-extra": "^6.0.0"
+    "fs-extra": "^6.0.1"
   },
   "beemo": {
     "module": "@milesj/build-tool-config",
