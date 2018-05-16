@@ -77,7 +77,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       status.push(`${this.calculateTaskCompletion(routines)}/${routines.length}`);
     }
 
-    if (task.hasPassed() && verbose >= 2) {
+    if (task instanceof Routine && verbose >= 2) {
       status.push(this.getElapsedTime(task.startTime, task.stopTime));
     }
 

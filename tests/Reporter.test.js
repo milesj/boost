@@ -3,6 +3,8 @@
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
 
+const oldNow = Date.now;
+
 describe('Reporter', () => {
   let reporter;
 
@@ -198,6 +200,14 @@ describe('Reporter', () => {
   });
 
   describe('displayFooter()', () => {
+    beforeEach(() => {
+      Date.now = () => 0;
+    });
+
+    afterEach(() => {
+      Date.now = oldNow;
+    });
+
     it('displays default message', () => {
       reporter.displayFooter();
 
@@ -278,18 +288,49 @@ describe('Reporter', () => {
   });
 
   describe('handleBaseStart()', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it('sets start time', () => {
       reporter.handleBaseStart();
 
       expect(reporter.startTime).not.toBe(0);
     });
+
+    it('sets an interval', () => {
+      reporter.handleBaseStart();
+
+      expect(setInterval).toHaveBeenCalled();
+    });
   });
 
   describe('handleBaseStop()', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it('sets stop time', () => {
       reporter.handleBaseStop();
 
       expect(reporter.stopTime).not.toBe(0);
+    });
+
+    it('clears an interval', () => {
+      const spy = jest.spyOn(global, 'clearInterval');
+
+      reporter.intervalTimer = 1;
+      reporter.handleBaseStop();
+
+      expect(spy).toHaveBeenCalled();
     });
 
     it('displays final output', () => {

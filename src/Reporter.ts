@@ -13,6 +13,7 @@ import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
 
 export const REFRESH_RATE = 100;
+export const BG_REFRESH_RATE = 500;
 export const SLOW_THRESHOLD = 10000; // ms
 
 export interface WrappedStream {
@@ -41,6 +42,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   err: WrappedStream;
 
   errorLogs: string[] = [];
+
+  intervalTimer?: NodeJS.Timer;
 
   lastOutputHeight: number = 0;
 
@@ -244,8 +247,8 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   /**
    * Calculate the elapsed time and highlight as red if over the threshold.
    */
-  getElapsedTime(start: number, stop: number, highlight: boolean = true): string {
-    const time = stop - start;
+  getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
+    const time = (stop || Date.now()) - start;
     const isSlow = time > this.options.slowThreshold;
 
     // eslint-disable-next-line no-magic-numbers
@@ -269,15 +272,22 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Set start time.
    */
   handleBaseStart = () => {
-    this.startTime = Date.now();
     this.err = this.wrapStream(process.stderr);
     this.out = this.wrapStream(process.stdout);
+    this.startTime = Date.now();
+
+    // Continuously update if a routine is taking too long
+    this.intervalTimer = setInterval(this.handleRender, BG_REFRESH_RATE);
   };
 
   /**
    * Set stop time and render.
    */
   handleBaseStop = (error: Error | null) => {
+    if (this.intervalTimer) {
+      clearInterval(this.intervalTimer);
+    }
+
     this.stopTime = Date.now();
     this.displayFinalOutput(error);
     this.unwrapStream(process.stderr);

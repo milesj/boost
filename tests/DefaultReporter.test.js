@@ -4,6 +4,8 @@ import Routine from '../src/Routine';
 import Task from '../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
+const oldNow = Date.now;
+
 describe('DefaultReporter', () => {
   let reporter;
 
@@ -12,6 +14,12 @@ describe('DefaultReporter', () => {
     reporter.err = jest.fn();
     reporter.out = jest.fn();
     reporter.debounceRender = jest.fn();
+
+    Date.now = () => 0;
+  });
+
+  afterEach(() => {
+    Date.now = oldNow;
   });
 
   describe('bootstrap()', () => {
@@ -152,55 +160,22 @@ describe('DefaultReporter', () => {
 
         expect(reporter.getLineTitle(task)).toBe(`This is a task${chalk.gray(' [1/1]')}`);
       });
-
-      it('shows elapsed time if verbose >= 2', () => {
-        reporter.options.verbose = 2;
-
-        const task = new Task('This is a task', () => {});
-        task.status = STATUS_PASSED;
-        task.startTime = 1000;
-        task.stopTime = 4000;
-
-        expect(reporter.getLineTitle(task)).toBe(`This is a task${chalk.gray(' [3.00s]')}`);
-      });
-
-      it('shows both count and status', () => {
-        reporter.options.verbose = 2;
-
-        const task = new Task('This is a task', () => {});
-        task.tasks.push(new Task('Subtask'));
-        task.status = STATUS_PASSED;
-        task.startTime = 1000;
-        task.stopTime = 4000;
-
-        expect(reporter.getLineTitle(task)).toBe(`This is a task${chalk.gray(' [1/1, 3.00s]')}`);
-      });
-
-      it('doesnt show status if verbose == 0', () => {
-        reporter.options.verbose = 0;
-
-        const task = new Task('This is a task', () => {});
-        task.tasks.push(new Task('Subtask'));
-        task.status = STATUS_PASSED;
-        task.startTime = 1000;
-        task.stopTime = 4000;
-
-        expect(reporter.getLineTitle(task)).toBe(`This is a task`);
-      });
     });
 
     describe('routine', () => {
       it('returns title', () => {
         const task = new Routine('foo', 'This is a routine');
 
-        expect(reporter.getLineTitle(task)).toBe('This is a routine');
+        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0.00s]')}`);
       });
 
       it('returns status text', () => {
         const task = new Routine('foo', 'This is a routine');
         task.statusText = 'Running things…';
 
-        expect(reporter.getLineTitle(task)).toBe(chalk.gray('Running things…'));
+        expect(reporter.getLineTitle(task)).toBe(
+          chalk.gray('Running things…') + chalk.gray(' [0.00s]'),
+        );
       });
 
       it('truncates title', () => {
@@ -213,7 +188,7 @@ describe('DefaultReporter', () => {
         process.stdout.columns = 80;
 
         expect(reporter.getLineTitle(task, 10)).toBe(
-          'This is a really really really long task, with a really dumb and stup…',
+          `This is a really really really long task, with a re…${chalk.gray(' [0.00s]')}`,
         );
 
         process.stdout.columns = oldColumns;
@@ -491,9 +466,11 @@ describe('DefaultReporter', () => {
       reporter.render();
 
       expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine\n` +
+        `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n` +
           `${chalk.reset.bold.keyword('gray')('   ')}  ${chalk.gray('This is a task')}\n` +
-          `${chalk.reset.bold.keyword('gray')('BAR')}  This is a routine with no tasks\n`,
+          `${chalk.reset.bold.keyword('gray')('BAR')}  This is a routine with no tasks${chalk.gray(
+            ' [0.00s]',
+          )}\n`,
       );
     });
   });
@@ -504,7 +481,9 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine\n`,
+          `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine${chalk.gray(
+            ' [0.00s]',
+          )}\n`,
         );
       });
 
@@ -513,7 +492,9 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('FOO  ')}  This is a routine\n`,
+          `${chalk.reset.bold.keyword('gray')('FOO  ')}  This is a routine${chalk.gray(
+            ' [0.00s]',
+          )}\n`,
         );
       });
 
@@ -523,7 +504,7 @@ describe('DefaultReporter', () => {
         expect(reporter.bufferedOutput).toBe(
           `${chalk.reset.bold.keyword('gray')('   FOO')}      ${chalk.gray(
             '└',
-          )} This is a routine\n`,
+          )} This is a routine${chalk.gray(' [0.00s]')}\n`,
         );
       });
     });
