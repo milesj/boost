@@ -41,8 +41,6 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
   // @ts-ignore Set after instantiation
   context: Tx;
 
-  frame: number = 0;
-
   options: To;
 
   title: string = '';
