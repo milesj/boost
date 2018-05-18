@@ -320,12 +320,16 @@ describe('Reporter', () => {
   });
 
   describe('handleBaseStart()', () => {
+    const oldCI = process.env.CI;
+
     beforeEach(() => {
+      process.env.CI = false;
       jest.useFakeTimers();
     });
 
     afterEach(() => {
       jest.useRealTimers();
+      process.env.CI = oldCI;
     });
 
     it('sets start time', () => {
@@ -334,10 +338,19 @@ describe('Reporter', () => {
       expect(reporter.startTime).not.toBe(0);
     });
 
-    it('sets an interval', () => {
+    it('sets an interval if not in a CI', () => {
+      process.env.CI = false;
       reporter.handleBaseStart();
 
       expect(setInterval).toHaveBeenCalled();
+    });
+
+    it('doesnt set an interval if in a CI', () => {
+      process.env.CI = true;
+      reporter.handleBaseStart();
+      process.env.CI = false;
+
+      expect(setInterval).not.toHaveBeenCalled();
     });
   });
 

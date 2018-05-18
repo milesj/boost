@@ -362,7 +362,9 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     this.startTime = Date.now();
 
     // Continuously update if a routine is taking too long
-    this.intervalTimer = setInterval(this.handleRender, BG_REFRESH_RATE);
+    if (!process.env.CI || process.env.CI !== 'true') {
+      this.intervalTimer = setInterval(this.handleRender, BG_REFRESH_RATE);
+    }
   };
 
   /**
