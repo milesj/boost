@@ -43,3 +43,29 @@ export interface SynchronizedResponse {
   errors: Error[];
   results: any[];
 }
+
+export type Color =
+  | 'black'
+  | 'red'
+  | 'green'
+  | 'yellow'
+  | 'blue'
+  | 'magenta'
+  | 'cyan'
+  | 'white'
+  | 'gray';
+
+export type ColorBlindMode =
+  | 'default'
+  | 'deuteranopia'
+  | 'deuteranomaly'
+  | 'protanopia'
+  | 'protanomaly'
+  | 'tritanopia'
+  | 'tritanomaly'
+  | 'achromatomaly'
+  | 'achromatopsia';
+
+export type ColorType = 'failure' | 'pending' | 'success' | 'warning';
+
+export type ColorPalette = { [T in ColorType]: Color | string };

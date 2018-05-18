@@ -4,12 +4,12 @@
  */
 
 import rl from 'readline';
-import chalk from 'chalk';
 import cliTruncate from 'cli-truncate';
 import { ConsoleInterface } from './Console';
 import Reporter, { ReporterOptions } from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
 import Task, { TaskInterface } from './Task';
+import { ColorPalette, ColorType } from './types';
 
 export interface Line {
   depth: number;
@@ -60,48 +60,34 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   /**
    * Return the task title with additional metadata.
    */
+  // eslint-disable-next-line complexity
   getLineTitle(task: TaskInterface | RoutineInterface, usedColumns: number = 0): string {
     const { verbose } = this.options;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
-    const title = task.statusText ? chalk.gray(task.statusText) : task.title;
+    const title = task.statusText ? this.style(task.statusText) : task.title;
     const status = [];
 
     if (task.isSkipped()) {
-      status.push(chalk.yellow('skipped'));
+      status.push(this.style('skipped', 'warning'));
     } else if (task.hasFailed()) {
-      status.push(chalk.red('failed'));
+      status.push(this.style('failed', 'failure'));
     } else if (tasks.length > 0) {
       status.push(`${this.calculateTaskCompletion(tasks)}/${tasks.length}`);
     } else if (routines.length > 0) {
       status.push(`${this.calculateTaskCompletion(routines)}/${routines.length}`);
     }
 
-    if (task instanceof Routine && verbose >= 2) {
+    if (task instanceof Routine && !task.isSkipped() && verbose >= 2) {
       status.push(this.getElapsedTime(task.startTime, task.stopTime));
     }
 
     // eslint-disable-next-line no-magic-numbers
     const columns = process.stdout.columns || 80;
     const fullStatus =
-      status.length > 0 && verbose >= 1 ? chalk.gray(` [${status.join(', ')}]`) : '';
+      status.length > 0 && verbose >= 1 ? this.style(` [${status.join(', ')}]`) : '';
 
     return cliTruncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
-  }
-
-  /**
-   * Return a specific color for each task status.
-   */
-  getStatusColor(task: TaskInterface): string {
-    if (task.isSkipped()) {
-      return 'yellow';
-    } else if (task.hasPassed()) {
-      return 'green';
-    } else if (task.hasFailed()) {
-      return 'red';
-    }
-
-    return 'gray';
   }
 
   handleStart = (routines: RoutineInterface[]) => {
@@ -175,9 +161,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     let output = '';
 
     // Status
-    output += chalk.supportsColor
-      ? chalk.reset.bold.keyword(this.getStatusColor(routine))(key)
-      : key;
+    output += this.style(key, this.getColorType(routine), ['bold']);
     output += '  ';
 
     // Tree
@@ -186,7 +170,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
         output += this.indent(indent);
       } else {
         output += this.indent(indent - 2);
-        output += chalk.gray('└');
+        output += this.style('└');
         output += ' ';
       }
     }
@@ -195,7 +179,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
     const usedColumns = indent + key.length;
 
     if (task) {
-      output += chalk.gray(this.getLineTitle(task, usedColumns));
+      output += this.style(this.getLineTitle(task, usedColumns));
     } else {
       output += this.getLineTitle(routine, usedColumns);
     }

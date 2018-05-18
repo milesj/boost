@@ -261,36 +261,6 @@ describe('DefaultReporter', () => {
     });
   });
 
-  describe('getStatusColor()', () => {
-    it('returns yellow for skipped', () => {
-      const task = new Task('task').skip();
-
-      expect(reporter.getStatusColor(task)).toBe('yellow');
-    });
-
-    it('returns green for passed', () => {
-      const task = new Task('task');
-
-      task.status = STATUS_PASSED;
-
-      expect(reporter.getStatusColor(task)).toBe('green');
-    });
-
-    it('returns red for failed', () => {
-      const task = new Task('task');
-
-      task.status = STATUS_FAILED;
-
-      expect(reporter.getStatusColor(task)).toBe('red');
-    });
-
-    it('returns gray otherwise', () => {
-      const task = new Task('task', () => {});
-
-      expect(reporter.getStatusColor(task)).toBe('gray');
-    });
-  });
-
   describe('handleStart()', () => {
     it('sets key length', () => {
       reporter.handleStart([
@@ -466,11 +436,9 @@ describe('DefaultReporter', () => {
       reporter.render();
 
       expect(reporter.bufferedOutput).toBe(
-        `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n` +
-          `${chalk.reset.bold.keyword('gray')('   ')}  ${chalk.gray('This is a task')}\n` +
-          `${chalk.reset.bold.keyword('gray')('BAR')}  This is a routine with no tasks${chalk.gray(
-            ' [0.00s]',
-          )}\n`,
+        `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n` +
+          `${chalk.gray.bold('   ')}  ${chalk.gray('This is a task')}\n` +
+          `${chalk.gray.bold('BAR')}  This is a routine with no tasks${chalk.gray(' [0.00s]')}\n`,
       );
     });
   });
@@ -481,9 +449,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('FOO')}  This is a routine${chalk.gray(
-            ' [0.00s]',
-          )}\n`,
+          `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
         );
       });
 
@@ -492,9 +458,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('FOO  ')}  This is a routine${chalk.gray(
-            ' [0.00s]',
-          )}\n`,
+          `${chalk.gray.bold('FOO  ')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
         );
       });
 
@@ -502,9 +466,9 @@ describe('DefaultReporter', () => {
         reporter.renderLine(new Routine('foo', 'This is a routine'), null, 3);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('   FOO')}      ${chalk.gray(
-            '└',
-          )} This is a routine${chalk.gray(' [0.00s]')}\n`,
+          `${chalk.gray.bold('   FOO')}      ${chalk.gray('└')} This is a routine${chalk.gray(
+            ' [0.00s]',
+          )}\n`,
         );
       });
     });
@@ -522,7 +486,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(routine, task, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('')}  ${chalk.gray('This is a task')}\n`,
+          `${chalk.gray.bold('')}  ${chalk.gray('This is a task')}\n`,
         );
       });
 
@@ -531,7 +495,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(routine, task, 0);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('     ')}  ${chalk.gray('This is a task')}\n`,
+          `${chalk.gray.bold('     ')}  ${chalk.gray('This is a task')}\n`,
         );
       });
 
@@ -539,7 +503,7 @@ describe('DefaultReporter', () => {
         reporter.renderLine(routine, task, 3);
 
         expect(reporter.bufferedOutput).toBe(
-          `${chalk.reset.bold.keyword('gray')('   ')}        ${chalk.gray('This is a task')}\n`,
+          `${chalk.gray.bold('   ')}        ${chalk.gray('This is a task')}\n`,
         );
       });
     });

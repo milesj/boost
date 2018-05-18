@@ -2,6 +2,8 @@
 
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
+import Task from '../src/Task';
+import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
 const oldNow = Date.now;
 
@@ -269,6 +271,36 @@ describe('Reporter', () => {
     });
   });
 
+  describe('getColorType()', () => {
+    it('returns yellow for skipped', () => {
+      const task = new Task('task').skip();
+
+      expect(reporter.getColorType(task)).toBe('warning');
+    });
+
+    it('returns green for passed', () => {
+      const task = new Task('task');
+
+      task.status = STATUS_PASSED;
+
+      expect(reporter.getColorType(task)).toBe('success');
+    });
+
+    it('returns red for failed', () => {
+      const task = new Task('task');
+
+      task.status = STATUS_FAILED;
+
+      expect(reporter.getColorType(task)).toBe('failure');
+    });
+
+    it('returns gray otherwise', () => {
+      const task = new Task('task', () => {});
+
+      expect(reporter.getColorType(task)).toBe('pending');
+    });
+  });
+
   describe('getElapsedTime()', () => {
     it('returns numbers in seconds', () => {
       expect(reporter.getElapsedTime(1000, 5000)).toBe('4.00s');
@@ -433,6 +465,30 @@ describe('Reporter', () => {
       reporter.showCursor();
 
       expect(reporter.out).toHaveBeenCalledWith('\x1B[?25h');
+    });
+  });
+
+  describe('style()', () => {
+    it('colors pending', () => {
+      expect(reporter.style('foo', 'pending')).toBe(chalk.gray('foo'));
+    });
+
+    it('colors failure', () => {
+      expect(reporter.style('foo', 'failure')).toBe(chalk.red('foo'));
+    });
+
+    it('colors success', () => {
+      expect(reporter.style('foo', 'success')).toBe(chalk.green('foo'));
+    });
+
+    it('colors warning', () => {
+      expect(reporter.style('foo', 'warning')).toBe(chalk.yellow('foo'));
+    });
+
+    it('can apply modifiers', () => {
+      expect(reporter.style('foo', 'pending', ['bold', 'dim', 'italic'])).toBe(
+        chalk.gray.bold.dim.italic('foo'),
+      );
     });
   });
 });

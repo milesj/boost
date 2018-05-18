@@ -6,11 +6,12 @@
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
 import rl from 'readline';
-import chalk from 'chalk';
+import chalk, { Chalk } from 'chalk';
 import optimal, { bool, number, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
+import { Color, ColorBlindMode, ColorType, ColorPalette } from './types';
 
 export const REFRESH_RATE = 100;
 export const BG_REFRESH_RATE = 500;
@@ -21,6 +22,7 @@ export interface WrappedStream {
 }
 
 export interface ReporterOptions extends Struct {
+  colorBlindMode: ColorBlindMode;
   footer: string;
   refreshRate: number;
   silent: boolean;
@@ -71,6 +73,17 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     this.options = optimal(
       options,
       {
+        colorBlindMode: string('default').oneOf([
+          'default',
+          'deuteranopia',
+          'deuteranomaly',
+          'protanopia',
+          'protanomaly',
+          'tritanopia',
+          'tritanomaly',
+          'achromatomaly',
+          'achromatopsia',
+        ]),
         footer: string().empty(),
         refreshRate: number(REFRESH_RATE),
         silent: bool(),
@@ -144,11 +157,11 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Display an error and it's stack.
    */
   displayError(error: Error): void {
-    this.err(`\n${chalk.red.bold(error.message)}\n`);
+    this.err(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
 
     // Remove message line from stack
     if (error.stack) {
-      const stack = chalk.gray(
+      const stack = this.style(
         error.stack
           .split('\n')
           .slice(1)
@@ -204,9 +217,9 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     const time = this.getElapsedTime(this.startTime, this.stopTime, false);
 
     if (footer) {
-      this.out(`${footer} ${chalk.gray(`(${time})`)}\n`);
+      this.out(`${footer} ${this.style(`(${time})`)}\n`);
     } else {
-      this.out(chalk.gray(`Ran in ${time}\n`));
+      this.out(this.style(`Ran in ${time}\n`));
     }
   }
 
@@ -254,7 +267,79 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     // eslint-disable-next-line no-magic-numbers
     const elapsed = `${(time / 1000).toFixed(2)}s`;
 
-    return isSlow && highlight ? chalk.red(elapsed) : elapsed;
+    return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
+  }
+
+  /**
+   * Return a specific color for each task status.
+   */
+  getColorType(task: TaskInterface): ColorType {
+    if (task.isSkipped()) {
+      return 'warning';
+    } else if (task.hasPassed()) {
+      return 'success';
+    } else if (task.hasFailed()) {
+      return 'failure';
+    }
+
+    return 'pending';
+  }
+
+  /**
+   * Return specific colors based on color blind mode.
+   */
+  getColorPalette(): ColorPalette {
+    const { colorBlindMode } = this.options;
+    const palette: ColorPalette = {
+      failure: 'red',
+      pending: 'gray',
+      success: 'green',
+      warning: 'yellow',
+    };
+
+    // Use real color blind colors when true colors is available
+    // if (chalk.level >= 2 && colorBlindMode !== 'default') {
+    //   // TODO Format with better colors
+    //   return {
+    //     failure: format(palette.failure),
+    //     pending: format(palette.pending),
+    //     success: format(palette.success),
+    //     warning: format(palette.warning),
+    //   };
+    // }
+
+    // Attempt to use basic colors
+    switch (colorBlindMode) {
+      default:
+        return palette;
+
+      case 'deuteranopia':
+      case 'deuteranomaly':
+        return {
+          failure: 'red',
+          pending: 'gray',
+          success: 'cyan',
+          warning: 'yellow',
+        };
+
+      case 'protanopia':
+      case 'protanomaly':
+        return {
+          failure: 'cyan',
+          pending: 'gray',
+          success: 'green',
+          warning: 'yellow',
+        };
+
+      case 'tritanopia':
+      case 'tritanomaly':
+        return {
+          failure: 'red',
+          pending: 'magenta',
+          success: 'green',
+          warning: 'cyan',
+        };
+    }
   }
 
   /**
@@ -378,6 +463,24 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     this.out('\x1B[?25h');
 
     return this;
+  }
+
+  /**
+   * Create a chalk formatted string with accessible colors and modifiers applied.
+   */
+  style(
+    message: string,
+    type: ColorType = 'pending',
+    modifiers: ('reset' | 'bold' | 'dim' | 'italic' | 'underline' | 'inverse' | 'hidden')[] = [],
+  ): string {
+    const color = this.getColorPalette()[type];
+    let out = color.charAt(0) === '#' ? chalk.hex(color) : chalk[color as Color];
+
+    modifiers.forEach(modifier => {
+      out = out[modifier];
+    });
+
+    return out(message);
   }
 
   /**
