@@ -110,25 +110,39 @@ describe('Reporter', () => {
   });
 
   describe('displayFinalOutput()', () => {
-    let clearSpy;
+    let timeoutSpy;
+    let intervalSpy;
 
     beforeEach(() => {
-      clearSpy = jest.spyOn(global, 'clearTimeout');
+      timeoutSpy = jest.spyOn(global, 'clearTimeout');
+      intervalSpy = jest.spyOn(global, 'clearInterval');
     });
 
     afterEach(() => {
-      clearSpy.mockRestore();
+      timeoutSpy.mockRestore();
+      intervalSpy.mockRestore();
     });
 
-    it('calls clearTimeout if timer set', () => {
+    it('calls clearTimeout if render timer set', () => {
       reporter.displayFinalOutput();
 
-      expect(clearSpy).not.toHaveBeenCalled();
+      expect(timeoutSpy).not.toHaveBeenCalled();
 
       reporter.renderTimer = 1;
       reporter.displayFinalOutput();
 
-      expect(clearSpy).toHaveBeenCalledWith(1);
+      expect(timeoutSpy).toHaveBeenCalledWith(1);
+    });
+
+    it('calls clearInterval if interval timer set', () => {
+      reporter.displayFinalOutput();
+
+      expect(intervalSpy).not.toHaveBeenCalled();
+
+      reporter.intervalTimer = 1;
+      reporter.displayFinalOutput();
+
+      expect(intervalSpy).toHaveBeenCalledWith(1);
     });
 
     it('triggers final render', () => {

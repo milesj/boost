@@ -178,6 +178,10 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Display the final output when an error occurs, or when all routines are complete.
    */
   displayFinalOutput(error?: Error | null) {
+    if (this.intervalTimer) {
+      clearInterval(this.intervalTimer);
+    }
+
     if (this.renderTimer) {
       clearTimeout(this.renderTimer);
     }
@@ -371,10 +375,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Set stop time and render.
    */
   handleBaseStop = (error: Error | null) => {
-    if (this.intervalTimer) {
-      clearInterval(this.intervalTimer);
-    }
-
     this.stopTime = Date.now();
     this.displayFinalOutput(error);
     this.unwrapStream(process.stderr);
