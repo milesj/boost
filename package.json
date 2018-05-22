@@ -43,7 +43,7 @@
     "@types/execa": "^0.9.0",
     "@types/glob": "^5.0.35",
     "@types/json5": "^0.0.29",
-    "@types/lodash": "^4.14.108",
+    "@types/lodash": "^4.14.109",
     "@types/pluralize": "^0.0.28",
     "@types/split": "^0.3.28",
     "chalk": "^2.4.1",
@@ -61,7 +61,7 @@
     "optimal": "^0.19.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.87.0",
+    "@milesj/build-tool-config": "0.93.0",
     "fs-extra": "^6.0.1"
   },
   "beemo": {
