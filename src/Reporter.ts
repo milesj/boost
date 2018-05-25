@@ -5,13 +5,14 @@
 
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
+import path from 'path';
 import rl from 'readline';
 import chalk, { Chalk } from 'chalk';
 import optimal, { bool, number, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
-import { Color, ColorBlindMode, ColorType, ColorPalette } from './types';
+import { Color, ColorType, ColorPalette } from './types';
 
 export const REFRESH_RATE = 100;
 export const BG_REFRESH_RATE = 500;
@@ -22,11 +23,11 @@ export interface WrappedStream {
 }
 
 export interface ReporterOptions extends Struct {
-  colorBlindMode: ColorBlindMode;
   footer: string;
   refreshRate: number;
   silent: boolean;
   slowThreshold: number;
+  theme: string;
   verbose: 0 | 1 | 2 | 3;
 }
 
@@ -73,21 +74,11 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     this.options = optimal(
       options,
       {
-        colorBlindMode: string('default').oneOf([
-          'default',
-          'deuteranopia',
-          'deuteranomaly',
-          'protanopia',
-          'protanomaly',
-          'tritanopia',
-          'tritanomaly',
-          'achromatomaly',
-          'achromatopsia',
-        ]),
         footer: string().empty(),
         refreshRate: number(REFRESH_RATE),
         silent: bool(),
         slowThreshold: number(SLOW_THRESHOLD),
+        theme: string('default'),
         verbose: number(3).between(0, 3, true),
       },
       {
@@ -290,60 +281,27 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
-   * Return specific colors based on color blind mode.
+   * Return specific colors based on chosen theme.
    */
   getColorPalette(): ColorPalette {
-    const { colorBlindMode } = this.options;
-    const palette: ColorPalette = {
+    const { theme } = this.options;
+    let palette = {
       failure: 'red',
       pending: 'gray',
       success: 'green',
       warning: 'yellow',
     };
 
-    // Use real color blind colors when true colors is available
-    // if (chalk.level >= 2 && colorBlindMode !== 'default') {
-    //   // TODO Format with better colors
-    //   return {
-    //     failure: format(palette.failure),
-    //     pending: format(palette.pending),
-    //     success: format(palette.success),
-    //     warning: format(palette.warning),
-    //   };
-    // }
-
-    // Attempt to use basic colors
-    switch (colorBlindMode) {
-      default:
-        return palette;
-
-      case 'deuteranopia':
-      case 'deuteranomaly':
-        return {
-          failure: 'red',
-          pending: 'gray',
-          success: 'cyan',
-          warning: 'yellow',
-        };
-
-      case 'protanopia':
-      case 'protanomaly':
-        return {
-          failure: 'cyan',
-          pending: 'gray',
-          success: 'green',
-          warning: 'yellow',
-        };
-
-      case 'tritanopia':
-      case 'tritanomaly':
-        return {
-          failure: 'red',
-          pending: 'magenta',
-          success: 'green',
-          warning: 'cyan',
-        };
+    if (chalk.level >= 2 && theme !== 'default') {
+      try {
+        // eslint-disable-next-line
+        palette = require(path.join(__dirname, `./themes/${theme}.js`)).default;
+      } catch (error) {
+        // Fallback to base palette
+      }
     }
+
+    return palette;
   }
 
   /**
@@ -517,7 +475,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
     };
 
     const flushBuffer = () => {
-      if (buffer) {
+      if (stream.isTTY && buffer) {
         originalWrite(buffer);
       }
 

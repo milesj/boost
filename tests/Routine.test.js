@@ -821,6 +821,7 @@ describe('Routine', () => {
 
       const response = await routine.run(context);
 
+      // eslint-disable-next-line
       expect(context.count).toBe(16);
       expect(response).toEqual({
         errors: [new Error('Failure')],

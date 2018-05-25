@@ -9,7 +9,6 @@ import { ConsoleInterface } from './Console';
 import Reporter, { ReporterOptions } from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
 import Task, { TaskInterface } from './Task';
-import { ColorPalette, ColorType } from './types';
 
 export interface Line {
   depth: number;
