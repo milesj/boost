@@ -285,6 +285,52 @@ describe('Reporter', () => {
     });
   });
 
+  describe('getColorPalette()', () => {
+    const oldLevel = chalk.level;
+    const basePalette = {
+      failure: 'red',
+      pending: 'gray',
+      success: 'green',
+      warning: 'yellow',
+    };
+
+    afterEach(() => {
+      chalk.level = oldLevel;
+    });
+
+    it('returns base palette if chalk level < 2', () => {
+      chalk.level = 1;
+
+      expect(reporter.getColorPalette()).toEqual(basePalette);
+    });
+
+    it('returns base palette if chalk level >= 2 and theme is default', () => {
+      chalk.level = 2;
+      reporter.options.theme = 'default';
+
+      expect(reporter.getColorPalette()).toEqual(basePalette);
+    });
+
+    it('returns base palette if theme does not exist', () => {
+      chalk.level = 2;
+      reporter.options.theme = 'unknown';
+
+      expect(reporter.getColorPalette()).toEqual(basePalette);
+    });
+
+    it('returns theme palette', () => {
+      chalk.level = 2;
+      reporter.options.theme = 'solarized';
+
+      expect(reporter.getColorPalette()).toEqual({
+        failure: '#dc322f',
+        pending: '#93a1a1',
+        success: '#859900',
+        warning: '#b58900',
+      });
+    });
+  });
+
   describe('getColorType()', () => {
     it('returns yellow for skipped', () => {
       const task = new Task('task').skip();

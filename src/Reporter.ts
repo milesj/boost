@@ -12,6 +12,7 @@ import optimal, { bool, number, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
+import themePalettes from './themes';
 import { Color, ColorType, ColorPalette } from './types';
 
 export const REFRESH_RATE = 100;
@@ -285,23 +286,17 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   getColorPalette(): ColorPalette {
     const { theme } = this.options;
-    let palette = {
+
+    if (chalk.level >= 2 && themePalettes[theme]) {
+      return themePalettes[theme];
+    }
+
+    return {
       failure: 'red',
       pending: 'gray',
       success: 'green',
       warning: 'yellow',
     };
-
-    if (chalk.level >= 2 && theme !== 'default') {
-      try {
-        // eslint-disable-next-line
-        palette = require(path.join(__dirname, `./themes/${theme}.js`)).default;
-      } catch (error) {
-        // Fallback to base palette
-      }
-    }
-
-    return palette;
   }
 
   /**
