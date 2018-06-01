@@ -19,5 +19,5 @@ export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,
   extends: [],
   plugins: [],
-  reporter: '',
+  reporters: [],
 };

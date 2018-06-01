@@ -40,9 +40,11 @@ export interface ToolInterface extends EmitterInterface {
   options: ToolOptions;
   package: PackageConfig;
   plugins: PluginInterface[];
+  reporters: ReporterInterface[];
   createDebugger(...namespaces: string[]): Debugger;
   initialize(): this;
   getPlugin(name: string): PluginInterface;
+  getReporter(name: string): ReporterInterface;
   log(message: string, ...args: any[]): this;
   logError(message: string, ...args: any[]): this;
 }
@@ -64,7 +66,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
   plugins: Tp[] = [];
 
-  reporter: ReporterInterface | null = null;
+  reporters: ReporterInterface[] = [];
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -143,6 +145,19 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
   }
 
   /**
+   * Get a reporter by name.
+   */
+  getReporter(name: string): ReporterInterface {
+    const reporter = this.reporters.find(p => p.name === name);
+
+    if (reporter) {
+      return reporter;
+    }
+
+    throw new Error(`Failed to find reporter "${name}". Have you installed it?`);
+  }
+
+  /**
    * Initialize the tool by loading config and plugins.
    */
   initialize(): this {
@@ -156,7 +171,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     this.loadConfig();
     this.loadPlugins();
-    this.loadReporter();
+    this.loadReporters();
 
     this.initialized = true;
 
@@ -216,10 +231,10 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
       throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
     }
 
-    const pluginLoader = new ModuleLoader(this, pluginAlias, Plugin);
+    const loader = new ModuleLoader(this, pluginAlias, Plugin);
 
     // @ts-ignore
-    this.plugins = pluginLoader.loadModules(this.config[pluralPluginAlias]);
+    this.plugins = loader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
     this.plugins.sort((a, b) => a.priority - b.priority);
@@ -234,50 +249,37 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
   }
 
   /**
-   * Register a reporter from the loaded configuration.
+   * Register reporters from the loaded configuration.
    *
    * Must be called after config has been loaded.
    */
-  loadReporter(): this {
+  loadReporters(): this {
     if (this.initialized) {
       return this;
     }
 
     if (isEmptyObject(this.config)) {
-      throw new Error('Cannot load reporter as configuration has not been loaded.');
+      throw new Error('Cannot load reporters as configuration has not been loaded.');
     }
 
-    const { reporter: reporterName } = this.config;
     const loader = new ModuleLoader(this, 'reporter', Reporter);
     const options = this.options.console;
-    let reporter = null;
 
-    // Load based on name
-    if (reporterName) {
-      if (isObject(reporterName)) {
-        reporter = loader.importModuleFromOptions({
-          // @ts-ignore
-          ...reporterName,
-          ...options,
-        });
-      } else {
-        reporter = loader.importModule(String(reporterName), options);
-      }
-    }
+    this.reporters = loader.loadModules(this.config.reporters, options);
 
     // Use default reporter
-    if (!reporter) {
+    if (this.reporters.length === 0) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-      reporter = new DefaultReporter(options);
+      this.reporters.push(new DefaultReporter(options));
     }
 
-    // Bootstrap console events
-    loader.debug('Bootstrapping reporter with console environment');
+    // Bootstrap each plugin with the tool
+    loader.debug('Bootstrapping reporters with console environment');
 
-    reporter.bootstrap(this.console);
-
-    this.reporter = reporter;
+    this.reporters.forEach(reporter => {
+      reporter.bootstrap(this.console);
+    });
 
     return this;
   }

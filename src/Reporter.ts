@@ -35,6 +35,7 @@ export interface ReporterOptions extends Struct {
 export interface ReporterInterface extends ModuleInterface {
   err: WrappedStream;
   out: WrappedStream;
+  bootstrap(cli: ConsoleInterface): void;
 }
 
 export default class Reporter<T, To extends ReporterOptions> extends Module<To>

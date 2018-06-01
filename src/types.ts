@@ -29,7 +29,7 @@ export interface ToolConfig extends Struct {
   debug: boolean;
   extends: string | string[];
   plugins: (string | PluginConfig)[];
-  reporter: string | ReporterConfig;
+  reporters: (string | ReporterConfig)[];
   [key: string]: any;
 }
 

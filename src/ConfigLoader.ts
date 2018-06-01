@@ -224,7 +224,7 @@ export default class ConfigLoader {
         ...configBlueprint,
         debug: bool(),
         extends: array(string()),
-        reporter: union([string().empty(), shape({ reporter: string() })], ''),
+        reporters: array(union([string(), shape({ reporter: string() })])),
         [pluralize(pluginAlias)]: array(union([string(), shape({ [pluginAlias]: string() })])),
       },
       {

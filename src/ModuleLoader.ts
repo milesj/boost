@@ -140,13 +140,17 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModule(module: string | Struct | Tm): Tm {
+  loadModule(module: string | Struct | Tm, options: Struct = {}): Tm {
     if (module instanceof this.classReference) {
       return module;
     } else if (typeof module === 'string') {
-      return this.importModule(module);
+      return this.importModule(module, options);
     } else if (isObject(module)) {
-      return this.importModuleFromOptions(module);
+      return this.importModuleFromOptions({
+        // @ts-ignore
+        ...module,
+        ...options,
+      });
     }
 
     throw new TypeError(
@@ -159,7 +163,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
   /**
    * Load multiple modules.
    */
-  loadModules(modules: (string | Struct | Tm)[] = []): Tm[] {
-    return modules.map(module => this.loadModule(module));
+  loadModules(modules: (string | Struct | Tm)[] = [], options: Struct = {}): Tm[] {
+    return modules.map(module => this.loadModule(module, options));
   }
 }

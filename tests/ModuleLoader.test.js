@@ -3,8 +3,8 @@ import ModuleLoader from '../src/ModuleLoader';
 import Tool from '../src/Tool';
 import { getFixturePath, getTestRoot, copyFixtureToMock } from './helpers';
 
-function createPlugin(name) {
-  const plugin = new Plugin();
+function createPlugin(name, options = {}) {
+  const plugin = new Plugin(options);
   plugin.name = name;
   plugin.moduleName = `test-boost-plugin-${name}`;
 
@@ -210,6 +210,22 @@ describe('ModuleLoader', () => {
         createPlugin('foo'),
         createPlugin('bar'),
         createPlugin('baz'),
+      ]);
+    });
+
+    it('pass options to string names', () => {
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
+
+      expect(loader.loadModules(['foo'], { test: true })).toEqual([
+        createPlugin('foo', { test: true }),
+      ]);
+    });
+
+    it('pass options to option objects', () => {
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
+
+      expect(loader.loadModules([{ plugin: 'foo' }], { test: true })).toEqual([
+        createPlugin('foo', { test: true }),
       ]);
     });
   });

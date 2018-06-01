@@ -88,6 +88,23 @@ describe('Tool', () => {
     });
   });
 
+  describe('getReporter()', () => {
+    it('errors if not found', () => {
+      expect(() => {
+        tool.getReporter('foo');
+      }).toThrowError('Failed to find reporter "foo". Have you installed it?');
+    });
+
+    it('returns plugin by name', () => {
+      const reporter = new Reporter();
+      reporter.name = 'foo';
+
+      tool.reporters.push(reporter);
+
+      expect(tool.getReporter('foo')).toBe(reporter);
+    });
+  });
+
   describe('initialize()', () => {
     it('loads config', () => {
       expect(tool.config).toEqual({});
@@ -212,43 +229,43 @@ describe('Tool', () => {
     });
   });
 
-  describe('loadReporter()', () => {
+  describe('loadReporters()', () => {
     it('errors if config is falsy', () => {
       expect(() => {
-        tool.loadReporter();
-      }).toThrowError('Cannot load reporter as configuration has not been loaded.');
+        tool.loadReporters();
+      }).toThrowError('Cannot load reporters as configuration has not been loaded.');
     });
 
     it('errors if config is an empty object', () => {
       expect(() => {
         tool.config = {};
-        tool.loadReporter();
-      }).toThrowError('Cannot load reporter as configuration has not been loaded.');
+        tool.loadReporters();
+      }).toThrowError('Cannot load reporters as configuration has not been loaded.');
     });
 
     it('doesnt load if initialized', () => {
       tool.initialized = true;
-      tool.loadReporter();
+      tool.loadReporters();
 
-      expect(tool.reporter).toBeNull();
+      expect(tool.reporters).toHaveLength(0);
     });
 
     it('loads default reporter if config not set', () => {
-      tool.config = { reporter: '' };
-      tool.loadReporter();
+      tool.config = { reporters: [] };
+      tool.loadReporters();
 
-      expect(tool.reporter).toBeInstanceOf(DefaultReporter);
+      expect(tool.reporters[0]).toBeInstanceOf(DefaultReporter);
     });
 
     it('loads reporter using a string', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.config = { reporter: 'foo' };
-      tool.loadReporter();
+      tool.config = { reporters: ['foo'] };
+      tool.loadReporters();
 
-      expect(tool.reporter).toBeInstanceOf(Reporter);
-      expect(tool.reporter.name).toBe('foo');
-      expect(tool.reporter.moduleName).toBe('test-boost-reporter-foo');
+      expect(tool.reporters[0]).toBeInstanceOf(Reporter);
+      expect(tool.reporters[0].name).toBe('foo');
+      expect(tool.reporters[0].moduleName).toBe('test-boost-reporter-foo');
 
       unmock();
     });
@@ -256,12 +273,12 @@ describe('Tool', () => {
     it('loads reporter using an object', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
-      tool.config = { reporter: { reporter: 'bar' } };
-      tool.loadReporter();
+      tool.config = { reporters: [{ reporter: 'bar' }] };
+      tool.loadReporters();
 
-      expect(tool.reporter).toBeInstanceOf(Reporter);
-      expect(tool.reporter.name).toBe('bar');
-      expect(tool.reporter.moduleName).toBe('test-boost-reporter-bar');
+      expect(tool.reporters[0]).toBeInstanceOf(Reporter);
+      expect(tool.reporters[0].name).toBe('bar');
+      expect(tool.reporters[0].moduleName).toBe('test-boost-reporter-bar');
 
       unmock();
     });
@@ -273,10 +290,10 @@ describe('Tool', () => {
         footer: 'Powered by Boost',
         silent: true,
       };
-      tool.config = { reporter: 'baz' };
-      tool.loadReporter();
+      tool.config = { reporters: ['baz'] };
+      tool.loadReporters();
 
-      const { reporter } = tool;
+      const [reporter] = tool.reporters;
 
       expect(reporter.options.footer).toBe('Powered by Boost');
       expect(reporter.options.silent).toBe(true);
