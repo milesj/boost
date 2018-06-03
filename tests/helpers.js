@@ -1,5 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
+import Tool from '../src/Tool';
+import Routine from '../src/Routine';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -45,4 +47,25 @@ export function createTempFileInRoot(file, data) {
   fs.writeFileSync(filePath, data);
 
   return () => fs.removeSync(filePath);
+}
+
+export function createTestTool(options) {
+  const tool = new Tool({
+    appName: 'test-boost',
+    ...options,
+  });
+  tool.config = {};
+  tool.package = {};
+  tool.initialized = true; // Avoid loaders
+
+  return tool;
+}
+
+export function createTestRoutine(tool, key = 'key') {
+  const routine = new Routine(key, 'Title');
+  routine.tool = tool;
+  routine.debug = () => {};
+  routine.action = (context, value) => value; // Avoid execute exception
+
+  return routine;
 }

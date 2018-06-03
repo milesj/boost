@@ -211,16 +211,4 @@ describe('Task', () => {
       expect(task.status).toBe(STATUS_PENDING);
     });
   });
-
-  describe('wrap()', () => {
-    it('wraps the value in a promise', () => {
-      expect(task.wrap(123)).toBeInstanceOf(Promise);
-    });
-
-    it('returns the promise as is', () => {
-      const promise = Promise.resolve(123);
-
-      expect(task.wrap(promise)).toBe(promise);
-    });
-  });
 });

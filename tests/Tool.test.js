@@ -5,7 +5,7 @@ import Reporter from '../src/Reporter';
 import DefaultReporter from '../src/DefaultReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath, copyFixtureToMock } from './helpers';
+import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
 
@@ -13,12 +13,10 @@ describe('Tool', () => {
   let tool;
 
   beforeEach(() => {
-    tool = new Tool({
-      appName: 'test-boost',
+    tool = createTestTool({
       root: getFixturePath('app'),
     });
-    tool.config = {};
-    tool.package = {};
+    tool.initialized = false; // Reset
   });
 
   describe('constructor()', () => {

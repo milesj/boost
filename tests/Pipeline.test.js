@@ -1,19 +1,12 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
-import Tool from '../src/Tool';
+import { createTestTool } from './helpers';
 
 describe('Pipeline', () => {
-  let tool;
   let pipeline;
 
   beforeEach(() => {
-    tool = new Tool({
-      appName: 'test-boost',
-    });
-    tool.config = { foo: 'bar' };
-    tool.initialized = true; // Avoid loaders
-
-    pipeline = new Pipeline(tool);
+    pipeline = new Pipeline(createTestTool());
   });
 
   describe('constructor()', () => {
@@ -24,7 +17,7 @@ describe('Pipeline', () => {
     });
 
     it('sets the context', () => {
-      pipeline = new Pipeline(tool, { foo: 'bar' });
+      pipeline = new Pipeline(createTestTool(), { foo: 'bar' });
 
       expect(pipeline.context).toEqual({ foo: 'bar' });
     });

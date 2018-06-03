@@ -9,6 +9,7 @@ import {
   getModulePath,
   copyFixtureToModule,
   createTempFileInRoot,
+  createTestTool,
 } from './helpers';
 
 function createJavascriptFile(data) {
@@ -20,8 +21,7 @@ describe('ConfigLoader', () => {
   let fixtures = [];
 
   beforeEach(() => {
-    const tool = new Tool({
-      appName: 'test-boost',
+    const tool = createTestTool({
       pluginAlias: 'plugin',
       root: getTestRoot(),
     });

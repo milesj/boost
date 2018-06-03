@@ -17,7 +17,13 @@ import { Struct } from 'optimal';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Debugger, Context, SynchronizedResponse } from './types';
+import { Debugger, Context } from './types';
+import { AggregatedResponse } from './Executor';
+import ParallelExecutor from './executors/Parallel';
+import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
+import SerialExecutor from './executors/Serial';
+import SyncExecutor from './executors/Sync';
+import wrapWithPromise from './helpers/wrapWithPromise';
 
 export interface CommandOptions extends Struct {
   sync?: boolean;
@@ -93,9 +99,8 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  /* istanbul ignore next */
   execute<T>(context: Tx, value?: T): Promise<any> {
-    return this.wrap(value);
+    throw new Error('execute() must be defined.');
   }
 
   /**
@@ -131,62 +136,25 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
       options.wrap(stream as ExecaChildProcess);
     }
 
-    return this.wrap(stream);
+    return wrapWithPromise(stream);
   }
 
   /**
-   * Execute a sub-routine with the provided value.
-   */
-  executeRoutine<T>(
-    routine: RoutineInterface,
-    value?: T,
-    wasParallel: boolean = false,
-  ): Promise<any> {
-    return this.wrap(routine.run(this.context, value, wasParallel));
-  }
-
-  /**
-   * Execute a task, a method in the current routine, or a function,
-   * with the provided value.
-   */
-  executeTask<T>(task: TaskInterface, value?: T, wasParallel: boolean = false): Promise<any> {
-    const { console: cli } = this.tool;
-
-    cli.emit('task', [task, this, value, wasParallel]);
-
-    return this.wrap(task.run(this.context, value))
-      .then(result => {
-        cli.emit('task.pass', [task, this, result, wasParallel]);
-
-        return result;
-      })
-      .catch(error => {
-        cli.emit('task.fail', [task, this, error, wasParallel]);
-
-        throw error;
-      });
-  }
-
-  /**
-   * Execute sub-routines in parralel with a value being passed to each sub-routine.
-   * A combination promise will be returned as the result.
+   * Execute routines in parallel.
    */
   parallelizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<any[]> {
-    return Promise.all(
-      (routines || this.routines).map(routine => this.executeRoutine(routine, value, true)),
-    );
+    return new ParallelExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
-   * Execute tasks in parralel with a value being passed to each task.
-   * A combination promise will be returned as the result.
+   * Execute tasks in parallel.
    */
   parallelizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<any[]> {
-    return Promise.all((tasks || this.tasks).map(task => this.executeTask(task, value, true)));
+    return new ParallelExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
   /**
-   * Add a new sub-routine within this routine.
+   * Add a new routine within this routine.
    */
   pipe(routine: RoutineInterface): this {
     if (routine instanceof Routine) {
@@ -196,6 +164,28 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
     }
 
     return this;
+  }
+
+  /**
+   * Execute routines in a pool.
+   */
+  poolRoutines<T>(
+    value?: T,
+    options?: Partial<PoolExecutorOptions>,
+    routines?: RoutineInterface[],
+  ): Promise<AggregatedResponse> {
+    return new PoolExecutor(this.tool, this.context, options).run(routines || this.routines, value);
+  }
+
+  /**
+   * Execute tasks in a pool.
+   */
+  poolTasks<T>(
+    value?: T,
+    options?: Partial<PoolExecutorOptions>,
+    tasks?: TaskInterface[],
+  ): Promise<AggregatedResponse> {
+    return new PoolExecutor(this.tool, this.context, options).run(tasks || this.tasks, value);
   }
 
   /**
@@ -227,43 +217,31 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   }
 
   /**
-   * Execute sub-routines in sequential (serial) order.
+   * Execute routines in sequential (serial) order.
    */
   serializeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<any> {
-    return this.serialize(
-      routines || this.routines,
-      (routine, val) => this.executeRoutine(routine, val),
-      value,
-    );
+    return new SerialExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
   serializeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<any> {
-    return this.serialize(tasks || this.tasks, (task, val) => this.executeTask(task, val), value);
+    return new SerialExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
   /**
-   * Execute sub-routines in parralel with a value being passed to each sub-routine.
-   * Sub-routines will synchronize regardless of race conditions and errors.
+   * Execute routines in sync.
    */
-  synchronizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<SynchronizedResponse> {
-    return this.synchronize(
-      (routines || this.routines).map(routine =>
-        this.executeRoutine(routine, value, true).catch(error => error),
-      ),
-    );
+  synchronizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<AggregatedResponse> {
+    return new SyncExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
-   * Execute tasks in parralel with a value being passed to each task.
-   * Tasks will synchronize regardless of race conditions and errors.
+   * Execute tasks in sync.
    */
-  synchronizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<SynchronizedResponse> {
-    return this.synchronize(
-      (tasks || this.tasks).map(task => this.executeTask(task, value, true).catch(error => error)),
-    );
+  synchronizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<AggregatedResponse> {
+    return new SyncExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
   /**
@@ -279,41 +257,5 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
     this.tasks.push(task);
 
     return task;
-  }
-
-  /**
-   * Execute processes in sequential order with the output of each
-   * task being passed to the next promise in the chain. Utilize the
-   * `accumulator` function to execute the list of processes.
-   */
-  private serialize<T, T2 extends TaskInterface>(
-    tasks: T2[],
-    accumulator: (task: T2, value?: T) => Promise<any>,
-    initialValue?: T,
-  ): Promise<any> {
-    return tasks.reduce(
-      (promise, task) => promise.then(value => accumulator(task, value)),
-      Promise.resolve(initialValue),
-    );
-  }
-
-  /**
-   * Synchronize parallel promises and partition errors and results into separate collections.
-   */
-  private synchronize(promises: Promise<any>[]): Promise<SynchronizedResponse> {
-    return Promise.all(promises).then((responses: any) => {
-      const results: any[] = [];
-      const errors: Error[] = [];
-
-      responses.forEach((response: any) => {
-        if (response instanceof Error) {
-          errors.push(response);
-        } else {
-          results.push(response);
-        }
-      });
-
-      return Promise.resolve({ errors, results });
-    });
   }
 }

@@ -30,7 +30,7 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
   }
 
   /**
-   * Execute all sub-routines in order.
+   * Execute all routines in order.
    */
   run<T>(initialValue?: T): Promise<any> {
     const { console: cli } = this.tool;

@@ -1,7 +1,6 @@
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
-import Tool from '../src/Tool';
-import { getFixturePath, getTestRoot, copyFixtureToMock } from './helpers';
+import { getFixturePath, getTestRoot, copyFixtureToMock, createTestTool } from './helpers';
 
 function createPlugin(name, options = {}) {
   const plugin = new Plugin(options);
@@ -16,13 +15,14 @@ describe('ModuleLoader', () => {
   let fixtures = [];
 
   beforeEach(() => {
-    const tool = new Tool({
-      appName: 'test-boost',
-      pluginAlias: 'plugin',
-      root: getTestRoot(),
-    });
-
-    loader = new ModuleLoader(tool, 'plugin', Plugin);
+    loader = new ModuleLoader(
+      createTestTool({
+        pluginAlias: 'plugin',
+        root: getTestRoot(),
+      }),
+      'plugin',
+      Plugin,
+    );
 
     fixtures = [];
   });

@@ -18,9 +18,7 @@ export default class Module<To extends Struct> implements ModuleInterface {
   options: To;
 
   constructor(options: Partial<To> = {}) {
-    this.options = {
-      // @ts-ignore
-      ...options,
-    };
+    // @ts-ignore
+    this.options = { ...options };
   }
 }

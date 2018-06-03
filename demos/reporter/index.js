@@ -1,10 +1,5 @@
-/* eslint-disable no-magic-numbers */
-
 const { Tool, Pipeline, Routine } = require('../../lib');
-
-function random(max = 10, min = 3) {
-  return Math.floor(Math.random() * max) + min;
-}
+const random = require('../random');
 
 class MultiTaskRoutine extends Routine {
   bootstrap() {
@@ -35,7 +30,7 @@ class MultiRoutine extends Routine {
     });
 
     if (this.options.deep) {
-      this.pipe(new MultiRoutine('deepsub', 'Deeply nested sub-routine', { parallel: true }));
+      this.pipe(new MultiRoutine('deepsub', 'Deeply nested routine', { parallel: true }));
     }
   }
 
@@ -59,4 +54,4 @@ new Pipeline(tool)
   .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3', { parallel: true }))
   .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
   // .pipe(new MultiRoutine('subs', 'Multi-routine', { deep: true }))
-  .run({});
+  .run();

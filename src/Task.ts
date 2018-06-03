@@ -164,11 +164,4 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
 
     return this;
   }
-
-  /**
-   * Wrap a value in a promise if it has not already been.
-   */
-  wrap<T>(value: T): Promise<any> {
-    return value instanceof Promise ? value : Promise.resolve(value);
-  }
 }

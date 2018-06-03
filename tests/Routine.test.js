@@ -4,15 +4,14 @@ import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
+import { createTestTool, createTestRoutine } from './helpers';
 
 describe('Routine', () => {
   let routine;
   let tool;
 
   beforeEach(() => {
-    tool = new Tool({
-      appName: 'test-boost',
-    });
+    tool = createTestTool();
     tool.config = {
       ...DEFAULT_TOOL_CONFIG,
       baz: {
@@ -23,15 +22,13 @@ describe('Routine', () => {
         command: 'yarn run build',
       },
     };
-    tool.initialized = true; // Avoid loaders
 
-    routine = new Routine('key', 'title');
+    routine = createTestRoutine(tool);
     routine.configure({
       config: {},
       context: {},
       tool,
     });
-    routine.debug = () => {};
   });
 
   class FailureRoutine extends Routine {
@@ -159,83 +156,6 @@ describe('Routine', () => {
     });
   });
 
-  describe('executeTask()', () => {
-    let task;
-
-    beforeEach(() => {
-      task = new Task('title', (con, value) => value * 3);
-    });
-
-    it('returns a promise', () => {
-      expect(routine.executeTask(task, 123)).toBeInstanceOf(Promise);
-    });
-
-    it('passes the value down the promise', async () => {
-      expect(await routine.executeTask(task, 123)).toBe(369);
-    });
-
-    it('updates status if a success', async () => {
-      await routine.executeTask(task, 123);
-
-      expect(task.status).toBe(STATUS_PASSED);
-    });
-
-    it('updates status if a failure', async () => {
-      task = new Task('title', () => {
-        throw new Error('Oops');
-      });
-
-      try {
-        await routine.executeTask(task, 123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Oops'));
-      }
-
-      expect(task.status).toBe(STATUS_FAILED);
-    });
-
-    it('emits console events if a success', async () => {
-      const spy = jest.fn();
-
-      routine.tool.console.emit = spy;
-
-      await routine.executeTask(task, 123);
-
-      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('task.pass', [task, routine, 369, false]);
-    });
-
-    it('emits console events if a failure', async () => {
-      const spy = jest.fn();
-
-      routine.tool.console.emit = spy;
-
-      task = new Task('title', () => {
-        throw new Error('Oops');
-      });
-
-      try {
-        await routine.executeTask(task, 123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Oops'));
-      }
-
-      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('task.fail', [task, routine, new Error('Oops'), false]);
-    });
-
-    it('emits console events with parallel flag', async () => {
-      const spy = jest.fn();
-
-      routine.tool.console.emit = spy;
-
-      await routine.executeTask(task, 123, true);
-
-      expect(spy).toHaveBeenCalledWith('task', [task, routine, 123, true]);
-      expect(spy).toHaveBeenCalledWith('task.pass', [task, routine, 369, true]);
-    });
-  });
-
   describe('parallelizeRoutines()', () => {
     it('returns a resolved promise if no routines exist', async () => {
       expect(await routine.parallelizeRoutines('abc')).toEqual([]);
@@ -276,23 +196,10 @@ describe('Routine', () => {
       expect(routine.context).toBe(context);
     });
 
-    it('calls `executeRoutine` with correct args', async () => {
-      const spy = jest.fn();
-      const sub = new ContextRoutine('foo', 'title', { multiplier: 1 });
-
-      routine.pipe(sub);
-      routine.action = (con, value) => routine.parallelizeRoutines(value);
-      routine.executeRoutine = spy;
-
-      await routine.run();
-
-      expect(spy).toHaveBeenCalledWith(sub, undefined, true);
-    });
-
     it('can run a specific list of routines', async () => {
-      const foo = new Routine('foo', 'title');
-      const bar = new Routine('bar', 'title');
-      const baz = new Routine('baz', 'title');
+      const foo = createTestRoutine(tool, 'foo');
+      const bar = createTestRoutine(tool, 'bar');
+      const baz = createTestRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -367,20 +274,6 @@ describe('Routine', () => {
       expect(routine.context).toBe(context);
     });
 
-    it('calls `executeTask` with correct args', async () => {
-      const spy = jest.fn();
-
-      routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.parallelizeTasks(value);
-      routine.executeTask = spy;
-
-      await routine.run();
-
-      expect(spy).toHaveBeenCalledWith(routine.tasks[0], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.tasks[1], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.tasks[2], undefined, true);
-    });
-
     it('can run a specific list of routines', async () => {
       const foo = routine.task('title', () => {});
       const bar = routine.task('title', () => {});
@@ -402,9 +295,9 @@ describe('Routine', () => {
     });
 
     it('sets routines in order', () => {
-      const foo = new Routine('foo', 'title');
-      const bar = new Routine('bar', 'title');
-      const baz = new Routine('baz', 'title');
+      const foo = createTestRoutine(tool, 'foo');
+      const bar = createTestRoutine(tool, 'bar');
+      const baz = createTestRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -415,11 +308,165 @@ describe('Routine', () => {
     });
 
     it('inherits console from parent routine', () => {
-      const foo = new Routine('foo', 'title');
+      const foo = createTestRoutine(tool, 'foo');
 
       routine.pipe(foo);
 
       expect(foo.console).toBe(routine.console);
+    });
+  });
+
+  describe('poolRoutines()', () => {
+    it('returns a resolved promise if no routines exist', async () => {
+      expect(await routine.poolRoutines('abc')).toEqual({ results: [], errors: [] });
+    });
+
+    it('passes context through routines when ran', async () => {
+      const context = {
+        count: 3,
+        parallel: 'routine',
+      };
+
+      routine
+        .pipe(new ContextRoutine('foo', 'title', { multiplier: 2 }))
+        .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
+        .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
+
+      routine.action = (con, value) => routine.poolRoutines(value);
+
+      await routine.run(context);
+
+      expect(context).toEqual({
+        bar: true,
+        baz: true,
+        count: 36,
+        foo: true,
+        parallel: 'routine',
+      });
+      expect(routine.context).toBe(context);
+    });
+
+    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
+      const context = { count: 1 };
+
+      routine
+        .pipe(new ContextRoutine('foo', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextRoutine('bar', 'title', { multiplier: 2, return: true }))
+        .pipe(new FailureRoutine('err', 'title'))
+        .pipe(new ContextRoutine('baz', 'title', { multiplier: 2, return: true }))
+        .pipe(new ContextRoutine('qux', 'title', { multiplier: 2, return: true }));
+
+      routine.action = () => routine.poolRoutines();
+
+      const response = await routine.run(context);
+
+      expect(context.count).toBe(16);
+      expect(response).toEqual({
+        errors: [new Error('Failure')],
+        results: ['foo', 'bar', 'baz', 'qux'],
+      });
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = createTestRoutine(tool, 'foo');
+      const bar = createTestRoutine(tool, 'bar');
+      const baz = createTestRoutine(tool, 'baz');
+
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
+
+      routine.action = (con, value) => routine.poolRoutines(value, {}, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
+    });
+  });
+
+  describe('poolTasks()', () => {
+    it('returns a resolved promise if no tasks exist', async () => {
+      expect(await routine.poolTasks('abc')).toEqual({ results: [], errors: [] });
+    });
+
+    it('supports normal functions', async () => {
+      routine.task('upper', (context, value) => value.toUpperCase());
+      routine.task('dupe', (context, value) => `${value}${value}`);
+
+      expect(await routine.poolTasks('abc')).toEqual({
+        results: ['ABC', 'abcabc'],
+        errors: [],
+      });
+    });
+
+    it('passes context through tasks when ran', async () => {
+      const context = { parallel: 'task' };
+
+      routine = new ContextRoutine('context', 'title');
+      routine.action = (con, value) => routine.poolTasks(value);
+
+      await routine.run(context);
+
+      expect(context).toEqual({
+        bar: 456,
+        baz: 789,
+        foo: 123,
+        parallel: 'task',
+      });
+      expect(routine.context).toBe(context);
+    });
+
+    it('synchronizes promises, collects errors, and lets all promises finish', async () => {
+      let count = 0;
+
+      routine.task('foo', () => {
+        count += 1;
+
+        return 'foo';
+      });
+      routine.task('bar', () => {
+        count += 1;
+
+        return 'bar';
+      });
+      routine.task('err', () => new Error('Failure'));
+      routine.task('baz', () => {
+        count += 1;
+
+        return 'baz';
+      });
+      routine.task('qux', () => {
+        count += 1;
+
+        return 'qux';
+      });
+
+      routine.action = () => routine.poolTasks();
+
+      const response = await routine.run();
+
+      expect(count).toBe(4);
+      expect(response).toEqual({
+        errors: [new Error('Failure')],
+        results: ['foo', 'bar', 'baz', 'qux'],
+      });
+    });
+
+    it('can run a specific list of routines', async () => {
+      const foo = routine.task('title', () => {});
+      const bar = routine.task('title', () => {});
+      const baz = routine.task('title', () => {});
+
+      routine.action = (con, value) => routine.poolTasks(value, {}, [bar]);
+
+      await routine.run({});
+
+      expect(foo.isPending()).toBe(true);
+      expect(bar.isPending()).toBe(false);
+      expect(baz.isPending()).toBe(true);
     });
   });
 
@@ -514,84 +561,6 @@ describe('Routine', () => {
     });
   });
 
-  describe('serialize()', () => {
-    it('returns initial value if no processes', async () => {
-      expect(await routine.serialize([], () => {}, 123)).toBe(123);
-    });
-
-    it('passes strings down the chain in order', async () => {
-      expect(await routine.serialize(['foo', 'bar', 'baz'], (next, prev) => prev + next, '')).toBe(
-        'foobarbaz',
-      );
-    });
-
-    it('passes numbers down the chain in order', async () => {
-      expect(await routine.serialize([1, 2, 3], (next, prev) => prev + next * 2, 0)).toBe(12);
-    });
-
-    it('passes promises down the chain in order', async () => {
-      expect(
-        await routine.serialize(
-          [
-            value => Promise.resolve([...value, 'foo']),
-            value => Promise.resolve(['bar', ...value]),
-            value => Promise.resolve(value.concat(['baz'])),
-          ],
-          (func, value) => func(value),
-          [],
-        ),
-      ).toEqual(['bar', 'foo', 'baz']);
-    });
-
-    it('aborts early if an error occurs', async () => {
-      let count = 0;
-
-      function incCount(value) {
-        count += 1;
-
-        return value;
-      }
-
-      try {
-        await routine.serialize(
-          [incCount, incCount, () => Promise.reject(new Error('Abort')), incCount, incCount],
-          (func, value) => func(value),
-          [],
-        );
-      } catch (error) {
-        expect(error).toEqual(new Error('Abort'));
-      }
-
-      expect(count).toBe(2);
-    });
-
-    it('handles buffers', async () => {
-      const result = await routine.serialize(
-        [
-          buffer => {
-            buffer.write('foo', 0, 3);
-
-            return buffer;
-          },
-          buffer => {
-            buffer.write('bar', 3, 3);
-
-            return buffer;
-          },
-          buffer => {
-            buffer.write('baz', 6, 3);
-
-            return buffer;
-          },
-        ],
-        (func, buffer) => func(buffer),
-        Buffer.alloc(9),
-      );
-
-      expect(result.toString('utf8')).toBe('foobarbaz');
-    });
-  });
-
   describe('serializeRoutines()', () => {
     class SerializeSubsRoutine extends Routine {
       constructor(...args) {
@@ -657,9 +626,9 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = new Routine('foo', 'title');
-      const bar = new Routine('bar', 'title');
-      const baz = new Routine('baz', 'title');
+      const foo = createTestRoutine(tool, 'foo');
+      const bar = createTestRoutine(tool, 'bar');
+      const baz = createTestRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -747,23 +716,6 @@ describe('Routine', () => {
     });
   });
 
-  describe('synchronize()', () => {
-    it('separates errors and results', async () => {
-      const response = await routine.synchronize([
-        Promise.resolve(123),
-        Promise.resolve(456),
-        Promise.resolve(new Error('Foo')),
-        Promise.resolve(789),
-        Promise.resolve(321),
-      ]);
-
-      expect(response).toEqual({
-        errors: [new Error('Foo')],
-        results: [123, 456, 789, 321],
-      });
-    });
-  });
-
   describe('synchronizeRoutines()', () => {
     it('returns a resolved promise if no routines exist', async () => {
       expect(await routine.synchronizeRoutines('abc')).toEqual({ results: [], errors: [] });
@@ -794,19 +746,6 @@ describe('Routine', () => {
       expect(routine.context).toBe(context);
     });
 
-    it('calls `executeRoutine` with correct args', async () => {
-      const spy = jest.fn(() => Promise.resolve());
-      const sub = new ContextRoutine('foo', 'title', { multiplier: 1 });
-
-      routine.pipe(sub);
-      routine.action = (con, value) => routine.synchronizeRoutines(value);
-      routine.executeRoutine = spy;
-
-      await routine.run();
-
-      expect(spy).toHaveBeenCalledWith(sub, undefined, true);
-    });
-
     it('synchronizes promises, collects errors, and lets all promises finish', async () => {
       const context = { count: 1 };
 
@@ -829,9 +768,9 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = new Routine('foo', 'title');
-      const bar = new Routine('bar', 'title');
-      const baz = new Routine('baz', 'title');
+      const foo = createTestRoutine(tool, 'foo');
+      const bar = createTestRoutine(tool, 'bar');
+      const baz = createTestRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -878,20 +817,6 @@ describe('Routine', () => {
         parallel: 'task',
       });
       expect(routine.context).toBe(context);
-    });
-
-    it('calls `executeTask` with correct args', async () => {
-      const spy = jest.fn(() => Promise.resolve());
-
-      routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.synchronizeTasks(value);
-      routine.executeTask = spy;
-
-      await routine.run();
-
-      expect(spy).toHaveBeenCalledWith(routine.tasks[0], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.tasks[1], undefined, true);
-      expect(spy).toHaveBeenCalledWith(routine.tasks[2], undefined, true);
     });
 
     it('synchronizes promises, collects errors, and lets all promises finish', async () => {
@@ -971,7 +896,7 @@ describe('Routine', () => {
         ({ config } = this);
       });
 
-      await routine.executeTask(routine.tasks[0]);
+      await routine.tasks[0].run();
 
       expect(config).toEqual(routine.config);
     });
