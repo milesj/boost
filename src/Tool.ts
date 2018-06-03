@@ -18,6 +18,7 @@ import DefaultReporter from './DefaultReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import isObject from './helpers/isObject';
+import themePalettes from './themes';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, ToolConfig, PackageConfig } from './types';
 
@@ -45,6 +46,7 @@ export interface ToolInterface extends EmitterInterface {
   initialize(): this;
   getPlugin(name: string): PluginInterface;
   getReporter(name: string): ReporterInterface;
+  getThemeList(): string[];
   log(message: string, ...args: any[]): this;
   logError(message: string, ...args: any[]): this;
 }
@@ -155,6 +157,13 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     }
 
     throw new Error(`Failed to find reporter "${name}". Have you installed it?`);
+  }
+
+  /**
+   * Return a list of all theme names.
+   */
+  getThemeList(): string[] {
+    return Object.keys(themePalettes);
   }
 
   /**

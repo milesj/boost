@@ -77,7 +77,7 @@ describe('PoolExecutor', () => {
     const bar = new Task('bar', () => 456);
     const baz = new Task('baz', () => 789);
 
-    await executor.run([foo, bar, baz]);
+    const results = await executor.run([foo, bar, baz]);
 
     expect(executor.queue).toHaveLength(0);
     expect(executor.running).toHaveLength(0);

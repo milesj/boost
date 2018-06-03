@@ -103,6 +103,15 @@ describe('Tool', () => {
     });
   });
 
+  describe('getThemeList()', () => {
+    it('returns a list of themes', () => {
+      const themes = tool.getThemeList();
+
+      expect(themes.length).not.toBe(0);
+      expect(themes).toContain('one-dark');
+    });
+  });
+
   describe('initialize()', () => {
     it('loads config', () => {
       expect(tool.config).toEqual({});
