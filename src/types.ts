@@ -11,10 +11,6 @@ export interface Debugger extends debug.IDebugger {
   invariant(condition: boolean, message: string, pass: string, fail: string): void;
 }
 
-export interface Context {
-  [key: string]: any;
-}
-
 export interface PluginConfig {
   plugin: string;
   [key: string]: any;

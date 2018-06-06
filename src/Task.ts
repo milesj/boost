@@ -4,6 +4,7 @@
  */
 
 import { Struct } from 'optimal';
+import Context from './Context';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -11,7 +12,7 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
-import { Context, Status } from './types';
+import { Status } from './types';
 
 export interface TaskInterface {
   startTime: number;
@@ -25,7 +26,7 @@ export interface TaskInterface {
   isSkipped(): boolean;
   hasFailed(): boolean;
   hasPassed(): boolean;
-  run<T>(context: any, initialValue?: T | null): Promise<any>;
+  run<T>(context: Context, initialValue?: T | null): Promise<any>;
   skip(condition?: boolean): this;
 }
 

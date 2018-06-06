@@ -5,6 +5,7 @@
 
 import ConfigLoader from './ConfigLoader';
 import { ConsoleInterface } from './Console';
+import Context from './Context';
 import Emitter, { EmitterInterface, EventArguments, EventListener } from './Emitter';
 import Module, { ModuleInterface } from './Module';
 import ModuleLoader from './ModuleLoader';
@@ -18,6 +19,7 @@ import Tool, { ToolInterface, ToolOptions } from './Tool';
 export {
   ConfigLoader,
   ConsoleInterface,
+  Context,
   Emitter,
   EmitterInterface,
   EventArguments,

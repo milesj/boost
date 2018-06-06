@@ -5,6 +5,7 @@
 
 import os from 'os';
 import optimal, { bool, number } from 'optimal';
+import Context from '../Context';
 import Executor, { AggregatedResponse } from '../Executor';
 import { TaskInterface } from '../Task';
 import { ToolInterface } from '../Tool';
@@ -28,7 +29,7 @@ export default class PoolExecutor extends Executor<PoolExecutorOptions> {
 
   timeoutTimer: number = 0;
 
-  constructor(tool: ToolInterface, context: any, options: Partial<PoolExecutorOptions> = {}) {
+  constructor(tool: ToolInterface, context: Context, options: Partial<PoolExecutorOptions> = {}) {
     super(tool, context, options);
 
     this.options = optimal(options, {

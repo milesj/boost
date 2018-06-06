@@ -6,6 +6,7 @@
 import { Struct } from 'optimal';
 import kebabCase from 'lodash/kebabCase';
 import wrapWithPromise from './helpers/wrapWithPromise';
+import Context from './Context';
 import { RoutineInterface } from './Routine';
 import { TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
@@ -17,7 +18,7 @@ export interface AggregatedResponse {
 }
 
 export default class Executor<To extends Struct = {}> {
-  context: any;
+  context: Context;
 
   debug: Debugger;
 
@@ -25,7 +26,7 @@ export default class Executor<To extends Struct = {}> {
 
   tool: ToolInterface;
 
-  constructor(tool: ToolInterface, context: any, options: Partial<To> = {}) {
+  constructor(tool: ToolInterface, context: Context, options: Partial<To> = {}) {
     this.context = context;
     this.debug = tool.createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;

@@ -3,16 +3,18 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import { Struct } from 'optimal';
+import Context from './Context';
 import Routine from './Routine';
 import Tool, { ToolInterface } from './Tool';
 import { PluginInterface } from './Plugin';
-import { Context, ToolConfig } from './types';
+import { ToolConfig } from './types';
 
 export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<
   ToolConfig,
   Tx
 > {
-  constructor(tool: ToolInterface, context?: Tx) {
+  constructor(tool: ToolInterface, context: Tx) {
     super('root', 'Pipeline');
 
     if (tool instanceof Tool) {
@@ -24,9 +26,7 @@ export default class Pipeline<Tp extends PluginInterface, Tx extends Context> ex
     this.tool = tool;
     this.tool.debug('Instantiating pipeline');
 
-    if (context) {
-      this.setContext(context);
-    }
+    this.setContext(context);
   }
 
   /**

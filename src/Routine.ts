@@ -14,10 +14,11 @@ import execa, {
 import split from 'split';
 import { Readable } from 'stream';
 import { Struct } from 'optimal';
+import Context from './Context';
 import Task, { TaskAction, TaskInterface } from './Task';
 import { ToolInterface } from './Tool';
 import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Debugger, Context } from './types';
+import { Debugger } from './types';
 import { AggregatedResponse } from './Executor';
 import ParallelExecutor from './executors/Parallel';
 import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
@@ -35,7 +36,7 @@ export interface RoutineInterface extends TaskInterface {
   key: string;
   routines: RoutineInterface[];
   tool: ToolInterface;
-  run<T>(context: any, initialValue?: T | null, wasParallel?: boolean): Promise<any>;
+  run<T>(context: Context, initialValue?: T | null, wasParallel?: boolean): Promise<any>;
 }
 
 export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx>
