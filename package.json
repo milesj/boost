@@ -38,12 +38,11 @@
     "node": ">=6.5.0"
   },
   "dependencies": {
-    "@types/chalk": "^2.2.0",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.9.0",
     "@types/glob": "^5.0.35",
     "@types/json5": "^0.0.29",
-    "@types/lodash": "^4.14.109",
+    "@types/lodash": "^4.14.110",
     "@types/pluralize": "^0.0.28",
     "@types/split": "^0.3.28",
     "chalk": "^2.4.1",
@@ -53,15 +52,15 @@
     "glob": "^7.1.2",
     "json5": "^1.0.1",
     "lodash": "^4.17.10",
-    "optimal": "^0.19.0",
+    "optimal": "^1.0.0",
     "pluralize": "^7.0.0",
     "split": "^1.0.1"
   },
   "peerDependencies": {
-    "optimal": "^0.19.0"
+    "optimal": "^1.0.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.100.1",
+    "@milesj/build-tool-config": "0.102.3",
     "fs-extra": "^6.0.1"
   },
   "beemo": {
