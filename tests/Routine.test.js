@@ -2,7 +2,6 @@
 
 import Routine from '../src/Routine';
 import Task from '../src/Task';
-import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { createTestTool, createTestRoutine } from './helpers';
 

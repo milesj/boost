@@ -1,7 +1,6 @@
 import JSON5 from 'json5';
 import { number } from 'optimal';
 import ConfigLoader from '../src/ConfigLoader';
-import Tool from '../src/Tool';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import {
   getTestRoot,

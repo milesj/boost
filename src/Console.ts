@@ -3,7 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import chalk from 'chalk';
 import Emitter, { EmitterInterface } from './Emitter';
 
 export interface ConsoleInterface extends EmitterInterface {

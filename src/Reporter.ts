@@ -5,9 +5,7 @@
 
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
-import path from 'path';
-import rl from 'readline';
-import chalk, { Chalk } from 'chalk';
+import chalk from 'chalk';
 import optimal, { bool, number, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';

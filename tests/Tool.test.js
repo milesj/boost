@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';

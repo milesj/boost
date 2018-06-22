@@ -3,12 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import rl from 'readline';
 import cliTruncate from 'cli-truncate';
 import { ConsoleInterface } from './Console';
 import Reporter, { ReporterOptions } from './Reporter';
 import Routine, { RoutineInterface } from './Routine';
-import Task, { TaskInterface } from './Task';
+import { TaskInterface } from './Task';
 
 export interface Line {
   depth: number;

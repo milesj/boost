@@ -28,7 +28,7 @@ describe('ParallelExecutor', () => {
     executor.executeTask = taskSpy;
     executor.executeRoutine = routineSpy;
 
-    const results = await executor.run([task, routine], 'foo');
+    await executor.run([task, routine], 'foo');
 
     expect(taskSpy).toHaveBeenCalledWith(task, 'foo', true);
     expect(routineSpy).toHaveBeenCalledWith(routine, 'foo', true);

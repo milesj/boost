@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import Console from '../src/Console';
 
 describe('Console', () => {

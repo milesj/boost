@@ -1,6 +1,6 @@
 import Executor from '../src/Executor';
 import Task from '../src/Task';
-import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
+import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 import { createTestTool, createTestRoutine } from './helpers';
 
 describe('Executor()', () => {

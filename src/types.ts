@@ -4,7 +4,7 @@
  */
 
 import debug from 'debug';
-import { Blueprint, Struct } from 'optimal';
+import { Struct } from 'optimal';
 
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;

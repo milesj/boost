@@ -3,7 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Struct } from 'optimal';
 import Context from './Context';
 import Routine from './Routine';
 import Tool, { ToolInterface } from './Tool';

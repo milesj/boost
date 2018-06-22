@@ -3,8 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { ChildProcess } from 'child_process';
-import chalk from 'chalk';
 import execa, {
   Options as ExecaOptions,
   SyncOptions as ExecaSyncOptions,
