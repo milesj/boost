@@ -10,7 +10,7 @@ import Executor, { AggregatedResponse } from '../Executor';
 import { TaskInterface } from '../Task';
 import { ToolInterface } from '../Tool';
 
-export const TIMEOUT = 60000; // ms
+export const TIMEOUT = 120000; // ms
 
 export interface PoolExecutorOptions {
   concurrency: number;
@@ -27,7 +27,7 @@ export default class PoolExecutor extends Executor<PoolExecutorOptions> {
 
   running: TaskInterface[] = [];
 
-  timeoutTimer: number = 0;
+  timeoutTimer?: NodeJS.Timer;
 
   constructor(tool: ToolInterface, context: Context, options: Partial<PoolExecutorOptions> = {}) {
     super(tool, context, options);
@@ -59,9 +59,22 @@ export default class PoolExecutor extends Executor<PoolExecutorOptions> {
       Promise.all(this.queue.slice(0, concurrency).map(() => this.runTask(value)));
 
       if (timeout) {
-        this.timeoutTimer = setTimeout(resolve, timeout);
+        this.timeoutTimer = setTimeout(() => this.resolve(), timeout);
       }
     });
+  }
+
+  /**
+   * Resolve the execution with the current results.
+   */
+  resolve() {
+    if (this.resolver) {
+      this.resolver(this.aggregateResponse(this.results));
+    }
+
+    if (this.timeoutTimer) {
+      clearTimeout(this.timeoutTimer);
+    }
   }
 
   /**
@@ -94,12 +107,8 @@ export default class PoolExecutor extends Executor<PoolExecutorOptions> {
   nextTask<T>(value?: T) {
     if (this.queue.length > 0 && this.running.length < this.options.concurrency) {
       this.runTask(value);
-    } else if (this.queue.length === 0 && this.running.length === 0 && this.resolver) {
-      this.resolver(this.aggregateResponse(this.results));
-
-      if (this.timeoutTimer) {
-        clearTimeout(this.timeoutTimer);
-      }
+    } else if (this.queue.length === 0 && this.running.length === 0) {
+      this.resolve();
     }
   }
 }
