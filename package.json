@@ -1,8 +1,16 @@
 {
   "name": "boost",
-  "version": "0.60.2",
+  "version": "0.60.3",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
-  "keywords": ["boost", "build", "tool", "pipeline", "routine", "task", "config"],
+  "keywords": [
+    "boost",
+    "build",
+    "tool",
+    "pipeline",
+    "routine",
+    "task",
+    "config"
+  ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
