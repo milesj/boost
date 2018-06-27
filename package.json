@@ -23,7 +23,7 @@
     "test": "yarn run jest",
     "posttest": "yarn run eslint",
     "type": "beemo typescript --noEmit",
-    "prerelease": "yarn run build && yarn test",
+    "prerelease": "yarn test && yarn run build",
     "release": "np --yolo --no-yarn"
   },
   "repository": {
