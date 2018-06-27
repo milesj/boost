@@ -102,7 +102,7 @@ export default class Executor<To extends Struct = {}> {
   }
 
   /**
-   * Importing Routine causes a circular reference, so we cant use an instanceof check,
+   * Importing Routine causes a circular reference, so we can't use an instanceof check,
    * so we need to hackily check this another way.
    * */
   getInstanceType(task: TaskInterface | RoutineInterface): string {

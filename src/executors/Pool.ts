@@ -10,8 +10,6 @@ import Executor, { AggregatedResponse } from '../Executor';
 import { TaskInterface } from '../Task';
 import { ToolInterface } from '../Tool';
 
-export const TIMEOUT = 120000; // ms
-
 export interface PoolExecutorOptions {
   concurrency: number;
   fifo: boolean;
@@ -35,7 +33,7 @@ export default class PoolExecutor extends Executor<PoolExecutorOptions> {
     this.options = optimal(options, {
       concurrency: number(os.cpus().length).gte(1),
       fifo: bool(true),
-      timeout: number(TIMEOUT).gte(0),
+      timeout: number(0).gte(0),
     });
   }
 
