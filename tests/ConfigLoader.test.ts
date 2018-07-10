@@ -11,13 +11,13 @@ import {
   createTestTool,
 } from './helpers';
 
-function createJavascriptFile(data) {
+function createJavascriptFile(data: any): string {
   return `module.exports = ${JSON5.stringify(data)};`;
 }
 
 describe('ConfigLoader', () => {
-  let loader;
-  let fixtures = [];
+  let loader: ConfigLoader;
+  let fixtures: (() => void)[] = [];
 
   beforeEach(() => {
     const tool = createTestTool({
@@ -36,12 +36,17 @@ describe('ConfigLoader', () => {
 
   describe('findConfigInPackageJSON()', () => {
     it('returns null if not found', () => {
-      expect(loader.findConfigInPackageJSON({})).toBeNull();
+      expect(
+        loader.findConfigInPackageJSON({
+          name: '',
+        }),
+      ).toBeNull();
     });
 
     it('returns object if found', () => {
       expect(
         loader.findConfigInPackageJSON({
+          name: '',
           testBoost: {
             foo: 'bar',
           },
@@ -54,6 +59,7 @@ describe('ConfigLoader', () => {
     it('returns extends object if a string is passed', () => {
       expect(
         loader.findConfigInPackageJSON({
+          name: '',
           testBoost: './foo.json',
         }),
       ).toEqual({
@@ -314,6 +320,7 @@ describe('ConfigLoader', () => {
   describe('parseAndExtend()', () => {
     it('errors if a non-string or non-object is provided', () => {
       expect(() => {
+        // @ts-ignore
         loader.parseAndExtend(123);
         loader.parseAndExtend([]);
       }).toThrowError('Invalid configuration. Must be a plain object.');
@@ -584,6 +591,7 @@ describe('ConfigLoader', () => {
   describe('resolveExtendPaths()', () => {
     it('errors if `extends` value is not a string', () => {
       expect(() => {
+        // @ts-ignore
         loader.resolveExtendPaths([123]);
       }).toThrowError('Invalid `extends` configuration value. Must be an array of strings.');
     });

@@ -1,7 +1,7 @@
 import Emitter from '../src/Emitter';
 
 describe('Emitter', () => {
-  let emitter;
+  let emitter: Emitter;
 
   beforeEach(() => {
     emitter = new Emitter();
@@ -56,7 +56,7 @@ describe('Emitter', () => {
     });
 
     it('executes listeners syncronously with arguments', () => {
-      const output = [];
+      const output: number[] = [];
 
       emitter.on('foo', (a, b) => {
         output.push(a, b * 2);
@@ -94,7 +94,7 @@ describe('Emitter', () => {
     });
 
     it('executes listeners syncronously with arguments while passing values to each', () => {
-      const value = [];
+      const value: string[] = [];
 
       emitter.on('foo', (a, b, c) => {
         value.push(a.repeat(3));
@@ -229,6 +229,7 @@ describe('Emitter', () => {
   describe('on()', () => {
     it('errors if listener is not a function', () => {
       expect(() => {
+        // @ts-ignore
         emitter.on('foo', 123);
       }).toThrowError('Invalid event listener for "foo", must be a function.');
     });

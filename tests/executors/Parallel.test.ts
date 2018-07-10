@@ -3,7 +3,7 @@ import Task from '../../src/Task';
 import { createTestTool, createTestRoutine } from '../helpers';
 
 describe('ParallelExecutor', () => {
-  let executor;
+  let executor: ParallelExecutor;
 
   beforeEach(() => {
     executor = new ParallelExecutor(createTestTool(), {});

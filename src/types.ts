@@ -5,6 +5,8 @@
 
 import debug from 'debug';
 import { Struct } from 'optimal';
+import { PluginInterface } from './Plugin';
+import { ReporterInterface } from './Reporter';
 
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
@@ -24,8 +26,8 @@ export interface ReporterConfig {
 export interface ToolConfig extends Struct {
   debug: boolean;
   extends: string | string[];
-  plugins: (string | PluginConfig)[];
-  reporters: (string | ReporterConfig)[];
+  plugins: (string | PluginConfig | PluginInterface)[];
+  reporters: (string | ReporterConfig | ReporterInterface)[];
   [key: string]: any;
 }
 

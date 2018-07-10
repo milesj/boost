@@ -1,13 +1,17 @@
 import chalk from 'chalk';
 import DefaultReporter from '../src/DefaultReporter';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
+import Routine, { RoutineInterface } from '../src/Routine';
+import Task, { TaskInterface } from '../src/Task';
+import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+import { createTestRoutine } from './helpers';
+
+jest.mock('../src/Console');
 
 const oldNow = Date.now;
 
 describe('DefaultReporter', () => {
-  let reporter;
+  let reporter: DefaultReporter;
 
   beforeEach(() => {
     reporter = new DefaultReporter();
@@ -24,9 +28,10 @@ describe('DefaultReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = jest.fn();
+      const cli = new Console();
+      const spy = jest.spyOn(cli, 'on');
 
-      reporter.bootstrap({ on: spy });
+      reporter.bootstrap(cli);
 
       expect(spy).toHaveBeenCalledWith('start', expect.anything());
       expect(spy).toHaveBeenCalledWith('task', expect.anything());
@@ -283,7 +288,7 @@ describe('DefaultReporter', () => {
 
   describe('handleTask()', () => {
     it('debounces render', () => {
-      reporter.handleTask(new Task('task'));
+      reporter.handleTask(new Task('task'), createTestRoutine());
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -311,7 +316,7 @@ describe('DefaultReporter', () => {
 
   describe('handleTaskComplete()', () => {
     it('debounces render', () => {
-      reporter.handleTaskComplete(new Task('task'));
+      reporter.handleTaskComplete(new Task('task'), createTestRoutine());
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -329,7 +334,7 @@ describe('DefaultReporter', () => {
 
   describe('handleRoutine()', () => {
     it('debounces render', () => {
-      reporter.handleRoutine(new Routine('key', 'title'));
+      reporter.handleRoutine(new Routine('key', 'title'), '', false);
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -337,7 +342,7 @@ describe('DefaultReporter', () => {
     it('adds the routine as a line', () => {
       const routine = new Routine('key', 'title');
 
-      reporter.handleRoutine(routine);
+      reporter.handleRoutine(routine, '', false);
 
       expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
@@ -345,7 +350,7 @@ describe('DefaultReporter', () => {
     it('increases depth', () => {
       expect(reporter.depth).toBe(0);
 
-      reporter.handleRoutine(new Routine('key', 'title'));
+      reporter.handleRoutine(new Routine('key', 'title'), '', false);
 
       expect(reporter.depth).toBe(1);
     });
@@ -353,7 +358,7 @@ describe('DefaultReporter', () => {
     it('doesnt increase depth if ran as parallel', () => {
       expect(reporter.depth).toBe(0);
 
-      reporter.handleRoutine(new Routine('key', 'title'), null, true);
+      reporter.handleRoutine(new Routine('key', 'title'), '', true);
 
       expect(reporter.depth).toBe(0);
     });
@@ -361,7 +366,7 @@ describe('DefaultReporter', () => {
 
   describe('handleRoutineComplete()', () => {
     it('debounces render', () => {
-      reporter.handleRoutineComplete(new Routine('key', 'title'));
+      reporter.handleRoutineComplete(new Routine('key', 'title'), '', false);
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
@@ -370,10 +375,10 @@ describe('DefaultReporter', () => {
       const routine = new Routine('key', 'title');
 
       reporter.options.verbose = 2;
-      reporter.lines = [{ depth: 0, routine }];
+      reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
 
-      reporter.handleRoutineComplete(routine);
+      reporter.handleRoutineComplete(routine, '', false);
 
       expect(reporter.lines).toEqual([]);
     });
@@ -381,30 +386,30 @@ describe('DefaultReporter', () => {
     it('doesnt remove line if depth becomes 0', () => {
       const routine = new Routine('key', 'title');
 
-      reporter.lines = [{ depth: 0, routine }];
+      reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete(routine);
+      reporter.handleRoutineComplete(routine, '', false);
 
-      expect(reporter.lines).toEqual([{ depth: 0, routine }]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
 
     it('doesnt remove line if verbose is 3', () => {
       const routine = new Routine('key', 'title');
 
-      reporter.lines = [{ depth: 0, routine }];
+      reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
       reporter.options.verbose = 3;
 
-      reporter.handleRoutineComplete(routine);
+      reporter.handleRoutineComplete(routine, '', false);
 
-      expect(reporter.lines).toEqual([{ depth: 0, routine }]);
+      expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
 
     it('decreses depth', () => {
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete(new Routine('key', 'title'));
+      reporter.handleRoutineComplete(new Routine('key', 'title'), '', false);
 
       expect(reporter.depth).toBe(0);
     });
@@ -412,7 +417,7 @@ describe('DefaultReporter', () => {
     it('doesnt decrese depth if ran as parallel', () => {
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete(new Routine('key', 'title'), null, true);
+      reporter.handleRoutineComplete(new Routine('key', 'title'), '', true);
 
       expect(reporter.depth).toBe(1);
     });
@@ -474,8 +479,8 @@ describe('DefaultReporter', () => {
     });
 
     describe('task', () => {
-      let routine;
-      let task;
+      let routine: RoutineInterface;
+      let task: TaskInterface;
 
       beforeEach(() => {
         routine = new Routine('foo', 'This is a routine');

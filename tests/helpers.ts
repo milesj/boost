@@ -1,25 +1,26 @@
 import fs from 'fs-extra';
 import path from 'path';
-import Tool from '../src/Tool';
+import Tool, { ToolOptions, ToolInterface } from '../src/Tool';
 import Routine from '../src/Routine';
+import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
 // and the `mock-fs` module was super painful.
 
-export function getFixturePath(fixture, file = '') {
+export function getFixturePath(fixture: string, file: string = ''): string {
   return path.join(__dirname, `./fixtures/${fixture}`, file);
 }
 
-export function getTestRoot() {
+export function getTestRoot(): string {
   return getFixturePath('app');
 }
 
-export function getModulePath(name, file = '') {
+export function getModulePath(name: string, file: string = ''): string {
   return path.join(getTestRoot(), `./node_modules/${name}`, file);
 }
 
-export function copyFixtureToModule(fixture, name) {
+export function copyFixtureToModule(fixture: string, name: string): () => void {
   const modulePath = getModulePath(name);
 
   fs.copySync(getFixturePath(fixture), modulePath, { overwrite: true });
@@ -33,7 +34,7 @@ export function copyFixtureToModule(fixture, name) {
   return () => fs.removeSync(modulePath);
 }
 
-export function copyFixtureToMock(fixture, name) {
+export function copyFixtureToMock(fixture: string, name: string): () => void {
   const module = require.requireActual(getFixturePath(fixture));
 
   jest.doMock(name, () => module, { virtual: true });
@@ -41,7 +42,7 @@ export function copyFixtureToMock(fixture, name) {
   return () => jest.dontMock(name);
 }
 
-export function createTempFileInRoot(file, data) {
+export function createTempFileInRoot(file: string, data: any): () => void {
   const filePath = getFixturePath('app', file);
 
   fs.writeFileSync(filePath, data);
@@ -49,22 +50,36 @@ export function createTempFileInRoot(file, data) {
   return () => fs.removeSync(filePath);
 }
 
-export function createTestTool(options) {
+export function createTestDebugger(): any {
+  const debug = jest.fn();
+
+  // @ts-ignore
+  debug.invariant = jest.fn();
+
+  return debug;
+}
+
+export function createTestTool(options?: Partial<ToolOptions>): Tool<any> {
   const tool = new Tool({
     appName: 'test-boost',
     ...options,
   });
-  tool.config = {};
-  tool.package = {};
+
+  tool.config = { ...DEFAULT_TOOL_CONFIG };
+  tool.package = { name: '' };
   tool.initialized = true; // Avoid loaders
 
   return tool;
 }
 
-export function createTestRoutine(tool, key = 'key') {
+export function createTestRoutine(
+  tool?: Tool<any> | ToolInterface,
+  key: string = 'key',
+): Routine<any, any> {
   const routine = new Routine(key, 'Title');
-  routine.tool = tool;
-  routine.debug = () => {};
+
+  routine.tool = tool || createTestTool();
+  routine.debug = createTestDebugger();
   routine.action = (context, value) => value; // Avoid execute exception
 
   return routine;

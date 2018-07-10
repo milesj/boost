@@ -8,7 +8,7 @@ import {
 } from '../src/constants';
 
 describe('Task', () => {
-  let task;
+  let task: Task<any, any>;
 
   beforeEach(() => {
     task = new Task('title', (con, value) => value * 2);
@@ -20,10 +20,12 @@ describe('Task', () => {
     });
 
     it('errors if title is not a string', () => {
+      // @ts-ignore
       expect(() => new Task(123)).toThrowError('Tasks require a title.');
     });
 
     it('errors if action is not a function', () => {
+      // @ts-ignore
       expect(() => new Task('title', 123)).toThrowError('Tasks require an executable function.');
     });
 
@@ -206,6 +208,7 @@ describe('Task', () => {
     it('evaluates a condition to determine whether to skip', () => {
       expect(task.status).toBe(STATUS_PENDING);
 
+      // @ts-ignore
       task.skip(1 === 2);
 
       expect(task.status).toBe(STATUS_PENDING);

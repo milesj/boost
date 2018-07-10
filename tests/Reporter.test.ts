@@ -3,12 +3,15 @@
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
 import Task from '../src/Task';
+import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+
+jest.mock('../src/Console');
 
 const oldNow = Date.now;
 
 describe('Reporter', () => {
-  let reporter;
+  let reporter: Reporter<any, any>;
 
   beforeEach(() => {
     reporter = new Reporter();
@@ -18,14 +21,15 @@ describe('Reporter', () => {
 
   describe('bootstrap()', () => {
     it('sets start and stop events', () => {
-      const cli = { on: jest.fn() };
+      const cli = new Console();
+      const spy = jest.spyOn(cli, 'on');
 
       reporter.bootstrap(cli);
 
-      expect(cli.on).toHaveBeenCalledWith('start', expect.anything());
-      expect(cli.on).toHaveBeenCalledWith('stop', expect.anything());
-      expect(cli.on).toHaveBeenCalledWith('log', expect.anything());
-      expect(cli.on).toHaveBeenCalledWith('log.error', expect.anything());
+      expect(spy).toHaveBeenCalledWith('start', expect.anything());
+      expect(spy).toHaveBeenCalledWith('stop', expect.anything());
+      expect(spy).toHaveBeenCalledWith('log', expect.anything());
+      expect(spy).toHaveBeenCalledWith('log.error', expect.anything());
     });
   });
 
@@ -71,7 +75,7 @@ describe('Reporter', () => {
   });
 
   describe('debounceRender()', () => {
-    let spy;
+    let spy: jest.SpyInstance;
 
     beforeEach(() => {
       jest.useFakeTimers();
@@ -110,8 +114,8 @@ describe('Reporter', () => {
   });
 
   describe('displayFinalOutput()', () => {
-    let timeoutSpy;
-    let intervalSpy;
+    let timeoutSpy: jest.SpyInstance;
+    let intervalSpy: jest.SpyInstance;
 
     beforeEach(() => {
       timeoutSpy = jest.spyOn(global, 'clearTimeout');
@@ -128,6 +132,7 @@ describe('Reporter', () => {
 
       expect(timeoutSpy).not.toHaveBeenCalled();
 
+      // @ts-ignore
       reporter.renderTimer = 1;
       reporter.displayFinalOutput();
 
@@ -139,6 +144,7 @@ describe('Reporter', () => {
 
       expect(intervalSpy).not.toHaveBeenCalled();
 
+      // @ts-ignore
       reporter.intervalTimer = 1;
       reporter.displayFinalOutput();
 
@@ -383,7 +389,7 @@ describe('Reporter', () => {
     const oldCI = process.env.CI;
 
     beforeEach(() => {
-      process.env.CI = false;
+      process.env.CI = '';
       jest.useFakeTimers();
     });
 
@@ -399,16 +405,16 @@ describe('Reporter', () => {
     });
 
     it('sets an interval if not in a CI', () => {
-      process.env.CI = false;
+      process.env.CI = '';
       reporter.handleBaseStart();
 
       expect(setInterval).toHaveBeenCalled();
     });
 
     it('doesnt set an interval if in a CI', () => {
-      process.env.CI = true;
+      process.env.CI = 'true';
       reporter.handleBaseStart();
-      process.env.CI = false;
+      process.env.CI = '';
 
       expect(setInterval).not.toHaveBeenCalled();
     });
@@ -424,7 +430,7 @@ describe('Reporter', () => {
     });
 
     it('sets stop time', () => {
-      reporter.handleBaseStop();
+      reporter.handleBaseStop(null);
 
       expect(reporter.stopTime).not.toBe(0);
     });
@@ -432,8 +438,9 @@ describe('Reporter', () => {
     it('clears an interval', () => {
       const spy = jest.spyOn(global, 'clearInterval');
 
+      // @ts-ignore
       reporter.intervalTimer = 1;
-      reporter.handleBaseStop();
+      reporter.handleBaseStop(null);
 
       expect(spy).toHaveBeenCalled();
     });

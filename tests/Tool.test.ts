@@ -9,7 +9,7 @@ import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 jest.mock('../src/helpers/enableDebug');
 
 describe('Tool', () => {
-  let tool;
+  let tool: Tool<any>;
 
   beforeEach(() => {
     tool = createTestTool({
@@ -58,7 +58,7 @@ describe('Tool', () => {
     });
 
     it('accepts an error', () => {
-      const error = new Error('Oh nooo', 456);
+      const error = new Error('Oh nooo');
       const spy = jest.fn();
 
       tool.console.exit = spy;
@@ -113,20 +113,27 @@ describe('Tool', () => {
 
   describe('initialize()', () => {
     it('loads config', () => {
+      // @ts-ignore
+      tool.config = {};
+
       expect(tool.config).toEqual({});
-      expect(tool.package).toEqual({});
+      expect(tool.package).toEqual({ name: '' });
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
-      expect(tool.package).not.toEqual({});
+      expect(tool.package).not.toEqual({ name: '' });
       expect(tool.initialized).toBe(true);
     });
   });
 
   describe('loadConfig()', () => {
     it('doesnt load if initialized', () => {
+      // @ts-ignore
+      tool.config = {};
+      // @ts-ignore
+      tool.package = {};
       tool.initialized = true;
       tool.loadConfig();
 
@@ -170,19 +177,22 @@ describe('Tool', () => {
   describe('loadPlugins()', () => {
     it('errors if config is falsy', () => {
       expect(() => {
+        // @ts-ignore
+        tool.config = null;
         tool.loadPlugins();
       }).toThrowError('Cannot load plugins as configuration has not been loaded.');
     });
 
     it('errors if config is an empty object', () => {
       expect(() => {
+        // @ts-ignore
         tool.config = {};
         tool.loadPlugins();
       }).toThrowError('Cannot load plugins as configuration has not been loaded.');
     });
 
     it('doesnt load if no plugins found in config', () => {
-      tool.config = { plugins: [] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [] };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual([]);
@@ -190,7 +200,7 @@ describe('Tool', () => {
 
     it('doesnt load if initialized', () => {
       tool.initialized = true;
-      tool.config = { plugins: ['foo'] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual([]);
@@ -200,20 +210,20 @@ describe('Tool', () => {
       const plugin = new Plugin();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
-      tool.config = { plugins: [plugin] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [plugin] };
       tool.loadPlugins();
 
       expect(spy).toHaveBeenCalled();
     });
 
     it('bootstraps plugins with tool if bootstrap() is overridden', () => {
-      class TestPlugin extends Plugin {
+      class TestPlugin extends Plugin<any> {
         bootstrap() {}
       }
 
       const plugin = new TestPlugin();
 
-      tool.config = { plugins: [plugin] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [plugin] };
       tool.loadPlugins();
 
       expect(plugin.tool).toBe(tool);
@@ -228,7 +238,7 @@ describe('Tool', () => {
       bar.priority = 2;
       foo.priority = 3;
 
-      tool.config = { plugins: [foo, bar, baz] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [foo, bar, baz] };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual([baz, bar, foo]);
@@ -238,12 +248,15 @@ describe('Tool', () => {
   describe('loadReporters()', () => {
     it('errors if config is falsy', () => {
       expect(() => {
+        // @ts-ignore
+        tool.config = null;
         tool.loadReporters();
       }).toThrowError('Cannot load reporters as configuration has not been loaded.');
     });
 
     it('errors if config is an empty object', () => {
       expect(() => {
+        // @ts-ignore
         tool.config = {};
         tool.loadReporters();
       }).toThrowError('Cannot load reporters as configuration has not been loaded.');
@@ -257,7 +270,7 @@ describe('Tool', () => {
     });
 
     it('loads default reporter if config not set', () => {
-      tool.config = { reporters: [] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [] };
       tool.loadReporters();
 
       expect(tool.reporters[0]).toBeInstanceOf(DefaultReporter);
@@ -266,7 +279,7 @@ describe('Tool', () => {
     it('loads reporter using a string', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.config = { reporters: ['foo'] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['foo'] };
       tool.loadReporters();
 
       expect(tool.reporters[0]).toBeInstanceOf(Reporter);
@@ -279,7 +292,7 @@ describe('Tool', () => {
     it('loads reporter using an object', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
-      tool.config = { reporters: [{ reporter: 'bar' }] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
       tool.loadReporters();
 
       expect(tool.reporters[0]).toBeInstanceOf(Reporter);
@@ -296,12 +309,14 @@ describe('Tool', () => {
         footer: 'Powered by Boost',
         silent: true,
       };
-      tool.config = { reporters: ['baz'] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['baz'] };
       tool.loadReporters();
 
       const [reporter] = tool.reporters;
 
+      // @ts-ignore
       expect(reporter.options.footer).toBe('Powered by Boost');
+      // @ts-ignore
       expect(reporter.options.silent).toBe(true);
 
       unmock();

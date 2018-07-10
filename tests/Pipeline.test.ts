@@ -1,16 +1,18 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import { createTestTool } from './helpers';
+import Context from '../src/Context';
 
 describe('Pipeline', () => {
-  let pipeline;
+  let pipeline: Pipeline<any, any>;
 
   beforeEach(() => {
-    pipeline = new Pipeline(createTestTool());
+    pipeline = new Pipeline(createTestTool(), new Context());
   });
 
   describe('constructor()', () => {
     it('errors if no tool is passed', () => {
+      // @ts-ignore
       expect(() => new Pipeline()).toThrowError(
         'A build `Tool` instance is required to operate the pipeline.',
       );
@@ -47,8 +49,8 @@ describe('Pipeline', () => {
     });
 
     it('exits the console on failure', async () => {
-      class FailureRoutine extends Routine {
-        execute() {
+      class FailureRoutine extends Routine<any, any> {
+        execute(): any {
           throw new Error('Oops');
         }
       }

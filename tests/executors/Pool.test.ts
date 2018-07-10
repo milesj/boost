@@ -3,7 +3,7 @@ import Task from '../../src/Task';
 import { createTestTool, createTestRoutine } from '../helpers';
 
 describe('PoolExecutor', () => {
-  let executor;
+  let executor: PoolExecutor;
 
   beforeEach(() => {
     executor = new PoolExecutor(

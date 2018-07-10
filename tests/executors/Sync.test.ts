@@ -3,7 +3,7 @@ import Task from '../../src/Task';
 import { createTestTool, createTestRoutine } from '../helpers';
 
 describe('SyncExecutor', () => {
-  let executor;
+  let executor: SyncExecutor;
 
   beforeEach(() => {
     executor = new SyncExecutor(createTestTool(), {});

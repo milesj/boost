@@ -1,7 +1,7 @@
 import Console from '../src/Console';
 
 describe('Console', () => {
-  let cli;
+  let cli: Console;
 
   beforeEach(() => {
     cli = new Console();
@@ -31,6 +31,7 @@ describe('Console', () => {
     const oldExit = process.exit.bind(process);
 
     beforeEach(() => {
+      // @ts-ignore
       process.exit = jest.fn();
       cli.emit = jest.fn();
     });

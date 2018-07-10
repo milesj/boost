@@ -74,9 +74,9 @@
   dependencies:
     rimraf "^2.6.2"
 
-"@milesj/build-tool-config@0.110.2":
-  version "0.110.2"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.110.2.tgz#a38e6a5760033124af7c21d217f4ef2c9b2fc056"
+"@milesj/build-tool-config@0.111.0":
+  version "0.111.0"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.111.0.tgz#abdaffc42e50daff4dc85cfc9cd25395e22f7fb1"
   dependencies:
     "@beemo/cli" "^0.19.0"
     "@beemo/core" "^0.19.2"
@@ -190,6 +190,10 @@
 "@types/lodash@^4.14.110":
   version "4.14.110"
   resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.110.tgz#fb07498f84152947f30ea09d89207ca07123461e"
+
+"@types/lodash@^4.14.111":
+  version "4.14.111"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.111.tgz#d926250baa9526c0ffe85914dd10363068e7893a"
 
 "@types/micromatch@^3.1.0":
   version "3.1.0"

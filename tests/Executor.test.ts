@@ -1,17 +1,19 @@
 import Executor from '../src/Executor';
-import Task from '../src/Task';
+import Task, { TaskInterface } from '../src/Task';
+import Tool from '../src/Tool';
+import { RoutineInterface } from '../src/Routine';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestTool, createTestRoutine } from './helpers';
+import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
 
 describe('Executor()', () => {
-  let tool;
-  let executor;
+  let tool: Tool<any>;
+  let executor: Executor;
 
   beforeEach(() => {
     tool = createTestTool();
 
     executor = new Executor(tool, {});
-    executor.debug = () => {};
+    executor.debug = createTestDebugger();
   });
 
   describe('aggregateResponse()', () => {
@@ -26,7 +28,7 @@ describe('Executor()', () => {
   describe('execute()', () => {
     it('executes a routine', () => {
       const spy = jest.fn();
-      const routine = createTestRoutine();
+      const routine = createTestRoutine(tool);
 
       executor.executeRoutine = spy;
       executor.execute(routine, 123, true);
@@ -46,7 +48,7 @@ describe('Executor()', () => {
   });
 
   describe('executeRoutine()', () => {
-    let routine;
+    let routine: RoutineInterface;
 
     beforeEach(() => {
       routine = createTestRoutine(tool);
@@ -67,6 +69,7 @@ describe('Executor()', () => {
     });
 
     it('updates status if a failure', async () => {
+      // @ts-ignore
       routine.action = () => {
         throw new Error('Oops');
       };
@@ -82,7 +85,7 @@ describe('Executor()', () => {
   });
 
   describe('executeTask()', () => {
-    let task;
+    let task: TaskInterface;
 
     beforeEach(() => {
       task = new Task('title', (con, value) => value * 3);
@@ -161,7 +164,7 @@ describe('Executor()', () => {
   describe('run()', () => {
     it('errors if not defined', () => {
       expect(() => {
-        executor.run();
+        executor.run([]);
       }).toThrowError('run() must be defined.');
     });
   });

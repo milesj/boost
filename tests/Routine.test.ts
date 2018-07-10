@@ -2,12 +2,13 @@
 
 import Routine from '../src/Routine';
 import Task from '../src/Task';
+import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { createTestTool, createTestRoutine } from './helpers';
+import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
 
 describe('Routine', () => {
-  let routine;
-  let tool;
+  let routine: Routine<any, any>;
+  let tool: Tool<any>;
 
   beforeEach(() => {
     tool = createTestTool();
@@ -23,57 +24,53 @@ describe('Routine', () => {
     };
 
     routine = createTestRoutine(tool);
-    routine.configure({
-      config: {},
-      context: {},
-      tool,
-    });
+    routine.configure(createTestRoutine(tool));
   });
 
-  class FailureRoutine extends Routine {
-    constructor(...args) {
-      super(...args);
+  class FailureRoutine extends Routine<any, any> {
+    constructor(key: string, title: string) {
+      super(key, title);
 
-      this.debug = () => {};
+      this.debug = createTestDebugger();
     }
 
-    execute() {
+    execute(): any {
       throw new Error('Failure');
     }
   }
 
-  class ContextRoutine extends Routine {
-    constructor(...args) {
-      super(...args);
+  class ContextRoutine extends Routine<any, any> {
+    constructor(key: string, title: string, options?: any) {
+      super(key, title, options);
 
       this.tool = tool;
-      this.debug = () => {};
+      this.debug = createTestDebugger();
 
       this.task('foo', this.foo);
       this.task('bar', this.bar);
       this.task('baz', this.baz);
     }
 
-    execute(context, value) {
+    execute(context: any, value: any) {
       context.count *= this.options.multiplier;
       context[this.key] = true;
 
       return this.options.return ? this.key : value;
     }
 
-    foo(context, value) {
+    foo(context: any, value: any) {
       context.foo = 123;
 
       return value;
     }
 
-    bar(context, value) {
+    bar(context: any, value: any) {
       context.bar = 456;
 
       return value;
     }
 
-    baz(context, value) {
+    baz(context: any, value: any) {
       context.baz = 789;
 
       return value;
@@ -96,6 +93,7 @@ describe('Routine', () => {
     });
 
     it('throws an error if key is not a string', () => {
+      // @ts-ignore
       expect(() => new Routine(123, 'title')).toThrowError(
         'Routine key must be a valid unique string.',
       );
@@ -112,11 +110,11 @@ describe('Routine', () => {
     it('triggers bootstrap', () => {
       let config = {};
 
-      class BootstrapRoutine extends Routine {
-        constructor(...args) {
-          super(...args);
+      class BootstrapRoutine extends Routine<any, any> {
+        constructor(key: string, title: string) {
+          super(key, title);
 
-          this.debug = () => {};
+          this.debug = createTestDebugger();
         }
 
         bootstrap() {
@@ -124,12 +122,11 @@ describe('Routine', () => {
         }
       }
 
+      const parent = createTestRoutine(tool);
+      parent.options.foo = 'bar';
+
       routine = new BootstrapRoutine('bootstrap', 'title');
-      routine.configure({
-        config: { foo: 'bar' },
-        context: {},
-        tool,
-      });
+      routine.configure(parent);
 
       expect(config).toEqual(tool.config);
     });
@@ -216,15 +213,15 @@ describe('Routine', () => {
   });
 
   describe('parallelizeTasks()', () => {
-    class FailureTaskRoutine extends Routine {
-      constructor(...args) {
-        super(...args);
+    class FailureTaskRoutine extends Routine<any, any> {
+      constructor(key: string, title: string) {
+        super(key, title);
 
         this.tool = tool;
-        this.debug = () => {};
+        this.debug = createTestDebugger();
       }
 
-      foo(context, value) {
+      foo(context: any, value: any) {
         return `${value}-foo`;
       }
 
@@ -239,7 +236,9 @@ describe('Routine', () => {
 
     it('captures and rethrows errors that occur down the chain', async () => {
       routine = new FailureTaskRoutine('failure', 'title');
+      // @ts-ignore
       routine.task('foo', routine.foo);
+      // @ts-ignore
       routine.task('bar', routine.bar);
 
       try {
@@ -290,6 +289,7 @@ describe('Routine', () => {
 
   describe('pipe()', () => {
     it('throws an error if a non-Routine is passed', () => {
+      // @ts-ignore
       expect(() => routine.pipe('foo')).toThrowError('a');
     });
 
@@ -311,6 +311,7 @@ describe('Routine', () => {
 
       routine.pipe(foo);
 
+      // @ts-ignore
       expect(foo.console).toBe(routine.console);
     });
   });
@@ -445,7 +446,7 @@ describe('Routine', () => {
 
       routine.action = () => routine.poolTasks();
 
-      const response = await routine.run();
+      const response = await routine.run({});
 
       expect(count).toBe(4);
       expect(response).toEqual({
@@ -561,15 +562,15 @@ describe('Routine', () => {
   });
 
   describe('serializeRoutines()', () => {
-    class SerializeSubsRoutine extends Routine {
-      constructor(...args) {
-        super(...args);
+    class SerializeSubsRoutine extends Routine<{ multiplier: number }, any> {
+      constructor(key: string, title: string, options?: { multiplier: number }) {
+        super(key, title, options);
 
         this.tool = tool;
-        this.debug = () => {};
+        this.debug = createTestDebugger();
       }
 
-      execute(context, value) {
+      execute(context: any, value: any) {
         return Promise.resolve({
           count: value.count * this.options.multiplier,
           key: value.key + this.key,
@@ -645,19 +646,19 @@ describe('Routine', () => {
   });
 
   describe('serializeTasks()', () => {
-    class SerializeTasksRoutine extends Routine {
-      constructor(...args) {
-        super(...args);
+    class SerializeTasksRoutine extends Routine<any, any> {
+      constructor(key: string, title: string) {
+        super(key, title);
 
         this.tool = tool;
-        this.debug = () => {};
+        this.debug = createTestDebugger();
       }
 
-      duplicate(context, value) {
+      duplicate(context: any, value: any) {
         return `${value}${value}`;
       }
 
-      upperCase(context, value) {
+      upperCase(context: any, value: any) {
         return value.toUpperCase();
       }
     }
@@ -670,7 +671,9 @@ describe('Routine', () => {
 
     it('executes all passed tasks in sequential order', async () => {
       routine = new SerializeTasksRoutine('key', 'title');
+      // @ts-ignore
       routine.task('upper', routine.upperCase);
+      // @ts-ignore
       routine.task('dupe', routine.duplicate);
 
       expect(await routine.serializeTasks('foo')).toBe('FOOFOO');
@@ -845,7 +848,7 @@ describe('Routine', () => {
 
       routine.action = () => routine.synchronizeTasks();
 
-      const response = await routine.run();
+      const response = await routine.run({});
 
       expect(count).toBe(4);
       expect(response).toEqual({
@@ -872,6 +875,7 @@ describe('Routine', () => {
   describe('task()', () => {
     it('errors if not a function', () => {
       expect(() => {
+        // @ts-ignore
         routine.task('foo', 'bar');
       }).toThrowError('Tasks require an executable function.');
     });
@@ -888,21 +892,22 @@ describe('Routine', () => {
     });
 
     it('binds the action function to the routine', async () => {
-      let config;
+      let options;
 
       routine.task('foo', function foo() {
-        // eslint-disable-next-line babel/no-invalid-this
-        ({ config } = this);
+        // @ts-ignore
+        ({ options } = this); // eslint-disable-line babel/no-invalid-this
       });
 
-      await routine.tasks[0].run();
+      await routine.tasks[0].run({});
 
-      expect(config).toEqual(routine.config);
+      expect(options).toEqual(routine.options);
     });
 
     it('defines the options for the task', () => {
       routine.task('foo', value => value, { foo: 'bar' });
 
+      // @ts-ignore
       expect(routine.tasks[0].options).toEqual({ foo: 'bar' });
     });
 

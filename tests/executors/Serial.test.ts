@@ -3,7 +3,7 @@ import Task from '../../src/Task';
 import { createTestTool, createTestRoutine } from '../helpers';
 
 describe('SerialExecutor', () => {
-  let executor;
+  let executor: SerialExecutor;
 
   beforeEach(() => {
     executor = new SerialExecutor(createTestTool(), {});
@@ -57,7 +57,7 @@ describe('SerialExecutor', () => {
   it('aborts early if an error occurs', async () => {
     let count = 0;
 
-    function incCount(context, value) {
+    function incCount(context: any, value: any) {
       count += 1;
 
       return value;
