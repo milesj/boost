@@ -65,7 +65,7 @@
     "optimal": "^1.0.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.111.0",
+    "@milesj/build-tool-config": "0.112.0",
     "fs-extra": "^6.0.1"
   },
   "beemo": {
