@@ -4,6 +4,7 @@
  */
 
 import Emitter, { EmitterInterface } from './Emitter';
+import Reporter from './Reporter';
 
 export interface ConsoleInterface extends EmitterInterface {
   exit(message: string | Error | null, code: number): void;
@@ -48,13 +49,21 @@ export default class Console extends Emitter {
       error = message instanceof Error ? message : new Error(message);
     }
 
-    this.emit('stop', [error, code]);
-
-    if (force) {
-      // eslint-disable-next-line unicorn/no-process-exit
-      process.exit(code);
+    // Handle cases when no listeners have been defined
+    if (this.listeners.stop) {
+      this.emit('stop', [error, code]);
     } else {
-      process.exitCode = code;
+      new Reporter().handleBaseStop(error);
     }
+
+    // Run in the next tick so that listeners have a chance to run
+    process.nextTick(() => {
+      if (force) {
+        // eslint-disable-next-line unicorn/no-process-exit
+        process.exit(code);
+      } else {
+        process.exitCode = code;
+      }
+    });
   }
 }
