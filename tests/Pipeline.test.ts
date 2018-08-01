@@ -1,6 +1,6 @@
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
-import { createTestTool } from './helpers';
+import { createTestTool, createTestRoutine } from './helpers';
 import Context from '../src/Context';
 
 describe('Pipeline', () => {
@@ -28,7 +28,7 @@ describe('Pipeline', () => {
   describe('run()', () => {
     it('starts console with routine', async () => {
       const spy = jest.fn();
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(pipeline.tool);
 
       pipeline.tool.console.emit = spy;
       pipeline.pipe(routine);
@@ -50,8 +50,8 @@ describe('Pipeline', () => {
 
     it('exits the console on failure', async () => {
       class FailureRoutine extends Routine<any, any> {
-        execute(): any {
-          throw new Error('Oops');
+        execute() {
+          return Promise.reject(new Error('Oops'));
         }
       }
 

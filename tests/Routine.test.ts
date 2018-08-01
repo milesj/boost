@@ -120,6 +120,10 @@ describe('Routine', () => {
         bootstrap() {
           ({ config } = this.tool);
         }
+
+        execute() {
+          return Promise.resolve();
+        }
       }
 
       const parent = createTestRoutine(tool);
@@ -219,6 +223,10 @@ describe('Routine', () => {
 
         this.tool = tool;
         this.debug = createTestDebugger();
+      }
+
+      execute() {
+        return Promise.resolve();
       }
 
       foo(context: any, value: any) {
@@ -652,6 +660,10 @@ describe('Routine', () => {
 
         this.tool = tool;
         this.debug = createTestDebugger();
+      }
+
+      execute() {
+        return Promise.resolve();
       }
 
       duplicate(context: any, value: any) {

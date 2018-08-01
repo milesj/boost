@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import DefaultReporter from '../src/DefaultReporter';
-import Routine, { RoutineInterface } from '../src/Routine';
+import { RoutineInterface } from '../src/Routine';
 import Task, { TaskInterface } from '../src/Task';
 import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
@@ -47,22 +47,22 @@ describe('DefaultReporter', () => {
   describe('calculateKeyLength()', () => {
     it('returns longest length', () => {
       const length = reporter.calculateKeyLength([
-        new Routine('foo', 'title'),
-        new Routine('barbar', 'title'),
-        new Routine('bazs', 'title'),
+        createTestRoutine(null, 'foo'),
+        createTestRoutine(null, 'barbar'),
+        createTestRoutine(null, 'bazs'),
       ]);
 
       expect(length).toBe(6);
     });
 
     it('checks all depths', () => {
-      const routine = new Routine('barbar', 'title');
-      routine.routines.push(new Routine('superlongkey', 'title'));
+      const routine = createTestRoutine(null, 'barbar');
+      routine.routines.push(createTestRoutine(null, 'superlongkey'));
 
       const length = reporter.calculateKeyLength([
-        new Routine('foo', 'title'),
+        createTestRoutine(null, 'foo'),
         routine,
-        new Routine('bazs', 'title'),
+        createTestRoutine(null),
       ]);
 
       expect(length).toBe(13);
@@ -95,9 +95,9 @@ describe('DefaultReporter', () => {
     });
 
     it('supports routines', () => {
-      const task1 = new Routine('one', 'title');
-      const task2 = new Routine('two', 'title');
-      const task3 = new Routine('three', 'title').skip();
+      const task1 = createTestRoutine(null, 'one');
+      const task2 = createTestRoutine(null, 'two');
+      const task3 = createTestRoutine(null, 'three').skip();
 
       task2.status = STATUS_PASSED;
 
@@ -169,13 +169,13 @@ describe('DefaultReporter', () => {
 
     describe('routine', () => {
       it('returns title', () => {
-        const task = new Routine('foo', 'This is a routine');
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
 
         expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0.00s]')}`);
       });
 
       it('returns status text', () => {
-        const task = new Routine('foo', 'This is a routine');
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.statusText = 'Running things…';
 
         expect(reporter.getLineTitle(task)).toBe(
@@ -187,7 +187,7 @@ describe('DefaultReporter', () => {
         const oldColumns = process.stdout.columns;
         const title =
           'This is a really really really long task, with a really dumb and stupidly long title';
-        const task = new Routine('foo', title);
+        const task = createTestRoutine(null, 'foo', title);
 
         process.stdout.columns = 80;
 
@@ -202,7 +202,7 @@ describe('DefaultReporter', () => {
       it('shows skipped if verbose >= 1', () => {
         reporter.options.verbose = 1;
 
-        const task = new Routine('foo', 'This is a routine').skip();
+        const task = createTestRoutine(null, 'foo', 'This is a routine').skip();
 
         expect(reporter.getLineTitle(task)).toBe(
           `This is a routine${chalk.gray(` [${chalk.yellow('skipped')}]`)}`,
@@ -212,7 +212,7 @@ describe('DefaultReporter', () => {
       it('shows failed if verbose >= 1', () => {
         reporter.options.verbose = 1;
 
-        const task = new Routine('foo', 'This is a routine');
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_FAILED;
 
         expect(reporter.getLineTitle(task)).toBe(
@@ -223,8 +223,8 @@ describe('DefaultReporter', () => {
       it('shows tasks count if verbose >= 1', () => {
         reporter.options.verbose = 1;
 
-        const task = new Routine('foo', 'This is a routine');
-        task.routines.push(new Routine('bar', 'Routine'));
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
+        task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
 
         expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0/1]')}`);
       });
@@ -232,7 +232,7 @@ describe('DefaultReporter', () => {
       it('shows elapsed time if verbose >= 2', () => {
         reporter.options.verbose = 2;
 
-        const task = new Routine('foo', 'This is a routine');
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;
@@ -243,8 +243,8 @@ describe('DefaultReporter', () => {
       it('shows both count and status', () => {
         reporter.options.verbose = 2;
 
-        const task = new Routine('foo', 'This is a routine');
-        task.routines.push(new Routine('bar', 'Routine'));
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
+        task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;
@@ -255,8 +255,8 @@ describe('DefaultReporter', () => {
       it('doesnt show status if verbose == 0', () => {
         reporter.options.verbose = 0;
 
-        const task = new Routine('foo', 'This is a routine');
-        task.routines.push(new Routine('bar', 'Routine'));
+        const task = createTestRoutine(null, 'foo', 'This is a routine');
+        task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
         task.status = STATUS_PASSED;
         task.startTime = 1000;
         task.stopTime = 4000;
@@ -269,9 +269,9 @@ describe('DefaultReporter', () => {
   describe('handleStart()', () => {
     it('sets key length', () => {
       reporter.handleStart([
-        new Routine('foo', 'title'),
-        new Routine('barbar', 'title'),
-        new Routine('bazs', 'title'),
+        createTestRoutine(null, 'foo'),
+        createTestRoutine(null, 'barbar'),
+        createTestRoutine(null, 'bazs'),
       ]);
 
       expect(reporter.keyLength).toBe(6);
@@ -294,7 +294,7 @@ describe('DefaultReporter', () => {
     });
 
     it('adds the task to the routine', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
       const task = new Task('task');
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
@@ -304,7 +304,7 @@ describe('DefaultReporter', () => {
     });
 
     it('doesnt add the task if routine was not found', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
       const task = new Task('task');
 
       reporter.lines = [];
@@ -322,7 +322,7 @@ describe('DefaultReporter', () => {
     });
 
     it('removes the task from the routine', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
       const task = new Task('task');
 
       reporter.lines = [{ depth: 0, routine, tasks: [task] }];
@@ -334,13 +334,13 @@ describe('DefaultReporter', () => {
 
   describe('handleRoutine()', () => {
     it('debounces render', () => {
-      reporter.handleRoutine(new Routine('key', 'title'), '', false);
+      reporter.handleRoutine(createTestRoutine(null, 'key'), '', false);
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
 
     it('adds the routine as a line', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
 
       reporter.handleRoutine(routine, '', false);
 
@@ -350,7 +350,7 @@ describe('DefaultReporter', () => {
     it('increases depth', () => {
       expect(reporter.depth).toBe(0);
 
-      reporter.handleRoutine(new Routine('key', 'title'), '', false);
+      reporter.handleRoutine(createTestRoutine(null, 'key'), '', false);
 
       expect(reporter.depth).toBe(1);
     });
@@ -358,7 +358,7 @@ describe('DefaultReporter', () => {
     it('doesnt increase depth if ran as parallel', () => {
       expect(reporter.depth).toBe(0);
 
-      reporter.handleRoutine(new Routine('key', 'title'), '', true);
+      reporter.handleRoutine(createTestRoutine(null, 'key'), '', true);
 
       expect(reporter.depth).toBe(0);
     });
@@ -366,13 +366,13 @@ describe('DefaultReporter', () => {
 
   describe('handleRoutineComplete()', () => {
     it('debounces render', () => {
-      reporter.handleRoutineComplete(new Routine('key', 'title'), '', false);
+      reporter.handleRoutineComplete(createTestRoutine(null, 'key'), '', false);
 
       expect(reporter.debounceRender).toHaveBeenCalled();
     });
 
     it('removes routine from lines if depth greater than 0 and verbose < 3', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
 
       reporter.options.verbose = 2;
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
@@ -384,7 +384,7 @@ describe('DefaultReporter', () => {
     });
 
     it('doesnt remove line if depth becomes 0', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 1;
@@ -395,7 +395,7 @@ describe('DefaultReporter', () => {
     });
 
     it('doesnt remove line if verbose is 3', () => {
-      const routine = new Routine('key', 'title');
+      const routine = createTestRoutine(null, 'key');
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
@@ -409,7 +409,7 @@ describe('DefaultReporter', () => {
     it('decreses depth', () => {
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete(new Routine('key', 'title'), '', false);
+      reporter.handleRoutineComplete(createTestRoutine(null, 'key'), '', false);
 
       expect(reporter.depth).toBe(0);
     });
@@ -417,7 +417,7 @@ describe('DefaultReporter', () => {
     it('doesnt decrese depth if ran as parallel', () => {
       reporter.depth = 1;
 
-      reporter.handleRoutineComplete(new Routine('key', 'title'), '', true);
+      reporter.handleRoutineComplete(createTestRoutine(null, 'key'), '', true);
 
       expect(reporter.depth).toBe(1);
     });
@@ -427,13 +427,13 @@ describe('DefaultReporter', () => {
     it('writes to buffer', () => {
       reporter.addLine({
         depth: 0,
-        routine: new Routine('foo', 'This is a routine'),
+        routine: createTestRoutine(null, 'foo', 'This is a routine'),
         tasks: [new Task('This is a task', () => {})],
       });
 
       reporter.addLine({
         depth: 0,
-        routine: new Routine('bar', 'This is a routine with no tasks'),
+        routine: createTestRoutine(null, 'bar', 'This is a routine with no tasks'),
         tasks: [],
       });
 
@@ -451,7 +451,7 @@ describe('DefaultReporter', () => {
   describe('renderLine()', () => {
     describe('routine', () => {
       it('writes to buffer', () => {
-        reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
+        reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
           `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
@@ -460,7 +460,7 @@ describe('DefaultReporter', () => {
 
       it('pads with key length', () => {
         reporter.keyLength = 5;
-        reporter.renderLine(new Routine('foo', 'This is a routine'), null, 0);
+        reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 0);
 
         expect(reporter.bufferedOutput).toBe(
           `${chalk.gray.bold('FOO  ')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
@@ -468,7 +468,7 @@ describe('DefaultReporter', () => {
       });
 
       it('indents with a higher depth', () => {
-        reporter.renderLine(new Routine('foo', 'This is a routine'), null, 3);
+        reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 3);
 
         expect(reporter.bufferedOutput).toBe(
           `${chalk.gray.bold('   FOO')}      ${chalk.gray('└')} This is a routine${chalk.gray(
@@ -483,7 +483,7 @@ describe('DefaultReporter', () => {
       let task: TaskInterface;
 
       beforeEach(() => {
-        routine = new Routine('foo', 'This is a routine');
+        routine = createTestRoutine(null, 'foo', 'This is a routine');
         task = new Task('This is a task', () => {});
       });
 

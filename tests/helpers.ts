@@ -73,14 +73,16 @@ export function createTestTool(options?: Partial<ToolOptions>): Tool<any> {
 }
 
 export function createTestRoutine(
-  tool?: Tool<any> | ToolInterface,
+  tool: Tool<any> | ToolInterface | null = null,
   key: string = 'key',
+  title: string = 'Title',
 ): Routine<any, any> {
-  const routine = new Routine(key, 'Title');
+  const routine = new Routine(key, title);
 
   routine.tool = tool || createTestTool();
   routine.debug = createTestDebugger();
-  routine.action = (context, value) => value; // Avoid execute exception
+  routine.action = (context, value) => Promise.resolve(value); // Avoid execute exception
+  routine.execute = routine.action as any;
 
   return routine;
 }
