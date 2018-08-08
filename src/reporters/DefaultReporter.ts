@@ -4,10 +4,9 @@
  */
 
 import cliTruncate from 'cli-truncate';
-import { ConsoleInterface } from './Console';
-import Reporter, { ReporterOptions } from './Reporter';
-import Routine, { RoutineInterface } from './Routine';
-import { TaskInterface } from './Task';
+import Reporter, { ReporterOptions } from '../Reporter';
+import Routine, { RoutineInterface } from '../Routine';
+import { TaskInterface } from '../Task';
 
 export interface Line {
   depth: number;
@@ -20,17 +19,17 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
 
   keyLength: number = 0;
 
-  bootstrap(cli: ConsoleInterface) {
-    super.bootstrap(cli);
-
-    cli.on('start', this.handleStart);
-    cli.on('task', this.handleTask);
-    cli.on('task.pass', this.handleTaskComplete);
-    cli.on('task.fail', this.handleTaskComplete);
-    cli.on('routine', this.handleRoutine);
-    cli.on('routine.pass', this.handleRoutineComplete);
-    cli.on('routine.fail', this.handleRoutineComplete);
-    cli.on('command.data', this.handleCommand);
+  bootstrap() {
+    this.console
+      .on('start', this.handleStart)
+      .on('task', this.handleTask)
+      .on('task.pass', this.handleTaskComplete)
+      .on('task.fail', this.handleTaskComplete)
+      .on('routine', this.handleRoutine)
+      .on('routine.pass', this.handleRoutineComplete)
+      .on('routine.fail', this.handleRoutineComplete)
+      .on('command.data', this.handleCommand)
+      .on('render', this.handleRender);
   }
 
   /**
@@ -93,7 +92,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
   };
 
   handleCommand = () => {
-    this.debounceRender();
+    this.console.render();
   };
 
   handleTask = (task: TaskInterface, routine: RoutineInterface) => {
@@ -103,7 +102,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       line.tasks.push(task);
     }
 
-    this.debounceRender();
+    this.console.render();
   };
 
   handleTaskComplete = (task: TaskInterface, routine: RoutineInterface) => {
@@ -113,7 +112,17 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       line.tasks = line.tasks.filter(t => t !== task);
     }
 
-    this.debounceRender();
+    this.console.render();
+  };
+
+  handleRender = () => {
+    this.lines.forEach(({ routine, tasks, depth }) => {
+      this.renderLine(routine, null, depth);
+
+      tasks.forEach(task => {
+        this.renderLine(routine, task, depth);
+      });
+    });
   };
 
   handleRoutine = (routine: RoutineInterface, value: any, wasParallel: boolean) => {
@@ -123,7 +132,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       tasks: [],
     });
 
-    this.debounceRender();
+    this.console.render();
 
     if (!wasParallel) {
       this.depth += 1;
@@ -139,18 +148,8 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       this.removeLine(line => line.routine === routine);
     }
 
-    this.debounceRender();
+    this.console.render();
   };
-
-  render() {
-    this.lines.forEach(({ routine, tasks, depth }) => {
-      this.renderLine(routine, null, depth);
-
-      tasks.forEach(task => {
-        this.renderLine(routine, task, depth);
-      });
-    });
-  }
 
   renderLine(routine: RoutineInterface, task: TaskInterface | null, depth: number) {
     const indent = depth * 2;
@@ -182,6 +181,6 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       output += this.getLineTitle(routine, usedColumns);
     }
 
-    this.log(output, 1);
+    this.console.write(output, 1);
   }
 }

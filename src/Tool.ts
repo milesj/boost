@@ -14,7 +14,8 @@ import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
 import Reporter, { ReporterInterface, ReporterOptions } from './Reporter';
-import DefaultReporter from './DefaultReporter';
+import DefaultReporter from './reporters/DefaultReporter';
+import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import themePalettes from './themes';
@@ -100,6 +101,11 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
     // Initialize the console first so we can start logging
     this.console = new Console();
+
+    const reporter = new ErrorReporter({}, this.console);
+    reporter.bootstrap();
+
+    this.reporters.push(reporter);
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -271,22 +277,23 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const options = this.options.console;
-
-    this.reporters = loader.loadModules(this.config.reporters, options);
+    const args = [this.options.console, this.console];
+    const reporters = loader.loadModules(this.config.reporters, args);
 
     // Use default reporter
-    if (this.reporters.length === 0) {
+    if (reporters.length === 0) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-      this.reporters.push(new DefaultReporter(options));
+      reporters.push(new DefaultReporter(this.options.console, this.console));
     }
 
     // Bootstrap each plugin with the tool
     loader.debug('Bootstrapping reporters with console environment');
 
-    this.reporters.forEach(reporter => {
-      reporter.bootstrap(this.console);
+    reporters.forEach(reporter => {
+      reporter.bootstrap();
+
+      this.reporters.push(reporter);
     });
 
     return this;
@@ -296,7 +303,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
    * Log a message to the console to display on success.
    */
   log(message: string, ...args: any[]): this {
-    this.console.emit('log', [util.format(message, ...args), message, args]);
+    this.console.log(util.format(message, ...args));
 
     return this;
   }
@@ -305,7 +312,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
    * Log an error to the console to display on failure.
    */
   logError(message: string, ...args: any[]): this {
-    this.console.emit('log.error', [util.format(message, ...args), message, args]);
+    this.console.logError(util.format(message, ...args));
 
     return this;
   }

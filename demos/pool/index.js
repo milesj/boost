@@ -1,4 +1,4 @@
-const { Tool, Pipeline, Routine, TaskPool } = require('../../lib');
+const { Tool, Pipeline, Routine } = require('../../lib');
 const random = require('../random');
 
 class DelayedRoutine extends Routine {
