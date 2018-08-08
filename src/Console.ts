@@ -107,10 +107,12 @@ export default class Console extends Emitter {
     // Render final output
     this.handleRender(error);
 
-    if (this.errorLogs.length > 0) {
-      this.displayLogs(this.errorLogs);
-    } else if (this.logs.length > 0 && !error) {
-      this.displayLogs(this.logs);
+    if (!error) {
+      if (this.errorLogs.length > 0) {
+        this.displayLogs(this.errorLogs);
+      } else if (this.logs.length > 0) {
+        this.displayLogs(this.logs);
+      }
     }
 
     // Unwrap our streams
@@ -176,16 +178,21 @@ export default class Console extends Emitter {
       this.refreshTimer = null;
     }
 
+    // Clear all previous output
     this.clearLinesOutput();
+
+    // Flush buffered `stdout` and `stderr`
     this.flushBufferedStreams();
 
+    // Render output from all reporters
     this.emit('render');
 
-    // Display errors at the bottom of the rendered output
+    // Render error at the bottom of the output
     if (error) {
       this.emit('error', [error]);
     }
 
+    // Flush buffered output from `render` and `error` events
     this.flushBufferedOutput();
   };
 
@@ -215,7 +222,7 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Store the log.
+   * Store the log message.
    */
   log(message: string): this {
     this.logs.push(message);
@@ -224,7 +231,7 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Store the error.
+   * Store the error message.
    */
   logError(message: string): this {
     this.errorLogs.push(message);
@@ -259,7 +266,6 @@ export default class Console extends Emitter {
    */
   showCursor(): this {
     this.out('\x1B[?25h');
-    this.restoreCursorOnExit = false;
 
     return this;
   }

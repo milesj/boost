@@ -1,12 +1,14 @@
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
-import DefaultReporter from '../src/DefaultReporter';
+import DefaultReporter from '../src/reporters/DefaultReporter';
+import ErrorReporter from '../src/reporters/ErrorReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
 import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
+jest.mock('../src/Console');
 
 describe('Tool', () => {
   let tool: Tool<any>;
@@ -29,6 +31,10 @@ describe('Tool', () => {
       );
 
       expect(enableDebug).toHaveBeenCalledWith('test-boost');
+    });
+
+    it('sets an error reporter', () => {
+      expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
     });
   });
 
@@ -93,7 +99,7 @@ describe('Tool', () => {
     });
 
     it('returns plugin by name', () => {
-      const reporter = new Reporter();
+      const reporter = new Reporter({}, tool.console);
       reporter.name = 'foo';
 
       tool.reporters.push(reporter);
@@ -325,9 +331,8 @@ describe('Tool', () => {
 
   describe('log()', () => {
     it('sends log to console', () => {
-      const spy = jest.fn();
+      const spy = jest.spyOn(tool.console, 'log');
 
-      tool.console.emit = spy;
       tool.log('Some message: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('log', ['Some message: foo', 'Some message: %s', ['foo']]);
@@ -336,9 +341,8 @@ describe('Tool', () => {
 
   describe('logError()', () => {
     it('sends error to console', () => {
-      const spy = jest.fn();
+      const spy = jest.spyOn(tool.console, 'logError');
 
-      tool.console.emit = spy;
       tool.logError('Some error: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('log.error', ['Some error: foo', 'Some error: %s', ['foo']]);

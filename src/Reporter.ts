@@ -3,8 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable unicorn/no-hex-escape, no-param-reassign */
-
 import chalk from 'chalk';
 import optimal, { bool, number, string, Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
@@ -118,14 +116,21 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
-   * Calculate the elapsed time and highlight as red if over the threshold.
+   * Return specific colors based on chosen theme.
    */
-  getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
-    const time = (stop || Date.now()) - start;
-    const isSlow = time > this.options.slowThreshold;
-    const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
+  getColorPalette(): ColorPalette {
+    const { theme } = this.options;
 
-    return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
+    if (chalk.level >= 2 && themePalettes[theme]) {
+      return themePalettes[theme];
+    }
+
+    return {
+      failure: 'red',
+      pending: 'gray',
+      success: 'green',
+      warning: 'yellow',
+    };
   }
 
   /**
@@ -144,21 +149,14 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
-   * Return specific colors based on chosen theme.
+   * Calculate the elapsed time and highlight as red if over the threshold.
    */
-  getColorPalette(): ColorPalette {
-    const { theme } = this.options;
+  getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
+    const time = (stop || Date.now()) - start;
+    const isSlow = time > this.options.slowThreshold;
+    const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
 
-    if (chalk.level >= 2 && themePalettes[theme]) {
-      return themePalettes[theme];
-    }
-
-    return {
-      failure: 'red',
-      pending: 'gray',
-      success: 'green',
-      warning: 'yellow',
-    };
+    return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
   }
 
   /**

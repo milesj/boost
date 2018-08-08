@@ -158,6 +158,22 @@ describe('ModuleLoader', () => {
       expect(plugin.name).toBe('definition-with-opts');
       expect(plugin.moduleName).toBe('test-boost-plugin-definition-with-opts');
     });
+
+    it('merges options correctly', () => {
+      fixtures.push(
+        copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition-merge-opts'),
+      );
+
+      const plugin = loader.importModuleFromOptions(
+        {
+          foo: 'bar',
+          plugin: 'definition-with-opts',
+        },
+        [{ foo: 'wtf', baz: 123 }],
+      );
+
+      expect(plugin.options).toEqual({ foo: 'bar', baz: 123 });
+    });
   });
 
   describe('loadModules()', () => {
@@ -216,7 +232,7 @@ describe('ModuleLoader', () => {
     it('pass options to string names', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
 
-      expect(loader.loadModules(['foo'], { test: true })).toEqual([
+      expect(loader.loadModules(['foo'], [{ test: true }])).toEqual([
         createPlugin('foo', { test: true }),
       ]);
     });
@@ -224,7 +240,7 @@ describe('ModuleLoader', () => {
     it('pass options to option objects', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
 
-      expect(loader.loadModules([{ plugin: 'foo' }], { test: true })).toEqual([
+      expect(loader.loadModules([{ plugin: 'foo' }], [{ test: true }])).toEqual([
         createPlugin('foo', { test: true }),
       ]);
     });
