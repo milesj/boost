@@ -195,6 +195,8 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     const { appName } = this.options;
 
     this.debug('Initializing %s', chalk.green(appName));
+    // eslint-disable-next-line global-require
+    this.debug('Using boost v%s', require('../package.json').version);
 
     this.loadConfig();
     this.loadPlugins();
