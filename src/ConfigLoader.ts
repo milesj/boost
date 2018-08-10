@@ -11,12 +11,14 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import optimal, { array, bool, shape, string, union, Struct } from 'optimal';
+import optimal, { array, bool, instance, shape, string, union, Struct } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import { ToolInterface } from './Tool';
+import Plugin from './Plugin';
+import Reporter from './Reporter';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { Debugger, ToolConfig, PackageConfig } from './types';
 
@@ -69,13 +71,14 @@ export default class ConfigLoader {
    */
   findConfigInLocalFiles(root: string): ConfigPathOrStruct | null {
     const { appName, configFolder } = this.tool.options;
-    const configPaths = glob.sync(path.join(root, configFolder, `${appName}.{js,json,json5}`), {
+    const relPath = path.join(configFolder, `${appName}.{js,json,json5}`);
+    const configPaths = glob.sync(path.join(root, relPath), {
       absolute: true,
     });
 
     this.debug.invariant(
       configPaths.length === 1,
-      `Looking for local config file in order: ${configPaths.map(p => chalk.cyan(p)).join(', ')}`,
+      `Looking for local config file in order: ${relPath}`,
       'Found',
       'Not found',
     );
@@ -224,8 +227,18 @@ export default class ConfigLoader {
         ...configBlueprint,
         debug: bool(),
         extends: array(string()),
-        reporters: array(union([string(), shape({ reporter: string() })])),
-        [pluralize(pluginAlias)]: array(union([string(), shape({ [pluginAlias]: string() })])),
+        // prettier-ignore
+        reporters: array(union([
+          string(),
+          shape({ reporter: string() }),
+          instance(Reporter),
+        ])),
+        // prettier-ignore
+        [pluralize(pluginAlias)]: array(union([
+          string(),
+          shape({ [pluginAlias]: string() }),
+          instance(Plugin),
+        ]))
       },
       {
         name: 'ConfigLoader',

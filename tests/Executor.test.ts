@@ -6,7 +6,7 @@ import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
 
 describe('Executor()', () => {
-  let tool: Tool<any>;
+  let tool: Tool<any, any>;
   let executor: Executor;
 
   beforeEach(() => {

@@ -8,7 +8,7 @@ import { createTestTool, createTestRoutine, createTestDebugger } from './helpers
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
-  let tool: Tool<any>;
+  let tool: Tool<any, any>;
 
   beforeEach(() => {
     tool = createTestTool();

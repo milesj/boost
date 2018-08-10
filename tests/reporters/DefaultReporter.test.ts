@@ -1,12 +1,12 @@
 import chalk from 'chalk';
-import DefaultReporter from '../src/DefaultReporter';
-import { RoutineInterface } from '../src/Routine';
-import Task, { TaskInterface } from '../src/Task';
-import Console from '../src/Console';
-import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestRoutine } from './helpers';
+import DefaultReporter from '../../src/reporters/DefaultReporter';
+import { RoutineInterface } from '../../src/Routine';
+import Task, { TaskInterface } from '../../src/Task';
+import Console from '../../src/Console';
+import { STATUS_PASSED, STATUS_FAILED } from '../../src/constants';
+import { createTestRoutine } from '../helpers';
 
-jest.mock('../src/Console');
+jest.mock('../../src/Console');
 
 const oldNow = Date.now;
 
@@ -15,11 +15,11 @@ describe('DefaultReporter', () => {
 
   beforeEach(() => {
     reporter = new DefaultReporter();
-    reporter.err = jest.fn();
-    reporter.out = jest.fn();
-    reporter.debounceRender = jest.fn();
+    reporter.console = new Console();
 
     Date.now = () => 0;
+
+    (reporter.console.on as jest.Mock).mockReturnThis();
   });
 
   afterEach(() => {
@@ -28,10 +28,9 @@ describe('DefaultReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const cli = new Console();
-      const spy = jest.spyOn(cli, 'on');
+      const spy = jest.spyOn(reporter.console, 'on');
 
-      reporter.bootstrap(cli);
+      reporter.bootstrap();
 
       expect(spy).toHaveBeenCalledWith('start', expect.anything());
       expect(spy).toHaveBeenCalledWith('task', expect.anything());
@@ -282,7 +281,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleCommand();
 
-      expect(reporter.debounceRender).toHaveBeenCalled();
+      expect(reporter.console.render).toHaveBeenCalled();
     });
   });
 
@@ -290,7 +289,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleTask(new Task('task'), createTestRoutine());
 
-      expect(reporter.debounceRender).toHaveBeenCalled();
+      expect(reporter.console.render).toHaveBeenCalled();
     });
 
     it('adds the task to the routine', () => {
@@ -318,7 +317,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleTaskComplete(new Task('task'), createTestRoutine());
 
-      expect(reporter.debounceRender).toHaveBeenCalled();
+      expect(reporter.console.render).toHaveBeenCalled();
     });
 
     it('removes the task from the routine', () => {
@@ -336,7 +335,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleRoutine(createTestRoutine(null, 'key'), '', false);
 
-      expect(reporter.debounceRender).toHaveBeenCalled();
+      expect(reporter.console.render).toHaveBeenCalled();
     });
 
     it('adds the routine as a line', () => {
@@ -368,7 +367,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleRoutineComplete(createTestRoutine(null, 'key'), '', false);
 
-      expect(reporter.debounceRender).toHaveBeenCalled();
+      expect(reporter.console.render).toHaveBeenCalled();
     });
 
     it('removes routine from lines if depth greater than 0 and verbose < 3', () => {
@@ -423,7 +422,7 @@ describe('DefaultReporter', () => {
     });
   });
 
-  describe('render()', () => {
+  describe('handleRender()', () => {
     it('writes to buffer', () => {
       reporter.addLine({
         depth: 0,
@@ -438,12 +437,19 @@ describe('DefaultReporter', () => {
       });
 
       reporter.keyLength = 3;
-      reporter.render();
+      reporter.handleRender();
 
-      expect(reporter.bufferedOutput).toBe(
-        `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n` +
-          `${chalk.gray.bold('   ')}  ${chalk.gray('This is a task')}\n` +
-          `${chalk.gray.bold('BAR')}  This is a routine with no tasks${chalk.gray(' [0.00s]')}\n`,
+      expect(reporter.console.write).toHaveBeenCalledWith(
+        `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}`,
+        1,
+      );
+      expect(reporter.console.write).toHaveBeenCalledWith(
+        `${chalk.gray.bold('   ')}  ${chalk.gray('This is a task')}`,
+        1,
+      );
+      expect(reporter.console.write).toHaveBeenCalledWith(
+        `${chalk.gray.bold('BAR')}  This is a routine with no tasks${chalk.gray(' [0.00s]')}`,
+        1,
       );
     });
   });
@@ -453,8 +459,9 @@ describe('DefaultReporter', () => {
       it('writes to buffer', () => {
         reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 0);
 
-        expect(reporter.bufferedOutput).toBe(
-          `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}`,
+          1,
         );
       });
 
@@ -462,18 +469,20 @@ describe('DefaultReporter', () => {
         reporter.keyLength = 5;
         reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 0);
 
-        expect(reporter.bufferedOutput).toBe(
-          `${chalk.gray.bold('FOO  ')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('FOO  ')}  This is a routine${chalk.gray(' [0.00s]')}`,
+          1,
         );
       });
 
       it('indents with a higher depth', () => {
         reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 3);
 
-        expect(reporter.bufferedOutput).toBe(
+        expect(reporter.console.write).toHaveBeenCalledWith(
           `${chalk.gray.bold('   FOO')}      ${chalk.gray('└')} This is a routine${chalk.gray(
             ' [0.00s]',
-          )}\n`,
+          )}`,
+          1,
         );
       });
     });
@@ -490,8 +499,9 @@ describe('DefaultReporter', () => {
       it('writes to buffer', () => {
         reporter.renderLine(routine, task, 0);
 
-        expect(reporter.bufferedOutput).toBe(
-          `${chalk.gray.bold('')}  ${chalk.gray('This is a task')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('')}  ${chalk.gray('This is a task')}`,
+          1,
         );
       });
 
@@ -499,16 +509,18 @@ describe('DefaultReporter', () => {
         reporter.keyLength = 5;
         reporter.renderLine(routine, task, 0);
 
-        expect(reporter.bufferedOutput).toBe(
-          `${chalk.gray.bold('     ')}  ${chalk.gray('This is a task')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('     ')}  ${chalk.gray('This is a task')}`,
+          1,
         );
       });
 
       it('indents with a higher depth', () => {
         reporter.renderLine(routine, task, 3);
 
-        expect(reporter.bufferedOutput).toBe(
-          `${chalk.gray.bold('   ')}        ${chalk.gray('This is a task')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('   ')}        ${chalk.gray('This is a task')}`,
+          1,
         );
       });
     });

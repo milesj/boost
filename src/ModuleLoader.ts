@@ -39,7 +39,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * Import a class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importModule(name: string, options: Struct = {}): Tm {
+  importModule(name: string, args: any[] = []): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
@@ -76,6 +76,8 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
 
         return true;
       } catch (error) {
+        this.debug('Failed to import module: %s', error.message);
+
         return false;
       }
     });
@@ -97,7 +99,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     }
 
     const ModuleClass = importedModule as Constructor<Tm>;
-    const module = new ModuleClass(options);
+    const module = new ModuleClass(...args);
 
     if (!(module instanceof this.classReference)) {
       throw new TypeError(`${upperFirst(typeName)} exported from "${moduleName}" is invalid.`);
@@ -119,7 +121,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If loading from an object, extract the module name and use the remaining object
    * as options for the class instance.
    */
-  importModuleFromOptions(baseOptions: Struct): Tm {
+  importModuleFromOptions(baseOptions: Struct, args: any[] = []): Tm {
     const { typeName } = this;
     const options = { ...baseOptions };
     const module = options[typeName];
@@ -132,7 +134,18 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
       );
     }
 
-    return this.importModule(module, options);
+    const nextArgs = [...args];
+
+    if (nextArgs.length === 0) {
+      nextArgs.push(options);
+    } else if (isObject(nextArgs[0])) {
+      nextArgs[0] = {
+        ...nextArgs[0],
+        ...options,
+      };
+    }
+
+    return this.importModule(module, nextArgs);
   }
 
   /**
@@ -140,17 +153,13 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModule(module: string | Struct | Tm, options: Struct = {}): Tm {
+  loadModule(module: string | Struct | Tm, args: any[] = []): Tm {
     if (module instanceof this.classReference) {
       return module;
     } else if (typeof module === 'string') {
-      return this.importModule(module, options);
+      return this.importModule(module, args);
     } else if (isObject(module)) {
-      return this.importModuleFromOptions({
-        // @ts-ignore
-        ...module,
-        ...options,
-      });
+      return this.importModuleFromOptions(module, args);
     }
 
     throw new TypeError(
@@ -163,7 +172,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
   /**
    * Load multiple modules.
    */
-  loadModules(modules: (string | Struct | Tm)[] = [], options: Struct = {}): Tm[] {
-    return modules.map(module => this.loadModule(module, options));
+  loadModules(modules: (string | Struct | Tm)[] = [], args: any[] = []): Tm[] {
+    return modules.map(module => this.loadModule(module, args));
   }
 }
