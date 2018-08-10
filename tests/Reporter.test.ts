@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/no-hex-escape */
-
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
 import Task from '../src/Task';
@@ -15,11 +13,13 @@ describe('Reporter', () => {
 
   beforeEach(() => {
     reporter = new Reporter({}, new Console());
+
+    (reporter.console.on as jest.Mock).mockReturnThis();
   });
 
   describe('bootstrap()', () => {
     it('sets start and stop events', () => {
-      const spy = jest.spyOn(reporter.console, 'on');
+      const spy = reporter.console.on;
 
       reporter.bootstrap();
 

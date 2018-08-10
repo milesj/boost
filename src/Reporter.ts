@@ -22,6 +22,7 @@ export interface ReporterOptions extends Struct {
 }
 
 export interface ReporterInterface extends ModuleInterface {
+  console: ConsoleInterface;
   bootstrap(): void;
 }
 

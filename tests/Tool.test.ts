@@ -11,13 +11,15 @@ jest.mock('../src/helpers/enableDebug');
 jest.mock('../src/Console');
 
 describe('Tool', () => {
-  let tool: Tool<any>;
+  let tool: Tool<any, any>;
 
   beforeEach(() => {
     tool = createTestTool({
       root: getFixturePath('app'),
     });
     tool.initialized = false; // Reset
+
+    (tool.console.on as jest.Mock).mockReturnThis();
   });
 
   describe('constructor()', () => {
@@ -272,14 +274,14 @@ describe('Tool', () => {
       tool.initialized = true;
       tool.loadReporters();
 
-      expect(tool.reporters).toHaveLength(0);
+      expect(tool.reporters).toHaveLength(1);
     });
 
     it('loads default reporter if config not set', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [] };
       tool.loadReporters();
 
-      expect(tool.reporters[0]).toBeInstanceOf(DefaultReporter);
+      expect(tool.reporters[1]).toBeInstanceOf(DefaultReporter);
     });
 
     it('loads reporter using a string', () => {
@@ -288,9 +290,9 @@ describe('Tool', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['foo'] };
       tool.loadReporters();
 
-      expect(tool.reporters[0]).toBeInstanceOf(Reporter);
-      expect(tool.reporters[0].name).toBe('foo');
-      expect(tool.reporters[0].moduleName).toBe('test-boost-reporter-foo');
+      expect(tool.reporters[1]).toBeInstanceOf(Reporter);
+      expect(tool.reporters[1].name).toBe('foo');
+      expect(tool.reporters[1].moduleName).toBe('test-boost-reporter-foo');
 
       unmock();
     });
@@ -301,9 +303,9 @@ describe('Tool', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
       tool.loadReporters();
 
-      expect(tool.reporters[0]).toBeInstanceOf(Reporter);
-      expect(tool.reporters[0].name).toBe('bar');
-      expect(tool.reporters[0].moduleName).toBe('test-boost-reporter-bar');
+      expect(tool.reporters[1]).toBeInstanceOf(Reporter);
+      expect(tool.reporters[1].name).toBe('bar');
+      expect(tool.reporters[1].moduleName).toBe('test-boost-reporter-bar');
 
       unmock();
     });
@@ -318,7 +320,7 @@ describe('Tool', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['baz'] };
       tool.loadReporters();
 
-      const [reporter] = tool.reporters;
+      const [, reporter] = tool.reporters;
 
       // @ts-ignore
       expect(reporter.options.footer).toBe('Powered by Boost');
@@ -335,7 +337,7 @@ describe('Tool', () => {
 
       tool.log('Some message: %s', 'foo');
 
-      expect(spy).toHaveBeenCalledWith('log', ['Some message: foo', 'Some message: %s', ['foo']]);
+      expect(spy).toHaveBeenCalledWith('Some message: foo');
     });
   });
 
@@ -345,7 +347,7 @@ describe('Tool', () => {
 
       tool.logError('Some error: %s', 'foo');
 
-      expect(spy).toHaveBeenCalledWith('log.error', ['Some error: foo', 'Some error: %s', ['foo']]);
+      expect(spy).toHaveBeenCalledWith('Some error: foo');
     });
   });
 });

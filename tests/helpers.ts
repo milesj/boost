@@ -59,7 +59,7 @@ export function createTestDebugger(): any {
   return debug;
 }
 
-export function createTestTool(options?: Partial<ToolOptions>): Tool<any> {
+export function createTestTool(options?: Partial<ToolOptions>): Tool<any, any> {
   const tool = new Tool({
     appName: 'test-boost',
     ...options,
@@ -73,7 +73,7 @@ export function createTestTool(options?: Partial<ToolOptions>): Tool<any> {
 }
 
 export function createTestRoutine(
-  tool: Tool<any> | ToolInterface | null = null,
+  tool: Tool<any, any> | ToolInterface | null = null,
   key: string = 'key',
   title: string = 'Title',
 ): Routine<any, any> {

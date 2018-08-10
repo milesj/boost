@@ -17,6 +17,8 @@ describe('DefaultReporter', () => {
     reporter = new DefaultReporter({}, new Console());
 
     Date.now = () => 0;
+
+    (reporter.console.on as jest.Mock).mockReturnThis();
   });
 
   afterEach(() => {
@@ -436,14 +438,17 @@ describe('DefaultReporter', () => {
       reporter.keyLength = 3;
       reporter.handleRender();
 
-      expect(reporter.console.render).toHaveBeenCalledWith(
-        `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
+      expect(reporter.console.write).toHaveBeenCalledWith(
+        `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}`,
+        1,
       );
-      expect(reporter.console.render).toHaveBeenCalledWith(
-        `${chalk.gray.bold('   ')}  ${chalk.gray('This is a task')}\n`,
+      expect(reporter.console.write).toHaveBeenCalledWith(
+        `${chalk.gray.bold('   ')}  ${chalk.gray('This is a task')}`,
+        1,
       );
-      expect(reporter.console.render).toHaveBeenCalledWith(
-        `${chalk.gray.bold('BAR')}  This is a routine with no tasks${chalk.gray(' [0.00s]')}\n`,
+      expect(reporter.console.write).toHaveBeenCalledWith(
+        `${chalk.gray.bold('BAR')}  This is a routine with no tasks${chalk.gray(' [0.00s]')}`,
+        1,
       );
     });
   });
@@ -453,8 +458,9 @@ describe('DefaultReporter', () => {
       it('writes to buffer', () => {
         reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 0);
 
-        expect(reporter.console.render).toHaveBeenCalledWith(
-          `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('FOO')}  This is a routine${chalk.gray(' [0.00s]')}`,
+          1,
         );
       });
 
@@ -462,18 +468,20 @@ describe('DefaultReporter', () => {
         reporter.keyLength = 5;
         reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 0);
 
-        expect(reporter.console.render).toHaveBeenCalledWith(
-          `${chalk.gray.bold('FOO  ')}  This is a routine${chalk.gray(' [0.00s]')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('FOO  ')}  This is a routine${chalk.gray(' [0.00s]')}`,
+          1,
         );
       });
 
       it('indents with a higher depth', () => {
         reporter.renderLine(createTestRoutine(null, 'foo', 'This is a routine'), null, 3);
 
-        expect(reporter.console.render).toHaveBeenCalledWith(
+        expect(reporter.console.write).toHaveBeenCalledWith(
           `${chalk.gray.bold('   FOO')}      ${chalk.gray('└')} This is a routine${chalk.gray(
             ' [0.00s]',
-          )}\n`,
+          )}`,
+          1,
         );
       });
     });
@@ -490,8 +498,9 @@ describe('DefaultReporter', () => {
       it('writes to buffer', () => {
         reporter.renderLine(routine, task, 0);
 
-        expect(reporter.console.render).toHaveBeenCalledWith(
-          `${chalk.gray.bold('')}  ${chalk.gray('This is a task')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('')}  ${chalk.gray('This is a task')}`,
+          1,
         );
       });
 
@@ -499,16 +508,18 @@ describe('DefaultReporter', () => {
         reporter.keyLength = 5;
         reporter.renderLine(routine, task, 0);
 
-        expect(reporter.console.render).toHaveBeenCalledWith(
-          `${chalk.gray.bold('     ')}  ${chalk.gray('This is a task')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('     ')}  ${chalk.gray('This is a task')}`,
+          1,
         );
       });
 
       it('indents with a higher depth', () => {
         reporter.renderLine(routine, task, 3);
 
-        expect(reporter.console.render).toHaveBeenCalledWith(
-          `${chalk.gray.bold('   ')}        ${chalk.gray('This is a task')}\n`,
+        expect(reporter.console.write).toHaveBeenCalledWith(
+          `${chalk.gray.bold('   ')}        ${chalk.gray('This is a task')}`,
+          1,
         );
       });
     });

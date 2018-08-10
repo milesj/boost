@@ -51,7 +51,8 @@ export interface ToolInterface extends EmitterInterface {
   logError(message: string, ...args: any[]): this;
 }
 
-export default class Tool<Tp extends PluginInterface> extends Emitter implements ToolInterface {
+export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
+  implements ToolInterface {
   argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
@@ -68,7 +69,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
 
   plugins: Tp[] = [];
 
-  reporters: ReporterInterface[] = [];
+  reporters: Tr[] = [];
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -102,10 +103,11 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     // Initialize the console first so we can start logging
     this.console = new Console();
 
+    // Add a reporter to catch errors during initialization
     const reporter = new ErrorReporter({}, this.console);
     reporter.bootstrap();
 
-    this.reporters.push(reporter);
+    this.reporters.push(reporter as any);
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -154,7 +156,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
   /**
    * Get a reporter by name.
    */
-  getReporter(name: string): ReporterInterface {
+  getReporter(name: string): Tr {
     const reporter = this.reporters.find(p => p.name === name);
 
     if (reporter) {
@@ -293,7 +295,7 @@ export default class Tool<Tp extends PluginInterface> extends Emitter implements
     reporters.forEach(reporter => {
       reporter.bootstrap();
 
-      this.reporters.push(reporter);
+      this.reporters.push(reporter as any);
     });
 
     return this;

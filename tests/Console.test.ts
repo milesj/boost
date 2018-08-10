@@ -46,13 +46,13 @@ describe('Console', () => {
     it('displays nothing if no logs', () => {
       cli.displayLogs([]);
 
-      expect(cli.out).not.toHaveBeenCalled();
+      expect(cli.bufferedOutput).toBe('');
     });
 
     it('displays the logs', () => {
       cli.displayLogs(['foo', 'bar']);
 
-      expect(cli.out).toHaveBeenCalledWith('\nfoo\nbar\n');
+      expect(cli.bufferedOutput).toBe('\nfoo\nbar\n');
     });
   });
 
@@ -221,27 +221,19 @@ describe('Console', () => {
     });
 
     it('calls clearTimeout if render timer set', () => {
-      cli.handleRender();
-
-      expect(timeoutSpy).not.toHaveBeenCalled();
-
       // @ts-ignore
       cli.renderTimer = 1;
       cli.handleRender();
 
-      expect(timeoutSpy).toHaveBeenCalledWith(1);
+      expect(timeoutSpy).toHaveBeenCalled();
     });
 
     it('calls clearTimeout if refresh timer set', () => {
-      cli.handleRender();
-
-      expect(timeoutSpy).not.toHaveBeenCalled();
-
       // @ts-ignore
       cli.refreshTimer = 1;
       cli.handleRender();
 
-      expect(timeoutSpy).toHaveBeenCalledWith(1);
+      expect(timeoutSpy).toHaveBeenCalled();
     });
 
     it('triggers `render` event', () => {

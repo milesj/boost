@@ -6,13 +6,9 @@
 import Context from './Context';
 import Routine from './Routine';
 import Tool, { ToolInterface } from './Tool';
-import { PluginInterface } from './Plugin';
 import { ToolConfig } from './types';
 
-export default class Pipeline<Tp extends PluginInterface, Tx extends Context> extends Routine<
-  ToolConfig,
-  Tx
-> {
+export default class Pipeline<Tx extends Context> extends Routine<ToolConfig, Tx> {
   constructor(tool: ToolInterface, context: Tx) {
     super('root', 'Pipeline');
 
