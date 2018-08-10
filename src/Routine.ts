@@ -118,16 +118,17 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
     // Push chunks to the reporter
     if (!options.sync) {
-      const out = stream.stdout as Readable;
       const task = options.task || this;
-
-      out.pipe(split()).on('data', (line: string) => {
+      const handler = (line: string) => {
         /* istanbul ignore next */
         if (task.status === STATUS_RUNNING) {
           task.statusText = line;
           this.tool.console.emit('command.data', [command, line, this]);
         }
-      });
+      };
+
+      (stream.stdout as Readable).pipe(split()).on('data', handler);
+      (stream.stderr as Readable).pipe(split()).on('data', handler);
     }
 
     // Allow consumer to wrap functionality
