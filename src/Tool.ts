@@ -104,7 +104,8 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     this.console = new Console();
 
     // Add a reporter to catch errors during initialization
-    const reporter = new ErrorReporter({}, this.console);
+    const reporter = new ErrorReporter();
+    reporter.console = this.console;
     reporter.bootstrap();
 
     this.reporters.push(reporter as any);
@@ -279,20 +280,20 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const args = [this.options.console, this.console];
-    const reporters = loader.loadModules(this.config.reporters, args);
+    const reporters = loader.loadModules(this.config.reporters, [this.options.console]);
 
     // Use default reporter
     if (reporters.length === 0) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-      reporters.push(new DefaultReporter(this.options.console, this.console));
+      reporters.push(new DefaultReporter(this.options.console));
     }
 
     // Bootstrap each plugin with the tool
     loader.debug('Bootstrapping reporters with console environment');
 
     reporters.forEach(reporter => {
+      reporter.console = this.console; // eslint-disable-line no-param-reassign
       reporter.bootstrap();
 
       this.reporters.push(reporter as any);

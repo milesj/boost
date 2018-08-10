@@ -1,13 +1,6 @@
 const { Tool, Pipeline, Routine } = require('../../lib');
+const { DelayedRoutine } = require('../routines');
 const random = require('../random');
-
-class DelayedRoutine extends Routine {
-  execute() {
-    return new Promise(resolve => {
-      setTimeout(resolve, random(2000, 1000));
-    });
-  }
-}
 
 class RoutinePoolRoutine extends Routine {
   bootstrap() {
@@ -24,6 +17,7 @@ class RoutinePoolRoutine extends Routine {
 const tool = new Tool(
   {
     appName: 'demos-pool',
+    console: { footer: 'Powered by Boost' },
   },
   process.argv.slice(2),
 );

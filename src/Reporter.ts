@@ -21,13 +21,15 @@ export interface ReporterOptions extends Struct {
   verbose: 0 | 1 | 2 | 3;
 }
 
-export interface ReporterInterface extends ModuleInterface {
+export interface ReporterInterface<T = any> extends ModuleInterface {
   console: ConsoleInterface;
+  lines: T[];
   bootstrap(): void;
 }
 
 export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   implements ReporterInterface {
+  // @ts-ignore Set after instantiation
   console: ConsoleInterface;
 
   lines: T[] = [];
@@ -38,10 +40,9 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
 
   stopTime: number = 0;
 
-  constructor(options: Partial<To>, cli: ConsoleInterface) {
+  constructor(options: Partial<To> = {}) {
     super(options);
 
-    this.console = cli;
     this.options = optimal(
       options,
       {
