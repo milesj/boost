@@ -3,6 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable no-param-reassign */
+
 import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
@@ -104,11 +106,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     this.console = new Console();
 
     // Add a reporter to catch errors during initialization
-    const reporter = new ErrorReporter();
-    reporter.console = this.console;
-    reporter.bootstrap();
-
-    this.reporters.push(reporter as any);
+    this.addReporter(new ErrorReporter(this.options.console) as any);
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -117,6 +115,18 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
         this.emit('exit', [code]);
       });
     }
+  }
+
+  /**
+   * Add a reporter and bootstrap with the console instance.
+   */
+  addReporter(reporter: Tr): this {
+    reporter.console = this.console;
+    reporter.bootstrap();
+
+    this.reporters.push(reporter);
+
+    return this;
   }
 
   /**
@@ -258,7 +268,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     // Bootstrap each plugin with the tool
     this.plugins.forEach(plugin => {
-      plugin.tool = this; // eslint-disable-line no-param-reassign
+      plugin.tool = this;
       plugin.bootstrap();
     });
 
@@ -293,10 +303,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     loader.debug('Bootstrapping reporters with console environment');
 
     reporters.forEach(reporter => {
-      reporter.console = this.console; // eslint-disable-line no-param-reassign
-      reporter.bootstrap();
-
-      this.reporters.push(reporter as any);
+      this.addReporter(reporter as any);
     });
 
     return this;

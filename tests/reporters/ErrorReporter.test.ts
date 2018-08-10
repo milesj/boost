@@ -7,7 +7,8 @@ describe('ErrorReporter', () => {
   let reporter: ErrorReporter;
 
   beforeEach(() => {
-    reporter = new ErrorReporter({}, new Console());
+    reporter = new ErrorReporter();
+    reporter.console = new Console();
   });
 
   describe('handleError()', () => {

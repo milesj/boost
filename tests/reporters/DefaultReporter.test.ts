@@ -14,7 +14,8 @@ describe('DefaultReporter', () => {
   let reporter: DefaultReporter;
 
   beforeEach(() => {
-    reporter = new DefaultReporter({}, new Console());
+    reporter = new DefaultReporter();
+    reporter.console = new Console();
 
     Date.now = () => 0;
 

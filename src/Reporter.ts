@@ -97,20 +97,6 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
   }
 
   /**
-   * Display a footer after all other output.
-   */
-  displayFooter() {
-    const { footer } = this.options;
-    const time = this.getElapsedTime(this.startTime, this.stopTime, false);
-
-    if (footer) {
-      this.console.write(`${footer} ${this.style(`(${time})`)}\n`);
-    } else {
-      this.console.write(this.style(`Ran in ${time}\n`));
-    }
-  }
-
-  /**
    * Find a line using a callback
    */
   findLine(callback: (item: T) => boolean): T | undefined {

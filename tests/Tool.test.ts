@@ -101,7 +101,7 @@ describe('Tool', () => {
     });
 
     it('returns plugin by name', () => {
-      const reporter = new Reporter({}, tool.console);
+      const reporter = new Reporter();
       reporter.name = 'foo';
 
       tool.reporters.push(reporter);

@@ -84,6 +84,16 @@ export default class Console extends Emitter {
   }
 
   /**
+   * Display a footer after all other output.
+   */
+  displayFooter() {
+    // const { footer } = this.options;
+    // if (footer) {
+    //   this.write(`${footer}\n`);
+    // }
+  }
+
+  /**
    * Display logs in the final output.
    */
   displayLogs(logs: string[]) {
@@ -114,6 +124,8 @@ export default class Console extends Emitter {
         this.displayLogs(this.logs);
       }
     }
+
+    this.displayFooter();
 
     // Unwrap our streams
     this.unwrapStream(process.stderr);
@@ -243,6 +255,11 @@ export default class Console extends Emitter {
    * Debounce the render as to avoid tearing.
    */
   render(): this {
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
+
     if (!this.renderTimer) {
       this.renderTimer = setTimeout(() => {
         this.handleRender();

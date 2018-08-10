@@ -6,13 +6,12 @@ import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 
 jest.mock('../src/Console');
 
-const oldNow = Date.now;
-
 describe('Reporter', () => {
   let reporter: Reporter<any, any>;
 
   beforeEach(() => {
-    reporter = new Reporter({}, new Console());
+    reporter = new Reporter();
+    reporter.console = new Console();
 
     (reporter.console.on as jest.Mock).mockReturnThis();
   });
@@ -43,31 +42,6 @@ describe('Reporter', () => {
       reporter.displayError(new Error('Oops'));
 
       expect(reporter.console.write).toHaveBeenCalledTimes(3);
-    });
-  });
-
-  describe('displayFooter()', () => {
-    beforeEach(() => {
-      Date.now = () => 0;
-    });
-
-    afterEach(() => {
-      Date.now = oldNow;
-    });
-
-    it('displays default message', () => {
-      reporter.displayFooter();
-
-      expect(reporter.console.write).toHaveBeenCalledWith(expect.stringContaining('Ran in 0.00s'));
-    });
-
-    it('displays custom footer message', () => {
-      reporter.options.footer = 'Powered by Boost';
-      reporter.displayFooter();
-
-      expect(reporter.console.write).toHaveBeenCalledWith(
-        expect.stringContaining('Powered by Boost'),
-      );
     });
   });
 
