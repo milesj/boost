@@ -4,7 +4,7 @@ import { RoutineInterface } from '../../src/Routine';
 import Task, { TaskInterface } from '../../src/Task';
 import Console from '../../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../../src/constants';
-import { createTestRoutine } from '../helpers';
+import { createTestRoutine, DEFAULT_CONSOLE_OPTIONS } from '../helpers';
 
 jest.mock('../../src/Console');
 
@@ -16,6 +16,7 @@ describe('DefaultReporter', () => {
   beforeEach(() => {
     reporter = new DefaultReporter();
     reporter.console = new Console();
+    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
 
     Date.now = () => 0;
 
@@ -136,7 +137,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows skipped if verbose >= 1', () => {
-        reporter.options.verbose = 1;
+        reporter.console.options.verbose = 1;
 
         const task = new Task('This is a task', () => {}).skip();
 
@@ -146,7 +147,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows failed if verbose >= 1', () => {
-        reporter.options.verbose = 1;
+        reporter.console.options.verbose = 1;
 
         const task = new Task('This is a task', () => {});
         task.status = STATUS_FAILED;
@@ -157,7 +158,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows tasks count if verbose >= 1', () => {
-        reporter.options.verbose = 1;
+        reporter.console.options.verbose = 1;
 
         const task = new Task('This is a task', () => {});
         task.tasks.push(new Task('Subtask'));
@@ -199,7 +200,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows skipped if verbose >= 1', () => {
-        reporter.options.verbose = 1;
+        reporter.console.options.verbose = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine').skip();
 
@@ -209,7 +210,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows failed if verbose >= 1', () => {
-        reporter.options.verbose = 1;
+        reporter.console.options.verbose = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_FAILED;
@@ -220,7 +221,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows tasks count if verbose >= 1', () => {
-        reporter.options.verbose = 1;
+        reporter.console.options.verbose = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -229,7 +230,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows elapsed time if verbose >= 2', () => {
-        reporter.options.verbose = 2;
+        reporter.console.options.verbose = 2;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_PASSED;
@@ -240,7 +241,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows both count and status', () => {
-        reporter.options.verbose = 2;
+        reporter.console.options.verbose = 2;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -252,7 +253,7 @@ describe('DefaultReporter', () => {
       });
 
       it('doesnt show status if verbose == 0', () => {
-        reporter.options.verbose = 0;
+        reporter.console.options.verbose = 0;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -373,7 +374,7 @@ describe('DefaultReporter', () => {
     it('removes routine from lines if depth greater than 0 and verbose < 3', () => {
       const routine = createTestRoutine(null, 'key');
 
-      reporter.options.verbose = 2;
+      reporter.console.options.verbose = 2;
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
 
@@ -398,7 +399,7 @@ describe('DefaultReporter', () => {
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
-      reporter.options.verbose = 3;
+      reporter.console.options.verbose = 3;
 
       reporter.handleRoutineComplete(routine, '', false);
 

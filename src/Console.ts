@@ -5,6 +5,7 @@
 
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
+import optimal, { bool, number, string, Struct } from 'optimal';
 import Emitter, { EmitterInterface } from './Emitter';
 
 export const REFRESH_RATE = 100;
@@ -14,9 +15,17 @@ export interface WrappedStream {
   (message: string): boolean;
 }
 
+export interface ConsoleOptions extends Struct {
+  footer: string;
+  silent: boolean;
+  theme: string;
+  verbose: 0 | 1 | 2 | 3;
+}
+
 export interface ConsoleInterface extends EmitterInterface {
   err: WrappedStream;
   out: WrappedStream;
+  options: ConsoleOptions;
   exit(message: string | Error | null, code: number): void;
   log(message: string): this;
   logError(message: string): this;
@@ -39,14 +48,29 @@ export default class Console extends Emitter {
 
   logs: string[] = [];
 
+  options: ConsoleOptions;
+
   out: WrappedStream;
 
   renderTimer: NodeJS.Timer | null = null;
 
   restoreCursorOnExit: boolean = false;
 
-  constructor() {
+  constructor(options: Partial<ConsoleOptions> = {}) {
     super();
+
+    this.options = optimal(
+      options,
+      {
+        footer: string().empty(),
+        silent: bool(),
+        theme: string('default'),
+        verbose: number(3).between(0, 3, true),
+      },
+      {
+        name: this.constructor.name,
+      },
+    );
 
     this.err = this.wrapStream(process.stderr);
     this.out = this.wrapStream(process.stdout);
@@ -87,10 +111,11 @@ export default class Console extends Emitter {
    * Display a footer after all other output.
    */
   displayFooter() {
-    // const { footer } = this.options;
-    // if (footer) {
-    //   this.write(`${footer}\n`);
-    // }
+    const { footer } = this.options;
+
+    if (footer) {
+      this.write(`${footer}\n`);
+    }
   }
 
   /**
@@ -354,10 +379,9 @@ export default class Console extends Emitter {
    * Log a message to `stdout` without a trailing newline or formatting.
    */
   write(message: string, nl: number = 0): this {
-    // TODO
-    // if (!this.options.silent) {
-    this.bufferedOutput += message + '\n'.repeat(nl);
-    // }
+    if (!this.options.silent) {
+      this.bufferedOutput += message + '\n'.repeat(nl);
+    }
 
     return this;
   }

@@ -3,6 +3,7 @@ import Reporter from '../src/Reporter';
 import Task from '../src/Task';
 import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+import { DEFAULT_CONSOLE_OPTIONS } from './helpers';
 
 jest.mock('../src/Console');
 
@@ -12,6 +13,7 @@ describe('Reporter', () => {
   beforeEach(() => {
     reporter = new Reporter();
     reporter.console = new Console();
+    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
 
     (reporter.console.on as jest.Mock).mockReturnThis();
   });
@@ -78,21 +80,21 @@ describe('Reporter', () => {
 
     it('returns base palette if chalk level >= 2 and theme is default', () => {
       chalk.level = 2;
-      reporter.options.theme = 'default';
+      reporter.console.options.theme = 'default';
 
       expect(reporter.getColorPalette()).toEqual(basePalette);
     });
 
     it('returns base palette if theme does not exist', () => {
       chalk.level = 2;
-      reporter.options.theme = 'unknown';
+      reporter.console.options.theme = 'unknown';
 
       expect(reporter.getColorPalette()).toEqual(basePalette);
     });
 
     it('returns theme palette', () => {
       chalk.level = 2;
-      reporter.options.theme = 'solarized';
+      reporter.console.options.theme = 'solarized';
 
       expect(reporter.getColorPalette()).toEqual({
         failure: '#dc322f',
@@ -139,13 +141,13 @@ describe('Reporter', () => {
     });
 
     it('colors red if higher than slow threshold', () => {
-      reporter.options.slowThreshold = 3000;
+      reporter.console.options.slowThreshold = 3000;
 
       expect(reporter.getElapsedTime(1000, 5000)).toBe(chalk.red('4.00s'));
     });
 
     it('doesnt color if highlight is false', () => {
-      reporter.options.slowThreshold = 3000;
+      reporter.console.options.slowThreshold = 3000;
 
       expect(reporter.getElapsedTime(1000, 5000, false)).toBe('4.00s');
     });

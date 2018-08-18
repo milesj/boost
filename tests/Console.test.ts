@@ -42,6 +42,21 @@ describe('Console', () => {
     });
   });
 
+  describe('displayFooter()', () => {
+    it('displays nothing if no footer', () => {
+      cli.displayFooter();
+
+      expect(cli.bufferedOutput).toBe('');
+    });
+
+    it('displays the footer', () => {
+      cli.options.footer = 'Powered by Boost';
+      cli.displayFooter();
+
+      expect(cli.bufferedOutput).toBe('Powered by Boost\n');
+    });
+  });
+
   describe('displayLogs()', () => {
     it('displays nothing if no logs', () => {
       cli.displayLogs([]);
@@ -353,9 +368,8 @@ describe('Console', () => {
       expect(cli.bufferedOutput).toBe('foo\nbar\n\n');
     });
 
-    // TODO
-    it.skip('doesnt log if silent', () => {
-      // cli.options.silent = true;
+    it('doesnt log if silent', () => {
+      cli.options.silent = true;
       cli.write('foo');
       cli.write('bar');
 

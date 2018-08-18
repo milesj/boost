@@ -1,5 +1,6 @@
 import ErrorReporter from '../../src/reporters/ErrorReporter';
 import Console from '../../src/Console';
+import { DEFAULT_CONSOLE_OPTIONS } from '../helpers';
 
 jest.mock('../../src/Console');
 
@@ -9,6 +10,7 @@ describe('ErrorReporter', () => {
   beforeEach(() => {
     reporter = new ErrorReporter();
     reporter.console = new Console();
+    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
   });
 
   describe('handleError()', () => {

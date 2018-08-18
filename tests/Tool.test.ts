@@ -5,7 +5,12 @@ import DefaultReporter from '../src/reporters/DefaultReporter';
 import ErrorReporter from '../src/reporters/ErrorReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
+import {
+  getFixturePath,
+  copyFixtureToMock,
+  createTestTool,
+  DEFAULT_CONSOLE_OPTIONS,
+} from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
 jest.mock('../src/Console');
@@ -18,6 +23,7 @@ describe('Tool', () => {
       root: getFixturePath('app'),
     });
     tool.initialized = false; // Reset
+    tool.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
 
     (tool.console.on as jest.Mock).mockReturnThis();
   });
@@ -313,19 +319,12 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.options.console = {
-        footer: 'Powered by Boost',
-        silent: true,
-      };
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['baz'] };
+      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
       tool.loadReporters();
 
       const [, reporter] = tool.reporters;
 
-      // @ts-ignore
-      expect(reporter.options.footer).toBe('Powered by Boost');
-      // @ts-ignore
-      expect(reporter.options.silent).toBe(true);
+      expect(reporter.options).toEqual({ foo: 'bar' });
 
       unmock();
     });

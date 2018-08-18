@@ -4,7 +4,7 @@
  */
 
 import cliTruncate from 'cli-truncate';
-import Reporter, { ReporterOptions } from '../Reporter';
+import Reporter from '../Reporter';
 import Routine, { RoutineInterface } from '../Routine';
 import { TaskInterface } from '../Task';
 
@@ -14,7 +14,7 @@ export interface Line {
   tasks: TaskInterface[];
 }
 
-export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
+export default class DefaultReporter extends Reporter<Line> {
   depth: number = 0;
 
   keyLength: number = 0;
@@ -59,7 +59,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
    */
   // eslint-disable-next-line complexity
   getLineTitle(task: TaskInterface | RoutineInterface, usedColumns: number = 0): string {
-    const { verbose } = this.options;
+    const { verbose } = this.console.options;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
     const title = task.statusText ? this.style(task.statusText) : task.title;
@@ -144,7 +144,7 @@ export default class DefaultReporter extends Reporter<Line, ReporterOptions> {
       this.depth -= 1;
     }
 
-    if (this.depth > 0 && this.options.verbose < 3) {
+    if (this.depth > 0 && this.console.options.verbose < 3) {
       this.removeLine(line => line.routine === routine);
     }
 

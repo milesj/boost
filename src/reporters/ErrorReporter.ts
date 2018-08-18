@@ -3,9 +3,9 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Reporter, { ReporterOptions } from '../Reporter';
+import Reporter from '../Reporter';
 
-export default class ErrorReporter extends Reporter<any, ReporterOptions> {
+export default class ErrorReporter extends Reporter<any> {
   bootstrap() {
     this.console.on('error', this.handleError);
   }
