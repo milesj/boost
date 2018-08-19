@@ -23,6 +23,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import themePalettes from './themes';
 import { DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, ToolConfig, PackageConfig } from './types';
+import CIReporter from './reporters/CIReporter';
 
 export interface ToolOptions extends Struct {
   appName: string;
@@ -292,7 +293,17 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const reporters = loader.loadModules(this.config.reporters);
+    const reporters = [];
+
+    console.log(process.env.CI, process.env.NODE_ENV);
+
+    if (process.env.CI && process.env.NODE_ENV !== 'test') {
+      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
+
+      reporters.push(new CIReporter());
+    } else {
+      reporters.push(...loader.loadModules(this.config.reporters));
+    }
 
     // Use default reporter
     if (reporters.length === 0) {
