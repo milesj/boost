@@ -161,7 +161,7 @@ export default class ConfigLoader {
     }
 
     const match = workspacePatterns.some(
-      (pattern: string) => !!root.match(new RegExp(path.join(workspaceRoot, pattern))),
+      (pattern: string) => !!root.match(new RegExp(path.join(workspaceRoot, pattern), 'u')),
     );
 
     this.debug.invariant(

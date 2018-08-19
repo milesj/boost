@@ -50,7 +50,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
     let moduleName;
 
     // File path
-    if (name.match(/^\.|\/|\\|[A-Z]:/)) {
+    if (name.match(/^\.|\/|\\|[A-Z]:/u)) {
       this.debug('Locating %s from path %s', typeName, chalk.cyan(name));
 
       modulesToAttempt.push(path.normalize(name));

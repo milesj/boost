@@ -55,7 +55,7 @@
     "debug": "^3.1.0",
     "execa": "^0.10.0",
     "glob": "^7.1.2",
-    "json5": "^1.0.1",
+    "json5": "^2.0.1",
     "lodash": "^4.17.10",
     "optimal": "^1.0.0",
     "pluralize": "^7.0.0",
@@ -65,7 +65,7 @@
     "optimal": "^1.0.0"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.115.2",
+    "@milesj/build-tool-config": "0.118.0",
     "fs-extra": "^7.0.0"
   },
   "beemo": {

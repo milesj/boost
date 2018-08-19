@@ -5,9 +5,9 @@
 
 import { Status, ToolConfig } from './types';
 
-export const APP_NAME_PATTERN: RegExp = /^[-a-z.]+$/;
-export const MODULE_NAME_PATTERN: RegExp = /^(@[-a-z]+\/)?[-a-z]+$/;
-export const PLUGIN_NAME_PATTERN: RegExp = /^[a-z]+:[-a-z]+$/;
+export const APP_NAME_PATTERN: RegExp = /^[-a-z.]+$/u;
+export const MODULE_NAME_PATTERN: RegExp = /^(@[-a-z]+\/)?[-a-z]+$/u;
+export const PLUGIN_NAME_PATTERN: RegExp = /^[a-z]+:[-a-z]+$/u;
 
 export const STATUS_PENDING: Status = 'pending';
 export const STATUS_RUNNING: Status = 'running';
