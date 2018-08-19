@@ -11,6 +11,18 @@ describe('ErrorReporter', () => {
     reporter = new ErrorReporter();
     reporter.console = new Console();
     reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
+
+    (reporter.console.on as jest.Mock).mockReturnThis();
+  });
+
+  describe('bootstrap()', () => {
+    it('binds events', () => {
+      const spy = reporter.console.on;
+
+      reporter.bootstrap();
+
+      expect(spy).toHaveBeenCalledWith('error', expect.anything());
+    });
   });
 
   describe('handleError()', () => {

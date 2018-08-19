@@ -29,7 +29,7 @@ describe('DefaultReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = jest.spyOn(reporter.console, 'on');
+      const spy = reporter.console.on;
 
       reporter.bootstrap();
 

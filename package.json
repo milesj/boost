@@ -76,7 +76,8 @@
       {
         "driver": "jest",
         "env": {
-          "NODE_ENV": "test"
+          "NODE_ENV": "test",
+          "BOOST_ENV": "test"
         }
       },
       "prettier",

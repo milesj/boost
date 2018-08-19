@@ -8,7 +8,7 @@ import { TaskInterface } from '../Task';
 import { RoutineInterface } from '../Routine';
 
 type TaskID = {
-  id: number;
+  id?: number;
 };
 
 export default class CIReporter extends Reporter<any> {

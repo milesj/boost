@@ -295,9 +295,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     const loader = new ModuleLoader(this, 'reporter', Reporter);
     const reporters = [];
 
-    console.log(process.env.CI, process.env.NODE_ENV);
-
-    if (process.env.CI && process.env.NODE_ENV !== 'test') {
+    if (process.env.CI && !process.env.BOOST_ENV) {
       loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
 
       reporters.push(new CIReporter());
