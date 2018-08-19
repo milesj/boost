@@ -3,6 +3,14 @@ import path from 'path';
 import Tool, { ToolOptions, ToolInterface } from '../src/Tool';
 import Routine from '../src/Routine';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
+import { ConsoleOptions } from '../src/Console';
+
+export const DEFAULT_CONSOLE_OPTIONS: ConsoleOptions = {
+  footer: '',
+  silent: false,
+  theme: 'default',
+  verbose: 3,
+};
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks

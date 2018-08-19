@@ -4,7 +4,7 @@
  */
 
 import chalk from 'chalk';
-import optimal, { bool, number, string, Struct } from 'optimal';
+import { Struct } from 'optimal';
 import { ConsoleInterface } from './Console';
 import Module, { ModuleInterface } from './Module';
 import { TaskInterface } from './Task';
@@ -13,51 +13,22 @@ import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export interface ReporterOptions extends Struct {
-  footer: string;
-  silent: boolean;
-  slowThreshold: number;
-  theme: string;
-  verbose: 0 | 1 | 2 | 3;
-}
-
 export interface ReporterInterface<T = any> extends ModuleInterface {
   console: ConsoleInterface;
   lines: T[];
   bootstrap(): void;
 }
 
-export default class Reporter<T, To extends ReporterOptions> extends Module<To>
+export default class Reporter<T, To extends Struct = {}> extends Module<To>
   implements ReporterInterface {
   // @ts-ignore Set after instantiation
   console: ConsoleInterface;
 
   lines: T[] = [];
 
-  options: To;
-
   startTime: number = 0;
 
   stopTime: number = 0;
-
-  constructor(options: Partial<To> = {}) {
-    super(options);
-
-    this.options = optimal(
-      options,
-      {
-        footer: string().empty(),
-        silent: bool(),
-        slowThreshold: number(SLOW_THRESHOLD),
-        theme: string('default'),
-        verbose: number(3).between(0, 3, true),
-      },
-      {
-        name: this.constructor.name,
-        unknown: true,
-      },
-    );
-  }
 
   /**
    * Register console listeners.
@@ -107,7 +78,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    * Return specific colors based on chosen theme.
    */
   getColorPalette(): ColorPalette {
-    const { theme } = this.options;
+    const { theme } = this.console.options;
 
     if (chalk.level >= 2 && themePalettes[theme]) {
       return themePalettes[theme];
@@ -141,7 +112,7 @@ export default class Reporter<T, To extends ReporterOptions> extends Module<To>
    */
   getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
     const time = (stop || Date.now()) - start;
-    const isSlow = time > this.options.slowThreshold;
+    const isSlow = time > SLOW_THRESHOLD;
     const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
 
     return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;

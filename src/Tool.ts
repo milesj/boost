@@ -11,11 +11,11 @@ import debug from 'debug';
 import pluralize from 'pluralize';
 import optimal, { bool, object, string, Blueprint, Struct } from 'optimal';
 import ConfigLoader from './ConfigLoader';
-import Console, { ConsoleInterface } from './Console';
+import Console, { ConsoleInterface, ConsoleOptions } from './Console';
 import Emitter, { EmitterInterface } from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin, { PluginInterface } from './Plugin';
-import Reporter, { ReporterInterface, ReporterOptions } from './Reporter';
+import Reporter, { ReporterInterface } from './Reporter';
 import DefaultReporter from './reporters/DefaultReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
@@ -28,7 +28,7 @@ export interface ToolOptions extends Struct {
   appName: string;
   configBlueprint: Blueprint;
   configFolder: string;
-  console: Partial<ReporterOptions>;
+  console: Partial<ConsoleOptions>;
   pluginAlias: string;
   root: string;
   scoped: boolean;
@@ -292,13 +292,13 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const reporters = loader.loadModules(this.config.reporters, [this.options.console]);
+    const reporters = loader.loadModules(this.config.reporters);
 
     // Use default reporter
     if (reporters.length === 0) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-      reporters.push(new DefaultReporter(this.options.console));
+      reporters.push(new DefaultReporter());
     }
 
     // Bootstrap each plugin with the tool
