@@ -132,8 +132,8 @@ describe('DefaultReporter', () => {
         process.stdout.columns = oldColumns;
       });
 
-      it('shows skipped if verbose >= 1', () => {
-        reporter.console.options.verbose = 1;
+      it('shows skipped if level >= 1', () => {
+        reporter.console.options.level = 1;
 
         const task = new Task('This is a task', () => {}).skip();
 
@@ -142,8 +142,8 @@ describe('DefaultReporter', () => {
         );
       });
 
-      it('shows failed if verbose >= 1', () => {
-        reporter.console.options.verbose = 1;
+      it('shows failed if level >= 1', () => {
+        reporter.console.options.level = 1;
 
         const task = new Task('This is a task', () => {});
         task.status = STATUS_FAILED;
@@ -153,8 +153,8 @@ describe('DefaultReporter', () => {
         );
       });
 
-      it('shows tasks count if verbose >= 1', () => {
-        reporter.console.options.verbose = 1;
+      it('shows tasks count if level >= 1', () => {
+        reporter.console.options.level = 1;
 
         const task = new Task('This is a task', () => {});
         task.tasks.push(new Task('Subtask'));
@@ -195,8 +195,8 @@ describe('DefaultReporter', () => {
         process.stdout.columns = oldColumns;
       });
 
-      it('shows skipped if verbose >= 1', () => {
-        reporter.console.options.verbose = 1;
+      it('shows skipped if level >= 1', () => {
+        reporter.console.options.level = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine').skip();
 
@@ -205,8 +205,8 @@ describe('DefaultReporter', () => {
         );
       });
 
-      it('shows failed if verbose >= 1', () => {
-        reporter.console.options.verbose = 1;
+      it('shows failed if level >= 1', () => {
+        reporter.console.options.level = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_FAILED;
@@ -216,8 +216,8 @@ describe('DefaultReporter', () => {
         );
       });
 
-      it('shows tasks count if verbose >= 1', () => {
-        reporter.console.options.verbose = 1;
+      it('shows tasks count if level >= 1', () => {
+        reporter.console.options.level = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -225,8 +225,8 @@ describe('DefaultReporter', () => {
         expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0/1]')}`);
       });
 
-      it('shows elapsed time if verbose >= 2', () => {
-        reporter.console.options.verbose = 2;
+      it('shows elapsed time if level >= 2', () => {
+        reporter.console.options.level = 2;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_PASSED;
@@ -237,7 +237,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows both count and status', () => {
-        reporter.console.options.verbose = 2;
+        reporter.console.options.level = 2;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -248,8 +248,8 @@ describe('DefaultReporter', () => {
         expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0/1, 3.00s]')}`);
       });
 
-      it('doesnt show status if verbose == 0', () => {
-        reporter.console.options.verbose = 0;
+      it('doesnt show status if level == 0', () => {
+        reporter.console.options.level = 0;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -367,10 +367,10 @@ describe('DefaultReporter', () => {
       expect(renderSpy).toHaveBeenCalled();
     });
 
-    it('removes routine from lines if depth greater than 0 and verbose < 3', () => {
+    it('removes routine from lines if depth greater than 0 and level < 3', () => {
       const routine = createTestRoutine(null, 'key');
 
-      reporter.console.options.verbose = 2;
+      reporter.console.options.level = 2;
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
 
@@ -390,12 +390,12 @@ describe('DefaultReporter', () => {
       expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
 
-    it('doesnt remove line if verbose is 3', () => {
+    it('doesnt remove line if level is 3', () => {
       const routine = createTestRoutine(null, 'key');
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
-      reporter.console.options.verbose = 3;
+      reporter.console.options.level = 3;
 
       reporter.handleRoutineComplete(routine, '', false);
 

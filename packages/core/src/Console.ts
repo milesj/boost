@@ -16,9 +16,9 @@ export type WrappedStream = (message: string) => void;
 export interface ConsoleOptions extends Struct {
   footer: string;
   header: string;
+  level: 0 | 1 | 2 | 3;
   silent: boolean;
   theme: string;
-  verbose: 0 | 1 | 2 | 3;
 }
 
 export interface ConsoleInterface extends EmitterInterface {
@@ -63,9 +63,9 @@ export default class Console extends Emitter {
       {
         footer: string().empty(),
         header: string().empty(),
+        level: number(3).between(0, 3, true),
         silent: bool(),
         theme: string('default'),
-        verbose: number(3).between(0, 3, true),
       },
       {
         name: this.constructor.name,
