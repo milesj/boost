@@ -11,9 +11,7 @@ import Emitter, { EmitterInterface } from './Emitter';
 export const REFRESH_RATE = 100;
 export const BG_REFRESH_RATE = 500;
 
-export interface WrappedStream {
-  (message: string): boolean;
-}
+export type WrappedStream = (message: string) => void;
 
 export interface ConsoleOptions extends Struct {
   footer: string;
@@ -74,13 +72,16 @@ export default class Console extends Emitter {
       },
     );
 
-    this.err = this.wrapStream(process.stderr);
-    this.out = this.wrapStream(process.stdout);
-    this.startBackgroundTimer();
-
-    // Avoid binding listeners while testing
     /* istanbul ignore next */
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV === 'test') {
+      this.err = () => {};
+      this.out = () => {};
+    } else {
+      this.err = this.wrapStream(process.stderr);
+      this.out = this.wrapStream(process.stdout);
+
+      this.startBackgroundTimer();
+
       process
         .on('SIGINT', this.handleSignal)
         .on('SIGTERM', this.handleSignal)
@@ -371,8 +372,6 @@ export default class Console extends Emitter {
       if (stream.isTTY) {
         originalWrite(message);
       }
-
-      return true;
     };
 
     const flush = () => {

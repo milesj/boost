@@ -2,25 +2,21 @@ import chalk from 'chalk';
 import DefaultReporter from '../../src/reporters/DefaultReporter';
 import { RoutineInterface } from '../../src/Routine';
 import Task, { TaskInterface } from '../../src/Task';
-import Console from '../../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../../src/constants';
-import { createTestRoutine, DEFAULT_CONSOLE_OPTIONS } from '../helpers';
-
-jest.mock('../../src/Console');
+import { createTestRoutine, createTestConsole } from '../helpers';
 
 const oldNow = Date.now;
 
 describe('DefaultReporter', () => {
   let reporter: DefaultReporter;
+  let renderSpy: jest.SpyInstance;
 
   beforeEach(() => {
     reporter = new DefaultReporter();
-    reporter.console = new Console();
-    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
+    reporter.console = createTestConsole();
+    renderSpy = jest.spyOn(reporter.console, 'render');
 
     Date.now = () => 0;
-
-    (reporter.console.on as jest.Mock).mockReturnThis();
   });
 
   afterEach(() => {
@@ -29,7 +25,7 @@ describe('DefaultReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = reporter.console.on;
+      const spy = jest.spyOn(reporter.console, 'on');
 
       reporter.bootstrap();
 
@@ -282,7 +278,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleCommand();
 
-      expect(reporter.console.render).toHaveBeenCalled();
+      expect(renderSpy).toHaveBeenCalled();
     });
   });
 
@@ -290,7 +286,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleTask(new Task('task'), createTestRoutine());
 
-      expect(reporter.console.render).toHaveBeenCalled();
+      expect(renderSpy).toHaveBeenCalled();
     });
 
     it('adds the task to the routine', () => {
@@ -318,7 +314,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleTaskComplete(new Task('task'), createTestRoutine());
 
-      expect(reporter.console.render).toHaveBeenCalled();
+      expect(renderSpy).toHaveBeenCalled();
     });
 
     it('removes the task from the routine', () => {
@@ -336,7 +332,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleRoutine(createTestRoutine(null, 'key'), '', false);
 
-      expect(reporter.console.render).toHaveBeenCalled();
+      expect(renderSpy).toHaveBeenCalled();
     });
 
     it('adds the routine as a line', () => {
@@ -368,7 +364,7 @@ describe('DefaultReporter', () => {
     it('debounces render', () => {
       reporter.handleRoutineComplete(createTestRoutine(null, 'key'), '', false);
 
-      expect(reporter.console.render).toHaveBeenCalled();
+      expect(renderSpy).toHaveBeenCalled();
     });
 
     it('removes routine from lines if depth greater than 0 and verbose < 3', () => {

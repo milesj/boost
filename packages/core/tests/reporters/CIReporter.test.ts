@@ -1,10 +1,7 @@
 import chalk from 'chalk';
 import CIReporter from '../../src/reporters/CIReporter';
-import Console from '../../src/Console';
-import { DEFAULT_CONSOLE_OPTIONS, createTestRoutine } from '../helpers';
+import { createTestRoutine, createTestConsole } from '../helpers';
 import Task from '../../src/Task';
-
-jest.mock('../../src/Console');
 
 describe('CIReporter', () => {
   let reporter: CIReporter;
@@ -13,15 +10,10 @@ describe('CIReporter', () => {
 
   beforeEach(() => {
     reporter = new CIReporter();
-    reporter.console = new Console();
-    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
+    reporter.console = createTestConsole();
 
-    outSpy = jest.fn();
-    errSpy = jest.fn();
-    reporter.console.out = outSpy;
-    reporter.console.err = errSpy;
-
-    (reporter.console.on as jest.Mock).mockReturnThis();
+    outSpy = reporter.console.out as jest.Mock;
+    errSpy = reporter.console.err as jest.Mock;
   });
 
   const task = new Task('Hello', () => {});
@@ -29,7 +21,7 @@ describe('CIReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = reporter.console.on;
+      const spy = jest.spyOn(reporter.console, 'on');
 
       reporter.bootstrap();
 

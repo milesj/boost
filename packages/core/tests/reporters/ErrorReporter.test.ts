@@ -1,23 +1,17 @@
 import ErrorReporter from '../../src/reporters/ErrorReporter';
-import Console from '../../src/Console';
-import { DEFAULT_CONSOLE_OPTIONS } from '../helpers';
-
-jest.mock('../../src/Console');
+import { createTestConsole } from '../helpers';
 
 describe('ErrorReporter', () => {
   let reporter: ErrorReporter;
 
   beforeEach(() => {
     reporter = new ErrorReporter();
-    reporter.console = new Console();
-    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
-
-    (reporter.console.on as jest.Mock).mockReturnThis();
+    reporter.console = createTestConsole();
   });
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = reporter.console.on;
+      const spy = jest.spyOn(reporter.console, 'on');
 
       reporter.bootstrap();
 

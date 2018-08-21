@@ -1,26 +1,20 @@
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
 import Task from '../src/Task';
-import Console from '../src/Console';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { DEFAULT_CONSOLE_OPTIONS } from './helpers';
-
-jest.mock('../src/Console');
+import { createTestConsole } from './helpers';
 
 describe('Reporter', () => {
   let reporter: Reporter<any, any>;
 
   beforeEach(() => {
     reporter = new Reporter();
-    reporter.console = new Console();
-    reporter.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
-
-    (reporter.console.on as jest.Mock).mockReturnThis();
+    reporter.console = createTestConsole();
   });
 
   describe('bootstrap()', () => {
     it('sets start and stop events', () => {
-      const spy = reporter.console.on;
+      const spy = jest.spyOn(reporter.console, 'on');
 
       reporter.bootstrap();
 
@@ -141,15 +135,11 @@ describe('Reporter', () => {
     });
 
     it('colors red if higher than slow threshold', () => {
-      reporter.console.options.slowThreshold = 3000;
-
-      expect(reporter.getElapsedTime(1000, 5000)).toBe(chalk.red('4.00s'));
+      expect(reporter.getElapsedTime(1000, 15000)).toBe(chalk.red('14.00s'));
     });
 
     it('doesnt color if highlight is false', () => {
-      reporter.console.options.slowThreshold = 3000;
-
-      expect(reporter.getElapsedTime(1000, 5000, false)).toBe('4.00s');
+      expect(reporter.getElapsedTime(1000, 15000, false)).toBe('14.00s');
     });
   });
 

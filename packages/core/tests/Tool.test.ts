@@ -5,15 +5,9 @@ import DefaultReporter from '../src/reporters/DefaultReporter';
 import ErrorReporter from '../src/reporters/ErrorReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import {
-  getFixturePath,
-  copyFixtureToMock,
-  createTestTool,
-  DEFAULT_CONSOLE_OPTIONS,
-} from './helpers';
+import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
-jest.mock('../src/Console');
 
 describe('Tool', () => {
   let tool: Tool<any, any>;
@@ -23,9 +17,6 @@ describe('Tool', () => {
       root: getFixturePath('app'),
     });
     tool.initialized = false; // Reset
-    tool.console.options = { ...DEFAULT_CONSOLE_OPTIONS };
-
-    (tool.console.on as jest.Mock).mockReturnThis();
   });
 
   describe('constructor()', () => {

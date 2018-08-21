@@ -3,15 +3,7 @@ import path from 'path';
 import Tool, { ToolOptions, ToolInterface } from '../src/Tool';
 import Routine from '../src/Routine';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { ConsoleOptions } from '../src/Console';
-
-export const DEFAULT_CONSOLE_OPTIONS: ConsoleOptions = {
-  footer: '',
-  header: '',
-  silent: false,
-  theme: 'default',
-  verbose: 3,
-};
+import Console from '../src/Console';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -94,4 +86,13 @@ export function createTestRoutine(
   routine.execute = routine.action as any;
 
   return routine;
+}
+
+export function createTestConsole(): Console {
+  const cli = new Console();
+  cli.err = jest.fn();
+  cli.out = jest.fn();
+  cli.write = jest.fn();
+
+  return cli;
 }
