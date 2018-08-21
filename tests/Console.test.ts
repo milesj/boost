@@ -57,6 +57,21 @@ describe('Console', () => {
     });
   });
 
+  describe('displayHeader()', () => {
+    it('displays nothing if no header', () => {
+      cli.displayHeader();
+
+      expect(cli.bufferedOutput).toBe('');
+    });
+
+    it('displays the header', () => {
+      cli.options.header = 'Powered by Boost';
+      cli.displayHeader();
+
+      expect(cli.bufferedOutput).toBe('Powered by Boost\n');
+    });
+  });
+
   describe('displayLogs()', () => {
     it('displays nothing if no logs', () => {
       cli.displayLogs([]);
@@ -276,6 +291,80 @@ describe('Console', () => {
 
       expect(spy).not.toHaveBeenCalledWith('error', [error]);
     });
+
+    it('doesnt append a footer if not final', () => {
+      cli.options.footer = 'Footer';
+      cli.handleRender();
+
+      expect(cli.out).toHaveBeenCalledWith('');
+    });
+
+    it('doesnt prepend a header if not final', () => {
+      cli.options.header = 'Header';
+      cli.handleRender();
+
+      expect(cli.out).toHaveBeenCalledWith('');
+    });
+
+    it('doesnt display logs if not final', () => {
+      cli.logs.push('Log');
+      cli.errorLogs.push('Error log');
+      cli.handleRender();
+
+      expect(cli.out).toHaveBeenCalledWith('');
+    });
+
+    describe('final output', () => {
+      beforeEach(() => {
+        cli.on('render', () => {
+          cli.write('Rendering something...', 1);
+        });
+
+        cli.on('error', (error: Error) => {
+          cli.write(error.message, 1);
+        });
+      });
+
+      it('displays final output', () => {
+        cli.handleRender(null, true);
+
+        expect(cli.out).toHaveBeenCalledWith('Rendering something...\n');
+      });
+
+      it('displays an error after the output', () => {
+        cli.handleRender(new Error('Oops'), true);
+
+        expect(cli.out).toHaveBeenCalledWith('Rendering something...\nOops\n');
+      });
+
+      it('appends a footer', () => {
+        cli.options.footer = 'Footer';
+        cli.handleRender(null, true);
+
+        expect(cli.out).toHaveBeenCalledWith('Rendering something...\nFooter\n');
+      });
+
+      it('prepends a header', () => {
+        cli.options.header = 'Header';
+        cli.handleRender(null, true);
+
+        expect(cli.out).toHaveBeenCalledWith('Header\nRendering something...\n');
+      });
+
+      it('displays logs', () => {
+        cli.logs.push('Log');
+        cli.handleRender(null, true);
+
+        expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
+      });
+
+      it('displays error logs', () => {
+        cli.errorLogs.push('Error log');
+        cli.handleRender(null, true);
+
+        expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nError log\n');
+      });
+    });
   });
 
   describe('hideCursor()', () => {
@@ -374,6 +463,13 @@ describe('Console', () => {
       cli.write('bar');
 
       expect(cli.bufferedOutput).toBe('');
+    });
+
+    it('supports prepending', () => {
+      cli.write('foo');
+      cli.write('bar', 0, true);
+
+      expect(cli.bufferedOutput).toBe('barfoo');
     });
   });
 });

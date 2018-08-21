@@ -7,6 +7,7 @@ import { ConsoleOptions } from '../src/Console';
 
 export const DEFAULT_CONSOLE_OPTIONS: ConsoleOptions = {
   footer: '',
+  header: '',
   silent: false,
   theme: 'default',
   verbose: 3,

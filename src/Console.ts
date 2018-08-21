@@ -17,6 +17,7 @@ export interface WrappedStream {
 
 export interface ConsoleOptions extends Struct {
   footer: string;
+  header: string;
   silent: boolean;
   theme: string;
   verbose: 0 | 1 | 2 | 3;
@@ -63,6 +64,7 @@ export default class Console extends Emitter {
       options,
       {
         footer: string().empty(),
+        header: string().empty(),
         silent: bool(),
         theme: string('default'),
         verbose: number(3).between(0, 3, true),
@@ -108,13 +110,24 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Display a footer after all other output.
+   * Display a footer after all final output.
    */
   displayFooter() {
     const { footer } = this.options;
 
     if (footer) {
-      this.write(`${footer}\n`);
+      this.write(footer, 1);
+    }
+  }
+
+  /**
+   * Display a header before all final output.
+   */
+  displayHeader() {
+    const { header } = this.options;
+
+    if (header) {
+      this.write(header, 1);
     }
   }
 
@@ -140,17 +153,7 @@ export default class Console extends Emitter {
     this.emit('stop', [error, code]);
 
     // Render final output
-    this.handleRender(error);
-
-    if (!error) {
-      if (this.errorLogs.length > 0) {
-        this.displayLogs(this.errorLogs);
-      } else if (this.logs.length > 0) {
-        this.displayLogs(this.logs);
-      }
-    }
-
-    this.displayFooter();
+    this.handleRender(error, true);
 
     // Unwrap our streams
     this.unwrapStream(process.stderr);
@@ -204,7 +207,7 @@ export default class Console extends Emitter {
   /**
    * Handle the entire rendering and flushing process.
    */
-  handleRender = (error: Error | null = null) => {
+  handleRender = (error: Error | null = null, final: boolean = false) => {
     if (this.renderTimer) {
       clearTimeout(this.renderTimer);
       this.renderTimer = null;
@@ -221,12 +224,28 @@ export default class Console extends Emitter {
     // Flush buffered `stdout` and `stderr`
     this.flushBufferedStreams();
 
+    // Prepend the header
+    if (final) {
+      this.displayHeader();
+    }
+
     // Render output from all reporters
     this.emit('render');
 
     // Render error at the bottom of the output
     if (error) {
       this.emit('error', [error]);
+    } else if (final) {
+      if (this.errorLogs.length > 0) {
+        this.displayLogs(this.errorLogs);
+      } else if (this.logs.length > 0) {
+        this.displayLogs(this.logs);
+      }
+    }
+
+    // Append the footer
+    if (final) {
+      this.displayFooter();
     }
 
     // Flush buffered output from `render` and `error` events
@@ -378,9 +397,17 @@ export default class Console extends Emitter {
   /**
    * Log a message to `stdout` without a trailing newline or formatting.
    */
-  write(message: string, nl: number = 0): this {
-    if (!this.options.silent) {
-      this.bufferedOutput += message + '\n'.repeat(nl);
+  write(message: string, nl: number = 0, prepend: boolean = false): this {
+    if (this.options.silent) {
+      return this;
+    }
+
+    const buffer = message + '\n'.repeat(nl);
+
+    if (prepend) {
+      this.bufferedOutput = buffer + this.bufferedOutput;
+    } else {
+      this.bufferedOutput += buffer;
     }
 
     return this;

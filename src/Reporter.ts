@@ -61,7 +61,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
           .join('\n'),
       );
 
-      this.console.write(`${stack}\n`);
+      this.console.write(stack, 1);
     }
 
     this.console.write('\n');
