@@ -1,4 +1,4 @@
-const { Routine } = require('../lib');
+const { Routine } = require('../packages/core/lib');
 const random = require('./random');
 
 class DelayedRoutine extends Routine {

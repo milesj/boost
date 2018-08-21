@@ -1,4 +1,4 @@
-const { Tool, Pipeline, Routine } = require('../../lib');
+const { Tool, Pipeline, Routine } = require('../../packages/core/lib');
 const { DelayedRoutine } = require('../routines');
 const random = require('../random');
 

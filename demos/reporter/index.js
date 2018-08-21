@@ -1,4 +1,4 @@
-const { Tool, Pipeline } = require('../../lib');
+const { Tool, Pipeline } = require('../../packages/core/lib');
 const { MultiTaskRoutine, MultiSubRoutine } = require('../routines');
 
 const tool = new Tool(
