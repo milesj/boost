@@ -1,20 +1,8 @@
 {
-  "name": "boost",
-  "version": "0.61.0",
-  "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
-  "keywords": [
-    "boost",
-    "build",
-    "tool",
-    "pipeline",
-    "routine",
-    "task",
-    "config"
-  ],
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "private": true,
+  "name": "boost-root",
   "scripts": {
-    "build": "beemo typescript --node",
+    "build": "beemo typescript --workspaces=* --priority --node",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
@@ -22,52 +10,21 @@
     "pretest": "yarn run type",
     "test": "yarn run jest",
     "posttest": "yarn run eslint",
-    "type": "beemo typescript --noEmit",
+    "type": "beemo typescript --workspaces=* --noEmit",
     "prerelease": "yarn test && yarn run build",
-    "release": "np --yolo --no-yarn"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/milesj/boost.git"
-  },
-  "author": {
-    "name": "Miles Johnson",
-    "url": "http://milesj.me"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/milesj/boost/issues"
-  },
-  "homepage": "https://github.com/milesj/boost#readme",
-  "engines": {
-    "node": ">=6.5.0"
-  },
-  "dependencies": {
-    "@types/debug": "^0.0.30",
-    "@types/execa": "^0.9.0",
-    "@types/glob": "^5.0.35",
-    "@types/json5": "^0.0.29",
-    "@types/lodash": "^4.14.116",
-    "@types/pluralize": "^0.0.29",
-    "@types/split": "^0.3.28",
-    "chalk": "^2.4.1",
-    "cli-truncate": "^1.1.0",
-    "debug": "^3.1.0",
-    "execa": "^0.11.0",
-    "glob": "^7.1.2",
-    "json5": "^2.0.1",
-    "lodash": "^4.17.10",
-    "optimal": "^1.0.0",
-    "pluralize": "^7.0.0",
-    "split": "^1.0.1"
-  },
-  "peerDependencies": {
-    "optimal": "^1.0.0"
+    "release": "lerna publish"
   },
   "devDependencies": {
     "@milesj/build-tool-config": "0.118.1",
-    "fs-extra": "^7.0.0"
+    "fs-extra": "^7.0.0",
+    "lerna": "^3.1.2"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
   "beemo": {
     "module": "@milesj/build-tool-config",
     "drivers": [

@@ -8,7 +8,7 @@ import { TaskInterface } from '../Task';
 
 export default class SyncExecutor extends Executor {
   /**
-   * Execute tasks in parralel with a value being passed to each task.
+   * Execute tasks in parallel with a value being passed to each task.
    * Tasks will synchronize regardless of race conditions and errors.
    */
   run<T>(tasks: TaskInterface[], value?: T): Promise<AggregatedResponse> {
