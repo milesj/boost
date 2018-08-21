@@ -5,7 +5,7 @@ import { RoutineInterface } from '../src/Routine';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
 
-describe('Executor()', () => {
+describe('Executor', () => {
   let tool: Tool<any, any>;
   let executor: Executor;
 

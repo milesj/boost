@@ -7,6 +7,7 @@ import Context from './Context';
 import Routine from './Routine';
 import Tool, { ToolInterface } from './Tool';
 import { ToolConfig } from './types';
+import CrashLogger from './CrashLogger';
 
 export default class Pipeline<Tx extends Context> extends Routine<ToolConfig, Tx> {
   constructor(tool: ToolInterface, context: Tx) {
@@ -42,6 +43,9 @@ export default class Pipeline<Tx extends Context> extends Routine<ToolConfig, Tx
       })
       .catch(error => {
         cli.exit(error, 1);
+
+        // Create a log of the failure
+        new CrashLogger(this.tool).log(error);
 
         return error;
       });
