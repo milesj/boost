@@ -243,9 +243,12 @@ export default class Console extends Emitter {
       }
     }
 
-    // Append the footer
     if (final) {
+      // Append the footer
       this.displayFooter();
+
+      // Remover all listeners so that we avoid unwanted re-renders
+      this.getListeners('render').clear();
     }
 
     // Flush buffered output from `render` and `error` events

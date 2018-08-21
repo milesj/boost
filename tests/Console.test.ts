@@ -176,11 +176,12 @@ describe('Console', () => {
 
     it('triggers a final render', () => {
       const spy = jest.fn();
+      const error = new Error('Oops');
 
       cli.handleRender = spy;
-      cli.exit(new Error('Oops'));
+      cli.exit(error);
 
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith(error, true);
     });
   });
 
@@ -314,6 +315,15 @@ describe('Console', () => {
       expect(cli.out).toHaveBeenCalledWith('');
     });
 
+    it('doesnt clear render listeners', () => {
+      cli.on('render', () => {
+        cli.write('Rendering something...', 1);
+      });
+      cli.handleRender();
+
+      expect(cli.getListeners('render').size).toBe(1);
+    });
+
     describe('final output', () => {
       beforeEach(() => {
         cli.on('render', () => {
@@ -363,6 +373,12 @@ describe('Console', () => {
         cli.handleRender(null, true);
 
         expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nError log\n');
+      });
+
+      it('clears render listeners', () => {
+        cli.handleRender(null, true);
+
+        expect(cli.getListeners('render').size).toBe(0);
       });
     });
   });
