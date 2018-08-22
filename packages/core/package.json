@@ -1,6 +1,6 @@
 {
   "name": "boost",
-  "version": "0.62.0",
+  "version": "0.63.0",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [
     "boost",
