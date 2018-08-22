@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import Tool, { ToolOptions, ToolInterface } from '../src/Tool';
+import Tool, { ToolOptions } from '../src/Tool';
 import Routine from '../src/Routine';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import Console from '../src/Console';
@@ -60,7 +60,7 @@ export function createTestDebugger(): any {
   return debug;
 }
 
-export function createTestTool(options?: Partial<ToolOptions>): Tool<any, any> {
+export function createTestTool(options?: Partial<ToolOptions>): Tool {
   const tool = new Tool({
     appName: 'test-boost',
     ...options,
@@ -74,7 +74,7 @@ export function createTestTool(options?: Partial<ToolOptions>): Tool<any, any> {
 }
 
 export function createTestRoutine(
-  tool: Tool<any, any> | ToolInterface | null = null,
+  tool: Tool | null = null,
   key: string = 'key',
   title: string = 'Title',
 ): Routine<any, any> {

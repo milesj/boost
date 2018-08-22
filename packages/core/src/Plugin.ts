@@ -3,23 +3,16 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Struct } from 'optimal';
-import Module, { ModuleInterface } from './Module';
-import { ToolInterface } from './Tool';
+import Module from './Module';
+import Tool from './Tool';
 
 export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
-export interface PluginInterface extends ModuleInterface {
-  priority: number;
-  tool: ToolInterface;
-  bootstrap(): void;
-}
-
-export default class Plugin<To extends Struct> extends Module<To> implements PluginInterface {
+export default class Plugin<Options> extends Module<Options> {
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
   // @ts-ignore Set after instantiation
-  tool: ToolInterface;
+  tool: Tool;
 
   bootstrap() {}
 }

@@ -1,13 +1,13 @@
 import Executor from '../src/Executor';
-import Task, { TaskInterface } from '../src/Task';
+import Task from '../src/Task';
 import Tool from '../src/Tool';
-import { RoutineInterface } from '../src/Routine';
+import Routine from '../src/Routine';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
 
 describe('Executor', () => {
-  let tool: Tool<any, any>;
-  let executor: Executor;
+  let tool: Tool;
+  let executor: Executor<any>;
 
   beforeEach(() => {
     tool = createTestTool();
@@ -48,7 +48,7 @@ describe('Executor', () => {
   });
 
   describe('executeRoutine()', () => {
-    let routine: RoutineInterface;
+    let routine: Routine<any>;
 
     beforeEach(() => {
       routine = createTestRoutine(tool);
@@ -85,7 +85,7 @@ describe('Executor', () => {
   });
 
   describe('executeTask()', () => {
-    let task: TaskInterface;
+    let task: Task<any>;
 
     beforeEach(() => {
       task = new Task('title', (con, value) => value * 3);

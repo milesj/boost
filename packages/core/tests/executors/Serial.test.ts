@@ -3,7 +3,7 @@ import Task from '../../src/Task';
 import { createTestTool, createTestRoutine } from '../helpers';
 
 describe('SerialExecutor', () => {
-  let executor: SerialExecutor;
+  let executor: SerialExecutor<any>;
 
   beforeEach(() => {
     executor = new SerialExecutor(createTestTool(), {});

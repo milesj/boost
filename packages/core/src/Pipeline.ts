@@ -4,13 +4,13 @@
  */
 
 import Context from './Context';
-import Routine from './Routine';
-import Tool, { ToolInterface } from './Tool';
-import { ToolConfig } from './types';
 import CrashLogger from './CrashLogger';
+import Routine from './Routine';
+import Tool from './Tool';
+import { ToolConfig } from './types';
 
-export default class Pipeline<Tx extends Context> extends Routine<ToolConfig, Tx> {
-  constructor(tool: ToolInterface, context: Tx) {
+export default class Pipeline<Ctx extends Context> extends Routine<Ctx, ToolConfig> {
+  constructor(tool: Tool, context: Ctx) {
     super('root', 'Pipeline');
 
     if (tool instanceof Tool) {

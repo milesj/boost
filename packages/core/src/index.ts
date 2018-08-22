@@ -4,39 +4,33 @@
  */
 
 import ConfigLoader from './ConfigLoader';
-import { ConsoleInterface } from './Console';
+import Console from './Console';
 import Context from './Context';
-import Emitter, { EmitterInterface, EventArguments, EventListener } from './Emitter';
-import Module, { ModuleInterface } from './Module';
+import Emitter, { EventArguments, EventListener } from './Emitter';
+import Module from './Module';
 import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
-import Plugin, { PluginInterface } from './Plugin';
-import Reporter, { ReporterInterface } from './Reporter';
-import Routine, { RoutineInterface } from './Routine';
-import { TaskInterface } from './Task';
-import Tool, { ToolInterface, ToolOptions } from './Tool';
+import Plugin from './Plugin';
+import Reporter from './Reporter';
+import Routine from './Routine';
+import Task from './Task';
+import Tool, { ToolOptions } from './Tool';
 
 export {
   ConfigLoader,
-  ConsoleInterface,
+  Console,
   Context,
   Emitter,
-  EmitterInterface,
   EventArguments,
   EventListener,
   Module,
-  ModuleInterface,
   ModuleLoader,
   Pipeline,
   Plugin,
-  PluginInterface,
   Reporter,
-  ReporterInterface,
   Routine,
-  RoutineInterface,
-  TaskInterface,
+  Task,
   Tool,
-  ToolInterface,
   ToolOptions,
 };
 

@@ -10,7 +10,7 @@ import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 jest.mock('../src/helpers/enableDebug');
 
 describe('Tool', () => {
-  let tool: Tool<any, any>;
+  let tool: Tool;
 
   beforeEach(() => {
     tool = createTestTool({

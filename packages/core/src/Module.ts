@@ -3,21 +3,14 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Struct } from 'optimal';
-
-export interface ModuleInterface {
-  moduleName: string;
-  name: string;
-}
-
-export default class Module<To extends Struct> implements ModuleInterface {
+export default class Module<Options> {
   moduleName: string = '';
 
   name: string = '';
 
-  options: To;
+  options: Options;
 
-  constructor(options: Partial<To> = {}) {
+  constructor(options: Partial<Options> = {}) {
     // @ts-ignore
     this.options = { ...options };
   }

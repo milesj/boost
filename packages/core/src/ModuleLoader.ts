@@ -7,26 +7,27 @@ import chalk from 'chalk';
 import path from 'path';
 import upperFirst from 'lodash/upperFirst';
 import pluralize from 'pluralize';
-import { Struct } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
-import { ModuleInterface } from './Module';
-import { ToolInterface } from './Tool';
+import Module from './Module';
+import Tool from './Tool';
 import { Debugger } from './types';
 
 export type Constructor<T> = new (...args: any[]) => T;
 
-export default class ModuleLoader<Tm extends ModuleInterface> {
+export type OptionsObject = { [key: string]: any };
+
+export default class ModuleLoader<Tm extends Module<any>> {
   classReference: Constructor<Tm>;
 
   debug: Debugger;
 
-  tool: ToolInterface;
+  tool: Tool;
 
   typeName: string;
 
-  constructor(tool: ToolInterface, typeName: string, classReference: Constructor<Tm>) {
+  constructor(tool: Tool, typeName: string, classReference: Constructor<Tm>) {
     this.classReference = classReference;
     this.debug = tool.createDebugger(`${typeName}-loader`);
     this.tool = tool;
@@ -121,7 +122,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If loading from an object, extract the module name and use the remaining object
    * as options for the class instance.
    */
-  importModuleFromOptions(baseOptions: Struct, args: any[] = []): Tm {
+  importModuleFromOptions(baseOptions: OptionsObject, args: any[] = []): Tm {
     const { typeName } = this;
     const options = { ...baseOptions };
     const module = options[typeName];
@@ -153,7 +154,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
    * If a class instance, use directly. If a string, attempt to load and
    * instantiate from a module. If an object, extract the name and run the previous.
    */
-  loadModule(module: string | Struct | Tm, args: any[] = []): Tm {
+  loadModule(module: string | OptionsObject | Tm, args: any[] = []): Tm {
     if (module instanceof this.classReference) {
       return module;
     } else if (typeof module === 'string') {
@@ -172,7 +173,7 @@ export default class ModuleLoader<Tm extends ModuleInterface> {
   /**
    * Load multiple modules.
    */
-  loadModules(modules: (string | Struct | Tm)[] = [], args: any[] = []): Tm[] {
+  loadModules(modules: (string | OptionsObject | Tm)[] = [], args: any[] = []): Tm[] {
     return modules.map(module => this.loadModule(module, args));
   }
 }

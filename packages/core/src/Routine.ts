@@ -11,34 +11,25 @@ import execa, {
 } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';
-import { Struct } from 'optimal';
 import Context from './Context';
-import Task, { TaskAction, TaskInterface } from './Task';
-import { ToolInterface } from './Tool';
-import { STATUS_PENDING, STATUS_RUNNING } from './constants';
-import { Debugger } from './types';
+import Task, { TaskAction } from './Task';
+import Tool from './Tool';
 import { AggregatedResponse } from './Executor';
 import ParallelExecutor from './executors/Parallel';
 import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
 import SerialExecutor from './executors/Serial';
 import SyncExecutor from './executors/Sync';
 import wrapWithPromise from './helpers/wrapWithPromise';
+import { STATUS_PENDING, STATUS_RUNNING } from './constants';
+import { Debugger } from './types';
 
-export interface CommandOptions extends Struct {
+export interface CommandOptions {
   sync?: boolean;
-  task?: TaskInterface;
+  task?: Task<any>;
   wrap?: (process: ExecaChildProcess) => void;
 }
 
-export interface RoutineInterface extends TaskInterface {
-  key: string;
-  routines: RoutineInterface[];
-  tool: ToolInterface;
-  run<T>(context: Context, initialValue?: T | null, wasParallel?: boolean): Promise<any>;
-}
-
-export default class Routine<To extends Struct, Tx extends Context> extends Task<To, Tx>
-  implements RoutineInterface {
+export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx, Options> {
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
@@ -46,12 +37,12 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
 
   key: string = '';
 
-  routines: RoutineInterface[] = [];
+  routines: Routine<Ctx, any>[] = [];
 
   // @ts-ignore Set after instantiation
-  tool: ToolInterface;
+  tool: Tool;
 
-  constructor(key: string, title: string, options: Partial<To> = {}) {
+  constructor(key: string, title: string, options: Partial<Options> = {}) {
     super(title, null, options);
 
     if (!key || typeof key !== 'string') {
@@ -75,7 +66,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine<Struct, Tx>): this {
+  configure(parent: Routine<Ctx>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -98,7 +89,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  execute<T>(context: Tx, value?: T): Promise<any> {
+  execute<T>(context: Ctx, value?: T): Promise<any> {
     throw new Error('execute() must be defined.');
   }
 
@@ -142,21 +133,21 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute routines in parallel.
    */
-  parallelizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<any[]> {
+  parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in parallel.
    */
-  parallelizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<any[]> {
+  parallelizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
   /**
    * Add a new routine within this routine.
    */
-  pipe(routine: RoutineInterface): this {
+  pipe(routine: Routine<Ctx>): this {
     if (routine instanceof Routine) {
       this.routines.push(routine.configure(this));
     } else {
@@ -172,7 +163,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   poolRoutines<T>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
-    routines?: RoutineInterface[],
+    routines?: Routine<Ctx>[],
   ): Promise<AggregatedResponse> {
     return new PoolExecutor(this.tool, this.context, options).run(routines || this.routines, value);
   }
@@ -183,7 +174,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   poolTasks<T>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
-    tasks?: TaskInterface[],
+    tasks?: Task<Ctx>[],
   ): Promise<AggregatedResponse> {
     return new PoolExecutor(this.tool, this.context, options).run(tasks || this.tasks, value);
   }
@@ -191,7 +182,7 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Trigger processes before and after execution.
    */
-  run<T>(context: Tx, value?: T, wasParallel: boolean = false): Promise<any> {
+  run<T>(context: Ctx, value?: T, wasParallel: boolean = false): Promise<any> {
     if (this.exit) {
       return Promise.reject(new Error('Process has been interrupted.'));
     }
@@ -219,40 +210,40 @@ export default class Routine<To extends Struct, Tx extends Context> extends Task
   /**
    * Execute routines in sequential (serial) order.
    */
-  serializeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<any> {
+  serializeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<any> {
     return new SerialExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
-  serializeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<any> {
+  serializeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any> {
     return new SerialExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
   /**
    * Execute routines in sync.
    */
-  synchronizeRoutines<T>(value?: T, routines?: RoutineInterface[]): Promise<AggregatedResponse> {
+  synchronizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<AggregatedResponse> {
     return new SyncExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in sync.
    */
-  synchronizeTasks<T>(value?: T, tasks?: TaskInterface[]): Promise<AggregatedResponse> {
+  synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
     return new SyncExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
   /**
    * Define an individual task.
    */
-  task<Tp extends Struct>(title: string, action: TaskAction<Tx>, options?: Tp): TaskInterface {
+  task<Tp>(title: string, action: TaskAction<Ctx>, options?: Tp): Task<Ctx, Tp> {
     if (typeof action !== 'function') {
       throw new TypeError('Tasks require an executable function.');
     }
 
-    const task = new Task(title, action.bind(this), options);
+    const task = new Task<Ctx, Tp>(title, action.bind(this), options);
 
     this.tasks.push(task);
 

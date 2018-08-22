@@ -9,13 +9,13 @@ import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
 import pluralize from 'pluralize';
-import optimal, { bool, object, string, Blueprint, Struct } from 'optimal';
+import optimal, { bool, object, string, Blueprint } from 'optimal';
 import ConfigLoader from './ConfigLoader';
-import Console, { ConsoleInterface, ConsoleOptions } from './Console';
-import Emitter, { EmitterInterface } from './Emitter';
+import Console, { ConsoleOptions } from './Console';
+import Emitter from './Emitter';
 import ModuleLoader from './ModuleLoader';
-import Plugin, { PluginInterface } from './Plugin';
-import Reporter, { ReporterInterface } from './Reporter';
+import Plugin from './Plugin';
+import Reporter from './Reporter';
 import DefaultReporter from './reporters/DefaultReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
@@ -25,7 +25,7 @@ import { DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, ToolConfig, PackageConfig } from './types';
 import CIReporter from './reporters/CIReporter';
 
-export interface ToolOptions extends Struct {
+export interface ToolOptions {
   appName: string;
   configBlueprint: Blueprint;
   configFolder: string;
@@ -36,31 +36,12 @@ export interface ToolOptions extends Struct {
   workspaceRoot: string;
 }
 
-export interface ToolInterface extends EmitterInterface {
-  argv: string[];
-  config: ToolConfig;
-  console: ConsoleInterface;
-  debug: Debugger;
-  options: ToolOptions;
-  package: PackageConfig;
-  plugins: PluginInterface[];
-  reporters: ReporterInterface[];
-  createDebugger(...namespaces: string[]): Debugger;
-  initialize(): this;
-  getPlugin(name: string): PluginInterface;
-  getReporter(name: string): ReporterInterface;
-  getThemeList(): string[];
-  log(message: string, ...args: any[]): this;
-  logError(message: string, ...args: any[]): this;
-}
-
-export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterface> extends Emitter
-  implements ToolInterface {
+export default class Tool extends Emitter {
   argv: string[] = [];
 
   config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
 
-  console: ConsoleInterface;
+  console: Console;
 
   debug: Debugger;
 
@@ -70,9 +51,9 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
   package: PackageConfig = { name: '' };
 
-  plugins: Tp[] = [];
+  plugins: Plugin<any>[] = [];
 
-  reporters: Tr[] = [];
+  reporters: Reporter<any>[] = [];
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -107,7 +88,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     this.console = new Console();
 
     // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter(this.options.console) as any);
+    this.addReporter(new ErrorReporter(this.options.console));
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -121,7 +102,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   /**
    * Add a reporter and bootstrap with the console instance.
    */
-  addReporter(reporter: Tr): this {
+  addReporter(reporter: Reporter<any>): this {
     reporter.console = this.console;
     reporter.bootstrap();
 
@@ -155,7 +136,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   /**
    * Get a plugin by name.
    */
-  getPlugin(name: string): Tp {
+  getPlugin(name: string): Plugin<any> {
     const plugin = this.plugins.find(p => p.name === name);
 
     if (plugin) {
@@ -168,7 +149,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
   /**
    * Get a reporter by name.
    */
-  getReporter(name: string): Tr {
+  getReporter(name: string): Reporter<any> {
     const reporter = this.reporters.find(p => p.name === name);
 
     if (reporter) {
@@ -263,7 +244,6 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
 
     const loader = new ModuleLoader(this, pluginAlias, Plugin);
 
-    // @ts-ignore
     this.plugins = loader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
@@ -293,7 +273,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const reporters = [];
+    const reporters: Reporter<any>[] = [];
 
     if (process.env.CI && !process.env.BOOST_ENV) {
       loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
@@ -314,7 +294,7 @@ export default class Tool<Tp extends PluginInterface, Tr extends ReporterInterfa
     loader.debug('Bootstrapping reporters with console environment');
 
     reporters.forEach(reporter => {
-      this.addReporter(reporter as any);
+      this.addReporter(reporter);
     });
 
     return this;

@@ -7,8 +7,8 @@ import os from 'os';
 import optimal, { bool, number } from 'optimal';
 import Context from '../Context';
 import Executor, { AggregatedResponse } from '../Executor';
-import { TaskInterface } from '../Task';
-import { ToolInterface } from '../Tool';
+import Task from '../Task';
+import Tool from '../Tool';
 
 export interface PoolExecutorOptions {
   concurrency: number;
@@ -16,18 +16,18 @@ export interface PoolExecutorOptions {
   timeout: number;
 }
 
-export default class PoolExecutor extends Executor<PoolExecutorOptions> {
-  queue: TaskInterface[] = [];
+export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, PoolExecutorOptions> {
+  queue: Task<Ctx>[] = [];
 
   resolver: ((response: AggregatedResponse) => void) | null = null;
 
   results: any[] = [];
 
-  running: TaskInterface[] = [];
+  running: Task<Ctx>[] = [];
 
   timeoutTimer?: NodeJS.Timer;
 
-  constructor(tool: ToolInterface, context: Context, options: Partial<PoolExecutorOptions> = {}) {
+  constructor(tool: Tool, context: Ctx, options: Partial<PoolExecutorOptions> = {}) {
     super(tool, context, options);
 
     this.options = optimal(options, {
@@ -40,7 +40,7 @@ export default class PoolExecutor extends Executor<PoolExecutorOptions> {
   /**
    * Execute tasks using a pool with a max concurrency.
    */
-  run<T>(tasks: TaskInterface[], value?: T): Promise<AggregatedResponse> {
+  run<T>(tasks: Task<Ctx>[], value?: T): Promise<AggregatedResponse> {
     if (tasks.length === 0) {
       return Promise.resolve(this.aggregateResponse([]));
     }
