@@ -53,10 +53,8 @@ export default class Task<Ctx extends Context, Options = {}> {
     }
 
     this.action = action;
-    this.options = {
-      // @ts-ignore
-      ...options,
-    };
+    // @ts-ignore
+    this.options = { ...options };
     this.status = action ? STATUS_PENDING : STATUS_SKIPPED;
     this.title = title;
   }

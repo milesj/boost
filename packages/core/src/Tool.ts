@@ -88,7 +88,7 @@ export default class Tool extends Emitter {
     this.console = new Console();
 
     // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter(this.options.console) as any);
+    this.addReporter(new ErrorReporter(this.options.console));
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -273,7 +273,7 @@ export default class Tool extends Emitter {
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter);
-    const reporters = [];
+    const reporters: Reporter<any>[] = [];
 
     if (process.env.CI && !process.env.BOOST_ENV) {
       loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
@@ -294,7 +294,7 @@ export default class Tool extends Emitter {
     loader.debug('Bootstrapping reporters with console environment');
 
     reporters.forEach(reporter => {
-      this.addReporter(reporter as any);
+      this.addReporter(reporter);
     });
 
     return this;
