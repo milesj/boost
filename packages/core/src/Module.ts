@@ -3,14 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Struct } from 'optimal';
-
-export interface ModuleInterface {
-  moduleName: string;
-  name: string;
-}
-
-export default class Module<To extends Struct> implements ModuleInterface {
+export default class Module<To> {
   moduleName: string = '';
 
   name: string = '';

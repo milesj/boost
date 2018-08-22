@@ -11,18 +11,20 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import optimal, { array, bool, instance, shape, string, union, Struct } from 'optimal';
+import optimal, { array, bool, instance, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import { ToolInterface } from './Tool';
+import Tool from './Tool';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { Debugger, ToolConfig, PackageConfig } from './types';
 
-export type ConfigPathOrStruct = string | Struct;
+export type ConfigObject = { [key: string]: any };
+
+export type ConfigPathOrObject = string | ConfigObject;
 
 export default class ConfigLoader {
   debug: Debugger;
@@ -31,11 +33,11 @@ export default class ConfigLoader {
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: ToolInterface;
+  tool: Tool;
 
   workspaceRoot: string = '';
 
-  constructor(tool: ToolInterface) {
+  constructor(tool: Tool) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
   }
@@ -43,7 +45,7 @@ export default class ConfigLoader {
   /**
    * Find the config in the package.json block under the application name.
    */
-  findConfigInPackageJSON(pkg: PackageConfig): ConfigPathOrStruct | null {
+  findConfigInPackageJSON(pkg: PackageConfig): ConfigPathOrObject | null {
     const camelName = camelCase(this.tool.options.appName);
     const config = pkg[camelName];
 
@@ -69,7 +71,7 @@ export default class ConfigLoader {
   /**
    * Find the config using local files commonly located in a configs/ folder.
    */
-  findConfigInLocalFiles(root: string): ConfigPathOrStruct | null {
+  findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
     const { appName, configFolder } = this.tool.options;
     const relPath = path.join(configFolder, `${appName}.{js,json,json5}`);
     const configPaths = glob.sync(path.join(root, relPath), {
@@ -100,7 +102,7 @@ export default class ConfigLoader {
    * Find the config within the root when in a workspace.
    */
   // eslint-disable-next-line complexity
-  findConfigInWorkspaceRoot(root: string): ConfigPathOrStruct | null {
+  findConfigInWorkspaceRoot(root: string): ConfigPathOrObject | null {
     let currentDir = path.dirname(root);
 
     if (currentDir.includes('node_modules')) {
@@ -282,7 +284,7 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: ConfigPathOrStruct): Struct {
+  parseAndExtend(fileOrConfig: ConfigPathOrObject): ConfigObject {
     let config;
     let baseDir = '';
 
@@ -340,7 +342,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, args: any[] = []): Struct {
+  parseFile(filePath: string, args: any[] = []): ConfigObject {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value: any = null;

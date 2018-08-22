@@ -9,14 +9,14 @@ import fs from 'fs';
 import util from 'util';
 import path from 'path';
 import execa from 'execa';
-import { ToolInterface } from './Tool';
+import Tool from './Tool';
 
 export default class CrashLogger {
   contents: string = '';
 
   logPath: string;
 
-  constructor({ config, options }: ToolInterface) {
+  constructor({ config, options }: Tool) {
     this.logPath = path.join(options.root, `${options.appName}-error.log`);
 
     this.add('Node', process.version.slice(1));

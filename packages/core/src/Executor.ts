@@ -3,13 +3,12 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Struct } from 'optimal';
 import kebabCase from 'lodash/kebabCase';
 import wrapWithPromise from './helpers/wrapWithPromise';
 import Context from './Context';
-import { RoutineInterface } from './Routine';
-import { TaskInterface } from './Task';
-import { ToolInterface } from './Tool';
+import Routine from './Routine';
+import Task from './Task';
+import Tool from './Tool';
 import { Debugger } from './types';
 
 export interface AggregatedResponse {
@@ -17,16 +16,16 @@ export interface AggregatedResponse {
   results: any[];
 }
 
-export default class Executor<To extends Struct = {}> {
-  context: Context;
+export default class Executor<Tx extends Context, To = {}> {
+  context: Tx;
 
   debug: Debugger;
 
   options: To;
 
-  tool: ToolInterface;
+  tool: Tool;
 
-  constructor(tool: ToolInterface, context: Context, options: Partial<To> = {}) {
+  constructor(tool: Tool, context: Tx, options: Partial<To> = {}) {
     this.context = context;
     this.debug = tool.createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;
@@ -59,31 +58,23 @@ export default class Executor<To extends Struct = {}> {
   /**
    * Execute either a task or routine.
    */
-  execute<T>(
-    task: TaskInterface | RoutineInterface,
-    value?: T,
-    wasParallel: boolean = false,
-  ): Promise<any> {
+  execute<T>(task: Task<Tx> | Routine<Tx>, value?: T, wasParallel: boolean = false): Promise<any> {
     return this.getInstanceType(task) === 'Routine'
-      ? this.executeRoutine(task as RoutineInterface, value, wasParallel)
+      ? this.executeRoutine(task as Routine<Tx>, value, wasParallel)
       : this.executeTask(task, value, wasParallel);
   }
 
   /**
    * Execute a routine with the provided value.
    */
-  executeRoutine<T>(
-    routine: RoutineInterface,
-    value?: T,
-    wasParallel: boolean = false,
-  ): Promise<any> {
+  executeRoutine<T>(routine: Routine<Tx>, value?: T, wasParallel: boolean = false): Promise<any> {
     return wrapWithPromise(routine.run(this.context, value, wasParallel));
   }
 
   /**
    * Execute a task with the provided value.
    */
-  executeTask<T>(task: TaskInterface, value?: T, wasParallel: boolean = false): Promise<any> {
+  executeTask<T>(task: Task<Tx>, value?: T, wasParallel: boolean = false): Promise<any> {
     const { console: cli } = this.tool;
 
     cli.emit('task', [task, value, wasParallel]);
@@ -104,8 +95,8 @@ export default class Executor<To extends Struct = {}> {
   /**
    * Importing Routine causes a circular reference, so we can't use an instanceof check,
    * so we need to hackily check this another way.
-   * */
-  getInstanceType(task: TaskInterface | RoutineInterface): string {
+   */
+  getInstanceType(task: Task<Tx> | Routine<Tx>): string {
     let instance = task;
     let name = '';
 
@@ -125,7 +116,7 @@ export default class Executor<To extends Struct = {}> {
   /**
    * Method to execute tasks. Must be defined in sub-classes.
    */
-  run<T>(tasks: TaskInterface[], value?: T) {
+  run<T>(tasks: Task<Tx>[], value?: T) {
     throw new Error('run() must be defined.');
   }
 }

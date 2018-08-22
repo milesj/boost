@@ -9,15 +9,7 @@ export type EventArguments = any[];
 
 export type EventListener = (...args: EventArguments) => false | void;
 
-export interface EmitterInterface {
-  emit(name: string, args?: EventArguments): this;
-  off(eventName: string, listener: EventListener): this;
-  on(eventName: string, listener: EventListener): this;
-  setEventNamespace(namespace: string): this;
-  removeEventNamespace(): this;
-}
-
-export default class Emitter implements EmitterInterface {
+export default class Emitter {
   listeners: { [eventName: string]: Set<EventListener> } = {};
 
   namespace: string = '';

@@ -4,27 +4,19 @@
  */
 
 import chalk from 'chalk';
-import { Struct } from 'optimal';
-import { ConsoleInterface } from './Console';
-import Module, { ModuleInterface } from './Module';
-import { TaskInterface } from './Task';
+import Console from './Console';
+import Module from './Module';
+import Task from './Task';
 import themePalettes from './themes';
 import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export interface ReporterInterface<T = any> extends ModuleInterface {
-  console: ConsoleInterface;
-  lines: T[];
-  bootstrap(): void;
-}
-
-export default class Reporter<T, To extends Struct = {}> extends Module<To>
-  implements ReporterInterface {
+export default class Reporter<Line = string, To = {}> extends Module<To> {
   // @ts-ignore Set after instantiation
-  console: ConsoleInterface;
+  console: Console;
 
-  lines: T[] = [];
+  lines: Line[] = [];
 
   startTime: number = 0;
 
@@ -40,7 +32,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
   /**
    * Add a line to be rendered.
    */
-  addLine(line: T): this {
+  addLine(line: Line): this {
     this.lines.push(line);
 
     return this;
@@ -70,7 +62,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
   /**
    * Find a line using a callback
    */
-  findLine(callback: (item: T) => boolean): T | undefined {
+  findLine(callback: (item: Line) => boolean): Line | undefined {
     return this.lines.find(line => callback(line));
   }
 
@@ -95,7 +87,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
   /**
    * Return a specific color for each task status.
    */
-  getColorType(task: TaskInterface): ColorType {
+  getColorType(task: Task<any>): ColorType {
     if (task.isSkipped()) {
       return 'warning';
     } else if (task.hasPassed()) {
@@ -142,7 +134,7 @@ export default class Reporter<T, To extends Struct = {}> extends Module<To>
   /**
    * Remove a line to be rendered.
    */
-  removeLine(callback: (item: T) => boolean): this {
+  removeLine(callback: (line: Line) => boolean): this {
     this.lines = this.lines.filter(line => !callback(line));
 
     return this;

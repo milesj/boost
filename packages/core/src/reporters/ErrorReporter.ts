@@ -5,7 +5,7 @@
 
 import Reporter from '../Reporter';
 
-export default class ErrorReporter extends Reporter<any> {
+export default class ErrorReporter extends Reporter {
   bootstrap() {
     this.console.on('error', this.handleError);
   }

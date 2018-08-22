@@ -5,31 +5,20 @@
 
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
-import optimal, { bool, number, string, Struct } from 'optimal';
-import Emitter, { EmitterInterface } from './Emitter';
+import optimal, { bool, number, string } from 'optimal';
+import Emitter from './Emitter';
 
 export const REFRESH_RATE = 100;
 export const BG_REFRESH_RATE = 500;
 
 export type WrappedStream = (message: string) => void;
 
-export interface ConsoleOptions extends Struct {
+export interface ConsoleOptions {
   footer: string;
   header: string;
   level: 0 | 1 | 2 | 3;
   silent: boolean;
   theme: string;
-}
-
-export interface ConsoleInterface extends EmitterInterface {
-  err: WrappedStream;
-  out: WrappedStream;
-  options: ConsoleOptions;
-  exit(message: string | Error | null, code: number): void;
-  log(message: string): this;
-  logError(message: string): this;
-  render(): this;
-  write(message: string, nl?: number): this;
 }
 
 export default class Console extends Emitter {

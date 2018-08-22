@@ -4,9 +4,8 @@
  */
 
 import debug from 'debug';
-import { Struct } from 'optimal';
-import { PluginInterface } from './Plugin';
-import { ReporterInterface } from './Reporter';
+import Plugin from './Plugin';
+import Reporter from './Reporter';
 
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
@@ -23,16 +22,17 @@ export interface ReporterConfig {
   [key: string]: any;
 }
 
-export interface ToolConfig extends Struct {
+export interface ToolConfig {
   debug: boolean;
   extends: string | string[];
-  plugins: (string | PluginConfig | PluginInterface)[];
-  reporters: (string | ReporterConfig | ReporterInterface)[];
+  plugins: (string | PluginConfig | Plugin<any>)[];
+  reporters: (string | ReporterConfig | Reporter<any>)[];
   [key: string]: any;
 }
 
-export interface PackageConfig extends Struct {
+export interface PackageConfig {
   name: string;
+  [key: string]: any;
 }
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';

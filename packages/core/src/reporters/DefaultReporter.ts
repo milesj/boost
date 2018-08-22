@@ -5,13 +5,13 @@
 
 import cliTruncate from 'cli-truncate';
 import Reporter from '../Reporter';
-import Routine, { RoutineInterface } from '../Routine';
-import { TaskInterface } from '../Task';
+import Routine from '../Routine';
+import Task from '../Task';
 
 export interface Line {
   depth: number;
-  routine: RoutineInterface;
-  tasks: TaskInterface[];
+  routine: Routine<any>;
+  tasks: Task<any>[];
 }
 
 export default class DefaultReporter extends Reporter<Line> {
@@ -35,9 +35,9 @@ export default class DefaultReporter extends Reporter<Line> {
   /**
    * Calculate the max string length for routine key's at every depth.
    */
-  calculateKeyLength(routines: RoutineInterface[], depth: number = 0): number {
+  calculateKeyLength(routines: Routine<any>[], depth: number = 0): number {
     return routines.reduce(
-      (sum: number, routine: RoutineInterface) =>
+      (sum: number, routine: Routine<any>) =>
         Math.max(
           sum,
           routine.key.length + depth,
@@ -50,7 +50,7 @@ export default class DefaultReporter extends Reporter<Line> {
   /**
    * Calculate the current number of tasks that have completed.
    */
-  calculateTaskCompletion(tasks: TaskInterface[]): number {
+  calculateTaskCompletion(tasks: Task<any>[]): number {
     return tasks.reduce((sum, task) => (task.hasPassed() || task.isSkipped() ? sum + 1 : sum), 0);
   }
 
@@ -58,7 +58,7 @@ export default class DefaultReporter extends Reporter<Line> {
    * Return the task title with additional metadata.
    */
   // eslint-disable-next-line complexity
-  getLineTitle(task: TaskInterface | RoutineInterface, usedColumns: number = 0): string {
+  getLineTitle(task: Task<any> | Routine<any>, usedColumns: number = 0): string {
     const { level } = this.console.options;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
@@ -86,7 +86,7 @@ export default class DefaultReporter extends Reporter<Line> {
     return cliTruncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
   }
 
-  handleStart = (routines: RoutineInterface[]) => {
+  handleStart = (routines: Routine<any>[]) => {
     this.keyLength = this.calculateKeyLength(routines);
   };
 
@@ -94,7 +94,7 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  handleTask = (task: TaskInterface, routine: RoutineInterface) => {
+  handleTask = (task: Task<any>, routine: Routine<any>) => {
     const line = this.findLine(row => row.routine === routine);
 
     if (line) {
@@ -104,7 +104,7 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  handleTaskComplete = (task: TaskInterface, routine: RoutineInterface) => {
+  handleTaskComplete = (task: Task<any>, routine: Routine<any>) => {
     const line = this.findLine(row => row.routine === routine);
 
     if (line) {
@@ -124,7 +124,7 @@ export default class DefaultReporter extends Reporter<Line> {
     });
   };
 
-  handleRoutine = (routine: RoutineInterface, value: any, wasParallel: boolean) => {
+  handleRoutine = (routine: Routine<any>, value: any, wasParallel: boolean) => {
     this.addLine({
       depth: this.depth,
       routine,
@@ -138,7 +138,7 @@ export default class DefaultReporter extends Reporter<Line> {
     }
   };
 
-  handleRoutineComplete = (routine: RoutineInterface, result: any, wasParallel: boolean) => {
+  handleRoutineComplete = (routine: Routine<any>, result: any, wasParallel: boolean) => {
     if (!wasParallel) {
       this.depth -= 1;
     }
@@ -150,7 +150,7 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  renderLine(routine: RoutineInterface, task: TaskInterface | null, depth: number) {
+  renderLine(routine: Routine<any>, task: Task<any> | null, depth: number) {
     const indent = depth * 2;
     const key =
       this.indent(depth) + (task ? '' : routine.key.toUpperCase()).padEnd(this.keyLength - depth);

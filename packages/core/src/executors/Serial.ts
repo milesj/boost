@@ -3,15 +3,16 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import Context from '../Context';
 import Executor from '../Executor';
-import { TaskInterface } from '../Task';
+import Task from '../Task';
 
-export default class SerialExecutor extends Executor {
+export default class SerialExecutor<Tx extends Context> extends Executor<Tx> {
   /**
    * Execute tasks in sequential order with the output of each
    * task being passed to the next promise in the chain.
    */
-  run<T>(tasks: TaskInterface[], value?: T): Promise<any> {
+  run<T>(tasks: Task<Tx>[], value?: T): Promise<any> {
     this.debug('Serializing %d tasks', tasks.length);
 
     return tasks.reduce(

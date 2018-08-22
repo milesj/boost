@@ -4,14 +4,14 @@
  */
 
 import Reporter from '../Reporter';
-import { TaskInterface } from '../Task';
-import { RoutineInterface } from '../Routine';
+import Task from '../Task';
+import Routine from '../Routine';
 
 type TaskID = {
   id?: number;
 };
 
-export default class CIReporter extends Reporter<any> {
+export default class CIReporter extends Reporter {
   taskID: number = 0;
 
   bootstrap() {
@@ -27,7 +27,7 @@ export default class CIReporter extends Reporter<any> {
       .on('routine.fail', this.handleRoutineFail);
   }
 
-  handleTask = (task: TaskInterface & TaskID) => {
+  handleTask = (task: Task<any> & TaskID) => {
     // eslint-disable-next-line no-param-reassign
     task.id = this.taskID;
     this.taskID += 1;
@@ -35,23 +35,23 @@ export default class CIReporter extends Reporter<any> {
     this.console.out(`[${task.id}] Running task: ${task.title}`);
   };
 
-  handleTaskPass = (task: TaskInterface & TaskID) => {
+  handleTaskPass = (task: Task<any> & TaskID) => {
     this.console.out(this.style(`[${task.id}] Passed`, 'success'));
   };
 
-  handleTaskFail = (task: TaskInterface & TaskID, error: Error) => {
+  handleTaskFail = (task: Task<any> & TaskID, error: Error) => {
     this.console.err(this.style(`[${task.id}] Failed: ${error.message}`, 'failure'));
   };
 
-  handleRoutine = (routine: RoutineInterface) => {
+  handleRoutine = (routine: Routine<any>) => {
     this.console.out(`[${routine.key}] Running routine: ${routine.title}`);
   };
 
-  handleRoutinePass = (routine: RoutineInterface) => {
+  handleRoutinePass = (routine: Routine<any>) => {
     this.console.out(this.style(`[${routine.key}] Passed`, 'success'));
   };
 
-  handleRoutineFail = (routine: RoutineInterface, error: Error) => {
+  handleRoutineFail = (routine: Routine<any>, error: Error) => {
     this.console.err(this.style(`[${routine.key}] Failed: ${error.message}`, 'failure'));
   };
 

@@ -3,7 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Struct } from 'optimal';
 import Context from './Context';
 import {
   STATUS_PENDING,
@@ -14,29 +13,13 @@ import {
 } from './constants';
 import { Status } from './types';
 
-export interface TaskInterface {
-  startTime: number;
-  status: Status;
-  statusText: string;
-  stopTime: number;
-  tasks: TaskInterface[];
-  title: string;
-  isPending(): boolean;
-  isRunning(): boolean;
-  isSkipped(): boolean;
-  hasFailed(): boolean;
-  hasPassed(): boolean;
-  run<T>(context: Context, initialValue?: T | null): Promise<any>;
-  skip(condition?: boolean): this;
-}
-
 export type TaskAction<Tx extends Context> = (
   context: Tx,
   value: any,
-  task: TaskInterface,
+  task: Task<Tx, any>,
 ) => any | Promise<any>;
 
-export default class Task<To extends Struct, Tx extends Context> implements TaskInterface {
+export default class Task<Tx extends Context, To = {}> {
   action: TaskAction<Tx> | null = null;
 
   // @ts-ignore Set after instantiation
@@ -54,7 +37,7 @@ export default class Task<To extends Struct, Tx extends Context> implements Task
 
   stopTime: number = 0;
 
-  tasks: TaskInterface[] = [];
+  tasks: Task<Tx, any>[] = [];
 
   constructor(title: string, action: TaskAction<Tx> | null = null, options: Partial<To> = {}) {
     if (!title || typeof title !== 'string') {
