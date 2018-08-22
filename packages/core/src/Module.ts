@@ -3,14 +3,14 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-export default class Module<To> {
+export default class Module<Options> {
   moduleName: string = '';
 
   name: string = '';
 
-  options: To;
+  options: Options;
 
-  constructor(options: Partial<To> = {}) {
+  constructor(options: Partial<Options> = {}) {
     // @ts-ignore
     this.options = { ...options };
   }

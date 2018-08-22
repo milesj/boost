@@ -13,19 +13,19 @@ import {
 } from './constants';
 import { Status } from './types';
 
-export type TaskAction<Tx extends Context> = (
-  context: Tx,
+export type TaskAction<Ctx extends Context> = (
+  context: Ctx,
   value: any,
-  task: Task<Tx, any>,
+  task: Task<Ctx, any>,
 ) => any | Promise<any>;
 
-export default class Task<Tx extends Context, To = {}> {
-  action: TaskAction<Tx> | null = null;
+export default class Task<Ctx extends Context, Options = {}> {
+  action: TaskAction<Ctx> | null = null;
 
   // @ts-ignore Set after instantiation
-  context: Tx;
+  context: Ctx;
 
-  options: To;
+  options: Options;
 
   title: string = '';
 
@@ -37,9 +37,13 @@ export default class Task<Tx extends Context, To = {}> {
 
   stopTime: number = 0;
 
-  tasks: Task<Tx, any>[] = [];
+  tasks: Task<Ctx, any>[] = [];
 
-  constructor(title: string, action: TaskAction<Tx> | null = null, options: Partial<To> = {}) {
+  constructor(
+    title: string,
+    action: TaskAction<Ctx> | null = null,
+    options: Partial<Options> = {},
+  ) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -95,7 +99,7 @@ export default class Task<Tx extends Context, To = {}> {
   /**
    * Run the current task by executing it and performing any before and after processes.
    */
-  run<T>(context: Tx, initialValue?: T): Promise<any> {
+  run<T>(context: Ctx, initialValue?: T): Promise<any> {
     this.setContext(context);
 
     if (this.isSkipped() || !this.action) {
@@ -132,7 +136,7 @@ export default class Task<Tx extends Context, To = {}> {
   /**
    * Set the context to be passed around.
    */
-  setContext(context: Tx): this {
+  setContext(context: Ctx): this {
     this.context = context;
 
     return this;

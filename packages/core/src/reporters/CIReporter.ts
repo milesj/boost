@@ -7,7 +7,7 @@ import Reporter from '../Reporter';
 import Task from '../Task';
 import Routine from '../Routine';
 
-type TaskID = {
+export type TaskID = {
   id?: number;
 };
 

@@ -7,12 +7,12 @@ import Context from '../Context';
 import Executor from '../Executor';
 import Task from '../Task';
 
-export default class SerialExecutor<Tx extends Context> extends Executor<Tx> {
+export default class SerialExecutor<Ctx extends Context> extends Executor<Ctx> {
   /**
    * Execute tasks in sequential order with the output of each
    * task being passed to the next promise in the chain.
    */
-  run<T>(tasks: Task<Tx>[], value?: T): Promise<any> {
+  run<T>(tasks: Task<Ctx>[], value?: T): Promise<any> {
     this.debug('Serializing %d tasks', tasks.length);
 
     return tasks.reduce(

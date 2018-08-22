@@ -8,11 +8,11 @@ import Reporter from '../Reporter';
 import Routine from '../Routine';
 import Task from '../Task';
 
-export interface Line {
+export type Line = {
   depth: number;
   routine: Routine<any>;
   tasks: Task<any>[];
-}
+};
 
 export default class DefaultReporter extends Reporter<Line> {
   depth: number = 0;

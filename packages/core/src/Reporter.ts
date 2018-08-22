@@ -12,7 +12,7 @@ import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Line = string, To = {}> extends Module<To> {
+export default class Reporter<Line = string, Options = {}> extends Module<Options> {
   // @ts-ignore Set after instantiation
   console: Console;
 

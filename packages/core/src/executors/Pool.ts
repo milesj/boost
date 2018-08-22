@@ -16,18 +16,18 @@ export interface PoolExecutorOptions {
   timeout: number;
 }
 
-export default class PoolExecutor<Tx extends Context> extends Executor<Tx, PoolExecutorOptions> {
-  queue: Task<Tx>[] = [];
+export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, PoolExecutorOptions> {
+  queue: Task<Ctx>[] = [];
 
   resolver: ((response: AggregatedResponse) => void) | null = null;
 
   results: any[] = [];
 
-  running: Task<Tx>[] = [];
+  running: Task<Ctx>[] = [];
 
   timeoutTimer?: NodeJS.Timer;
 
-  constructor(tool: Tool, context: Tx, options: Partial<PoolExecutorOptions> = {}) {
+  constructor(tool: Tool, context: Ctx, options: Partial<PoolExecutorOptions> = {}) {
     super(tool, context, options);
 
     this.options = optimal(options, {
@@ -40,7 +40,7 @@ export default class PoolExecutor<Tx extends Context> extends Executor<Tx, PoolE
   /**
    * Execute tasks using a pool with a max concurrency.
    */
-  run<T>(tasks: Task<Tx>[], value?: T): Promise<AggregatedResponse> {
+  run<T>(tasks: Task<Ctx>[], value?: T): Promise<AggregatedResponse> {
     if (tasks.length === 0) {
       return Promise.resolve(this.aggregateResponse([]));
     }

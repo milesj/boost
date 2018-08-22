@@ -9,8 +9,8 @@ import Routine from './Routine';
 import Tool from './Tool';
 import { ToolConfig } from './types';
 
-export default class Pipeline<Tx extends Context> extends Routine<Tx, ToolConfig> {
-  constructor(tool: Tool, context: Tx) {
+export default class Pipeline<Ctx extends Context> extends Routine<Ctx, ToolConfig> {
+  constructor(tool: Tool, context: Ctx) {
     super('root', 'Pipeline');
 
     if (tool instanceof Tool) {

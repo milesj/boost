@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import DefaultReporter from '../../src/reporters/DefaultReporter';
-import { RoutineInterface } from '../../src/Routine';
-import Task, { TaskInterface } from '../../src/Task';
+import Routine from '../../src/Routine';
+import Task from '../../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../../src/constants';
 import { createTestRoutine, createTestConsole } from '../helpers';
 
@@ -485,8 +485,8 @@ describe('DefaultReporter', () => {
     });
 
     describe('task', () => {
-      let routine: RoutineInterface;
-      let task: TaskInterface;
+      let routine: Routine<any>;
+      let task: Task<any>;
 
       beforeEach(() => {
         routine = createTestRoutine(null, 'foo', 'This is a routine');

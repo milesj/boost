@@ -8,7 +8,7 @@ import Tool from './Tool';
 
 export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
-export default class Plugin<To> extends Module<To> {
+export default class Plugin<Options> extends Module<Options> {
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
   // @ts-ignore Set after instantiation

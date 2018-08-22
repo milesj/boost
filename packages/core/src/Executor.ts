@@ -16,16 +16,16 @@ export interface AggregatedResponse {
   results: any[];
 }
 
-export default class Executor<Tx extends Context, To = {}> {
-  context: Tx;
+export default class Executor<Ctx extends Context, Options = {}> {
+  context: Ctx;
 
   debug: Debugger;
 
-  options: To;
+  options: Options;
 
   tool: Tool;
 
-  constructor(tool: Tool, context: Tx, options: Partial<To> = {}) {
+  constructor(tool: Tool, context: Ctx, options: Partial<Options> = {}) {
     this.context = context;
     this.debug = tool.createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;
@@ -58,23 +58,27 @@ export default class Executor<Tx extends Context, To = {}> {
   /**
    * Execute either a task or routine.
    */
-  execute<T>(task: Task<Tx> | Routine<Tx>, value?: T, wasParallel: boolean = false): Promise<any> {
+  execute<T>(
+    task: Task<Ctx> | Routine<Ctx>,
+    value?: T,
+    wasParallel: boolean = false,
+  ): Promise<any> {
     return this.getInstanceType(task) === 'Routine'
-      ? this.executeRoutine(task as Routine<Tx>, value, wasParallel)
+      ? this.executeRoutine(task as Routine<Ctx>, value, wasParallel)
       : this.executeTask(task, value, wasParallel);
   }
 
   /**
    * Execute a routine with the provided value.
    */
-  executeRoutine<T>(routine: Routine<Tx>, value?: T, wasParallel: boolean = false): Promise<any> {
+  executeRoutine<T>(routine: Routine<Ctx>, value?: T, wasParallel: boolean = false): Promise<any> {
     return wrapWithPromise(routine.run(this.context, value, wasParallel));
   }
 
   /**
    * Execute a task with the provided value.
    */
-  executeTask<T>(task: Task<Tx>, value?: T, wasParallel: boolean = false): Promise<any> {
+  executeTask<T>(task: Task<Ctx>, value?: T, wasParallel: boolean = false): Promise<any> {
     const { console: cli } = this.tool;
 
     cli.emit('task', [task, value, wasParallel]);
@@ -96,7 +100,7 @@ export default class Executor<Tx extends Context, To = {}> {
    * Importing Routine causes a circular reference, so we can't use an instanceof check,
    * so we need to hackily check this another way.
    */
-  getInstanceType(task: Task<Tx> | Routine<Tx>): string {
+  getInstanceType(task: Task<Ctx> | Routine<Ctx>): string {
     let instance = task;
     let name = '';
 
@@ -116,7 +120,7 @@ export default class Executor<Tx extends Context, To = {}> {
   /**
    * Method to execute tasks. Must be defined in sub-classes.
    */
-  run<T>(tasks: Task<Tx>[], value?: T) {
+  run<T>(tasks: Task<Ctx>[], value?: T) {
     throw new Error('run() must be defined.');
   }
 }

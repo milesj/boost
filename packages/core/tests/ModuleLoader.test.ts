@@ -1,8 +1,8 @@
-import Plugin, { PluginInterface } from '../src/Plugin';
+import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
 import { getFixturePath, getTestRoot, copyFixtureToMock, createTestTool } from './helpers';
 
-function createPlugin(name: string, options: any = {}): PluginInterface {
+function createPlugin(name: string, options: any = {}): Plugin<any> {
   const plugin = new Plugin(options);
   plugin.name = name;
   plugin.moduleName = `test-boost-plugin-${name}`;

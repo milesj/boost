@@ -7,7 +7,7 @@ import { createTestTool } from './helpers';
 jest.mock('fs');
 
 describe('CrashLogger', () => {
-  let tool: Tool<any, any>;
+  let tool: Tool;
   let logger: CrashLogger;
 
   beforeEach(() => {
