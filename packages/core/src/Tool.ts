@@ -85,10 +85,10 @@ export default class Tool extends Emitter {
     this.debug = this.createDebugger('core');
 
     // Initialize the console first so we can start logging
-    this.console = new Console();
+    this.console = new Console(this.options.console);
 
     // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter(this.options.console));
+    this.addReporter(new ErrorReporter());
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -97,6 +97,9 @@ export default class Tool extends Emitter {
         this.emit('exit', [code]);
       });
     }
+
+    // eslint-disable-next-line global-require
+    this.debug('Using boost v%s', require('../package.json').version);
   }
 
   /**
@@ -177,8 +180,6 @@ export default class Tool extends Emitter {
     const { appName } = this.options;
 
     this.debug('Initializing %s', chalk.green(appName));
-    // eslint-disable-next-line global-require
-    this.debug('Using boost v%s', require('../package.json').version);
 
     this.loadConfig();
     this.loadPlugins();

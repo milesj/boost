@@ -35,6 +35,17 @@ describe('Tool', () => {
     it('sets an error reporter', () => {
       expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
     });
+
+    it('passes options to console instance', () => {
+      tool = new Tool({
+        appName: 'test-boost',
+        console: {
+          footer: 'Footer',
+        },
+      });
+
+      expect(tool.console.options.footer).toBe('Footer');
+    });
   });
 
   describe('createDebugger()', () => {
