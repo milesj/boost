@@ -143,7 +143,7 @@ export default class Console extends Emitter {
     this.emit('stop', [error, code]);
 
     // Render final output
-    this.handleRender(error, true);
+    this.handleFinalRender(error);
 
     // Unwrap our streams
     this.unwrapStream(process.stderr);
@@ -195,53 +195,45 @@ export default class Console extends Emitter {
   };
 
   /**
+   * Handle the final render before exiting.
+   */
+  handleFinalRender = (error: Error | null = null) => {
+    this.resetTimers();
+    this.clearLinesOutput();
+    this.flushBufferedStreams();
+    this.displayHeader();
+    this.emit('render');
+
+    if (error) {
+      this.emit('error', [error]);
+    } else if (this.errorLogs.length > 0) {
+      this.displayLogs(this.errorLogs);
+    } else if (this.logs.length > 0) {
+      this.displayLogs(this.logs);
+    }
+
+    this.displayFooter();
+    this.flushBufferedOutput();
+    this.flushBufferedStreams();
+
+    // Remover listeners so that we avoid unwanted re-renders
+    this.flushListeners('render');
+    this.flushListeners('error');
+  };
+
+  /**
    * Handle the entire rendering and flushing process.
    */
   handleRender = (error: Error | null = null, final: boolean = false) => {
-    if (this.renderTimer) {
-      clearTimeout(this.renderTimer);
-      this.renderTimer = null;
-    }
-
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-      this.refreshTimer = null;
-    }
-
-    // Clear all previous output
+    this.resetTimers();
     this.clearLinesOutput();
-
-    // Flush buffered `stdout` and `stderr`
     this.flushBufferedStreams();
-
-    // Prepend the header
-    if (final) {
-      this.displayHeader();
-    }
-
-    // Render output from all reporters
     this.emit('render');
 
-    // Render error at the bottom of the output
     if (error) {
       this.emit('error', [error]);
-    } else if (final) {
-      if (this.errorLogs.length > 0) {
-        this.displayLogs(this.errorLogs);
-      } else if (this.logs.length > 0) {
-        this.displayLogs(this.logs);
-      }
     }
 
-    if (final) {
-      // Append the footer
-      this.displayFooter();
-
-      // Remover all listeners so that we avoid unwanted re-renders
-      this.getListeners('render').clear();
-    }
-
-    // Flush buffered output from `render` and `error` events
     this.flushBufferedOutput();
   };
 
@@ -311,6 +303,23 @@ export default class Console extends Emitter {
    */
   resetCursor(): this {
     this.out(`\x1B[${process.stdout.rows};0H`);
+
+    return this;
+  }
+
+  /**
+   * Reset both the render and background refresh timers.
+   */
+  resetTimers(): this {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = null;
+    }
+
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
 
     return this;
   }

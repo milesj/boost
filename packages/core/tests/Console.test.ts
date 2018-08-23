@@ -178,10 +178,10 @@ describe('Console', () => {
       const spy = jest.fn();
       const error = new Error('Oops');
 
-      cli.handleRender = spy;
+      cli.handleFinalRender = spy;
       cli.exit(error);
 
-      expect(spy).toHaveBeenCalledWith(error, true);
+      expect(spy).toHaveBeenCalledWith(error);
     });
   });
 
@@ -323,63 +323,63 @@ describe('Console', () => {
 
       expect(cli.getListeners('render').size).toBe(1);
     });
+  });
 
-    describe('final output', () => {
-      beforeEach(() => {
-        cli.on('render', () => {
-          cli.write('Rendering something...', 1);
-        });
-
-        cli.on('error', (error: Error) => {
-          cli.write(error.message, 1);
-        });
+  describe('handleFinalRender()', () => {
+    beforeEach(() => {
+      cli.on('render', () => {
+        cli.write('Rendering something...', 1);
       });
 
-      it('displays final output', () => {
-        cli.handleRender(null, true);
-
-        expect(cli.out).toHaveBeenCalledWith('Rendering something...\n');
+      cli.on('error', (error: Error) => {
+        cli.write(error.message, 1);
       });
+    });
 
-      it('displays an error after the output', () => {
-        cli.handleRender(new Error('Oops'), true);
+    it('displays final output', () => {
+      cli.handleFinalRender();
 
-        expect(cli.out).toHaveBeenCalledWith('Rendering something...\nOops\n');
-      });
+      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n');
+    });
 
-      it('appends a footer', () => {
-        cli.options.footer = 'Footer';
-        cli.handleRender(null, true);
+    it('displays an error after the output', () => {
+      cli.handleFinalRender(new Error('Oops'));
 
-        expect(cli.out).toHaveBeenCalledWith('Rendering something...\nFooter\n');
-      });
+      expect(cli.out).toHaveBeenCalledWith('Rendering something...\nOops\n');
+    });
 
-      it('prepends a header', () => {
-        cli.options.header = 'Header';
-        cli.handleRender(null, true);
+    it('appends a footer', () => {
+      cli.options.footer = 'Footer';
+      cli.handleFinalRender();
 
-        expect(cli.out).toHaveBeenCalledWith('Header\nRendering something...\n');
-      });
+      expect(cli.out).toHaveBeenCalledWith('Rendering something...\nFooter\n');
+    });
 
-      it('displays logs', () => {
-        cli.logs.push('Log');
-        cli.handleRender(null, true);
+    it('prepends a header', () => {
+      cli.options.header = 'Header';
+      cli.handleFinalRender();
 
-        expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
-      });
+      expect(cli.out).toHaveBeenCalledWith('Header\nRendering something...\n');
+    });
 
-      it('displays error logs', () => {
-        cli.errorLogs.push('Error log');
-        cli.handleRender(null, true);
+    it('displays logs', () => {
+      cli.logs.push('Log');
+      cli.handleFinalRender();
 
-        expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nError log\n');
-      });
+      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
+    });
 
-      it('clears render listeners', () => {
-        cli.handleRender(null, true);
+    it('displays error logs', () => {
+      cli.errorLogs.push('Error log');
+      cli.handleFinalRender();
 
-        expect(cli.getListeners('render').size).toBe(0);
-      });
+      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nError log\n');
+    });
+
+    it('clears render listeners', () => {
+      cli.handleFinalRender();
+
+      expect(cli.getListeners('render').size).toBe(0);
     });
   });
 
