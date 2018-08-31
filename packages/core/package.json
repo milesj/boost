@@ -28,7 +28,7 @@
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.116",
     "@types/pluralize": "^0.0.29",
-    "@types/split": "^0.3.28",
+    "@types/split": "^1.0.0",
     "chalk": "^2.4.1",
     "cli-truncate": "^1.1.0",
     "debug": "^3.1.0",
