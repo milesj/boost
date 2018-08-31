@@ -235,6 +235,7 @@ export default class Console extends Emitter {
     }
 
     this.flushBufferedOutput();
+    this.startBackgroundTimer();
   };
 
   /**
@@ -339,7 +340,6 @@ export default class Console extends Emitter {
   startBackgroundTimer() {
     this.refreshTimer = setTimeout(() => {
       this.handleRender();
-      this.startBackgroundTimer();
     }, BG_REFRESH_RATE);
   }
 
