@@ -39,7 +39,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleTask(task);
 
-      expect(outSpy).toHaveBeenCalledWith('[0] Running task: Hello');
+      expect(outSpy).toHaveBeenCalledWith('[0] Running task: Hello\n');
     });
   });
 
@@ -47,7 +47,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleTaskPass(task);
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('[0] Passed'));
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('[0] Passed\n'));
     });
   });
 
@@ -55,7 +55,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleTaskFail(task, new Error('Oops'));
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('[0] Failed: Oops'));
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('[0] Failed: Oops\n'));
     });
   });
 
@@ -63,7 +63,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleRoutine(routine);
 
-      expect(outSpy).toHaveBeenCalledWith('[key] Running routine: Title');
+      expect(outSpy).toHaveBeenCalledWith('[key] Running routine: Title\n');
     });
   });
 
@@ -71,7 +71,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleRoutinePass(routine);
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('[key] Passed'));
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('[key] Passed\n'));
     });
   });
 
@@ -79,7 +79,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleRoutineFail(routine, new Error('Oops'));
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('[key] Failed: Oops'));
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('[key] Failed: Oops\n'));
     });
   });
 

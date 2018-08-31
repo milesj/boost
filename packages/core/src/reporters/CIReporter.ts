@@ -32,30 +32,30 @@ export default class CIReporter extends Reporter {
     task.id = this.taskID;
     this.taskID += 1;
 
-    this.console.out(`[${task.id}] Running task: ${task.title}`);
+    this.console.out(`[${task.id}] Running task: ${task.title}\n`);
   };
 
   handleTaskPass = (task: Task<any> & TaskID) => {
-    this.console.out(this.style(`[${task.id}] Passed`, 'success'));
+    this.console.out(`${this.style(`[${task.id}] Passed`, 'success')}\n`);
   };
 
   handleTaskFail = (task: Task<any> & TaskID, error: Error) => {
-    this.console.err(this.style(`[${task.id}] Failed: ${error.message}`, 'failure'));
+    this.console.err(`${this.style(`[${task.id}] Failed: ${error.message}`, 'failure')}\n`);
   };
 
   handleRoutine = (routine: Routine<any>) => {
-    this.console.out(`[${routine.key}] Running routine: ${routine.title}`);
+    this.console.out(`[${routine.key}] Running routine: ${routine.title}\n`);
   };
 
   handleRoutinePass = (routine: Routine<any>) => {
-    this.console.out(this.style(`[${routine.key}] Passed`, 'success'));
+    this.console.out(`${this.style(`[${routine.key}] Passed`, 'success')}\n`);
   };
 
   handleRoutineFail = (routine: Routine<any>, error: Error) => {
-    this.console.err(this.style(`[${routine.key}] Failed: ${error.message}`, 'failure'));
+    this.console.err(`${this.style(`[${routine.key}] Failed: ${error.message}`, 'failure')}\n`);
   };
 
   handleStop = () => {
-    this.console.out(`Ran in ${this.getElapsedTime(this.startTime, this.stopTime, false)}`);
+    this.console.out(`Ran in ${this.getElapsedTime(this.startTime, this.stopTime, false)}\n`);
   };
 }
