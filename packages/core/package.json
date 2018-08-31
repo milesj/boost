@@ -1,6 +1,6 @@
 {
   "name": "@boost/core",
-  "version": "0.64.1",
+  "version": "0.64.2",
   "description": "Robust pipeline for creating build tools that separate logic into routines and tasks.",
   "keywords": [
     "boost",
