@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import CIReporter from '../../src/reporters/CIReporter';
 import { createTestRoutine, createTestConsole } from '../helpers';
 import Task from '../../src/Task';
@@ -47,7 +46,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleTaskPass(task);
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('[0] Passed\n'));
+      expect(outSpy).toHaveBeenCalledWith('[0] Passed\n');
     });
   });
 
@@ -55,7 +54,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleTaskFail(task, new Error('Oops'));
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('[0] Failed: Oops\n'));
+      expect(errSpy).toHaveBeenCalledWith('[0] Failed: Oops\n');
     });
   });
 
@@ -71,7 +70,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleRoutinePass(routine);
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('[key] Passed\n'));
+      expect(outSpy).toHaveBeenCalledWith('[key] Passed\n');
     });
   });
 
@@ -79,7 +78,7 @@ describe('CIReporter', () => {
     it('displays the title', () => {
       reporter.handleRoutineFail(routine, new Error('Oops'));
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('[key] Failed: Oops\n'));
+      expect(errSpy).toHaveBeenCalledWith('[key] Failed: Oops\n');
     });
   });
 
