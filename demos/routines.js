@@ -23,7 +23,24 @@ class MultiTaskRoutine extends Routine {
       throw new Error('Oops!');
     }
 
-    return this.options.parallel ? this.parallelizeTasks() : this.serializeTasks();
+    return this.tool.console
+      .prompt({
+        type: 'multiselect',
+        name: 'value',
+        message: 'Pick colors',
+        choices: [
+          { title: 'Red', value: '#ff0000' },
+          { title: 'Green', value: '#00ff00' },
+          { title: 'Blue', value: '#0000ff', selected: true },
+        ],
+        initial: 1,
+        max: 2,
+        hint: '- Space to select. Return to submit',
+      })
+      .then(a => {
+        console.log('ANSWER', a);
+      });
+    // return this.options.parallel ? this.parallelizeTasks() : this.serializeTasks();
   }
 
   delayedTask() {

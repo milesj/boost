@@ -5,6 +5,10 @@
 
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
+import inquirer from 'inquirer';
+import through from 'through2';
+// @ts-ignore
+import prompts from 'prompts';
 import optimal, { bool, number, string } from 'optimal';
 import Emitter from './Emitter';
 
@@ -30,7 +34,9 @@ export default class Console extends Emitter {
 
   errorLogs: string[] = [];
 
-  refreshTimer: NodeJS.Timer | null = null;
+  // inquirer: inquirer.PromptModule;
+
+  inquirerOutput: string = '';
 
   lastOutputHeight: number = 0;
 
@@ -39,6 +45,8 @@ export default class Console extends Emitter {
   options: ConsoleOptions;
 
   out: WrappedStream;
+
+  refreshTimer: NodeJS.Timer | null = null;
 
   renderTimer: NodeJS.Timer | null = null;
 
@@ -61,6 +69,16 @@ export default class Console extends Emitter {
       },
     );
 
+    // this.inquirer = inquirer.createPromptModule({
+    //   input: process.stdin.on('data', () => {
+    //     this.handleRender();
+    //   }),
+    //   output: through((chunk, encoding, callback) => {
+    //     this.inquirerOutput += String(chunk);
+    //     callback();
+    //   }),
+    // });
+
     /* istanbul ignore next */
     if (process.env.NODE_ENV === 'test') {
       this.err = () => {};
@@ -80,6 +98,16 @@ export default class Console extends Emitter {
   }
 
   /**
+   * Clear defined lines from the console.
+   */
+  clearLinesOutput(): this {
+    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.lastOutputHeight = 0;
+
+    return this;
+  }
+
+  /**
    * Clear the entire console.
    */
   clearOutput(): this {
@@ -90,13 +118,47 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Clear defined lines from the console.
+   * Clear background timer.
    */
-  clearLinesOutput(): this {
-    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
-    this.lastOutputHeight = 0;
+  clearBackgroundTimer(): this {
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
 
     return this;
+  }
+
+  /**
+   * Clear render timer.
+   */
+  clearRenderTimer(): this {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = null;
+    }
+
+    return this;
+  }
+
+  displayContents(error: Error | null = null) {
+    this.emit('render.header');
+    this.emit('render');
+    this.emit('render.footer');
+
+    if (error) {
+      this.emit('error', [error]);
+    } else if (this.errorLogs.length > 0) {
+      this.displayLogs(this.errorLogs);
+    } else if (this.logs.length > 0) {
+      this.displayLogs(this.logs);
+    }
+
+    if (this.inquirerOutput) {
+      this.write(this.inquirerOutput, 1);
+    }
+
+    this.flushBufferedOutput();
   }
 
   /**
@@ -198,41 +260,33 @@ export default class Console extends Emitter {
    * Handle the final render before exiting.
    */
   handleFinalRender = (error: Error | null = null) => {
-    this.resetTimers();
+    this.clearBackgroundTimer();
+    this.clearRenderTimer();
     this.clearLinesOutput();
     this.flushBufferedStreams();
+
     this.displayHeader();
-    this.emit('render');
-
-    if (error) {
-      this.emit('error', [error]);
-    } else if (this.errorLogs.length > 0) {
-      this.displayLogs(this.errorLogs);
-    } else if (this.logs.length > 0) {
-      this.displayLogs(this.logs);
-    }
-
+    this.displayContents(error);
     this.displayFooter();
+
     this.flushBufferedOutput();
     this.flushBufferedStreams();
 
     // Remover listeners so that we avoid unwanted re-renders
-    this.flushListeners('render');
-    this.flushListeners('error');
+    this.clearListeners('render');
+    this.clearListeners('error');
   };
 
   /**
    * Handle the entire rendering and flushing process.
    */
-  handleRender = (error: Error | null = null, final: boolean = false) => {
-    this.resetTimers();
+  handleRender = (error: Error | null = null) => {
+    this.clearBackgroundTimer();
+    this.clearRenderTimer();
     this.clearLinesOutput();
     this.flushBufferedStreams();
-    this.emit('render');
 
-    if (error) {
-      this.emit('error', [error]);
-    }
+    this.displayContents(error);
 
     this.flushBufferedOutput();
     this.startBackgroundTimer();
@@ -281,14 +335,32 @@ export default class Console extends Emitter {
     return this;
   }
 
+  prompt<T>(question: any): Promise<T> {
+    this.render();
+
+    return prompts({
+      ...question,
+      cursor: this.bufferedOutput.length,
+      out: through((chunk, encoding, callback) => {
+        console.log('PROMPT', JSON.stringify(String(chunk)));
+        this.inquirerOutput += String(chunk);
+        callback();
+      }),
+      onState: () => {
+        this.handleRender();
+      },
+    }).then(() => {
+      this.inquirerOutput = '';
+
+      return null;
+    });
+  }
+
   /**
    * Debounce the render as to avoid tearing.
    */
   render(): this {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-      this.refreshTimer = null;
-    }
+    this.clearBackgroundTimer();
 
     if (!this.renderTimer) {
       this.renderTimer = setTimeout(() => {
@@ -304,23 +376,6 @@ export default class Console extends Emitter {
    */
   resetCursor(): this {
     this.out(`\x1B[${process.stdout.rows};0H`);
-
-    return this;
-  }
-
-  /**
-   * Reset both the render and background refresh timers.
-   */
-  resetTimers(): this {
-    if (this.renderTimer) {
-      clearTimeout(this.renderTimer);
-      this.renderTimer = null;
-    }
-
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-      this.refreshTimer = null;
-    }
 
     return this;
   }
