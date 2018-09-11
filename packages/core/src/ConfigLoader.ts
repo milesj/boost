@@ -251,7 +251,7 @@ export default class ConfigLoader {
 
   /**
    * Load the "package.json" from the current working directory,
-   * as we require the build tool to be ran from the project root.
+   * as we require the dev tool to be ran from the project root.
    */
   loadPackageJSON(): PackageConfig {
     const { root } = this.tool.options;
