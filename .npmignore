@@ -8,6 +8,7 @@ logs/
 .npm
 .vscode
 .yarnclean
+yarn.lock
 
 # Directories
 _book/
@@ -15,6 +16,7 @@ coverage/
 docs/
 src/
 tests/
+types/
 node_modules/
 
 # Custom
@@ -29,6 +31,7 @@ node_modules/
 .gitbook.yaml
 .prettierignore
 .travis.yml
+babel.config.js
 book.json
 jest.config.js
 prettier.config.js

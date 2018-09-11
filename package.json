@@ -15,9 +15,9 @@
     "release": "lerna publish"
   },
   "devDependencies": {
-    "@milesj/build-tool-config": "0.119.1",
+    "@milesj/build-tools": "^0.0.11",
     "fs-extra": "^7.0.0",
-    "lerna": "^3.2.1"
+    "lerna": "^3.3.0"
   },
   "publishConfig": {
     "access": "public"
@@ -26,7 +26,7 @@
     "packages/*"
   ],
   "beemo": {
-    "module": "@milesj/build-tool-config",
+    "module": "@milesj/build-tools",
     "drivers": [
       "babel",
       "eslint",

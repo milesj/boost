@@ -40,7 +40,7 @@
     "split": "^1.0.1"
   },
   "devDependencies": {
-    "optimal": "^1.0.0"
+    "optimal": "^1.1.1"
   },
   "peerDependencies": {
     "optimal": "^1.0.0"
