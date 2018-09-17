@@ -97,7 +97,7 @@ export default class Task<Ctx extends Context, Options = {}> {
   /**
    * Run the current task by executing it and performing any before and after processes.
    */
-  run<T>(context: Ctx, initialValue?: T): Promise<any> {
+  async run<T>(context: Ctx, initialValue?: T): Promise<any> {
     this.setContext(context);
 
     if (this.isSkipped() || !this.action) {
@@ -106,29 +106,25 @@ export default class Task<Ctx extends Context, Options = {}> {
       return Promise.resolve(initialValue);
     }
 
+    let value = null;
     this.status = STATUS_RUNNING;
     this.startTime = Date.now();
 
-    return (
-      Promise.resolve(initialValue)
-        // @ts-ignore
-        .then(value => this.action(context, value, this))
-        .then(
-          result => {
-            this.status = STATUS_PASSED;
-            this.stopTime = Date.now();
-            this.statusText = '';
+    try {
+      value = await this.action(context, initialValue, this);
 
-            return result;
-          },
-          error => {
-            this.status = STATUS_FAILED;
-            this.stopTime = Date.now();
+      this.status = STATUS_PASSED;
+      this.stopTime = Date.now();
+    } catch (error) {
+      this.status = STATUS_FAILED;
+      this.stopTime = Date.now();
 
-            throw error;
-          },
-        )
-    );
+      throw error;
+    }
+
+    this.statusText = '';
+
+    return value;
   }
 
   /**

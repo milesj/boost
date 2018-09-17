@@ -21,9 +21,9 @@ describe('ParallelExecutor', () => {
 
   it('triggers `executeRoutine` and `executeTask` with the correct values', async () => {
     const task = new Task('foo', value => value);
-    const taskSpy = jest.fn();
+    const taskSpy = jest.fn(() => Promise.resolve());
     const routine = createTestRoutine(executor.tool);
-    const routineSpy = jest.fn();
+    const routineSpy = jest.fn(() => Promise.resolve());
 
     executor.executeTask = taskSpy;
     executor.executeRoutine = routineSpy;

@@ -11,7 +11,7 @@ export default class ParallelExecutor<Ctx extends Context> extends Executor<Ctx>
   /**
    * Execute tasks in parallel.
    */
-  run<T>(tasks: Task<Ctx>[], value?: T): Promise<any[]> {
+  async run<T>(tasks: Task<Ctx>[], value?: T): Promise<any[]> {
     this.debug('Parallelizing %d tasks', tasks.length);
 
     return Promise.all(tasks.map(task => this.execute(task, value, true)));

@@ -26,22 +26,24 @@ describe('Executor', () => {
   });
 
   describe('execute()', () => {
-    it('executes a routine', () => {
+    it('executes a routine', async () => {
       const spy = jest.fn();
       const routine = createTestRoutine(tool);
 
       executor.executeRoutine = spy;
-      executor.execute(routine, 123, true);
+
+      await executor.execute(routine, 123, true);
 
       expect(spy).toHaveBeenCalledWith(routine, 123, true);
     });
 
-    it('executes a task', () => {
+    it('executes a task', async () => {
       const spy = jest.fn();
-      const task = new Task('Title', () => {});
+      const task = new Task('Title', () => Promise.resolve());
 
       executor.executeTask = spy;
-      executor.execute(task, 123, false);
+
+      await executor.execute(task, 123, false);
 
       expect(spy).toHaveBeenCalledWith(task, 123, false);
     });
@@ -88,7 +90,7 @@ describe('Executor', () => {
     let task: Task<any>;
 
     beforeEach(() => {
-      task = new Task('title', (con, value) => value * 3);
+      task = new Task('title', (con, value) => Promise.resolve(value * 3));
     });
 
     it('returns a promise', () => {
@@ -163,9 +165,7 @@ describe('Executor', () => {
 
   describe('run()', () => {
     it('errors if not defined', () => {
-      expect(() => {
-        executor.run([]);
-      }).toThrowError('run() must be defined.');
+      expect(executor.run([])).rejects.toThrowError('run() must be defined asynchronously.');
     });
   });
 });

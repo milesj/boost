@@ -34,7 +34,7 @@ describe('Routine', () => {
       this.debug = createTestDebugger();
     }
 
-    execute(): any {
+    async execute(): Promise<any> {
       throw new Error('Failure');
     }
   }
@@ -51,7 +51,7 @@ describe('Routine', () => {
       this.task('baz', this.baz);
     }
 
-    execute(context: any, value: any) {
+    async execute(context: any, value: any): Promise<any> {
       context.count *= this.options.multiplier;
       context[this.key] = true;
 
@@ -121,7 +121,7 @@ describe('Routine', () => {
           ({ config } = this.tool);
         }
 
-        execute() {
+        async execute(): Promise<any> {
           return Promise.resolve();
         }
       }
@@ -225,7 +225,7 @@ describe('Routine', () => {
         this.debug = createTestDebugger();
       }
 
-      execute() {
+      async execute(): Promise<any> {
         return Promise.resolve();
       }
 
@@ -578,7 +578,7 @@ describe('Routine', () => {
         this.debug = createTestDebugger();
       }
 
-      execute(context: any, value: any) {
+      async execute(context: any, value: any): Promise<any> {
         return Promise.resolve({
           count: value.count * this.options.multiplier,
           key: value.key + this.key,
@@ -662,7 +662,7 @@ describe('Routine', () => {
         this.debug = createTestDebugger();
       }
 
-      execute() {
+      async execute(): Promise<any> {
         return Promise.resolve();
       }
 

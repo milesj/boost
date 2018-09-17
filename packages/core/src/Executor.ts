@@ -4,7 +4,6 @@
  */
 
 import kebabCase from 'lodash/kebabCase';
-import wrapWithPromise from './helpers/wrapWithPromise';
 import Context from './Context';
 import Routine from './Routine';
 import Task from './Task';
@@ -58,42 +57,49 @@ export default class Executor<Ctx extends Context, Options = {}> {
   /**
    * Execute either a task or routine.
    */
-  execute<T>(
+  async execute<T>(
     task: Task<Ctx> | Routine<Ctx>,
     value?: T,
     wasParallel: boolean = false,
   ): Promise<any> {
-    return this.getInstanceType(task) === 'Routine'
-      ? this.executeRoutine(task as Routine<Ctx>, value, wasParallel)
-      : this.executeTask(task, value, wasParallel);
+    if (this.getInstanceType(task) === 'Routine') {
+      return this.executeRoutine(task as Routine<Ctx>, value, wasParallel);
+    }
+
+    return this.executeTask(task, value, wasParallel);
   }
 
   /**
    * Execute a routine with the provided value.
    */
-  executeRoutine<T>(routine: Routine<Ctx>, value?: T, wasParallel: boolean = false): Promise<any> {
-    return wrapWithPromise(routine.run(this.context, value, wasParallel));
+  async executeRoutine<T>(
+    routine: Routine<Ctx>,
+    value?: T,
+    wasParallel: boolean = false,
+  ): Promise<any> {
+    return routine.run(this.context, value, wasParallel);
   }
 
   /**
    * Execute a task with the provided value.
    */
-  executeTask<T>(task: Task<Ctx>, value?: T, wasParallel: boolean = false): Promise<any> {
+  async executeTask<T>(task: Task<Ctx>, value?: T, wasParallel: boolean = false): Promise<any> {
     const { console: cli } = this.tool;
+    let result = null;
 
     cli.emit('task', [task, value, wasParallel]);
 
-    return wrapWithPromise(task.run(this.context, value))
-      .then(result => {
-        cli.emit('task.pass', [task, result, wasParallel]);
+    try {
+      result = await task.run(this.context, value);
 
-        return result;
-      })
-      .catch(error => {
-        cli.emit('task.fail', [task, error, wasParallel]);
+      cli.emit('task.pass', [task, result, wasParallel]);
+    } catch (error) {
+      cli.emit('task.fail', [task, error, wasParallel]);
 
-        throw error;
-      });
+      throw error;
+    }
+
+    return result;
   }
 
   /**
@@ -120,7 +126,7 @@ export default class Executor<Ctx extends Context, Options = {}> {
   /**
    * Method to execute tasks. Must be defined in sub-classes.
    */
-  run<T>(tasks: Task<Ctx>[], value?: T) {
-    throw new Error('run() must be defined.');
+  async run<T>(tasks: Task<Ctx>[], value?: T): Promise<any> {
+    throw new Error('run() must be defined asynchronously.');
   }
 }

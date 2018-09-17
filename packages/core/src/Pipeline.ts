@@ -28,26 +28,25 @@ export default class Pipeline<Ctx extends Context> extends Routine<Ctx, ToolConf
   /**
    * Execute all routines in order.
    */
-  run<T>(initialValue?: T): Promise<any> {
+  async run<T>(initialValue?: T): Promise<any> {
     const { console: cli } = this.tool;
+    let result = null;
 
     this.tool.debug('Running pipeline');
 
     cli.emit('start', [this.routines]);
 
-    return this.serializeRoutines(initialValue)
-      .then(result => {
-        cli.exit(null, 0);
+    try {
+      result = await this.serializeRoutines(initialValue);
+      cli.exit(null, 0);
+    } catch (error) {
+      result = error;
+      cli.exit(error, 1);
 
-        return result;
-      })
-      .catch(error => {
-        cli.exit(error, 1);
+      // Create a log of the failure
+      new CrashLogger(this.tool).log(error);
+    }
 
-        // Create a log of the failure
-        new CrashLogger(this.tool).log(error);
-
-        return error;
-      });
+    return result;
   }
 }

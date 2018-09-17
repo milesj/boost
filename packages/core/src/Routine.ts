@@ -3,12 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import execa, {
-  Options as ExecaOptions,
-  SyncOptions as ExecaSyncOptions,
-  ExecaChildProcess,
-  ExecaReturns,
-} from 'execa';
+import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';
 import Context from './Context';
@@ -89,38 +84,34 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  execute<T>(context: Ctx, value?: T): Promise<any> {
-    throw new Error('execute() must be defined.');
+  async execute<T>(context: Ctx, value?: T): Promise<any> {
+    throw new Error('execute() must be defined asynchronously.');
   }
 
   /**
    * Execute a command with the given arguments and pass the results through a promise.
    */
-  executeCommand(
+  async executeCommand(
     command: string,
     args: string[],
-    options: (ExecaOptions | ExecaSyncOptions) & CommandOptions = {},
+    options: ExecaOptions & CommandOptions = {},
   ): Promise<ExecaReturns> {
-    const stream = options.sync
-      ? execa.sync(command, args, options as ExecaSyncOptions)
-      : execa(command, args, options);
+    const stream = execa(command, args, options);
 
     this.tool.console.emit('command', [command, this]);
 
     // Push chunks to the reporter
-    if (!options.sync) {
-      const task = options.task || this;
-      const handler = (line: string) => {
-        /* istanbul ignore next */
-        if (task.status === STATUS_RUNNING) {
-          task.statusText = line;
-          this.tool.console.emit('command.data', [command, line, this]);
-        }
-      };
+    const task = options.task || this;
+    const handler = (line: string) => {
+      /* istanbul ignore next */
+      if (task.status === STATUS_RUNNING) {
+        task.statusText = line;
+        this.tool.console.emit('command.data', [command, line, this]);
+      }
+    };
 
-      (stream.stdout as Readable).pipe(split()).on('data', handler);
-      (stream.stderr as Readable).pipe(split()).on('data', handler);
-    }
+    (stream.stdout as Readable).pipe(split()).on('data', handler);
+    (stream.stderr as Readable).pipe(split()).on('data', handler);
 
     // Allow consumer to wrap functionality
     if (typeof options.wrap === 'function') {
@@ -133,14 +124,14 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute routines in parallel.
    */
-  parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<any[]> {
+  async parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in parallel.
    */
-  parallelizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any[]> {
+  async parallelizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
@@ -160,7 +151,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute routines in a pool.
    */
-  poolRoutines<T>(
+  async poolRoutines<T>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
     routines?: Routine<Ctx>[],
@@ -171,7 +162,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute tasks in a pool.
    */
-  poolTasks<T>(
+  async poolTasks<T>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
     tasks?: Task<Ctx>[],
@@ -182,7 +173,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Trigger processes before and after execution.
    */
-  run<T>(context: Ctx, value?: T, wasParallel: boolean = false): Promise<any> {
+  async run<T>(context: Ctx, value?: T, wasParallel: boolean = false): Promise<any> {
     if (this.exit) {
       return Promise.reject(new Error('Process has been interrupted.'));
     }
@@ -190,21 +181,21 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
     this.debug('Executing routine');
 
     const { console: cli } = this.tool;
+    let result = null;
 
     cli.emit('routine', [this, value, wasParallel]);
 
-    return super
-      .run(context, value)
-      .then(result => {
-        cli.emit('routine.pass', [this, result, wasParallel]);
+    try {
+      result = await super.run(context, value);
 
-        return result;
-      })
-      .catch(error => {
-        cli.emit('routine.fail', [this, error, wasParallel]);
+      cli.emit('routine.pass', [this, result, wasParallel]);
+    } catch (error) {
+      cli.emit('routine.fail', [this, error, wasParallel]);
 
-        throw error;
-      });
+      throw error;
+    }
+
+    return result;
   }
 
   /**
@@ -224,14 +215,14 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute routines in sync.
    */
-  synchronizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<AggregatedResponse> {
+  async synchronizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<AggregatedResponse> {
     return new SyncExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in sync.
    */
-  synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
+  async synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
     return new SyncExecutor(this.tool, this.context).run(tasks || this.tasks, value);
   }
 
