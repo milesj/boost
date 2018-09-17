@@ -20,4 +20,5 @@ export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   extends: [],
   plugins: [],
   reporters: [],
+  settings: {},
 };

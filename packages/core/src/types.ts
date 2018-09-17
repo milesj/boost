@@ -27,6 +27,7 @@ export interface ToolConfig {
   extends: string | string[];
   plugins: (string | PluginConfig | Plugin<any>)[];
   reporters: (string | ReporterConfig | Reporter<any>)[];
+  settings: { [key: string]: any };
   [key: string]: any;
 }
 

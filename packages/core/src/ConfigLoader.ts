@@ -11,7 +11,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import optimal, { array, bool, instance, shape, string, union } from 'optimal';
+import optimal, { array, bool, instance, object, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -235,6 +235,7 @@ export default class ConfigLoader {
           shape({ reporter: string() }),
           instance(Reporter),
         ])),
+        settings: object(),
         // prettier-ignore
         [pluralize(pluginAlias)]: array(union([
           string(),
