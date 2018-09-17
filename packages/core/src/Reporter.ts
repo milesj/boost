@@ -52,6 +52,7 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
           .split('\n')
           .slice(1)
           .join('\n'),
+        'pending',
       );
 
       this.console.write(stack, 1);
@@ -85,6 +86,7 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
     }
 
     return {
+      default: 'white',
       failure: 'red',
       pending: 'gray',
       success: 'green',
@@ -154,7 +156,7 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
    */
   style(
     message: string,
-    type: ColorType = 'pending',
+    type: ColorType = 'default',
     modifiers: ('reset' | 'bold' | 'dim' | 'italic' | 'underline' | 'inverse' | 'hidden')[] = [],
   ): string {
     const color = this.getColorPalette()[type];

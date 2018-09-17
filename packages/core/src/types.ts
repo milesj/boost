@@ -49,6 +49,6 @@ export type Color =
   | 'white'
   | 'gray';
 
-export type ColorType = 'failure' | 'pending' | 'success' | 'warning';
+export type ColorType = 'default' | 'failure' | 'pending' | 'success' | 'warning';
 
 export type ColorPalette = { [T in ColorType]: Color | string };

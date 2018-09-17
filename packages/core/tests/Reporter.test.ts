@@ -56,6 +56,7 @@ describe('Reporter', () => {
   describe('getColorPalette()', () => {
     const oldLevel = chalk.level;
     const basePalette = {
+      default: 'white',
       failure: 'red',
       pending: 'gray',
       success: 'green',
@@ -91,6 +92,7 @@ describe('Reporter', () => {
       reporter.console.options.theme = 'solarized';
 
       expect(reporter.getColorPalette()).toEqual({
+        default: '#eee8d5',
         failure: '#dc322f',
         pending: '#93a1a1',
         success: '#859900',
@@ -189,6 +191,10 @@ describe('Reporter', () => {
   });
 
   describe('style()', () => {
+    it('colors default', () => {
+      expect(reporter.style('foo')).toBe(chalk.white('foo'));
+    });
+
     it('colors pending', () => {
       expect(reporter.style('foo', 'pending')).toBe(chalk.gray('foo'));
     });

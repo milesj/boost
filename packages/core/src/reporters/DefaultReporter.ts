@@ -62,7 +62,7 @@ export default class DefaultReporter extends Reporter<Line> {
     const { level } = this.console.options;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
-    const title = task.statusText ? this.style(task.statusText) : task.title;
+    const title = task.statusText ? this.style(task.statusText, 'pending') : task.title;
     const status = [];
 
     if (task.isSkipped()) {
@@ -81,7 +81,8 @@ export default class DefaultReporter extends Reporter<Line> {
 
     // eslint-disable-next-line no-magic-numbers
     const columns = process.stdout.columns || 80;
-    const fullStatus = status.length > 0 && level >= 1 ? this.style(` [${status.join(', ')}]`) : '';
+    const fullStatus =
+      status.length > 0 && level >= 1 ? this.style(` [${status.join(', ')}]`, 'pending') : '';
 
     return cliTruncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
   }
@@ -166,7 +167,7 @@ export default class DefaultReporter extends Reporter<Line> {
         output += this.indent(indent);
       } else {
         output += this.indent(indent - 2);
-        output += this.style('└');
+        output += this.style('└', 'pending');
         output += ' ';
       }
     }
@@ -175,7 +176,7 @@ export default class DefaultReporter extends Reporter<Line> {
     const usedColumns = indent + key.length;
 
     if (task) {
-      output += this.style(this.getLineTitle(task, usedColumns));
+      output += this.style(this.getLineTitle(task, usedColumns), 'pending');
     } else {
       output += this.getLineTitle(routine, usedColumns);
     }
