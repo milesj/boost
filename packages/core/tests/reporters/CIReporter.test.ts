@@ -1,6 +1,6 @@
+import chalk from 'chalk';
 import CIReporter from '../../src/reporters/CIReporter';
-import { createTestRoutine, createTestConsole } from '../helpers';
-import Task from '../../src/Task';
+import { createTestConsole } from '../helpers';
 
 describe('CIReporter', () => {
   let reporter: CIReporter;
@@ -14,9 +14,6 @@ describe('CIReporter', () => {
     outSpy = reporter.console.out as jest.Mock;
     errSpy = reporter.console.err as jest.Mock;
   });
-
-  const task = new Task('Hello', () => {});
-  const routine = createTestRoutine();
 
   describe('bootstrap()', () => {
     it('binds events', () => {
@@ -35,50 +32,60 @@ describe('CIReporter', () => {
   });
 
   describe('handleTask()', () => {
-    it('displays the title', () => {
-      reporter.handleTask(task);
+    it('increments count', () => {
+      expect(reporter.taskCount).toBe(0);
 
-      expect(outSpy).toHaveBeenCalledWith('[0] Running task: Hello\n');
+      reporter.handleTask();
+
+      expect(reporter.taskCount).toBe(1);
     });
   });
 
   describe('handleTaskPass()', () => {
-    it('displays the title', () => {
-      reporter.handleTaskPass(task);
+    it('logs a dot', () => {
+      reporter.handleTaskPass();
 
-      expect(outSpy).toHaveBeenCalledWith('[0] Passed\n');
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('.'));
     });
   });
 
   describe('handleTaskFail()', () => {
-    it('displays the title', () => {
-      reporter.handleTaskFail(task, new Error('Oops'));
+    it('logs a dot', () => {
+      reporter.handleTaskFail();
 
-      expect(errSpy).toHaveBeenCalledWith('[0] Failed: Oops\n');
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('.'));
     });
   });
 
   describe('handleRoutine()', () => {
-    it('displays the title', () => {
-      reporter.handleRoutine(routine);
+    it('increments count', () => {
+      expect(reporter.routineCount).toBe(0);
 
-      expect(outSpy).toHaveBeenCalledWith('[key] Running routine: Title\n');
+      reporter.handleRoutine();
+
+      expect(reporter.routineCount).toBe(1);
+    });
+
+    it('logs a star', () => {
+      reporter.handleRoutine();
+
+      expect(outSpy).toHaveBeenCalledWith('*');
     });
   });
 
   describe('handleRoutinePass()', () => {
-    it('displays the title', () => {
-      reporter.handleRoutinePass(routine);
+    it('logs a star', () => {
+      reporter.handleRoutinePass();
 
-      expect(outSpy).toHaveBeenCalledWith('[key] Passed\n');
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('*'));
     });
   });
 
   describe('handleRoutineFail()', () => {
-    it('displays the title', () => {
-      reporter.handleRoutineFail(routine, new Error('Oops'));
+    it('logs a star', () => {
+      reporter.handleRoutineFail();
 
-      expect(errSpy).toHaveBeenCalledWith('[key] Failed: Oops\n');
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('*'));
     });
   });
 
@@ -86,7 +93,9 @@ describe('CIReporter', () => {
     it('displays the time', () => {
       reporter.handleStop();
 
-      expect(outSpy).toHaveBeenCalledWith(expect.stringContaining('Ran in'));
+      expect(outSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Ran 0 routine(s) and 0 task(s) in'),
+      );
     });
   });
 });
