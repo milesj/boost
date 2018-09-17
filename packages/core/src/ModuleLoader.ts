@@ -23,13 +23,21 @@ export default class ModuleLoader<Tm extends Module<any>> {
 
   debug: Debugger;
 
+  loadBoostModules: boolean;
+
   tool: Tool;
 
   typeName: string;
 
-  constructor(tool: Tool, typeName: string, classReference: Constructor<Tm>) {
+  constructor(
+    tool: Tool,
+    typeName: string,
+    classReference: Constructor<Tm>,
+    loadBoostModules: boolean = false,
+  ) {
     this.classReference = classReference;
     this.debug = tool.createDebugger(`${typeName}-loader`);
+    this.loadBoostModules = loadBoostModules;
     this.tool = tool;
     this.typeName = typeName;
 
@@ -61,10 +69,17 @@ export default class ModuleLoader<Tm extends Module<any>> {
     } else {
       this.debug('Locating %s module %s', typeName, chalk.yellow(name));
 
-      modulesToAttempt.push(formatModuleName(appName, typeName, name, false));
-
       if (scoped) {
-        modulesToAttempt.unshift(formatModuleName(appName, typeName, name, true));
+        modulesToAttempt.push(formatModuleName(appName, typeName, name, true));
+      }
+
+      modulesToAttempt.push(formatModuleName(appName, typeName, name));
+
+      if (this.loadBoostModules) {
+        modulesToAttempt.push(
+          formatModuleName('boost', typeName, name, true),
+          formatModuleName('boost', typeName, name),
+        );
       }
 
       this.debug('Resolving in order: %s', modulesToAttempt.join(', '));

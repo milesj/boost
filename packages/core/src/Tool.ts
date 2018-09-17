@@ -273,7 +273,7 @@ export default class Tool extends Emitter {
       throw new Error('Cannot load reporters as configuration has not been loaded.');
     }
 
-    const loader = new ModuleLoader(this, 'reporter', Reporter);
+    const loader = new ModuleLoader(this, 'reporter', Reporter, true);
     const reporters: Reporter<any>[] = [];
 
     if (process.env.CI && !process.env.BOOST_ENV) {

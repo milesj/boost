@@ -47,6 +47,16 @@ describe('ModuleLoader', () => {
       );
     });
 
+    it.only('errors for missing node module (with boost)', () => {
+      expect(() => {
+        loader.loadBoostModules = true;
+        loader.tool.options.scoped = true;
+        loader.importModule('missing');
+      }).toThrowError(
+        'Missing plugin. Attempted import in order: @test-boost/plugin-missing, test-boost-plugin-missing, @boost/plugin-missing, boost-plugin-missing',
+      );
+    });
+
     it('errors if a non-function is exported', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-nonfunc', 'test-boost-plugin-nonfunc'));
 
