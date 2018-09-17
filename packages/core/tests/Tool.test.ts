@@ -88,7 +88,7 @@ describe('Tool', () => {
     it('errors if not found', () => {
       expect(() => {
         tool.getPlugin('foo');
-      }).toThrowError('Failed to find plugin "foo". Have you installed it?');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('returns plugin by name', () => {
@@ -105,7 +105,7 @@ describe('Tool', () => {
     it('errors if not found', () => {
       expect(() => {
         tool.getReporter('foo');
-      }).toThrowError('Failed to find reporter "foo". Have you installed it?');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('returns plugin by name', () => {
@@ -196,7 +196,7 @@ describe('Tool', () => {
         // @ts-ignore
         tool.config = null;
         tool.loadPlugins();
-      }).toThrowError('Cannot load plugins as configuration has not been loaded.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if config is an empty object', () => {
@@ -204,7 +204,7 @@ describe('Tool', () => {
         // @ts-ignore
         tool.config = {};
         tool.loadPlugins();
-      }).toThrowError('Cannot load plugins as configuration has not been loaded.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('doesnt load if no plugins found in config', () => {
@@ -267,7 +267,7 @@ describe('Tool', () => {
         // @ts-ignore
         tool.config = null;
         tool.loadReporters();
-      }).toThrowError('Cannot load reporters as configuration has not been loaded.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if config is an empty object', () => {
@@ -275,7 +275,7 @@ describe('Tool', () => {
         // @ts-ignore
         tool.config = {};
         tool.loadReporters();
-      }).toThrowError('Cannot load reporters as configuration has not been loaded.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('doesnt load if initialized', () => {

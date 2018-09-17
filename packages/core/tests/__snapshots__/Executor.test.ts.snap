@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Executor run() errors if not defined 1`] = `"run() must be defined asynchronously."`;

@@ -165,7 +165,7 @@ describe('Executor', () => {
 
   describe('run()', () => {
     it('errors if not defined', () => {
-      expect(executor.run([])).rejects.toThrowError('run() must be defined asynchronously.');
+      expect(executor.run([])).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 });

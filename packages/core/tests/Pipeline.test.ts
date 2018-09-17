@@ -13,9 +13,7 @@ describe('Pipeline', () => {
   describe('constructor()', () => {
     it('errors if no tool is passed', () => {
       // @ts-ignore
-      expect(() => new Pipeline()).toThrowError(
-        'A build `Tool` instance is required to operate the pipeline.',
-      );
+      expect(() => new Pipeline()).toThrowErrorMatchingSnapshot();
     });
 
     it('sets the context', () => {

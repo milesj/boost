@@ -35,26 +35,22 @@ describe('ModuleLoader', () => {
     it('errors for missing node module', () => {
       expect(() => {
         loader.importModule('missing');
-      }).toThrowError('Missing plugin. Attempted import in order: test-boost-plugin-missing');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors for missing node module (with scope)', () => {
       expect(() => {
         loader.tool.options.scoped = true;
         loader.importModule('missing');
-      }).toThrowError(
-        'Missing plugin. Attempted import in order: @test-boost/plugin-missing, test-boost-plugin-missing',
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
-    it.only('errors for missing node module (with boost)', () => {
+    it('errors for missing node module (with boost)', () => {
       expect(() => {
         loader.loadBoostModules = true;
         loader.tool.options.scoped = true;
         loader.importModule('missing');
-      }).toThrowError(
-        'Missing plugin. Attempted import in order: @test-boost/plugin-missing, test-boost-plugin-missing, @boost/plugin-missing, boost-plugin-missing',
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if a non-function is exported', () => {
@@ -62,7 +58,7 @@ describe('ModuleLoader', () => {
 
       expect(() => {
         loader.importModule('nonfunc');
-      }).toThrowError('Invalid plugin class definition exported from "test-boost-plugin-nonfunc".');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if a non-plugin is exported', () => {
@@ -70,7 +66,7 @@ describe('ModuleLoader', () => {
 
       expect(() => {
         loader.importModule('func');
-      }).toThrowError('Plugin exported from "test-boost-plugin-func" is invalid.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if a plugin instance is exported', () => {
@@ -78,9 +74,7 @@ describe('ModuleLoader', () => {
 
       expect(() => {
         loader.importModule('instance');
-      }).toThrowError(
-        'A plugin class instance was exported from "test-boost-plugin-instance". Test-boost requires a plugin class definition to be exported.',
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if a non-plugin instance is exported', () => {
@@ -90,9 +84,7 @@ describe('ModuleLoader', () => {
 
       expect(() => {
         loader.importModule('nonplugin');
-      }).toThrowError(
-        'Invalid plugin class definition exported from "test-boost-plugin-nonplugin".',
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('imports and instantiates a plugin', () => {
@@ -145,13 +137,13 @@ describe('ModuleLoader', () => {
     it('errors if key doesnt exist', () => {
       expect(() => {
         loader.importModuleFromOptions({});
-      }).toThrowError('A "plugin" property must exist when loading through an options object.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if key is not a string', () => {
       expect(() => {
         loader.importModuleFromOptions({ plugin: [] });
-      }).toThrowError('A "plugin" property must exist when loading through an options object.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('imports and instantiates a plugin with options', () => {
@@ -190,9 +182,7 @@ describe('ModuleLoader', () => {
     it('errors if an unsupported value is passed', () => {
       expect(() => {
         loader.loadModules([123]);
-      }).toThrowError(
-        'Invalid plugin. Must be a class instance or a module that exports a class definition.',
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('returns an empty array if no values', () => {

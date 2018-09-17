@@ -87,16 +87,12 @@ describe('Routine', () => {
 
   describe('constructor()', () => {
     it('throws an error if no key is provided', () => {
-      expect(() => new Routine('', 'title')).toThrowError(
-        'Routine key must be a valid unique string.',
-      );
+      expect(() => new Routine('', 'title')).toThrowErrorMatchingSnapshot();
     });
 
     it('throws an error if key is not a string', () => {
       // @ts-ignore
-      expect(() => new Routine(123, 'title')).toThrowError(
-        'Routine key must be a valid unique string.',
-      );
+      expect(() => new Routine(123, 'title')).toThrowErrorMatchingSnapshot();
     });
 
     it('inherits default options', () => {
@@ -298,7 +294,7 @@ describe('Routine', () => {
   describe('pipe()', () => {
     it('throws an error if a non-Routine is passed', () => {
       // @ts-ignore
-      expect(() => routine.pipe('foo')).toThrowError('a');
+      expect(() => routine.pipe('foo')).toThrowErrorMatchingSnapshot();
     });
 
     it('sets routines in order', () => {
@@ -889,7 +885,7 @@ describe('Routine', () => {
       expect(() => {
         // @ts-ignore
         routine.task('foo', 'bar');
-      }).toThrowError('Tasks require an executable function.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('maps `Task` objects', () => {

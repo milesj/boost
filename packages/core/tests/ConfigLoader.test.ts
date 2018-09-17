@@ -80,7 +80,7 @@ describe('ConfigLoader', () => {
     it('errors if too many files are found', () => {
       expect(() => {
         loader.findConfigInLocalFiles(getFixturePath('app-multi-configs'));
-      }).toThrowError('Multiple "test-boost" configuration files found. Only 1 may exist.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('returns file path if found', () => {
@@ -138,7 +138,7 @@ describe('ConfigLoader', () => {
     it('errors if package.json has not been loaded', () => {
       expect(() => {
         loader.loadConfig();
-      }).toThrowError('Cannot load configuration as "package.json" has not been loaded.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     describe('from package.json', () => {
@@ -150,7 +150,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError('Invalid configuration. Must be a plain object.');
+        }).toThrowErrorMatchingSnapshot();
       });
 
       it('supports an object', () => {
@@ -226,7 +226,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError('Invalid ConfigLoader field "foo". Must be a number.');
+        }).toThrowErrorMatchingSnapshot();
       });
     });
 
@@ -240,7 +240,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError('Local configuration file or package.json property could not be found.');
+        }).toThrowErrorMatchingSnapshot();
       });
 
       it('errors if too many files are found', () => {
@@ -248,7 +248,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig();
-        }).toThrowError('Multiple "test-boost" configuration files found. Only 1 may exist.');
+        }).toThrowErrorMatchingSnapshot();
       });
 
       it('supports .json files', () => {
@@ -304,9 +304,7 @@ describe('ConfigLoader', () => {
 
       expect(() => {
         loader.loadPackageJSON();
-      }).toThrowError(
-        'Local "package.json" could not be found. Please run the command in your project\'s root.',
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('parses package.json and merges values', () => {
@@ -323,21 +321,19 @@ describe('ConfigLoader', () => {
         // @ts-ignore
         loader.parseAndExtend(123);
         loader.parseAndExtend([]);
-      }).toThrowError('Invalid configuration. Must be a plain object.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if preset does not exist', () => {
       expect(() => {
         loader.parseAndExtend({ extends: ['./foo.json'] });
-      }).toThrowError(
-        `Preset configuration ${getFixturePath('app', './foo.json')} does not exist.`,
-      );
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if preset is not a file', () => {
       expect(() => {
         loader.parseAndExtend({ extends: [__dirname] });
-      }).toThrowError(`Preset configuration ${__dirname} must be a valid file.`);
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('parses a file path if a string is provided', () => {
@@ -492,13 +488,13 @@ describe('ConfigLoader', () => {
     it('errors for an non-absolute path', () => {
       expect(() => {
         loader.parseFile('foo.json');
-      }).toThrowError('An absolute file path is required.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors for an unsupported file format', () => {
       expect(() => {
         loader.parseFile(getFixturePath('app', 'foo.txt'));
-      }).toThrowError('Unsupported configuration file format "foo.txt".');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if an object is not returned', () => {
@@ -509,19 +505,19 @@ describe('ConfigLoader', () => {
 
       expect(() => {
         loader.parseFile(getFixturePath('app', 'bool.json'));
-      }).toThrowError('Invalid configuration file "bool.json". Must return an object.');
+      }).toThrowErrorMatchingSnapshot();
 
       expect(() => {
         loader.parseFile(getFixturePath('app', 'number.json'));
-      }).toThrowError('Invalid configuration file "number.json". Must return an object.');
+      }).toThrowErrorMatchingSnapshot();
 
       expect(() => {
         loader.parseFile(getFixturePath('app', 'string.json'));
-      }).toThrowError('Invalid configuration file "string.json". Must return an object.');
+      }).toThrowErrorMatchingSnapshot();
 
       expect(() => {
         loader.parseFile(getFixturePath('app', 'array.json'));
-      }).toThrowError('Invalid configuration file "array.json". Must return an object.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('parses .json files', () => {
@@ -593,13 +589,13 @@ describe('ConfigLoader', () => {
       expect(() => {
         // @ts-ignore
         loader.resolveExtendPaths([123]);
-      }).toThrowError('Invalid `extends` configuration value. Must be an array of strings.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('errors for an invalid extend path', () => {
       expect(() => {
         loader.resolveExtendPaths(['FooBarBaz']);
-      }).toThrowError('Invalid `extends` configuration value "FooBarBaz".');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('supports multiple string values using an array', () => {

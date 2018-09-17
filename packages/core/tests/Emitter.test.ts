@@ -197,9 +197,7 @@ describe('Emitter', () => {
 
   describe('getListeners()', () => {
     it('errors if name contains invalid characters', () => {
-      expect(() => emitter.getListeners('foo+bar')).toThrowError(
-        'Invalid event name "foo+bar". May only contain dashes, periods, and lowercase characters.',
-      );
+      expect(() => emitter.getListeners('foo+bar')).toThrowErrorMatchingSnapshot();
     });
 
     it('creates the listeners set if it does not exist', () => {
@@ -231,7 +229,7 @@ describe('Emitter', () => {
       expect(() => {
         // @ts-ignore
         emitter.on('foo', 123);
-      }).toThrowError('Invalid event listener for "foo", must be a function.');
+      }).toThrowErrorMatchingSnapshot();
     });
 
     it('adds a listener to the set', () => {

@@ -16,17 +16,17 @@ describe('Task', () => {
 
   describe('constructor()', () => {
     it('errors if no title', () => {
-      expect(() => new Task('')).toThrowError('Tasks require a title.');
+      expect(() => new Task('')).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if title is not a string', () => {
       // @ts-ignore
-      expect(() => new Task(123)).toThrowError('Tasks require a title.');
+      expect(() => new Task(123)).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if action is not a function', () => {
       // @ts-ignore
-      expect(() => new Task('title', 123)).toThrowError('Tasks require an executable function.');
+      expect(() => new Task('title', 123)).toThrowErrorMatchingSnapshot();
     });
 
     it('doesnt error if action is null', () => {

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tool getPlugin() errors if not found 1`] = `"Failed to find plugin \\"foo\\". Have you installed it?"`;
+
+exports[`Tool getReporter() errors if not found 1`] = `"Failed to find reporter \\"foo\\". Have you installed it?"`;
+
+exports[`Tool loadPlugins() errors if config is an empty object 1`] = `"Cannot load plugins as configuration has not been loaded."`;
+
+exports[`Tool loadPlugins() errors if config is falsy 1`] = `"Cannot load plugins as configuration has not been loaded."`;
+
+exports[`Tool loadReporters() errors if config is an empty object 1`] = `"Cannot load reporters as configuration has not been loaded."`;
+
+exports[`Tool loadReporters() errors if config is falsy 1`] = `"Cannot load reporters as configuration has not been loaded."`;
