@@ -16,10 +16,6 @@ exports[`ConfigLoader loadPackageJSON() errors if no package.json exists in curr
 
 exports[`ConfigLoader parseAndExtend() errors if a non-string or non-object is provided 1`] = `"Invalid configuration. Must be a plain object."`;
 
-exports[`ConfigLoader parseAndExtend() errors if preset does not exist 1`] = `"Preset configuration /Users/Miles/Sites/boost/packages/core/tests/fixtures/app/foo.json does not exist."`;
-
-exports[`ConfigLoader parseAndExtend() errors if preset is not a file 1`] = `"Preset configuration /Users/Miles/Sites/boost/packages/core/tests must be a valid file."`;
-
 exports[`ConfigLoader parseFile() errors for an non-absolute path 1`] = `"An absolute file path is required."`;
 
 exports[`ConfigLoader parseFile() errors for an unsupported file format 1`] = `"Unsupported configuration file format \\"foo.txt\\"."`;

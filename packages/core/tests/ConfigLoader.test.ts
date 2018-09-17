@@ -327,13 +327,15 @@ describe('ConfigLoader', () => {
     it('errors if preset does not exist', () => {
       expect(() => {
         loader.parseAndExtend({ extends: ['./foo.json'] });
-      }).toThrowErrorMatchingSnapshot();
+      }).toThrowError(
+        `Preset configuration ${getFixturePath('app', './foo.json')} does not exist.`,
+      );
     });
 
     it('errors if preset is not a file', () => {
       expect(() => {
         loader.parseAndExtend({ extends: [__dirname] });
-      }).toThrowErrorMatchingSnapshot();
+      }).toThrowError(`Preset configuration ${__dirname} must be a valid file.`);
     });
 
     it('parses a file path if a string is provided', () => {
