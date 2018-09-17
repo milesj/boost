@@ -14,7 +14,7 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": ">=6.5.0"
+    "node": ">=8.9.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/core",
   "license": "MIT",
@@ -31,11 +31,11 @@
     "@types/split": "^1.0.0",
     "chalk": "^2.4.1",
     "cli-truncate": "^1.1.0",
-    "debug": "^3.1.0",
+    "debug": "^4.0.1",
     "execa": "^1.0.0",
     "glob": "^7.1.3",
     "json5": "^2.0.1",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "pluralize": "^7.0.0",
     "split": "^1.0.1"
   },
