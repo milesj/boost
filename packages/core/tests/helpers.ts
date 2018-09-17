@@ -90,6 +90,7 @@ export function createTestRoutine(
 
 export function createTestConsole(): Console {
   const cli = new Console();
+  cli.tool = createTestTool();
   cli.err = jest.fn();
   cli.out = jest.fn();
   cli.write = jest.fn();

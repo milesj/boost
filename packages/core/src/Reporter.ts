@@ -6,6 +6,7 @@
 import chalk from 'chalk';
 import Console from './Console';
 import Module from './Module';
+import ModuleLoader from './ModuleLoader';
 import Task from './Task';
 import themePalettes from './themes';
 import { Color, ColorType, ColorPalette } from './types';
@@ -71,9 +72,16 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
    */
   getColorPalette(): ColorPalette {
     const { theme } = this.console.options;
+    let palette = {};
 
-    if (chalk.level >= 2 && themePalettes[theme]) {
-      return themePalettes[theme];
+    if (chalk.level >= 2) {
+      if (themePalettes[theme]) {
+        palette = themePalettes[theme];
+      } else if (theme !== 'default') {
+        palette = new ModuleLoader<ColorPalette>(this.console.tool, 'theme', null, true).loadModule(
+          theme,
+        );
+      }
     }
 
     return {
@@ -81,6 +89,7 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
       pending: 'gray',
       success: 'green',
       warning: 'yellow',
+      ...palette,
     };
   }
 

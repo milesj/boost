@@ -79,11 +79,11 @@ describe('Reporter', () => {
       expect(reporter.getColorPalette()).toEqual(basePalette);
     });
 
-    it('returns base palette if theme does not exist', () => {
+    it('errors if theme does not exist', () => {
       chalk.level = 2;
-      reporter.console.options.theme = 'unknown';
+      reporter.console.options.theme = 'custom';
 
-      expect(reporter.getColorPalette()).toEqual(basePalette);
+      expect(() => reporter.getColorPalette()).toThrowErrorMatchingSnapshot();
     });
 
     it('returns theme palette', () => {

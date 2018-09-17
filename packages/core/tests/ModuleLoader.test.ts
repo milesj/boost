@@ -99,6 +99,27 @@ describe('ModuleLoader', () => {
       expect(plugin.moduleName).toBe('test-boost-plugin-definition');
     });
 
+    it('imports and returns a theme object', () => {
+      fixtures.push(copyFixtureToMock('theme-exported-object', 'test-boost-theme-object'));
+
+      loader = new ModuleLoader(
+        createTestTool({
+          root: getTestRoot(),
+        }),
+        'theme',
+      );
+
+      const palette = loader.importModule('object');
+
+      expect(palette).toEqual({
+        default: 'white',
+        failure: 'red',
+        pending: 'gray',
+        success: 'green',
+        warning: 'yellow',
+      });
+    });
+
     it('imports using a file path', () => {
       fixtures.push(
         copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition'),

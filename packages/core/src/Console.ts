@@ -7,6 +7,7 @@
 
 import optimal, { bool, number, string } from 'optimal';
 import Emitter from './Emitter';
+import Tool from './Tool';
 
 export const REFRESH_RATE = 100;
 export const BG_REFRESH_RATE = 500;
@@ -43,6 +44,9 @@ export default class Console extends Emitter {
   renderTimer: NodeJS.Timer | null = null;
 
   restoreCursorOnExit: boolean = false;
+
+  // @ts-ignore Set after instantiation
+  tool: Tool;
 
   constructor(options: Partial<ConsoleOptions> = {}) {
     super();

@@ -10,7 +10,6 @@ import pluralize from 'pluralize';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
-import Module from './Module';
 import Tool from './Tool';
 import { Debugger } from './types';
 
@@ -18,8 +17,8 @@ export type Constructor<T> = new (...args: any[]) => T;
 
 export type OptionsObject = { [key: string]: any };
 
-export default class ModuleLoader<Tm extends Module<any>> {
-  classReference: Constructor<Tm>;
+export default class ModuleLoader<Tm> {
+  classReference: Constructor<Tm> | null = null;
 
   debug: Debugger;
 
@@ -32,7 +31,7 @@ export default class ModuleLoader<Tm extends Module<any>> {
   constructor(
     tool: Tool,
     typeName: string,
-    classReference: Constructor<Tm>,
+    classReference: Constructor<Tm> | null = null,
     loadBoostModules: boolean = false,
   ) {
     this.classReference = classReference;
@@ -104,6 +103,10 @@ export default class ModuleLoader<Tm extends Module<any>> {
       );
     }
 
+    if (!this.classReference) {
+      return importedModule;
+    }
+
     // An instance was returned instead of the class definition
     if (importedModule instanceof this.classReference) {
       throw new TypeError(
@@ -126,8 +129,8 @@ export default class ModuleLoader<Tm extends Module<any>> {
     } else {
       this.debug('Found with module %s', chalk.yellow(moduleName));
 
-      module.name = name;
-      module.moduleName = moduleName;
+      (module as any).name = name;
+      (module as any).moduleName = moduleName;
     }
 
     return module;
@@ -170,7 +173,7 @@ export default class ModuleLoader<Tm extends Module<any>> {
    * instantiate from a module. If an object, extract the name and run the previous.
    */
   loadModule(module: string | OptionsObject | Tm, args: any[] = []): Tm {
-    if (module instanceof this.classReference) {
+    if (this.classReference && module instanceof this.classReference) {
       return module;
     } else if (typeof module === 'string') {
       return this.importModule(module, args);

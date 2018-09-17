@@ -86,6 +86,7 @@ export default class Tool extends Emitter {
 
     // Initialize the console first so we can start logging
     this.console = new Console(this.options.console);
+    this.console.tool = this;
 
     // Add a reporter to catch errors during initialization
     this.addReporter(new ErrorReporter());
