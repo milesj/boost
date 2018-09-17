@@ -42,18 +42,18 @@ describe('CIReporter', () => {
   });
 
   describe('handleTaskPass()', () => {
-    it('logs a dot', () => {
+    it('logs a dash', () => {
       reporter.handleTaskPass();
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('.'));
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('-'));
     });
   });
 
   describe('handleTaskFail()', () => {
-    it('logs a dot', () => {
+    it('logs a dash', () => {
       reporter.handleTaskFail();
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('.'));
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('-'));
     });
   });
 
@@ -66,26 +66,26 @@ describe('CIReporter', () => {
       expect(reporter.routineCount).toBe(1);
     });
 
-    it('logs a star', () => {
+    it('logs a plus', () => {
       reporter.handleRoutine();
 
-      expect(outSpy).toHaveBeenCalledWith('*');
+      expect(outSpy).toHaveBeenCalledWith('+');
     });
   });
 
   describe('handleRoutinePass()', () => {
-    it('logs a star', () => {
+    it('logs a plus', () => {
       reporter.handleRoutinePass();
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('*'));
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('+'));
     });
   });
 
   describe('handleRoutineFail()', () => {
-    it('logs a star', () => {
+    it('logs a plus', () => {
       reporter.handleRoutineFail();
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('*'));
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('+'));
     });
   });
 
