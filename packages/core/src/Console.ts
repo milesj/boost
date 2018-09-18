@@ -27,7 +27,7 @@ export default class Console extends Emitter {
 
   bufferedStreams: (() => void)[] = [];
 
-  err: WrappedStream;
+  err?: WrappedStream;
 
   errorLogs: string[] = [];
 
@@ -39,7 +39,7 @@ export default class Console extends Emitter {
 
   options: ConsoleOptions;
 
-  out: WrappedStream;
+  out?: WrappedStream;
 
   renderTimer: NodeJS.Timer | null = null;
 
@@ -66,13 +66,7 @@ export default class Console extends Emitter {
     );
 
     /* istanbul ignore next */
-    if (process.env.NODE_ENV === 'test') {
-      this.err = () => {};
-      this.out = () => {};
-    } else {
-      this.err = this.wrapStream(process.stderr);
-      this.out = this.wrapStream(process.stdout);
-
+    if (process.env.NODE_ENV !== 'test') {
       this.startBackgroundTimer();
 
       process
@@ -87,7 +81,7 @@ export default class Console extends Emitter {
    * Clear the entire console.
    */
   clearOutput(): this {
-    this.out('\x1Bc');
+    this.out!('\x1Bc');
     this.lastOutputHeight = 0;
 
     return this;
@@ -97,7 +91,7 @@ export default class Console extends Emitter {
    * Clear defined lines from the console.
    */
   clearLinesOutput(): this {
-    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.out!('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
     this.lastOutputHeight = 0;
 
     return this;
@@ -150,8 +144,8 @@ export default class Console extends Emitter {
     this.handleFinalRender(error);
 
     // Unwrap our streams
-    this.unwrapStream(process.stderr);
-    this.unwrapStream(process.stdout);
+    this.err = this.unwrapStream(process.stderr);
+    this.out = this.unwrapStream(process.stdout);
 
     // Run in the next tick so that listeners have a chance to run
     process.nextTick(() => {
@@ -171,7 +165,7 @@ export default class Console extends Emitter {
     const lines = this.bufferedOutput;
 
     if (lines) {
-      this.out(lines);
+      this.out!(lines);
       this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
     }
 
@@ -195,6 +189,7 @@ export default class Console extends Emitter {
    * Handle uncaught exceptions and unhandled rejections that bubble up.
    */
   handleFailure = (error: Error) => {
+    this.start();
     this.exit(error, 1, true);
   };
 
@@ -246,6 +241,7 @@ export default class Console extends Emitter {
    * Handle SIGINT and SIGTERM interruptions.
    */
   handleSignal = () => {
+    this.start();
     this.exit('Process has been terminated.', 1, true);
   };
 
@@ -253,7 +249,7 @@ export default class Console extends Emitter {
    * Hide the console cursor.
    */
   hideCursor(): this {
-    this.out('\x1B[?25l');
+    this.out!('\x1B[?25l');
 
     if (!this.restoreCursorOnExit) {
       this.restoreCursorOnExit = true;
@@ -307,7 +303,7 @@ export default class Console extends Emitter {
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.out(`\x1B[${process.stdout.rows};0H`);
+    this.out!(`\x1B[${process.stdout.rows};0H`);
 
     return this;
   }
@@ -333,7 +329,24 @@ export default class Console extends Emitter {
    * Show the console cursor.
    */
   showCursor(): this {
-    this.out('\x1B[?25h');
+    this.out!('\x1B[?25h');
+
+    return this;
+  }
+
+  /**
+   * Start the console by wrapping streams and buffering output.
+   */
+  start(args: any[] = []): this {
+    if (!this.err) {
+      this.err = this.wrapStream(process.stderr);
+    }
+
+    if (!this.out) {
+      this.out = this.wrapStream(process.stdout);
+    }
+
+    this.emit('start', args);
 
     return this;
   }
@@ -350,11 +363,13 @@ export default class Console extends Emitter {
   /**
    * Unwrap a stream and reset it back to normal.
    */
-  unwrapStream(stream: NodeJS.WriteStream): void {
+  unwrapStream(stream: NodeJS.WriteStream): undefined {
     if (process.env.NODE_ENV !== 'test') {
       // @ts-ignore
       stream.write = stream.originalWrite;
     }
+
+    return undefined;
   }
 
   /**
