@@ -206,13 +206,13 @@ export default class Console extends Emitter {
     this.clearLinesOutput();
     this.flushBufferedStreams();
     this.displayHeader();
-    this.emit('render');
 
     if (error) {
-      this.emit('error', [error]);
-    } else if (this.errorLogs.length > 0) {
+      this.emit('render');
       this.displayLogs(this.errorLogs);
-    } else if (this.logs.length > 0) {
+      this.emit('error', [error]);
+    } else {
+      this.emit('render');
       this.displayLogs(this.logs);
     }
 

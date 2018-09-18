@@ -158,20 +158,9 @@ describe('Console', () => {
 
       const spy = jest.spyOn(cli, 'displayLogs');
 
-      cli.exit(null);
-
-      expect(spy).toHaveBeenCalledWith(['foo']);
-    });
-
-    it('doesnt display either logs when an error', () => {
-      cli.logs.push('foo');
-      cli.errorLogs.push('foo');
-
-      const spy = jest.spyOn(cli, 'displayLogs');
-
       cli.exit(new Error('Oops'));
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith(['foo']);
     });
 
     it('triggers a final render', () => {
@@ -367,13 +356,6 @@ describe('Console', () => {
       cli.handleFinalRender();
 
       expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
-    });
-
-    it('displays error logs', () => {
-      cli.errorLogs.push('Error log');
-      cli.handleFinalRender();
-
-      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nError log\n');
     });
 
     it('clears render listeners', () => {
