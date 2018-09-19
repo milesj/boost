@@ -7,36 +7,6 @@ describe('Emitter', () => {
     emitter = new Emitter();
   });
 
-  it('toggles event namespace', () => {
-    expect(emitter.namespace).toBe('');
-
-    emitter.setEventNamespace('ns');
-
-    expect(emitter.namespace).toBe('ns');
-
-    emitter.removeEventNamespace();
-
-    expect(emitter.namespace).toBe('');
-  });
-
-  describe('createEventName()', () => {
-    it('returns name as-is if no namespace', () => {
-      expect(emitter.createEventName('foo')).toBe('foo');
-    });
-
-    it('prepends namespace', () => {
-      emitter.setEventNamespace('ns');
-
-      expect(emitter.createEventName('foo')).toBe('ns.foo');
-    });
-
-    it('doesnt prepend namespace if already prefixed', () => {
-      emitter.setEventNamespace('ns');
-
-      expect(emitter.createEventName('ns.foo')).toBe('ns.foo');
-    });
-  });
-
   describe('emit()', () => {
     it('executes listeners in order', () => {
       let output = '';
@@ -157,14 +127,6 @@ describe('Emitter', () => {
     });
 
     describe('with namespace', () => {
-      beforeEach(() => {
-        emitter.setEventNamespace('ns');
-      });
-
-      afterEach(() => {
-        emitter.removeEventNamespace();
-      });
-
       it('executes listeners in order', () => {
         let output = '';
 
@@ -177,7 +139,7 @@ describe('Emitter', () => {
         emitter.on('ns.foo', () => {
           output += 'C';
         });
-        emitter.emit('foo');
+        emitter.emit('ns.foo');
 
         expect(output).toBe('ABC');
       });

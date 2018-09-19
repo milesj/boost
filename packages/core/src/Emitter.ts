@@ -12,26 +12,11 @@ export type EventListener = (...args: EventArguments) => false | void;
 export default class Emitter {
   listeners: { [eventName: string]: Set<EventListener> } = {};
 
-  namespace: string = '';
-
-  /**
-   * Create an event name with optional namespace.
-   */
-  createEventName(name: string): string {
-    if (this.namespace && !name.startsWith(this.namespace)) {
-      return `${this.namespace}.${name}`;
-    }
-
-    return name;
-  }
-
   /**
    * Syncronously execute listeners for the defined event and arguments.
    */
-  emit(name: string, args: EventArguments = []): this {
-    Array.from(this.getListeners(this.createEventName(name))).some(
-      listener => listener(...args) === false,
-    );
+  emit(eventName: string, args: EventArguments = []): this {
+    Array.from(this.getListeners(eventName)).some(listener => listener(...args) === false);
 
     return this;
   }
@@ -104,24 +89,6 @@ export default class Emitter {
     }
 
     this.getListeners(eventName).add(listener);
-
-    return this;
-  }
-
-  /**
-   * Set the namespace.
-   */
-  setEventNamespace(namespace: string): this {
-    this.namespace = namespace;
-
-    return this;
-  }
-
-  /**
-   * Remove the namespace.
-   */
-  removeEventNamespace(): this {
-    this.namespace = '';
 
     return this;
   }
