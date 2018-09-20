@@ -1399,6 +1399,14 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/glob@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.npmjs.org/@types/glob/-/glob-7.1.0.tgz#55ff6b216e9100b22eccec2cfe2e251ccb09a6ab"
+  dependencies:
+    "@types/events" "*"
+    "@types/minimatch" "*"
+    "@types/node" "*"
+
 "@types/is-glob@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@types/is-glob/-/is-glob-4.0.0.tgz#fb8a2bff539025d4dcd6d5efe7689e03341b876d"
