@@ -19,7 +19,7 @@ import { STATUS_PENDING, STATUS_RUNNING } from './constants';
 import { Debugger } from './types';
 
 export interface CommandOptions {
-  sync?: boolean;
+  shell?: boolean;
   task?: Task<any>;
   wrap?: (process: ExecaChildProcess) => void;
 }
@@ -96,7 +96,9 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
     args: string[],
     options: ExecaOptions & CommandOptions = {},
   ): Promise<ExecaReturns> {
-    const stream = execa(command, args, options);
+    const stream = options.shell
+      ? execa.shell(`${command} ${args.join(' ')}`.trim(), options)
+      : execa(command, args, options);
 
     this.tool.console.emit('command', [command, this]);
 
@@ -110,8 +112,13 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
       }
     };
 
-    (stream.stdout as Readable).pipe(split()).on('data', handler);
-    (stream.stderr as Readable).pipe(split()).on('data', handler);
+    if (stream && stream.stdout) {
+      (stream.stdout as Readable).pipe(split()).on('data', handler);
+    }
+
+    if (stream && stream.stderr) {
+      (stream.stderr as Readable).pipe(split()).on('data', handler);
+    }
 
     // Allow consumer to wrap functionality
     if (typeof options.wrap === 'function') {

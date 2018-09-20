@@ -51,7 +51,8 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
         error.stack
           .split('\n')
           .slice(1)
-          .join('\n'),
+          .join('\n')
+          .trim(),
         'pending',
       );
 

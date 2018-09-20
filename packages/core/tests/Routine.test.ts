@@ -1,10 +1,13 @@
 /* eslint-disable no-param-reassign */
 
+import execa from 'execa';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
 import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
+
+jest.mock('execa');
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
@@ -133,14 +136,22 @@ describe('Routine', () => {
   });
 
   describe('executeCommand()', () => {
-    it('runs a local command and captures output', async () => {
-      expect((await routine.executeCommand('yarn', ['-v'])).stdout).toMatch(/^\d+\.\d+\.\d+$/u);
+    it('runs a local command', async () => {
+      await routine.executeCommand('yarn', ['-v']);
+
+      expect(execa).toHaveBeenCalledWith('yarn', ['-v'], {});
     });
 
-    it('runs a local command synchronously', async () => {
-      expect((await routine.executeCommand('yarn', ['-v'], { sync: true })).stdout).toMatch(
-        /^\d+\.\d+\.\d+$/u,
-      );
+    it('runs a local command in a shell', async () => {
+      await routine.executeCommand('yarn', ['-v'], { shell: true });
+
+      expect(execa.shell).toHaveBeenCalledWith('yarn -v', { shell: true });
+    });
+
+    it('runs a local command in a shell with args used directly', async () => {
+      await routine.executeCommand('yarn -v', [], { shell: true });
+
+      expect(execa.shell).toHaveBeenCalledWith('yarn -v', { shell: true });
     });
 
     it('calls callback with stream', async () => {

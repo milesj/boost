@@ -35,7 +35,7 @@ export default class DefaultReporter extends Reporter<Line> {
   /**
    * Calculate the max string length for routine key's at every depth.
    */
-  calculateKeyLength(routines: Routine<any>[], depth: number = 0): number {
+  calculateKeyLength(routines: Routine<any>[] = [], depth: number = 0): number {
     return routines.reduce(
       (sum: number, routine: Routine<any>) =>
         Math.max(
