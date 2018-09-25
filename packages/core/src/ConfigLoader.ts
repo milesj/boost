@@ -92,7 +92,7 @@ export default class ConfigLoader {
     }
 
     if (configPaths.length > 1) {
-      throw new Error(`Multiple "${appName}" configuration files found. Only 1 may exist.`);
+      throw new Error(this.tool.i18n.t('errors:multipleConfigFiles', { name: appName }));
     }
 
     return null;
@@ -207,7 +207,7 @@ export default class ConfigLoader {
    */
   loadConfig(): ToolConfig {
     if (isEmptyObject(this.package) || !this.package.name) {
-      throw new Error('Cannot load configuration as "package.json" has not been loaded.');
+      throw new Error(this.tool.i18n.t('errors:packageJsonNotLoaded'));
     }
 
     this.debug('Locating configuration');
@@ -219,7 +219,7 @@ export default class ConfigLoader {
       this.findConfigInWorkspaceRoot(root);
 
     if (!config) {
-      throw new Error('Local configuration file or package.json property could not be found.');
+      throw new Error(this.tool.i18n.t('errors:configNotFound'));
     }
 
     // Parse and extend configuration
@@ -261,9 +261,7 @@ export default class ConfigLoader {
     this.debug('Locating package.json in %s', chalk.cyan(root));
 
     if (!fs.existsSync(filePath)) {
-      throw new Error(
-        'Local "package.json" could not be found. Please run the command in your project\'s root.',
-      );
+      throw new Error(this.tool.i18n.t('errors:packageJsonNotFound'));
     }
 
     this.package = optimal(
@@ -299,7 +297,7 @@ export default class ConfigLoader {
 
     // Verify we're working with an object
     if (!isObject(config)) {
-      throw new Error('Invalid configuration. Must be a plain object.');
+      throw new Error(this.tool.i18n.t('errors:configInvalid'));
     }
 
     const { extends: extendPaths } = config;

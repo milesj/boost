@@ -9,6 +9,7 @@ import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
 import pluralize from 'pluralize';
+import i18next from 'i18next';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import ConfigLoader from './ConfigLoader';
 import Console, { ConsoleOptions } from './Console';
@@ -44,6 +45,8 @@ export default class Tool extends Emitter {
   console: Console;
 
   debug: Debugger;
+
+  i18n: i18next.i18n;
 
   initialized: boolean = false;
 
@@ -83,6 +86,9 @@ export default class Tool extends Emitter {
 
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
+
+    // Setup i18n messaging
+    this.i18n = this.createI18N();
 
     // Initialize the console first so we can start logging
     this.console = new Console(this.options.console);
@@ -126,6 +132,24 @@ export default class Tool extends Emitter {
     };
 
     return handler;
+  }
+
+  createI18N() {
+    return this.i18n.createInstance(
+      {
+        defaultNS: 'app',
+        fallbackLng: ['en'],
+        fallbackNS: 'common',
+        initImmediate: false,
+        lowerCaseLng: true,
+        ns: ['app', 'common', 'errors', 'prompts'],
+      },
+      error => {
+        if (error) {
+          throw error;
+        }
+      },
+    );
   }
 
   /**
