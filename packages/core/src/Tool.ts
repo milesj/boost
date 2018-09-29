@@ -5,6 +5,7 @@
 
 /* eslint-disable no-param-reassign */
 
+import path from 'path';
 import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
@@ -21,13 +22,15 @@ import DefaultReporter from './reporters/DefaultReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
+import CIReporter from './reporters/CIReporter';
+import FileBackend from './i18n/FileBackend';
 import themePalettes from './themes';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { Debugger, ToolConfig, PackageConfig } from './types';
-import CIReporter from './reporters/CIReporter';
+import { Debugger, Translator, ToolConfig, PackageConfig } from './types';
 
 export interface ToolOptions {
   appName: string;
+  appPath: string;
   configBlueprint: Blueprint;
   configFolder: string;
   console: Partial<ConsoleOptions>;
@@ -46,9 +49,7 @@ export default class Tool extends Emitter {
 
   debug: Debugger;
 
-  i18n: i18next.i18n;
-
-  initialized: boolean = false;
+  private initialized: boolean = false;
 
   options: ToolOptions;
 
@@ -58,6 +59,8 @@ export default class Tool extends Emitter {
 
   reporters: Reporter<any>[] = [];
 
+  translator: Translator;
+
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
 
@@ -66,6 +69,7 @@ export default class Tool extends Emitter {
       options,
       {
         appName: string().required(),
+        appPath: string().required(),
         configBlueprint: object(),
         configFolder: string('./configs'),
         console: object(),
@@ -87,12 +91,11 @@ export default class Tool extends Emitter {
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
 
-    // Setup i18n messaging
-    this.i18n = this.createI18N();
+    // Setup i18n translation
+    this.translator = this.createTranslator();
 
     // Initialize the console first so we can start logging
     this.console = new Console(this.options.console);
-    this.console.tool = this;
 
     // Add a reporter to catch errors during initialization
     this.addReporter(new ErrorReporter());
@@ -110,10 +113,23 @@ export default class Tool extends Emitter {
   }
 
   /**
-   * Add a reporter and bootstrap with the console instance.
+   * Add a plugin and bootstrap with the tool.
+   */
+  addPlugin(plugin: Plugin<any>): this {
+    plugin.tool = this;
+    plugin.bootstrap();
+
+    this.plugins.push(plugin);
+
+    return this;
+  }
+
+  /**
+   * Add a reporter and bootstrap with the tool and console.
    */
   addReporter(reporter: Reporter<any>): this {
     reporter.console = this.console;
+    reporter.tool = this;
     reporter.bootstrap();
 
     this.reporters.push(reporter);
@@ -122,7 +138,7 @@ export default class Tool extends Emitter {
   }
 
   /**
-   * Create a debugger with a namespace.
+   * Create a debugger instance with a namespace.
    */
   createDebugger(...namespaces: string[]): Debugger {
     const handler = debug(`${this.options.appName}:${namespaces.join(':')}`) as Debugger;
@@ -134,22 +150,34 @@ export default class Tool extends Emitter {
     return handler;
   }
 
-  createI18N() {
-    return this.i18n.createInstance(
-      {
-        defaultNS: 'app',
-        fallbackLng: ['en'],
-        fallbackNS: 'common',
-        initImmediate: false,
-        lowerCaseLng: true,
-        ns: ['app', 'common', 'errors', 'prompts'],
-      },
-      error => {
-        if (error) {
-          throw error;
-        }
-      },
-    );
+  /**
+   * Create an i18n translator instance.
+   */
+  createTranslator(): Translator {
+    return i18next
+      .createInstance()
+      .use(new FileBackend())
+      .init(
+        {
+          backend: {
+            resourcePaths: [
+              path.join(__dirname, 'resources'),
+              path.join(this.options.appPath, 'resources'),
+            ],
+          },
+          defaultNS: 'app',
+          fallbackLng: ['en'],
+          fallbackNS: 'common',
+          initImmediate: false,
+          lowerCaseLng: true,
+          ns: ['app', 'common', 'errors', 'prompts'],
+        },
+        error => {
+          if (error) {
+            throw error;
+          }
+        },
+      );
   }
 
   /**
@@ -171,7 +199,12 @@ export default class Tool extends Emitter {
       return plugin;
     }
 
-    throw new Error(`Failed to find ${this.options.pluginAlias} "${name}". Have you installed it?`);
+    throw new Error(
+      this.msg('errors:pluginNotFound', {
+        alias: this.options.pluginAlias,
+        name,
+      }),
+    );
   }
 
   /**
@@ -184,7 +217,7 @@ export default class Tool extends Emitter {
       return reporter;
     }
 
-    throw new Error(`Failed to find reporter "${name}". Have you installed it?`);
+    throw new Error(this.msg('errors:reporterNotFound', { name }));
   }
 
   /**
@@ -265,20 +298,22 @@ export default class Tool extends Emitter {
     const pluralPluginAlias = pluralize(pluginAlias);
 
     if (isEmptyObject(this.config)) {
-      throw new Error(`Cannot load ${pluralPluginAlias} as configuration has not been loaded.`);
+      throw new Error(this.msg('errors:configNotLoaded', { name: pluralPluginAlias }));
     }
 
     const loader = new ModuleLoader(this, pluginAlias, Plugin);
-
-    this.plugins = loader.loadModules(this.config[pluralPluginAlias]);
+    const plugins = loader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
-    this.plugins.sort((a, b) => a.priority - b.priority);
+    loader.debug('Sorting plugins by priority');
+
+    plugins.sort((a, b) => a.priority - b.priority);
 
     // Bootstrap each plugin with the tool
-    this.plugins.forEach(plugin => {
-      plugin.tool = this;
-      plugin.bootstrap();
+    loader.debug('Bootstrapping plugins with tool environment');
+
+    plugins.forEach(plugin => {
+      this.addPlugin(plugin);
     });
 
     return this;
@@ -295,7 +330,7 @@ export default class Tool extends Emitter {
     }
 
     if (isEmptyObject(this.config)) {
-      throw new Error('Cannot load reporters as configuration has not been loaded.');
+      throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
     }
 
     const loader = new ModuleLoader(this, 'reporter', Reporter, true);
@@ -317,7 +352,7 @@ export default class Tool extends Emitter {
     }
 
     // Bootstrap each plugin with the tool
-    loader.debug('Bootstrapping reporters with console environment');
+    loader.debug('Bootstrapping reporters with tool and console environment');
 
     reporters.forEach(reporter => {
       this.addReporter(reporter);
@@ -342,5 +377,16 @@ export default class Tool extends Emitter {
     this.console.logError(util.format(message, ...args));
 
     return this;
+  }
+
+  /**
+   * Retrieve a translated message from a resource bundle.
+   */
+  msg(key: string | string, params?: any, options?: i18next.TranslationOptions): string {
+    return this.translator.t(key, {
+      interpolation: { escapeValue: false },
+      replace: params,
+      ...options,
+    });
   }
 }

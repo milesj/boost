@@ -63,11 +63,13 @@ export function createTestDebugger(): any {
 export function createTestTool(options?: Partial<ToolOptions>): Tool {
   const tool = new Tool({
     appName: 'test-boost',
+    appPath: __dirname,
     ...options,
   });
 
   tool.config = { ...DEFAULT_TOOL_CONFIG };
   tool.package = { name: '' };
+  // @ts-ignore Allow private access
   tool.initialized = true; // Avoid loaders
 
   return tool;
@@ -90,7 +92,6 @@ export function createTestRoutine(
 
 export function createTestConsole(): Console {
   const cli = new Console();
-  cli.tool = createTestTool();
   cli.err = jest.fn();
   cli.out = jest.fn();
   cli.write = jest.fn();

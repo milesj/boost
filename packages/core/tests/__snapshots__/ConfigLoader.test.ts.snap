@@ -18,15 +18,15 @@ exports[`ConfigLoader parseAndExtend() errors if a non-string or non-object is p
 
 exports[`ConfigLoader parseFile() errors for an non-absolute path 1`] = `"An absolute file path is required."`;
 
-exports[`ConfigLoader parseFile() errors for an unsupported file format 1`] = `"Unsupported configuration file format \\"foo.txt\\"."`;
+exports[`ConfigLoader parseFile() errors for an unsupported file format 1`] = `"Unsupported configuration file extension \\".txt\\"."`;
 
-exports[`ConfigLoader parseFile() errors if an object is not returned 1`] = `"Invalid configuration file \\"bool.json\\". Must return an object."`;
+exports[`ConfigLoader parseFile() errors if an object is not returned 1`] = `"Invalid configuration file \\"bool.json\\". Must return a plain object."`;
 
-exports[`ConfigLoader parseFile() errors if an object is not returned 2`] = `"Invalid configuration file \\"number.json\\". Must return an object."`;
+exports[`ConfigLoader parseFile() errors if an object is not returned 2`] = `"Invalid configuration file \\"number.json\\". Must return a plain object."`;
 
-exports[`ConfigLoader parseFile() errors if an object is not returned 3`] = `"Invalid configuration file \\"string.json\\". Must return an object."`;
+exports[`ConfigLoader parseFile() errors if an object is not returned 3`] = `"Invalid configuration file \\"string.json\\". Must return a plain object."`;
 
-exports[`ConfigLoader parseFile() errors if an object is not returned 4`] = `"Invalid configuration file \\"array.json\\". Must return an object."`;
+exports[`ConfigLoader parseFile() errors if an object is not returned 4`] = `"Invalid configuration file \\"array.json\\". Must return a plain object."`;
 
 exports[`ConfigLoader resolveExtendPaths() errors for an invalid extend path 1`] = `"Invalid \`extends\` configuration value \\"FooBarBaz\\"."`;
 

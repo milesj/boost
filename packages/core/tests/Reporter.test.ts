@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import Reporter from '../src/Reporter';
 import Task from '../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestConsole } from './helpers';
+import { createTestConsole, createTestTool } from './helpers';
 
 describe('Reporter', () => {
   let reporter: Reporter<any, any>;
@@ -10,6 +10,7 @@ describe('Reporter', () => {
   beforeEach(() => {
     reporter = new Reporter();
     reporter.console = createTestConsole();
+    reporter.tool = createTestTool();
   });
 
   describe('bootstrap()', () => {

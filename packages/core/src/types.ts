@@ -4,6 +4,7 @@
  */
 
 import debug from 'debug';
+import i18next from 'i18next';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 
@@ -11,6 +12,8 @@ export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
   invariant(condition: boolean, message: string, pass: string, fail: string): void;
 }
+
+export interface Translator extends i18next.i18n {}
 
 export interface PluginConfig {
   plugin: string;

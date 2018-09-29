@@ -1,7 +1,0 @@
-{
-  "configInvalid": "Invalid configuration. Must be a plain object.",
-  "configNotFound": "Local configuration file or package.json property could not be found.",
-  "multipleConfigFiles": "Multiple {{appName}} configuration files found. Only 1 may exist.",
-  "packageJsonNotFound": "Local \"package.json\" could not be found. Please run the command in your project's root.",
-  "packageJsonNotLoaded": "Cannot load configuration as \"package.json\" has not been loaded."
-}

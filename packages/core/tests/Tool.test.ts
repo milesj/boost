@@ -1,3 +1,4 @@
+import path from 'path';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
@@ -16,6 +17,7 @@ describe('Tool', () => {
     tool = createTestTool({
       root: getFixturePath('app'),
     });
+    // @ts-ignore Allow private access
     tool.initialized = false; // Reset
   });
 
@@ -24,6 +26,7 @@ describe('Tool', () => {
       tool = new Tool(
         {
           appName: 'test-boost',
+          appPath: __dirname,
           root: getFixturePath('app'),
         },
         ['--debug'],
@@ -39,6 +42,7 @@ describe('Tool', () => {
     it('passes options to console instance', () => {
       tool = new Tool({
         appName: 'test-boost',
+        appPath: __dirname,
         console: {
           footer: 'Footer',
         },
@@ -60,6 +64,20 @@ describe('Tool', () => {
       const debug = tool.createDebugger('foo');
 
       expect(typeof debug.invariant).toBe('function');
+    });
+  });
+
+  describe('createTranslator', () => {
+    it('returns an i18n instance', () => {
+      const i18n = tool.createTranslator();
+
+      expect(typeof i18n).toBe('object');
+      expect(i18n.options.backend).toEqual({
+        resourcePaths: [
+          path.join(__dirname, '../src/resources'),
+          path.join(__dirname, 'resources'),
+        ],
+      });
     });
   });
 
@@ -129,17 +147,19 @@ describe('Tool', () => {
 
   describe('initialize()', () => {
     it('loads config', () => {
-      // @ts-ignore
+      // @ts-ignore Allow missing fields
       tool.config = {};
 
       expect(tool.config).toEqual({});
       expect(tool.package).toEqual({ name: '' });
+      // @ts-ignore Allow private access
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
       expect(tool.package).not.toEqual({ name: '' });
+      // @ts-ignore Allow private access
       expect(tool.initialized).toBe(true);
     });
   });
@@ -150,6 +170,7 @@ describe('Tool', () => {
       tool.config = {};
       // @ts-ignore
       tool.package = {};
+      // @ts-ignore Allow private access
       tool.initialized = true;
       tool.loadConfig();
 
@@ -215,6 +236,7 @@ describe('Tool', () => {
     });
 
     it('doesnt load if initialized', () => {
+      // @ts-ignore Allow private access
       tool.initialized = true;
       tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
@@ -279,6 +301,7 @@ describe('Tool', () => {
     });
 
     it('doesnt load if initialized', () => {
+      // @ts-ignore Allow private access
       tool.initialized = true;
       tool.loadReporters();
 

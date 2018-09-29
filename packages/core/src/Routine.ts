@@ -149,7 +149,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
     if (routine instanceof Routine) {
       this.routines.push(routine.configure(this));
     } else {
-      throw new TypeError('Routines must be an instance of `Routine`.');
+      throw new TypeError(this.tool.msg('errors:routineInstanceInvalid'));
     }
 
     return this;
@@ -182,7 +182,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
    */
   async run<T>(context: Ctx, value?: T, wasParallel: boolean = false): Promise<any> {
     if (this.exit) {
-      return Promise.reject(new Error('Process has been interrupted.'));
+      return Promise.reject(new Error(this.tool.msg('errors:processInterrupted')));
     }
 
     this.debug('Executing routine');
@@ -238,7 +238,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
    */
   task<Tp>(title: string, action: TaskAction<Ctx>, options?: Tp): Task<Ctx, Tp> {
     if (typeof action !== 'function') {
-      throw new TypeError('Tasks require an executable function.');
+      throw new TypeError(this.tool.msg('errors:taskRequireAction'));
     }
 
     const task = new Task<Ctx, Tp>(title, action.bind(this), options);

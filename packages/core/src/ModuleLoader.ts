@@ -99,7 +99,10 @@ export default class ModuleLoader<Tm> {
 
     if (!importedModule || !moduleName) {
       throw new Error(
-        `Missing ${typeName}. Attempted import in order: ${modulesToAttempt.join(', ')}`,
+        this.tool.msg('errors:moduleImportFailed', {
+          modules: modulesToAttempt.join(', '),
+          typeName,
+        }),
       );
     }
 
@@ -110,18 +113,26 @@ export default class ModuleLoader<Tm> {
     // An instance was returned instead of the class definition
     if (importedModule instanceof this.classReference) {
       throw new TypeError(
-        `A ${typeName} class instance was exported from "${moduleName}". ` +
-          `${upperFirst(appName)} requires a ${typeName} class definition to be exported.`,
+        this.tool.msg('errors:moduleClassInstanceExported', {
+          appName: upperFirst(appName),
+          moduleName,
+          typeName,
+        }),
       );
     } else if (typeof importedModule !== 'function') {
-      throw new TypeError(`Invalid ${typeName} class definition exported from "${moduleName}".`);
+      throw new TypeError(this.tool.msg('errors:moduleClassDefRequired', { moduleName, typeName }));
     }
 
     const ModuleClass = importedModule as Constructor<Tm>;
     const module = new ModuleClass(...args);
 
     if (!(module instanceof this.classReference)) {
-      throw new TypeError(`${upperFirst(typeName)} exported from "${moduleName}" is invalid.`);
+      throw new TypeError(
+        this.tool.msg('errors:moduleExportInvalid', {
+          moduleName,
+          typeName: upperFirst(typeName),
+        }),
+      );
     }
 
     if (isFilePath) {
@@ -148,9 +159,7 @@ export default class ModuleLoader<Tm> {
     delete options[typeName];
 
     if (!module || typeof module !== 'string') {
-      throw new TypeError(
-        `A "${typeName}" property must exist when loading through an options object.`,
-      );
+      throw new TypeError(this.tool.msg('errors:moduleOptionMissingKey', { typeName }));
     }
 
     const nextArgs = [...args];
@@ -181,11 +190,7 @@ export default class ModuleLoader<Tm> {
       return this.importModuleFromOptions(module, args);
     }
 
-    throw new TypeError(
-      `Invalid ${
-        this.typeName
-      }. Must be a class instance or a module that exports a class definition.`,
-    );
+    throw new TypeError(this.tool.msg('errors:moduleTypeInvalid', { typeName: this.typeName }));
   }
 
   /**
