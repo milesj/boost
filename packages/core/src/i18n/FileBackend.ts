@@ -32,14 +32,16 @@ export default class FileBackend {
     namespace: string,
     callback: (error: Error | null, resources: any) => void,
   ): i18next.ResourceKey {
-    const fileName = '{{language}}/{{namespace}}.json';
     let resources = {};
 
     this.options.resourcePaths.forEach(resourcePath => {
-      const filePath = this.services.interpolator.interpolate(path.join(resourcePath, fileName), {
-        language,
-        namespace,
-      });
+      const filePath = this.services.interpolator.interpolate(
+        path.join(resourcePath, '{{language}}/{{namespace}}.json'),
+        {
+          language,
+          namespace,
+        },
+      );
       let contents = {};
 
       if (this.fileCache[filePath]) {

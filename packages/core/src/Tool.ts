@@ -49,8 +49,6 @@ export default class Tool extends Emitter {
 
   debug: Debugger;
 
-  private initialized: boolean = false;
-
   options: ToolOptions;
 
   package: PackageConfig = { name: '' };
@@ -60,6 +58,8 @@ export default class Tool extends Emitter {
   reporters: Reporter<any>[] = [];
 
   translator: Translator;
+
+  private initialized: boolean = false;
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();

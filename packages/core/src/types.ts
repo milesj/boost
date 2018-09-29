@@ -3,6 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable typescript/no-empty-interface */
+
 import debug from 'debug';
 import i18next from 'i18next';
 import Plugin from './Plugin';
