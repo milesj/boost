@@ -23,6 +23,7 @@ import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
 import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
+import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
 import themePalettes from './themes';
 import { DEFAULT_TOOL_CONFIG } from './constants';
@@ -34,6 +35,7 @@ export interface ToolOptions {
   configBlueprint: Blueprint;
   configFolder: string;
   console: Partial<ConsoleOptions>;
+  locale: string;
   pluginAlias: string;
   root: string;
   scoped: boolean;
@@ -73,6 +75,7 @@ export default class Tool extends Emitter {
         configBlueprint: object(),
         configFolder: string('./configs'),
         console: object(),
+        locale: string().empty(),
         pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
@@ -92,7 +95,7 @@ export default class Tool extends Emitter {
     this.debug = this.createDebugger('core');
 
     // Setup i18n translation
-    this.translator = this.createTranslator();
+    this.translator = this.createTranslator(this.options.locale);
 
     // Initialize the console first so we can start logging
     this.console = new Console(this.options.console);
@@ -153,9 +156,10 @@ export default class Tool extends Emitter {
   /**
    * Create an i18n translator instance.
    */
-  createTranslator(): Translator {
+  createTranslator(locale?: string): Translator {
     return i18next
       .createInstance()
+      .use(new LanguageDetector())
       .use(new FileBackend())
       .init(
         {
@@ -169,6 +173,7 @@ export default class Tool extends Emitter {
           fallbackLng: ['en'],
           fallbackNS: 'common',
           initImmediate: false,
+          lng: locale,
           lowerCaseLng: true,
           ns: ['app', 'common', 'errors', 'prompts'],
         },
