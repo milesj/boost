@@ -52,6 +52,7 @@ export default class CrashLogger {
 
     this.addTitle('Tool Instance');
     this.add('App name', options.appName);
+    this.add('App path', options.appPath);
     this.add('Plugin alias', options.pluginAlias);
     this.add('Scoped package', util.inspect(options.scoped));
     this.add('Root', options.root);

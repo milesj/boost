@@ -1,5 +1,5 @@
 import ErrorReporter from '../../src/reporters/ErrorReporter';
-import { createTestConsole } from '../helpers';
+import { createTestConsole, createTestTool } from '../helpers';
 
 describe('ErrorReporter', () => {
   let reporter: ErrorReporter;
@@ -7,6 +7,7 @@ describe('ErrorReporter', () => {
   beforeEach(() => {
     reporter = new ErrorReporter();
     reporter.console = createTestConsole();
+    reporter.tool = createTestTool();
   });
 
   describe('bootstrap()', () => {

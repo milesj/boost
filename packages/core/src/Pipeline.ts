@@ -16,7 +16,7 @@ export default class Pipeline<Ctx extends Context> extends Routine<Ctx, ToolConf
     if (tool instanceof Tool) {
       tool.initialize();
     } else {
-      throw new TypeError('A build `Tool` instance is required to operate the pipeline.');
+      throw new TypeError('A `Tool` instance is required to operate the pipeline.');
     }
 
     this.tool = tool;

@@ -3,7 +3,7 @@ import DefaultReporter from '../../src/reporters/DefaultReporter';
 import Routine from '../../src/Routine';
 import Task from '../../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../../src/constants';
-import { createTestRoutine, createTestConsole } from '../helpers';
+import { createTestRoutine, createTestConsole, createTestTool } from '../helpers';
 
 const oldNow = Date.now;
 
@@ -14,6 +14,8 @@ describe('DefaultReporter', () => {
   beforeEach(() => {
     reporter = new DefaultReporter();
     reporter.console = createTestConsole();
+    reporter.tool = createTestTool();
+
     renderSpy = jest.spyOn(reporter.console, 'render');
 
     Date.now = () => 0;

@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import CIReporter from '../../src/reporters/CIReporter';
-import { createTestConsole } from '../helpers';
+import { createTestConsole, createTestTool } from '../helpers';
 
 describe('CIReporter', () => {
   let reporter: CIReporter;
@@ -10,6 +10,7 @@ describe('CIReporter', () => {
   beforeEach(() => {
     reporter = new CIReporter();
     reporter.console = createTestConsole();
+    reporter.tool = createTestTool();
 
     outSpy = reporter.console.out as jest.Mock;
     errSpy = reporter.console.err as jest.Mock;

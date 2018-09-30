@@ -49,10 +49,12 @@ export default class CIReporter extends Reporter {
   };
 
   handleStop = () => {
-    const time = this.getElapsedTime(this.startTime, this.stopTime, false);
+    const msg = this.tool.msg('common:ciRanIn', {
+      routineCount: this.routineCount,
+      taskCount: this.taskCount,
+      time: this.getElapsedTime(this.startTime, this.stopTime, false),
+    });
 
-    this.console.out!(
-      `\nRan ${this.routineCount} routine(s) and ${this.taskCount} task(s) in ${time}\n`,
-    );
+    this.console.out!(`\n${msg}\n`);
   };
 }

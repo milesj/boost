@@ -6,4 +6,4 @@ exports[`Routine constructor() throws an error if no key is provided 1`] = `"Rou
 
 exports[`Routine pipe() throws an error if a non-Routine is passed 1`] = `"Routines must be an instance of \`Routine\`."`;
 
-exports[`Routine task() errors if not a function 1`] = `"Tasks require an executable function."`;
+exports[`Routine task() errors if not a function 1`] = `"Tasks require an action function."`;

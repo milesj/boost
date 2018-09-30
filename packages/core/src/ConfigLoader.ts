@@ -92,7 +92,7 @@ export default class ConfigLoader {
     }
 
     if (configPaths.length > 1) {
-      throw new Error(`Multiple "${appName}" configuration files found. Only 1 may exist.`);
+      throw new Error(this.tool.msg('errors:multipleConfigFiles', { appName }));
     }
 
     return null;
@@ -207,7 +207,7 @@ export default class ConfigLoader {
    */
   loadConfig(): ToolConfig {
     if (isEmptyObject(this.package) || !this.package.name) {
-      throw new Error('Cannot load configuration as "package.json" has not been loaded.');
+      throw new Error(this.tool.msg('errors:packageJsonNotLoaded'));
     }
 
     this.debug('Locating configuration');
@@ -219,7 +219,7 @@ export default class ConfigLoader {
       this.findConfigInWorkspaceRoot(root);
 
     if (!config) {
-      throw new Error('Local configuration file or package.json property could not be found.');
+      throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
     // Parse and extend configuration
@@ -261,9 +261,7 @@ export default class ConfigLoader {
     this.debug('Locating package.json in %s', chalk.cyan(root));
 
     if (!fs.existsSync(filePath)) {
-      throw new Error(
-        'Local "package.json" could not be found. Please run the command in your project\'s root.',
-      );
+      throw new Error(this.tool.msg('errors:packageJsonNotFound'));
     }
 
     this.package = optimal(
@@ -299,7 +297,7 @@ export default class ConfigLoader {
 
     // Verify we're working with an object
     if (!isObject(config)) {
-      throw new Error('Invalid configuration. Must be a plain object.');
+      throw new Error(this.tool.msg('errors:configInvalid'));
     }
 
     const { extends: extendPaths } = config;
@@ -319,9 +317,9 @@ export default class ConfigLoader {
       }
 
       if (!fs.existsSync(extendPath)) {
-        throw new Error(`Preset configuration ${extendPath} does not exist.`);
+        throw new Error(this.tool.msg('errors:presetConfigNotFound', { extendPath }));
       } else if (!fs.statSync(extendPath).isFile()) {
-        throw new Error(`Preset configuration ${extendPath} must be a valid file.`);
+        throw new Error(this.tool.msg('errors:presetConfigInvalid', { extendPath }));
       }
 
       this.debug('Extending from file %s', chalk.cyan(extendPath));
@@ -351,7 +349,7 @@ export default class ConfigLoader {
     this.debug('Parsing file %s', chalk.cyan(filePath));
 
     if (!path.isAbsolute(filePath)) {
-      throw new Error('An absolute file path is required.');
+      throw new Error(this.tool.msg('errors:absolutePathRequired'));
     }
 
     if (ext === '.json' || ext === '.json5') {
@@ -363,11 +361,11 @@ export default class ConfigLoader {
         value = value(...args);
       }
     } else {
-      throw new Error(`Unsupported configuration file format "${name}".`);
+      throw new Error(this.tool.msg('errors:configUnsupportedExt', { ext }));
     }
 
     if (!isObject(value)) {
-      throw new Error(`Invalid configuration file "${name}". Must return an object.`);
+      throw new Error(this.tool.msg('errors:configInvalidNamed', { name }));
     }
 
     this.parsedFiles[filePath] = true;
@@ -387,7 +385,7 @@ export default class ConfigLoader {
   resolveExtendPaths(extendPaths: string[], baseDir: string = ''): string[] {
     return extendPaths.map(extendPath => {
       if (typeof extendPath !== 'string') {
-        throw new TypeError('Invalid `extends` configuration value. Must be an array of strings.');
+        throw new TypeError(this.tool.msg('errors:configExtendsInvalid'));
       }
 
       const { appName, scoped, pluginAlias, root } = this.tool.options;
@@ -413,7 +411,7 @@ export default class ConfigLoader {
         );
       }
 
-      throw new Error(`Invalid \`extends\` configuration value "${extendPath}".`);
+      throw new Error(this.tool.msg('errors:configExtendsInvalidPath', { extendPath }));
     });
   }
 

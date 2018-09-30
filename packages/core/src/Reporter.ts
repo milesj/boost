@@ -8,6 +8,7 @@ import Console from './Console';
 import Module from './Module';
 import ModuleLoader from './ModuleLoader';
 import Task from './Task';
+import Tool from './Tool';
 import themePalettes from './themes';
 import { Color, ColorType, ColorPalette } from './types';
 
@@ -22,6 +23,9 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
   startTime: number = 0;
 
   stopTime: number = 0;
+
+  // @ts-ignore Set after instantiation
+  tool: Tool;
 
   /**
    * Register console listeners.
@@ -80,9 +84,7 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
       if (themePalettes[theme]) {
         palette = themePalettes[theme];
       } else if (theme !== 'default') {
-        palette = new ModuleLoader<ColorPalette>(this.console.tool, 'theme', null, true).loadModule(
-          theme,
-        );
+        palette = new ModuleLoader<ColorPalette>(this.tool, 'theme', null, true).loadModule(theme);
       }
     }
 
