@@ -22,12 +22,14 @@
     "access": "public"
   },
   "dependencies": {
+    "@types/cli-truncate": "^1.1.0",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.9.0",
     "@types/glob": "^7.1.0",
     "@types/i18next": "^11.9.0",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.116",
+    "@types/os-locale": "^2.1.0",
     "@types/pluralize": "^0.0.29",
     "@types/split": "^1.0.0",
     "chalk": "^2.4.1",
