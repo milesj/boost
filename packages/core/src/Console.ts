@@ -63,8 +63,6 @@ export default class Console extends Emitter {
 
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
-      this.startBackgroundTimer();
-
       process
         .on('SIGINT', this.handleSignal)
         .on('SIGTERM', this.handleSignal)
@@ -343,6 +341,7 @@ export default class Console extends Emitter {
     }
 
     this.emit('start', args);
+    this.startBackgroundTimer();
 
     return this;
   }
@@ -351,6 +350,10 @@ export default class Console extends Emitter {
    * Automatically refresh in the background if some tasks are taking too long.
    */
   startBackgroundTimer() {
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
+    }
+
     this.refreshTimer = setTimeout(() => {
       this.handleRender();
     }, BG_REFRESH_RATE);
