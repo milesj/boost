@@ -77,7 +77,7 @@ export default class Reporter<Line = string, Options = {}> extends Module<Option
    * Return specific colors based on chosen theme.
    */
   getColorPalette(): ColorPalette {
-    const { theme } = this.console.options;
+    const { theme } = this.tool.config;
     let palette = {};
 
     if (chalk.level >= 2) {

@@ -13,7 +13,7 @@ import pluralize from 'pluralize';
 import i18next from 'i18next';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import ConfigLoader from './ConfigLoader';
-import Console, { ConsoleOptions } from './Console';
+import Console from './Console';
 import Emitter from './Emitter';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
@@ -34,18 +34,19 @@ export interface ToolOptions {
   appPath: string;
   configBlueprint: Blueprint;
   configFolder: string;
-  console: Partial<ConsoleOptions>;
-  locale: string;
+  footer: string;
+  header: string;
   pluginAlias: string;
   root: string;
   scoped: boolean;
   workspaceRoot: string;
 }
 
-export default class Tool extends Emitter {
+export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitter {
   argv: string[] = [];
 
-  config: ToolConfig = { ...DEFAULT_TOOL_CONFIG };
+  // @ts-ignore Allow default spread
+  config: Config = { ...DEFAULT_TOOL_CONFIG };
 
   console: Console;
 
@@ -61,7 +62,13 @@ export default class Tool extends Emitter {
 
   translator: Translator;
 
+  private configLoader: ConfigLoader;
+
   private initialized: boolean = false;
+
+  private pluginLoader: ModuleLoader<Plugin<any>>;
+
+  private reporterLoader: ModuleLoader<Reporter<any>>;
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -74,8 +81,8 @@ export default class Tool extends Emitter {
         appPath: string().required(),
         configBlueprint: object(),
         configFolder: string('./configs'),
-        console: object(),
-        locale: string().empty(),
+        footer: string().empty(),
+        header: string().empty(),
         pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
@@ -95,13 +102,18 @@ export default class Tool extends Emitter {
     this.debug = this.createDebugger('core');
 
     // Setup i18n translation
-    this.translator = this.createTranslator(this.options.locale);
+    this.translator = this.createTranslator();
 
     // Initialize the console first so we can start logging
-    this.console = new Console(this.options.console);
+    this.console = new Console(this);
 
     // Add a reporter to catch errors during initialization
     this.addReporter(new ErrorReporter());
+
+    // Make these available for testing purposes
+    this.configLoader = new ConfigLoader(this);
+    this.pluginLoader = new ModuleLoader(this, this.options.pluginAlias, Plugin);
+    this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter, true);
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -156,7 +168,7 @@ export default class Tool extends Emitter {
   /**
    * Create an i18n translator instance.
    */
-  createTranslator(locale?: string): Translator {
+  createTranslator(): Translator {
     return i18next
       .createInstance()
       .use(new LanguageDetector())
@@ -173,7 +185,6 @@ export default class Tool extends Emitter {
           fallbackLng: ['en'],
           fallbackNS: 'common',
           initImmediate: false,
-          lng: locale,
           lowerCaseLng: true,
           ns: ['app', 'common', 'errors', 'prompts'],
         },
@@ -216,7 +227,7 @@ export default class Tool extends Emitter {
    * Get a reporter by name.
    */
   getReporter(name: string): Reporter<any> {
-    const reporter = this.reporters.find(p => p.name === name);
+    const reporter = this.reporters.find(r => r.name === name);
 
     if (reporter) {
       return reporter;
@@ -263,27 +274,20 @@ export default class Tool extends Emitter {
       return this;
     }
 
-    const configLoader = new ConfigLoader(this);
+    this.package = this.configLoader.loadPackageJSON();
+    this.config = this.configLoader.loadConfig();
 
-    this.package = configLoader.loadPackageJSON();
-    this.config = configLoader.loadConfig();
+    // Inherit workspace metadata
+    this.options.workspaceRoot = this.configLoader.workspaceRoot;
 
-    // Inherit workspace metadata if found
-    this.options.workspaceRoot = configLoader.workspaceRoot;
-
-    // Inherit from argv
-    this.argv.forEach(arg => {
-      if (arg === '--debug') {
-        const name = arg.slice(2);
-
-        this.config[name] = true;
-      }
-    });
-
-    // Enable debugging if defined in the config
-    // This happens a little too late, but oh well
+    // Enable debugger
     if (this.config.debug) {
       enableDebug(this.options.appName);
+    }
+
+    // Update locale
+    if (this.config.locale) {
+      this.translator.changeLanguage(this.config.locale);
     }
 
     return this;
@@ -299,23 +303,21 @@ export default class Tool extends Emitter {
       return this;
     }
 
-    const { pluginAlias } = this.options;
-    const pluralPluginAlias = pluralize(pluginAlias);
+    const pluralPluginAlias = pluralize(this.options.pluginAlias);
 
     if (isEmptyObject(this.config)) {
       throw new Error(this.msg('errors:configNotLoaded', { name: pluralPluginAlias }));
     }
 
-    const loader = new ModuleLoader(this, pluginAlias, Plugin);
-    const plugins = loader.loadModules(this.config[pluralPluginAlias]);
+    const plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
 
     // Sort plugins by priority
-    loader.debug('Sorting plugins by priority');
+    this.pluginLoader.debug('Sorting plugins by priority');
 
     plugins.sort((a, b) => a.priority - b.priority);
 
     // Bootstrap each plugin with the tool
-    loader.debug('Bootstrapping plugins with tool environment');
+    this.pluginLoader.debug('Bootstrapping plugins with tool environment');
 
     plugins.forEach(plugin => {
       this.addPlugin(plugin);
@@ -338,26 +340,28 @@ export default class Tool extends Emitter {
       throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
     }
 
-    const loader = new ModuleLoader(this, 'reporter', Reporter, true);
     const reporters: Reporter<any>[] = [];
 
     if (process.env.CI && !process.env.BOOST_ENV) {
-      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
+      this.reporterLoader.debug(
+        'CI environment detected, using %s CI reporter',
+        chalk.yellow('boost'),
+      );
 
       reporters.push(new CIReporter());
     } else {
-      reporters.push(...loader.loadModules(this.config.reporters));
+      reporters.push(...this.reporterLoader.loadModules(this.config.reporters));
     }
 
     // Use default reporter
     if (reporters.length === 0) {
-      loader.debug('Using default %s reporter', chalk.yellow('boost'));
+      this.reporterLoader.debug('Using default %s reporter', chalk.yellow('boost'));
 
       reporters.push(new DefaultReporter());
     }
 
     // Bootstrap each plugin with the tool
-    loader.debug('Bootstrapping reporters with tool and console environment');
+    this.reporterLoader.debug('Bootstrapping reporters with tool and console environment');
 
     reporters.forEach(reporter => {
       this.addReporter(reporter);

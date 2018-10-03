@@ -1,12 +1,13 @@
 /* eslint-disable unicorn/no-hex-escape */
 
 import Console from '../src/Console';
+import { createTestTool } from './helpers';
 
 describe('Console', () => {
   let cli: Console;
 
   beforeEach(() => {
-    cli = new Console();
+    cli = new Console(createTestTool());
     cli.err = jest.fn();
     cli.out = jest.fn();
   });
@@ -50,7 +51,7 @@ describe('Console', () => {
     });
 
     it('displays the footer', () => {
-      cli.options.footer = 'Powered by Boost';
+      cli.tool.options.footer = 'Powered by Boost';
       cli.displayFooter();
 
       expect(cli.bufferedOutput).toBe('Powered by Boost\n');
@@ -65,7 +66,7 @@ describe('Console', () => {
     });
 
     it('displays the header', () => {
-      cli.options.header = 'Powered by Boost';
+      cli.tool.options.header = 'Powered by Boost';
       cli.displayHeader();
 
       expect(cli.bufferedOutput).toBe('Powered by Boost\n');
@@ -283,14 +284,14 @@ describe('Console', () => {
     });
 
     it('doesnt append a footer if not final', () => {
-      cli.options.footer = 'Footer';
+      cli.tool.options.footer = 'Footer';
       cli.handleRender();
 
       expect(cli.out).toHaveBeenCalledWith('');
     });
 
     it('doesnt prepend a header if not final', () => {
-      cli.options.header = 'Header';
+      cli.tool.options.header = 'Header';
       cli.handleRender();
 
       expect(cli.out).toHaveBeenCalledWith('');
@@ -338,14 +339,14 @@ describe('Console', () => {
     });
 
     it('appends a footer', () => {
-      cli.options.footer = 'Footer';
+      cli.tool.options.footer = 'Footer';
       cli.handleFinalRender();
 
       expect(cli.out).toHaveBeenCalledWith('Rendering something...\nFooter\n');
     });
 
     it('prepends a header', () => {
-      cli.options.header = 'Header';
+      cli.tool.options.header = 'Header';
       cli.handleFinalRender();
 
       expect(cli.out).toHaveBeenCalledWith('Header\nRendering something...\n');
@@ -456,7 +457,7 @@ describe('Console', () => {
     });
 
     it('doesnt log if silent', () => {
-      cli.options.silent = true;
+      cli.tool.config.silent = true;
       cli.write('foo');
       cli.write('bar');
 

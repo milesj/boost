@@ -135,7 +135,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows skipped if level >= 1', () => {
-        reporter.console.options.level = 1;
+        reporter.tool.config.output = 1;
 
         const task = new Task('This is a task', () => {}).skip();
 
@@ -145,7 +145,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows failed if level >= 1', () => {
-        reporter.console.options.level = 1;
+        reporter.tool.config.output = 1;
 
         const task = new Task('This is a task', () => {});
         task.status = STATUS_FAILED;
@@ -156,7 +156,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows tasks count if level >= 1', () => {
-        reporter.console.options.level = 1;
+        reporter.tool.config.output = 1;
 
         const task = new Task('This is a task', () => {});
         task.tasks.push(new Task('Subtask'));
@@ -198,7 +198,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows skipped if level >= 1', () => {
-        reporter.console.options.level = 1;
+        reporter.tool.config.output = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine').skip();
 
@@ -208,7 +208,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows failed if level >= 1', () => {
-        reporter.console.options.level = 1;
+        reporter.tool.config.output = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_FAILED;
@@ -219,7 +219,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows tasks count if level >= 1', () => {
-        reporter.console.options.level = 1;
+        reporter.tool.config.output = 1;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -228,7 +228,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows elapsed time if level >= 2', () => {
-        reporter.console.options.level = 2;
+        reporter.tool.config.output = 2;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_PASSED;
@@ -239,7 +239,7 @@ describe('DefaultReporter', () => {
       });
 
       it('shows both count and status', () => {
-        reporter.console.options.level = 2;
+        reporter.tool.config.output = 2;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -251,7 +251,7 @@ describe('DefaultReporter', () => {
       });
 
       it('doesnt show status if level == 0', () => {
-        reporter.console.options.level = 0;
+        reporter.tool.config.output = 0;
 
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
@@ -372,7 +372,7 @@ describe('DefaultReporter', () => {
     it('removes routine from lines if depth greater than 0 and level < 3', () => {
       const routine = createTestRoutine(null, 'key');
 
-      reporter.console.options.level = 2;
+      reporter.tool.config.output = 2;
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
 
@@ -397,7 +397,7 @@ describe('DefaultReporter', () => {
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
       reporter.depth = 2;
-      reporter.console.options.level = 3;
+      reporter.tool.config.output = 3;
 
       reporter.handleRoutineComplete(routine, '', false);
 

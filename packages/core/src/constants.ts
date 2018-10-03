@@ -18,7 +18,11 @@ export const STATUS_FAILED: Status = 'failed';
 export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   debug: false,
   extends: [],
+  locale: '',
+  output: 3,
   plugins: [],
   reporters: [],
   settings: {},
+  silent: false,
+  theme: 'default',
 };

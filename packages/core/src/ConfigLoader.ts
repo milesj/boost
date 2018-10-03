@@ -11,7 +11,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import optimal, { array, bool, instance, object, shape, string, union } from 'optimal';
+import optimal, { array, bool, instance, number, object, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
@@ -20,7 +20,7 @@ import Tool from './Tool';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { Debugger, ToolConfig, PackageConfig } from './types';
+import { Debugger, PackageConfig } from './types';
 
 export type ConfigObject = { [key: string]: any };
 
@@ -205,7 +205,7 @@ export default class ConfigLoader {
    *
    * Support both JSON and JS file formats by globbing the config directory.
    */
-  loadConfig(): ToolConfig {
+  loadConfig<T>(): T {
     if (isEmptyObject(this.package) || !this.package.name) {
       throw new Error(this.tool.msg('errors:packageJsonNotLoaded'));
     }
@@ -229,6 +229,8 @@ export default class ConfigLoader {
         ...configBlueprint,
         debug: bool(),
         extends: array(string()),
+        locale: string().empty(),
+        output: number(3).between(1, 3, true),
         // prettier-ignore
         reporters: array(union([
           string(),
@@ -236,6 +238,8 @@ export default class ConfigLoader {
           instance(Reporter),
         ])),
         settings: object(),
+        silent: bool(),
+        theme: string('default'),
         // prettier-ignore
         [pluralize(pluginAlias)]: array(union([
           string(),

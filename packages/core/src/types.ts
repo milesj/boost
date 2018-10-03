@@ -27,12 +27,20 @@ export interface ReporterConfig {
   [key: string]: any;
 }
 
-export interface ToolConfig {
+export interface SettingsConfig {
+  [key: string]: any;
+}
+
+export interface ToolConfig<T = SettingsConfig> {
   debug: boolean;
   extends: string | string[];
+  locale: string;
+  output: number;
   plugins: (string | PluginConfig | Plugin<any>)[];
   reporters: (string | ReporterConfig | Reporter<any>)[];
-  settings: { [key: string]: any };
+  settings: T;
+  silent: boolean;
+  theme: string;
   [key: string]: any;
 }
 
