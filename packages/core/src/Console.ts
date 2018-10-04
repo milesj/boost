@@ -19,6 +19,8 @@ export default class Console extends Emitter {
 
   bufferedStreams: (() => void)[] = [];
 
+  debug: Debugger;
+
   err?: WrappedStream;
 
   errorLogs: string[] = [];
@@ -36,8 +38,6 @@ export default class Console extends Emitter {
   restoreCursorOnExit: boolean = false;
 
   tool: Tool;
-
-  private debug: Debugger;
 
   constructor(tool: Tool) {
     super();
@@ -176,6 +176,7 @@ export default class Console extends Emitter {
    */
   handleFailure = (error: Error) => {
     this.start();
+    this.debug('Uncaught exception or unresolved promise handled. Terminating.');
     this.exit(error, 1, true);
   };
 
@@ -228,7 +229,7 @@ export default class Console extends Emitter {
    */
   handleSignal = () => {
     this.start();
-    this.debug('SIGINT or SIGTERM captured. Terminating.');
+    this.debug('SIGINT or SIGTERM handled. Terminating.');
     this.exit('Process has been terminated.', 1, true);
   };
 
