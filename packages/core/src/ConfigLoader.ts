@@ -13,6 +13,7 @@ import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
 import optimal, { array, bool, instance, number, object, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
+import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
@@ -187,19 +188,6 @@ export default class ConfigLoader {
   }
 
   /**
-   * Handle special cases when merging 2 configuration values.
-   * If the target and source are both arrays, concatenate them.
-   */
-  handleMerge(target: any, source: any): any {
-    if (Array.isArray(target) && Array.isArray(source)) {
-      return Array.from(new Set([...target, ...source]));
-    }
-
-    // Defer to lodash
-    return undefined;
-  }
-
-  /**
    * Load a local configuration file relative to the current working directory,
    * or from within a package.json property of the same appName.
    *
@@ -328,13 +316,13 @@ export default class ConfigLoader {
 
       this.debug('Extending from file %s', chalk.cyan(extendPath));
 
-      mergeWith(nextConfig, this.parseAndExtend(extendPath), this.handleMerge);
+      mergeWith(nextConfig, this.parseAndExtend(extendPath), handleMerge);
     });
 
     // Apply the current config after extending preset configs
     config.extends = resolvedPaths;
 
-    mergeWith(nextConfig, config, this.handleMerge);
+    mergeWith(nextConfig, config, handleMerge);
 
     return nextConfig;
   }

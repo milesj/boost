@@ -11,7 +11,9 @@ import chalk from 'chalk';
 import debug from 'debug';
 import pluralize from 'pluralize';
 import i18next from 'i18next';
+import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
+import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
@@ -21,6 +23,7 @@ import Reporter from './Reporter';
 import DefaultReporter from './reporters/DefaultReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
+import handleMerge from './helpers/handleMerge';
 import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
@@ -32,6 +35,7 @@ import { Debugger, Translator, ToolConfig, PackageConfig } from './types';
 export interface ToolOptions {
   appName: string;
   appPath: string;
+  argOptions: ArgOptions;
   configBlueprint: Blueprint;
   configFolder: string;
   footer: string;
@@ -43,6 +47,8 @@ export interface ToolOptions {
 }
 
 export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitter {
+  args: Arguments;
+
   argv: string[] = [];
 
   // @ts-ignore Allow default spread
@@ -74,11 +80,13 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
     super();
 
     this.argv = argv;
+
     this.options = optimal(
       options,
       {
         appName: string().required(),
         appPath: string().required(),
+        argOptions: object(),
         configBlueprint: object(),
         configFolder: string('./configs'),
         footer: string().empty(),
@@ -93,8 +101,22 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
       },
     );
 
+    this.args = parseArgs(
+      this.argv,
+      mergeWith(
+        {
+          array: ['extends', 'plugin', 'reporter'],
+          boolean: ['debug', 'silent'],
+          number: ['output'],
+          string: ['extends', 'locale', 'theme'],
+        },
+        this.config.argOptions,
+        handleMerge,
+      ),
+    );
+
     // Enable debugging as early as possible
-    if (argv.includes('--debug')) {
+    if (this.args.debug) {
       enableDebug(this.options.appName);
     }
 
