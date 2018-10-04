@@ -18,6 +18,7 @@ function createJavascriptFile(data: any): string {
 describe('ConfigLoader', () => {
   let loader: ConfigLoader;
   let fixtures: (() => void)[] = [];
+  const args = { $0: '', _: [] };
 
   beforeEach(() => {
     const tool = createTestTool({
@@ -153,6 +154,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             config: './some/path.js',
           },
         ),
@@ -164,6 +166,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             extends: './some/path.js',
           },
         ),
@@ -175,6 +178,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             settings: 'foo=bar',
           },
         ),
@@ -186,6 +190,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             reporter: 'default',
           },
         ),
@@ -199,6 +204,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             reporter: ['default', 'other'],
           },
         ),
@@ -214,6 +220,7 @@ describe('ConfigLoader', () => {
             reporters: ['base'],
           },
           {
+            ...args,
             reporter: ['default', 'other'],
           },
         ),
@@ -227,6 +234,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             plugin: 'foo',
           },
         ),
@@ -240,6 +248,7 @@ describe('ConfigLoader', () => {
         loader.inheritFromArgs(
           {},
           {
+            ...args,
             plugin: ['foo', 'bar'],
           },
         ),
@@ -255,6 +264,7 @@ describe('ConfigLoader', () => {
             plugins: ['baz'],
           },
           {
+            ...args,
             plugin: ['foo', 'bar'],
           },
         ),
@@ -270,6 +280,7 @@ describe('ConfigLoader', () => {
             debug: true,
           },
           {
+            ...args,
             debug: false,
           },
         ),
@@ -285,6 +296,7 @@ describe('ConfigLoader', () => {
             debug: true,
           },
           {
+            ...args,
             debugger: false,
           },
         ),
@@ -295,8 +307,6 @@ describe('ConfigLoader', () => {
   });
 
   describe('loadConfig()', () => {
-    const args = {};
-
     it('errors if package.json has not been loaded', () => {
       expect(() => {
         loader.loadConfig(args);
@@ -311,6 +321,7 @@ describe('ConfigLoader', () => {
 
         expect(() => {
           loader.loadConfig({
+            ...args,
             config: './some/very/fake/path.js',
           });
         }).toThrowErrorMatchingSnapshot();
@@ -323,6 +334,7 @@ describe('ConfigLoader', () => {
 
         expect(
           loader.loadConfig({
+            ...args,
             config: `${getFixturePath('app-js-config')}/configs/test-boost.js`,
           }),
         ).toEqual(expect.objectContaining({ foo: 'bar' }));

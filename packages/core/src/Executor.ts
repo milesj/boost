@@ -18,11 +18,11 @@ export interface AggregatedResponse {
 export default class Executor<Ctx extends Context, Options = {}> {
   context: Ctx;
 
+  debug: Debugger;
+
   options: Options;
 
-  protected debug: Debugger;
-
-  protected tool: Tool;
+  tool: Tool;
 
   constructor(tool: Tool, context: Ctx, options: Partial<Options> = {}) {
     this.context = context;
