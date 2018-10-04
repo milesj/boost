@@ -33,7 +33,7 @@ export interface SettingsConfig {
 
 export interface ToolConfig<T = SettingsConfig> {
   debug: boolean;
-  extends: string | string[];
+  extends: string[];
   locale: string;
   output: number;
   plugins: (string | PluginConfig | Plugin<any>)[];

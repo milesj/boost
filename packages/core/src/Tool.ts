@@ -105,10 +105,10 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
       this.argv,
       mergeWith(
         {
-          array: ['extends', 'plugin', 'reporter'],
+          array: ['extends', this.options.pluginAlias, 'reporter'],
           boolean: ['debug', 'silent'],
           number: ['output'],
-          string: ['extends', 'locale', 'theme'],
+          string: ['config', 'extends', 'locale', 'theme'],
         },
         this.config.argOptions,
         handleMerge,
@@ -297,7 +297,7 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
     }
 
     this.package = this.configLoader.loadPackageJSON();
-    this.config = this.configLoader.loadConfig();
+    this.config = this.configLoader.loadConfig(this.args);
 
     // Inherit workspace metadata
     this.options.workspaceRoot = this.configLoader.workspaceRoot;

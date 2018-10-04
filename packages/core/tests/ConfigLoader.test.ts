@@ -34,6 +34,19 @@ describe('ConfigLoader', () => {
     fixtures.forEach(remove => remove());
   });
 
+  describe('findConfigFromArg()', () => {
+    it('returns null if falsy', () => {
+      expect(loader.findConfigFromArg()).toBeNull();
+      expect(loader.findConfigFromArg('')).toBeNull();
+    });
+
+    it('returns extends object if found', () => {
+      expect(loader.findConfigFromArg('./some/path.js')).toEqual({
+        extends: ['./some/path.js'],
+      });
+    });
+  });
+
   describe('findConfigInPackageJSON()', () => {
     it('returns null if not found', () => {
       expect(
@@ -134,11 +147,186 @@ describe('ConfigLoader', () => {
     });
   });
 
+  describe('inheritFromArgs()', () => {
+    it('doesnt pass --config', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            config: './some/path.js',
+          },
+        ),
+      ).toEqual({});
+    });
+
+    it('doesnt pass --extends', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            extends: './some/path.js',
+          },
+        ),
+      ).toEqual({});
+    });
+
+    it('doesnt pass --settings', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            settings: 'foo=bar',
+          },
+        ),
+      ).toEqual({});
+    });
+
+    it('sets --reporter', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            reporter: 'default',
+          },
+        ),
+      ).toEqual({
+        reporters: ['default'],
+      });
+    });
+
+    it('sets multiple --reporter', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            reporter: ['default', 'other'],
+          },
+        ),
+      ).toEqual({
+        reporters: ['default', 'other'],
+      });
+    });
+
+    it('merges --reporter', () => {
+      expect(
+        loader.inheritFromArgs(
+          {
+            reporters: ['base'],
+          },
+          {
+            reporter: ['default', 'other'],
+          },
+        ),
+      ).toEqual({
+        reporters: ['base', 'default', 'other'],
+      });
+    });
+
+    it('sets --plugin', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            plugin: 'foo',
+          },
+        ),
+      ).toEqual({
+        plugins: ['foo'],
+      });
+    });
+
+    it('sets multiple --plugin', () => {
+      expect(
+        loader.inheritFromArgs(
+          {},
+          {
+            plugin: ['foo', 'bar'],
+          },
+        ),
+      ).toEqual({
+        plugins: ['foo', 'bar'],
+      });
+    });
+
+    it('merges --plugin', () => {
+      expect(
+        loader.inheritFromArgs(
+          {
+            plugins: ['baz'],
+          },
+          {
+            plugin: ['foo', 'bar'],
+          },
+        ),
+      ).toEqual({
+        plugins: ['baz', 'foo', 'bar'],
+      });
+    });
+
+    it('sets known key', () => {
+      expect(
+        loader.inheritFromArgs(
+          {
+            debug: true,
+          },
+          {
+            debug: false,
+          },
+        ),
+      ).toEqual({
+        debug: false,
+      });
+    });
+
+    it('doesnt set unknown key', () => {
+      expect(
+        loader.inheritFromArgs(
+          {
+            debug: true,
+          },
+          {
+            debugger: false,
+          },
+        ),
+      ).toEqual({
+        debug: true,
+      });
+    });
+  });
+
   describe('loadConfig()', () => {
+    const args = {};
+
     it('errors if package.json has not been loaded', () => {
       expect(() => {
-        loader.loadConfig();
+        loader.loadConfig(args);
       }).toThrowErrorMatchingSnapshot();
+    });
+
+    describe('from --config option', () => {
+      it('errors if invalid path', () => {
+        loader.package = {
+          name: 'boost',
+        };
+
+        expect(() => {
+          loader.loadConfig({
+            config: './some/very/fake/path.js',
+          });
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      it('loads from passed file path', () => {
+        loader.package = {
+          name: 'boost',
+        };
+
+        expect(
+          loader.loadConfig({
+            config: `${getFixturePath('app-js-config')}/configs/test-boost.js`,
+          }),
+        ).toEqual(expect.objectContaining({ foo: 'bar' }));
+      });
     });
 
     describe('from package.json', () => {
@@ -149,17 +337,17 @@ describe('ConfigLoader', () => {
         };
 
         expect(() => {
-          loader.loadConfig();
+          loader.loadConfig(args);
         }).toThrowErrorMatchingSnapshot();
       });
 
       it('supports an object', () => {
         loader.package = {
           name: 'boost',
-          testBoost: { foo: 'bar' },
+          testBoost: { locale: 'en' },
         };
 
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+        expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ locale: 'en' }));
       });
 
       it('supports a string and converts it to `extends`', () => {
@@ -170,7 +358,7 @@ describe('ConfigLoader', () => {
           testBoost: 'test-boost-preset',
         };
 
-        expect(loader.loadConfig()).toEqual(
+        expect(loader.loadConfig(args)).toEqual(
           expect.objectContaining({
             extends: [getModulePath('test-boost-preset', 'configs/test-boost.preset.js')],
           }),
@@ -180,12 +368,12 @@ describe('ConfigLoader', () => {
       it('merges with default config', () => {
         loader.package = {
           name: 'boost',
-          testBoost: { foo: 'bar' },
+          testBoost: { locale: 'en' },
         };
 
-        expect(loader.loadConfig()).toEqual({
+        expect(loader.loadConfig(args)).toEqual({
           ...DEFAULT_TOOL_CONFIG,
-          foo: 'bar',
+          locale: 'en',
         });
       });
 
@@ -203,7 +391,7 @@ describe('ConfigLoader', () => {
           },
         };
 
-        expect(loader.loadConfig()).toEqual({
+        expect(loader.loadConfig(args)).toEqual({
           ...DEFAULT_TOOL_CONFIG,
           plugins: [
             'foo',
@@ -225,7 +413,7 @@ describe('ConfigLoader', () => {
         };
 
         expect(() => {
-          loader.loadConfig();
+          loader.loadConfig(args);
         }).toThrowErrorMatchingSnapshot();
       });
     });
@@ -239,7 +427,7 @@ describe('ConfigLoader', () => {
         loader.tool.options.root = getFixturePath('app-no-configs');
 
         expect(() => {
-          loader.loadConfig();
+          loader.loadConfig(args);
         }).toThrowErrorMatchingSnapshot();
       });
 
@@ -247,28 +435,28 @@ describe('ConfigLoader', () => {
         loader.tool.options.root = getFixturePath('app-multi-configs');
 
         expect(() => {
-          loader.loadConfig();
+          loader.loadConfig(args);
         }).toThrowErrorMatchingSnapshot();
       });
 
       it('supports .json files', () => {
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+        expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
 
       it('supports .json5 files', () => {
         loader.tool.options.root = getFixturePath('app-json5-config');
 
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+        expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
 
       it('supports .js files', () => {
         loader.tool.options.root = getFixturePath('app-js-config');
 
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+        expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
 
       it('merges with default config', () => {
-        expect(loader.loadConfig()).toEqual({
+        expect(loader.loadConfig(args)).toEqual({
           ...DEFAULT_TOOL_CONFIG,
           foo: 'bar',
         });
@@ -277,7 +465,7 @@ describe('ConfigLoader', () => {
       it('supports plugins', () => {
         loader.tool.options.root = getFixturePath('app-plugin-config');
 
-        expect(loader.loadConfig()).toEqual({
+        expect(loader.loadConfig(args)).toEqual({
           ...DEFAULT_TOOL_CONFIG,
           plugins: [
             'foo',
@@ -293,7 +481,7 @@ describe('ConfigLoader', () => {
         loader.tool.options.configFolder = './config';
         loader.tool.options.root = getFixturePath('app-folder-name');
 
-        expect(loader.loadConfig()).toEqual(expect.objectContaining({ foo: 'bar' }));
+        expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ foo: 'bar' }));
       });
     });
   });

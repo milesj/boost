@@ -11,6 +11,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
+import { Arguments } from 'yargs-parser';
 import optimal, { array, bool, instance, number, object, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import handleMerge from './helpers/handleMerge';
@@ -20,7 +21,7 @@ import requireModule from './helpers/requireModule';
 import Tool from './Tool';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
-import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
+import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN, DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, PackageConfig } from './types';
 
 export type ConfigObject = { [key: string]: any };
@@ -41,6 +42,20 @@ export default class ConfigLoader {
   constructor(tool: Tool) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
+  }
+
+  /**
+   * Find the config using the --config file path option.
+   */
+  findConfigFromArg(filePath?: string): ConfigPathOrObject | null {
+    this.debug.invariant(
+      !!filePath,
+      'Looking in --config command line option',
+      'Found',
+      'Not found',
+    );
+
+    return filePath ? { extends: [filePath] } : null;
   }
 
   /**
@@ -188,12 +203,50 @@ export default class ConfigLoader {
   }
 
   /**
+   * Inherit configuration settings from defined CLI options.
+   */
+  inheritFromArgs(config: any, args: Arguments): any {
+    const { configBlueprint, pluginAlias } = this.tool.options;
+    const pluralPluginAlias = pluralize(pluginAlias);
+    const nextConfig = { ...config };
+    const keys = new Set([...Object.keys(DEFAULT_TOOL_CONFIG), ...Object.keys(configBlueprint)]);
+
+    Object.keys(args).forEach(key => {
+      const value = args[key];
+
+      switch (key) {
+        case 'config':
+        case 'extends':
+        case 'settings':
+          // Ignore these when used as options
+          break;
+
+        case 'reporter':
+          nextConfig.reporters = (nextConfig.reporters || []).concat(value);
+          break;
+
+        case pluginAlias:
+          nextConfig[pluralPluginAlias] = (nextConfig[pluralPluginAlias] || []).concat(value);
+          break;
+
+        default:
+          if (keys.has(key)) {
+            nextConfig[key] = value;
+          }
+          break;
+      }
+    });
+
+    return nextConfig;
+  }
+
+  /**
    * Load a local configuration file relative to the current working directory,
    * or from within a package.json property of the same appName.
    *
    * Support both JSON and JS file formats by globbing the config directory.
    */
-  loadConfig<T>(): T {
+  loadConfig<T>(args: Arguments): T {
     if (isEmptyObject(this.package) || !this.package.name) {
       throw new Error(this.tool.msg('errors:packageJsonNotLoaded'));
     }
@@ -201,18 +254,18 @@ export default class ConfigLoader {
     this.debug('Locating configuration');
 
     const { configBlueprint, pluginAlias, root } = this.tool.options;
-    const config =
+    const configPath =
+      this.findConfigFromArg(args.config) ||
       this.findConfigInPackageJSON(this.package) ||
       this.findConfigInLocalFiles(root) ||
       this.findConfigInWorkspaceRoot(root);
 
-    if (!config) {
+    if (!configPath) {
       throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
-    // Parse and extend configuration
     return optimal(
-      this.parseAndExtend(config),
+      this.inheritFromArgs(this.parseAndExtend(configPath), args),
       {
         ...configBlueprint,
         debug: bool(),
