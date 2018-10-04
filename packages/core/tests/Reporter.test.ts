@@ -76,21 +76,21 @@ describe('Reporter', () => {
 
     it('returns base palette if chalk level >= 2 and theme is default', () => {
       chalk.level = 2;
-      reporter.console.options.theme = 'default';
+      reporter.tool.config.theme = 'default';
 
       expect(reporter.getColorPalette()).toEqual(basePalette);
     });
 
     it('errors if theme does not exist', () => {
       chalk.level = 2;
-      reporter.console.options.theme = 'custom';
+      reporter.tool.config.theme = 'custom';
 
       expect(() => reporter.getColorPalette()).toThrowErrorMatchingSnapshot();
     });
 
     it('returns theme palette', () => {
       chalk.level = 2;
-      reporter.console.options.theme = 'solarized';
+      reporter.tool.config.theme = 'solarized';
 
       expect(reporter.getColorPalette()).toEqual({
         default: '#eee8d5',

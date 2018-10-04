@@ -38,18 +38,6 @@ describe('Tool', () => {
     it('sets an error reporter', () => {
       expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
     });
-
-    it('passes options to console instance', () => {
-      tool = new Tool({
-        appName: 'test-boost',
-        appPath: __dirname,
-        console: {
-          footer: 'Footer',
-        },
-      });
-
-      expect(tool.console.options.footer).toBe('Footer');
-    });
   });
 
   describe('createDebugger()', () => {
@@ -196,18 +184,21 @@ describe('Tool', () => {
       });
     });
 
-    it('extends from argv', () => {
-      tool.argv = ['--debug'];
-      tool.loadConfig();
-
-      expect(tool.config.debug).toBe(true);
-    });
-
     it('enables debug if debug config is true', () => {
       tool.argv = ['--debug'];
       tool.loadConfig();
 
       expect(enableDebug).toHaveBeenCalledWith('test-boost');
+    });
+
+    it('updates locale if defined', () => {
+      const spy = jest.spyOn(tool.translator, 'changeLanguage');
+
+      // @ts-ignore Allow private access
+      tool.configLoader.loadConfig = jest.fn(() => ({ locale: 'fr' }));
+      tool.loadConfig();
+
+      expect(spy).toHaveBeenCalledWith('fr');
     });
   });
 

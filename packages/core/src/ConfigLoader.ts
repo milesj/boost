@@ -11,16 +11,18 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import pluralize from 'pluralize';
-import optimal, { array, bool, instance, object, shape, string, union } from 'optimal';
+import { Arguments } from 'yargs-parser';
+import optimal, { array, bool, instance, number, object, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
+import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import Tool from './Tool';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
-import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { Debugger, ToolConfig, PackageConfig } from './types';
+import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN, DEFAULT_TOOL_CONFIG } from './constants';
+import { Debugger, PackageConfig } from './types';
 
 export type ConfigObject = { [key: string]: any };
 
@@ -40,6 +42,20 @@ export default class ConfigLoader {
   constructor(tool: Tool) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
+  }
+
+  /**
+   * Find the config using the --config file path option.
+   */
+  findConfigFromArg(filePath?: string): ConfigPathOrObject | null {
+    this.debug.invariant(
+      !!filePath,
+      'Looking in --config command line option',
+      'Found',
+      'Not found',
+    );
+
+    return filePath ? { extends: [filePath] } : null;
   }
 
   /**
@@ -187,16 +203,41 @@ export default class ConfigLoader {
   }
 
   /**
-   * Handle special cases when merging 2 configuration values.
-   * If the target and source are both arrays, concatenate them.
+   * Inherit configuration settings from defined CLI options.
    */
-  handleMerge(target: any, source: any): any {
-    if (Array.isArray(target) && Array.isArray(source)) {
-      return Array.from(new Set([...target, ...source]));
-    }
+  inheritFromArgs(config: any, args: Arguments): any {
+    const { configBlueprint, pluginAlias } = this.tool.options;
+    const pluralPluginAlias = pluralize(pluginAlias);
+    const nextConfig = { ...config };
+    const keys = new Set([...Object.keys(DEFAULT_TOOL_CONFIG), ...Object.keys(configBlueprint)]);
 
-    // Defer to lodash
-    return undefined;
+    Object.keys(args).forEach(key => {
+      const value = args[key];
+
+      switch (key) {
+        case 'config':
+        case 'extends':
+        case 'settings':
+          // Ignore these when used as options
+          break;
+
+        case 'reporter':
+          nextConfig.reporters = (nextConfig.reporters || []).concat(value);
+          break;
+
+        case pluginAlias:
+          nextConfig[pluralPluginAlias] = (nextConfig[pluralPluginAlias] || []).concat(value);
+          break;
+
+        default:
+          if (keys.has(key)) {
+            nextConfig[key] = value;
+          }
+          break;
+      }
+    });
+
+    return nextConfig;
   }
 
   /**
@@ -205,7 +246,7 @@ export default class ConfigLoader {
    *
    * Support both JSON and JS file formats by globbing the config directory.
    */
-  loadConfig(): ToolConfig {
+  loadConfig<T>(args: Arguments): T {
     if (isEmptyObject(this.package) || !this.package.name) {
       throw new Error(this.tool.msg('errors:packageJsonNotLoaded'));
     }
@@ -213,22 +254,24 @@ export default class ConfigLoader {
     this.debug('Locating configuration');
 
     const { configBlueprint, pluginAlias, root } = this.tool.options;
-    const config =
+    const configPath =
+      this.findConfigFromArg(args.config) ||
       this.findConfigInPackageJSON(this.package) ||
       this.findConfigInLocalFiles(root) ||
       this.findConfigInWorkspaceRoot(root);
 
-    if (!config) {
+    if (!configPath) {
       throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
-    // Parse and extend configuration
     return optimal(
-      this.parseAndExtend(config),
+      this.inheritFromArgs(this.parseAndExtend(configPath), args),
       {
         ...configBlueprint,
         debug: bool(),
         extends: array(string()),
+        locale: string().empty(),
+        output: number(3).between(1, 3, true),
         // prettier-ignore
         reporters: array(union([
           string(),
@@ -236,6 +279,8 @@ export default class ConfigLoader {
           instance(Reporter),
         ])),
         settings: object(),
+        silent: bool(),
+        theme: string('default'),
         // prettier-ignore
         [pluralize(pluginAlias)]: array(union([
           string(),
@@ -324,13 +369,13 @@ export default class ConfigLoader {
 
       this.debug('Extending from file %s', chalk.cyan(extendPath));
 
-      mergeWith(nextConfig, this.parseAndExtend(extendPath), this.handleMerge);
+      mergeWith(nextConfig, this.parseAndExtend(extendPath), handleMerge);
     });
 
     // Apply the current config after extending preset configs
     config.extends = resolvedPaths;
 
-    mergeWith(nextConfig, config, this.handleMerge);
+    mergeWith(nextConfig, config, handleMerge);
 
     return nextConfig;
   }

@@ -5,21 +5,13 @@
 
 /* eslint-disable unicorn/no-hex-escape, no-param-reassign */
 
-import optimal, { bool, number, string } from 'optimal';
 import Emitter from './Emitter';
+import Tool from './Tool';
 
 export const REFRESH_RATE = 100;
 export const BG_REFRESH_RATE = 500;
 
 export type WrappedStream = (message: string) => void;
-
-export interface ConsoleOptions {
-  footer: string;
-  header: string;
-  level: 0 | 1 | 2 | 3;
-  silent: boolean;
-  theme: string;
-}
 
 export default class Console extends Emitter {
   bufferedOutput: string = '';
@@ -36,30 +28,18 @@ export default class Console extends Emitter {
 
   logs: string[] = [];
 
-  options: ConsoleOptions;
-
   out?: WrappedStream;
 
   renderTimer: NodeJS.Timer | null = null;
 
   restoreCursorOnExit: boolean = false;
 
-  constructor(options: Partial<ConsoleOptions> = {}) {
+  tool: Tool;
+
+  constructor(tool: Tool) {
     super();
 
-    this.options = optimal(
-      options,
-      {
-        footer: string().empty(),
-        header: string().empty(),
-        level: number(3).between(0, 3, true),
-        silent: bool(),
-        theme: string('default'),
-      },
-      {
-        name: this.constructor.name,
-      },
-    );
+    this.tool = tool;
 
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
@@ -95,7 +75,7 @@ export default class Console extends Emitter {
    * Display a footer after all final output.
    */
   displayFooter() {
-    const { footer } = this.options;
+    const { footer } = this.tool.options;
 
     if (footer) {
       this.write(footer, 1);
@@ -106,7 +86,7 @@ export default class Console extends Emitter {
    * Display a header before all final output.
    */
   displayHeader() {
-    const { header } = this.options;
+    const { header } = this.tool.options;
 
     if (header) {
       this.write(header, 1);
@@ -416,7 +396,7 @@ export default class Console extends Emitter {
    * Log a message to `stdout` without a trailing newline or formatting.
    */
   write(message: string, nl: number = 0, prepend: boolean = false): this {
-    if (this.options.silent) {
+    if (this.tool.config.silent) {
       return this;
     }
 
