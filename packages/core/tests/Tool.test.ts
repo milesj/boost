@@ -22,19 +22,6 @@ describe('Tool', () => {
   });
 
   describe('constructor()', () => {
-    it('enables debug if --debug is passed', () => {
-      tool = new Tool(
-        {
-          appName: 'test-boost',
-          appPath: __dirname,
-          root: getFixturePath('app'),
-        },
-        ['--debug'],
-      );
-
-      expect(enableDebug).toHaveBeenCalledWith('test-boost');
-    });
-
     it('sets an error reporter', () => {
       expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
     });
@@ -93,7 +80,7 @@ describe('Tool', () => {
   describe('getPlugin()', () => {
     it('errors if not found', () => {
       expect(() => {
-        tool.getPlugin('foo');
+        tool.getPlugin('plugin', 'foo');
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -101,9 +88,9 @@ describe('Tool', () => {
       const plugin = new Plugin();
       plugin.name = 'foo';
 
-      tool.plugins.push(plugin);
+      tool.plugins.plugin = [plugin];
 
-      expect(tool.getPlugin('foo')).toBe(plugin);
+      expect(tool.getPlugin('plugin', 'foo')).toBe(plugin);
     });
   });
 
@@ -185,7 +172,7 @@ describe('Tool', () => {
     });
 
     it('enables debug if debug config is true', () => {
-      tool.argv = ['--debug'];
+      tool.args = { debug: true };
       tool.loadConfig();
 
       expect(enableDebug).toHaveBeenCalledWith('test-boost');
@@ -223,7 +210,7 @@ describe('Tool', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual([]);
+      expect(tool.plugins).toEqual({ plugin: [] });
     });
 
     it('doesnt load if initialized', () => {
@@ -232,7 +219,7 @@ describe('Tool', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual([]);
+      expect(tool.plugins).toEqual({ plugin: [] });
     });
 
     it('bootstraps plugins on load', () => {
@@ -270,7 +257,7 @@ describe('Tool', () => {
       tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [foo, bar, baz] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual([baz, bar, foo]);
+      expect(tool.plugins).toEqual({ plugin: [baz, bar, foo] });
     });
   });
 

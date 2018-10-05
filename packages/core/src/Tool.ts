@@ -45,7 +45,7 @@ export interface ToolOptions {
   workspaceRoot: string;
 }
 
-export interface PluginContract<T = any> {
+export interface PluginType<T = any> {
   contract: Constructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
@@ -75,7 +75,7 @@ export default class Tool<
 
   plugins: { [K in keyof Registry]?: Registry[K][] } = {};
 
-  pluginTypes: { [K in keyof Registry]?: PluginContract<Registry[K]> } = {};
+  pluginTypes: { [K in keyof Registry]?: PluginType<Registry[K]> } = {};
 
   reporters: Reporter<any>[] = [];
 
@@ -269,7 +269,7 @@ export default class Tool<
   }
 
   /**
-   * Return a list of Boost bundled theme names.
+   * Return a list of core bundled theme names.
    */
   getThemeList(): string[] {
     return Object.keys(themePalettes);
@@ -284,7 +284,7 @@ export default class Tool<
     }
 
     const { appName } = this.options;
-    const pluginNames = Object.values(this.pluginTypes).map(type => type!.singularName);
+    const pluginNames = Object.keys(this.pluginTypes);
 
     this.debug('Initializing %s', chalk.yellow(appName));
 
@@ -292,10 +292,10 @@ export default class Tool<
       this.argv,
       mergeWith(
         {
-          array: ['extends', 'reporter', ...pluginNames],
+          array: ['reporter', ...pluginNames],
           boolean: ['debug', 'silent'],
           number: ['output'],
-          string: ['config', 'extends', 'locale', 'reporter', 'theme', ...pluginNames],
+          string: ['config', 'locale', 'reporter', 'theme', ...pluginNames],
         },
         this.config.argOptions,
         handleMerge,
@@ -351,7 +351,7 @@ export default class Tool<
     }
 
     if (isEmptyObject(this.config)) {
-      throw new Error(this.msg('errors:configNotLoaded'));
+      throw new Error(this.msg('errors:configNotLoaded', { name: 'plugins' }));
     }
 
     Object.keys(this.pluginTypes).forEach(type => {
@@ -359,12 +359,12 @@ export default class Tool<
       const plugins = loader.loadModules(this.config[pluralName]);
 
       // Sort plugins by priority
-      loader.debug('Sorting plugins by priority');
+      loader.debug('Sorting by priority');
 
       plugins.sort((a, b) => a.priority - b.priority);
 
       // Bootstrap each plugin with the tool
-      loader.debug('Bootstrapping plugins with tool environment');
+      loader.debug('Bootstrapping with tool environment');
 
       plugins.forEach(plugin => {
         this.addPlugin(type, plugin);
@@ -448,7 +448,8 @@ export default class Tool<
   }
 
   /**
-   * Register a custom type of plugin, with a defined contract all instances should extend.
+   * Register a custom type of plugin, with a defined contract that all instances should extend.
+   * The type name should be in singular form, as plural variants are generated automatically.
    */
   registerPlugin(
     typeName: keyof Registry,

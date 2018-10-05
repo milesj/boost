@@ -211,7 +211,7 @@ export default class ConfigLoader {
     const nextConfig = { ...config };
     const keys = new Set([...Object.keys(DEFAULT_TOOL_CONFIG), ...Object.keys(configBlueprint)]);
 
-    this.debug('Inheriting config settings from CLI arguments');
+    this.debug('Inheriting config from CLI options');
 
     Object.keys(args).forEach(key => {
       const value = args[key];
@@ -224,18 +224,21 @@ export default class ConfigLoader {
           break;
 
         case 'reporter':
+          this.debug('  --reporter=[%s]', value.join(', '));
           nextConfig.reporters = (nextConfig.reporters || []).concat(value);
           break;
 
         default:
           // Plugins
           if (this.tool.pluginTypes[key]) {
-            const { pluralName } = this.tool.pluginTypes[key]!;
+            const { pluralName, singularName } = this.tool.pluginTypes[key]!;
 
+            this.debug('  --%s=[%s]', singularName, value.join(', '));
             nextConfig[pluralName] = (nextConfig[pluralName] || []).concat(value);
 
-            // Other settings
+            // Other
           } else if (keys.has(key)) {
+            this.debug('  --%s=%s', key, value);
             nextConfig[key] = value;
           }
           break;
@@ -271,15 +274,15 @@ export default class ConfigLoader {
     }
 
     Object.values(this.tool.pluginTypes).forEach(type => {
-      const { singularName, pluralName } = type!;
+      const { contract, singularName, pluralName } = type!;
 
-      this.debug('Generating %s (%s) blueprint', chalk.green(singularName), pluralName);
+      this.debug('Generating %s blueprint', chalk.green(singularName));
 
       // prettier-ignore
       pluginsBlueprint[pluralName] = array(union([
         string(),
         shape({ [singularName]: string() }),
-        instance(Plugin),
+        instance(contract),
       ]));
     });
 

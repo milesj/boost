@@ -69,6 +69,8 @@ export function createTestTool(options?: Partial<ToolOptions>): Tool {
   });
 
   tool.registerPlugin('plugin', Plugin);
+  tool.args = {};
+  tool.argv = [];
   tool.config = { ...DEFAULT_TOOL_CONFIG };
   tool.package = { name: '' };
   // @ts-ignore Allow private access and avoid loaders

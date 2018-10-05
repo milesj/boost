@@ -5,7 +5,7 @@
   "configInvalid": "Invalid configuration. Must be a plain object.",
   "configInvalidNamed": "Invalid configuration file \"{{name}}\". Must return a plain object.",
   "configNotFound": "Local configuration file or package.json property could not be found.",
-  "configNotLoaded": "Cannot load plugins as configuration has not been loaded.",
+  "configNotLoaded": "Cannot load {{name}} as configuration has not been loaded.",
   "configUnsupportedExt": "Unsupported configuration file extension \"{{ext}}\".",
   "moduleClassDefRequired": "Invalid {{typeName}} class definition exported from \"{{moduleName}}\".",
   "moduleClassInstanceExported": "A {{typeName}} class instance was exported from \"{{moduleName}}\". {{appName}} requires a {{typeName}} class definition to be exported.",
