@@ -2,8 +2,9 @@ import fs from 'fs-extra';
 import path from 'path';
 import Tool, { ToolOptions } from '../src/Tool';
 import Routine from '../src/Routine';
-import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import Console from '../src/Console';
+import Plugin from '../src/Plugin';
+import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -67,10 +68,11 @@ export function createTestTool(options?: Partial<ToolOptions>): Tool {
     ...options,
   });
 
+  tool.registerPlugin('plugin', Plugin);
   tool.config = { ...DEFAULT_TOOL_CONFIG };
   tool.package = { name: '' };
-  // @ts-ignore Allow private access
-  tool.initialized = true; // Avoid loaders
+  // @ts-ignore Allow private access and avoid loaders
+  tool.initialized = true;
 
   return tool;
 }

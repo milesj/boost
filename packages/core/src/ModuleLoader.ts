@@ -18,7 +18,7 @@ export type Constructor<T> = new (...args: any[]) => T;
 export type OptionsObject = { [key: string]: any };
 
 export default class ModuleLoader<Tm> {
-  classReference: Constructor<Tm> | null = null;
+  contract: Constructor<Tm> | null = null;
 
   debug: Debugger;
 
@@ -31,10 +31,10 @@ export default class ModuleLoader<Tm> {
   constructor(
     tool: Tool,
     typeName: string,
-    classReference: Constructor<Tm> | null = null,
+    contract: Constructor<Tm> | null = null,
     loadBoostModules: boolean = false,
   ) {
-    this.classReference = classReference;
+    this.contract = contract;
     this.debug = tool.createDebugger(`${typeName}-loader`);
     this.loadBoostModules = loadBoostModules;
     this.tool = tool;
@@ -106,12 +106,12 @@ export default class ModuleLoader<Tm> {
       );
     }
 
-    if (!this.classReference) {
+    if (!this.contract) {
       return importedModule;
     }
 
     // An instance was returned instead of the class definition
-    if (importedModule instanceof this.classReference) {
+    if (importedModule instanceof this.contract) {
       throw new TypeError(
         this.tool.msg('errors:moduleClassInstanceExported', {
           appName: upperFirst(appName),
@@ -126,7 +126,7 @@ export default class ModuleLoader<Tm> {
     const ModuleClass = importedModule as Constructor<Tm>;
     const module = new ModuleClass(...args);
 
-    if (!(module instanceof this.classReference)) {
+    if (!(module instanceof this.contract)) {
       throw new TypeError(
         this.tool.msg('errors:moduleExportInvalid', {
           moduleName,
@@ -182,7 +182,7 @@ export default class ModuleLoader<Tm> {
    * instantiate from a module. If an object, extract the name and run the previous.
    */
   loadModule(module: string | OptionsObject | Tm, args: any[] = []): Tm {
-    if (this.classReference && module instanceof this.classReference) {
+    if (this.contract && module instanceof this.contract) {
       return module;
     } else if (typeof module === 'string') {
       return this.importModule(module, args);

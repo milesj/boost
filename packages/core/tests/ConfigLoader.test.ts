@@ -22,7 +22,6 @@ describe('ConfigLoader', () => {
 
   beforeEach(() => {
     const tool = createTestTool({
-      pluginAlias: 'plugin',
       root: getTestRoot(),
     });
 

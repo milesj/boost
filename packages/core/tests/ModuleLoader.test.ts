@@ -17,7 +17,6 @@ describe('ModuleLoader', () => {
   beforeEach(() => {
     loader = new ModuleLoader(
       createTestTool({
-        pluginAlias: 'plugin',
         root: getTestRoot(),
       }),
       'plugin',
