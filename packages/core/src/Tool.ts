@@ -232,14 +232,10 @@ export default class Tool<
   }
 
   /**
-   * Get a plugin by name and type.
+   * Return a plugin by name and type.
    */
   getPlugin<K extends keyof PluginRegistry>(typeName: K, name: string): PluginRegistry[K] {
-    if (!this.pluginTypes[typeName]) {
-      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
-    }
-
-    const plugin = this.plugins[typeName]!.find(p => p instanceof Plugin && p.name === name);
+    const plugin = this.getPlugins(typeName).find(p => p instanceof Plugin && p.name === name);
 
     if (plugin) {
       return plugin;
@@ -254,16 +250,34 @@ export default class Tool<
   }
 
   /**
-   * Get a reporter by name.
+   * Return all plugins by type.
+   */
+  getPlugins<K extends keyof PluginRegistry>(typeName: K): PluginRegistry[K][] {
+    if (!this.pluginTypes[typeName]) {
+      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
+    }
+
+    return this.plugins[typeName]! || [];
+  }
+
+  /**
+   * Return a reporter by name.
    */
   getReporter(name: string): Reporter<any> {
-    const reporter = this.reporters.find(r => r.name === name);
+    const reporter = this.getReporters().find(r => r.name === name);
 
     if (reporter) {
       return reporter;
     }
 
     throw new Error(this.msg('errors:reporterNotFound', { name }));
+  }
+
+  /**
+   * Return all reporters.
+   */
+  getReporters(): Reporter<any>[] {
+    return this.reporters;
   }
 
   /**
