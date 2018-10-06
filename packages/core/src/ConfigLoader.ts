@@ -19,8 +19,7 @@ import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import Tool from './Tool';
-import Plugin from './Plugin';
+import Tool, { PluginType } from './Tool';
 import Reporter from './Reporter';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN, DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, PackageConfig } from './types';
@@ -206,10 +205,13 @@ export default class ConfigLoader {
   /**
    * Inherit configuration settings from defined CLI options.
    */
-  inheritFromArgs(config: any, args: Arguments): any {
-    const { configBlueprint } = this.tool.options;
+  inheritFromArgs<T>(config: T, args: Arguments): T {
+    // @ts-ignore Allow spread
     const nextConfig = { ...config };
-    const keys = new Set([...Object.keys(DEFAULT_TOOL_CONFIG), ...Object.keys(configBlueprint)]);
+    const keys = new Set([
+      ...Object.keys(DEFAULT_TOOL_CONFIG),
+      ...Object.keys(this.tool.options.configBlueprint),
+    ]);
 
     this.debug('Inheriting config from CLI options');
 
@@ -228,10 +230,12 @@ export default class ConfigLoader {
           nextConfig.reporters = (nextConfig.reporters || []).concat(value);
           break;
 
-        default:
+        default: {
+          const pluginType = (this.tool.pluginTypes as any)[key];
+
           // Plugins
-          if (this.tool.pluginTypes[key]) {
-            const { pluralName, singularName } = this.tool.pluginTypes[key]!;
+          if (pluginType) {
+            const { pluralName, singularName } = pluginType as PluginType<any>;
 
             this.debug('  --%s=[%s]', singularName, value.join(', '));
             nextConfig[pluralName] = (nextConfig[pluralName] || []).concat(value);
@@ -242,6 +246,7 @@ export default class ConfigLoader {
             nextConfig[key] = value;
           }
           break;
+        }
       }
     });
 
@@ -274,7 +279,7 @@ export default class ConfigLoader {
     }
 
     Object.values(this.tool.pluginTypes).forEach(type => {
-      const { contract, singularName, pluralName } = type!;
+      const { contract, singularName, pluralName } = type as PluginType<any>;
 
       this.debug('Generating %s blueprint', chalk.green(singularName));
 

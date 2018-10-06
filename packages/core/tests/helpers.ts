@@ -61,16 +61,19 @@ export function createTestDebugger(): any {
   return debug;
 }
 
-export function createTestTool(options?: Partial<ToolOptions>): Tool {
-  const tool = new Tool({
+export interface TestPluginRegistry {
+  plugin: Plugin<any>;
+}
+
+export function createTestTool(options?: Partial<ToolOptions>): Tool<TestPluginRegistry> {
+  const tool = new Tool<TestPluginRegistry>({
     appName: 'test-boost',
     appPath: __dirname,
     ...options,
   });
 
   tool.registerPlugin('plugin', Plugin);
-  tool.args = {};
-  tool.argv = [];
+  tool.args = { $0: '', _: [] };
   tool.config = { ...DEFAULT_TOOL_CONFIG };
   tool.package = { name: '' };
   // @ts-ignore Allow private access and avoid loaders

@@ -45,18 +45,16 @@ export interface ToolOptions {
   workspaceRoot: string;
 }
 
-export interface PluginType<T = any> {
+export interface PluginType<T> {
   contract: Constructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
   singularName: string;
 }
 
-export type PluginRegistry = { [type: string]: Plugin<any> };
-
 export default class Tool<
-  Config extends ToolConfig = ToolConfig,
-  Registry extends PluginRegistry = PluginRegistry
+  PluginRegistry = {},
+  Config extends ToolConfig = ToolConfig
 > extends Emitter {
   args?: Arguments;
 
@@ -73,9 +71,9 @@ export default class Tool<
 
   package: PackageConfig = { name: '' };
 
-  plugins: { [K in keyof Registry]?: Registry[K][] } = {};
+  plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
 
-  pluginTypes: { [K in keyof Registry]?: PluginType<Registry[K]> } = {};
+  pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
 
   reporters: Reporter<any>[] = [];
 
@@ -120,12 +118,12 @@ export default class Tool<
     // Initialize the console first so we can start logging
     this.console = new Console(this);
 
-    // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter());
-
     // Make these available for testing purposes
     this.configLoader = new ConfigLoader(this);
     this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter, true);
+
+    // Add a reporter to catch errors during initialization
+    this.addReporter(new ErrorReporter());
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -142,7 +140,7 @@ export default class Tool<
   /**
    * Add a plugin for a specific contract type and bootstrap with the tool.
    */
-  addPlugin<T extends Plugin<any>>(typeName: keyof Registry, plugin: T): this {
+  addPlugin<K extends keyof PluginRegistry>(typeName: K, plugin: PluginRegistry[K]): this {
     const type = this.pluginTypes[typeName];
 
     if (!type) {
@@ -236,15 +234,15 @@ export default class Tool<
   /**
    * Get a plugin by name and type.
    */
-  getPlugin<T extends Plugin<any>>(typeName: keyof Registry, name: string): T {
+  getPlugin<K extends keyof PluginRegistry>(typeName: K, name: string): PluginRegistry[K] {
     if (!this.pluginTypes[typeName]) {
       throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
     }
 
-    const plugin = this.plugins[typeName]!.find(p => p.name === name);
+    const plugin = this.plugins[typeName]!.find(p => p instanceof Plugin && p.name === name);
 
     if (plugin) {
-      return plugin as T;
+      return plugin;
     }
 
     throw new Error(
@@ -355,19 +353,22 @@ export default class Tool<
     }
 
     Object.keys(this.pluginTypes).forEach(type => {
-      const { loader, pluralName } = this.pluginTypes[type as keyof Registry]!;
+      const typeName = type as keyof PluginRegistry;
+      const { loader, pluralName } = this.pluginTypes[typeName]!;
       const plugins = loader.loadModules(this.config[pluralName]);
 
       // Sort plugins by priority
       loader.debug('Sorting by priority');
 
-      plugins.sort((a, b) => a.priority - b.priority);
+      plugins.sort(
+        (a, b) => (a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0),
+      );
 
       // Bootstrap each plugin with the tool
       loader.debug('Bootstrapping with tool environment');
 
       plugins.forEach(plugin => {
-        this.addPlugin(type, plugin);
+        this.addPlugin(typeName, plugin);
       });
     });
 
@@ -439,7 +440,11 @@ export default class Tool<
   /**
    * Retrieve a translated message from a resource bundle.
    */
-  msg(key: string | string, params?: any, options?: i18next.TranslationOptions): string {
+  msg(
+    key: string | string,
+    params?: { [key: string]: any },
+    options?: i18next.TranslationOptions,
+  ): string {
     return this.translator.t(key, {
       interpolation: { escapeValue: false },
       replace: params,
@@ -451,10 +456,9 @@ export default class Tool<
    * Register a custom type of plugin, with a defined contract that all instances should extend.
    * The type name should be in singular form, as plural variants are generated automatically.
    */
-  registerPlugin(
-    typeName: keyof Registry,
-    contract: Constructor<any>,
-    useBoost: boolean = false,
+  registerPlugin<K extends keyof PluginRegistry>(
+    typeName: K,
+    contract: Constructor<PluginRegistry[K]>,
   ): this {
     if (this.pluginTypes[typeName]) {
       throw new Error(this.msg('errors:pluginContractExists', { typeName }));
@@ -468,7 +472,7 @@ export default class Tool<
 
     this.pluginTypes[typeName] = {
       contract,
-      loader: new ModuleLoader(this, name, contract, useBoost),
+      loader: new ModuleLoader(this, name, contract),
       pluralName: pluralize(name),
       singularName: name,
     };

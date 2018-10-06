@@ -6,12 +6,12 @@ import DefaultReporter from '../src/reporters/DefaultReporter';
 import ErrorReporter from '../src/reporters/ErrorReporter';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
+import { getFixturePath, copyFixtureToMock, createTestTool, TestPluginRegistry } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
 
 describe('Tool', () => {
-  let tool: Tool;
+  let tool: Tool<TestPluginRegistry>;
 
   beforeEach(() => {
     tool = createTestTool({
@@ -172,7 +172,7 @@ describe('Tool', () => {
     });
 
     it('enables debug if debug config is true', () => {
-      tool.args = { debug: true };
+      tool.args = { $0: '', _: [], debug: true };
       tool.loadConfig();
 
       expect(enableDebug).toHaveBeenCalledWith('test-boost');

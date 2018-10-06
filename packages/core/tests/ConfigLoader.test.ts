@@ -190,7 +190,7 @@ describe('ConfigLoader', () => {
           {},
           {
             ...args,
-            reporter: 'default',
+            reporter: ['default'],
           },
         ),
       ).toEqual({
@@ -234,7 +234,7 @@ describe('ConfigLoader', () => {
           {},
           {
             ...args,
-            plugin: 'foo',
+            plugin: ['foo'],
           },
         ),
       ).toEqual({
