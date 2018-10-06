@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { bool } from 'optimal';
-import { Tool, ToolConfig, Plugin } from '../src';
+import { Tool, ToolConfig, Plugin, PluginConfigOption } from '../src';
 
 class Adapter extends Plugin<{}> {}
 class Renderer extends Plugin<{}> {}
@@ -13,6 +13,8 @@ interface ExamplePlugins {
 }
 
 interface ExampleConfig extends ToolConfig {
+  adapters: PluginConfigOption<Adapter>;
+  renderers: PluginConfigOption<Adapter>;
   something: boolean;
 }
 

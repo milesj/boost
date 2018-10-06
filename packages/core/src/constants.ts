@@ -20,7 +20,6 @@ export const DEFAULT_TOOL_CONFIG: ToolConfig = {
   extends: [],
   locale: '',
   output: 3,
-  plugins: [],
   reporters: [],
   settings: {},
   silent: false,

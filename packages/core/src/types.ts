@@ -7,7 +7,6 @@
 
 import debug from 'debug';
 import i18next from 'i18next';
-import Plugin from './Plugin';
 import Reporter from './Reporter';
 
 export interface Debugger extends debug.IDebugger {
@@ -17,15 +16,7 @@ export interface Debugger extends debug.IDebugger {
 
 export interface Translator extends i18next.i18n {}
 
-export interface PluginConfig {
-  plugin: string;
-  [key: string]: any;
-}
-
-export interface ReporterConfig {
-  reporter: string;
-  [key: string]: any;
-}
+export type PluginConfigOption<P> = (string | { [key: string]: any } | P)[];
 
 export interface SettingsConfig {
   [key: string]: any;
@@ -36,12 +27,10 @@ export interface ToolConfig<T = SettingsConfig> {
   extends: string[];
   locale: string;
   output: number;
-  plugins: (string | PluginConfig | Plugin<any>)[];
-  reporters: (string | ReporterConfig | Reporter<any>)[];
+  reporters: PluginConfigOption<Reporter<any>>;
   settings: T;
   silent: boolean;
   theme: string;
-  [key: string]: any;
 }
 
 export interface PackageConfig {

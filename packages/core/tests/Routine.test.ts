@@ -4,19 +4,19 @@ import execa from 'execa';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
-import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
+import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
+import { createTestTool, createTestRoutine, createTestDebugger, TEST_TOOL_CONFIG } from './helpers';
 
 jest.mock('execa');
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
-  let tool: Tool;
+  let tool: Tool<any, any>;
 
   beforeEach(() => {
     tool = createTestTool();
     tool.config = {
-      ...DEFAULT_TOOL_CONFIG,
+      ...TEST_TOOL_CONFIG,
       baz: {
         compress: true,
         outDir: './out/',

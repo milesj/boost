@@ -295,7 +295,7 @@ export default class Tool<
           number: ['output'],
           string: ['config', 'locale', 'reporter', 'theme', ...pluginNames],
         },
-        this.config.argOptions,
+        this.options.argOptions,
         handleMerge,
       ),
     );
@@ -355,7 +355,7 @@ export default class Tool<
     Object.keys(this.pluginTypes).forEach(type => {
       const typeName = type as keyof PluginRegistry;
       const { loader, pluralName } = this.pluginTypes[typeName]!;
-      const plugins = loader.loadModules(this.config[pluralName]);
+      const plugins = loader.loadModules((this.config as any)[pluralName]);
 
       // Sort plugins by priority
       loader.debug('Sorting by priority');

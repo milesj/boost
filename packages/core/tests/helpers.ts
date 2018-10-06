@@ -5,6 +5,7 @@ import Routine from '../src/Routine';
 import Console from '../src/Console';
 import Plugin from '../src/Plugin';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
+import { PluginConfigOption, ToolConfig } from '../src/types';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -65,8 +66,19 @@ export interface TestPluginRegistry {
   plugin: Plugin<any>;
 }
 
-export function createTestTool(options?: Partial<ToolOptions>): Tool<TestPluginRegistry> {
-  const tool = new Tool<TestPluginRegistry>({
+export interface TestToolConfig extends ToolConfig {
+  plugins: PluginConfigOption<Plugin<any>>;
+}
+
+export const TEST_TOOL_CONFIG = {
+  ...DEFAULT_TOOL_CONFIG,
+  plugins: [],
+};
+
+export function createTestTool(
+  options?: Partial<ToolOptions>,
+): Tool<TestPluginRegistry, TestToolConfig> {
+  const tool = new Tool<TestPluginRegistry, TestToolConfig>({
     appName: 'test-boost',
     appPath: __dirname,
     ...options,
@@ -74,7 +86,7 @@ export function createTestTool(options?: Partial<ToolOptions>): Tool<TestPluginR
 
   tool.registerPlugin('plugin', Plugin);
   tool.args = { $0: '', _: [] };
-  tool.config = { ...DEFAULT_TOOL_CONFIG };
+  tool.config = { ...TEST_TOOL_CONFIG };
   tool.package = { name: '' };
   // @ts-ignore Allow private access and avoid loaders
   tool.initialized = true;

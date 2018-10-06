@@ -4,14 +4,20 @@ import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import DefaultReporter from '../src/reporters/DefaultReporter';
 import ErrorReporter from '../src/reporters/ErrorReporter';
-import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath, copyFixtureToMock, createTestTool, TestPluginRegistry } from './helpers';
+import {
+  getFixturePath,
+  copyFixtureToMock,
+  createTestTool,
+  TestPluginRegistry,
+  TestToolConfig,
+  TEST_TOOL_CONFIG,
+} from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
 
 describe('Tool', () => {
-  let tool: Tool<TestPluginRegistry>;
+  let tool: Tool<TestPluginRegistry, TestToolConfig>;
 
   beforeEach(() => {
     tool = createTestTool({
@@ -166,7 +172,7 @@ describe('Tool', () => {
       tool.loadConfig();
 
       expect(tool.config).toEqual({
-        ...DEFAULT_TOOL_CONFIG,
+        ...TEST_TOOL_CONFIG,
         foo: 'bar',
       });
     });
@@ -207,7 +213,7 @@ describe('Tool', () => {
     });
 
     it('doesnt load if no plugins found in config', () => {
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [] };
+      tool.config = { ...TEST_TOOL_CONFIG };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual({ plugin: [] });
@@ -216,7 +222,7 @@ describe('Tool', () => {
     it('doesnt load if initialized', () => {
       // @ts-ignore Allow private access
       tool.initialized = true;
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: ['foo'] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual({ plugin: [] });
@@ -226,7 +232,7 @@ describe('Tool', () => {
       const plugin = new Plugin();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [plugin] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
       tool.loadPlugins();
 
       expect(spy).toHaveBeenCalled();
@@ -239,7 +245,7 @@ describe('Tool', () => {
 
       const plugin = new TestPlugin();
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [plugin] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
       tool.loadPlugins();
 
       expect(plugin.tool).toBe(tool);
@@ -254,7 +260,7 @@ describe('Tool', () => {
       bar.priority = 2;
       foo.priority = 3;
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [foo, bar, baz] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: [foo, bar, baz] };
       tool.loadPlugins();
 
       expect(tool.plugins).toEqual({ plugin: [baz, bar, foo] });
@@ -287,7 +293,7 @@ describe('Tool', () => {
     });
 
     it('loads default reporter if config not set', () => {
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [] };
       tool.loadReporters();
 
       expect(tool.reporters[1]).toBeInstanceOf(DefaultReporter);
@@ -296,7 +302,7 @@ describe('Tool', () => {
     it('loads reporter using a string', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['foo'] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
       tool.loadReporters();
 
       expect(tool.reporters[1]).toBeInstanceOf(Reporter);
@@ -309,7 +315,7 @@ describe('Tool', () => {
     it('loads reporter using an object', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
       tool.loadReporters();
 
       expect(tool.reporters[1]).toBeInstanceOf(Reporter);
@@ -322,7 +328,7 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
       tool.loadReporters();
 
       const [, reporter] = tool.reporters;
