@@ -101,4 +101,10 @@ describe('PoolExecutor', () => {
     expect(taskSpy).toHaveBeenCalledWith(task, 'foo', true);
     expect(routineSpy).toHaveBeenCalledWith(routine, 'foo', true);
   });
+
+  it('doesnt fail when an empty queue tries to run', async () => {
+    const result = await executor.runTask();
+
+    expect(result).toBeUndefined();
+  });
 });

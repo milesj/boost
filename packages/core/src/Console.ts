@@ -111,7 +111,12 @@ export default class Console extends Emitter {
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code: number = 1, force: boolean = false) {
+  exit(
+    message: string | Error | null,
+    code: number,
+    force: boolean = false,
+    abort: boolean = false,
+  ) {
     let error = null;
 
     if (message !== null) {
@@ -130,8 +135,13 @@ export default class Console extends Emitter {
     this.handleFinalRender(error);
 
     // Unwrap our streams
-    this.err = this.unwrapStream(process.stderr, 'stderr');
-    this.out = this.unwrapStream(process.stdout, 'stdout');
+    this.err = this.unwrapStream('stderr');
+    this.out = this.unwrapStream('stdout');
+
+    // For testing only
+    if (abort) {
+      return;
+    }
 
     // Run in the next tick so that listeners have a chance to run
     process.nextTick(() => {
@@ -139,6 +149,7 @@ export default class Console extends Emitter {
         // eslint-disable-next-line unicorn/no-process-exit
         process.exit(code);
       } else {
+        // istanbul ignore next
         process.exitCode = code;
       }
     });
@@ -273,10 +284,7 @@ export default class Console extends Emitter {
    * Debounce the render as to avoid tearing.
    */
   render(): this {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-      this.refreshTimer = null;
-    }
+    this.resetRefreshTimer();
 
     if (!this.renderTimer) {
       this.renderTimer = setTimeout(() => {
@@ -300,17 +308,30 @@ export default class Console extends Emitter {
    * Reset both the render and background refresh timers.
    */
   resetTimers(): this {
-    if (this.renderTimer) {
-      clearTimeout(this.renderTimer);
-      this.renderTimer = null;
-    }
+    this.resetRenderTimer();
+    this.resetRefreshTimer();
 
+    return this;
+  }
+
+  /**
+   * Reset the background refresh timer.
+   */
+  resetRefreshTimer() {
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer);
       this.refreshTimer = null;
     }
+  }
 
-    return this;
+  /**
+   * Reset the render only timer.
+   */
+  resetRenderTimer() {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = null;
+    }
   }
 
   /**
@@ -327,11 +348,11 @@ export default class Console extends Emitter {
    */
   start(args: any[] = []): this {
     if (!this.err) {
-      this.err = this.wrapStream(process.stderr, 'stderr');
+      this.err = this.wrapStream('stderr');
     }
 
     if (!this.out) {
-      this.out = this.wrapStream(process.stdout, 'stdout');
+      this.out = this.wrapStream('stdout');
     }
 
     this.debug('Starting console rendering process');
@@ -345,10 +366,7 @@ export default class Console extends Emitter {
    * Automatically refresh in the background if some tasks are taking too long.
    */
   startBackgroundTimer() {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-    }
-
+    this.resetRefreshTimer();
     this.refreshTimer = setTimeout(() => {
       this.handleRender();
     }, BG_REFRESH_RATE);
@@ -357,10 +375,13 @@ export default class Console extends Emitter {
   /**
    * Unwrap a stream and reset it back to normal.
    */
-  unwrapStream(stream: NodeJS.WriteStream, name: string): undefined {
+  unwrapStream(name: 'stdout' | 'stderr'): undefined {
     this.debug('Unwrapping %s stream', name);
 
+    // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
+      const stream = process[name];
+
       // @ts-ignore
       stream.write = stream.originalWrite;
     }
@@ -372,9 +393,10 @@ export default class Console extends Emitter {
    * Wrap a stream and buffer the output as to not collide with our reporter.
    */
   /* istanbul ignore next */
-  wrapStream(stream: NodeJS.WriteStream, name: string): WrappedStream {
+  wrapStream(name: 'stdout' | 'stderr'): WrappedStream {
     this.debug('Wrapping %s stream', name);
 
+    const stream = process[name];
     const originalWrite = stream.write.bind(stream);
 
     if (process.env.NODE_ENV === 'test') {

@@ -22,7 +22,7 @@ export default class FileBackend {
 
   type: string = 'backend';
 
-  init(services: any, options: Partial<FileBackendOptions> = {}) {
+  init(services: any, options: Partial<FileBackendOptions>) {
     this.services = services;
     this.options = { ...this.options, ...options };
   }

@@ -108,6 +108,10 @@ describe('ConfigLoader', () => {
       expect(loader.findConfigInWorkspaceRoot('/path/node_modules/path')).toBeNull();
     });
 
+    it('returns null when no package.json found in the tree', () => {
+      expect(loader.findConfigInWorkspaceRoot('/')).toBeNull();
+    });
+
     it('returns null when workspace root found and pattern does not match', () => {
       expect(
         loader.findConfigInWorkspaceRoot(getFixturePath('workspace-mismatch', './packages/foo')),
@@ -116,7 +120,13 @@ describe('ConfigLoader', () => {
 
     it('returns null when workspace root found and no config file', () => {
       expect(
-        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-mismatch', './packages/foo')),
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-no-config', './packages/foo')),
+      ).toBeNull();
+    });
+
+    it('returns null when no workspace root could be found', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-no-packages', './packages/foo')),
       ).toBeNull();
     });
 

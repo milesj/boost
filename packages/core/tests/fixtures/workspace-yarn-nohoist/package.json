@@ -1,5 +1,12 @@
 {
   "name": "test-boost-workspace-yarn-nohoist",
   "version": "0.0.0",
-  "workspaces": ["packages/*"]
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/react-native/**"
+    ]
+  }
 }

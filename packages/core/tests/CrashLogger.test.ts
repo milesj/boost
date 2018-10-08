@@ -12,11 +12,24 @@ describe('CrashLogger', () => {
 
   beforeEach(() => {
     tool = createTestTool();
-
-    logger = new CrashLogger(tool);
   });
 
   it('writes to a log file', () => {
+    logger = new CrashLogger(tool);
+    logger.log(new Error());
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      path.join(tool.options.root, 'test-boost-error.log'),
+      expect.anything(),
+      'utf8',
+    );
+  });
+
+  it('with different parameters', () => {
+    tool.config.extends = ['./some/other/file.js'];
+    tool.options.scoped = true;
+
+    logger = new CrashLogger(tool);
     logger.log(new Error());
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(

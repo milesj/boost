@@ -25,6 +25,7 @@ export default class CrashLogger {
     try {
       this.add('Yarn', String(execa.shellSync('yarn --version').stdout));
     } catch {
+      // istanbul ignore next
       this.add('Yarn', '(Not installed)');
     }
 

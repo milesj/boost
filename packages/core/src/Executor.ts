@@ -120,6 +120,7 @@ export default class Executor<Ctx extends Context, Options = {}> {
       instance = Object.getPrototypeOf(instance);
     } while (instance);
 
+    // istanbul ignore next
     return name;
   }
 

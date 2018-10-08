@@ -96,33 +96,30 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
     args: string[],
     options: ExecaOptions & CommandOptions = {},
   ): Promise<ExecaReturns> {
-    const stream = options.shell
-      ? execa.shell(`${command} ${args.join(' ')}`.trim(), options)
-      : execa(command, args, options);
+    const { shell, task, wrap, ...opts } = options;
+    const stream = shell
+      ? execa.shell(`${command} ${args.join(' ')}`.trim(), opts)
+      : execa(command, args, opts);
 
     this.tool.console.emit('command', [command, this]);
 
     // Push chunks to the reporter
-    const task = options.task || this;
+    const unit = task || this;
     const handler = (line: string) => {
-      /* istanbul ignore next */
-      if (task.status === STATUS_RUNNING) {
-        task.statusText = line;
+      if (unit.status === STATUS_RUNNING) {
+        unit.statusText = line;
         this.tool.console.emit('command.data', [command, line, this]);
       }
     };
 
-    if (stream && stream.stdout) {
+    if (!shell) {
       (stream.stdout as Readable).pipe(split()).on('data', handler);
-    }
-
-    if (stream && stream.stderr) {
       (stream.stderr as Readable).pipe(split()).on('data', handler);
     }
 
     // Allow consumer to wrap functionality
-    if (typeof options.wrap === 'function') {
-      options.wrap(stream as ExecaChildProcess);
+    if (typeof wrap === 'function') {
+      wrap(stream as ExecaChildProcess);
     }
 
     return wrapWithPromise(stream);

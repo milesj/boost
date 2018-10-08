@@ -133,15 +133,12 @@ describe('Console', () => {
       });
     });
 
-    it('unwraps streams', done => {
+    it('unwraps streams', () => {
       const spy = jest.spyOn(cli, 'unwrapStream');
 
-      cli.exit(null, 2, true);
+      cli.exit(null, 2, false, true);
 
-      process.nextTick(() => {
-        expect(spy).toHaveBeenCalledTimes(2);
-        done();
-      });
+      expect(spy).toHaveBeenCalledTimes(2);
     });
 
     it('displays logs on success', () => {
@@ -149,7 +146,7 @@ describe('Console', () => {
 
       const spy = jest.spyOn(cli, 'displayLogs');
 
-      cli.exit(null);
+      cli.exit(null, 0, false, true);
 
       expect(spy).toHaveBeenCalledWith(['foo']);
     });
@@ -159,7 +156,7 @@ describe('Console', () => {
 
       const spy = jest.spyOn(cli, 'displayLogs');
 
-      cli.exit(new Error('Oops'));
+      cli.exit(new Error('Oops'), 1, false, true);
 
       expect(spy).toHaveBeenCalledWith(['foo']);
     });
@@ -169,7 +166,7 @@ describe('Console', () => {
       const error = new Error('Oops');
 
       cli.handleFinalRender = spy;
-      cli.exit(error);
+      cli.exit(error, 1, false, true);
 
       expect(spy).toHaveBeenCalledWith(error);
     });
@@ -396,15 +393,26 @@ describe('Console', () => {
 
   describe('render()', () => {
     let spy: jest.SpyInstance;
+    let clearSpy: jest.SpyInstance;
 
     beforeEach(() => {
       jest.useFakeTimers();
       spy = jest.spyOn(global, 'setTimeout');
+      clearSpy = jest.spyOn(global, 'clearTimeout');
     });
 
     afterEach(() => {
       spy.mockRestore();
+      clearSpy.mockRestore();
       jest.useRealTimers();
+    });
+
+    it('clears refresh timer', () => {
+      cli.refreshTimer = 1 as any;
+      cli.render();
+
+      expect(clearSpy).toHaveBeenCalled();
+      expect(cli.refreshTimer).toBeNull();
     });
 
     it('schedules a timer', () => {
@@ -423,6 +431,19 @@ describe('Console', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
+
+    it('calls handleRender() after timeout', () => {
+      const renderSpy = jest.fn();
+
+      cli.handleRender = renderSpy;
+      cli.render();
+
+      expect(renderSpy).not.toHaveBeenCalled();
+
+      jest.runOnlyPendingTimers();
+
+      expect(renderSpy).toHaveBeenCalled();
+    });
   });
 
   describe('resetCursor()', () => {
@@ -438,6 +459,53 @@ describe('Console', () => {
       cli.showCursor();
 
       expect(cli.out).toHaveBeenCalledWith('\x1B[?25h');
+    });
+  });
+
+  describe('startBackgroundTimer()', () => {
+    let spy: jest.SpyInstance;
+    let clearSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      spy = jest.spyOn(global, 'setTimeout');
+      clearSpy = jest.spyOn(global, 'clearTimeout');
+    });
+
+    afterEach(() => {
+      spy.mockRestore();
+      clearSpy.mockRestore();
+      jest.useRealTimers();
+    });
+
+    it('clears refresh timer', () => {
+      cli.refreshTimer = 1 as any;
+      cli.startBackgroundTimer();
+
+      expect(clearSpy).toHaveBeenCalled();
+      expect(cli.refreshTimer).not.toBe(1);
+    });
+
+    it('schedules a timer', () => {
+      expect(cli.refreshTimer).toBeNull();
+
+      cli.startBackgroundTimer();
+
+      expect(cli.refreshTimer).not.toBeNull();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('calls handleRender() after timeout', () => {
+      const renderSpy = jest.fn();
+
+      cli.handleRender = renderSpy;
+      cli.render();
+
+      expect(renderSpy).not.toHaveBeenCalled();
+
+      jest.runOnlyPendingTimers();
+
+      expect(renderSpy).toHaveBeenCalled();
     });
   });
 
