@@ -1,0 +1,7 @@
+{
+  "name": "test-boost-workspace-no-config",
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*"
+  ]
+}

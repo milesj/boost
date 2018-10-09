@@ -4,14 +4,32 @@ import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import DefaultReporter from '../src/reporters/DefaultReporter';
 import ErrorReporter from '../src/reporters/ErrorReporter';
-import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import enableDebug from '../src/helpers/enableDebug';
-import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
+import {
+  getFixturePath,
+  copyFixtureToMock,
+  createTestTool,
+  TestPluginRegistry,
+  TestToolConfig,
+  TEST_TOOL_CONFIG,
+} from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
 
+class Foo extends Plugin<any> {}
+class Bar extends Plugin<any> {}
+class Baz {}
+
 describe('Tool', () => {
-  let tool: Tool;
+  let tool: Tool<TestPluginRegistry, TestToolConfig>;
+  let toolWithPlugins: Tool<
+    TestPluginRegistry & {
+      foo: Foo;
+      bar: Bar;
+      baz: Baz;
+    },
+    TestToolConfig
+  >;
 
   beforeEach(() => {
     tool = createTestTool({
@@ -19,24 +37,69 @@ describe('Tool', () => {
     });
     // @ts-ignore Allow private access
     tool.initialized = false; // Reset
+
+    toolWithPlugins = createTestTool({
+      root: getFixturePath('app'),
+    }) as any;
   });
 
   describe('constructor()', () => {
-    it('enables debug if --debug is passed', () => {
-      tool = new Tool(
-        {
-          appName: 'test-boost',
-          appPath: __dirname,
-          root: getFixturePath('app'),
-        },
-        ['--debug'],
-      );
-
-      expect(enableDebug).toHaveBeenCalledWith('test-boost');
-    });
-
     it('sets an error reporter', () => {
       expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
+    });
+  });
+
+  describe('addPlugin()', () => {
+    beforeEach(() => {
+      toolWithPlugins.registerPlugin('foo', Foo);
+      toolWithPlugins.registerPlugin('bar', Bar);
+      toolWithPlugins.registerPlugin('baz', Baz);
+    });
+
+    it('errors if type has not been registered', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid type
+        toolWithPlugins.addPlugin('qux', new Plugin());
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('errors if type does not extend `Plugin`', () => {
+      expect(() => {
+        toolWithPlugins.addPlugin('baz', new Baz());
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('errors if type does not extend defined contract', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid instance
+        toolWithPlugins.addPlugin('foo', new Bar());
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('sets tool on plugin', () => {
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(plugin.tool).toBe(toolWithPlugins);
+    });
+
+    it('calls bootstrap() on plugin', () => {
+      const plugin = new Foo();
+      const spy = jest.spyOn(plugin, 'bootstrap');
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('adds to plugins list', () => {
+      expect(toolWithPlugins.plugins.foo).toHaveLength(0);
+
+      toolWithPlugins.addPlugin('foo', new Foo());
+      toolWithPlugins.addPlugin('foo', new Foo());
+
+      expect(toolWithPlugins.plugins.foo).toHaveLength(2);
     });
   });
 
@@ -62,7 +125,8 @@ describe('Tool', () => {
       expect(typeof i18n).toBe('object');
       expect(i18n.options.backend).toEqual({
         resourcePaths: [
-          path.join(__dirname, '../src/resources'),
+          path.join(__dirname, '../resources'),
+          path.join(__dirname, '../resources'),
           path.join(__dirname, 'resources'),
         ],
       });
@@ -91,9 +155,16 @@ describe('Tool', () => {
   });
 
   describe('getPlugin()', () => {
+    it('errors for invalid type', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid type
+        tool.getPlugin('unknown', 'foo');
+      }).toThrowErrorMatchingSnapshot();
+    });
+
     it('errors if not found', () => {
       expect(() => {
-        tool.getPlugin('foo');
+        tool.getPlugin('plugin', 'foo');
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -101,9 +172,9 @@ describe('Tool', () => {
       const plugin = new Plugin();
       plugin.name = 'foo';
 
-      tool.plugins.push(plugin);
+      tool.plugins.plugin = [plugin];
 
-      expect(tool.getPlugin('foo')).toBe(plugin);
+      expect(tool.getPlugin('plugin', 'foo')).toBe(plugin);
     });
   });
 
@@ -179,13 +250,13 @@ describe('Tool', () => {
       tool.loadConfig();
 
       expect(tool.config).toEqual({
-        ...DEFAULT_TOOL_CONFIG,
+        ...TEST_TOOL_CONFIG,
         foo: 'bar',
       });
     });
 
     it('enables debug if debug config is true', () => {
-      tool.argv = ['--debug'];
+      tool.args = { $0: '', _: [], debug: true };
       tool.loadConfig();
 
       expect(enableDebug).toHaveBeenCalledWith('test-boost');
@@ -220,26 +291,26 @@ describe('Tool', () => {
     });
 
     it('doesnt load if no plugins found in config', () => {
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [] };
+      tool.config = { ...TEST_TOOL_CONFIG };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual([]);
+      expect(tool.plugins).toEqual({ plugin: [] });
     });
 
     it('doesnt load if initialized', () => {
       // @ts-ignore Allow private access
       tool.initialized = true;
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: ['foo'] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual([]);
+      expect(tool.plugins).toEqual({ plugin: [] });
     });
 
     it('bootstraps plugins on load', () => {
       const plugin = new Plugin();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [plugin] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
       tool.loadPlugins();
 
       expect(spy).toHaveBeenCalled();
@@ -252,7 +323,7 @@ describe('Tool', () => {
 
       const plugin = new TestPlugin();
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [plugin] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
       tool.loadPlugins();
 
       expect(plugin.tool).toBe(tool);
@@ -267,10 +338,10 @@ describe('Tool', () => {
       bar.priority = 2;
       foo.priority = 3;
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, plugins: [foo, bar, baz] };
+      tool.config = { ...TEST_TOOL_CONFIG, plugins: [foo, bar, baz] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual([baz, bar, foo]);
+      expect(tool.plugins).toEqual({ plugin: [baz, bar, foo] });
     });
   });
 
@@ -300,7 +371,7 @@ describe('Tool', () => {
     });
 
     it('loads default reporter if config not set', () => {
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [] };
       tool.loadReporters();
 
       expect(tool.reporters[1]).toBeInstanceOf(DefaultReporter);
@@ -309,7 +380,7 @@ describe('Tool', () => {
     it('loads reporter using a string', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: ['foo'] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
       tool.loadReporters();
 
       expect(tool.reporters[1]).toBeInstanceOf(Reporter);
@@ -322,7 +393,7 @@ describe('Tool', () => {
     it('loads reporter using an object', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
       tool.loadReporters();
 
       expect(tool.reporters[1]).toBeInstanceOf(Reporter);
@@ -335,7 +406,7 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.config = { ...DEFAULT_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
       tool.loadReporters();
 
       const [, reporter] = tool.reporters;
@@ -363,6 +434,36 @@ describe('Tool', () => {
       tool.logError('Some error: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('Some error: foo');
+    });
+  });
+
+  describe('registerPlugin()', () => {
+    it('errors if type is already defined', () => {
+      expect(() => {
+        toolWithPlugins.registerPlugin('foo', Foo);
+        toolWithPlugins.registerPlugin('foo', Foo);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('creates a plugins property', () => {
+      expect(toolWithPlugins.plugins.baz).toBeUndefined();
+
+      toolWithPlugins.registerPlugin('baz', Baz);
+
+      expect(toolWithPlugins.plugins.baz).toEqual([]);
+    });
+
+    it('creates a plugins type struct', () => {
+      expect(toolWithPlugins.pluginTypes.baz).toBeUndefined();
+
+      toolWithPlugins.registerPlugin('baz', Baz);
+
+      expect(toolWithPlugins.pluginTypes.baz).toEqual({
+        contract: Baz,
+        loader: expect.anything(),
+        singularName: 'baz',
+        pluralName: 'bazs',
+      });
     });
   });
 });

@@ -3,6 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable no-cond-assign */
+
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
@@ -10,7 +12,6 @@ import path from 'path';
 import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
-import pluralize from 'pluralize';
 import { Arguments } from 'yargs-parser';
 import optimal, { array, bool, instance, number, object, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
@@ -18,8 +19,7 @@ import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import Tool from './Tool';
-import Plugin from './Plugin';
+import Tool, { PluginType } from './Tool';
 import Reporter from './Reporter';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN, DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, PackageConfig } from './types';
@@ -205,11 +205,15 @@ export default class ConfigLoader {
   /**
    * Inherit configuration settings from defined CLI options.
    */
-  inheritFromArgs(config: any, args: Arguments): any {
-    const { configBlueprint, pluginAlias } = this.tool.options;
-    const pluralPluginAlias = pluralize(pluginAlias);
+  inheritFromArgs<T>(config: T, args: Arguments): T {
+    // @ts-ignore Allow spread
     const nextConfig = { ...config };
-    const keys = new Set([...Object.keys(DEFAULT_TOOL_CONFIG), ...Object.keys(configBlueprint)]);
+    const keys = new Set([
+      ...Object.keys(DEFAULT_TOOL_CONFIG),
+      ...Object.keys(this.tool.options.configBlueprint),
+    ]);
+
+    this.debug('Inheriting config from CLI options');
 
     Object.keys(args).forEach(key => {
       const value = args[key];
@@ -222,18 +226,27 @@ export default class ConfigLoader {
           break;
 
         case 'reporter':
+          this.debug('  --reporter=[%s]', value.join(', '));
           nextConfig.reporters = (nextConfig.reporters || []).concat(value);
           break;
 
-        case pluginAlias:
-          nextConfig[pluralPluginAlias] = (nextConfig[pluralPluginAlias] || []).concat(value);
-          break;
+        default: {
+          const pluginType = (this.tool.pluginTypes as any)[key];
 
-        default:
-          if (keys.has(key)) {
+          // Plugins
+          if (pluginType) {
+            const { pluralName, singularName } = pluginType as PluginType<any>;
+
+            this.debug('  --%s=[%s]', singularName, value.join(', '));
+            nextConfig[pluralName] = (nextConfig[pluralName] || []).concat(value);
+
+            // Other
+          } else if (keys.has(key)) {
+            this.debug('  --%s=%s', key, value);
             nextConfig[key] = value;
           }
           break;
+        }
       }
     });
 
@@ -253,7 +266,8 @@ export default class ConfigLoader {
 
     this.debug('Locating configuration');
 
-    const { configBlueprint, pluginAlias, root } = this.tool.options;
+    const { configBlueprint, root } = this.tool.options;
+    const pluginsBlueprint: any = {};
     const configPath =
       this.findConfigFromArg(args.config) ||
       this.findConfigInPackageJSON(this.package) ||
@@ -264,10 +278,24 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
+    Object.values(this.tool.pluginTypes).forEach(type => {
+      const { contract, singularName, pluralName } = type as PluginType<any>;
+
+      this.debug('Generating %s blueprint', chalk.green(singularName));
+
+      // prettier-ignore
+      pluginsBlueprint[pluralName] = array(union([
+        string(),
+        shape({ [singularName]: string() }),
+        instance(contract),
+      ]));
+    });
+
     return optimal(
       this.inheritFromArgs(this.parseAndExtend(configPath), args),
       {
         ...configBlueprint,
+        ...pluginsBlueprint,
         debug: bool(),
         extends: array(string()),
         locale: string().empty(),
@@ -281,12 +309,6 @@ export default class ConfigLoader {
         settings: object(),
         silent: bool(),
         theme: string('default'),
-        // prettier-ignore
-        [pluralize(pluginAlias)]: array(union([
-          string(),
-          shape({ [pluginAlias]: string() }),
-          instance(Plugin),
-        ]))
       },
       {
         name: 'ConfigLoader',
@@ -433,7 +455,8 @@ export default class ConfigLoader {
         throw new TypeError(this.tool.msg('errors:configExtendsInvalid'));
       }
 
-      const { appName, scoped, pluginAlias, root } = this.tool.options;
+      const { appName, scoped, root } = this.tool.options;
+      let match = null;
 
       // Absolute path, use it directly
       if (path.isAbsolute(extendPath)) {
@@ -448,10 +471,10 @@ export default class ConfigLoader {
         return this.resolveModuleConfigPath(appName, extendPath, true);
 
         // Plugin, resolve to a node module
-      } else if (extendPath.match(PLUGIN_NAME_PATTERN)) {
+      } else if ((match = extendPath.match(PLUGIN_NAME_PATTERN))) {
         return this.resolveModuleConfigPath(
           appName,
-          formatModuleName(appName, pluginAlias, extendPath, scoped),
+          formatModuleName(appName, match[1], extendPath, scoped),
           true,
         );
       }

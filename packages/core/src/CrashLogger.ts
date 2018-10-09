@@ -16,12 +16,18 @@ export default class CrashLogger {
 
   logPath: string;
 
-  constructor({ config, options }: Tool) {
+  constructor({ config, options, pluginTypes }: Tool) {
     this.logPath = path.join(options.root, `${options.appName}-error.log`);
 
     this.add('Node', process.version.slice(1));
-    this.add('NPM', String(execa.shellSync('npm --version').stdout) || '(Not installed)');
-    this.add('Yarn', String(execa.shellSync('yarn --version').stdout) || '(Not installed)');
+    this.add('NPM', String(execa.shellSync('npm --version').stdout));
+
+    try {
+      this.add('Yarn', String(execa.shellSync('yarn --version').stdout));
+    } catch {
+      // istanbul ignore next
+      this.add('Yarn', '(Not installed)');
+    }
 
     this.addTitle('Process');
     this.add('ID', process.pid);
@@ -53,8 +59,8 @@ export default class CrashLogger {
     this.addTitle('Tool Instance');
     this.add('App name', options.appName);
     this.add('App path', options.appPath);
-    this.add('Plugin alias', options.pluginAlias);
-    this.add('Scoped package', util.inspect(options.scoped));
+    this.add('Plugin types', Object.keys(pluginTypes).join(', '));
+    this.add('Scoped package', options.scoped ? 'Yes' : 'No');
     this.add('Root', options.root);
     this.add('Configs path', path.join(options.root, options.configFolder));
     this.add('Package path', path.join(options.root, 'package.json'));

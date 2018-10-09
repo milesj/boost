@@ -17,7 +17,7 @@ import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
-import ModuleLoader from './ModuleLoader';
+import ModuleLoader, { Constructor } from './ModuleLoader';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 import DefaultReporter from './reporters/DefaultReporter';
@@ -40,14 +40,23 @@ export interface ToolOptions {
   configFolder: string;
   footer: string;
   header: string;
-  pluginAlias: string;
   root: string;
   scoped: boolean;
   workspaceRoot: string;
 }
 
-export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitter {
-  args: Arguments;
+export interface PluginType<T> {
+  contract: Constructor<T>;
+  loader: ModuleLoader<T>;
+  pluralName: string;
+  singularName: string;
+}
+
+export default class Tool<
+  PluginRegistry = {},
+  Config extends ToolConfig = ToolConfig
+> extends Emitter {
+  args?: Arguments;
 
   argv: string[] = [];
 
@@ -62,7 +71,9 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
 
   package: PackageConfig = { name: '' };
 
-  plugins: Plugin<any>[] = [];
+  plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
+
+  pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
 
   reporters: Reporter<any>[] = [];
 
@@ -71,8 +82,6 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
   private configLoader: ConfigLoader;
 
   private initialized: boolean = false;
-
-  private pluginLoader: ModuleLoader<Plugin<any>>;
 
   private reporterLoader: ModuleLoader<Reporter<any>>;
 
@@ -91,7 +100,6 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
         configFolder: string('./configs'),
         footer: string().empty(),
         header: string().empty(),
-        pluginAlias: string('plugin'),
         root: string(process.cwd()),
         scoped: bool(),
         workspaceRoot: string().empty(),
@@ -100,25 +108,6 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
         name: 'Tool',
       },
     );
-
-    this.args = parseArgs(
-      this.argv,
-      mergeWith(
-        {
-          array: ['extends', this.options.pluginAlias, 'reporter'],
-          boolean: ['debug', 'silent'],
-          number: ['output'],
-          string: ['config', 'extends', 'locale', 'theme'],
-        },
-        this.config.argOptions,
-        handleMerge,
-      ),
-    );
-
-    // Enable debugging as early as possible
-    if (this.args.debug) {
-      enableDebug(this.options.appName);
-    }
 
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
@@ -129,13 +118,12 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
     // Initialize the console first so we can start logging
     this.console = new Console(this);
 
-    // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter());
-
     // Make these available for testing purposes
     this.configLoader = new ConfigLoader(this);
-    this.pluginLoader = new ModuleLoader(this, this.options.pluginAlias, Plugin);
     this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter, true);
+
+    // Add a reporter to catch errors during initialization
+    this.addReporter(new ErrorReporter());
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -144,19 +132,28 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
         this.emit('exit', [code]);
       });
     }
-
-    // eslint-disable-next-line global-require
-    this.debug('Using boost v%s', require('../package.json').version);
   }
 
   /**
-   * Add a plugin and bootstrap with the tool.
+   * Add a plugin for a specific contract type and bootstrap with the tool.
    */
-  addPlugin(plugin: Plugin<any>): this {
+  addPlugin<K extends keyof PluginRegistry>(typeName: K, plugin: PluginRegistry[K]): this {
+    const type = this.pluginTypes[typeName];
+
+    if (!type) {
+      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
+    } else if (!(plugin instanceof Plugin)) {
+      throw new TypeError(this.msg('errors:pluginNotExtended', { parent: 'Plugin', typeName }));
+    } else if (!(plugin instanceof type.contract)) {
+      throw new TypeError(
+        this.msg('errors:pluginNotExtended', { parent: type.contract.name, typeName }),
+      );
+    }
+
     plugin.tool = this;
     plugin.bootstrap();
 
-    this.plugins.push(plugin);
+    this.plugins[typeName]!.push(plugin);
 
     return this;
   }
@@ -199,7 +196,8 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
         {
           backend: {
             resourcePaths: [
-              path.join(__dirname, 'resources'),
+              path.join(__dirname, '../resources'),
+              path.join(this.options.appPath, '../resources'),
               path.join(this.options.appPath, 'resources'),
             ],
           },
@@ -211,6 +209,7 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
           ns: ['app', 'common', 'errors', 'prompts'],
         },
         error => {
+          // istanbul ignore next
           if (error) {
             throw error;
           }
@@ -228,10 +227,10 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
   }
 
   /**
-   * Get a plugin by name.
+   * Return a plugin by name and type.
    */
-  getPlugin(name: string): Plugin<any> {
-    const plugin = this.plugins.find(p => p.name === name);
+  getPlugin<K extends keyof PluginRegistry>(typeName: K, name: string): PluginRegistry[K] {
+    const plugin = this.getPlugins(typeName).find(p => p instanceof Plugin && p.name === name);
 
     if (plugin) {
       return plugin;
@@ -239,17 +238,28 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
 
     throw new Error(
       this.msg('errors:pluginNotFound', {
-        alias: this.options.pluginAlias,
         name,
+        typeName,
       }),
     );
   }
 
   /**
-   * Get a reporter by name.
+   * Return all plugins by type.
+   */
+  getPlugins<K extends keyof PluginRegistry>(typeName: K): PluginRegistry[K][] {
+    if (!this.pluginTypes[typeName]) {
+      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
+    }
+
+    return this.plugins[typeName]! || [];
+  }
+
+  /**
+   * Return a reporter by name.
    */
   getReporter(name: string): Reporter<any> {
-    const reporter = this.reporters.find(r => r.name === name);
+    const reporter = this.getReporters().find(r => r.name === name);
 
     if (reporter) {
       return reporter;
@@ -259,7 +269,14 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
   }
 
   /**
-   * Return a list of all theme names.
+   * Return all reporters.
+   */
+  getReporters(): Reporter<any>[] {
+    return this.reporters;
+  }
+
+  /**
+   * Return a list of core bundled theme names.
    */
   getThemeList(): string[] {
     return Object.keys(themePalettes);
@@ -274,8 +291,26 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
     }
 
     const { appName } = this.options;
+    const pluginNames = Object.keys(this.pluginTypes);
 
-    this.debug('Initializing %s', chalk.green(appName));
+    this.debug('Initializing %s', chalk.yellow(appName));
+
+    // eslint-disable-next-line global-require
+    this.debug('Using boost v%s', require('../package.json').version);
+
+    this.args = parseArgs(
+      this.argv,
+      mergeWith(
+        {
+          array: ['reporter', ...pluginNames],
+          boolean: ['debug', 'silent'],
+          number: ['output'],
+          string: ['config', 'locale', 'reporter', 'theme', ...pluginNames],
+        },
+        this.options.argOptions,
+        handleMerge,
+      ),
+    );
 
     this.loadConfig();
     this.loadPlugins();
@@ -297,7 +332,7 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
     }
 
     this.package = this.configLoader.loadPackageJSON();
-    this.config = this.configLoader.loadConfig(this.args);
+    this.config = this.configLoader.loadConfig(this.args!);
 
     // Inherit workspace metadata
     this.options.workspaceRoot = this.configLoader.workspaceRoot;
@@ -325,24 +360,28 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
       return this;
     }
 
-    const pluralPluginAlias = pluralize(this.options.pluginAlias);
-
     if (isEmptyObject(this.config)) {
-      throw new Error(this.msg('errors:configNotLoaded', { name: pluralPluginAlias }));
+      throw new Error(this.msg('errors:configNotLoaded', { name: 'plugins' }));
     }
 
-    const plugins = this.pluginLoader.loadModules(this.config[pluralPluginAlias]);
+    Object.keys(this.pluginTypes).forEach(type => {
+      const typeName = type as keyof PluginRegistry;
+      const { loader, pluralName } = this.pluginTypes[typeName]!;
+      const plugins = loader.loadModules((this.config as any)[pluralName]);
 
-    // Sort plugins by priority
-    this.pluginLoader.debug('Sorting plugins by priority');
+      // Sort plugins by priority
+      loader.debug('Sorting by priority');
 
-    plugins.sort((a, b) => a.priority - b.priority);
+      plugins.sort(
+        (a, b) => (a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0),
+      );
 
-    // Bootstrap each plugin with the tool
-    this.pluginLoader.debug('Bootstrapping plugins with tool environment');
+      // Bootstrap each plugin with the tool
+      loader.debug('Bootstrapping with tool environment');
 
-    plugins.forEach(plugin => {
-      this.addPlugin(plugin);
+      plugins.forEach(plugin => {
+        this.addPlugin(typeName, plugin);
+      });
     });
 
     return this;
@@ -364,6 +403,7 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
 
     const reporters: Reporter<any>[] = [];
 
+    // istanbul ignore next
     if (process.env.CI && !process.env.BOOST_ENV) {
       this.reporterLoader.debug(
         'CI environment detected, using %s CI reporter',
@@ -413,11 +453,43 @@ export default class Tool<Config extends ToolConfig = ToolConfig> extends Emitte
   /**
    * Retrieve a translated message from a resource bundle.
    */
-  msg(key: string | string, params?: any, options?: i18next.TranslationOptions): string {
+  msg(
+    key: string | string,
+    params?: { [key: string]: any },
+    options?: i18next.TranslationOptions,
+  ): string {
     return this.translator.t(key, {
       interpolation: { escapeValue: false },
       replace: params,
       ...options,
     });
+  }
+
+  /**
+   * Register a custom type of plugin, with a defined contract that all instances should extend.
+   * The type name should be in singular form, as plural variants are generated automatically.
+   */
+  registerPlugin<K extends keyof PluginRegistry>(
+    typeName: K,
+    contract: Constructor<PluginRegistry[K]>,
+  ): this {
+    if (this.pluginTypes[typeName]) {
+      throw new Error(this.msg('errors:pluginContractExists', { typeName }));
+    }
+
+    const name = String(typeName);
+
+    this.debug('Registering new plugin type: %s', chalk.green(name));
+
+    this.plugins[typeName] = [];
+
+    this.pluginTypes[typeName] = {
+      contract,
+      loader: new ModuleLoader(this, name, contract),
+      pluralName: pluralize(name),
+      singularName: name,
+    };
+
+    return this;
   }
 }

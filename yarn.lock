@@ -1573,10 +1573,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/i18next@^11.9.0":
-  version "11.9.0"
-  resolved "https://registry.npmjs.org/@types/i18next/-/i18next-11.9.0.tgz#e3781b5b6a923902c63e61d09b98881999a4eb88"
-  integrity sha512-9ah3/OkCuZRH8QJPOfnTh5Q6JvohJivWGjmK5IgsvKEXCLpVbIPB/RXOM22Ms3xFT2Mbvt7d/mh4U7GIxEuN6A==
+"@types/i18next@^11.9.1":
+  version "11.9.1"
+  resolved "https://registry.npmjs.org/@types/i18next/-/i18next-11.9.1.tgz#af62e232007dd20e636f03e271af0b1dd1e57129"
+  integrity sha512-AgSgGHD2IiPVzoeCSU9lEVadKc23WzxWioB6weks/KRQqdA5y6bjYMKt2tZzaypKs5XM46s7fDAFwfxdaYZ5Ow==
 
 "@types/is-glob@^4.0.0":
   version "4.0.0"
@@ -2422,6 +2422,11 @@ camelcase@^4.0.0, camelcase@^4.1.0:
   resolved "https://registry.npmjs.org/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
   integrity sha1-1UVjW+HjPFQmScaRc+Xeas+uNN0=
 
+camelcase@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/camelcase/-/camelcase-5.0.0.tgz#03295527d58bd3cd4aa75363f35b2e8d97be2f42"
+  integrity sha512-faqwZqnWxbxn+F1d399ygeamQNy3lPp/H9H6rNrqYh4FSVCtcY+3cub1MxA8o9mDd55mM8Aghuu/kuyYA6VTsA==
+
 caniuse-db@^1.0.30000865:
   version "1.0.30000885"
   resolved "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000885.tgz#cdc98dd168ed59678650071f7f6a70910e275bc8"
@@ -3002,10 +3007,10 @@ debug@^2.1.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8, debug@^2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/debug/-/debug-4.0.1.tgz#f9bb36d439b8d1f0dd52d8fb6b46e4ebb8c1cd5b"
-  integrity sha512-K23FHJ/Mt404FSlp6gSZCevIbTMLX0j3fmHhUEhQ3Wq0FMODW3+cUSoLdy1Gx4polAf4t/lphhmHH35BB8cLYw==
+debug@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/debug/-/debug-4.1.0.tgz#373687bffa678b38b1cd91f861b63850035ddc87"
+  integrity sha512-heNPJUJIqC+xB6ayLAMHaIrmN9HKa7aQO8MGqKpvCA+uJYVcvR6l5kgdrhRuwPFHU7P5/A1w0BjByPHwpfTDKg==
   dependencies:
     ms "^2.1.1"
 
@@ -3022,7 +3027,7 @@ decamelize-keys@^1.0.0:
     decamelize "^1.1.0"
     map-obj "^1.0.0"
 
-decamelize@^1.1.0, decamelize@^1.1.1, decamelize@^1.1.2:
+decamelize@^1.1.0, decamelize@^1.1.1, decamelize@^1.1.2, decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
@@ -4606,10 +4611,10 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-i18next@^11.9.0:
-  version "11.9.0"
-  resolved "https://registry.npmjs.org/i18next/-/i18next-11.9.0.tgz#c30c0a5e0a857124923a8dd1ce8f1df603e30c70"
-  integrity sha512-NDuIoELzyJ+29kc29j9aKgzjZht4kEKh3PPdz0qCEC9ZUpgRVaWUdkMRES/NVTcpe1ei4MMwY8DNWBWCIUlAng==
+i18next@^11.9.1:
+  version "11.9.1"
+  resolved "https://registry.npmjs.org/i18next/-/i18next-11.9.1.tgz#f2718b11da2460e29e2dbd3dd8dea05dfc88e2dc"
+  integrity sha512-sUAfCdKYi8EufO6B8aY5RF/hqweCpRKvbxUhlzlmlAr+LgJQ2kXe/5y02kaPu6ApFIiW5WOz8+3ehoy97LUtMw==
 
 iconv-lite@0.4.23:
   version "0.4.23"
@@ -9083,6 +9088,14 @@ yargs-parser@^10.0.0, yargs-parser@^10.1.0:
   integrity sha512-VCIyR1wJoEBZUqk5PA+oOBF6ypbwh5aNB3I50guxAL/quggdfs4TtNHQrSazFA3fYZ+tEqfs0zIGlv0c/rgjbQ==
   dependencies:
     camelcase "^4.1.0"
+
+yargs-parser@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-11.0.0.tgz#d9fd0f0cd551a2a2ef9bbf42606ffb6211634232"
+  integrity sha512-dvsafRjM45h79WOTvS/dP35Sb31SlGAKz6tFjI97kGC4MJFBuzTZY6TTYHrz0QSMQdkyd8Y+RsOMLr+JY0nPFQ==
+  dependencies:
+    camelcase "^5.0.0"
+    decamelize "^1.2.0"
 
 yargs-parser@^9.0.2:
   version "9.0.2"

@@ -4,19 +4,17 @@ import execa from 'execa';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
-import { STATUS_PASSED, STATUS_FAILED, DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
-
-jest.mock('execa');
+import { STATUS_PASSED, STATUS_FAILED, STATUS_RUNNING } from '../src/constants';
+import { createTestTool, createTestRoutine, createTestDebugger, TEST_TOOL_CONFIG } from './helpers';
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
-  let tool: Tool;
+  let tool: Tool<any, any>;
 
   beforeEach(() => {
     tool = createTestTool();
     tool.config = {
-      ...DEFAULT_TOOL_CONFIG,
+      ...TEST_TOOL_CONFIG,
       baz: {
         compress: true,
         outDir: './out/',
@@ -135,23 +133,47 @@ describe('Routine', () => {
     });
   });
 
+  describe('execute()', () => {
+    it('errors when not defined', async () => {
+      class UndefinedRoutine extends Routine<any> {}
+
+      try {
+        routine = new UndefinedRoutine('undefined', 'title');
+
+        await routine.execute({});
+      } catch (error) {
+        expect(error).toEqual(new Error('execute() must be defined asynchronously.'));
+      }
+    });
+  });
+
   describe('executeCommand()', () => {
     it('runs a local command', async () => {
-      await routine.executeCommand('yarn', ['-v']);
+      const result = await routine.executeCommand('yarn', ['-v']);
 
-      expect(execa).toHaveBeenCalledWith('yarn', ['-v'], {});
+      expect(result).toEqual(
+        expect.objectContaining({ cmd: 'yarn -v', stdout: expect.stringMatching(/[\d.]+/u) }),
+      );
     });
 
     it('runs a local command in a shell', async () => {
-      await routine.executeCommand('yarn', ['-v'], { shell: true });
+      const spy = jest.spyOn(execa, 'shell');
+      const result = await routine.executeCommand('echo', ['boost'], { shell: true });
 
-      expect(execa.shell).toHaveBeenCalledWith('yarn -v', { shell: true });
+      expect(spy).toHaveBeenCalledWith('echo boost', {});
+      expect(result).toEqual(
+        expect.objectContaining({ cmd: '/bin/sh -c echo boost', stdout: 'boost' }),
+      );
     });
 
     it('runs a local command in a shell with args used directly', async () => {
-      await routine.executeCommand('yarn -v', [], { shell: true });
+      const spy = jest.spyOn(execa, 'shell');
+      const result = await routine.executeCommand('echo boost', [], { shell: true });
 
-      expect(execa.shell).toHaveBeenCalledWith('yarn -v', { shell: true });
+      expect(spy).toHaveBeenCalledWith('echo boost', {});
+      expect(result).toEqual(
+        expect.objectContaining({ cmd: '/bin/sh -c echo boost', stdout: 'boost' }),
+      );
     });
 
     it('calls callback with stream', async () => {
@@ -160,6 +182,22 @@ describe('Routine', () => {
       await routine.executeCommand('yarn', ['-v'], { wrap: spy });
 
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('pipes stdout/stderr to handler', async () => {
+      const spy = jest.spyOn(routine.tool.console, 'emit');
+      const task = new Task('title', () => {}, {});
+
+      task.status = STATUS_RUNNING;
+
+      await routine.executeCommand('yarn', ['-v'], { task });
+
+      expect(spy).toHaveBeenCalledWith('command', ['yarn', expect.anything()]);
+      expect(spy).toHaveBeenCalledWith('command.data', [
+        'yarn',
+        expect.stringMatching(/[\d.]+/u),
+        expect.anything(),
+      ]);
     });
   });
 

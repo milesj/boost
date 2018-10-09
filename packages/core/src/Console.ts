@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable unicorn/no-hex-escape, no-param-reassign */
+/* eslint-disable unicorn/no-hex-escape */
 
 import Emitter from './Emitter';
 import Tool from './Tool';
@@ -82,7 +82,6 @@ export default class Console extends Emitter {
     const { footer } = this.tool.options;
 
     if (footer) {
-      this.debug('Displaying console footer');
       this.write(footer, 1);
     }
   }
@@ -94,7 +93,6 @@ export default class Console extends Emitter {
     const { header } = this.tool.options;
 
     if (header) {
-      this.debug('Displaying console header');
       this.write(header, 1);
     }
   }
@@ -111,7 +109,12 @@ export default class Console extends Emitter {
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code: number = 1, force: boolean = false) {
+  exit(
+    message: string | Error | null,
+    code: number,
+    force: boolean = false,
+    abort: boolean = false,
+  ) {
     let error = null;
 
     if (message !== null) {
@@ -119,9 +122,9 @@ export default class Console extends Emitter {
     }
 
     if (error) {
-      this.debug('Exiting console with an error: %s', error.message);
+      this.debug('Exiting console with an error');
     } else {
-      this.debug('Exiting console');
+      this.debug('Exiting console rendering process');
     }
 
     this.emit('stop', [error, code]);
@@ -130,8 +133,13 @@ export default class Console extends Emitter {
     this.handleFinalRender(error);
 
     // Unwrap our streams
-    this.err = this.unwrapStream(process.stderr, 'stderr');
-    this.out = this.unwrapStream(process.stdout, 'stdout');
+    this.err = this.unwrapStream('stderr');
+    this.out = this.unwrapStream('stdout');
+
+    // For testing only
+    if (abort) {
+      return;
+    }
 
     // Run in the next tick so that listeners have a chance to run
     process.nextTick(() => {
@@ -139,6 +147,7 @@ export default class Console extends Emitter {
         // eslint-disable-next-line unicorn/no-process-exit
         process.exit(code);
       } else {
+        // istanbul ignore next
         process.exitCode = code;
       }
     });
@@ -176,7 +185,7 @@ export default class Console extends Emitter {
    */
   handleFailure = (error: Error) => {
     this.start();
-    this.debug('Uncaught exception or unresolved promise handled. Terminating.');
+    this.debug('Uncaught exception or unresolved promise handled');
     this.exit(error, 1, true);
   };
 
@@ -184,21 +193,22 @@ export default class Console extends Emitter {
    * Handle the final render before exiting.
    */
   handleFinalRender = (error: Error | null = null) => {
+    this.debug('Rendering final console output');
     this.resetTimers();
     this.clearLinesOutput();
     this.flushBufferedStreams();
-    this.displayHeader();
 
     if (error) {
       this.emit('render');
       this.displayLogs(this.errorLogs);
       this.emit('error', [error]);
     } else {
+      this.displayHeader();
       this.emit('render');
       this.displayLogs(this.logs);
+      this.displayFooter();
     }
 
-    this.displayFooter();
     this.flushBufferedOutput();
     this.flushBufferedStreams();
 
@@ -229,7 +239,7 @@ export default class Console extends Emitter {
    */
   handleSignal = () => {
     this.start();
-    this.debug('SIGINT or SIGTERM handled. Terminating.');
+    this.debug('SIGINT or SIGTERM handled');
     this.exit('Process has been terminated.', 1, true);
   };
 
@@ -273,10 +283,7 @@ export default class Console extends Emitter {
    * Debounce the render as to avoid tearing.
    */
   render(): this {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-      this.refreshTimer = null;
-    }
+    this.resetRefreshTimer();
 
     if (!this.renderTimer) {
       this.renderTimer = setTimeout(() => {
@@ -300,17 +307,30 @@ export default class Console extends Emitter {
    * Reset both the render and background refresh timers.
    */
   resetTimers(): this {
-    if (this.renderTimer) {
-      clearTimeout(this.renderTimer);
-      this.renderTimer = null;
-    }
+    this.resetRenderTimer();
+    this.resetRefreshTimer();
 
+    return this;
+  }
+
+  /**
+   * Reset the background refresh timer.
+   */
+  resetRefreshTimer() {
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer);
       this.refreshTimer = null;
     }
+  }
 
-    return this;
+  /**
+   * Reset the render only timer.
+   */
+  resetRenderTimer() {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = null;
+    }
   }
 
   /**
@@ -327,11 +347,11 @@ export default class Console extends Emitter {
    */
   start(args: any[] = []): this {
     if (!this.err) {
-      this.err = this.wrapStream(process.stderr, 'stderr');
+      this.err = this.wrapStream('stderr');
     }
 
     if (!this.out) {
-      this.out = this.wrapStream(process.stdout, 'stdout');
+      this.out = this.wrapStream('stdout');
     }
 
     this.debug('Starting console rendering process');
@@ -345,10 +365,7 @@ export default class Console extends Emitter {
    * Automatically refresh in the background if some tasks are taking too long.
    */
   startBackgroundTimer() {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-    }
-
+    this.resetRefreshTimer();
     this.refreshTimer = setTimeout(() => {
       this.handleRender();
     }, BG_REFRESH_RATE);
@@ -357,10 +374,11 @@ export default class Console extends Emitter {
   /**
    * Unwrap a stream and reset it back to normal.
    */
-  unwrapStream(stream: NodeJS.WriteStream, name: string): undefined {
-    this.debug('Unwrapping %s stream', name);
-
+  unwrapStream(name: 'stdout' | 'stderr'): undefined {
+    // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
+      const stream = process[name];
+
       // @ts-ignore
       stream.write = stream.originalWrite;
     }
@@ -372,9 +390,10 @@ export default class Console extends Emitter {
    * Wrap a stream and buffer the output as to not collide with our reporter.
    */
   /* istanbul ignore next */
-  wrapStream(stream: NodeJS.WriteStream, name: string): WrappedStream {
+  wrapStream(name: 'stdout' | 'stderr'): WrappedStream {
     this.debug('Wrapping %s stream', name);
 
+    const stream = process[name];
     const originalWrite = stream.write.bind(stream);
 
     if (process.env.NODE_ENV === 'test') {

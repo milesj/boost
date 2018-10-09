@@ -1,7 +1,6 @@
 import JSON5 from 'json5';
 import { number } from 'optimal';
 import ConfigLoader from '../src/ConfigLoader';
-import { DEFAULT_TOOL_CONFIG } from '../src/constants';
 import {
   getTestRoot,
   getFixturePath,
@@ -9,6 +8,7 @@ import {
   copyFixtureToModule,
   createTempFileInRoot,
   createTestTool,
+  TEST_TOOL_CONFIG,
 } from './helpers';
 
 function createJavascriptFile(data: any): string {
@@ -22,7 +22,6 @@ describe('ConfigLoader', () => {
 
   beforeEach(() => {
     const tool = createTestTool({
-      pluginAlias: 'plugin',
       root: getTestRoot(),
     });
 
@@ -109,6 +108,10 @@ describe('ConfigLoader', () => {
       expect(loader.findConfigInWorkspaceRoot('/path/node_modules/path')).toBeNull();
     });
 
+    it('returns null when no package.json found in the tree', () => {
+      expect(loader.findConfigInWorkspaceRoot('/')).toBeNull();
+    });
+
     it('returns null when workspace root found and pattern does not match', () => {
       expect(
         loader.findConfigInWorkspaceRoot(getFixturePath('workspace-mismatch', './packages/foo')),
@@ -117,7 +120,13 @@ describe('ConfigLoader', () => {
 
     it('returns null when workspace root found and no config file', () => {
       expect(
-        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-mismatch', './packages/foo')),
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-no-config', './packages/foo')),
+      ).toBeNull();
+    });
+
+    it('returns null when no workspace root could be found', () => {
+      expect(
+        loader.findConfigInWorkspaceRoot(getFixturePath('workspace-no-packages', './packages/foo')),
       ).toBeNull();
     });
 
@@ -191,7 +200,7 @@ describe('ConfigLoader', () => {
           {},
           {
             ...args,
-            reporter: 'default',
+            reporter: ['default'],
           },
         ),
       ).toEqual({
@@ -235,7 +244,7 @@ describe('ConfigLoader', () => {
           {},
           {
             ...args,
-            plugin: 'foo',
+            plugin: ['foo'],
           },
         ),
       ).toEqual({
@@ -324,7 +333,7 @@ describe('ConfigLoader', () => {
             ...args,
             config: './some/very/fake/path.js',
           });
-        }).toThrowErrorMatchingSnapshot();
+        }).toThrowError();
       });
 
       it('loads from passed file path', () => {
@@ -384,7 +393,7 @@ describe('ConfigLoader', () => {
         };
 
         expect(loader.loadConfig(args)).toEqual({
-          ...DEFAULT_TOOL_CONFIG,
+          ...TEST_TOOL_CONFIG,
           locale: 'en',
         });
       });
@@ -404,7 +413,7 @@ describe('ConfigLoader', () => {
         };
 
         expect(loader.loadConfig(args)).toEqual({
-          ...DEFAULT_TOOL_CONFIG,
+          ...TEST_TOOL_CONFIG,
           plugins: [
             'foo',
             {
@@ -469,7 +478,7 @@ describe('ConfigLoader', () => {
 
       it('merges with default config', () => {
         expect(loader.loadConfig(args)).toEqual({
-          ...DEFAULT_TOOL_CONFIG,
+          ...TEST_TOOL_CONFIG,
           foo: 'bar',
         });
       });
@@ -478,7 +487,7 @@ describe('ConfigLoader', () => {
         loader.tool.options.root = getFixturePath('app-plugin-config');
 
         expect(loader.loadConfig(args)).toEqual({
-          ...DEFAULT_TOOL_CONFIG,
+          ...TEST_TOOL_CONFIG,
           plugins: [
             'foo',
             {
