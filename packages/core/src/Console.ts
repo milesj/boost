@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable unicorn/no-hex-escape, no-param-reassign */
+/* eslint-disable unicorn/no-hex-escape */
 
 import Emitter from './Emitter';
 import Tool from './Tool';

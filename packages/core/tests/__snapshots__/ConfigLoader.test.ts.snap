@@ -4,8 +4,6 @@ exports[`ConfigLoader findConfigInLocalFiles() errors if too many files are foun
 
 exports[`ConfigLoader loadConfig() errors if package.json has not been loaded 1`] = `"Cannot load configuration as \\"package.json\\" has not been loaded."`;
 
-exports[`ConfigLoader loadConfig() from --config option errors if invalid path 1`] = `"Preset configuration /Users/miles_johnson/Sites/boost/packages/core/tests/fixtures/app/some/very/fake/path.js does not exist."`;
-
 exports[`ConfigLoader loadConfig() from config folder errors if no files found 1`] = `"Local configuration file or package.json property could not be found."`;
 
 exports[`ConfigLoader loadConfig() from config folder errors if too many files are found 1`] = `"Multiple \\"test-boost\\" configuration files found. Only 1 may exist."`;

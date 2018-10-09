@@ -156,11 +156,7 @@ export default class Tool<
     plugin.tool = this;
     plugin.bootstrap();
 
-    if (this.plugins[typeName]) {
-      this.plugins[typeName]!.push(plugin);
-    } else {
-      this.plugins[typeName] = [plugin];
-    }
+    this.plugins[typeName]!.push(plugin);
 
     return this;
   }
@@ -215,6 +211,7 @@ export default class Tool<
           ns: ['app', 'common', 'errors', 'prompts'],
         },
         error => {
+          // istanbul ignore next
           if (error) {
             throw error;
           }
@@ -405,6 +402,7 @@ export default class Tool<
 
     const reporters: Reporter<any>[] = [];
 
+    // istanbul ignore next
     if (process.env.CI && !process.env.BOOST_ENV) {
       this.reporterLoader.debug(
         'CI environment detected, using %s CI reporter',

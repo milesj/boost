@@ -16,8 +16,20 @@ import {
 
 jest.mock('../src/helpers/enableDebug');
 
+class Foo extends Plugin<any> {}
+class Bar extends Plugin<any> {}
+class Baz {}
+
 describe('Tool', () => {
   let tool: Tool<TestPluginRegistry, TestToolConfig>;
+  let toolWithPlugins: Tool<
+    TestPluginRegistry & {
+      foo: Foo;
+      bar: Bar;
+      baz: Baz;
+    },
+    TestToolConfig
+  >;
 
   beforeEach(() => {
     tool = createTestTool({
@@ -25,11 +37,69 @@ describe('Tool', () => {
     });
     // @ts-ignore Allow private access
     tool.initialized = false; // Reset
+
+    toolWithPlugins = createTestTool({
+      root: getFixturePath('app'),
+    }) as any;
   });
 
   describe('constructor()', () => {
     it('sets an error reporter', () => {
       expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
+    });
+  });
+
+  describe('addPlugin()', () => {
+    beforeEach(() => {
+      toolWithPlugins.registerPlugin('foo', Foo);
+      toolWithPlugins.registerPlugin('bar', Bar);
+      toolWithPlugins.registerPlugin('baz', Baz);
+    });
+
+    it('errors if type has not been registered', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid type
+        toolWithPlugins.addPlugin('qux', new Plugin());
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('errors if type does not extend `Plugin`', () => {
+      expect(() => {
+        toolWithPlugins.addPlugin('baz', new Baz());
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('errors if type does not extend defined contract', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid instance
+        toolWithPlugins.addPlugin('foo', new Bar());
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('sets tool on plugin', () => {
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(plugin.tool).toBe(toolWithPlugins);
+    });
+
+    it('calls bootstrap() on plugin', () => {
+      const plugin = new Foo();
+      const spy = jest.spyOn(plugin, 'bootstrap');
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('adds to plugins list', () => {
+      expect(toolWithPlugins.plugins.foo).toHaveLength(0);
+
+      toolWithPlugins.addPlugin('foo', new Foo());
+      toolWithPlugins.addPlugin('foo', new Foo());
+
+      expect(toolWithPlugins.plugins.foo).toHaveLength(2);
     });
   });
 
@@ -84,6 +154,13 @@ describe('Tool', () => {
   });
 
   describe('getPlugin()', () => {
+    it('errors for invalid type', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid type
+        tool.getPlugin('unknown', 'foo');
+      }).toThrowErrorMatchingSnapshot();
+    });
+
     it('errors if not found', () => {
       expect(() => {
         tool.getPlugin('plugin', 'foo');
@@ -356,6 +433,36 @@ describe('Tool', () => {
       tool.logError('Some error: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('Some error: foo');
+    });
+  });
+
+  describe('registerPlugin()', () => {
+    it('errors if type is already defined', () => {
+      expect(() => {
+        toolWithPlugins.registerPlugin('foo', Foo);
+        toolWithPlugins.registerPlugin('foo', Foo);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('creates a plugins property', () => {
+      expect(toolWithPlugins.plugins.baz).toBeUndefined();
+
+      toolWithPlugins.registerPlugin('baz', Baz);
+
+      expect(toolWithPlugins.plugins.baz).toEqual([]);
+    });
+
+    it('creates a plugins type struct', () => {
+      expect(toolWithPlugins.pluginTypes.baz).toBeUndefined();
+
+      toolWithPlugins.registerPlugin('baz', Baz);
+
+      expect(toolWithPlugins.pluginTypes.baz).toEqual({
+        contract: Baz,
+        loader: expect.anything(),
+        singularName: 'baz',
+        pluralName: 'bazs',
+      });
     });
   });
 });

@@ -333,7 +333,7 @@ describe('ConfigLoader', () => {
             ...args,
             config: './some/very/fake/path.js',
           });
-        }).toThrowErrorMatchingSnapshot();
+        }).toThrowError();
       });
 
       it('loads from passed file path', () => {
