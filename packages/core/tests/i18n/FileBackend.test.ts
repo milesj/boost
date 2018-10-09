@@ -21,7 +21,7 @@ describe('FileBackend', () => {
         },
       },
       {
-        resourcePaths: [path.join(__dirname, '../../src/resources')],
+        resourcePaths: [path.join(__dirname, '../../resources')],
       },
     );
   });
@@ -42,7 +42,7 @@ describe('FileBackend', () => {
 
       backend.read('en', 'common', () => {});
 
-      const key = path.join(__dirname, '../../src/resources/en/common.json');
+      const key = path.join(__dirname, '../../resources/en/common.json');
       const cache = backend.fileCache[key];
 
       expect(backend.fileCache[key]).toBeDefined();

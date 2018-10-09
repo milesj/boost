@@ -4,7 +4,8 @@ const { MultiTaskRoutine, MultiSubRoutine } = require('../routines');
 const tool = new Tool(
   {
     appName: 'demos-reporter',
-    console: { footer: 'Powered by Boost' },
+    appPath: __dirname,
+    footer: 'Powered by Boost',
   },
   process.argv.slice(2),
 );

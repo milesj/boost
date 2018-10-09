@@ -6,7 +6,6 @@
 import chalk from 'chalk';
 import path from 'path';
 import upperFirst from 'lodash/upperFirst';
-import pluralize from 'pluralize';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
@@ -39,8 +38,6 @@ export default class ModuleLoader<Tm> {
     this.loadBoostModules = loadBoostModules;
     this.tool = tool;
     this.typeName = typeName;
-
-    this.debug('Loading %s', chalk.green(pluralize(typeName)));
   }
 
   /**

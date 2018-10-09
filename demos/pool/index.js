@@ -17,7 +17,8 @@ class RoutinePoolRoutine extends Routine {
 const tool = new Tool(
   {
     appName: 'demos-pool',
-    console: { footer: 'Powered by Boost' },
+    appPath: __dirname,
+    header: 'Powered by Boost',
   },
   process.argv.slice(2),
 );

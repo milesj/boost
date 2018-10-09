@@ -132,9 +132,6 @@ export default class Tool<
         this.emit('exit', [code]);
       });
     }
-
-    // eslint-disable-next-line global-require
-    this.debug('Using boost v%s', require('../package.json').version);
   }
 
   /**
@@ -199,7 +196,8 @@ export default class Tool<
         {
           backend: {
             resourcePaths: [
-              path.join(__dirname, 'resources'),
+              path.join(__dirname, '../resources'),
+              path.join(this.options.appPath, '../resources'),
               path.join(this.options.appPath, 'resources'),
             ],
           },
@@ -296,6 +294,9 @@ export default class Tool<
     const pluginNames = Object.keys(this.pluginTypes);
 
     this.debug('Initializing %s', chalk.yellow(appName));
+
+    // eslint-disable-next-line global-require
+    this.debug('Using boost v%s', require('../package.json').version);
 
     this.args = parseArgs(
       this.argv,

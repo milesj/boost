@@ -82,7 +82,6 @@ export default class Console extends Emitter {
     const { footer } = this.tool.options;
 
     if (footer) {
-      this.debug('Displaying console footer');
       this.write(footer, 1);
     }
   }
@@ -94,7 +93,6 @@ export default class Console extends Emitter {
     const { header } = this.tool.options;
 
     if (header) {
-      this.debug('Displaying console header');
       this.write(header, 1);
     }
   }
@@ -124,9 +122,9 @@ export default class Console extends Emitter {
     }
 
     if (error) {
-      this.debug('Exiting console with an error: %s', error.message);
+      this.debug('Exiting console with an error');
     } else {
-      this.debug('Exiting console');
+      this.debug('Exiting console rendering process');
     }
 
     this.emit('stop', [error, code]);
@@ -187,7 +185,7 @@ export default class Console extends Emitter {
    */
   handleFailure = (error: Error) => {
     this.start();
-    this.debug('Uncaught exception or unresolved promise handled. Terminating.');
+    this.debug('Uncaught exception or unresolved promise handled');
     this.exit(error, 1, true);
   };
 
@@ -195,21 +193,22 @@ export default class Console extends Emitter {
    * Handle the final render before exiting.
    */
   handleFinalRender = (error: Error | null = null) => {
+    this.debug('Rendering final console output');
     this.resetTimers();
     this.clearLinesOutput();
     this.flushBufferedStreams();
-    this.displayHeader();
 
     if (error) {
       this.emit('render');
       this.displayLogs(this.errorLogs);
       this.emit('error', [error]);
     } else {
+      this.displayHeader();
       this.emit('render');
       this.displayLogs(this.logs);
+      this.displayFooter();
     }
 
-    this.displayFooter();
     this.flushBufferedOutput();
     this.flushBufferedStreams();
 
@@ -240,7 +239,7 @@ export default class Console extends Emitter {
    */
   handleSignal = () => {
     this.start();
-    this.debug('SIGINT or SIGTERM handled. Terminating.');
+    this.debug('SIGINT or SIGTERM handled');
     this.exit('Process has been terminated.', 1, true);
   };
 
@@ -376,8 +375,6 @@ export default class Console extends Emitter {
    * Unwrap a stream and reset it back to normal.
    */
   unwrapStream(name: 'stdout' | 'stderr'): undefined {
-    this.debug('Unwrapping %s stream', name);
-
     // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
       const stream = process[name];
