@@ -40,7 +40,7 @@ describe('Routine', () => {
     }
   }
 
-  class ContextRoutine extends Routine<any, any> {
+  class ContextRoutine extends Routine<any, any, { multiplier: number; return: boolean }> {
     constructor(key: string, title: string, options?: any) {
       super(key, title, options);
 
@@ -124,6 +124,7 @@ describe('Routine', () => {
       }
 
       const parent = createTestRoutine(tool);
+      // @ts-ignore
       parent.options.foo = 'bar';
 
       routine = new BootstrapRoutine('bootstrap', 'title');
@@ -135,7 +136,7 @@ describe('Routine', () => {
 
   describe('execute()', () => {
     it('errors when not defined', async () => {
-      class UndefinedRoutine extends Routine<any> {}
+      class UndefinedRoutine extends Routine<any, any> {}
 
       try {
         routine = new UndefinedRoutine('undefined', 'title');
@@ -186,7 +187,7 @@ describe('Routine', () => {
 
     it('pipes stdout/stderr to handler', async () => {
       const spy = jest.spyOn(routine.tool.console, 'emit');
-      const task = new Task('title', () => {}, {});
+      const task = new Task('title', () => {});
 
       task.status = STATUS_RUNNING;
 
@@ -615,7 +616,7 @@ describe('Routine', () => {
   });
 
   describe('serializeRoutines()', () => {
-    class SerializeSubsRoutine extends Routine<{ multiplier: number }, any> {
+    class SerializeSubsRoutine extends Routine<any, any, { multiplier: number }> {
       constructor(key: string, title: string, options?: { multiplier: number }) {
         super(key, title, options);
 
@@ -961,15 +962,8 @@ describe('Routine', () => {
       expect(options).toEqual(routine.options);
     });
 
-    it('defines the options for the task', () => {
-      routine.task('foo', value => value, { foo: 'bar' });
-
-      // @ts-ignore
-      expect(routine.tasks[0].options).toEqual({ foo: 'bar' });
-    });
-
     it('returns a `Task` instance', () => {
-      const task = routine.task('foo', value => value, { foo: 'bar' });
+      const task = routine.task('foo', value => value);
 
       expect(task).toBeInstanceOf(Task);
     });

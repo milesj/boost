@@ -4,7 +4,7 @@ import { createTestTool, createTestRoutine } from './helpers';
 import Context from '../src/Context';
 
 describe('Pipeline', () => {
-  let pipeline: Pipeline<any>;
+  let pipeline: Pipeline<any, any>;
 
   beforeEach(() => {
     pipeline = new Pipeline(createTestTool(), new Context());

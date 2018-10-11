@@ -75,7 +75,7 @@ export default class Tool<
 
   pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
 
-  reporters: Reporter<any>[] = [];
+  reporters: Reporter[] = [];
 
   translator: Translator;
 
@@ -83,7 +83,7 @@ export default class Tool<
 
   private initialized: boolean = false;
 
-  private reporterLoader: ModuleLoader<Reporter<any>>;
+  private reporterLoader: ModuleLoader<Reporter>;
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -161,7 +161,7 @@ export default class Tool<
   /**
    * Add a reporter and bootstrap with the tool and console.
    */
-  addReporter(reporter: Reporter<any>): this {
+  addReporter(reporter: Reporter): this {
     reporter.console = this.console;
     reporter.tool = this;
     reporter.bootstrap();
@@ -258,7 +258,7 @@ export default class Tool<
   /**
    * Return a reporter by name.
    */
-  getReporter(name: string): Reporter<any> {
+  getReporter(name: string): Reporter {
     const reporter = this.getReporters().find(r => r.name === name);
 
     if (reporter) {
@@ -271,7 +271,7 @@ export default class Tool<
   /**
    * Return all reporters.
    */
-  getReporters(): Reporter<any>[] {
+  getReporters(): Reporter[] {
     return this.reporters;
   }
 
@@ -401,7 +401,7 @@ export default class Tool<
       throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
     }
 
-    const reporters: Reporter<any>[] = [];
+    const reporters: Reporter[] = [];
 
     // istanbul ignore next
     if (process.env.CI && !process.env.BOOST_ENV) {

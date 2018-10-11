@@ -6,14 +6,17 @@
 import Context from './Context';
 import CrashLogger from './CrashLogger';
 import Routine from './Routine';
-import Tool from './Tool';
-import { ToolConfig } from './types';
+import CoreTool from './Tool';
 
-export default class Pipeline<Ctx extends Context> extends Routine<Ctx, ToolConfig> {
+export default class Pipeline<Ctx extends Context, Tool extends CoreTool> extends Routine<
+  Ctx,
+  Tool,
+  Tool['config']
+> {
   constructor(tool: Tool, context: Ctx) {
     super('root', 'Pipeline');
 
-    if (tool instanceof Tool) {
+    if (tool instanceof CoreTool) {
       tool.initialize();
     } else {
       throw new TypeError('A `Tool` instance is required to operate the pipeline.');

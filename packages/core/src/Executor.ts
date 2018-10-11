@@ -58,12 +58,12 @@ export default class Executor<Ctx extends Context, Options = {}> {
    * Execute either a task or routine.
    */
   async execute<T>(
-    task: Task<Ctx> | Routine<Ctx>,
+    task: Task<Ctx> | Routine<Ctx, any>,
     value?: T,
     wasParallel: boolean = false,
   ): Promise<any> {
     if (this.getInstanceType(task) === 'Routine') {
-      return this.executeRoutine(task as Routine<Ctx>, value, wasParallel);
+      return this.executeRoutine(task as Routine<Ctx, any>, value, wasParallel);
     }
 
     return this.executeTask(task, value, wasParallel);
@@ -73,7 +73,7 @@ export default class Executor<Ctx extends Context, Options = {}> {
    * Execute a routine with the provided value.
    */
   async executeRoutine<T>(
-    routine: Routine<Ctx>,
+    routine: Routine<Ctx, any>,
     value?: T,
     wasParallel: boolean = false,
   ): Promise<any> {
@@ -106,7 +106,7 @@ export default class Executor<Ctx extends Context, Options = {}> {
    * Importing Routine causes a circular reference, so we can't use an instanceof check,
    * so we need to hackily check this another way.
    */
-  getInstanceType(task: Task<Ctx> | Routine<Ctx>): string {
+  getInstanceType(task: Task<Ctx> | Routine<Ctx, any>): string {
     let instance = task;
     let name = '';
 

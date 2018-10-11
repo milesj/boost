@@ -487,7 +487,7 @@ describe('DefaultReporter', () => {
     });
 
     describe('task', () => {
-      let routine: Routine<any>;
+      let routine: Routine<any, any>;
       let task: Task<any>;
 
       beforeEach(() => {

@@ -16,16 +16,14 @@ import { Status } from './types';
 export type TaskAction<Ctx extends Context> = (
   context: Ctx,
   value: any,
-  task: Task<Ctx, any>,
+  task: Task<Ctx>,
 ) => any | Promise<any>;
 
-export default class Task<Ctx extends Context, Options = {}> {
+export default class Task<Ctx extends Context> {
   action: TaskAction<Ctx> | null = null;
 
   // @ts-ignore Set after instantiation
   context: Ctx;
-
-  options: Options;
 
   title: string = '';
 
@@ -37,13 +35,9 @@ export default class Task<Ctx extends Context, Options = {}> {
 
   stopTime: number = 0;
 
-  tasks: Task<Ctx, any>[] = [];
+  tasks: Task<Ctx>[] = [];
 
-  constructor(
-    title: string,
-    action: TaskAction<Ctx> | null = null,
-    options: Partial<Options> = {},
-  ) {
+  constructor(title: string, action: TaskAction<Ctx> | null = null) {
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -53,8 +47,6 @@ export default class Task<Ctx extends Context, Options = {}> {
     }
 
     this.action = action;
-    // @ts-ignore
-    this.options = { ...options };
     this.status = action ? STATUS_PENDING : STATUS_SKIPPED;
     this.title = title;
   }

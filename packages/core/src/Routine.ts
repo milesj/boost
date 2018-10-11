@@ -8,7 +8,7 @@ import split from 'split';
 import { Readable } from 'stream';
 import Context from './Context';
 import Task, { TaskAction } from './Task';
-import Tool from './Tool';
+import CoreTool from './Tool';
 import { AggregatedResponse } from './Executor';
 import ParallelExecutor from './executors/Parallel';
 import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
@@ -24,7 +24,9 @@ export interface CommandOptions {
   wrap?: (process: ExecaChildProcess) => void;
 }
 
-export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx, Options> {
+export default class Routine<Ctx extends Context, Tool extends CoreTool, Options = {}> extends Task<
+  Ctx
+> {
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
@@ -32,19 +34,23 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
 
   key: string = '';
 
-  routines: Routine<Ctx, any>[] = [];
+  options: Options;
+
+  routines: Routine<Ctx, Tool>[] = [];
 
   // @ts-ignore Set after instantiation
   tool: Tool;
 
   constructor(key: string, title: string, options: Partial<Options> = {}) {
-    super(title, null, options);
+    super(title, null);
 
     if (!key || typeof key !== 'string') {
       throw new Error('Routine key must be a valid unique string.');
     }
 
     this.key = key;
+    // @ts-ignore
+    this.options = { ...options };
 
     // We cant pass to super, so bind here
     this.action = this.execute.bind(this);
@@ -61,7 +67,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Configure the routine after it has been instantiated.
    */
-  configure(parent: Routine<Ctx>): this {
+  configure(parent: Routine<Ctx, Tool>): this {
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -128,7 +134,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute routines in parallel.
    */
-  async parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<any[]> {
+  async parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
@@ -142,7 +148,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Add a new routine within this routine.
    */
-  pipe(routine: Routine<Ctx>): this {
+  pipe(routine: Routine<Ctx, Tool>): this {
     if (routine instanceof Routine) {
       this.routines.push(routine.configure(this));
     } else {
@@ -158,7 +164,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   async poolRoutines<T>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
-    routines?: Routine<Ctx>[],
+    routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
     return new PoolExecutor(this.tool, this.context, options).run(routines || this.routines, value);
   }
@@ -205,7 +211,7 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute routines in sequential (serial) order.
    */
-  serializeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<any> {
+  serializeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any> {
     return new SerialExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
@@ -219,7 +225,10 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Execute routines in sync.
    */
-  async synchronizeRoutines<T>(value?: T, routines?: Routine<Ctx>[]): Promise<AggregatedResponse> {
+  async synchronizeRoutines<T>(
+    value?: T,
+    routines?: Routine<Ctx, Tool>[],
+  ): Promise<AggregatedResponse> {
     return new SyncExecutor(this.tool, this.context).run(routines || this.routines, value);
   }
 
@@ -233,12 +242,12 @@ export default class Routine<Ctx extends Context, Options = {}> extends Task<Ctx
   /**
    * Define an individual task.
    */
-  task<Tp>(title: string, action: TaskAction<Ctx>, options?: Tp): Task<Ctx, Tp> {
+  task(title: string, action: TaskAction<Ctx>): Task<Ctx> {
     if (typeof action !== 'function') {
       throw new TypeError(this.tool.msg('errors:taskRequireAction'));
     }
 
-    const task = new Task<Ctx, Tp>(title, action.bind(this), options);
+    const task = new Task<Ctx>(title, action.bind(this));
 
     this.tasks.push(task);
 

@@ -27,7 +27,7 @@ export interface ToolConfig<T = SettingsConfig> {
   extends: string[];
   locale: string;
   output: number;
-  reporters: PluginConfigOption<Reporter<any>>;
+  reporters: PluginConfigOption<Reporter>;
   settings: T;
   silent: boolean;
   theme: string;

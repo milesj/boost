@@ -8,7 +8,7 @@ import {
 } from '../src/constants';
 
 describe('Task', () => {
-  let task: Task<any, any>;
+  let task: Task<any>;
 
   beforeEach(() => {
     task = new Task('title', (con, value) => value * 2);
@@ -37,12 +37,6 @@ describe('Task', () => {
       task = new Task('title');
 
       expect(task.isSkipped()).toBe(true);
-    });
-
-    it('inherits default options', () => {
-      task = new Task('title', value => value, { foo: 'bar' });
-
-      expect(task.options).toEqual({ foo: 'bar' });
     });
   });
 

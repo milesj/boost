@@ -10,7 +10,7 @@ import Task from '../Task';
 
 export type Line = {
   depth: number;
-  routine: Routine<any>;
+  routine: Routine<any, any>;
   tasks: Task<any>[];
 };
 
@@ -35,9 +35,9 @@ export default class DefaultReporter extends Reporter<Line> {
   /**
    * Calculate the max string length for routine key's at every depth.
    */
-  calculateKeyLength(routines: Routine<any>[] = [], depth: number = 0): number {
+  calculateKeyLength(routines: Routine<any, any>[] = [], depth: number = 0): number {
     return routines.reduce(
-      (sum: number, routine: Routine<any>) =>
+      (sum: number, routine: Routine<any, any>) =>
         Math.max(
           sum,
           routine.key.length + depth,
@@ -58,7 +58,7 @@ export default class DefaultReporter extends Reporter<Line> {
    * Return the task title with additional metadata.
    */
   // eslint-disable-next-line complexity
-  getLineTitle(task: Task<any> | Routine<any>, usedColumns: number = 0): string {
+  getLineTitle(task: Task<any> | Routine<any, any>, usedColumns: number = 0): string {
     const outputLevel = this.tool.config.output;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
@@ -87,7 +87,7 @@ export default class DefaultReporter extends Reporter<Line> {
     return cliTruncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
   }
 
-  handleStart = (routines: Routine<any>[]) => {
+  handleStart = (routines: Routine<any, any>[]) => {
     this.keyLength = this.calculateKeyLength(routines);
   };
 
@@ -95,7 +95,7 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  handleTask = (task: Task<any>, routine: Routine<any>) => {
+  handleTask = (task: Task<any>, routine: Routine<any, any>) => {
     const line = this.findLine(row => row.routine === routine);
 
     if (line) {
@@ -105,7 +105,7 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  handleTaskComplete = (task: Task<any>, routine: Routine<any>) => {
+  handleTaskComplete = (task: Task<any>, routine: Routine<any, any>) => {
     const line = this.findLine(row => row.routine === routine);
 
     if (line) {
@@ -125,7 +125,7 @@ export default class DefaultReporter extends Reporter<Line> {
     });
   };
 
-  handleRoutine = (routine: Routine<any>, value: any, wasParallel: boolean) => {
+  handleRoutine = (routine: Routine<any, any>, value: any, wasParallel: boolean) => {
     this.addLine({
       depth: this.depth,
       routine,
@@ -139,7 +139,7 @@ export default class DefaultReporter extends Reporter<Line> {
     }
   };
 
-  handleRoutineComplete = (routine: Routine<any>, result: any, wasParallel: boolean) => {
+  handleRoutineComplete = (routine: Routine<any, any>, result: any, wasParallel: boolean) => {
     if (!wasParallel) {
       this.depth -= 1;
     }
@@ -151,7 +151,7 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  renderLine(routine: Routine<any>, task: Task<any> | null, depth: number) {
+  renderLine(routine: Routine<any, any>, task: Task<any> | null, depth: number) {
     const indent = depth * 2;
     const key =
       this.indent(depth) + (task ? '' : routine.key.toUpperCase()).padEnd(this.keyLength - depth);

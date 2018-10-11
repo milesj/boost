@@ -50,7 +50,7 @@ describe('Executor', () => {
   });
 
   describe('executeRoutine()', () => {
-    let routine: Routine<any>;
+    let routine: Routine<any, any>;
 
     beforeEach(() => {
       routine = createTestRoutine(tool);
