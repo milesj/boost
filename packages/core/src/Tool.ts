@@ -38,6 +38,7 @@ export interface ToolOptions {
   argOptions: ArgOptions;
   configBlueprint: Blueprint;
   configFolder: string;
+  configName: string;
   footer: string;
   header: string;
   root: string;
@@ -98,6 +99,7 @@ export default class Tool<
         argOptions: object(),
         configBlueprint: object(),
         configFolder: string('./configs'),
+        configName: string().empty(),
         footer: string().empty(),
         header: string().empty(),
         root: string(process.cwd()),

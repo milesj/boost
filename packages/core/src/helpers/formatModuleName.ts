@@ -8,18 +8,15 @@
  */
 export default function formatModuleName(
   appName: string,
-  addonName: string,
+  pluginType: string,
   name: string,
   scoped: boolean = false,
 ): string {
-  const moduleName = name
-    .toLowerCase()
-    .replace('plugin:', '')
-    .replace(`${addonName}:`, '');
+  const moduleName = name.toLowerCase().replace(`${pluginType}:`, '');
 
   if (scoped) {
-    return `@${appName}/${addonName}-${moduleName}`;
+    return `@${appName}/${pluginType}-${moduleName}`;
   }
 
-  return `${appName}-${addonName}-${moduleName}`;
+  return `${appName}-${pluginType}-${moduleName}`;
 }

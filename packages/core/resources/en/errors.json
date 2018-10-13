@@ -13,7 +13,7 @@
   "moduleImportFailed": "Missing {{typeName}}. Attempted import in order: {{modules}}",
   "moduleOptionMissingKey": "A \"{{typeName}}\" property must exist when loading through an options object.",
   "moduleTypeInvalid": "Invalid {{typeName}}. Must be a class instance or a module that exports a class definition.",
-  "multipleConfigFiles": "Multiple \"{{appName}}\" configuration files found. Only 1 may exist.",
+  "multipleConfigFiles": "Multiple \"{{configName}}\" configuration files found. Only 1 may exist.",
   "packageJsonNotFound": "Local \"package.json\" could not be found. Please run the command in your project's root.",
   "packageJsonNotLoaded": "Cannot load configuration as \"package.json\" has not been loaded.",
   "pluginContractExists": "Plugin type \"{{typeName}}\" already exists.",

@@ -62,6 +62,7 @@ export default class CrashLogger {
     this.add('Plugin types', Object.keys(pluginTypes).join(', '));
     this.add('Scoped package', options.scoped ? 'Yes' : 'No');
     this.add('Root', options.root);
+    this.add('Config name', options.configName);
     this.add('Configs path', path.join(options.root, options.configFolder));
     this.add('Package path', path.join(options.root, 'package.json'));
     this.add('Workspaces root', options.workspaceRoot || '(Not enabled)');

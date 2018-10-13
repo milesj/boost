@@ -62,12 +62,12 @@ export default class ConfigLoader {
    * Find the config in the package.json block under the application name.
    */
   findConfigInPackageJSON(pkg: PackageConfig): ConfigPathOrObject | null {
-    const camelName = camelCase(this.tool.options.appName);
-    const config = pkg[camelName];
+    const configName = this.getConfigName();
+    const config = pkg[configName];
 
     this.debug.invariant(
       !!config,
-      `Looking in package.json under ${chalk.yellow(camelName)} property`,
+      `Looking in package.json under ${chalk.yellow(configName)} property`,
       'Found',
       'Not found',
     );
@@ -88,8 +88,8 @@ export default class ConfigLoader {
    * Find the config using local files commonly located in a configs/ folder.
    */
   findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
-    const { appName, configFolder } = this.tool.options;
-    const relPath = path.join(configFolder, `${appName}.{js,json,json5}`);
+    const configName = this.getConfigName();
+    const relPath = path.join(this.tool.options.configFolder, `${configName}.{js,json,json5}`);
     const configPaths = glob.sync(path.join(root, relPath), {
       absolute: true,
     });
@@ -108,7 +108,7 @@ export default class ConfigLoader {
     }
 
     if (configPaths.length > 1) {
-      throw new Error(this.tool.msg('errors:multipleConfigFiles', { appName }));
+      throw new Error(this.tool.msg('errors:multipleConfigFiles', { configName }));
     }
 
     return null;
@@ -200,6 +200,15 @@ export default class ConfigLoader {
       this.findConfigInLocalFiles(workspaceRoot) ||
       null
     );
+  }
+
+  /**
+   * Return the config name used for file names and the package.json property.
+   */
+  getConfigName(): string {
+    const { configName, appName } = this.tool.options;
+
+    return camelCase(configName || appName);
   }
 
   /**
@@ -456,6 +465,7 @@ export default class ConfigLoader {
       }
 
       const { appName, scoped, root } = this.tool.options;
+      const configName = this.getConfigName();
       let match = null;
 
       // Absolute path, use it directly
@@ -468,12 +478,12 @@ export default class ConfigLoader {
 
         // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
-        return this.resolveModuleConfigPath(appName, extendPath, true);
+        return this.resolveModuleConfigPath(configName, extendPath, true);
 
         // Plugin, resolve to a node module
       } else if ((match = extendPath.match(PLUGIN_NAME_PATTERN))) {
         return this.resolveModuleConfigPath(
-          appName,
+          configName,
           formatModuleName(appName, match[1], extendPath, scoped),
           true,
         );
@@ -487,14 +497,14 @@ export default class ConfigLoader {
    * Resolve a Node/NPM module path to an app config file.
    */
   resolveModuleConfigPath(
-    appName: string,
+    configName: string,
     moduleName: string,
     preset: boolean = false,
     ext: string = 'js',
   ): string {
-    const fileName = preset ? `${appName}.preset.${ext}` : `${appName}.${ext}`;
-    const { configFolder } = this.tool.options;
+    const fileName = preset ? `${configName}.preset.${ext}` : `${configName}.${ext}`;
+    const { configFolder, root } = this.tool.options;
 
-    return path.resolve(this.tool.options.root, 'node_modules', moduleName, configFolder, fileName);
+    return path.resolve(root, 'node_modules', moduleName, configFolder, fileName);
   }
 }
