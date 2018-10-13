@@ -95,8 +95,8 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  handleTask = (task: Task<any>, routine: Routine<any, any>) => {
-    const line = this.findLine(row => row.routine === routine);
+  handleTask = (task: Task<any>) => {
+    const line = this.findLine(row => row.routine === task.parent);
 
     if (line) {
       line.tasks.push(task);
@@ -105,8 +105,8 @@ export default class DefaultReporter extends Reporter<Line> {
     this.console.render();
   };
 
-  handleTaskComplete = (task: Task<any>, routine: Routine<any, any>) => {
-    const line = this.findLine(row => row.routine === routine);
+  handleTaskComplete = (task: Task<any>) => {
+    const line = this.findLine(row => row.routine === task.parent);
 
     if (line) {
       line.tasks = line.tasks.filter(t => t !== task);

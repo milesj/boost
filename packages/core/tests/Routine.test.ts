@@ -967,5 +967,11 @@ describe('Routine', () => {
 
       expect(task).toBeInstanceOf(Task);
     });
+
+    it('sets routine as parent', () => {
+      const task = routine.task('foo', value => value);
+
+      expect(task.parent).toBe(routine);
+    });
   });
 });

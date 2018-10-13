@@ -248,6 +248,7 @@ export default class Routine<Ctx extends Context, Tool extends CoreTool, Options
     }
 
     const task = new Task<Ctx>(title, action.bind(this));
+    task.parent = this;
 
     this.tasks.push(task);
 

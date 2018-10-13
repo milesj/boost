@@ -27,6 +27,8 @@ export default class Task<Ctx extends Context> {
 
   title: string = '';
 
+  parent: Task<Ctx> | null = null;
+
   startTime: number = 0;
 
   status: Status = STATUS_PENDING;

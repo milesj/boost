@@ -286,7 +286,7 @@ describe('DefaultReporter', () => {
 
   describe('handleTask()', () => {
     it('debounces render', () => {
-      reporter.handleTask(new Task('task'), createTestRoutine());
+      reporter.handleTask(new Task('task'));
 
       expect(renderSpy).toHaveBeenCalled();
     });
@@ -294,9 +294,10 @@ describe('DefaultReporter', () => {
     it('adds the task to the routine', () => {
       const routine = createTestRoutine(null, 'key');
       const task = new Task('task');
+      task.parent = routine;
 
       reporter.lines = [{ depth: 0, routine, tasks: [] }];
-      reporter.handleTask(task, routine);
+      reporter.handleTask(task);
 
       expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [task] }]);
     });
@@ -304,9 +305,10 @@ describe('DefaultReporter', () => {
     it('doesnt add the task if routine was not found', () => {
       const routine = createTestRoutine(null, 'key');
       const task = new Task('task');
+      task.parent = routine;
 
       reporter.lines = [];
-      reporter.handleTask(task, routine);
+      reporter.handleTask(task);
 
       expect(reporter.lines).toEqual([]);
     });
@@ -314,7 +316,7 @@ describe('DefaultReporter', () => {
 
   describe('handleTaskComplete()', () => {
     it('debounces render', () => {
-      reporter.handleTaskComplete(new Task('task'), createTestRoutine());
+      reporter.handleTaskComplete(new Task('task'));
 
       expect(renderSpy).toHaveBeenCalled();
     });
@@ -322,9 +324,10 @@ describe('DefaultReporter', () => {
     it('removes the task from the routine', () => {
       const routine = createTestRoutine(null, 'key');
       const task = new Task('task');
+      task.parent = routine;
 
       reporter.lines = [{ depth: 0, routine, tasks: [task] }];
-      reporter.handleTaskComplete(task, routine);
+      reporter.handleTaskComplete(task);
 
       expect(reporter.lines).toEqual([{ depth: 0, routine, tasks: [] }]);
     });
