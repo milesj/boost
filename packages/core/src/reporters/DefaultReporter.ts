@@ -3,7 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import cliTruncate from 'cli-truncate';
 import Reporter from '../Reporter';
 import Routine from '../Routine';
 import Task from '../Task';
@@ -62,7 +61,7 @@ export default class DefaultReporter extends Reporter<Line> {
     const outputLevel = this.tool.config.output;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
-    const title = task.statusText ? this.style(task.statusText, 'pending') : task.title;
+    const title = task.statusText ? this.style(this.strip(task.statusText), 'pending') : task.title;
     const status = [];
 
     if (task.isSkipped()) {
@@ -84,7 +83,7 @@ export default class DefaultReporter extends Reporter<Line> {
     const fullStatus =
       status.length > 0 && outputLevel >= 1 ? this.style(` [${status.join(', ')}]`, 'pending') : '';
 
-    return cliTruncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
+    return this.truncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
   }
 
   handleStart = (routines: Routine<any, any>[]) => {

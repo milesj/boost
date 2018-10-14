@@ -1573,10 +1573,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/i18next@^11.9.1":
-  version "11.9.1"
-  resolved "https://registry.npmjs.org/@types/i18next/-/i18next-11.9.1.tgz#af62e232007dd20e636f03e271af0b1dd1e57129"
-  integrity sha512-AgSgGHD2IiPVzoeCSU9lEVadKc23WzxWioB6weks/KRQqdA5y6bjYMKt2tZzaypKs5XM46s7fDAFwfxdaYZ5Ow==
+"@types/i18next@^11.9.2":
+  version "11.9.2"
+  resolved "https://registry.npmjs.org/@types/i18next/-/i18next-11.9.2.tgz#5026ce949ed895a0c94b994736f7e849600ebf84"
+  integrity sha512-kuMQfZnTgv0Cp0V4yaxUsQ/9Pd653JYR6I4kFPNsBnhy/g0ys+bsOwsYReyOM1oY4VlV3rHTRbSI4InwAxWEuw==
 
 "@types/is-glob@^4.0.0":
   version "4.0.0"
@@ -1658,12 +1658,22 @@
     "@types/node" "*"
     "@types/through" "*"
 
+"@types/strip-ansi@^3.0.0":
+  version "3.0.0"
+  resolved "http://registry.npmjs.org/@types/strip-ansi/-/strip-ansi-3.0.0.tgz#9b63d453a6b54aa849182207711a08be8eea48ae"
+  integrity sha1-m2PUU6a1SqhJGCIHcRoIvo7qSK4=
+
 "@types/through@*":
   version "0.0.29"
   resolved "https://registry.npmjs.org/@types/through/-/through-0.0.29.tgz#72943aac922e179339c651fa34a4428a4d722f93"
   integrity sha512-9a7C5VHh+1BKblaYiq+7Tfc+EOmjMdZaD1MYtkQjSoxgB69tBjW98ry6SKsi4zEIWztLOMRuL87A3bdT/Fc/4w==
   dependencies:
     "@types/node" "*"
+
+"@types/wrap-ansi@^3.0.0":
+  version "3.0.0"
+  resolved "http://registry.npmjs.org/@types/wrap-ansi/-/wrap-ansi-3.0.0.tgz#18b97a972f94f60a679fd5c796d96421b9abb9fd"
+  integrity sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==
 
 "@types/yargs-parser@^11.0.0":
   version "11.0.0"
@@ -1791,6 +1801,11 @@ ansi-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
   integrity sha1-7QMXwyIGT3lGbAKWa922Bas32Zg=
+
+ansi-regex@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-4.0.0.tgz#70de791edf021404c3fd615aa89118ae0432e5a9"
+  integrity sha512-iB5Dda8t/UqpPI/IjsejXu5jOGDrzn41wJyljwPH65VCIbk6+1BzFIMJGFwTNrYXT1CrD+B4l19U7awiQ8rk7w==
 
 ansi-styles@^2.2.1:
   version "2.2.1"
@@ -8355,6 +8370,13 @@ strip-ansi@^4.0.0:
   dependencies:
     ansi-regex "^3.0.0"
 
+strip-ansi@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-5.0.0.tgz#f78f68b5d0866c20b2c9b8c61b5298508dc8756f"
+  integrity sha512-Uu7gQyZI7J7gn5qLn1Np3G9vcYGTVqB+lFTytnDJv83dd8T22aGH451P3jueT2/QemInJDfxHB5Tde5OzgG1Ow==
+  dependencies:
+    ansi-regex "^4.0.0"
+
 strip-bom-buffer@^0.1.1:
   version "0.1.1"
   resolved "https://registry.npmjs.org/strip-bom-buffer/-/strip-bom-buffer-0.1.1.tgz#ca3ddc4919c13f9fddf30b1dff100a9835248b4d"
@@ -9010,6 +9032,15 @@ wrap-ansi@^2.0.0:
   dependencies:
     string-width "^1.0.1"
     strip-ansi "^3.0.1"
+
+wrap-ansi@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-4.0.0.tgz#b3570d7c70156159a2d42be5cc942e957f7b1131"
+  integrity sha512-uMTsj9rDb0/7kk1PbcbCcwvHUxp60fGDB/NNXpVa0Q+ic/e7y5+BwTxKfQ33VYgDppSwi/FBzpetYzo8s6tfbg==
+  dependencies:
+    ansi-styles "^3.2.0"
+    string-width "^2.1.1"
+    strip-ansi "^4.0.0"
 
 wrappy@1:
   version "1.0.2"
