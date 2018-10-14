@@ -3,6 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import CLI from './CLI';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Context from './Context';
@@ -17,6 +18,7 @@ import Task from './Task';
 import Tool, { ToolOptions } from './Tool';
 
 export {
+  CLI,
   ConfigLoader,
   Console,
   Context,

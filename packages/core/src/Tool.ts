@@ -199,16 +199,14 @@ export default class Tool<
           backend: {
             resourcePaths: [
               path.join(__dirname, '../resources'),
-              path.join(this.options.appPath, '../resources'),
               path.join(this.options.appPath, 'resources'),
             ],
           },
           defaultNS: 'app',
           fallbackLng: ['en'],
-          fallbackNS: 'common',
           initImmediate: false,
           lowerCaseLng: true,
-          ns: ['app', 'common', 'errors', 'prompts'],
+          ns: ['app', 'errors', 'prompts'],
         },
         error => {
           // istanbul ignore next

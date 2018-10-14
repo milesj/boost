@@ -28,26 +28,28 @@ describe('FileBackend', () => {
 
   describe('read()', () => {
     it('returns empty object for missing locale', () => {
-      expect(backend.read('fr', 'common', () => {})).toEqual({});
+      expect(backend.read('fr', 'app', () => {})).toEqual({});
     });
 
     it('returns object for defined locales', () => {
-      expect(backend.read('en', 'common', () => {})).toEqual({
-        ciRanIn: 'Ran {{routineCount}} routine(s) and {{taskCount}} task(s) in {{time}}',
-      });
+      expect(backend.read('en', 'app', () => {})).toEqual(
+        expect.objectContaining({
+          ciRanIn: 'Ran {{routineCount}} routine(s) and {{taskCount}} task(s) in {{time}}',
+        }),
+      );
     });
 
     it('caches files after lookup', () => {
       expect(backend.fileCache).toEqual({});
 
-      backend.read('en', 'common', () => {});
+      backend.read('en', 'app', () => {});
 
-      const key = path.join(__dirname, '../../resources/en/common.json');
+      const key = path.join(__dirname, '../../resources/en/app.json');
       const cache = backend.fileCache[key];
 
       expect(backend.fileCache[key]).toBeDefined();
 
-      backend.read('en', 'common', () => {});
+      backend.read('en', 'app', () => {});
 
       expect(backend.fileCache[key]).toBe(cache);
     });

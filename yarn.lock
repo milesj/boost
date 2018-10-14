@@ -1672,7 +1672,7 @@
   dependencies:
     "@types/yargs" "*"
 
-"@types/yargs@*":
+"@types/yargs@*", "@types/yargs@^12.0.1":
   version "12.0.1"
   resolved "https://registry.npmjs.org/@types/yargs/-/yargs-12.0.1.tgz#c5ce4ad64499010ae4dc2acd9b14d49749a44233"
   integrity sha512-UVjo2oH79aRNcsDlFlnQ/iJ67Jd7j6uSg7jUJP/RZ/nUjAh5ElmnwlD5K/6eGgETJUgCHkiWn91B8JjXQ6ubAw==
