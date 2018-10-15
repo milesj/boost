@@ -46,7 +46,7 @@ export default class Console extends Emitter {
     this.tool = tool;
 
     /* istanbul ignore next */
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.BOOST_ENV !== 'test') {
       process
         .on('SIGINT', this.handleSignal)
         .on('SIGTERM', this.handleSignal)
@@ -376,7 +376,7 @@ export default class Console extends Emitter {
    */
   unwrapStream(name: 'stdout' | 'stderr'): undefined {
     // istanbul ignore next
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.BOOST_ENV !== 'test') {
       const stream = process[name];
 
       // @ts-ignore
@@ -396,7 +396,7 @@ export default class Console extends Emitter {
     const stream = process[name];
     const originalWrite = stream.write.bind(stream);
 
-    if (process.env.NODE_ENV === 'test') {
+    if (process.env.BOOST_ENV === 'test') {
       return originalWrite;
     }
 

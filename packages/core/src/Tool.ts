@@ -129,7 +129,7 @@ export default class Tool<
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.BOOST_ENV !== 'test') {
       process.on('exit', code => {
         this.emit('exit', [code]);
       });
