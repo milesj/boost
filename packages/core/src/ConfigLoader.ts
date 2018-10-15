@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import fs from 'fs';
-import glob from 'glob';
+import glob from 'fast-glob';
 import path from 'path';
 import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
@@ -90,9 +90,13 @@ export default class ConfigLoader {
   findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
     const configName = this.getConfigName();
     const relPath = path.join(this.tool.options.configFolder, `${configName}.{js,json,json5}`);
-    const configPaths = glob.sync(path.join(root, relPath), {
-      absolute: true,
-    });
+    const configPaths = glob
+      .sync(relPath, {
+        absolute: true,
+        cwd: root,
+        onlyFiles: true,
+      })
+      .map(filePath => String(filePath));
 
     this.debug.invariant(
       configPaths.length === 1,
