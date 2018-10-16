@@ -1,5 +1,5 @@
 declare module 'env-ci' {
-  interface EnvCI { isCI: boolean }
+  interface EnvCI { isCi: boolean }
 
   export default function envCI(): EnvCI;
 }
