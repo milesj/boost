@@ -9,7 +9,7 @@
     "jest": "beemo jest",
     "prettier": "beemo prettier",
     "pretest": "yarn run type",
-    "test": "BOOST_ENV=test yarn run jest",
+    "test": "yarn run jest",
     "posttest": "yarn run eslint",
     "type": "beemo typescript --workspaces=* --noEmit",
     "prerelease": "yarn test && yarn run build",
@@ -31,7 +31,13 @@
     "drivers": [
       "babel",
       "eslint",
-      "jest",
+      {
+        "driver": "jest",
+        "env": {
+          "NODE_ENV": "test",
+          "BOOST_ENV": "test"
+        }
+      },
       "prettier",
       "typescript"
     ],
