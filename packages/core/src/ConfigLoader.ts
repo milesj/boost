@@ -99,13 +99,13 @@ export default class ConfigLoader {
 
     this.debug.invariant(
       configPaths.length === 1,
-      `Looking for local config file in order: ${relPath}`,
+      `Looking for local config file: ${relPath}`,
       'Found',
       'Not found',
     );
 
     if (configPaths.length === 1) {
-      this.debug('Found %s', path.basename(configPaths[0]));
+      this.debug('Found %s', chalk.cyan(path.basename(configPaths[0])));
 
       return configPaths[0];
     }

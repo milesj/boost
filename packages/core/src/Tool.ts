@@ -143,12 +143,13 @@ export default class Tool<
       loadBoostModules: true,
     });
 
-    // Add a reporter to catch errors during initialization
-    this.addPlugin('reporter', new ErrorReporter());
-
-    // Cleanup when an exit occurs
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
+      // Add a reporter to catch errors during initialization
+      // Do this outside of tests otherwise Jest hangs trying to compare objects
+      this.addPlugin('reporter', new ErrorReporter());
+
+      // Cleanup when an exit occurs
       process.on('exit', code => {
         this.emit('exit', [code]);
       });

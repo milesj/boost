@@ -3,7 +3,6 @@ import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import DefaultReporter from '../src/reporters/DefaultReporter';
-import ErrorReporter from '../src/reporters/ErrorReporter';
 import enableDebug from '../src/helpers/enableDebug';
 import {
   getFixturePath,
@@ -41,12 +40,6 @@ describe('Tool', () => {
     toolWithPlugins = createTestTool({
       root: getFixturePath('app'),
     }) as any;
-  });
-
-  describe('constructor()', () => {
-    it('sets an error reporter', () => {
-      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(ErrorReporter);
-    });
   });
 
   describe('addPlugin()', () => {
@@ -453,6 +446,8 @@ describe('Tool', () => {
 
       // @ts-ignore Allow access
       expect(toolWithPlugins.pluginTypes.baz).toEqual({
+        afterBootstrap: null,
+        beforeBootstrap: null,
         contract: Baz,
         loader: expect.anything(),
         singularName: 'baz',
