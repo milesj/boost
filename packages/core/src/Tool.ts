@@ -9,6 +9,7 @@ import path from 'path';
 import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
+import envCI from 'env-ci';
 import pluralize from 'pluralize';
 import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
@@ -28,9 +29,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
-import themePalettes from './themes';
-import { DEFAULT_TOOL_CONFIG } from './constants';
-import { Debugger, Translator, ToolConfig, PackageConfig } from './types';
+import { Debugger, Translator, PackageConfig, PluginSetting } from './types';
 
 export interface ToolOptions {
   appName: string;
@@ -46,7 +45,24 @@ export interface ToolOptions {
   workspaceRoot: string;
 }
 
+export interface ToolConfig {
+  debug: boolean;
+  extends: string[];
+  locale: string;
+  output: number;
+  reporters: PluginSetting<Reporter>;
+  settings: { [key: string]: any };
+  silent: boolean;
+  theme: string;
+}
+
+export interface ToolPluginRegistry {
+  reporter: Reporter;
+}
+
 export interface PluginType<T> {
+  afterBootstrap: ((plugin: T) => void) | null;
+  beforeBootstrap: ((plugin: T) => void) | null;
   contract: Constructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
@@ -54,15 +70,15 @@ export interface PluginType<T> {
 }
 
 export default class Tool<
-  PluginRegistry = {},
-  Config extends ToolConfig = ToolConfig
+  PluginRegistry extends ToolPluginRegistry,
+  Config extends ToolConfig
 > extends Emitter {
   args?: Arguments;
 
   argv: string[] = [];
 
-  // @ts-ignore Allow default spread
-  config: Config = { ...DEFAULT_TOOL_CONFIG };
+  // @ts-ignore Set after instantiation
+  config: Config;
 
   console: Console;
 
@@ -72,19 +88,15 @@ export default class Tool<
 
   package: PackageConfig = { name: '' };
 
-  plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
-
-  pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
-
-  reporters: Reporter[] = [];
-
   translator: Translator;
 
   private configLoader: ConfigLoader;
 
   private initialized: boolean = false;
 
-  private reporterLoader: ModuleLoader<Reporter>;
+  private plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
+
+  private pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -120,16 +132,24 @@ export default class Tool<
     // Initialize the console first so we can start logging
     this.console = new Console(this);
 
-    // Make these available for testing purposes
+    // Make this available for testing purposes
     this.configLoader = new ConfigLoader(this);
-    this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter, true);
 
-    // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter());
+    // Define a special type of plugin
+    this.registerPlugin('reporter', Reporter, {
+      beforeBootstrap: reporter => {
+        reporter.console = this.console;
+      },
+      loadBoostModules: true,
+    });
 
-    // Cleanup when an exit occurs
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
+      // Add a reporter to catch errors during initialization
+      // Do this outside of tests otherwise Jest hangs trying to compare objects
+      this.addPlugin('reporter', new ErrorReporter());
+
+      // Cleanup when an exit occurs
       process.on('exit', code => {
         this.emit('exit', [code]);
       });
@@ -153,22 +173,18 @@ export default class Tool<
     }
 
     plugin.tool = this;
+
+    if (type.beforeBootstrap) {
+      type.beforeBootstrap(plugin);
+    }
+
     plugin.bootstrap();
 
+    if (type.afterBootstrap) {
+      type.afterBootstrap(plugin);
+    }
+
     this.plugins[typeName]!.push(plugin);
-
-    return this;
-  }
-
-  /**
-   * Add a reporter and bootstrap with the tool and console.
-   */
-  addReporter(reporter: Reporter): this {
-    reporter.console = this.console;
-    reporter.tool = this;
-    reporter.bootstrap();
-
-    this.reporters.push(reporter);
 
     return this;
   }
@@ -256,30 +272,10 @@ export default class Tool<
   }
 
   /**
-   * Return a reporter by name.
+   * Return the registered plugin types.
    */
-  getReporter(name: string): Reporter {
-    const reporter = this.getReporters().find(r => r.name === name);
-
-    if (reporter) {
-      return reporter;
-    }
-
-    throw new Error(this.msg('errors:reporterNotFound', { name }));
-  }
-
-  /**
-   * Return all reporters.
-   */
-  getReporters(): Reporter[] {
-    return this.reporters;
-  }
-
-  /**
-   * Return a list of core bundled theme names.
-   */
-  getThemeList(): string[] {
-    return Object.keys(themePalettes);
+  getRegisteredPlugins() {
+    return this.pluginTypes;
   }
 
   /**
@@ -302,10 +298,10 @@ export default class Tool<
       this.argv,
       mergeWith(
         {
-          array: ['reporter', ...pluginNames],
+          array: [...pluginNames],
           boolean: ['debug', 'silent'],
           number: ['output'],
-          string: ['config', 'locale', 'reporter', 'theme', ...pluginNames],
+          string: ['config', 'locale', 'theme', ...pluginNames],
         },
         this.options.argOptions,
         handleMerge,
@@ -401,33 +397,25 @@ export default class Tool<
       throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
     }
 
-    const reporters: Reporter[] = [];
+    const reporters = this.plugins.reporter!;
+    const { loader } = this.pluginTypes.reporter!;
 
+    // Use a special reporter when in a CI
     // istanbul ignore next
-    if (process.env.CI && !process.env.BOOST_ENV) {
-      this.reporterLoader.debug(
-        'CI environment detected, using %s CI reporter',
-        chalk.yellow('boost'),
-      );
+    if (envCI().isCi && !process.env.BOOST_ENV) {
+      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
 
-      reporters.push(new CIReporter());
-    } else {
-      reporters.push(...this.reporterLoader.loadModules(this.config.reporters));
+      this.addPlugin('reporter', new CIReporter());
+
+      // Use default reporter
+    } else if (
+      reporters.length === 0 ||
+      (reporters.length === 1 && reporters[0] instanceof ErrorReporter)
+    ) {
+      loader.debug('Using default %s reporter', chalk.yellow('boost'));
+
+      this.addPlugin('reporter', new DefaultReporter());
     }
-
-    // Use default reporter
-    if (reporters.length === 0) {
-      this.reporterLoader.debug('Using default %s reporter', chalk.yellow('boost'));
-
-      reporters.push(new DefaultReporter());
-    }
-
-    // Bootstrap each plugin with the tool
-    this.reporterLoader.debug('Bootstrapping reporters with tool and console environment');
-
-    reporters.forEach(reporter => {
-      this.addReporter(reporter);
-    });
 
     return this;
   }
@@ -472,20 +460,28 @@ export default class Tool<
   registerPlugin<K extends keyof PluginRegistry>(
     typeName: K,
     contract: Constructor<PluginRegistry[K]>,
+    options: {
+      afterBootstrap?: (plugin: PluginRegistry[K]) => void;
+      beforeBootstrap?: (plugin: PluginRegistry[K]) => void;
+      loadBoostModules?: boolean;
+    } = {},
   ): this {
     if (this.pluginTypes[typeName]) {
       throw new Error(this.msg('errors:pluginContractExists', { typeName }));
     }
 
     const name = String(typeName);
+    const { afterBootstrap = null, beforeBootstrap = null, loadBoostModules = false } = options;
 
     this.debug('Registering new plugin type: %s', chalk.green(name));
 
     this.plugins[typeName] = [];
 
     this.pluginTypes[typeName] = {
+      afterBootstrap,
+      beforeBootstrap,
       contract,
-      loader: new ModuleLoader(this, name, contract),
+      loader: new ModuleLoader(this, name, contract, loadBoostModules),
       pluralName: pluralize(name),
       singularName: name,
     };

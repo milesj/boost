@@ -37,9 +37,9 @@ export default class Console extends Emitter {
 
   restoreCursorOnExit: boolean = false;
 
-  tool: Tool;
+  tool: Tool<any, any>;
 
-  constructor(tool: Tool) {
+  constructor(tool: Tool<any, any>) {
     super();
 
     this.debug = tool.createDebugger('console');

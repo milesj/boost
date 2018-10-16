@@ -8,7 +8,7 @@ import CrashLogger from './CrashLogger';
 import Routine from './Routine';
 import CoreTool from './Tool';
 
-export default class Pipeline<Ctx extends Context, Tool extends CoreTool> extends Routine<
+export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any, any>> extends Routine<
   Ctx,
   Tool,
   Tool['config']

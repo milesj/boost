@@ -19,9 +19,8 @@ import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import Tool, { PluginType } from './Tool';
-import Reporter from './Reporter';
-import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN, DEFAULT_TOOL_CONFIG } from './constants';
+import Tool from './Tool';
+import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { Debugger, PackageConfig } from './types';
 
 export type ConfigObject = { [key: string]: any };
@@ -35,11 +34,11 @@ export default class ConfigLoader {
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: Tool;
+  tool: Tool<any, any>;
 
   workspaceRoot: string = '';
 
-  constructor(tool: Tool) {
+  constructor(tool: Tool<any, any>) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
   }
@@ -100,13 +99,13 @@ export default class ConfigLoader {
 
     this.debug.invariant(
       configPaths.length === 1,
-      `Looking for local config file in order: ${relPath}`,
+      `Looking for local config file: ${relPath}`,
       'Found',
       'Not found',
     );
 
     if (configPaths.length === 1) {
-      this.debug('Found %s', path.basename(configPaths[0]));
+      this.debug('Found %s', chalk.cyan(path.basename(configPaths[0])));
 
       return configPaths[0];
     }
@@ -221,8 +220,13 @@ export default class ConfigLoader {
   inheritFromArgs<T>(config: T, args: Arguments): T {
     // @ts-ignore Allow spread
     const nextConfig = { ...config };
+    const pluginTypes = this.tool.getRegisteredPlugins();
     const keys = new Set([
-      ...Object.keys(DEFAULT_TOOL_CONFIG),
+      'debug',
+      'locale',
+      'output',
+      'silent',
+      'theme',
       ...Object.keys(this.tool.options.configBlueprint),
     ]);
 
@@ -231,35 +235,24 @@ export default class ConfigLoader {
     Object.keys(args).forEach(key => {
       const value = args[key];
 
-      switch (key) {
-        case 'config':
-        case 'extends':
-        case 'settings':
-          // Ignore these when used as options
-          break;
+      if (key === 'config' || key === 'extends' || key === 'settings') {
+        return;
+      }
 
-        case 'reporter':
-          this.debug('  --reporter=[%s]', value.join(', '));
-          nextConfig.reporters = (nextConfig.reporters || []).concat(value);
-          break;
+      // @ts-ignore Ignore symbol check
+      const pluginType = pluginTypes[key as keyof typeof pluginTypes];
 
-        default: {
-          const pluginType = (this.tool.pluginTypes as any)[key];
+      // Plugins
+      if (pluginType) {
+        const { pluralName, singularName } = pluginType;
 
-          // Plugins
-          if (pluginType) {
-            const { pluralName, singularName } = pluginType as PluginType<any>;
+        this.debug('  --%s=[%s]', singularName, value.join(', '));
+        nextConfig[pluralName] = (nextConfig[pluralName] || []).concat(value);
 
-            this.debug('  --%s=[%s]', singularName, value.join(', '));
-            nextConfig[pluralName] = (nextConfig[pluralName] || []).concat(value);
-
-            // Other
-          } else if (keys.has(key)) {
-            this.debug('  --%s=%s', key, value);
-            nextConfig[key] = value;
-          }
-          break;
-        }
+        // Other
+      } else if (keys.has(key)) {
+        this.debug('  --%s=%s', key, value);
+        nextConfig[key] = value;
       }
     });
 
@@ -291,8 +284,8 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
-    Object.values(this.tool.pluginTypes).forEach(type => {
-      const { contract, singularName, pluralName } = type as PluginType<any>;
+    Object.values(this.tool.getRegisteredPlugins()).forEach(type => {
+      const { contract, singularName, pluralName } = type!;
 
       this.debug('Generating %s blueprint', chalk.green(singularName));
 
@@ -313,12 +306,6 @@ export default class ConfigLoader {
         extends: array(string()),
         locale: string().empty(),
         output: number(3).between(1, 3, true),
-        // prettier-ignore
-        reporters: array(union([
-          string(),
-          shape({ reporter: string() }),
-          instance(Reporter),
-        ])),
         settings: object(),
         silent: bool(),
         theme: string('default'),

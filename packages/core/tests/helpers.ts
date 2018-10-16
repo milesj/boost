@@ -1,11 +1,10 @@
 import fs from 'fs-extra';
 import path from 'path';
-import Tool, { ToolOptions } from '../src/Tool';
+import Tool, { ToolOptions, ToolConfig, ToolPluginRegistry } from '../src/Tool';
 import Routine from '../src/Routine';
 import Console from '../src/Console';
 import Plugin from '../src/Plugin';
-import { DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { PluginConfigOption, ToolConfig } from '../src/types';
+import { PluginSetting } from '../src/types';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -62,22 +61,29 @@ export function createTestDebugger(): any {
   return debug;
 }
 
-export interface TestPluginRegistry {
-  plugin: Plugin<any>;
+export interface TestPluginRegistry extends ToolPluginRegistry {
+  plugin: Plugin;
 }
 
 export interface TestToolConfig extends ToolConfig {
-  plugins: PluginConfigOption<Plugin<any>>;
+  plugins: PluginSetting<Plugin>;
 }
 
+export type TestTool = Tool<TestPluginRegistry, TestToolConfig>;
+
 export const TEST_TOOL_CONFIG = {
-  ...DEFAULT_TOOL_CONFIG,
+  debug: false,
+  extends: [],
+  locale: '',
+  output: 3,
   plugins: [],
+  reporters: [],
+  settings: {},
+  silent: false,
+  theme: 'default',
 };
 
-export function createTestTool(
-  options?: Partial<ToolOptions>,
-): Tool<TestPluginRegistry, TestToolConfig> {
+export function createTestTool(options?: Partial<ToolOptions>): TestTool {
   const tool = new Tool<TestPluginRegistry, TestToolConfig>({
     appName: 'test-boost',
     appPath: __dirname,
@@ -95,11 +101,11 @@ export function createTestTool(
 }
 
 export function createTestRoutine(
-  tool: Tool | null = null,
+  tool: TestTool | null = null,
   key: string = 'key',
   title: string = 'Title',
 ): Routine<any, any> {
-  const routine = new Routine(key, title);
+  const routine = new Routine<{}, TestTool>(key, title);
 
   routine.tool = tool || createTestTool();
   routine.debug = createTestDebugger();

@@ -24,9 +24,11 @@ export interface CommandOptions {
   wrap?: (process: ExecaChildProcess) => void;
 }
 
-export default class Routine<Ctx extends Context, Tool extends CoreTool, Options = {}> extends Task<
-  Ctx
-> {
+export default class Routine<
+  Ctx extends Context,
+  Tool extends CoreTool<any, any>,
+  Options = {}
+> extends Task<Ctx> {
   exit: boolean = false;
 
   // @ts-ignore Set after instantiation
