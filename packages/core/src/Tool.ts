@@ -400,6 +400,8 @@ export default class Tool<
     const reporters = this.plugins.reporter!;
     const { loader } = this.pluginTypes.reporter!;
 
+    console.log(envCI(), process.env.BOOST_ENV);
+
     // Use a special reporter when in a CI
     // istanbul ignore next
     if (envCI().isCI && !process.env.BOOST_ENV) {
