@@ -1,10 +1,10 @@
 /* eslint-disable */
 
 import { bool } from 'optimal';
-import { Tool, ToolConfig, ToolPluginRegistry, Plugin, PluginConfigOption } from '../src';
+import { Tool, ToolConfig, ToolPluginRegistry, Plugin, PluginSetting } from '../src';
 
-class Adapter extends Plugin<Tool<ExamplePlugins, ExampleConfig>> {}
-class Renderer extends Plugin<Tool<ExamplePlugins, ExampleConfig>> {}
+class Adapter extends Plugin {}
+class Renderer extends Plugin {}
 class Controller {}
 
 interface ExamplePlugins extends ToolPluginRegistry {
@@ -13,8 +13,8 @@ interface ExamplePlugins extends ToolPluginRegistry {
 }
 
 interface ExampleConfig extends ToolConfig {
-  adapters: PluginConfigOption<Adapter>;
-  renderers: PluginConfigOption<Adapter>;
+  adapters: PluginSetting<Adapter>;
+  renderers: PluginSetting<Adapter>;
   something: boolean;
 }
 
@@ -27,9 +27,11 @@ const tool = new Tool<ExamplePlugins, ExampleConfig>({
 });
 
 tool.registerPlugin('adapter', Adapter);
+
 tool.registerPlugin('renderer', Renderer, {
   beforeBootstrap(plugin: Renderer) {},
 });
+
 // @ts-ignore Unknown plugin type / missing from registry
 tool.registerPlugin('controller', Controller);
 

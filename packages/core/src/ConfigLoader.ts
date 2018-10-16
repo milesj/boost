@@ -34,11 +34,11 @@ export default class ConfigLoader {
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: Tool;
+  tool: Tool<any, any>;
 
   workspaceRoot: string = '';
 
-  constructor(tool: Tool) {
+  constructor(tool: Tool<any, any>) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
   }
@@ -239,6 +239,7 @@ export default class ConfigLoader {
         return;
       }
 
+      // @ts-ignore Ignore symbol check
       const pluginType = pluginTypes[key as keyof typeof pluginTypes];
 
       // Plugins

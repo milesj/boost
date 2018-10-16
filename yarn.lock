@@ -722,7 +722,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.1.0"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2":
+"@babel/runtime@^7.1.2":
   version "7.1.2"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.1.2.tgz#81c89935f4647706fc54541145e6b4ecfef4b8e3"
   integrity sha512-Y3SCjmhSupzFB6wcv1KmmFucH6gDVnI30WjOcicV10ju0cZjak3Jcs67YLIXBrmZYw1xCrVeJPbycFwrqNyxpg==
@@ -771,29 +771,28 @@
     semver "^5.6.0"
     yargs "^12.0.2"
 
-"@beemo/core@^0.23.0":
-  version "0.23.0"
-  resolved "https://registry.npmjs.org/@beemo/core/-/core-0.23.0.tgz#773053ee7aeee3518b928947522ff71353b8ae7d"
-  integrity sha512-fu2CNs6NfwCF5kjf0fp8zN+TxKXSt+99moBP0OxEkyO03aIWOQP5lRVoGpbQRpNTB9i+1A+/Xa+AsiZJTLHXTw==
+"@beemo/core@^0.23.1":
+  version "0.23.1"
+  resolved "https://registry.npmjs.org/@beemo/core/-/core-0.23.1.tgz#dac63fe905c858b5e57548baa79ad75989898d56"
+  integrity sha512-BgEn5waAFjvpdBSCr71lCvdmMNQZsdOwkT9cbmT9Hxmzhs9EBMH+6JgaaUgqJJ6qmiMWnlJkB3KcZJDBf83KpQ==
   dependencies:
-    "@boost/core" "^1.0.0-beta.0"
+    "@boost/core" "^1.0.0-beta.1"
     "@types/execa" "^0.9.0"
     "@types/fs-extra" "^5.0.4"
-    "@types/glob" "^7.1.1"
     "@types/is-glob" "^4.0.0"
     "@types/lodash" "^4.14.117"
     "@types/micromatch" "^3.1.0"
-    "@types/node" "^10.11.7"
+    "@types/node" "^10.12.0"
     "@types/yargs" "^12.0.1"
     "@types/yargs-parser" "^11.0.0"
     chalk "^2.4.1"
+    fast-glob "^2.2.3"
     fs-extra "^7.0.0"
-    glob "^7.1.3"
     hygen "^1.6.2"
     is-glob "^4.0.0"
     lodash "^4.17.11"
     micromatch "^3.1.10"
-    optimal "^1.1.1"
+    optimal "^1.1.3"
     yargs "^12.0.2"
     yargs-parser "^11.0.0"
 
@@ -1435,14 +1434,14 @@
     typescript "^3.1.3"
     typescript-eslint-parser "^20.0.0"
 
-"@milesj/build-tool-runtime@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.3.0.tgz#00dc370ee61de69e7ae7f5ef8130c587fad7a0cd"
-  integrity sha512-W2GEN7VR8Nx1vvqtrFL5EUj3wlX2O+al12HAAML/DR0WxGI9tJ2w53L4olEikYbxbFPgkFrNUIl1r5CxX07iVg==
+"@milesj/build-tool-runtime@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.3.1.tgz#7070b0c953dd99cd633e32b57e42efc145d9ddec"
+  integrity sha512-6fK8IkPiAFF2tJWYEpNAgKpRUr/AWKHy3P0ZiYFTBl+z/WpQD30N7U3Gp1s+SkpfmL8QIsyu6L1UMUxvsCHThQ==
   dependencies:
     "@babel/core" "^7.1.2"
     "@beemo/cli" "^0.23.0"
-    "@beemo/core" "^0.23.0"
+    "@beemo/core" "^0.23.1"
     "@beemo/driver-babel" "^0.23.0"
     "@beemo/driver-eslint" "^0.23.0"
     "@beemo/driver-jest" "^0.23.0"
@@ -1454,13 +1453,13 @@
     prettier "^1.14.3"
     typescript "^3.1.3"
 
-"@milesj/build-tools@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.3.0.tgz#c1b05eebdaa21b0ba0af56b65ce708f4dc9340d9"
-  integrity sha512-Z6pKycQgcyMOnTacbMTIukEkF5jSvl+ijlHNH/lpmeOSMacR8VLBlNghk3tIL2VrJZ7nznKaxkrpvFS/aJ+Uzw==
+"@milesj/build-tools@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.3.1.tgz#7d484be1a3b03a2743030070a10be184c1120bea"
+  integrity sha512-TgfUxWLNezSkLADqAai+XkHtqgU2mGYjqSKPuYXGDpWgNwRMgEgAuip1/RqxV+nAyD9myRhZarOa4qJMvgkLdQ==
   dependencies:
     "@milesj/build-tool-config" "^0.125.0"
-    "@milesj/build-tool-runtime" "^0.3.0"
+    "@milesj/build-tool-runtime" "^0.3.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -1510,11 +1509,6 @@
     "@types/cheerio" "*"
     "@types/react" "*"
 
-"@types/events@*":
-  version "1.2.0"
-  resolved "http://registry.npmjs.org/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
-  integrity sha512-KEIlhXnIutzKwRbQkGWb/I4HFqBuUykAdHgDED6xqwXJfONCjF5VoE0cXEiurh3XauygxzeDzgtXUqvLkxFzzA==
-
 "@types/execa@^0.9.0":
   version "0.9.0"
   resolved "http://registry.npmjs.org/@types/execa/-/execa-0.9.0.tgz#9b025d2755f17e80beaf9368c3f4f319d8b0fb93"
@@ -1529,19 +1523,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/glob@^7.1.1":
-  version "7.1.1"
-  resolved "https://registry.npmjs.org/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
-  integrity sha512-1Bh06cbWJUHMC97acuD6UMG29nMt0Aqz1vF3guLfG+kHHJhy3AyohZFFxYk2f7Q1SQIrNwvncxAE0N/9s70F2w==
-  dependencies:
-    "@types/events" "*"
-    "@types/minimatch" "*"
-    "@types/node" "*"
-
-"@types/i18next@^11.9.2":
-  version "11.9.2"
-  resolved "https://registry.npmjs.org/@types/i18next/-/i18next-11.9.2.tgz#5026ce949ed895a0c94b994736f7e849600ebf84"
-  integrity sha512-kuMQfZnTgv0Cp0V4yaxUsQ/9Pd653JYR6I4kFPNsBnhy/g0ys+bsOwsYReyOM1oY4VlV3rHTRbSI4InwAxWEuw==
+"@types/i18next@^11.9.3":
+  version "11.9.3"
+  resolved "https://registry.npmjs.org/@types/i18next/-/i18next-11.9.3.tgz#04d84c6539908ad69665d26d8967f942d1638550"
+  integrity sha512-snM7bMKy6gt7UYdpjsxycqSCAy0fr2JVPY0B8tJ2vp9bN58cE7C880k20PWFM4KXxQ3KsstKM8DLCawGCIH0tg==
 
 "@types/is-glob@^4.0.0":
   version "4.0.0"
@@ -1570,15 +1555,15 @@
   dependencies:
     "@types/braces" "*"
 
-"@types/minimatch@*":
-  version "3.0.3"
-  resolved "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
-  integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
-
-"@types/node@*", "@types/node@^10.11.7":
+"@types/node@*":
   version "10.11.7"
   resolved "https://registry.npmjs.org/@types/node/-/node-10.11.7.tgz#0e75ca9357d646ca754016ca1d68a127ad7e7300"
   integrity sha512-yOxFfkN9xUFLyvWaeYj90mlqTJ41CsQzWKS3gXdOMOyPVacUsymejKxJ4/pMW7exouubuEeZLJawGgcNGYlTeg==
+
+"@types/node@^10.12.0":
+  version "10.12.0"
+  resolved "https://registry.npmjs.org/@types/node/-/node-10.12.0.tgz#ea6dcbddbc5b584c83f06c60e82736d8fbb0c235"
+  integrity sha512-3TUHC3jsBAB7qVRGxT6lWyYo2v96BMmD2PTcl47H25Lu7UXtFH/2qqmKiVrnel6Ne//0TFYf6uvNX+HW2FRkLQ==
 
 "@types/os-locale@^2.1.0":
   version "2.1.0"
@@ -4333,7 +4318,7 @@ glob-to-regexp@^0.3.0:
   resolved "https://registry.npmjs.org/glob-to-regexp/-/glob-to-regexp-0.3.0.tgz#8c5a1494d2066c570cc3bfe4496175acc4d502ab"
   integrity sha1-jFoUlNIGbFcMw7/kSWF1rMTVAqs=
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3:
+glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2:
   version "7.1.3"
   resolved "https://registry.npmjs.org/glob/-/glob-7.1.3.tgz#3960832d3f1574108342dafd3a67b332c0969df1"
   integrity sha512-vcfuiIxogLV4DlGBHIUOwI0IbrJ8HWPc4MU7HzviGeNho/UJDfi6B5p3sHeWIQ0KGIU0Jpxi5ZHxemQfLkkAwQ==
@@ -6773,12 +6758,12 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-optimal@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/optimal/-/optimal-1.1.1.tgz#e7fdd8ca5cd2d5e4db64fa2b20c21f27e8611539"
-  integrity sha512-CfYJnuZGl5d2DUtHljhKDPJOEJmVheDS1IbPxdrfepG+hcXeaojZAdN7bdKMaRVKsxJoiXQYrHYurCk1rrKpvg==
+optimal@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-1.1.3.tgz#c73d08a6f07fb67b7e3be61d670ce69eedcaa69b"
+  integrity sha512-tpbM7Kw/FmsN052YnKRndzVgHDlWfRhY1AYPaCZcc2FPmUFcnV0ypePV75OPrUczntWuNsxaUzrSzZUiXnUiUA==
   dependencies:
-    "@babel/runtime" "^7.0.0"
+    "@babel/runtime" "^7.1.2"
 
 optimist@^0.6.1:
   version "0.6.1"

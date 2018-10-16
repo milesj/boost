@@ -135,7 +135,7 @@ export default class Tool<
     // Make this available for testing purposes
     this.configLoader = new ConfigLoader(this);
 
-    // Default a special type of plugin
+    // Define a special type of plugin
     this.registerPlugin('reporter', Reporter, {
       beforeBootstrap: reporter => {
         reporter.console = this.console;
@@ -144,6 +144,7 @@ export default class Tool<
     });
 
     // Add a reporter to catch errors during initialization
+    this.addPlugin('reporter', new ErrorReporter());
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */

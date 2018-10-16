@@ -45,7 +45,7 @@ describe('Tool', () => {
 
   describe('constructor()', () => {
     it('sets an error reporter', () => {
-      expect(tool.plugins.reporter![0]).toBeInstanceOf(ErrorReporter);
+      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(ErrorReporter);
     });
   });
 
@@ -94,12 +94,12 @@ describe('Tool', () => {
     });
 
     it('adds to plugins list', () => {
-      expect(toolWithPlugins.plugins.foo).toHaveLength(0);
+      expect(toolWithPlugins.getPlugins('foo')).toHaveLength(0);
 
       toolWithPlugins.addPlugin('foo', new Foo());
       toolWithPlugins.addPlugin('foo', new Foo());
 
-      expect(toolWithPlugins.plugins.foo).toHaveLength(2);
+      expect(toolWithPlugins.getPlugins('foo')).toHaveLength(2);
     });
 
     it('sets console on reporter', () => {
@@ -185,6 +185,7 @@ describe('Tool', () => {
       const plugin = new Plugin();
       plugin.name = 'foo';
 
+      // @ts-ignore Allow access
       tool.plugins.plugin = [plugin];
 
       expect(tool.getPlugin('plugin', 'foo')).toBe(plugin);
@@ -281,6 +282,7 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG };
       tool.loadPlugins();
 
+      // @ts-ignore Allow access
       expect(tool.plugins).toEqual({ plugin: [], reporter: [] });
     });
 
@@ -290,6 +292,7 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
 
+      // @ts-ignore Allow access
       expect(tool.plugins).toEqual({ plugin: [], reporter: [] });
     });
 
@@ -328,6 +331,7 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, plugins: [foo, bar, baz] };
       tool.loadPlugins();
 
+      // @ts-ignore Allow access
       expect(tool.plugins).toEqual({ plugin: [baz, bar, foo], reporter: [] });
     });
 
@@ -337,9 +341,9 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
       tool.loadPlugins();
 
-      expect(tool.plugins.reporter![0]).toBeInstanceOf(Reporter);
-      expect(tool.plugins.reporter![0].name).toBe('foo');
-      expect(tool.plugins.reporter![0].moduleName).toBe('test-boost-reporter-foo');
+      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(Reporter);
+      expect(tool.getPlugins('reporter')[0].name).toBe('foo');
+      expect(tool.getPlugins('reporter')[0].moduleName).toBe('test-boost-reporter-foo');
 
       unmock();
     });
@@ -350,9 +354,9 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
       tool.loadPlugins();
 
-      expect(tool.plugins.reporter![0]).toBeInstanceOf(Reporter);
-      expect(tool.plugins.reporter![0].name).toBe('bar');
-      expect(tool.plugins.reporter![0].moduleName).toBe('test-boost-reporter-bar');
+      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(Reporter);
+      expect(tool.getPlugins('reporter')[0].name).toBe('bar');
+      expect(tool.getPlugins('reporter')[0].moduleName).toBe('test-boost-reporter-bar');
 
       unmock();
     });
@@ -363,7 +367,7 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
       tool.loadPlugins();
 
-      const [reporter] = tool.plugins.reporter!;
+      const [reporter] = tool.getPlugins('reporter');
 
       expect(reporter.options).toEqual({ foo: 'bar' });
 
@@ -393,13 +397,13 @@ describe('Tool', () => {
       tool.initialized = true;
       tool.loadReporters();
 
-      expect(tool.plugins.reporter!).toHaveLength(0);
+      expect(tool.getPlugins('reporter')).toHaveLength(0);
     });
 
     it('loads default reporter if none defined', () => {
       tool.loadReporters();
 
-      expect(tool.plugins.reporter![0]).toBeInstanceOf(DefaultReporter);
+      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(DefaultReporter);
     });
   });
 
@@ -432,18 +436,22 @@ describe('Tool', () => {
     });
 
     it('creates a plugins property', () => {
+      // @ts-ignore Allow access
       expect(toolWithPlugins.plugins.baz).toBeUndefined();
 
       toolWithPlugins.registerPlugin('baz', Baz);
 
+      // @ts-ignore Allow access
       expect(toolWithPlugins.plugins.baz).toEqual([]);
     });
 
     it('creates a plugins type struct', () => {
+      // @ts-ignore Allow access
       expect(toolWithPlugins.pluginTypes.baz).toBeUndefined();
 
       toolWithPlugins.registerPlugin('baz', Baz);
 
+      // @ts-ignore Allow access
       expect(toolWithPlugins.pluginTypes.baz).toEqual({
         contract: Baz,
         loader: expect.anything(),

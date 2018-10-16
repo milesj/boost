@@ -22,9 +22,9 @@ export default class Executor<Ctx extends Context, Options = {}> {
 
   options: Options;
 
-  tool: Tool;
+  tool: Tool<any, any>;
 
-  constructor(tool: Tool, context: Ctx, options: Partial<Options> = {}) {
+  constructor(tool: Tool<any, any>, context: Ctx, options: Partial<Options> = {}) {
     this.context = context;
     this.debug = tool.createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;

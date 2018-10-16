@@ -9,7 +9,7 @@ import { createTestTool, createTestRoutine, createTestDebugger, TEST_TOOL_CONFIG
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
-  let tool: Tool;
+  let tool: Tool<any, any>;
 
   beforeEach(() => {
     tool = createTestTool();

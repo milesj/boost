@@ -27,7 +27,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
 
   timeoutTimer?: NodeJS.Timer;
 
-  constructor(tool: Tool, context: Ctx, options: Partial<PoolExecutorOptions> = {}) {
+  constructor(tool: Tool<any, any>, context: Ctx, options: Partial<PoolExecutorOptions> = {}) {
     super(tool, context, options);
 
     this.options = optimal(options, {

@@ -4,7 +4,7 @@ import Tool, { ToolOptions, ToolConfig, ToolPluginRegistry } from '../src/Tool';
 import Routine from '../src/Routine';
 import Console from '../src/Console';
 import Plugin from '../src/Plugin';
-import { PluginConfigOption } from '../src/types';
+import { PluginSetting } from '../src/types';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -66,8 +66,10 @@ export interface TestPluginRegistry extends ToolPluginRegistry {
 }
 
 export interface TestToolConfig extends ToolConfig {
-  plugins: PluginConfigOption<Plugin>;
+  plugins: PluginSetting<Plugin>;
 }
+
+export type TestTool = Tool<TestPluginRegistry, TestToolConfig>;
 
 export const TEST_TOOL_CONFIG = {
   debug: false,
@@ -81,9 +83,7 @@ export const TEST_TOOL_CONFIG = {
   theme: 'default',
 };
 
-export function createTestTool(
-  options?: Partial<ToolOptions>,
-): Tool<TestPluginRegistry, TestToolConfig> {
+export function createTestTool(options?: Partial<ToolOptions>): TestTool {
   const tool = new Tool<TestPluginRegistry, TestToolConfig>({
     appName: 'test-boost',
     appPath: __dirname,
@@ -101,11 +101,11 @@ export function createTestTool(
 }
 
 export function createTestRoutine(
-  tool: Tool | null = null,
+  tool: TestTool | null = null,
   key: string = 'key',
   title: string = 'Title',
 ): Routine<any, any> {
-  const routine = new Routine(key, title);
+  const routine = new Routine<{}, TestTool>(key, title);
 
   routine.tool = tool || createTestTool();
   routine.debug = createTestDebugger();
