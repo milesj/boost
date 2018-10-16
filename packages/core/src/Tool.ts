@@ -402,7 +402,7 @@ export default class Tool<
 
     // Use a special reporter when in a CI
     // istanbul ignore next
-    if (envCI.isCI && !process.env.BOOST_ENV) {
+    if (envCI().isCI && !process.env.BOOST_ENV) {
       loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
 
       this.addPlugin('reporter', new CIReporter());

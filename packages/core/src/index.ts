@@ -31,8 +31,8 @@ export {
   Routine,
   Task,
   Tool,
-  ToolOptions,
   ToolConfig,
+  ToolOptions,
   ToolPluginRegistry,
 };
 
