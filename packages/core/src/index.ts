@@ -14,7 +14,7 @@ import Plugin from './Plugin';
 import Reporter from './Reporter';
 import Routine from './Routine';
 import Task from './Task';
-import Tool, { ToolOptions } from './Tool';
+import Tool, { ToolOptions, ToolConfig, ToolPluginRegistry } from './Tool';
 
 export {
   CLI,
@@ -32,6 +32,8 @@ export {
   Task,
   Tool,
   ToolOptions,
+  ToolConfig,
+  ToolPluginRegistry,
 };
 
 export * from './types';

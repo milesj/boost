@@ -2,7 +2,7 @@ import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
 import { getFixturePath, getTestRoot, copyFixtureToMock, createTestTool } from './helpers';
 
-function createPlugin(name: string, options: any = {}): Plugin<any> {
+function createPlugin(name: string, options: any = {}): Plugin {
   const plugin = new Plugin(options);
   plugin.name = name;
   plugin.moduleName = `test-boost-plugin-${name}`;

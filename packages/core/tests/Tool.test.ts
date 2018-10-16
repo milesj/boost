@@ -16,8 +16,8 @@ import {
 
 jest.mock('../src/helpers/enableDebug');
 
-class Foo extends Plugin<any> {}
-class Bar extends Plugin<any> {}
+class Foo extends Plugin {}
+class Bar extends Plugin {}
 class Baz {}
 
 describe('Tool', () => {
@@ -304,7 +304,7 @@ describe('Tool', () => {
     });
 
     it('bootstraps plugins with tool if bootstrap() is overridden', () => {
-      class TestPlugin extends Plugin<any> {
+      class TestPlugin extends Plugin {
         bootstrap() {}
       }
 

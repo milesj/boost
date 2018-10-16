@@ -3,11 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import CoreTool from './Tool';
+import Tool from './Tool';
 
 export const DEFAULT_PLUGIN_PRIORITY: number = 100;
 
-export default class Plugin<Tool extends CoreTool, Options = {}> {
+export default class Plugin<Options = {}> {
   moduleName: string = '';
 
   name: string = '';

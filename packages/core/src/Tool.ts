@@ -29,8 +29,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
-import { DEFAULT_TOOL_CONFIG } from './constants';
-import { Debugger, Translator, ToolConfig, ToolPluginRegistry, PackageConfig } from './types';
+import { Debugger, Translator, PackageConfig, PluginSetting } from './types';
 
 export interface ToolOptions {
   appName: string;
@@ -46,7 +45,24 @@ export interface ToolOptions {
   workspaceRoot: string;
 }
 
+export interface ToolConfig {
+  debug: boolean;
+  extends: string[];
+  locale: string;
+  output: number;
+  reporters: PluginSetting<Reporter>;
+  settings: { [key: string]: any };
+  silent: boolean;
+  theme: string;
+}
+
+export interface ToolPluginRegistry {
+  reporter: Reporter;
+}
+
 export interface PluginType<T> {
+  afterBootstrap: ((plugin: T) => void) | null;
+  beforeBootstrap: ((plugin: T) => void) | null;
   contract: Constructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
@@ -61,8 +77,8 @@ export default class Tool<
 
   argv: string[] = [];
 
-  // @ts-ignore Allow default spread
-  config: Config = { ...DEFAULT_TOOL_CONFIG };
+  // @ts-ignore Set after instantiation
+  config: Config;
 
   console: Console;
 
@@ -116,15 +132,18 @@ export default class Tool<
     // Initialize the console first so we can start logging
     this.console = new Console(this);
 
-    // Add a reporter to catch errors during initialization
-    this.registerPlugin('reporter', Reporter);
-    // this.addPlugin('reporter', new ErrorReporter());
-
-    // Reporters should also load from the Boost namespace
-    this.pluginTypes.reporter!.loader.loadBoostModules = true;
-
     // Make this available for testing purposes
     this.configLoader = new ConfigLoader(this);
+
+    // Default a special type of plugin
+    this.registerPlugin('reporter', Reporter, {
+      beforeBootstrap: reporter => {
+        reporter.console = this.console;
+      },
+      loadBoostModules: true,
+    });
+
+    // Add a reporter to catch errors during initialization
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -151,13 +170,17 @@ export default class Tool<
       );
     }
 
-    // Special functionality only applicable to reporters
-    if (plugin instanceof Reporter) {
-      plugin.console = this.console;
+    plugin.tool = this;
+
+    if (type.beforeBootstrap) {
+      type.beforeBootstrap(plugin);
     }
 
-    plugin.tool = this;
     plugin.bootstrap();
+
+    if (type.afterBootstrap) {
+      type.afterBootstrap(plugin);
+    }
 
     this.plugins[typeName]!.push(plugin);
 
@@ -273,10 +296,10 @@ export default class Tool<
       this.argv,
       mergeWith(
         {
-          array: ['reporter', ...pluginNames],
+          array: [...pluginNames],
           boolean: ['debug', 'silent'],
           number: ['output'],
-          string: ['config', 'locale', 'reporter', 'theme', ...pluginNames],
+          string: ['config', 'locale', 'theme', ...pluginNames],
         },
         this.options.argOptions,
         handleMerge,
@@ -435,20 +458,28 @@ export default class Tool<
   registerPlugin<K extends keyof PluginRegistry>(
     typeName: K,
     contract: Constructor<PluginRegistry[K]>,
+    options: {
+      afterBootstrap?: (plugin: PluginRegistry[K]) => void;
+      beforeBootstrap?: (plugin: PluginRegistry[K]) => void;
+      loadBoostModules?: boolean;
+    } = {},
   ): this {
     if (this.pluginTypes[typeName]) {
       throw new Error(this.msg('errors:pluginContractExists', { typeName }));
     }
 
     const name = String(typeName);
+    const { afterBootstrap = null, beforeBootstrap = null, loadBoostModules = false } = options;
 
     this.debug('Registering new plugin type: %s', chalk.green(name));
 
     this.plugins[typeName] = [];
 
     this.pluginTypes[typeName] = {
+      afterBootstrap,
+      beforeBootstrap,
       contract,
-      loader: new ModuleLoader(this, name, contract),
+      loader: new ModuleLoader(this, name, contract, loadBoostModules),
       pluralName: pluralize(name),
       singularName: name,
     };

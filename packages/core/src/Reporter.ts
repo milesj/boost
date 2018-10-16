@@ -11,13 +11,12 @@ import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
 import Task from './Task';
-import Tool from './Tool';
 import themePalettes from './themes';
 import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Line = any, Options = {}> extends Plugin<Tool, Options> {
+export default class Reporter<Line = any, Options = {}> extends Plugin<Options> {
   // @ts-ignore Set after instantiation
   console: Console;
 
