@@ -45,7 +45,7 @@ describe('Tool', () => {
 
   describe('constructor()', () => {
     it('sets an error reporter', () => {
-      expect(tool.reporters[0]).toBeInstanceOf(ErrorReporter);
+      expect(tool.plugins.reporter![0]).toBeInstanceOf(ErrorReporter);
     });
   });
 
@@ -100,6 +100,23 @@ describe('Tool', () => {
       toolWithPlugins.addPlugin('foo', new Foo());
 
       expect(toolWithPlugins.plugins.foo).toHaveLength(2);
+    });
+
+    it('sets console on reporter', () => {
+      const reporter = new DefaultReporter();
+
+      toolWithPlugins.addPlugin('reporter', reporter);
+
+      expect(reporter.console).toBe(toolWithPlugins.console);
+    });
+
+    it('doesnt set console on non-reporter', () => {
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      // @ts-ignore
+      expect(plugin.console).not.toBe(tool.console);
     });
   });
 
@@ -171,32 +188,6 @@ describe('Tool', () => {
       tool.plugins.plugin = [plugin];
 
       expect(tool.getPlugin('plugin', 'foo')).toBe(plugin);
-    });
-  });
-
-  describe('getReporter()', () => {
-    it('errors if not found', () => {
-      expect(() => {
-        tool.getReporter('foo');
-      }).toThrowErrorMatchingSnapshot();
-    });
-
-    it('returns plugin by name', () => {
-      const reporter = new Reporter();
-      reporter.name = 'foo';
-
-      tool.reporters.push(reporter);
-
-      expect(tool.getReporter('foo')).toBe(reporter);
-    });
-  });
-
-  describe('getThemeList()', () => {
-    it('returns a list of themes', () => {
-      const themes = tool.getThemeList();
-
-      expect(themes.length).not.toBe(0);
-      expect(themes).toContain('one-dark');
     });
   });
 
@@ -290,7 +281,7 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual({ plugin: [] });
+      expect(tool.plugins).toEqual({ plugin: [], reporter: [] });
     });
 
     it('doesnt load if initialized', () => {
@@ -299,7 +290,7 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, plugins: ['foo'] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual({ plugin: [] });
+      expect(tool.plugins).toEqual({ plugin: [], reporter: [] });
     });
 
     it('bootstraps plugins on load', () => {
@@ -337,7 +328,46 @@ describe('Tool', () => {
       tool.config = { ...TEST_TOOL_CONFIG, plugins: [foo, bar, baz] };
       tool.loadPlugins();
 
-      expect(tool.plugins).toEqual({ plugin: [baz, bar, foo] });
+      expect(tool.plugins).toEqual({ plugin: [baz, bar, foo], reporter: [] });
+    });
+
+    it('loads reporter using a string', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
+
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
+      tool.loadPlugins();
+
+      expect(tool.plugins.reporter![0]).toBeInstanceOf(Reporter);
+      expect(tool.plugins.reporter![0].name).toBe('foo');
+      expect(tool.plugins.reporter![0].moduleName).toBe('test-boost-reporter-foo');
+
+      unmock();
+    });
+
+    it('loads reporter using an object', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
+
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
+      tool.loadPlugins();
+
+      expect(tool.plugins.reporter![0]).toBeInstanceOf(Reporter);
+      expect(tool.plugins.reporter![0].name).toBe('bar');
+      expect(tool.plugins.reporter![0].moduleName).toBe('test-boost-reporter-bar');
+
+      unmock();
+    });
+
+    it('passes options to reporter', () => {
+      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
+
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
+      tool.loadPlugins();
+
+      const [reporter] = tool.plugins.reporter!;
+
+      expect(reporter.options).toEqual({ foo: 'bar' });
+
+      unmock();
     });
   });
 
@@ -363,53 +393,13 @@ describe('Tool', () => {
       tool.initialized = true;
       tool.loadReporters();
 
-      expect(tool.reporters).toHaveLength(1);
+      expect(tool.plugins.reporter!).toHaveLength(0);
     });
 
-    it('loads default reporter if config not set', () => {
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: [] };
+    it('loads default reporter if none defined', () => {
       tool.loadReporters();
 
-      expect(tool.reporters[1]).toBeInstanceOf(DefaultReporter);
-    });
-
-    it('loads reporter using a string', () => {
-      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
-
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
-      tool.loadReporters();
-
-      expect(tool.reporters[1]).toBeInstanceOf(Reporter);
-      expect(tool.reporters[1].name).toBe('foo');
-      expect(tool.reporters[1].moduleName).toBe('test-boost-reporter-foo');
-
-      unmock();
-    });
-
-    it('loads reporter using an object', () => {
-      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
-
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
-      tool.loadReporters();
-
-      expect(tool.reporters[1]).toBeInstanceOf(Reporter);
-      expect(tool.reporters[1].name).toBe('bar');
-      expect(tool.reporters[1].moduleName).toBe('test-boost-reporter-bar');
-
-      unmock();
-    });
-
-    it('passes options to reporter', () => {
-      const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
-
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
-      tool.loadReporters();
-
-      const [, reporter] = tool.reporters;
-
-      expect(reporter.options).toEqual({ foo: 'bar' });
-
-      unmock();
+      expect(tool.plugins.reporter![0]).toBeInstanceOf(DefaultReporter);
     });
   });
 

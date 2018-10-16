@@ -1,13 +1,13 @@
 /* eslint-disable */
 
 import { bool } from 'optimal';
-import { Tool, ToolConfig, Plugin, PluginConfigOption } from '../src';
+import { Tool, ToolConfig, ToolPluginRegistry, Plugin, PluginConfigOption } from '../src';
 
 class Adapter extends Plugin<Tool<ExamplePlugins, ExampleConfig>> {}
 class Renderer extends Plugin<Tool<ExamplePlugins, ExampleConfig>> {}
 class Controller {}
 
-interface ExamplePlugins {
+interface ExamplePlugins extends ToolPluginRegistry {
   adapter: Adapter;
   renderer: Renderer;
 }

@@ -8,7 +8,6 @@ import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Context from './Context';
 import Emitter, { EventArguments, EventListener } from './Emitter';
-import Module from './Module';
 import ModuleLoader from './ModuleLoader';
 import Pipeline from './Pipeline';
 import Plugin from './Plugin';
@@ -25,7 +24,6 @@ export {
   Emitter,
   EventArguments,
   EventListener,
-  Module,
   ModuleLoader,
   Pipeline,
   Plugin,

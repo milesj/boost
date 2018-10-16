@@ -22,6 +22,10 @@ export interface SettingsConfig {
   [key: string]: any;
 }
 
+export interface ToolPluginRegistry {
+  reporter: Reporter;
+}
+
 export interface ToolConfig<T = SettingsConfig> {
   debug: boolean;
   extends: string[];

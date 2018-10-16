@@ -3309,6 +3309,14 @@ entities@^1.1.1, entities@~1.1.1:
   resolved "https://registry.npmjs.org/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
   integrity sha1-blwtClYhtdra7O+AuQ7ftc13cvA=
 
+env-ci@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/env-ci/-/env-ci-3.1.0.tgz#8aef2340389ae17e27623988ae1002f130491185"
+  integrity sha512-+yFT8QX8W9bee0/fuzKvqt2vEhWvU3FXZ1P5xbveDq/EqcYLh4e0QNE16okUS3pawALDGXE9eCJPVeWY0/ilQA==
+  dependencies:
+    execa "^1.0.0"
+    java-properties "^0.2.9"
+
 enzyme-adapter-react-16@^1.6.0:
   version "1.6.0"
   resolved "https://registry.npmjs.org/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.6.0.tgz#3fca28d3c32f3ff427495380fe2dd51494689073"
@@ -5244,6 +5252,11 @@ istanbul-reports@^1.5.1:
   integrity sha512-+cfoZ0UXzWjhAdzosCPP3AN8vvef8XDkWtTfgaN+7L3YTpNYITnCaEkceo5SEYy644VkHka/P1FvkWvrG/rrJw==
   dependencies:
     handlebars "^4.0.3"
+
+java-properties@^0.2.9:
+  version "0.2.10"
+  resolved "https://registry.npmjs.org/java-properties/-/java-properties-0.2.10.tgz#2551560c25fa1ad94d998218178f233ad9b18f60"
+  integrity sha512-CpKJh9VRNhS+XqZtg1UMejETGEiqwCGDC/uwPEEQwc2nfdbSm73SIE29TplG2gLYuBOOTNDqxzG6A9NtEPLt0w==
 
 jest-changed-files@^23.4.2:
   version "23.4.2"

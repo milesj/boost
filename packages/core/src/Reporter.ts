@@ -8,8 +8,8 @@ import cliTruncate from 'cli-truncate';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import Console from './Console';
-import Module from './Module';
 import ModuleLoader from './ModuleLoader';
+import Plugin from './Plugin';
 import Task from './Task';
 import Tool from './Tool';
 import themePalettes from './themes';
@@ -17,7 +17,7 @@ import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Line = any, Options = {}> extends Module<Options> {
+export default class Reporter<Line = any, Options = {}> extends Plugin<Tool, Options> {
   // @ts-ignore Set after instantiation
   console: Console;
 
@@ -26,9 +26,6 @@ export default class Reporter<Line = any, Options = {}> extends Module<Options> 
   startTime: number = 0;
 
   stopTime: number = 0;
-
-  // @ts-ignore Set after instantiation
-  tool: Tool;
 
   /**
    * Register console listeners.

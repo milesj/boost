@@ -19,7 +19,7 @@ import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import Tool, { PluginType } from './Tool';
+import Tool from './Tool';
 import Reporter from './Reporter';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN, DEFAULT_TOOL_CONFIG } from './constants';
 import { Debugger, PackageConfig } from './types';
@@ -221,6 +221,7 @@ export default class ConfigLoader {
   inheritFromArgs<T>(config: T, args: Arguments): T {
     // @ts-ignore Allow spread
     const nextConfig = { ...config };
+    const pluginTypes = this.tool.getRegisteredPlugins();
     const keys = new Set([
       ...Object.keys(DEFAULT_TOOL_CONFIG),
       ...Object.keys(this.tool.options.configBlueprint),
@@ -244,11 +245,11 @@ export default class ConfigLoader {
           break;
 
         default: {
-          const pluginType = (this.tool.pluginTypes as any)[key];
+          const pluginType = pluginTypes[key as keyof typeof pluginTypes];
 
           // Plugins
           if (pluginType) {
-            const { pluralName, singularName } = pluginType as PluginType<any>;
+            const { pluralName, singularName } = pluginType;
 
             this.debug('  --%s=[%s]', singularName, value.join(', '));
             nextConfig[pluralName] = (nextConfig[pluralName] || []).concat(value);
@@ -291,8 +292,8 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
-    Object.values(this.tool.pluginTypes).forEach(type => {
-      const { contract, singularName, pluralName } = type as PluginType<any>;
+    Object.values(this.tool.getRegisteredPlugins()).forEach(type => {
+      const { contract, singularName, pluralName } = type!;
 
       this.debug('Generating %s blueprint', chalk.green(singularName));
 

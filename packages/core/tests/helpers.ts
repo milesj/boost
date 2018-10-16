@@ -5,7 +5,7 @@ import Routine from '../src/Routine';
 import Console from '../src/Console';
 import Plugin from '../src/Plugin';
 import { DEFAULT_TOOL_CONFIG } from '../src/constants';
-import { PluginConfigOption, ToolConfig } from '../src/types';
+import { PluginConfigOption, ToolConfig, ToolPluginRegistry } from '../src/types';
 
 // This is super janky as tests touch the filesystem, which is slow.
 // But getting `fs` and `require` to work correctly with Jest mocks
@@ -62,7 +62,7 @@ export function createTestDebugger(): any {
   return debug;
 }
 
-export interface TestPluginRegistry {
+export interface TestPluginRegistry extends ToolPluginRegistry {
   plugin: Plugin<any>;
 }
 

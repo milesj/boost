@@ -9,6 +9,7 @@ import path from 'path';
 import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
+import envCI from 'env-ci';
 import pluralize from 'pluralize';
 import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
@@ -28,9 +29,8 @@ import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
-import themePalettes from './themes';
 import { DEFAULT_TOOL_CONFIG } from './constants';
-import { Debugger, Translator, ToolConfig, PackageConfig } from './types';
+import { Debugger, Translator, ToolConfig, ToolPluginRegistry, PackageConfig } from './types';
 
 export interface ToolOptions {
   appName: string;
@@ -54,7 +54,7 @@ export interface PluginType<T> {
 }
 
 export default class Tool<
-  PluginRegistry = {},
+  PluginRegistry extends ToolPluginRegistry = ToolPluginRegistry,
   Config extends ToolConfig = ToolConfig
 > extends Emitter {
   args?: Arguments;
@@ -72,19 +72,15 @@ export default class Tool<
 
   package: PackageConfig = { name: '' };
 
-  plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
-
-  pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
-
-  reporters: Reporter[] = [];
-
   translator: Translator;
 
   private configLoader: ConfigLoader;
 
   private initialized: boolean = false;
 
-  private reporterLoader: ModuleLoader<Reporter>;
+  private plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
+
+  private pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -120,12 +116,15 @@ export default class Tool<
     // Initialize the console first so we can start logging
     this.console = new Console(this);
 
-    // Make these available for testing purposes
-    this.configLoader = new ConfigLoader(this);
-    this.reporterLoader = new ModuleLoader(this, 'reporter', Reporter, true);
-
     // Add a reporter to catch errors during initialization
-    this.addReporter(new ErrorReporter());
+    this.registerPlugin('reporter', Reporter);
+    // this.addPlugin('reporter', new ErrorReporter());
+
+    // Reporters should also load from the Boost namespace
+    this.pluginTypes.reporter!.loader.loadBoostModules = true;
+
+    // Make this available for testing purposes
+    this.configLoader = new ConfigLoader(this);
 
     // Cleanup when an exit occurs
     /* istanbul ignore next */
@@ -152,23 +151,15 @@ export default class Tool<
       );
     }
 
+    // Special functionality only applicable to reporters
+    if (plugin instanceof Reporter) {
+      plugin.console = this.console;
+    }
+
     plugin.tool = this;
     plugin.bootstrap();
 
     this.plugins[typeName]!.push(plugin);
-
-    return this;
-  }
-
-  /**
-   * Add a reporter and bootstrap with the tool and console.
-   */
-  addReporter(reporter: Reporter): this {
-    reporter.console = this.console;
-    reporter.tool = this;
-    reporter.bootstrap();
-
-    this.reporters.push(reporter);
 
     return this;
   }
@@ -256,30 +247,10 @@ export default class Tool<
   }
 
   /**
-   * Return a reporter by name.
+   * Return the registered plugin types.
    */
-  getReporter(name: string): Reporter {
-    const reporter = this.getReporters().find(r => r.name === name);
-
-    if (reporter) {
-      return reporter;
-    }
-
-    throw new Error(this.msg('errors:reporterNotFound', { name }));
-  }
-
-  /**
-   * Return all reporters.
-   */
-  getReporters(): Reporter[] {
-    return this.reporters;
-  }
-
-  /**
-   * Return a list of core bundled theme names.
-   */
-  getThemeList(): string[] {
-    return Object.keys(themePalettes);
+  getRegisteredPlugins() {
+    return this.pluginTypes;
   }
 
   /**
@@ -401,33 +372,25 @@ export default class Tool<
       throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
     }
 
-    const reporters: Reporter[] = [];
+    const reporters = this.plugins.reporter!;
+    const { loader } = this.pluginTypes.reporter!;
 
+    // Use a special reporter when in a CI
     // istanbul ignore next
-    if (process.env.CI && !process.env.BOOST_ENV) {
-      this.reporterLoader.debug(
-        'CI environment detected, using %s CI reporter',
-        chalk.yellow('boost'),
-      );
+    if (envCI.isCI && !process.env.BOOST_ENV) {
+      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
 
-      reporters.push(new CIReporter());
-    } else {
-      reporters.push(...this.reporterLoader.loadModules(this.config.reporters));
+      this.addPlugin('reporter', new CIReporter());
+
+      // Use default reporter
+    } else if (
+      reporters.length === 0 ||
+      (reporters.length === 1 && reporters[0] instanceof ErrorReporter)
+    ) {
+      loader.debug('Using default %s reporter', chalk.yellow('boost'));
+
+      this.addPlugin('reporter', new DefaultReporter());
     }
-
-    // Use default reporter
-    if (reporters.length === 0) {
-      this.reporterLoader.debug('Using default %s reporter', chalk.yellow('boost'));
-
-      reporters.push(new DefaultReporter());
-    }
-
-    // Bootstrap each plugin with the tool
-    this.reporterLoader.debug('Bootstrapping reporters with tool and console environment');
-
-    reporters.forEach(reporter => {
-      this.addReporter(reporter);
-    });
 
     return this;
   }
