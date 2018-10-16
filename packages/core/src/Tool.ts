@@ -70,8 +70,8 @@ export interface PluginType<T> {
 }
 
 export default class Tool<
-  PluginRegistry extends ToolPluginRegistry = ToolPluginRegistry,
-  Config extends ToolConfig = ToolConfig
+  PluginRegistry extends ToolPluginRegistry,
+  Config extends ToolConfig
 > extends Emitter {
   args?: Arguments;
 
