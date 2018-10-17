@@ -115,7 +115,13 @@ export default class Routine<
     const unit = task || this;
     const handler = (line: string) => {
       if (unit.status === STATUS_RUNNING) {
-        unit.statusText = line;
+        unit.output += line;
+
+        // Only capture the status when not empty
+        if (line) {
+          unit.statusText = line;
+        }
+
         this.tool.console.emit('command.data', [command, line, this]);
       }
     };

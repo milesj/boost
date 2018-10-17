@@ -200,6 +200,35 @@ describe('Routine', () => {
         expect.anything(),
       ]);
     });
+
+    it('sets `statusText` on task', async () => {
+      const task = new Task('title', () => {});
+
+      task.status = STATUS_RUNNING;
+
+      await routine.executeCommand('yarn', ['--help'], { task });
+
+      expect(task.statusText).toEqual(expect.stringContaining('learn more about Yarn'));
+    });
+
+    it('sets `output` on task', async () => {
+      const task = new Task('title', () => {});
+
+      task.status = STATUS_RUNNING;
+
+      await routine.executeCommand('yarn', ['-v'], { task });
+
+      expect(task.output).toBe('1.10.1');
+    });
+
+    it('doesnt set `statusText` or `output` on task when not running', async () => {
+      const task = new Task('title', () => {});
+
+      await routine.executeCommand('yarn', ['-v'], { task });
+
+      expect(task.statusText).toBe('');
+      expect(task.output).toBe('');
+    });
   });
 
   describe('parallelizeRoutines()', () => {

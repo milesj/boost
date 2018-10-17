@@ -91,6 +91,13 @@ describe('Task', () => {
   });
 
   describe('run()', () => {
+    it('stores action result as output', async () => {
+      const value = await task.run({}, 123);
+
+      expect(value).toBe(246);
+      expect(task.output).toBe(value);
+    });
+
     it('resolves a value with the action', async () => {
       try {
         expect(await task.run({}, 123)).toBe(246);

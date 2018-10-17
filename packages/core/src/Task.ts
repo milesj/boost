@@ -27,6 +27,8 @@ export default class Task<Ctx extends Context> {
 
   title: string = '';
 
+  output: string = '';
+
   parent: Task<Ctx> | null = null;
 
   startTime: number = 0;
@@ -100,13 +102,11 @@ export default class Task<Ctx extends Context> {
       return Promise.resolve(initialValue);
     }
 
-    let value = null;
     this.status = STATUS_RUNNING;
     this.startTime = Date.now();
 
     try {
-      value = await this.action(context, initialValue, this);
-
+      this.output = await this.action(context, initialValue, this);
       this.status = STATUS_PASSED;
       this.stopTime = Date.now();
     } catch (error) {
@@ -118,7 +118,7 @@ export default class Task<Ctx extends Context> {
 
     this.statusText = '';
 
-    return value;
+    return this.output;
   }
 
   /**
