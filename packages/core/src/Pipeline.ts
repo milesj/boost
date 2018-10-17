@@ -43,11 +43,11 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any, an
       result = await this.serializeRoutines(initialValue);
       cli.exit(null, 0);
     } catch (error) {
-      result = error;
-      cli.exit(error, 1);
-
       // Create a log of the failure
       new CrashLogger(this.tool).log(error);
+
+      result = error;
+      cli.exit(error, 1);
     }
 
     return result;

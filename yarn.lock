@@ -1516,11 +1516,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/exit@^0.1.30":
-  version "0.1.30"
-  resolved "http://registry.npmjs.org/@types/exit/-/exit-0.1.30.tgz#7078b736a7d166c80b6394dc0d9de1577ca76daf"
-  integrity sha1-cHi3NqfRZsgLY5TcDZ3hV3ynba8=
-
 "@types/fs-extra@^5.0.4":
   version "5.0.4"
   resolved "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"
