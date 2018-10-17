@@ -160,6 +160,28 @@ describe('Console', () => {
 
       expect(spy).toHaveBeenCalledWith(error);
     });
+
+    it('copies logs to error logs if persist is true', () => {
+      cli.logs.push('Hello');
+
+      expect(cli.errorLogs).toEqual([]);
+
+      cli.exit(new Error('Oops'), 2, true);
+
+      expect(cli.logs).toEqual([]);
+      expect(cli.errorLogs).toEqual(['Hello']);
+    });
+
+    it('doesnt copy logs if not an error', () => {
+      cli.logs.push('Hello');
+
+      expect(cli.errorLogs).toEqual([]);
+
+      cli.exit(null, 0, true);
+
+      expect(cli.logs).toEqual(['Hello']);
+      expect(cli.errorLogs).toEqual([]);
+    });
   });
 
   describe('flushBufferedOutput()', () => {
@@ -204,7 +226,7 @@ describe('Console', () => {
       cli.exit = jest.fn();
       cli.handleFailure(error);
 
-      expect(cli.exit).toHaveBeenCalledWith(error, 1);
+      expect(cli.exit).toHaveBeenCalledWith(error, 1, true);
     });
   });
 
@@ -213,7 +235,7 @@ describe('Console', () => {
       cli.exit = jest.fn();
       cli.handleSignal();
 
-      expect(cli.exit).toHaveBeenCalledWith('Process has been terminated.', 1);
+      expect(cli.exit).toHaveBeenCalledWith('Process has been terminated.', 1, true);
     });
   });
 

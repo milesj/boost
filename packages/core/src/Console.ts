@@ -110,7 +110,7 @@ export default class Console extends Emitter {
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code: number) {
+  exit(message: string | Error | null, code: number, persistLogs: boolean = false) {
     let error = null;
 
     if (message !== null) {
@@ -119,6 +119,12 @@ export default class Console extends Emitter {
 
     if (error) {
       this.debug('Exiting console with an error');
+
+      // Mark logs as errors
+      if (persistLogs) {
+        this.errorLogs.push(...this.logs);
+        this.logs = [];
+      }
     } else {
       this.debug('Exiting console rendering process');
     }
@@ -169,7 +175,7 @@ export default class Console extends Emitter {
   handleFailure = (error: Error) => {
     this.start();
     this.debug('Uncaught exception or unresolved promise handled');
-    this.exit(error, 1);
+    this.exit(error, 1, true);
   };
 
   /**
@@ -223,7 +229,7 @@ export default class Console extends Emitter {
   handleSignal = () => {
     this.start();
     this.debug('SIGINT or SIGTERM handled');
-    this.exit('Process has been terminated.', 1);
+    this.exit('Process has been terminated.', 1, true);
   };
 
   /**
