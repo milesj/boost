@@ -24,6 +24,13 @@ describe('Pipeline', () => {
   });
 
   describe('run()', () => {
+    let exitSpy: jest.Mock;
+
+    beforeEach(() => {
+      exitSpy = jest.fn();
+      pipeline.tool.console.exit = exitSpy;
+    });
+
     it('starts console with routine', async () => {
       const spy = jest.fn();
       const routine = createTestRoutine(pipeline.tool);
@@ -37,13 +44,9 @@ describe('Pipeline', () => {
     });
 
     it('exits the console on success', async () => {
-      const spy = jest.fn();
-
-      pipeline.tool.console.exit = spy;
-
       await pipeline.run();
 
-      expect(spy).toHaveBeenCalledWith(null, 0);
+      expect(exitSpy).toHaveBeenCalledWith(null, 0);
     });
 
     it('exits the console on failure', async () => {
@@ -53,17 +56,13 @@ describe('Pipeline', () => {
         }
       }
 
-      const spy = jest.fn();
-
-      pipeline.tool.console.exit = spy;
-
       try {
         await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
       } catch (error) {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(spy).toHaveBeenCalledWith(new Error('Oops'), 1);
+      expect(exitSpy).toHaveBeenCalledWith(new Error('Oops'), 1);
     });
   });
 });

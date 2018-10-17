@@ -5,6 +5,7 @@
 
 /* eslint-disable unicorn/no-hex-escape */
 
+import exit from 'exit';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
@@ -109,12 +110,7 @@ export default class Console extends Emitter {
   /**
    * Force exit the application.
    */
-  exit(
-    message: string | Error | null,
-    code: number,
-    force: boolean = false,
-    abort: boolean = false,
-  ) {
+  exit(message: string | Error | null, code: number) {
     let error = null;
 
     if (message !== null) {
@@ -136,21 +132,8 @@ export default class Console extends Emitter {
     this.err = this.unwrapStream('stderr');
     this.out = this.unwrapStream('stdout');
 
-    // For testing only
-    if (abort) {
-      return;
-    }
-
-    // Run in the next tick so that listeners have a chance to run
-    process.nextTick(() => {
-      if (force) {
-        // eslint-disable-next-line unicorn/no-process-exit
-        process.exit(code);
-      } else {
-        // istanbul ignore next
-        process.exitCode = code;
-      }
-    });
+    // Exit after buffers have flushed
+    exit(code);
   }
 
   /**
@@ -186,7 +169,7 @@ export default class Console extends Emitter {
   handleFailure = (error: Error) => {
     this.start();
     this.debug('Uncaught exception or unresolved promise handled');
-    this.exit(error, 1, true);
+    this.exit(error, 1);
   };
 
   /**
@@ -240,7 +223,7 @@ export default class Console extends Emitter {
   handleSignal = () => {
     this.start();
     this.debug('SIGINT or SIGTERM handled');
-    this.exit('Process has been terminated.', 1, true);
+    this.exit('Process has been terminated.', 1);
   };
 
   /**

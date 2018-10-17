@@ -91,8 +91,7 @@ describe('Console', () => {
     const oldExit = process.exit.bind(process);
 
     beforeEach(() => {
-      // @ts-ignore
-      process.exit = jest.fn();
+      process.exit = jest.fn() as any;
       cli.on('stop', jest.fn());
       cli.emit = jest.fn();
     });
@@ -101,42 +100,33 @@ describe('Console', () => {
       process.exit = oldExit;
     });
 
-    it('calls `stop` with null', done => {
-      cli.exit(null, 2, true);
+    it('calls `stop` with null', () => {
+      cli.exit(null, 2);
 
-      process.nextTick(() => {
-        expect(process.exit).toHaveBeenCalledWith(2);
-        expect(cli.emit).toHaveBeenCalledWith('stop', [null, 2]);
-        done();
-      });
+      expect(process.exit).toHaveBeenCalledWith(2);
+      expect(cli.emit).toHaveBeenCalledWith('stop', [null, 2]);
     });
 
-    it('calls `stop` with string', done => {
-      cli.exit('Oops', 2, true);
+    it('calls `stop` with string', () => {
+      cli.exit('Oops', 2);
 
-      process.nextTick(() => {
-        expect(process.exit).toHaveBeenCalledWith(2);
-        expect(cli.emit).toHaveBeenCalledWith('stop', [new Error('Oops'), 2]);
-        done();
-      });
+      expect(process.exit).toHaveBeenCalledWith(2);
+      expect(cli.emit).toHaveBeenCalledWith('stop', [new Error('Oops'), 2]);
     });
 
-    it('calls `stop` with error', done => {
+    it('calls `stop` with error', () => {
       const error = new Error('Oops');
 
-      cli.exit(error, 2, true);
+      cli.exit(error, 2);
 
-      process.nextTick(() => {
-        expect(process.exit).toHaveBeenCalledWith(2);
-        expect(cli.emit).toHaveBeenCalledWith('stop', [error, 2]);
-        done();
-      });
+      expect(process.exit).toHaveBeenCalledWith(2);
+      expect(cli.emit).toHaveBeenCalledWith('stop', [error, 2]);
     });
 
     it('unwraps streams', () => {
       const spy = jest.spyOn(cli, 'unwrapStream');
 
-      cli.exit(null, 2, false, true);
+      cli.exit(null, 2);
 
       expect(spy).toHaveBeenCalledTimes(2);
     });
@@ -146,7 +136,7 @@ describe('Console', () => {
 
       const spy = jest.spyOn(cli, 'displayLogs');
 
-      cli.exit(null, 0, false, true);
+      cli.exit(null, 0);
 
       expect(spy).toHaveBeenCalledWith(['foo']);
     });
@@ -156,7 +146,7 @@ describe('Console', () => {
 
       const spy = jest.spyOn(cli, 'displayLogs');
 
-      cli.exit(new Error('Oops'), 1, false, true);
+      cli.exit(new Error('Oops'), 1);
 
       expect(spy).toHaveBeenCalledWith(['foo']);
     });
@@ -166,7 +156,7 @@ describe('Console', () => {
       const error = new Error('Oops');
 
       cli.handleFinalRender = spy;
-      cli.exit(error, 1, false, true);
+      cli.exit(error, 1);
 
       expect(spy).toHaveBeenCalledWith(error);
     });
@@ -214,7 +204,7 @@ describe('Console', () => {
       cli.exit = jest.fn();
       cli.handleFailure(error);
 
-      expect(cli.exit).toHaveBeenCalledWith(error, 1, true);
+      expect(cli.exit).toHaveBeenCalledWith(error, 1);
     });
   });
 
@@ -223,7 +213,7 @@ describe('Console', () => {
       cli.exit = jest.fn();
       cli.handleSignal();
 
-      expect(cli.exit).toHaveBeenCalledWith('Process has been terminated.', 1, true);
+      expect(cli.exit).toHaveBeenCalledWith('Process has been terminated.', 1);
     });
   });
 
