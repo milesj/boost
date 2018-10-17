@@ -172,13 +172,11 @@ describe('DefaultReporter', () => {
         expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0.00s]')}`);
       });
 
-      it('returns status text', () => {
+      it('doesnt return status text', () => {
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.statusText = 'Running things…';
 
-        expect(reporter.getLineTitle(task)).toBe(
-          chalk.gray('Running things…') + chalk.gray(' [0.00s]'),
-        );
+        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0.00s]')}`);
       });
 
       it('truncates title', () => {

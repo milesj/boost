@@ -61,8 +61,8 @@ export default class DefaultReporter extends Reporter<Line> {
     const outputLevel = this.tool.config.output;
     // @ts-ignore
     const { tasks = [], routines = [] } = task;
-    const title = task.statusText ? this.style(this.strip(task.statusText), 'pending') : task.title;
     const status = [];
+    let { title } = task;
 
     if (task.isSkipped()) {
       status.push(this.style('skipped', 'warning'));
@@ -76,6 +76,8 @@ export default class DefaultReporter extends Reporter<Line> {
 
     if (task instanceof Routine && !task.isSkipped() && outputLevel >= 2) {
       status.push(this.getElapsedTime(task.startTime, task.stopTime));
+    } else if (task instanceof Task && task.statusText) {
+      title = this.style(this.strip(task.statusText), 'pending');
     }
 
     // eslint-disable-next-line no-magic-numbers
