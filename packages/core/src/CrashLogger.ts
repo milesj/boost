@@ -45,10 +45,10 @@ export default class CrashLogger {
     );
 
     this.addTitle('Console Instance');
-    this.add('Logs', console.logs.length > 0 ? util.inspect(console.logs) : '(No logs)');
+    this.add('Logs', console.logs.length > 0 ? console.logs.join('\n  ') : '(No logs)');
     this.add(
       'Error logs',
-      console.errorLogs.length > 0 ? util.inspect(console.errorLogs) : '(No error logs)',
+      console.errorLogs.length > 0 ? console.errorLogs.join('\n  ') : '(No error logs)',
     );
     this.add('Buffer', console.bufferedOutput);
 
