@@ -89,26 +89,30 @@ describe('Console', () => {
 
   describe('exit()', () => {
     const oldExit = process.exit.bind(process);
+    let oldExitCode: number;
 
     beforeEach(() => {
       process.exit = jest.fn() as any;
+      oldExitCode = process.exitCode;
+
       cli.on('stop', jest.fn());
       cli.emit = jest.fn();
     });
 
     afterEach(() => {
       process.exit = oldExit;
+      process.exitCode = oldExitCode;
     });
 
     it('calls `stop` with null', () => {
-      cli.exit(null, 2);
+      cli.exit(null, 2, true);
 
       expect(process.exit).toHaveBeenCalledWith(2);
       expect(cli.emit).toHaveBeenCalledWith('stop', [null, 2]);
     });
 
     it('calls `stop` with string', () => {
-      cli.exit('Oops', 2);
+      cli.exit('Oops', 2, true);
 
       expect(process.exit).toHaveBeenCalledWith(2);
       expect(cli.emit).toHaveBeenCalledWith('stop', [new Error('Oops'), 2]);
@@ -117,7 +121,7 @@ describe('Console', () => {
     it('calls `stop` with error', () => {
       const error = new Error('Oops');
 
-      cli.exit(error, 2);
+      cli.exit(error, 2, true);
 
       expect(process.exit).toHaveBeenCalledWith(2);
       expect(cli.emit).toHaveBeenCalledWith('stop', [error, 2]);

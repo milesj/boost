@@ -110,7 +110,7 @@ export default class Console extends Emitter {
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code: number, persistLogs: boolean = false) {
+  exit(message: string | Error | null, code: number, force: boolean = false) {
     let error = null;
 
     if (message !== null) {
@@ -121,7 +121,7 @@ export default class Console extends Emitter {
       this.debug('Exiting console with an error');
 
       // Mark logs as errors
-      if (persistLogs) {
+      if (force) {
         this.errorLogs.push(...this.logs);
         this.logs = [];
       }
@@ -139,7 +139,11 @@ export default class Console extends Emitter {
     this.out = this.unwrapStream('stdout');
 
     // Exit after buffers have flushed
-    exit(code);
+    if (force) {
+      exit(code);
+    } else {
+      process.exitCode = code;
+    }
   }
 
   /**
