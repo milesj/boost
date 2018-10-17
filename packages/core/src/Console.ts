@@ -5,6 +5,7 @@
 
 /* eslint-disable unicorn/no-hex-escape */
 
+import exit from 'exit';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
@@ -137,8 +138,8 @@ export default class Console extends Emitter {
     this.err = this.unwrapStream('stderr');
     this.out = this.unwrapStream('stdout');
 
-    // Set the exit code
-    process.exitCode = code;
+    // Exit after buffers have flushed
+    exit(code);
   }
 
   /**
