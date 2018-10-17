@@ -16,7 +16,7 @@ export default class CrashLogger {
 
   logPath: string;
 
-  constructor({ config, options, pluginTypes }: Tool<any, any>) {
+  constructor({ config, console, options, pluginTypes }: Tool<any, any>) {
     this.logPath = path.join(options.root, `${options.appName}-error.log`);
 
     this.add('Node', process.version.slice(1));
@@ -28,6 +28,29 @@ export default class CrashLogger {
       // istanbul ignore next
       this.add('Yarn', '(Not installed)');
     }
+
+    this.addTitle('Tool Instance');
+    this.add('App name', options.appName);
+    this.add('App path', options.appPath);
+    this.add('Plugin types', Object.keys(pluginTypes).join(', '));
+    this.add('Scoped package', options.scoped ? 'Yes' : 'No');
+    this.add('Root', options.root);
+    this.add('Config name', options.configName);
+    this.add('Configs path', path.join(options.root, options.configFolder));
+    this.add('Package path', path.join(options.root, 'package.json'));
+    this.add('Workspaces root', options.workspaceRoot || '(Not enabled)');
+    this.add(
+      'Extending configs',
+      config.extends.length > 0 ? util.inspect(config.extends) : '(Not extending)',
+    );
+
+    this.addTitle('Console Instance');
+    this.add('Logs', console.logs.length > 0 ? util.inspect(console.logs) : '(No logs)');
+    this.add(
+      'Error logs',
+      console.errorLogs.length > 0 ? util.inspect(console.errorLogs) : '(No error logs)',
+    );
+    this.add('Buffer', console.bufferedOutput);
 
     this.addTitle('Process');
     this.add('ID', process.pid);
@@ -49,27 +72,6 @@ export default class CrashLogger {
       this.add('Group ID', process.getgid());
       this.add('User ID', process.getuid());
     }
-
-    this.addTitle('Environment');
-
-    Object.keys(process.env).forEach(key => {
-      this.add(key, process.env[key]!);
-    });
-
-    this.addTitle('Tool Instance');
-    this.add('App name', options.appName);
-    this.add('App path', options.appPath);
-    this.add('Plugin types', Object.keys(pluginTypes).join(', '));
-    this.add('Scoped package', options.scoped ? 'Yes' : 'No');
-    this.add('Root', options.root);
-    this.add('Config name', options.configName);
-    this.add('Configs path', path.join(options.root, options.configFolder));
-    this.add('Package path', path.join(options.root, 'package.json'));
-    this.add('Workspaces root', options.workspaceRoot || '(Not enabled)');
-    this.add(
-      'Extending configs',
-      config.extends.length > 0 ? util.inspect(config.extends) : '(Not extending)',
-    );
   }
 
   add(label: string, message: string | number) {
@@ -85,6 +87,12 @@ export default class CrashLogger {
   log(error: Error) {
     this.addTitle('Stack Trace');
     this.contents += error.stack;
+
+    this.addTitle('Environment');
+
+    Object.keys(process.env).forEach(key => {
+      this.add(key, process.env[key]!);
+    });
 
     fs.writeFileSync(this.logPath, this.contents, 'utf8');
   }
