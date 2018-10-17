@@ -140,7 +140,9 @@ export default class Console extends Emitter {
 
     // Exit after buffers have flushed
     if (force) {
-      exit(code);
+      setTimeout(() => {
+        exit(code);
+      }, REFRESH_RATE);
     } else {
       process.exitCode = code;
     }

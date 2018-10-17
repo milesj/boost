@@ -88,6 +88,7 @@ describe('Console', () => {
   });
 
   describe('exit()', () => {
+    const oldSetTimeout = global.setTimeout.bind(global);
     const oldExit = process.exit.bind(process);
     let oldExitCode: number;
 
@@ -97,11 +98,17 @@ describe('Console', () => {
 
       cli.on('stop', jest.fn());
       cli.emit = jest.fn();
+
+      // Fire immediately instead of using fake timers
+      global.setTimeout = ((cb: any) => {
+        cb();
+      }) as any;
     });
 
     afterEach(() => {
       process.exit = oldExit;
       process.exitCode = oldExitCode;
+      global.setTimeout = oldSetTimeout;
     });
 
     it('calls `stop` with null', () => {
