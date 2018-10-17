@@ -201,8 +201,8 @@ export default class Console extends Emitter {
     this.flushBufferedStreams();
 
     // Remover listeners so that we avoid unwanted re-renders
-    this.flushListeners('render');
-    this.flushListeners('error');
+    this.clearListeners('render');
+    this.clearListeners('error');
   };
 
   /**

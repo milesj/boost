@@ -40,7 +40,7 @@ export default class Emitter {
   /**
    * Remove all listeners for the defined event name.
    */
-  flushListeners(eventName: string): this {
+  clearListeners(eventName: string): this {
     this.getListeners(eventName).clear();
 
     return this;
