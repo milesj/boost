@@ -20,6 +20,8 @@ exports[`ConfigLoader parseFile() errors for an non-absolute path 1`] = `"An abs
 
 exports[`ConfigLoader parseFile() errors for an unsupported file format 1`] = `"Unsupported configuration file extension \\".txt\\"."`;
 
+exports[`ConfigLoader parseFile() errors if a function is returned and \`errorOnFunction\` is try 1`] = `"Configuration file \\"test-func.js\\" returned a function. Only plain objects are supported."`;
+
 exports[`ConfigLoader parseFile() errors if an object is not returned 1`] = `"Invalid configuration file \\"bool.json\\". Must return a plain object."`;
 
 exports[`ConfigLoader parseFile() errors if an object is not returned 2`] = `"Invalid configuration file \\"number.json\\". Must return a plain object."`;

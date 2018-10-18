@@ -4,6 +4,7 @@
   "configExtendsInvalidPath": "Invalid `extends` configuration value \"{{extendPath}}\".",
   "configInvalid": "Invalid configuration. Must be a plain object.",
   "configInvalidNamed": "Invalid configuration file \"{{name}}\". Must return a plain object.",
+  "configNoFunction": "Configuration file \"{{name}}\" returned a function. Only plain objects are supported.",
   "configNotFound": "Local configuration file or package.json property could not be found.",
   "configNotLoaded": "Cannot load {{name}} as configuration has not been loaded.",
   "configUnsupportedExt": "Unsupported configuration file extension \"{{ext}}\".",

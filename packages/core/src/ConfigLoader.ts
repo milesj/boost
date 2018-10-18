@@ -27,6 +27,10 @@ export type ConfigObject = { [key: string]: any };
 
 export type ConfigPathOrObject = string | ConfigObject;
 
+export interface ParseOptions {
+  errorOnFunction?: boolean;
+}
+
 export default class ConfigLoader {
   debug: Debugger;
 
@@ -408,7 +412,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, args: any[] = []): ConfigObject {
+  parseFile(filePath: string, args: any[] = [], options: ParseOptions = {}): ConfigObject {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value: any = null;
@@ -425,7 +429,11 @@ export default class ConfigLoader {
       value = requireModule(filePath);
 
       if (typeof value === 'function') {
-        value = value(...args);
+        if (options.errorOnFunction) {
+          throw new Error(this.tool.msg('errors:configNoFunction', { name }));
+        } else {
+          value = value(...args);
+        }
       }
     } else {
       throw new Error(this.tool.msg('errors:configUnsupportedExt', { ext }));

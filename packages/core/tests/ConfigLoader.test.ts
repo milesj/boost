@@ -786,6 +786,16 @@ describe('ConfigLoader', () => {
         version: 1,
       });
     });
+
+    it('errors if a function is returned and `errorOnFunction` is try', () => {
+      fixtures.push(
+        createTempFileInRoot('test-func.js', 'module.exports = () => { return { name: "foo" }; };'),
+      );
+
+      expect(() => {
+        loader.parseFile(getFixturePath('app', 'test-func.js'), [], { errorOnFunction: true });
+      }).toThrowErrorMatchingSnapshot();
+    });
   });
 
   describe('resolveExtendPaths()', () => {
