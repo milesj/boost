@@ -1,4 +1,5 @@
 import path from 'path';
+import { string } from 'optimal';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
@@ -40,6 +41,32 @@ describe('Tool', () => {
     toolWithPlugins = createTestTool({
       root: getFixturePath('app'),
     }) as any;
+  });
+
+  describe('constructor()', () => {
+    it('can define config blueprint', () => {
+      tool = createTestTool({
+        configBlueprint: {
+          name: string(),
+        },
+      });
+
+      expect(tool.options.configBlueprint).toEqual({
+        name: string(),
+      });
+    });
+
+    it('can define settings blueprint', () => {
+      tool = createTestTool({
+        settingsBlueprint: {
+          name: string(),
+        },
+      });
+
+      expect(tool.options.settingsBlueprint).toEqual({
+        name: string(),
+      });
+    });
   });
 
   describe('addPlugin()', () => {

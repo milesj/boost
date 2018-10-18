@@ -10,7 +10,9 @@ exports[`ConfigLoader loadConfig() from config folder errors if too many files a
 
 exports[`ConfigLoader loadConfig() from package.json errors if not an object 1`] = `"Invalid configuration. Must be a plain object."`;
 
-exports[`ConfigLoader loadConfig() from package.json supports custom blueprint 1`] = `"Invalid ConfigLoader field \\"foo\\". Must be a number."`;
+exports[`ConfigLoader loadConfig() from package.json supports custom config blueprint 1`] = `"Invalid ConfigLoader field \\"foo\\". Must be a number."`;
+
+exports[`ConfigLoader loadConfig() from package.json supports custom settings blueprint 1`] = `"Invalid ConfigLoader field \\"settings.foo\\". Must be a number."`;
 
 exports[`ConfigLoader loadPackageJSON() errors if no package.json exists in current working directory 1`] = `"Local \\"package.json\\" could not be found. Please run the command in your project's root."`;
 

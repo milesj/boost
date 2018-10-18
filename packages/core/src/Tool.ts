@@ -41,6 +41,7 @@ export interface ToolOptions {
   header: string;
   root: string;
   scoped: boolean;
+  settingsBlueprint: Blueprint;
   workspaceRoot: string;
 }
 
@@ -114,6 +115,7 @@ export default class Tool<
         header: string().empty(),
         root: string(process.cwd()),
         scoped: bool(),
+        settingsBlueprint: object(),
         workspaceRoot: string().empty(),
       },
       {

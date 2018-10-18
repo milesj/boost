@@ -276,7 +276,7 @@ export default class ConfigLoader {
 
     this.debug('Locating configuration');
 
-    const { configBlueprint, root } = this.tool.options;
+    const { configBlueprint, settingsBlueprint, root } = this.tool.options;
     const pluginsBlueprint: any = {};
     const configPath =
       this.findConfigFromArg(args.config) ||
@@ -310,7 +310,7 @@ export default class ConfigLoader {
         extends: array(string()),
         locale: string().empty(),
         output: number(3).between(1, 3, true),
-        settings: object(),
+        settings: settingsBlueprint,
         silent: bool(),
         theme: string('default'),
       },

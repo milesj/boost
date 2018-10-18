@@ -424,12 +424,26 @@ describe('ConfigLoader', () => {
         });
       });
 
-      it('supports custom blueprint', () => {
+      it('supports custom config blueprint', () => {
         loader.package = {
           name: 'boost',
           testBoost: { foo: 'bar' },
         };
         loader.tool.options.configBlueprint = {
+          foo: number(),
+        };
+
+        expect(() => {
+          loader.loadConfig(args);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      it('supports custom settings blueprint', () => {
+        loader.package = {
+          name: 'boost',
+          testBoost: { settings: { foo: 'bar' } },
+        };
+        loader.tool.options.settingsBlueprint = {
           foo: number(),
         };
 
