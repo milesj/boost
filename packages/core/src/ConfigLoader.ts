@@ -88,7 +88,7 @@ export default class ConfigLoader {
    */
   findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
     const configName = this.getConfigName();
-    const relPath = path.join(this.tool.options.configFolder, `${configName}.{js,json,json5}`);
+    const relPath = `configs/${configName}.{js,json,json5}`;
     const configPaths = glob
       .sync(relPath, {
         absolute: true,
@@ -494,8 +494,7 @@ export default class ConfigLoader {
     ext: string = 'js',
   ): string {
     const fileName = preset ? `${configName}.preset.${ext}` : `${configName}.${ext}`;
-    const { configFolder, root } = this.tool.options;
 
-    return path.resolve(root, 'node_modules', moduleName, configFolder, fileName);
+    return path.resolve(this.tool.options.root, 'node_modules', moduleName, 'configs', fileName);
   }
 }

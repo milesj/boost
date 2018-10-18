@@ -497,13 +497,6 @@ describe('ConfigLoader', () => {
           ],
         });
       });
-
-      it('supports custom folder name', () => {
-        loader.tool.options.configFolder = './config';
-        loader.tool.options.root = getFixturePath('app-folder-name');
-
-        expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ foo: 'bar' }));
-      });
     });
   });
 
