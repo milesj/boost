@@ -107,7 +107,7 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
       return 'success';
     } else if (task.hasFailed()) {
       return 'failure';
-    } else if (task.isPending()) {
+    } else if (task.isPending() || task.isRunning()) {
       return 'pending';
     }
 
