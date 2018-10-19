@@ -291,7 +291,7 @@ export default class ConfigLoader {
     Object.values(this.tool.getRegisteredPlugins()).forEach(type => {
       const { contract, singularName, pluralName } = type!;
 
-      this.debug('Generating %s blueprint', chalk.green(singularName));
+      this.debug('Generating %s blueprint', chalk.magenta(singularName));
 
       // prettier-ignore
       pluginsBlueprint[pluralName] = array(union([

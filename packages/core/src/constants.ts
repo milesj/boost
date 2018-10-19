@@ -18,4 +18,4 @@ export const STATUS_FAILED: Status = 'failed';
 // Chalk colors
 // yellow = app name, module name
 // cyan = file
-// green = plugin name
+// magenta = plugin name

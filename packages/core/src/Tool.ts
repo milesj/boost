@@ -126,6 +126,9 @@ export default class Tool<
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
 
+    // eslint-disable-next-line global-require
+    this.debug('Using boost v%s', require('../package.json').version);
+
     // Setup i18n translation
     translatorCache.set(this, this.createTranslator());
 
@@ -146,7 +149,6 @@ export default class Tool<
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
       // Add a reporter to catch errors during initialization
-      // Do this outside of tests otherwise Jest hangs trying to compare objects
       this.addPlugin('reporter', new ErrorReporter());
 
       // Cleanup when an exit occurs
@@ -289,10 +291,7 @@ export default class Tool<
     const { appName } = this.options;
     const pluginNames = Object.keys(this.pluginTypes);
 
-    this.debug('Initializing %s', chalk.yellow(appName));
-
-    // eslint-disable-next-line global-require
-    this.debug('Using boost v%s', require('../package.json').version);
+    this.debug('Initializing %s application', chalk.yellow(appName));
 
     this.args = parseArgs(
       this.argv,
@@ -473,7 +472,7 @@ export default class Tool<
     const name = String(typeName);
     const { afterBootstrap = null, beforeBootstrap = null, loadBoostModules = false } = options;
 
-    this.debug('Registering new plugin type: %s', chalk.green(name));
+    this.debug('Registering new plugin type: %s', chalk.magenta(name));
 
     this.plugins[typeName] = [];
 
