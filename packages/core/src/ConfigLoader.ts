@@ -13,7 +13,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import { Arguments } from 'yargs-parser';
-import optimal, { array, bool, instance, number, object, shape, string, union } from 'optimal';
+import optimal, { array, bool, instance, number, shape, string, union } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
