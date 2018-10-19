@@ -270,15 +270,15 @@ describe('Tool', () => {
       expect(enableDebug).toHaveBeenCalledWith('test-boost');
     });
 
-    it('updates locale if defined', () => {
-      const spy = jest.spyOn(tool.translator, 'changeLanguage');
+    // it('updates locale if defined', () => {
+    //   const spy = jest.spyOn(tool.translator, 'changeLanguage');
 
-      // @ts-ignore Allow private access
-      tool.configLoader.loadConfig = jest.fn(() => ({ locale: 'fr' }));
-      tool.loadConfig();
+    //   // @ts-ignore Allow private access
+    //   tool.configLoader.loadConfig = jest.fn(() => ({ locale: 'fr' }));
+    //   tool.loadConfig();
 
-      expect(spy).toHaveBeenCalledWith('fr');
-    });
+    //   expect(spy).toHaveBeenCalledWith('fr');
+    // });
   });
 
   describe('loadPlugins()', () => {

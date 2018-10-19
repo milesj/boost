@@ -69,6 +69,8 @@ export interface PluginType<T> {
   singularName: string;
 }
 
+const translatorCache: Map<Tool<any, any>, Translator> = new Map();
+
 export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
   Config extends ToolConfig
@@ -87,8 +89,6 @@ export default class Tool<
   options: ToolOptions;
 
   package: PackageConfig = { name: '' };
-
-  translator: Translator;
 
   private configLoader: ConfigLoader;
 
@@ -127,7 +127,7 @@ export default class Tool<
     this.debug = this.createDebugger('core');
 
     // Setup i18n translation
-    this.translator = this.createTranslator();
+    translatorCache.set(this, this.createTranslator());
 
     // Initialize the console first so we can start logging
     this.console = new Console(this);
@@ -340,7 +340,7 @@ export default class Tool<
 
     // Update locale
     if (this.config.locale) {
-      this.translator.changeLanguage(this.config.locale);
+      translatorCache.get(this)!.changeLanguage(this.config.locale);
     }
 
     return this;
@@ -446,7 +446,7 @@ export default class Tool<
     params?: { [key: string]: any },
     options?: i18next.TranslationOptions,
   ): string {
-    return this.translator.t(key, {
+    return translatorCache.get(this)!.t(key, {
       interpolation: { escapeValue: false },
       replace: params,
       ...options,
