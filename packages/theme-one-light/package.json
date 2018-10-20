@@ -1,0 +1,12 @@
+{
+  "name": "@boost/theme-one-light",
+  "version": "0.0.0",
+  "description": "One Light command line theme for Boost powered applications.",
+  "keywords": ["boost", "theme", "one", "light"],
+  "main": "./index.js",
+  "repository": "https://github.com/milesj/boost/tree/master/packages/theme-one-light",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -11,7 +11,6 @@ import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
 import Task from './Task';
-import themePalettes from './themes';
 import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
@@ -77,15 +76,10 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
    */
   getColorPalette(): ColorPalette {
     const { theme } = this.tool.config;
-    let palette = {};
-
-    if (chalk.level >= 2) {
-      if (themePalettes[theme]) {
-        palette = themePalettes[theme];
-      } else if (theme !== 'default') {
-        palette = new ModuleLoader<ColorPalette>(this.tool, 'theme', null, true).loadModule(theme);
-      }
-    }
+    const palette =
+      chalk.level >= 2 && theme !== 'default'
+        ? new ModuleLoader<ColorPalette>(this.tool, 'theme', null, true).loadModule(theme)
+        : {};
 
     return {
       default: 'white',

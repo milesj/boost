@@ -1,0 +1,12 @@
+{
+  "name": "@boost/theme-moon-light",
+  "version": "0.0.0",
+  "description": "Far Side Of The Moon command line theme for Boost powered applications.",
+  "keywords": ["boost", "theme", "moon", "light", "far", "side"],
+  "main": "./index.js",
+  "repository": "https://github.com/milesj/boost/tree/master/packages/theme-moon-light",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

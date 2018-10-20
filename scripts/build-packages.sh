@@ -15,8 +15,10 @@ build_pkg() {
 build_pkg "./packages/core"
 cd "$root" || exit
 
+REGEX="/(core|theme)"
+
 for pkg in ./packages/*; do
-  if [ "$pkg" != "./packages/core" ]
+  if ! [[ "$pkg" =~ $REGEX ]]
   then
     build_pkg "$pkg"
   fi
