@@ -1,8 +1,14 @@
 {
   "name": "@boost/theme-moon-dark",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Dark Side Of The Moon command line theme for Boost powered applications.",
-  "keywords": ["boost", "theme", "moon", "dark", "side"],
+  "keywords": [
+    "boost",
+    "theme",
+    "moon",
+    "dark",
+    "side"
+  ],
   "main": "./index.js",
   "repository": "https://github.com/milesj/boost/tree/master/packages/theme-moon-dark",
   "license": "MIT",

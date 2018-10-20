@@ -1,8 +1,13 @@
 {
   "name": "@boost/theme-one-dark",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "One Dark command line theme for Boost powered applications.",
-  "keywords": ["boost", "theme", "one", "dark"],
+  "keywords": [
+    "boost",
+    "theme",
+    "one",
+    "dark"
+  ],
   "main": "./index.js",
   "repository": "https://github.com/milesj/boost/tree/master/packages/theme-one-dark",
   "license": "MIT",

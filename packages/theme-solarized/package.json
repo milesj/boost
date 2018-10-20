@@ -1,8 +1,12 @@
 {
   "name": "@boost/theme-solarized",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Solarized command line theme for Boost powered applications.",
-  "keywords": ["boost", "theme", "solarized"],
+  "keywords": [
+    "boost",
+    "theme",
+    "solarized"
+  ],
   "main": "./index.js",
   "repository": "https://github.com/milesj/boost/tree/master/packages/theme-solarized",
   "license": "MIT",
