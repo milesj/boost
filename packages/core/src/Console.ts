@@ -140,9 +140,9 @@ export default class Console extends Emitter {
 
     // Exit after buffers have flushed
     if (force) {
-      setTimeout(() => {
-        exit(code);
-      }, REFRESH_RATE);
+      // setTimeout(() => {
+      exit(code);
+      // }, REFRESH_RATE);
     } else {
       process.exitCode = code;
     }
@@ -332,7 +332,12 @@ export default class Console extends Emitter {
    * Show the console cursor.
    */
   showCursor(): this {
-    this.out!('\x1B[?25h');
+    if (this.out) {
+      this.out('\x1B[?25h');
+    } else {
+      // May be called during `exit`
+      process.stdout.write('\x1B[?25h');
+    }
 
     return this;
   }
@@ -361,6 +366,7 @@ export default class Console extends Emitter {
    */
   startBackgroundTimer() {
     this.resetRefreshTimer();
+
     this.refreshTimer = setTimeout(() => {
       this.handleRender();
     }, BG_REFRESH_RATE);
