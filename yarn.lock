@@ -771,12 +771,12 @@
     semver "^5.6.0"
     yargs "^12.0.2"
 
-"@beemo/core@^0.24.0":
-  version "0.24.0"
-  resolved "https://registry.npmjs.org/@beemo/core/-/core-0.24.0.tgz#364e2c5e4a82a79180ca7fae6fa0eaa601717a17"
-  integrity sha512-kPtUXKdHqNOoDSDzc4rFGAFipx9KaDarRQqY76h/ioIFksQwJUBilJQTs9bEGFtZgKI3HgVLCOTniRh3XeyMHw==
+"@beemo/core@^0.24.1":
+  version "0.24.2"
+  resolved "https://registry.yarnpkg.com/@beemo/core/-/core-0.24.2.tgz#a0babaaff152955a108459fd344b530a664a50b7"
+  integrity sha512-Ndd2bqmZ8H7IazBzTX3H4QMM/ooEPVsk4CTlT0SMMlLGsF+7HoY0mLFPpZi9L2Ysx48q3X5vgChQPCkKg4Zf/g==
   dependencies:
-    "@boost/core" "^1.0.0-rc.4"
+    "@boost/core" "^1.0.0"
     "@types/execa" "^0.9.0"
     "@types/fs-extra" "^5.0.4"
     "@types/is-glob" "^4.0.0"
@@ -1434,14 +1434,14 @@
     typescript "^3.1.3"
     typescript-eslint-parser "^20.0.0"
 
-"@milesj/build-tool-runtime@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.4.0.tgz#63d6fe82f5423768c6c96ca21b7bcf9e5b70c1c9"
-  integrity sha512-FOae0KWXJSP1pe3kkylgH99HxzKdddPogXoB0htxur2mIHBX5Nc1K9hvK9LNPamiG0Y5KK4fx+pfMpCv5Ws6wg==
+"@milesj/build-tool-runtime@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@milesj/build-tool-runtime/-/build-tool-runtime-0.4.1.tgz#7b0136f7dc23b70b4c2b732c0d0a989a42e30599"
+  integrity sha512-qgFq39ayF//j6uiC5tNmwoDAewJIiivpYAzR/aArzN9hi23NLG3+R6xmkeOzFmxceK1KYtXph87MoRbbtNF/rQ==
   dependencies:
     "@babel/core" "^7.1.2"
     "@beemo/cli" "^0.24.0"
-    "@beemo/core" "^0.24.0"
+    "@beemo/core" "^0.24.1"
     "@beemo/driver-babel" "^0.24.0"
     "@beemo/driver-eslint" "^0.24.0"
     "@beemo/driver-jest" "^0.24.0"
@@ -1453,13 +1453,13 @@
     prettier "^1.14.3"
     typescript "^3.1.3"
 
-"@milesj/build-tools@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.4.1.tgz#44de23bb4a57de58450bb2bc150e0bc67132f788"
-  integrity sha512-pUKMGpqWmLYH1rfQiqi2glHyshUNkKU/wQkXsfW9JSPMELqJoajkBsNQ3270K/8P2E+a4xmP7JF0oD+salw7hA==
+"@milesj/build-tools@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@milesj/build-tools/-/build-tools-0.4.2.tgz#bd9bf69e7de01d8eec4b3690414061e957efceb8"
+  integrity sha512-A2J40ZBu1pTD0XkqC7X4GnwB2syPjcNm+M1AesThvFw2Ff5igywQeXMggv5YISbvOZFTOocU7XENVwZ42gvTWw==
   dependencies:
     "@milesj/build-tool-config" "^0.126.1"
-    "@milesj/build-tool-runtime" "^0.4.0"
+    "@milesj/build-tool-runtime" "^0.4.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -4598,10 +4598,10 @@ hygen@^1.6.2:
     lodash "^4.17.4"
     yargs-parser "^7.0.0"
 
-i18next@^11.10.0:
-  version "11.10.0"
-  resolved "https://registry.npmjs.org/i18next/-/i18next-11.10.0.tgz#901231c840ba2bbf89b672a7f65d50fb2250626e"
-  integrity sha512-5ElF7gjvRztb7sxS9KOGQ7b8L6uJqysTuGNIwSEefVDE4yhEmIrD6SZB3Z90QtwLq9Ag7W6QJQGO/yAI8gPd1A==
+i18next@^11.10.1:
+  version "11.10.1"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-11.10.1.tgz#260d1114e94c0eedc330e5bd5624c77387376f19"
+  integrity sha512-cXSA0vc+jmpcQ4EKP+SFQ5WSKwTnEr3j5+SU5E5rpefhvfxSQ5Av5wCWqL7I5b8HJSWEiV9JtzYAMuVvxx7e1A==
 
 iconv-lite@0.4.24, iconv-lite@^0.4.17, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
   version "0.4.24"
