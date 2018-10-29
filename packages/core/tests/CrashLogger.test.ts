@@ -12,10 +12,10 @@ describe('CrashLogger', () => {
 
   beforeEach(() => {
     tool = createTestTool();
+    logger = new CrashLogger(tool);
   });
 
   it('writes to a log file', () => {
-    logger = new CrashLogger(tool);
     logger.log(new Error());
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
@@ -29,7 +29,6 @@ describe('CrashLogger', () => {
     tool.config.extends = ['./some/other/file.js'];
     tool.options.scoped = true;
 
-    logger = new CrashLogger(tool);
     logger.log(new Error());
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
