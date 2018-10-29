@@ -1,3 +1,9 @@
+# 1.0.2 - 10/29/18
+
+#### 🐞 Fixes
+
+- Added a delay before exiting the console so that CIs can buffer output effectively.
+
 # 1.0.1 - 10/23/18
 
 #### 🐞 Fixes

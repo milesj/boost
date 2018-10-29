@@ -6,6 +6,7 @@
 /* eslint-disable unicorn/no-hex-escape */
 
 import exit from 'exit';
+import envCI from 'env-ci';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
@@ -140,9 +141,10 @@ export default class Console extends Emitter {
 
     // Exit after buffers have flushed
     if (force) {
-      // setTimeout(() => {
-      exit(code);
-      // }, REFRESH_RATE);
+      setTimeout(() => {
+        exit(code);
+        // Some CIs buffer output, so give them time to flush as well
+      }, envCI().isCi ? REFRESH_RATE : 0);
     } else {
       process.exitCode = code;
     }
