@@ -218,7 +218,7 @@ describe('Routine', () => {
 
       await routine.executeCommand('yarn', ['-v'], { task });
 
-      expect(task.output).toBe('1.10.1');
+      expect(task.output).toMatch(/\d+\.\d+\.\d+/u);
     });
 
     it('doesnt set `statusText` or `output` on task when not running', async () => {
