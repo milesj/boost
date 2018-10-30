@@ -27,6 +27,8 @@ export default class Console extends Emitter {
 
   errorLogs: string[] = [];
 
+  exiting: boolean = false;
+
   refreshTimer: NodeJS.Timer | null = null;
 
   lastOutputHeight: number = 0;
@@ -112,6 +114,13 @@ export default class Console extends Emitter {
    * Force exit the application.
    */
   exit(message: string | Error | null, code: number, force: boolean = false) {
+    // Another flow has already triggered the exit
+    if (this.exiting) {
+      return;
+    }
+
+    this.exiting = true;
+
     let error = null;
 
     if (message !== null) {
@@ -190,6 +199,10 @@ export default class Console extends Emitter {
    * Handle the final render before exiting.
    */
   handleFinalRender = (error: Error | null = null) => {
+    if (!this.out) {
+      return;
+    }
+
     this.debug('Rendering final console output');
     this.resetTimers();
     this.clearLinesOutput();

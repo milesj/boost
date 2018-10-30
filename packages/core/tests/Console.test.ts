@@ -111,6 +111,14 @@ describe('Console', () => {
       global.setTimeout = oldSetTimeout;
     });
 
+    it('sets exiting bool', () => {
+      expect(cli.exiting).toBe(false);
+
+      cli.exit(null, 2, true);
+
+      expect(cli.exiting).toBe(true);
+    });
+
     it('calls `stop` with null', () => {
       cli.exit(null, 2, true);
 

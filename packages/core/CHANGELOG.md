@@ -1,3 +1,9 @@
+# 1.0.3 - 10/30/18
+
+#### 🐞 Fixes
+
+- Added an `exiting` boolean to the console to handle multiple calls to `exit`.
+
 # 1.0.2 - 10/29/18
 
 #### 🐞 Fixes
