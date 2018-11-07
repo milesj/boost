@@ -150,10 +150,13 @@ export default class Console extends Emitter {
 
     // Exit after buffers have flushed
     if (force) {
-      setTimeout(() => {
-        exit(code);
-        // Some CIs buffer output, so give them time to flush as well
-      }, envCI().isCi ? REFRESH_RATE : 0);
+      setTimeout(
+        () => {
+          exit(code);
+          // Some CIs buffer output, so give them time to flush as well
+        },
+        envCI().isCi ? REFRESH_RATE : 0,
+      );
     } else {
       process.exitCode = code;
     }

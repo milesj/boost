@@ -28,7 +28,7 @@
     "@types/exit": "^0.1.30",
     "@types/i18next": "^11.9.3",
     "@types/json5": "^0.0.30",
-    "@types/lodash": "^4.14.117",
+    "@types/lodash": "^4.14.118",
     "@types/os-locale": "^2.1.0",
     "@types/pluralize": "^0.0.29",
     "@types/split": "^1.0.0",

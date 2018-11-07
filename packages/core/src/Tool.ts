@@ -367,8 +367,8 @@ export default class Tool<
       // Sort plugins by priority
       loader.debug('Sorting by priority');
 
-      plugins.sort(
-        (a, b) => (a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0),
+      plugins.sort((a, b) =>
+        a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0,
       );
 
       // Bootstrap each plugin with the tool
