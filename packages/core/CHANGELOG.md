@@ -1,3 +1,9 @@
+# 1.0.4 - 11/27/18
+
+#### 🛠 Internal
+
+- Update dependencies.
+
 # 1.0.3 - 10/30/18
 
 #### 🐞 Fixes
