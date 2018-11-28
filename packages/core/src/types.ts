@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable typescript/no-empty-interface */
+/* eslint-disable typescript/no-empty-interface, no-unused-vars */
 
 import debug from 'debug';
 import i18next from 'i18next';
