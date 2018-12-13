@@ -33,6 +33,8 @@ export default class Console extends Emitter {
 
   lastOutputHeight: number = 0;
 
+  liveLogs: string[] = [];
+
   logs: string[] = [];
 
   out?: WrappedStream;
@@ -238,6 +240,7 @@ export default class Console extends Emitter {
     this.clearLinesOutput();
     this.flushBufferedStreams();
     this.emit('render');
+    this.displayLogs(this.liveLogs);
 
     if (error) {
       this.emit('error', [error]);
@@ -279,6 +282,15 @@ export default class Console extends Emitter {
    */
   log(message: string): this {
     this.logs.push(message);
+
+    return this;
+  }
+
+  /**
+   * Store the live message.
+   */
+  logLive(message: string): this {
+    this.liveLogs.push(message);
 
     return this;
   }

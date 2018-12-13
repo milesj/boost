@@ -437,6 +437,16 @@ describe('Tool', () => {
     });
   });
 
+  describe('logLive()', () => {
+    it('sends log to console', () => {
+      const spy = jest.spyOn(tool.console, 'logLive');
+
+      tool.logLive('Some message: %s', 'foo');
+
+      expect(spy).toHaveBeenCalledWith('Some message: foo');
+    });
+  });
+
   describe('logError()', () => {
     it('sends error to console', () => {
       const spy = jest.spyOn(tool.console, 'logError');

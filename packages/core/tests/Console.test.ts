@@ -262,6 +262,10 @@ describe('Console', () => {
     let timeoutSpy: jest.SpyInstance;
 
     beforeEach(() => {
+      cli.on('render', () => {
+        cli.write('Rendering something...', 1);
+      });
+
       timeoutSpy = jest.spyOn(global, 'clearTimeout');
     });
 
@@ -302,6 +306,24 @@ describe('Console', () => {
       expect(spy).toHaveBeenCalledWith('error', [error]);
     });
 
+    it('displays live logs', () => {
+      cli.liveLogs.push('Log');
+      cli.handleRender();
+
+      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
+    });
+
+    it('increases output line height when live logs are present', () => {
+      cli.handleRender();
+
+      expect(cli.lastOutputHeight).toBe(1);
+
+      cli.liveLogs.push('Log');
+      cli.handleRender();
+
+      expect(cli.lastOutputHeight).toBe(3);
+    });
+
     it('doesnt trigger `error` event if no error', () => {
       const spy = jest.spyOn(cli, 'emit');
       const error = new Error('Oops');
@@ -325,7 +347,7 @@ describe('Console', () => {
       expect(cli.out).toHaveBeenCalledWith('');
     });
 
-    it('doesnt display logs if not final', () => {
+    it('doesnt display non-live logs if not final', () => {
       cli.logs.push('Log');
       cli.errorLogs.push('Error log');
       cli.handleRender();
@@ -334,9 +356,6 @@ describe('Console', () => {
     });
 
     it('doesnt clear render listeners', () => {
-      cli.on('render', () => {
-        cli.write('Rendering something...', 1);
-      });
       cli.handleRender();
 
       expect(cli.getListeners('render').size).toBe(1);
@@ -409,6 +428,16 @@ describe('Console', () => {
       cli.log('foo');
 
       expect(cli.logs).toEqual(['foo']);
+    });
+  });
+
+  describe('logLive()', () => {
+    it('adds a log', () => {
+      expect(cli.liveLogs).toEqual([]);
+
+      cli.logLive('foo');
+
+      expect(cli.liveLogs).toEqual(['foo']);
     });
   });
 

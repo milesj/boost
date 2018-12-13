@@ -28,7 +28,11 @@ class MultiTaskRoutine extends Routine {
 
   delayedTask() {
     return new Promise(resolve => {
-      setTimeout(resolve, random(750, 250));
+      const time = random(750, 250);
+
+      this.tool.logLive(`This is a live message! ${time}`);
+
+      setTimeout(resolve, time);
     });
   }
 }

@@ -429,6 +429,15 @@ export default class Tool<
   }
 
   /**
+   * Log a live message to the console to display while a process is running.
+   */
+  logLive(message: string, ...args: any[]): this {
+    this.console.logLive(util.format(message, ...args));
+
+    return this;
+  }
+
+  /**
    * Log an error to the console to display on failure.
    */
   logError(message: string, ...args: any[]): this {

@@ -1,3 +1,14 @@
+# 1.1.0 - 12/12/18
+
+#### 🚀 New
+
+- Added a `Tool#logLive` method to display live messages during a running process. These messages
+  will be removed on the success or failure of the process.
+
+#### 🛠 Internal
+
+- Update dependencies.
+
 # 1.0.4 - 11/27/18
 
 #### 🛠 Internal
