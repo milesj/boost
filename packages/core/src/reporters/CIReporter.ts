@@ -28,24 +28,24 @@ export default class CIReporter extends Reporter {
   };
 
   handleTaskPass = () => {
-    this.console.out!(this.style('-', 'success'));
+    this.console.out(this.style('-', 'success'));
   };
 
   handleTaskFail = () => {
-    this.console.err!(this.style('-', 'failure'));
+    this.console.err(this.style('-', 'failure'));
   };
 
   handleRoutine = () => {
     this.routineCount += 1;
-    this.console.out!('+');
+    this.console.out('+');
   };
 
   handleRoutinePass = () => {
-    this.console.out!(this.style('+', 'success'));
+    this.console.out(this.style('+', 'success'));
   };
 
   handleRoutineFail = () => {
-    this.console.err!(this.style('+', 'failure'));
+    this.console.err(this.style('+', 'failure'));
   };
 
   handleStop = () => {
@@ -55,6 +55,6 @@ export default class CIReporter extends Reporter {
       time: this.getElapsedTime(this.startTime, this.stopTime, false),
     });
 
-    this.console.out!(`\n${msg}\n`);
+    this.console.out(`\n${msg}\n`);
   };
 }

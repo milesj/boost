@@ -1,9 +1,23 @@
+# 1.2.0
+
+#### 🚀 New
+
+- Added `Console#size` to gather terminal information, like the column and row count.
+- Updated `Console#truncate` and `wrap` to default column count automatically.
+- Updated `Console#out` and `err` to always be defined, but a no-op if no stream available.
+- Updated `Console#write` to always wrap to column width.
+
+#### 🐞 Fixes
+
+- Fixed a reporter bug in which task statuses were not wrapping properly, causing subsequent renders
+  to get out of sync.
+
 # 1.1.0 - 12/12/18
 
 #### 🚀 New
 
-- Added a `Tool#logLive` method to display live messages during a running process. These messages
-  will be removed on the success or failure of the process.
+- Added `Tool#logLive` to display live messages during a running process. These messages will be
+  removed on the success or failure of the process.
 
 #### 🛠 Internal
 

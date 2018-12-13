@@ -7,6 +7,10 @@
 
 import exit from 'exit';
 import envCI from 'env-ci';
+import cliTruncate from 'cli-truncate';
+import cliSize from 'term-size';
+import stripAnsi from 'strip-ansi';
+import wrapAnsi from 'wrap-ansi';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
@@ -16,6 +20,8 @@ export const BG_REFRESH_RATE = 500;
 
 export type WrappedStream = (message: string) => void;
 
+function noop() {}
+
 export default class Console extends Emitter {
   bufferedOutput: string = '';
 
@@ -23,7 +29,7 @@ export default class Console extends Emitter {
 
   debug: Debugger;
 
-  err?: WrappedStream;
+  err: WrappedStream;
 
   errorLogs: string[] = [];
 
@@ -37,7 +43,7 @@ export default class Console extends Emitter {
 
   logs: string[] = [];
 
-  out?: WrappedStream;
+  out: WrappedStream;
 
   renderTimer: NodeJS.Timer | null = null;
 
@@ -50,6 +56,8 @@ export default class Console extends Emitter {
 
     this.debug = tool.createDebugger('console');
     this.tool = tool;
+    this.out = noop;
+    this.err = noop;
 
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
@@ -65,7 +73,7 @@ export default class Console extends Emitter {
    * Clear the entire console.
    */
   clearOutput(): this {
-    this.out!('\x1Bc');
+    this.out('\x1Bc');
     this.lastOutputHeight = 0;
 
     return this;
@@ -75,7 +83,7 @@ export default class Console extends Emitter {
    * Clear defined lines from the console.
    */
   clearLinesOutput(): this {
-    this.out!('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
     this.lastOutputHeight = 0;
 
     return this;
@@ -171,7 +179,7 @@ export default class Console extends Emitter {
     const lines = this.bufferedOutput;
 
     if (lines) {
-      this.out!(lines);
+      this.out(lines);
       this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
     }
 
@@ -263,7 +271,7 @@ export default class Console extends Emitter {
    * Hide the console cursor.
    */
   hideCursor(): this {
-    this.out!('\x1B[?25l');
+    this.out('\x1B[?25l');
 
     if (!this.restoreCursorOnExit) {
       this.restoreCursorOnExit = true;
@@ -323,7 +331,7 @@ export default class Console extends Emitter {
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.out!(`\x1B[${process.stdout.rows};0H`);
+    this.out(`\x1B[${process.stdout.rows};0H`);
 
     return this;
   }
@@ -373,6 +381,13 @@ export default class Console extends Emitter {
   }
 
   /**
+   * Return size information about the terminal window.
+   */
+  size(): { columns: number; rows: number } {
+    return cliSize();
+  }
+
+  /**
    * Start the console by wrapping streams and buffering output.
    */
   start(args: any[] = []): this {
@@ -403,9 +418,27 @@ export default class Console extends Emitter {
   }
 
   /**
+   * Strip ANSI characters from a string.
+   */
+  strip(message: string): string {
+    return stripAnsi(message);
+  }
+
+  /**
+   * Truncate a string that may contain ANSI characters to a specific column width.
+   */
+  truncate(
+    message: string,
+    columns?: number,
+    options?: { position?: 'start' | 'middle' | 'end' },
+  ): string {
+    return cliTruncate(message, columns || this.size().columns, options);
+  }
+
+  /**
    * Unwrap a stream and reset it back to normal.
    */
-  unwrapStream(name: 'stdout' | 'stderr'): undefined {
+  unwrapStream(name: 'stdout' | 'stderr') {
     // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
       const stream = process[name];
@@ -414,7 +447,21 @@ export default class Console extends Emitter {
       stream.write = stream.originalWrite;
     }
 
-    return undefined;
+    return noop;
+  }
+
+  /**
+   * Wrap a string that may contain ANSI characters to a specific column width.
+   */
+  wrap(
+    message: string,
+    columns?: number,
+    options?: { hard?: boolean; trim?: boolean; wordWrap?: boolean },
+  ): string {
+    return wrapAnsi(message, columns || this.size().columns, {
+      hard: true,
+      ...options,
+    });
   }
 
   /**
@@ -469,7 +516,7 @@ export default class Console extends Emitter {
       return this;
     }
 
-    const buffer = message + '\n'.repeat(nl);
+    const buffer = this.wrap(message) + '\n'.repeat(nl);
 
     if (prepend) {
       this.bufferedOutput = buffer + this.bufferedOutput;

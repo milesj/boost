@@ -30,7 +30,7 @@ class MultiTaskRoutine extends Routine {
     return new Promise(resolve => {
       const time = random(750, 250);
 
-      this.tool.logLive(`This is a live message! ${time}`);
+      this.tool.logLive(`This is a live message! ${time}`.repeat(10));
 
       setTimeout(resolve, time);
     });
