@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/no-hex-escape */
 
+import chalk from 'chalk';
 import Console from '../src/Console';
 import { createTestTool } from './helpers';
 
@@ -514,6 +515,15 @@ describe('Console', () => {
     });
   });
 
+  describe('size()', () => {
+    it('returns columns and rows', () => {
+      const size = cli.size();
+
+      expect(size.columns).toBeDefined();
+      expect(size.rows).toBeDefined();
+    });
+  });
+
   describe('showCursor()', () => {
     it('writes ansi escape code', () => {
       cli.showCursor();
@@ -566,6 +576,24 @@ describe('Console', () => {
       jest.runOnlyPendingTimers();
 
       expect(renderSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('strip()', () => {
+    it('stips ANSI escape codes', () => {
+      expect(cli.strip(chalk.red('foo'))).toBe('foo');
+    });
+  });
+
+  describe('truncate()', () => {
+    it('truncates with ANSI escape codes', () => {
+      expect(cli.truncate(chalk.red('foobar'), 3)).toBe(chalk.red('fo…'));
+    });
+  });
+
+  describe('wrap()', () => {
+    it('wraps with ANSI escape codes', () => {
+      expect(cli.wrap(chalk.red('foobar'), 3)).toBe(chalk.red('foo\nbar'));
     });
   });
 

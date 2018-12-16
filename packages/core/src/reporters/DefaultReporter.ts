@@ -74,11 +74,9 @@ export default class DefaultReporter extends Reporter<Line> {
       status.push(`${this.calculateTaskCompletion(routines)}/${routines.length}`);
     }
 
-    if (task instanceof Routine) {
-      if (!task.isSkipped() && outputLevel >= 2) {
-        status.push(this.getElapsedTime(task.startTime, task.stopTime));
-      }
-    } else if (task instanceof Task) {
+    if (task instanceof Routine && !task.isSkipped() && outputLevel >= 2) {
+      status.push(this.getElapsedTime(task.startTime, task.stopTime));
+    } else if (task instanceof Task && task.statusText) {
       title = this.style(this.console.strip(task.statusText), 'pending');
     }
 

@@ -105,33 +105,20 @@ describe('DefaultReporter', () => {
 
   describe('getLineTitle()', () => {
     describe('task', () => {
-      it('returns title', () => {
+      it('returns  title', () => {
         const task = new Task('This is a task', () => {});
 
-        expect(reporter.getLineTitle(task)).toBe('This is a task');
+        expect(reporter.getLineTitle(task)).toEqual({ title: 'This is a task', status: '' });
       });
 
-      it('returns status text', () => {
+      it('returns status text as title', () => {
         const task = new Task('This is a task', () => {});
         task.statusText = 'Running things…';
 
-        expect(reporter.getLineTitle(task)).toBe(chalk.gray('Running things…'));
-      });
-
-      it('truncates title', () => {
-        const oldColumns = process.stdout.columns;
-        const task = new Task(
-          'This is a really really really long task, with a really dumb and stupidly long title',
-          () => {},
-        );
-
-        process.stdout.columns = 80;
-
-        expect(reporter.getLineTitle(task, 10)).toBe(
-          'This is a really really really long task, with a really dumb and stup…',
-        );
-
-        process.stdout.columns = oldColumns;
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: chalk.gray('Running things…'),
+          status: '',
+        });
       });
 
       it('shows skipped if level >= 1', () => {
@@ -139,9 +126,10 @@ describe('DefaultReporter', () => {
 
         const task = new Task('This is a task', () => {}).skip();
 
-        expect(reporter.getLineTitle(task)).toBe(
-          `This is a task${chalk.gray(` [${chalk.yellow('skipped')}]`)}`,
-        );
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a task',
+          status: chalk.gray(` [${chalk.yellow('skipped')}]`),
+        });
       });
 
       it('shows failed if level >= 1', () => {
@@ -150,9 +138,10 @@ describe('DefaultReporter', () => {
         const task = new Task('This is a task', () => {});
         task.status = STATUS_FAILED;
 
-        expect(reporter.getLineTitle(task)).toBe(
-          `This is a task${chalk.gray(` [${chalk.red('failed')}]`)}`,
-        );
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a task',
+          status: chalk.gray(` [${chalk.red('failed')}]`),
+        });
       });
 
       it('shows tasks count if level >= 1', () => {
@@ -161,7 +150,10 @@ describe('DefaultReporter', () => {
         const task = new Task('This is a task', () => {});
         task.tasks.push(new Task('Subtask'));
 
-        expect(reporter.getLineTitle(task)).toBe(`This is a task${chalk.gray(' [1/1]')}`);
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a task',
+          status: chalk.gray(' [1/1]'),
+        });
       });
     });
 
@@ -169,30 +161,20 @@ describe('DefaultReporter', () => {
       it('returns title', () => {
         const task = createTestRoutine(null, 'foo', 'This is a routine');
 
-        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0.00s]')}`);
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(' [0.00s]'),
+        });
       });
 
       it('doesnt return status text', () => {
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.statusText = 'Running things…';
 
-        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0.00s]')}`);
-      });
-
-      it('truncates title', () => {
-        const oldColumns = process.stdout.columns;
-        const title =
-          'This is a really really really long task, with a really dumb and stupidly long title';
-        const task = createTestRoutine(null, 'foo', title);
-
-        process.stdout.columns = 80;
-
-        const line = reporter.getLineTitle(task, 10);
-
-        expect(line).not.toContain(title);
-        expect(line).toContain('…');
-
-        process.stdout.columns = oldColumns;
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(' [0.00s]'),
+        });
       });
 
       it('shows skipped if level >= 1', () => {
@@ -200,9 +182,10 @@ describe('DefaultReporter', () => {
 
         const task = createTestRoutine(null, 'foo', 'This is a routine').skip();
 
-        expect(reporter.getLineTitle(task)).toBe(
-          `This is a routine${chalk.gray(` [${chalk.yellow('skipped')}]`)}`,
-        );
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(` [${chalk.yellow('skipped')}]`),
+        });
       });
 
       it('shows failed if level >= 1', () => {
@@ -211,9 +194,10 @@ describe('DefaultReporter', () => {
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.status = STATUS_FAILED;
 
-        expect(reporter.getLineTitle(task)).toBe(
-          `This is a routine${chalk.gray(` [${chalk.red('failed')}]`)}`,
-        );
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(` [${chalk.red('failed')}]`),
+        });
       });
 
       it('shows tasks count if level >= 1', () => {
@@ -222,7 +206,10 @@ describe('DefaultReporter', () => {
         const task = createTestRoutine(null, 'foo', 'This is a routine');
         task.routines.push(createTestRoutine(null, 'bar', 'Routine'));
 
-        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0/1]')}`);
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(' [0/1]'),
+        });
       });
 
       it('shows elapsed time if level >= 2', () => {
@@ -233,7 +220,10 @@ describe('DefaultReporter', () => {
         task.startTime = 1000;
         task.stopTime = 4000;
 
-        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [3.00s]')}`);
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(' [3.00s]'),
+        });
       });
 
       it('shows both count and status', () => {
@@ -245,7 +235,10 @@ describe('DefaultReporter', () => {
         task.startTime = 1000;
         task.stopTime = 4000;
 
-        expect(reporter.getLineTitle(task)).toBe(`This is a routine${chalk.gray(' [0/1, 3.00s]')}`);
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: chalk.gray(' [0/1, 3.00s]'),
+        });
       });
 
       it('doesnt show status if level == 0', () => {
@@ -257,7 +250,10 @@ describe('DefaultReporter', () => {
         task.startTime = 1000;
         task.stopTime = 4000;
 
-        expect(reporter.getLineTitle(task)).toBe('This is a routine');
+        expect(reporter.getLineTitle(task)).toEqual({
+          title: 'This is a routine',
+          status: '',
+        });
       });
     });
   });
