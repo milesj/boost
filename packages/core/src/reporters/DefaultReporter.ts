@@ -175,7 +175,7 @@ export default class DefaultReporter extends Reporter<Line> {
     }
 
     // Title
-    const { title, status } = this.getLineTitle(routine);
+    const { title, status } = this.getLineTitle(task || routine);
 
     output +=
       this.console.truncate(

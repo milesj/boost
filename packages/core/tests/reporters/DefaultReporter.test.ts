@@ -105,7 +105,7 @@ describe('DefaultReporter', () => {
 
   describe('getLineTitle()', () => {
     describe('task', () => {
-      it('returns  title', () => {
+      it('returns title', () => {
         const task = new Task('This is a task', () => {});
 
         expect(reporter.getLineTitle(task)).toEqual({ title: 'This is a task', status: '' });
