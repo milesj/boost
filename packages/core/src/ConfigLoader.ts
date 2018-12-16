@@ -222,8 +222,7 @@ export default class ConfigLoader {
    * Inherit configuration settings from defined CLI options.
    */
   inheritFromArgs<T>(config: T, args: Arguments): T {
-    // @ts-ignore Allow spread
-    const nextConfig = { ...config };
+    const nextConfig: any = { ...config };
     const pluginTypes = this.tool.getRegisteredPlugins();
     const keys = new Set([
       'debug',

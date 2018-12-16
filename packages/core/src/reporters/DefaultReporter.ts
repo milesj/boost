@@ -59,8 +59,7 @@ export default class DefaultReporter extends Reporter<Line> {
   // eslint-disable-next-line complexity
   getLineTitle(task: Task<any> | Routine<any, any>): { title: string; status: string } {
     const outputLevel = this.tool.config.output;
-    // @ts-ignore
-    const { tasks = [], routines = [] } = task;
+    const { tasks = [], routines = [] } = task as Routine<any, any>;
     const status = [];
     let { title } = task;
 
