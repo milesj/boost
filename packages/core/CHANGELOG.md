@@ -5,7 +5,6 @@
 - Added `Console#size` to gather terminal information, like the column and row count.
 - Updated `Console#truncate` and `wrap` to default column count automatically.
 - Updated `Console#out` and `err` to always be defined, but a no-op if no stream available.
-- Updated `Console#write` to always wrap to column width.
 
 #### 🐞 Fixes
 

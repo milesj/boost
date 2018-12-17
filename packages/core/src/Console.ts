@@ -391,13 +391,8 @@ export default class Console extends Emitter {
    * Start the console by wrapping streams and buffering output.
    */
   start(args: any[] = []): this {
-    if (!this.err) {
-      this.err = this.wrapStream('stderr');
-    }
-
-    if (!this.out) {
-      this.out = this.wrapStream('stdout');
-    }
+    this.err = this.wrapStream('stderr');
+    this.out = this.wrapStream('stdout');
 
     this.debug('Starting console rendering process');
     this.emit('start', args);
@@ -460,6 +455,7 @@ export default class Console extends Emitter {
   ): string {
     return wrapAnsi(message, columns || this.size().columns, {
       hard: true,
+      trim: false,
       ...options,
     });
   }
@@ -516,7 +512,7 @@ export default class Console extends Emitter {
       return this;
     }
 
-    const buffer = this.wrap(message) + '\n'.repeat(nl);
+    const buffer = message + '\n'.repeat(nl);
 
     if (prepend) {
       this.bufferedOutput = buffer + this.bufferedOutput;
