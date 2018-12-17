@@ -73,7 +73,7 @@ export default class Console extends Emitter {
    * Clear the entire console.
    */
   clearOutput(): this {
-    this.out('\x1Bc');
+    this.out('\x1B[2J');
     this.lastOutputHeight = 0;
 
     return this;
@@ -331,7 +331,7 @@ export default class Console extends Emitter {
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.out(`\x1B[${process.stdout.rows};0H`);
+    this.out(`\x1B[${this.size().rows};0H`);
 
     return this;
   }

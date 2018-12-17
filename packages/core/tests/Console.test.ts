@@ -17,7 +17,7 @@ describe('Console', () => {
     it('writes ansi escape code', () => {
       cli.clearOutput();
 
-      expect(cli.out).toHaveBeenCalledWith('\x1Bc');
+      expect(cli.out).toHaveBeenCalledWith('\x1B[2J');
     });
 
     it('resets last output height', () => {
