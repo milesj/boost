@@ -6,7 +6,7 @@
 import os from 'os';
 import optimal, { bool, number } from 'optimal';
 import Context from '../Context';
-import Executor, { AggregatedResponse } from '../Executor';
+import Executor, { AggregatedResponse, ExecuteHandler } from '../Executor';
 import Task from '../Task';
 import Tool from '../Tool';
 
@@ -17,6 +17,10 @@ export interface PoolExecutorOptions {
 }
 
 export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, PoolExecutorOptions> {
+  handler: ExecuteHandler<Ctx> | null = null;
+
+  parallel: boolean = true;
+
   queue: Task<Ctx>[] = [];
 
   resolver: ((response: AggregatedResponse) => void) | null = null;
@@ -40,13 +44,14 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
   /**
    * Execute tasks using a pool with a max concurrency.
    */
-  run<T>(tasks: Task<Ctx>[], value?: T): Promise<AggregatedResponse> {
+  run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<AggregatedResponse> {
     if (tasks.length === 0) {
       return Promise.resolve(this.aggregateResponse([]));
     }
 
     const { concurrency, timeout } = this.options;
 
+    this.handler = handler;
     this.debug('Pooling %d tasks', tasks.length);
 
     return new Promise(resolve => {
@@ -54,7 +59,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
       this.resolver = resolve;
 
       // eslint-disable-next-line promise/catch-or-return
-      Promise.all(this.queue.slice(0, concurrency).map(() => this.runTask(value)));
+      Promise.all(this.queue.slice(0, concurrency).map(() => this.runItem(value)));
 
       if (timeout) {
         this.timeoutTimer = setTimeout(() => this.resolve(), timeout);
@@ -78,10 +83,10 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
   /**
    * Run a task from the queue, and start the next task one it passes or fails.
    */
-  runTask<T>(value?: T): Promise<void> {
+  runItem<T>(value?: T): Promise<void> {
     const task = this.options.fifo ? this.queue.shift() : this.queue.pop();
 
-    if (!task) {
+    if (!task || !this.handler) {
       return Promise.resolve();
     }
 
@@ -90,10 +95,10 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
     const handleResult = (result: any) => {
       this.running = this.running.filter(running => running !== task);
       this.results.push(result);
-      this.nextTask(value);
+      this.nextItem(value);
     };
 
-    return this.execute(task, value, true)
+    return this.handler(task, value)
       .then(handleResult)
       .catch(handleResult);
   }
@@ -102,9 +107,9 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
    * Run the next task if there are tasks available in the queue, and the max concurrency isn't met.
    * Otherwise, resolve and exit the current pool.
    */
-  nextTask<T>(value?: T) {
-    if (this.queue.length > 0 && this.running.length < this.options.concurrency) {
-      this.runTask(value);
+  nextItem<T>(value?: T) {
+    if (this.queue.length > 0 && this.running.length < this.options.concurrency!) {
+      this.runItem(value);
     } else if (this.queue.length === 0 && this.running.length === 0) {
       this.resolve();
     }

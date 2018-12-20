@@ -27,7 +27,7 @@ export interface CommandOptions {
 export default class Routine<
   Ctx extends Context,
   Tool extends CoreTool<any, any>,
-  Options = {}
+  Options extends object = {}
 > extends Task<Ctx> {
   exit: boolean = false;
 
@@ -36,7 +36,7 @@ export default class Routine<
 
   key: string = '';
 
-  options: Options;
+  options: Partial<Options>;
 
   routines: Routine<Ctx, Tool>[] = [];
 
@@ -51,7 +51,6 @@ export default class Routine<
     }
 
     this.key = key;
-    // @ts-ignore
     this.options = { ...options };
 
     // We cant pass to super, so bind here
@@ -70,6 +69,7 @@ export default class Routine<
    * Configure the routine after it has been instantiated.
    */
   configure(parent: Routine<Ctx, Tool>): this {
+    this.parent = parent;
     this.context = parent.context;
     this.tool = parent.tool;
 
@@ -109,7 +109,7 @@ export default class Routine<
       ? execa.shell(`${command} ${args.join(' ')}`.trim(), opts)
       : execa(command, args, opts);
 
-    this.tool.console.emit('command', [command, this]);
+    this.emit('command', [this, command]);
 
     // Push chunks to the reporter
     const unit = task || this;
@@ -122,7 +122,7 @@ export default class Routine<
           unit.statusText = line;
         }
 
-        this.tool.console.emit('command.data', [command, line, this]);
+        this.emit('command.data', [this, command, line]);
       }
     };
 
@@ -143,14 +143,17 @@ export default class Routine<
    * Execute routines in parallel.
    */
   async parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any[]> {
-    return new ParallelExecutor(this.tool, this.context).run(routines || this.routines, value);
+    return new ParallelExecutor(this.tool, this.context).runRoutines(
+      routines || this.routines,
+      value,
+    );
   }
 
   /**
    * Execute tasks in parallel.
    */
   async parallelizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any[]> {
-    return new ParallelExecutor(this.tool, this.context).run(tasks || this.tasks, value);
+    return new ParallelExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
   }
 
   /**
@@ -174,7 +177,10 @@ export default class Routine<
     options?: Partial<PoolExecutorOptions>,
     routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
-    return new PoolExecutor(this.tool, this.context, options).run(routines || this.routines, value);
+    return new PoolExecutor(this.tool, this.context, options).runRoutines(
+      routines || this.routines,
+      value,
+    );
   }
 
   /**
@@ -185,49 +191,37 @@ export default class Routine<
     options?: Partial<PoolExecutorOptions>,
     tasks?: Task<Ctx>[],
   ): Promise<AggregatedResponse> {
-    return new PoolExecutor(this.tool, this.context, options).run(tasks || this.tasks, value);
+    return new PoolExecutor(this.tool, this.context, options).runTasks(tasks || this.tasks, value);
   }
 
   /**
    * Trigger processes before and after execution.
    */
-  async run<T>(context: Ctx, value?: T, wasParallel: boolean = false): Promise<any> {
+  async run<T>(context: Ctx, value?: T): Promise<any> {
     if (this.exit) {
       return Promise.reject(new Error(this.tool.msg('errors:processInterrupted')));
     }
 
     this.debug('Executing routine');
 
-    const { console: cli } = this.tool;
-    let result = null;
-
-    cli.emit('routine', [this, value, wasParallel]);
-
-    try {
-      result = await super.run(context, value);
-
-      cli.emit('routine.pass', [this, result, wasParallel]);
-    } catch (error) {
-      cli.emit('routine.fail', [this, error, wasParallel]);
-
-      throw error;
-    }
-
-    return result;
+    return super.run(context, value);
   }
 
   /**
    * Execute routines in sequential (serial) order.
    */
   serializeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any> {
-    return new SerialExecutor(this.tool, this.context).run(routines || this.routines, value);
+    return new SerialExecutor(this.tool, this.context).runRoutines(
+      routines || this.routines,
+      value,
+    );
   }
 
   /**
    * Execute tasks in sequential (serial) order.
    */
   serializeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any> {
-    return new SerialExecutor(this.tool, this.context).run(tasks || this.tasks, value);
+    return new SerialExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
   }
 
   /**
@@ -237,14 +231,14 @@ export default class Routine<
     value?: T,
     routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
-    return new SyncExecutor(this.tool, this.context).run(routines || this.routines, value);
+    return new SyncExecutor(this.tool, this.context).runRoutines(routines || this.routines, value);
   }
 
   /**
    * Execute tasks in sync.
    */
   async synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
-    return new SyncExecutor(this.tool, this.context).run(tasks || this.tasks, value);
+    return new SyncExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
   }
 
   /**

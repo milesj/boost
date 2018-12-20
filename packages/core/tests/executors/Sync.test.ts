@@ -1,6 +1,6 @@
 import SyncExecutor from '../../src/executors/Sync';
 import Task from '../../src/Task';
-import { createTestTool, createTestRoutine } from '../helpers';
+import { createTestTool } from '../helpers';
 
 describe('SyncExecutor', () => {
   let executor: SyncExecutor<any>;
@@ -16,26 +16,11 @@ describe('SyncExecutor', () => {
     });
     const baz = new Task('baz', () => 789);
 
-    const results = await executor.run([foo, bar, baz]);
+    const results = await executor.runTasks([foo, bar, baz]);
 
     expect(results).toEqual({
       errors: [new Error('Oops')],
       results: [123, 789],
     });
-  });
-
-  it('triggers `executeRoutine` and `executeTask` with the correct values', async () => {
-    const task = new Task('foo', value => value);
-    const taskSpy = jest.fn(() => Promise.resolve());
-    const routine = createTestRoutine(executor.tool);
-    const routineSpy = jest.fn(() => Promise.resolve());
-
-    executor.executeTask = taskSpy;
-    executor.executeRoutine = routineSpy;
-
-    await executor.run([task, routine], 'foo');
-
-    expect(taskSpy).toHaveBeenCalledWith(task, 'foo', true);
-    expect(routineSpy).toHaveBeenCalledWith(routine, 'foo', true);
   });
 });

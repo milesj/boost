@@ -10,6 +10,8 @@ import Task from './Task';
 import Tool from './Tool';
 import { Debugger } from './types';
 
+export type ExecuteHandler<Ctx> = (task: Task<Ctx>, value?: any) => Promise<any>;
+
 export interface AggregatedResponse {
   errors: Error[];
   results: any[];
@@ -20,7 +22,9 @@ export default class Executor<Ctx extends Context, Options = {}> {
 
   debug: Debugger;
 
-  options: Options;
+  options: Partial<Options>;
+
+  parallel: boolean = false;
 
   tool: Tool<any, any>;
 
@@ -28,7 +32,6 @@ export default class Executor<Ctx extends Context, Options = {}> {
     this.context = context;
     this.debug = tool.createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;
-    // @ts-ignore
     this.options = { ...options };
 
     this.debug('Instantiating task executor');
@@ -55,79 +58,71 @@ export default class Executor<Ctx extends Context, Options = {}> {
   }
 
   /**
-   * Execute either a task or routine.
-   */
-  async execute<T>(
-    task: Task<Ctx> | Routine<Ctx, any>,
-    value?: T,
-    wasParallel: boolean = false,
-  ): Promise<any> {
-    if (this.getInstanceType(task) === 'Routine') {
-      return this.executeRoutine(task as Routine<Ctx, any>, value, wasParallel);
-    }
-
-    return this.executeTask(task, value, wasParallel);
-  }
-
-  /**
    * Execute a routine with the provided value.
    */
-  async executeRoutine<T>(
-    routine: Routine<Ctx, any>,
-    value?: T,
-    wasParallel: boolean = false,
-  ): Promise<any> {
-    return routine.run(this.context, value, wasParallel);
-  }
-
-  /**
-   * Execute a task with the provided value.
-   */
-  async executeTask<T>(task: Task<Ctx>, value?: T, wasParallel: boolean = false): Promise<any> {
+  executeRoutine = async <T>(routine: Routine<Ctx, any>, value?: T): Promise<any> => {
     const { console: cli } = this.tool;
     let result = null;
 
-    cli.emit('task', [task, value, wasParallel]);
+    cli.emit('routine', [routine, value, this.parallel]);
 
     try {
-      result = await task.run(this.context, value);
+      result = await routine.run(this.context, value);
 
-      cli.emit('task.pass', [task, result, wasParallel]);
+      cli.emit('routine.pass', [routine, result, this.parallel]);
     } catch (error) {
-      cli.emit('task.fail', [task, error, wasParallel]);
+      cli.emit('routine.fail', [routine, error, this.parallel]);
 
       throw error;
     }
 
     return result;
-  }
+  };
 
   /**
-   * Importing Routine causes a circular reference, so we can't use an instanceof check,
-   * so we need to hackily check this another way.
+   * Execute a task with the provided value.
    */
-  getInstanceType(task: Task<Ctx> | Routine<Ctx, any>): string {
-    let instance = task;
-    let name = '';
+  executeTask = async <T>(task: Task<Ctx>, value?: T): Promise<any> => {
+    const { console: cli } = this.tool;
+    let result = null;
 
-    do {
-      ({ name } = instance.constructor);
+    cli.emit('task', [task, value, this.parallel]);
 
-      if (name === 'Routine' || name === 'Task') {
-        return name;
-      }
+    try {
+      result = await task.run(this.context, value);
 
-      instance = Object.getPrototypeOf(instance);
-    } while (instance);
+      cli.emit('task.pass', [task, result, this.parallel]);
+    } catch (error) {
+      cli.emit('task.fail', [task, error, this.parallel]);
 
-    // istanbul ignore next
-    return name;
-  }
+      throw error;
+    }
+
+    return result;
+  };
 
   /**
    * Method to execute tasks. Must be defined in sub-classes.
    */
-  async run<T>(tasks: Task<Ctx>[], value?: T): Promise<any> {
+  async run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<any> {
     throw new Error('run() must be defined asynchronously.');
+  }
+
+  /**
+   * Run all routines with the defined executor.
+   */
+  runRoutines<T>(routines: Routine<Ctx, any>[], value?: T): Promise<any> {
+    this.tool.console.emit(this.parallel ? 'routines.parallel' : 'routines', [routines, value]);
+
+    return this.run(this.executeRoutine as any, routines, value);
+  }
+
+  /**
+   * Run all tasks with the defined executor.
+   */
+  runTasks<T>(tasks: Task<Ctx>[], value?: T): Promise<any> {
+    this.tool.console.emit(this.parallel ? 'tasks.parallel' : 'tasks', [tasks, value]);
+
+    return this.run(this.executeTask, tasks, value);
   }
 }

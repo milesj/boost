@@ -53,7 +53,7 @@ describe('Routine', () => {
     }
 
     async execute(context: any, value: any): Promise<any> {
-      context.count *= this.options.multiplier;
+      context.count *= this.options.multiplier!;
       context[this.key] = true;
 
       return this.options.return ? this.key : value;
@@ -592,47 +592,6 @@ describe('Routine', () => {
       expect(routine.status).toBe(STATUS_FAILED);
     });
 
-    it('emits console events if a success', async () => {
-      const spy = jest.fn();
-
-      routine.tool.console.emit = spy;
-
-      await routine.run({}, 123);
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, false]);
-    });
-
-    it('emits console events if a failure', async () => {
-      const spy = jest.fn();
-
-      routine.tool.console.emit = spy;
-
-      routine.action = () => {
-        throw new Error('Failure');
-      };
-
-      try {
-        await routine.run({}, 123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Failure'));
-      }
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('routine.fail', [routine, new Error('Failure'), false]);
-    });
-
-    it('emits console with parallel flags', async () => {
-      const spy = jest.fn();
-
-      routine.tool.console.emit = spy;
-
-      await routine.run({}, 123, true);
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, true]);
-      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, true]);
-    });
-
     it('passes task as 3rd argument to action', async () => {
       const spy = jest.fn();
 
@@ -655,7 +614,7 @@ describe('Routine', () => {
 
       async execute(context: any, value: any): Promise<any> {
         return Promise.resolve({
-          count: value.count * this.options.multiplier,
+          count: value.count * this.options.multiplier!,
           key: value.key + this.key,
         });
       }
