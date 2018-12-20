@@ -24,8 +24,6 @@ describe('CIReporter', () => {
 
       expect(spy).toHaveBeenCalledWith('stop', expect.anything());
       expect(spy).toHaveBeenCalledWith('task', expect.anything());
-      expect(spy).toHaveBeenCalledWith('task.pass', expect.anything());
-      expect(spy).toHaveBeenCalledWith('task.fail', expect.anything());
       expect(spy).toHaveBeenCalledWith('routine', expect.anything());
       expect(spy).toHaveBeenCalledWith('routine.pass', expect.anything());
       expect(spy).toHaveBeenCalledWith('routine.fail', expect.anything());
@@ -40,21 +38,11 @@ describe('CIReporter', () => {
 
       expect(reporter.taskCount).toBe(1);
     });
-  });
 
-  describe('handleTaskPass()', () => {
-    it('logs a dash', () => {
-      reporter.handleTaskPass();
+    it('logs a period', () => {
+      reporter.handleTask();
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('-'));
-    });
-  });
-
-  describe('handleTaskFail()', () => {
-    it('logs a dash', () => {
-      reporter.handleTaskFail();
-
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('-'));
+      expect(outSpy).toHaveBeenCalledWith(chalk.gray('.'));
     });
   });
 
@@ -67,26 +55,26 @@ describe('CIReporter', () => {
       expect(reporter.routineCount).toBe(1);
     });
 
-    it('logs a plus', () => {
+    it('logs a period', () => {
       reporter.handleRoutine();
 
-      expect(outSpy).toHaveBeenCalledWith('+');
+      expect(outSpy).toHaveBeenCalledWith('.');
     });
   });
 
   describe('handleRoutinePass()', () => {
-    it('logs a plus', () => {
+    it('logs a period', () => {
       reporter.handleRoutinePass();
 
-      expect(outSpy).toHaveBeenCalledWith(chalk.green('+'));
+      expect(outSpy).toHaveBeenCalledWith(chalk.green('.'));
     });
   });
 
   describe('handleRoutineFail()', () => {
-    it('logs a plus', () => {
+    it('logs a period', () => {
       reporter.handleRoutineFail();
 
-      expect(errSpy).toHaveBeenCalledWith(chalk.red('+'));
+      expect(errSpy).toHaveBeenCalledWith(chalk.red('.'));
     });
   });
 

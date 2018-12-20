@@ -116,7 +116,7 @@ export default class Console extends Emitter {
    */
   displayLogs(logs: string[]) {
     if (logs.length > 0) {
-      this.write(`\n${logs.map(log => this.wrap(log)).join('\n')}\n`);
+      this.write(`\n${logs.join('\n')}\n`);
     }
   }
 
