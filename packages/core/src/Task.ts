@@ -12,6 +12,7 @@ import {
   STATUS_FAILED,
 } from './constants';
 import { Status } from './types';
+import Emitter from './Emitter';
 
 export type TaskAction<Ctx extends Context> = (
   context: Ctx,
@@ -19,7 +20,7 @@ export type TaskAction<Ctx extends Context> = (
   task: Task<Ctx>,
 ) => any | Promise<any>;
 
-export default class Task<Ctx extends Context> {
+export default class Task<Ctx extends Context> extends Emitter {
   action: TaskAction<Ctx> | null = null;
 
   // @ts-ignore Set after instantiation
@@ -42,6 +43,8 @@ export default class Task<Ctx extends Context> {
   tasks: Task<Ctx>[] = [];
 
   constructor(title: string, action: TaskAction<Ctx> | null = null) {
+    super();
+
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -93,25 +96,29 @@ export default class Task<Ctx extends Context> {
   /**
    * Run the current task by executing it and performing any before and after processes.
    */
-  async run<T>(context: Ctx, initialValue?: T): Promise<any> {
+  async run<T>(context: Ctx, value?: T): Promise<any> {
     this.setContext(context);
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;
+      this.emit('skip', [this]);
 
-      return Promise.resolve(initialValue);
+      return Promise.resolve(value);
     }
 
     this.status = STATUS_RUNNING;
     this.startTime = Date.now();
+    this.emit('run', [this, value]);
 
     try {
-      this.output = await this.action(context, initialValue, this);
+      this.output = await this.action(context, value, this);
       this.status = STATUS_PASSED;
       this.stopTime = Date.now();
+      this.emit('pass', [this, this.output]);
     } catch (error) {
       this.status = STATUS_FAILED;
       this.stopTime = Date.now();
+      this.emit('fail', [this, error]);
 
       throw error;
     }
