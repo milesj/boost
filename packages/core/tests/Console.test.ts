@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/no-hex-escape */
-
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import Console from '../src/Console';

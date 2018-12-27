@@ -5,14 +5,18 @@
 - Added `Console#size` to gather terminal information, like the column and row count.
 - Updated `Console#truncate` and `wrap` to default column count automatically.
 - Updated `Console#out` and `err` to always be defined, but a no-op if no stream available.
+- Updated `Task` and `Routine` to extend from `Emitter` so they may emit events.
+  - Added `run`, `skip`, `pass`, and `fail` events.
 
 #### 🐞 Fixes
 
 - Fixed a reporter bug in which task statuses were not wrapping properly, causing subsequent renders
   to get out of sync.
+- Refactored executors to be slightly more performant.
 
 #### 🛠 Internal
 
+- Updated console output to use `ansi-escapes` package.
 - Update dependencies.
 
 # 1.1.0 - 12/12/18

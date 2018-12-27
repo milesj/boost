@@ -101,24 +101,24 @@ export default class Task<Ctx extends Context> extends Emitter {
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;
-      this.emit('skip', [this]);
+      this.emit('skip');
 
       return Promise.resolve(value);
     }
 
     this.status = STATUS_RUNNING;
     this.startTime = Date.now();
-    this.emit('run', [this, value]);
+    this.emit('run', [value]);
 
     try {
       this.output = await this.action(context, value, this);
       this.status = STATUS_PASSED;
       this.stopTime = Date.now();
-      this.emit('pass', [this, this.output]);
+      this.emit('pass', [this.output]);
     } catch (error) {
       this.status = STATUS_FAILED;
       this.stopTime = Date.now();
-      this.emit('fail', [this, error]);
+      this.emit('fail', [error]);
 
       throw error;
     }

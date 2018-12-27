@@ -186,18 +186,22 @@ describe('Routine', () => {
     });
 
     it('pipes stdout/stderr to handler', async () => {
-      const spy = jest.spyOn(routine, 'emit');
+      const spy1 = jest.spyOn(routine, 'emit');
+      const spy2 = jest.spyOn(routine.tool.console, 'emit');
       const task = new Task('title', () => {});
 
       task.status = STATUS_RUNNING;
 
       await routine.executeCommand('yarn', ['-v'], { task });
 
-      expect(spy).toHaveBeenCalledWith('command', [expect.anything(), 'yarn']);
-      expect(spy).toHaveBeenCalledWith('command.data', [
-        expect.anything(),
+      expect(spy1).toHaveBeenCalledWith('command', ['yarn']);
+      expect(spy1).toHaveBeenCalledWith('command.data', ['yarn', expect.stringMatching(/[\d.]+/u)]);
+
+      expect(spy2).toHaveBeenCalledWith('command', ['yarn', expect.anything()]);
+      expect(spy2).toHaveBeenCalledWith('command.data', [
         'yarn',
         expect.stringMatching(/[\d.]+/u),
+        expect.anything(),
       ]);
     });
 

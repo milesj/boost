@@ -195,7 +195,7 @@ describe('Task', () => {
 
       await task.skip().run({}, 123);
 
-      expect(spy).toHaveBeenCalledWith(task);
+      expect(spy).toHaveBeenCalled();
     });
 
     it('emits `run` event when running', async () => {
@@ -205,7 +205,7 @@ describe('Task', () => {
 
       await task.run({}, 123);
 
-      expect(spy).toHaveBeenCalledWith(task, 123);
+      expect(spy).toHaveBeenCalledWith(123);
     });
 
     it('emits `pass` event on success', async () => {
@@ -215,7 +215,7 @@ describe('Task', () => {
 
       await task.run({}, 123);
 
-      expect(spy).toHaveBeenCalledWith(task, 246);
+      expect(spy).toHaveBeenCalledWith(246);
     });
 
     it('emits `fail` event on error', async () => {
@@ -230,7 +230,7 @@ describe('Task', () => {
 
         await task.run({}, 123);
       } catch (error) {
-        expect(spy).toHaveBeenCalledWith(task, error);
+        expect(spy).toHaveBeenCalledWith(error);
       }
     });
   });
