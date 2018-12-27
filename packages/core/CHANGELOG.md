@@ -11,6 +11,10 @@
 - Fixed a reporter bug in which task statuses were not wrapping properly, causing subsequent renders
   to get out of sync.
 
+#### 🛠 Internal
+
+- Update dependencies.
+
 # 1.1.0 - 12/12/18
 
 #### 🚀 New
