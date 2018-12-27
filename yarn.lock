@@ -1543,6 +1543,13 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
+"@types/ansi-escapes@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/@types/ansi-escapes/-/ansi-escapes-3.0.0.tgz#619bbc6d46fc75da6d784e53b5a25d2efff07108"
+  integrity sha512-aamJrX6PdmIO8E9qhZaYmXiMGXwnkF2lcga/VbqLf8g90aaKGZ4cSFP5AabqxAbmp0h69C9yE3a4fUBtVpqtmg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/braces@*":
   version "2.3.0"
   resolved "https://registry.npmjs.org/@types/braces/-/braces-2.3.0.tgz#d00ec0a76562b2acb6f29330be33a093e33ed25c"

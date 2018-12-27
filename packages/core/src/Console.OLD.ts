@@ -9,19 +9,22 @@ import exit from 'exit';
 import envCI from 'env-ci';
 import cliTruncate from 'cli-truncate';
 import cliSize from 'term-size';
-import ansiEscapes from 'ansi-escapes';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import Emitter from './Emitter';
-import Output from './Output';
 import Tool from './Tool';
 import { Debugger } from './types';
 
-export type WrappedStream = (message: string, nl?: number) => void;
+export const REFRESH_RATE = 100;
+export const BG_REFRESH_RATE = 500;
+
+export type WrappedStream = (message: string) => void;
 
 function noop() {}
 
 export default class Console extends Emitter {
+  bufferedOutput: string = '';
+
   bufferedStreams: (() => void)[] = [];
 
   debug: Debugger;
@@ -32,9 +35,17 @@ export default class Console extends Emitter {
 
   exiting: boolean = false;
 
+  refreshTimer: NodeJS.Timer | null = null;
+
+  lastOutputHeight: number = 0;
+
+  liveLogs: string[] = [];
+
   logs: string[] = [];
 
   out: WrappedStream;
+
+  renderTimer: NodeJS.Timer | null = null;
 
   restoreCursorOnExit: boolean = false;
 
@@ -62,7 +73,18 @@ export default class Console extends Emitter {
    * Clear the entire console.
    */
   clearOutput(): this {
-    this.out(ansiEscapes.eraseScreen);
+    this.out('\x1B[2J');
+    this.lastOutputHeight = 0;
+
+    return this;
+  }
+
+  /**
+   * Clear defined lines from the console.
+   */
+  clearLinesOutput(): this {
+    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.lastOutputHeight = 0;
 
     return this;
   }
@@ -74,7 +96,7 @@ export default class Console extends Emitter {
     const { footer } = this.tool.options;
 
     if (footer) {
-      this.out(footer, 1);
+      this.write(footer, 1);
     }
   }
 
@@ -85,7 +107,7 @@ export default class Console extends Emitter {
     const { header } = this.tool.options;
 
     if (header) {
-      this.out(header, 1);
+      this.write(header, 1);
     }
   }
 
@@ -94,7 +116,7 @@ export default class Console extends Emitter {
    */
   displayLogs(logs: string[]) {
     if (logs.length > 0) {
-      this.out(`\n${logs.join('\n')}\n`);
+      this.write(`\n${logs.join('\n')}\n`);
     }
   }
 
@@ -130,7 +152,7 @@ export default class Console extends Emitter {
     this.emit('stop', [error, code]);
 
     // Render final output
-    this.renderFinalOutput(error);
+    this.handleFinalRender(error);
 
     // Unwrap our streams
     this.err = this.unwrapStream('stderr');
@@ -138,12 +160,32 @@ export default class Console extends Emitter {
 
     // Exit after buffers have flushed
     if (force) {
-      setTimeout(() => {
-        exit(code);
-      }, 0);
+      setTimeout(
+        () => {
+          exit(code);
+          // Some CIs buffer output, so give them time to flush as well
+        },
+        envCI().isCi ? REFRESH_RATE : 0,
+      );
     } else {
       process.exitCode = code;
     }
+  }
+
+  /**
+   * Flush buffered output that has been logged.
+   */
+  flushBufferedOutput(): this {
+    const lines = this.bufferedOutput;
+
+    if (lines) {
+      this.out(lines);
+      this.lastOutputHeight = Math.max(lines.split('\n').length - 1, 0);
+    }
+
+    this.bufferedOutput = '';
+
+    return this;
   }
 
   /**
@@ -167,6 +209,56 @@ export default class Console extends Emitter {
   };
 
   /**
+   * Handle the final render before exiting.
+   */
+  handleFinalRender = (error: Error | null = null) => {
+    if (!this.out) {
+      return;
+    }
+
+    this.debug('Rendering final console output');
+    this.resetTimers();
+    this.clearLinesOutput();
+    this.flushBufferedStreams();
+
+    if (error) {
+      this.emit('render');
+      this.displayLogs(this.errorLogs);
+      this.emit('error', [error]);
+    } else {
+      this.displayHeader();
+      this.emit('render');
+      this.displayLogs(this.logs);
+      this.displayFooter();
+    }
+
+    this.flushBufferedOutput();
+    this.flushBufferedStreams();
+
+    // Remover listeners so that we avoid unwanted re-renders
+    this.clearListeners('render');
+    this.clearListeners('error');
+  };
+
+  /**
+   * Handle the entire rendering and flushing process.
+   */
+  handleRender = (error: Error | null = null, final: boolean = false) => {
+    this.resetTimers();
+    this.clearLinesOutput();
+    this.flushBufferedStreams();
+    this.emit('render');
+    this.displayLogs(this.liveLogs);
+
+    if (error) {
+      this.emit('error', [error]);
+    }
+
+    this.flushBufferedOutput();
+    this.startBackgroundTimer();
+  };
+
+  /**
    * Handle SIGINT and SIGTERM interruptions.
    */
   handleSignal = () => {
@@ -179,7 +271,7 @@ export default class Console extends Emitter {
    * Hide the console cursor.
    */
   hideCursor(): this {
-    this.out(ansiEscapes.cursorHide);
+    this.out('\x1B[?25l');
 
     if (!this.restoreCursorOnExit) {
       this.restoreCursorOnExit = true;
@@ -203,10 +295,10 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Log the live message immediately to the console.
+   * Store the live message.
    */
   logLive(message: string): this {
-    this.out(message);
+    this.liveLogs.push(message);
 
     return this;
   }
@@ -221,52 +313,69 @@ export default class Console extends Emitter {
   }
 
   /**
-   * TODO
+   * Debounce the render as to avoid tearing.
    */
-  render(output: string | Output): this {
-    this.flushBufferedStreams();
+  render(): this {
+    this.resetRefreshTimer();
 
-    if (output instanceof Output) {
-      this.out(output.render());
-    } else if (output) {
-      this.out(String(output));
+    if (!this.renderTimer) {
+      this.renderTimer = setTimeout(() => {
+        this.handleRender();
+      }, REFRESH_RATE);
     }
 
     return this;
-  }
-
-  /**
-   * Handle the final render before exiting.
-   */
-  renderFinalOutput(error: Error | null = null) {
-    this.debug('Rendering final console output');
-    this.flushBufferedStreams();
-
-    if (error) {
-      this.emit('render');
-      this.displayLogs(this.errorLogs);
-      this.emit('error', [error]);
-    } else {
-      this.emit('render');
-      this.displayLogs(this.logs);
-      this.displayFooter();
-    }
   }
 
   /**
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.out(ansiEscapes.cursorTo(0, this.size().rows));
+    this.out(`\x1B[${this.size().rows};0H`);
 
     return this;
+  }
+
+  /**
+   * Reset both the render and background refresh timers.
+   */
+  resetTimers(): this {
+    this.resetRenderTimer();
+    this.resetRefreshTimer();
+
+    return this;
+  }
+
+  /**
+   * Reset the background refresh timer.
+   */
+  resetRefreshTimer() {
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
+  }
+
+  /**
+   * Reset the render only timer.
+   */
+  resetRenderTimer() {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = null;
+    }
   }
 
   /**
    * Show the console cursor.
    */
   showCursor(): this {
-    this.out(ansiEscapes.cursorShow);
+    if (this.out) {
+      this.out('\x1B[?25h');
+    } else {
+      // May be called during `exit`
+      process.stdout.write('\x1B[?25h');
+    }
 
     return this;
   }
@@ -287,9 +396,19 @@ export default class Console extends Emitter {
 
     this.debug('Starting console rendering process');
     this.emit('start', args);
-    this.displayHeader();
 
     return this;
+  }
+
+  /**
+   * Automatically refresh in the background if some tasks are taking too long.
+   */
+  startBackgroundTimer() {
+    this.resetRefreshTimer();
+
+    this.refreshTimer = setTimeout(() => {
+      this.handleRender();
+    }, BG_REFRESH_RATE);
   }
 
   /**
@@ -351,18 +470,14 @@ export default class Console extends Emitter {
     const originalWrite = stream.write.bind(stream);
 
     if (process.env.NODE_ENV === 'test') {
-      return message => originalWrite(message);
+      return originalWrite;
     }
 
     let buffer = '';
 
-    const write = (message: string, nl: number = 0) => {
-      if (this.tool.config.silent) {
-        return;
-      }
-
+    const write = (message: string) => {
       if (stream.isTTY) {
-        originalWrite(message + '\n'.repeat(nl));
+        originalWrite(message);
       }
     };
 
@@ -386,5 +501,24 @@ export default class Console extends Emitter {
     stream.originalWrite = originalWrite;
 
     return write;
+  }
+
+  /**
+   * Log a message to `stdout` without a trailing newline or formatting.
+   */
+  write(message: string, nl: number = 0, prepend: boolean = false): this {
+    if (this.tool.config.silent) {
+      return this;
+    }
+
+    const buffer = message + '\n'.repeat(nl);
+
+    if (prepend) {
+      this.bufferedOutput = buffer + this.bufferedOutput;
+    } else {
+      this.bufferedOutput += buffer;
+    }
+
+    return this;
   }
 }

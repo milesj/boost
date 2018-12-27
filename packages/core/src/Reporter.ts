@@ -7,16 +7,17 @@ import chalk from 'chalk';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
+import Routine from './Routine';
 import Task from './Task';
 import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Line = any, Options = {}> extends Plugin<Options> {
+export default class Reporter<Options = {}> extends Plugin<Options> {
   // @ts-ignore Set after instantiation
   console: Console;
 
-  lines: Line[] = [];
+  // lines: Line[] = [];
 
   startTime: number = 0;
 
@@ -29,20 +30,42 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
     this.console.on('start', this.handleBaseStart).on('stop', this.handleBaseStop);
   }
 
-  /**
-   * Add a line to be rendered.
-   */
-  addLine(line: Line): this {
-    this.lines.push(line);
+  // /**
+  //  * Add a line to be rendered.
+  //  */
+  // addLine(line: Line): this {
+  //   this.lines.push(line);
 
-    return this;
+  //   return this;
+  // }
+
+  /**
+   * Calculate the task or routine hierarchical depth based on parent tree.
+   */
+  calculateParentDepth(routine: Routine<any, any>): number {
+    let depth = -1; // Ignore Pipeline
+    let current = routine.parent;
+
+    while (current) {
+      current = current.parent;
+      depth += 1;
+    }
+
+    return Math.max(depth, 0);
+  }
+
+  /**
+   * Calculate the current number of tasks that have completed.
+   */
+  calculateTaskCompletion(tasks: Task<any>[]): number {
+    return tasks.reduce((sum, task) => (task.hasPassed() || task.isSkipped() ? sum + 1 : sum), 0);
   }
 
   /**
    * Display an error and it's stack.
    */
   displayError(error: Error): void {
-    this.console.write(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
+    this.console.out(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
 
     // Remove message line from stack
     if (error.stack) {
@@ -55,18 +78,18 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
         'pending',
       );
 
-      this.console.write(stack, 1);
+      this.console.out(stack, 1);
     }
 
-    this.console.write('\n');
+    this.console.out('\n');
   }
 
-  /**
-   * Find a line using a callback
-   */
-  findLine(callback: (item: Line) => boolean): Line | undefined {
-    return this.lines.find(line => callback(line));
-  }
+  // /**
+  //  * Find a line using a callback
+  //  */
+  // findLine(callback: (item: Line) => boolean): Line | undefined {
+  //   return this.lines.find(line => callback(line));
+  // }
 
   /**
    * Return specific colors based on chosen theme.
@@ -137,14 +160,14 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
     return ' '.repeat(length);
   }
 
-  /**
-   * Remove a line to be rendered.
-   */
-  removeLine(callback: (line: Line) => boolean): this {
-    this.lines = this.lines.filter(line => !callback(line));
+  // /**
+  //  * Remove a line to be rendered.
+  //  */
+  // removeLine(callback: (line: Line) => boolean): this {
+  //   this.lines = this.lines.filter(line => !callback(line));
 
-    return this;
-  }
+  //   return this;
+  // }
 
   /**
    * Create a chalk formatted string with accessible colors and modifiers applied.
