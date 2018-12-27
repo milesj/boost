@@ -109,7 +109,8 @@ export default class Routine<
       ? execa.shell(`${command} ${args.join(' ')}`.trim(), opts)
       : execa(command, args, opts);
 
-    this.emit('command', [this, command]);
+    this.emit('command', [command]);
+    this.tool.console.emit('command', [command, this]);
 
     // Push chunks to the reporter
     const unit = task || this;
@@ -122,7 +123,8 @@ export default class Routine<
           unit.statusText = line;
         }
 
-        this.emit('command.data', [this, command, line]);
+        this.emit('command.data', [command, line]);
+        this.tool.console.emit('command.data', [command, line, this]);
       }
     };
 

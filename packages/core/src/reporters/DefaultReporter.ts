@@ -19,6 +19,8 @@ export default class DefaultReporter extends Reporter<Line> {
   keyLength: number = 0;
 
   bootstrap() {
+    super.bootstrap();
+
     this.console
       .on('start', this.handleStart)
       .on('task', this.handleTask)

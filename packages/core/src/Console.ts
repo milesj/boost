@@ -3,12 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable unicorn/no-hex-escape */
-
 import exit from 'exit';
 import envCI from 'env-ci';
 import cliTruncate from 'cli-truncate';
 import cliSize from 'term-size';
+import ansiEscapes from 'ansi-escapes';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import Emitter from './Emitter';
@@ -73,7 +72,7 @@ export default class Console extends Emitter {
    * Clear the entire console.
    */
   clearOutput(): this {
-    this.out('\x1B[2J');
+    this.out(ansiEscapes.eraseScreen);
     this.lastOutputHeight = 0;
 
     return this;
@@ -83,7 +82,7 @@ export default class Console extends Emitter {
    * Clear defined lines from the console.
    */
   clearLinesOutput(): this {
-    this.out('\x1B[1A\x1B[K'.repeat(this.lastOutputHeight));
+    this.out(ansiEscapes.eraseLines(this.lastOutputHeight + 1));
     this.lastOutputHeight = 0;
 
     return this;
@@ -271,7 +270,7 @@ export default class Console extends Emitter {
    * Hide the console cursor.
    */
   hideCursor(): this {
-    this.out('\x1B[?25l');
+    this.out(ansiEscapes.cursorHide);
 
     if (!this.restoreCursorOnExit) {
       this.restoreCursorOnExit = true;
@@ -331,7 +330,7 @@ export default class Console extends Emitter {
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.out(`\x1B[${this.size().rows};0H`);
+    this.out(ansiEscapes.cursorTo(0, this.size().rows));
 
     return this;
   }
@@ -370,12 +369,9 @@ export default class Console extends Emitter {
    * Show the console cursor.
    */
   showCursor(): this {
-    if (this.out) {
-      this.out('\x1B[?25h');
-    } else {
-      // May be called during `exit`
-      process.stdout.write('\x1B[?25h');
-    }
+    this.restoreCursorOnExit = false;
+
+    process.stdout.write(ansiEscapes.cursorShow);
 
     return this;
   }

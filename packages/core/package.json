@@ -22,6 +22,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@types/ansi-escapes": "^3.0.0",
     "@types/cli-truncate": "^1.1.0",
     "@types/debug": "^0.0.31",
     "@types/execa": "^0.9.0",
@@ -35,6 +36,7 @@
     "@types/wrap-ansi": "^3.0.0",
     "@types/yargs": "^12.0.4",
     "@types/yargs-parser": "^11.0.2",
+    "ansi-escapes": "^3.1.0",
     "chalk": "^2.4.1",
     "cli-truncate": "^1.1.0",
     "debug": "^4.1.1",
