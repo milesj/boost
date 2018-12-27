@@ -4,9 +4,6 @@
  */
 
 import chalk from 'chalk';
-import cliTruncate from 'cli-truncate';
-import stripAnsi from 'strip-ansi';
-import wrapAnsi from 'wrap-ansi';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
@@ -150,13 +147,6 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
   }
 
   /**
-   * Strip ANSI characters from a string.
-   */
-  strip(message: string): string {
-    return stripAnsi(message);
-  }
-
-  /**
    * Create a chalk formatted string with accessible colors and modifiers applied.
    */
   style(
@@ -172,27 +162,5 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
     });
 
     return out(message);
-  }
-
-  /**
-   * Truncate a string that may contain ANSI characters to a specific column width.
-   */
-  truncate(
-    message: string,
-    columns: number,
-    options?: { position?: 'start' | 'middle' | 'end' },
-  ): string {
-    return cliTruncate(message, columns, options);
-  }
-
-  /**
-   * Wrap a string that may contain ANSI characters to a specific column width.
-   */
-  wrap(
-    message: string,
-    columns: number,
-    options?: { hard?: boolean; trim?: boolean; wordWrap?: boolean },
-  ): string {
-    return wrapAnsi(message, columns, options);
   }
 }

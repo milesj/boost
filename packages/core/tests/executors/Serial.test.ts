@@ -1,6 +1,6 @@
 import SerialExecutor from '../../src/executors/Serial';
 import Task from '../../src/Task';
-import { createTestTool, createTestRoutine } from '../helpers';
+import { createTestTool } from '../helpers';
 
 describe('SerialExecutor', () => {
   let executor: SerialExecutor<any>;
@@ -14,28 +14,13 @@ describe('SerialExecutor', () => {
     const bar = new Task('bar', (context, value) => value + 123);
     const baz = new Task('baz', (context, value) => value + 123);
 
-    const results = await executor.run([foo, bar, baz], 0);
+    const results = await executor.runTasks([foo, bar, baz], 0);
 
     expect(results).toBe(369);
   });
 
-  it('triggers `executeRoutine` and `executeTask` with the correct values', async () => {
-    const task = new Task('foo', (context, value) => value);
-    const taskSpy = jest.fn((t, value) => value);
-    const routine = createTestRoutine(executor.tool);
-    const routineSpy = jest.fn((r, value) => value);
-
-    executor.executeTask = taskSpy;
-    executor.executeRoutine = routineSpy;
-
-    await executor.run([task, routine], 'foo');
-
-    expect(taskSpy).toHaveBeenCalledWith(task, 'foo', false);
-    expect(routineSpy).toHaveBeenCalledWith(routine, 'foo', false);
-  });
-
   it('returns initial value if no processes', async () => {
-    expect(await await executor.run([], 123)).toBe(123);
+    expect(await await executor.runTasks([], 123)).toBe(123);
   });
 
   it('passes strings down the chain in order', async () => {
@@ -43,7 +28,7 @@ describe('SerialExecutor', () => {
     const bar = new Task('bar', (context, value) => `${value}bar`);
     const baz = new Task('baz', (context, value) => `${value}baz`);
 
-    expect(await executor.run([foo, bar, baz], '')).toBe('foobarbaz');
+    expect(await executor.runTasks([foo, bar, baz], '')).toBe('foobarbaz');
   });
 
   it('passes promises down the chain in order', async () => {
@@ -51,7 +36,7 @@ describe('SerialExecutor', () => {
     const bar = new Task('bar', (context, value) => Promise.resolve(['bar', ...value]));
     const baz = new Task('baz', (context, value) => Promise.resolve(value.concat(['baz'])));
 
-    expect(await executor.run([foo, bar, baz], '')).toEqual(['bar', 'foo', 'baz']);
+    expect(await executor.runTasks([foo, bar, baz], '')).toEqual(['bar', 'foo', 'baz']);
   });
 
   it('aborts early if an error occurs', async () => {
@@ -70,7 +55,7 @@ describe('SerialExecutor', () => {
     const baz = new Task('baz', incCount);
 
     try {
-      await executor.run([foo, bar, baz], 0);
+      await executor.runTasks([foo, bar, baz], 0);
     } catch (error) {
       expect(error).toEqual(new Error('Abort'));
     }
@@ -95,7 +80,7 @@ describe('SerialExecutor', () => {
       return buffer;
     });
 
-    const result = await executor.run([foo, bar, baz], Buffer.alloc(9));
+    const result = await executor.runTasks([foo, bar, baz], Buffer.alloc(9));
 
     expect(result.toString('utf8')).toBe('foobarbaz');
   });

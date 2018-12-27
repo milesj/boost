@@ -1,6 +1,6 @@
 import PoolExecutor from '../../src/executors/Pool';
 import Task from '../../src/Task';
-import { createTestTool, createTestRoutine } from '../helpers';
+import { createTestTool } from '../helpers';
 
 describe('PoolExecutor', () => {
   let executor: PoolExecutor<any>;
@@ -22,7 +22,7 @@ describe('PoolExecutor', () => {
     });
     const baz = new Task('baz', () => 789);
 
-    const results = await executor.run([foo, bar, baz]);
+    const results = await executor.runTasks([foo, bar, baz]);
 
     expect(executor.queue).toHaveLength(0);
     expect(executor.running).toHaveLength(0);
@@ -33,7 +33,7 @@ describe('PoolExecutor', () => {
   });
 
   it('returns response if no tasks', async () => {
-    const results = await executor.run([]);
+    const results = await executor.runTasks([]);
 
     expect(results).toEqual({
       errors: [],
@@ -48,7 +48,7 @@ describe('PoolExecutor', () => {
     const bar = new Task('bar', () => 456);
     const baz = new Task('baz', () => 789);
 
-    const results = await executor.run([foo, bar, baz]);
+    const results = await executor.runTasks([foo, bar, baz]);
 
     expect(results).toEqual({
       errors: [],
@@ -58,13 +58,13 @@ describe('PoolExecutor', () => {
 
   it('maxes at concurrency limit', async () => {
     executor.options.concurrency = 1;
-    executor.nextTask = () => {}; // Stop it exhausting
+    executor.nextItem = () => {}; // Stop it exhausting
 
     const foo = new Task('foo', () => 123);
     const bar = new Task('bar', () => 456);
     const baz = new Task('baz', () => 789);
 
-    await executor.run([foo, bar, baz]);
+    await executor.runTasks([foo, bar, baz]);
 
     expect(executor.queue).toHaveLength(2);
     expect(executor.running).toHaveLength(0);
@@ -77,7 +77,7 @@ describe('PoolExecutor', () => {
     const bar = new Task('bar', () => 456);
     const baz = new Task('baz', () => 789);
 
-    const results = await executor.run([foo, bar, baz]);
+    const results = await executor.runTasks([foo, bar, baz]);
 
     expect(executor.queue).toHaveLength(0);
     expect(executor.running).toHaveLength(0);
@@ -87,23 +87,8 @@ describe('PoolExecutor', () => {
     });
   });
 
-  it('triggers `executeRoutine` and `executeTask` with the correct values', async () => {
-    const task = new Task('foo', value => value);
-    const taskSpy = jest.fn(() => Promise.resolve());
-    const routine = createTestRoutine(executor.tool);
-    const routineSpy = jest.fn(() => Promise.resolve());
-
-    executor.executeTask = taskSpy;
-    executor.executeRoutine = routineSpy;
-
-    await executor.run([task, routine], 'foo');
-
-    expect(taskSpy).toHaveBeenCalledWith(task, 'foo', true);
-    expect(routineSpy).toHaveBeenCalledWith(routine, 'foo', true);
-  });
-
   it('doesnt fail when an empty queue tries to run', async () => {
-    const result = await executor.runTask();
+    const result = await executor.runItem();
 
     expect(result).toBeUndefined();
   });

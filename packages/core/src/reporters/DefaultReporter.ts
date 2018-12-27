@@ -19,6 +19,8 @@ export default class DefaultReporter extends Reporter<Line> {
   keyLength: number = 0;
 
   bootstrap() {
+    super.bootstrap();
+
     this.console
       .on('start', this.handleStart)
       .on('task', this.handleTask)
@@ -57,10 +59,9 @@ export default class DefaultReporter extends Reporter<Line> {
    * Return the task title with additional metadata.
    */
   // eslint-disable-next-line complexity
-  getLineTitle(task: Task<any> | Routine<any, any>, usedColumns: number = 0): string {
+  getLineTitle(task: Task<any> | Routine<any, any>): { title: string; status: string } {
     const outputLevel = this.tool.config.output;
-    // @ts-ignore
-    const { tasks = [], routines = [] } = task;
+    const { tasks = [], routines = [] } = task as Routine<any, any>;
     const status = [];
     let { title } = task;
 
@@ -77,15 +78,16 @@ export default class DefaultReporter extends Reporter<Line> {
     if (task instanceof Routine && !task.isSkipped() && outputLevel >= 2) {
       status.push(this.getElapsedTime(task.startTime, task.stopTime));
     } else if (task instanceof Task && task.statusText) {
-      title = this.style(this.strip(task.statusText), 'pending');
+      title = this.style(this.console.strip(task.statusText), 'pending');
     }
 
-    // eslint-disable-next-line no-magic-numbers
-    const columns = process.stdout.columns || 80;
-    const fullStatus =
-      status.length > 0 && outputLevel >= 1 ? this.style(` [${status.join(', ')}]`, 'pending') : '';
-
-    return this.truncate(title, columns - usedColumns - fullStatus.length) + fullStatus;
+    return {
+      status:
+        status.length > 0 && outputLevel >= 1
+          ? this.style(` [${status.join(', ')}]`, 'pending')
+          : '',
+      title,
+    };
   }
 
   handleStart = (routines: Routine<any, any>[]) => {
@@ -174,13 +176,13 @@ export default class DefaultReporter extends Reporter<Line> {
     }
 
     // Title
-    const usedColumns = indent + key.length;
+    const { title, status } = this.getLineTitle(task || routine);
 
-    if (task) {
-      output += this.style(this.getLineTitle(task, usedColumns), 'pending');
-    } else {
-      output += this.getLineTitle(routine, usedColumns);
-    }
+    output +=
+      this.console.truncate(
+        task ? this.style(title, 'pending') : title,
+        this.console.size().columns - output.length - status.length,
+      ) + status;
 
     this.console.write(output, 1);
   }

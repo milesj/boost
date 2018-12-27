@@ -25,30 +25,6 @@ describe('Executor', () => {
     });
   });
 
-  describe('execute()', () => {
-    it('executes a routine', async () => {
-      const spy = jest.fn();
-      const routine = createTestRoutine(tool);
-
-      executor.executeRoutine = spy;
-
-      await executor.execute(routine, 123, true);
-
-      expect(spy).toHaveBeenCalledWith(routine, 123, true);
-    });
-
-    it('executes a task', async () => {
-      const spy = jest.fn();
-      const task = new Task('Title', () => Promise.resolve());
-
-      executor.executeTask = spy;
-
-      await executor.execute(task, 123, false);
-
-      expect(spy).toHaveBeenCalledWith(task, 123, false);
-    });
-  });
-
   describe('executeRoutine()', () => {
     let routine: Routine<any, any>;
 
@@ -83,6 +59,49 @@ describe('Executor', () => {
       }
 
       expect(routine.status).toBe(STATUS_FAILED);
+    });
+
+    it('emits console events if a success', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+
+      await executor.executeRoutine(routine, 123);
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, false]);
+    });
+
+    it('emits console events if a failure', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+
+      // @ts-ignore
+      routine.action = () => {
+        throw new Error('Oops');
+      };
+
+      try {
+        await executor.executeRoutine(routine, 123);
+      } catch (error) {
+        expect(error).toEqual(new Error('Oops'));
+      }
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('routine.fail', [routine, new Error('Oops'), false]);
+    });
+
+    it('emits console events with parallel flag', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+      executor.parallel = true;
+
+      await executor.executeRoutine(routine, 123);
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, true]);
+      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, true]);
     });
   });
 
@@ -155,8 +174,9 @@ describe('Executor', () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
+      executor.parallel = true;
 
-      await executor.executeTask(task, 123, true);
+      await executor.executeTask(task, 123);
 
       expect(spy).toHaveBeenCalledWith('task', [task, 123, true]);
       expect(spy).toHaveBeenCalledWith('task.pass', [task, 369, true]);
@@ -165,7 +185,81 @@ describe('Executor', () => {
 
   describe('run()', () => {
     it('errors if not defined', () => {
-      expect(executor.run([])).rejects.toThrowErrorMatchingSnapshot();
+      expect(executor.run(() => Promise.resolve(), [])).rejects.toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  describe('runRoutines()', () => {
+    const routines = [createTestRoutine(tool), createTestRoutine(tool), createTestRoutine(tool)];
+
+    beforeEach(() => {
+      executor.run = jest.fn();
+    });
+
+    it('calls `executeRoutine` with routines', async () => {
+      await executor.runRoutines(routines, 123);
+
+      expect(executor.run).toHaveBeenCalledWith(executor.executeRoutine, routines, 123);
+    });
+
+    it('emits `routines` event', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+
+      await executor.runRoutines(routines, 123);
+
+      expect(spy).toHaveBeenCalledWith('routines', [routines, 123]);
+    });
+
+    it('emits `routines.parallel` event when parallel', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+      executor.parallel = true;
+
+      await executor.runRoutines(routines, 123);
+
+      expect(spy).toHaveBeenCalledWith('routines.parallel', [routines, 123]);
+    });
+  });
+
+  describe('runTasks()', () => {
+    const tasks = [
+      new Task('title', () => 123),
+      new Task('title', () => 456),
+      new Task('title', () => 789),
+    ];
+
+    beforeEach(() => {
+      executor.run = jest.fn();
+    });
+
+    it('calls `executeTask` with routines', async () => {
+      await executor.runTasks(tasks, 123);
+
+      expect(executor.run).toHaveBeenCalledWith(executor.executeTask, tasks, 123);
+    });
+
+    it('emits `routines` event', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+
+      await executor.runTasks(tasks, 123);
+
+      expect(spy).toHaveBeenCalledWith('tasks', [tasks, 123]);
+    });
+
+    it('emits `routines.parallel` event when parallel', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+      executor.parallel = true;
+
+      await executor.runTasks(tasks, 123);
+
+      expect(spy).toHaveBeenCalledWith('tasks.parallel', [tasks, 123]);
     });
   });
 });

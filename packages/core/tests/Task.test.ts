@@ -187,6 +187,52 @@ describe('Task', () => {
 
       expect(spy).toHaveBeenCalledWith({}, 123, task);
     });
+
+    it('emits `skip` event when skipped', async () => {
+      const spy = jest.fn();
+
+      task.on('skip', spy);
+
+      await task.skip().run({}, 123);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('emits `run` event when running', async () => {
+      const spy = jest.fn();
+
+      task.on('run', spy);
+
+      await task.run({}, 123);
+
+      expect(spy).toHaveBeenCalledWith(123);
+    });
+
+    it('emits `pass` event on success', async () => {
+      const spy = jest.fn();
+
+      task.on('pass', spy);
+
+      await task.run({}, 123);
+
+      expect(spy).toHaveBeenCalledWith(246);
+    });
+
+    it('emits `fail` event on error', async () => {
+      const spy = jest.fn();
+
+      task.on('fail', spy);
+
+      try {
+        task.action = () => {
+          throw new Error('Oops');
+        };
+
+        await task.run({}, 123);
+      } catch (error) {
+        expect(spy).toHaveBeenCalledWith(error);
+      }
+    });
   });
 
   describe('setContext()', () => {

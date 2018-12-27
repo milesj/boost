@@ -16,36 +16,27 @@ export default class CIReporter extends Reporter {
     this.console
       .on('stop', this.handleStop)
       .on('task', this.handleTask)
-      .on('task.pass', this.handleTaskPass)
-      .on('task.fail', this.handleTaskFail)
       .on('routine', this.handleRoutine)
       .on('routine.pass', this.handleRoutinePass)
       .on('routine.fail', this.handleRoutineFail);
   }
 
-  handleTask = () => {
-    this.taskCount += 1;
-  };
-
-  handleTaskPass = () => {
-    this.console.out!(this.style('-', 'success'));
-  };
-
-  handleTaskFail = () => {
-    this.console.err!(this.style('-', 'failure'));
-  };
-
   handleRoutine = () => {
     this.routineCount += 1;
-    this.console.out!('+');
+    this.console.out('.');
   };
 
   handleRoutinePass = () => {
-    this.console.out!(this.style('+', 'success'));
+    this.console.out(this.style('.', 'success'));
   };
 
   handleRoutineFail = () => {
-    this.console.err!(this.style('+', 'failure'));
+    this.console.err(this.style('.', 'failure'));
+  };
+
+  handleTask = () => {
+    this.taskCount += 1;
+    this.console.out(this.style('.', 'pending'));
   };
 
   handleStop = () => {
@@ -55,6 +46,6 @@ export default class CIReporter extends Reporter {
       time: this.getElapsedTime(this.startTime, this.stopTime, false),
     });
 
-    this.console.out!(`\n${msg}\n`);
+    this.console.out(`\n${msg}\n`);
   };
 }

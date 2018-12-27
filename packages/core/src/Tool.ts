@@ -208,31 +208,34 @@ export default class Tool<
    * Create an i18n translator instance.
    */
   createTranslator(): Translator {
-    return i18next
+    const translator = i18next
       .createInstance()
       .use(new LanguageDetector())
-      .use(new FileBackend())
-      .init(
-        {
-          backend: {
-            resourcePaths: [
-              path.join(__dirname, '../resources'),
-              path.join(this.options.appPath, 'resources'),
-            ],
-          },
-          defaultNS: 'app',
-          fallbackLng: ['en'],
-          initImmediate: false,
-          lowerCaseLng: true,
-          ns: ['app', 'errors', 'prompts'],
+      .use(new FileBackend());
+
+    translator.init(
+      {
+        backend: {
+          resourcePaths: [
+            path.join(__dirname, '../resources'),
+            path.join(this.options.appPath, 'resources'),
+          ],
         },
-        error => {
-          // istanbul ignore next
-          if (error) {
-            throw error;
-          }
-        },
-      );
+        defaultNS: 'app',
+        fallbackLng: ['en'],
+        initImmediate: false,
+        lowerCaseLng: true,
+        ns: ['app', 'errors', 'prompts'],
+      },
+      error => {
+        // istanbul ignore next
+        if (error) {
+          throw error;
+        }
+      },
+    );
+
+    return translator;
   }
 
   /**

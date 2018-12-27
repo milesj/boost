@@ -16,7 +16,10 @@ export default class CrashLogger {
 
   logPath: string;
 
-  constructor({ config, console, options, pluginTypes }: Tool<any, any>) {
+  constructor(tool: Tool<any, any>) {
+    // @ts-ignore Allow private access of pluginTypes
+    const { config, console, options, pluginTypes } = tool;
+
     this.logPath = path.join(options.root, `${options.appName}-error.log`);
 
     this.add('Node', process.version.slice(1));
