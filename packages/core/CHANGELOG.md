@@ -1,4 +1,4 @@
-# 1.2.0 - [UNRELEASED]
+# 1.2.0 - 12/26/2018
 
 #### 🚀 New
 
@@ -17,9 +17,9 @@
 #### 🛠 Internal
 
 - Updated console output to use `ansi-escapes` package.
-- Update dependencies.
+- Updated dependencies.
 
-# 1.1.0 - 12/12/18
+# 1.1.0 - 12/12/2018
 
 #### 🚀 New
 
@@ -28,33 +28,33 @@
 
 #### 🛠 Internal
 
-- Update dependencies.
+- Updated dependencies.
 
-# 1.0.4 - 11/27/18
+# 1.0.4 - 11/27/2018
 
 #### 🛠 Internal
 
-- Update dependencies.
+- Updated dependencies.
 
-# 1.0.3 - 10/30/18
+# 1.0.3 - 10/30/2018
 
 #### 🐞 Fixes
 
 - Added an `exiting` boolean to the console to handle multiple calls to `exit`.
 
-# 1.0.2 - 10/29/18
+# 1.0.2 - 10/29/2018
 
 #### 🐞 Fixes
 
 - Added a delay before exiting the console so that CIs can buffer output effectively.
 
-# 1.0.1 - 10/23/18
+# 1.0.1 - 10/23/2018
 
 #### 🐞 Fixes
 
 - Fixed an issue where console signals were causing re-render issues.
 
-# 1.0.0 - 10/19/18
+# 1.0.0 - 10/19/2018
 
 #### 🎉 Release
 
