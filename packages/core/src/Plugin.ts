@@ -20,7 +20,7 @@ export default class Plugin<Options = {}> {
   tool: Tool<any, any>;
 
   constructor(options: Partial<Options> = {}) {
-    // @ts-ignore
+    // @ts-ignore Handle in sub-classes or bootstrap()
     this.options = { ...options };
   }
 

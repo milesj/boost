@@ -1,3 +1,9 @@
+# 1.2.1 - 12/28/2018
+
+#### 🐞 Fixed
+
+- Reverted some typing issues in relation to partial options.
+
 # 1.2.0 - 12/26/2018
 
 #### 🚀 New
@@ -8,7 +14,7 @@
 - Updated `Task` and `Routine` to extend from `Emitter` so they may emit events.
   - Added `run`, `skip`, `pass`, and `fail` events.
 
-#### 🐞 Fixes
+#### 🐞 Fixed
 
 - Fixed a reporter bug in which task statuses were not wrapping properly, causing subsequent renders
   to get out of sync.
@@ -38,19 +44,19 @@
 
 # 1.0.3 - 10/30/2018
 
-#### 🐞 Fixes
+#### 🐞 Fixed
 
 - Added an `exiting` boolean to the console to handle multiple calls to `exit`.
 
 # 1.0.2 - 10/29/2018
 
-#### 🐞 Fixes
+#### 🐞 Fixed
 
 - Added a delay before exiting the console so that CIs can buffer output effectively.
 
 # 1.0.1 - 10/23/2018
 
-#### 🐞 Fixes
+#### 🐞 Fixed
 
 - Fixed an issue where console signals were causing re-render issues.
 

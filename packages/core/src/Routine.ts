@@ -36,7 +36,7 @@ export default class Routine<
 
   key: string = '';
 
-  options: Partial<Options>;
+  options: Options;
 
   routines: Routine<Ctx, Tool>[] = [];
 
@@ -51,6 +51,8 @@ export default class Routine<
     }
 
     this.key = key;
+
+    // @ts-ignore Handle in sub-classes or bootstrap()
     this.options = { ...options };
 
     // We cant pass to super, so bind here
