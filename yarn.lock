@@ -1421,10 +1421,10 @@
     libnpm "^2.0.1"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.137.1":
-  version "0.137.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.137.1.tgz#adfdd826b2c178e75dff9d94e071265bc6768ad0"
-  integrity sha512-8IxQBEjss6MzVpEAAT6PYKaziIoaUfEamQW4DcYOVN4CsR3Iruv2upmiBodO8TdOii9U0AkrnV3wd+tNhv1Bow==
+"@milesj/build-tool-config@^0.137.2":
+  version "0.137.2"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.137.2.tgz#56e4c356a8316a6b0085153db65235090bbea4d6"
+  integrity sha512-OxmZP2dmHgDQ74sEmozlnfXY0n64FenlMaBc0AM4s0YT27nkzzn+d/YByfU8bSaUuVfpG02TLbzXtHbbvmgNAw==
   dependencies:
     "@babel/cli" "^7.2.3"
     "@babel/core" "^7.2.2"
@@ -1483,12 +1483,12 @@
     prettier "^1.15.3"
     typescript "^3.2.2"
 
-"@milesj/build-tools@^0.15.1":
-  version "0.15.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.15.1.tgz#b8b8a310394efc264b6d03bded752c99e2cb62c5"
-  integrity sha512-T8WufrSMfLf8RmXiIknk2YPFktV7/Pl927UFRZMfpg35YezObwcvxyz3RvHivm1zibOso9GgwsR3HlPKsVof8Q==
+"@milesj/build-tools@^0.15.2":
+  version "0.15.2"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.15.2.tgz#f03b5c2d5040ff60f62fed4f0a800001e431309d"
+  integrity sha512-liafO/e9iimqBiLHfwxkO/49uzC6rP1Rbna3n5SNnZ46Klz3J3JvreUHMjqQuYKBKwz9bqFqeZPA/ljrRDdEbQ==
   dependencies:
-    "@milesj/build-tool-config" "^0.137.1"
+    "@milesj/build-tool-config" "^0.137.2"
     "@milesj/build-tool-runtime" "^0.13.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":

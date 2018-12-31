@@ -5,11 +5,13 @@
 
 /* eslint-disable no-param-reassign */
 
+import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
 import envCI from 'env-ci';
+import glob from 'fast-glob';
 import pluralize from 'pluralize';
 import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
@@ -27,6 +29,7 @@ import enableDebug from './helpers/enableDebug';
 import handleMerge from './helpers/handleMerge';
 import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
+import Memoize from './decorators/Memoize';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
 import { Debugger, Translator, PackageConfig, PluginSetting } from './types';
@@ -284,6 +287,58 @@ export default class Tool<
   }
 
   /**
+   * Return a list of absolute package folder paths, across all workspaces,
+   * for the defined root.
+   */
+  @Memoize
+  getWorkspacePackagePaths(customRoot: string = ''): string[] {
+    const root = customRoot || this.options.root;
+
+    return glob
+      .sync(this.getWorkspacePaths(root), {
+        absolute: true,
+        cwd: root,
+      })
+      .map(pkgPath => String(pkgPath));
+  }
+
+  /**
+   * Return a list of absolute workspace folder paths, with wildstar glob in tact,
+   * for the defined root.
+   */
+  @Memoize
+  getWorkspacePaths(customRoot: string = ''): string[] {
+    const root = customRoot || this.options.root;
+    const pkgPath = path.join(root, 'package.json');
+    const lernaPath = path.join(root, 'lerna.json');
+    const workspacePaths = [];
+
+    // Yarn
+    if (fs.existsSync(pkgPath)) {
+      const pkg = fs.readJsonSync(pkgPath);
+
+      if (pkg.workspaces) {
+        if (Array.isArray(pkg.workspaces)) {
+          workspacePaths.push(...pkg.workspaces);
+        } else if (Array.isArray(pkg.workspaces.packages)) {
+          workspacePaths.push(...pkg.workspaces.packages);
+        }
+      }
+    }
+
+    // Lerna
+    if (workspacePaths.length === 0 && fs.existsSync(lernaPath)) {
+      const lerna = fs.readJsonSync(lernaPath);
+
+      if (Array.isArray(lerna.packages)) {
+        workspacePaths.push(...lerna.packages);
+      }
+    }
+
+    return workspacePaths.map(workspace => path.join(root, workspace));
+  }
+
+  /**
    * Initialize the tool by loading config and plugins.
    */
   initialize(): this {
@@ -346,6 +401,32 @@ export default class Tool<
     }
 
     return this;
+  }
+
+  /**
+   * Load all workspace packages `package.json`s and append path metadata.
+   */
+  @Memoize
+  loadWorkspacePackages(customRoot: string = ''): PackageConfig[] {
+    const root = customRoot || this.options.root;
+
+    return glob
+      .sync(this.getWorkspacePackagePaths(root).map(ws => `${ws}/package.json`), {
+        absolute: true,
+        cwd: root,
+      })
+      .map(filePath => {
+        const pkgPath = String(filePath);
+        const pkg = fs.readJsonSync(pkgPath);
+
+        pkg.packageJsonPath = pkgPath;
+        pkg.packagePath = path.dirname(pkgPath);
+        pkg.packageName = path.basename(pkg.packagePath);
+        pkg.workspacePath = path.dirname(pkg.packagePath);
+        pkg.workspaceName = path.basename(pkg.workspacePath);
+
+        return pkg;
+      });
   }
 
   /**

@@ -145,35 +145,16 @@ export default class ConfigLoader {
       }
 
       const pkgPath = path.join(currentDir, 'package.json');
-      const lernaPath = path.join(currentDir, 'lerna.json');
 
-      // Yarn
       if (fs.existsSync(pkgPath)) {
         workspacePackage = this.parseFile(pkgPath);
-
-        if (workspacePackage.workspaces) {
-          if (Array.isArray(workspacePackage.workspaces)) {
-            workspaceRoot = currentDir;
-            workspacePatterns = workspacePackage.workspaces;
-          } else if (Array.isArray(workspacePackage.workspaces.packages)) {
-            workspaceRoot = currentDir;
-            workspacePatterns = workspacePackage.workspaces.packages;
-          }
-
-          break;
-        }
       }
 
-      // Lerna
-      if (workspacePackage && fs.existsSync(lernaPath)) {
-        const lerna = this.parseFile(lernaPath);
+      workspaceRoot = currentDir;
+      workspacePatterns = this.tool.getWorkspacePaths(currentDir);
 
-        if (Array.isArray(lerna.packages)) {
-          workspaceRoot = currentDir;
-          workspacePatterns = lerna.packages;
-
-          break;
-        }
+      if (workspacePatterns.length !== 0) {
+        break;
       }
 
       currentDir = path.dirname(currentDir);
