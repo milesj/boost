@@ -12,6 +12,7 @@ import {
   TestPluginRegistry,
   TestToolConfig,
   TEST_TOOL_CONFIG,
+  TEST_PACKAGE_JSON,
 } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
@@ -218,14 +219,14 @@ describe('Tool', () => {
       tool.config = {};
 
       expect(tool.config).toEqual({});
-      expect(tool.package).toEqual({ name: '' });
+      expect(tool.package).toEqual({ ...TEST_PACKAGE_JSON });
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
-      expect(tool.package).not.toEqual({ name: '' });
+      expect(tool.package).not.toEqual({ ...TEST_PACKAGE_JSON });
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(true);
     });

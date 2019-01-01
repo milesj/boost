@@ -6,7 +6,7 @@
 /* eslint-disable no-cond-assign */
 
 import chalk from 'chalk';
-import fs from 'fs';
+import fs from 'fs-extra';
 import glob from 'fast-glob';
 import path from 'path';
 import JSON5 from 'json5';
@@ -34,7 +34,7 @@ export interface ParseOptions {
 export default class ConfigLoader {
   debug: Debugger;
 
-  package: PackageConfig = { name: '' };
+  package: PackageConfig = { name: '', version: '0.0.0' };
 
   parsedFiles: { [path: string]: boolean } = {};
 

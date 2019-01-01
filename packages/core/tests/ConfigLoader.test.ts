@@ -9,6 +9,7 @@ import {
   createTempFileInRoot,
   createTestTool,
   TEST_TOOL_CONFIG,
+  TEST_PACKAGE_JSON,
 } from './helpers';
 
 function createJavascriptFile(data: any): string {
@@ -51,7 +52,7 @@ describe('ConfigLoader', () => {
     it('returns null if not found', () => {
       expect(
         loader.findConfigInPackageJSON({
-          name: '',
+          ...TEST_PACKAGE_JSON,
         }),
       ).toBeNull();
     });
@@ -59,7 +60,7 @@ describe('ConfigLoader', () => {
     it('returns object if found', () => {
       expect(
         loader.findConfigInPackageJSON({
-          name: '',
+          ...TEST_PACKAGE_JSON,
           testBoost: {
             foo: 'bar',
           },
@@ -72,7 +73,7 @@ describe('ConfigLoader', () => {
     it('returns extends object if a string is passed', () => {
       expect(
         loader.findConfigInPackageJSON({
-          name: '',
+          ...TEST_PACKAGE_JSON,
           testBoost: './foo.json',
         }),
       ).toEqual({
@@ -83,7 +84,7 @@ describe('ConfigLoader', () => {
 
   describe('findConfigInLocalFiles()', () => {
     beforeEach(() => {
-      loader.package = { name: 'foo' };
+      loader.package = { ...TEST_PACKAGE_JSON, name: 'foo' };
     });
 
     it('returns null when no files found', () => {
@@ -325,6 +326,7 @@ describe('ConfigLoader', () => {
     describe('from --config option', () => {
       it('errors if invalid path', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
         };
 
@@ -338,6 +340,7 @@ describe('ConfigLoader', () => {
 
       it('loads from passed file path', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
         };
 
@@ -353,6 +356,7 @@ describe('ConfigLoader', () => {
     describe('from package.json', () => {
       it('errors if not an object', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: [],
         };
@@ -364,6 +368,7 @@ describe('ConfigLoader', () => {
 
       it('supports an object', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: { locale: 'en' },
         };
@@ -375,6 +380,7 @@ describe('ConfigLoader', () => {
         fixtures.push(copyFixtureToModule('preset', 'test-boost-preset'));
 
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: 'test-boost-preset',
         };
@@ -388,6 +394,7 @@ describe('ConfigLoader', () => {
 
       it('merges with default config', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: { locale: 'en' },
         };
@@ -400,6 +407,7 @@ describe('ConfigLoader', () => {
 
       it('supports plugins', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: {
             plugins: [
@@ -426,6 +434,7 @@ describe('ConfigLoader', () => {
 
       it('supports custom config blueprint', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: { foo: 'bar' },
         };
@@ -440,6 +449,7 @@ describe('ConfigLoader', () => {
 
       it('supports custom settings blueprint', () => {
         loader.package = {
+          ...TEST_PACKAGE_JSON,
           name: 'boost',
           testBoost: { settings: { foo: 'bar' } },
         };
@@ -455,7 +465,7 @@ describe('ConfigLoader', () => {
 
     describe('from config folder', () => {
       beforeEach(() => {
-        loader.package = { name: 'foo' };
+        loader.package = { ...TEST_PACKAGE_JSON, name: 'foo' };
       });
 
       it('errors if no files found', () => {

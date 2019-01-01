@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import CrashLogger from '../src/CrashLogger';
 import Tool from '../src/Tool';

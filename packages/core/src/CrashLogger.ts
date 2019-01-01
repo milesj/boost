@@ -5,7 +5,7 @@
 
 /* eslint-disable no-magic-numbers */
 
-import fs from 'fs';
+import fs from 'fs-extra';
 import util from 'util';
 import path from 'path';
 import execa from 'execa';

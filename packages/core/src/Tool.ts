@@ -5,7 +5,7 @@
 
 /* eslint-disable no-param-reassign */
 
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import util from 'util';
 import chalk from 'chalk';
@@ -29,10 +29,15 @@ import enableDebug from './helpers/enableDebug';
 import handleMerge from './helpers/handleMerge';
 import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
-import Memoize from './decorators/Memoize';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
-import { Debugger, Translator, PackageConfig, PluginSetting } from './types';
+import {
+  Debugger,
+  Translator,
+  PackageConfig,
+  PluginSetting,
+  PackageWorkspaceMetadata,
+} from './types';
 
 export interface ToolOptions {
   appName: string;
@@ -91,7 +96,7 @@ export default class Tool<
 
   options: ToolOptions;
 
-  package: PackageConfig = { name: '' };
+  package: PackageConfig = { name: '', version: '0.0.0' };
 
   private configLoader: ConfigLoader;
 
@@ -290,7 +295,6 @@ export default class Tool<
    * Return a list of absolute package folder paths, across all workspaces,
    * for the defined root.
    */
-  @Memoize
   getWorkspacePackagePaths(customRoot: string = ''): string[] {
     const root = customRoot || this.options.root;
 
@@ -306,7 +310,6 @@ export default class Tool<
    * Return a list of absolute workspace folder paths, with wildstar glob in tact,
    * for the defined root.
    */
-  @Memoize
   getWorkspacePaths(customRoot: string = ''): string[] {
     const root = customRoot || this.options.root;
     const pkgPath = path.join(root, 'package.json');
@@ -404,10 +407,12 @@ export default class Tool<
   }
 
   /**
-   * Load all workspace packages `package.json`s and append path metadata.
+   * Load all `package.json`s across all workspaces and their packages.
+   * Once loaded, append workspace path metadata.
    */
-  @Memoize
-  loadWorkspacePackages(customRoot: string = ''): PackageConfig[] {
+  loadWorkspacePackages(
+    customRoot: string = '',
+  ): (PackageConfig & { workspace: PackageWorkspaceMetadata })[] {
     const root = customRoot || this.options.root;
 
     return glob
@@ -416,16 +421,19 @@ export default class Tool<
         cwd: root,
       })
       .map(filePath => {
-        const pkgPath = String(filePath);
-        const pkg = fs.readJsonSync(pkgPath);
+        const jsonPath = String(filePath);
+        const metadata: Partial<PackageWorkspaceMetadata> = {};
 
-        pkg.packageJsonPath = pkgPath;
-        pkg.packagePath = path.dirname(pkgPath);
-        pkg.packageName = path.basename(pkg.packagePath);
-        pkg.workspacePath = path.dirname(pkg.packagePath);
-        pkg.workspaceName = path.basename(pkg.workspacePath);
+        metadata.jsonPath = jsonPath;
+        metadata.packagePath = path.dirname(jsonPath);
+        metadata.packageName = path.basename(metadata.packagePath);
+        metadata.workspacePath = path.dirname(metadata.packagePath);
+        metadata.workspaceName = path.basename(metadata.workspacePath);
 
-        return pkg;
+        return {
+          ...fs.readJsonSync(jsonPath),
+          workspace: metadata,
+        };
       });
   }
 

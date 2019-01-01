@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import i18next from 'i18next';
 
@@ -47,7 +47,7 @@ export default class FileBackend {
       if (this.fileCache[filePath]) {
         contents = this.fileCache[filePath];
       } else if (fs.existsSync(filePath)) {
-        contents = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        contents = fs.readJsonSync(filePath);
         this.fileCache[filePath] = contents;
       }
 
