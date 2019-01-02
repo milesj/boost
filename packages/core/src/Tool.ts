@@ -247,6 +247,21 @@ export default class Tool<
   }
 
   /**
+   * Create a workspace metadata object composed of absolute file paths.
+   */
+  createWorkspaceMetadata(jsonPath: string): PackageWorkspaceMetadata {
+    const metadata: any = {};
+
+    metadata.jsonPath = jsonPath;
+    metadata.packagePath = path.dirname(jsonPath);
+    metadata.packageName = path.basename(metadata.packagePath);
+    metadata.workspacePath = path.dirname(metadata.packagePath);
+    metadata.workspaceName = path.basename(metadata.workspacePath);
+
+    return metadata;
+  }
+
+  /**
    * Force exit the application.
    */
   exit(message: string | Error | null, code: number = 1): this {
@@ -295,22 +310,24 @@ export default class Tool<
    * Return a list of absolute package folder paths, across all workspaces,
    * for the defined root.
    */
-  getWorkspacePackagePaths(customRoot: string = ''): string[] {
+  getWorkspacePackagePaths(customRoot: string = '', relative: boolean = false): string[] {
     const root = customRoot || this.options.root;
 
     return glob
-      .sync(this.getWorkspacePaths(root), {
-        absolute: true,
+      .sync(this.getWorkspacePaths(root, true), {
+        absolute: !relative,
         cwd: root,
+        onlyDirectories: true,
+        onlyFiles: false,
       })
       .map(pkgPath => String(pkgPath));
   }
 
   /**
-   * Return a list of absolute workspace folder paths, with wildstar glob in tact,
+   * Return a list of workspace folder paths, with wildstar glob in tact,
    * for the defined root.
    */
-  getWorkspacePaths(customRoot: string = ''): string[] {
+  getWorkspacePaths(customRoot: string = '', relative: boolean = false): string[] {
     const root = customRoot || this.options.root;
     const pkgPath = path.join(root, 'package.json');
     const lernaPath = path.join(root, 'lerna.json');
@@ -336,6 +353,10 @@ export default class Tool<
       if (Array.isArray(lerna.packages)) {
         workspacePaths.push(...lerna.packages);
       }
+    }
+
+    if (relative) {
+      return workspacePaths;
     }
 
     return workspacePaths.map(workspace => path.join(root, workspace));
@@ -416,23 +437,16 @@ export default class Tool<
     const root = customRoot || this.options.root;
 
     return glob
-      .sync(this.getWorkspacePackagePaths(root).map(ws => `${ws}/package.json`), {
+      .sync(this.getWorkspacePaths(root, true).map(ws => `${ws}/package.json`), {
         absolute: true,
         cwd: root,
       })
       .map(filePath => {
         const jsonPath = String(filePath);
-        const metadata: Partial<PackageWorkspaceMetadata> = {};
-
-        metadata.jsonPath = jsonPath;
-        metadata.packagePath = path.dirname(jsonPath);
-        metadata.packageName = path.basename(metadata.packagePath);
-        metadata.workspacePath = path.dirname(metadata.packagePath);
-        metadata.workspaceName = path.basename(metadata.workspacePath);
 
         return {
           ...fs.readJsonSync(jsonPath),
-          workspace: metadata,
+          workspace: this.createWorkspaceMetadata(jsonPath),
         };
       });
   }
