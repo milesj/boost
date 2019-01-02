@@ -1,3 +1,11 @@
+# 1.3.0 - 1/1/2019
+
+#### 🚀 New
+
+- Added `Tool#getWorkspacePaths`, `getWorkspacePackagePaths`, and `loadWorkspacePackages` helper
+  methods.
+- Added `CLI` generic for Yargs typings.
+
 # 1.2.1 - 12/28/2018
 
 #### 🐞 Fixed
