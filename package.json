@@ -18,7 +18,7 @@
   "devDependencies": {
     "@milesj/build-tools": "^0.15.2",
     "fs-extra": "^7.0.1",
-    "lerna": "^3.8.0"
+    "lerna": "^3.8.1"
   },
   "publishConfig": {
     "access": "public"
