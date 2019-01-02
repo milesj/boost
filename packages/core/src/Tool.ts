@@ -36,7 +36,8 @@ import {
   Translator,
   PackageConfig,
   PluginSetting,
-  PackageWorkspaceMetadata,
+  WorkspaceMetadata,
+  WorkspacePackageConfig,
 } from './types';
 
 export interface ToolOptions {
@@ -249,7 +250,7 @@ export default class Tool<
   /**
    * Create a workspace metadata object composed of absolute file paths.
    */
-  createWorkspaceMetadata(jsonPath: string): PackageWorkspaceMetadata {
+  createWorkspaceMetadata(jsonPath: string): WorkspaceMetadata {
     const metadata: any = {};
 
     metadata.jsonPath = jsonPath;
@@ -431,9 +432,7 @@ export default class Tool<
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
    */
-  loadWorkspacePackages(
-    customRoot: string = '',
-  ): (PackageConfig & { workspace: PackageWorkspaceMetadata })[] {
+  loadWorkspacePackages(customRoot: string = ''): WorkspacePackageConfig[] {
     const root = customRoot || this.options.root;
 
     return glob

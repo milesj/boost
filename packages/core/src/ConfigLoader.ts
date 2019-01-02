@@ -151,9 +151,9 @@ export default class ConfigLoader {
       }
 
       workspaceRoot = currentDir;
-      workspacePatterns = this.tool.getWorkspacePaths(currentDir);
+      workspacePatterns = this.tool.getWorkspacePaths(currentDir, true);
 
-      if (workspacePatterns.length !== 0) {
+      if (workspacePackage && workspacePatterns.length > 0) {
         break;
       }
 

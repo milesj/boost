@@ -58,6 +58,14 @@ export type SettingMap = { [key: string]: string };
 
 export type DependencyMap = { [module: string]: string };
 
+export interface WorkspaceMetadata {
+  jsonPath: string;
+  packagePath: string;
+  packageName: string;
+  workspacePath: string;
+  workspaceName: string;
+}
+
 export interface PackageConfig {
   name: string;
   version: string;
@@ -91,10 +99,6 @@ export interface PackageConfig {
   [key: string]: any;
 }
 
-export interface PackageWorkspaceMetadata {
-  jsonPath: string;
-  packagePath: string;
-  packageName: string;
-  workspacePath: string;
-  workspaceName: string;
+export interface WorkspacePackageConfig extends PackageConfig {
+  workspace: WorkspaceMetadata;
 }
