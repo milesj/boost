@@ -71,6 +71,11 @@ export interface TestToolConfig extends ToolConfig {
 
 export type TestTool = Tool<TestPluginRegistry, TestToolConfig>;
 
+export const TEST_PACKAGE_JSON = {
+  name: '',
+  version: '0.0.0',
+};
+
 export const TEST_TOOL_CONFIG = {
   debug: false,
   extends: [],
@@ -93,7 +98,7 @@ export function createTestTool(options?: Partial<ToolOptions>): TestTool {
   tool.registerPlugin('plugin', Plugin);
   tool.args = { $0: '', _: [] };
   tool.config = { ...TEST_TOOL_CONFIG };
-  tool.package = { name: '' };
+  tool.package = { ...TEST_PACKAGE_JSON };
   // @ts-ignore Allow private access and avoid loaders
   tool.initialized = true;
 

@@ -5,11 +5,13 @@
 
 /* eslint-disable no-param-reassign */
 
+import fs from 'fs-extra';
 import path from 'path';
 import util from 'util';
 import chalk from 'chalk';
 import debug from 'debug';
 import envCI from 'env-ci';
+import glob from 'fast-glob';
 import pluralize from 'pluralize';
 import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
@@ -29,7 +31,14 @@ import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
-import { Debugger, Translator, PackageConfig, PluginSetting } from './types';
+import {
+  Debugger,
+  Translator,
+  PackageConfig,
+  PluginSetting,
+  WorkspaceMetadata,
+  WorkspacePackageConfig,
+} from './types';
 
 export interface ToolOptions {
   appName: string;
@@ -88,7 +97,7 @@ export default class Tool<
 
   options: ToolOptions;
 
-  package: PackageConfig = { name: '' };
+  package: PackageConfig = { name: '', version: '0.0.0' };
 
   private configLoader: ConfigLoader;
 
@@ -239,6 +248,21 @@ export default class Tool<
   }
 
   /**
+   * Create a workspace metadata object composed of absolute file paths.
+   */
+  createWorkspaceMetadata(jsonPath: string): WorkspaceMetadata {
+    const metadata: any = {};
+
+    metadata.jsonPath = jsonPath;
+    metadata.packagePath = path.dirname(jsonPath);
+    metadata.packageName = path.basename(metadata.packagePath);
+    metadata.workspacePath = path.dirname(metadata.packagePath);
+    metadata.workspaceName = path.basename(metadata.workspacePath);
+
+    return metadata;
+  }
+
+  /**
    * Force exit the application.
    */
   exit(message: string | Error | null, code: number = 1): this {
@@ -281,6 +305,62 @@ export default class Tool<
    */
   getRegisteredPlugins() {
     return this.pluginTypes;
+  }
+
+  /**
+   * Return a list of absolute package folder paths, across all workspaces,
+   * for the defined root.
+   */
+  getWorkspacePackagePaths(customRoot: string = '', relative: boolean = false): string[] {
+    const root = customRoot || this.options.root;
+
+    return glob
+      .sync(this.getWorkspacePaths(root, true), {
+        absolute: !relative,
+        cwd: root,
+        onlyDirectories: true,
+        onlyFiles: false,
+      })
+      .map(pkgPath => String(pkgPath));
+  }
+
+  /**
+   * Return a list of workspace folder paths, with wildstar glob in tact,
+   * for the defined root.
+   */
+  getWorkspacePaths(customRoot: string = '', relative: boolean = false): string[] {
+    const root = customRoot || this.options.root;
+    const pkgPath = path.join(root, 'package.json');
+    const lernaPath = path.join(root, 'lerna.json');
+    const workspacePaths = [];
+
+    // Yarn
+    if (fs.existsSync(pkgPath)) {
+      const pkg = fs.readJsonSync(pkgPath);
+
+      if (pkg.workspaces) {
+        if (Array.isArray(pkg.workspaces)) {
+          workspacePaths.push(...pkg.workspaces);
+        } else if (Array.isArray(pkg.workspaces.packages)) {
+          workspacePaths.push(...pkg.workspaces.packages);
+        }
+      }
+    }
+
+    // Lerna
+    if (workspacePaths.length === 0 && fs.existsSync(lernaPath)) {
+      const lerna = fs.readJsonSync(lernaPath);
+
+      if (Array.isArray(lerna.packages)) {
+        workspacePaths.push(...lerna.packages);
+      }
+    }
+
+    if (relative) {
+      return workspacePaths;
+    }
+
+    return workspacePaths.map(workspace => path.join(root, workspace));
   }
 
   /**
@@ -346,6 +426,28 @@ export default class Tool<
     }
 
     return this;
+  }
+
+  /**
+   * Load all `package.json`s across all workspaces and their packages.
+   * Once loaded, append workspace path metadata.
+   */
+  loadWorkspacePackages(customRoot: string = ''): WorkspacePackageConfig[] {
+    const root = customRoot || this.options.root;
+
+    return glob
+      .sync(this.getWorkspacePaths(root, true).map(ws => `${ws}/package.json`), {
+        absolute: true,
+        cwd: root,
+      })
+      .map(filePath => {
+        const jsonPath = String(filePath);
+
+        return {
+          ...fs.readJsonSync(jsonPath),
+          workspace: this.createWorkspaceMetadata(jsonPath),
+        };
+      });
   }
 
   /**

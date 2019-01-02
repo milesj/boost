@@ -12,6 +12,7 @@ import {
   TestPluginRegistry,
   TestToolConfig,
   TEST_TOOL_CONFIG,
+  TEST_PACKAGE_JSON,
 } from './helpers';
 
 jest.mock('../src/helpers/enableDebug');
@@ -212,20 +213,84 @@ describe('Tool', () => {
     });
   });
 
+  describe('getWorkspacePackagePaths()', () => {
+    it('returns an empty array if no workspace config', () => {
+      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-no-packages'))).toEqual([]);
+    });
+
+    it('returns an empty array if no workspace packages', () => {
+      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-mismatch'))).toEqual([]);
+    });
+
+    it('returns an array of all packages within all workspaces', () => {
+      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-multiple'))).toEqual([
+        getFixturePath('workspace-multiple', 'packages/baz'),
+        getFixturePath('workspace-multiple', 'packages/foo'),
+        getFixturePath('workspace-multiple', 'modules/bar'),
+      ]);
+    });
+
+    it('returns an array of all packages within all workspaces as relative paths', () => {
+      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-multiple'), true)).toEqual([
+        'packages/baz',
+        'packages/foo',
+        'modules/bar',
+      ]);
+    });
+  });
+
+  describe('getWorkspacePaths', () => {
+    it('returns an empty array if no workspace config', () => {
+      expect(tool.getWorkspacePaths(getFixturePath('workspace-no-packages'))).toEqual([]);
+    });
+
+    it('returns an array of workspaces for yarn `workspaces` property', () => {
+      expect(tool.getWorkspacePaths(getFixturePath('workspace-yarn'))).toEqual([
+        getFixturePath('workspace-yarn', 'packages/*'),
+      ]);
+    });
+
+    it('returns an array of workspaces for yarn no hoist `workspaces.packages` property', () => {
+      expect(tool.getWorkspacePaths(getFixturePath('workspace-yarn-nohoist'))).toEqual([
+        getFixturePath('workspace-yarn-nohoist', 'packages/*'),
+      ]);
+    });
+
+    it('returns an array of workspaces for lerna `packages` property', () => {
+      expect(tool.getWorkspacePaths(getFixturePath('workspace-lerna'))).toEqual([
+        getFixturePath('workspace-lerna', 'packages/*'),
+      ]);
+    });
+
+    it('returns an array of all workspaces', () => {
+      expect(tool.getWorkspacePaths(getFixturePath('workspace-multiple'))).toEqual([
+        getFixturePath('workspace-multiple', 'packages/*'),
+        getFixturePath('workspace-multiple', 'modules/*'),
+      ]);
+    });
+
+    it('returns an array of all workspaces as relative paths', () => {
+      expect(tool.getWorkspacePaths(getFixturePath('workspace-multiple'), true)).toEqual([
+        'packages/*',
+        'modules/*',
+      ]);
+    });
+  });
+
   describe('initialize()', () => {
     it('loads config', () => {
       // @ts-ignore Allow missing fields
       tool.config = {};
 
       expect(tool.config).toEqual({});
-      expect(tool.package).toEqual({ name: '' });
+      expect(tool.package).toEqual({ ...TEST_PACKAGE_JSON });
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
-      expect(tool.package).not.toEqual({ name: '' });
+      expect(tool.package).not.toEqual({ ...TEST_PACKAGE_JSON });
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(true);
     });
@@ -424,6 +489,35 @@ describe('Tool', () => {
       tool.loadReporters();
 
       expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(DefaultReporter);
+    });
+  });
+
+  describe('loadWorkspacePackages()', () => {
+    it('returns an empty array if no workspace config', () => {
+      expect(tool.loadWorkspacePackages(getFixturePath('workspace-no-packages'))).toEqual([]);
+    });
+
+    it('loads all package.jsons and appends metadata', () => {
+      const root = getFixturePath('workspace-multiple');
+      const packages = tool.loadWorkspacePackages(root);
+
+      expect(packages).toEqual([
+        {
+          name: 'test-boost-workspace-multiple-baz',
+          version: '0.0.0',
+          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/baz/package.json')),
+        },
+        {
+          name: 'test-boost-workspace-multiple-foo',
+          version: '0.0.0',
+          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/foo/package.json')),
+        },
+        {
+          name: 'test-boost-workspace-multiple-bar',
+          version: '0.0.0',
+          workspace: tool.createWorkspaceMetadata(path.join(root, 'modules/bar/package.json')),
+        },
+      ]);
     });
   });
 

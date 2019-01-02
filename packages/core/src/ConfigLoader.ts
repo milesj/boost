@@ -6,7 +6,7 @@
 /* eslint-disable no-cond-assign */
 
 import chalk from 'chalk';
-import fs from 'fs';
+import fs from 'fs-extra';
 import glob from 'fast-glob';
 import path from 'path';
 import JSON5 from 'json5';
@@ -34,7 +34,7 @@ export interface ParseOptions {
 export default class ConfigLoader {
   debug: Debugger;
 
-  package: PackageConfig = { name: '' };
+  package: PackageConfig = { name: '', version: '0.0.0' };
 
   parsedFiles: { [path: string]: boolean } = {};
 
@@ -145,35 +145,16 @@ export default class ConfigLoader {
       }
 
       const pkgPath = path.join(currentDir, 'package.json');
-      const lernaPath = path.join(currentDir, 'lerna.json');
 
-      // Yarn
       if (fs.existsSync(pkgPath)) {
         workspacePackage = this.parseFile(pkgPath);
-
-        if (workspacePackage.workspaces) {
-          if (Array.isArray(workspacePackage.workspaces)) {
-            workspaceRoot = currentDir;
-            workspacePatterns = workspacePackage.workspaces;
-          } else if (Array.isArray(workspacePackage.workspaces.packages)) {
-            workspaceRoot = currentDir;
-            workspacePatterns = workspacePackage.workspaces.packages;
-          }
-
-          break;
-        }
       }
 
-      // Lerna
-      if (workspacePackage && fs.existsSync(lernaPath)) {
-        const lerna = this.parseFile(lernaPath);
+      workspaceRoot = currentDir;
+      workspacePatterns = this.tool.getWorkspacePaths(currentDir, true);
 
-        if (Array.isArray(lerna.packages)) {
-          workspaceRoot = currentDir;
-          workspacePatterns = lerna.packages;
-
-          break;
-        }
+      if (workspacePackage && workspacePatterns.length > 0) {
+        break;
       }
 
       currentDir = path.dirname(currentDir);
