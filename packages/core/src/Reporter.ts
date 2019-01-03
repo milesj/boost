@@ -42,7 +42,7 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
    * Display an error and it's stack.
    */
   displayError(error: Error): void {
-    this.console.write(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
+    this.console.out(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
 
     // Remove message line from stack
     if (error.stack) {
@@ -55,10 +55,10 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
         'pending',
       );
 
-      this.console.write(stack, 1);
+      this.console.out(stack, 1);
     }
 
-    this.console.write('\n');
+    this.console.out('\n');
   }
 
   /**

@@ -184,6 +184,6 @@ export default class DefaultReporter extends Reporter<Line> {
         this.console.size().columns - output.length - status.length,
       ) + status;
 
-    this.console.write(output, 1);
+    this.console.out(output, 1);
   }
 }
