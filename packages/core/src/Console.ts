@@ -14,6 +14,7 @@ import wrapAnsi from 'wrap-ansi';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
+import Output from './Output';
 
 const boundConsole = {
   error: console.error.bind(console),
@@ -25,6 +26,8 @@ const boundConsole = {
 // TODO
 // - render Output classes
 // - footer
+// - final output
+// - logs
 
 // console.* - captured into `bufferedConsole`
 // out - write to stdout
@@ -32,6 +35,8 @@ const boundConsole = {
 // render - schedule a render of `Output`s
 export default class Console extends Emitter {
   bufferedConsole: (() => void)[] = [];
+
+  currentOutput: Output | null = null;
 
   debug: Debugger;
 
@@ -86,19 +91,10 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Display logs in the final output.
-   */
-  displayLogs(logs: string[]) {
-    if (logs.length > 0) {
-      this.out(`\n${logs.join('\n')}\n`);
-    }
-  }
-
-  /**
    * Write a message to `stderr` with optional trailing newline(s).
    */
   err(message: string, nl: number = 0): this {
-    if (this.tool.config.silent) {
+    if (this.isSilent()) {
       return this;
     }
 
@@ -177,19 +173,22 @@ export default class Console extends Emitter {
    */
   handleFinalRender = (error: Error | null = null) => {
     this.debug('Rendering final console output');
-    this.resetRenderTimer();
-    this.flushBufferedConsole();
+    this.handleRender();
 
-    if (error) {
-      this.emit('render');
-      this.displayLogs(this.errorLogs);
-      this.emit('error', [error]);
-    } else {
-      this.displayHeader();
-      this.emit('render');
-      this.displayLogs(this.logs);
-      this.displayFooter();
-    }
+    // if (logs.length > 0) {
+    //   this.out(`\n${logs.join('\n')}\n`);
+    // }
+
+    // if (error) {
+    //   this.emit('render');
+    //   this.displayLogs(this.errorLogs);
+    //   this.emit('error', [error]);
+    // } else {
+    //   this.displayHeader();
+    //   this.emit('render');
+    //   this.displayLogs(this.logs);
+    //   this.displayFooter();
+    // }
 
     this.flushBufferedConsole();
 
@@ -199,16 +198,25 @@ export default class Console extends Emitter {
   };
 
   /**
-   * Handle the entire rendering and flushing process.
+   * Handle the rendering and flushing process for each block of output.
    */
-  handleRender = (error: Error | null = null) => {
-    this.resetRenderTimer();
-    this.flushBufferedConsole();
-    this.emit('render');
+  handleRender = () => {
+    const output = this.currentOutput;
 
-    if (error) {
-      this.emit('error', [error]);
+    this.resetRenderTimer();
+
+    if (!output) {
+      return;
     }
+
+    this.out(output.render());
+
+    if (output.isComplete()) {
+      this.flushBufferedConsole();
+      this.currentOutput = null;
+    }
+
+    this.emit('render');
   };
 
   /**
@@ -226,7 +234,7 @@ export default class Console extends Emitter {
   hideCursor(): this {
     this.out(ansiEscapes.cursorHide);
 
-    if (!this.restoreCursorOnExit && !this.tool.config.silent) {
+    if (!this.restoreCursorOnExit && !this.isSilent()) {
       this.restoreCursorOnExit = true;
 
       /* istanbul ignore next */
@@ -236,6 +244,10 @@ export default class Console extends Emitter {
     }
 
     return this;
+  }
+
+  isSilent(): boolean {
+    return this.tool.config.silent;
   }
 
   /**
@@ -269,7 +281,7 @@ export default class Console extends Emitter {
    * Write a message to `stdout` with optional trailing newline(s).
    */
   out(message: string, nl: number = 0): this {
-    if (this.tool.config.silent) {
+    if (this.isSilent()) {
       return this;
     }
 
@@ -279,10 +291,18 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Debounce the render as to avoid tearing.
+   * Enqueue a block of output to be rendered. Debounce the render as to avoid tearing.
    */
-  render(): this {
+  render(output: Output): this {
     const refreshRate = 100;
+
+    if (this.currentOutput && output !== this.currentOutput) {
+      throw new Error(
+        "Cannot render new output as the previous output hasn't completed rendering.",
+      );
+    }
+
+    this.currentOutput = output;
 
     if (!this.renderTimer) {
       this.renderTimer = setTimeout(() => {

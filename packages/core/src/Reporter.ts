@@ -7,6 +7,7 @@ import chalk from 'chalk';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
+import Routine from './Routine';
 import Task from './Task';
 import { Color, ColorType, ColorPalette } from './types';
 
@@ -36,6 +37,28 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
     this.lines.push(line);
 
     return this;
+  }
+
+  /**
+   * Calculate the task or routine depth based on parent hierarchy.
+   */
+  calculateDepth(task: Task<any>): number {
+    let depth = 0;
+    let current = task;
+
+    while (current.parent) {
+      depth += 1;
+      current = current.parent;
+    }
+
+    return depth;
+  }
+
+  /**
+   * Calculate the current number of tasks that have completed.
+   */
+  calculateTaskCompletion(tasks: Task<any>[]): number {
+    return tasks.reduce((sum, task) => (task.hasPassed() || task.isSkipped() ? sum + 1 : sum), 0);
   }
 
   /**
