@@ -52,7 +52,6 @@ export default class CrashLogger {
       'Error logs',
       console.errorLogs.length > 0 ? console.errorLogs.join('\n  ') : '(No error logs)',
     );
-    this.add('Buffer', console.bufferedOutput);
 
     this.addTitle('Process');
     this.add('ID', process.pid);

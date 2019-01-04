@@ -6,74 +6,90 @@
 import ansiEscapes from 'ansi-escapes';
 import Console from './Console';
 
+export type Renderer = () => string;
+
 export default class Output {
   protected completed: boolean = false;
 
   protected console: Console;
 
-  protected content: string = '';
+  protected final: boolean = false;
 
-  protected finalRender: boolean = false;
+  protected previousHeight: number = 0;
 
-  protected lastHeight: number = 0;
+  protected renderer: Renderer;
 
-  constructor(console: Console) {
-    this.console = console;
+  constructor(cli: Console, renderer: Renderer) {
+    if (typeof renderer !== 'function') {
+      throw new TypeError('Output renderer must be a function.');
+    }
+
+    this.console = cli;
+    this.renderer = renderer;
   }
 
   /**
-   * Mark the next render as the final render.
+   * Enqueue a render. Optionally mark the update as the final render.
    */
-  final() {
-    if (this.finalRender) {
-      throw new Error('Output cannot be marked as final again.');
-    } else {
-      this.finalRender = true;
+  enqueue(final: boolean = false): this {
+    if (this.isComplete()) {
+      return this;
     }
+
+    if (final) {
+      this.final = true;
+    }
+
+    this.console.render(this);
+
+    return this;
   }
 
+  /**
+   * Erase the previous content if it exists.
+   */
+  erasePrevious(): this {
+    if (this.previousHeight > 0) {
+      this.console.out(ansiEscapes.eraseLines(this.previousHeight));
+    }
+
+    return this;
+  }
+
+  /**
+   * Return true if the output is complete and fully rendered.
+   */
   isComplete(): boolean {
     return this.completed;
   }
 
-  isFinal(): boolean {
-    return this.finalRender;
-  }
-
   /**
-   * Render the content to the console. If this output has previously
-   * been rendered, re-render it by erasing previous output.
-   */
-  render(): string {
-    let output = ansiEscapes.eraseLines(this.lastHeight);
-
-    // Count the height of the content without the ANSI escape codes above
-    this.lastHeight = this.content.split('\n').length;
-
-    output += this.content;
-
-    // Mark output as complete if the final render
-    if (this.finalRender) {
-      this.completed = true;
-    }
-
-    return output;
-  }
-
-  /**
-   * Update the output block with the defined content and render the console.
+   * Render the content to the console and calculate a new height.
    * Since an output represents an exact line, or a collection of lines,
    * we must always end with a new line to calculate height correctly.
    */
-  update(content: string) {
-    this.content = content;
-
-    // Always end with a new line
-    if (!this.content.endsWith('\n')) {
-      this.content += '\n';
+  render(): this {
+    if (this.isComplete()) {
+      return this;
     }
 
-    // Enqueue a render update
-    this.console.render(this);
+    let content = this.renderer();
+
+    // Always end with a new line
+    if (!content.endsWith('\n')) {
+      content += '\n';
+    }
+
+    this.console.out(content);
+
+    // Mark output as complete if the final render
+    if (this.final) {
+      this.completed = true;
+      // Otherwise calculate the height of the output
+    } else {
+      this.previousHeight = content.split('\n').length;
+    }
+
+    return this;
   }
 }

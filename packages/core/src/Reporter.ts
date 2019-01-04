@@ -7,17 +7,17 @@ import chalk from 'chalk';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
-import Routine from './Routine';
 import Task from './Task';
 import { Color, ColorType, ColorPalette } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
+export const OUTPUT_COMPACT = 1;
+export const OUTPUT_NORMAL = 2;
+export const OUTPUT_VERBOSE = 3;
 
-export default class Reporter<Line = any, Options = {}> extends Plugin<Options> {
+export default class Reporter<Options = {}> extends Plugin<Options> {
   // @ts-ignore Set after instantiation
   console: Console;
-
-  lines: Line[] = [];
 
   startTime: number = 0;
 
@@ -31,30 +31,6 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
   }
 
   /**
-   * Add a line to be rendered.
-   */
-  addLine(line: Line): this {
-    this.lines.push(line);
-
-    return this;
-  }
-
-  /**
-   * Calculate the task or routine depth based on parent hierarchy.
-   */
-  calculateDepth(task: Task<any>): number {
-    let depth = 0;
-    let current = task;
-
-    while (current.parent) {
-      depth += 1;
-      current = current.parent;
-    }
-
-    return depth;
-  }
-
-  /**
    * Calculate the current number of tasks that have completed.
    */
   calculateTaskCompletion(tasks: Task<any>[]): number {
@@ -65,7 +41,7 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
    * Display an error and it's stack.
    */
   displayError(error: Error): void {
-    this.console.out(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
+    this.console.err(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
 
     // Remove message line from stack
     if (error.stack) {
@@ -78,17 +54,10 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
         'pending',
       );
 
-      this.console.out(stack, 1);
+      this.console.err(stack, 1);
     }
 
-    this.console.out('\n');
-  }
-
-  /**
-   * Find a line using a callback
-   */
-  findLine(callback: (item: Line) => boolean): Line | undefined {
-    return this.lines.find(line => callback(line));
+    this.console.err('\n');
   }
 
   /**
@@ -157,16 +126,35 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
    * Create an indentation based on the defined length.
    */
   indent(length: number = 0): string {
-    return ' '.repeat(length);
+    return ' '.repeat(Math.max(0, length));
   }
 
   /**
-   * Remove a line to be rendered.
+   * Return true if output level is compact (1).
    */
-  removeLine(callback: (line: Line) => boolean): this {
-    this.lines = this.lines.filter(line => !callback(line));
+  isCompactOutput(): boolean {
+    return this.tool.config.output === OUTPUT_COMPACT;
+  }
 
-    return this;
+  /**
+   * Return true if output level is normal (2).
+   */
+  isNormalOutput(): boolean {
+    return this.tool.config.output === OUTPUT_NORMAL;
+  }
+
+  /**
+   * Return true if the there should be no output.
+   */
+  isSilent(): boolean {
+    return this.console.isSilent();
+  }
+
+  /**
+   * Return true if output level is verbose (3).
+   */
+  isVerboseOutput(): boolean {
+    return this.tool.config.output === OUTPUT_VERBOSE;
   }
 
   /**

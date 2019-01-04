@@ -289,7 +289,7 @@ export default class ConfigLoader {
         debug: bool(),
         extends: array(string()),
         locale: string().empty(),
-        output: number(3).between(1, 3, true),
+        output: number(2).between(1, 3, true),
         settings: settingsBlueprint,
         silent: bool(),
         theme: string('default'),

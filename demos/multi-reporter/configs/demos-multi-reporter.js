@@ -1,5 +1,5 @@
-const DefaultReporter = require('../../../packages/core/lib/reporters/DefaultReporter').default;
+const BoostReporter = require('../../../packages/core/lib/reporters/BoostReporter').default;
 
 module.exports = {
-  reporters: [new DefaultReporter(), new DefaultReporter(), new DefaultReporter()],
+  reporters: [new BoostReporter(), new BoostReporter(), new BoostReporter()],
 };

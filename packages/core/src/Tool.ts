@@ -23,7 +23,7 @@ import Emitter from './Emitter';
 import ModuleLoader, { Constructor } from './ModuleLoader';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
-import DefaultReporter from './reporters/DefaultReporter';
+import BoostReporter from './reporters/BoostReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
 import handleMerge from './helpers/handleMerge';
@@ -518,7 +518,7 @@ export default class Tool<
     ) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-      this.addPlugin('reporter', new DefaultReporter());
+      this.addPlugin('reporter', new BoostReporter());
     }
 
     return this;

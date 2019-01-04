@@ -25,6 +25,8 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any, an
     this.tool = tool;
     this.tool.debug('Instantiating pipeline');
 
+    this.metadata.depth = -1;
+
     this.setContext(context);
   }
 

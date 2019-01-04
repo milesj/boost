@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const { Routine } = require('../packages/core/lib');
 const random = require('./random');
 
@@ -14,7 +16,7 @@ exports.DelayedRoutine = DelayedRoutine;
 class MultiTaskRoutine extends Routine {
   bootstrap() {
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
-      this.task(`Running task #${index}`, this.delayedTask).skip(index % 6 === 0);
+      this.task(`Running task #${index + 1}`, this.delayedTask).skip(index % 6 === 0);
     });
   }
 
@@ -30,7 +32,7 @@ class MultiTaskRoutine extends Routine {
     return new Promise(resolve => {
       const time = random(750, 250);
 
-      this.tool.logLive(`This is a live message! ${time}`);
+      // this.tool.logLive(`This is a live message! ${time}`);
 
       setTimeout(resolve, time);
     });
@@ -42,7 +44,7 @@ exports.MultiTaskRoutine = MultiTaskRoutine;
 class MultiSubRoutine extends Routine {
   bootstrap() {
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
-      this.pipe(new MultiTaskRoutine(`sub${index}`, `Routine #${index}`));
+      this.pipe(new MultiTaskRoutine(`sub ${index + 1}`, `Routine #${index + 1}`));
     });
 
     if (this.options.deep) {

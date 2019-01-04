@@ -9,6 +9,7 @@ import Console from './Console';
 import Context from './Context';
 import Emitter, { EventArguments, EventListener } from './Emitter';
 import ModuleLoader from './ModuleLoader';
+import Output from './Output';
 import Pipeline from './Pipeline';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
@@ -25,6 +26,7 @@ export {
   EventArguments,
   EventListener,
   ModuleLoader,
+  Output,
   Pipeline,
   Plugin,
   Reporter,

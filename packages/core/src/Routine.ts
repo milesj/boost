@@ -38,6 +38,8 @@ export default class Routine<
 
   options: Options;
 
+  parent: Routine<Ctx, Tool> | null = null;
+
   routines: Routine<Ctx, Tool>[] = [];
 
   // @ts-ignore Set after instantiation
@@ -72,8 +74,9 @@ export default class Routine<
    */
   configure(parent: Routine<Ctx, Tool>): this {
     this.parent = parent;
-    this.context = parent.context;
     this.tool = parent.tool;
+    this.context = parent.context;
+    this.metadata.depth = parent.metadata.depth + 1;
 
     // Monitor process
     this.tool.on('exit', () => {
@@ -166,6 +169,9 @@ export default class Routine<
   pipe(routine: Routine<Ctx, Tool>): this {
     if (routine instanceof Routine) {
       this.routines.push(routine.configure(this));
+
+      // eslint-disable-next-line no-param-reassign
+      routine.metadata.order = this.routines.length;
     } else {
       throw new TypeError(this.tool.msg('errors:routineInstanceInvalid'));
     }
@@ -254,9 +260,11 @@ export default class Routine<
     }
 
     const task = new Task<Ctx>(title, action.bind(this));
-    task.parent = this;
 
     this.tasks.push(task);
+
+    task.parent = this;
+    task.metadata.order = this.tasks.length;
 
     return task;
   }

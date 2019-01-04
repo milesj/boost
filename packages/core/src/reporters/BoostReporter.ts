@@ -5,75 +5,121 @@
 
 import Reporter from '../Reporter';
 import Routine from '../Routine';
-import Task from '../Task';
-
-// TODO
-// - i18n
-
-const GAP = '  ';
 
 export interface LineParts {
   prefix: string;
-  status: string;
   suffix: string;
   title: string;
 }
 
 export default class BoostReporter extends Reporter {
-  getLineParts(routine: Routine<any, any>, task: Task<any> | null = null): LineParts {
-    const outputLevel = this.tool.config.output;
-    const depth = this.calculateDepth(routine);
-    const prefix = this.indent(depth * 2) + routine.key.toUpperCase() + GAP;
-    const status = this.indent(prefix.length) + (task ? task.statusText : '');
+  bootstrap() {
+    super.bootstrap();
+
+    this.console.on('routine', this.handleRoutine);
+  }
+
+  handleRoutine = (routine: Routine<any, any>) => {
+    if (routine.metadata.depth !== 0) {
+      return;
+    }
+
+    const output = this.console.createOutput(() => this.renderLines(routine)).enqueue();
+    const handler = () => {
+      output.enqueue(true);
+    };
+
+    routine.on('skip', handler);
+    routine.on('pass', handler);
+    routine.on('fail', handler);
+  };
+
+  getLineParts(routine: Routine<any, any>): LineParts {
+    const { depth, order, startTime, stopTime } = routine.metadata;
+
+    // Prefix
+    const prefix = [];
+    const orderProgress = `[${order}/${routine.parent!.routines.length}]`;
+
+    if (depth === 0) {
+      prefix.push(this.style(orderProgress, 'pending'), ' ');
+    } else {
+      prefix.push(
+        this.indent(orderProgress.length),
+        ' ',
+        this.indent(depth - 2),
+        this.style('└', 'pending'),
+        ' ',
+      );
+    }
+
+    prefix.push(this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']), ' ');
+
+    // Suffix
     const suffix = [];
-    const { tasks } = routine;
 
     if (routine.isSkipped()) {
-      suffix.push(this.style('skipped', 'warning'));
+      suffix.push(this.style(this.tool.msg('app:cliSkipped'), 'warning'));
     } else if (routine.hasFailed()) {
-      suffix.push(this.style('failed', 'failure'));
-    } else {
-      if (tasks.length > 0) {
-        suffix.push(`${this.calculateTaskCompletion(tasks)}/${tasks.length}`);
-      }
-
-      if (outputLevel >= 2) {
-        suffix.push(this.getElapsedTime(routine.startTime, routine.stopTime));
+      suffix.push(this.style(this.tool.msg('app:cliFailed'), 'failure'));
+    } else if (routine.isRunning()) {
+      if (!this.isCompactOutput()) {
+        suffix.push(this.getElapsedTime(startTime, stopTime));
       }
     }
 
     return {
-      prefix,
-      status,
+      prefix: prefix.join(''),
       suffix: suffix.join(', '),
       title: routine.title,
     };
   }
 
-  renderLines(routine: Routine<any, any>, task: Task<any> | null = null) {
-    const outputLevel = this.tool.config.output;
+  renderLines(routine: Routine<any, any>): string {
+    const { prefix, suffix, title } = this.getLineParts(routine);
     const { columns } = this.console.size();
-    const { prefix, suffix, title, status } = this.getLineParts(routine, task);
-    let routineLine = '';
-    let taskLine = '';
+    const prefixLength = this.console.strip(prefix).length;
+    const suffixLength = this.console.strip(suffix).length;
+    let output = '';
 
     // Routine line
-    routineLine += this.style(prefix, this.getColorType(routine), ['bold']);
-    routineLine += this.console.truncate(title, columns - prefix.length - suffix.length);
+    output += prefix;
+    output += this.console.truncate(title, columns - prefixLength - suffixLength);
 
-    if (suffix && outputLevel >= 1) {
-      routineLine += ' ';
-      routineLine += this.style(`[${suffix}]`, 'pending');
+    if (suffix) {
+      output += ' ';
+      output += this.style(`(${suffix})`, 'pending');
     }
 
-    routineLine += '\n';
+    output += '\n';
 
-    // Active task line
-    if (status) {
-      taskLine += this.console.truncate(this.style(status, 'pending'), columns);
-      taskLine += '\n';
+    // Active task lines
+    routine.tasks.forEach(task => {
+      if (task.isRunning()) {
+        output += this.console.truncate(
+          this.indent(prefixLength) +
+            this.style(
+              `${task.statusText || task.title} [${task.metadata.order}/${
+                task.parent!.tasks.length
+              }]`,
+              'pending',
+            ),
+          columns,
+        );
+        output += '\n';
+      }
+    });
+
+    // Only show sub-routines while still running or when verbose
+    if (!routine.isRunning() && !this.isVerboseOutput()) {
+      return output;
     }
 
-    this.console.out(routineLine + taskLine);
+    // Active routine lines
+    routine.routines.forEach(sub => {
+      output += this.renderLines(sub);
+    });
+
+    return output;
   }
 }

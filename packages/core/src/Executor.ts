@@ -69,7 +69,11 @@ export default class Executor<Ctx extends Context, Options = {}> {
     try {
       result = await routine.run(this.context, value);
 
-      cli.emit('routine.pass', [routine, result, this.parallel]);
+      if (routine.isSkipped()) {
+        cli.emit('routine.skip', [routine, value, this.parallel]);
+      } else {
+        cli.emit('routine.pass', [routine, result, this.parallel]);
+      }
     } catch (error) {
       cli.emit('routine.fail', [routine, error, this.parallel]);
 
@@ -91,7 +95,11 @@ export default class Executor<Ctx extends Context, Options = {}> {
     try {
       result = await task.run(this.context, value);
 
-      cli.emit('task.pass', [task, result, this.parallel]);
+      if (task.isSkipped()) {
+        cli.emit('task.skip', [task, value, this.parallel]);
+      } else {
+        cli.emit('task.pass', [task, result, this.parallel]);
+      }
     } catch (error) {
       cli.emit('task.fail', [task, error, this.parallel]);
 
