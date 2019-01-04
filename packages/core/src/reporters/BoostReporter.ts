@@ -6,6 +6,8 @@
 import Reporter from '../Reporter';
 import Routine from '../Routine';
 
+const BUFFER = 10;
+
 export interface LineParts {
   prefix: string;
   suffix: string;
@@ -84,7 +86,7 @@ export default class BoostReporter extends Reporter {
 
     // Routine line
     output += prefix;
-    output += this.console.truncate(title, columns - prefixLength - suffixLength);
+    output += this.console.truncate(title, columns - prefixLength - suffixLength - BUFFER);
 
     if (suffix) {
       output += ' ';
@@ -104,7 +106,7 @@ export default class BoostReporter extends Reporter {
               }]`,
               'pending',
             ),
-          columns,
+          columns - BUFFER,
         );
         output += '\n';
       }

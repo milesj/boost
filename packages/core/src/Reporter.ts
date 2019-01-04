@@ -126,7 +126,7 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
    * Create an indentation based on the defined length.
    */
   indent(length: number = 0): string {
-    return ' '.repeat(Math.max(0, length));
+    return length <= 0 ? '' : ' '.repeat(length);
   }
 
   /**
