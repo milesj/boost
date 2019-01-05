@@ -22,7 +22,7 @@ export type TaskAction<Ctx extends Context> = (
 
 export interface TaskMetadata {
   depth: number;
-  order: number;
+  index: number;
   startTime: number;
   stopTime: number;
 }
@@ -37,7 +37,7 @@ export default class Task<Ctx extends Context> extends Emitter {
 
   metadata: TaskMetadata = {
     depth: 0,
-    order: 0,
+    index: 0,
     startTime: 0,
     stopTime: 0,
   };

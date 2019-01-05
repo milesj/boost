@@ -7,6 +7,7 @@ import chalk from 'chalk';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
+import Routine from './Routine';
 import Task from './Task';
 import { Color, ColorType, ColorPalette } from './types';
 
@@ -106,6 +107,19 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
     const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
 
     return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
+  }
+
+  /**
+   * Return the root parent (depth of 0) in the current routine tree.
+   */
+  getRootParent(routine: Routine<any, any>): Routine<any, any> {
+    let current = routine;
+
+    while (current.metadata.depth > 0 && current.parent) {
+      current = current.parent;
+    }
+
+    return current;
   }
 
   /**

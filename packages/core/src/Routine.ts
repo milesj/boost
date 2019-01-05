@@ -87,7 +87,7 @@ export default class Routine<
     this.debug = this.tool.createDebugger('routine', this.key);
     this.debug('Bootstrapping routine');
 
-    // Initialize routine (this must be last!)
+    // Initialize routine
     this.bootstrap();
 
     return this;
@@ -168,10 +168,10 @@ export default class Routine<
    */
   pipe(routine: Routine<Ctx, Tool>): this {
     if (routine instanceof Routine) {
-      this.routines.push(routine.configure(this));
-
       // eslint-disable-next-line no-param-reassign
-      routine.metadata.order = this.routines.length;
+      routine.metadata.index = this.routines.length;
+
+      this.routines.push(routine.configure(this));
     } else {
       throw new TypeError(this.tool.msg('errors:routineInstanceInvalid'));
     }
@@ -261,10 +261,10 @@ export default class Routine<
 
     const task = new Task<Ctx>(title, action.bind(this));
 
-    this.tasks.push(task);
-
     task.parent = this;
-    task.metadata.order = this.tasks.length;
+    task.metadata.index = this.tasks.length;
+
+    this.tasks.push(task);
 
     return task;
   }

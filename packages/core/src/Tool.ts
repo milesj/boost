@@ -150,6 +150,7 @@ export default class Tool<
     // Define a special type of plugin
     this.registerPlugin('reporter', Reporter, {
       beforeBootstrap: reporter => {
+        // @ts-ignore Allow procected access
         reporter.console = this.console;
       },
       loadBoostModules: true,

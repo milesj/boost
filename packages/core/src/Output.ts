@@ -80,6 +80,15 @@ export default class Output {
       content += '\n';
     }
 
+    // Content cannot be higher than the terminal
+    const lines = content.split('\n');
+    const maxHeight = this.console.size().rows - 1; // Buffer for input line
+
+    if (lines.length >= maxHeight) {
+      content = lines.slice(-maxHeight).join('\n');
+    }
+
+    // Write output
     this.console.out(content);
 
     // Mark output as complete if the final render

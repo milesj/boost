@@ -410,7 +410,7 @@ describe('Routine', () => {
       expect(routine.routines).toEqual([foo, bar, baz]);
     });
 
-    it('updates order metadata of each routine', () => {
+    it('updates index metadata of each routine', () => {
       const foo = createTestRoutine(tool, 'foo');
       const bar = createTestRoutine(tool, 'bar');
       const baz = createTestRoutine(tool, 'baz');
@@ -420,9 +420,9 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      expect(foo.metadata.order).toBe(1);
-      expect(bar.metadata.order).toBe(2);
-      expect(baz.metadata.order).toBe(3);
+      expect(foo.metadata.index).toBe(0);
+      expect(bar.metadata.index).toBe(1);
+      expect(baz.metadata.index).toBe(2);
     });
 
     it('inherits console from parent routine', () => {
@@ -998,14 +998,14 @@ describe('Routine', () => {
       expect(task.parent).toBe(routine);
     });
 
-    it('updates order metadata of each routine', () => {
+    it('updates index metadata of each task', () => {
       const foo = routine.task('foo', value => value);
       const bar = routine.task('bar', value => value);
       const baz = routine.task('baz', value => value);
 
-      expect(foo.metadata.order).toBe(1);
-      expect(bar.metadata.order).toBe(2);
-      expect(baz.metadata.order).toBe(3);
+      expect(foo.metadata.index).toBe(0);
+      expect(bar.metadata.index).toBe(1);
+      expect(baz.metadata.index).toBe(2);
     });
   });
 });

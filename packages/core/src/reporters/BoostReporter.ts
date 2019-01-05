@@ -37,16 +37,19 @@ export default class BoostReporter extends Reporter {
   };
 
   getLineParts(routine: Routine<any, any>): LineParts {
-    const { depth, order, startTime, stopTime } = routine.metadata;
+    const { depth, startTime, stopTime } = routine.metadata;
 
     // Prefix
     const prefix = [];
-    const orderProgress = `[${order}/${routine.parent!.routines.length}]`;
 
     if (depth === 0) {
-      prefix.push(this.style(orderProgress, 'pending'), ' ');
+      prefix.push(this.style(this.getStepProgress(routine), 'pending'), ' ');
     } else {
-      prefix.push(this.indent(orderProgress.length), ' ', this.indent(depth));
+      prefix.push(
+        this.indent(this.getStepProgress(this.getRootParent(routine)).length),
+        ' ',
+        this.indent(depth * 2),
+      );
     }
 
     prefix.push(this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']), ' ');
@@ -69,6 +72,10 @@ export default class BoostReporter extends Reporter {
       suffix: suffix.join(', '),
       title: routine.title,
     };
+  }
+
+  getStepProgress(routine: Routine<any, any>): string {
+    return `[${routine.metadata.index + 1}/${routine.parent!.routines.length}]`;
   }
 
   renderLines(routine: Routine<any, any>): string {
@@ -95,7 +102,7 @@ export default class BoostReporter extends Reporter {
         output += this.console.truncate(
           this.indent(prefixLength) +
             this.style(
-              `${task.statusText || task.title} [${task.metadata.order}/${
+              `${task.statusText || task.title} [${task.metadata.index}/${
                 task.parent!.tasks.length
               }]`,
               'pending',
@@ -107,7 +114,11 @@ export default class BoostReporter extends Reporter {
     });
 
     // Only show sub-routines while still running or when verbose
-    if (!routine.isRunning() && !this.isVerboseOutput()) {
+    if (routine.isComplete()) {
+      if (!this.isVerboseOutput()) {
+        return output;
+      }
+    } else if (routine.isPending()) {
       return output;
     }
 

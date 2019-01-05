@@ -18,6 +18,8 @@ class MultiTaskRoutine extends Routine {
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
       this.task(`Running task #${index + 1}`, this.delayedTask).skip(index % 6 === 0);
     });
+
+    this.title += ` (${this.metadata.depth}:${this.metadata.index})`;
   }
 
   execute() {
@@ -50,6 +52,8 @@ class MultiSubRoutine extends Routine {
     if (this.options.deep) {
       this.pipe(new MultiSubRoutine('deepsub', 'Deeply nested routine', { parallel: true }));
     }
+
+    this.title += ` (${this.metadata.depth}:${this.metadata.index})`;
   }
 
   execute() {
