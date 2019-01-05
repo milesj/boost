@@ -132,6 +132,23 @@ describe('Routine', () => {
 
       expect(config).toEqual(tool.config);
     });
+
+    it('increases depth with each parent', () => {
+      const parent = createTestRoutine(tool);
+      const child = createTestRoutine(tool);
+      const grandchild = createTestRoutine(tool);
+
+      expect(parent.metadata.depth).toBe(0);
+      expect(child.metadata.depth).toBe(0);
+      expect(grandchild.metadata.depth).toBe(0);
+
+      child.configure(parent);
+      grandchild.configure(child);
+
+      expect(parent.metadata.depth).toBe(0);
+      expect(child.metadata.depth).toBe(1);
+      expect(grandchild.metadata.depth).toBe(2);
+    });
   });
 
   describe('execute()', () => {
@@ -391,6 +408,21 @@ describe('Routine', () => {
         .pipe(baz);
 
       expect(routine.routines).toEqual([foo, bar, baz]);
+    });
+
+    it('updates order metadata of each routine', () => {
+      const foo = createTestRoutine(tool, 'foo');
+      const bar = createTestRoutine(tool, 'bar');
+      const baz = createTestRoutine(tool, 'baz');
+
+      routine
+        .pipe(foo)
+        .pipe(bar)
+        .pipe(baz);
+
+      expect(foo.metadata.order).toBe(1);
+      expect(bar.metadata.order).toBe(2);
+      expect(baz.metadata.order).toBe(3);
     });
 
     it('inherits console from parent routine', () => {
@@ -964,6 +996,16 @@ describe('Routine', () => {
       const task = routine.task('foo', value => value);
 
       expect(task.parent).toBe(routine);
+    });
+
+    it('updates order metadata of each routine', () => {
+      const foo = routine.task('foo', value => value);
+      const bar = routine.task('bar', value => value);
+      const baz = routine.task('baz', value => value);
+
+      expect(foo.metadata.order).toBe(1);
+      expect(bar.metadata.order).toBe(2);
+      expect(baz.metadata.order).toBe(3);
     });
   });
 });

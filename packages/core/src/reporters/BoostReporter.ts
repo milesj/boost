@@ -46,13 +46,7 @@ export default class BoostReporter extends Reporter {
     if (depth === 0) {
       prefix.push(this.style(orderProgress, 'pending'), ' ');
     } else {
-      prefix.push(
-        this.indent(orderProgress.length),
-        ' ',
-        this.indent(depth - 2),
-        this.style('└', 'pending'),
-        ' ',
-      );
+      prefix.push(this.indent(orderProgress.length), ' ', this.indent(depth));
     }
 
     prefix.push(this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']), ' ');

@@ -67,42 +67,6 @@ describe('DefaultReporter', () => {
     });
   });
 
-  describe('calculateTaskCompletion()', () => {
-    it('returns a total', () => {
-      const task1 = new Task('one', () => {});
-      const task2 = new Task('two', () => {});
-      const task3 = new Task('three', () => {});
-
-      task2.status = STATUS_PASSED;
-
-      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(1);
-
-      task1.status = STATUS_PASSED;
-
-      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
-    });
-
-    it('includes skipped', () => {
-      const task1 = new Task('one', () => {});
-      const task2 = new Task('two', () => {});
-      const task3 = new Task('three', () => {}).skip();
-
-      task2.status = STATUS_PASSED;
-
-      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
-    });
-
-    it('supports routines', () => {
-      const task1 = createTestRoutine(null, 'one');
-      const task2 = createTestRoutine(null, 'two');
-      const task3 = createTestRoutine(null, 'three').skip();
-
-      task2.status = STATUS_PASSED;
-
-      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
-    });
-  });
-
   describe('getLineTitle()', () => {
     describe('task', () => {
       it('returns title', () => {

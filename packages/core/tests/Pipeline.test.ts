@@ -21,6 +21,12 @@ describe('Pipeline', () => {
 
       expect(pipeline.context).toEqual({ foo: 'bar' });
     });
+
+    it('sets default depth to -1', () => {
+      pipeline = new Pipeline(createTestTool(), { foo: 'bar' });
+
+      expect(pipeline.metadata.depth).toBe(-1);
+    });
   });
 
   describe('run()', () => {

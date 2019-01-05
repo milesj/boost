@@ -16,12 +16,12 @@ export const OUTPUT_NORMAL = 2;
 export const OUTPUT_VERBOSE = 3;
 
 export default class Reporter<Options = {}> extends Plugin<Options> {
-  // @ts-ignore Set after instantiation
-  console: Console;
-
   startTime: number = 0;
 
   stopTime: number = 0;
+
+  // @ts-ignore Set after instantiation
+  protected console: Console;
 
   /**
    * Register console listeners.
@@ -147,7 +147,7 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
    * Return true if the there should be no output.
    */
   isSilent(): boolean {
-    return this.console.isSilent();
+    return this.tool.config.silent;
   }
 
   /**

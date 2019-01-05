@@ -115,6 +115,7 @@ export default class Task<Ctx extends Context> extends Emitter {
    */
   async run<T>(context: Ctx, value?: T): Promise<any> {
     this.setContext(context);
+    this.emit('run', [value]);
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;
@@ -125,7 +126,6 @@ export default class Task<Ctx extends Context> extends Emitter {
 
     this.status = STATUS_RUNNING;
     this.metadata.startTime = Date.now();
-    this.emit('run', [value]);
 
     try {
       this.output = await this.action(context, value, this);

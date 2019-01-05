@@ -3,7 +3,7 @@ import { string } from 'optimal';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
-import DefaultReporter from '../src/reporters/DefaultReporter';
+import BoostReporter from '../src/reporters/BoostReporter';
 import enableDebug from '../src/helpers/enableDebug';
 import {
   getFixturePath,
@@ -124,10 +124,11 @@ describe('Tool', () => {
     });
 
     it('sets console on reporter', () => {
-      const reporter = new DefaultReporter();
+      const reporter = new BoostReporter();
 
       toolWithPlugins.addPlugin('reporter', reporter);
 
+      // @ts-ignore Allow protected access
       expect(reporter.console).toBe(toolWithPlugins.console);
     });
 
@@ -488,7 +489,7 @@ describe('Tool', () => {
     it('loads default reporter if none defined', () => {
       tool.loadReporters();
 
-      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(DefaultReporter);
+      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(BoostReporter);
     });
   });
 

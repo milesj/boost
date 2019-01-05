@@ -80,7 +80,7 @@ export const TEST_TOOL_CONFIG = {
   debug: false,
   extends: [],
   locale: '',
-  output: 3,
+  output: 2,
   plugins: [],
   reporters: [],
   settings: {},
@@ -124,7 +124,6 @@ export function createTestConsole(): Console {
   const cli = new Console(createTestTool());
   cli.err = jest.fn();
   cli.out = jest.fn();
-  cli.write = jest.fn();
 
   return cli;
 }

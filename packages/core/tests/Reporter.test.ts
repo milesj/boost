@@ -2,19 +2,21 @@ import chalk from 'chalk';
 import Reporter from '../src/Reporter';
 import Task from '../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestConsole, createTestTool } from './helpers';
+import { createTestConsole, createTestTool, createTestRoutine } from './helpers';
 
 describe('Reporter', () => {
-  let reporter: Reporter<any, any>;
+  let reporter: Reporter<any>;
 
   beforeEach(() => {
     reporter = new Reporter();
+    // @ts-ignore Allow protected access
     reporter.console = createTestConsole();
     reporter.tool = createTestTool();
   });
 
   describe('bootstrap()', () => {
     it('sets start and stop events', () => {
+      // @ts-ignore Allow protected access
       const spy = jest.spyOn(reporter.console, 'on');
 
       reporter.bootstrap();
@@ -24,13 +26,39 @@ describe('Reporter', () => {
     });
   });
 
-  describe('addLine()', () => {
-    it('adds a line to the list', () => {
-      expect(reporter.lines).toEqual([]);
+  describe('calculateTaskCompletion()', () => {
+    it('returns a total', () => {
+      const task1 = new Task('one', () => {});
+      const task2 = new Task('two', () => {});
+      const task3 = new Task('three', () => {});
 
-      reporter.addLine('foo');
+      task2.status = STATUS_PASSED;
 
-      expect(reporter.lines).toEqual(['foo']);
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(1);
+
+      task1.status = STATUS_PASSED;
+
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
+    });
+
+    it('includes skipped', () => {
+      const task1 = new Task('one', () => {});
+      const task2 = new Task('two', () => {});
+      const task3 = new Task('three', () => {}).skip();
+
+      task2.status = STATUS_PASSED;
+
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
+    });
+
+    it('supports routines', () => {
+      const task1 = createTestRoutine(null, 'one');
+      const task2 = createTestRoutine(null, 'two');
+      const task3 = createTestRoutine(null, 'three').skip();
+
+      task2.status = STATUS_PASSED;
+
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
     });
   });
 
@@ -38,19 +66,8 @@ describe('Reporter', () => {
     it('writes to stderr', () => {
       reporter.displayError(new Error('Oops'));
 
-      expect(reporter.console.write).toHaveBeenCalledTimes(3);
-    });
-  });
-
-  describe('findLine()', () => {
-    it('returns undefined if not found', () => {
-      expect(reporter.findLine(line => line === 'foo')).toBeUndefined();
-    });
-
-    it('returns the line', () => {
-      reporter.lines.push('foo');
-
-      expect(reporter.findLine(line => line === 'foo')).toBe('foo');
+      // @ts-ignore Allow protected access
+      expect(reporter.console.err).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -180,14 +197,54 @@ describe('Reporter', () => {
       expect(reporter.indent(1)).toBe(' ');
       expect(reporter.indent(3)).toBe('   ');
     });
+
+    it('handles negative numbers and 0', () => {
+      expect(reporter.indent(0)).toBe('');
+      expect(reporter.indent(-1)).toBe('');
+      expect(reporter.indent(-3)).toBe('');
+    });
   });
 
-  describe('removeLine()', () => {
-    it('removes a line', () => {
-      reporter.lines.push('foo', 'bar', 'baz');
-      reporter.removeLine(line => line === 'foo');
+  describe('isCompactOutput()', () => {
+    it('returns true if output is 1', () => {
+      expect(reporter.isCompactOutput()).toBe(false);
 
-      expect(reporter.lines).toEqual(['bar', 'baz']);
+      reporter.tool.config.output = 1;
+
+      expect(reporter.isCompactOutput()).toBe(true);
+    });
+  });
+
+  describe('isNormalOutput()', () => {
+    it('returns true if output is 2', () => {
+      // Default is 2
+      reporter.tool.config.output = 1;
+
+      expect(reporter.isNormalOutput()).toBe(false);
+
+      reporter.tool.config.output = 2;
+
+      expect(reporter.isNormalOutput()).toBe(true);
+    });
+  });
+
+  describe('isVerboseOutput()', () => {
+    it('returns true if output is 3', () => {
+      expect(reporter.isVerboseOutput()).toBe(false);
+
+      reporter.tool.config.output = 3;
+
+      expect(reporter.isVerboseOutput()).toBe(true);
+    });
+  });
+
+  describe('isSilent()', () => {
+    it('returns value from config', () => {
+      expect(reporter.isSilent()).toBe(false);
+
+      reporter.tool.config.silent = true;
+
+      expect(reporter.isSilent()).toBe(true);
     });
   });
 

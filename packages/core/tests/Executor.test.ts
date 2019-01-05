@@ -61,6 +61,19 @@ describe('Executor', () => {
       expect(routine.status).toBe(STATUS_FAILED);
     });
 
+    it('emits console events when skipped', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+
+      routine.skip();
+
+      await executor.executeRoutine(routine, 123);
+
+      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
+      expect(spy).toHaveBeenCalledWith('routine.skip', [routine, 123, false]);
+    });
+
     it('emits console events if a success', async () => {
       const spy = jest.fn();
 
@@ -138,6 +151,19 @@ describe('Executor', () => {
       }
 
       expect(task.status).toBe(STATUS_FAILED);
+    });
+
+    it('emits console events when skipped', async () => {
+      const spy = jest.fn();
+
+      executor.tool.console.emit = spy;
+
+      task.skip();
+
+      await executor.executeTask(task, 123);
+
+      expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
+      expect(spy).toHaveBeenCalledWith('task.skip', [task, 123, false]);
     });
 
     it('emits console events if a success', async () => {
