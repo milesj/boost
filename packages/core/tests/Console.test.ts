@@ -18,12 +18,6 @@ describe('Console', () => {
     });
   });
 
-  describe('createOutput()', () => {
-    it('returns an `Output` instance', () => {
-      expect(cli.createOutput(() => 'foo')).toBeInstanceOf(Output);
-    });
-  });
-
   describe('displayFooter()', () => {
     it('displays nothing if no footer', () => {
       cli.displayFooter();

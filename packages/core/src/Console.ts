@@ -8,7 +8,7 @@ import ansiEscapes from 'ansi-escapes';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
-import Output, { Renderer } from './Output';
+import Output from './Output';
 
 // 16 FPS (60 FPS is actually too fast as it tears)
 const FPS_RATE = 62.5;
@@ -55,13 +55,6 @@ export default class Console extends Emitter {
         .on('uncaughtException', this.handleFailure)
         .on('unhandledRejection', this.handleFailure);
     }
-  }
-
-  /**
-   * Create a new output to be rendered with the defined renderer function.
-   */
-  createOutput(renderer: Renderer): Output {
-    return new Output(this, renderer);
   }
 
   /**

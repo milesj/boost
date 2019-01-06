@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
+import Output from '../src/Output';
 import Task from '../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
 import { createTestConsole, createTestTool, createTestRoutine } from './helpers';
@@ -57,6 +58,12 @@ describe('Reporter', () => {
       task2.status = STATUS_PASSED;
 
       expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
+    });
+  });
+
+  describe('createOutput()', () => {
+    it('returns an `Output` instance', () => {
+      expect(reporter.createOutput(() => 'foo')).toBeInstanceOf(Output);
     });
   });
 

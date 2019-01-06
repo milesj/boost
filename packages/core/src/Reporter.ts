@@ -10,6 +10,7 @@ import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
+import Output, { Renderer } from './Output';
 import Plugin from './Plugin';
 import Routine from './Routine';
 import Task from './Task';
@@ -46,6 +47,13 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
    */
   calculateTaskCompletion(tasks: Task<any>[]): number {
     return tasks.reduce((sum, task) => (task.hasPassed() || task.isSkipped() ? sum + 1 : sum), 0);
+  }
+
+  /**
+   * Create a new output to be rendered with the defined renderer function.
+   */
+  createOutput(renderer: Renderer): Output {
+    return new Output(this.console, renderer);
   }
 
   /**

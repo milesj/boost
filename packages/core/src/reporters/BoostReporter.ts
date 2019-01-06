@@ -24,7 +24,7 @@ export default class BoostReporter extends Reporter {
       return;
     }
 
-    const output = this.console.createOutput(() => this.renderLines(routine)).enqueue();
+    const output = this.createOutput(() => this.renderLines(routine)).enqueue();
     const handler = () => {
       output.enqueue(true);
     };
