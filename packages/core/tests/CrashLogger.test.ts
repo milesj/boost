@@ -45,4 +45,17 @@ describe('CrashLogger', () => {
       'utf8',
     );
   });
+
+  it('with console information', () => {
+    tool.console.log('Log');
+    tool.console.logError('Error');
+
+    logger.log(new Error());
+
+    expect(spy).toHaveBeenCalledWith(
+      path.join(tool.options.root, 'test-boost-error.log'),
+      expect.anything(),
+      'utf8',
+    );
+  });
 });

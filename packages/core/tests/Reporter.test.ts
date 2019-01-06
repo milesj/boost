@@ -170,6 +170,20 @@ describe('Reporter', () => {
     });
   });
 
+  describe('getRootParent()', () => {
+    it('returns the root parent of a routine tree', () => {
+      const a = createTestRoutine(reporter.tool as any);
+      const b = createTestRoutine(reporter.tool as any);
+      const c = createTestRoutine(reporter.tool as any);
+
+      a.pipe(b.pipe(c));
+
+      expect(reporter.getRootParent(c)).toBe(a);
+      expect(reporter.getRootParent(b)).toBe(a);
+      expect(reporter.getRootParent(a)).toBe(a);
+    });
+  });
+
   describe('handleBaseStart()', () => {
     const oldCI = process.env.CI;
 

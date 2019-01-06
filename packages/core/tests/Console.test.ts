@@ -209,16 +209,13 @@ describe('Console', () => {
 
   describe('logLive()', () => {
     it('adds a log via `console.log`', () => {
-      const old = console.log.bind(console);
-      const spy = jest.fn();
-
-      console.log = spy;
+      const spy = jest.spyOn(process.stdout, 'write');
 
       cli.logLive('foo');
 
       expect(spy).toHaveBeenCalledWith('foo');
 
-      console.log = old;
+      spy.mockRestore();
     });
   });
 
@@ -271,7 +268,9 @@ describe('Console', () => {
     });
   });
 
-  describe.skip('renderFinalOutput()', () => {});
+  describe.skip('renderFinalOutput()', () => {
+    // TODO
+  });
 
   describe('resetCursor()', () => {
     it('writes ansi escape code', () => {
@@ -357,6 +356,15 @@ describe('Console', () => {
       cli.stop();
 
       expect(cli.stopping).toBe(true);
+    });
+
+    it('only triggers once if stopping', () => {
+      const spy = jest.spyOn(cli, 'renderFinalOutput');
+
+      cli.stop();
+      cli.stop();
+
+      expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('calls `stop` with null (no error)', () => {

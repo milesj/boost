@@ -6,8 +6,6 @@
 import Reporter from '../Reporter';
 import Routine from '../Routine';
 
-const BUFFER = 10;
-
 export interface LineParts {
   prefix: string;
   suffix: string;
@@ -89,7 +87,7 @@ export default class BoostReporter extends Reporter {
 
     // Routine line
     output += prefix;
-    output += this.truncate(title, columns - prefixLength - suffixLength - BUFFER);
+    output += this.truncate(title, columns - prefixLength - suffixLength - Reporter.BUFFER);
 
     if (suffix) {
       output += ' ';
@@ -101,7 +99,7 @@ export default class BoostReporter extends Reporter {
     // Active task lines
     routine.tasks.forEach(task => {
       if (task.isRunning()) {
-        let line = this.strip(task.statusText || task.title);
+        let line = this.strip(task.statusText || task.title).trim();
 
         if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
           line += ` [${task.metadata.index}/${task.parent!.tasks.length}]`;
@@ -109,7 +107,7 @@ export default class BoostReporter extends Reporter {
 
         output += this.truncate(
           this.indent(prefixLength) + this.style(line, 'pending'),
-          columns - BUFFER,
+          columns - Reporter.BUFFER,
         );
         output += '\n';
       }

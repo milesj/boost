@@ -18,6 +18,9 @@ import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 export const SLOW_THRESHOLD = 10000; // ms
 
 export default class Reporter<Options = {}> extends Plugin<Options> {
+  // eslint-disable-next-line no-magic-numbers
+  static BUFFER = 10;
+
   static OUTPUT_COMPACT = 1;
 
   static OUTPUT_NORMAL = 2;
@@ -98,11 +101,9 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
       return 'success';
     } else if (task.hasFailed()) {
       return 'failure';
-    } else if (task.isPending() || task.isRunning()) {
-      return 'pending';
     }
 
-    return 'default';
+    return 'pending';
   }
 
   /**

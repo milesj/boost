@@ -47,7 +47,7 @@ export default class Console extends Emitter {
     this.tool = tool;
     this.writers = testWriters;
 
-    /* istanbul ignore next */
+    // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
       process
         .on('SIGINT', this.handleSignal)
@@ -236,7 +236,7 @@ export default class Console extends Emitter {
   /**
    * Handle the final rendering of all output before stopping.
    */
-  renderFinalOutput(error: Error | null = null) {
+  renderFinalOutput(error: Error | null) {
     this.debug('Rendering final console output');
 
     // Mark all output as final
@@ -356,6 +356,7 @@ export default class Console extends Emitter {
   /**
    * Unwrap the native console and reset it back to normal.
    */
+  // istanbul ignore next
   unwrapStreams() {
     this.debug('Unwrapping `stderr` and `stdout` streams');
 
@@ -371,6 +372,7 @@ export default class Console extends Emitter {
    * Wrap the `stdout` and `stderr` streams and buffer the output as
    * to not collide with our render loop.
    */
+  // istanbul ignore next
   wrapStreams() {
     this.debug('Wrapping `stderr` and `stdout` streams');
 

@@ -156,7 +156,7 @@ export default class Tool<
       loadBoostModules: true,
     });
 
-    /* istanbul ignore next */
+    // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
       // Add a reporter to catch errors during initialization
       this.addPlugin('reporter', new ErrorReporter());
