@@ -3,12 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import exit from 'exit';
-import cliTruncate from 'cli-truncate';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
-import stripAnsi from 'strip-ansi';
-import wrapAnsi from 'wrap-ansi';
 import Emitter from './Emitter';
 import Tool from './Tool';
 import { Debugger } from './types';
@@ -18,7 +14,7 @@ import Output, { Renderer } from './Output';
 const FPS_RATE = 62.5;
 
 // Bind our writable streams for easy access
-const write = {
+const BOUND_WRITERS = {
   stderr: process.stderr.write.bind(process.stderr),
   stdout: process.stdout.write.bind(process.stdout),
 };
@@ -30,8 +26,6 @@ export default class Console extends Emitter {
 
   errorLogs: string[] = [];
 
-  exiting: boolean = false;
-
   logs: string[] = [];
 
   outputQueue: Output[] = [];
@@ -40,13 +34,18 @@ export default class Console extends Emitter {
 
   restoreCursorOnExit: boolean = false;
 
-  tool: Tool<any, any>;
+  stopping: boolean = false;
 
-  constructor(tool: Tool<any, any>) {
+  tool: Tool<any>;
+
+  writers: typeof BOUND_WRITERS;
+
+  constructor(tool: Tool<any>, /* test only */ testWriters: typeof BOUND_WRITERS = BOUND_WRITERS) {
     super();
 
     this.debug = tool.createDebugger('console');
     this.tool = tool;
+    this.writers = testWriters;
 
     /* istanbul ignore next */
     if (process.env.NODE_ENV !== 'test') {
@@ -95,53 +94,9 @@ export default class Console extends Emitter {
       return this;
     }
 
-    write.stderr(message + '\n'.repeat(nl));
+    this.writers.stderr(message + '\n'.repeat(nl));
 
     return this;
-  }
-
-  /**
-   * Force exit the application.
-   */
-  exit(message: string | Error | null, code: number, force: boolean = false) {
-    if (this.exiting) {
-      return;
-    }
-
-    this.exiting = true;
-
-    let error = null;
-
-    if (message !== null) {
-      error = message instanceof Error ? message : new Error(message);
-    }
-
-    if (error) {
-      this.debug('Exiting console with an error');
-
-      // Mark logs as errors
-      if (force) {
-        this.errorLogs.push(...this.logs);
-        this.logs = [];
-      }
-    } else {
-      this.debug('Exiting console rendering process');
-    }
-
-    this.emit('stop', [error, code]);
-
-    // Render final output
-    this.handleFinalRender(error);
-
-    // Unwrap our streams
-    this.unwrapStreams();
-
-    // Exit after buffers have flushed
-    if (force) {
-      exit(code);
-    } else {
-      process.exitCode = code;
-    }
   }
 
   /**
@@ -189,13 +144,99 @@ export default class Console extends Emitter {
   handleFailure = (error: Error) => {
     this.start();
     this.debug('Uncaught exception or unresolved promise handled');
-    this.exit(error, 1, true);
+    this.stop(error, true);
   };
 
   /**
-   * Handle the final render before exiting.
+   * Handle SIGINT and SIGTERM interruptions.
    */
-  handleFinalRender = (error: Error | null = null) => {
+  handleSignal = () => {
+    this.start();
+    this.debug('SIGINT or SIGTERM handled');
+    this.stop('Process has been terminated.', true);
+  };
+
+  /**
+   * Hide the console cursor.
+   */
+  hideCursor(): this {
+    this.out(ansiEscapes.cursorHide);
+
+    if (!this.restoreCursorOnExit && !this.isSilent()) {
+      this.restoreCursorOnExit = true;
+
+      // istanbul ignore next
+      process.on('exit', () => {
+        process.stdout.write(ansiEscapes.cursorShow);
+      });
+    }
+
+    return this;
+  }
+
+  /**
+   * Return true if the there should be no output.
+   */
+  isSilent(): boolean {
+    return this.tool.config.silent;
+  }
+
+  /**
+   * Log a message to display on success during the final render.
+   */
+  log(message: string): this {
+    this.logs.push(message);
+
+    return this;
+  }
+
+  /**
+   * Log a live message to display during the rendering process.
+   */
+  logLive(message: string): this {
+    // Write to the wrapped buffer
+    process.stdout.write(message);
+
+    return this;
+  }
+
+  /**
+   * Log an error message to display on failure during the final render.
+   */
+  logError(message: string): this {
+    this.errorLogs.push(message);
+
+    return this;
+  }
+
+  /**
+   * Write a message to `stdout` with optional trailing newline(s).
+   */
+  out(message: string, nl: number = 0): this {
+    if (this.isSilent()) {
+      return this;
+    }
+
+    this.writers.stdout(message + '\n'.repeat(nl));
+
+    return this;
+  }
+
+  /**
+   * Enqueue a block of output to be rendered.
+   */
+  render(output: Output): this {
+    if (!this.outputQueue.includes(output)) {
+      this.outputQueue.push(output);
+    }
+
+    return this;
+  }
+
+  /**
+   * Handle the final rendering of all output before stopping.
+   */
+  renderFinalOutput(error: Error | null = null) {
     this.debug('Rendering final console output');
 
     // Mark all output as final
@@ -225,105 +266,13 @@ export default class Console extends Emitter {
 
     // Stop the render loop
     this.stopRenderLoop();
-  };
-
-  /**
-   * Handle the rendering and flushing process.
-   */
-  handleRender = () => {
-    this.flushOutputQueue();
-  };
-
-  /**
-   * Handle SIGINT and SIGTERM interruptions.
-   */
-  handleSignal = () => {
-    this.start();
-    this.debug('SIGINT or SIGTERM handled');
-    this.exit('Process has been terminated.', 1, true);
-  };
-
-  /**
-   * Hide the console cursor.
-   */
-  hideCursor(): this {
-    this.out(ansiEscapes.cursorHide);
-
-    if (!this.restoreCursorOnExit && !this.isSilent()) {
-      this.restoreCursorOnExit = true;
-
-      /* istanbul ignore next */
-      process.on('exit', () => {
-        process.stdout.write(ansiEscapes.cursorShow);
-      });
-    }
-
-    return this;
-  }
-
-  /**
-   * Return true if the there should be no output.
-   */
-  isSilent(): boolean {
-    return this.tool.config.silent;
-  }
-
-  /**
-   * Log a message to display on success during the final render.
-   */
-  log(message: string): this {
-    this.logs.push(message);
-
-    return this;
-  }
-
-  /**
-   * Log a live message to display during the rendering process.
-   */
-  logLive(message: string): this {
-    console.log(message);
-
-    return this;
-  }
-
-  /**
-   * Log an error message to display on failure during the final render.
-   */
-  logError(message: string): this {
-    this.errorLogs.push(message);
-
-    return this;
-  }
-
-  /**
-   * Write a message to `stdout` with optional trailing newline(s).
-   */
-  out(message: string, nl: number = 0): this {
-    if (this.isSilent()) {
-      return this;
-    }
-
-    write.stdout(message + '\n'.repeat(nl));
-
-    return this;
-  }
-
-  /**
-   * Enqueue a block of output to be rendered.
-   */
-  render(output: Output): this {
-    if (!this.outputQueue.includes(output)) {
-      this.outputQueue.push(output);
-    }
-
-    return this;
   }
 
   /**
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.out(ansiEscapes.cursorTo(0, this.size().rows));
+    this.out(ansiEscapes.cursorTo(0, cliSize().rows));
 
     return this;
   }
@@ -339,18 +288,10 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Return size information about the terminal window.
-   */
-  size(): { columns: number; rows: number } {
-    return cliSize();
-  }
-
-  /**
    * Start the console by wrapping streams and buffering output.
    */
   start(args: any[] = []): this {
-    this.debug('Starting console rendering process');
-
+    this.debug('Starting console render loop');
     this.wrapStreams();
     this.displayHeader();
     this.startRenderLoop();
@@ -360,13 +301,46 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Automatically render the console in a loop at 16 FPS.
+   * Automatically render the console in a timeout loop at 16 FPS.
    */
   startRenderLoop() {
     this.renderTimer = setTimeout(() => {
-      this.handleRender();
+      this.flushOutputQueue();
       this.startRenderLoop();
     }, FPS_RATE);
+  }
+
+  /**
+   * Stop the console rendering process.
+   */
+  stop(message: string | Error | null = null, force: boolean = false) {
+    if (this.stopping) {
+      return;
+    }
+
+    this.stopping = true;
+
+    let error = null;
+
+    if (message !== null) {
+      error = message instanceof Error ? message : new Error(message);
+    }
+
+    if (error) {
+      this.debug('Stopping console with an error');
+      this.errorLogs.push(...this.logs);
+      this.logs = [];
+    } else {
+      this.debug('Stopping console render loop');
+    }
+
+    this.emit('stop', [error]);
+    this.renderFinalOutput(error);
+    this.unwrapStreams();
+
+    if (error && force) {
+      throw error;
+    }
   }
 
   /**
@@ -380,50 +354,17 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Strip ANSI escape characters from a string.
-   */
-  strip(message: string): string {
-    return stripAnsi(message);
-  }
-
-  /**
-   * Truncate a string that contains ANSI escape characters to a specific column width.
-   */
-  truncate(
-    message: string,
-    columns?: number,
-    options?: { position?: 'start' | 'middle' | 'end' },
-  ): string {
-    return cliTruncate(message, columns || this.size().columns, options);
-  }
-
-  /**
    * Unwrap the native console and reset it back to normal.
    */
   unwrapStreams() {
-    this.debug('Unwrapping streams');
+    this.debug('Unwrapping `stderr` and `stdout` streams');
 
     if (process.env.NODE_ENV === 'test') {
       return;
     }
 
-    process.stderr.write = write.stderr as any;
-    process.stdout.write = write.stdout as any;
-  }
-
-  /**
-   * Wrap a string that contains ANSI escape characters to a specific column width.
-   */
-  wrap(
-    message: string,
-    columns?: number,
-    options?: { hard?: boolean; trim?: boolean; wordWrap?: boolean },
-  ): string {
-    return wrapAnsi(message, columns || this.size().columns, {
-      hard: true,
-      trim: false,
-      ...options,
-    });
+    process.stderr.write = this.writers.stderr as any;
+    process.stdout.write = this.writers.stdout as any;
   }
 
   /**
@@ -431,7 +372,7 @@ export default class Console extends Emitter {
    * to not collide with our render loop.
    */
   wrapStreams() {
-    this.debug('Wrapping streams');
+    this.debug('Wrapping `stderr` and `stdout` streams');
 
     if (process.env.NODE_ENV === 'test') {
       return;
@@ -444,7 +385,7 @@ export default class Console extends Emitter {
 
       this.bufferedStreams.push(() => {
         if (stream.isTTY && buffer) {
-          write[name](buffer);
+          this.writers[name](buffer);
         }
 
         buffer = '';

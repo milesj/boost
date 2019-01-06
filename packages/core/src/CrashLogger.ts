@@ -16,7 +16,7 @@ export default class CrashLogger {
 
   logPath: string;
 
-  constructor(tool: Tool<any, any>) {
+  constructor(tool: Tool<any>) {
     // @ts-ignore Allow private access of pluginTypes
     const { config, console, options, pluginTypes } = tool;
 

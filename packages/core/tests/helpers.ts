@@ -76,7 +76,7 @@ export const TEST_PACKAGE_JSON = {
   version: '0.0.0',
 };
 
-export const TEST_TOOL_CONFIG = {
+export const TEST_TOOL_CONFIG: TestToolConfig = {
   debug: false,
   extends: [],
   locale: '',

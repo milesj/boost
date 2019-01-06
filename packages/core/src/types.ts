@@ -19,6 +19,8 @@ export type PluginSetting<P> = (string | { [key: string]: any } | P)[];
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
+export type OutputLevel = 1 | 2 | 3;
+
 // THEME
 
 export type Color =

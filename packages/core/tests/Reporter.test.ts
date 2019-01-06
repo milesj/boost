@@ -9,14 +9,12 @@ describe('Reporter', () => {
 
   beforeEach(() => {
     reporter = new Reporter();
-    // @ts-ignore Allow protected access
     reporter.console = createTestConsole();
     reporter.tool = createTestTool();
   });
 
   describe('bootstrap()', () => {
     it('sets start and stop events', () => {
-      // @ts-ignore Allow protected access
       const spy = jest.spyOn(reporter.console, 'on');
 
       reporter.bootstrap();
@@ -66,7 +64,6 @@ describe('Reporter', () => {
     it('writes to stderr', () => {
       reporter.displayError(new Error('Oops'));
 
-      // @ts-ignore Allow protected access
       expect(reporter.console.err).toHaveBeenCalledTimes(3);
     });
   });
@@ -163,6 +160,16 @@ describe('Reporter', () => {
     });
   });
 
+  describe('getOutputLevel()', () => {
+    it('returns value from config', () => {
+      expect(reporter.getOutputLevel()).toBe(2);
+
+      reporter.tool.config.output = 1;
+
+      expect(reporter.getOutputLevel()).toBe(1);
+    });
+  });
+
   describe('handleBaseStart()', () => {
     const oldCI = process.env.CI;
 
@@ -205,39 +212,6 @@ describe('Reporter', () => {
     });
   });
 
-  describe('isCompactOutput()', () => {
-    it('returns true if output is 1', () => {
-      expect(reporter.isCompactOutput()).toBe(false);
-
-      reporter.tool.config.output = 1;
-
-      expect(reporter.isCompactOutput()).toBe(true);
-    });
-  });
-
-  describe('isNormalOutput()', () => {
-    it('returns true if output is 2', () => {
-      // Default is 2
-      reporter.tool.config.output = 1;
-
-      expect(reporter.isNormalOutput()).toBe(false);
-
-      reporter.tool.config.output = 2;
-
-      expect(reporter.isNormalOutput()).toBe(true);
-    });
-  });
-
-  describe('isVerboseOutput()', () => {
-    it('returns true if output is 3', () => {
-      expect(reporter.isVerboseOutput()).toBe(false);
-
-      reporter.tool.config.output = 3;
-
-      expect(reporter.isVerboseOutput()).toBe(true);
-    });
-  });
-
   describe('isSilent()', () => {
     it('returns value from config', () => {
       expect(reporter.isSilent()).toBe(false);
@@ -245,6 +219,15 @@ describe('Reporter', () => {
       reporter.tool.config.silent = true;
 
       expect(reporter.isSilent()).toBe(true);
+    });
+  });
+
+  describe('size()', () => {
+    it('returns columns and rows', () => {
+      const size = reporter.size();
+
+      expect(size.columns).toBeDefined();
+      expect(size.rows).toBeDefined();
     });
   });
 
@@ -273,6 +256,24 @@ describe('Reporter', () => {
       expect(reporter.style('foo', 'pending', ['bold', 'dim', 'italic'])).toBe(
         chalk.gray.bold.dim.italic('foo'),
       );
+    });
+  });
+
+  describe('strip()', () => {
+    it('stips ANSI escape codes', () => {
+      expect(reporter.strip(chalk.red('foo'))).toBe('foo');
+    });
+  });
+
+  describe('truncate()', () => {
+    it('truncates with ANSI escape codes', () => {
+      expect(reporter.truncate(chalk.red('foobar'), 3)).not.toBe(chalk.red('foobar'));
+    });
+  });
+
+  describe('wrap()', () => {
+    it('wraps with ANSI escape codes', () => {
+      expect(reporter.wrap(chalk.red('foobar'), 3)).toBe(chalk.red('foo\nbar'));
     });
   });
 });

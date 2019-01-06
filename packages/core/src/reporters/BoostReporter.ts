@@ -43,13 +43,15 @@ export default class BoostReporter extends Reporter {
     const prefix = [];
 
     if (depth === 0) {
-      prefix.push(this.style(this.getStepProgress(routine), 'pending'), ' ');
+      if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
+        prefix.push(this.style(this.getStepProgress(routine), 'pending'), ' ');
+      }
     } else {
-      prefix.push(
-        this.indent(this.getStepProgress(this.getRootParent(routine)).length),
-        ' ',
-        this.indent(depth * 2),
-      );
+      if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
+        prefix.push(this.indent(this.getStepProgress(this.getRootParent(routine)).length), ' ');
+      }
+
+      prefix.push(this.indent(depth * 2));
     }
 
     prefix.push(this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']), ' ');
@@ -62,7 +64,7 @@ export default class BoostReporter extends Reporter {
     } else if (routine.hasFailed()) {
       suffix.push(this.style(this.tool.msg('app:cliFailed'), 'failure'));
     } else if (routine.isRunning()) {
-      if (!this.isCompactOutput()) {
+      if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
         suffix.push(this.getElapsedTime(startTime, stopTime));
       }
     }
@@ -80,14 +82,14 @@ export default class BoostReporter extends Reporter {
 
   renderLines(routine: Routine<any, any>): string {
     const { prefix, suffix, title } = this.getLineParts(routine);
-    const { columns } = this.console.size();
-    const prefixLength = this.console.strip(prefix).length;
-    const suffixLength = this.console.strip(suffix).length;
+    const { columns } = this.size();
+    const prefixLength = this.strip(prefix).length;
+    const suffixLength = this.strip(suffix).length;
     let output = '';
 
     // Routine line
     output += prefix;
-    output += this.console.truncate(title, columns - prefixLength - suffixLength - BUFFER);
+    output += this.truncate(title, columns - prefixLength - suffixLength - BUFFER);
 
     if (suffix) {
       output += ' ';
@@ -99,14 +101,14 @@ export default class BoostReporter extends Reporter {
     // Active task lines
     routine.tasks.forEach(task => {
       if (task.isRunning()) {
-        output += this.console.truncate(
-          this.indent(prefixLength) +
-            this.style(
-              `${task.statusText || task.title} [${task.metadata.index}/${
-                task.parent!.tasks.length
-              }]`,
-              'pending',
-            ),
+        let line = this.strip(task.statusText || task.title);
+
+        if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
+          line += ` [${task.metadata.index}/${task.parent!.tasks.length}]`;
+        }
+
+        output += this.truncate(
+          this.indent(prefixLength) + this.style(line, 'pending'),
           columns - BUFFER,
         );
         output += '\n';
@@ -115,7 +117,7 @@ export default class BoostReporter extends Reporter {
 
     // Only show sub-routines while still running or when verbose
     if (routine.isComplete()) {
-      if (!this.isVerboseOutput()) {
+      if (this.getOutputLevel() < Reporter.OUTPUT_VERBOSE) {
         return output;
       }
     } else if (routine.isPending()) {

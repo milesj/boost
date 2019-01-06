@@ -3,6 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Console from './Console';
 
@@ -64,6 +65,13 @@ export default class Output {
   }
 
   /**
+   * Return true if the next render is the final render.
+   */
+  isFinal(): boolean {
+    return this.final;
+  }
+
+  /**
    * Render the content to the console and calculate a new height.
    * Since an output represents an exact line, or a collection of lines,
    * we must always end with a new line to calculate height correctly.
@@ -82,7 +90,7 @@ export default class Output {
 
     // Content cannot be higher than the terminal
     const lines = content.split('\n');
-    const maxHeight = this.console.size().rows - 1; // Buffer for input line
+    const maxHeight = cliSize().rows - 1; // Buffer for input line
 
     if (lines.length >= maxHeight) {
       content = lines.slice(-maxHeight).join('\n');
@@ -92,11 +100,11 @@ export default class Output {
     this.console.out(content);
 
     // Mark output as complete if the final render
-    if (this.final) {
+    if (this.isFinal()) {
       this.completed = true;
       // Otherwise calculate the height of the output
     } else {
-      this.previousHeight = content.split('\n').length;
+      this.previousHeight = lines.length;
     }
 
     return this;

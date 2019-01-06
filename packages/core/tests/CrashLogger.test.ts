@@ -5,7 +5,7 @@ import Tool from '../src/Tool';
 import { createTestTool } from './helpers';
 
 describe('CrashLogger', () => {
-  let tool: Tool<any, any>;
+  let tool: Tool<any>;
   let logger: CrashLogger;
   let spy: jest.Mock;
 

@@ -169,23 +169,32 @@ describe('Tool', () => {
   });
 
   describe('exit()', () => {
+    it('accepts null (no error)', () => {
+      const spy = jest.fn();
+
+      tool.console.stop = spy;
+      tool.exit();
+
+      expect(spy).toHaveBeenCalledWith(null, false);
+    });
+
     it('accepts a string', () => {
       const spy = jest.fn();
 
-      tool.console.exit = spy;
-      tool.exit('Oops', 123);
+      tool.console.stop = spy;
+      tool.exit('Oops');
 
-      expect(spy).toHaveBeenCalledWith('Oops', 123);
+      expect(spy).toHaveBeenCalledWith('Oops', true);
     });
 
     it('accepts an error', () => {
       const error = new Error('Oh nooo');
       const spy = jest.fn();
 
-      tool.console.exit = spy;
+      tool.console.stop = spy;
       tool.exit(error);
 
-      expect(spy).toHaveBeenCalledWith(error, 1);
+      expect(spy).toHaveBeenCalledWith(error, true);
     });
   });
 
@@ -534,11 +543,17 @@ describe('Tool', () => {
 
   describe('logLive()', () => {
     it('sends log to console', () => {
+      const old = console.log.bind(console);
+      const log = jest.fn();
       const spy = jest.spyOn(tool.console, 'logLive');
+
+      console.log = log;
 
       tool.logLive('Some message: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('Some message: foo');
+
+      console.log = old;
     });
   });
 

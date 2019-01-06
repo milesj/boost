@@ -33,7 +33,7 @@ export default class Task<Ctx extends Context> extends Emitter {
   // @ts-ignore Set after instantiation
   context: Ctx;
 
-  title: string = '';
+  title: string;
 
   metadata: TaskMetadata = {
     depth: 0,

@@ -38,11 +38,11 @@ export default class ConfigLoader {
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: Tool<any, any>;
+  tool: Tool<any>;
 
   workspaceRoot: string = '';
 
-  constructor(tool: Tool<any, any>) {
+  constructor(tool: Tool<any>) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
   }

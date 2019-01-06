@@ -4,25 +4,32 @@
  */
 
 import chalk from 'chalk';
+import cliTruncate from 'cli-truncate';
+import cliSize from 'term-size';
+import stripAnsi from 'strip-ansi';
+import wrapAnsi from 'wrap-ansi';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
 import Routine from './Routine';
 import Task from './Task';
-import { Color, ColorType, ColorPalette } from './types';
+import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
-export const OUTPUT_COMPACT = 1;
-export const OUTPUT_NORMAL = 2;
-export const OUTPUT_VERBOSE = 3;
 
 export default class Reporter<Options = {}> extends Plugin<Options> {
+  static OUTPUT_COMPACT = 1;
+
+  static OUTPUT_NORMAL = 2;
+
+  static OUTPUT_VERBOSE = 3;
+
+  // @ts-ignore Set after instantiation
+  console: Console;
+
   startTime: number = 0;
 
   stopTime: number = 0;
-
-  // @ts-ignore Set after instantiation
-  protected console: Console;
 
   /**
    * Register console listeners.
@@ -110,6 +117,13 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
   }
 
   /**
+   * Return the output level: 1 (compact), 2 (normal), 3 (verbose).
+   */
+  getOutputLevel(): OutputLevel {
+    return this.tool.config.output;
+  }
+
+  /**
    * Return the root parent (depth of 0) in the current routine tree.
    */
   getRootParent(routine: Routine<any, any>): Routine<any, any> {
@@ -144,20 +158,6 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
   }
 
   /**
-   * Return true if output level is compact (1).
-   */
-  isCompactOutput(): boolean {
-    return this.tool.config.output === OUTPUT_COMPACT;
-  }
-
-  /**
-   * Return true if output level is normal (2).
-   */
-  isNormalOutput(): boolean {
-    return this.tool.config.output === OUTPUT_NORMAL;
-  }
-
-  /**
    * Return true if the there should be no output.
    */
   isSilent(): boolean {
@@ -165,10 +165,17 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
   }
 
   /**
-   * Return true if output level is verbose (3).
+   * Return size information about the terminal window.
    */
-  isVerboseOutput(): boolean {
-    return this.tool.config.output === OUTPUT_VERBOSE;
+  size(): { columns: number; rows: number } {
+    return cliSize();
+  }
+
+  /**
+   * Strip ANSI escape characters from a string.
+   */
+  strip(message: string): string {
+    return stripAnsi(message);
   }
 
   /**
@@ -187,5 +194,31 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
     });
 
     return out(message);
+  }
+
+  /**
+   * Truncate a string that contains ANSI escape characters to a specific column width.
+   */
+  truncate(
+    message: string,
+    columns?: number,
+    options?: { position?: 'start' | 'middle' | 'end' },
+  ): string {
+    return cliTruncate(message, columns || this.size().columns, options);
+  }
+
+  /**
+   * Wrap a string that contains ANSI escape characters to a specific column width.
+   */
+  wrap(
+    message: string,
+    columns?: number,
+    options?: { hard?: boolean; trim?: boolean; wordWrap?: boolean },
+  ): string {
+    return wrapAnsi(message, columns || this.size().columns, {
+      hard: true,
+      trim: false,
+      ...options,
+    });
   }
 }

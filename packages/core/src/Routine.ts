@@ -26,7 +26,7 @@ export interface CommandOptions {
 
 export default class Routine<
   Ctx extends Context,
-  Tool extends CoreTool<any, any>,
+  Tool extends CoreTool<any>,
   Options extends object = {}
 > extends Task<Ctx> {
   exit: boolean = false;
