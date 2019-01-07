@@ -3,8 +3,8 @@
 #### 🎉 Release
 
 Complete rewrite of the console rendering layer, which now utilizes a render loop that continuously
-renders "blocks" or "lines" of output at 16 FPS. Implementation is much faster and cleaner, and
-properly handles outside interferrence, like `console.log`s or `stderr` writes.
+renders "blocks" or "lines" of output at 16 FPS. Implementation is much faster, much cleaner, more
+customizable, and properly handles outside interferrence, like `console` logs or `stderr` writes.
 
 #### 🚀 New
 
@@ -25,7 +25,6 @@ properly handles outside interferrence, like `console.log`s or `stderr` writes.
 #### 🛠 Internal
 
 - Changed default output level to `2` (normal) from `3` (verbose).
-- TS: Marked `Tool#console` as private.
 
 # 1.3.0 - 2019-01-01
 
