@@ -7,6 +7,19 @@ describe('Emitter', () => {
     emitter = new Emitter();
   });
 
+  describe('clearListeners()', () => {
+    it('deletes all listeners', () => {
+      emitter.on('foo', () => {});
+      emitter.on('foo', () => {});
+
+      expect(emitter.getListeners('foo').size).toBe(2);
+
+      emitter.clearListeners('foo');
+
+      expect(emitter.getListeners('foo').size).toBe(0);
+    });
+  });
+
   describe('emit()', () => {
     it('executes listeners in order', () => {
       let output = '';

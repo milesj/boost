@@ -26,7 +26,7 @@ export interface CommandOptions {
 
 export default class Routine<
   Ctx extends Context,
-  Tool extends CoreTool<any, any>,
+  Tool extends CoreTool<any>,
   Options extends object = {}
 > extends Task<Ctx> {
   exit: boolean = false;
@@ -37,6 +37,8 @@ export default class Routine<
   key: string = '';
 
   options: Options;
+
+  parent: Routine<Ctx, Tool> | null = null;
 
   routines: Routine<Ctx, Tool>[] = [];
 
@@ -72,8 +74,9 @@ export default class Routine<
    */
   configure(parent: Routine<Ctx, Tool>): this {
     this.parent = parent;
-    this.context = parent.context;
     this.tool = parent.tool;
+    this.context = parent.context;
+    this.metadata.depth = parent.metadata.depth + 1;
 
     // Monitor process
     this.tool.on('exit', () => {
@@ -84,7 +87,7 @@ export default class Routine<
     this.debug = this.tool.createDebugger('routine', this.key);
     this.debug('Bootstrapping routine');
 
-    // Initialize routine (this must be last!)
+    // Initialize routine
     this.bootstrap();
 
     return this;
@@ -165,6 +168,9 @@ export default class Routine<
    */
   pipe(routine: Routine<Ctx, Tool>): this {
     if (routine instanceof Routine) {
+      // eslint-disable-next-line no-param-reassign
+      routine.metadata.index = this.routines.length;
+
       this.routines.push(routine.configure(this));
     } else {
       throw new TypeError(this.tool.msg('errors:routineInstanceInvalid'));
@@ -254,7 +260,9 @@ export default class Routine<
     }
 
     const task = new Task<Ctx>(title, action.bind(this));
+
     task.parent = this;
+    task.metadata.index = this.tasks.length;
 
     this.tasks.push(task);
 

@@ -38,7 +38,7 @@
     "@types/yargs": "^12.0.5",
     "@types/yargs-parser": "^11.0.2",
     "ansi-escapes": "^3.1.0",
-    "chalk": "^2.4.1",
+    "chalk": "^2.4.2",
     "cli-truncate": "^1.1.0",
     "debug": "^4.1.1",
     "env-ci": "^3.1.3",

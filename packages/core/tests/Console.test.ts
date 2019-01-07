@@ -1,45 +1,20 @@
-import chalk from 'chalk';
+import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Console from '../src/Console';
+import Output from '../src/Output';
 import { createTestTool } from './helpers';
 
 describe('Console', () => {
   let cli: Console;
+  let err: jest.Mock;
+  let out: jest.Mock;
 
   beforeEach(() => {
-    cli = new Console(createTestTool());
-    cli.err = jest.fn();
-    cli.out = jest.fn();
-  });
-
-  describe('clearOutput()', () => {
-    it('writes ansi escape code', () => {
-      cli.clearOutput();
-
-      expect(cli.out).toHaveBeenCalledWith(ansiEscapes.eraseScreen);
-    });
-
-    it('resets last output height', () => {
-      cli.lastOutputHeight = 10;
-      cli.clearOutput();
-
-      expect(cli.lastOutputHeight).toBe(0);
-    });
-  });
-
-  describe('clearLinesOutput()', () => {
-    it('writes ansi escape code for each line height', () => {
-      cli.lastOutputHeight = 10;
-      cli.clearLinesOutput();
-
-      expect(cli.out).toHaveBeenCalledWith(ansiEscapes.eraseLines(11));
-    });
-
-    it('resets last output height', () => {
-      cli.lastOutputHeight = 10;
-      cli.clearLinesOutput();
-
-      expect(cli.lastOutputHeight).toBe(0);
+    err = jest.fn();
+    out = jest.fn();
+    cli = new Console(createTestTool(), {
+      stderr: err,
+      stdout: out,
     });
   });
 
@@ -47,14 +22,14 @@ describe('Console', () => {
     it('displays nothing if no footer', () => {
       cli.displayFooter();
 
-      expect(cli.bufferedOutput).toBe('');
+      expect(out).not.toHaveBeenCalled();
     });
 
     it('displays the footer', () => {
       cli.tool.options.footer = 'Powered by Boost';
       cli.displayFooter();
 
-      expect(cli.bufferedOutput).toBe('Powered by Boost\n');
+      expect(out).toHaveBeenCalledWith('Powered by Boost\n');
     });
   });
 
@@ -62,166 +37,37 @@ describe('Console', () => {
     it('displays nothing if no header', () => {
       cli.displayHeader();
 
-      expect(cli.bufferedOutput).toBe('');
+      expect(out).not.toHaveBeenCalled();
     });
 
     it('displays the header', () => {
       cli.tool.options.header = 'Powered by Boost';
       cli.displayHeader();
 
-      expect(cli.bufferedOutput).toBe('Powered by Boost\n');
+      expect(out).toHaveBeenCalledWith('Powered by Boost\n');
     });
   });
 
-  describe('displayLogs()', () => {
-    it('displays nothing if no logs', () => {
-      cli.displayLogs([]);
+  describe('err()', () => {
+    it('writes a message to `stderr`', () => {
+      cli.err('Hello');
 
-      expect(cli.bufferedOutput).toBe('');
+      expect(err).toHaveBeenCalledWith('Hello');
     });
 
-    it('displays the logs', () => {
-      cli.displayLogs(['foo', 'bar']);
+    it('doesnt write to `stderr` if config is silent', () => {
+      cli.tool.config.silent = true;
+      cli.err('Hello');
 
-      expect(cli.bufferedOutput).toBe('\nfoo\nbar\n');
-    });
-  });
-
-  describe('exit()', () => {
-    const oldSetTimeout = global.setTimeout.bind(global);
-    const oldExit = process.exit.bind(process);
-    let oldExitCode: number;
-
-    beforeEach(() => {
-      process.exit = jest.fn() as any;
-      oldExitCode = process.exitCode;
-
-      cli.on('stop', jest.fn());
-      cli.emit = jest.fn();
-
-      // Fire immediately instead of using fake timers
-      global.setTimeout = ((cb: any) => {
-        cb();
-      }) as any;
+      expect(err).not.toHaveBeenCalled();
     });
 
-    afterEach(() => {
-      process.exit = oldExit;
-      process.exitCode = oldExitCode;
-      global.setTimeout = oldSetTimeout;
-    });
+    it('can customize the number of trailing newlines', () => {
+      cli.err('Hello', 3);
+      cli.err('Hello', 1);
 
-    it('sets exiting bool', () => {
-      expect(cli.exiting).toBe(false);
-
-      cli.exit(null, 2, true);
-
-      expect(cli.exiting).toBe(true);
-    });
-
-    it('calls `stop` with null', () => {
-      cli.exit(null, 2, true);
-
-      expect(process.exit).toHaveBeenCalledWith(2);
-      expect(cli.emit).toHaveBeenCalledWith('stop', [null, 2]);
-    });
-
-    it('calls `stop` with string', () => {
-      cli.exit('Oops', 2, true);
-
-      expect(process.exit).toHaveBeenCalledWith(2);
-      expect(cli.emit).toHaveBeenCalledWith('stop', [new Error('Oops'), 2]);
-    });
-
-    it('calls `stop` with error', () => {
-      const error = new Error('Oops');
-
-      cli.exit(error, 2, true);
-
-      expect(process.exit).toHaveBeenCalledWith(2);
-      expect(cli.emit).toHaveBeenCalledWith('stop', [error, 2]);
-    });
-
-    it('unwraps streams', () => {
-      const spy = jest.spyOn(cli, 'unwrapStream');
-
-      cli.exit(null, 2);
-
-      expect(spy).toHaveBeenCalledTimes(2);
-    });
-
-    it('displays logs on success', () => {
-      cli.logs.push('foo');
-
-      const spy = jest.spyOn(cli, 'displayLogs');
-
-      cli.exit(null, 0);
-
-      expect(spy).toHaveBeenCalledWith(['foo']);
-    });
-
-    it('displays error logs on failure', () => {
-      cli.errorLogs.push('foo');
-
-      const spy = jest.spyOn(cli, 'displayLogs');
-
-      cli.exit(new Error('Oops'), 1);
-
-      expect(spy).toHaveBeenCalledWith(['foo']);
-    });
-
-    it('triggers a final render', () => {
-      const spy = jest.fn();
-      const error = new Error('Oops');
-
-      cli.handleFinalRender = spy;
-      cli.exit(error, 1);
-
-      expect(spy).toHaveBeenCalledWith(error);
-    });
-
-    it('copies logs to error logs if persist is true', () => {
-      cli.logs.push('Hello');
-
-      expect(cli.errorLogs).toEqual([]);
-
-      cli.exit(new Error('Oops'), 2, true);
-
-      expect(cli.logs).toEqual([]);
-      expect(cli.errorLogs).toEqual(['Hello']);
-    });
-
-    it('doesnt copy logs if not an error', () => {
-      cli.logs.push('Hello');
-
-      expect(cli.errorLogs).toEqual([]);
-
-      cli.exit(null, 0, true);
-
-      expect(cli.logs).toEqual(['Hello']);
-      expect(cli.errorLogs).toEqual([]);
-    });
-  });
-
-  describe('flushBufferedOutput()', () => {
-    it('doesnt output if no buffer', () => {
-      cli.flushBufferedOutput();
-
-      expect(cli.out).not.toHaveBeenCalled();
-    });
-
-    it('output if buffer is not empty', () => {
-      cli.bufferedOutput = 'foo\nbar\nbaz';
-      cli.flushBufferedOutput();
-
-      expect(cli.out).toHaveBeenCalledWith('foo\nbar\nbaz');
-    });
-
-    it('sets last output height', () => {
-      cli.bufferedOutput = 'foo\nbar\nbaz';
-      cli.flushBufferedOutput();
-
-      expect(cli.lastOutputHeight).toBe(2);
+      expect(err).toHaveBeenCalledWith('Hello\n\n\n');
+      expect(err).toHaveBeenCalledWith('Hello\n');
     });
   });
 
@@ -238,178 +84,79 @@ describe('Console', () => {
     });
   });
 
+  describe('flushOutputQueue()', () => {
+    it('flushes buffered streams', () => {
+      const spy = jest.spyOn(cli, 'flushBufferedStreams');
+
+      cli.flushOutputQueue();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('renders an output', () => {
+      const output = new Output(cli, () => 'foo');
+      const eraseSpy = jest.spyOn(output, 'erasePrevious');
+      const renderSpy = jest.spyOn(output, 'render');
+
+      cli.outputQueue.push(output);
+      cli.flushOutputQueue();
+
+      expect(eraseSpy).toHaveBeenCalled();
+      expect(renderSpy).toHaveBeenCalled();
+    });
+
+    it('only renders the first output', () => {
+      const o1 = new Output(cli, () => 'foo');
+      const o2 = new Output(cli, () => 'bar');
+      const eraseSpy = jest.spyOn(o2, 'erasePrevious');
+      const renderSpy = jest.spyOn(o2, 'render');
+
+      cli.outputQueue.push(o1, o2);
+      cli.flushOutputQueue();
+
+      expect(eraseSpy).not.toHaveBeenCalled();
+      expect(renderSpy).not.toHaveBeenCalled();
+    });
+
+    it('removes the output when complete', () => {
+      const output = new Output(cli, () => 'foo');
+      output.enqueue(true);
+
+      cli.outputQueue.push(output);
+      cli.flushOutputQueue();
+
+      expect(cli.outputQueue).toEqual([]);
+    });
+
+    it('re-flushes the queue when output is complete', () => {
+      const spy = jest.spyOn(cli, 'flushOutputQueue');
+      const output = new Output(cli, () => 'foo');
+      output.enqueue(true);
+
+      cli.outputQueue.push(output);
+      cli.flushOutputQueue();
+
+      expect(spy).not.toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('handleFailure()', () => {
     it('calls exit with error', () => {
       const error = new Error('Oops');
 
-      cli.exit = jest.fn();
+      cli.stop = jest.fn();
       cli.handleFailure(error);
 
-      expect(cli.exit).toHaveBeenCalledWith(error, 1, true);
+      expect(cli.stop).toHaveBeenCalledWith(error, true);
     });
   });
 
   describe('handleSignal()', () => {
     it('calls exit with error', () => {
-      cli.exit = jest.fn();
+      cli.stop = jest.fn();
       cli.handleSignal();
 
-      expect(cli.exit).toHaveBeenCalledWith('Process has been terminated.', 1, true);
-    });
-  });
-
-  describe('handleRender()', () => {
-    let timeoutSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      cli.on('render', () => {
-        cli.write('Rendering something...', 1);
-      });
-
-      timeoutSpy = jest.spyOn(global, 'clearTimeout');
-    });
-
-    afterEach(() => {
-      timeoutSpy.mockRestore();
-    });
-
-    it('calls clearTimeout if render timer set', () => {
-      // @ts-ignore
-      cli.renderTimer = 1;
-      cli.handleRender();
-
-      expect(timeoutSpy).toHaveBeenCalled();
-    });
-
-    it('calls clearTimeout if refresh timer set', () => {
-      // @ts-ignore
-      cli.refreshTimer = 1;
-      cli.handleRender();
-
-      expect(timeoutSpy).toHaveBeenCalled();
-    });
-
-    it('triggers `render` event', () => {
-      const spy = jest.spyOn(cli, 'emit');
-
-      cli.handleRender();
-
-      expect(spy).toHaveBeenCalledWith('render');
-    });
-
-    it('triggers `error` event if an error', () => {
-      const spy = jest.spyOn(cli, 'emit');
-      const error = new Error('Oops');
-
-      cli.handleRender(error);
-
-      expect(spy).toHaveBeenCalledWith('error', [error]);
-    });
-
-    it('displays live logs', () => {
-      cli.liveLogs.push('Log');
-      cli.handleRender();
-
-      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
-    });
-
-    it('increases output line height when live logs are present', () => {
-      cli.handleRender();
-
-      expect(cli.lastOutputHeight).toBe(1);
-
-      cli.liveLogs.push('Log');
-      cli.handleRender();
-
-      expect(cli.lastOutputHeight).toBe(3);
-    });
-
-    it('doesnt trigger `error` event if no error', () => {
-      const spy = jest.spyOn(cli, 'emit');
-      const error = new Error('Oops');
-
-      cli.handleRender();
-
-      expect(spy).not.toHaveBeenCalledWith('error', [error]);
-    });
-
-    it('doesnt append a footer if not final', () => {
-      cli.tool.options.footer = 'Footer';
-      cli.handleRender();
-
-      expect(cli.out).toHaveBeenCalledWith(expect.not.stringContaining('Footer'));
-    });
-
-    it('doesnt prepend a header if not final', () => {
-      cli.tool.options.header = 'Header';
-      cli.handleRender();
-
-      expect(cli.out).toHaveBeenCalledWith(expect.not.stringContaining('Header'));
-    });
-
-    it('doesnt display non-live logs if not final', () => {
-      cli.logs.push('Log');
-      cli.errorLogs.push('Error log');
-      cli.handleRender();
-
-      expect(cli.out).toHaveBeenCalledWith(expect.not.stringContaining('Log'));
-    });
-
-    it('doesnt clear render listeners', () => {
-      cli.handleRender();
-
-      expect(cli.getListeners('render').size).toBe(1);
-    });
-  });
-
-  describe('handleFinalRender()', () => {
-    beforeEach(() => {
-      cli.on('render', () => {
-        cli.write('Rendering something...', 1);
-      });
-
-      cli.on('error', (error: Error) => {
-        cli.write(error.message, 1);
-      });
-    });
-
-    it('displays final output', () => {
-      cli.handleFinalRender();
-
-      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n');
-    });
-
-    it('displays an error after the output', () => {
-      cli.handleFinalRender(new Error('Oops'));
-
-      expect(cli.out).toHaveBeenCalledWith('Rendering something...\nOops\n');
-    });
-
-    it('appends a footer', () => {
-      cli.tool.options.footer = 'Footer';
-      cli.handleFinalRender();
-
-      expect(cli.out).toHaveBeenCalledWith('Rendering something...\nFooter\n');
-    });
-
-    it('prepends a header', () => {
-      cli.tool.options.header = 'Header';
-      cli.handleFinalRender();
-
-      expect(cli.out).toHaveBeenCalledWith('Header\nRendering something...\n');
-    });
-
-    it('displays logs', () => {
-      cli.logs.push('Log');
-      cli.handleFinalRender();
-
-      expect(cli.out).toHaveBeenCalledWith('Rendering something...\n\nLog\n');
-    });
-
-    it('clears render listeners', () => {
-      cli.handleFinalRender();
-
-      expect(cli.getListeners('render').size).toBe(0);
+      expect(cli.stop).toHaveBeenCalledWith('Process has been terminated.', true);
     });
   });
 
@@ -417,7 +164,30 @@ describe('Console', () => {
     it('writes ansi escape code', () => {
       cli.hideCursor();
 
-      expect(cli.out).toHaveBeenCalledWith(ansiEscapes.cursorHide);
+      expect(out).toHaveBeenCalledWith(ansiEscapes.cursorHide);
+    });
+
+    it('sets restore flag', () => {
+      cli.hideCursor();
+
+      expect(cli.restoreCursorOnExit).toBe(true);
+    });
+
+    it('doesnt set restore flag if config is silent', () => {
+      cli.tool.config.silent = true;
+      cli.hideCursor();
+
+      expect(cli.restoreCursorOnExit).toBe(false);
+    });
+  });
+
+  describe('isSilent()', () => {
+    it('returns value from config', () => {
+      expect(cli.isSilent()).toBe(false);
+
+      cli.tool.config.silent = true;
+
+      expect(cli.isSilent()).toBe(true);
     });
   });
 
@@ -432,12 +202,14 @@ describe('Console', () => {
   });
 
   describe('logLive()', () => {
-    it('adds a log', () => {
-      expect(cli.liveLogs).toEqual([]);
+    it('adds a log via `console.log`', () => {
+      const spy = jest.spyOn(process.stdout, 'write');
 
       cli.logLive('foo');
 
-      expect(cli.liveLogs).toEqual(['foo']);
+      expect(spy).toHaveBeenCalledWith('foo');
+
+      spy.mockRestore();
     });
   });
 
@@ -451,58 +223,156 @@ describe('Console', () => {
     });
   });
 
+  describe('out()', () => {
+    it('writes a message to `stdout`', () => {
+      cli.out('Hello');
+
+      expect(out).toHaveBeenCalledWith('Hello');
+    });
+
+    it('doesnt write to `stdout` if config is silent', () => {
+      cli.tool.config.silent = true;
+      cli.out('Hello');
+
+      expect(out).not.toHaveBeenCalled();
+    });
+
+    it('can customize the number of trailing newlines', () => {
+      cli.out('Hello', 3);
+      cli.out('Hello', 1);
+
+      expect(out).toHaveBeenCalledWith('Hello\n\n\n');
+      expect(out).toHaveBeenCalledWith('Hello\n');
+    });
+  });
+
   describe('render()', () => {
-    let spy: jest.SpyInstance;
-    let clearSpy: jest.SpyInstance;
+    it('enqueues an `Output` and doesnt duplicate', () => {
+      expect(cli.outputQueue).toEqual([]);
 
-    beforeEach(() => {
-      jest.useFakeTimers();
-      spy = jest.spyOn(global, 'setTimeout');
-      clearSpy = jest.spyOn(global, 'clearTimeout');
+      const output = new Output(cli, () => 'foo');
+
+      cli.render(output);
+
+      expect(cli.outputQueue).toEqual([output]);
+
+      cli.render(output);
+
+      expect(cli.outputQueue).toEqual([output]);
+    });
+  });
+
+  describe('renderFinalOutput()', () => {
+    it('flushes and stops loop', () => {
+      const queueSpy = jest.spyOn(cli, 'flushOutputQueue');
+      const streamSpy = jest.spyOn(cli, 'flushBufferedStreams');
+      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
+
+      cli.renderFinalOutput(null);
+
+      expect(queueSpy).toHaveBeenCalled();
+      expect(streamSpy).toHaveBeenCalled();
+      expect(loopSpy).toHaveBeenCalled();
     });
 
-    afterEach(() => {
-      spy.mockRestore();
-      clearSpy.mockRestore();
-      jest.useRealTimers();
+    it('marks all output as final and renders', () => {
+      const foo = new Output(cli, () => 'foo');
+      const bar = new Output(cli, () => 'bar');
+      const baz = new Output(cli, () => 'baz');
+
+      cli.outputQueue.push(foo, bar, baz);
+      cli.renderFinalOutput(null);
+
+      expect(foo.isFinal()).toBe(true);
+      expect(bar.isFinal()).toBe(true);
+      expect(baz.isFinal()).toBe(true);
+
+      expect(foo.isComplete()).toBe(true);
+      expect(bar.isComplete()).toBe(true);
+      expect(baz.isComplete()).toBe(true);
+
+      expect(out).toHaveBeenCalledWith('foo\n');
+      expect(out).toHaveBeenCalledWith('bar\n');
+      expect(out).toHaveBeenCalledWith('baz\n');
     });
 
-    it('clears refresh timer', () => {
-      cli.refreshTimer = 1 as any;
-      cli.render();
+    it('displays logs on success', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
 
-      expect(clearSpy).toHaveBeenCalled();
-      expect(cli.refreshTimer).toBeNull();
+      cli.renderFinalOutput(null);
+
+      expect(out).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
     });
 
-    it('schedules a timer', () => {
-      expect(cli.renderTimer).toBeNull();
+    it('doesnt display logs on failure', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
 
-      cli.render();
+      cli.renderFinalOutput(new Error());
 
-      expect(cli.renderTimer).not.toBeNull();
-      expect(spy).toHaveBeenCalled();
+      expect(out).not.toHaveBeenCalled();
     });
 
-    it('doesnt schedule if already set', () => {
-      cli.render();
-      cli.render();
-      cli.render();
+    it('displays error logs on failure', () => {
+      cli.logError('foo');
+      cli.logError('bar');
+      cli.logError('baz');
 
-      expect(spy).toHaveBeenCalledTimes(1);
+      cli.renderFinalOutput(new Error());
+
+      expect(err).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
     });
 
-    it('calls handleRender() after timeout', () => {
-      const renderSpy = jest.fn();
+    it('doesnt display error logs on success', () => {
+      cli.logError('foo');
+      cli.logError('bar');
+      cli.logError('baz');
 
-      cli.handleRender = renderSpy;
-      cli.render();
+      cli.renderFinalOutput(null);
 
-      expect(renderSpy).not.toHaveBeenCalled();
+      expect(err).not.toHaveBeenCalled();
+    });
 
-      jest.runOnlyPendingTimers();
+    it('displays footer on success', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
 
-      expect(renderSpy).toHaveBeenCalled();
+      cli.renderFinalOutput(null);
+
+      expect(out).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
+    });
+
+    it('doesnt display footer on failure', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
+
+      cli.renderFinalOutput(new Error());
+
+      expect(out).not.toHaveBeenCalled();
+    });
+
+    it('emits `error` event on failure', () => {
+      const spy = jest.fn();
+      const error = new Error('Stop');
+
+      cli.on('error', spy);
+      cli.renderFinalOutput(error);
+
+      expect(spy).toHaveBeenCalledWith(error);
+    });
+
+    it('doesnt emit `error` event on success', () => {
+      const spy = jest.fn();
+
+      cli.on('error', spy);
+      cli.renderFinalOutput(null);
+
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
@@ -510,122 +380,185 @@ describe('Console', () => {
     it('writes ansi escape code', () => {
       cli.resetCursor();
 
-      expect(cli.out).toHaveBeenCalledWith(ansiEscapes.cursorTo(0, cli.size().rows));
-    });
-  });
-
-  describe('size()', () => {
-    it('returns columns and rows', () => {
-      const size = cli.size();
-
-      expect(size.columns).toBeDefined();
-      expect(size.rows).toBeDefined();
+      expect(out).toHaveBeenCalledWith(ansiEscapes.cursorTo(0, cliSize().rows));
     });
   });
 
   describe('showCursor()', () => {
     it('writes ansi escape code', () => {
-      const spy = jest.spyOn(process.stdout, 'write');
-
       cli.showCursor();
 
-      expect(spy).toHaveBeenCalledWith(ansiEscapes.cursorShow);
+      expect(out).toHaveBeenCalledWith(ansiEscapes.cursorShow);
+    });
+
+    it('sets restore flag to off', () => {
+      cli.showCursor();
+
+      expect(cli.restoreCursorOnExit).toBe(false);
     });
   });
 
-  describe('startBackgroundTimer()', () => {
-    let spy: jest.SpyInstance;
-    let clearSpy: jest.SpyInstance;
+  describe('start()', () => {
+    it('triggers the initial process methods', () => {
+      cli.wrapStreams = jest.fn();
+      cli.displayHeader = jest.fn();
+      cli.startRenderLoop = jest.fn();
+      cli.start([]);
 
+      expect(cli.wrapStreams).toHaveBeenCalled();
+      expect(cli.displayHeader).toHaveBeenCalled();
+      expect(cli.startRenderLoop).toHaveBeenCalled();
+    });
+
+    it('emits `start` event', () => {
+      const spy = jest.fn();
+
+      cli.on('start', spy);
+      cli.wrapStreams = jest.fn();
+      cli.displayHeader = jest.fn();
+      cli.startRenderLoop = jest.fn();
+      cli.start([1, 2, 3]);
+
+      expect(spy).toHaveBeenCalledWith(1, 2, 3);
+    });
+  });
+
+  describe('startRenderLoop()', () => {
     beforeEach(() => {
       jest.useFakeTimers();
-      spy = jest.spyOn(global, 'setTimeout');
-      clearSpy = jest.spyOn(global, 'clearTimeout');
     });
 
     afterEach(() => {
-      spy.mockRestore();
-      clearSpy.mockRestore();
       jest.useRealTimers();
     });
 
-    it('clears refresh timer', () => {
-      cli.refreshTimer = 1 as any;
-      cli.startBackgroundTimer();
+    it('sets a timer', () => {
+      expect(cli.renderTimer).toBeNull();
 
-      expect(clearSpy).toHaveBeenCalled();
-      expect(cli.refreshTimer).not.toBe(1);
+      cli.startRenderLoop();
+
+      expect(cli.renderTimer).not.toBeNull();
     });
 
-    it('schedules a timer', () => {
-      expect(cli.refreshTimer).toBeNull();
+    it('flushes output queue and restarts loop', () => {
+      cli.flushOutputQueue = jest.fn();
+      cli.startRenderLoop();
 
-      cli.startBackgroundTimer();
+      const id = cli.renderTimer;
 
-      expect(cli.refreshTimer).not.toBeNull();
-      expect(spy).toHaveBeenCalled();
-    });
+      jest.advanceTimersByTime(100);
 
-    it('calls handleRender() after timeout', () => {
-      const renderSpy = jest.fn();
-
-      cli.handleRender = renderSpy;
-      cli.render();
-
-      expect(renderSpy).not.toHaveBeenCalled();
-
-      jest.runOnlyPendingTimers();
-
-      expect(renderSpy).toHaveBeenCalled();
+      expect(cli.flushOutputQueue).toHaveBeenCalled();
+      expect(cli.renderTimer).not.toEqual(id);
     });
   });
 
-  describe('strip()', () => {
-    it('stips ANSI escape codes', () => {
-      expect(cli.strip(chalk.red('foo'))).toBe('foo');
+  describe('stop()', () => {
+    it('sets `stopping` flag', () => {
+      expect(cli.stopping).toBe(false);
+
+      cli.stop();
+
+      expect(cli.stopping).toBe(true);
+    });
+
+    it('only triggers once if stopping', () => {
+      const spy = jest.spyOn(cli, 'renderFinalOutput');
+
+      cli.stop();
+      cli.stop();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls `stop` with null (no error)', () => {
+      const spy = jest.fn();
+
+      cli.on('stop', spy);
+      cli.stop();
+
+      expect(spy).toHaveBeenCalledWith(null);
+    });
+
+    it('calls `stop` with string', () => {
+      const spy = jest.fn();
+
+      cli.on('stop', spy);
+      cli.stop('Oops');
+
+      expect(spy).toHaveBeenCalledWith(new Error('Oops'));
+    });
+
+    it('calls `stop` with error', () => {
+      const spy = jest.fn();
+      const error = new Error('Oops');
+
+      cli.on('stop', spy);
+      cli.stop(error);
+
+      expect(spy).toHaveBeenCalledWith(error);
+    });
+
+    it('renders final output', () => {
+      const spy = jest.spyOn(cli, 'renderFinalOutput');
+
+      cli.stop();
+
+      expect(spy).toHaveBeenCalledWith(null);
+    });
+
+    it('renders final output with an error', () => {
+      const spy = jest.spyOn(cli, 'renderFinalOutput');
+
+      cli.stop('Oops');
+
+      expect(spy).toHaveBeenCalledWith(new Error('Oops'));
+    });
+
+    it('unwraps streams', () => {
+      const spy = jest.spyOn(cli, 'unwrapStreams');
+
+      cli.stop();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws the error if forced', () => {
+      expect(() => {
+        cli.stop('Thrown', true);
+      }).toThrowError('Thrown');
+    });
+
+    it('copies logs to error logs if persist is true', () => {
+      cli.logs.push('Hello');
+
+      expect(cli.errorLogs).toEqual([]);
+
+      cli.stop(new Error('Oops'));
+
+      expect(cli.logs).toEqual([]);
+      expect(cli.errorLogs).toEqual(['Hello']);
+    });
+
+    it('doesnt copy logs if not an error', () => {
+      cli.logs.push('Hello');
+
+      expect(cli.errorLogs).toEqual([]);
+
+      cli.stop();
+
+      expect(cli.logs).toEqual(['Hello']);
+      expect(cli.errorLogs).toEqual([]);
     });
   });
 
-  describe('truncate()', () => {
-    it('truncates with ANSI escape codes', () => {
-      expect(cli.truncate(chalk.red('foobar'), 3)).not.toBe(chalk.red('foobar'));
-    });
-  });
+  describe('stopRenderLoop()', () => {
+    it('it clears the timer', () => {
+      // @ts-ignore
+      cli.renderTimer = 123;
+      cli.stopRenderLoop();
 
-  describe('wrap()', () => {
-    it('wraps with ANSI escape codes', () => {
-      expect(cli.wrap(chalk.red('foobar'), 3)).toBe(chalk.red('foo\nbar'));
-    });
-  });
-
-  describe('write()', () => {
-    it('adds to buffered output', () => {
-      cli.write('foo');
-      cli.write('bar');
-
-      expect(cli.bufferedOutput).toBe('foobar');
-    });
-
-    it('can control newlines', () => {
-      cli.write('foo', 1);
-      cli.write('bar', 2);
-
-      expect(cli.bufferedOutput).toBe('foo\nbar\n\n');
-    });
-
-    it('doesnt log if silent', () => {
-      cli.tool.config.silent = true;
-      cli.write('foo');
-      cli.write('bar');
-
-      expect(cli.bufferedOutput).toBe('');
-    });
-
-    it('supports prepending', () => {
-      cli.write('foo');
-      cli.write('bar', 0, true);
-
-      expect(cli.bufferedOutput).toBe('barfoo');
+      expect(cli.renderTimer).toBeNull();
     });
   });
 });

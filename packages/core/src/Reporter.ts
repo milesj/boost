@@ -4,19 +4,32 @@
  */
 
 import chalk from 'chalk';
+import cliTruncate from 'cli-truncate';
+import cliSize from 'term-size';
+import stripAnsi from 'strip-ansi';
+import wrapAnsi from 'wrap-ansi';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
+import Output, { Renderer } from './Output';
 import Plugin from './Plugin';
+import Routine from './Routine';
 import Task from './Task';
-import { Color, ColorType, ColorPalette } from './types';
+import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Line = any, Options = {}> extends Plugin<Options> {
+export default class Reporter<Options = {}> extends Plugin<Options> {
+  // eslint-disable-next-line no-magic-numbers
+  static BUFFER = 10;
+
+  static OUTPUT_COMPACT = 1;
+
+  static OUTPUT_NORMAL = 2;
+
+  static OUTPUT_VERBOSE = 3;
+
   // @ts-ignore Set after instantiation
   console: Console;
-
-  lines: Line[] = [];
 
   startTime: number = 0;
 
@@ -30,19 +43,24 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
   }
 
   /**
-   * Add a line to be rendered.
+   * Calculate the current number of tasks that have completed.
    */
-  addLine(line: Line): this {
-    this.lines.push(line);
+  calculateTaskCompletion(tasks: Task<any>[]): number {
+    return tasks.reduce((sum, task) => (task.hasPassed() || task.isSkipped() ? sum + 1 : sum), 0);
+  }
 
-    return this;
+  /**
+   * Create a new output to be rendered with the defined renderer function.
+   */
+  createOutput(renderer: Renderer): Output {
+    return new Output(this.console, renderer);
   }
 
   /**
    * Display an error and it's stack.
    */
   displayError(error: Error): void {
-    this.console.write(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
+    this.console.err(`\n${this.style(error.message, 'failure', ['bold'])}\n`);
 
     // Remove message line from stack
     if (error.stack) {
@@ -55,17 +73,10 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
         'pending',
       );
 
-      this.console.write(stack, 1);
+      this.console.err(stack, 1);
     }
 
-    this.console.write('\n');
-  }
-
-  /**
-   * Find a line using a callback
-   */
-  findLine(callback: (item: Line) => boolean): Line | undefined {
-    return this.lines.find(line => callback(line));
+    this.console.err('\n');
   }
 
   /**
@@ -98,11 +109,9 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
       return 'success';
     } else if (task.hasFailed()) {
       return 'failure';
-    } else if (task.isPending() || task.isRunning()) {
-      return 'pending';
     }
 
-    return 'default';
+    return 'pending';
   }
 
   /**
@@ -114,6 +123,26 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
     const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
 
     return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
+  }
+
+  /**
+   * Return the output level: 1 (compact), 2 (normal), 3 (verbose).
+   */
+  getOutputLevel(): OutputLevel {
+    return this.tool.config.output;
+  }
+
+  /**
+   * Return the root parent (depth of 0) in the current routine tree.
+   */
+  getRootParent(routine: Routine<any, any>): Routine<any, any> {
+    let current = routine;
+
+    while (current.metadata.depth > 0 && current.parent) {
+      current = current.parent;
+    }
+
+    return current;
   }
 
   /**
@@ -134,16 +163,28 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
    * Create an indentation based on the defined length.
    */
   indent(length: number = 0): string {
-    return ' '.repeat(length);
+    return length <= 0 ? '' : ' '.repeat(length);
   }
 
   /**
-   * Remove a line to be rendered.
+   * Return true if the there should be no output.
    */
-  removeLine(callback: (line: Line) => boolean): this {
-    this.lines = this.lines.filter(line => !callback(line));
+  isSilent(): boolean {
+    return this.tool.config.silent;
+  }
 
-    return this;
+  /**
+   * Return size information about the terminal window.
+   */
+  size(): { columns: number; rows: number } {
+    return cliSize();
+  }
+
+  /**
+   * Strip ANSI escape characters from a string.
+   */
+  strip(message: string): string {
+    return stripAnsi(message);
   }
 
   /**
@@ -162,5 +203,31 @@ export default class Reporter<Line = any, Options = {}> extends Plugin<Options> 
     });
 
     return out(message);
+  }
+
+  /**
+   * Truncate a string that contains ANSI escape characters to a specific column width.
+   */
+  truncate(
+    message: string,
+    columns?: number,
+    options?: { position?: 'start' | 'middle' | 'end' },
+  ): string {
+    return cliTruncate(message, columns || this.size().columns, options);
+  }
+
+  /**
+   * Wrap a string that contains ANSI escape characters to a specific column width.
+   */
+  wrap(
+    message: string,
+    columns?: number,
+    options?: { hard?: boolean; trim?: boolean; wordWrap?: boolean },
+  ): string {
+    return wrapAnsi(message, columns || this.size().columns, {
+      hard: true,
+      trim: false,
+      ...options,
+    });
   }
 }

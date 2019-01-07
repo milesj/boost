@@ -20,25 +20,35 @@ export type TaskAction<Ctx extends Context> = (
   task: Task<Ctx>,
 ) => any | Promise<any>;
 
+export interface TaskMetadata {
+  depth: number;
+  index: number;
+  startTime: number;
+  stopTime: number;
+}
+
 export default class Task<Ctx extends Context> extends Emitter {
   action: TaskAction<Ctx> | null = null;
 
   // @ts-ignore Set after instantiation
   context: Ctx;
 
-  title: string = '';
+  title: string;
+
+  metadata: TaskMetadata = {
+    depth: 0,
+    index: 0,
+    startTime: 0,
+    stopTime: 0,
+  };
 
   output: string = '';
 
   parent: Task<Ctx> | null = null;
 
-  startTime: number = 0;
-
   status: Status = STATUS_PENDING;
 
   statusText: string = '';
-
-  stopTime: number = 0;
 
   tasks: Task<Ctx>[] = [];
 
@@ -73,6 +83,13 @@ export default class Task<Ctx extends Context> extends Emitter {
   }
 
   /**
+   * Return true if the task has been completed in any form.
+   */
+  isComplete(): boolean {
+    return this.hasPassed() || this.hasFailed() || this.isSkipped();
+  }
+
+  /**
    * Return true if the task has not been executed yet.
    */
   isPending(): boolean {
@@ -98,26 +115,26 @@ export default class Task<Ctx extends Context> extends Emitter {
    */
   async run<T>(context: Ctx, value?: T): Promise<any> {
     this.setContext(context);
+    this.emit('run', [value]);
 
     if (this.isSkipped() || !this.action) {
       this.status = STATUS_SKIPPED;
-      this.emit('skip');
+      this.emit('skip', [value]);
 
       return Promise.resolve(value);
     }
 
     this.status = STATUS_RUNNING;
-    this.startTime = Date.now();
-    this.emit('run', [value]);
+    this.metadata.startTime = Date.now();
 
     try {
       this.output = await this.action(context, value, this);
       this.status = STATUS_PASSED;
-      this.stopTime = Date.now();
+      this.metadata.stopTime = Date.now();
       this.emit('pass', [this.output]);
     } catch (error) {
       this.status = STATUS_FAILED;
-      this.stopTime = Date.now();
+      this.metadata.stopTime = Date.now();
       this.emit('fail', [error]);
 
       throw error;

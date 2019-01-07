@@ -13,6 +13,15 @@ export default class Emitter {
   listeners: { [eventName: string]: Set<EventListener> } = {};
 
   /**
+   * Remove all listeners for the defined event name.
+   */
+  clearListeners(eventName: string): this {
+    this.getListeners(eventName).clear();
+
+    return this;
+  }
+
+  /**
    * Syncronously execute listeners for the defined event and arguments.
    */
   emit(eventName: string, args: EventArguments = []): this {
@@ -36,15 +45,6 @@ export default class Emitter {
 
   //   return value;
   // }
-
-  /**
-   * Remove all listeners for the defined event name.
-   */
-  clearListeners(eventName: string): this {
-    this.getListeners(eventName).clear();
-
-    return this;
-  }
 
   /**
    * Return all event names with registered listeners.

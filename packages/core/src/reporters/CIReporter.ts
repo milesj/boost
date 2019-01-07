@@ -17,6 +17,7 @@ export default class CIReporter extends Reporter {
       .on('stop', this.handleStop)
       .on('task', this.handleTask)
       .on('routine', this.handleRoutine)
+      .on('routine.skip', this.handleRoutineSkip)
       .on('routine.pass', this.handleRoutinePass)
       .on('routine.fail', this.handleRoutineFail);
   }
@@ -24,6 +25,10 @@ export default class CIReporter extends Reporter {
   handleRoutine = () => {
     this.routineCount += 1;
     this.console.out('.');
+  };
+
+  handleRoutineSkip = () => {
+    this.console.out(this.style('.', 'warning'));
   };
 
   handleRoutinePass = () => {

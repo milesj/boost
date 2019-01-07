@@ -25,6 +25,7 @@ describe('CIReporter', () => {
       expect(spy).toHaveBeenCalledWith('stop', expect.anything());
       expect(spy).toHaveBeenCalledWith('task', expect.anything());
       expect(spy).toHaveBeenCalledWith('routine', expect.anything());
+      expect(spy).toHaveBeenCalledWith('routine.skip', expect.anything());
       expect(spy).toHaveBeenCalledWith('routine.pass', expect.anything());
       expect(spy).toHaveBeenCalledWith('routine.fail', expect.anything());
     });
@@ -59,6 +60,14 @@ describe('CIReporter', () => {
       reporter.handleRoutine();
 
       expect(outSpy).toHaveBeenCalledWith('.');
+    });
+  });
+
+  describe('handleRoutineSkip()', () => {
+    it('logs a period', () => {
+      reporter.handleRoutineSkip();
+
+      expect(outSpy).toHaveBeenCalledWith(chalk.yellow('.'));
     });
   });
 

@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 import Reporter from '../src/Reporter';
+import Output from '../src/Output';
 import Task from '../src/Task';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestConsole, createTestTool } from './helpers';
+import { createTestConsole, createTestTool, createTestRoutine } from './helpers';
 
 describe('Reporter', () => {
-  let reporter: Reporter<any, any>;
+  let reporter: Reporter<any>;
 
   beforeEach(() => {
     reporter = new Reporter();
@@ -24,13 +25,45 @@ describe('Reporter', () => {
     });
   });
 
-  describe('addLine()', () => {
-    it('adds a line to the list', () => {
-      expect(reporter.lines).toEqual([]);
+  describe('calculateTaskCompletion()', () => {
+    it('returns a total', () => {
+      const task1 = new Task('one', () => {});
+      const task2 = new Task('two', () => {});
+      const task3 = new Task('three', () => {});
 
-      reporter.addLine('foo');
+      task2.status = STATUS_PASSED;
 
-      expect(reporter.lines).toEqual(['foo']);
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(1);
+
+      task1.status = STATUS_PASSED;
+
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
+    });
+
+    it('includes skipped', () => {
+      const task1 = new Task('one', () => {});
+      const task2 = new Task('two', () => {});
+      const task3 = new Task('three', () => {}).skip();
+
+      task2.status = STATUS_PASSED;
+
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
+    });
+
+    it('supports routines', () => {
+      const task1 = createTestRoutine(null, 'one');
+      const task2 = createTestRoutine(null, 'two');
+      const task3 = createTestRoutine(null, 'three').skip();
+
+      task2.status = STATUS_PASSED;
+
+      expect(reporter.calculateTaskCompletion([task1, task2, task3])).toBe(2);
+    });
+  });
+
+  describe('createOutput()', () => {
+    it('returns an `Output` instance', () => {
+      expect(reporter.createOutput(() => 'foo')).toBeInstanceOf(Output);
     });
   });
 
@@ -38,19 +71,7 @@ describe('Reporter', () => {
     it('writes to stderr', () => {
       reporter.displayError(new Error('Oops'));
 
-      expect(reporter.console.write).toHaveBeenCalledTimes(3);
-    });
-  });
-
-  describe('findLine()', () => {
-    it('returns undefined if not found', () => {
-      expect(reporter.findLine(line => line === 'foo')).toBeUndefined();
-    });
-
-    it('returns the line', () => {
-      reporter.lines.push('foo');
-
-      expect(reporter.findLine(line => line === 'foo')).toBe('foo');
+      expect(reporter.console.err).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -146,6 +167,30 @@ describe('Reporter', () => {
     });
   });
 
+  describe('getOutputLevel()', () => {
+    it('returns value from config', () => {
+      expect(reporter.getOutputLevel()).toBe(2);
+
+      reporter.tool.config.output = 1;
+
+      expect(reporter.getOutputLevel()).toBe(1);
+    });
+  });
+
+  describe('getRootParent()', () => {
+    it('returns the root parent of a routine tree', () => {
+      const a = createTestRoutine(reporter.tool as any);
+      const b = createTestRoutine(reporter.tool as any);
+      const c = createTestRoutine(reporter.tool as any);
+
+      a.pipe(b.pipe(c));
+
+      expect(reporter.getRootParent(c)).toBe(a);
+      expect(reporter.getRootParent(b)).toBe(a);
+      expect(reporter.getRootParent(a)).toBe(a);
+    });
+  });
+
   describe('handleBaseStart()', () => {
     const oldCI = process.env.CI;
 
@@ -180,14 +225,30 @@ describe('Reporter', () => {
       expect(reporter.indent(1)).toBe(' ');
       expect(reporter.indent(3)).toBe('   ');
     });
+
+    it('handles negative numbers and 0', () => {
+      expect(reporter.indent(0)).toBe('');
+      expect(reporter.indent(-1)).toBe('');
+      expect(reporter.indent(-3)).toBe('');
+    });
   });
 
-  describe('removeLine()', () => {
-    it('removes a line', () => {
-      reporter.lines.push('foo', 'bar', 'baz');
-      reporter.removeLine(line => line === 'foo');
+  describe('isSilent()', () => {
+    it('returns value from config', () => {
+      expect(reporter.isSilent()).toBe(false);
 
-      expect(reporter.lines).toEqual(['bar', 'baz']);
+      reporter.tool.config.silent = true;
+
+      expect(reporter.isSilent()).toBe(true);
+    });
+  });
+
+  describe('size()', () => {
+    it('returns columns and rows', () => {
+      const size = reporter.size();
+
+      expect(size.columns).toBeDefined();
+      expect(size.rows).toBeDefined();
     });
   });
 
@@ -216,6 +277,24 @@ describe('Reporter', () => {
       expect(reporter.style('foo', 'pending', ['bold', 'dim', 'italic'])).toBe(
         chalk.gray.bold.dim.italic('foo'),
       );
+    });
+  });
+
+  describe('strip()', () => {
+    it('stips ANSI escape codes', () => {
+      expect(reporter.strip(chalk.red('foo'))).toBe('foo');
+    });
+  });
+
+  describe('truncate()', () => {
+    it('truncates with ANSI escape codes', () => {
+      expect(reporter.truncate(chalk.red('foobar'), 3)).not.toBe(chalk.red('foobar'));
+    });
+  });
+
+  describe('wrap()', () => {
+    it('wraps with ANSI escape codes', () => {
+      expect(reporter.wrap(chalk.red('foobar'), 3)).toBe(chalk.red('foo\nbar'));
     });
   });
 });

@@ -17,7 +17,7 @@ export default class Plugin<Options = {}> {
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
   // @ts-ignore Set after instantiation
-  tool: Tool<any, any>;
+  tool: Tool<any>;
 
   constructor(options: Partial<Options> = {}) {
     // @ts-ignore Handle in sub-classes or bootstrap()

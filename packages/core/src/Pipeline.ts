@@ -3,12 +3,13 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import exit from 'exit';
 import Context from './Context';
 import CrashLogger from './CrashLogger';
 import Routine from './Routine';
 import CoreTool from './Tool';
 
-export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any, any>> extends Routine<
+export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> extends Routine<
   Ctx,
   Tool,
   Tool['config']
@@ -25,31 +26,37 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any, an
     this.tool = tool;
     this.tool.debug('Instantiating pipeline');
 
+    // Child routines should start at 0
+    this.metadata.depth = -1;
+
     this.setContext(context);
   }
 
   /**
    * Execute all routines in order.
    */
-  async run<T>(initialValue?: T): Promise<any> {
+  run<T>(initialValue?: T): Promise<any> {
     const { console: cli } = this.tool;
-    let result = null;
 
     this.tool.debug('Running pipeline');
 
-    cli.start([this.routines]);
+    cli.start([this.routines, initialValue]);
 
-    try {
-      result = await this.serializeRoutines(initialValue);
-      cli.exit(null, 0);
-    } catch (error) {
-      // Create a log of the failure
-      new CrashLogger(this.tool).log(error);
+    return this.serializeRoutines(initialValue)
+      .then(result => {
+        cli.stop();
+        process.exitCode = 0;
 
-      result = error;
-      cli.exit(error, 1);
-    }
+        return result;
+      })
+      .catch(error => {
+        // Create a log of the failure
+        new CrashLogger(this.tool).log(error);
 
-    return result;
+        cli.stop(error);
+        exit(error.code || 1);
+
+        return error;
+      });
   }
 }

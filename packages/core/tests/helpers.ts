@@ -76,11 +76,11 @@ export const TEST_PACKAGE_JSON = {
   version: '0.0.0',
 };
 
-export const TEST_TOOL_CONFIG = {
+export const TEST_TOOL_CONFIG: TestToolConfig = {
   debug: false,
   extends: [],
   locale: '',
-  output: 3,
+  output: 2,
   plugins: [],
   reporters: [],
   settings: {},
@@ -121,10 +121,13 @@ export function createTestRoutine(
 }
 
 export function createTestConsole(): Console {
-  const cli = new Console(createTestTool());
+  const cli = new Console(createTestTool(), {
+    stderr: jest.fn(),
+    stdout: jest.fn(),
+  });
+
   cli.err = jest.fn();
   cli.out = jest.fn();
-  cli.write = jest.fn();
 
   return cli;
 }

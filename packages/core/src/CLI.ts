@@ -8,7 +8,7 @@ import { Argv } from 'yargs';
 import Tool from './Tool';
 
 export default class CLI {
-  static registerGlobalOptions<T = {}>(app: Argv<T>, tool: Tool<any, any>) {
+  static registerGlobalOptions<T = {}>(app: Argv<T>, tool: Tool<any>) {
     app
       .option('config', {
         default: '',

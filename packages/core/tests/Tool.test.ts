@@ -3,7 +3,7 @@ import { string } from 'optimal';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
-import DefaultReporter from '../src/reporters/DefaultReporter';
+import BoostReporter from '../src/reporters/BoostReporter';
 import enableDebug from '../src/helpers/enableDebug';
 import {
   getFixturePath,
@@ -124,10 +124,11 @@ describe('Tool', () => {
     });
 
     it('sets console on reporter', () => {
-      const reporter = new DefaultReporter();
+      const reporter = new BoostReporter();
 
       toolWithPlugins.addPlugin('reporter', reporter);
 
+      // @ts-ignore Allow protected access
       expect(reporter.console).toBe(toolWithPlugins.console);
     });
 
@@ -168,23 +169,32 @@ describe('Tool', () => {
   });
 
   describe('exit()', () => {
+    it('accepts null (no error)', () => {
+      const spy = jest.fn();
+
+      tool.console.stop = spy;
+      tool.exit();
+
+      expect(spy).toHaveBeenCalledWith(null, false);
+    });
+
     it('accepts a string', () => {
       const spy = jest.fn();
 
-      tool.console.exit = spy;
-      tool.exit('Oops', 123);
+      tool.console.stop = spy;
+      tool.exit('Oops');
 
-      expect(spy).toHaveBeenCalledWith('Oops', 123);
+      expect(spy).toHaveBeenCalledWith('Oops', true);
     });
 
     it('accepts an error', () => {
       const error = new Error('Oh nooo');
       const spy = jest.fn();
 
-      tool.console.exit = spy;
+      tool.console.stop = spy;
       tool.exit(error);
 
-      expect(spy).toHaveBeenCalledWith(error, 1);
+      expect(spy).toHaveBeenCalledWith(error, true);
     });
   });
 
@@ -488,7 +498,7 @@ describe('Tool', () => {
     it('loads default reporter if none defined', () => {
       tool.loadReporters();
 
-      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(DefaultReporter);
+      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(BoostReporter);
     });
   });
 
@@ -533,11 +543,17 @@ describe('Tool', () => {
 
   describe('logLive()', () => {
     it('sends log to console', () => {
+      const old = console.log.bind(console);
+      const log = jest.fn();
       const spy = jest.spyOn(tool.console, 'logLive');
+
+      console.log = log;
 
       tool.logLive('Some message: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('Some message: foo');
+
+      console.log = old;
     });
   });
 

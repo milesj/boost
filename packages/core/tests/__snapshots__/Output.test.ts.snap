@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Output constructor() errors if renderer is not a function 1`] = `"Output renderer must be a function."`;

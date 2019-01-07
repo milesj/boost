@@ -38,11 +38,11 @@ export default class ConfigLoader {
 
   parsedFiles: { [path: string]: boolean } = {};
 
-  tool: Tool<any, any>;
+  tool: Tool<any>;
 
   workspaceRoot: string = '';
 
-  constructor(tool: Tool<any, any>) {
+  constructor(tool: Tool<any>) {
     this.debug = tool.createDebugger('config-loader');
     this.tool = tool;
   }
@@ -289,7 +289,7 @@ export default class ConfigLoader {
         debug: bool(),
         extends: array(string()),
         locale: string().empty(),
-        output: number(3).between(1, 3, true),
+        output: number(2).between(1, 3, true),
         settings: settingsBlueprint,
         silent: bool(),
         theme: string('default'),

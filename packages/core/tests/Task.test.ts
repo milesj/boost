@@ -60,6 +60,48 @@ describe('Task', () => {
     });
   });
 
+  describe('isComplete()', () => {
+    it('returns true when passed', () => {
+      expect(task.isComplete()).toBe(false);
+
+      task.status = STATUS_PASSED;
+
+      expect(task.isComplete()).toBe(true);
+    });
+
+    it('returns true when failed', () => {
+      expect(task.isComplete()).toBe(false);
+
+      task.status = STATUS_FAILED;
+
+      expect(task.isComplete()).toBe(true);
+    });
+
+    it('returns true when skipped', () => {
+      expect(task.isComplete()).toBe(false);
+
+      task.status = STATUS_SKIPPED;
+
+      expect(task.isComplete()).toBe(true);
+    });
+
+    it('returns false when pending', () => {
+      expect(task.isComplete()).toBe(false);
+
+      task.status = STATUS_PENDING;
+
+      expect(task.isComplete()).toBe(false);
+    });
+
+    it('returns false when running', () => {
+      expect(task.isComplete()).toBe(false);
+
+      task.status = STATUS_RUNNING;
+
+      expect(task.isComplete()).toBe(false);
+    });
+  });
+
   describe('isPending()', () => {
     it('returns a boolean for STATUS_PENDING status state', () => {
       expect(task.isPending()).toBe(true);
@@ -159,8 +201,8 @@ describe('Task', () => {
     it('sets times on success', async () => {
       await task.run({}, 123);
 
-      expect(task.startTime).not.toBe(0);
-      expect(task.stopTime).not.toBe(0);
+      expect(task.metadata.startTime).not.toBe(0);
+      expect(task.metadata.stopTime).not.toBe(0);
     });
 
     it('sets times on failure', async () => {
@@ -174,8 +216,8 @@ describe('Task', () => {
         // Skip
       }
 
-      expect(task.startTime).not.toBe(0);
-      expect(task.stopTime).not.toBe(0);
+      expect(task.metadata.startTime).not.toBe(0);
+      expect(task.metadata.stopTime).not.toBe(0);
     });
 
     it('passes task as 3rd argument to action', async () => {
@@ -195,7 +237,7 @@ describe('Task', () => {
 
       await task.skip().run({}, 123);
 
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith(123);
     });
 
     it('emits `run` event when running', async () => {

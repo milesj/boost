@@ -23,7 +23,7 @@ import Emitter from './Emitter';
 import ModuleLoader, { Constructor } from './ModuleLoader';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
-import DefaultReporter from './reporters/DefaultReporter';
+import BoostReporter from './reporters/BoostReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import enableDebug from './helpers/enableDebug';
 import handleMerge from './helpers/handleMerge';
@@ -38,6 +38,7 @@ import {
   PluginSetting,
   WorkspaceMetadata,
   WorkspacePackageConfig,
+  OutputLevel,
 } from './types';
 
 export interface ToolOptions {
@@ -58,7 +59,7 @@ export interface ToolConfig {
   debug: boolean;
   extends: string[];
   locale: string;
-  output: number;
+  output: OutputLevel;
   reporters: PluginSetting<Reporter>;
   settings: { [key: string]: any };
   silent: boolean;
@@ -78,11 +79,11 @@ export interface PluginType<T> {
   singularName: string;
 }
 
-const translatorCache: Map<Tool<any, any>, Translator> = new Map();
+const translatorCache: Map<Tool<any>, Translator> = new Map();
 
 export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
-  Config extends ToolConfig
+  Config extends ToolConfig = ToolConfig
 > extends Emitter {
   args?: Arguments;
 
@@ -155,7 +156,7 @@ export default class Tool<
       loadBoostModules: true,
     });
 
-    /* istanbul ignore next */
+    // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
       // Add a reporter to catch errors during initialization
       this.addPlugin('reporter', new ErrorReporter());
@@ -265,8 +266,8 @@ export default class Tool<
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null, code: number = 1): this {
-    this.console.exit(message, code);
+  exit(message: string | Error | null = null): this {
+    this.console.stop(message, message !== null);
 
     return this;
   }
@@ -518,7 +519,7 @@ export default class Tool<
     ) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 
-      this.addPlugin('reporter', new DefaultReporter());
+      this.addPlugin('reporter', new BoostReporter());
     }
 
     return this;

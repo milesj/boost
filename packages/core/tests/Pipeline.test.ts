@@ -1,7 +1,10 @@
+import exit from 'exit';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
-import { createTestTool, createTestRoutine } from './helpers';
 import Context from '../src/Context';
+import { createTestTool, createTestRoutine } from './helpers';
+
+jest.mock('exit');
 
 describe('Pipeline', () => {
   let pipeline: Pipeline<any, any>;
@@ -21,14 +24,20 @@ describe('Pipeline', () => {
 
       expect(pipeline.context).toEqual({ foo: 'bar' });
     });
+
+    it('sets default depth to -1', () => {
+      pipeline = new Pipeline(createTestTool(), { foo: 'bar' });
+
+      expect(pipeline.metadata.depth).toBe(-1);
+    });
   });
 
   describe('run()', () => {
-    let exitSpy: jest.Mock;
+    let stopSpy: jest.Mock;
 
     beforeEach(() => {
-      exitSpy = jest.fn();
-      pipeline.tool.console.exit = exitSpy;
+      stopSpy = jest.fn();
+      pipeline.tool.console.stop = stopSpy;
     });
 
     it('starts console with routine', async () => {
@@ -38,18 +47,18 @@ describe('Pipeline', () => {
       pipeline.tool.console.emit = spy;
       pipeline.pipe(routine);
 
-      await pipeline.run();
+      await pipeline.run(123);
 
-      expect(spy).toHaveBeenCalledWith('start', [[routine]]);
+      expect(spy).toHaveBeenCalledWith('start', [[routine], 123]);
     });
 
-    it('exits the console on success', async () => {
+    it('stops the console on success', async () => {
       await pipeline.run();
 
-      expect(exitSpy).toHaveBeenCalledWith(null, 0);
+      expect(stopSpy).toHaveBeenCalledWith();
     });
 
-    it('exits the console on failure', async () => {
+    it('stops the console on failure', async () => {
       class FailureRoutine extends Routine<any, any> {
         execute() {
           return Promise.reject(new Error('Oops'));
@@ -62,7 +71,8 @@ describe('Pipeline', () => {
         expect(error).toEqual(new Error('Oops'));
       }
 
-      expect(exitSpy).toHaveBeenCalledWith(new Error('Oops'), 1);
+      expect(stopSpy).toHaveBeenCalledWith(new Error('Oops'));
+      expect(exit).toHaveBeenCalledWith(1);
     });
   });
 });

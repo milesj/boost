@@ -23,12 +23,12 @@ export default class ModuleLoader<Tm> {
 
   loadBoostModules: boolean;
 
-  tool: Tool<any, any>;
+  tool: Tool<any>;
 
   typeName: string;
 
   constructor(
-    tool: Tool<any, any>,
+    tool: Tool<any>,
     typeName: string,
     contract: Constructor<Tm> | null = null,
     loadBoostModules: boolean = false,

@@ -11,10 +11,11 @@ const tool = new Tool(
 );
 
 new Pipeline(tool)
-  .pipe(new MultiTaskRoutine('multiple', 'Multi-task routine #1'))
-  .pipe(new MultiTaskRoutine('skipped', 'Multi-task routine #2').skip(true))
-  .pipe(new MultiSubRoutine('parallel', 'Parallel routines', { parallel: true }))
-  .pipe(new MultiTaskRoutine('again', 'Multi-task routine #3', { parallel: true }))
+  .pipe(new MultiTaskRoutine('skipped', 'Skipped routine').skip(true))
+  // .pipe(new MultiTaskRoutine('multiple', 'Multi-task routine'))
+  // .pipe(new MultiTaskRoutine('multi', 'Multi-task routine again'))
+  // .pipe(new MultiSubRoutine('parallel', 'Parallel routines', { parallel: true }))
   // .pipe(new MultiTaskRoutine('error', 'Routine that will fail', { error: true }))
-  // .pipe(new MultiRoutine('subs', 'Multi-routine', { deep: true }))
+  .pipe(new MultiTaskRoutine('parallel', 'Parallel tasks', { parallel: true }))
+  .pipe(new MultiSubRoutine('subs', 'Multi-routine', { deep: true }))
   .run();
