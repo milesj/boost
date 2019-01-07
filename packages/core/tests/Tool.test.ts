@@ -225,65 +225,71 @@ describe('Tool', () => {
 
   describe('getWorkspacePackagePaths()', () => {
     it('returns an empty array if no workspace config', () => {
-      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-no-packages'))).toEqual([]);
+      expect(
+        tool.getWorkspacePackagePaths({ root: getFixturePath('workspace-no-packages') }),
+      ).toEqual([]);
     });
 
     it('returns an empty array if no workspace packages', () => {
-      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-mismatch'))).toEqual([]);
+      expect(tool.getWorkspacePackagePaths({ root: getFixturePath('workspace-mismatch') })).toEqual(
+        [],
+      );
     });
 
     it('returns an array of all packages within all workspaces', () => {
-      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-multiple'))).toEqual([
-        getFixturePath('workspace-multiple', 'packages/baz'),
-        getFixturePath('workspace-multiple', 'packages/foo'),
-        getFixturePath('workspace-multiple', 'modules/bar'),
-      ]);
+      expect(tool.getWorkspacePackagePaths({ root: getFixturePath('workspace-multiple') })).toEqual(
+        [
+          getFixturePath('workspace-multiple', 'packages/baz'),
+          getFixturePath('workspace-multiple', 'packages/foo'),
+          getFixturePath('workspace-multiple', 'modules/bar'),
+        ],
+      );
     });
 
     it('returns an array of all packages within all workspaces as relative paths', () => {
-      expect(tool.getWorkspacePackagePaths(getFixturePath('workspace-multiple'), true)).toEqual([
-        'packages/baz',
-        'packages/foo',
-        'modules/bar',
-      ]);
+      expect(
+        tool.getWorkspacePackagePaths({
+          root: getFixturePath('workspace-multiple'),
+          relative: true,
+        }),
+      ).toEqual(['packages/baz', 'packages/foo', 'modules/bar']);
     });
   });
 
   describe('getWorkspacePaths', () => {
     it('returns an empty array if no workspace config', () => {
-      expect(tool.getWorkspacePaths(getFixturePath('workspace-no-packages'))).toEqual([]);
+      expect(tool.getWorkspacePaths({ root: getFixturePath('workspace-no-packages') })).toEqual([]);
     });
 
     it('returns an array of workspaces for yarn `workspaces` property', () => {
-      expect(tool.getWorkspacePaths(getFixturePath('workspace-yarn'))).toEqual([
+      expect(tool.getWorkspacePaths({ root: getFixturePath('workspace-yarn') })).toEqual([
         getFixturePath('workspace-yarn', 'packages/*'),
       ]);
     });
 
     it('returns an array of workspaces for yarn no hoist `workspaces.packages` property', () => {
-      expect(tool.getWorkspacePaths(getFixturePath('workspace-yarn-nohoist'))).toEqual([
+      expect(tool.getWorkspacePaths({ root: getFixturePath('workspace-yarn-nohoist') })).toEqual([
         getFixturePath('workspace-yarn-nohoist', 'packages/*'),
       ]);
     });
 
     it('returns an array of workspaces for lerna `packages` property', () => {
-      expect(tool.getWorkspacePaths(getFixturePath('workspace-lerna'))).toEqual([
+      expect(tool.getWorkspacePaths({ root: getFixturePath('workspace-lerna') })).toEqual([
         getFixturePath('workspace-lerna', 'packages/*'),
       ]);
     });
 
     it('returns an array of all workspaces', () => {
-      expect(tool.getWorkspacePaths(getFixturePath('workspace-multiple'))).toEqual([
+      expect(tool.getWorkspacePaths({ root: getFixturePath('workspace-multiple') })).toEqual([
         getFixturePath('workspace-multiple', 'packages/*'),
         getFixturePath('workspace-multiple', 'modules/*'),
       ]);
     });
 
     it('returns an array of all workspaces as relative paths', () => {
-      expect(tool.getWorkspacePaths(getFixturePath('workspace-multiple'), true)).toEqual([
-        'packages/*',
-        'modules/*',
-      ]);
+      expect(
+        tool.getWorkspacePaths({ root: getFixturePath('workspace-multiple'), relative: true }),
+      ).toEqual(['packages/*', 'modules/*']);
     });
   });
 
@@ -504,12 +510,14 @@ describe('Tool', () => {
 
   describe('loadWorkspacePackages()', () => {
     it('returns an empty array if no workspace config', () => {
-      expect(tool.loadWorkspacePackages(getFixturePath('workspace-no-packages'))).toEqual([]);
+      expect(tool.loadWorkspacePackages({ root: getFixturePath('workspace-no-packages') })).toEqual(
+        [],
+      );
     });
 
     it('loads all package.jsons and appends metadata', () => {
       const root = getFixturePath('workspace-multiple');
-      const packages = tool.loadWorkspacePackages(root);
+      const packages = tool.loadWorkspacePackages({ root });
 
       expect(packages).toEqual([
         {

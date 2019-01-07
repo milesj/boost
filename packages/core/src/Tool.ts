@@ -79,6 +79,11 @@ export interface PluginType<T> {
   singularName: string;
 }
 
+export interface WorkspaceOptions {
+  relative?: boolean;
+  root?: string;
+}
+
 const translatorCache: Map<Tool<any>, Translator> = new Map();
 
 export default class Tool<
@@ -312,12 +317,12 @@ export default class Tool<
    * Return a list of absolute package folder paths, across all workspaces,
    * for the defined root.
    */
-  getWorkspacePackagePaths(customRoot: string = '', relative: boolean = false): string[] {
-    const root = customRoot || this.options.root;
+  getWorkspacePackagePaths(options: WorkspaceOptions = {}): string[] {
+    const root = options.root || this.options.root;
 
     return glob
-      .sync(this.getWorkspacePaths(root, true), {
-        absolute: !relative,
+      .sync(this.getWorkspacePaths({ ...options, relative: true, root }), {
+        absolute: !options.relative,
         cwd: root,
         onlyDirectories: true,
         onlyFiles: false,
@@ -329,8 +334,8 @@ export default class Tool<
    * Return a list of workspace folder paths, with wildstar glob in tact,
    * for the defined root.
    */
-  getWorkspacePaths(customRoot: string = '', relative: boolean = false): string[] {
-    const root = customRoot || this.options.root;
+  getWorkspacePaths(options: WorkspaceOptions = {}): string[] {
+    const root = options.root || this.options.root;
     const pkgPath = path.join(root, 'package.json');
     const lernaPath = path.join(root, 'lerna.json');
     const workspacePaths = [];
@@ -357,7 +362,7 @@ export default class Tool<
       }
     }
 
-    if (relative) {
+    if (options.relative) {
       return workspacePaths;
     }
 
@@ -433,14 +438,21 @@ export default class Tool<
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
    */
-  loadWorkspacePackages(customRoot: string = ''): WorkspacePackageConfig[] {
-    const root = customRoot || this.options.root;
+  loadWorkspacePackages(options: WorkspaceOptions = {}): WorkspacePackageConfig[] {
+    const root = options.root || this.options.root;
 
     return glob
-      .sync(this.getWorkspacePaths(root, true).map(ws => `${ws}/package.json`), {
-        absolute: true,
-        cwd: root,
-      })
+      .sync(
+        this.getWorkspacePaths({
+          ...options,
+          relative: true,
+          root,
+        }).map(ws => `${ws}/package.json`),
+        {
+          absolute: true,
+          cwd: root,
+        },
+      )
       .map(filePath => {
         const jsonPath = String(filePath);
 
