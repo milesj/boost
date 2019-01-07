@@ -5,6 +5,7 @@
 
 import Reporter from '../Reporter';
 import Routine from '../Routine';
+import Task from '../Task';
 
 export interface LineParts {
   prefix: string;
@@ -34,7 +35,7 @@ export default class BoostReporter extends Reporter {
     routine.on('fail', handler);
   };
 
-  getLineParts(routine: Routine<any, any>): LineParts {
+  getRoutineLineParts(routine: Routine<any, any>): LineParts {
     const { depth, startTime, stopTime } = routine.metadata;
 
     // Prefix
@@ -74,12 +75,29 @@ export default class BoostReporter extends Reporter {
     };
   }
 
-  getStepProgress(routine: Routine<any, any>): string {
-    return `[${routine.metadata.index + 1}/${routine.parent!.routines.length}]`;
+  getStepProgress(task: Task<any>): string {
+    if (!task.parent) {
+      return '';
+    }
+
+    const collection = task instanceof Routine ? task.parent.routines : task.parent.tasks;
+
+    return `[${task.metadata.index + 1}/${collection.length}]`;
+  }
+
+  getTaskLine(task: Task<any>): string {
+    let line = this.strip(task.statusText || task.title).trim();
+
+    if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
+      line += ' ';
+      line += this.getStepProgress(task);
+    }
+
+    return line;
   }
 
   renderLines(routine: Routine<any, any>): string {
-    const { prefix, suffix, title } = this.getLineParts(routine);
+    const { prefix, suffix, title } = this.getRoutineLineParts(routine);
     const { columns } = this.size();
     const prefixLength = this.strip(prefix).length;
     const suffixLength = this.strip(suffix).length;
@@ -99,14 +117,8 @@ export default class BoostReporter extends Reporter {
     // Active task lines
     routine.tasks.forEach(task => {
       if (task.isRunning()) {
-        let line = this.strip(task.statusText || task.title).trim();
-
-        if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
-          line += ` [${task.metadata.index}/${task.parent!.tasks.length}]`;
-        }
-
         output += this.truncate(
-          this.indent(prefixLength) + this.style(line, 'pending'),
+          this.indent(prefixLength) + this.style(this.getTaskLine(task), 'pending'),
           columns - Reporter.BUFFER,
         );
         output += '\n';

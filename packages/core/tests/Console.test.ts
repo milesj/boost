@@ -262,8 +262,118 @@ describe('Console', () => {
     });
   });
 
-  describe.skip('renderFinalOutput()', () => {
-    // TODO
+  describe('renderFinalOutput()', () => {
+    it('flushes and stops loop', () => {
+      const queueSpy = jest.spyOn(cli, 'flushOutputQueue');
+      const streamSpy = jest.spyOn(cli, 'flushBufferedStreams');
+      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
+
+      cli.renderFinalOutput(null);
+
+      expect(queueSpy).toHaveBeenCalled();
+      expect(streamSpy).toHaveBeenCalled();
+      expect(loopSpy).toHaveBeenCalled();
+    });
+
+    it('marks all output as final and renders', () => {
+      const foo = new Output(cli, () => 'foo');
+      const bar = new Output(cli, () => 'bar');
+      const baz = new Output(cli, () => 'baz');
+
+      cli.outputQueue.push(foo, bar, baz);
+      cli.renderFinalOutput(null);
+
+      expect(foo.isFinal()).toBe(true);
+      expect(bar.isFinal()).toBe(true);
+      expect(baz.isFinal()).toBe(true);
+
+      expect(foo.isComplete()).toBe(true);
+      expect(bar.isComplete()).toBe(true);
+      expect(baz.isComplete()).toBe(true);
+
+      expect(out).toHaveBeenCalledWith('foo\n');
+      expect(out).toHaveBeenCalledWith('bar\n');
+      expect(out).toHaveBeenCalledWith('baz\n');
+    });
+
+    it('displays logs on success', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
+
+      cli.renderFinalOutput(null);
+
+      expect(out).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
+    });
+
+    it('doesnt display logs on failure', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
+
+      cli.renderFinalOutput(new Error());
+
+      expect(out).not.toHaveBeenCalled();
+    });
+
+    it('displays error logs on failure', () => {
+      cli.logError('foo');
+      cli.logError('bar');
+      cli.logError('baz');
+
+      cli.renderFinalOutput(new Error());
+
+      expect(err).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
+    });
+
+    it('doesnt display error logs on success', () => {
+      cli.logError('foo');
+      cli.logError('bar');
+      cli.logError('baz');
+
+      cli.renderFinalOutput(null);
+
+      expect(err).not.toHaveBeenCalled();
+    });
+
+    it('displays footer on success', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
+
+      cli.renderFinalOutput(null);
+
+      expect(out).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
+    });
+
+    it('doesnt display footer on failure', () => {
+      cli.log('foo');
+      cli.log('bar');
+      cli.log('baz');
+
+      cli.renderFinalOutput(new Error());
+
+      expect(out).not.toHaveBeenCalled();
+    });
+
+    it('emits `error` event on failure', () => {
+      const spy = jest.fn();
+      const error = new Error('Stop');
+
+      cli.on('error', spy);
+      cli.renderFinalOutput(error);
+
+      expect(spy).toHaveBeenCalledWith(error);
+    });
+
+    it('doesnt emit `error` event on success', () => {
+      const spy = jest.fn();
+
+      cli.on('error', spy);
+      cli.renderFinalOutput(null);
+
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   describe('resetCursor()', () => {
