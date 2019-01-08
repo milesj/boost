@@ -10,9 +10,7 @@ import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 import Tool from './Tool';
-import { Debugger } from './types';
-
-export type Constructor<T> = new (...args: any[]) => T;
+import { Constructor, Debugger } from './types';
 
 export type OptionsObject = { [key: string]: any };
 

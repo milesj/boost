@@ -7,6 +7,9 @@
 
 import debug from 'debug';
 import i18next from 'i18next';
+import ModuleLoader from './ModuleLoader';
+
+export type Constructor<T> = new (...args: any[]) => T;
 
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
@@ -15,7 +18,20 @@ export interface Debugger extends debug.IDebugger {
 
 export interface Translator extends i18next.i18n {}
 
+// PLUGINS
+
+export interface PluginType<T> {
+  afterBootstrap: ((plugin: T) => void) | null;
+  beforeBootstrap: ((plugin: T) => void) | null;
+  contract: Constructor<T>;
+  loader: ModuleLoader<T>;
+  pluralName: string;
+  singularName: string;
+}
+
 export type PluginSetting<P> = (string | { [key: string]: any } | P)[];
+
+// CONSOLE
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
 
@@ -80,7 +96,6 @@ export interface PackageConfig {
   contributors?: string[] | PeopleSetting[];
   files?: string[];
   main?: string;
-  module?: string; // Webpack
   browser?: string;
   bin?: any;
   man?: string | string[];
@@ -97,10 +112,16 @@ export interface PackageConfig {
   cpu?: string[];
   private?: boolean;
   publishConfig?: SettingMap;
-  // Other custom fields
-  [key: string]: any;
+  // Webpack
+  module?: string;
+  sideEffects?: boolean | string[];
 }
 
 export interface WorkspacePackageConfig extends PackageConfig {
   workspace: WorkspaceMetadata;
+}
+
+export interface WorkspaceOptions {
+  relative?: boolean;
+  root?: string;
 }

@@ -20,7 +20,7 @@ import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
-import ModuleLoader, { Constructor } from './ModuleLoader';
+import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 import BoostReporter from './reporters/BoostReporter';
@@ -32,12 +32,15 @@ import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
 import {
+  Constructor,
   Debugger,
   Translator,
   PackageConfig,
+  PluginType,
   PluginSetting,
   WorkspaceMetadata,
   WorkspacePackageConfig,
+  WorkspaceOptions,
   OutputLevel,
 } from './types';
 
@@ -68,20 +71,6 @@ export interface ToolConfig {
 
 export interface ToolPluginRegistry {
   reporter: Reporter;
-}
-
-export interface PluginType<T> {
-  afterBootstrap: ((plugin: T) => void) | null;
-  beforeBootstrap: ((plugin: T) => void) | null;
-  contract: Constructor<T>;
-  loader: ModuleLoader<T>;
-  pluralName: string;
-  singularName: string;
-}
-
-export interface WorkspaceOptions {
-  relative?: boolean;
-  root?: string;
 }
 
 const translatorCache: Map<Tool<any>, Translator> = new Map();

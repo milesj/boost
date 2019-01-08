@@ -66,7 +66,7 @@ export default class ConfigLoader {
    */
   findConfigInPackageJSON(pkg: PackageConfig): ConfigPathOrObject | null {
     const configName = this.getConfigName();
-    const config = pkg[configName];
+    const config = (pkg as any)[configName];
 
     this.debug.invariant(
       !!config,

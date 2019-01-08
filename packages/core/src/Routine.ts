@@ -97,7 +97,7 @@ export default class Routine<
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  async execute<T>(context: Ctx, value?: T): Promise<any> {
+  async execute<T>(context: Ctx, value: T): Promise<any> {
     throw new Error('execute() must be defined asynchronously.');
   }
 

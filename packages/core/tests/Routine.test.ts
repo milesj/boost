@@ -158,7 +158,7 @@ describe('Routine', () => {
       try {
         routine = new UndefinedRoutine('undefined', 'title');
 
-        await routine.execute({});
+        await routine.execute({}, undefined);
       } catch (error) {
         expect(error).toEqual(new Error('execute() must be defined asynchronously.'));
       }
@@ -981,7 +981,7 @@ describe('Routine', () => {
         ({ options } = this); // eslint-disable-line babel/no-invalid-this
       });
 
-      await routine.tasks[0].run({});
+      await routine.tasks[0].run({}, undefined);
 
       expect(options).toEqual(routine.options);
     });

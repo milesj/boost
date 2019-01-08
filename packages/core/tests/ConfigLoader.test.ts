@@ -61,6 +61,7 @@ describe('ConfigLoader', () => {
       expect(
         loader.findConfigInPackageJSON({
           ...TEST_PACKAGE_JSON,
+          // @ts-ignore Allow custom key
           testBoost: {
             foo: 'bar',
           },
@@ -74,6 +75,7 @@ describe('ConfigLoader', () => {
       expect(
         loader.findConfigInPackageJSON({
           ...TEST_PACKAGE_JSON,
+          // @ts-ignore Allow custom key
           testBoost: './foo.json',
         }),
       ).toEqual({
@@ -358,6 +360,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: [],
         };
 
@@ -370,6 +373,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: { locale: 'en' },
         };
 
@@ -382,6 +386,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: 'test-boost-preset',
         };
 
@@ -396,6 +401,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: { locale: 'en' },
         };
 
@@ -409,6 +415,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: {
             plugins: [
               'foo',
@@ -436,6 +443,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: { foo: 'bar' },
         };
         loader.tool.options.configBlueprint = {
@@ -451,6 +459,7 @@ describe('ConfigLoader', () => {
         loader.package = {
           ...TEST_PACKAGE_JSON,
           name: 'boost',
+          // @ts-ignore Allow custom key
           testBoost: { settings: { foo: 'bar' } },
         };
         loader.tool.options.settingsBlueprint = {
