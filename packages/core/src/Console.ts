@@ -34,7 +34,9 @@ export default class Console extends Emitter {
 
   restoreCursorOnExit: boolean = false;
 
-  stopping: boolean = false;
+  started: boolean = false;
+
+  stopped: boolean = false;
 
   tool: Tool<any>;
 
@@ -284,11 +286,16 @@ export default class Console extends Emitter {
    * Start the console by wrapping streams and buffering output.
    */
   start(args: any[] = []): this {
+    if (this.started) {
+      return this;
+    }
+
     this.debug('Starting console render loop');
     this.wrapStreams();
     this.displayHeader();
     this.startRenderLoop();
     this.emit('start', args);
+    this.started = true;
 
     return this;
   }
@@ -307,11 +314,9 @@ export default class Console extends Emitter {
    * Stop the console rendering process.
    */
   stop(message: string | Error | null = null, force: boolean = false) {
-    if (this.stopping) {
+    if (this.stopped) {
       return;
     }
-
-    this.stopping = true;
 
     let error = null;
 
@@ -330,6 +335,8 @@ export default class Console extends Emitter {
     this.emit('stop', [error]);
     this.renderFinalOutput(error);
     this.unwrapStreams();
+    this.stopped = true;
+    this.started = false;
 
     if (error && force) {
       throw error;

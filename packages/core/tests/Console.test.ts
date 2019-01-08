@@ -399,6 +399,23 @@ describe('Console', () => {
   });
 
   describe('start()', () => {
+    it('sets `started` flag', () => {
+      expect(cli.started).toBe(false);
+
+      cli.start();
+
+      expect(cli.started).toBe(true);
+    });
+
+    it('only triggers once if started', () => {
+      const spy = jest.spyOn(cli, 'wrapStreams');
+
+      cli.start();
+      cli.start();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
     it('triggers the initial process methods', () => {
       cli.wrapStreams = jest.fn();
       cli.displayHeader = jest.fn();
@@ -454,12 +471,22 @@ describe('Console', () => {
   });
 
   describe('stop()', () => {
-    it('sets `stopping` flag', () => {
-      expect(cli.stopping).toBe(false);
+    it('sets `stopped` flag', () => {
+      expect(cli.stopped).toBe(false);
 
       cli.stop();
 
-      expect(cli.stopping).toBe(true);
+      expect(cli.stopped).toBe(true);
+    });
+
+    it('sets `started` flag', () => {
+      cli.start();
+
+      expect(cli.started).toBe(true);
+
+      cli.stop();
+
+      expect(cli.started).toBe(false);
     });
 
     it('only triggers once if stopping', () => {
