@@ -53,7 +53,7 @@ export default class BoostReporter extends Reporter {
       prefix.push(this.indent(depth * 2));
     }
 
-    prefix.push(this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']), ' ');
+    prefix.push(this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']));
 
     // Suffix
     const suffix = [];
@@ -105,6 +105,7 @@ export default class BoostReporter extends Reporter {
 
     // Routine line
     output += prefix;
+    output += ' ';
     output += this.truncate(title, columns - prefixLength - suffixLength - Reporter.BUFFER);
 
     if (suffix) {
@@ -115,15 +116,16 @@ export default class BoostReporter extends Reporter {
     output += '\n';
 
     // Active task lines
-    routine.tasks.forEach(task => {
-      if (task.isRunning()) {
+    this.sortTasksByStartTime(routine.tasks)
+      .filter(task => task.isRunning())
+      .forEach(task => {
         output += this.truncate(
-          this.indent(prefixLength) + this.style(this.getTaskLine(task), 'pending'),
+          this.indent(prefixLength - routine.key.length + 2) +
+            this.style(this.getTaskLine(task), 'pending'),
           columns - Reporter.BUFFER,
         );
         output += '\n';
-      }
-    });
+      });
 
     // Only show sub-routines while still running or when verbose
     if (routine.isComplete()) {
@@ -135,9 +137,11 @@ export default class BoostReporter extends Reporter {
     }
 
     // Active routine lines
-    routine.routines.forEach(sub => {
-      output += this.renderLines(sub);
-    });
+    this.sortTasksByStartTime(routine.routines)
+      .filter(task => !task.isPending())
+      .forEach(sub => {
+        output += this.renderLines(sub);
+      });
 
     return output;
   }

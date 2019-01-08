@@ -181,6 +181,13 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
   }
 
   /**
+   * Sort all tasks by start time and filter to remove pending tasks.
+   */
+  sortTasksByStartTime<T extends Task<any>>(tasks: T[]): T[] {
+    return tasks.sort((a, b) => a.metadata.startTime - b.metadata.startTime);
+  }
+
+  /**
    * Strip ANSI escape characters from a string.
    */
   strip(message: string): string {

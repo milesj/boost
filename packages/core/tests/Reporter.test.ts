@@ -252,6 +252,20 @@ describe('Reporter', () => {
     });
   });
 
+  describe('sortTasksByStartTime()', () => {
+    it('sorts by start time', () => {
+      const foo = createTestRoutine();
+      const bar = createTestRoutine();
+      const baz = createTestRoutine();
+
+      foo.metadata.startTime = 100;
+      bar.metadata.startTime = 150;
+      baz.metadata.startTime = 50;
+
+      expect(reporter.sortTasksByStartTime([foo, bar, baz])).toEqual([baz, foo, bar]);
+    });
+  });
+
   describe('style()', () => {
     it('colors default', () => {
       expect(reporter.style('foo')).toBe(chalk.white('foo'));

@@ -119,7 +119,7 @@ describe('BoostReporter', () => {
   describe('getRoutineLineParts()', () => {
     it('handles skipped', () => {
       expect(reporter.getRoutineLineParts(child2)).toEqual({
-        prefix: '        ' + chalk.yellow.bold('CHILD2') + ' ',
+        prefix: '        ' + chalk.yellow.bold('CHILD2'),
         suffix: chalk.yellow('skipped'),
         title: 'Child #2',
       });
@@ -129,7 +129,7 @@ describe('BoostReporter', () => {
       child2.status = STATUS_FAILED;
 
       expect(reporter.getRoutineLineParts(child2)).toEqual({
-        prefix: '        ' + chalk.red.bold('CHILD2') + ' ',
+        prefix: '        ' + chalk.red.bold('CHILD2'),
         suffix: chalk.red('failed'),
         title: 'Child #2',
       });
@@ -139,7 +139,7 @@ describe('BoostReporter', () => {
       child2.status = STATUS_PASSED;
 
       expect(reporter.getRoutineLineParts(child2)).toEqual({
-        prefix: '        ' + chalk.green.bold('CHILD2') + ' ',
+        prefix: '        ' + chalk.green.bold('CHILD2'),
         suffix: '',
         title: 'Child #2',
       });
@@ -152,7 +152,7 @@ describe('BoostReporter', () => {
 
       it('returns parent parts', () => {
         expect(reporter.getRoutineLineParts(parent)).toEqual({
-          prefix: chalk.gray.bold('PARENT') + ' ',
+          prefix: chalk.gray.bold('PARENT'),
           suffix: '',
           title: 'Parent',
         });
@@ -160,7 +160,7 @@ describe('BoostReporter', () => {
 
       it('returns child parts', () => {
         expect(reporter.getRoutineLineParts(child1)).toEqual({
-          prefix: '  ' + chalk.gray.bold('CHILD1') + ' ',
+          prefix: '  ' + chalk.gray.bold('CHILD1'),
           suffix: '',
           title: 'Child #1',
         });
@@ -174,7 +174,7 @@ describe('BoostReporter', () => {
 
       it('returns parent parts', () => {
         expect(reporter.getRoutineLineParts(parent)).toEqual({
-          prefix: chalk.gray('[1/1]') + ' ' + chalk.gray.bold('PARENT') + ' ',
+          prefix: chalk.gray('[1/1]') + ' ' + chalk.gray.bold('PARENT'),
           suffix: '0.00s',
           title: 'Parent',
         });
@@ -182,7 +182,7 @@ describe('BoostReporter', () => {
 
       it('returns child parts', () => {
         expect(reporter.getRoutineLineParts(child1)).toEqual({
-          prefix: '        ' + chalk.gray.bold('CHILD1') + ' ',
+          prefix: '        ' + chalk.gray.bold('CHILD1'),
           suffix: '0.00s',
           title: 'Child #1',
         });
@@ -196,7 +196,7 @@ describe('BoostReporter', () => {
 
       it('returns parent parts', () => {
         expect(reporter.getRoutineLineParts(parent)).toEqual({
-          prefix: chalk.gray('[1/1]') + ' ' + chalk.gray.bold('PARENT') + ' ',
+          prefix: chalk.gray('[1/1]') + ' ' + chalk.gray.bold('PARENT'),
           suffix: '0.00s',
           title: 'Parent',
         });
@@ -204,7 +204,7 @@ describe('BoostReporter', () => {
 
       it('returns child parts', () => {
         expect(reporter.getRoutineLineParts(child1)).toEqual({
-          prefix: '        ' + chalk.gray.bold('CHILD1') + ' ',
+          prefix: '        ' + chalk.gray.bold('CHILD1'),
           suffix: '0.00s',
           title: 'Child #1',
         });
@@ -278,8 +278,8 @@ describe('BoostReporter', () => {
 
       expect(reporter.renderLines(child1)).toBe(
         `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0.00s)')}\n` +
-          `               ${chalk.gray('Task #2 [2/3]')}\n` +
-          `               ${chalk.gray('Task #3 [3/3]')}\n`,
+          `          ${chalk.gray('Task #2 [2/3]')}\n` +
+          `          ${chalk.gray('Task #3 [3/3]')}\n`,
       );
     });
 
@@ -290,6 +290,27 @@ describe('BoostReporter', () => {
           `        ${chalk.yellow.bold('CHILD2')} Child #2 ${chalk.gray(
             `(${chalk.yellow('skipped')})`,
           )}\n`,
+      );
+    });
+
+    it('sorts sub-routines by start time', () => {
+      child1.metadata.startTime = 100;
+      child2.metadata.startTime = 10;
+      child2.status = STATUS_RUNNING;
+
+      expect(reporter.renderLines(parent)).toBe(
+        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0.00s)')}\n` +
+          `        ${chalk.gray.bold('CHILD2')} Child #2 ${chalk.gray(`(-0.01s)`)}\n` +
+          `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(-0.10s)')}\n`,
+      );
+    });
+
+    it('filters pending sub-routines', () => {
+      child2.status = STATUS_PENDING;
+
+      expect(reporter.renderLines(parent)).toBe(
+        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0.00s)')}\n` +
+          `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0.00s)')}\n`,
       );
     });
 
