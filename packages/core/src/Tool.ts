@@ -427,7 +427,9 @@ export default class Tool<
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
    */
-  loadWorkspacePackages(options: WorkspaceOptions = {}): WorkspacePackageConfig[] {
+  loadWorkspacePackages<CustomConfig extends object = {}>(
+    options: WorkspaceOptions = {},
+  ): (WorkspacePackageConfig & CustomConfig)[] {
     const root = options.root || this.options.root;
 
     return glob
