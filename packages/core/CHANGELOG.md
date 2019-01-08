@@ -25,6 +25,7 @@ customizable, and properly handles outside interferrence, like `console` logs or
 #### 🛠 Internal
 
 - Changed default output level to `2` (normal) from `3` (verbose).
+- TS: `execute()` and `run()` methods now type the value as `any` instead of using generics.
 
 # 1.3.0 - 2019-01-01
 

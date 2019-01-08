@@ -113,7 +113,7 @@ export default class Task<Ctx extends Context> extends Emitter {
   /**
    * Run the current task by executing it and performing any before and after processes.
    */
-  async run<T>(context: Ctx, value: T): Promise<any> {
+  async run(context: Ctx, value: any): Promise<any> {
     this.setContext(context);
     this.emit('run', [value]);
 

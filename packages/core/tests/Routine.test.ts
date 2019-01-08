@@ -280,7 +280,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.parallelizeRoutines(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: true,
@@ -304,7 +304,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.parallelizeRoutines(value, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -365,7 +365,7 @@ describe('Routine', () => {
       routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.parallelizeTasks(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: 456,
@@ -383,7 +383,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.parallelizeTasks(value, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -453,7 +453,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.poolRoutines(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: true,
@@ -477,7 +477,7 @@ describe('Routine', () => {
 
       routine.action = () => routine.poolRoutines();
 
-      const response = await routine.run(context);
+      const response = await routine.run(context, undefined);
 
       expect(context.count).toBe(16);
       expect(response).toEqual({
@@ -498,7 +498,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.poolRoutines(value, {}, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -527,7 +527,7 @@ describe('Routine', () => {
       routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.poolTasks(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: 456,
@@ -565,7 +565,7 @@ describe('Routine', () => {
 
       routine.action = () => routine.poolTasks();
 
-      const response = await routine.run({});
+      const response = await routine.run({}, undefined);
 
       expect(count).toBe(4);
       expect(response).toEqual({
@@ -581,7 +581,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.poolTasks(value, {}, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -691,7 +691,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.serializeRoutines(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: true,
@@ -715,7 +715,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.serializeRoutines(value, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -774,7 +774,7 @@ describe('Routine', () => {
       routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.serializeTasks(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: 456,
@@ -792,7 +792,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.serializeTasks(value, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -818,7 +818,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.synchronizeRoutines(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: true,
@@ -842,7 +842,7 @@ describe('Routine', () => {
 
       routine.action = () => routine.synchronizeRoutines();
 
-      const response = await routine.run(context);
+      const response = await routine.run(context, undefined);
 
       expect(context.count).toBe(16);
       expect(response).toEqual({
@@ -863,7 +863,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.synchronizeRoutines(value, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);
@@ -892,7 +892,7 @@ describe('Routine', () => {
       routine = new ContextRoutine('context', 'title');
       routine.action = (con, value) => routine.synchronizeTasks(value);
 
-      await routine.run(context);
+      await routine.run(context, undefined);
 
       expect(context).toEqual({
         bar: 456,
@@ -930,7 +930,7 @@ describe('Routine', () => {
 
       routine.action = () => routine.synchronizeTasks();
 
-      const response = await routine.run({});
+      const response = await routine.run({}, undefined);
 
       expect(count).toBe(4);
       expect(response).toEqual({
@@ -946,7 +946,7 @@ describe('Routine', () => {
 
       routine.action = (con, value) => routine.synchronizeTasks(value, [bar]);
 
-      await routine.run({});
+      await routine.run({}, undefined);
 
       expect(foo.isPending()).toBe(true);
       expect(bar.isPending()).toBe(false);

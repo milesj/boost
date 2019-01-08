@@ -97,7 +97,7 @@ export default class Routine<
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  async execute<T>(context: Ctx, value: T): Promise<any> {
+  async execute(context: Ctx, value: any): Promise<any> {
     throw new Error('execute() must be defined asynchronously.');
   }
 
@@ -207,7 +207,7 @@ export default class Routine<
   /**
    * Trigger processes before and after execution.
    */
-  async run<T>(context: Ctx, value?: T): Promise<any> {
+  async run(context: Ctx, value: any): Promise<any> {
     if (this.exit) {
       return Promise.reject(new Error(this.tool.msg('errors:processInterrupted')));
     }

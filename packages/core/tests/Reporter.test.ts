@@ -262,7 +262,10 @@ describe('Reporter', () => {
       bar.metadata.startTime = 150;
       baz.metadata.startTime = 50;
 
-      expect(reporter.sortTasksByStartTime([foo, bar, baz])).toEqual([baz, foo, bar]);
+      const list = [foo, bar, baz];
+
+      expect(reporter.sortTasksByStartTime(list)).toEqual([baz, foo, bar]);
+      expect(list).toEqual([foo, bar, baz]);
     });
   });
 
