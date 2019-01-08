@@ -234,6 +234,9 @@ export default class Console extends Emitter {
   renderFinalOutput(error: Error | null) {
     this.debug('Rendering final console output');
 
+    // Stop the render loop
+    this.stopRenderLoop();
+
     // Mark all output as final
     this.outputQueue.forEach(output => {
       output.enqueue(true);
@@ -258,9 +261,6 @@ export default class Console extends Emitter {
 
     // Flush any stream output that still exists
     this.flushBufferedStreams();
-
-    // Stop the render loop
-    this.stopRenderLoop();
   }
 
   /**
