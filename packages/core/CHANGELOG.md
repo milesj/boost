@@ -1,3 +1,9 @@
+# 1.4.1 - 2019-01-08
+
+#### 🐞 Fixed
+
+- Fixed `--debug` not enabling in some situations.
+
 # 1.4.0 - 2019-01-07
 
 #### 🎉 Release

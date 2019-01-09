@@ -1,10 +1,10 @@
+import debug from 'debug';
 import path from 'path';
 import { string } from 'optimal';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import BoostReporter from '../src/reporters/BoostReporter';
-import enableDebug from '../src/helpers/enableDebug';
 import {
   getFixturePath,
   copyFixtureToMock,
@@ -14,8 +14,6 @@ import {
   TEST_TOOL_CONFIG,
   TEST_PACKAGE_JSON,
 } from './helpers';
-
-jest.mock('../src/helpers/enableDebug');
 
 class Foo extends Plugin {}
 class Bar extends Plugin {}
@@ -144,16 +142,16 @@ describe('Tool', () => {
 
   describe('createDebugger()', () => {
     it('returns a debug function', () => {
-      const debug = tool.createDebugger('foo');
+      const debugFunc = tool.createDebugger('foo');
 
-      expect(typeof debug).toBe('function');
-      expect(debug.namespace).toBe('test-boost:foo');
+      expect(typeof debugFunc).toBe('function');
+      expect(debugFunc.namespace).toBe('test-boost:foo');
     });
 
     it('provides an invariant function', () => {
-      const debug = tool.createDebugger('foo');
+      const debugFunc = tool.createDebugger('foo');
 
-      expect(typeof debug.invariant).toBe('function');
+      expect(typeof debugFunc.invariant).toBe('function');
     });
   });
 
@@ -345,10 +343,14 @@ describe('Tool', () => {
     });
 
     it('enables debug if debug config is true', () => {
+      const spy = jest.spyOn(debug, 'enable');
+
       tool.args = { $0: '', _: [], debug: true };
       tool.loadConfig();
 
-      expect(enableDebug).toHaveBeenCalledWith('test-boost');
+      expect(spy).toHaveBeenCalledWith('test-boost:*');
+
+      spy.mockRestore();
     });
 
     // it('updates locale if defined', () => {

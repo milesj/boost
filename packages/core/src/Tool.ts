@@ -25,7 +25,6 @@ import Plugin from './Plugin';
 import Reporter from './Reporter';
 import BoostReporter from './reporters/BoostReporter';
 import ErrorReporter from './reporters/ErrorReporter';
-import enableDebug from './helpers/enableDebug';
 import handleMerge from './helpers/handleMerge';
 import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
@@ -410,9 +409,9 @@ export default class Tool<
     // Inherit workspace metadata
     this.options.workspaceRoot = this.configLoader.workspaceRoot;
 
-    // Enable debugger
+    // Enable debugger (a bit late but oh well)
     if (this.config.debug) {
-      enableDebug(this.options.appName);
+      debug.enable(`${this.options.appName}:*`);
     }
 
     // Update locale
