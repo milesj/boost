@@ -2,6 +2,7 @@
 
 #### 🚀 New
 
+- Added `Tool#isCI` method to check if in a CI environment.
 - Deprecated `Tool#loadWorkspacePackages`. Use `Tool#getWorkspacePackages` instead.
 
 #### 🛠 Internal

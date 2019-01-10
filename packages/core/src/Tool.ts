@@ -425,6 +425,13 @@ export default class Tool<
   }
 
   /**
+   * Return true if running in a CI environment.
+   */
+  isCI(): boolean {
+    return envCI().isCi;
+  }
+
+  /**
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
    * @deprecated
@@ -603,7 +610,7 @@ export default class Tool<
 
     // Use a special reporter when in a CI
     // istanbul ignore next
-    if (envCI().isCi && !process.env.BOOST_ENV) {
+    if (this.isCI() && !process.env.BOOST_ENV) {
       loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
 
       this.addPlugin('reporter', new CIReporter());
