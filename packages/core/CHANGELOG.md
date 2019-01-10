@@ -3,10 +3,11 @@
 #### 🚀 New
 
 - Added `Tool#isCI` method to check if in a CI environment.
-- Deprecated `Tool#loadWorkspacePackages`. Use `Tool#getWorkspacePackages` instead.
+- Added `Tool#isPluginEnabled` method to check if a plugin by type has been enabled.
 
 #### 🛠 Internal
 
+- Deprecated `Tool#loadWorkspacePackages`. Use `Tool#getWorkspacePackages` instead.
 - TS: `Tool#loadConfig`, `loadPlugins`, `loadReporters` have been marked `protected`.
 
 # 1.4.1 - 2019-01-08

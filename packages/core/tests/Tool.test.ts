@@ -341,6 +341,50 @@ describe('Tool', () => {
     });
   });
 
+  describe('isPluginEnabled()', () => {
+    it('returns true when using strings and name is found', () => {
+      tool.config.plugins = ['foo'];
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(true);
+    });
+
+    it('returns false when using strings and name not found', () => {
+      tool.config.plugins = ['bar'];
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+
+    it('returns true when using objects and name is found', () => {
+      tool.config.plugins = [{ plugin: 'foo' }];
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(true);
+    });
+
+    it('returns false when using objects and name not found', () => {
+      tool.config.plugins = [{ plugin: 'bar' }];
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+
+    it('returns true when using instances and name matches', () => {
+      const plugin = new Plugin();
+      plugin.name = 'foo';
+
+      tool.config.plugins = [plugin];
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(true);
+    });
+
+    it('returns false when using instances and name doesnt match', () => {
+      const plugin = new Plugin();
+      plugin.name = 'bar';
+
+      tool.config.plugins = [plugin];
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+  });
+
   describe('loadConfig()', () => {
     it('doesnt load if initialized', () => {
       // @ts-ignore

@@ -105,7 +105,6 @@ export default class Tool<
     super();
 
     this.argv = argv;
-
     this.options = optimal(
       options,
       {
@@ -165,7 +164,7 @@ export default class Tool<
    * Add a plugin for a specific contract type and bootstrap with the tool.
    */
   addPlugin<K extends keyof PluginRegistry>(typeName: K, plugin: PluginRegistry[K]): this {
-    const type = this.pluginTypes[typeName];
+    const type = this.getRegisteredPlugin(typeName);
 
     if (!type) {
       throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
@@ -287,11 +286,23 @@ export default class Tool<
    * Return all plugins by type.
    */
   getPlugins<K extends keyof PluginRegistry>(typeName: K): PluginRegistry[K][] {
-    if (!this.pluginTypes[typeName]) {
+    // Trigger check
+    this.getRegisteredPlugin(typeName);
+
+    return this.plugins[typeName]! || [];
+  }
+
+  /**
+   * Return a registered plugin type by name.
+   */
+  getRegisteredPlugin<K extends keyof PluginRegistry>(typeName: K): PluginType<PluginRegistry[K]> {
+    const type = this.pluginTypes[typeName];
+
+    if (!type) {
       throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
     }
 
-    return this.plugins[typeName]! || [];
+    return type as any;
   }
 
   /**
@@ -432,8 +443,46 @@ export default class Tool<
   }
 
   /**
+   * Return true if a plugin by type has been enabled in the configuration file
+   * by property name of the same type.  The following variants are supported:
+   *
+   * - As a string using the plugins name: "foo"
+   * - As an object with a property by plugin type: { plugin: "foo" }
+   * - As an instance of the plugin class: new Plugin()
+   */
+  isPluginEnabled<K extends keyof PluginRegistry>(typeName: K, name: string): boolean {
+    const type = this.getRegisteredPlugin(typeName);
+    const setting = (this.config as any)[type.pluralName] as PluginSetting<any>;
+
+    if (!setting || !Array.isArray(setting)) {
+      return false;
+    }
+
+    return setting.some(value => {
+      if (typeof value === 'string' && value === name) {
+        return true;
+      }
+
+      if (
+        typeof value === 'object' &&
+        value[type.singularName] &&
+        value[type.singularName] === name
+      ) {
+        return true;
+      }
+
+      if (typeof value === 'object' && value.constructor && value.name === name) {
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  /**
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
+   *
    * @deprecated
    */
   loadWorkspacePackages<CustomConfig extends object = {}>(
