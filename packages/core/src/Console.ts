@@ -40,7 +40,7 @@ export default class Console extends Emitter {
 
   tool: Tool<any>;
 
-  writers: typeof BOUND_WRITERS;
+  private writers: typeof BOUND_WRITERS;
 
   constructor(tool: Tool<any>, /* test only */ testWriters: typeof BOUND_WRITERS = BOUND_WRITERS) {
     super();

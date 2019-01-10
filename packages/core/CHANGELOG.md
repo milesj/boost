@@ -4,6 +4,7 @@
 
 - Added `Tool#isCI` method to check if in a CI environment.
 - Added `Tool#isPluginEnabled` method to check if a plugin by type has been enabled.
+- Registered plugins can now define a list of custom NPM `scopes` to lookup modules in.
 
 #### 🛠 Internal
 

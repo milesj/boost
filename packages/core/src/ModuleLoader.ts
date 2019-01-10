@@ -19,7 +19,7 @@ export default class ModuleLoader<Tm> {
 
   debug: Debugger;
 
-  loadBoostModules: boolean;
+  scopes: string[];
 
   tool: Tool<any>;
 
@@ -29,11 +29,11 @@ export default class ModuleLoader<Tm> {
     tool: Tool<any>,
     typeName: string,
     contract: Constructor<Tm> | null = null,
-    loadBoostModules: boolean = false,
+    scopes: string[] = [],
   ) {
     this.contract = contract;
     this.debug = tool.createDebugger(`${typeName}-loader`);
-    this.loadBoostModules = loadBoostModules;
+    this.scopes = scopes;
     this.tool = tool;
     this.typeName = typeName;
   }
@@ -69,12 +69,13 @@ export default class ModuleLoader<Tm> {
 
       modulesToAttempt.push(formatModuleName(appName, typeName, name));
 
-      if (this.loadBoostModules) {
+      // Additional scopes to load
+      this.scopes.forEach(otherScope => {
         modulesToAttempt.push(
-          formatModuleName('boost', typeName, name, true),
-          formatModuleName('boost', typeName, name),
+          formatModuleName(otherScope, typeName, name, true),
+          formatModuleName(otherScope, typeName, name),
         );
-      }
+      });
 
       this.debug('Resolving in order: %s', modulesToAttempt.join(', '));
     }

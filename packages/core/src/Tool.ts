@@ -145,7 +145,7 @@ export default class Tool<
       beforeBootstrap: reporter => {
         reporter.console = this.console;
       },
-      loadBoostModules: true,
+      scopes: ['boost'],
     });
 
     // istanbul ignore next
@@ -545,18 +545,16 @@ export default class Tool<
   registerPlugin<K extends keyof PluginRegistry>(
     typeName: K,
     contract: Constructor<PluginRegistry[K]>,
-    options: {
-      afterBootstrap?: (plugin: PluginRegistry[K]) => void;
-      beforeBootstrap?: (plugin: PluginRegistry[K]) => void;
-      loadBoostModules?: boolean;
-    } = {},
+    options: Partial<
+      Pick<PluginType<PluginRegistry[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'scopes'>
+    > = {},
   ): this {
     if (this.pluginTypes[typeName]) {
       throw new Error(this.msg('errors:pluginContractExists', { typeName }));
     }
 
     const name = String(typeName);
-    const { afterBootstrap = null, beforeBootstrap = null, loadBoostModules = false } = options;
+    const { afterBootstrap = null, beforeBootstrap = null, scopes = [] } = options;
 
     this.debug('Registering new plugin type: %s', chalk.magenta(name));
 
@@ -566,8 +564,9 @@ export default class Tool<
       afterBootstrap,
       beforeBootstrap,
       contract,
-      loader: new ModuleLoader(this, name, contract, loadBoostModules),
+      loader: new ModuleLoader(this, name, contract, scopes),
       pluralName: pluralize(name),
+      scopes,
       singularName: name,
     };
 

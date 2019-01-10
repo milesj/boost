@@ -669,6 +669,7 @@ describe('Tool', () => {
         beforeBootstrap: null,
         contract: Baz,
         loader: expect.anything(),
+        scopes: [],
         singularName: 'baz',
         pluralName: 'bazs',
       });

@@ -18,8 +18,7 @@ export default class CrashLogger {
 
   // istanbul ignore next
   constructor(tool: Tool<any>) {
-    // @ts-ignore Allow private access of pluginTypes
-    const { config, console, options, pluginTypes } = tool;
+    const { config, console, options } = tool;
 
     this.logPath = path.join(options.root, `${options.appName}-error.log`);
 
@@ -56,7 +55,7 @@ export default class CrashLogger {
     this.addTitle('Tool Instance');
     this.add('App name', options.appName);
     this.add('App path', options.appPath);
-    this.add('Plugin types', Object.keys(pluginTypes).join(', '));
+    this.add('Plugin types', Object.keys(tool.getRegisteredPlugins()).join(', '));
     this.add('Scoped package', options.scoped ? 'Yes' : 'No');
     this.add('Root', options.root);
     this.add('Config name', options.configName);

@@ -26,6 +26,7 @@ export interface PluginType<T> {
   contract: Constructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
+  scopes: string[];
   singularName: string;
 }
 

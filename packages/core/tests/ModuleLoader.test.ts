@@ -46,7 +46,7 @@ describe('ModuleLoader', () => {
 
     it('errors for missing node module (with boost)', () => {
       expect(() => {
-        loader.loadBoostModules = true;
+        loader.scopes = ['boost'];
         loader.tool.options.scoped = true;
         loader.importModule('missing');
       }).toThrowErrorMatchingSnapshot();
@@ -142,7 +142,7 @@ describe('ModuleLoader', () => {
       expect(plugin.moduleName).toBe('test-boost-addon-definition');
     });
 
-    it('supports scopeds', () => {
+    it('supports app scopes', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', '@test-boost/plugin-scoped'));
       loader.tool.options.scoped = true;
 
@@ -150,6 +150,16 @@ describe('ModuleLoader', () => {
 
       expect(plugin.name).toBe('scoped');
       expect(plugin.moduleName).toBe('@test-boost/plugin-scoped');
+    });
+
+    it('supports additional scopes', () => {
+      fixtures.push(copyFixtureToMock('plugin-exported-definition', 'custom-scope-plugin-scoped'));
+      loader.scopes = ['custom-scope'];
+
+      const plugin = loader.importModule('scoped');
+
+      expect(plugin.name).toBe('scoped');
+      expect(plugin.moduleName).toBe('custom-scope-plugin-scoped');
     });
   });
 

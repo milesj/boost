@@ -86,7 +86,7 @@ export default class Reporter<Options = {}> extends Plugin<Options> {
     const { theme } = this.tool.config;
     const palette =
       chalk.level >= 2 && theme !== 'default'
-        ? new ModuleLoader<ColorPalette>(this.tool, 'theme', null, true).loadModule(theme)
+        ? new ModuleLoader<ColorPalette>(this.tool, 'theme', null, ['boost']).loadModule(theme)
         : {};
 
     return {
