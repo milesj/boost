@@ -125,13 +125,13 @@ describe('Reporter', () => {
 
   describe('getColorType()', () => {
     it('returns yellow for skipped', () => {
-      const task = new Task('task').skip();
+      const task = new Task('task', () => {}).skip();
 
       expect(reporter.getColorType(task)).toBe('warning');
     });
 
     it('returns green for passed', () => {
-      const task = new Task('task');
+      const task = new Task('task', () => {});
 
       task.status = STATUS_PASSED;
 
@@ -139,7 +139,7 @@ describe('Reporter', () => {
     });
 
     it('returns red for failed', () => {
-      const task = new Task('task');
+      const task = new Task('task', () => {});
 
       task.status = STATUS_FAILED;
 

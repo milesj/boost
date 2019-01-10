@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import execa from 'execa';
+import { number, bool } from 'optimal';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
@@ -28,11 +29,17 @@ describe('Routine', () => {
     routine.configure(createTestRoutine(tool));
   });
 
-  class FailureRoutine extends Routine<any, any> {
-    constructor(key: string, title: string) {
-      super(key, title);
+  class FailureRoutine extends Routine<any, any, { test: number }> {
+    constructor(key: string, title: string, options?: any) {
+      super(key, title, options);
 
       this.debug = createTestDebugger();
+    }
+
+    blueprint() {
+      return {
+        test: number(),
+      };
     }
 
     async execute(): Promise<any> {
@@ -52,8 +59,15 @@ describe('Routine', () => {
       this.task('baz', this.baz);
     }
 
+    blueprint() {
+      return {
+        multiplier: number(),
+        return: bool(),
+      };
+    }
+
     async execute(context: any, value: any): Promise<any> {
-      context.count *= this.options.multiplier!;
+      context.count *= this.options.multiplier;
       context[this.key] = true;
 
       return this.options.return ? this.key : value;
@@ -97,9 +111,9 @@ describe('Routine', () => {
     });
 
     it('inherits default options', () => {
-      routine = new Routine('key', 'title', { foo: 123 });
+      routine = new FailureRoutine('key', 'title', { test: 123 });
 
-      expect(routine.options).toEqual({ foo: 123 });
+      expect(routine.options).toEqual({ test: 123 });
     });
   });
 
@@ -646,6 +660,12 @@ describe('Routine', () => {
 
         this.tool = tool;
         this.debug = createTestDebugger();
+      }
+
+      blueprint() {
+        return {
+          multiplier: number(),
+        };
       }
 
       async execute(context: any, value: any): Promise<any> {

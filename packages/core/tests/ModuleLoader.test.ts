@@ -1,9 +1,11 @@
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
 import { getFixturePath, getTestRoot, copyFixtureToMock, createTestTool } from './helpers';
+// @ts-ignore
+import TestPlugin from './fixtures/plugin-exported-definition';
 
 function createPlugin(name: string, options: any = {}): Plugin {
-  const plugin = new Plugin(options);
+  const plugin = new TestPlugin(options);
   plugin.name = name;
   plugin.moduleName = `test-boost-plugin-${name}`;
 
@@ -186,7 +188,7 @@ describe('ModuleLoader', () => {
         plugin: 'definition-with-opts',
       });
 
-      expect(plugin.options).toEqual({ foo: 'bar' });
+      expect(plugin.options).toEqual({ foo: 'bar', bar: false, baz: 0 });
       expect(plugin.name).toBe('definition-with-opts');
       expect(plugin.moduleName).toBe('test-boost-plugin-definition-with-opts');
     });
@@ -204,7 +206,7 @@ describe('ModuleLoader', () => {
         [{ foo: 'wtf', baz: 123 }],
       );
 
-      expect(plugin.options).toEqual({ foo: 'bar', baz: 123 });
+      expect(plugin.options).toEqual({ foo: 'bar', bar: false, baz: 123 });
     });
   });
 
@@ -262,17 +264,21 @@ describe('ModuleLoader', () => {
     it('pass options to string names', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
 
-      expect(loader.loadModules(['foo'], [{ test: true }])).toEqual([
-        createPlugin('foo', { test: true }),
-      ]);
+      const foo = createPlugin('foo');
+      // @ts-ignore Allow
+      foo.options.bar = true;
+
+      expect(loader.loadModules(['foo'], [{ bar: true }])).toEqual([foo]);
     });
 
     it('pass options to option objects', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
 
-      expect(loader.loadModules([{ plugin: 'foo' }], [{ test: true }])).toEqual([
-        createPlugin('foo', { test: true }),
-      ]);
+      const foo = createPlugin('foo');
+      // @ts-ignore Allow
+      foo.options.bar = true;
+
+      expect(loader.loadModules([{ plugin: 'foo' }], [{ bar: true }])).toEqual([foo]);
     });
   });
 });

@@ -6,6 +6,7 @@
 import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';
+import optimal, { Builder, Blueprint } from 'optimal';
 import Context from './Context';
 import Task, { TaskAction } from './Task';
 import CoreTool from './Tool';
@@ -15,7 +16,7 @@ import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
 import SerialExecutor from './executors/Serial';
 import SyncExecutor from './executors/Sync';
 import wrapWithPromise from './helpers/wrapWithPromise';
-import { STATUS_PENDING, STATUS_RUNNING } from './constants';
+import { STATUS_RUNNING } from './constants';
 import { Debugger } from './types';
 
 export interface CommandOptions {
@@ -46,22 +47,25 @@ export default class Routine<
   tool: Tool;
 
   constructor(key: string, title: string, options: Partial<Options> = {}) {
-    super(title, null);
+    super(title, (context, value) => this.execute(context, value));
 
     if (!key || typeof key !== 'string') {
       throw new Error('Routine key must be a valid unique string.');
     }
 
     this.key = key;
+    this.options = optimal(options, this.blueprint(), {
+      name: this.constructor.name,
+      unknown: true,
+    });
+  }
 
-    // @ts-ignore Handle in sub-classes or bootstrap()
-    this.options = { ...options };
-
-    // We cant pass to super, so bind here
-    this.action = this.execute.bind(this);
-
-    // We also need to set it back to pending
-    this.status = STATUS_PENDING;
+  /**
+   * Define an optimal blueprint in which to validate and build the
+   * options passed to the constructor.
+   */
+  blueprint(): { [K in keyof Options]: Builder<any> | Blueprint } {
+    return {} as any;
   }
 
   /**

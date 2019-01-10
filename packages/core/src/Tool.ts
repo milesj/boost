@@ -121,7 +121,7 @@ export default class Tool<
         workspaceRoot: string().empty(),
       },
       {
-        name: 'Tool',
+        name: this.constructor.name,
       },
     );
 

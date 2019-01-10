@@ -18,7 +18,7 @@ import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Options = {}> extends Plugin<Options> {
+export default class Reporter<Options extends object = {}> extends Plugin<Options> {
   // eslint-disable-next-line no-magic-numbers
   static BUFFER = 10;
 

@@ -16,27 +16,17 @@ describe('Task', () => {
 
   describe('constructor()', () => {
     it('errors if no title', () => {
-      expect(() => new Task('')).toThrowErrorMatchingSnapshot();
+      expect(() => new Task('', () => {})).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if title is not a string', () => {
       // @ts-ignore
-      expect(() => new Task(123)).toThrowErrorMatchingSnapshot();
+      expect(() => new Task(123, () => {})).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if action is not a function', () => {
       // @ts-ignore
       expect(() => new Task('title', 123)).toThrowErrorMatchingSnapshot();
-    });
-
-    it('doesnt error if action is null', () => {
-      expect(() => new Task('title')).not.toThrow();
-    });
-
-    it('marks the task as skipped if no action', () => {
-      task = new Task('title');
-
-      expect(task.isSkipped()).toBe(true);
     });
   });
 
@@ -172,12 +162,6 @@ describe('Task', () => {
         expect(error).toEqual(new Error('Oops'));
         expect(task.status).toBe(STATUS_FAILED);
       }
-    });
-
-    it('passes the value through when no action exists', async () => {
-      task.action = null;
-
-      expect(await task.run({}, 123)).toBe(123);
     });
 
     it('passes a context to the action', async () => {

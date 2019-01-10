@@ -555,13 +555,13 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
+      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', fps: 30 }] };
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       const [reporter] = tool.getPlugins('reporter');
 
-      expect(reporter.options).toEqual({ foo: 'bar' });
+      expect(reporter.options).toEqual({ fps: 30 });
 
       unmock();
     });

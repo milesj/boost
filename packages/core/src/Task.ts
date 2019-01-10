@@ -28,7 +28,7 @@ export interface TaskMetadata {
 }
 
 export default class Task<Ctx extends Context> extends Emitter {
-  action: TaskAction<Ctx> | null = null;
+  action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation
   context: Ctx;
@@ -52,7 +52,7 @@ export default class Task<Ctx extends Context> extends Emitter {
 
   tasks: Task<Ctx>[] = [];
 
-  constructor(title: string, action: TaskAction<Ctx> | null = null) {
+  constructor(title: string, action: TaskAction<Ctx>) {
     super();
 
     if (!title || typeof title !== 'string') {
@@ -64,7 +64,7 @@ export default class Task<Ctx extends Context> extends Emitter {
     }
 
     this.action = action;
-    this.status = action ? STATUS_PENDING : STATUS_SKIPPED;
+    this.status = STATUS_PENDING;
     this.title = title;
   }
 
@@ -117,7 +117,7 @@ export default class Task<Ctx extends Context> extends Emitter {
     this.setContext(context);
     this.emit('run', [value]);
 
-    if (this.isSkipped() || !this.action) {
+    if (this.isSkipped()) {
       this.status = STATUS_SKIPPED;
       this.emit('skip', [value]);
 
