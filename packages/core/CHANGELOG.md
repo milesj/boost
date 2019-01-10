@@ -1,3 +1,13 @@
+# 1.5.0
+
+#### 🚀 New
+
+- Deprecated `Tool#loadWorkspacePackages`. Use `Tool#getWorkspacePackages` instead.
+
+#### 🛠 Internal
+
+- TS: `Tool#loadConfig`, `loadPlugins`, `loadReporters` have been marked `protected`.
+
 # 1.4.1 - 2019-01-08
 
 #### 🐞 Fixed

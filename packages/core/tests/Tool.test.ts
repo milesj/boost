@@ -221,6 +221,37 @@ describe('Tool', () => {
     });
   });
 
+  describe('getWorkspacePackages()', () => {
+    it('returns an empty array if no workspace config', () => {
+      expect(tool.getWorkspacePackages({ root: getFixturePath('workspace-no-packages') })).toEqual(
+        [],
+      );
+    });
+
+    it('loads all package.jsons and appends metadata', () => {
+      const root = getFixturePath('workspace-multiple');
+      const packages = tool.getWorkspacePackages({ root });
+
+      expect(packages).toEqual([
+        {
+          name: 'test-boost-workspace-multiple-baz',
+          version: '0.0.0',
+          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/baz/package.json')),
+        },
+        {
+          name: 'test-boost-workspace-multiple-foo',
+          version: '0.0.0',
+          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/foo/package.json')),
+        },
+        {
+          name: 'test-boost-workspace-multiple-bar',
+          version: '0.0.0',
+          workspace: tool.createWorkspaceMetadata(path.join(root, 'modules/bar/package.json')),
+        },
+      ]);
+    });
+  });
+
   describe('getWorkspacePackagePaths()', () => {
     it('returns an empty array if no workspace config', () => {
       expect(
@@ -318,6 +349,7 @@ describe('Tool', () => {
       tool.package = {};
       // @ts-ignore Allow private access
       tool.initialized = true;
+      // @ts-ignore Allow protected access
       tool.loadConfig();
 
       expect(tool.config).toEqual({});
@@ -325,6 +357,7 @@ describe('Tool', () => {
     });
 
     it('loads package.json', () => {
+      // @ts-ignore Allow protected access
       tool.loadConfig();
 
       expect(tool.package).toEqual({
@@ -334,6 +367,7 @@ describe('Tool', () => {
     });
 
     it('loads config file', () => {
+      // @ts-ignore Allow protected access
       tool.loadConfig();
 
       expect(tool.config).toEqual({
@@ -346,6 +380,7 @@ describe('Tool', () => {
       const spy = jest.spyOn(debug, 'enable');
 
       tool.args = { $0: '', _: [], debug: true };
+      // @ts-ignore Allow protected access
       tool.loadConfig();
 
       expect(spy).toHaveBeenCalledWith('test-boost:*');
@@ -369,6 +404,7 @@ describe('Tool', () => {
       expect(() => {
         // @ts-ignore
         tool.config = null;
+        // @ts-ignore Allow protected access
         tool.loadPlugins();
       }).toThrowErrorMatchingSnapshot();
     });
@@ -377,12 +413,14 @@ describe('Tool', () => {
       expect(() => {
         // @ts-ignore
         tool.config = {};
+        // @ts-ignore Allow protected access
         tool.loadPlugins();
       }).toThrowErrorMatchingSnapshot();
     });
 
     it('doesnt load if no plugins found in config', () => {
       tool.config = { ...TEST_TOOL_CONFIG };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       // @ts-ignore Allow access
@@ -393,6 +431,7 @@ describe('Tool', () => {
       // @ts-ignore Allow private access
       tool.initialized = true;
       tool.config = { ...TEST_TOOL_CONFIG, plugins: ['foo'] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       // @ts-ignore Allow access
@@ -404,6 +443,7 @@ describe('Tool', () => {
       const spy = jest.spyOn(plugin, 'bootstrap');
 
       tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       expect(spy).toHaveBeenCalled();
@@ -417,6 +457,7 @@ describe('Tool', () => {
       const plugin = new TestPlugin();
 
       tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       expect(plugin.tool).toBe(tool);
@@ -432,6 +473,7 @@ describe('Tool', () => {
       foo.priority = 3;
 
       tool.config = { ...TEST_TOOL_CONFIG, plugins: [foo, bar, baz] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       // @ts-ignore Allow access
@@ -442,6 +484,7 @@ describe('Tool', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
       tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(Reporter);
@@ -455,6 +498,7 @@ describe('Tool', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
       tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(Reporter);
@@ -468,6 +512,7 @@ describe('Tool', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
       tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', foo: 'bar' }] };
+      // @ts-ignore Allow protected access
       tool.loadPlugins();
 
       const [reporter] = tool.getPlugins('reporter');
@@ -483,6 +528,7 @@ describe('Tool', () => {
       expect(() => {
         // @ts-ignore
         tool.config = null;
+        // @ts-ignore Allow protected access
         tool.loadReporters();
       }).toThrowErrorMatchingSnapshot();
     });
@@ -491,6 +537,7 @@ describe('Tool', () => {
       expect(() => {
         // @ts-ignore
         tool.config = {};
+        // @ts-ignore Allow protected access
         tool.loadReporters();
       }).toThrowErrorMatchingSnapshot();
     });
@@ -498,46 +545,17 @@ describe('Tool', () => {
     it('doesnt load if initialized', () => {
       // @ts-ignore Allow private access
       tool.initialized = true;
+      // @ts-ignore Allow protected access
       tool.loadReporters();
 
       expect(tool.getPlugins('reporter')).toHaveLength(0);
     });
 
     it('loads default reporter if none defined', () => {
+      // @ts-ignore Allow protected access
       tool.loadReporters();
 
       expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(BoostReporter);
-    });
-  });
-
-  describe('loadWorkspacePackages()', () => {
-    it('returns an empty array if no workspace config', () => {
-      expect(tool.loadWorkspacePackages({ root: getFixturePath('workspace-no-packages') })).toEqual(
-        [],
-      );
-    });
-
-    it('loads all package.jsons and appends metadata', () => {
-      const root = getFixturePath('workspace-multiple');
-      const packages = tool.loadWorkspacePackages({ root });
-
-      expect(packages).toEqual([
-        {
-          name: 'test-boost-workspace-multiple-baz',
-          version: '0.0.0',
-          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/baz/package.json')),
-        },
-        {
-          name: 'test-boost-workspace-multiple-foo',
-          version: '0.0.0',
-          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/foo/package.json')),
-        },
-        {
-          name: 'test-boost-workspace-multiple-bar',
-          version: '0.0.0',
-          workspace: tool.createWorkspaceMetadata(path.join(root, 'modules/bar/package.json')),
-        },
-      ]);
     });
   });
 

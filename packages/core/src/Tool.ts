@@ -302,6 +302,37 @@ export default class Tool<
   }
 
   /**
+   * Return all `package.json`s across all workspaces and their packages.
+   * Once loaded, append workspace path metadata.
+   */
+  getWorkspacePackages<CustomConfig extends object = {}>(
+    options: WorkspaceOptions = {},
+  ): (WorkspacePackageConfig & CustomConfig)[] {
+    const root = options.root || this.options.root;
+
+    return glob
+      .sync(
+        this.getWorkspacePaths({
+          ...options,
+          relative: true,
+          root,
+        }).map(ws => `${ws}/package.json`),
+        {
+          absolute: true,
+          cwd: root,
+        },
+      )
+      .map(filePath => {
+        const jsonPath = String(filePath);
+
+        return {
+          ...fs.readJsonSync(jsonPath),
+          workspace: this.createWorkspaceMetadata(jsonPath),
+        };
+      });
+  }
+
+  /**
    * Return a list of absolute package folder paths, across all workspaces,
    * for the defined root.
    */
@@ -394,137 +425,19 @@ export default class Tool<
   }
 
   /**
-   * Load the package.json and local configuration files.
-   *
-   * Must be called first in the lifecycle.
-   */
-  loadConfig(): this {
-    if (this.initialized) {
-      return this;
-    }
-
-    this.package = this.configLoader.loadPackageJSON();
-    this.config = this.configLoader.loadConfig(this.args!);
-
-    // Inherit workspace metadata
-    this.options.workspaceRoot = this.configLoader.workspaceRoot;
-
-    // Enable debugger (a bit late but oh well)
-    if (this.config.debug) {
-      debug.enable(`${this.options.appName}:*`);
-    }
-
-    // Update locale
-    if (this.config.locale) {
-      translatorCache.get(this)!.changeLanguage(this.config.locale);
-    }
-
-    return this;
-  }
-
-  /**
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
+   * @deprecated
    */
   loadWorkspacePackages<CustomConfig extends object = {}>(
     options: WorkspaceOptions = {},
   ): (WorkspacePackageConfig & CustomConfig)[] {
-    const root = options.root || this.options.root;
+    // eslint-disable-next-line no-console
+    console.warn(
+      'Tool#loadWorkspacePackages is deprecated. Use Tool#getWorkspacePackages instead.',
+    );
 
-    return glob
-      .sync(
-        this.getWorkspacePaths({
-          ...options,
-          relative: true,
-          root,
-        }).map(ws => `${ws}/package.json`),
-        {
-          absolute: true,
-          cwd: root,
-        },
-      )
-      .map(filePath => {
-        const jsonPath = String(filePath);
-
-        return {
-          ...fs.readJsonSync(jsonPath),
-          workspace: this.createWorkspaceMetadata(jsonPath),
-        };
-      });
-  }
-
-  /**
-   * Register plugins from the loaded configuration.
-   *
-   * Must be called after config has been loaded.
-   */
-  loadPlugins(): this {
-    if (this.initialized) {
-      return this;
-    }
-
-    if (isEmptyObject(this.config)) {
-      throw new Error(this.msg('errors:configNotLoaded', { name: 'plugins' }));
-    }
-
-    Object.keys(this.pluginTypes).forEach(type => {
-      const typeName = type as keyof PluginRegistry;
-      const { loader, pluralName } = this.pluginTypes[typeName]!;
-      const plugins = loader.loadModules((this.config as any)[pluralName]);
-
-      // Sort plugins by priority
-      loader.debug('Sorting by priority');
-
-      plugins.sort((a, b) =>
-        a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0,
-      );
-
-      // Bootstrap each plugin with the tool
-      loader.debug('Bootstrapping with tool environment');
-
-      plugins.forEach(plugin => {
-        this.addPlugin(typeName, plugin);
-      });
-    });
-
-    return this;
-  }
-
-  /**
-   * Register reporters from the loaded configuration.
-   *
-   * Must be called after config has been loaded.
-   */
-  loadReporters(): this {
-    if (this.initialized) {
-      return this;
-    }
-
-    if (isEmptyObject(this.config)) {
-      throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
-    }
-
-    const reporters = this.plugins.reporter!;
-    const { loader } = this.pluginTypes.reporter!;
-
-    // Use a special reporter when in a CI
-    // istanbul ignore next
-    if (envCI().isCi && !process.env.BOOST_ENV) {
-      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
-
-      this.addPlugin('reporter', new CIReporter());
-
-      // Use default reporter
-    } else if (
-      reporters.length === 0 ||
-      (reporters.length === 1 && reporters[0] instanceof ErrorReporter)
-    ) {
-      loader.debug('Using default %s reporter', chalk.yellow('boost'));
-
-      this.addPlugin('reporter', new BoostReporter());
-    }
-
-    return this;
+    return this.getWorkspacePackages<CustomConfig>(options);
   }
 
   /**
@@ -601,6 +514,109 @@ export default class Tool<
       pluralName: pluralize(name),
       singularName: name,
     };
+
+    return this;
+  }
+
+  /**
+   * Load the package.json and local configuration files.
+   *
+   * Must be called first in the lifecycle.
+   */
+  protected loadConfig(): this {
+    if (this.initialized) {
+      return this;
+    }
+
+    this.package = this.configLoader.loadPackageJSON();
+    this.config = this.configLoader.loadConfig(this.args!);
+
+    // Inherit workspace metadata
+    this.options.workspaceRoot = this.configLoader.workspaceRoot;
+
+    // Enable debugger (a bit late but oh well)
+    if (this.config.debug) {
+      debug.enable(`${this.options.appName}:*`);
+    }
+
+    // Update locale
+    if (this.config.locale) {
+      translatorCache.get(this)!.changeLanguage(this.config.locale);
+    }
+
+    return this;
+  }
+
+  /**
+   * Register plugins from the loaded configuration.
+   *
+   * Must be called after config has been loaded.
+   */
+  protected loadPlugins(): this {
+    if (this.initialized) {
+      return this;
+    }
+
+    if (isEmptyObject(this.config)) {
+      throw new Error(this.msg('errors:configNotLoaded', { name: 'plugins' }));
+    }
+
+    Object.keys(this.pluginTypes).forEach(type => {
+      const typeName = type as keyof PluginRegistry;
+      const { loader, pluralName } = this.pluginTypes[typeName]!;
+      const plugins = loader.loadModules((this.config as any)[pluralName]);
+
+      // Sort plugins by priority
+      loader.debug('Sorting by priority');
+
+      plugins.sort((a, b) =>
+        a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0,
+      );
+
+      // Bootstrap each plugin with the tool
+      loader.debug('Bootstrapping with tool environment');
+
+      plugins.forEach(plugin => {
+        this.addPlugin(typeName, plugin);
+      });
+    });
+
+    return this;
+  }
+
+  /**
+   * Register reporters from the loaded configuration.
+   *
+   * Must be called after config has been loaded.
+   */
+  protected loadReporters(): this {
+    if (this.initialized) {
+      return this;
+    }
+
+    if (isEmptyObject(this.config)) {
+      throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
+    }
+
+    const reporters = this.plugins.reporter!;
+    const { loader } = this.pluginTypes.reporter!;
+
+    // Use a special reporter when in a CI
+    // istanbul ignore next
+    if (envCI().isCi && !process.env.BOOST_ENV) {
+      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
+
+      this.addPlugin('reporter', new CIReporter());
+
+      // Use default reporter
+    } else if (
+      reporters.length === 0 ||
+      (reporters.length === 1 && reporters[0] instanceof ErrorReporter)
+    ) {
+      loader.debug('Using default %s reporter', chalk.yellow('boost'));
+
+      this.addPlugin('reporter', new BoostReporter());
+    }
 
     return this;
   }
