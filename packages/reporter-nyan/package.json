@@ -1,0 +1,23 @@
+{
+  "name": "@boost/reporter-nyan",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/reporter-nyan",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@boost/core": "^1.4.1"
+  },
+  "peerDependencies": {
+    "@boost/core": "^1.4.0"
+  }
+}
