@@ -156,7 +156,7 @@ describe('Console', () => {
       cli.stop = jest.fn();
       cli.handleSignal();
 
-      expect(cli.stop).toHaveBeenCalledWith('Process has been terminated.', true);
+      expect(cli.stop).toHaveBeenCalledWith(new Error('Process has been terminated.'), true);
     });
   });
 
@@ -170,6 +170,7 @@ describe('Console', () => {
     it('sets restore flag', () => {
       cli.hideCursor();
 
+      // @ts-ignore Allow access
       expect(cli.restoreCursorOnExit).toBe(true);
     });
 
@@ -177,6 +178,7 @@ describe('Console', () => {
       cli.tool.config.silent = true;
       cli.hideCursor();
 
+      // @ts-ignore Allow access
       expect(cli.restoreCursorOnExit).toBe(false);
     });
   });
@@ -374,6 +376,14 @@ describe('Console', () => {
 
       expect(spy).not.toHaveBeenCalled();
     });
+
+    it('sets `final` flag', () => {
+      expect(cli.isFinal()).toBe(false);
+
+      cli.renderFinalOutput(null);
+
+      expect(cli.isFinal()).toBe(true);
+    });
   });
 
   describe('resetCursor()', () => {
@@ -394,16 +404,19 @@ describe('Console', () => {
     it('sets restore flag to off', () => {
       cli.showCursor();
 
+      // @ts-ignore Allow access
       expect(cli.restoreCursorOnExit).toBe(false);
     });
   });
 
   describe('start()', () => {
     it('sets `started` flag', () => {
+      // @ts-ignore Allow access
       expect(cli.started).toBe(false);
 
       cli.start();
 
+      // @ts-ignore Allow access
       expect(cli.started).toBe(true);
     });
 
@@ -450,10 +463,12 @@ describe('Console', () => {
     });
 
     it('sets a timer', () => {
+      // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();
 
       cli.startRenderLoop();
 
+      // @ts-ignore Allow access
       expect(cli.renderTimer).not.toBeNull();
     });
 
@@ -461,31 +476,37 @@ describe('Console', () => {
       cli.flushOutputQueue = jest.fn();
       cli.startRenderLoop();
 
+      // @ts-ignore Allow access
       const id = cli.renderTimer;
 
       jest.advanceTimersByTime(100);
 
       expect(cli.flushOutputQueue).toHaveBeenCalled();
+      // @ts-ignore Allow access
       expect(cli.renderTimer).not.toEqual(id);
     });
   });
 
   describe('stop()', () => {
     it('sets `stopped` flag', () => {
+      // @ts-ignore Allow access
       expect(cli.stopped).toBe(false);
 
       cli.stop();
 
+      // @ts-ignore Allow access
       expect(cli.stopped).toBe(true);
     });
 
     it('sets `started` flag', () => {
       cli.start();
 
+      // @ts-ignore Allow access
       expect(cli.started).toBe(true);
 
       cli.stop();
 
+      // @ts-ignore Allow access
       expect(cli.started).toBe(false);
     });
 
@@ -505,15 +526,6 @@ describe('Console', () => {
       cli.stop();
 
       expect(spy).toHaveBeenCalledWith(null);
-    });
-
-    it('calls `stop` with string', () => {
-      const spy = jest.fn();
-
-      cli.on('stop', spy);
-      cli.stop('Oops');
-
-      expect(spy).toHaveBeenCalledWith(new Error('Oops'));
     });
 
     it('calls `stop` with error', () => {
@@ -537,7 +549,7 @@ describe('Console', () => {
     it('renders final output with an error', () => {
       const spy = jest.spyOn(cli, 'renderFinalOutput');
 
-      cli.stop('Oops');
+      cli.stop(new Error('Oops'));
 
       expect(spy).toHaveBeenCalledWith(new Error('Oops'));
     });
@@ -552,7 +564,7 @@ describe('Console', () => {
 
     it('throws the error if forced', () => {
       expect(() => {
-        cli.stop('Thrown', true);
+        cli.stop(new Error('Thrown'), true);
       }).toThrowError('Thrown');
     });
 
@@ -585,6 +597,7 @@ describe('Console', () => {
       cli.renderTimer = 123;
       cli.stopRenderLoop();
 
+      // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();
     });
   });

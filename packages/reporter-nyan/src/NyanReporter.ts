@@ -5,37 +5,54 @@
 
 /* eslint-disable no-magic-numbers */
 
-import { Reporter } from '@boost/core';
+import chalk from 'chalk';
+import { Reporter, Routine, Task } from '@boost/core';
 
 // Based on the wonderful reporter found in Mocha
 // https://github.com/mochajs/mocha/blob/master/lib/reporters/nyan.js
 export default class NyanReporter extends Reporter {
+  activeRoutine: Routine<any, any> | null = null;
+
+  activeTask: Task<any> | null = null;
+
   catWidth: number = 11;
 
   colorIndex: number = 0;
 
-  rainbows: string[][] = [];
+  rainbows: string[][] = [[], [], [], []];
 
   rainbowColors: number[] = [];
 
   rainbowWidth: number = 0;
 
-  tick: boolean = false;
+  tick: number = 0;
 
   width: number = 0;
 
   bootstrap() {
     super.bootstrap();
 
-    this.rainbowWidth = this.size().columns * 0.75 - this.catWidth;
+    this.rainbowWidth = this.size().columns - this.catWidth * 2;
     this.rainbowColors = this.generateColors();
-    this.rainbows = this.generateRainbows();
 
-    this.console.on('start', this.handleStart);
+    this.console
+      .on('start', this.handleStart)
+      .on('routine', this.handleRoutine)
+      .on('routine.pass', this.handleRoutine)
+      .on('routine.fail', this.handleRoutine)
+      .on('task', this.handleTask);
   }
 
   handleStart = () => {
     this.createOutput(() => this.renderLines()).enqueue();
+  };
+
+  handleRoutine = (routine: Routine<any, any>) => {
+    this.activeRoutine = routine;
+  };
+
+  handleTask = (task: Task<any>) => {
+    this.activeTask = task;
   };
 
   applyColor(text: string): string {
@@ -44,8 +61,6 @@ export default class NyanReporter extends Reporter {
     }
 
     const color = this.rainbowColors[this.colorIndex % this.rainbowColors.length];
-
-    this.colorIndex += 1;
 
     // eslint-disable-next-line unicorn/escape-case
     return `\u001b[38;5;${color}m${text}\u001b[0m`;
@@ -67,63 +82,119 @@ export default class NyanReporter extends Reporter {
     return colors;
   }
 
-  generateRainbows(): string[][] {
-    const rainbows: string[][] = [];
+  getCatFace(): string {
+    const routine = this.activeRoutine;
+    let eyes = '- .-';
 
-    for (let i = 0; i < 4; i += 1) {
-      const line = [];
-
-      this.colorIndex = 0;
-
-      for (let r = 0; r < this.rainbowWidth; r += 1) {
-        line.push(this.applyColor(r % 2 === 0 ? '_' : '-'));
+    if (routine) {
+      if (routine.hasFailed()) {
+        eyes = 'x .x';
+      } else if (routine.isSkipped() || routine.isPending()) {
+        eyes = 'o .o';
+      } else if (routine.hasPassed()) {
+        eyes = '^ .^';
       }
-
-      rainbows.push(line);
     }
 
-    return rainbows;
+    return `( ${chalk.white(eyes)})`;
   }
 
-  getCatFace(): string {
-    // if (stats.failures) {
-    //   return '( x .x)';
-    // } else if (stats.pending) {
-    //   return '( o .o)';
-    // } else if (stats.passes) {
-    //   return '( ^ .^)';
-    // }
+  increaseRainbowWidth() {
+    for (let i = 0; i < 4; i += 1) {
+      const line = this.rainbows[i];
 
-    return '( - .-)';
+      if (line.length >= this.rainbowWidth) {
+        line.shift();
+      }
+
+      line.push(this.applyColor(this.isInterval() ? '_' : '-'));
+
+      this.rainbows[i] = line;
+    }
+
+    this.colorIndex += 1;
+  }
+
+  increaseTick() {
+    this.tick += 1;
+
+    if (this.tick === 100) {
+      this.tick = 0;
+    }
+  }
+
+  isInterval(long: boolean = false): boolean {
+    return this.tick % (long ? 4 : 2) === 0;
   }
 
   renderLines(): string {
+    this.increaseTick();
+    this.increaseRainbowWidth();
+
+    const tick = this.isInterval(true);
     let output = '';
 
     // Poptart
     output += this.rainbows[0].join('');
     output += ' ';
-    output += ' ,------,\n';
+    output += chalk.magenta(' ,------,');
+    output += '\n';
 
     // Ears
     output += this.rainbows[1].join('');
     output += ' ';
-    output += ` |${this.tick ? '  ' : '   '}/\\_/\\\n`;
+    output += chalk.magenta(` |${tick ? ' .' : ' . '}`);
+    output += chalk.gray('/\\_/\\');
+    output += '\n';
 
     // Face
     output += this.rainbows[2].join('');
     output += ' ';
 
-    if (this.tick) {
-      output += `~|_${this.getCatFace()}\n`;
+    if (tick) {
+      output += chalk.gray('~');
+      output += chalk.magenta('|_');
     } else {
-      output += `^|__${this.getCatFace()}\n`;
+      output += chalk.gray('^');
+      output += chalk.magenta('|__');
     }
+
+    output += chalk.gray(this.getCatFace());
+    output += '\n';
 
     // Feet
     output += this.rainbows[3].join('');
     output += ' ';
-    output += `${this.tick ? '  ' : '   '}""  ""\n`;
+
+    if (tick) {
+      output += chalk.gray(' " "  ""');
+    } else {
+      output += chalk.gray('  ""  " "');
+    }
+
+    output += '\n';
+
+    if (this.console.isFinal()) {
+      return output;
+    }
+
+    // Routine
+    const routine = this.activeRoutine;
+    const task = this.activeTask;
+    let line = '\n';
+
+    if (routine) {
+      line += this.style(routine.key.toUpperCase(), this.getColorType(routine), ['bold']);
+      line += ' ';
+      line += routine.title;
+    }
+
+    if (task) {
+      line += ' ';
+      line += this.style(task.statusText || task.title, 'pending');
+    }
+
+    output += this.truncate(line);
 
     return output;
   }

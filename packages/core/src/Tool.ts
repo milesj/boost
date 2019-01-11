@@ -258,8 +258,8 @@ export default class Tool<
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null = null): this {
-    this.console.stop(message, message !== null);
+  exit(error: Error | null = null): this {
+    this.console.stop(error, error !== null);
 
     return this;
   }

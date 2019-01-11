@@ -176,15 +176,6 @@ describe('Tool', () => {
       expect(spy).toHaveBeenCalledWith(null, false);
     });
 
-    it('accepts a string', () => {
-      const spy = jest.fn();
-
-      tool.console.stop = spy;
-      tool.exit('Oops');
-
-      expect(spy).toHaveBeenCalledWith('Oops', true);
-    });
-
     it('accepts an error', () => {
       const error = new Error('Oh nooo');
       const spy = jest.fn();
