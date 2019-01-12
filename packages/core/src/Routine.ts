@@ -30,8 +30,6 @@ export default class Routine<
   Tool extends CoreTool<any>,
   Options extends object = {}
 > extends Task<Ctx> {
-  exit: boolean = false;
-
   // @ts-ignore Set after instantiation
   debug: Debugger;
 
@@ -81,11 +79,6 @@ export default class Routine<
     this.tool = parent.tool;
     this.context = parent.context;
     this.metadata.depth = parent.metadata.depth + 1;
-
-    // Monitor process
-    this.tool.on('exit', () => {
-      this.exit = true;
-    });
 
     // Custom debugger for this routine
     this.debug = this.tool.createDebugger('routine', this.key);
@@ -206,19 +199,6 @@ export default class Routine<
     tasks?: Task<Ctx>[],
   ): Promise<AggregatedResponse> {
     return new PoolExecutor(this.tool, this.context, options).runTasks(tasks || this.tasks, value);
-  }
-
-  /**
-   * Trigger processes before and after execution.
-   */
-  async run(context: Ctx, value: any): Promise<any> {
-    if (this.exit) {
-      return Promise.reject(new Error(this.tool.msg('errors:processInterrupted')));
-    }
-
-    this.debug('Executing routine');
-
-    return super.run(context, value);
   }
 
   /**

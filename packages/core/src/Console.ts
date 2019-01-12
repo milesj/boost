@@ -153,7 +153,7 @@ export default class Console extends Emitter {
   handleSignal = () => {
     this.start();
     this.debug('SIGINT or SIGTERM handled');
-    this.stop(new Error('Process has been terminated.'));
+    this.stop(new Error(this.tool.msg('errors:processTerminated')));
 
     exit(2);
   };

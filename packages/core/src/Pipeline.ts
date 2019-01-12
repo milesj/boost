@@ -6,6 +6,7 @@
 import exit from 'exit';
 import Context from './Context';
 import CrashLogger from './CrashLogger';
+import ExitError from './ExitError';
 import Routine from './Routine';
 import CoreTool from './Tool';
 
@@ -45,16 +46,21 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
     return this.serializeRoutines(initialValue)
       .then(result => {
         cli.stop();
+
         process.exitCode = 0;
 
         return result;
       })
       .catch(error => {
-        // Create a log of the failure
+        cli.stop(error);
+
         new CrashLogger(this.tool).log(error);
 
-        cli.stop(error);
-        exit(error.code || 1);
+        if (error instanceof ExitError) {
+          exit(error.code);
+        } else {
+          exit(1);
+        }
 
         return error;
       });

@@ -25,6 +25,8 @@ class MultiTaskRoutine extends Routine {
   execute() {
     if (this.options.error) {
       throw new Error('Oops!');
+    } else if (this.options.exit) {
+      this.tool.exit('Force exit with a 0.', 0);
     }
 
     return this.options.parallel ? this.parallelizeTasks() : this.serializeTasks();

@@ -23,7 +23,6 @@
   "pluginNotFound": "Failed to find {{typeName}} \"{{name}}\". Have you installed it?",
   "presetConfigNotFound": "Preset configuration {{extendPath}} does not exist.",
   "presetConfigInvalid": "Preset configuration {{extendPath}} must be a valid file.",
-  "processInterrupted": "Process has been interrupted.",
   "processTerminated": "Process has been terminated.",
   "routineInstanceInvalid": "Routines must be an instance of `Routine`.",
   "taskRequireAction": "Tasks require an action function."

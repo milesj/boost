@@ -14,6 +14,7 @@ import {
   TEST_TOOL_CONFIG,
   TEST_PACKAGE_JSON,
 } from './helpers';
+import ExitError from '../src/ExitError';
 
 class Foo extends Plugin {}
 class Bar extends Plugin {}
@@ -167,23 +168,20 @@ describe('Tool', () => {
   });
 
   describe('exit()', () => {
-    it('accepts null (no error)', () => {
-      const spy = jest.fn();
-
-      tool.console.stop = spy;
-      tool.exit();
-
-      expect(spy).toHaveBeenCalledWith(null);
+    it('throws exit error', () => {
+      try {
+        tool.exit();
+      } catch (error) {
+        expect(error).toEqual(new ExitError('Process has been terminated.', 1));
+      }
     });
 
-    it('accepts an error', () => {
-      const error = new Error('Oh nooo');
-      const spy = jest.fn();
-
-      tool.console.stop = spy;
-      tool.exit(error);
-
-      expect(spy).toHaveBeenCalledWith(error);
+    it('throws exit error with custom message and code', () => {
+      try {
+        tool.exit('Hello', 123);
+      } catch (error) {
+        expect(error).toEqual(new ExitError('Hello', 123));
+      }
     });
   });
 

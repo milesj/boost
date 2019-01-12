@@ -74,5 +74,22 @@ describe('Pipeline', () => {
       expect(stopSpy).toHaveBeenCalledWith(new Error('Oops'));
       expect(exit).toHaveBeenCalledWith(1);
     });
+
+    it('uses exit error code', async () => {
+      class ExitRoutine extends Routine<any, any> {
+        execute() {
+          return this.tool.exit('Forced!', 123);
+        }
+      }
+
+      try {
+        await pipeline.pipe(new ExitRoutine('exit', 'title')).run();
+      } catch (error) {
+        expect(error).toEqual(new Error('Forced!'));
+      }
+
+      expect(stopSpy).toHaveBeenCalledWith(new Error('Forced!'));
+      expect(exit).toHaveBeenCalledWith(123);
+    });
   });
 });
