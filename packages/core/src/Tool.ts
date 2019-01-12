@@ -259,7 +259,7 @@ export default class Tool<
    * Force exit the application.
    */
   exit(error: Error | null = null): this {
-    this.console.stop(error, error !== null);
+    this.console.stop(error);
 
     return this;
   }

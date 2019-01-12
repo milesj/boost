@@ -173,7 +173,7 @@ describe('Tool', () => {
       tool.console.stop = spy;
       tool.exit();
 
-      expect(spy).toHaveBeenCalledWith(null, false);
+      expect(spy).toHaveBeenCalledWith(null);
     });
 
     it('accepts an error', () => {
@@ -183,7 +183,7 @@ describe('Tool', () => {
       tool.console.stop = spy;
       tool.exit(error);
 
-      expect(spy).toHaveBeenCalledWith(error, true);
+      expect(spy).toHaveBeenCalledWith(error);
     });
   });
 

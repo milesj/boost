@@ -11,6 +11,10 @@
 - Added `Reporter#hasColorSupport` to check for terminal color support.
 - Registered plugins can now define a list of custom NPM `scopes` to lookup modules in.
 
+#### 🐞 Fixed
+
+- `ctrl + c` should now exit the render loop properly.
+
 #### 🛠 Internal
 
 - Deprecated `Tool#loadWorkspacePackages`. Use `Tool#getWorkspacePackages` instead.

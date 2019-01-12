@@ -1,8 +1,11 @@
+import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Console from '../src/Console';
 import Output from '../src/Output';
 import { createTestTool } from './helpers';
+
+jest.mock('exit');
 
 describe('Console', () => {
   let cli: Console;
@@ -147,7 +150,13 @@ describe('Console', () => {
       cli.stop = jest.fn();
       cli.handleFailure(error);
 
-      expect(cli.stop).toHaveBeenCalledWith(error, true);
+      expect(cli.stop).toHaveBeenCalledWith(error);
+    });
+
+    it('exits with a code of 2', () => {
+      cli.handleFailure(new Error('Oops'));
+
+      expect(exit).toHaveBeenCalledWith(2);
     });
   });
 
@@ -156,7 +165,13 @@ describe('Console', () => {
       cli.stop = jest.fn();
       cli.handleSignal();
 
-      expect(cli.stop).toHaveBeenCalledWith(new Error('Process has been terminated.'), true);
+      expect(cli.stop).toHaveBeenCalledWith(new Error('Process has been terminated.'));
+    });
+
+    it('exits with a code of 2', () => {
+      cli.handleSignal();
+
+      expect(exit).toHaveBeenCalledWith(2);
     });
   });
 
@@ -560,12 +575,6 @@ describe('Console', () => {
       cli.stop();
 
       expect(spy).toHaveBeenCalledTimes(1);
-    });
-
-    it('throws the error if forced', () => {
-      expect(() => {
-        cli.stop(new Error('Thrown'), true);
-      }).toThrowError('Thrown');
     });
 
     it('copies logs to error logs if persist is true', () => {

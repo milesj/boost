@@ -1,8 +1,8 @@
 {
   "name": "@boost/reporter-nyan",
   "version": "0.0.0",
-  "description": "",
-  "keywords": [],
+  "description": "A nyan cat console reporter for Boost applications.",
+  "keywords": ["boost", "boost-reporter", "reporter", "nyan", "cat"],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "engines": {

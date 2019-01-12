@@ -3,6 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Emitter from './Emitter';
@@ -141,7 +142,9 @@ export default class Console extends Emitter {
   handleFailure = (error: Error) => {
     this.start();
     this.debug('Uncaught exception or unresolved promise handled');
-    this.stop(error, true);
+    this.stop(error);
+
+    exit(2);
   };
 
   /**
@@ -150,7 +153,9 @@ export default class Console extends Emitter {
   handleSignal = () => {
     this.start();
     this.debug('SIGINT or SIGTERM handled');
-    this.stop(new Error('Process has been terminated.'), true);
+    this.stop(new Error('Process has been terminated.'));
+
+    exit(2);
   };
 
   /**
@@ -323,7 +328,7 @@ export default class Console extends Emitter {
   /**
    * Stop the console rendering process.
    */
-  stop(error: Error | null = null, force: boolean = false) {
+  stop(error: Error | null = null) {
     if (this.stopped) {
       return;
     }
@@ -341,10 +346,6 @@ export default class Console extends Emitter {
     this.unwrapStreams();
     this.stopped = true;
     this.started = false;
-
-    if (error && force) {
-      throw error;
-    }
   }
 
   /**

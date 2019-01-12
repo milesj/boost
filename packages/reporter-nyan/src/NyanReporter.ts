@@ -19,6 +19,8 @@ export default class NyanReporter extends Reporter {
 
   colorIndex: number = 0;
 
+  failed: boolean = false;
+
   rainbows: string[][] = [[], [], [], []];
 
   rainbowColors: number[] = [];
@@ -37,6 +39,7 @@ export default class NyanReporter extends Reporter {
 
     this.console
       .on('start', this.handleStart)
+      .on('stop', this.handleStop)
       .on('routine', this.handleRoutine)
       .on('routine.pass', this.handleRoutine)
       .on('routine.fail', this.handleRoutine)
@@ -45,6 +48,10 @@ export default class NyanReporter extends Reporter {
 
   handleStart = () => {
     this.createOutput(() => this.renderLines()).enqueue();
+  };
+
+  handleStop = (error: Error | null) => {
+    this.failed = !!error;
   };
 
   handleRoutine = (routine: Routine<any, any>) => {
@@ -94,6 +101,10 @@ export default class NyanReporter extends Reporter {
       } else if (routine.hasPassed()) {
         eyes = '^ .^';
       }
+    }
+
+    if (this.failed) {
+      eyes = 'x .x';
     }
 
     return `( ${chalk.white(eyes)})`;
@@ -194,6 +205,7 @@ export default class NyanReporter extends Reporter {
       line += this.style(task.statusText || task.title, 'pending');
     }
 
+    line += '\n';
     output += this.truncate(line);
 
     return output;
