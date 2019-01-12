@@ -9,6 +9,8 @@
 - Added `Plugin#blueprint`, `Reporter#blueprint`, and `Routine#blueprint` as a means to validate and
   build options passed to the constructor.
 - Added `Reporter#hasColorSupport` to check for terminal color support.
+- Added an `ExitError` class.
+- Updated `Tool#exit` to accept an exit code as the 2nd argument.
 - Registered plugins can now define a list of custom NPM `scopes` to lookup modules in.
 
 #### 🐞 Fixed

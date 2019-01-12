@@ -219,6 +219,28 @@ describe('Reporter', () => {
     });
   });
 
+  describe('hasColorSupport()', () => {
+    const oldSupportLevel = chalk.supportsColor.level;
+
+    afterEach(() => {
+      chalk.supportsColor.level = oldSupportLevel;
+    });
+
+    it('returns false if support is below the requested level', () => {
+      chalk.supportsColor.level = 2;
+
+      expect(reporter.hasColorSupport(3)).toBe(false);
+    });
+
+    it('returns true if support is equal or above the requested level', () => {
+      // @ts-ignore
+      chalk.supportsColor.level = 2;
+
+      expect(reporter.hasColorSupport(1)).toBe(true);
+      expect(reporter.hasColorSupport(2)).toBe(true);
+    });
+  });
+
   describe('indent()', () => {
     it('indents based on length', () => {
       expect(reporter.indent()).toBe('');

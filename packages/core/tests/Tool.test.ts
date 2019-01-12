@@ -183,6 +183,14 @@ describe('Tool', () => {
         expect(error).toEqual(new ExitError('Hello', 123));
       }
     });
+
+    it('throws exit error based on original error', () => {
+      try {
+        tool.exit(new Error('Hello'), 0);
+      } catch (error) {
+        expect(error).toEqual(new ExitError('Hello', 0));
+      }
+    });
   });
 
   describe('getPlugin()', () => {
@@ -410,15 +418,17 @@ describe('Tool', () => {
     });
 
     it('enables debug if debug config is true', () => {
-      const spy = jest.spyOn(debug, 'enable');
+      const oldEnable = debug.enable;
+
+      debug.enable = jest.fn();
 
       tool.args = { $0: '', _: [], debug: true };
       // @ts-ignore Allow protected access
       tool.loadConfig();
 
-      expect(spy).toHaveBeenCalledWith('test-boost:*');
+      expect(debug.enable).toHaveBeenCalledWith('test-boost:*');
 
-      spy.mockRestore();
+      debug.enable = oldEnable;
     });
 
     // it('updates locale if defined', () => {

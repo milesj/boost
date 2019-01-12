@@ -259,8 +259,19 @@ export default class Tool<
   /**
    * Force exit the application.
    */
-  exit(message: string = '', code: number = 1): this {
-    throw new ExitError(message || this.msg('errors:processTerminated'), code);
+  exit(message: string | Error | null = null, code: number = 1): this {
+    const error = new ExitError(this.msg('errors:processTerminated'), code);
+
+    if (message) {
+      if (message instanceof Error) {
+        error.message = message.message;
+        error.stack = message.stack;
+      } else {
+        error.message = message;
+      }
+    }
+
+    throw error;
   }
 
   /**
