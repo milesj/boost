@@ -174,6 +174,13 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
   }
 
   /**
+   * Return true if the final render.
+   */
+  isFinalRender(): boolean {
+    return this.console.isFinalRender();
+  }
+
+  /**
    * Return true if the there should be no output.
    */
   isSilent(): boolean {

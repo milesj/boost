@@ -174,7 +174,7 @@ export default class Console extends Emitter {
   /**
    * Return true if the final render.
    */
-  isFinal(): boolean {
+  isFinalRender(): boolean {
     return this.final;
   }
 

@@ -174,7 +174,7 @@ export default class NyanReporter extends Reporter {
 
     output += '\n';
 
-    if (this.console.isFinal()) {
+    if (this.isFinalRender()) {
       return output;
     }
 

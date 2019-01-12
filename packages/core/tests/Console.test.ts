@@ -378,11 +378,11 @@ describe('Console', () => {
     });
 
     it('sets `final` flag', () => {
-      expect(cli.isFinal()).toBe(false);
+      expect(cli.isFinalRender()).toBe(false);
 
       cli.renderFinalOutput(null);
 
-      expect(cli.isFinal()).toBe(true);
+      expect(cli.isFinalRender()).toBe(true);
     });
   });
 

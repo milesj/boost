@@ -4,7 +4,8 @@
 
 - Added `Tool#isCI` method to check if in a CI environment.
 - Added `Tool#isPluginEnabled` method to check if a plugin by type has been enabled.
-- Added `Console#isFinal` method to check whether it's the final render or not.
+- Added `Console#isFinalRender` and `Reporter#isFinalRender` methods to check whether it's the final
+  render or not.
 - Added `Plugin#blueprint`, `Reporter#blueprint`, and `Routine#blueprint` as a means to validate and
   build options passed to the constructor.
 - Added `Reporter#hasColorSupport` to check for terminal color support.
