@@ -27,9 +27,7 @@ export default class NyanReporter extends Reporter {
 
   rainbowWidth: number = 0;
 
-  tick: number = 0;
-
-  width: number = 0;
+  tick: 1 | 2 | 3 | 4 = 1;
 
   bootstrap() {
     super.bootstrap();
@@ -48,10 +46,12 @@ export default class NyanReporter extends Reporter {
 
   handleStart = () => {
     this.createOutput(() => this.renderLines()).enqueue();
+    this.console.hideCursor();
   };
 
   handleStop = (error: Error | null) => {
     this.failed = !!error;
+    this.console.showCursor();
   };
 
   handleRoutine = (routine: Routine<any, any>) => {
@@ -129,21 +129,21 @@ export default class NyanReporter extends Reporter {
   increaseTick() {
     this.tick += 1;
 
-    if (this.tick === 100) {
-      this.tick = 0;
+    if (this.tick === 5) {
+      this.tick = 1;
     }
   }
 
-  isInterval(long: boolean = false): boolean {
-    return this.tick % (long ? 4 : 2) === 0;
+  isInterval(): boolean {
+    return this.tick >= 3;
   }
 
   renderLines(): string {
     this.increaseTick();
     this.increaseRainbowWidth();
 
-    const tick = this.isInterval(true);
-    let output = '';
+    const tick = this.isInterval();
+    let output = '\n';
 
     // Poptart
     output += this.rainbows[0].join('');
@@ -178,9 +178,9 @@ export default class NyanReporter extends Reporter {
     output += ' ';
 
     if (tick) {
-      output += chalk.gray(' " "  ""');
+      output += chalk.gray(' "  ""  "');
     } else {
-      output += chalk.gray('  ""  " "');
+      output += chalk.gray('  ""  ""');
     }
 
     output += '\n';
