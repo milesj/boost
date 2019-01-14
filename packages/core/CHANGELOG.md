@@ -1,17 +1,33 @@
-# 1.5.0
+# 1.5.0 - 2019-01-13
+
+#### 🎉 Release
+
+In an effort to test the new CLI rendering engine, this release includes a new
+[nyan cat](http://www.nyan.cat/) reporter! Install with `@boost/reporter-nyan` and enable with
+`--reporter=nyan`.
 
 #### 🚀 New
 
 - Added `Tool#isCI` method to check if in a CI environment.
 - Added `Tool#isPluginEnabled` method to check if a plugin by type has been enabled.
+- Added `Console#isFinalRender` and `Reporter#isFinalRender` methods to check whether it's the final
+  render or not.
 - Added `Plugin#blueprint`, `Reporter#blueprint`, and `Routine#blueprint` as a means to validate and
   build options passed to the constructor.
+- Added `Reporter#hasColorSupport` to check for terminal color support.
+- Added an `ExitError` class.
+- Updated `Tool#exit` to accept an exit code as the 2nd argument.
 - Registered plugins can now define a list of custom NPM `scopes` to lookup modules in.
+
+#### 🐞 Fixed
+
+- `ctrl + c` should now exit the render loop properly.
 
 #### 🛠 Internal
 
 - Deprecated `Tool#loadWorkspacePackages`. Use `Tool#getWorkspacePackages` instead.
 - TS: `Tool#loadConfig`, `loadPlugins`, `loadReporters` have been marked `protected`.
+- TS: `Console#final`, `started`, `stopped` have been marked `protected`.
 
 # 1.4.1 - 2019-01-08
 

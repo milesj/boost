@@ -8,6 +8,7 @@ import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Context from './Context';
 import Emitter, { EventArguments, EventListener } from './Emitter';
+import ExitError from './ExitError';
 import { AggregatedResponse } from './Executor';
 import ModuleLoader from './ModuleLoader';
 import Output from './Output';
@@ -28,6 +29,7 @@ export {
   Emitter,
   EventArguments,
   EventListener,
+  ExitError,
   ModuleLoader,
   Output,
   Pipeline,

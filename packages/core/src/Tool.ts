@@ -20,6 +20,7 @@ import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
+import ExitError from './ExitError';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
@@ -258,10 +259,19 @@ export default class Tool<
   /**
    * Force exit the application.
    */
-  exit(message: string | Error | null = null): this {
-    this.console.stop(message, message !== null);
+  exit(message: string | Error | null = null, code: number = 1): this {
+    const error = new ExitError(this.msg('errors:processTerminated'), code);
 
-    return this;
+    if (message) {
+      if (message instanceof Error) {
+        error.message = message.message;
+        error.stack = message.stack;
+      } else {
+        error.message = message;
+      }
+    }
+
+    throw error;
   }
 
   /**

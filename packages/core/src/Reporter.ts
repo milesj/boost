@@ -160,10 +160,24 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
   };
 
   /**
+   * Return true if the user's terminal supports color.
+   */
+  hasColorSupport(level: number = 1): boolean {
+    return chalk.supportsColor && chalk.supportsColor.level >= level;
+  }
+
+  /**
    * Create an indentation based on the defined length.
    */
   indent(length: number = 0): string {
     return length <= 0 ? '' : ' '.repeat(length);
+  }
+
+  /**
+   * Return true if the final render.
+   */
+  isFinalRender(): boolean {
+    return this.console.isFinalRender();
   }
 
   /**
@@ -202,6 +216,10 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
     type: ColorType = 'default',
     modifiers: ('reset' | 'bold' | 'dim' | 'italic' | 'underline' | 'inverse' | 'hidden')[] = [],
   ): string {
+    if (!this.hasColorSupport()) {
+      return message;
+    }
+
     const color = this.getColorPalette()[type];
     let out = color.charAt(0) === '#' ? chalk.hex(color) : chalk[color as Color];
 

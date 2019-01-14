@@ -92,14 +92,6 @@ describe('Routine', () => {
     }
   }
 
-  it('flags an exit when an exit event occurs', () => {
-    expect(routine.exit).toBe(false);
-
-    tool.emit('exit');
-
-    expect(routine.exit).toBe(true);
-  });
-
   describe('constructor()', () => {
     it('throws an error if no key is provided', () => {
       expect(() => new Routine('', 'title')).toThrowErrorMatchingSnapshot();
@@ -606,16 +598,6 @@ describe('Routine', () => {
   describe('run()', () => {
     it('returns a promise', () => {
       expect(routine.run({}, 123)).toBeInstanceOf(Promise);
-    });
-
-    it('errors if an exit occurs', async () => {
-      routine.exit = true;
-
-      try {
-        await routine.run({}, 123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Process has been interrupted.'));
-      }
     });
 
     it('passes the value down the promise', async () => {

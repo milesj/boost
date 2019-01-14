@@ -3,6 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Emitter from './Emitter';
@@ -30,15 +31,17 @@ export default class Console extends Emitter {
 
   outputQueue: Output[] = [];
 
-  renderTimer: NodeJS.Timer | null = null;
-
-  restoreCursorOnExit: boolean = false;
-
-  started: boolean = false;
-
-  stopped: boolean = false;
-
   tool: Tool<any>;
+
+  protected final: boolean = false;
+
+  protected renderTimer: NodeJS.Timer | null = null;
+
+  protected restoreCursorOnExit: boolean = false;
+
+  protected started: boolean = false;
+
+  protected stopped: boolean = false;
 
   private writers: typeof BOUND_WRITERS;
 
@@ -139,7 +142,9 @@ export default class Console extends Emitter {
   handleFailure = (error: Error) => {
     this.start();
     this.debug('Uncaught exception or unresolved promise handled');
-    this.stop(error, true);
+    this.stop(error);
+
+    exit(2);
   };
 
   /**
@@ -148,7 +153,9 @@ export default class Console extends Emitter {
   handleSignal = () => {
     this.start();
     this.debug('SIGINT or SIGTERM handled');
-    this.stop('Process has been terminated.', true);
+    this.stop(new Error(this.tool.msg('errors:processTerminated')));
+
+    exit(2);
   };
 
   /**
@@ -167,6 +174,13 @@ export default class Console extends Emitter {
     }
 
     return this;
+  }
+
+  /**
+   * Return true if the final render.
+   */
+  isFinalRender(): boolean {
+    return this.final;
   }
 
   /**
@@ -233,6 +247,7 @@ export default class Console extends Emitter {
    */
   renderFinalOutput(error: Error | null) {
     this.debug('Rendering final console output');
+    this.final = true;
 
     // Stop the render loop
     this.stopRenderLoop();
@@ -313,15 +328,9 @@ export default class Console extends Emitter {
   /**
    * Stop the console rendering process.
    */
-  stop(message: string | Error | null = null, force: boolean = false) {
+  stop(error: Error | null = null) {
     if (this.stopped) {
       return;
-    }
-
-    let error = null;
-
-    if (message !== null) {
-      error = message instanceof Error ? message : new Error(message);
     }
 
     if (error) {
@@ -337,10 +346,6 @@ export default class Console extends Emitter {
     this.unwrapStreams();
     this.stopped = true;
     this.started = false;
-
-    if (error && force) {
-      throw error;
-    }
   }
 
   /**

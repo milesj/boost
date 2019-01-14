@@ -14,6 +14,7 @@ import {
   TEST_TOOL_CONFIG,
   TEST_PACKAGE_JSON,
 } from './helpers';
+import ExitError from '../src/ExitError';
 
 class Foo extends Plugin {}
 class Bar extends Plugin {}
@@ -167,32 +168,28 @@ describe('Tool', () => {
   });
 
   describe('exit()', () => {
-    it('accepts null (no error)', () => {
-      const spy = jest.fn();
-
-      tool.console.stop = spy;
-      tool.exit();
-
-      expect(spy).toHaveBeenCalledWith(null, false);
+    it('throws exit error', () => {
+      try {
+        tool.exit();
+      } catch (error) {
+        expect(error).toEqual(new ExitError('Process has been terminated.', 1));
+      }
     });
 
-    it('accepts a string', () => {
-      const spy = jest.fn();
-
-      tool.console.stop = spy;
-      tool.exit('Oops');
-
-      expect(spy).toHaveBeenCalledWith('Oops', true);
+    it('throws exit error with custom message and code', () => {
+      try {
+        tool.exit('Hello', 123);
+      } catch (error) {
+        expect(error).toEqual(new ExitError('Hello', 123));
+      }
     });
 
-    it('accepts an error', () => {
-      const error = new Error('Oh nooo');
-      const spy = jest.fn();
-
-      tool.console.stop = spy;
-      tool.exit(error);
-
-      expect(spy).toHaveBeenCalledWith(error, true);
+    it('throws exit error based on original error', () => {
+      try {
+        tool.exit(new Error('Hello'), 0);
+      } catch (error) {
+        expect(error).toEqual(new ExitError('Hello', 0));
+      }
     });
   });
 
@@ -421,15 +418,17 @@ describe('Tool', () => {
     });
 
     it('enables debug if debug config is true', () => {
-      const spy = jest.spyOn(debug, 'enable');
+      const oldEnable = debug.enable;
+
+      debug.enable = jest.fn();
 
       tool.args = { $0: '', _: [], debug: true };
       // @ts-ignore Allow protected access
       tool.loadConfig();
 
-      expect(spy).toHaveBeenCalledWith('test-boost:*');
+      expect(debug.enable).toHaveBeenCalledWith('test-boost:*');
 
-      spy.mockRestore();
+      debug.enable = oldEnable;
     });
 
     // it('updates locale if defined', () => {
