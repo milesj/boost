@@ -3,9 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import instanceOf from './instanceOf';
+
 /**
  * Wrap a value in a promise if it has not already been.
  */
 export default function wrapWithPromise<T>(value: T): Promise<any> {
-  return value instanceof Promise ? value : Promise.resolve(value);
+  return instanceOf(value, Promise) ? value : Promise.resolve(value);
 }

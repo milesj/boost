@@ -8,6 +8,7 @@ import Context from './Context';
 import Routine from './Routine';
 import Task from './Task';
 import Tool from './Tool';
+import instanceOf from './helpers/instanceOf';
 import { Debugger } from './types';
 
 export type ExecuteHandler<Ctx> = (task: Task<Ctx>, value?: any) => Promise<any>;
@@ -47,7 +48,7 @@ export default class Executor<Ctx extends Context, Options = {}> {
     this.debug('Aggregating results');
 
     responses.forEach((response: any) => {
-      if (response instanceof Error) {
+      if (instanceOf(response, Error)) {
         errors.push(response);
       } else {
         results.push(response);

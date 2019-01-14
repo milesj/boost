@@ -15,6 +15,7 @@ import ParallelExecutor from './executors/Parallel';
 import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
 import SerialExecutor from './executors/Serial';
 import SyncExecutor from './executors/Sync';
+import instanceOf from './helpers/instanceOf';
 import wrapWithPromise from './helpers/wrapWithPromise';
 import { STATUS_RUNNING } from './constants';
 import { Debugger } from './types';
@@ -164,7 +165,7 @@ export default class Routine<
    * Add a new routine within this routine.
    */
   pipe(routine: Routine<Ctx, Tool>): this {
-    if (routine instanceof Routine) {
+    if (instanceOf(routine, Routine)) {
       // eslint-disable-next-line no-param-reassign
       routine.metadata.index = this.routines.length;
 

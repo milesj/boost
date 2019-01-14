@@ -6,6 +6,7 @@
 import Reporter from '../Reporter';
 import Routine from '../Routine';
 import Task from '../Task';
+import instanceOf from '../helpers/instanceOf';
 
 export interface LineParts {
   prefix: string;
@@ -80,7 +81,7 @@ export default class BoostReporter extends Reporter {
       return '';
     }
 
-    const collection = task instanceof Routine ? task.parent.routines : task.parent.tasks;
+    const collection = instanceOf(task, Routine) ? task.parent!.routines : task.parent!.tasks;
 
     return `[${task.metadata.index + 1}/${collection.length}]`;
   }

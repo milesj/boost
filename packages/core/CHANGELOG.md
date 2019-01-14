@@ -1,3 +1,9 @@
+# 1.5.1
+
+#### 🐞 Fixed
+
+- Fixed some cross-realm `instanceof` check issues.
+
 # 1.5.0 - 2019-01-13
 
 #### 🎉 Release
