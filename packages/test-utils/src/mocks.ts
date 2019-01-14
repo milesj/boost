@@ -3,7 +3,16 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Tool, ToolOptions, Plugin, Debugger, Console, Routine } from '@boost/core';
+import {
+  Console,
+  Debugger,
+  Plugin,
+  Routine,
+  Task,
+  TaskAction,
+  Tool,
+  ToolOptions,
+} from '@boost/core';
 import { stubArgs, stubPackageJson, stubToolConfig } from './stubs';
 import { TestTool, TestToolConfig, TestPluginRegistry } from './types';
 
@@ -16,7 +25,7 @@ export function mockDebugger(): Debugger {
   return debug as any;
 }
 
-export function mockTool<T extends TestTool>(options?: Partial<ToolOptions>): T {
+export function mockTool(options?: Partial<ToolOptions>): any {
   const tool = new Tool<TestPluginRegistry, TestToolConfig>({
     appName: 'test-boost',
     appPath: __dirname,
@@ -33,10 +42,10 @@ export function mockTool<T extends TestTool>(options?: Partial<ToolOptions>): T 
   // @ts-ignore Allow private access and avoid loaders
   tool.initialized = true;
 
-  return tool as any;
+  return tool;
 }
 
-export function mockConsole(tool: Tool<any, any>): Console {
+export function mockConsole(tool: Tool<any, any>): any {
   const cli = new Console(tool, {
     stderr: jest.fn(),
     stdout: jest.fn(),
@@ -52,7 +61,7 @@ export function mockRoutine(
   tool: Tool<any, any>,
   key: string = 'key',
   title: string = 'Title',
-): Routine<any, TestTool> {
+): any {
   const routine = new Routine<any, TestTool>(key, title);
 
   routine.tool = tool;
@@ -60,4 +69,8 @@ export function mockRoutine(
   routine.action = (context, value) => Promise.resolve(value); // Avoid execute exception
 
   return routine;
+}
+
+export function mockTask(action: TaskAction<any> | null = null, title: string = 'Title'): any {
+  return new Task(title, action || (() => null));
 }

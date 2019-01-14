@@ -1,19 +1,19 @@
+import { mockTool, mockRoutine, mockDebugger } from '@boost/test-utils';
 import Executor from '../src/Executor';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import Routine from '../src/Routine';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestTool, createTestRoutine, createTestDebugger } from './helpers';
 
 describe('Executor', () => {
   let tool: Tool<any, any>;
   let executor: Executor<any>;
 
   beforeEach(() => {
-    tool = createTestTool();
+    tool = mockTool();
 
     executor = new Executor(tool, {});
-    executor.debug = createTestDebugger();
+    executor.debug = mockDebugger();
   });
 
   describe('aggregateResponse()', () => {
@@ -29,7 +29,7 @@ describe('Executor', () => {
     let routine: Routine<any, any>;
 
     beforeEach(() => {
-      routine = createTestRoutine(tool);
+      routine = mockRoutine(tool);
     });
 
     it('returns a promise', () => {
@@ -216,7 +216,7 @@ describe('Executor', () => {
   });
 
   describe('runRoutines()', () => {
-    const routines = [createTestRoutine(tool), createTestRoutine(tool), createTestRoutine(tool)];
+    const routines = [mockRoutine(tool), mockRoutine(tool), mockRoutine(tool)];
 
     beforeEach(() => {
       executor.run = jest.fn();

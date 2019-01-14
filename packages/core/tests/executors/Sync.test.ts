@@ -1,12 +1,12 @@
+import { mockTool } from '@boost/test-utils';
 import SyncExecutor from '../../src/executors/Sync';
 import Task from '../../src/Task';
-import { createTestTool } from '../helpers';
 
 describe('SyncExecutor', () => {
   let executor: SyncExecutor<any>;
 
   beforeEach(() => {
-    executor = new SyncExecutor(createTestTool(), {});
+    executor = new SyncExecutor(mockTool(), {});
   });
 
   it('triggers tasks in parallel', async () => {

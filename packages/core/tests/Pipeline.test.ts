@@ -1,8 +1,8 @@
 import exit from 'exit';
+import { mockTool, mockRoutine } from '@boost/test-utils';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Context from '../src/Context';
-import { createTestTool, createTestRoutine } from './helpers';
 
 jest.mock('exit');
 
@@ -10,7 +10,7 @@ describe('Pipeline', () => {
   let pipeline: Pipeline<any, any>;
 
   beforeEach(() => {
-    pipeline = new Pipeline(createTestTool(), new Context());
+    pipeline = new Pipeline(mockTool(), new Context());
   });
 
   describe('constructor()', () => {
@@ -20,13 +20,13 @@ describe('Pipeline', () => {
     });
 
     it('sets the context', () => {
-      pipeline = new Pipeline(createTestTool(), { foo: 'bar' });
+      pipeline = new Pipeline(mockTool(), { foo: 'bar' });
 
       expect(pipeline.context).toEqual({ foo: 'bar' });
     });
 
     it('sets default depth to -1', () => {
-      pipeline = new Pipeline(createTestTool(), { foo: 'bar' });
+      pipeline = new Pipeline(mockTool(), { foo: 'bar' });
 
       expect(pipeline.metadata.depth).toBe(-1);
     });
@@ -42,7 +42,7 @@ describe('Pipeline', () => {
 
     it('starts console with routine', async () => {
       const spy = jest.fn();
-      const routine = createTestRoutine(pipeline.tool);
+      const routine = mockRoutine(pipeline.tool);
 
       pipeline.tool.console.emit = spy;
       pipeline.pipe(routine);

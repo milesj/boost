@@ -11,7 +11,7 @@ describe('Task', () => {
   let task: Task<any>;
 
   beforeEach(() => {
-    task = new Task('title', (con, value) => value * 2);
+    task = new Task('title', (context, value) => value * 2);
   });
 
   describe('constructor()', () => {
@@ -168,9 +168,9 @@ describe('Task', () => {
       const context = { count: 1 };
 
       /* eslint-disable no-param-reassign */
-      task.action = (con, value) => {
-        con.count += 1;
-        con.foo = 'bar';
+      task.action = (ctx, value) => {
+        ctx.count += 1;
+        ctx.foo = 'bar';
       };
       /* eslint-enable */
 

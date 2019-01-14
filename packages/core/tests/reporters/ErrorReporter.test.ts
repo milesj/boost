@@ -1,13 +1,15 @@
+import { mockTool, mockConsole } from '@boost/test-utils';
 import ErrorReporter from '../../src/reporters/ErrorReporter';
-import { createTestConsole, createTestTool } from '../helpers';
 
 describe('ErrorReporter', () => {
   let reporter: ErrorReporter;
 
   beforeEach(() => {
+    const tool = mockTool();
+
     reporter = new ErrorReporter();
-    reporter.console = createTestConsole();
-    reporter.tool = createTestTool();
+    reporter.console = mockConsole(tool);
+    reporter.tool = tool;
   });
 
   describe('bootstrap()', () => {

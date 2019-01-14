@@ -14,18 +14,15 @@ export function stubArgs(fields: object = {}): any {
   };
 }
 
-export function stubPackageJson(
-  name: string = '',
-  fields: Partial<PackageConfig> = {},
-): PackageConfig {
+export function stubPackageJson(fields: Partial<PackageConfig> = {}): PackageConfig {
   return {
-    name,
+    name: 'test-boost',
     version: '0.0.0',
     ...fields,
   };
 }
 
-export function stubToolConfig(): TestToolConfig {
+export function stubToolConfig(config: Partial<TestToolConfig> = {}): TestToolConfig {
   return {
     debug: false,
     extends: [],
@@ -36,5 +33,6 @@ export function stubToolConfig(): TestToolConfig {
     settings: {},
     silent: false,
     theme: 'default',
+    ...config,
   };
 }

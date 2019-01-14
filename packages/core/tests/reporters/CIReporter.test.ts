@@ -1,6 +1,6 @@
 import chalk from 'chalk';
+import { mockTool, mockConsole } from '@boost/test-utils';
 import CIReporter from '../../src/reporters/CIReporter';
-import { createTestConsole, createTestTool } from '../helpers';
 
 describe('CIReporter', () => {
   let reporter: CIReporter;
@@ -8,9 +8,11 @@ describe('CIReporter', () => {
   let errSpy: jest.Mock;
 
   beforeEach(() => {
+    const tool = mockTool();
+
     reporter = new CIReporter();
-    reporter.console = createTestConsole();
-    reporter.tool = createTestTool();
+    reporter.console = mockConsole(tool);
+    reporter.tool = tool;
 
     outSpy = reporter.console.out as jest.Mock;
     errSpy = reporter.console.err as jest.Mock;

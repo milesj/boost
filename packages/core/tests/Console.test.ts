@@ -1,9 +1,9 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
+import { mockTool } from '@boost/test-utils';
 import Console from '../src/Console';
 import Output from '../src/Output';
-import { createTestTool } from './helpers';
 
 jest.mock('exit');
 
@@ -15,7 +15,7 @@ describe('Console', () => {
   beforeEach(() => {
     err = jest.fn();
     out = jest.fn();
-    cli = new Console(createTestTool(), {
+    cli = new Console(mockTool(), {
       stderr: err,
       stdout: out,
     });

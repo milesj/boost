@@ -1,12 +1,12 @@
+import { mockTool } from '@boost/test-utils';
 import SerialExecutor from '../../src/executors/Serial';
 import Task from '../../src/Task';
-import { createTestTool } from '../helpers';
 
 describe('SerialExecutor', () => {
   let executor: SerialExecutor<any>;
 
   beforeEach(() => {
-    executor = new SerialExecutor(createTestTool(), {});
+    executor = new SerialExecutor(mockTool(), {});
   });
 
   it('triggers tasks in sequence', async () => {

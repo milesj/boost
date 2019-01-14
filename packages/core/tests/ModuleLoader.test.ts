@@ -1,9 +1,8 @@
-import { getFixurePath } from '@boost/test-utils';
+import { getFixturePath, copyFixtureToMock, mockTool } from '@boost/test-utils';
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
-import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 // @ts-ignore
-import TestPlugin from './fixtures/plugin-exported-definition';
+import TestPlugin from '../../../tests/__fixtures__/plugin-exported-definition';
 
 function createPlugin(name: string, options: any = {}): Plugin {
   const plugin = new TestPlugin(options);
@@ -19,7 +18,7 @@ describe('ModuleLoader', () => {
 
   beforeEach(() => {
     loader = new ModuleLoader(
-      createTestTool({
+      mockTool({
         root: getFixturePath('app'),
       }),
       'plugin',
@@ -105,7 +104,7 @@ describe('ModuleLoader', () => {
       fixtures.push(copyFixtureToMock('theme-exported-object', 'test-boost-theme-object'));
 
       loader = new ModuleLoader(
-        createTestTool({
+        mockTool({
           root: getFixturePath('app'),
         }),
         'theme',

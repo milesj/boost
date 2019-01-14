@@ -2,20 +2,20 @@
 
 import execa from 'execa';
 import { number, bool } from 'optimal';
+import { mockTool, mockRoutine, mockDebugger, stubToolConfig } from '@boost/test-utils';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, STATUS_RUNNING } from '../src/constants';
-import { createTestTool, createTestRoutine, createTestDebugger, TEST_TOOL_CONFIG } from './helpers';
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
   let tool: Tool<any, any>;
 
   beforeEach(() => {
-    tool = createTestTool();
+    tool = mockTool();
     tool.config = {
-      ...TEST_TOOL_CONFIG,
+      ...stubToolConfig(),
       baz: {
         compress: true,
         outDir: './out/',
@@ -25,15 +25,15 @@ describe('Routine', () => {
       },
     };
 
-    routine = createTestRoutine(tool);
-    routine.configure(createTestRoutine(tool));
+    routine = mockRoutine(tool);
+    routine.configure(mockRoutine(tool));
   });
 
   class FailureRoutine extends Routine<any, any, { test: number }> {
     constructor(key: string, title: string, options?: any) {
       super(key, title, options);
 
-      this.debug = createTestDebugger();
+      this.debug = mockDebugger();
     }
 
     blueprint() {
@@ -52,7 +52,7 @@ describe('Routine', () => {
       super(key, title, options);
 
       this.tool = tool;
-      this.debug = createTestDebugger();
+      this.debug = mockDebugger();
 
       this.task('foo', this.foo);
       this.task('bar', this.bar);
@@ -117,7 +117,7 @@ describe('Routine', () => {
         constructor(key: string, title: string) {
           super(key, title);
 
-          this.debug = createTestDebugger();
+          this.debug = mockDebugger();
         }
 
         bootstrap() {
@@ -129,7 +129,7 @@ describe('Routine', () => {
         }
       }
 
-      const parent = createTestRoutine(tool);
+      const parent = mockRoutine(tool);
       // @ts-ignore
       parent.options.foo = 'bar';
 
@@ -140,9 +140,9 @@ describe('Routine', () => {
     });
 
     it('increases depth with each parent', () => {
-      const parent = createTestRoutine(tool);
-      const child = createTestRoutine(tool);
-      const grandchild = createTestRoutine(tool);
+      const parent = mockRoutine(tool);
+      const child = mockRoutine(tool);
+      const grandchild = mockRoutine(tool);
 
       expect(parent.metadata.depth).toBe(0);
       expect(child.metadata.depth).toBe(0);
@@ -299,9 +299,9 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -324,7 +324,7 @@ describe('Routine', () => {
         super(key, title);
 
         this.tool = tool;
-        this.debug = createTestDebugger();
+        this.debug = mockDebugger();
       }
 
       async execute(): Promise<any> {
@@ -404,9 +404,9 @@ describe('Routine', () => {
     });
 
     it('sets routines in order', () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -417,9 +417,9 @@ describe('Routine', () => {
     });
 
     it('updates index metadata of each routine', () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -432,7 +432,7 @@ describe('Routine', () => {
     });
 
     it('inherits console from parent routine', () => {
-      const foo = createTestRoutine(tool, 'foo');
+      const foo = mockRoutine(tool, 'foo');
 
       routine.pipe(foo);
 
@@ -493,9 +493,9 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -641,7 +641,7 @@ describe('Routine', () => {
         super(key, title, options);
 
         this.tool = tool;
-        this.debug = createTestDebugger();
+        this.debug = mockDebugger();
       }
 
       blueprint() {
@@ -706,9 +706,9 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -731,7 +731,7 @@ describe('Routine', () => {
         super(key, title);
 
         this.tool = tool;
-        this.debug = createTestDebugger();
+        this.debug = mockDebugger();
       }
 
       async execute(): Promise<any> {
@@ -854,9 +854,9 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
