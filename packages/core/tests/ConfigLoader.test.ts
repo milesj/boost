@@ -1,9 +1,8 @@
 import JSON5 from 'json5';
 import { number } from 'optimal';
+import { getFixurePath } from '@boost/test-utils';
 import ConfigLoader from '../src/ConfigLoader';
 import {
-  getTestRoot,
-  getFixturePath,
   getModulePath,
   copyFixtureToModule,
   createTempFileInRoot,
@@ -23,7 +22,7 @@ describe('ConfigLoader', () => {
 
   beforeEach(() => {
     const tool = createTestTool({
-      root: getTestRoot(),
+      root: getFixurePath('app'),
     });
 
     loader = new ConfigLoader(tool);

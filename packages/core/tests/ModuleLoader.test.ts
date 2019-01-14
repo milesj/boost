@@ -1,6 +1,7 @@
+import { getFixurePath } from '@boost/test-utils';
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
-import { getFixturePath, getTestRoot, copyFixtureToMock, createTestTool } from './helpers';
+import { getFixturePath, copyFixtureToMock, createTestTool } from './helpers';
 // @ts-ignore
 import TestPlugin from './fixtures/plugin-exported-definition';
 
@@ -19,7 +20,7 @@ describe('ModuleLoader', () => {
   beforeEach(() => {
     loader = new ModuleLoader(
       createTestTool({
-        root: getTestRoot(),
+        root: getFixturePath('app'),
       }),
       'plugin',
       Plugin,
@@ -105,7 +106,7 @@ describe('ModuleLoader', () => {
 
       loader = new ModuleLoader(
         createTestTool({
-          root: getTestRoot(),
+          root: getFixturePath('app'),
         }),
         'theme',
       );
