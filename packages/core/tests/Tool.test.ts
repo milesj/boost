@@ -7,10 +7,9 @@ import {
   stubPackageJson,
   getFixturePath,
   copyFixtureToMock,
-  TestPluginRegistry,
   TestToolConfig,
 } from '@boost/test-utils';
-import Tool from '../src/Tool';
+import Tool, { ToolPluginRegistry } from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import BoostReporter from '../src/reporters/BoostReporter';
@@ -21,9 +20,9 @@ class Bar extends Plugin {}
 class Baz {}
 
 describe('Tool', () => {
-  let tool: Tool<TestPluginRegistry, TestToolConfig>;
+  let tool: Tool<any, TestToolConfig>;
   let toolWithPlugins: Tool<
-    TestPluginRegistry & {
+    ToolPluginRegistry & {
       foo: Foo;
       bar: Bar;
       baz: Baz;

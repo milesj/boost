@@ -5,7 +5,6 @@
 
 import Context from './Context';
 import Emitter from './Emitter';
-import instanceOf from './helpers/instanceOf';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,

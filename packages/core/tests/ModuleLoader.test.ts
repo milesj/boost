@@ -5,7 +5,9 @@ import ModuleLoader from '../src/ModuleLoader';
 import TestPlugin from '../../../tests/__fixtures__/plugin-exported-definition';
 
 function createPlugin(name: string, options: any = {}): Plugin {
+  // @ts-ignore Ignore argument errors
   const plugin = new TestPlugin(options);
+
   plugin.name = name;
   plugin.moduleName = `test-boost-plugin-${name}`;
 

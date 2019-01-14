@@ -14,7 +14,7 @@ import {
   ToolOptions,
 } from '@boost/core';
 import { stubArgs, stubPackageJson, stubToolConfig } from './stubs';
-import { TestTool, TestToolConfig, TestPluginRegistry } from './types';
+import { TestTool, TestToolConfig, TestToolPluginRegistry, ToolLike } from './types';
 
 export function mockDebugger(): Debugger {
   const debug = jest.fn();
@@ -26,7 +26,7 @@ export function mockDebugger(): Debugger {
 }
 
 export function mockTool(options?: Partial<ToolOptions>): any {
-  const tool = new Tool<TestPluginRegistry, TestToolConfig>({
+  const tool = new Tool<TestToolPluginRegistry, TestToolConfig>({
     appName: 'test-boost',
     appPath: __dirname,
     ...options,
@@ -39,14 +39,14 @@ export function mockTool(options?: Partial<ToolOptions>): any {
   tool.config = stubToolConfig();
   tool.package = stubPackageJson();
 
-  // @ts-ignore Allow private access and avoid loaders
+  // @ts-ignore Allow private access to avoid loaders
   tool.initialized = true;
 
   return tool;
 }
 
-export function mockConsole(tool: Tool<any, any>): any {
-  const cli = new Console(tool, {
+export function mockConsole(tool: ToolLike): any {
+  const cli = new Console(tool as Tool<any, any>, {
     stderr: jest.fn(),
     stdout: jest.fn(),
   });
@@ -57,14 +57,10 @@ export function mockConsole(tool: Tool<any, any>): any {
   return cli;
 }
 
-export function mockRoutine(
-  tool: Tool<any, any>,
-  key: string = 'key',
-  title: string = 'Title',
-): any {
+export function mockRoutine(tool: ToolLike, key: string = 'key', title: string = 'Title'): any {
   const routine = new Routine<any, TestTool>(key, title);
 
-  routine.tool = tool;
+  routine.tool = tool as Tool<any, any>;
   routine.debug = mockDebugger();
   routine.action = (context, value) => Promise.resolve(value); // Avoid execute exception
   routine.execute = routine.action as any;
