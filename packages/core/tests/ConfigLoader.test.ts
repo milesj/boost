@@ -374,7 +374,7 @@ describe('ConfigLoader', () => {
       });
 
       it('supports a string and converts it to `extends`', () => {
-        fixtures.push(copyFixtureToNodeModule('preset', 'test-boost-preset'));
+        fixtures.push(copyFixtureToNodeModule('preset', 'app', 'test-boost-preset'));
 
         loader.package = stubPackageJson({
           name: 'boost',
@@ -384,7 +384,7 @@ describe('ConfigLoader', () => {
 
         expect(loader.loadConfig(args)).toEqual(
           expect.objectContaining({
-            extends: [getNodeModulePath('test-boost-preset', 'configs/testBoost.preset.js')],
+            extends: [getNodeModulePath('app', 'test-boost-preset', 'configs/testBoost.preset.js')],
           }),
         );
       });

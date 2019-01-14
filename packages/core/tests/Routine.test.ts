@@ -971,8 +971,8 @@ describe('Routine', () => {
       routine.task('bar', value => value);
 
       expect(routine.tasks).toHaveLength(2);
-      expect(routine.tasks[0]).toBeInstanceOf(Task);
-      expect(routine.tasks[1]).toBeInstanceOf(Task);
+      expect(routine.tasks[0].constructor.name).toBe('Task');
+      expect(routine.tasks[1].constructor.name).toBe('Task');
     });
 
     it('binds the action function to the routine', async () => {
@@ -991,7 +991,7 @@ describe('Routine', () => {
     it('returns a `Task` instance', () => {
       const task = routine.task('foo', value => value);
 
-      expect(task).toBeInstanceOf(Task);
+      expect(task.constructor.name).toBe('Task');
     });
 
     it('sets routine as parent', () => {

@@ -599,7 +599,7 @@ describe('Tool', () => {
       // @ts-ignore Allow protected access
       tool.loadReporters();
 
-      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(BoostReporter);
+      expect(tool.getPlugins('reporter')[0].constructor.name).toBe('BoostReporter');
     });
   });
 

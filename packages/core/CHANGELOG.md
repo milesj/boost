@@ -4,6 +4,10 @@
 
 - Fixed some cross-realm `instanceof` check issues.
 
+#### 🛠 Internal
+
+- TS: `TaskAction` is now exported.
+
 # 1.5.0 - 2019-01-13
 
 #### 🎉 Release

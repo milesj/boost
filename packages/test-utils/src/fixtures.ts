@@ -16,10 +16,10 @@ export function getNodeModulePath(fixture: string, name: string, file: string = 
   return path.join(getFixturePath(fixture), `./node_modules/${name}`, file);
 }
 
-export function copyFixtureToNodeModule(fixture: string, name: string): () => void {
-  const modulePath = getNodeModulePath(fixture, name);
+export function copyFixtureToNodeModule(from: string, to: string, name: string): () => void {
+  const modulePath = getNodeModulePath(to, name);
 
-  fs.copySync(getFixturePath(fixture), modulePath, { overwrite: true });
+  fs.copySync(getFixturePath(from), modulePath, { overwrite: true });
 
   fs.writeJsonSync(path.join(modulePath, 'package.json'), {
     main: './index.js',

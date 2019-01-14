@@ -67,7 +67,7 @@ export function mockRoutine(
   routine.tool = tool;
   routine.debug = mockDebugger();
   routine.action = (context, value) => Promise.resolve(value); // Avoid execute exception
-  routine.execute = routine.action;
+  routine.execute = routine.action as any;
 
   return routine;
 }

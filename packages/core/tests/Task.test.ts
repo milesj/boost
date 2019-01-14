@@ -167,12 +167,10 @@ describe('Task', () => {
     it('passes a context to the action', async () => {
       const context = { count: 1 };
 
-      /* eslint-disable no-param-reassign */
-      task.action = (ctx, value) => {
+      task.action = ctx => {
         ctx.count += 1;
         ctx.foo = 'bar';
       };
-      /* eslint-enable */
 
       await task.run(context, 123);
 
