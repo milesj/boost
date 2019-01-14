@@ -862,8 +862,8 @@ describe('ConfigLoader', () => {
 
     it('supports multiple string values using an array', () => {
       expect(loader.resolveExtendPaths(['foo-bar', 'plugin:foo'])).toEqual([
-        getNodeModulePath('foo-bar', 'configs/testBoost.preset.js'),
-        getNodeModulePath('test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'foo-bar', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
@@ -881,19 +881,19 @@ describe('ConfigLoader', () => {
 
     it('resolves node modules', () => {
       expect(loader.resolveExtendPaths(['foo-bar'])).toEqual([
-        getNodeModulePath('foo-bar', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'foo-bar', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves node modules with a scoped', () => {
       expect(loader.resolveExtendPaths(['@ns/foo-bar'])).toEqual([
-        getNodeModulePath('@ns/foo-bar', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', '@ns/foo-bar', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves plugins', () => {
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
-        getNodeModulePath('test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
@@ -901,19 +901,19 @@ describe('ConfigLoader', () => {
       loader.tool.options.scoped = true;
 
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
-        getNodeModulePath('@test-boost/plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', '@test-boost/plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves plugins using their full name', () => {
       expect(loader.resolveExtendPaths(['test-boost-plugin-foo'])).toEqual([
-        getNodeModulePath('test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves plugins using their full namepaced name', () => {
       expect(loader.resolveExtendPaths(['@ns/test-test-boost-plugin-foo'])).toEqual([
-        getNodeModulePath('@ns/test-test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', '@ns/test-test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
   });
@@ -921,19 +921,19 @@ describe('ConfigLoader', () => {
   describe('resolveModuleConfigPath()', () => {
     it('returns file path with correct naming', () => {
       expect(loader.resolveModuleConfigPath('foo', 'bar')).toBe(
-        getNodeModulePath('bar', 'configs/foo.js'),
+        getNodeModulePath('app', 'bar', 'configs/foo.js'),
       );
     });
 
     it('can flag as preset', () => {
       expect(loader.resolveModuleConfigPath('foo', 'bar', true)).toBe(
-        getNodeModulePath('bar', 'configs/foo.preset.js'),
+        getNodeModulePath('app', 'bar', 'configs/foo.preset.js'),
       );
     });
 
     it('can change the extension', () => {
       expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json')).toBe(
-        getNodeModulePath('bar', 'configs/foo.preset.json'),
+        getNodeModulePath('app', 'bar', 'configs/foo.preset.json'),
       );
     });
   });

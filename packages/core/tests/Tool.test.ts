@@ -163,7 +163,7 @@ describe('Tool', () => {
 
       expect(typeof i18n).toBe('object');
       expect(i18n.options.backend).toEqual({
-        resourcePaths: [path.join(__dirname, '../resources'), path.join(__dirname, 'resources')],
+        resourcePaths: expect.arrayContaining([path.join(__dirname, '../resources')]),
       });
     });
   });
