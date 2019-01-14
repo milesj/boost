@@ -1,8 +1,14 @@
 {
   "name": "@boost/reporter-nyan",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A nyan cat console reporter for Boost applications.",
-  "keywords": ["boost", "boost-reporter", "reporter", "nyan", "cat"],
+  "keywords": [
+    "boost",
+    "boost-reporter",
+    "reporter",
+    "nyan",
+    "cat"
+  ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "engines": {
@@ -17,7 +23,7 @@
     "chalk": "^2.4.2"
   },
   "devDependencies": {
-    "@boost/core": "^1.4.1"
+    "@boost/core": "^1.5.0"
   },
   "peerDependencies": {
     "@boost/core": "^1.4.0"
