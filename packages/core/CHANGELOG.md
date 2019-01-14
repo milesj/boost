@@ -1,4 +1,10 @@
-# 1.5.0
+# 1.5.0 - 2019-01-13
+
+#### 🎉 Release
+
+In an effort to test the new CLI rendering engine, this release includes a new
+[nyan cat](http://www.nyan.cat/) reporter! Install with `@boost/reporter-nyan` and enable with
+`--reporter=nyan`.
 
 #### 🚀 New
 
