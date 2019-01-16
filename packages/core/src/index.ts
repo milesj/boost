@@ -45,4 +45,5 @@ export {
   ToolPluginRegistry,
 };
 
+export * from './constants';
 export * from './types';

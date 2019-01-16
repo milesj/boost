@@ -146,7 +146,6 @@ describe('Tool', () => {
       const debugFunc = tool.createDebugger('foo');
 
       expect(typeof debugFunc).toBe('function');
-      expect(debugFunc.namespace).toBe('test-boost:foo');
     });
 
     it('provides an invariant function', () => {

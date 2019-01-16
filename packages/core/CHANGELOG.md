@@ -1,4 +1,8 @@
-# 1.5.1
+# 1.6.0
+
+#### 🚀 New
+
+- Constants are now exported from the index.
 
 #### 🐞 Fixed
 

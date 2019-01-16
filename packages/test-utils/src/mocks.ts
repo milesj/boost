@@ -14,6 +14,7 @@ import {
   ToolOptions,
 } from '@boost/core';
 import { stubArgs, stubPackageJson, stubToolConfig } from './stubs';
+import { getFixturePath } from './fixtures';
 import { TestTool, TestToolConfig, TestToolPluginRegistry, ToolLike } from './types';
 
 export function mockDebugger(): Debugger {
@@ -28,7 +29,7 @@ export function mockDebugger(): Debugger {
 export function mockTool(options?: Partial<ToolOptions>): any {
   const tool = new Tool<TestToolPluginRegistry, TestToolConfig>({
     appName: 'test-boost',
-    appPath: __dirname,
+    appPath: getFixturePath('app'),
     ...options,
   });
 
@@ -38,6 +39,10 @@ export function mockTool(options?: Partial<ToolOptions>): any {
   tool.args = stubArgs();
   tool.config = stubToolConfig();
   tool.package = stubPackageJson();
+
+  // Stub out methods
+  tool.debug = mockDebugger();
+  tool.createDebugger = mockDebugger;
 
   // @ts-ignore Allow private access to avoid loaders
   tool.initialized = true;
@@ -62,12 +67,12 @@ export function mockRoutine(tool: ToolLike, key: string = 'key', title: string =
 
   routine.tool = tool as Tool<any, any>;
   routine.debug = mockDebugger();
-  routine.action = (context, value) => Promise.resolve(value); // Avoid execute exception
+  routine.action = jest.fn((context, value) => Promise.resolve(value)); // Avoid execute exception
   routine.execute = routine.action as any;
 
   return routine;
 }
 
 export function mockTask(action: TaskAction<any> | null = null, title: string = 'Title'): any {
-  return new Task(title, action || (() => null));
+  return new Task(title, action || jest.fn());
 }
