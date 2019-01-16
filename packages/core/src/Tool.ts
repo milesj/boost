@@ -168,9 +168,7 @@ export default class Tool<
   addPlugin<K extends keyof PluginRegistry>(typeName: K, plugin: PluginRegistry[K]): this {
     const type = this.getRegisteredPlugin(typeName);
 
-    if (!type) {
-      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
-    } else if (!instanceOf(plugin, Plugin)) {
+    if (!instanceOf(plugin, Plugin)) {
       throw new TypeError(this.msg('errors:pluginNotExtended', { parent: 'Plugin', typeName }));
     } else if (!instanceOf(plugin, type.contract)) {
       throw new TypeError(

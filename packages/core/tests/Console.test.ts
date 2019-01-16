@@ -220,13 +220,17 @@ describe('Console', () => {
 
   describe('logLive()', () => {
     it('adds a log via `console.log`', () => {
-      const spy = jest.spyOn(process.stdout, 'write');
+      const old = process.stdout.write.bind(process.stdout);
+      const spy = jest.fn();
+
+      process.stdout.write = spy;
 
       cli.logLive('foo');
 
       expect(spy).toHaveBeenCalledWith('foo');
 
-      spy.mockRestore();
+      // @ts-ignore
+      process.stdout.write = old;
     });
   });
 

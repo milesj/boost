@@ -25,7 +25,8 @@ describe('Routine', () => {
       },
     };
 
-    routine = mockRoutine(tool);
+    routine = new Routine('key', 'Title');
+    routine.execute = (ctx, value) => Promise.resolve(value);
     routine.configure(mockRoutine(tool));
   });
 
@@ -284,7 +285,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.parallelizeRoutines(value);
+      routine.action = (ctx, value) => routine.parallelizeRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -308,7 +309,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.parallelizeRoutines(value, [bar]);
+      routine.action = (ctx, value) => routine.parallelizeRoutines(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -369,7 +370,7 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.parallelizeTasks(value);
+      routine.action = (ctx, value) => routine.parallelizeTasks(value);
 
       await routine.run(context, undefined);
 
@@ -387,7 +388,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.parallelizeTasks(value, [bar]);
+      routine.action = (ctx, value) => routine.parallelizeTasks(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -457,7 +458,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.poolRoutines(value);
+      routine.action = (ctx, value) => routine.poolRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -502,7 +503,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.poolRoutines(value, {}, [bar]);
+      routine.action = (ctx, value) => routine.poolRoutines(value, {}, [bar]);
 
       await routine.run({}, undefined);
 
@@ -531,7 +532,7 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.poolTasks(value);
+      routine.action = (ctx, value) => routine.poolTasks(value);
 
       await routine.run(context, undefined);
 
@@ -585,7 +586,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.poolTasks(value, {}, [bar]);
+      routine.action = (ctx, value) => routine.poolTasks(value, {}, [bar]);
 
       await routine.run({}, undefined);
 
@@ -691,7 +692,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.serializeRoutines(value);
+      routine.action = (ctx, value) => routine.serializeRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -715,7 +716,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.serializeRoutines(value, [bar]);
+      routine.action = (ctx, value) => routine.serializeRoutines(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -774,7 +775,7 @@ describe('Routine', () => {
       const context = { serial: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.serializeTasks(value);
+      routine.action = (ctx, value) => routine.serializeTasks(value);
 
       await routine.run(context, undefined);
 
@@ -792,7 +793,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.serializeTasks(value, [bar]);
+      routine.action = (ctx, value) => routine.serializeTasks(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -818,7 +819,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.synchronizeRoutines(value);
+      routine.action = (ctx, value) => routine.synchronizeRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -863,7 +864,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.synchronizeRoutines(value, [bar]);
+      routine.action = (ctx, value) => routine.synchronizeRoutines(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -892,7 +893,7 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.synchronizeTasks(value);
+      routine.action = (ctx, value) => routine.synchronizeTasks(value);
 
       await routine.run(context, undefined);
 
@@ -946,7 +947,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.synchronizeTasks(value, [bar]);
+      routine.action = (ctx, value) => routine.synchronizeTasks(value, [bar]);
 
       await routine.run({}, undefined);
 

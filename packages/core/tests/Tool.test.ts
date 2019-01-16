@@ -2,14 +2,15 @@ import debug from 'debug';
 import path from 'path';
 import { string } from 'optimal';
 import {
-  mockTool,
-  stubToolConfig,
-  stubPackageJson,
-  getFixturePath,
   copyFixtureToMock,
+  getFixturePath,
+  mockConsole,
+  mockTool,
+  stubPackageJson,
+  stubToolConfig,
   TestToolConfig,
 } from '@boost/test-utils';
-import Tool, { ToolPluginRegistry } from '../src/Tool';
+import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import BoostReporter from '../src/reporters/BoostReporter';
@@ -22,25 +23,37 @@ class Baz {}
 describe('Tool', () => {
   let tool: Tool<any, TestToolConfig>;
   let toolWithPlugins: Tool<
-    ToolPluginRegistry & {
+    {
       foo: Foo;
       bar: Bar;
       baz: Baz;
+      plugin: Plugin;
+      reporter: Reporter;
     },
     TestToolConfig
   >;
 
   beforeEach(() => {
-    tool = mockTool({
-      root: getFixturePath('app'),
-    });
-
+    tool = mockTool(
+      {},
+      new Tool({
+        appName: 'test-boost',
+        appPath: getFixturePath('app'),
+        root: getFixturePath('app'),
+      }),
+    );
+    tool.console = mockConsole(tool);
     // @ts-ignore Allow private access
     tool.initialized = false; // Reset
 
-    toolWithPlugins = mockTool({
-      root: getFixturePath('app'),
-    });
+    toolWithPlugins = mockTool(
+      {},
+      new Tool({
+        appName: 'test-boost',
+        appPath: getFixturePath('app'),
+        root: getFixturePath('app'),
+      }),
+    );
   });
 
   describe('constructor()', () => {
@@ -138,6 +151,32 @@ describe('Tool', () => {
 
       // @ts-ignore
       expect(plugin.console).not.toBe(tool.console);
+    });
+
+    it('calls `beforeBootstrap` on type', () => {
+      const spy = jest.fn();
+      const type = toolWithPlugins.getRegisteredPlugin('foo');
+
+      type.beforeBootstrap = spy;
+
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(spy).toHaveBeenCalledWith(plugin);
+    });
+
+    it('calls `afterBootstrap` on type', () => {
+      const spy = jest.fn();
+      const type = toolWithPlugins.getRegisteredPlugin('foo');
+
+      type.afterBootstrap = spy;
+
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(spy).toHaveBeenCalledWith(plugin);
     });
   });
 
@@ -335,9 +374,33 @@ describe('Tool', () => {
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(true);
     });
+
+    it('only initializes once', () => {
+      // @ts-ignore Allow protected access
+      const spy = jest.spyOn(tool, 'loadConfig');
+
+      tool.initialize();
+      tool.initialize();
+      tool.initialize();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('isPluginEnabled()', () => {
+    it('returns false when config property not found', () => {
+      delete tool.config.plugins;
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+
+    it('returns false when config property not an array', () => {
+      // @ts-ignore Allow invalid type
+      tool.config.plugins = 'wrong';
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+
     it('returns true when using strings and name is found', () => {
       tool.config.plugins = ['foo'];
 
@@ -613,17 +676,19 @@ describe('Tool', () => {
 
   describe('logLive()', () => {
     it('sends log to console', () => {
-      const old = console.log.bind(console);
+      const old = process.stdout.write.bind(process.stdout);
       const log = jest.fn();
       const spy = jest.spyOn(tool.console, 'logLive');
 
-      console.log = log;
+      process.stdout.write = log;
 
       tool.logLive('Some message: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('Some message: foo');
+      expect(log).toHaveBeenCalledWith('Some message: foo');
 
-      console.log = old;
+      // @ts-ignore
+      process.stdout.write = old;
     });
   });
 

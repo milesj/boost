@@ -26,12 +26,13 @@ export function mockDebugger(): Debugger {
   return debug as any;
 }
 
-export function mockTool(options?: Partial<ToolOptions>): any {
-  const tool = new Tool<TestToolPluginRegistry, TestToolConfig>({
-    appName: 'test-boost',
-    appPath: getFixturePath('app'),
-    ...options,
-  });
+export function mockTool(options?: Partial<ToolOptions>, baseTool?: ToolLike): any {
+  const tool = (baseTool ||
+    new Tool<TestToolPluginRegistry, TestToolConfig>({
+      appName: 'test-boost',
+      appPath: getFixturePath('app'),
+      ...options,
+    })) as Tool<any, any>;
 
   tool.registerPlugin('plugin', Plugin);
 
