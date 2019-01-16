@@ -1,10 +1,7 @@
-import exit from 'exit';
 import { mockTool, mockRoutine } from '@boost/test-utils';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Context from '../src/Context';
-
-jest.mock('exit');
 
 describe('Pipeline', () => {
   let pipeline: Pipeline<any, any>;
@@ -59,6 +56,10 @@ describe('Pipeline', () => {
     });
 
     it('stops the console on failure', async () => {
+      const spy = jest.fn();
+
+      pipeline.options.exit = spy;
+
       class FailureRoutine extends Routine<any, any> {
         execute() {
           return Promise.reject(new Error('Oops'));
@@ -72,10 +73,14 @@ describe('Pipeline', () => {
       }
 
       expect(stopSpy).toHaveBeenCalledWith(new Error('Oops'));
-      expect(exit).toHaveBeenCalledWith(1);
+      expect(spy).toHaveBeenCalledWith(1);
     });
 
     it('uses exit error code', async () => {
+      const spy = jest.fn();
+
+      pipeline.options.exit = spy;
+
       class ExitRoutine extends Routine<any, any> {
         execute() {
           return this.tool.exit('Forced!', 123);
@@ -89,7 +94,7 @@ describe('Pipeline', () => {
       }
 
       expect(stopSpy).toHaveBeenCalledWith(new Error('Forced!'));
-      expect(exit).toHaveBeenCalledWith(123);
+      expect(spy).toHaveBeenCalledWith(123);
     });
   });
 });

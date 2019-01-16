@@ -11,13 +11,20 @@ import Routine from './Routine';
 import CoreTool from './Tool';
 import instanceOf from './helpers/instanceOf';
 
+export interface PipelineOptions {
+  exit: (code: number) => void;
+}
+
 export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> extends Routine<
   Ctx,
   Tool,
-  Tool['config']
+  PipelineOptions
 > {
-  constructor(tool: Tool, context: Ctx) {
-    super('root', 'Pipeline');
+  constructor(tool: Tool, context: Ctx, options: Partial<PipelineOptions> = {}) {
+    super('root', 'Pipeline', {
+      exit,
+      ...options,
+    });
 
     if (instanceOf(tool, CoreTool)) {
       tool.initialize();
@@ -58,9 +65,9 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
         new CrashLogger(this.tool).log(error);
 
         if (instanceOf(error, ExitError)) {
-          exit(error.code);
+          this.options.exit(error.code);
         } else {
-          exit(1);
+          this.options.exit(1);
         }
 
         return error;

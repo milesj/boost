@@ -3,6 +3,7 @@
 #### 🚀 New
 
 - Constants are now exported from the index.
+- Updated `Pipeline` to support a custom `exit` handler option.
 
 #### 🐞 Fixed
 

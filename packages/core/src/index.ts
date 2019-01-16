@@ -12,7 +12,7 @@ import ExitError from './ExitError';
 import { AggregatedResponse } from './Executor';
 import ModuleLoader from './ModuleLoader';
 import Output from './Output';
-import Pipeline from './Pipeline';
+import Pipeline, { PipelineOptions } from './Pipeline';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 import Routine, { CommandOptions } from './Routine';
@@ -33,6 +33,7 @@ export {
   ModuleLoader,
   Output,
   Pipeline,
+  PipelineOptions,
   Plugin,
   Reporter,
   Routine,
