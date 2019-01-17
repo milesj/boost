@@ -2,6 +2,7 @@ import { mockTool, mockRoutine } from '@boost/test-utils';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Context from '../src/Context';
+import ExitError from '../src/ExitError';
 
 describe('Pipeline', () => {
   let pipeline: Pipeline<any, any>;
@@ -29,7 +30,7 @@ describe('Pipeline', () => {
     });
   });
 
-  describe('run()', () => {
+  describe.only('run()', () => {
     let stopSpy: jest.Mock;
 
     beforeEach(() => {
@@ -66,12 +67,9 @@ describe('Pipeline', () => {
         }
       }
 
-      try {
-        await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
-      } catch (error) {
-        expect(error).toEqual(new Error('Oops'));
-      }
+      const error = await pipeline.pipe(new FailureRoutine('fail', 'title')).run();
 
+      expect(error).toEqual(new Error('Oops'));
       expect(stopSpy).toHaveBeenCalledWith(new Error('Oops'));
       expect(spy).toHaveBeenCalledWith(1);
     });
@@ -87,13 +85,10 @@ describe('Pipeline', () => {
         }
       }
 
-      try {
-        await pipeline.pipe(new ExitRoutine('exit', 'title')).run();
-      } catch (error) {
-        expect(error).toEqual(new Error('Forced!'));
-      }
+      const error = await pipeline.pipe(new ExitRoutine('exit', 'title')).run();
 
-      expect(stopSpy).toHaveBeenCalledWith(new Error('Forced!'));
+      expect(error).toEqual(new ExitError('Forced!', 123));
+      expect(stopSpy).toHaveBeenCalledWith(new ExitError('Forced!', 123));
       expect(spy).toHaveBeenCalledWith(123);
     });
   });
