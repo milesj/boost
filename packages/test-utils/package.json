@@ -1,0 +1,31 @@
+{
+  "name": "@boost/test-utils",
+  "version": "0.0.0",
+  "description": "Utility classes and functions for testing Boost applications in Jest.",
+  "keywords": [
+    "boost",
+    "test",
+    "utils"
+  ],
+  "main": "./lib/index.js",
+  "module": "./esm/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/test-utils",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@boost/core": "^1.5.0"
+  },
+  "peerDependencies": {
+    "@boost/core": "^1.5.0"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^5.0.4",
+    "fs-extra": "^7.0.1"
+  }
+}

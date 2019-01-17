@@ -9,6 +9,7 @@ import upperFirst from 'lodash/upperFirst';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
+import instanceOf from './helpers/instanceOf';
 import Tool from './Tool';
 import { Constructor, Debugger } from './types';
 
@@ -107,7 +108,7 @@ export default class ModuleLoader<Tm> {
     }
 
     // An instance was returned instead of the class definition
-    if (importedModule instanceof this.contract) {
+    if (instanceOf(importedModule, this.contract)) {
       throw new TypeError(
         this.tool.msg('errors:moduleClassInstanceExported', {
           appName: upperFirst(appName),
@@ -122,7 +123,7 @@ export default class ModuleLoader<Tm> {
     const ModuleClass = importedModule as Constructor<Tm>;
     const module = new ModuleClass(...args);
 
-    if (!(module instanceof this.contract)) {
+    if (!instanceOf(module, this.contract)) {
       throw new TypeError(
         this.tool.msg('errors:moduleExportInvalid', {
           moduleName,
@@ -178,7 +179,7 @@ export default class ModuleLoader<Tm> {
    * instantiate from a module. If an object, extract the name and run the previous.
    */
   loadModule(module: string | OptionsObject | Tm, args: any[] = []): Tm {
-    if (this.contract && module instanceof this.contract) {
+    if (this.contract && instanceOf(module, this.contract)) {
       return module;
     } else if (typeof module === 'string') {
       return this.importModule(module, args);

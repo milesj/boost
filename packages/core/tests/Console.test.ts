@@ -1,9 +1,9 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
+import { mockTool } from '@boost/test-utils';
 import Console from '../src/Console';
 import Output from '../src/Output';
-import { createTestTool } from './helpers';
 
 jest.mock('exit');
 
@@ -15,7 +15,7 @@ describe('Console', () => {
   beforeEach(() => {
     err = jest.fn();
     out = jest.fn();
-    cli = new Console(createTestTool(), {
+    cli = new Console(mockTool(), {
       stderr: err,
       stdout: out,
     });
@@ -220,13 +220,17 @@ describe('Console', () => {
 
   describe('logLive()', () => {
     it('adds a log via `console.log`', () => {
-      const spy = jest.spyOn(process.stdout, 'write');
+      const old = process.stdout.write.bind(process.stdout);
+      const spy = jest.fn();
+
+      process.stdout.write = spy;
 
       cli.logLive('foo');
 
       expect(spy).toHaveBeenCalledWith('foo');
 
-      spy.mockRestore();
+      // @ts-ignore
+      process.stdout.write = old;
     });
   });
 

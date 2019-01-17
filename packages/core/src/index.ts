@@ -12,11 +12,11 @@ import ExitError from './ExitError';
 import { AggregatedResponse } from './Executor';
 import ModuleLoader from './ModuleLoader';
 import Output from './Output';
-import Pipeline from './Pipeline';
+import Pipeline, { PipelineOptions } from './Pipeline';
 import Plugin from './Plugin';
 import Reporter from './Reporter';
 import Routine, { CommandOptions } from './Routine';
-import Task, { TaskMetadata } from './Task';
+import Task, { TaskAction, TaskMetadata } from './Task';
 import Tool, { ToolOptions, ToolConfig, ToolPluginRegistry } from './Tool';
 
 export {
@@ -33,10 +33,12 @@ export {
   ModuleLoader,
   Output,
   Pipeline,
+  PipelineOptions,
   Plugin,
   Reporter,
   Routine,
   Task,
+  TaskAction,
   TaskMetadata,
   Tool,
   ToolConfig,
@@ -44,4 +46,5 @@ export {
   ToolPluginRegistry,
 };
 
+export * from './constants';
 export * from './types';

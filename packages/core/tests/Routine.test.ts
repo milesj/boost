@@ -2,20 +2,20 @@
 
 import execa from 'execa';
 import { number, bool } from 'optimal';
+import { mockTool, mockRoutine, mockDebugger, stubToolConfig } from '@boost/test-utils';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED, STATUS_RUNNING } from '../src/constants';
-import { createTestTool, createTestRoutine, createTestDebugger, TEST_TOOL_CONFIG } from './helpers';
 
 describe('Routine', () => {
   let routine: Routine<any, any>;
   let tool: Tool<any, any>;
 
   beforeEach(() => {
-    tool = createTestTool();
+    tool = mockTool();
     tool.config = {
-      ...TEST_TOOL_CONFIG,
+      ...stubToolConfig(),
       baz: {
         compress: true,
         outDir: './out/',
@@ -25,15 +25,16 @@ describe('Routine', () => {
       },
     };
 
-    routine = createTestRoutine(tool);
-    routine.configure(createTestRoutine(tool));
+    routine = new Routine('key', 'Title');
+    routine.execute = (ctx, value) => Promise.resolve(value);
+    routine.configure(mockRoutine(tool));
   });
 
   class FailureRoutine extends Routine<any, any, { test: number }> {
     constructor(key: string, title: string, options?: any) {
       super(key, title, options);
 
-      this.debug = createTestDebugger();
+      this.debug = mockDebugger();
     }
 
     blueprint() {
@@ -52,7 +53,7 @@ describe('Routine', () => {
       super(key, title, options);
 
       this.tool = tool;
-      this.debug = createTestDebugger();
+      this.debug = mockDebugger();
 
       this.task('foo', this.foo);
       this.task('bar', this.bar);
@@ -117,7 +118,7 @@ describe('Routine', () => {
         constructor(key: string, title: string) {
           super(key, title);
 
-          this.debug = createTestDebugger();
+          this.debug = mockDebugger();
         }
 
         bootstrap() {
@@ -129,7 +130,7 @@ describe('Routine', () => {
         }
       }
 
-      const parent = createTestRoutine(tool);
+      const parent = mockRoutine(tool);
       // @ts-ignore
       parent.options.foo = 'bar';
 
@@ -140,9 +141,9 @@ describe('Routine', () => {
     });
 
     it('increases depth with each parent', () => {
-      const parent = createTestRoutine(tool);
-      const child = createTestRoutine(tool);
-      const grandchild = createTestRoutine(tool);
+      const parent = mockRoutine(tool);
+      const child = mockRoutine(tool);
+      const grandchild = mockRoutine(tool);
 
       expect(parent.metadata.depth).toBe(0);
       expect(child.metadata.depth).toBe(0);
@@ -284,7 +285,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.parallelizeRoutines(value);
+      routine.action = (ctx, value) => routine.parallelizeRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -299,16 +300,16 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.parallelizeRoutines(value, [bar]);
+      routine.action = (ctx, value) => routine.parallelizeRoutines(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -324,7 +325,7 @@ describe('Routine', () => {
         super(key, title);
 
         this.tool = tool;
-        this.debug = createTestDebugger();
+        this.debug = mockDebugger();
       }
 
       async execute(): Promise<any> {
@@ -369,7 +370,7 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.parallelizeTasks(value);
+      routine.action = (ctx, value) => routine.parallelizeTasks(value);
 
       await routine.run(context, undefined);
 
@@ -387,7 +388,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.parallelizeTasks(value, [bar]);
+      routine.action = (ctx, value) => routine.parallelizeTasks(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -404,9 +405,9 @@ describe('Routine', () => {
     });
 
     it('sets routines in order', () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -417,9 +418,9 @@ describe('Routine', () => {
     });
 
     it('updates index metadata of each routine', () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
@@ -432,7 +433,7 @@ describe('Routine', () => {
     });
 
     it('inherits console from parent routine', () => {
-      const foo = createTestRoutine(tool, 'foo');
+      const foo = mockRoutine(tool, 'foo');
 
       routine.pipe(foo);
 
@@ -457,7 +458,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.poolRoutines(value);
+      routine.action = (ctx, value) => routine.poolRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -493,16 +494,16 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.poolRoutines(value, {}, [bar]);
+      routine.action = (ctx, value) => routine.poolRoutines(value, {}, [bar]);
 
       await routine.run({}, undefined);
 
@@ -531,7 +532,7 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.poolTasks(value);
+      routine.action = (ctx, value) => routine.poolTasks(value);
 
       await routine.run(context, undefined);
 
@@ -585,7 +586,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.poolTasks(value, {}, [bar]);
+      routine.action = (ctx, value) => routine.poolTasks(value, {}, [bar]);
 
       await routine.run({}, undefined);
 
@@ -641,7 +642,7 @@ describe('Routine', () => {
         super(key, title, options);
 
         this.tool = tool;
-        this.debug = createTestDebugger();
+        this.debug = mockDebugger();
       }
 
       blueprint() {
@@ -691,7 +692,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.serializeRoutines(value);
+      routine.action = (ctx, value) => routine.serializeRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -706,16 +707,16 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.serializeRoutines(value, [bar]);
+      routine.action = (ctx, value) => routine.serializeRoutines(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -731,7 +732,7 @@ describe('Routine', () => {
         super(key, title);
 
         this.tool = tool;
-        this.debug = createTestDebugger();
+        this.debug = mockDebugger();
       }
 
       async execute(): Promise<any> {
@@ -774,7 +775,7 @@ describe('Routine', () => {
       const context = { serial: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.serializeTasks(value);
+      routine.action = (ctx, value) => routine.serializeTasks(value);
 
       await routine.run(context, undefined);
 
@@ -792,7 +793,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.serializeTasks(value, [bar]);
+      routine.action = (ctx, value) => routine.serializeTasks(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -818,7 +819,7 @@ describe('Routine', () => {
         .pipe(new ContextRoutine('bar', 'title', { multiplier: 3 }))
         .pipe(new ContextRoutine('baz', 'title', { multiplier: 2 }));
 
-      routine.action = (con, value) => routine.synchronizeRoutines(value);
+      routine.action = (ctx, value) => routine.synchronizeRoutines(value);
 
       await routine.run(context, undefined);
 
@@ -854,16 +855,16 @@ describe('Routine', () => {
     });
 
     it('can run a specific list of routines', async () => {
-      const foo = createTestRoutine(tool, 'foo');
-      const bar = createTestRoutine(tool, 'bar');
-      const baz = createTestRoutine(tool, 'baz');
+      const foo = mockRoutine(tool, 'foo');
+      const bar = mockRoutine(tool, 'bar');
+      const baz = mockRoutine(tool, 'baz');
 
       routine
         .pipe(foo)
         .pipe(bar)
         .pipe(baz);
 
-      routine.action = (con, value) => routine.synchronizeRoutines(value, [bar]);
+      routine.action = (ctx, value) => routine.synchronizeRoutines(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -892,7 +893,7 @@ describe('Routine', () => {
       const context = { parallel: 'task' };
 
       routine = new ContextRoutine('context', 'title');
-      routine.action = (con, value) => routine.synchronizeTasks(value);
+      routine.action = (ctx, value) => routine.synchronizeTasks(value);
 
       await routine.run(context, undefined);
 
@@ -946,7 +947,7 @@ describe('Routine', () => {
       const bar = routine.task('title', () => {});
       const baz = routine.task('title', () => {});
 
-      routine.action = (con, value) => routine.synchronizeTasks(value, [bar]);
+      routine.action = (ctx, value) => routine.synchronizeTasks(value, [bar]);
 
       await routine.run({}, undefined);
 
@@ -971,8 +972,8 @@ describe('Routine', () => {
       routine.task('bar', value => value);
 
       expect(routine.tasks).toHaveLength(2);
-      expect(routine.tasks[0]).toBeInstanceOf(Task);
-      expect(routine.tasks[1]).toBeInstanceOf(Task);
+      expect(routine.tasks[0].constructor.name).toBe('Task');
+      expect(routine.tasks[1].constructor.name).toBe('Task');
     });
 
     it('binds the action function to the routine', async () => {
@@ -991,7 +992,7 @@ describe('Routine', () => {
     it('returns a `Task` instance', () => {
       const task = routine.task('foo', value => value);
 
-      expect(task).toBeInstanceOf(Task);
+      expect(task.constructor.name).toBe('Task');
     });
 
     it('sets routine as parent', () => {

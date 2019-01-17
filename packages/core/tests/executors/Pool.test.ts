@@ -1,13 +1,13 @@
+import { mockTool } from '@boost/test-utils';
 import PoolExecutor from '../../src/executors/Pool';
 import Task from '../../src/Task';
-import { createTestTool } from '../helpers';
 
 describe('PoolExecutor', () => {
   let executor: PoolExecutor<any>;
 
   beforeEach(() => {
     executor = new PoolExecutor(
-      createTestTool(),
+      mockTool(),
       {},
       {
         timeout: 1000,

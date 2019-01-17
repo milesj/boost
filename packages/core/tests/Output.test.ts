@@ -1,7 +1,7 @@
 import ansiEscapes from 'ansi-escapes';
+import { mockConsole, mockTool } from '@boost/test-utils';
 import Console from '../src/Console';
 import Output from '../src/Output';
-import { createTestConsole } from './helpers';
 
 jest.mock('term-size', () => () => ({ columns: 0, rows: 5 }));
 
@@ -10,7 +10,7 @@ describe('Output', () => {
   let cli: Console;
 
   beforeEach(() => {
-    cli = createTestConsole();
+    cli = mockConsole(mockTool());
     cli.render = jest.fn();
 
     output = new Output(cli, () => 'foo\nbar\nbaz');

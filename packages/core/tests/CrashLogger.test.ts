@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
+import { mockTool } from '@boost/test-utils';
 import CrashLogger from '../src/CrashLogger';
 import Tool from '../src/Tool';
-import { createTestTool } from './helpers';
 
 describe('CrashLogger', () => {
   let tool: Tool<any>;
@@ -12,7 +12,7 @@ describe('CrashLogger', () => {
   const oldWrite = fs.writeFileSync.bind(fs);
 
   beforeEach(() => {
-    tool = createTestTool();
+    tool = mockTool();
     logger = new CrashLogger(tool);
     spy = jest.fn();
 

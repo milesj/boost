@@ -1,16 +1,15 @@
 import JSON5 from 'json5';
 import { number } from 'optimal';
-import ConfigLoader from '../src/ConfigLoader';
 import {
-  getTestRoot,
   getFixturePath,
-  getModulePath,
-  copyFixtureToModule,
-  createTempFileInRoot,
-  createTestTool,
-  TEST_TOOL_CONFIG,
-  TEST_PACKAGE_JSON,
-} from './helpers';
+  getNodeModulePath,
+  copyFixtureToNodeModule,
+  createTempFileInFixture,
+  mockTool,
+  stubToolConfig,
+  stubPackageJson,
+} from '@boost/test-utils';
+import ConfigLoader from '../src/ConfigLoader';
 
 function createJavascriptFile(data: any): string {
   return `module.exports = ${JSON5.stringify(data)};`;
@@ -22,8 +21,8 @@ describe('ConfigLoader', () => {
   const args = { $0: '', _: [] };
 
   beforeEach(() => {
-    const tool = createTestTool({
-      root: getTestRoot(),
+    const tool = mockTool({
+      root: getFixturePath('app'),
     });
 
     loader = new ConfigLoader(tool);
@@ -50,22 +49,19 @@ describe('ConfigLoader', () => {
 
   describe('findConfigInPackageJSON()', () => {
     it('returns null if not found', () => {
-      expect(
-        loader.findConfigInPackageJSON({
-          ...TEST_PACKAGE_JSON,
-        }),
-      ).toBeNull();
+      expect(loader.findConfigInPackageJSON(stubPackageJson())).toBeNull();
     });
 
     it('returns object if found', () => {
       expect(
-        loader.findConfigInPackageJSON({
-          ...TEST_PACKAGE_JSON,
-          // @ts-ignore Allow custom key
-          testBoost: {
-            foo: 'bar',
-          },
-        }),
+        loader.findConfigInPackageJSON(
+          stubPackageJson({
+            // @ts-ignore Allow custom key
+            testBoost: {
+              foo: 'bar',
+            },
+          }),
+        ),
       ).toEqual({
         foo: 'bar',
       });
@@ -73,11 +69,12 @@ describe('ConfigLoader', () => {
 
     it('returns extends object if a string is passed', () => {
       expect(
-        loader.findConfigInPackageJSON({
-          ...TEST_PACKAGE_JSON,
-          // @ts-ignore Allow custom key
-          testBoost: './foo.json',
-        }),
+        loader.findConfigInPackageJSON(
+          stubPackageJson({
+            // @ts-ignore Allow custom key
+            testBoost: './foo.json',
+          }),
+        ),
       ).toEqual({
         extends: ['./foo.json'],
       });
@@ -86,7 +83,7 @@ describe('ConfigLoader', () => {
 
   describe('findConfigInLocalFiles()', () => {
     beforeEach(() => {
-      loader.package = { ...TEST_PACKAGE_JSON, name: 'foo' };
+      loader.package = stubPackageJson({ name: 'foo' });
     });
 
     it('returns null when no files found', () => {
@@ -327,10 +324,9 @@ describe('ConfigLoader', () => {
 
     describe('from --config option', () => {
       it('errors if invalid path', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
-        };
+        });
 
         expect(() => {
           loader.loadConfig({
@@ -341,10 +337,9 @@ describe('ConfigLoader', () => {
       });
 
       it('loads from passed file path', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
-        };
+        });
 
         expect(
           loader.loadConfig({
@@ -357,12 +352,11 @@ describe('ConfigLoader', () => {
 
     describe('from package.json', () => {
       it('errors if not an object', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: [],
-        };
+        });
 
         expect(() => {
           loader.loadConfig(args);
@@ -370,50 +364,47 @@ describe('ConfigLoader', () => {
       });
 
       it('supports an object', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: { locale: 'en' },
-        };
+        });
 
         expect(loader.loadConfig(args)).toEqual(expect.objectContaining({ locale: 'en' }));
       });
 
       it('supports a string and converts it to `extends`', () => {
-        fixtures.push(copyFixtureToModule('preset', 'test-boost-preset'));
+        fixtures.push(copyFixtureToNodeModule('preset', 'app', 'test-boost-preset'));
 
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: 'test-boost-preset',
-        };
+        });
 
         expect(loader.loadConfig(args)).toEqual(
           expect.objectContaining({
-            extends: [getModulePath('test-boost-preset', 'configs/testBoost.preset.js')],
+            extends: [getNodeModulePath('app', 'test-boost-preset', 'configs/testBoost.preset.js')],
           }),
         );
       });
 
       it('merges with default config', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: { locale: 'en' },
-        };
-
-        expect(loader.loadConfig(args)).toEqual({
-          ...TEST_TOOL_CONFIG,
-          locale: 'en',
         });
+
+        expect(loader.loadConfig(args)).toEqual(
+          stubToolConfig({
+            locale: 'en',
+          }),
+        );
       });
 
       it('supports plugins', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: {
@@ -425,27 +416,28 @@ describe('ConfigLoader', () => {
               },
             ],
           },
-        };
-
-        expect(loader.loadConfig(args)).toEqual({
-          ...TEST_TOOL_CONFIG,
-          plugins: [
-            'foo',
-            {
-              plugin: 'bar',
-              option: true,
-            },
-          ],
         });
+
+        expect(loader.loadConfig(args)).toEqual(
+          stubToolConfig({
+            plugins: [
+              'foo',
+              {
+                plugin: 'bar',
+                option: true,
+              },
+            ],
+          }),
+        );
       });
 
       it('supports custom config blueprint', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: { foo: 'bar' },
-        };
+        });
+
         loader.tool.options.configBlueprint = {
           foo: number(),
         };
@@ -456,12 +448,12 @@ describe('ConfigLoader', () => {
       });
 
       it('supports custom settings blueprint', () => {
-        loader.package = {
-          ...TEST_PACKAGE_JSON,
+        loader.package = stubPackageJson({
           name: 'boost',
           // @ts-ignore Allow custom key
           testBoost: { settings: { foo: 'bar' } },
-        };
+        });
+
         loader.tool.options.settingsBlueprint = {
           foo: number(),
         };
@@ -474,7 +466,7 @@ describe('ConfigLoader', () => {
 
     describe('from config folder', () => {
       beforeEach(() => {
-        loader.package = { ...TEST_PACKAGE_JSON, name: 'foo' };
+        loader.package = stubPackageJson({ name: 'foo' });
       });
 
       it('errors if no files found', () => {
@@ -510,25 +502,28 @@ describe('ConfigLoader', () => {
       });
 
       it('merges with default config', () => {
-        expect(loader.loadConfig(args)).toEqual({
-          ...TEST_TOOL_CONFIG,
-          foo: 'bar',
-        });
+        expect(loader.loadConfig(args)).toEqual(
+          stubToolConfig({
+            // @ts-ignore Allow unknown
+            foo: 'bar',
+          }),
+        );
       });
 
       it('supports plugins', () => {
         loader.tool.options.root = getFixturePath('app-plugin-config');
 
-        expect(loader.loadConfig(args)).toEqual({
-          ...TEST_TOOL_CONFIG,
-          plugins: [
-            'foo',
-            {
-              plugin: 'bar',
-              option: true,
-            },
-          ],
-        });
+        expect(loader.loadConfig(args)).toEqual(
+          stubToolConfig({
+            plugins: [
+              'foo',
+              {
+                plugin: 'bar',
+                option: true,
+              },
+            ],
+          }),
+        );
       });
     });
   });
@@ -621,18 +616,22 @@ describe('ConfigLoader', () => {
 
     it('extends presets recursively', () => {
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'extend-recursive-a.json',
           JSON.stringify({ a: 1, extends: ['./extend-recursive-b.json'] }),
         ),
       );
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'extend-recursive-b.json',
           JSON.stringify({ b: 2, extends: ['./extend-recursive-c.json'] }),
         ),
       );
-      fixtures.push(createTempFileInRoot('extend-recursive-c.json', JSON.stringify({ c: 3 })));
+      fixtures.push(
+        createTempFileInFixture('app', 'extend-recursive-c.json', JSON.stringify({ c: 3 })),
+      );
 
       expect(
         loader.parseAndExtend({
@@ -654,13 +653,15 @@ describe('ConfigLoader', () => {
 
     it('avoids circular recursion', () => {
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'extend-circular-a.json',
           JSON.stringify({ a: 1, extends: ['./extend-circular-b.json'] }),
         ),
       );
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'extend-circular-b.json',
           JSON.stringify({ b: 2, extends: ['./extend-circular-a.json'] }),
         ),
@@ -684,7 +685,8 @@ describe('ConfigLoader', () => {
 
     it('concatenates and uniquifys arrays', () => {
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'extend-merge-arrays.json',
           JSON.stringify({ list: ['foo', 'bar', 'baz'] }),
         ),
@@ -703,7 +705,8 @@ describe('ConfigLoader', () => {
 
     it('merges objects', () => {
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'extend-merge-objects.json',
           JSON.stringify({ map: { foo: 123, bar: true } }),
         ),
@@ -735,10 +738,10 @@ describe('ConfigLoader', () => {
     });
 
     it('errors if an object is not returned', () => {
-      fixtures.push(createTempFileInRoot('bool.json', JSON.stringify(true)));
-      fixtures.push(createTempFileInRoot('number.json', JSON.stringify(123)));
-      fixtures.push(createTempFileInRoot('string.json', JSON.stringify('foo')));
-      fixtures.push(createTempFileInRoot('array.json', JSON.stringify([])));
+      fixtures.push(createTempFileInFixture('app', 'bool.json', JSON.stringify(true)));
+      fixtures.push(createTempFileInFixture('app', 'number.json', JSON.stringify(123)));
+      fixtures.push(createTempFileInFixture('app', 'string.json', JSON.stringify('foo')));
+      fixtures.push(createTempFileInFixture('app', 'array.json', JSON.stringify([])));
 
       expect(() => {
         loader.parseFile(getFixturePath('app', 'bool.json'));
@@ -758,32 +761,35 @@ describe('ConfigLoader', () => {
     });
 
     it('parses .json files', () => {
-      fixtures.push(createTempFileInRoot('test.json', JSON.stringify({ name: 'foo' })));
+      fixtures.push(createTempFileInFixture('app', 'test.json', JSON.stringify({ name: 'foo' })));
 
       expect(loader.parseFile(getFixturePath('app', 'test.json'))).toEqual({ name: 'foo' });
     });
 
     it('parses .json files in JSON5 format', () => {
-      fixtures.push(createTempFileInRoot('test.json', JSON5.stringify({ name: 'foo' })));
+      fixtures.push(createTempFileInFixture('app', 'test.json', JSON5.stringify({ name: 'foo' })));
 
       expect(loader.parseFile(getFixturePath('app', 'test.json'))).toEqual({ name: 'foo' });
     });
 
     it('parses .json5 files', () => {
-      fixtures.push(createTempFileInRoot('test.json5', JSON5.stringify({ name: 'foo' })));
+      fixtures.push(createTempFileInFixture('app', 'test.json5', JSON5.stringify({ name: 'foo' })));
 
       expect(loader.parseFile(getFixturePath('app', 'test.json5'))).toEqual({ name: 'foo' });
     });
 
     it('parses .js files', () => {
-      fixtures.push(createTempFileInRoot('test.js', createJavascriptFile({ name: 'foo' })));
+      fixtures.push(
+        createTempFileInFixture('app', 'test.js', createJavascriptFile({ name: 'foo' })),
+      );
 
       expect(loader.parseFile(getFixturePath('app', 'test.js'))).toEqual({ name: 'foo' });
     });
 
     it('parses .js files and handles babel default exports', () => {
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'test-default.js',
           createJavascriptFile({
             __esModule: true,
@@ -797,7 +803,11 @@ describe('ConfigLoader', () => {
 
     it('parses .js files that return functions', () => {
       fixtures.push(
-        createTempFileInRoot('test-func.js', 'module.exports = () => { return { name: "foo" }; };'),
+        createTempFileInFixture(
+          'app',
+          'test-func.js',
+          'module.exports = () => { return { name: "foo" }; };',
+        ),
       );
 
       expect(loader.parseFile(getFixturePath('app', 'test-func.js'))).toEqual({ name: 'foo' });
@@ -805,7 +815,8 @@ describe('ConfigLoader', () => {
 
     it('parses .js files that return functions with options passed', () => {
       fixtures.push(
-        createTempFileInRoot(
+        createTempFileInFixture(
+          'app',
           'test-func-opts.js',
           'module.exports = (opts, count) => Object.assign({ name: "foo", count }, opts);',
         ),
@@ -822,7 +833,11 @@ describe('ConfigLoader', () => {
 
     it('errors if a function is returned and `errorOnFunction` is try', () => {
       fixtures.push(
-        createTempFileInRoot('test-func.js', 'module.exports = () => { return { name: "foo" }; };'),
+        createTempFileInFixture(
+          'app',
+          'test-func.js',
+          'module.exports = () => { return { name: "foo" }; };',
+        ),
       );
 
       expect(() => {
@@ -847,8 +862,8 @@ describe('ConfigLoader', () => {
 
     it('supports multiple string values using an array', () => {
       expect(loader.resolveExtendPaths(['foo-bar', 'plugin:foo'])).toEqual([
-        getModulePath('foo-bar', 'configs/testBoost.preset.js'),
-        getModulePath('test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'foo-bar', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
@@ -866,19 +881,19 @@ describe('ConfigLoader', () => {
 
     it('resolves node modules', () => {
       expect(loader.resolveExtendPaths(['foo-bar'])).toEqual([
-        getModulePath('foo-bar', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'foo-bar', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves node modules with a scoped', () => {
       expect(loader.resolveExtendPaths(['@ns/foo-bar'])).toEqual([
-        getModulePath('@ns/foo-bar', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', '@ns/foo-bar', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves plugins', () => {
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
-        getModulePath('test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
@@ -886,19 +901,19 @@ describe('ConfigLoader', () => {
       loader.tool.options.scoped = true;
 
       expect(loader.resolveExtendPaths(['plugin:foo'])).toEqual([
-        getModulePath('@test-boost/plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', '@test-boost/plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves plugins using their full name', () => {
       expect(loader.resolveExtendPaths(['test-boost-plugin-foo'])).toEqual([
-        getModulePath('test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', 'test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
 
     it('resolves plugins using their full namepaced name', () => {
       expect(loader.resolveExtendPaths(['@ns/test-test-boost-plugin-foo'])).toEqual([
-        getModulePath('@ns/test-test-boost-plugin-foo', 'configs/testBoost.preset.js'),
+        getNodeModulePath('app', '@ns/test-test-boost-plugin-foo', 'configs/testBoost.preset.js'),
       ]);
     });
   });
@@ -906,19 +921,19 @@ describe('ConfigLoader', () => {
   describe('resolveModuleConfigPath()', () => {
     it('returns file path with correct naming', () => {
       expect(loader.resolveModuleConfigPath('foo', 'bar')).toBe(
-        getModulePath('bar', 'configs/foo.js'),
+        getNodeModulePath('app', 'bar', 'configs/foo.js'),
       );
     });
 
     it('can flag as preset', () => {
       expect(loader.resolveModuleConfigPath('foo', 'bar', true)).toBe(
-        getModulePath('bar', 'configs/foo.preset.js'),
+        getNodeModulePath('app', 'bar', 'configs/foo.preset.js'),
       );
     });
 
     it('can change the extension', () => {
       expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json')).toBe(
-        getModulePath('bar', 'configs/foo.preset.json'),
+        getNodeModulePath('app', 'bar', 'configs/foo.preset.json'),
       );
     });
   });

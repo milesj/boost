@@ -4,6 +4,7 @@
  */
 
 import Context from './Context';
+import Emitter from './Emitter';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -12,7 +13,6 @@ import {
   STATUS_FAILED,
 } from './constants';
 import { Status } from './types';
-import Emitter from './Emitter';
 
 export type TaskAction<Ctx extends Context> = (
   context: Ctx,

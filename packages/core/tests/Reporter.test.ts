@@ -1,17 +1,21 @@
 import chalk from 'chalk';
+import { mockConsole, mockTool, mockRoutine } from '@boost/test-utils';
 import Reporter from '../src/Reporter';
 import Output from '../src/Output';
 import Task from '../src/Task';
+import Tool from '../src/Tool';
 import { STATUS_PASSED, STATUS_FAILED } from '../src/constants';
-import { createTestConsole, createTestTool, createTestRoutine } from './helpers';
 
 describe('Reporter', () => {
   let reporter: Reporter<any>;
+  let tool: Tool<any, any>;
 
   beforeEach(() => {
+    tool = mockTool();
+
     reporter = new Reporter();
-    reporter.console = createTestConsole();
-    reporter.tool = createTestTool();
+    reporter.console = mockConsole(tool);
+    reporter.tool = tool;
   });
 
   describe('bootstrap()', () => {
@@ -51,9 +55,9 @@ describe('Reporter', () => {
     });
 
     it('supports routines', () => {
-      const task1 = createTestRoutine(null, 'one');
-      const task2 = createTestRoutine(null, 'two');
-      const task3 = createTestRoutine(null, 'three').skip();
+      const task1 = mockRoutine(tool, 'one');
+      const task2 = mockRoutine(tool, 'two');
+      const task3 = mockRoutine(tool, 'three').skip();
 
       task2.status = STATUS_PASSED;
 
@@ -179,9 +183,9 @@ describe('Reporter', () => {
 
   describe('getRootParent()', () => {
     it('returns the root parent of a routine tree', () => {
-      const a = createTestRoutine(reporter.tool as any);
-      const b = createTestRoutine(reporter.tool as any);
-      const c = createTestRoutine(reporter.tool as any);
+      const a = mockRoutine(tool);
+      const b = mockRoutine(tool);
+      const c = mockRoutine(tool);
 
       a.pipe(b.pipe(c));
 
@@ -276,9 +280,9 @@ describe('Reporter', () => {
 
   describe('sortTasksByStartTime()', () => {
     it('sorts by start time', () => {
-      const foo = createTestRoutine();
-      const bar = createTestRoutine();
-      const baz = createTestRoutine();
+      const foo = mockRoutine(tool);
+      const bar = mockRoutine(tool);
+      const baz = mockRoutine(tool);
 
       foo.metadata.startTime = 100;
       bar.metadata.startTime = 150;

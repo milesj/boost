@@ -31,6 +31,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
+import instanceOf from './helpers/instanceOf';
 import {
   Constructor,
   Debugger,
@@ -167,11 +168,9 @@ export default class Tool<
   addPlugin<K extends keyof PluginRegistry>(typeName: K, plugin: PluginRegistry[K]): this {
     const type = this.getRegisteredPlugin(typeName);
 
-    if (!type) {
-      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
-    } else if (!(plugin instanceof Plugin)) {
+    if (!instanceOf(plugin, Plugin)) {
       throw new TypeError(this.msg('errors:pluginNotExtended', { parent: 'Plugin', typeName }));
-    } else if (!(plugin instanceof type.contract)) {
+    } else if (!instanceOf(plugin, type.contract)) {
       throw new TypeError(
         this.msg('errors:pluginNotExtended', { parent: type.contract.name, typeName }),
       );
@@ -263,7 +262,7 @@ export default class Tool<
     const error = new ExitError(this.msg('errors:processTerminated'), code);
 
     if (message) {
-      if (message instanceof Error) {
+      if (instanceOf(message, Error)) {
         error.message = message.message;
         error.stack = message.stack;
       } else {
@@ -278,7 +277,7 @@ export default class Tool<
    * Return a plugin by name and type.
    */
   getPlugin<K extends keyof PluginRegistry>(typeName: K, name: string): PluginRegistry[K] {
-    const plugin = this.getPlugins(typeName).find(p => p instanceof Plugin && p.name === name);
+    const plugin = this.getPlugins(typeName).find(p => instanceOf(p, Plugin) && p.name === name);
 
     if (plugin) {
       return plugin;
@@ -635,7 +634,7 @@ export default class Tool<
       loader.debug('Sorting by priority');
 
       plugins.sort((a, b) =>
-        a instanceof Plugin && b instanceof Plugin ? a.priority - b.priority : 0,
+        instanceOf(a, Plugin) && instanceOf(b, Plugin) ? a.priority - b.priority : 0,
       );
 
       // Bootstrap each plugin with the tool
@@ -676,7 +675,7 @@ export default class Tool<
       // Use default reporter
     } else if (
       reporters.length === 0 ||
-      (reporters.length === 1 && reporters[0] instanceof ErrorReporter)
+      (reporters.length === 1 && instanceOf(reporters[0], ErrorReporter))
     ) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 

@@ -1,3 +1,18 @@
+# 1.6.0
+
+#### 🚀 New
+
+- Constants are now exported from the index.
+- Updated `Pipeline` to support a custom `exit` handler option.
+
+#### 🐞 Fixed
+
+- Fixed some cross-realm `instanceof` check issues.
+
+#### 🛠 Internal
+
+- TS: `TaskAction` is now exported.
+
 # 1.5.0 - 2019-01-13
 
 #### 🎉 Release

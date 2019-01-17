@@ -1,11 +1,12 @@
 /* eslint-disable prefer-template */
 
 import chalk from 'chalk';
+import { mockTool, mockConsole, mockRoutine } from '@boost/test-utils';
 import BoostReporter from '../../src/reporters/BoostReporter';
 import Pipeline from '../../src/Pipeline';
 import Routine from '../../src/Routine';
 import Task from '../../src/Task';
-import { createTestConsole, createTestTool, createTestRoutine } from '../helpers';
+import Tool from '../../src/Tool';
 import {
   STATUS_RUNNING,
   STATUS_SKIPPED,
@@ -18,25 +19,26 @@ const oldNow = Date.now;
 
 describe('BoostReporter', () => {
   let reporter: BoostReporter;
+  let tool: Tool<any, any>;
   let parent: Routine<any, any>;
   let child1: Routine<any, any>;
   let child2: Routine<any, any>;
 
   beforeEach(() => {
-    const tool = createTestTool();
+    tool = mockTool();
 
     reporter = new BoostReporter();
-    reporter.console = createTestConsole();
+    reporter.console = mockConsole(tool);
     reporter.tool = tool;
 
-    parent = createTestRoutine(tool, 'parent', 'Parent');
+    parent = mockRoutine(tool, 'parent', 'Parent');
     parent.metadata.depth = 0;
     parent.status = STATUS_RUNNING;
 
-    child1 = createTestRoutine(tool, 'child1', 'Child #1');
+    child1 = mockRoutine(tool, 'child1', 'Child #1');
     child1.status = STATUS_RUNNING;
 
-    child2 = createTestRoutine(tool, 'child2', 'Child #2');
+    child2 = mockRoutine(tool, 'child2', 'Child #2');
     child2.status = STATUS_SKIPPED;
 
     new Pipeline(tool, {}).pipe(parent);
@@ -61,7 +63,7 @@ describe('BoostReporter', () => {
 
   describe('handleRoutine()', () => {
     it('enqueues an output if depth is 0', () => {
-      const routine = createTestRoutine();
+      const routine = mockRoutine(tool);
 
       expect(reporter.console.outputQueue).toEqual([]);
 
@@ -71,7 +73,7 @@ describe('BoostReporter', () => {
     });
 
     it('doesnt enqueue an output if depth is greater than 0', () => {
-      const routine = createTestRoutine();
+      const routine = mockRoutine(tool);
       routine.metadata.depth = 1;
 
       expect(reporter.console.outputQueue).toEqual([]);

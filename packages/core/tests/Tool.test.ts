@@ -1,19 +1,19 @@
 import debug from 'debug';
 import path from 'path';
 import { string } from 'optimal';
+import {
+  copyFixtureToMock,
+  getFixturePath,
+  mockConsole,
+  mockTool,
+  stubPackageJson,
+  stubToolConfig,
+  TestToolConfig,
+} from '@boost/test-utils';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import BoostReporter from '../src/reporters/BoostReporter';
-import {
-  getFixturePath,
-  copyFixtureToMock,
-  createTestTool,
-  TestPluginRegistry,
-  TestToolConfig,
-  TEST_TOOL_CONFIG,
-  TEST_PACKAGE_JSON,
-} from './helpers';
 import ExitError from '../src/ExitError';
 
 class Foo extends Plugin {}
@@ -21,31 +21,44 @@ class Bar extends Plugin {}
 class Baz {}
 
 describe('Tool', () => {
-  let tool: Tool<TestPluginRegistry, TestToolConfig>;
+  let tool: Tool<any, TestToolConfig>;
   let toolWithPlugins: Tool<
-    TestPluginRegistry & {
+    {
       foo: Foo;
       bar: Bar;
       baz: Baz;
+      plugin: Plugin;
+      reporter: Reporter;
     },
     TestToolConfig
   >;
 
   beforeEach(() => {
-    tool = createTestTool({
-      root: getFixturePath('app'),
-    });
+    tool = mockTool(
+      {},
+      new Tool({
+        appName: 'test-boost',
+        appPath: getFixturePath('app'),
+        root: getFixturePath('app'),
+      }),
+    );
+    tool.console = mockConsole(tool);
     // @ts-ignore Allow private access
     tool.initialized = false; // Reset
 
-    toolWithPlugins = createTestTool({
-      root: getFixturePath('app'),
-    }) as any;
+    toolWithPlugins = mockTool(
+      {},
+      new Tool({
+        appName: 'test-boost',
+        appPath: getFixturePath('app'),
+        root: getFixturePath('app'),
+      }),
+    );
   });
 
   describe('constructor()', () => {
     it('can define config blueprint', () => {
-      tool = createTestTool({
+      tool = mockTool({
         configBlueprint: {
           name: string(),
         },
@@ -57,7 +70,7 @@ describe('Tool', () => {
     });
 
     it('can define settings blueprint', () => {
-      tool = createTestTool({
+      tool = mockTool({
         settingsBlueprint: {
           name: string(),
         },
@@ -139,6 +152,32 @@ describe('Tool', () => {
       // @ts-ignore
       expect(plugin.console).not.toBe(tool.console);
     });
+
+    it('calls `beforeBootstrap` on type', () => {
+      const spy = jest.fn();
+      const type = toolWithPlugins.getRegisteredPlugin('foo');
+
+      type.beforeBootstrap = spy;
+
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(spy).toHaveBeenCalledWith(plugin);
+    });
+
+    it('calls `afterBootstrap` on type', () => {
+      const spy = jest.fn();
+      const type = toolWithPlugins.getRegisteredPlugin('foo');
+
+      type.afterBootstrap = spy;
+
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(spy).toHaveBeenCalledWith(plugin);
+    });
   });
 
   describe('createDebugger()', () => {
@@ -146,7 +185,6 @@ describe('Tool', () => {
       const debugFunc = tool.createDebugger('foo');
 
       expect(typeof debugFunc).toBe('function');
-      expect(debugFunc.namespace).toBe('test-boost:foo');
     });
 
     it('provides an invariant function', () => {
@@ -162,7 +200,7 @@ describe('Tool', () => {
 
       expect(typeof i18n).toBe('object');
       expect(i18n.options.backend).toEqual({
-        resourcePaths: [path.join(__dirname, '../resources'), path.join(__dirname, 'resources')],
+        resourcePaths: expect.arrayContaining([path.join(__dirname, '../resources')]),
       });
     });
   });
@@ -325,20 +363,44 @@ describe('Tool', () => {
       tool.config = {};
 
       expect(tool.config).toEqual({});
-      expect(tool.package).toEqual({ ...TEST_PACKAGE_JSON });
+      expect(tool.package).toEqual(stubPackageJson());
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(false);
 
       tool.initialize();
 
       expect(tool.config).not.toEqual({});
-      expect(tool.package).not.toEqual({ ...TEST_PACKAGE_JSON });
+      expect(tool.package).not.toEqual(stubPackageJson());
       // @ts-ignore Allow private access
       expect(tool.initialized).toBe(true);
+    });
+
+    it('only initializes once', () => {
+      // @ts-ignore Allow protected access
+      const spy = jest.spyOn(tool, 'loadConfig');
+
+      tool.initialize();
+      tool.initialize();
+      tool.initialize();
+
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('isPluginEnabled()', () => {
+    it('returns false when config property not found', () => {
+      delete tool.config.plugins;
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+
+    it('returns false when config property not an array', () => {
+      // @ts-ignore Allow invalid type
+      tool.config.plugins = 'wrong';
+
+      expect(tool.isPluginEnabled('plugin', 'foo')).toBe(false);
+    });
+
     it('returns true when using strings and name is found', () => {
       tool.config.plugins = ['foo'];
 
@@ -412,7 +474,7 @@ describe('Tool', () => {
       tool.loadConfig();
 
       expect(tool.config).toEqual({
-        ...TEST_TOOL_CONFIG,
+        ...stubToolConfig(),
         foo: 'bar',
       });
     });
@@ -462,7 +524,7 @@ describe('Tool', () => {
     });
 
     it('doesnt load if no plugins found in config', () => {
-      tool.config = { ...TEST_TOOL_CONFIG };
+      tool.config = stubToolConfig();
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -473,7 +535,7 @@ describe('Tool', () => {
     it('doesnt load if initialized', () => {
       // @ts-ignore Allow private access
       tool.initialized = true;
-      tool.config = { ...TEST_TOOL_CONFIG, plugins: ['foo'] };
+      tool.config = stubToolConfig({ plugins: ['foo'] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -485,7 +547,7 @@ describe('Tool', () => {
       const plugin = new Plugin();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
-      tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
+      tool.config = stubToolConfig({ plugins: [plugin] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -499,7 +561,7 @@ describe('Tool', () => {
 
       const plugin = new TestPlugin();
 
-      tool.config = { ...TEST_TOOL_CONFIG, plugins: [plugin] };
+      tool.config = stubToolConfig({ plugins: [plugin] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -515,7 +577,7 @@ describe('Tool', () => {
       bar.priority = 2;
       foo.priority = 3;
 
-      tool.config = { ...TEST_TOOL_CONFIG, plugins: [foo, bar, baz] };
+      tool.config = stubToolConfig({ plugins: [foo, bar, baz] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -526,7 +588,7 @@ describe('Tool', () => {
     it('loads reporter using a string', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: ['foo'] };
+      tool.config = stubToolConfig({ reporters: ['foo'] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -540,7 +602,7 @@ describe('Tool', () => {
     it('loads reporter using an object', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'bar' }] };
+      tool.config = stubToolConfig({ reporters: [{ reporter: 'bar' }] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -554,7 +616,7 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.config = { ...TEST_TOOL_CONFIG, reporters: [{ reporter: 'baz', fps: 30 }] };
+      tool.config = stubToolConfig({ reporters: [{ reporter: 'baz', fps: 30 }] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -598,7 +660,7 @@ describe('Tool', () => {
       // @ts-ignore Allow protected access
       tool.loadReporters();
 
-      expect(tool.getPlugins('reporter')[0]).toBeInstanceOf(BoostReporter);
+      expect(tool.getPlugins('reporter')[0].constructor.name).toBe('BoostReporter');
     });
   });
 
@@ -614,17 +676,19 @@ describe('Tool', () => {
 
   describe('logLive()', () => {
     it('sends log to console', () => {
-      const old = console.log.bind(console);
+      const old = process.stdout.write.bind(process.stdout);
       const log = jest.fn();
       const spy = jest.spyOn(tool.console, 'logLive');
 
-      console.log = log;
+      process.stdout.write = log;
 
       tool.logLive('Some message: %s', 'foo');
 
       expect(spy).toHaveBeenCalledWith('Some message: foo');
+      expect(log).toHaveBeenCalledWith('Some message: foo');
 
-      console.log = old;
+      // @ts-ignore
+      process.stdout.write = old;
     });
   });
 
