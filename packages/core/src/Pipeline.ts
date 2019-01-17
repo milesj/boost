@@ -4,6 +4,7 @@
  */
 
 import exit from 'exit';
+import { func } from 'optimal';
 import Context from './Context';
 import CrashLogger from './CrashLogger';
 import ExitError from './ExitError';
@@ -39,6 +40,12 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
     this.metadata.depth = -1;
 
     this.setContext(context);
+  }
+
+  blueprint() /* infer */ {
+    return {
+      exit: func().required(),
+    };
   }
 
   /**

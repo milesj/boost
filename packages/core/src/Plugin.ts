@@ -23,7 +23,6 @@ export default class Plugin<Options extends object = {}> {
   constructor(options: Partial<Options> = {}) {
     this.options = optimal(options, this.blueprint(), {
       name: this.constructor.name,
-      unknown: true,
     });
   }
 

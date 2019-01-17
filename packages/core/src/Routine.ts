@@ -55,7 +55,6 @@ export default class Routine<
     this.key = key;
     this.options = optimal(options, this.blueprint(), {
       name: this.constructor.name,
-      unknown: true,
     });
   }
 
