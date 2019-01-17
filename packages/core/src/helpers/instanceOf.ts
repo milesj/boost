@@ -30,7 +30,14 @@ export default function instanceOf<T = any>(object: any, contract: Constructor<T
       current.constructor.name === contract.name,
     );
 
-    if (current.constructor.name === contract.name) {
+    if (current.constructor.name === 'Object') {
+      return false;
+    }
+
+    if (
+      current.constructor.name === contract.name ||
+      (current instanceof Error && current.name === contract.name)
+    ) {
       return true;
     }
 
