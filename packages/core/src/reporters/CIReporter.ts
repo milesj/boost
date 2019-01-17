@@ -18,6 +18,8 @@ export default class CIReporter extends Reporter {
     this.console
       .on('stop', this.handleStop)
       .on('task', this.handleTask)
+      .on('task.pass', this.handleTask)
+      .on('task.fail', this.handleTask)
       .on('routine', this.handleRoutine)
       .on('routine.skip', this.handleRoutineSkip)
       .on('routine.pass', this.handleRoutinePass)
@@ -31,23 +33,23 @@ export default class CIReporter extends Reporter {
 
   handleRoutineSkip = (routine: Routine<any, any>) => {
     this.console.out(this.style('.', 'warning'));
-    this.console.out(`\n${routine.title}\n`);
+    this.console.out(`\n[r] ${routine.title}\n`);
   };
 
   handleRoutinePass = (routine: Routine<any, any>) => {
     this.console.out(this.style('.', 'success'));
-    this.console.out(`\n${routine.title} (pass)\n`);
+    this.console.out(`\n[r] ${routine.title} (pass)\n`);
   };
 
   handleRoutineFail = (routine: Routine<any, any>) => {
     this.console.err(this.style('.', 'failure'));
-    this.console.out(`\n${routine.title} (fail)\n`);
+    this.console.out(`\n[r] ${routine.title} (fail)\n`);
   };
 
   handleTask = (task: Task<any>) => {
     this.taskCount += 1;
     this.console.out(this.style('.', 'pending'));
-    this.console.out(`\n${task.title} (fail)\n`);
+    this.console.out(`\n[t] ${task.title}\n`);
   };
 
   handleStop = () => {
