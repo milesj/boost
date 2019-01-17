@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NyanReporter getCatFace() returns a cross eyes face when failed 1`] = `"( [37mx .x[39m)"`;
+exports[`NyanReporter getCatFace() returns a cross eyes face when failed 1`] = `"( x .x)"`;
 
-exports[`NyanReporter getCatFace() returns a cross eyes face when routine is failed 1`] = `"( [37mx .x[39m)"`;
+exports[`NyanReporter getCatFace() returns a cross eyes face when routine is failed 1`] = `"( x .x)"`;
 
-exports[`NyanReporter getCatFace() returns a happy eyes face when routine is passed 1`] = `"( [37m^ .^[39m)"`;
+exports[`NyanReporter getCatFace() returns a happy eyes face when routine is passed 1`] = `"( ^ .^)"`;
 
-exports[`NyanReporter getCatFace() returns a normal face 1`] = `"( [37m- .-[39m)"`;
+exports[`NyanReporter getCatFace() returns a normal face 1`] = `"( - .-)"`;
 
-exports[`NyanReporter getCatFace() returns an open eyes face when routine is pending 1`] = `"( [37mo .o[39m)"`;
+exports[`NyanReporter getCatFace() returns an open eyes face when routine is pending 1`] = `"( o .o)"`;
 
-exports[`NyanReporter getCatFace() returns an open eyes face when routine is skipped 1`] = `"( [37mo .o[39m)"`;
+exports[`NyanReporter getCatFace() returns an open eyes face when routine is skipped 1`] = `"( o .o)"`;
 
 exports[`NyanReporter increaseRainbowWidth() increases width each call 1`] = `
 Array [
@@ -77,19 +77,19 @@ Array [
 
 exports[`NyanReporter renderLines() doesnt render routine and task when final render 1`] = `
 "
-[38;5;154m-[0m [35m ,------,[39m
-[38;5;154m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m [90m^[39m[35m|__[39m[90m( [37mo .o[90m)[39m
-[38;5;154m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m  ,------,
+[38;5;154m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m ^|__( o .o)
+[38;5;154m-[0m   \\"\\"  \\"\\"
 "
 `;
 
 exports[`NyanReporter renderLines() renders base cat 1`] = `
 "
-[38;5;154m-[0m [35m ,------,[39m
-[38;5;154m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m [90m^[39m[35m|__[39m[90m( [37m- .-[90m)[39m
-[38;5;154m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m  ,------,
+[38;5;154m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m ^|__( - .-)
+[38;5;154m-[0m   \\"\\"  \\"\\"
 
 
 "
@@ -97,10 +97,10 @@ exports[`NyanReporter renderLines() renders base cat 1`] = `
 
 exports[`NyanReporter renderLines() renders with a routine 1`] = `
 "
-[38;5;154m-[0m [35m ,------,[39m
-[38;5;154m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m [90m^[39m[35m|__[39m[90m( [37mo .o[90m)[39m
-[38;5;154m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m  ,------,
+[38;5;154m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m ^|__( o .o)
+[38;5;154m-[0m   \\"\\"  \\"\\"
 
 [90m[1mKEY[22m[39m Title
 "
@@ -108,10 +108,10 @@ exports[`NyanReporter renderLines() renders with a routine 1`] = `
 
 exports[`NyanReporter renderLines() renders with a routine and task 1`] = `
 "
-[38;5;154m-[0m [35m ,------,[39m
-[38;5;154m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m [90m^[39m[35m|__[39m[90m( [37mo .o[90m)[39m
-[38;5;154m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m  ,------,
+[38;5;154m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m ^|__( o .o)
+[38;5;154m-[0m   \\"\\"  \\"\\"
 
 [90m[1mKEY[22m[39m Title [90mTitle[39m
 "
@@ -119,10 +119,10 @@ exports[`NyanReporter renderLines() renders with a routine and task 1`] = `
 
 exports[`NyanReporter renderLines() renders with alternative ticks 1`] = `
 "
-[38;5;154m-[0m [35m ,------,[39m
-[38;5;154m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m [90m^[39m[35m|__[39m[90m( [37m- .-[90m)[39m
-[38;5;154m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m  ,------,
+[38;5;154m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m ^|__( - .-)
+[38;5;154m-[0m   \\"\\"  \\"\\"
 
 
 "
@@ -130,10 +130,10 @@ exports[`NyanReporter renderLines() renders with alternative ticks 1`] = `
 
 exports[`NyanReporter renderLines() renders with alternative ticks 2`] = `
 "
-[38;5;154m-[0m[38;5;154m_[0m [35m ,------,[39m
-[38;5;154m-[0m[38;5;154m_[0m [35m | .[39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m[38;5;154m_[0m [90m~[39m[35m|_[39m[90m( [37m- .-[90m)[39m
-[38;5;154m-[0m[38;5;154m_[0m [90m \\"  \\"\\"  \\"[39m
+[38;5;154m-[0m[38;5;154m_[0m  ,------,
+[38;5;154m-[0m[38;5;154m_[0m  | ./\\\\_/\\\\
+[38;5;154m-[0m[38;5;154m_[0m ~|_( - .-)
+[38;5;154m-[0m[38;5;154m_[0m  \\"  \\"\\"  \\"
 
 
 "
@@ -141,10 +141,10 @@ exports[`NyanReporter renderLines() renders with alternative ticks 2`] = `
 
 exports[`NyanReporter renderLines() renders with alternative ticks 3`] = `
 "
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m [35m ,------,[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m [35m | .[39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m [90m~[39m[35m|_[39m[90m( [37m- .-[90m)[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m [90m \\"  \\"\\"  \\"[39m
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m  ,------,
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m  | ./\\\\_/\\\\
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m ~|_( - .-)
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m  \\"  \\"\\"  \\"
 
 
 "
@@ -152,10 +152,10 @@ exports[`NyanReporter renderLines() renders with alternative ticks 3`] = `
 
 exports[`NyanReporter renderLines() renders with alternative ticks 4`] = `
 "
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m [35m ,------,[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m [90m^[39m[35m|__[39m[90m( [37m- .-[90m)[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m  ,------,
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m ^|__( - .-)
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m   \\"\\"  \\"\\"
 
 
 "
@@ -163,10 +163,10 @@ exports[`NyanReporter renderLines() renders with alternative ticks 4`] = `
 
 exports[`NyanReporter renderLines() renders with alternative ticks 5`] = `
 "
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m [35m ,------,[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m [35m | . [39m[90m/\\\\_/\\\\[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m [90m^[39m[35m|__[39m[90m( [37m- .-[90m)[39m
-[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m [90m  \\"\\"  \\"\\"[39m
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m  ,------,
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m  | . /\\\\_/\\\\
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m ^|__( - .-)
+[38;5;154m-[0m[38;5;154m_[0m[38;5;154m_[0m[38;5;184m-[0m[38;5;184m-[0m   \\"\\"  \\"\\"
 
 
 "

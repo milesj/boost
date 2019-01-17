@@ -18,7 +18,7 @@ export default class CrashLogger {
 
   // istanbul ignore next
   constructor(tool: Tool<any>) {
-    const { config, console, options } = tool;
+    const { config, console: cli, options } = tool;
 
     this.logPath = path.join(options.root, `${options.appName}-error.log`);
 
@@ -67,10 +67,10 @@ export default class CrashLogger {
     );
 
     this.addTitle('Console Instance');
-    this.add('Logs', console.logs.length > 0 ? console.logs.join('\n  ') : '(No logs)');
+    this.add('Logs', cli.logs.length > 0 ? cli.logs.join('\n  ') : '(No logs)');
     this.add(
       'Error logs',
-      console.errorLogs.length > 0 ? console.errorLogs.join('\n  ') : '(No error logs)',
+      cli.errorLogs.length > 0 ? cli.errorLogs.join('\n  ') : '(No error logs)',
     );
   }
 

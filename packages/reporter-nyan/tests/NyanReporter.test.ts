@@ -8,6 +8,9 @@ describe('NyanReporter', () => {
   let tool: Tool<any>;
 
   beforeEach(() => {
+    // Chalk massively slows down CI tests
+    chalk.enabled = false;
+
     tool = mockTool();
 
     reporter = new NyanReporter();

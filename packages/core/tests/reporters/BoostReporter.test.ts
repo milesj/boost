@@ -25,6 +25,9 @@ describe('BoostReporter', () => {
   let child2: Routine<any, any>;
 
   beforeEach(() => {
+    // Chalk massively slows down CI tests
+    chalk.enabled = false;
+
     tool = mockTool();
 
     reporter = new BoostReporter();

@@ -1,4 +1,5 @@
 import exit from 'exit';
+import chalk from 'chalk';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import { mockTool } from '@boost/test-utils';
@@ -13,6 +14,9 @@ describe('Console', () => {
   let out: jest.Mock;
 
   beforeEach(() => {
+    // Chalk massively slows down CI tests
+    chalk.enabled = false;
+
     err = jest.fn();
     out = jest.fn();
     cli = new Console(mockTool(), {
