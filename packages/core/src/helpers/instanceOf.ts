@@ -20,13 +20,22 @@ export default function instanceOf<T = any>(object: any, contract: Constructor<T
   }
 
   let current = object;
+  let i = 0;
 
   while (current) {
+    console.log(
+      i,
+      current.constructor.name,
+      contract.name,
+      current.constructor.name === contract.name,
+    );
+
     if (current.constructor.name === contract.name) {
       return true;
     }
 
     current = Object.getPrototypeOf(current);
+    i += 1;
   }
 
   return false;
