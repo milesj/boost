@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { Tool, STATUS_FAILED, STATUS_PASSED, STATUS_PENDING } from '@boost/core';
 import { mockTool, mockConsole, mockRoutine, mockTask } from '@boost/test-utils';
 import NyanReporter from '../src/NyanReporter';
@@ -8,9 +7,6 @@ describe('NyanReporter', () => {
   let tool: Tool<any>;
 
   beforeEach(() => {
-    // Chalk massively slows down CI tests
-    chalk.enabled = false;
-
     tool = mockTool();
 
     reporter = new NyanReporter();
