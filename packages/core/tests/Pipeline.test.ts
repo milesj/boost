@@ -30,7 +30,7 @@ describe('Pipeline', () => {
     });
   });
 
-  describe.only('run()', () => {
+  describe('run()', () => {
     let stopSpy: jest.Mock;
 
     beforeEach(() => {

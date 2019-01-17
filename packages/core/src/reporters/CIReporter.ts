@@ -4,6 +4,8 @@
  */
 
 import Reporter from '../Reporter';
+import Routine from '../Routine';
+import Task from '../Task';
 
 export default class CIReporter extends Reporter {
   routineCount: number = 0;
@@ -27,21 +29,25 @@ export default class CIReporter extends Reporter {
     this.console.out('.');
   };
 
-  handleRoutineSkip = () => {
+  handleRoutineSkip = (routine: Routine<any, any>) => {
     this.console.out(this.style('.', 'warning'));
+    this.console.out(`\n${routine.title}\n`);
   };
 
-  handleRoutinePass = () => {
+  handleRoutinePass = (routine: Routine<any, any>) => {
     this.console.out(this.style('.', 'success'));
+    this.console.out(`\n${routine.title} (pass)\n`);
   };
 
-  handleRoutineFail = () => {
+  handleRoutineFail = (routine: Routine<any, any>) => {
     this.console.err(this.style('.', 'failure'));
+    this.console.out(`\n${routine.title} (fail)\n`);
   };
 
-  handleTask = () => {
+  handleTask = (task: Task<any>) => {
     this.taskCount += 1;
     this.console.out(this.style('.', 'pending'));
+    this.console.out(`\n${task.title} (fail)\n`);
   };
 
   handleStop = () => {

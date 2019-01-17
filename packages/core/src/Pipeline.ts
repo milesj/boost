@@ -60,8 +60,6 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
         return result;
       })
       .catch(error => {
-        console.log(error, instanceOf(error, ExitError), error.code);
-
         cli.stop(error);
 
         new CrashLogger(this.tool).log(error);
