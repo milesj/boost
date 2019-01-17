@@ -771,12 +771,12 @@
     semver "^5.6.0"
     yargs "^12.0.5"
 
-"@beemo/core@^0.26.0":
-  version "0.26.0"
-  resolved "https://registry.npmjs.org/@beemo/core/-/core-0.26.0.tgz#b7d200ef58abc5509667106f330766edbba302bb"
-  integrity sha512-su6FmEYlc21FSkh+xRvsi3hyM8OgMq9xkqtZvnam0yK94fm9rdWvRK+SCwLU/bqkfD0bcd2UdxFG3825FdZnOg==
+"@beemo/core@^0.26.1":
+  version "0.26.1"
+  resolved "https://registry.npmjs.org/@beemo/core/-/core-0.26.1.tgz#d3d302d93bdc1396b8591e034f5d6ec8a22e4550"
+  integrity sha512-aJ2T3LDERVZ2adlGY3/bTnuqHeY1wLgpP79uvuZvlyx9y93BHokVuvSCWPOA0SH58T3aFb4cO3LUluyqt4/Z7Q==
   dependencies:
-    "@boost/core" "^1.4.1"
+    "@boost/core" "^1.5.0"
     "@types/execa" "^0.9.0"
     "@types/fs-extra" "^5.0.4"
     "@types/is-glob" "^4.0.0"
@@ -809,10 +809,10 @@
   resolved "https://registry.npmjs.org/@beemo/driver-eslint/-/driver-eslint-0.26.0.tgz#c97692b10b515f4a88fc84570a8e28b44a00f135"
   integrity sha512-Lsn1W82jBiY4/j8zl2GrGAG1yMMl7aNcU44BjawYyQC9OB/1qVPqiTFk+AbQrMz+R/L88boWvRjQ6jNvPcVr6g==
 
-"@beemo/driver-jest@^0.26.0":
-  version "0.26.0"
-  resolved "https://registry.npmjs.org/@beemo/driver-jest/-/driver-jest-0.26.0.tgz#88eecc8d160cec92d672ee48c635c7d668f27708"
-  integrity sha512-KxKCiAlmzasoJwKz7IYioqnxPg0E4QdA49Atbsk+PUeUhzye6CFWX2D+Fq02SS7acZAxjko/VVoBm+2BYYo/fQ==
+"@beemo/driver-jest@^0.26.1":
+  version "0.26.1"
+  resolved "https://registry.npmjs.org/@beemo/driver-jest/-/driver-jest-0.26.1.tgz#af4cb0c0720dc04b28837c15a304d61c995eb074"
+  integrity sha512-IjUW/NS+T199NL3ildQArIjQ4OSNAZLKx5ugmv7EPx0Ctxz74JhNjDs30g/ZPnBEX3W1VUWswIIK1MRSkBzuzg==
 
 "@beemo/driver-prettier@^0.26.0":
   version "0.26.0"
@@ -1420,10 +1420,10 @@
     libnpm "^2.0.1"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.139.0":
-  version "0.139.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.139.0.tgz#4940147f1213d41a40210030b7e99c8024537fd3"
-  integrity sha512-74noRzxFJCJux2QQTIFTGmpASTtob6TL23H/9Idm5rZ7v9USaCnyGcY41TyyPp2qjZtFqCrRDabT7qmaOTdTJA==
+"@milesj/build-tool-config@^0.139.1":
+  version "0.139.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.139.1.tgz#ea578b164248ae169145ebfc00e220e7fd981979"
+  integrity sha512-wYBNGx4U0oyFa43Q3K7LwoLFRFsy8PB1+rDlWM3E9sByAmxSv8v4M9kEjrZ0LwTR/frwjp7bJOf5hw3FjoUkng==
   dependencies:
     "@babel/cli" "^7.2.3"
     "@babel/core" "^7.2.2"
@@ -1445,7 +1445,7 @@
     enzyme-to-json "^3.3.5"
     eslint "^5.12.0"
     eslint-config-airbnb "^17.1.0"
-    eslint-config-prettier "^3.3.0"
+    eslint-config-prettier "^3.4.0"
     eslint-plugin-babel "^5.3.0"
     eslint-plugin-compat "^2.6.3"
     eslint-plugin-import "^2.14.0"
@@ -1464,17 +1464,17 @@
     typescript "^3.2.2"
     typescript-eslint-parser "^21.0.2"
 
-"@milesj/build-tool-runtime@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.15.0.tgz#ddef4eec8375830f5b03b95b0a3a5796266b8006"
-  integrity sha512-l0bBWLUKHLn5O76EI0q2xcl6/FS9SXXtSGZq3IRDmAV0dXJYFSzu+NqsxCnH/eh2DM3Tl25aOhQJyFlzDiZd2Q==
+"@milesj/build-tool-runtime@^0.15.1":
+  version "0.15.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.15.1.tgz#e767def6f75bc454215bfe5a8b39e351cc32e1e9"
+  integrity sha512-WQx2eFaFgwhCd8UxpirYEPayML0B9hgSSsSE3717d6WMUQkb0i8FMx0/yy4giYdtA4rIT8I29Io5qKElBChUgw==
   dependencies:
     "@babel/core" "^7.2.2"
     "@beemo/cli" "^0.26.0"
-    "@beemo/core" "^0.26.0"
+    "@beemo/core" "^0.26.1"
     "@beemo/driver-babel" "^0.26.0"
     "@beemo/driver-eslint" "^0.26.0"
-    "@beemo/driver-jest" "^0.26.0"
+    "@beemo/driver-jest" "^0.26.1"
     "@beemo/driver-prettier" "^0.26.0"
     "@beemo/driver-typescript" "^0.15.0"
     eslint "^5.12.0"
@@ -1482,13 +1482,13 @@
     prettier "^1.15.3"
     typescript "^3.2.2"
 
-"@milesj/build-tools@^0.17.0":
-  version "0.17.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.17.0.tgz#a7568fef00fec90115af2ea3021c4ab8778abd5c"
-  integrity sha512-OQaPohB2CIe7xPg/awCHJEg354ekF92ATyU4ngkNamAKtrCKhce4qlsIF/6+bbhix+SqunT+Uo9aVLunPk8K4A==
+"@milesj/build-tools@^0.17.1":
+  version "0.17.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.17.1.tgz#8a33db4ceb9e57671f9eb1c99333b8dd9a205998"
+  integrity sha512-THc8LdTIw7rbtXZW8BUk/+itQWalMgCVX+Im9OLPHcOA7fKXWX4PRN3hs1rUKfNwhnkPCPMVcs059DAYSNUHzA==
   dependencies:
-    "@milesj/build-tool-config" "^0.139.0"
-    "@milesj/build-tool-runtime" "^0.15.0"
+    "@milesj/build-tool-config" "^0.139.1"
+    "@milesj/build-tool-runtime" "^0.15.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -3388,10 +3388,10 @@ eslint-config-airbnb@^17.1.0:
     object.assign "^4.1.0"
     object.entries "^1.0.4"
 
-eslint-config-prettier@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-3.3.0.tgz#41afc8d3b852e757f06274ed6c44ca16f939a57d"
-  integrity sha512-Bc3bh5bAcKNvs3HOpSi6EfGA2IIp7EzWcg2tS4vP7stnXu/J1opihHDM7jI9JCIckyIDTgZLSWn7J3HY0j2JfA==
+eslint-config-prettier@^3.4.0:
+  version "3.5.0"
+  resolved "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-3.5.0.tgz#fb29575c5be7ed79c1637c5a0c58985833290805"
+  integrity sha512-LcZEoAY5lL3/H2NTFSeUl/z8X8oMea1IxLEIb5uDbRxPTdQeeT7oGpRWT6UwHXGcoRbYH0TZmfRsh8iXbpyW7A==
   dependencies:
     get-stdin "^6.0.0"
 

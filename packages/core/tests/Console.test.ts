@@ -491,6 +491,14 @@ describe('Console', () => {
       expect(cli.renderTimer).not.toBeNull();
     });
 
+    it('doesnt set a timer if silent', () => {
+      cli.tool.config.silent = true;
+      cli.startRenderLoop();
+
+      // @ts-ignore Allow access
+      expect(cli.renderTimer).toBeNull();
+    });
+
     it('flushes output queue and restarts loop', () => {
       cli.flushOutputQueue = jest.fn();
       cli.startRenderLoop();

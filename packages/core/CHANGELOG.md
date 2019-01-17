@@ -8,6 +8,7 @@
 #### 🐞 Fixed
 
 - Fixed some cross-realm `instanceof` check issues.
+- Fixed a bug in which the render loop was still running during `--silent`.
 
 #### 🛠 Internal
 

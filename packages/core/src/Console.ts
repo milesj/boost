@@ -88,11 +88,9 @@ export default class Console extends Emitter {
    * Write a message to `stderr` with optional trailing newline(s).
    */
   err(message: string, nl: number = 0): this {
-    if (this.isSilent()) {
-      return this;
+    if (!this.isSilent()) {
+      this.writers.stderr(message + '\n'.repeat(nl));
     }
-
-    this.writers.stderr(message + '\n'.repeat(nl));
 
     return this;
   }
@@ -222,11 +220,9 @@ export default class Console extends Emitter {
    * Write a message to `stdout` with optional trailing newline(s).
    */
   out(message: string, nl: number = 0): this {
-    if (this.isSilent()) {
-      return this;
+    if (!this.isSilent()) {
+      this.writers.stdout(message + '\n'.repeat(nl));
     }
-
-    this.writers.stdout(message + '\n'.repeat(nl));
 
     return this;
   }
@@ -319,6 +315,10 @@ export default class Console extends Emitter {
    * Automatically render the console in a timeout loop at 16 FPS.
    */
   startRenderLoop() {
+    if (this.isSilent()) {
+      return;
+    }
+
     this.renderTimer = setTimeout(() => {
       this.flushOutputQueue();
       this.startRenderLoop();
@@ -363,11 +363,11 @@ export default class Console extends Emitter {
    */
   // istanbul ignore next
   unwrapStreams() {
-    this.debug('Unwrapping `stderr` and `stdout` streams');
-
-    if (process.env.NODE_ENV === 'test') {
+    if (this.isSilent() || process.env.NODE_ENV === 'test') {
       return;
     }
+
+    this.debug('Unwrapping `stderr` and `stdout` streams');
 
     process.stderr.write = this.writers.stderr as any;
     process.stdout.write = this.writers.stdout as any;
@@ -379,11 +379,11 @@ export default class Console extends Emitter {
    */
   // istanbul ignore next
   wrapStreams() {
-    this.debug('Wrapping `stderr` and `stdout` streams');
-
-    if (process.env.NODE_ENV === 'test') {
+    if (this.isSilent() || process.env.NODE_ENV === 'test') {
       return;
     }
+
+    this.debug('Wrapping `stderr` and `stdout` streams');
 
     ['stderr', 'stdout'].forEach(key => {
       const name = key as 'stderr' | 'stdout';
