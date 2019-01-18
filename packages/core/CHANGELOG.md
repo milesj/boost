@@ -1,9 +1,14 @@
 # 1.6.0
 
+#### 🎉 Release
+
+A new package `@boost/test-utils` has been added for easily testing Boost applications.
+
 #### 🚀 New
 
 - Constants are now exported from the index.
-- Updated `Pipeline` to support a custom `exit` handler option.
+- Added `Console#enable`, `disable`, and `isDisabled` to control the render loop.
+- Added an `exit` handler option to `Pipeline` to support a custom exit strategy.
 
 #### 🐞 Fixed
 

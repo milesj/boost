@@ -2,7 +2,7 @@ import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import { mockTool } from '@boost/test-utils';
-import Console from '../src/Console';
+import Console, { WRAPPED_STREAMS } from '../src/Console';
 import Output from '../src/Output';
 
 jest.mock('exit');
@@ -18,6 +18,26 @@ describe('Console', () => {
     cli = new Console(mockTool(), {
       stderr: err,
       stdout: out,
+    });
+  });
+
+  describe('disable()', () => {
+    it('marks as disabled', () => {
+      expect(cli.isDisabled()).toBe(false);
+
+      cli.disable();
+
+      expect(cli.isDisabled()).toBe(true);
+    });
+
+    it('unwraps streams and stops the loop timer', () => {
+      const wrapSpy = jest.spyOn(cli, 'unwrapStreams');
+      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
+
+      cli.disable();
+
+      expect(wrapSpy).toHaveBeenCalled();
+      expect(loopSpy).toHaveBeenCalled();
     });
   });
 
@@ -48,6 +68,28 @@ describe('Console', () => {
       cli.displayHeader();
 
       expect(out).toHaveBeenCalledWith('Powered by Boost\n');
+    });
+  });
+
+  describe('enable()', () => {
+    it('marks as enabled', () => {
+      cli.disable();
+
+      expect(cli.isDisabled()).toBe(true);
+
+      cli.enable();
+
+      expect(cli.isDisabled()).toBe(false);
+    });
+
+    it('wraps streams and starts the loop timer', () => {
+      const wrapSpy = jest.spyOn(cli, 'wrapStreams');
+      const loopSpy = jest.spyOn(cli, 'startRenderLoop');
+
+      cli.enable();
+
+      expect(wrapSpy).toHaveBeenCalled();
+      expect(loopSpy).toHaveBeenCalled();
     });
   });
 
@@ -491,6 +533,14 @@ describe('Console', () => {
       expect(cli.renderTimer).not.toBeNull();
     });
 
+    it('doesnt set a timer if disabled', () => {
+      cli.disable();
+      cli.startRenderLoop();
+
+      // @ts-ignore Allow access
+      expect(cli.renderTimer).toBeNull();
+    });
+
     it('doesnt set a timer if silent', () => {
       cli.tool.config.silent = true;
       cli.startRenderLoop();
@@ -620,6 +670,79 @@ describe('Console', () => {
 
       // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();
+    });
+  });
+
+  describe('streams', () => {
+    const oldErr = process.stderr.write;
+    const oldOut = process.stdout.write;
+
+    beforeEach(() => {
+      process.env.NODE_ENV = 'test-streams';
+    });
+
+    afterEach(() => {
+      process.env.NODE_ENV = 'test';
+
+      process.stderr.write = oldErr;
+      process.stdout.write = oldOut;
+
+      WRAPPED_STREAMS.stderr = false;
+      WRAPPED_STREAMS.stdout = false;
+    });
+
+    describe('unwrapStreams()', () => {
+      it('sets process streams to defined writes', () => {
+        cli.unwrapStreams();
+
+        expect(process.stderr.write).toBe(err);
+        expect(process.stdout.write).toBe(out);
+
+        expect(cli.isStreamWrapped('stderr')).toBe(false);
+        expect(cli.isStreamWrapped('stdout')).toBe(false);
+      });
+
+      it('doesnt set process streams to defined writes when silent', () => {
+        cli.tool.config.silent = true;
+        cli.unwrapStreams();
+
+        expect(process.stderr.write).not.toBe(err);
+        expect(process.stdout.write).not.toBe(out);
+      });
+    });
+
+    describe('wrapStreams()', () => {
+      it('sets process streams to custom writers', () => {
+        cli.wrapStreams();
+
+        expect(process.stderr.write).not.toBe(oldErr);
+        expect(process.stdout.write).not.toBe(oldOut);
+
+        expect(cli.isStreamWrapped('stderr')).toBe(true);
+        expect(cli.isStreamWrapped('stdout')).toBe(true);
+      });
+
+      it('only wraps once per stream', () => {
+        cli.wrapStreams();
+        cli.wrapStreams();
+        cli.wrapStreams();
+
+        expect(cli.bufferedStreams).toHaveLength(2);
+      });
+
+      it('doesnt set process streams to custom writers when silent', () => {
+        cli.tool.config.silent = true;
+        cli.wrapStreams();
+
+        expect(cli.bufferedStreams).toHaveLength(0);
+      });
+
+      it('doesnt set process streams to custom writers when disabled', () => {
+        cli.disable();
+        cli.wrapStreams();
+
+        expect(cli.bufferedStreams).toHaveLength(0);
+      });
     });
   });
 });

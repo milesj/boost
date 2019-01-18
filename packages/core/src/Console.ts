@@ -12,13 +12,20 @@ import { Debugger } from './types';
 import Output from './Output';
 
 // 16 FPS (60 FPS is actually too fast as it tears)
-const FPS_RATE = 62.5;
+export const FPS_RATE = 62.5;
 
 // Bind our writable streams for easy access
-const BOUND_WRITERS = {
+export const BOUND_WRITERS = {
   stderr: process.stderr.write.bind(process.stderr),
   stdout: process.stdout.write.bind(process.stdout),
 };
+
+export const WRAPPED_STREAMS = {
+  stderr: false,
+  stdout: false,
+};
+
+export type StreamType = 'stderr' | 'stdout';
 
 export default class Console extends Emitter {
   bufferedStreams: (() => void)[] = [];
@@ -32,6 +39,8 @@ export default class Console extends Emitter {
   outputQueue: Output[] = [];
 
   tool: Tool<any>;
+
+  protected disabled: boolean = false;
 
   protected final: boolean = false;
 
@@ -63,6 +72,17 @@ export default class Console extends Emitter {
   }
 
   /**
+   * Disable the render loop.
+   */
+  disable(): this {
+    this.unwrapStreams();
+    this.stopRenderLoop();
+    this.disabled = true;
+
+    return this;
+  }
+
+  /**
    * Display a footer after all output.
    */
   displayFooter() {
@@ -82,6 +102,17 @@ export default class Console extends Emitter {
     if (header) {
       this.out(header, 1);
     }
+  }
+
+  /**
+   * Enable the render loop.
+   */
+  enable(): this {
+    this.disabled = false;
+    this.wrapStreams();
+    this.startRenderLoop();
+
+    return this;
   }
 
   /**
@@ -175,6 +206,13 @@ export default class Console extends Emitter {
   }
 
   /**
+   * Return true if the render loop has been disabled.
+   */
+  isDisabled(): boolean {
+    return this.disabled;
+  }
+
+  /**
    * Return true if the final render.
    */
   isFinalRender(): boolean {
@@ -186,6 +224,13 @@ export default class Console extends Emitter {
    */
   isSilent(): boolean {
     return this.tool.config.silent;
+  }
+
+  /**
+   * Return true if the defined stream has been wrapped by the console layer.
+   */
+  isStreamWrapped(type: StreamType): boolean {
+    return !!WRAPPED_STREAMS[type];
   }
 
   /**
@@ -302,10 +347,10 @@ export default class Console extends Emitter {
     }
 
     this.debug('Starting console render loop');
-    this.wrapStreams();
-    this.displayHeader();
-    this.startRenderLoop();
     this.emit('start', args);
+    this.wrapStreams();
+    this.startRenderLoop();
+    this.displayHeader();
     this.started = true;
 
     return this;
@@ -315,7 +360,7 @@ export default class Console extends Emitter {
    * Automatically render the console in a timeout loop at 16 FPS.
    */
   startRenderLoop() {
-    if (this.isSilent()) {
+    if (this.isSilent() || this.isDisabled()) {
       return;
     }
 
@@ -361,34 +406,41 @@ export default class Console extends Emitter {
   /**
    * Unwrap the native console and reset it back to normal.
    */
-  // istanbul ignore next
   unwrapStreams() {
     if (this.isSilent() || process.env.NODE_ENV === 'test') {
       return;
     }
 
-    this.debug('Unwrapping `stderr` and `stdout` streams');
+    ['stderr', 'stdout'].forEach(key => {
+      const name = key as StreamType;
 
-    process.stderr.write = this.writers.stderr as any;
-    process.stdout.write = this.writers.stdout as any;
+      this.debug('Unwrapping `%s` stream', name);
+
+      process[name].write = this.writers[name] as any;
+
+      WRAPPED_STREAMS[name] = false;
+    });
   }
 
   /**
    * Wrap the `stdout` and `stderr` streams and buffer the output as
    * to not collide with our render loop.
    */
-  // istanbul ignore next
   wrapStreams() {
-    if (this.isSilent() || process.env.NODE_ENV === 'test') {
+    if (this.isSilent() || this.isDisabled() || process.env.NODE_ENV === 'test') {
       return;
     }
 
-    this.debug('Wrapping `stderr` and `stdout` streams');
-
     ['stderr', 'stdout'].forEach(key => {
-      const name = key as 'stderr' | 'stdout';
+      const name = key as StreamType;
       const stream = process[name];
       let buffer = '';
+
+      if (this.isStreamWrapped(name)) {
+        return;
+      }
+
+      this.debug('Wrapping `%s` stream', name);
 
       this.bufferedStreams.push(() => {
         if (stream.isTTY && buffer) {
@@ -403,6 +455,8 @@ export default class Console extends Emitter {
 
         return true;
       };
+
+      WRAPPED_STREAMS[name] = true;
     });
   }
 }
