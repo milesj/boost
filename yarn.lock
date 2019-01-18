@@ -1596,6 +1596,11 @@
   resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.119.tgz#be847e5f4bc3e35e46d041c394ead8b603ad8b39"
   integrity sha512-Z3TNyBL8Vd/M9D9Ms2S3LmFq2sSMzahodD6rCS9V2N44HUMINb75jNkSuwAx7eo2ufqTdfOdtGQpNbieUjPQmw==
 
+"@types/lodash@^4.14.120":
+  version "4.14.120"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.120.tgz#cf265d06f6c7a710db087ed07523ab8c1a24047b"
+  integrity sha512-jQ21kQ120mo+IrDs1nFNVm/AsdFxIx2+vZ347DbogHJPd/JzKNMOqU6HCYin1W6v8l5R9XSO2/e9cxmn7HAnVw==
+
 "@types/micromatch@^3.1.0":
   version "3.1.0"
   resolved "https://registry.npmjs.org/@types/micromatch/-/micromatch-3.1.0.tgz#514c8a3d24b2680a9b838eeb80e6d7d724545433"
@@ -4489,10 +4494,10 @@ hygen@^2.1.1:
     lodash "^4.17.11"
     yargs-parser "^10.1.0"
 
-i18next@^13.1.2:
-  version "13.1.2"
-  resolved "https://registry.npmjs.org/i18next/-/i18next-13.1.2.tgz#25b663e6562e76cc4f384f1b5c21bbe4f81b3e85"
-  integrity sha512-W7qVWQiuLcVeq39QE5y1tMh1SFZR1BQ4PdGILuVLYa9dd1Hf7KfFpxqEcRx/UxTiqHpdC99e6C58oqie1bxyGg==
+i18next@^13.1.4:
+  version "13.1.4"
+  resolved "https://registry.npmjs.org/i18next/-/i18next-13.1.4.tgz#2d07e7f191dec3b22f02420a89897dc25b29b291"
+  integrity sha512-qPmjdQrUQ4AGzKBGBpPLC7XiJoqbV/dGmDW/xmwbzAk60eavTkZ+s5FqoSAP2YeurPF8XpNWQaDvXNSWzT0ZYw==
 
 iconv-lite@0.4.24, iconv-lite@^0.4.17, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
   version "0.4.24"
