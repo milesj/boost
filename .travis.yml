@@ -8,7 +8,9 @@ before_script:
   - export PATH=$HOME/.yarn/bin:$PATH
   - yarn install --frozen-lockfile
   - yarn run setup
-script: yarn test --maxWorkers=2
+script:
+  - yarn test --maxWorkers=2
+  - time npx jest --maxWorkers=2
 notifications:
   email: false
 cache:
