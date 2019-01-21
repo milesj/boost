@@ -18,7 +18,7 @@ export interface AggregatedResponse {
   results: any[];
 }
 
-export default class Executor<Ctx extends Context, Options = {}> {
+export default abstract class Executor<Ctx extends Context, Options = {}> {
   context: Ctx;
 
   debug: Debugger;
@@ -113,9 +113,7 @@ export default class Executor<Ctx extends Context, Options = {}> {
   /**
    * Method to execute tasks. Must be defined in sub-classes.
    */
-  async run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<any> {
-    throw new Error('run() must be defined asynchronously.');
-  }
+  abstract async run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<any>;
 
   /**
    * Run all routines with the defined executor.

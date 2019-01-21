@@ -10,7 +10,10 @@ import { Constructor } from '../types';
  * They will also fail when comparing against source and built files.
  * So emulate an `instanceof` check by comparing constructor names.
  */
-export default function instanceOf<T = any>(object: any, contract: Constructor<T>): object is T {
+export default function instanceOf<T = any>(
+  object: any,
+  contract: Constructor<T> | Function,
+): object is T {
   if (!object || typeof object !== 'object') {
     return false;
   }

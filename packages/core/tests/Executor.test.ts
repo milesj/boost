@@ -9,10 +9,16 @@ describe('Executor', () => {
   let tool: Tool<any, any>;
   let executor: Executor<any>;
 
+  class TestExecture extends Executor<any, any> {
+    run() {
+      return Promise.resolve();
+    }
+  }
+
   beforeEach(() => {
     tool = mockTool();
 
-    executor = new Executor(tool, {});
+    executor = new TestExecture(tool, {});
     executor.debug = mockDebugger();
   });
 
@@ -206,12 +212,6 @@ describe('Executor', () => {
 
       expect(spy).toHaveBeenCalledWith('task', [task, 123, true]);
       expect(spy).toHaveBeenCalledWith('task.pass', [task, 369, true]);
-    });
-  });
-
-  describe('run()', () => {
-    it('errors if not defined', () => {
-      expect(executor.run(() => Promise.resolve(), [])).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 

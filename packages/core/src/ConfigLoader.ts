@@ -23,7 +23,9 @@ import Tool from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { Debugger, PackageConfig } from './types';
 
-export type ConfigObject = { [key: string]: any };
+export interface ConfigObject {
+  [key: string]: any;
+}
 
 export type ConfigPathOrObject = string | ConfigObject;
 

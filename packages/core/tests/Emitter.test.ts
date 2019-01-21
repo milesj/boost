@@ -79,10 +79,10 @@ describe('Emitter', () => {
     it('executes listeners syncronously with arguments while passing values to each', () => {
       const value: string[] = [];
 
-      emitter.on('foo', (a, b, c) => {
+      emitter.on('foo', a => {
         value.push(a.repeat(3));
       });
-      emitter.on('foo', (a, b, c) => {
+      emitter.on('foo', (a, b) => {
         value.push(b.repeat(2));
       });
       emitter.on('foo', (a, b, c) => {

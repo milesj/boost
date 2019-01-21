@@ -12,6 +12,7 @@ import {
   TaskAction,
   Tool,
   ToolOptions,
+  Context,
 } from '@boost/core';
 import { stubArgs, stubPackageJson, stubToolConfig } from './stubs';
 import { getFixturePath } from './fixtures';
@@ -63,13 +64,17 @@ export function mockConsole(tool: ToolLike): any {
   return cli;
 }
 
+export class MockRoutine<Ctx, CoreTool extends Tool<any>> extends Routine<Context, CoreTool> {
+  execute(context: Ctx, value: any) {
+    return Promise.resolve(value);
+  }
+}
+
 export function mockRoutine(tool: ToolLike, key: string = 'key', title: string = 'Title'): any {
-  const routine = new Routine<any, TestTool>(key, title);
+  const routine = new MockRoutine<any, TestTool>(key, title);
 
   routine.tool = tool as Tool<any, any>;
   routine.debug = mockDebugger();
-  routine.action = jest.fn((context, value) => Promise.resolve(value)); // Avoid execute exception
-  routine.execute = routine.action as any;
 
   return routine;
 }

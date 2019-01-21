@@ -13,7 +13,9 @@ import instanceOf from './helpers/instanceOf';
 import Tool from './Tool';
 import { Constructor, Debugger } from './types';
 
-export type OptionsObject = { [key: string]: any };
+export interface OptionsObject {
+  [key: string]: any;
+}
 
 export default class ModuleLoader<Tm> {
   contract: Constructor<Tm> | null = null;

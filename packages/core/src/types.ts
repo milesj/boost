@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable typescript/no-empty-interface */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import debug from 'debug';
 import i18next from 'i18next';
@@ -73,9 +73,13 @@ export interface PeopleSetting {
   url?: string;
 }
 
-export type SettingMap = { [key: string]: string };
+export interface SettingMap {
+  [key: string]: string;
+}
 
-export type DependencyMap = { [module: string]: string };
+export interface DependencyMap {
+  [module: string]: string;
+}
 
 export interface WorkspaceMetadata {
   jsonPath: string;

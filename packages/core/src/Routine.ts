@@ -26,7 +26,7 @@ export interface CommandOptions {
   wrap?: (process: ExecaChildProcess) => void;
 }
 
-export default class Routine<
+export default abstract class Routine<
   Ctx extends Context,
   Tool extends CoreTool<any>,
   Options extends object = {}
@@ -94,9 +94,7 @@ export default class Routine<
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */
-  async execute(context: Ctx, value: any): Promise<any> {
-    throw new Error('execute() must be defined asynchronously.');
-  }
+  abstract async execute(context: Ctx, value: any): Promise<any>;
 
   /**
    * Execute a command with the given arguments and pass the results through a promise.

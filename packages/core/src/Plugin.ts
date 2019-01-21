@@ -6,7 +6,7 @@
 import optimal, { Builder, Blueprint } from 'optimal';
 import Tool from './Tool';
 
-export const DEFAULT_PLUGIN_PRIORITY: number = 100;
+export const DEFAULT_PLUGIN_PRIORITY = 100;
 
 export default class Plugin<Options extends object = {}> {
   moduleName: string = '';

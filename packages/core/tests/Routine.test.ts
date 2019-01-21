@@ -12,6 +12,12 @@ describe('Routine', () => {
   let routine: Routine<any, any>;
   let tool: Tool<any, any>;
 
+  class TestRoutine extends Routine<any, any> {
+    execute(ctx: any, value: any) {
+      return Promise.resolve(value);
+    }
+  }
+
   beforeEach(() => {
     tool = mockTool();
     tool.config = {
@@ -25,8 +31,7 @@ describe('Routine', () => {
       },
     };
 
-    routine = new Routine('key', 'Title');
-    routine.execute = (ctx, value) => Promise.resolve(value);
+    routine = new TestRoutine('key', 'Title');
     routine.configure(mockRoutine(tool));
   });
 
@@ -95,12 +100,12 @@ describe('Routine', () => {
 
   describe('constructor()', () => {
     it('throws an error if no key is provided', () => {
-      expect(() => new Routine('', 'title')).toThrowErrorMatchingSnapshot();
+      expect(() => new TestRoutine('', 'title')).toThrowErrorMatchingSnapshot();
     });
 
     it('throws an error if key is not a string', () => {
       // @ts-ignore
-      expect(() => new Routine(123, 'title')).toThrowErrorMatchingSnapshot();
+      expect(() => new TestRoutine(123, 'title')).toThrowErrorMatchingSnapshot();
     });
 
     it('inherits default options', () => {
@@ -155,20 +160,6 @@ describe('Routine', () => {
       expect(parent.metadata.depth).toBe(0);
       expect(child.metadata.depth).toBe(1);
       expect(grandchild.metadata.depth).toBe(2);
-    });
-  });
-
-  describe('execute()', () => {
-    it('errors when not defined', async () => {
-      class UndefinedRoutine extends Routine<any, any> {}
-
-      try {
-        routine = new UndefinedRoutine('undefined', 'title');
-
-        await routine.execute({}, undefined);
-      } catch (error) {
-        expect(error).toEqual(new Error('execute() must be defined asynchronously.'));
-      }
     });
   });
 

@@ -1,3 +1,9 @@
+# 1.7.0
+
+#### 🛠 Internal
+
+- TS: `Executore` and `Routine` have been marked abstract.
+
 # 1.6.0 - 2019-01-17
 
 #### 🎉 Release
