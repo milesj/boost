@@ -72,11 +72,9 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Disable the render loop.
+   * Disable the render loop entirely.
    */
   disable(): this {
-    this.unwrapStreams();
-    this.stopRenderLoop();
     this.disabled = true;
 
     return this;
@@ -109,8 +107,6 @@ export default class Console extends Emitter {
    */
   enable(): this {
     this.disabled = false;
-    this.wrapStreams();
-    this.startRenderLoop();
 
     return this;
   }
@@ -158,7 +154,12 @@ export default class Console extends Emitter {
       // Restart queue if the output is complete
       if (output.isComplete()) {
         this.outputQueue.shift();
-        this.flushOutputQueue();
+
+        if (this.isEmptyQueue()) {
+          this.stopRenderLoop();
+        } else {
+          this.flushOutputQueue();
+        }
       }
     }
 
@@ -210,6 +211,13 @@ export default class Console extends Emitter {
    */
   isDisabled(): boolean {
     return this.disabled;
+  }
+
+  /**
+   * Return true if the output queue is empty.
+   */
+  isEmptyQueue(): boolean {
+    return this.outputQueue.length === 0;
   }
 
   /**
@@ -276,9 +284,18 @@ export default class Console extends Emitter {
    * Enqueue a block of output to be rendered.
    */
   render(output: Output): this {
+    if (this.isDisabled()) {
+      throw new Error(
+        'Output cannot be enqueued as the render loop has been disabled. This is usually caused by conflicting reporters.',
+      );
+    }
+
     if (!this.outputQueue.includes(output)) {
       this.outputQueue.push(output);
     }
+
+    // Only run the render loop when output is enqueued
+    this.startRenderLoop();
 
     return this;
   }
@@ -349,7 +366,6 @@ export default class Console extends Emitter {
     this.debug('Starting console render loop');
     this.emit('start', args);
     this.wrapStreams();
-    this.startRenderLoop();
     this.displayHeader();
     this.started = true;
 
@@ -363,6 +379,9 @@ export default class Console extends Emitter {
     if (this.isSilent() || this.isDisabled()) {
       return;
     }
+
+    // Clear previous timer
+    this.stopRenderLoop();
 
     this.renderTimer = setTimeout(() => {
       this.flushOutputQueue();
@@ -414,6 +433,10 @@ export default class Console extends Emitter {
     ['stderr', 'stdout'].forEach(key => {
       const name = key as StreamType;
 
+      if (!this.isStreamWrapped(name)) {
+        return;
+      }
+
       this.debug('Unwrapping `%s` stream', name);
 
       process[name].write = this.writers[name] as any;
@@ -451,7 +474,12 @@ export default class Console extends Emitter {
       });
 
       stream.write = (chunk: string) => {
-        buffer += String(chunk);
+        // No output, display immediately
+        if (this.isEmptyQueue()) {
+          this.writers[name](chunk);
+        } else {
+          buffer += String(chunk);
+        }
 
         return true;
       };

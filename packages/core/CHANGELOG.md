@@ -1,5 +1,10 @@
 # 1.7.0
 
+#### 🚀 New
+
+- Updated the render loop to only run when output has been enqueued. Otherwise, streams flush
+  immediately.
+
 #### 🛠 Internal
 
 - TS: `Executore` and `Routine` have been marked abstract.

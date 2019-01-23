@@ -19,6 +19,12 @@ describe('Console', () => {
       stderr: err,
       stdout: out,
     });
+
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('disable()', () => {
@@ -28,16 +34,6 @@ describe('Console', () => {
       cli.disable();
 
       expect(cli.isDisabled()).toBe(true);
-    });
-
-    it('unwraps streams and stops the loop timer', () => {
-      const wrapSpy = jest.spyOn(cli, 'unwrapStreams');
-      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
-
-      cli.disable();
-
-      expect(wrapSpy).toHaveBeenCalled();
-      expect(loopSpy).toHaveBeenCalled();
     });
   });
 
@@ -80,16 +76,6 @@ describe('Console', () => {
       cli.enable();
 
       expect(cli.isDisabled()).toBe(false);
-    });
-
-    it('wraps streams and starts the loop timer', () => {
-      const wrapSpy = jest.spyOn(cli, 'wrapStreams');
-      const loopSpy = jest.spyOn(cli, 'startRenderLoop');
-
-      cli.enable();
-
-      expect(wrapSpy).toHaveBeenCalled();
-      expect(loopSpy).toHaveBeenCalled();
     });
   });
 
@@ -173,15 +159,32 @@ describe('Console', () => {
       expect(cli.outputQueue).toEqual([]);
     });
 
-    it('re-flushes the queue when output is complete', () => {
-      const spy = jest.spyOn(cli, 'flushOutputQueue');
+    it('re-flushes the queue when output is complete and queue isnt empty', () => {
+      const flushSpy = jest.spyOn(cli, 'flushOutputQueue');
+      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
       const output = new Output(cli, () => 'foo');
+
+      output.enqueue(true);
+
+      cli.outputQueue.push(output, new Output(cli, () => 'bar'));
+      cli.flushOutputQueue();
+
+      expect(flushSpy).toHaveBeenCalledTimes(3);
+      expect(loopSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops the loop when output is complete and queue is empty', () => {
+      const flushSpy = jest.spyOn(cli, 'flushOutputQueue');
+      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
+      const output = new Output(cli, () => 'foo');
+
       output.enqueue(true);
 
       cli.outputQueue.push(output);
       cli.flushOutputQueue();
 
-      expect(spy).not.toHaveBeenCalledTimes(1);
+      expect(flushSpy).toHaveBeenCalledTimes(2);
+      expect(loopSpy).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -322,6 +325,22 @@ describe('Console', () => {
       cli.render(output);
 
       expect(cli.outputQueue).toEqual([output]);
+    });
+
+    it('throws an error when render loop is disabled', () => {
+      cli.disable();
+
+      expect(() => {
+        cli.render(new Output(cli, () => 'foo'));
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('starts the render loop', () => {
+      const spy = jest.spyOn(cli, 'startRenderLoop');
+
+      cli.render(new Output(cli, () => 'foo'));
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 
@@ -493,12 +512,10 @@ describe('Console', () => {
     it('triggers the initial process methods', () => {
       cli.wrapStreams = jest.fn();
       cli.displayHeader = jest.fn();
-      cli.startRenderLoop = jest.fn();
       cli.start([]);
 
       expect(cli.wrapStreams).toHaveBeenCalled();
       expect(cli.displayHeader).toHaveBeenCalled();
-      expect(cli.startRenderLoop).toHaveBeenCalled();
     });
 
     it('emits `start` event', () => {
@@ -693,6 +710,7 @@ describe('Console', () => {
 
     describe('unwrapStreams()', () => {
       it('sets process streams to defined writes', () => {
+        cli.wrapStreams();
         cli.unwrapStreams();
 
         expect(process.stderr.write).toBe(err);
@@ -704,6 +722,7 @@ describe('Console', () => {
 
       it('doesnt set process streams to defined writes when silent', () => {
         cli.tool.config.silent = true;
+        cli.wrapStreams();
         cli.unwrapStreams();
 
         expect(process.stderr.write).not.toBe(err);
@@ -742,6 +761,23 @@ describe('Console', () => {
         cli.wrapStreams();
 
         expect(cli.bufferedStreams).toHaveLength(0);
+      });
+
+      it('calls stream directly when queue is empty', () => {
+        cli.wrapStreams();
+
+        process.stdout.write('foo');
+
+        expect(out).toHaveBeenCalledWith('foo');
+      });
+
+      it('buffers stream when queue is not empty', () => {
+        cli.wrapStreams();
+        cli.outputQueue.push(new Output(cli, () => 'test'));
+
+        process.stdout.write('foo');
+
+        expect(out).not.toHaveBeenCalledWith('foo');
       });
     });
   });

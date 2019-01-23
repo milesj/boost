@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+const { bool } = require('optimal');
 const { Routine } = require('../packages/core/lib');
 const random = require('./random');
 
@@ -14,6 +15,14 @@ class DelayedRoutine extends Routine {
 exports.DelayedRoutine = DelayedRoutine;
 
 class MultiTaskRoutine extends Routine {
+  blueprint() {
+    return {
+      error: bool(),
+      exit: bool(),
+      parallel: bool(),
+    };
+  }
+
   bootstrap() {
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
       this.task(`Running task #${index + 1}`, this.delayedTask).skip(index % 6 === 0);
@@ -46,6 +55,13 @@ class MultiTaskRoutine extends Routine {
 exports.MultiTaskRoutine = MultiTaskRoutine;
 
 class MultiSubRoutine extends Routine {
+  blueprint() {
+    return {
+      deep: bool(),
+      parallel: bool(),
+    };
+  }
+
   bootstrap() {
     Array.from({ length: random() }, (v, i) => i).forEach(index => {
       this.pipe(new MultiTaskRoutine(`sub ${index + 1}`, `Routine #${index + 1}`));
