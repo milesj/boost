@@ -492,12 +492,12 @@ describe('Console', () => {
   describe('start()', () => {
     it('sets `started` flag', () => {
       // @ts-ignore Allow access
-      expect(cli.started).toBe(false);
+      expect(cli.state.started).toBe(false);
 
       cli.start();
 
       // @ts-ignore Allow access
-      expect(cli.started).toBe(true);
+      expect(cli.state.started).toBe(true);
     });
 
     it('only triggers once if started', () => {
@@ -584,24 +584,24 @@ describe('Console', () => {
   describe('stop()', () => {
     it('sets `stopped` flag', () => {
       // @ts-ignore Allow access
-      expect(cli.stopped).toBe(false);
+      expect(cli.state.stopped).toBe(false);
 
       cli.stop();
 
       // @ts-ignore Allow access
-      expect(cli.stopped).toBe(true);
+      expect(cli.state.stopped).toBe(true);
     });
 
     it('sets `started` flag', () => {
       cli.start();
 
       // @ts-ignore Allow access
-      expect(cli.started).toBe(true);
+      expect(cli.state.started).toBe(true);
 
       cli.stop();
 
       // @ts-ignore Allow access
-      expect(cli.started).toBe(false);
+      expect(cli.state.started).toBe(false);
     });
 
     it('only triggers once if stopping', () => {

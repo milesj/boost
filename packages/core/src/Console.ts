@@ -27,6 +27,13 @@ export const WRAPPED_STREAMS = {
 
 export type StreamType = 'stderr' | 'stdout';
 
+export interface ConsoleState {
+  disabled: boolean;
+  final: boolean;
+  started: boolean;
+  stopped: boolean;
+}
+
 export default class Console extends Emitter {
   bufferedStreams: (() => void)[] = [];
 
@@ -40,17 +47,16 @@ export default class Console extends Emitter {
 
   tool: Tool<any>;
 
-  protected disabled: boolean = false;
-
-  protected final: boolean = false;
-
   protected renderTimer: NodeJS.Timer | null = null;
 
   protected restoreCursorOnExit: boolean = false;
 
-  protected started: boolean = false;
-
-  protected stopped: boolean = false;
+  protected state: ConsoleState = {
+    disabled: false,
+    final: false,
+    started: false,
+    stopped: false,
+  };
 
   private writers: typeof BOUND_WRITERS;
 
@@ -75,7 +81,7 @@ export default class Console extends Emitter {
    * Disable the render loop entirely.
    */
   disable(): this {
-    this.disabled = true;
+    this.state.disabled = true;
 
     return this;
   }
@@ -106,7 +112,7 @@ export default class Console extends Emitter {
    * Enable the render loop.
    */
   enable(): this {
-    this.disabled = false;
+    this.state.disabled = false;
 
     return this;
   }
@@ -210,7 +216,7 @@ export default class Console extends Emitter {
    * Return true if the render loop has been disabled.
    */
   isDisabled(): boolean {
-    return this.disabled;
+    return this.state.disabled;
   }
 
   /**
@@ -224,7 +230,7 @@ export default class Console extends Emitter {
    * Return true if the final render.
    */
   isFinalRender(): boolean {
-    return this.final;
+    return this.state.final;
   }
 
   /**
@@ -305,7 +311,7 @@ export default class Console extends Emitter {
    */
   renderFinalOutput(error: Error | null) {
     this.debug('Rendering final console output');
-    this.final = true;
+    this.state.final = true;
 
     // Stop the render loop
     this.stopRenderLoop();
@@ -359,7 +365,7 @@ export default class Console extends Emitter {
    * Start the console by wrapping streams and buffering output.
    */
   start(args: any[] = []): this {
-    if (this.started) {
+    if (this.state.started) {
       return this;
     }
 
@@ -367,7 +373,7 @@ export default class Console extends Emitter {
     this.emit('start', args);
     this.wrapStreams();
     this.displayHeader();
-    this.started = true;
+    this.state.started = true;
 
     return this;
   }
@@ -393,7 +399,7 @@ export default class Console extends Emitter {
    * Stop the console rendering process.
    */
   stop(error: Error | null = null) {
-    if (this.stopped) {
+    if (this.state.stopped) {
       return;
     }
 
@@ -408,8 +414,8 @@ export default class Console extends Emitter {
     this.emit('stop', [error]);
     this.renderFinalOutput(error);
     this.unwrapStreams();
-    this.stopped = true;
-    this.started = false;
+    this.state.stopped = true;
+    this.state.started = false;
   }
 
   /**
