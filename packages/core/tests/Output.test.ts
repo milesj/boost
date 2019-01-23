@@ -32,7 +32,7 @@ describe('Output', () => {
 
     it('doesnt render the output into the console if already completed', () => {
       // @ts-ignore Allow private access
-      output.completed = true;
+      output.state.completed = true;
       output.enqueue();
 
       expect(cli.render).not.toHaveBeenCalled();

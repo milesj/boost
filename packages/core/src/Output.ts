@@ -9,16 +9,22 @@ import Console from './Console';
 
 export type Renderer = () => string;
 
+export interface OutputState {
+  completed: boolean;
+  final: boolean;
+}
+
 export default class Output {
-  protected completed: boolean = false;
-
   protected console: Console;
-
-  protected final: boolean = false;
 
   protected previousHeight: number = 0;
 
   protected renderer: Renderer;
+
+  protected state: OutputState = {
+    completed: false,
+    final: false,
+  };
 
   constructor(cli: Console, renderer: Renderer) {
     if (typeof renderer !== 'function') {
@@ -38,7 +44,7 @@ export default class Output {
     }
 
     if (final) {
-      this.final = true;
+      this.state.final = true;
     }
 
     this.console.render(this);
@@ -61,14 +67,14 @@ export default class Output {
    * Return true if the output is complete and fully rendered.
    */
   isComplete(): boolean {
-    return this.completed;
+    return this.state.completed;
   }
 
   /**
    * Return true if the next render is the final render.
    */
   isFinal(): boolean {
-    return this.final;
+    return this.state.final;
   }
 
   /**
@@ -101,7 +107,7 @@ export default class Output {
 
     // Mark output as complete if the final render
     if (this.isFinal()) {
-      this.completed = true;
+      this.state.completed = true;
       // Otherwise calculate the height of the output
     } else {
       this.previousHeight = lines.length;
