@@ -535,11 +535,7 @@ export default class Tool<
   /**
    * Retrieve a translated message from a resource bundle.
    */
-  msg(
-    key: string | string,
-    params?: { [key: string]: any },
-    options?: i18next.TranslationOptions,
-  ): string {
+  msg(key: string | string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
     return translatorCache.get(this)!.t(key, {
       interpolation: { escapeValue: false },
       replace: params,
