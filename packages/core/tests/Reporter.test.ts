@@ -65,6 +65,15 @@ describe('Reporter', () => {
     });
   });
 
+  describe('createConcurrentOutput()', () => {
+    it('returns an `Output` instance marked as concurrent', () => {
+      const output = reporter.createConcurrentOutput(() => 'foo');
+
+      expect(output).toBeInstanceOf(Output);
+      expect(output.isConcurrent()).toBe(true);
+    });
+  });
+
   describe('createOutput()', () => {
     it('returns an `Output` instance', () => {
       expect(reporter.createOutput(() => 'foo')).toBeInstanceOf(Output);

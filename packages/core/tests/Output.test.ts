@@ -23,6 +23,16 @@ describe('Output', () => {
     });
   });
 
+  describe('concurrent()', () => {
+    it('marks the output as concurrent', () => {
+      expect(output.isConcurrent()).toBe(false);
+
+      output.concurrent();
+
+      expect(output.isConcurrent()).toBe(true);
+    });
+  });
+
   describe('enqueue()', () => {
     it('renders the output into the console', () => {
       output.enqueue();

@@ -124,57 +124,22 @@ describe('Console', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('renders an output', () => {
-      const output = new Output(cli, () => 'foo');
-      const eraseSpy = jest.spyOn(output, 'erasePrevious');
-      const renderSpy = jest.spyOn(output, 'render');
-
-      cli.outputQueue.push(output);
-      cli.flushOutputQueue();
-
-      expect(eraseSpy).toHaveBeenCalled();
-      expect(renderSpy).toHaveBeenCalled();
-    });
-
-    it('only renders the first output', () => {
+    it('re-flushes the queue when output is complete and queue isnt empty', () => {
+      const loopSpy = jest.spyOn(cli, 'startRenderLoop');
       const o1 = new Output(cli, () => 'foo');
       const o2 = new Output(cli, () => 'bar');
-      const eraseSpy = jest.spyOn(o2, 'erasePrevious');
-      const renderSpy = jest.spyOn(o2, 'render');
+
+      o1.enqueue(true);
 
       cli.outputQueue.push(o1, o2);
       cli.flushOutputQueue();
 
-      expect(eraseSpy).not.toHaveBeenCalled();
-      expect(renderSpy).not.toHaveBeenCalled();
-    });
-
-    it('removes the output when complete', () => {
-      const output = new Output(cli, () => 'foo');
-      output.enqueue(true);
-
-      cli.outputQueue.push(output);
-      cli.flushOutputQueue();
-
-      expect(cli.outputQueue).toEqual([]);
-    });
-
-    it('re-flushes the queue when output is complete and queue isnt empty', () => {
-      const flushSpy = jest.spyOn(cli, 'flushOutputQueue');
-      const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
-      const output = new Output(cli, () => 'foo');
-
-      output.enqueue(true);
-
-      cli.outputQueue.push(output, new Output(cli, () => 'bar'));
-      cli.flushOutputQueue();
-
-      expect(flushSpy).toHaveBeenCalledTimes(3);
-      expect(loopSpy).toHaveBeenCalledTimes(1);
+      expect(loopSpy).toHaveBeenCalledTimes(2);
+      expect(out).toHaveBeenCalledWith('foo\n');
+      expect(cli.outputQueue).toEqual([o2]);
     });
 
     it('stops the loop when output is complete and queue is empty', () => {
-      const flushSpy = jest.spyOn(cli, 'flushOutputQueue');
       const loopSpy = jest.spyOn(cli, 'stopRenderLoop');
       const output = new Output(cli, () => 'foo');
 
@@ -183,8 +148,101 @@ describe('Console', () => {
       cli.outputQueue.push(output);
       cli.flushOutputQueue();
 
-      expect(flushSpy).toHaveBeenCalledTimes(2);
-      expect(loopSpy).toHaveBeenCalledTimes(2);
+      expect(loopSpy).toHaveBeenCalledTimes(1);
+      expect(out).toHaveBeenCalledWith('foo\n');
+      expect(cli.outputQueue).toEqual([]);
+    });
+
+    describe('non-concurrent', () => {
+      it('renders an output', () => {
+        const output = new Output(cli, () => 'foo');
+        const eraseSpy = jest.spyOn(output, 'erasePrevious');
+        const renderSpy = jest.spyOn(output, 'render');
+
+        cli.outputQueue.push(output);
+        cli.flushOutputQueue();
+
+        expect(eraseSpy).toHaveBeenCalled();
+        expect(renderSpy).toHaveBeenCalled();
+        expect(out).toHaveBeenCalledWith('foo\n');
+        expect(cli.outputQueue).toEqual([output]);
+      });
+
+      it('only renders the first output', () => {
+        const o1 = new Output(cli, () => 'foo');
+        const o2 = new Output(cli, () => 'bar');
+        const eraseSpy = jest.spyOn(o2, 'erasePrevious');
+        const renderSpy = jest.spyOn(o2, 'render');
+
+        cli.outputQueue.push(o1, o2);
+        cli.flushOutputQueue();
+
+        expect(eraseSpy).not.toHaveBeenCalled();
+        expect(renderSpy).not.toHaveBeenCalled();
+        expect(out).toHaveBeenCalledWith('foo\n');
+        expect(cli.outputQueue).toEqual([o1, o2]);
+      });
+
+      it('removes the output when complete', () => {
+        const output = new Output(cli, () => 'foo');
+        output.enqueue(true);
+
+        cli.outputQueue.push(output);
+        cli.flushOutputQueue();
+
+        expect(out).toHaveBeenCalledWith('foo\n');
+        expect(cli.outputQueue).toEqual([]);
+      });
+    });
+
+    describe('concurrent', () => {
+      it('renders first output and concurrent outputs', () => {
+        const o1 = new Output(cli, () => 'foo');
+        const o2 = new Output(cli, () => 'bar');
+        const o3 = new Output(cli, () => 'baz').concurrent();
+
+        cli.outputQueue.push(o1, o2, o3);
+        cli.flushOutputQueue();
+
+        expect(out).toHaveBeenCalledWith('foo\n');
+        expect(out).toHaveBeenCalledWith('baz\n');
+        expect(cli.outputQueue).toEqual([o1, o2, o3]);
+      });
+
+      it('renders all concurrent outputs', () => {
+        const o1 = new Output(cli, () => 'foo');
+        const o2 = new Output(cli, () => 'bar');
+        const o3 = new Output(cli, () => 'baz').concurrent();
+        const o4 = new Output(cli, () => 'qux');
+        const o5 = new Output(cli, () => 'wtf').concurrent();
+
+        cli.outputQueue.push(o1, o2, o3, o4, o5);
+        cli.flushOutputQueue();
+
+        expect(out).toHaveBeenCalledWith('foo\n');
+        expect(out).toHaveBeenCalledWith('baz\n');
+        expect(out).toHaveBeenCalledWith('wtf\n');
+        expect(cli.outputQueue).toEqual([o1, o2, o3, o4, o5]);
+      });
+
+      it('removes all concurrent outputs that are completed', () => {
+        const o1 = new Output(cli, () => 'foo');
+        const o2 = new Output(cli, () => 'bar');
+        const o3 = new Output(cli, () => 'baz').concurrent();
+        const o4 = new Output(cli, () => 'qux');
+        const o5 = new Output(cli, () => 'wtf').concurrent();
+
+        o1.enqueue(true);
+        o5.enqueue(true);
+
+        cli.outputQueue.push(o1, o2, o3, o4, o5);
+        cli.flushOutputQueue();
+
+        expect(out).toHaveBeenCalledWith('foo\n');
+        expect(out).toHaveBeenCalledWith('baz\n');
+        expect(out).toHaveBeenCalledWith('wtf\n');
+        expect(cli.outputQueue).toEqual([o2, o3, o4]);
+      });
     });
   });
 
@@ -352,18 +410,21 @@ describe('Console', () => {
 
       cli.renderFinalOutput(null);
 
-      expect(queueSpy).toHaveBeenCalled();
+      expect(queueSpy).not.toHaveBeenCalled();
       expect(streamSpy).toHaveBeenCalled();
       expect(loopSpy).toHaveBeenCalled();
     });
 
     it('marks all output as final and renders', () => {
+      const queueSpy = jest.spyOn(cli, 'flushOutputQueue');
       const foo = new Output(cli, () => 'foo');
       const bar = new Output(cli, () => 'bar');
       const baz = new Output(cli, () => 'baz');
 
       cli.outputQueue.push(foo, bar, baz);
       cli.renderFinalOutput(null);
+
+      expect(queueSpy).toHaveBeenCalled();
 
       expect(foo.isFinal()).toBe(true);
       expect(bar.isFinal()).toBe(true);
@@ -395,7 +456,7 @@ describe('Console', () => {
 
       cli.renderFinalOutput(new Error());
 
-      expect(out).not.toHaveBeenCalled();
+      expect(out).not.toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
     });
 
     it('displays error logs on failure', () => {
@@ -419,23 +480,19 @@ describe('Console', () => {
     });
 
     it('displays footer on success', () => {
-      cli.log('foo');
-      cli.log('bar');
-      cli.log('baz');
+      cli.tool.options.footer = 'Footer';
 
       cli.renderFinalOutput(null);
 
-      expect(out).toHaveBeenCalledWith('\nfoo\nbar\nbaz\n');
+      expect(out).toHaveBeenCalledWith('Footer\n');
     });
 
     it('doesnt display footer on failure', () => {
-      cli.log('foo');
-      cli.log('bar');
-      cli.log('baz');
+      cli.tool.options.footer = 'Footer';
 
       cli.renderFinalOutput(new Error());
 
-      expect(out).not.toHaveBeenCalled();
+      expect(out).not.toHaveBeenCalledWith('Footer');
     });
 
     it('emits `error` event on failure', () => {
@@ -564,20 +621,6 @@ describe('Console', () => {
 
       // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();
-    });
-
-    it('flushes output queue and restarts loop', () => {
-      cli.flushOutputQueue = jest.fn();
-      cli.startRenderLoop();
-
-      // @ts-ignore Allow access
-      const id = cli.renderTimer;
-
-      jest.advanceTimersByTime(100);
-
-      expect(cli.flushOutputQueue).toHaveBeenCalled();
-      // @ts-ignore Allow access
-      expect(cli.renderTimer).not.toEqual(id);
     });
   });
 

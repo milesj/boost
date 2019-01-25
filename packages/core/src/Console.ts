@@ -143,30 +143,29 @@ export default class Console extends Emitter {
    * Flush the top output block in the queue.
    */
   flushOutputQueue(): this {
-    const output = this.outputQueue[0];
+    const outputs = this.outputQueue.filter((out, i) => i === 0 || out.isConcurrent());
 
     // Erase the previous output
-    if (output) {
+    outputs.forEach(output => {
       output.erasePrevious();
-    }
+    });
 
     // Write buffered output
     this.flushBufferedStreams();
 
     // Write the next output
-    if (output) {
+    outputs.forEach(output => {
       output.render();
+    });
 
-      // Restart queue if the output is complete
-      if (output.isComplete()) {
-        this.outputQueue.shift();
+    // Remove completed outputs
+    this.outputQueue = this.outputQueue.filter(out => !out.isComplete());
 
-        if (this.isEmptyQueue()) {
-          this.stopRenderLoop();
-        } else {
-          this.flushOutputQueue();
-        }
-      }
+    // Stop the render loop once the queue is empty
+    if (this.isEmptyQueue()) {
+      this.stopRenderLoop();
+    } else {
+      this.startRenderLoop();
     }
 
     return this;
@@ -313,16 +312,18 @@ export default class Console extends Emitter {
     this.debug('Rendering final console output');
     this.state.final = true;
 
-    // Stop the render loop
-    this.stopRenderLoop();
-
     // Mark all output as final
     this.outputQueue.forEach(output => {
       output.enqueue(true);
     });
 
     // Recursively render the remaining output
-    this.flushOutputQueue();
+    while (!this.isEmptyQueue()) {
+      this.flushOutputQueue();
+    }
+
+    // Stop the render loop
+    this.stopRenderLoop();
 
     if (error) {
       if (this.errorLogs.length > 0) {
@@ -340,6 +341,9 @@ export default class Console extends Emitter {
 
     // Flush any stream output that still exists
     this.flushBufferedStreams();
+
+    // Show the cursor incase it has been hidden
+    this.out(ansiEscapes.cursorShow);
   }
 
   /**
@@ -386,12 +390,8 @@ export default class Console extends Emitter {
       return;
     }
 
-    // Clear previous timer
-    this.stopRenderLoop();
-
     this.renderTimer = setTimeout(() => {
       this.flushOutputQueue();
-      this.startRenderLoop();
     }, FPS_RATE);
   }
 
@@ -411,9 +411,9 @@ export default class Console extends Emitter {
       this.debug('Stopping console render loop');
     }
 
-    this.emit('stop', [error]);
     this.renderFinalOutput(error);
     this.unwrapStreams();
+    this.emit('stop', [error]);
     this.state.stopped = true;
     this.state.started = false;
   }

@@ -2,12 +2,17 @@
 
 #### 🚀 New
 
+- Added concurrent output rendering to the render loop, which will render the first output and all
+  concurrent outputs in parallel until they complete.
+- Added `Output#concurrent` to mark an output as concurrent.
+- Added `Reporter#createConcurrentOutput` to instantiate a concurrent output.
 - Updated the render loop to only run when output has been enqueued. Otherwise, streams flush
   immediately.
 
 #### 🛠 Internal
 
 - TS: `Executore` and `Routine` have been marked abstract.
+- Updated `i18next` to v14.0.
 
 # 1.6.0 - 2019-01-17
 

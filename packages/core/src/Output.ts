@@ -11,6 +11,7 @@ export type Renderer = () => string;
 
 export interface OutputState {
   completed: boolean;
+  concurrent: boolean;
   final: boolean;
 }
 
@@ -23,6 +24,7 @@ export default class Output {
 
   protected state: OutputState = {
     completed: false,
+    concurrent: false,
     final: false,
   };
 
@@ -33,6 +35,15 @@ export default class Output {
 
     this.console = cli;
     this.renderer = renderer;
+  }
+
+  /**
+   * Mark the output as concurrent to be rendered at the same time as other output.
+   */
+  concurrent(): this {
+    this.state.concurrent = true;
+
+    return this;
   }
 
   /**
@@ -68,6 +79,13 @@ export default class Output {
    */
   isComplete(): boolean {
     return this.state.completed;
+  }
+
+  /**
+   * Return true if the output should be rendered concurrently.
+   */
+  isConcurrent(): boolean {
+    return this.state.concurrent;
   }
 
   /**

@@ -51,6 +51,18 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
 
   /**
    * Create a new output to be rendered with the defined renderer function.
+   * Concurrent outputs will be rendered in parallel with other concurrent
+   * outputs and the top of the queue output.
+   */
+  createConcurrentOutput(renderer: Renderer): Output {
+    const output = this.createOutput(renderer);
+    output.concurrent();
+
+    return output;
+  }
+
+  /**
+   * Create a new output to be rendered with the defined renderer function.
    */
   createOutput(renderer: Renderer): Output {
     return new Output(this.console, renderer);

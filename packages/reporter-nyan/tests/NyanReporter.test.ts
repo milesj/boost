@@ -205,7 +205,7 @@ describe('NyanReporter', () => {
       reporter.activeRoutine = mockRoutine(tool);
       reporter.activeTask = mockTask();
       // @ts-ignore
-      reporter.console.final = true;
+      reporter.console.state.final = true;
 
       expect(reporter.renderLines()).toMatchSnapshot();
     });
