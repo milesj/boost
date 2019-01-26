@@ -1,13 +1,17 @@
-/* eslint-disable */
-
-const { bool } = require('optimal');
+const { bool, number } = require('optimal');
 const { Routine } = require('../packages/core/lib');
 const random = require('./random');
 
 class DelayedRoutine extends Routine {
+  blueprint() {
+    return {
+      delay: number(),
+    };
+  }
+
   execute() {
     return new Promise(resolve => {
-      setTimeout(resolve, random(2000, 1000));
+      setTimeout(resolve, this.options.delay || random(2000, 1000));
     });
   }
 }

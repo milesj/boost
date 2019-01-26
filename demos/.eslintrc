@@ -1,5 +1,7 @@
 {
   "rules": {
-    "no-magic-numbers": "off"
+    "max-classes-per-file": "off",
+    "no-magic-numbers": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }

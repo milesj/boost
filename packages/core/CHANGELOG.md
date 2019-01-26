@@ -9,6 +9,10 @@
 - Updated the render loop to only run when output has been enqueued. Otherwise, streams flush
   immediately.
 
+#### 🐞 Fixed
+
+- Fixed some issues where the tool would crash before config has been loaded.
+
 #### 🛠 Internal
 
 - TS: `Executore` and `Routine` have been marked abstract.

@@ -85,7 +85,7 @@ export default class Tool<
   argv: string[] = [];
 
   // @ts-ignore Set after instantiation
-  config: Config;
+  config: Config = {};
 
   console: Console;
 

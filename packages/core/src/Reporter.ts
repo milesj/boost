@@ -95,7 +95,7 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
    * Return specific colors based on chosen theme.
    */
   getColorPalette(): ColorPalette {
-    const { theme } = this.tool.config;
+    const { theme = 'default' } = this.tool.config;
     const palette =
       chalk.level >= 2 && theme !== 'default'
         ? new ModuleLoader<ColorPalette>(this.tool, 'theme', null, ['boost']).loadModule(theme)

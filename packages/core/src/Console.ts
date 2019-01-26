@@ -236,7 +236,8 @@ export default class Console extends Emitter {
    * Return true if the there should be no output.
    */
   isSilent(): boolean {
-    return this.tool.config.silent;
+    // Check all objects since these might not have been loaded yet
+    return this.tool && this.tool.config && this.tool.config.silent;
   }
 
   /**
