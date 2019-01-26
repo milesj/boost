@@ -1,6 +1,4 @@
 import exit from 'exit';
-import cliSize from 'term-size';
-import ansiEscapes from 'ansi-escapes';
 import { mockTool } from '@boost/test-utils';
 import Console, { WRAPPED_STREAMS } from '../src/Console';
 import Output from '../src/Output';
@@ -278,29 +276,6 @@ describe('Console', () => {
     });
   });
 
-  describe('hideCursor()', () => {
-    it('writes ansi escape code', () => {
-      cli.hideCursor();
-
-      expect(out).toHaveBeenCalledWith(ansiEscapes.cursorHide);
-    });
-
-    it('sets restore flag', () => {
-      cli.hideCursor();
-
-      // @ts-ignore Allow access
-      expect(cli.restoreCursorOnExit).toBe(true);
-    });
-
-    it('doesnt set restore flag if config is silent', () => {
-      cli.tool.config.silent = true;
-      cli.hideCursor();
-
-      // @ts-ignore Allow access
-      expect(cli.restoreCursorOnExit).toBe(false);
-    });
-  });
-
   describe('isSilent()', () => {
     it('returns value from config', () => {
       expect(cli.isSilent()).toBe(false);
@@ -520,29 +495,6 @@ describe('Console', () => {
       cli.renderFinalOutput(null);
 
       expect(cli.isFinalRender()).toBe(true);
-    });
-  });
-
-  describe('resetCursor()', () => {
-    it('writes ansi escape code', () => {
-      cli.resetCursor();
-
-      expect(out).toHaveBeenCalledWith(ansiEscapes.cursorTo(0, cliSize().rows));
-    });
-  });
-
-  describe('showCursor()', () => {
-    it('writes ansi escape code', () => {
-      cli.showCursor();
-
-      expect(out).toHaveBeenCalledWith(ansiEscapes.cursorShow);
-    });
-
-    it('sets restore flag to off', () => {
-      cli.showCursor();
-
-      // @ts-ignore Allow access
-      expect(cli.restoreCursorOnExit).toBe(false);
     });
   });
 

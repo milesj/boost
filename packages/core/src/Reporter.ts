@@ -4,6 +4,7 @@
  */
 
 import chalk from 'chalk';
+import ansiEscapes from 'ansi-escapes';
 import cliTruncate from 'cli-truncate';
 import cliSize from 'term-size';
 import stripAnsi from 'strip-ansi';
@@ -15,6 +16,12 @@ import Plugin from './Plugin';
 import Routine from './Routine';
 import Task from './Task';
 import { Color, ColorType, ColorPalette, OutputLevel } from './types';
+
+let restoreCursorOnExit = false;
+
+const restoreHandler = () => {
+  process.stdout.write(ansiEscapes.cursorShow);
+};
 
 export const SLOW_THRESHOLD = 10000; // ms
 
@@ -179,6 +186,20 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
   }
 
   /**
+   * Hide the console cursor.
+   */
+  hideCursor(): this {
+    this.console.out(ansiEscapes.cursorHide);
+
+    if (!restoreCursorOnExit) {
+      restoreCursorOnExit = true;
+      process.on('exit', restoreHandler);
+    }
+
+    return this;
+  }
+
+  /**
    * Create an indentation based on the defined length.
    */
   indent(length: number = 0): string {
@@ -197,6 +218,29 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
    */
   isSilent(): boolean {
     return this.tool.config.silent;
+  }
+
+  /**
+   * Reset the cursor back to the bottom of the console.
+   */
+  resetCursor(): this {
+    this.console.out(ansiEscapes.cursorTo(0, this.size().rows));
+
+    return this;
+  }
+
+  /**
+   * Show the console cursor.
+   */
+  showCursor(): this {
+    this.console.out(ansiEscapes.cursorShow);
+
+    if (restoreCursorOnExit) {
+      restoreCursorOnExit = false;
+      process.off('exit', restoreHandler);
+    }
+
+    return this;
   }
 
   /**
@@ -267,4 +311,8 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
       ...options,
     });
   }
+}
+
+export function testOnlyResetRestoreCursor() {
+  restoreCursorOnExit = false;
 }

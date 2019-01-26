@@ -1,13 +1,16 @@
-# 1.7.0
+# 1.7.0 - 2019-01-25
+
+#### 🎉 Release
+
+Added concurrent rendering which will render the first output and all concurrent outputs in parallel
+until they complete. Also updated the render loop to only run when output has been enqueued,
+otherwise, streams flush immediately.
 
 #### 🚀 New
 
-- Added concurrent output rendering to the render loop, which will render the first output and all
-  concurrent outputs in parallel until they complete.
 - Added `Output#concurrent` to mark an output as concurrent.
 - Added `Reporter#createConcurrentOutput` to instantiate a concurrent output.
-- Updated the render loop to only run when output has been enqueued. Otherwise, streams flush
-  immediately.
+- Added `Reporter#hideCursor`, `Reporter#resetCursor`, and `Reporter#showCursor` methods.
 
 #### 🐞 Fixed
 
@@ -15,8 +18,11 @@
 
 #### 🛠 Internal
 
-- TS: `Executore` and `Routine` have been marked abstract.
+- Deprecated `Console#logLive`. A new system will be replacing it in v2.0.
+- Deprecated `Console#hideCursor`, `Console#resetCursor`, and `Console#showCursor`. Use `Reporter`
+  equivalent methods instead.
 - Updated `i18next` to v14.0.
+- TS: `Executor` and `Routine` have been marked abstract.
 
 # 1.6.0 - 2019-01-17
 

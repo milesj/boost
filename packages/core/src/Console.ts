@@ -3,6 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable no-console */
+
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
@@ -48,8 +50,6 @@ export default class Console extends Emitter {
   tool: Tool<any>;
 
   protected renderTimer: NodeJS.Timer | null = null;
-
-  protected restoreCursorOnExit: boolean = false;
 
   protected state: ConsoleState = {
     disabled: false,
@@ -197,16 +197,9 @@ export default class Console extends Emitter {
    * Hide the console cursor.
    */
   hideCursor(): this {
+    console.warn('Console#hideCursor is deprecated. Use Reporter#hideCursor instead.');
+
     this.out(ansiEscapes.cursorHide);
-
-    if (!this.restoreCursorOnExit && !this.isSilent()) {
-      this.restoreCursorOnExit = true;
-
-      // istanbul ignore next
-      process.on('exit', () => {
-        process.stdout.write(ansiEscapes.cursorShow);
-      });
-    }
 
     return this;
   }
@@ -260,6 +253,8 @@ export default class Console extends Emitter {
    * Log a live message to display during the rendering process.
    */
   logLive(message: string): this {
+    console.warn('Console#logLive is deprecated. Use console.log instead.');
+
     // Write to the wrapped buffer
     process.stdout.write(message);
 
@@ -351,6 +346,8 @@ export default class Console extends Emitter {
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
+    console.warn('Console#resetCursor is deprecated. Use Reporter#resetCursor instead.');
+
     this.out(ansiEscapes.cursorTo(0, cliSize().rows));
 
     return this;
@@ -360,7 +357,8 @@ export default class Console extends Emitter {
    * Show the console cursor.
    */
   showCursor(): this {
-    this.restoreCursorOnExit = false;
+    console.warn('Console#showCursor is deprecated. Use Reporter#showCursor instead.');
+
     this.out(ansiEscapes.cursorShow);
 
     return this;

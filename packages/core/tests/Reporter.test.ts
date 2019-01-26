@@ -1,6 +1,7 @@
 import chalk from 'chalk';
+import ansiEscapes from 'ansi-escapes';
 import { mockConsole, mockTool, mockRoutine } from '@boost/test-utils';
-import Reporter from '../src/Reporter';
+import Reporter, { testOnlyResetRestoreCursor } from '../src/Reporter';
 import Output from '../src/Output';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
@@ -16,6 +17,8 @@ describe('Reporter', () => {
     reporter = new Reporter();
     reporter.console = mockConsole(tool);
     reporter.tool = tool;
+
+    testOnlyResetRestoreCursor();
   });
 
   describe('bootstrap()', () => {
@@ -254,6 +257,24 @@ describe('Reporter', () => {
     });
   });
 
+  describe('hideCursor()', () => {
+    it('writes ansi escape code', () => {
+      reporter.hideCursor();
+
+      expect(reporter.console.out).toHaveBeenCalledWith(ansiEscapes.cursorHide);
+    });
+
+    it('sets restore listener', () => {
+      const spy = jest.spyOn(process, 'on');
+
+      reporter.hideCursor();
+
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockRestore();
+    });
+  });
+
   describe('indent()', () => {
     it('indents based on length', () => {
       expect(reporter.indent()).toBe('');
@@ -275,6 +296,33 @@ describe('Reporter', () => {
       reporter.tool.config.silent = true;
 
       expect(reporter.isSilent()).toBe(true);
+    });
+  });
+
+  describe('resetCursor()', () => {
+    it('writes ansi escape code', () => {
+      reporter.resetCursor();
+
+      expect(reporter.console.out).toHaveBeenCalledWith(
+        ansiEscapes.cursorTo(0, reporter.size().rows),
+      );
+    });
+  });
+
+  describe('showCursor()', () => {
+    it('writes ansi escape code', () => {
+      reporter.showCursor();
+
+      expect(reporter.console.out).toHaveBeenCalledWith(ansiEscapes.cursorShow);
+    });
+
+    it('removes restore listener', () => {
+      const spy = jest.spyOn(process, 'off');
+
+      reporter.hideCursor();
+      reporter.showCursor();
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 
