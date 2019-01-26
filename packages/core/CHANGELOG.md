@@ -1,3 +1,9 @@
+# 1.7.1 - 2019-01-25
+
+#### 🐞 Fixed
+
+- Quick render loop fix to avoid tearing.
+
 # 1.7.0 - 2019-01-25
 
 #### 🎉 Release

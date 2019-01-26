@@ -574,6 +574,22 @@ describe('Console', () => {
       // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();
     });
+
+    it('flushes output and resets timer', () => {
+      const spy = jest.spyOn(cli, 'flushOutputQueue');
+
+      cli.startRenderLoop();
+
+      // @ts-ignore Allow access
+      expect(cli.renderTimer).not.toBeNull();
+
+      jest.advanceTimersByTime(100);
+
+      expect(spy).toHaveBeenCalledWith();
+
+      // @ts-ignore Allow access
+      expect(cli.renderTimer).toBeNull();
+    });
   });
 
   describe('stop()', () => {

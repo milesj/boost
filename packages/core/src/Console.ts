@@ -385,11 +385,12 @@ export default class Console extends Emitter {
    * Automatically render the console in a timeout loop at 16 FPS.
    */
   startRenderLoop() {
-    if (this.isSilent() || this.isDisabled()) {
+    if (this.isSilent() || this.isDisabled() || this.renderTimer) {
       return;
     }
 
     this.renderTimer = setTimeout(() => {
+      this.renderTimer = null;
       this.flushOutputQueue();
     }, FPS_RATE);
   }
