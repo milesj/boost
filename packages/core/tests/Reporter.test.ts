@@ -315,15 +315,6 @@ describe('Reporter', () => {
 
       expect(reporter.console.out).toHaveBeenCalledWith(ansiEscapes.cursorShow);
     });
-
-    it('removes restore listener', () => {
-      const spy = jest.spyOn(process, 'off');
-
-      reporter.hideCursor();
-      reporter.showCursor();
-
-      expect(spy).toHaveBeenCalled();
-    });
   });
 
   describe('size()', () => {

@@ -19,10 +19,6 @@ import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 
 let restoreCursorOnExit = false;
 
-const restoreHandler = () => {
-  process.stdout.write(ansiEscapes.cursorShow);
-};
-
 export const SLOW_THRESHOLD = 10000; // ms
 
 export default class Reporter<Options extends object = {}> extends Plugin<Options> {
@@ -193,7 +189,10 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
 
     if (!restoreCursorOnExit) {
       restoreCursorOnExit = true;
-      process.on('exit', restoreHandler);
+
+      process.on('exit', () => {
+        process.stdout.write(ansiEscapes.cursorShow);
+      });
     }
 
     return this;
@@ -234,11 +233,6 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
    */
   showCursor(): this {
     this.console.out(ansiEscapes.cursorShow);
-
-    if (restoreCursorOnExit) {
-      restoreCursorOnExit = false;
-      process.off('exit', restoreHandler);
-    }
 
     return this;
   }
