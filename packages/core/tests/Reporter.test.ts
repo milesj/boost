@@ -85,9 +85,27 @@ describe('Reporter', () => {
 
   describe('displayError()', () => {
     it('writes to stderr', () => {
-      reporter.displayError(new Error('Oops'));
+      const error = new Error('Oops');
 
-      expect(reporter.console.err).toHaveBeenCalledTimes(3);
+      reporter.displayError(error);
+
+      expect(reporter.console.err).toHaveBeenCalledWith(`\n${chalk.red.bold('Oops')}\n`);
+      expect(reporter.console.err).toHaveBeenCalledWith(
+        chalk.gray(error.stack!.replace('Error: Oops\n', '')),
+        1,
+      );
+    });
+
+    it('handles multiline messages', () => {
+      const error = new Error('Oops\nBroken');
+
+      reporter.displayError(error);
+
+      expect(reporter.console.err).toHaveBeenCalledWith(`\n${chalk.red.bold('Oops\nBroken')}\n`);
+      expect(reporter.console.err).toHaveBeenCalledWith(
+        chalk.gray(error.stack!.replace('Error: Oops\nBroken\n', '')),
+        1,
+      );
     });
   });
 

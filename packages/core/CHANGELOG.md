@@ -1,3 +1,9 @@
+# 1.7.2 - 2019-01-28
+
+#### 🐞 Fixed
+
+- Fixed multiline error messages displaying multiple times in the reporter error stack output.
+
 # 1.7.1 - 2019-01-25
 
 #### 🐞 Fixed

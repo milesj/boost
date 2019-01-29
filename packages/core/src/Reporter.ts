@@ -79,16 +79,10 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
 
     // Remove message line from stack
     if (error.stack) {
-      const stack = this.style(
-        error.stack
-          .split('\n')
-          .slice(1)
-          .join('\n')
-          .trim(),
-        'pending',
+      this.console.err(
+        this.style(error.stack.replace(`Error: ${error.message}\n`, ''), 'pending'),
+        1,
       );
-
-      this.console.err(stack, 1);
     }
 
     this.console.err('\n');
