@@ -1,6 +1,6 @@
 {
   "name": "@boost/test-utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Utility classes and functions for testing Boost applications in Jest.",
   "keywords": [
     "boost",
@@ -19,7 +19,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@boost/core": "^1.7.1"
+    "@boost/core": "^1.7.2"
   },
   "peerDependencies": {
     "@boost/core": "^1.5.0"
