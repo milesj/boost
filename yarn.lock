@@ -731,7 +731,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.1.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1":
   version "7.3.1"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.3.1.tgz#574b03e8e8a9898eaf4a872a92ea20b7846f6f2a"
   integrity sha512-7jGW8ppV0ant637pIqAcFfQDDH1orEPGJb8aXfUozuCU3QqX7rX4DA8iwrbPrR1hcH0FTTHz47yQnk+bl5xHQA==
@@ -6749,6 +6749,13 @@ optimal@^1.2.0:
   integrity sha512-vUKTBCsney4T7uzZ+21QUXpNOH2o4gOtnj+wFJRv097jBN36HPngSJfgOhueh+BWrBFhQsgohNGv8mPqVj63hA==
   dependencies:
     "@babel/runtime" "^7.2.0"
+
+optimal@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-2.0.0.tgz#1ec4cd738e9b94a599dea99fabb4309f7e6829d8"
+  integrity sha512-yG3mN1N94zvha9OxdhUqmYsyQdfzZ7HFdHrymg+FrGIRyELS10x5KTXaxwo5FfIPn3m4ng/hM3Wsnc20FzYL/g==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
 
 optimist@^0.6.1:
   version "0.6.1"

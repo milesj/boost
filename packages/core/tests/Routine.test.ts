@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import execa from 'execa';
-import { number, bool } from 'optimal';
+import { Predicates } from 'optimal';
 import { mockTool, mockRoutine, mockDebugger, stubToolConfig } from '@boost/test-utils';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
@@ -42,7 +42,7 @@ describe('Routine', () => {
       this.debug = mockDebugger();
     }
 
-    blueprint() {
+    blueprint({ number }: Predicates) {
       return {
         test: number(),
       };
@@ -65,7 +65,7 @@ describe('Routine', () => {
       this.task('baz', this.baz);
     }
 
-    blueprint() {
+    blueprint({ number, bool }: Predicates) {
       return {
         multiplier: number(),
         return: bool(),
@@ -636,7 +636,7 @@ describe('Routine', () => {
         this.debug = mockDebugger();
       }
 
-      blueprint() {
+      blueprint({ number }: Predicates) {
         return {
           multiplier: number(),
         };

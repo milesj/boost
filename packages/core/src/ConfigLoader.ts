@@ -13,7 +13,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import { Arguments } from 'yargs-parser';
-import optimal, { array, bool, instance, number, shape, string, union } from 'optimal';
+import optimal, { array, bool, instance, number, shape, string, union, object } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
@@ -21,7 +21,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import Tool from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { Debugger, PackageConfig } from './types';
+import { Debugger, PackageConfig, PluginSetting } from './types';
 
 export interface ConfigObject {
   [key: string]: any;
@@ -279,31 +279,35 @@ export default class ConfigLoader {
       this.debug('Generating %s blueprint', chalk.magenta(singularName));
 
       // prettier-ignore
-      pluginsBlueprint[pluralName] = array(union([
-        string(),
-        shape({ [singularName]: string() }),
-        instance(contract),
-      ]));
+      pluginsBlueprint[pluralName] = array(union<PluginSetting<Function>>([
+        string().notEmpty(),
+        shape({ [singularName]: string().notEmpty() }),
+        instance(contract, true),
+      ], []));
     });
 
-    return optimal(
+    const config = optimal(
       this.inheritFromArgs(this.parseAndExtend(configPath), args),
       {
         ...configBlueprint,
         ...pluginsBlueprint,
         debug: bool(),
         extends: array(string()),
-        locale: string().empty(),
+        locale: string(),
         output: number(2).between(1, 3, true),
-        settings: settingsBlueprint,
+        // shape() requires a non-empty object
+        settings: isEmptyObject(settingsBlueprint) ? object() : shape(settingsBlueprint),
         silent: bool(),
-        theme: string('default'),
+        theme: string('default').notEmpty(),
       },
       {
+        file: typeof configPath === 'string' ? path.basename(configPath) : '',
         name: 'ConfigLoader',
         unknown: true,
       },
     );
+
+    return config as T;
   }
 
   /**
@@ -323,9 +327,11 @@ export default class ConfigLoader {
     this.package = optimal(
       this.parseFile(filePath),
       {
-        name: string(),
+        name: string().notEmpty(),
+        version: string('0.0.0'),
       },
       {
+        file: 'package.json',
         name: 'ConfigLoader',
         unknown: true,
       },

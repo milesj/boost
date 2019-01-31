@@ -1,3 +1,15 @@
+# 1.8.0
+
+#### 🚀 New
+
+- Optimal predicates are now passed to `Plugin#blueprint` and `Routine#blueprint`, allowing
+  consumers to destructure from an argument instead of importing from `optimal` directly.
+
+#### 🛠 Internal
+
+- Removed `optimal` as a peer dependency.
+- Updated `optimal` to v2.0.
+
 # 1.7.2 - 2019-01-28
 
 #### 🐞 Fixed

@@ -34,11 +34,17 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
   constructor(tool: Tool<any>, context: Ctx, options: Partial<PoolExecutorOptions> = {}) {
     super(tool, context, options);
 
-    this.options = optimal(options, {
-      concurrency: number(os.cpus().length).gte(1),
-      fifo: bool(true),
-      timeout: number(0).gte(0),
-    });
+    this.options = optimal(
+      options,
+      {
+        concurrency: number(os.cpus().length).gte(1),
+        fifo: bool(true),
+        timeout: number(0).gte(0),
+      },
+      {
+        name: 'PoolExecutor',
+      },
+    );
   }
 
   /**

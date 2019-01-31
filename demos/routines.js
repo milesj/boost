@@ -1,9 +1,8 @@
-const { bool, number } = require('optimal');
 const { Routine } = require('../packages/core/lib');
 const random = require('./random');
 
 class DelayedRoutine extends Routine {
-  blueprint() {
+  blueprint({ number }) {
     return {
       delay: number(),
     };
@@ -19,7 +18,7 @@ class DelayedRoutine extends Routine {
 exports.DelayedRoutine = DelayedRoutine;
 
 class MultiTaskRoutine extends Routine {
-  blueprint() {
+  blueprint({ bool }) {
     return {
       error: bool(),
       exit: bool(),
@@ -59,7 +58,7 @@ class MultiTaskRoutine extends Routine {
 exports.MultiTaskRoutine = MultiTaskRoutine;
 
 class MultiSubRoutine extends Routine {
-  blueprint() {
+  blueprint({ bool }) {
     return {
       deep: bool(),
       parallel: bool(),

@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import optimal, { Builder, Blueprint } from 'optimal';
+import optimal, { predicates, Blueprint, Predicates } from 'optimal';
 import Tool from './Tool';
 
 export const DEFAULT_PLUGIN_PRIORITY = 100;
@@ -21,7 +21,7 @@ export default class Plugin<Options extends object = {}> {
   tool: Tool<any>;
 
   constructor(options: Partial<Options> = {}) {
-    this.options = optimal(options, this.blueprint(), {
+    this.options = optimal(options, this.blueprint(predicates), {
       name: this.constructor.name,
     });
   }
@@ -30,7 +30,7 @@ export default class Plugin<Options extends object = {}> {
    * Define an optimal blueprint in which to validate and build the
    * options passed to the constructor.
    */
-  blueprint(): { [K in keyof Options]: Builder<any> | Blueprint } {
+  blueprint(preds: Predicates): Blueprint<Options> {
     return {} as any;
   }
 

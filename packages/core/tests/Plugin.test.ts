@@ -1,11 +1,11 @@
-import { string, number } from 'optimal';
+import { Predicates } from 'optimal';
 import Plugin from '../src/Plugin';
 
 describe('Plugin', () => {
   class TestPlugin extends Plugin {
-    blueprint() {
+    blueprint({ string, number }: Predicates) {
       return {
-        foo: string().empty(),
+        foo: string(),
         bar: number(),
       };
     }

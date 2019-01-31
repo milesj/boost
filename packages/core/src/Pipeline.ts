@@ -4,7 +4,7 @@
  */
 
 import exit from 'exit';
-import { func } from 'optimal';
+import { Predicates } from 'optimal';
 import Context from './Context';
 import CrashLogger from './CrashLogger';
 import ExitError from './ExitError';
@@ -22,10 +22,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
   PipelineOptions
 > {
   constructor(tool: Tool, context: Ctx, options: Partial<PipelineOptions> = {}) {
-    super('root', 'Pipeline', {
-      exit,
-      ...options,
-    });
+    super('root', 'Pipeline', options);
 
     if (instanceOf(tool, CoreTool)) {
       tool.initialize();
@@ -42,9 +39,9 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
     this.setContext(context);
   }
 
-  blueprint() /* infer */ {
+  blueprint({ func }: Predicates) /* infer */ {
     return {
-      exit: func().required(),
+      exit: func(exit).notNullable(),
     };
   }
 

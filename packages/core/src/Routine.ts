@@ -6,7 +6,7 @@
 import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';
-import optimal, { Builder, Blueprint } from 'optimal';
+import optimal, { predicates, Blueprint, Predicates } from 'optimal';
 import Context from './Context';
 import Task, { TaskAction } from './Task';
 import CoreTool from './Tool';
@@ -53,7 +53,7 @@ export default abstract class Routine<
     }
 
     this.key = key;
-    this.options = optimal(options, this.blueprint(), {
+    this.options = optimal(options, this.blueprint(predicates), {
       name: this.constructor.name,
     });
   }
@@ -62,7 +62,7 @@ export default abstract class Routine<
    * Define an optimal blueprint in which to validate and build the
    * options passed to the constructor.
    */
-  blueprint(): { [K in keyof Options]: Builder<any> | Blueprint } {
+  blueprint(preds: Predicates): Blueprint<Options> {
     return {} as any;
   }
 

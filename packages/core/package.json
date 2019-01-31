@@ -49,6 +49,7 @@
     "i18next": "^14.0.1",
     "json5": "^2.1.0",
     "lodash": "^4.17.11",
+    "optimal": "^2.0.0",
     "os-locale": "^3.1.0",
     "pluralize": "^7.0.0",
     "split": "^1.0.1",
@@ -56,11 +57,5 @@
     "term-size": "^1.2.0",
     "wrap-ansi": "^4.0.0",
     "yargs-parser": "^11.1.1"
-  },
-  "devDependencies": {
-    "optimal": "^1.2.0"
-  },
-  "peerDependencies": {
-    "optimal": "^1.0.0"
   }
 }

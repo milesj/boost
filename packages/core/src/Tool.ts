@@ -49,13 +49,13 @@ export interface ToolOptions {
   appName: string;
   appPath: string;
   argOptions: ArgOptions;
-  configBlueprint: Blueprint;
+  configBlueprint: Blueprint<any>;
   configName: string;
   footer: string;
   header: string;
   root: string;
   scoped: boolean;
-  settingsBlueprint: Blueprint;
+  settingsBlueprint: Blueprint<any>;
   workspaceRoot: string;
 }
 
@@ -110,17 +110,21 @@ export default class Tool<
     this.options = optimal(
       options,
       {
-        appName: string().required(),
-        appPath: string().required(),
+        appName: string()
+          .required()
+          .notEmpty(),
+        appPath: string()
+          .required()
+          .notEmpty(),
         argOptions: object(),
         configBlueprint: object(),
-        configName: string().empty(),
-        footer: string().empty(),
-        header: string().empty(),
+        configName: string(),
+        footer: string(),
+        header: string(),
         root: string(process.cwd()),
         scoped: bool(),
         settingsBlueprint: object(),
-        workspaceRoot: string().empty(),
+        workspaceRoot: string(),
       },
       {
         name: this.constructor.name,

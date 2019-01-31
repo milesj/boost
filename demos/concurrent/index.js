@@ -1,9 +1,8 @@
-const { string } = require('optimal');
 const { Tool, Pipeline, Routine, Reporter } = require('../../packages/core/lib');
 const { DelayedRoutine } = require('../routines');
 
 class ConcurrentReporter extends Reporter {
-  blueprint() {
+  blueprint({ string }) {
     return {
       char: string(),
     };
