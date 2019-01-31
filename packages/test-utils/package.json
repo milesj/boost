@@ -18,9 +18,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
-    "@boost/core": "^1.7.2"
-  },
   "peerDependencies": {
     "@boost/core": "^1.5.0"
   },
