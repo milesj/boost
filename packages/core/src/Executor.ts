@@ -11,7 +11,7 @@ import Tool from './Tool';
 import instanceOf from './helpers/instanceOf';
 import { Debugger } from './types';
 
-export type ExecuteHandler<Ctx> = (task: Task<Ctx>, value?: any) => Promise<any>;
+export type ExecuteHandler<Ctx extends Context> = (task: Task<Ctx>, value?: any) => Promise<any>;
 
 export interface AggregatedResponse {
   errors: Error[];

@@ -4,6 +4,7 @@
 
 - Optimal predicates are now passed to `Plugin#blueprint` and `Routine#blueprint`, allowing
   consumers to destructure from an argument instead of importing from `optimal` directly.
+- Added `Context#clone` so contexts can easily be cloned within the pipeline.
 
 #### 🛠 Internal
 

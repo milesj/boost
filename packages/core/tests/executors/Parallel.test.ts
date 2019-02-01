@@ -1,12 +1,13 @@
 import { mockTool } from '@boost/test-utils';
 import ParallelExecutor from '../../src/executors/Parallel';
 import Task from '../../src/Task';
+import Context from '../../src/Context';
 
 describe('ParallelExecutor', () => {
   let executor: ParallelExecutor<any>;
 
   beforeEach(() => {
-    executor = new ParallelExecutor(mockTool(), {});
+    executor = new ParallelExecutor(mockTool(), new Context());
   });
 
   it('triggers tasks in parallel', async () => {

@@ -1,18 +1,15 @@
 import { mockTool } from '@boost/test-utils';
 import PoolExecutor from '../../src/executors/Pool';
 import Task from '../../src/Task';
+import Context from '../../src/Context';
 
 describe('PoolExecutor', () => {
   let executor: PoolExecutor<any>;
 
   beforeEach(() => {
-    executor = new PoolExecutor(
-      mockTool(),
-      {},
-      {
-        timeout: 1000,
-      },
-    );
+    executor = new PoolExecutor(mockTool(), new Context(), {
+      timeout: 1000,
+    });
   });
 
   it('triggers tasks in parallel', async () => {

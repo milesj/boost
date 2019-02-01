@@ -7,6 +7,7 @@ import Pipeline from '../../src/Pipeline';
 import Routine from '../../src/Routine';
 import Task from '../../src/Task';
 import Tool from '../../src/Tool';
+import Context from '../../src/Context';
 import {
   STATUS_RUNNING,
   STATUS_SKIPPED,
@@ -41,7 +42,7 @@ describe('BoostReporter', () => {
     child2 = mockRoutine(tool, 'child2', 'Child #2');
     child2.status = STATUS_SKIPPED;
 
-    new Pipeline(tool, {}).pipe(parent);
+    new Pipeline(tool, new Context()).pipe(parent);
     parent.pipe(child1).pipe(child2);
 
     Date.now = () => 0;

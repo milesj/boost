@@ -18,13 +18,15 @@ describe('Pipeline', () => {
     });
 
     it('sets the context', () => {
-      pipeline = new Pipeline(mockTool(), { foo: 'bar' });
+      const context = new Context();
 
-      expect(pipeline.context).toEqual({ foo: 'bar' });
+      pipeline = new Pipeline(mockTool(), context);
+
+      expect(pipeline.context).toEqual(context);
     });
 
     it('sets default depth to -1', () => {
-      pipeline = new Pipeline(mockTool(), { foo: 'bar' });
+      pipeline = new Pipeline(mockTool(), new Context());
 
       expect(pipeline.metadata.depth).toBe(-1);
     });
