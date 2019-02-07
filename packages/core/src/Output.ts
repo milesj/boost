@@ -1,8 +1,3 @@
-/**
- * @copyright   2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Console from './Console';

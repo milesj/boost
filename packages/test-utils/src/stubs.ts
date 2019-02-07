@@ -1,8 +1,3 @@
-/**
- * @copyright   2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import { PackageConfig } from '@boost/core';
 import { TestToolConfig } from './types';
 

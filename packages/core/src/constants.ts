@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import { Status } from './types';
 
 export const APP_NAME_PATTERN: RegExp = /^[-a-z.]+$/u;

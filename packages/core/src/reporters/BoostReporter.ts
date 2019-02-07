@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import Reporter from '../Reporter';
 import Routine from '../Routine';
 import Task from '../Task';

@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import { APP_NAME_PATTERN } from './constants';
 
 export type EventArguments = any[];

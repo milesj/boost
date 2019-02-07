@@ -1,9 +1,4 @@
 /**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
-/**
  * Combine app and plugin names into a Node/NPM applicable module name.
  */
 export default function formatModuleName(

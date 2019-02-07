@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
 import Tool from './Tool';
 

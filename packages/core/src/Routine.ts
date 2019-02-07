@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';

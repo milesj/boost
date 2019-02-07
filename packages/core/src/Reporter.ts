@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import cliTruncate from 'cli-truncate';

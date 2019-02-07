@@ -1,9 +1,4 @@
 /**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
-/**
  * Import a module and handle default exports correctly.
  */
 export default function requireModule<T>(path: string): T {

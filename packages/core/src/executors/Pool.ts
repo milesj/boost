@@ -1,8 +1,3 @@
-/**
- * @copyright   2017-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import os from 'os';
 import optimal, { bool, number } from 'optimal';
 import Context from '../Context';

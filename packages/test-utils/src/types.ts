@@ -1,8 +1,3 @@
-/**
- * @copyright   2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import { Tool, ToolConfig, ToolPluginRegistry, Plugin, PluginSetting } from '@boost/core';
 
 export interface TestToolPluginRegistry extends ToolPluginRegistry {
