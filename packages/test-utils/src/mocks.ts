@@ -59,7 +59,10 @@ export function mockConsole(tool: ToolLike): any {
   return cli;
 }
 
-export class MockRoutine<Ctx, CoreTool extends Tool<any>> extends Routine<Context, CoreTool> {
+export class MockRoutine<Ctx extends Context, CoreTool extends Tool<any>> extends Routine<
+  Ctx,
+  CoreTool
+> {
   execute(context: Ctx, value: any) {
     return Promise.resolve(value);
   }
