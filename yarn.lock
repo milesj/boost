@@ -6759,10 +6759,10 @@ optimal@^1.2.0:
   dependencies:
     "@babel/runtime" "^7.2.0"
 
-optimal@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/optimal/-/optimal-2.0.0.tgz#1ec4cd738e9b94a599dea99fabb4309f7e6829d8"
-  integrity sha512-yG3mN1N94zvha9OxdhUqmYsyQdfzZ7HFdHrymg+FrGIRyELS10x5KTXaxwo5FfIPn3m4ng/hM3Wsnc20FzYL/g==
+optimal@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-2.1.0.tgz#e2ddb62a47e12ac5443267147f488e76e23ed8a4"
+  integrity sha512-SLm0qj9DOQOhssRBBRIoU7lZIUECwIEwC/6/NSbrZyeXY5HbPQrgomPBQJDvzRNxRma+B0BEzAWPcLcg1e1DrQ==
   dependencies:
     "@babel/runtime" "^7.3.1"
 
