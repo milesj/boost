@@ -10,6 +10,7 @@
 
 - Removed `optimal` as a peer dependency.
 - Updated `optimal` to v2.0.
+- Updated `yargs-parser` to v13.0 (this may be a breaking change depending on your usage).
 
 # 1.7.2 - 2019-01-28
 
