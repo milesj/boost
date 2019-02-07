@@ -231,7 +231,7 @@ describe('BoostReporter', () => {
     it('returns status text over title', () => {
       task.statusText = 'Running...';
 
-      expect(reporter.getTaskLine(task)).toBe('Running... [1/1]');
+      expect(reporter.getTaskLine(task)).toBe('Running...');
     });
 
     describe('compact output', () => {

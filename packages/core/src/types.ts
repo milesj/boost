@@ -7,7 +7,10 @@
 
 import debug from 'debug';
 import i18next from 'i18next';
+import { Predicates } from 'optimal';
 import ModuleLoader from './ModuleLoader';
+
+export { Predicates };
 
 export type Constructor<T> = new (...args: any[]) => T;
 

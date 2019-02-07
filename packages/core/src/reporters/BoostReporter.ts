@@ -89,7 +89,7 @@ export default class BoostReporter extends Reporter {
   getTaskLine(task: Task<any>): string {
     let line = this.strip(task.statusText || task.title).trim();
 
-    if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
+    if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL && !task.statusText) {
       line += ' ';
       line += this.getStepProgress(task);
     }
