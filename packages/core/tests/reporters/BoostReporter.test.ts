@@ -26,6 +26,8 @@ describe('BoostReporter', () => {
   let child2: Routine<any, any>;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+
     tool = mockTool();
 
     reporter = new BoostReporter();
@@ -50,6 +52,8 @@ describe('BoostReporter', () => {
 
   afterEach(() => {
     Date.now = oldNow;
+
+    jest.useRealTimers();
   });
 
   describe('bootstrap()', () => {

@@ -7,11 +7,17 @@ describe('NyanReporter', () => {
   let tool: Tool<any>;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+
     tool = mockTool();
 
     reporter = new NyanReporter();
     reporter.console = mockConsole(tool);
     reporter.tool = tool;
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('bootstrap()', () => {
