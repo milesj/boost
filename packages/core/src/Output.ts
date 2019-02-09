@@ -2,15 +2,16 @@ import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Console from './Console';
 
-export type Renderer = () => string;
+export type StringRenderer = () => string;
 
 export interface OutputState {
   completed: boolean;
   concurrent: boolean;
   final: boolean;
+  first: boolean;
 }
 
-export default class Output {
+export default class Output<Renderer extends () => any = StringRenderer> {
   protected console: Console;
 
   protected previousHeight: number = 0;
@@ -21,6 +22,7 @@ export default class Output {
     completed: false,
     concurrent: false,
     final: false,
+    first: true,
   };
 
   constructor(cli: Console, renderer: Renderer) {
@@ -50,7 +52,9 @@ export default class Output {
     }
 
     if (final) {
-      this.state.final = true;
+      this.markFinal();
+    } else {
+      this.onStart();
     }
 
     this.console.render(this);
@@ -100,7 +104,13 @@ export default class Output {
       return this;
     }
 
-    let content = this.renderer();
+    // Mark first render
+    if (this.state.first) {
+      this.state.first = false;
+      this.onFirst();
+    }
+
+    let content = this.toString(this.renderer());
 
     // Always end with a new line
     if (!content.endsWith('\n')) {
@@ -120,12 +130,56 @@ export default class Output {
 
     // Mark output as complete if the final render
     if (this.isFinal()) {
-      this.state.completed = true;
+      this.markComplete();
+
       // Otherwise calculate the height of the output
     } else {
       this.previousHeight = lines.length;
     }
 
     return this;
+  }
+
+  /**
+   * Mark the output as complete.
+   */
+  protected markComplete() {
+    this.state.completed = true;
+    this.onComplete();
+  }
+
+  /**
+   * Mark as the final render.
+   */
+  protected markFinal() {
+    this.state.final = true;
+    this.onLast();
+  }
+
+  /**
+   * Callback fired when output is completed.
+   */
+  protected onComplete() {}
+
+  /**
+   * Callback fired before the first render.
+   */
+  protected onFirst() {}
+
+  /**
+   * Callback fired before the last render.
+   */
+  protected onLast() {}
+
+  /**
+   * Callback fired when the output has been enqueued.
+   */
+  protected onStart() {}
+
+  /**
+   * Convert the renderer output to a string for the console.
+   */
+  protected toString(output: ReturnType<Renderer>): string {
+    return String(output);
   }
 }
