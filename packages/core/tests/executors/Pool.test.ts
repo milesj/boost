@@ -12,6 +12,15 @@ describe('PoolExecutor', () => {
     });
   });
 
+  afterEach(() => {
+    if (executor.resolver) {
+      executor.resolver({
+        results: [],
+        errors: [],
+      });
+    }
+  });
+
   it('triggers tasks in parallel', async () => {
     const foo = new Task('foo', () => 123);
     const bar = new Task('bar', () => {
