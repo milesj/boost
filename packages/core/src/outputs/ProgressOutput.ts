@@ -2,6 +2,7 @@
 
 import chalk from 'chalk';
 import cliSize from 'term-size';
+import prettyMs from 'pretty-ms';
 import optimal, { bool, number, string } from 'optimal';
 import Output from '../Output';
 
@@ -31,6 +32,14 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
 
   stopTime: number = 0;
 
+  prettyTime(ms: number): string {
+    if (!Number.isFinite(ms) || ms <= 0) {
+      return '0s';
+    }
+
+    return prettyMs(ms, { keepDecimalsOnWholeSeconds: true });
+  }
+
   protected onStart() {
     this.concurrent();
   }
@@ -52,7 +61,7 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
           .required()
           .gte(0),
         style: string('bar').oneOf(Object.keys(STYLES) as ProgressStyle[]),
-        template: string('{percent} [{bar}] {progress}').notEmpty(),
+        template: string('{percent} {bar} {progress}').notEmpty(),
         total: number()
           .required()
           .gt(0),
@@ -77,10 +86,10 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     const partialTemplate = template
       .replace('{progress}', `${current}/${total}`)
       .replace('{current}', String(current))
-      .replace('{elapsed}', (elapsed / 1000).toFixed(1))
-      .replace('{eta}', (eta / 1000).toFixed(1))
+      .replace('{elapsed}', this.prettyTime(elapsed))
+      .replace('{eta}', this.prettyTime(eta))
       .replace('{percent}', `${percent.toFixed(0)}%`)
-      .replace('{rate}', String(Math.round(rate)))
+      .replace('{rate}', String(rate.toFixed(2)))
       .replace('{total}', String(total));
 
     // Render the progress bar
@@ -94,9 +103,9 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     ].join('');
 
     if (color) {
-      if (percent === 100) {
+      if (percent >= 95) {
         bar = chalk.green(bar);
-      } else if (percent > 50) {
+      } else if (percent >= 50) {
         bar = chalk.yellow(bar);
       } else {
         bar = chalk.red(bar);

@@ -189,15 +189,15 @@ describe('Reporter', () => {
 
   describe('getElapsedTime()', () => {
     it('returns numbers in seconds', () => {
-      expect(reporter.getElapsedTime(1000, 5000)).toBe('4.00s');
+      expect(reporter.getElapsedTime(1000, 5000)).toBe('4.0s');
     });
 
     it('colors red if higher than slow threshold', () => {
-      expect(reporter.getElapsedTime(1000, 15000)).toBe(chalk.red('14.00s'));
+      expect(reporter.getElapsedTime(1000, 15000)).toBe(chalk.red('14.0s'));
     });
 
     it('doesnt color if highlight is false', () => {
-      expect(reporter.getElapsedTime(1000, 15000, false)).toBe('14.00s');
+      expect(reporter.getElapsedTime(1000, 15000, false)).toBe('14.0s');
     });
   });
 

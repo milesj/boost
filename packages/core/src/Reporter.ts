@@ -4,6 +4,7 @@ import cliTruncate from 'cli-truncate';
 import cliSize from 'term-size';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
+import prettyMs from 'pretty-ms';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Output, { StringRenderer } from './Output';
@@ -132,7 +133,7 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
   getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
     const time = (stop || Date.now()) - start;
     const isSlow = time > SLOW_THRESHOLD;
-    const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
+    const elapsed = prettyMs(time, { keepDecimalsOnWholeSeconds: true });
 
     return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
   }
