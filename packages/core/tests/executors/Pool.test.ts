@@ -13,6 +13,7 @@ describe('PoolExecutor', () => {
   });
 
   afterEach(() => {
+    // Resolve any pending promises
     if (executor.resolver) {
       executor.resolver({
         results: [],
