@@ -134,7 +134,7 @@ describe('ProgressOutput', () => {
       expect(output.testRender()).toMatchSnapshot();
     });
 
-    it('renders red when below 50 and color enabeld', () => {
+    it('renders red when below 45 and color enabled', () => {
       output = new TestProgressOutput(cli, () => ({
         color: true,
         current: 15,
@@ -146,7 +146,7 @@ describe('ProgressOutput', () => {
       expect(output.testRender()).toMatchSnapshot();
     });
 
-    it('renders yellow when above 50 and color enabeld', () => {
+    it('renders yellow when above 45 and color enabled', () => {
       output = new TestProgressOutput(cli, () => ({
         color: true,
         current: 75,
@@ -158,10 +158,10 @@ describe('ProgressOutput', () => {
       expect(output.testRender()).toMatchSnapshot();
     });
 
-    it('renders gren when above 95 and color enabeld', () => {
+    it('renders gren when above 90 and color enabled', () => {
       output = new TestProgressOutput(cli, () => ({
         color: true,
-        current: 100,
+        current: 95,
         total: 100,
         style: 'square',
         template: '{bar}',

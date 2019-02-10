@@ -95,9 +95,9 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     ].join('');
 
     if (color) {
-      if (percent >= 95) {
+      if (percent >= 90) {
         bar = chalk.green(bar);
-      } else if (percent >= 50) {
+      } else if (percent >= 45) {
         bar = chalk.yellow(bar);
       } else {
         bar = chalk.red(bar);
