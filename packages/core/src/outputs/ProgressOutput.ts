@@ -2,13 +2,13 @@
 
 import chalk from 'chalk';
 import cliSize from 'term-size';
-import prettyMs from 'pretty-ms';
 import optimal, { bool, number, string } from 'optimal';
+import formatTime from '../helpers/formatTime';
 import Output from '../Output';
 
 const STYLES = {
   bar: ['\u2588', '\u2591'],
-  dash: ['=', '-'],
+  classic: ['=', '-'],
   hash: ['#', '-'],
   pipe: ['|', '-'],
   square: ['\u25A0', ' '],
@@ -31,14 +31,6 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
   startTime: number = 0;
 
   stopTime: number = 0;
-
-  prettyTime(ms: number): string {
-    if (!Number.isFinite(ms) || ms <= 0) {
-      return '0s';
-    }
-
-    return prettyMs(ms, { keepDecimalsOnWholeSeconds: true });
-  }
 
   protected onStart() {
     this.concurrent();
@@ -86,8 +78,8 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     const partialTemplate = template
       .replace('{progress}', `${current}/${total}`)
       .replace('{current}', String(current))
-      .replace('{elapsed}', this.prettyTime(elapsed))
-      .replace('{eta}', this.prettyTime(eta))
+      .replace('{elapsed}', formatTime(elapsed))
+      .replace('{eta}', formatTime(eta))
       .replace('{percent}', `${percent.toFixed(0)}%`)
       .replace('{rate}', String(rate.toFixed(2)))
       .replace('{total}', String(total));

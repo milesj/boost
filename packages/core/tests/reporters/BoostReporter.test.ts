@@ -178,7 +178,7 @@ describe('BoostReporter', () => {
       it('returns parent parts', () => {
         expect(reporter.getRoutineLineParts(parent)).toEqual({
           prefix: chalk.gray('[1/1]') + ' ' + chalk.gray.bold('PARENT'),
-          suffix: '0ms',
+          suffix: '0s',
           title: 'Parent',
         });
       });
@@ -186,7 +186,7 @@ describe('BoostReporter', () => {
       it('returns child parts', () => {
         expect(reporter.getRoutineLineParts(child1)).toEqual({
           prefix: '        ' + chalk.gray.bold('CHILD1'),
-          suffix: '0ms',
+          suffix: '0s',
           title: 'Child #1',
         });
       });
@@ -200,7 +200,7 @@ describe('BoostReporter', () => {
       it('returns parent parts', () => {
         expect(reporter.getRoutineLineParts(parent)).toEqual({
           prefix: chalk.gray('[1/1]') + ' ' + chalk.gray.bold('PARENT'),
-          suffix: '0ms',
+          suffix: '0s',
           title: 'Parent',
         });
       });
@@ -208,7 +208,7 @@ describe('BoostReporter', () => {
       it('returns child parts', () => {
         expect(reporter.getRoutineLineParts(child1)).toEqual({
           prefix: '        ' + chalk.gray.bold('CHILD1'),
-          suffix: '0ms',
+          suffix: '0s',
           title: 'Child #1',
         });
       });
@@ -268,7 +268,7 @@ describe('BoostReporter', () => {
   describe('renderLines()', () => {
     it('returns a routine', () => {
       expect(reporter.renderLines(child1)).toBe(
-        `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0ms)')}\n`,
+        `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0s)')}\n`,
       );
     });
 
@@ -280,7 +280,7 @@ describe('BoostReporter', () => {
       task3.status = STATUS_RUNNING;
 
       expect(reporter.renderLines(child1)).toBe(
-        `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0ms)')}\n` +
+        `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0s)')}\n` +
           `          ${chalk.gray('Task #2 [2/3]')}\n` +
           `          ${chalk.gray('Task #3 [3/3]')}\n`,
       );
@@ -288,8 +288,8 @@ describe('BoostReporter', () => {
 
     it('includes sub-routines', () => {
       expect(reporter.renderLines(parent)).toBe(
-        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0ms)')}\n` +
-          `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0ms)')}\n` +
+        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0s)')}\n` +
+          `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0s)')}\n` +
           `        ${chalk.yellow.bold('CHILD2')} Child #2 ${chalk.gray(
             `(${chalk.yellow('skipped')})`,
           )}\n`,
@@ -302,7 +302,7 @@ describe('BoostReporter', () => {
       child2.status = STATUS_RUNNING;
 
       expect(reporter.renderLines(parent)).toBe(
-        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0ms)')}\n` +
+        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0s)')}\n` +
           `        ${chalk.gray.bold('CHILD2')} Child #2 ${chalk.gray(`(-10ms)`)}\n` +
           `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(-100ms)')}\n`,
       );
@@ -312,8 +312,8 @@ describe('BoostReporter', () => {
       child2.status = STATUS_PENDING;
 
       expect(reporter.renderLines(parent)).toBe(
-        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0ms)')}\n` +
-          `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0ms)')}\n`,
+        `${chalk.gray('[1/1]')} ${chalk.gray.bold('PARENT')} Parent ${chalk.gray('(0s)')}\n` +
+          `        ${chalk.gray.bold('CHILD1')} Child #1 ${chalk.gray('(0s)')}\n`,
       );
     });
 

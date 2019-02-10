@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import { mockConsole, mockTool, mockRoutine } from '@boost/test-utils';
 import Reporter, { testOnlyResetRestoreCursor } from '../src/Reporter';
+import ProgressOutput from '../src/outputs/ProgressOutput';
 import Output from '../src/Output';
 import Task from '../src/Task';
 import Tool from '../src/Tool';
@@ -80,6 +81,17 @@ describe('Reporter', () => {
   describe('createOutput()', () => {
     it('returns an `Output` instance', () => {
       expect(reporter.createOutput(() => 'foo')).toBeInstanceOf(Output);
+    });
+  });
+
+  describe('createProgressOutput()', () => {
+    it('returns a `ProgressOutput` instance', () => {
+      const output = reporter.createProgressOutput(() => ({
+        current: 0,
+        total: 100,
+      }));
+
+      expect(output).toBeInstanceOf(ProgressOutput);
     });
   });
 
