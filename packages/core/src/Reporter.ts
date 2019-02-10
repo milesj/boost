@@ -6,10 +6,12 @@ import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
-import Output, { Renderer } from './Output';
+import Output, { StringRenderer } from './Output';
+import ProgressOutput, { ProgressRenderer } from './outputs/ProgressOutput';
 import Plugin from './Plugin';
 import Routine from './Routine';
 import Task from './Task';
+import formatTime from './helpers/formatTime';
 import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 
 let restoreCursorOnExit = false;
@@ -52,7 +54,7 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
    * Concurrent outputs will be rendered in parallel with other concurrent
    * outputs and the top of the queue output.
    */
-  createConcurrentOutput(renderer: Renderer): Output {
+  createConcurrentOutput(renderer: StringRenderer): Output {
     const output = this.createOutput(renderer);
     output.concurrent();
 
@@ -62,8 +64,15 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
   /**
    * Create a new output to be rendered with the defined renderer function.
    */
-  createOutput(renderer: Renderer): Output {
+  createOutput(renderer: StringRenderer): Output {
     return new Output(this.console, renderer);
+  }
+
+  /**
+   * Create a new output to continuously render a progress bar.
+   */
+  createProgressOutput(renderer: ProgressRenderer): ProgressOutput {
+    return new ProgressOutput(this.console, renderer);
   }
 
   /**
@@ -124,7 +133,7 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
   getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
     const time = (stop || Date.now()) - start;
     const isSlow = time > SLOW_THRESHOLD;
-    const elapsed = `${(time / 1000).toFixed(2)}s`; // eslint-disable-line no-magic-numbers
+    const elapsed = formatTime(time);
 
     return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
   }
@@ -297,5 +306,7 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
 }
 
 export function testOnlyResetRestoreCursor() {
-  restoreCursorOnExit = false;
+  if (process.env.NODE_ENV === 'test') {
+    restoreCursorOnExit = false;
+  }
 }

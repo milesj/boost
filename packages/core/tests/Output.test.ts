@@ -55,6 +55,38 @@ describe('Output', () => {
 
       expect(output.isFinal()).toBe(true);
     });
+
+    it('triggers start lifecycle', () => {
+      const spy = jest.spyOn(output, 'onStart' as any);
+
+      output.enqueue();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('doesnt trigger start lifecycle when final render', () => {
+      const spy = jest.spyOn(output, 'onStart' as any);
+
+      output.enqueue(true);
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('triggers last lifecycle when marked as final', () => {
+      const spy = jest.spyOn(output, 'onLast' as any);
+
+      output.enqueue(true);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('doesnt trigger last lifecycle on normal enqueue', () => {
+      const spy = jest.spyOn(output, 'onLast' as any);
+
+      output.enqueue();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   describe('erasePrevious()', () => {
@@ -120,6 +152,41 @@ describe('Output', () => {
       output.render();
 
       expect(cli.out).toHaveBeenCalledWith('6\n7\n8\n');
+    });
+
+    it('triggers first lifecycle on first render', () => {
+      const spy = jest.spyOn(output, 'onFirst' as any);
+
+      output.render();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('doesnt trigger first lifecycle on subsequent renders', () => {
+      const spy = jest.spyOn(output, 'onFirst' as any);
+
+      output.render();
+      output.render();
+      output.render();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('triggers complete lifecycle on last render when marked as final', () => {
+      const spy = jest.spyOn(output, 'onComplete' as any);
+
+      output.enqueue(true);
+      output.render();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('doesnt trigger complete lifecycle when not final', () => {
+      const spy = jest.spyOn(output, 'onComplete' as any);
+
+      output.render();
+
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });
