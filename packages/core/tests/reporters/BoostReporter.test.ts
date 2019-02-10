@@ -16,7 +16,7 @@ import {
   STATUS_PASSED,
 } from '../../src/constants';
 
-const oldNow = Date.now;
+const oldDateNow = Date.now;
 
 describe('BoostReporter', () => {
   let reporter: BoostReporter;
@@ -26,8 +26,6 @@ describe('BoostReporter', () => {
   let child2: Routine<any, any>;
 
   beforeEach(() => {
-    jest.useFakeTimers();
-
     tool = mockTool();
 
     reporter = new BoostReporter();
@@ -51,9 +49,7 @@ describe('BoostReporter', () => {
   });
 
   afterEach(() => {
-    Date.now = oldNow;
-
-    jest.useRealTimers();
+    Date.now = oldDateNow;
   });
 
   describe('bootstrap()', () => {

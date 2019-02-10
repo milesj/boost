@@ -242,11 +242,9 @@ describe('Reporter', () => {
 
     beforeEach(() => {
       process.env.CI = '';
-      jest.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
       process.env.CI = oldCI;
     });
 
