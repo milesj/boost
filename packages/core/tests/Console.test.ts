@@ -17,12 +17,6 @@ describe('Console', () => {
       stderr: err,
       stdout: out,
     });
-
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   describe('disable()', () => {
@@ -541,14 +535,6 @@ describe('Console', () => {
   });
 
   describe('startRenderLoop()', () => {
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
     it('sets a timer', () => {
       // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();

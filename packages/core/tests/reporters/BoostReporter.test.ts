@@ -16,7 +16,7 @@ import {
   STATUS_PASSED,
 } from '../../src/constants';
 
-const oldNow = Date.now;
+const oldDateNow = Date.now;
 
 describe('BoostReporter', () => {
   let reporter: BoostReporter;
@@ -49,7 +49,7 @@ describe('BoostReporter', () => {
   });
 
   afterEach(() => {
-    Date.now = oldNow;
+    Date.now = oldDateNow;
   });
 
   describe('bootstrap()', () => {

@@ -43,6 +43,9 @@
     ],
     "settings": {
       "node": true
+    },
+    "jest": {
+      "timers": "fake"
     }
   }
 }

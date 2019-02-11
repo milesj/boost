@@ -69,8 +69,6 @@ export interface ToolPluginRegistry {
   reporter: Reporter;
 }
 
-const translatorCache: Map<Tool<any>, Translator> = new Map();
-
 export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
   Config extends ToolConfig = ToolConfig
@@ -97,6 +95,8 @@ export default class Tool<
   private plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
 
   private pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
+
+  private translator: Translator | null = null;
 
   constructor(options: Partial<ToolOptions>, argv: string[] = []) {
     super();
@@ -131,9 +131,6 @@ export default class Tool<
 
     // eslint-disable-next-line global-require
     this.debug('Using boost v%s', require('../package.json').version);
-
-    // Setup i18n translation
-    translatorCache.set(this, this.createTranslator());
 
     // Initialize the console first so we can start logging
     this.console = new Console(this);
@@ -535,7 +532,11 @@ export default class Tool<
    * Retrieve a translated message from a resource bundle.
    */
   msg(key: string | string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
-    return translatorCache.get(this)!.t(key, {
+    if (!this.translator) {
+      this.translator = this.createTranslator();
+    }
+
+    return this.translator.t(key, {
       interpolation: { escapeValue: false },
       replace: params,
       ...options,
@@ -599,8 +600,8 @@ export default class Tool<
     }
 
     // Update locale
-    if (this.config.locale) {
-      translatorCache.get(this)!.changeLanguage(this.config.locale);
+    if (this.config.locale && this.translator) {
+      this.translator.changeLanguage(this.config.locale);
     }
 
     return this;
