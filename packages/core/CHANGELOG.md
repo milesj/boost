@@ -14,6 +14,7 @@ Added a new type of output to concurrently render progress bars in a handful of 
 #### 🛠 Internal
 
 - Updated `msg()` to lazy-load the translator.
+- Updated `i18next` to v15.0.
 - Improved Jest performance.
 
 # 1.8.0 - 2019-02-06
