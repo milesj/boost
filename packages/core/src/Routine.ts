@@ -231,12 +231,12 @@ export default abstract class Routine<
   /**
    * Define an individual task.
    */
-  task(title: string, action: TaskAction<Ctx>): Task<Ctx> {
+  task(title: string, action: TaskAction<Ctx>, scope?: any): Task<Ctx> {
     if (typeof action !== 'function') {
       throw new TypeError(this.tool.msg('errors:taskRequireAction'));
     }
 
-    const task = new Task<Ctx>(title, action.bind(this));
+    const task = new Task<Ctx>(title, action.bind(scope || this));
 
     task.parent = this;
     task.metadata.index = this.tasks.length;

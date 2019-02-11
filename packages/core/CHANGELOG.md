@@ -9,6 +9,12 @@ Added a new type of output to concurrently render progress bars in a handful of 
 - Added `ProgressOutput` class.
 - Added `Output#onStart`, `onComplete`, `onFirst`, `onLast` lifecycle methods for sub-classes.
 - Added `Reporter#createProgressOutput` to instantiate a concurrent progress bar output.
+- Added a `scope` arugment to `Routine#task` to control the `this` of task actions.
+
+#### 🛠 Internal
+
+- Updated `msg()` to lazy-load the translator.
+- Improved Jest performance.
 
 # 1.8.0 - 2019-02-06
 
