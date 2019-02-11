@@ -185,8 +185,8 @@ describe('Routine', () => {
     beforeEach(() => {
       ((execa as any) as jest.Mock).mockImplementation((cmd, args) => ({
         cmd: `${cmd} ${args.join(' ')}`,
-        stdout: new FakeStream('stdout'),
-        stderr: new FakeStream('stderr'),
+        stdout: new FakeStream(),
+        stderr: new FakeStream(),
       }));
 
       (execa.shell as jest.Mock).mockImplementation(cmd => ({ cmd: `/bin/sh -c ${cmd}` }));
