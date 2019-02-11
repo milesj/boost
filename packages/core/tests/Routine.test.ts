@@ -167,12 +167,6 @@ describe('Routine', () => {
 
   describe('executeCommand()', () => {
     class FakeStream {
-      type: string;
-
-      constructor(type: string) {
-        this.type = type;
-      }
-
       pipe() {
         return this;
       }
@@ -184,7 +178,7 @@ describe('Routine', () => {
       }
 
       toString() {
-        return this.type;
+        return '';
       }
     }
 
