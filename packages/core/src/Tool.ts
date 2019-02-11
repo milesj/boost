@@ -132,9 +132,6 @@ export default class Tool<
     // eslint-disable-next-line global-require
     this.debug('Using boost v%s', require('../package.json').version);
 
-    // Setup i18n translation
-    translatorCache.set(this, this.createTranslator());
-
     // Initialize the console first so we can start logging
     this.console = new Console(this);
 
@@ -535,7 +532,14 @@ export default class Tool<
    * Retrieve a translated message from a resource bundle.
    */
   msg(key: string | string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
-    return translatorCache.get(this)!.t(key, {
+    let translator = translatorCache.get(this);
+
+    if (!translator) {
+      translator = this.createTranslator();
+      translatorCache.set(this, translator);
+    }
+
+    return translator.t(key, {
       interpolation: { escapeValue: false },
       replace: params,
       ...options,
