@@ -6,7 +6,7 @@ exports[`ProgressOutput toString() renders classic style with elapsed time 1`] =
 
 exports[`ProgressOutput toString() renders gren when above 90 and color enabled 1`] = `"[32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  [39m"`;
 
-exports[`ProgressOutput toString() renders hash style with elapsed time 1`] = `"64ms eta / ##########################-------------"`;
+exports[`ProgressOutput toString() renders hash style with elapsed time 1`] = `"64ms estimated / ######################-----------"`;
 
 exports[`ProgressOutput toString() renders pipe style with rate 1`] = `"178.86 bps / ||||||||-----------------------------"`;
 

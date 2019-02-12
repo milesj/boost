@@ -106,7 +106,7 @@ describe('ProgressOutput', () => {
         current: 66,
         total: 100,
         style: 'hash',
-        template: '{eta} eta / {bar}',
+        template: '{estimated} estimated / {bar}',
       }));
 
       expect(output.testRender()).toMatchSnapshot();
@@ -128,7 +128,7 @@ describe('ProgressOutput', () => {
         current: 22,
         total: 100,
         style: 'square',
-        template: '{bar} {percent} {progress} {elapsed} {eta} {rate}',
+        template: '{bar} {percent} {progress} {elapsed} {estimated} {rate}',
       }));
 
       expect(output.testRender()).toMatchSnapshot();

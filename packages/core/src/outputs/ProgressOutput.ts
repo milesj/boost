@@ -73,13 +73,13 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     const progress = Math.min(Math.max(current / total, 0.0), 1.0);
     const percent = Math.floor(progress * 100);
     const elapsed = Date.now() - this.startTime;
-    const eta = percent === 100 ? 0 : elapsed * (total / current - 1);
+    const estimated = percent === 100 ? 0 : elapsed * (total / current - 1);
     const rate = current / (elapsed / 1000);
     const partialTemplate = template
       .replace('{progress}', `${current}/${total}`)
       .replace('{current}', String(current))
       .replace('{elapsed}', formatTime(elapsed))
-      .replace('{eta}', formatTime(eta))
+      .replace('{estimated}', formatTime(estimated))
       .replace('{percent}', `${percent.toFixed(0)}%`)
       .replace('{rate}', String(rate.toFixed(2)))
       .replace('{total}', String(total));

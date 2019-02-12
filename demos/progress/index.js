@@ -34,7 +34,7 @@ class ProgressReporter extends Reporter {
     this.createProgressOutput(() => ({
       current: getCurrent(),
       style: 'pipe',
-      template: '[{bar}] | {elapsed} elapsed | {eta} eta',
+      template: '[{bar}] | {elapsed} elapsed | {estimated} estimated',
       total,
     })).enqueue();
 
