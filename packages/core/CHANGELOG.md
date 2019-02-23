@@ -1,3 +1,9 @@
+# 1.9.1 - 2019-02-22
+
+#### 🛠 Internal
+
+- Updated dependencies.
+
 # 1.9.0 - 2019-02-10
 
 #### 🎉 Release
