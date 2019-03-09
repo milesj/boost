@@ -22,14 +22,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@types/ansi-escapes": "^3.0.0",
+    "@types/ansi-escapes": "^3.0.1",
     "@types/cli-truncate": "^1.1.0",
     "@types/debug": "^4.1.2",
     "@types/execa": "^0.9.0",
     "@types/exit": "^0.1.30",
     "@types/fs-extra": "^5.0.5",
     "@types/json5": "^0.0.30",
-    "@types/lodash": "^4.14.121",
+    "@types/lodash": "^4.14.122",
     "@types/os-locale": "^2.1.0",
     "@types/pluralize": "^0.0.29",
     "@types/pretty-ms": "^4.0.0",
@@ -47,7 +47,7 @@
     "exit": "^0.1.2",
     "fast-glob": "^2.2.6",
     "fs-extra": "^7.0.1",
-    "i18next": "^15.0.4",
+    "i18next": "^15.0.6",
     "json5": "^2.1.0",
     "lodash": "^4.17.11",
     "optimal": "^2.1.1",
@@ -55,9 +55,9 @@
     "pluralize": "^7.0.0",
     "pretty-ms": "^4.0.0",
     "split": "^1.0.1",
-    "strip-ansi": "^5.0.0",
+    "strip-ansi": "^5.1.0",
     "term-size": "^1.2.0",
-    "wrap-ansi": "^4.0.0",
+    "wrap-ansi": "^5.0.0",
     "yargs-parser": "^13.0.0"
   }
 }
