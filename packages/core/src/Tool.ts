@@ -27,6 +27,7 @@ import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
 import instanceOf from './helpers/instanceOf';
+import { APP_NAME_PATTERN } from './constants';
 import {
   Constructor,
   Debugger,
@@ -107,7 +108,8 @@ export default class Tool<
       {
         appName: string()
           .required()
-          .notEmpty(),
+          .notEmpty()
+          .match(APP_NAME_PATTERN),
         appPath: string()
           .required()
           .notEmpty(),

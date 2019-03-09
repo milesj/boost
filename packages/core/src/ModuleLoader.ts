@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import path from 'path';
-import upperFirst from 'lodash/upperFirst';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
@@ -108,7 +107,7 @@ export default class ModuleLoader<Tm> {
     if (instanceOf(importedModule, this.contract)) {
       throw new TypeError(
         this.tool.msg('errors:moduleClassInstanceExported', {
-          appName: upperFirst(appName),
+          appName,
           moduleName,
           typeName,
         }),
@@ -124,7 +123,7 @@ export default class ModuleLoader<Tm> {
       throw new TypeError(
         this.tool.msg('errors:moduleExportInvalid', {
           moduleName,
-          typeName: upperFirst(typeName),
+          typeName,
         }),
       );
     }

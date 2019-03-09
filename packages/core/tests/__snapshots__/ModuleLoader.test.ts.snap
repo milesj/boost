@@ -10,9 +10,9 @@ exports[`ModuleLoader importModule() errors if a non-function is exported 1`] = 
 
 exports[`ModuleLoader importModule() errors if a non-plugin instance is exported 1`] = `"Invalid plugin class definition exported from \\"test-boost-plugin-nonplugin\\"."`;
 
-exports[`ModuleLoader importModule() errors if a non-plugin is exported 1`] = `"Plugin exported from \\"test-boost-plugin-func\\" is invalid."`;
+exports[`ModuleLoader importModule() errors if a non-plugin is exported 1`] = `"The plugin exported from \\"test-boost-plugin-func\\" is invalid."`;
 
-exports[`ModuleLoader importModule() errors if a plugin instance is exported 1`] = `"A plugin class instance was exported from \\"test-boost-plugin-instance\\". Test-boost requires a plugin class definition to be exported."`;
+exports[`ModuleLoader importModule() errors if a plugin instance is exported 1`] = `"A plugin class instance was exported from \\"test-boost-plugin-instance\\" but test-boost requires a plugin class definition to be exported."`;
 
 exports[`ModuleLoader importModuleFromOptions() errors if key doesnt exist 1`] = `"A \\"plugin\\" property must exist when loading through an options object."`;
 

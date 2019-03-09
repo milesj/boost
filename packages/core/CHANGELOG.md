@@ -1,3 +1,13 @@
+# 1.9.2 - 2019-03-08
+
+#### 🐞 Fixed
+
+- Fixed some invalid validation patterns.
+
+#### 🛠 Internal
+
+- Updated dependencies.
+
 # 1.9.1 - 2019-02-22
 
 #### 🛠 Internal

@@ -1,4 +1,4 @@
-import { APP_NAME_PATTERN } from './constants';
+import { EVENT_NAME_PATTERN } from './constants';
 
 export type EventArguments = any[];
 
@@ -52,7 +52,7 @@ export default class Emitter {
    * Return a set of listeners for a specific event name.
    */
   getListeners(eventName: string): Set<EventListener> {
-    if (!eventName.match(APP_NAME_PATTERN)) {
+    if (!eventName.match(EVENT_NAME_PATTERN)) {
       throw new Error(
         `Invalid event name "${eventName}". ` +
           'May only contain dashes, periods, and lowercase characters.',

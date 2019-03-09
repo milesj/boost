@@ -1,6 +1,7 @@
 import { Status } from './types';
 
-export const APP_NAME_PATTERN: RegExp = /^[-a-z.]+$/u;
+export const APP_NAME_PATTERN: RegExp = /^[a-z][-a-z0-9]+[a-z]$/u;
+export const EVENT_NAME_PATTERN: RegExp = /^[-a-z.]+$/u;
 export const MODULE_NAME_PATTERN: RegExp = /^(@[-a-z]+\/)?[-a-z]+$/u;
 export const PLUGIN_NAME_PATTERN: RegExp = /^([a-z]+):[-a-z]+$/u;
 
