@@ -27,7 +27,7 @@ import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
 import instanceOf from './helpers/instanceOf';
-import { APP_NAME_PATTERN } from './constants';
+import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
   Constructor,
   Debugger,
@@ -44,15 +44,15 @@ import {
 export interface ToolOptions {
   appName: string;
   appPath: string;
-  argOptions: ArgOptions;
-  configBlueprint: Blueprint<any>;
-  configName: string;
-  footer: string;
-  header: string;
-  root: string;
-  scoped: boolean;
-  settingsBlueprint: Blueprint<any>;
-  workspaceRoot: string;
+  argOptions?: ArgOptions;
+  configBlueprint?: Blueprint<any>;
+  configName?: string;
+  footer?: string;
+  header?: string;
+  root?: string;
+  scoped?: boolean;
+  settingsBlueprint?: Blueprint<any>;
+  workspaceRoot?: string;
 }
 
 export interface ToolConfig {
@@ -85,7 +85,7 @@ export default class Tool<
 
   debug: Debugger;
 
-  options: ToolOptions;
+  options: Required<ToolOptions>;
 
   package: PackageConfig = { name: '', version: '0.0.0' };
 
@@ -99,7 +99,7 @@ export default class Tool<
 
   private translator: Translator | null = null;
 
-  constructor(options: Partial<ToolOptions>, argv: string[] = []) {
+  constructor(options: ToolOptions, argv: string[] = []) {
     super();
 
     this.argv = argv;
@@ -115,7 +115,11 @@ export default class Tool<
           .notEmpty(),
         argOptions: object(),
         configBlueprint: object(),
-        configName: string(),
+        configName: string().custom(value => {
+          if (value && !value.match(CONFIG_NAME_PATTERN)) {
+            throw new Error('Config file name must be camel case without extension.');
+          }
+        }),
         footer: string(),
         header: string(),
         root: string(process.cwd()),

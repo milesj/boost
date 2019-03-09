@@ -6,6 +6,7 @@
 
 #### 🛠 Internal
 
+- Improved `ToolOptions` type.
 - Updated dependencies.
 
 # 1.9.1 - 2019-02-22

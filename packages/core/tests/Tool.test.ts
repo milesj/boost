@@ -80,6 +80,61 @@ describe('Tool', () => {
         name: string(),
       });
     });
+
+    it('errors if `appName` is not kebab case', () => {
+      expect(
+        () =>
+          new Tool({
+            appName: 'should be-kebab-case',
+            appPath: '.',
+          }),
+      ).toThrowErrorMatchingSnapshot();
+
+      expect(
+        () =>
+          new Tool({
+            appName: 'almost-Kebab',
+            appPath: '.',
+          }),
+      ).toThrowErrorMatchingSnapshot();
+
+      expect(
+        () =>
+          new Tool({
+            appName: 'is-kebab',
+            appPath: '.',
+          }),
+      ).not.toThrowError();
+    });
+
+    it('errors if `configName` is not camel case', () => {
+      expect(
+        () =>
+          new Tool({
+            configName: 'oh no not camel',
+            appName: 'test',
+            appPath: '.',
+          }),
+      ).toThrowErrorMatchingSnapshot();
+
+      expect(
+        () =>
+          new Tool({
+            configName: 'AlmostCamel',
+            appName: 'test',
+            appPath: '.',
+          }),
+      ).toThrowErrorMatchingSnapshot();
+
+      expect(
+        () =>
+          new Tool({
+            configName: 'isCamel',
+            appName: 'test',
+            appPath: '.',
+          }),
+      ).not.toThrowError();
+    });
   });
 
   describe('addPlugin()', () => {

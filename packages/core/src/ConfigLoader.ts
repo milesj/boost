@@ -196,7 +196,7 @@ export default class ConfigLoader {
   getConfigName(): string {
     const { configName, appName } = this.tool.options;
 
-    return camelCase(configName || appName);
+    return configName || camelCase(appName);
   }
 
   /**
