@@ -195,4 +195,41 @@ describe('Context', () => {
       expect(Array.from(ctx.set.keys())).toEqual(['foo', 'bar', 'baz']);
     });
   });
+
+  describe('classes', () => {
+    class Test {
+      name: string;
+
+      flag: boolean = false;
+
+      constructor(name: string) {
+        this.name = name;
+      }
+    }
+
+    class ClassContext extends Context {
+      instance: Test;
+
+      constructor(instance: Test) {
+        super();
+
+        this.instance = instance;
+      }
+    }
+
+    it('doesnt spread and persists references', () => {
+      const inst = new Test('foo');
+      const ctx = new ClassContext(inst);
+      const clone = ctx.clone();
+
+      expect(clone).toEqual(ctx);
+      expect(clone).not.toBe(ctx);
+      expect(clone.instance).toBe(ctx.instance);
+      expect(clone.instance).toBe(inst);
+
+      clone.instance.flag = true;
+
+      expect(ctx.instance.flag).toBe(true);
+    });
+  });
 });

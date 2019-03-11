@@ -1,3 +1,9 @@
+# 1.9.3
+
+#### 🐞 Fixes
+
+- Fixed in issue where `Context#clone` was destroying class instances.
+
 # 1.9.2 - 2019-03-08
 
 #### 🐞 Fixed
