@@ -8,8 +8,8 @@ import Tool from './Tool';
 import { Debugger } from './types';
 import Output from './Output';
 
-// 16 FPS (60 FPS is actually too fast as it tears)
-export const FPS_RATE = 62.5;
+// 8 FPS (60 FPS is actually too fast as it tears)
+export const FPS_RATE = 125;
 
 // Bind our writable streams for easy access
 export const BOUND_WRITERS = {
@@ -377,7 +377,7 @@ export default class Console extends Emitter {
   }
 
   /**
-   * Automatically render the console in a timeout loop at 16 FPS.
+   * Automatically render the console in a timeout loop at 8 FPS.
    */
   startRenderLoop() {
     if (this.isSilent() || this.isDisabled() || this.renderTimer) {

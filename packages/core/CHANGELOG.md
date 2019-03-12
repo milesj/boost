@@ -1,8 +1,12 @@
-# 1.9.3
+# 1.9.3 - 2019-03-11
 
 #### 🐞 Fixes
 
 - Fixed in issue where `Context#clone` was destroying class instances.
+
+#### 🛠 Internal
+
+- Reduced console FPS from 16 to 8.
 
 # 1.9.2 - 2019-03-08
 

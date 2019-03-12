@@ -569,7 +569,7 @@ describe('Console', () => {
       // @ts-ignore Allow access
       expect(cli.renderTimer).not.toBeNull();
 
-      jest.advanceTimersByTime(100);
+      jest.advanceTimersByTime(200);
 
       expect(spy).toHaveBeenCalledWith();
 
