@@ -2,6 +2,7 @@ import exit from 'exit';
 import { mockTool } from '@boost/test-utils';
 import Console, { WRAPPED_STREAMS } from '../src/Console';
 import Output from '../src/Output';
+import { SignalError } from '../src';
 
 jest.mock('exit');
 
@@ -258,13 +259,15 @@ describe('Console', () => {
   describe('handleSignal()', () => {
     it('calls exit with error', () => {
       cli.stop = jest.fn();
-      cli.handleSignal();
+      cli.handleSignal('SIGINT');
 
-      expect(cli.stop).toHaveBeenCalledWith(new Error('Process has been terminated.'));
+      expect(cli.stop).toHaveBeenCalledWith(
+        new SignalError('Process has been terminated.', 'SIGINT'),
+      );
     });
 
     it('exits with a code of 2', () => {
-      cli.handleSignal();
+      cli.handleSignal('SIGTERM');
 
       expect(exit).toHaveBeenCalledWith(2);
     });

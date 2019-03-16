@@ -9,6 +9,7 @@ import Console from './Console';
 import Context from './Context';
 import Emitter, { EventArguments, EventListener } from './Emitter';
 import ExitError from './ExitError';
+import SignalError from './SignalError';
 import { AggregatedResponse } from './Executor';
 import ModuleLoader from './ModuleLoader';
 import Output from './Output';
@@ -37,6 +38,7 @@ export {
   Plugin,
   Reporter,
   Routine,
+  SignalError,
   Task,
   TaskAction,
   TaskMetadata,

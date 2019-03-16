@@ -5,8 +5,9 @@ import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import Emitter from './Emitter';
 import Tool from './Tool';
-import { Debugger } from './types';
 import Output from './Output';
+import SignalError from './SignalError';
+import { Debugger } from './types';
 
 // 8 FPS (60 FPS is actually too fast as it tears)
 export const FPS_RATE = 125;
@@ -180,10 +181,10 @@ export default class Console extends Emitter {
   /**
    * Handle SIGINT and SIGTERM interruptions.
    */
-  handleSignal = () => {
+  handleSignal = (signal: NodeJS.Signals) => {
     this.start();
     this.debug('SIGINT or SIGTERM handled');
-    this.stop(new Error(this.tool.msg('errors:processTerminated')));
+    this.stop(new SignalError(this.tool.msg('errors:processTerminated'), signal));
 
     exit(2);
   };
