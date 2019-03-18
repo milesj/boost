@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Emitter, { EventListener, EventRegistry } from '@boost/emitter';
+import Emitter from '@boost/emitter';
 import CLI from './CLI';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
@@ -28,8 +28,6 @@ export {
   Console,
   Context,
   Emitter,
-  EventListener,
-  EventRegistry,
   ExitError,
   ModuleLoader,
   Output,

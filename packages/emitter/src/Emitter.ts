@@ -1,8 +1,8 @@
 import { EVENT_NAME_PATTERN } from './constants';
-import { ListenerOf, ArgumentsOf, WaterfallArgumentOf } from './types';
+import { ListenerType, Arguments, WaterfallArgument } from './types';
 
 export default class Emitter<T> {
-  listeners: { [K in keyof T]?: Set<ListenerOf<T[K]>> } = {};
+  listeners: { [K in keyof T]?: Set<ListenerType<T[K]>> } = {};
 
   /**
    * Remove all listeners for the defined event name.
@@ -16,7 +16,7 @@ export default class Emitter<T> {
   /**
    * Synchronously execute listeners for the defined event and arguments.
    */
-  emit<K extends keyof T>(eventName: K, args: ArgumentsOf<T[K]>): this {
+  emit<K extends keyof T>(eventName: K, args: Arguments<T[K]>): this {
     Array.from(this.getListeners(eventName)).forEach(listener => {
       listener(...args);
     });
@@ -28,7 +28,7 @@ export default class Emitter<T> {
    * Synchronously execute listeners for the defined event and arguments.
    * If a listener returns `false`, the loop with be aborted early.
    */
-  emitBail<K extends keyof T>(eventName: K, args: ArgumentsOf<T[K]>): this {
+  emitBail<K extends keyof T>(eventName: K, args: Arguments<T[K]>): this {
     Array.from(this.getListeners(eventName)).some(listener => listener(...args) === false);
 
     return this;
@@ -38,7 +38,7 @@ export default class Emitter<T> {
    * Asynchronously execute listeners for the defined event and arguments.
    * Will return a promise with an array of each listener result.
    */
-  emitParallel<K extends keyof T>(eventName: K, args: ArgumentsOf<T[K]>): Promise<any[]> {
+  emitParallel<K extends keyof T>(eventName: K, args: Arguments<T[K]>): Promise<any[]> {
     return Promise.all(
       Array.from(this.getListeners(eventName)).map(listener => Promise.resolve(listener(...args))),
     );
@@ -50,8 +50,8 @@ export default class Emitter<T> {
    */
   emitWaterfall<K extends keyof T>(
     eventName: K,
-    value: WaterfallArgumentOf<T[K]>,
-  ): WaterfallArgumentOf<T[K]> {
+    value: WaterfallArgument<T[K]>,
+  ): WaterfallArgument<T[K]> {
     return Array.from(this.getListeners(eventName)).reduce(
       (nextValue, listener) => listener(nextValue),
       value,
@@ -73,7 +73,7 @@ export default class Emitter<T> {
   /**
    * Return a set of listeners for a specific event name.
    */
-  getListeners<K extends keyof T>(eventName: K): Set<ListenerOf<T[K]>> {
+  getListeners<K extends keyof T>(eventName: K): Set<ListenerType<T[K]>> {
     const key = String(eventName);
 
     if (!key.match(EVENT_NAME_PATTERN)) {
@@ -97,7 +97,7 @@ export default class Emitter<T> {
   /**
    * Remove a listener from a specific event name.
    */
-  off<K extends keyof T>(eventName: K, listener: ListenerOf<T[K]>): this {
+  off<K extends keyof T>(eventName: K, listener: ListenerType<T[K]>): this {
     this.getListeners(eventName).delete(listener);
 
     return this;
@@ -106,7 +106,7 @@ export default class Emitter<T> {
   /**
    * Register a listener to a specific event name.
    */
-  on<K extends keyof T>(eventName: K, listener: ListenerOf<T[K]>): this {
+  on<K extends keyof T>(eventName: K, listener: ListenerType<T[K]>): this {
     this.getListeners(eventName).add(this.validateListener(eventName, listener));
 
     return this;
@@ -115,9 +115,9 @@ export default class Emitter<T> {
   /**
    * Register a listener to a specific event name that only triggers once.
    */
-  once<K extends keyof T>(eventName: K, listener: ListenerOf<T[K]>): this {
+  once<K extends keyof T>(eventName: K, listener: ListenerType<T[K]>): this {
     const func = this.validateListener(eventName, listener);
-    const handler: any = (...args: ArgumentsOf<T[K]>) => {
+    const handler: any = (...args: Arguments<T[K]>) => {
       this.off(eventName, handler);
 
       return func(...args);

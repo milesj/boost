@@ -1,13 +1,13 @@
 // prettier-ignore
-export type ArgumentsOf<T> =
+export type Arguments<T> =
   T extends (...args: infer A) => any ? A :
   T extends any[] ? T :
   never;
 
-export type WaterfallArgumentOf<T> = T extends (value: infer A) => any ? A : T;
+export type WaterfallArgument<T> = T extends (value: infer A) => any ? A : T;
 
 // prettier-ignore
-export type ListenerOf<T> =
+export type ListenerType<T> =
   T extends (...args: any[]) => boolean | any ? T :
   T extends any[] ? (...args: T) => boolean | void :
   never;
