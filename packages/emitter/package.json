@@ -1,7 +1,7 @@
 {
   "name": "@boost/emitter",
   "version": "0.0.0",
-  "description": "",
+  "description": "A type-safe event emitter. Designed for Boost applications.",
   "keywords": [],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

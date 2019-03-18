@@ -96,4 +96,21 @@ export default class Emitter<T> {
 
     return this;
   }
+
+  /**
+   * Register a listener to a specific event name that only triggers once.
+   */
+  once<K extends keyof T>(eventName: K, listener: ListenerOf<T[K]>): this {
+    if (typeof listener !== 'function') {
+      throw new TypeError(`Invalid event listener for "${eventName}", must be a function.`);
+    }
+
+    const handler: any = (...args: ArgumentsOf<T[K]>) => {
+      this.off(eventName, handler);
+
+      return listener(...args);
+    };
+
+    return this.on(eventName, handler);
+  }
 }

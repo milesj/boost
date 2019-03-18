@@ -6,6 +6,6 @@ export type ArgumentsOf<T> =
 
 // prettier-ignore
 export type ListenerOf<T> =
-  T extends (...args: any[]) => any ? T :
-  T extends any[] ? (...args: T) => false | void :
+  T extends (...args: any[]) => boolean | any ? T :
+  T extends any[] ? (...args: T) => boolean | void :
   never;
