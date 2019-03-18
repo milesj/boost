@@ -3,7 +3,7 @@ import split from 'split';
 import { Readable } from 'stream';
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
 import Context from './Context';
-import Task, { TaskAction } from './Task';
+import Task, { TaskAction, TaskEvents } from './Task';
 import CoreTool from './Tool';
 import { AggregatedResponse } from './Executor';
 import ParallelExecutor from './executors/Parallel';
@@ -21,11 +21,17 @@ export interface CommandOptions {
   wrap?: (process: ExecaChildProcess) => void;
 }
 
+export interface RoutineEvents extends TaskEvents {
+  command: (name: string) => void;
+  'command.data': (name: string, line: string) => void;
+}
+
 export default abstract class Routine<
   Ctx extends Context,
   Tool extends CoreTool<any>,
-  Options extends object = {}
-> extends Task<Ctx> {
+  Options extends object = {},
+  Events extends RoutineEvents = RoutineEvents
+> extends Task<Ctx, Events> {
   // @ts-ignore Set after instantiation
   debug: Debugger;
 

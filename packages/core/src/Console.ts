@@ -3,11 +3,12 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
-import Emitter from './Emitter';
+import Emitter from '@boost/emitter';
 import Tool from './Tool';
 import Output from './Output';
 import SignalError from './SignalError';
 import { Debugger } from './types';
+import { Routine, Task } from '.';
 
 // 8 FPS (60 FPS is actually too fast as it tears)
 export const FPS_RATE = 125;
@@ -25,6 +26,24 @@ export const WRAPPED_STREAMS = {
 
 export type StreamType = 'stderr' | 'stdout';
 
+export interface ConsoleEvents {
+  error: (error: Error) => void;
+  routine: (routine: Routine<any, any>, value: any, parallel: boolean) => void;
+  'routine.fail': (routine: Routine<any, any>, error: Error, parallel: boolean) => void;
+  'routine.pass': (routine: Routine<any, any>, value: any, parallel: boolean) => void;
+  'routine.skip': (routine: Routine<any, any>, value: any, parallel: boolean) => void;
+  routines: (routines: Routine<any, any>[], value: any) => void;
+  'routines.parallel': (routines: Routine<any, any>[], value: any) => void;
+  start: (...args: any[]) => void;
+  stop: (error: Error) => void;
+  task: (task: Task<any>, value: any, parallel: boolean) => void;
+  'task.fail': (task: Task<any>, error: Error, parallel: boolean) => void;
+  'task.pass': (task: Task<any>, value: any, parallel: boolean) => void;
+  'task.skip': (task: Task<any>, value: any, parallel: boolean) => void;
+  tasks: (tasks: Task<any>[], value: any) => void;
+  'tasks.parallel': (tasks: Task<any>[], value: any) => void;
+}
+
 export interface ConsoleState {
   disabled: boolean;
   final: boolean;
@@ -32,7 +51,7 @@ export interface ConsoleState {
   stopped: boolean;
 }
 
-export default class Console extends Emitter {
+export default class Console extends Emitter<ConsoleEvents> {
   bufferedStreams: (() => void)[] = [];
 
   debug: Debugger;

@@ -1,5 +1,5 @@
+import Emitter from '@boost/emitter';
 import Context from './Context';
-import Emitter from './Emitter';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -15,6 +15,13 @@ export type TaskAction<Ctx extends Context> = (
   task: Task<Ctx>,
 ) => any | Promise<any>;
 
+export interface TaskEvents {
+  fail: (error: Error) => void;
+  pass: (value: any) => void;
+  run: (value: any) => void;
+  skip: (value: any) => void;
+}
+
 export interface TaskMetadata {
   depth: number;
   index: number;
@@ -22,7 +29,10 @@ export interface TaskMetadata {
   stopTime: number;
 }
 
-export default class Task<Ctx extends Context> extends Emitter {
+export default class Task<
+  Ctx extends Context,
+  Events extends TaskEvents = TaskEvents
+> extends Emitter<Events> {
   action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation

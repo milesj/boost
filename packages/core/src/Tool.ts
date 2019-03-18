@@ -12,9 +12,9 @@ import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
+import Emitter from '@boost/emitter';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
-import Emitter from './Emitter';
 import ExitError from './ExitError';
 import ModuleLoader from './ModuleLoader';
 import Plugin from './Plugin';
@@ -66,6 +66,10 @@ export interface ToolConfig {
   theme: string;
 }
 
+export interface ToolEvents {
+  exit: (code: number) => void;
+}
+
 export interface ToolPluginRegistry {
   reporter: Reporter;
 }
@@ -73,7 +77,7 @@ export interface ToolPluginRegistry {
 export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
   Config extends ToolConfig = ToolConfig
-> extends Emitter {
+> extends Emitter<ToolEvents> {
   args?: Arguments;
 
   argv: string[] = [];
