@@ -8,10 +8,27 @@ describe('Emitter', () => {
     qux: () => number;
     'ns.one': [boolean];
     'ns.two': [];
+    parallel: (value: number) => Promise<number>;
+    waterfall: (value: string) => string;
+    'waterfall.array': (value: string[]) => string[];
+    'waterfall.object': (value: { [key: string]: string }) => { [key: string]: string };
   }>;
 
   beforeEach(() => {
     emitter = new Emitter();
+  });
+
+  it('passes arguments to listeners', () => {
+    const baseArgs: [number, number, number] = [1, 2, 3];
+    let args;
+
+    emitter.on('foo', (...eventArgs) => {
+      args = eventArgs;
+    });
+
+    emitter.emit('foo', baseArgs);
+
+    expect(args).toEqual(baseArgs);
   });
 
   describe('clearListeners()', () => {
@@ -45,7 +62,7 @@ describe('Emitter', () => {
       expect(output).toBe('ABC');
     });
 
-    it('executes listeners syncronously with arguments', () => {
+    it('executes listeners synchronously with arguments', () => {
       const output: number[] = [];
 
       emitter.on('foo', (a, b) => {
@@ -62,7 +79,7 @@ describe('Emitter', () => {
       expect(output).toEqual([2, 6, 6, 12, 10, 18]);
     });
 
-    it('executes listeners syncronously while passing values to each', () => {
+    it('executes listeners synchronously while passing values to each', () => {
       let value = 'foo';
 
       emitter.on('baz', () => {
@@ -83,7 +100,7 @@ describe('Emitter', () => {
       expect(value).toBe('OOF-OOF');
     });
 
-    it('executes listeners syncronously with arguments while passing values to each', () => {
+    it('executes listeners synchronously with arguments while passing values to each', () => {
       const value: string[] = [];
 
       emitter.on('bar', a => {
@@ -101,6 +118,102 @@ describe('Emitter', () => {
       expect(value).toEqual(['foofoofoo', 'barbar', 'baz']);
     });
 
+    it('execution can be not be stopped (bailed)', () => {
+      let count = 0;
+
+      emitter.on('baz', () => {
+        count += 1;
+      });
+      emitter.on('baz', () => false);
+      emitter.on('baz', () => {
+        count += 1;
+      });
+      emitter.on('baz', () => {
+        count += 1;
+      });
+
+      emitter.emit('baz', []);
+
+      expect(count).toBe(3);
+    });
+  });
+
+  describe('emitBail()', () => {
+    it('executes listeners in order', () => {
+      let output = '';
+
+      emitter.on('foo', () => {
+        output += 'A';
+      });
+      emitter.on('foo', () => {
+        output += 'B';
+      });
+      emitter.on('foo', () => {
+        output += 'C';
+      });
+
+      emitter.emitBail('foo', [0, 0]);
+
+      expect(output).toBe('ABC');
+    });
+
+    it('executes listeners synchronously with arguments', () => {
+      const output: number[] = [];
+
+      emitter.on('foo', (a, b) => {
+        output.push(a, b * 2);
+      });
+      emitter.on('foo', (a, b) => {
+        output.push(a * 3, b * 4);
+      });
+      emitter.on('foo', (a, b) => {
+        output.push(a * 5, b * 6);
+      });
+
+      emitter.emitBail('foo', [2, 3]);
+
+      expect(output).toEqual([2, 6, 6, 12, 10, 18]);
+    });
+
+    it('executes listeners synchronously while passing values to each', () => {
+      let value = 'foo';
+
+      emitter.on('baz', () => {
+        value = value.toUpperCase();
+      });
+      emitter.on('baz', () => {
+        value = value
+          .split('')
+          .reverse()
+          .join('');
+      });
+      emitter.on('baz', () => {
+        value = `${value}-${value}`;
+      });
+
+      emitter.emitBail('baz', []);
+
+      expect(value).toBe('OOF-OOF');
+    });
+
+    it('executes listeners synchronously with arguments while passing values to each', () => {
+      const value: string[] = [];
+
+      emitter.on('bar', a => {
+        value.push(a.repeat(3));
+      });
+      emitter.on('bar', (a, b) => {
+        value.push(b.repeat(2));
+      });
+      emitter.on('bar', (a, b, c) => {
+        value.push(c.repeat(1));
+      });
+
+      emitter.emitBail('bar', ['foo', 'bar', 'baz']);
+
+      expect(value).toEqual(['foofoofoo', 'barbar', 'baz']);
+    });
+
     it('execution can be stopped', () => {
       let count = 0;
 
@@ -111,57 +224,103 @@ describe('Emitter', () => {
       emitter.on('baz', () => {
         count += 1;
       });
-      emitter.emit('baz', []);
+      emitter.on('baz', () => {
+        count += 1;
+      });
+
+      emitter.emitBail('baz', []);
 
       expect(count).toBe(1);
     });
+  });
 
-    it('passes arguments to listeners', () => {
-      const baseArgs: [number, number, number] = [1, 2, 3];
-      let args;
-
-      emitter.on('foo', (...eventArgs) => {
-        args = eventArgs;
-      });
-      emitter.emit('foo', baseArgs);
-
-      expect(args).toEqual(baseArgs);
+  describe('emitParallel()', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
     });
 
-    it('passes value by modifying event object', () => {
-      let value = 0;
-
-      emitter.on('baz', () => {
-        value += 1;
-      });
-      emitter.on('baz', () => {
-        value += 1;
-      });
-      emitter.on('baz', () => {
-        value += 1;
-      });
-
-      emitter.emit('baz', []);
-
-      expect(value).toBe(3);
+    afterEach(() => {
+      jest.useFakeTimers();
     });
 
-    describe('with namespace', () => {
-      it('executes listeners in order', () => {
-        let output = '';
+    it('returns a promise', () => {
+      expect(emitter.emitParallel('parallel', [0])).toBeInstanceOf(Promise);
+    });
 
-        emitter.on('ns.one', () => {
-          output += 'A';
-        });
-        emitter.on('ns.one', () => {
-          output += 'B';
-        });
-        emitter.on('ns.one', () => {
-          output += 'C';
-        });
-        emitter.emit('ns.one', [true]);
+    it('executes listeners asynchronously with arguments', async () => {
+      const output: number[] = [];
 
-        expect(output).toBe('ABC');
+      function getRandom() {
+        return Math.round(Math.random() * (500 - 0) + 0);
+      }
+
+      emitter.on(
+        'parallel',
+        value =>
+          new Promise<number>(resolve => {
+            setTimeout(() => {
+              resolve(value * 2);
+            }, getRandom());
+          }),
+      );
+      emitter.on(
+        'parallel',
+        value =>
+          new Promise<number>(resolve => {
+            setTimeout(() => {
+              resolve(value * 3);
+            }, getRandom());
+          }),
+      );
+      emitter.on(
+        'parallel',
+        value =>
+          new Promise<number>(resolve => {
+            setTimeout(() => {
+              resolve(value * 4);
+            }, getRandom());
+          }),
+      );
+
+      await emitter.emitParallel('parallel', [1]);
+
+      expect(output).not.toEqual([2, 3, 4]);
+    });
+  });
+
+  describe('emitWaterfall()', () => {
+    it('executes listeners in order with the value being passed to each function', () => {
+      emitter.on('waterfall', value => `${value}B`);
+      emitter.on('waterfall', value => `${value}C`);
+      emitter.on('waterfall', value => `${value}D`);
+
+      const output = emitter.emitWaterfall('waterfall', 'A');
+
+      expect(output).toBe('ABCD');
+    });
+
+    it('supports arrays', () => {
+      emitter.on('waterfall.array', value => [...value, 'B']);
+      emitter.on('waterfall.array', value => [...value, 'C']);
+      emitter.on('waterfall.array', value => [...value, 'D']);
+
+      const output = emitter.emitWaterfall('waterfall.array', ['A']);
+
+      expect(output).toEqual(['A', 'B', 'C', 'D']);
+    });
+
+    it('supports objects', () => {
+      emitter.on('waterfall.object', value => ({ ...value, B: 'B' }));
+      emitter.on('waterfall.object', value => ({ ...value, C: 'C' }));
+      emitter.on('waterfall.object', value => ({ ...value, D: 'D' }));
+
+      const output = emitter.emitWaterfall('waterfall.object', { A: 'A' });
+
+      expect(output).toEqual({
+        A: 'A',
+        B: 'B',
+        C: 'C',
+        D: 'D',
       });
     });
   });

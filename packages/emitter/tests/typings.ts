@@ -6,6 +6,10 @@ const emitter = new Emitter<{
   'no.args': [];
   'no.args.func': () => void;
   'custom.return': (num: number) => number;
+  waterfall: (value: string) => string;
+
+  // INVALID
+  'must.be.array': number;
 }>();
 
 // VALID
@@ -32,9 +36,7 @@ emitter.on('unknown.name', () => {});
 emitter.on('args', (num, bool, str, other) => {});
 
 // Return not boolean or void
-emitter.on('no.args', () => {
-  return {};
-});
+emitter.on('no.args', () => ({}));
 
 // Return not number
 emitter.on('custom.return', () => {});
@@ -47,3 +49,9 @@ emitter.emit('args.func', [123, {}, 'abc']);
 
 // Extra arg
 emitter.emit('no.args', ['abc']);
+
+// Args must be an array
+emitter.once('must.be.array', 123);
+
+// Args must be a string
+emitter.once('waterfall', (value: number) => value);

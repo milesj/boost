@@ -1,5 +1,5 @@
 import { EVENT_NAME_PATTERN } from './constants';
-import { ListenerOf, ArgumentsOf } from './types';
+import { ListenerOf, ArgumentsOf, WaterfallArgumentOf } from './types';
 
 export default class Emitter<T> {
   listeners: { [K in keyof T]?: Set<ListenerOf<T[K]>> } = {};
@@ -15,29 +15,48 @@ export default class Emitter<T> {
 
   /**
    * Synchronously execute listeners for the defined event and arguments.
-   * If a listener returns `false`, the loop with be aborted early.
    */
   emit<K extends keyof T>(eventName: K, args: ArgumentsOf<T[K]>): this {
+    Array.from(this.getListeners(eventName)).forEach(listener => {
+      listener(...args);
+    });
+
+    return this;
+  }
+
+  /**
+   * Synchronously execute listeners for the defined event and arguments.
+   * If a listener returns `false`, the loop with be aborted early.
+   */
+  emitBail<K extends keyof T>(eventName: K, args: ArgumentsOf<T[K]>): this {
     Array.from(this.getListeners(eventName)).some(listener => listener(...args) === false);
 
     return this;
   }
 
   /**
-   * Synchronously execute listeners for the defined event and arguments,
-   * with the ability to intercept and abort early with a value.
+   * Asynchronously execute listeners for the defined event and arguments.
+   * Will return a promise with an array of each listener result.
    */
-  // emitCascade<T>(name: string, args: EventArguments = []): T | void {
-  //   let value;
+  emitParallel<K extends keyof T>(eventName: K, args: ArgumentsOf<T[K]>): Promise<any[]> {
+    return Promise.all(
+      Array.from(this.getListeners(eventName)).map(listener => Promise.resolve(listener(...args))),
+    );
+  }
 
-  //   Array.from(this.getListeners(this.createEventName(name))).some(listener => {
-  //     value = listener(...args);
-
-  //     return typeof value !== 'undefined';
-  //   });
-
-  //   return value;
-  // }
+  /**
+   * Synchronously execute listeners for the defined event and value.
+   * The return value of each listener will be passed as an argument to the next listener.
+   */
+  emitWaterfall<K extends keyof T>(
+    eventName: K,
+    value: WaterfallArgumentOf<T[K]>,
+  ): WaterfallArgumentOf<T[K]> {
+    return Array.from(this.getListeners(eventName)).reduce(
+      (nextValue, listener) => listener(nextValue),
+      value,
+    );
+  }
 
   /**
    * Return all event names with registered listeners.
@@ -88,11 +107,7 @@ export default class Emitter<T> {
    * Register a listener to a specific event name.
    */
   on<K extends keyof T>(eventName: K, listener: ListenerOf<T[K]>): this {
-    if (typeof listener !== 'function') {
-      throw new TypeError(`Invalid event listener for "${eventName}", must be a function.`);
-    }
-
-    this.getListeners(eventName).add(listener);
+    this.getListeners(eventName).add(this.validateListener(eventName, listener));
 
     return this;
   }
@@ -101,16 +116,21 @@ export default class Emitter<T> {
    * Register a listener to a specific event name that only triggers once.
    */
   once<K extends keyof T>(eventName: K, listener: ListenerOf<T[K]>): this {
+    const func = this.validateListener(eventName, listener);
+    const handler: any = (...args: ArgumentsOf<T[K]>) => {
+      this.off(eventName, handler);
+
+      return func(...args);
+    };
+
+    return this.on(eventName, handler);
+  }
+
+  protected validateListener<K extends keyof T, L>(eventName: K, listener: L): L {
     if (typeof listener !== 'function') {
       throw new TypeError(`Invalid event listener for "${eventName}", must be a function.`);
     }
 
-    const handler: any = (...args: ArgumentsOf<T[K]>) => {
-      this.off(eventName, handler);
-
-      return listener(...args);
-    };
-
-    return this.on(eventName, handler);
+    return listener;
   }
 }
