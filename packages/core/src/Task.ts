@@ -29,7 +29,10 @@ export interface TaskMetadata {
   stopTime: number;
 }
 
-export default class Task<Ctx extends Context, Events extends TaskEvents> extends Emitter<Events> {
+export default class Task<
+  Ctx extends Context,
+  Events extends TaskEvents = TaskEvents
+> extends Emitter<Events> {
   action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation
