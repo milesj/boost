@@ -22,8 +22,8 @@ export interface CommandOptions {
 }
 
 export interface RoutineEvents extends TaskEvents {
-  command: (name: string) => void;
-  'command.data': (name: string, line: string) => void;
+  command: [string];
+  'command.data': [string, string];
 }
 
 export default abstract class Routine<

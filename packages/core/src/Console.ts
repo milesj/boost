@@ -27,21 +27,23 @@ export const WRAPPED_STREAMS = {
 export type StreamType = 'stderr' | 'stdout';
 
 export interface ConsoleEvents {
-  error: (error: Error) => void;
-  routine: (routine: Routine<any, any>, value: any, parallel: boolean) => void;
-  'routine.fail': (routine: Routine<any, any>, error: Error, parallel: boolean) => void;
-  'routine.pass': (routine: Routine<any, any>, value: any, parallel: boolean) => void;
-  'routine.skip': (routine: Routine<any, any>, value: any, parallel: boolean) => void;
-  routines: (routines: Routine<any, any>[], value: any) => void;
-  'routines.parallel': (routines: Routine<any, any>[], value: any) => void;
-  start: (...args: any[]) => void;
-  stop: (error: Error) => void;
-  task: (task: Task<any>, value: any, parallel: boolean) => void;
-  'task.fail': (task: Task<any>, error: Error, parallel: boolean) => void;
-  'task.pass': (task: Task<any>, value: any, parallel: boolean) => void;
-  'task.skip': (task: Task<any>, value: any, parallel: boolean) => void;
-  tasks: (tasks: Task<any>[], value: any) => void;
-  'tasks.parallel': (tasks: Task<any>[], value: any) => void;
+  command: [string, Routine<any, any>];
+  'command.data': [string, string, Routine<any, any>];
+  error: [Error];
+  routine: [Routine<any, any>, any, boolean];
+  'routine.fail': [Routine<any, any>, Error, boolean];
+  'routine.pass': [Routine<any, any>, any, boolean];
+  'routine.skip': [Routine<any, any>, any, boolean];
+  routines: [Routine<any, any>[], any];
+  'routines.parallel': [Routine<any, any>[], any];
+  start: any[];
+  stop: [Error | null];
+  task: [Task<any>, any, boolean];
+  'task.fail': [Task<any>, Error, boolean];
+  'task.pass': [Task<any>, any, boolean];
+  'task.skip': [Task<any>, any, boolean];
+  tasks: [Task<any>[], any];
+  'tasks.parallel': [Task<any>[], any];
 }
 
 export interface ConsoleState {

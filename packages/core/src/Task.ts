@@ -16,10 +16,10 @@ export type TaskAction<Ctx extends Context> = (
 ) => any | Promise<any>;
 
 export interface TaskEvents {
-  fail: (error: Error) => void;
-  pass: (value: any) => void;
-  run: (value: any) => void;
-  skip: (value: any) => void;
+  fail: [Error];
+  pass: [any];
+  run: [any];
+  skip: [any];
 }
 
 export interface TaskMetadata {
@@ -29,10 +29,7 @@ export interface TaskMetadata {
   stopTime: number;
 }
 
-export default class Task<
-  Ctx extends Context,
-  Events extends TaskEvents = TaskEvents
-> extends Emitter<Events> {
+export default class Task<Ctx extends Context, Events extends TaskEvents> extends Emitter<Events> {
   action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation
@@ -49,7 +46,7 @@ export default class Task<
 
   output: string = '';
 
-  parent: Task<Ctx> | null = null;
+  parent: Task<Ctx, Events> | null = null;
 
   status: Status = STATUS_PENDING;
 

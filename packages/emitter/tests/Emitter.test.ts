@@ -22,7 +22,7 @@ describe('Emitter', () => {
     const baseArgs: [number, number, number] = [1, 2, 3];
     let args;
 
-    emitter.on('foo', (...eventArgs) => {
+    emitter.on('foo', (...eventArgs: any[]) => {
       args = eventArgs;
     });
 
@@ -65,13 +65,13 @@ describe('Emitter', () => {
     it('executes listeners synchronously with arguments', () => {
       const output: number[] = [];
 
-      emitter.on('foo', (a, b) => {
+      emitter.on('foo', (a: number, b: number) => {
         output.push(a, b * 2);
       });
-      emitter.on('foo', (a, b) => {
+      emitter.on('foo', (a: number, b: number) => {
         output.push(a * 3, b * 4);
       });
-      emitter.on('foo', (a, b) => {
+      emitter.on('foo', (a: number, b: number) => {
         output.push(a * 5, b * 6);
       });
       emitter.emit('foo', [2, 3]);
@@ -103,13 +103,13 @@ describe('Emitter', () => {
     it('executes listeners synchronously with arguments while passing values to each', () => {
       const value: string[] = [];
 
-      emitter.on('bar', a => {
+      emitter.on('bar', (a: string) => {
         value.push(a.repeat(3));
       });
-      emitter.on('bar', (a, b) => {
+      emitter.on('bar', (a: string, b: string) => {
         value.push(b.repeat(2));
       });
-      emitter.on('bar', (a, b, c) => {
+      emitter.on('bar', (a: string, b: string, c: string) => {
         value.push(c.repeat(1));
       });
 
@@ -160,13 +160,13 @@ describe('Emitter', () => {
     it('executes listeners synchronously with arguments', () => {
       const output: number[] = [];
 
-      emitter.on('foo', (a, b) => {
+      emitter.on('foo', (a: number, b: number) => {
         output.push(a, b * 2);
       });
-      emitter.on('foo', (a, b) => {
+      emitter.on('foo', (a: number, b: number) => {
         output.push(a * 3, b * 4);
       });
-      emitter.on('foo', (a, b) => {
+      emitter.on('foo', (a: number, b: number) => {
         output.push(a * 5, b * 6);
       });
 
@@ -199,13 +199,13 @@ describe('Emitter', () => {
     it('executes listeners synchronously with arguments while passing values to each', () => {
       const value: string[] = [];
 
-      emitter.on('bar', a => {
+      emitter.on('bar', (a: string) => {
         value.push(a.repeat(3));
       });
-      emitter.on('bar', (a, b) => {
+      emitter.on('bar', (a: string, b: string) => {
         value.push(b.repeat(2));
       });
-      emitter.on('bar', (a, b, c) => {
+      emitter.on('bar', (a: string, b: string, c: string) => {
         value.push(c.repeat(1));
       });
 
@@ -256,7 +256,7 @@ describe('Emitter', () => {
 
       emitter.on(
         'parallel',
-        value =>
+        (value: number) =>
           new Promise<number>(resolve => {
             setTimeout(() => {
               resolve(value * 2);
@@ -265,7 +265,7 @@ describe('Emitter', () => {
       );
       emitter.on(
         'parallel',
-        value =>
+        (value: number) =>
           new Promise<number>(resolve => {
             setTimeout(() => {
               resolve(value * 3);
@@ -274,7 +274,7 @@ describe('Emitter', () => {
       );
       emitter.on(
         'parallel',
-        value =>
+        (value: number) =>
           new Promise<number>(resolve => {
             setTimeout(() => {
               resolve(value * 4);
@@ -290,9 +290,9 @@ describe('Emitter', () => {
 
   describe('emitWaterfall()', () => {
     it('executes listeners in order with the value being passed to each function', () => {
-      emitter.on('waterfall', value => `${value}B`);
-      emitter.on('waterfall', value => `${value}C`);
-      emitter.on('waterfall', value => `${value}D`);
+      emitter.on('waterfall', (value: string) => `${value}B`);
+      emitter.on('waterfall', (value: string) => `${value}C`);
+      emitter.on('waterfall', (value: string) => `${value}D`);
 
       const output = emitter.emitWaterfall('waterfall', 'A');
 
@@ -300,9 +300,9 @@ describe('Emitter', () => {
     });
 
     it('supports arrays', () => {
-      emitter.on('waterfall.array', value => [...value, 'B']);
-      emitter.on('waterfall.array', value => [...value, 'C']);
-      emitter.on('waterfall.array', value => [...value, 'D']);
+      emitter.on('waterfall.array', (value: string[]) => [...value, 'B']);
+      emitter.on('waterfall.array', (value: string[]) => [...value, 'C']);
+      emitter.on('waterfall.array', (value: string[]) => [...value, 'D']);
 
       const output = emitter.emitWaterfall('waterfall.array', ['A']);
 
@@ -310,9 +310,9 @@ describe('Emitter', () => {
     });
 
     it('supports objects', () => {
-      emitter.on('waterfall.object', value => ({ ...value, B: 'B' }));
-      emitter.on('waterfall.object', value => ({ ...value, C: 'C' }));
-      emitter.on('waterfall.object', value => ({ ...value, D: 'D' }));
+      emitter.on('waterfall.object', (value: { [key: string]: string }) => ({ ...value, B: 'B' }));
+      emitter.on('waterfall.object', (value: { [key: string]: string }) => ({ ...value, C: 'C' }));
+      emitter.on('waterfall.object', (value: { [key: string]: string }) => ({ ...value, D: 'D' }));
 
       const output = emitter.emitWaterfall('waterfall.object', { A: 'A' });
 

@@ -67,7 +67,7 @@ export interface ToolConfig {
 }
 
 export interface ToolEvents {
-  exit: (code: number) => void;
+  exit: [number];
 }
 
 export interface ToolPluginRegistry {

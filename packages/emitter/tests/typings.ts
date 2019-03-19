@@ -19,7 +19,7 @@ emitter.on('args', (num, bool, str) => {});
 emitter.on('args.func', (num, bool, str) => true);
 emitter.on('no.args', () => false);
 emitter.on('no.args.func', () => {});
-emitter.once('custom.return', num => num);
+emitter.once('custom.return', (num: number) => num);
 
 emitter.emit('args', [123, true]);
 emitter.emit('args.func', [123, true, 'abc']);
