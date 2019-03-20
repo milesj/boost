@@ -1,6 +1,8 @@
 import path from 'path';
+import { Arguments } from 'yargs-parser';
 import Console from './Console';
 import Context from './Context';
+import Plugin from './Plugin';
 import Routine from './Routine';
 import Task, { TaskAction } from './Task';
 import Tool, { ToolConfig, ToolOptions, ToolPluginRegistry } from './Tool';
@@ -16,7 +18,7 @@ export interface TestToolConfig extends ToolConfig {
 
 export type TestTool = Tool<TestToolPlugins, TestToolConfig>;
 
-export function stubArgs(fields: object = {}): any {
+export function stubArgs(fields: object = {}): Arguments {
   return {
     $0: '',
     _: [],
@@ -94,7 +96,7 @@ export function mockConsole(tool: Tool<any, any>): Console {
 }
 
 export class MockRoutine<Ctx extends Context> extends Routine<Ctx, TestTool> {
-  execute(context: Ctx, value: any) {
+  execute(context: Ctx, value: unknown) {
     return Promise.resolve(value);
   }
 }
@@ -103,7 +105,7 @@ export function mockRoutine<Ctx extends Context>(
   tool: Tool<any, any>,
   key: string = 'key',
   title: string = 'Title',
-): any {
+): Routine<Ctx, TestTool> {
   const routine = new MockRoutine<Ctx>(key, title);
 
   routine.tool = tool;
@@ -114,7 +116,7 @@ export function mockRoutine<Ctx extends Context>(
 
 export function mockTask<Ctx extends Context>(
   action: TaskAction<Ctx> | null = null,
-  title: string = 'Title',
+  title: string = 'Description',
 ): Task<Ctx> {
   return new Task(title, action || jest.fn());
 }
