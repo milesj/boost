@@ -2,7 +2,7 @@
 
 import execa from 'execa';
 import { Predicates } from 'optimal';
-import { mockTool, mockRoutine, mockDebugger, stubToolConfig } from '../src/tests';
+import { mockTool, mockRoutine, mockDebugger, stubToolConfig } from '../src/testUtils';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';

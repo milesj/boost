@@ -1,4 +1,4 @@
-import { mockTool } from '../src/tests';
+import { mockTool } from '../src/testUtils';
 import CLI from '../src/CLI';
 
 describe('CLI', () => {

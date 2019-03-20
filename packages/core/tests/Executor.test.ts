@@ -1,4 +1,4 @@
-import { mockTool, mockRoutine, mockDebugger } from '../src/tests';
+import { mockTool, mockRoutine, mockDebugger } from '../src/testUtils';
 import Executor from '../src/Executor';
 import Task from '../src/Task';
 import Tool from '../src/Tool';

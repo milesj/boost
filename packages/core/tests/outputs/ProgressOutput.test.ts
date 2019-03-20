@@ -1,4 +1,4 @@
-import { mockConsole, mockTool } from '../../src/tests';
+import { mockConsole, mockTool } from '../../src/testUtils';
 import ProgressOutput from '../../src/outputs/ProgressOutput';
 import Console from '../../src/Console';
 

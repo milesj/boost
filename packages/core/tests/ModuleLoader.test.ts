@@ -1,5 +1,5 @@
 import { getFixturePath, copyFixtureToMock } from '@boost/test-utils';
-import { mockTool } from '../src/tests';
+import { mockTool } from '../src/testUtils';
 import Plugin from '../src/Plugin';
 import ModuleLoader from '../src/ModuleLoader';
 // @ts-ignore

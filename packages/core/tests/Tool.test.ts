@@ -8,7 +8,7 @@ import {
   stubPackageJson,
   stubToolConfig,
   TestToolConfig,
-} from '../src/tests';
+} from '../src/testUtils';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';

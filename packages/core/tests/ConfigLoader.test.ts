@@ -6,7 +6,7 @@ import {
   copyFixtureToNodeModule,
   createTempFileInFixture,
 } from '@boost/test-utils';
-import { mockTool, stubToolConfig, stubPackageJson } from '../src/tests';
+import { mockTool, stubToolConfig, stubPackageJson } from '../src/testUtils';
 import ConfigLoader from '../src/ConfigLoader';
 
 function createJavascriptFile(data: any): string {

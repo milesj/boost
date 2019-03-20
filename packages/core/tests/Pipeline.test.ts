@@ -1,4 +1,4 @@
-import { mockTool, mockRoutine } from '../src/tests';
+import { mockTool, mockRoutine } from '../src/testUtils';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Context from '../src/Context';

@@ -1,5 +1,5 @@
 import exit from 'exit';
-import { mockTool } from '../src/tests';
+import { mockTool } from '../src/testUtils';
 import Console, { WRAPPED_STREAMS } from '../src/Console';
 import Output from '../src/Output';
 import { SignalError } from '../src';

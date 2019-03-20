@@ -1,4 +1,4 @@
-import { mockTool, mockConsole } from '../../src/tests';
+import { mockTool, mockConsole } from '../../src/testUtils';
 import ErrorReporter from '../../src/reporters/ErrorReporter';
 
 describe('ErrorReporter', () => {
