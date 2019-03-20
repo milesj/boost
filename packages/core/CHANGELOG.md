@@ -6,6 +6,10 @@
 - When a SIGINT or SIGTERM occurs, a `SignalError` is now thrown. This can be used for easier
   failure detection.
 
+#### 🛠 Internal
+
+- Updated dependencies.
+
 # 1.9.3 - 2019-03-11
 
 #### 🐞 Fixes

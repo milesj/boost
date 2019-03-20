@@ -16,7 +16,7 @@
     "release": "lerna publish"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^0.25.7",
+    "@milesj/build-tools": "^0.33.0",
     "fs-extra": "^7.0.1",
     "lerna": "^3.13.1"
   },

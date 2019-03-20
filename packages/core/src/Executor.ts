@@ -106,11 +106,6 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
   };
 
   /**
-   * Method to execute tasks. Must be defined in sub-classes.
-   */
-  abstract async run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<any>;
-
-  /**
    * Run all routines with the defined executor.
    */
   runRoutines<T>(routines: Routine<Ctx, any>[], value?: T): Promise<any> {
@@ -127,4 +122,9 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
 
     return this.run(this.executeTask, tasks, value);
   }
+
+  /**
+   * Method to execute tasks. Must be defined in sub-classes.
+   */
+  abstract async run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<any>;
 }

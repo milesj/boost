@@ -69,6 +69,7 @@ export default class Console extends Emitter {
         .on('SIGINT', this.handleSignal)
         .on('SIGTERM', this.handleSignal)
         .on('uncaughtException', this.handleFailure)
+        // @ts-ignore
         .on('unhandledRejection', this.handleFailure);
     }
   }

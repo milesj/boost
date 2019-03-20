@@ -6,9 +6,9 @@ exports[`Tool addPlugin() errors if type does not extend defined contract 1`] = 
 
 exports[`Tool addPlugin() errors if type has not been registered 1`] = `"Plugin type \\"qux\\" could not be found. Has it been registered?"`;
 
-exports[`Tool constructor() errors if \`appName\` is not kebab case 1`] = `"Invalid Tool field \\"appName\\". String does not match pattern \\"^[a-z]{1}[\\\\x2D0-9a-z]+[a-z]{1}$\\"."`;
+exports[`Tool constructor() errors if \`appName\` is not kebab case 1`] = `"Invalid Tool field \\"appName\\". String does not match pattern \\"^[a-z]{1}[-a-z0-9]+[a-z]{1}$\\"."`;
 
-exports[`Tool constructor() errors if \`appName\` is not kebab case 2`] = `"Invalid Tool field \\"appName\\". String does not match pattern \\"^[a-z]{1}[\\\\x2D0-9a-z]+[a-z]{1}$\\"."`;
+exports[`Tool constructor() errors if \`appName\` is not kebab case 2`] = `"Invalid Tool field \\"appName\\". String does not match pattern \\"^[a-z]{1}[-a-z0-9]+[a-z]{1}$\\"."`;
 
 exports[`Tool constructor() errors if \`configName\` is not camel case 1`] = `"Invalid Tool field \\"configName\\". Config file name must be camel case without extension."`;
 
