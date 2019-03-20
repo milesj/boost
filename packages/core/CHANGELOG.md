@@ -2,6 +2,7 @@
 
 #### 🚀 New
 
+- Added `@boost/core/test-utils`, in which mocks, stubs, and test types can be utilized.
 - When a SIGINT or SIGTERM occurs, a `SignalError` is now thrown. This can be used for easier
   failure detection.
 

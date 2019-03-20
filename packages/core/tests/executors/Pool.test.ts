@@ -1,4 +1,4 @@
-import { mockTool } from '@boost/test-utils';
+import { mockTool } from '../../src/testUtils';
 import PoolExecutor from '../../src/executors/Pool';
 import Task from '../../src/Task';
 import Context from '../../src/Context';

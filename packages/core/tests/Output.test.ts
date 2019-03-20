@@ -1,5 +1,5 @@
 import ansiEscapes from 'ansi-escapes';
-import { mockConsole, mockTool } from '@boost/test-utils';
+import { mockConsole, mockTool } from '../src/testUtils';
 import Console from '../src/Console';
 import Output from '../src/Output';
 

@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
-import { mockConsole, mockTool, mockRoutine } from '@boost/test-utils';
+import { mockConsole, mockTool, mockRoutine } from '../src/testUtils';
 import Reporter, { testOnlyResetRestoreCursor } from '../src/Reporter';
 import ProgressOutput from '../src/outputs/ProgressOutput';
 import Output from '../src/Output';

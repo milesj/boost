@@ -1,5 +1,5 @@
 import { Tool, STATUS_FAILED, STATUS_PASSED, STATUS_PENDING } from '@boost/core';
-import { mockTool, mockConsole, mockRoutine, mockTask } from '@boost/test-utils';
+import { mockTool, mockConsole, mockRoutine, mockTask } from '@boost/core/test-utils';
 import NyanReporter from '../src/NyanReporter';
 
 describe('NyanReporter', () => {

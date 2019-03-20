@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import execa from 'execa';
-import { mockTool } from '@boost/test-utils';
+import { mockTool } from '../src/testUtils';
 import CrashLogger from '../src/CrashLogger';
 import Tool from '../src/Tool';
 
