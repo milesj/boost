@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { mockTool, mockConsole } from '@boost/test-utils';
+import { mockTool, mockConsole } from '../../src/tests';
 import CIReporter from '../../src/reporters/CIReporter';
 
 describe('CIReporter', () => {

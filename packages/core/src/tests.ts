@@ -1,3 +1,4 @@
+import path from 'path';
 import Console from './Console';
 import Context from './Context';
 import Routine from './Routine';
@@ -55,8 +56,13 @@ export function mockDebugger(): Debugger {
   return debug as any;
 }
 
-export function mockTool(options: ToolOptions): TestTool {
-  const tool: TestTool = new Tool(options);
+export function mockTool(options?: Partial<ToolOptions>): TestTool {
+  const tool: TestTool = new Tool({
+    appName: 'test-boost',
+    // Match fixtures path
+    appPath: path.join(process.cwd(), 'tests/__fixtures__/app'),
+    ...options,
+  });
 
   tool.registerPlugin('plugin', Plugin);
 

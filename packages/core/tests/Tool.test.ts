@@ -1,15 +1,14 @@
 import debug from 'debug';
 import path from 'path';
 import { string } from 'optimal';
+import { copyFixtureToMock, getFixturePath } from '@boost/test-utils';
 import {
-  copyFixtureToMock,
-  getFixturePath,
   mockConsole,
   mockTool,
   stubPackageJson,
   stubToolConfig,
   TestToolConfig,
-} from '@boost/test-utils';
+} from '../src/tests';
 import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
@@ -20,40 +19,33 @@ class Foo extends Plugin {}
 class Bar extends Plugin {}
 class Baz {}
 
+interface ToolWithPlugins {
+  foo: Foo;
+  bar: Bar;
+  baz: Baz;
+  plugin: Plugin;
+  reporter: Reporter;
+}
+
 describe('Tool', () => {
   let tool: Tool<any, TestToolConfig>;
-  let toolWithPlugins: Tool<
-    {
-      foo: Foo;
-      bar: Bar;
-      baz: Baz;
-      plugin: Plugin;
-      reporter: Reporter;
-    },
-    TestToolConfig
-  >;
+  let toolWithPlugins: Tool<ToolWithPlugins, TestToolConfig>;
 
   beforeEach(() => {
-    tool = mockTool(
-      {},
-      new Tool({
-        appName: 'test-boost',
-        appPath: getFixturePath('app'),
-        root: getFixturePath('app'),
-      }),
-    );
+    tool = mockTool({
+      appName: 'test-boost',
+      appPath: getFixturePath('app'),
+      root: getFixturePath('app'),
+    });
     tool.console = mockConsole(tool);
     // @ts-ignore Allow private access
     tool.initialized = false; // Reset
 
-    toolWithPlugins = mockTool(
-      {},
-      new Tool({
-        appName: 'test-boost',
-        appPath: getFixturePath('app'),
-        root: getFixturePath('app'),
-      }),
-    );
+    toolWithPlugins = (mockTool({
+      appName: 'test-boost',
+      appPath: getFixturePath('app'),
+      root: getFixturePath('app'),
+    }) as any) as Tool<ToolWithPlugins, TestToolConfig>;
   });
 
   describe('constructor()', () => {

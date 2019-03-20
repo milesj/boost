@@ -1,7 +1,7 @@
 /* eslint-disable prefer-template */
 
 import chalk from 'chalk';
-import { mockTool, mockConsole, mockRoutine } from '@boost/test-utils';
+import { mockTool, mockConsole, mockRoutine } from '../../src/tests';
 import BoostReporter from '../../src/reporters/BoostReporter';
 import Pipeline from '../../src/Pipeline';
 import Routine from '../../src/Routine';

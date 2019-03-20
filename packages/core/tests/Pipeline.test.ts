@@ -1,4 +1,4 @@
-import { mockTool, mockRoutine } from '@boost/test-utils';
+import { mockTool, mockRoutine } from '../src/tests';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Context from '../src/Context';

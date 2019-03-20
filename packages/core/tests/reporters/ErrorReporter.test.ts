@@ -1,4 +1,4 @@
-import { mockTool, mockConsole } from '@boost/test-utils';
+import { mockTool, mockConsole } from '../../src/tests';
 import ErrorReporter from '../../src/reporters/ErrorReporter';
 
 describe('ErrorReporter', () => {

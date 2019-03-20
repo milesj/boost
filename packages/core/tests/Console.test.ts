@@ -1,5 +1,5 @@
 import exit from 'exit';
-import { mockTool } from '@boost/test-utils';
+import { mockTool } from '../src/tests';
 import Console, { WRAPPED_STREAMS } from '../src/Console';
 import Output from '../src/Output';
 import { SignalError } from '../src';

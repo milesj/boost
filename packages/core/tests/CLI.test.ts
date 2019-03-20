@@ -1,4 +1,4 @@
-import { mockTool } from '@boost/test-utils';
+import { mockTool } from '../src/tests';
 import CLI from '../src/CLI';
 
 describe('CLI', () => {

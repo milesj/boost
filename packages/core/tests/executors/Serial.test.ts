@@ -1,4 +1,4 @@
-import { mockTool } from '@boost/test-utils';
+import { mockTool } from '../../src/tests';
 import SerialExecutor from '../../src/executors/Serial';
 import Task from '../../src/Task';
 import Context from '../../src/Context';
