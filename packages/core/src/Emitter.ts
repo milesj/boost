@@ -5,7 +5,7 @@ export type EventArguments = any[];
 export type EventListener = (...args: EventArguments) => false | void;
 
 export default class Emitter {
-  listeners: { [eventName: string]: Set<EventListener> } = {};
+  listeners: Map<string, Set<EventListener>> = new Map();
 
   /**
    * Remove all listeners for the defined event name.
@@ -59,11 +59,11 @@ export default class Emitter {
       );
     }
 
-    if (!this.listeners[eventName]) {
-      this.listeners[eventName] = new Set();
+    if (!this.listeners.has(eventName)) {
+      this.listeners.set(eventName, new Set());
     }
 
-    return this.listeners[eventName];
+    return this.listeners.get(eventName)!;
   }
 
   /**

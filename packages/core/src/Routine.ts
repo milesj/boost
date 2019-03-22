@@ -35,7 +35,9 @@ export default abstract class Routine<
 
   parent: Routine<Ctx, Tool> | null = null;
 
-  routines: Routine<Ctx, Tool>[] = [];
+  routines: Set<Routine<Ctx, Tool>> = new Set();
+
+  tasks: Set<Task<Ctx>> = new Set();
 
   // @ts-ignore Set after instantiation
   tool: Tool;
@@ -135,7 +137,7 @@ export default abstract class Routine<
    */
   async parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).runRoutines(
-      routines || this.routines,
+      Array.from(routines || this.routines),
       value,
     );
   }
@@ -144,7 +146,10 @@ export default abstract class Routine<
    * Execute tasks in parallel.
    */
   async parallelizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any[]> {
-    return new ParallelExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
+    return new ParallelExecutor(this.tool, this.context).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -153,9 +158,9 @@ export default abstract class Routine<
   pipe(routine: Routine<Ctx, Tool>): this {
     if (instanceOf(routine, Routine)) {
       // eslint-disable-next-line no-param-reassign
-      routine.metadata.index = this.routines.length;
+      routine.metadata.index = this.routines.size;
 
-      this.routines.push(routine.configure(this));
+      this.routines.add(routine.configure(this));
     } else {
       throw new TypeError(this.tool.msg('errors:routineInstanceInvalid'));
     }
@@ -172,7 +177,7 @@ export default abstract class Routine<
     routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
     return new PoolExecutor(this.tool, this.context, options).runRoutines(
-      routines || this.routines,
+      Array.from(routines || this.routines),
       value,
     );
   }
@@ -185,7 +190,10 @@ export default abstract class Routine<
     options?: Partial<PoolExecutorOptions>,
     tasks?: Task<Ctx>[],
   ): Promise<AggregatedResponse> {
-    return new PoolExecutor(this.tool, this.context, options).runTasks(tasks || this.tasks, value);
+    return new PoolExecutor(this.tool, this.context, options).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -193,7 +201,7 @@ export default abstract class Routine<
    */
   serializeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any> {
     return new SerialExecutor(this.tool, this.context).runRoutines(
-      routines || this.routines,
+      Array.from(routines || this.routines),
       value,
     );
   }
@@ -202,7 +210,10 @@ export default abstract class Routine<
    * Execute tasks in sequential (serial) order.
    */
   serializeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any> {
-    return new SerialExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
+    return new SerialExecutor(this.tool, this.context).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -212,14 +223,20 @@ export default abstract class Routine<
     value?: T,
     routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
-    return new SyncExecutor(this.tool, this.context).runRoutines(routines || this.routines, value);
+    return new SyncExecutor(this.tool, this.context).runRoutines(
+      Array.from(routines || this.routines),
+      value,
+    );
   }
 
   /**
    * Execute tasks in sync.
    */
   async synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
-    return new SyncExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
+    return new SyncExecutor(this.tool, this.context).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -233,9 +250,9 @@ export default abstract class Routine<
     const task = new Task<Ctx>(title, action.bind(scope || this));
 
     task.parent = this;
-    task.metadata.index = this.tasks.length;
+    task.metadata.index = this.tasks.size;
 
-    this.tasks.push(task);
+    this.tasks.add(task);
 
     return task;
   }

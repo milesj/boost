@@ -72,13 +72,13 @@ export default class BoostReporter extends Reporter {
   }
 
   getStepProgress(task: Task<any>): string {
-    if (!task.parent) {
+    if (!task.parent || !instanceOf(task, Routine)) {
       return '';
     }
 
-    const collection = instanceOf(task, Routine) ? task.parent!.routines : task.parent!.tasks;
+    const limit = task.parent!.routines.size || task.parent!.tasks.size;
 
-    return `[${task.metadata.index + 1}/${collection.length}]`;
+    return `[${task.metadata.index + 1}/${limit}]`;
   }
 
   getTaskLine(task: Task<any>): string {
@@ -112,7 +112,7 @@ export default class BoostReporter extends Reporter {
     output += '\n';
 
     // Active task lines
-    this.sortTasksByStartTime(routine.tasks)
+    this.sortTasksByStartTime(Array.from(routine.tasks))
       .filter(task => task.isRunning())
       .forEach(task => {
         output += this.truncate(
@@ -133,7 +133,7 @@ export default class BoostReporter extends Reporter {
     }
 
     // Active routine lines
-    this.sortTasksByStartTime(routine.routines)
+    this.sortTasksByStartTime(Array.from(routine.routines))
       .filter(task => !task.isPending())
       .forEach(sub => {
         output += this.renderLines(sub);

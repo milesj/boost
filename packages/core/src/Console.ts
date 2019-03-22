@@ -33,7 +33,7 @@ export interface ConsoleState {
 }
 
 export default class Console extends Emitter {
-  bufferedStreams: (() => void)[] = [];
+  bufferedStreams: Set<() => void> = new Set();
 
   debug: Debugger;
 
@@ -468,7 +468,7 @@ export default class Console extends Emitter {
 
       this.debug('Wrapping `%s` stream', name);
 
-      this.bufferedStreams.push(() => {
+      this.bufferedStreams.add(() => {
         if (stream.isTTY && buffer) {
           this.writers[name](buffer);
         }

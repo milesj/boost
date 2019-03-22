@@ -297,7 +297,7 @@ describe('Tool', () => {
       plugin.name = 'foo';
 
       // @ts-ignore Allow access
-      tool.plugins.plugin = [plugin];
+      tool.plugins.plugin = new Set([plugin]);
 
       expect(tool.getPlugin('plugin', 'foo')).toBe(plugin);
     });
@@ -576,7 +576,7 @@ describe('Tool', () => {
       tool.loadPlugins();
 
       // @ts-ignore Allow access
-      expect(tool.plugins).toEqual({ plugin: [], reporter: [] });
+      expect(tool.plugins).toEqual({ plugin: new Set(), reporter: new Set() });
     });
 
     it('doesnt load if initialized', () => {
@@ -587,7 +587,7 @@ describe('Tool', () => {
       tool.loadPlugins();
 
       // @ts-ignore Allow access
-      expect(tool.plugins).toEqual({ plugin: [], reporter: [] });
+      expect(tool.plugins).toEqual({ plugin: new Set(), reporter: new Set() });
     });
 
     it('bootstraps plugins on load', () => {
@@ -629,7 +629,7 @@ describe('Tool', () => {
       tool.loadPlugins();
 
       // @ts-ignore Allow access
-      expect(tool.plugins).toEqual({ plugin: [baz, bar, foo], reporter: [] });
+      expect(tool.plugins).toEqual({ plugin: new Set([baz, bar, foo]), reporter: new Set() });
     });
 
     it('loads reporter using a string', () => {
@@ -764,7 +764,7 @@ describe('Tool', () => {
       toolWithPlugins.registerPlugin('baz', Baz);
 
       // @ts-ignore Allow access
-      expect(toolWithPlugins.plugins.baz).toEqual([]);
+      expect(toolWithPlugins.plugins.baz).toBeInstanceOf(Set);
     });
 
     it('creates a plugins type struct', () => {
