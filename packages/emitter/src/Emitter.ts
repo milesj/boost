@@ -1,5 +1,5 @@
 import { EVENT_NAME_PATTERN } from './constants';
-import { ListenerType, Arguments, WaterfallArgument } from './types';
+import { Arguments, WaterfallArgument, ListenerType } from './types';
 
 export default class Emitter<T> {
   listeners: { [K in keyof T]?: Set<ListenerType<T[K]>> } = {};
@@ -61,13 +61,8 @@ export default class Emitter<T> {
   /**
    * Return all event names with registered listeners.
    */
-<<<<<<< HEAD:packages/core/src/Emitter.ts
-  getEventNames(): string[] {
-    return Array.from(this.listeners.keys());
-=======
   getEventNames(): (keyof T)[] {
     return Object.keys(this.listeners) as (keyof T)[];
->>>>>>> a8bbc3b... Start moving emitter to own package.:packages/emitter/src/Emitter.ts
   }
 
   /**
@@ -83,15 +78,11 @@ export default class Emitter<T> {
       );
     }
 
-    if (!this.listeners.has(eventName)) {
-      this.listeners.set(eventName, new Set());
+    if (!this.listeners[eventName]) {
+      this.listeners[eventName] = new Set();
     }
 
-<<<<<<< HEAD:packages/core/src/Emitter.ts
-    return this.listeners.get(eventName)!;
-=======
     return this.listeners[eventName]!;
->>>>>>> a8bbc3b... Start moving emitter to own package.:packages/emitter/src/Emitter.ts
   }
 
   /**

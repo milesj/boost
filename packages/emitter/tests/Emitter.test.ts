@@ -1,17 +1,18 @@
 import Emitter from '../src/Emitter';
+import { Listener, ParallelListener, WaterfallListener } from '../src/types';
 
 describe('Emitter', () => {
   let emitter: Emitter<{
-    foo: [number, number, number?];
-    bar: [string, string, string];
-    baz: [];
-    qux: () => number;
-    'ns.one': [boolean];
-    'ns.two': [];
-    parallel: (value: number) => Promise<number>;
-    waterfall: (value: string) => string;
-    'waterfall.array': (value: string[]) => string[];
-    'waterfall.object': (value: { [key: string]: string }) => { [key: string]: string };
+    foo: Listener<[number, number, number?]>;
+    bar: Listener<[string, string, string]>;
+    baz: Listener;
+    qux: Listener<[], number>;
+    'ns.one': Listener<[boolean]>;
+    'ns.two': Listener;
+    parallel: ParallelListener<[number]>;
+    waterfall: WaterfallListener<string>;
+    'waterfall.array': WaterfallListener<string[]>;
+    'waterfall.object': WaterfallListener<{ [key: string]: string }>;
   }>;
 
   beforeEach(() => {
@@ -345,12 +346,12 @@ describe('Emitter', () => {
     });
 
     it('creates the listeners set if it does not exist', () => {
-      expect(emitter.listeners.has('foo')).toBe(false);
+      expect(emitter.listeners.foo).toBeUndefined();
 
       const set = emitter.getListeners('foo');
 
       expect(set).toBeInstanceOf(Set);
-      expect(emitter.listeners.has('foo')).toBe(true);
+      expect(emitter.listeners.foo).toBeUndefined();
     });
   });
 

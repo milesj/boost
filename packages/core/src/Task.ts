@@ -1,4 +1,4 @@
-import Emitter from '@boost/emitter';
+import Emitter, { Listener } from '@boost/emitter';
 import Context from './Context';
 import {
   STATUS_PENDING,
@@ -16,10 +16,10 @@ export type TaskAction<Ctx extends Context> = (
 ) => any | Promise<any>;
 
 export interface TaskEvents {
-  fail: [Error];
-  pass: [any];
-  run: [any];
-  skip: [any];
+  fail: Listener<[Error]>;
+  pass: Listener<[any]>;
+  run: Listener<[any]>;
+  skip: Listener<[any]>;
 }
 
 export interface TaskMetadata {

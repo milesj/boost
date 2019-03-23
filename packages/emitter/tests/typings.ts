@@ -1,12 +1,13 @@
 import Emitter from '../src/Emitter';
+import { Listener, WaterfallListener } from '../src/types';
 
 const emitter = new Emitter<{
-  args: [number, boolean, string?];
-  'args.func': (num: number, bool: boolean, str?: string) => void;
-  'no.args': [];
-  'no.args.func': () => void;
-  'custom.return': (num: number) => number;
-  waterfall: (value: string) => string;
+  args: Listener<[number, boolean, string]>;
+  'args.func': Listener<[number, boolean, string?]>;
+  'no.args': Listener;
+  'no.args.func': Listener<[]>;
+  'custom.return': Listener<[number], number>;
+  waterfall: WaterfallListener<String>;
 
   // INVALID
   'must.be.array': number;
@@ -21,8 +22,8 @@ emitter.on('no.args', () => false);
 emitter.on('no.args.func', () => {});
 emitter.once('custom.return', (num: number) => num);
 
-emitter.emit('args', [123, true]);
-emitter.emit('args.func', [123, true, 'abc']);
+emitter.emit('args', [123, true, 'abc']);
+emitter.emit('args.func', [123, true]);
 emitter.emit('no.args', []);
 emitter.emit('no.args.func', []);
 emitter.emit('custom.return', [0]);
