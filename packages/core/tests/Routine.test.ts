@@ -425,7 +425,7 @@ describe('Routine', () => {
         .pipe(bar)
         .pipe(baz);
 
-      expect(routine.routines).toEqual([foo, bar, baz]);
+      expect(Array.from(routine.routines)).toEqual([foo, bar, baz]);
     });
 
     it('updates index metadata of each routine', () => {
@@ -977,14 +977,17 @@ describe('Routine', () => {
     });
 
     it('maps `Task` objects', () => {
-      expect(routine.tasks).toHaveLength(0);
+      expect(routine.tasks.size).toBe(0);
 
       routine.task('foo', value => value);
       routine.task('bar', value => value);
 
-      expect(routine.tasks).toHaveLength(2);
-      expect(routine.tasks[0].constructor.name).toBe('Task');
-      expect(routine.tasks[1].constructor.name).toBe('Task');
+      expect(routine.tasks.size).toBe(2);
+
+      const tasks = Array.from(routine.tasks);
+
+      expect(tasks[0].constructor.name).toBe('Task');
+      expect(tasks[1].constructor.name).toBe('Task');
     });
 
     it('binds the action function to the routine', async () => {
@@ -995,7 +998,7 @@ describe('Routine', () => {
         ({ options } = this); // eslint-disable-line babel/no-invalid-this
       });
 
-      await routine.tasks[0].run({}, undefined);
+      await Array.from(routine.tasks)[0].run({}, undefined);
 
       expect(options).toEqual(routine.options);
     });

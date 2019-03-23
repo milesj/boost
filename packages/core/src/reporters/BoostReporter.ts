@@ -39,11 +39,14 @@ export default class BoostReporter extends Reporter {
 
     if (depth === 0) {
       if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
-        prefix.push(this.style(this.getStepProgress(routine), 'pending'), ' ');
+        prefix.push(this.style(this.getStepProgress(routine, 'routines'), 'pending'), ' ');
       }
     } else {
       if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
-        prefix.push(this.indent(this.getStepProgress(this.getRootParent(routine)).length), ' ');
+        prefix.push(
+          this.indent(this.getStepProgress(this.getRootParent(routine), 'routines').length),
+          ' ',
+        );
       }
 
       prefix.push(this.indent(depth * 2));
@@ -71,14 +74,12 @@ export default class BoostReporter extends Reporter {
     };
   }
 
-  getStepProgress(task: Task<any>): string {
-    if (!task.parent || !instanceOf(task, Routine)) {
+  getStepProgress(task: Task<any>, type: 'routines' | 'tasks'): string {
+    if (!task.parent || !instanceOf(task.parent, Routine)) {
       return '';
     }
 
-    const limit = task.parent!.routines.size || task.parent!.tasks.size;
-
-    return `[${task.metadata.index + 1}/${limit}]`;
+    return `[${task.metadata.index + 1}/${task.parent![type].size}]`;
   }
 
   getTaskLine(task: Task<any>): string {
@@ -86,7 +87,7 @@ export default class BoostReporter extends Reporter {
 
     if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL && !task.statusText) {
       line += ' ';
-      line += this.getStepProgress(task);
+      line += this.getStepProgress(task, 'tasks');
     }
 
     return line;

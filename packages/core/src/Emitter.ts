@@ -45,7 +45,7 @@ export default class Emitter {
    * Return all event names with registered listeners.
    */
   getEventNames(): string[] {
-    return Object.keys(this.listeners);
+    return Array.from(this.listeners.keys());
   }
 
   /**

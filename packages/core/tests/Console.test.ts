@@ -100,8 +100,7 @@ describe('Console', () => {
       const spy1 = jest.fn();
       const spy2 = jest.fn();
 
-      cli.bufferedStreams.add(spy1);
-      cli.bufferedStreams.add(spy2);
+      cli.bufferedStreams.push(spy1, spy2);
       cli.flushBufferedStreams();
 
       expect(spy1).toHaveBeenCalled();
