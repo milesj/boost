@@ -39,11 +39,14 @@ export default class BoostReporter extends Reporter {
 
     if (depth === 0) {
       if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
-        prefix.push(this.style(this.getStepProgress(routine), 'pending'), ' ');
+        prefix.push(this.style(this.getStepProgress(routine, 'routines'), 'pending'), ' ');
       }
     } else {
       if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL) {
-        prefix.push(this.indent(this.getStepProgress(this.getRootParent(routine)).length), ' ');
+        prefix.push(
+          this.indent(this.getStepProgress(this.getRootParent(routine), 'routines').length),
+          ' ',
+        );
       }
 
       prefix.push(this.indent(depth * 2));
@@ -71,14 +74,12 @@ export default class BoostReporter extends Reporter {
     };
   }
 
-  getStepProgress(task: Task<any>): string {
-    if (!task.parent) {
+  getStepProgress(task: Task<any>, type: 'routines' | 'tasks'): string {
+    if (!task.parent || !instanceOf(task.parent, Routine)) {
       return '';
     }
 
-    const collection = instanceOf(task, Routine) ? task.parent!.routines : task.parent!.tasks;
-
-    return `[${task.metadata.index + 1}/${collection.length}]`;
+    return `[${task.metadata.index + 1}/${task.parent![type].length}]`;
   }
 
   getTaskLine(task: Task<any>): string {
@@ -86,7 +87,7 @@ export default class BoostReporter extends Reporter {
 
     if (this.getOutputLevel() >= Reporter.OUTPUT_NORMAL && !task.statusText) {
       line += ' ';
-      line += this.getStepProgress(task);
+      line += this.getStepProgress(task, 'tasks');
     }
 
     return line;
@@ -112,7 +113,7 @@ export default class BoostReporter extends Reporter {
     output += '\n';
 
     // Active task lines
-    this.sortTasksByStartTime(routine.tasks)
+    this.sortTasksByStartTime(Array.from(routine.tasks))
       .filter(task => task.isRunning())
       .forEach(task => {
         output += this.truncate(
@@ -133,7 +134,7 @@ export default class BoostReporter extends Reporter {
     }
 
     // Active routine lines
-    this.sortTasksByStartTime(routine.routines)
+    this.sortTasksByStartTime(Array.from(routine.routines))
       .filter(task => !task.isPending())
       .forEach(sub => {
         output += this.renderLines(sub);

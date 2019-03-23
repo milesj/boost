@@ -35,7 +35,11 @@ export default abstract class Routine<
 
   parent: Routine<Ctx, Tool> | null = null;
 
+  // TODO Change to Set in 2.0
   routines: Routine<Ctx, Tool>[] = [];
+
+  // TODO Change to Set in 2.0
+  tasks: Task<Ctx>[] = [];
 
   // @ts-ignore Set after instantiation
   tool: Tool;
@@ -135,7 +139,7 @@ export default abstract class Routine<
    */
   async parallelizeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any[]> {
     return new ParallelExecutor(this.tool, this.context).runRoutines(
-      routines || this.routines,
+      Array.from(routines || this.routines),
       value,
     );
   }
@@ -144,7 +148,10 @@ export default abstract class Routine<
    * Execute tasks in parallel.
    */
   async parallelizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any[]> {
-    return new ParallelExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
+    return new ParallelExecutor(this.tool, this.context).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -172,7 +179,7 @@ export default abstract class Routine<
     routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
     return new PoolExecutor(this.tool, this.context, options).runRoutines(
-      routines || this.routines,
+      Array.from(routines || this.routines),
       value,
     );
   }
@@ -185,7 +192,10 @@ export default abstract class Routine<
     options?: Partial<PoolExecutorOptions>,
     tasks?: Task<Ctx>[],
   ): Promise<AggregatedResponse> {
-    return new PoolExecutor(this.tool, this.context, options).runTasks(tasks || this.tasks, value);
+    return new PoolExecutor(this.tool, this.context, options).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -193,7 +203,7 @@ export default abstract class Routine<
    */
   serializeRoutines<T>(value?: T, routines?: Routine<Ctx, Tool>[]): Promise<any> {
     return new SerialExecutor(this.tool, this.context).runRoutines(
-      routines || this.routines,
+      Array.from(routines || this.routines),
       value,
     );
   }
@@ -202,7 +212,10 @@ export default abstract class Routine<
    * Execute tasks in sequential (serial) order.
    */
   serializeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<any> {
-    return new SerialExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
+    return new SerialExecutor(this.tool, this.context).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**
@@ -212,14 +225,20 @@ export default abstract class Routine<
     value?: T,
     routines?: Routine<Ctx, Tool>[],
   ): Promise<AggregatedResponse> {
-    return new SyncExecutor(this.tool, this.context).runRoutines(routines || this.routines, value);
+    return new SyncExecutor(this.tool, this.context).runRoutines(
+      Array.from(routines || this.routines),
+      value,
+    );
   }
 
   /**
    * Execute tasks in sync.
    */
   async synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
-    return new SyncExecutor(this.tool, this.context).runTasks(tasks || this.tasks, value);
+    return new SyncExecutor(this.tool, this.context).runTasks(
+      Array.from(tasks || this.tasks),
+      value,
+    );
   }
 
   /**

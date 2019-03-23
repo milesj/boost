@@ -93,7 +93,7 @@ export default class Tool<
 
   private initialized: boolean = false;
 
-  private plugins: { [K in keyof PluginRegistry]?: PluginRegistry[K][] } = {};
+  private plugins: { [K in keyof PluginRegistry]?: Set<PluginRegistry[K]> } = {};
 
   private pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
 
@@ -190,7 +190,7 @@ export default class Tool<
       type.afterBootstrap(plugin);
     }
 
-    this.plugins[typeName]!.push(plugin);
+    this.plugins[typeName]!.add(plugin);
 
     return this;
   }
@@ -300,7 +300,7 @@ export default class Tool<
     // Trigger check
     this.getRegisteredPlugin(typeName);
 
-    return this.plugins[typeName]! || [];
+    return Array.from(this.plugins[typeName]!);
   }
 
   /**
@@ -569,7 +569,7 @@ export default class Tool<
 
     this.debug('Registering new plugin type: %s', chalk.magenta(name));
 
-    this.plugins[typeName] = [];
+    this.plugins[typeName] = new Set();
 
     this.pluginTypes[typeName] = {
       afterBootstrap,
@@ -676,8 +676,8 @@ export default class Tool<
 
       // Use default reporter
     } else if (
-      reporters.length === 0 ||
-      (reporters.length === 1 && instanceOf(reporters[0], ErrorReporter))
+      reporters.size === 0 ||
+      (reporters.size === 1 && instanceOf(Array.from(reporters)[0], ErrorReporter))
     ) {
       loader.debug('Using default %s reporter', chalk.yellow('boost'));
 

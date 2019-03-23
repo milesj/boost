@@ -8,6 +8,7 @@
 
 #### 🛠 Internal
 
+- Migrated to `Map` and `Set` for performance improvements (where applicable).
 - Updated dependencies.
 
 # 1.9.3 - 2019-03-11

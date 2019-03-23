@@ -56,7 +56,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
 
     this.tool.debug('Running pipeline');
 
-    cli.start([this.routines, initialValue]);
+    cli.start([Array.from(this.routines), initialValue]);
 
     return this.serializeRoutines(initialValue)
       .then(result => {

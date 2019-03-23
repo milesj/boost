@@ -176,12 +176,12 @@ describe('Emitter', () => {
     });
 
     it('creates the listeners set if it does not exist', () => {
-      expect(emitter.listeners.foo).toBeUndefined();
+      expect(emitter.listeners.has('foo')).toBe(false);
 
       const set = emitter.getListeners('foo');
 
       expect(set).toBeInstanceOf(Set);
-      expect(emitter.listeners.foo).toBeDefined();
+      expect(emitter.listeners.has('foo')).toBe(true);
     });
   });
 

@@ -217,7 +217,7 @@ describe('BoostReporter', () => {
 
   describe('getStepProgress()', () => {
     it('returns an empty string if no parent', () => {
-      expect(reporter.getStepProgress(new Task('Title', () => {}))).toBe('');
+      expect(reporter.getStepProgress(new Task('Title', () => {}), 'tasks')).toBe('');
     });
   });
 

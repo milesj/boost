@@ -45,8 +45,6 @@ export default class Task<Ctx extends Context> extends Emitter {
 
   statusText: string = '';
 
-  tasks: Task<Ctx>[] = [];
-
   constructor(title: string, action: TaskAction<Ctx>) {
     super();
 

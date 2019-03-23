@@ -14,15 +14,16 @@ import handleMerge from './helpers/handleMerge';
 import isObject from './helpers/isObject';
 import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
-import Tool from './Tool';
+import Tool, { ToolConfig } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { Debugger, PackageConfig, PluginSetting } from './types';
 
-export interface ConfigObject {
-  [key: string]: any;
+export interface ConfigLike {
+  extends?: ToolConfig['extends'];
+  [key: string]: unknown;
 }
 
-export type ConfigPathOrObject = string | ConfigObject;
+export type ConfigPathOrObject = string | ConfigLike;
 
 export interface ParseOptions {
   errorOnFunction?: boolean;
@@ -33,7 +34,7 @@ export default class ConfigLoader {
 
   package: PackageConfig = { name: '', version: '0.0.0' };
 
-  parsedFiles: { [path: string]: boolean } = {};
+  parsedFiles: Set<string> = new Set();
 
   tool: Tool<any>;
 
@@ -340,8 +341,8 @@ export default class ConfigLoader {
    * with the preset configurations defined within `extends`,
    * and return the new configuration object.
    */
-  parseAndExtend(fileOrConfig: ConfigPathOrObject): ConfigObject {
-    let config;
+  parseAndExtend(fileOrConfig: ConfigPathOrObject): ConfigLike {
+    let config: ConfigLike;
     let baseDir = '';
 
     // Parse out the object if a file path
@@ -369,7 +370,7 @@ export default class ConfigLoader {
     const resolvedPaths = this.resolveExtendPaths(extendPaths, baseDir);
 
     resolvedPaths.forEach(extendPath => {
-      if (this.parsedFiles[extendPath]) {
+      if (this.parsedFiles.has(extendPath)) {
         return;
       }
 
@@ -398,7 +399,7 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile(filePath: string, args: any[] = [], options: ParseOptions = {}): ConfigObject {
+  parseFile<T>(filePath: string, args: any[] = [], options: ParseOptions = {}): T {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
     let value: any = null;
@@ -429,7 +430,7 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configInvalidNamed', { name }));
     }
 
-    this.parsedFiles[filePath] = true;
+    this.parsedFiles.add(filePath);
 
     return value;
   }
