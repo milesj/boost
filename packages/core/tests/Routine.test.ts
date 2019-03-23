@@ -977,12 +977,12 @@ describe('Routine', () => {
     });
 
     it('maps `Task` objects', () => {
-      expect(routine.tasks.size).toBe(0);
+      expect(routine.tasks).toHaveLength(0);
 
       routine.task('foo', value => value);
       routine.task('bar', value => value);
 
-      expect(routine.tasks.size).toBe(2);
+      expect(routine.tasks).toHaveLength(2);
 
       const tasks = Array.from(routine.tasks);
 

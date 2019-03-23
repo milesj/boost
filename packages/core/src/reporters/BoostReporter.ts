@@ -79,7 +79,7 @@ export default class BoostReporter extends Reporter {
       return '';
     }
 
-    return `[${task.metadata.index + 1}/${task.parent![type].size}]`;
+    return `[${task.metadata.index + 1}/${task.parent![type].length}]`;
   }
 
   getTaskLine(task: Task<any>): string {

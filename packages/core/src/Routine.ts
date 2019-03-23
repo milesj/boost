@@ -35,9 +35,11 @@ export default abstract class Routine<
 
   parent: Routine<Ctx, Tool> | null = null;
 
-  routines: Set<Routine<Ctx, Tool>> = new Set();
+  // TODO Change to Set in 2.0
+  routines: Routine<Ctx, Tool>[] = [];
 
-  tasks: Set<Task<Ctx>> = new Set();
+  // TODO Change to Set in 2.0
+  tasks: Task<Ctx>[] = [];
 
   // @ts-ignore Set after instantiation
   tool: Tool;
@@ -158,9 +160,9 @@ export default abstract class Routine<
   pipe(routine: Routine<Ctx, Tool>): this {
     if (instanceOf(routine, Routine)) {
       // eslint-disable-next-line no-param-reassign
-      routine.metadata.index = this.routines.size;
+      routine.metadata.index = this.routines.length;
 
-      this.routines.add(routine.configure(this));
+      this.routines.push(routine.configure(this));
     } else {
       throw new TypeError(this.tool.msg('errors:routineInstanceInvalid'));
     }
@@ -250,9 +252,9 @@ export default abstract class Routine<
     const task = new Task<Ctx>(title, action.bind(scope || this));
 
     task.parent = this;
-    task.metadata.index = this.tasks.size;
+    task.metadata.index = this.tasks.length;
 
-    this.tasks.add(task);
+    this.tasks.push(task);
 
     return task;
   }
