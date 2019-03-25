@@ -6,7 +6,7 @@ import {
   copyFixtureToNodeModule,
   createTempFileInFixture,
 } from '@boost/test-utils';
-import { mockTool, stubToolConfig, stubPackageJson } from '../src/testUtils';
+import { mockTool, stubToolConfig, stubPackageJson, TestToolConfig } from '../src/testUtils';
 import ConfigLoader from '../src/ConfigLoader';
 
 function createJavascriptFile(data: any): string {
@@ -417,7 +417,7 @@ describe('ConfigLoader', () => {
         });
 
         expect(loader.loadConfig(args)).toEqual(
-          stubToolConfig({
+          stubToolConfig<TestToolConfig>({
             plugins: [
               'foo',
               {
@@ -512,7 +512,7 @@ describe('ConfigLoader', () => {
         loader.tool.options.root = getFixturePath('app-plugin-config');
 
         expect(loader.loadConfig(args)).toEqual(
-          stubToolConfig({
+          stubToolConfig<TestToolConfig>({
             plugins: [
               'foo',
               {

@@ -582,7 +582,7 @@ describe('Tool', () => {
     it('doesnt load if initialized', () => {
       // @ts-ignore Allow private access
       tool.initialized = true;
-      tool.config = stubToolConfig({ plugins: ['foo'] });
+      tool.config = stubToolConfig<TestToolConfig>({ plugins: ['foo'] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -594,7 +594,7 @@ describe('Tool', () => {
       const plugin = new Plugin();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
-      tool.config = stubToolConfig({ plugins: [plugin] });
+      tool.config = stubToolConfig<TestToolConfig>({ plugins: [plugin] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -608,7 +608,7 @@ describe('Tool', () => {
 
       const plugin = new TestPlugin();
 
-      tool.config = stubToolConfig({ plugins: [plugin] });
+      tool.config = stubToolConfig<TestToolConfig>({ plugins: [plugin] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -624,7 +624,7 @@ describe('Tool', () => {
       bar.priority = 2;
       foo.priority = 3;
 
-      tool.config = stubToolConfig({ plugins: [foo, bar, baz] });
+      tool.config = stubToolConfig<TestToolConfig>({ plugins: [foo, bar, baz] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -635,7 +635,7 @@ describe('Tool', () => {
     it('loads reporter using a string', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-foo');
 
-      tool.config = stubToolConfig({ reporters: ['foo'] });
+      tool.config = stubToolConfig<TestToolConfig>({ reporters: ['foo'] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -649,7 +649,7 @@ describe('Tool', () => {
     it('loads reporter using an object', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-bar');
 
-      tool.config = stubToolConfig({ reporters: [{ reporter: 'bar' }] });
+      tool.config = stubToolConfig<TestToolConfig>({ reporters: [{ reporter: 'bar' }] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 
@@ -663,7 +663,7 @@ describe('Tool', () => {
     it('passes options to reporter', () => {
       const unmock = copyFixtureToMock('reporter', 'test-boost-reporter-baz');
 
-      tool.config = stubToolConfig({ reporters: [{ reporter: 'baz', fps: 30 }] });
+      tool.config = stubToolConfig<TestToolConfig>({ reporters: [{ reporter: 'baz', fps: 30 }] });
       // @ts-ignore Allow protected access
       tool.loadPlugins();
 

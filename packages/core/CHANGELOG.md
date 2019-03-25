@@ -1,3 +1,9 @@
+# 1.10.1 - 2019-03-24
+
+#### 🐞 Fixes
+
+- Fixed and improved the test utils generics.
+
 # 1.10.0 - 2019-03-23
 
 #### 🚀 New
