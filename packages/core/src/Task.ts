@@ -13,13 +13,16 @@ export type TaskAction<Ctx extends Context> = (
   context: Ctx,
   value: any,
   task: Task<Ctx>,
-) => any | Promise<any>;
+) => unknown | Promise<unknown>;
 
 export interface TaskEvents {
-  fail: Listener<[Error]>;
-  pass: Listener<[any]>;
-  run: Listener<[any]>;
-  skip: Listener<[any]>;
+  fail: Listener<Error>;
+  pass: Listener<unknown>;
+  run: Listener<unknown>;
+  skip: Listener<unknown>;
+  // Routine
+  command: Listener<string>;
+  'command.data': Listener<string, string>;
 }
 
 export interface TaskMetadata {
@@ -29,10 +32,7 @@ export interface TaskMetadata {
   stopTime: number;
 }
 
-export default class Task<
-  Ctx extends Context,
-  Events extends TaskEvents = TaskEvents
-> extends Emitter<Events> {
+export default class Task<Ctx extends Context> extends Emitter<TaskEvents> {
   action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation
@@ -47,9 +47,9 @@ export default class Task<
     stopTime: 0,
   };
 
-  output: string = '';
+  output: unknown = '';
 
-  parent: Task<Ctx, Events> | null = null;
+  parent: Task<Ctx> | null = null;
 
   status: Status = STATUS_PENDING;
 

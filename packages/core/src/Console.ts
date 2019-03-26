@@ -3,7 +3,7 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
-import Emitter from '@boost/emitter';
+import Emitter, { Listener } from '@boost/emitter';
 import Tool from './Tool';
 import Output from './Output';
 import SignalError from './SignalError';
@@ -27,23 +27,23 @@ export const WRAPPED_STREAMS = {
 export type StreamType = 'stderr' | 'stdout';
 
 export interface ConsoleEvents {
-  command: [string, Routine<any, any>];
-  'command.data': [string, string, Routine<any, any>];
-  error: [Error];
-  routine: [Routine<any, any>, any, boolean];
-  'routine.fail': [Routine<any, any>, Error, boolean];
-  'routine.pass': [Routine<any, any>, any, boolean];
-  'routine.skip': [Routine<any, any>, any, boolean];
-  routines: [Routine<any, any>[], any];
-  'routines.parallel': [Routine<any, any>[], any];
-  start: any[];
-  stop: [Error | null];
-  task: [Task<any>, any, boolean];
-  'task.fail': [Task<any>, Error, boolean];
-  'task.pass': [Task<any>, any, boolean];
-  'task.skip': [Task<any>, any, boolean];
-  tasks: [Task<any>[], any];
-  'tasks.parallel': [Task<any>[], any];
+  command: Listener<string, Routine<any, any>>;
+  'command.data': Listener<string, string, Routine<any, any>>;
+  error: Listener<Error>;
+  routine: Listener<Routine<any, any>, any, boolean>;
+  'routine.fail': Listener<Routine<any, any>, Error, boolean>;
+  'routine.pass': Listener<Routine<any, any>, any, boolean>;
+  'routine.skip': Listener<Routine<any, any>, any, boolean>;
+  routines: Listener<Routine<any, any>[], any>;
+  'routines.parallel': Listener<Routine<any, any>[], any>;
+  start: Listener<any[]>;
+  stop: Listener<Error | null>;
+  task: Listener<Task<any>, any, boolean>;
+  'task.fail': Listener<Task<any>, Error, boolean>;
+  'task.pass': Listener<Task<any>, any, boolean>;
+  'task.skip': Listener<Task<any>, any, boolean>;
+  tasks: Listener<Task<any>[], any>;
+  'tasks.parallel': Listener<Task<any>[], any>;
 }
 
 export interface ConsoleState {

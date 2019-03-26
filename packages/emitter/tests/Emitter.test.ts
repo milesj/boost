@@ -1,15 +1,15 @@
 import Emitter from '../src/Emitter';
-import { Listener, ParallelListener, WaterfallListener } from '../src/types';
+import { BaseListener, Listener, ParallelListener, WaterfallListener } from '../src/types';
 
 describe('Emitter', () => {
   let emitter: Emitter<{
-    foo: Listener<[number, number, number?]>;
-    bar: Listener<[string, string, string]>;
+    foo: Listener<number, number>;
+    bar: Listener<string, string, string>;
     baz: Listener;
-    qux: Listener<[], number>;
-    'ns.one': Listener<[boolean]>;
+    qux: BaseListener<number>;
+    'ns.one': Listener<boolean>;
     'ns.two': Listener;
-    parallel: ParallelListener<[number]>;
+    parallel: ParallelListener<number>;
     waterfall: WaterfallListener<string>;
     'waterfall.array': WaterfallListener<string[]>;
     'waterfall.object': WaterfallListener<{ [key: string]: string }>;
@@ -20,7 +20,7 @@ describe('Emitter', () => {
   });
 
   it('passes arguments to listeners', () => {
-    const baseArgs: [number, number, number] = [1, 2, 3];
+    const baseArgs: [number, number] = [1, 2];
     let args;
 
     emitter.on('foo', (...eventArgs: any[]) => {

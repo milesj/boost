@@ -16,7 +16,7 @@ export default class Emitter<T> {
   /**
    * Synchronously execute listeners for the defined event and arguments.
    */
-  emit<K extends keyof T>(eventName: K, args: Arguments<T[K]>): this {
+  emit<K extends keyof T, A extends Arguments<T[K]>>(eventName: K, args: A): this {
     Array.from(this.getListeners(eventName)).forEach(listener => {
       listener(...args);
     });
@@ -28,7 +28,7 @@ export default class Emitter<T> {
    * Synchronously execute listeners for the defined event and arguments.
    * If a listener returns `false`, the loop with be aborted early.
    */
-  emitBail<K extends keyof T>(eventName: K, args: Arguments<T[K]>): this {
+  emitBail<K extends keyof T, A extends Arguments<T[K]>>(eventName: K, args: A): this {
     Array.from(this.getListeners(eventName)).some(listener => listener(...args) === false);
 
     return this;
@@ -38,7 +38,10 @@ export default class Emitter<T> {
    * Asynchronously execute listeners for the defined event and arguments.
    * Will return a promise with an array of each listener result.
    */
-  emitParallel<K extends keyof T>(eventName: K, args: Arguments<T[K]>): Promise<any[]> {
+  emitParallel<K extends keyof T, A extends Arguments<T[K]>>(
+    eventName: K,
+    args: A,
+  ): Promise<unknown[]> {
     return Promise.all(
       Array.from(this.getListeners(eventName)).map(listener => Promise.resolve(listener(...args))),
     );
@@ -48,12 +51,9 @@ export default class Emitter<T> {
    * Synchronously execute listeners for the defined event and value.
    * The return value of each listener will be passed as an argument to the next listener.
    */
-  emitWaterfall<K extends keyof T>(
-    eventName: K,
-    value: WaterfallArgument<T[K]>,
-  ): WaterfallArgument<T[K]> {
+  emitWaterfall<K extends keyof T, V extends WaterfallArgument<T[K]>>(eventName: K, value: V): V {
     return Array.from(this.getListeners(eventName)).reduce(
-      (nextValue, listener) => listener(nextValue),
+      (nextValue, listener) => listener(nextValue) as V,
       value,
     );
   }

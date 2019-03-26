@@ -1,50 +1,42 @@
-export type Listener<T extends unknown[] = [], R = boolean | void> = (...args: T) => R;
+export type BaseListener<
+  R,
+  T1 = undefined,
+  T2 = undefined,
+  T3 = undefined,
+  T4 = undefined,
+  T5 = undefined
+> = T1 extends undefined
+  ? () => R
+  : T2 extends undefined
+  ? (a1: T1) => R
+  : T3 extends undefined
+  ? (a1: T1, a2: T2) => R
+  : T4 extends undefined
+  ? (a1: T1, a2: T2, a3: T3) => R
+  : T5 extends undefined
+  ? (a1: T1, a2: T2, a3: T3, a4: T4) => R
+  : (a1: T1, a2: T2, a3: T3, a4: T4, a5: T5) => R;
 
-export type ParallelListener<T extends unknown[] = []> = Listener<T, Promise<unknown>>;
+export type Listener<
+  T1 = undefined,
+  T2 = undefined,
+  T3 = undefined,
+  T4 = undefined,
+  T5 = undefined
+> = BaseListener<boolean | void, T1, T2, T3, T4, T5>;
 
-export type WaterfallListener<T> = Listener<[T], T>;
+export type ParallelListener<
+  T1 = undefined,
+  T2 = undefined,
+  T3 = undefined,
+  T4 = undefined,
+  T5 = undefined
+> = BaseListener<Promise<unknown>, T1, T2, T3, T4, T5>;
 
-// VALID
-// type A = Listener<[string]>;
-// type B = Listener<[string, number], object>;
-// type C = ParallelListener<[string, number]>;
-// type F = WaterfallListener<string>;
+export type WaterfallListener<T> = BaseListener<T, T>;
 
-// prettier-ignore
-export type Arguments<T> =
-  T extends (...args: infer A) => unknown ? A :
-  // T extends unknown[] ? T :
-  never;
+export type ListenerType<T> = T extends (...args: unknown[]) => unknown ? T : never;
 
-// VALID
-type A = Arguments<Listener<[number]>>;
-type B = Arguments<Listener<[number, string]>>;
-type C = Arguments<Listener<[number, boolean, string?]>>;
-type D = Arguments<Listener>;
-type E = Arguments<(a: string) => boolean | void>;
-type F = Arguments<(a: string, b: number) => boolean | void>;
-type G = Arguments<(a: string, b: number, c?: object) => string>;
-// type A = Arguments<[number]>;
-// type B = Arguments<[number, string]>;
-// type C = Arguments<[number, boolean, string?]>;
-// type D = Arguments<() => void>;
-// type E = Arguments<(a: string) => boolean | void>;
-// type F = Arguments<(a: string, b: number) => boolean | void>;
-// type G = Arguments<(a: string, b: number, c?: object) => string>;
+export type Arguments<T> = T extends (...args: infer A) => unknown ? A : never;
 
-export type WaterfallArgument<T> = T extends (value: infer A) => unknown ? A : T;
-
-// prettier-ignore
-export type ListenerType<T> =
-  T extends (...args: any[]) => any ? T :
-  // T extends unknown[] ? (...args: T) => boolean | void :
-  never;
-
-// VALID
-// type H = ListenerType<(a: string, b: number, c?: object) => string>;
-// type I = ListenerType<(a: string) => Promise<boolean>>;
-// type J = ListenerType<(a: string, b: number) => boolean | void>;
-// type K = ListenerType<[number, boolean, string?]>;
-// type L = ListenerType<[number]>;
-// type M = ListenerType<[]>;
-// type N = ListenerType<{}>;
+export type WaterfallArgument<T> = T extends (arg: infer A) => unknown ? A : never;
