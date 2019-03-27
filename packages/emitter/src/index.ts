@@ -3,9 +3,13 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Emitter from './Emitter';
+import BailEvent from './BailEvent';
+import BaseEvent from './BaseEvent';
+import Event from './Event';
+import ParallelEvent from './ParallelEvent';
+import WaterfallEvent from './WaterfallEvent';
 
 export * from './constants';
 export * from './types';
 
-export default Emitter;
+export { BailEvent, BaseEvent, Event, ParallelEvent, WaterfallEvent };

@@ -1,4 +1,4 @@
-import Emitter, { Listener } from '@boost/emitter';
+import { Event } from '@boost/emitter';
 import Context from './Context';
 import {
   STATUS_PENDING,
@@ -15,16 +15,6 @@ export type TaskAction<Ctx extends Context> = (
   task: Task<Ctx>,
 ) => unknown | Promise<unknown>;
 
-export interface TaskEvents {
-  fail: Listener<Error>;
-  pass: Listener<unknown>;
-  run: Listener<unknown>;
-  skip: Listener<unknown>;
-  // Routine
-  command: Listener<string>;
-  'command.data': Listener<string, string>;
-}
-
 export interface TaskMetadata {
   depth: number;
   index: number;
@@ -32,7 +22,7 @@ export interface TaskMetadata {
   stopTime: number;
 }
 
-export default class Task<Ctx extends Context> extends Emitter<TaskEvents> {
+export default class Task<Ctx extends Context> {
   action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation
@@ -47,6 +37,8 @@ export default class Task<Ctx extends Context> extends Emitter<TaskEvents> {
     stopTime: 0,
   };
 
+  onFail: Event<[Error | null]>;
+
   output: unknown = '';
 
   parent: Task<Ctx> | null = null;
@@ -56,8 +48,6 @@ export default class Task<Ctx extends Context> extends Emitter<TaskEvents> {
   statusText: string = '';
 
   constructor(title: string, action: TaskAction<Ctx>) {
-    super();
-
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -69,6 +59,7 @@ export default class Task<Ctx extends Context> extends Emitter<TaskEvents> {
     this.action = action;
     this.status = STATUS_PENDING;
     this.title = title;
+    this.onFail = new Event('fail');
   }
 
   /**
@@ -139,6 +130,7 @@ export default class Task<Ctx extends Context> extends Emitter<TaskEvents> {
       this.status = STATUS_FAILED;
       this.metadata.stopTime = Date.now();
       this.emit('fail', [error]);
+      this.onFail.listen((a, b, c) => 'foo');
 
       throw error;
     }
