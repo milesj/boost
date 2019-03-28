@@ -6,10 +6,10 @@
 
 #### 🚀 Updates
 
-- Added `Emitter#once`, which only fires the listener one time.
-- Added `Emitter#emitBail`, which will bail the loop if a listener returns `false`.
-- Added `Emitter#emitParallel`, which will asynchronously fire listeners and return a promise.
-- Added `Emitter#emitWaterfall`, which passes the return value to each listener.
+- Added `Event`, which synchronously fires listeners.
+- Added `BailEvent`, which will bail the loop if a listener returns `false`.
+- Added `ParallelEvent`, which asynchronously fires listeners and return a promise.
+- Added `WaterfallEvent`, which passes the return value to each listener.
 
 #### 🛠 Internals
 

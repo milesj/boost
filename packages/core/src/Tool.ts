@@ -12,7 +12,7 @@ import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
-import Emitter, { Listener } from '@boost/event';
+import { Event } from '@boost/event';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import ExitError from './ExitError';
@@ -66,10 +66,6 @@ export interface ToolConfig {
   theme: string;
 }
 
-export interface ToolEvents {
-  exit: Listener<number>;
-}
-
 export interface ToolPluginRegistry {
   reporter: Reporter;
 }
@@ -77,7 +73,7 @@ export interface ToolPluginRegistry {
 export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
   Config extends ToolConfig = ToolConfig
-> extends Emitter<ToolEvents> {
+> {
   args?: Arguments;
 
   argv: string[] = [];
@@ -88,6 +84,8 @@ export default class Tool<
   console: Console;
 
   debug: Debugger;
+
+  onExit: Event<[number]>;
 
   options: Required<ToolOptions>;
 
@@ -104,8 +102,6 @@ export default class Tool<
   private translator: Translator | null = null;
 
   constructor(options: ToolOptions, argv: string[] = []) {
-    super();
-
     this.argv = argv;
     this.options = optimal(
       options,
@@ -136,6 +132,8 @@ export default class Tool<
       },
     );
 
+    this.onExit = new Event('exit');
+
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
 
@@ -163,7 +161,7 @@ export default class Tool<
 
       // Cleanup when an exit occurs
       process.on('exit', code => {
-        this.emit('exit', [code]);
+        this.onExit.emit([code]);
       });
     }
   }
@@ -584,6 +582,21 @@ export default class Tool<
       scopes,
       singularName: name,
     };
+
+    return this;
+  }
+
+  /**
+   * Temporary bridge until v2.
+   */
+  on(eventName: string, listener: any) {
+    switch (eventName) {
+      case 'exit':
+        this.onExit.listen(listener);
+        break;
+      default:
+        throw new Error(`Unsupported event ${eventName}.`);
+    }
 
     return this;
   }

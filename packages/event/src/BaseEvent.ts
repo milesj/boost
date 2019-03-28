@@ -37,6 +37,13 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
   }
 
   /**
+   * Return a list of all scopes with listeners.
+   */
+  getScopes(): string[] {
+    return Array.from(this.listeners.keys());
+  }
+
+  /**
    * Register a listener to the event.
    */
   listen(listener: Listener<Args, Return>, scope?: Scope): this {
@@ -50,7 +57,7 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
    */
   once(listener: Listener<Args, Return>, scope?: Scope): this {
     const func = this.validateListener(listener);
-    const handler: Listener<Args, Return> = (...args: Args) => {
+    const handler: any = (...args: unknown[]) => {
       this.unlisten(handler);
 
       return func(...args);

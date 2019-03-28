@@ -39,7 +39,8 @@ export default class Reporter<Options extends object = {}> extends Plugin<Option
    * Register console listeners.
    */
   bootstrap() {
-    this.console.on('start', this.handleBaseStart).on('stop', this.handleBaseStop);
+    this.console.onStart.listen(this.handleBaseStart);
+    this.console.onStop.listen(this.handleBaseStop);
   }
 
   /**

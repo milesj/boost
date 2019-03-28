@@ -30,13 +30,10 @@ export default class NyanReporter extends Reporter {
     this.rainbowWidth = this.size().columns - this.catWidth * 2;
     this.rainbowColors = this.generateColors();
 
-    this.console
-      .on('start', this.handleStart)
-      .on('stop', this.handleStop)
-      .on('routine', this.handleRoutine)
-      .on('routine.pass', this.handleRoutine)
-      .on('routine.fail', this.handleRoutine)
-      .on('task', this.handleTask);
+    this.console.onStart.listen(this.handleStart);
+    this.console.onStop.listen(this.handleStop);
+    this.console.onRoutine.listen(this.handleRoutine);
+    this.console.onTask.listen(this.handleTask);
   }
 
   handleStart = () => {
@@ -50,7 +47,13 @@ export default class NyanReporter extends Reporter {
   };
 
   handleRoutine = (routine: Routine<any, any>) => {
-    this.activeRoutine = routine;
+    const handler = () => {
+      this.activeRoutine = routine;
+    };
+
+    routine.onFail.listen(handler);
+    routine.onPass.listen(handler);
+    handler();
   };
 
   handleTask = (task: Task<any>) => {

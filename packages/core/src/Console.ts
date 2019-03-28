@@ -3,7 +3,7 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
-import Emitter, { Listener } from '@boost/event';
+import { Event } from '@boost/event';
 import Tool from './Tool';
 import Output from './Output';
 import SignalError from './SignalError';
@@ -26,26 +26,6 @@ export const WRAPPED_STREAMS = {
 
 export type StreamType = 'stderr' | 'stdout';
 
-export interface ConsoleEvents {
-  command: Listener<string, Routine<any, any>>;
-  'command.data': Listener<string, string, Routine<any, any>>;
-  error: Listener<Error>;
-  routine: Listener<Routine<any, any>, any, boolean>;
-  'routine.fail': Listener<Routine<any, any>, Error, boolean>;
-  'routine.pass': Listener<Routine<any, any>, any, boolean>;
-  'routine.skip': Listener<Routine<any, any>, any, boolean>;
-  routines: Listener<Routine<any, any>[], any>;
-  'routines.parallel': Listener<Routine<any, any>[], any>;
-  start: Listener<any[]>;
-  stop: Listener<Error | null>;
-  task: Listener<Task<any>, any, boolean>;
-  'task.fail': Listener<Task<any>, Error, boolean>;
-  'task.pass': Listener<Task<any>, any, boolean>;
-  'task.skip': Listener<Task<any>, any, boolean>;
-  tasks: Listener<Task<any>[], any>;
-  'tasks.parallel': Listener<Task<any>[], any>;
-}
-
 export interface ConsoleState {
   disabled: boolean;
   final: boolean;
@@ -53,7 +33,7 @@ export interface ConsoleState {
   stopped: boolean;
 }
 
-export default class Console extends Emitter<ConsoleEvents> {
+export default class Console {
   bufferedStreams: (() => void)[] = [];
 
   debug: Debugger;
@@ -61,6 +41,20 @@ export default class Console extends Emitter<ConsoleEvents> {
   errorLogs: string[] = [];
 
   logs: string[] = [];
+
+  onError: Event<[Error]>;
+
+  onRoutine: Event<[Routine<any, any>, unknown, boolean]>;
+
+  onRoutines: Event<[Routine<any, any>[], unknown, boolean]>;
+
+  onStart: Event<unknown[]>;
+
+  onStop: Event<[Error | null]>;
+
+  onTask: Event<[Task<any>, unknown, boolean]>;
+
+  onTasks: Event<[Task<any>[], unknown, boolean]>;
 
   outputQueue: Output[] = [];
 
@@ -78,11 +72,17 @@ export default class Console extends Emitter<ConsoleEvents> {
   private writers: typeof BOUND_WRITERS;
 
   constructor(tool: Tool<any>, /* test only */ testWriters: typeof BOUND_WRITERS = BOUND_WRITERS) {
-    super();
-
     this.debug = tool.createDebugger('console');
     this.tool = tool;
     this.writers = testWriters;
+
+    this.onError = new Event('error');
+    this.onRoutine = new Event('routine');
+    this.onRoutines = new Event('routines');
+    this.onStart = new Event('start');
+    this.onStop = new Event('stop');
+    this.onTask = new Event('task');
+    this.onTasks = new Event('task');
 
     // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
@@ -344,7 +344,7 @@ export default class Console extends Emitter<ConsoleEvents> {
         this.err(`\n${this.errorLogs.join('\n')}\n`);
       }
 
-      this.emit('error', [error]);
+      this.onError.emit([error]);
     } else {
       if (this.logs.length > 0) {
         this.out(`\n${this.logs.join('\n')}\n`);
@@ -391,7 +391,7 @@ export default class Console extends Emitter<ConsoleEvents> {
     }
 
     this.debug('Starting console render loop');
-    this.emit('start', args);
+    this.onStart.emit(args);
     this.wrapStreams();
     this.displayHeader();
     this.state.started = true;
@@ -431,7 +431,7 @@ export default class Console extends Emitter<ConsoleEvents> {
 
     this.renderFinalOutput(error);
     this.unwrapStreams();
-    this.emit('stop', [error]);
+    this.onStop.emit([error]);
     this.state.stopped = true;
     this.state.started = false;
   }
