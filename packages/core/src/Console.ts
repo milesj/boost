@@ -511,4 +511,39 @@ export default class Console {
       WRAPPED_STREAMS[name] = true;
     });
   }
+
+  /**
+   * Temporary bridge until v2.
+   */
+  on(eventName: string, listener: any) {
+    switch (eventName) {
+      case 'error':
+        this.onError.listen(listener);
+        break;
+      case 'routine':
+        this.onRoutine.listen(listener);
+        break;
+      case 'routines':
+      case 'routines.parallel':
+        this.onRoutines.listen(listener);
+        break;
+      case 'start':
+        this.onStart.listen(listener);
+        break;
+      case 'stop':
+        this.onStop.listen(listener);
+        break;
+      case 'task':
+        this.onTask.listen(listener);
+        break;
+      case 'tasks':
+      case 'tasks.parallel':
+        this.onTasks.listen(listener);
+        break;
+      default:
+        throw new Error(`Unsupported event ${eventName}.`);
+    }
+
+    return this;
+  }
 }

@@ -90,6 +90,10 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
    * Validate the name/scope match a defined pattern.
    */
   protected validateName(name: string, type: string): string {
+    if (type === 'scope' && name === '*') {
+      return name;
+    }
+
     if (!name.match(EVENT_NAME_PATTERN)) {
       throw new Error(
         `Invalid event ${type} "${name}". May only contain dashes, periods, and lowercase characters.`,
