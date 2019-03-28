@@ -1,4 +1,4 @@
-import { Event } from '@boost/emitter';
+import { Event } from '@boost/event';
 import Context from './Context';
 import {
   STATUS_PENDING,

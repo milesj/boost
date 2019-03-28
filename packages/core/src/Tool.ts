@@ -12,7 +12,7 @@ import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
-import Emitter, { Listener } from '@boost/emitter';
+import Emitter, { Listener } from '@boost/event';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import ExitError from './ExitError';

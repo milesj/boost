@@ -3,7 +3,7 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
-import Emitter, { Listener } from '@boost/emitter';
+import Emitter, { Listener } from '@boost/event';
 import Tool from './Tool';
 import Output from './Output';
 import SignalError from './SignalError';

@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Emitter from '@boost/emitter';
+import Emitter from '@boost/event';
 import CLI from './CLI';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
