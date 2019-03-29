@@ -4,11 +4,13 @@ import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import { Event } from '@boost/event';
+import Emitter from './Emitter';
+import Task from './Task';
 import Tool from './Tool';
 import Output from './Output';
+import Routine from './Routine';
 import SignalError from './SignalError';
 import { Debugger } from './types';
-import { Routine, Task } from '.';
 
 // 8 FPS (60 FPS is actually too fast as it tears)
 export const FPS_RATE = 125;
@@ -33,7 +35,7 @@ export interface ConsoleState {
   stopped: boolean;
 }
 
-export default class Console {
+export default class Console extends Emitter {
   bufferedStreams: (() => void)[] = [];
 
   debug: Debugger;
@@ -72,6 +74,8 @@ export default class Console {
   private writers: typeof BOUND_WRITERS;
 
   constructor(tool: Tool<any>, /* test only */ testWriters: typeof BOUND_WRITERS = BOUND_WRITERS) {
+    super();
+
     this.debug = tool.createDebugger('console');
     this.tool = tool;
     this.writers = testWriters;
@@ -82,7 +86,7 @@ export default class Console {
     this.onStart = new Event('start');
     this.onStop = new Event('stop');
     this.onTask = new Event('task');
-    this.onTasks = new Event('task');
+    this.onTasks = new Event('tasks');
 
     // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
@@ -344,6 +348,7 @@ export default class Console {
         this.err(`\n${this.errorLogs.join('\n')}\n`);
       }
 
+      this.emit('error', [error]);
       this.onError.emit([error]);
     } else {
       if (this.logs.length > 0) {
@@ -391,6 +396,7 @@ export default class Console {
     }
 
     this.debug('Starting console render loop');
+    this.emit('start', args);
     this.onStart.emit(args);
     this.wrapStreams();
     this.displayHeader();
@@ -431,6 +437,7 @@ export default class Console {
 
     this.renderFinalOutput(error);
     this.unwrapStreams();
+    this.emit('stop', [error]);
     this.onStop.emit([error]);
     this.state.stopped = true;
     this.state.started = false;
@@ -510,40 +517,5 @@ export default class Console {
 
       WRAPPED_STREAMS[name] = true;
     });
-  }
-
-  /**
-   * Temporary bridge until v2.
-   */
-  on(eventName: string, listener: any) {
-    switch (eventName) {
-      case 'error':
-        this.onError.listen(listener);
-        break;
-      case 'routine':
-        this.onRoutine.listen(listener);
-        break;
-      case 'routines':
-      case 'routines.parallel':
-        this.onRoutines.listen(listener);
-        break;
-      case 'start':
-        this.onStart.listen(listener);
-        break;
-      case 'stop':
-        this.onStop.listen(listener);
-        break;
-      case 'task':
-        this.onTask.listen(listener);
-        break;
-      case 'tasks':
-      case 'tasks.parallel':
-        this.onTasks.listen(listener);
-        break;
-      default:
-        throw new Error(`Unsupported event ${eventName}.`);
-    }
-
-    return this;
   }
 }

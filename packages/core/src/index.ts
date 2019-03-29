@@ -3,11 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Emitter from '@boost/event';
 import CLI from './CLI';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Context from './Context';
+import Emitter, { EventArguments, EventListener } from './Emitter';
 import ExitError from './ExitError';
 import SignalError from './SignalError';
 import { AggregatedResponse } from './Executor';
@@ -28,6 +28,8 @@ export {
   Console,
   Context,
   Emitter,
+  EventArguments,
+  EventListener,
   ExitError,
   ModuleLoader,
   Output,

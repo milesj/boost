@@ -1,4 +1,5 @@
 import { Event, BailEvent } from '@boost/event';
+import Emitter from './Emitter';
 import Context from './Context';
 import {
   STATUS_PENDING,
@@ -22,7 +23,7 @@ export interface TaskMetadata {
   stopTime: number;
 }
 
-export default class Task<Ctx extends Context> {
+export default class Task<Ctx extends Context> extends Emitter {
   action: TaskAction<Ctx>;
 
   // @ts-ignore Set after instantiation
@@ -54,6 +55,8 @@ export default class Task<Ctx extends Context> {
   statusText: string = '';
 
   constructor(title: string, action: TaskAction<Ctx>) {
+    super();
+
     if (!title || typeof title !== 'string') {
       throw new Error('Tasks require a title.');
     }
@@ -118,11 +121,13 @@ export default class Task<Ctx extends Context> {
    */
   async run(context: Ctx, value: any): Promise<any> {
     this.setContext(context);
+    this.emit('run', [value]);
 
     const skip = this.onRun.emit([value]);
 
     if (skip || this.isSkipped()) {
       this.status = STATUS_SKIPPED;
+      this.emit('skip', [value]);
       this.onSkip.emit([value]);
 
       return Promise.resolve(value);
@@ -135,10 +140,12 @@ export default class Task<Ctx extends Context> {
       this.output = await this.action(context, value, this);
       this.status = STATUS_PASSED;
       this.metadata.stopTime = Date.now();
+      this.emit('pass', [this.output]);
       this.onPass.emit([this.output]);
     } catch (error) {
       this.status = STATUS_FAILED;
       this.metadata.stopTime = Date.now();
+      this.emit('fail', [error]);
       this.onFail.emit([error]);
 
       throw error;
@@ -164,30 +171,6 @@ export default class Task<Ctx extends Context> {
   skip(condition: boolean = true): this {
     if (condition) {
       this.status = STATUS_SKIPPED;
-    }
-
-    return this;
-  }
-
-  /**
-   * Temporary bridge until v2.
-   */
-  on(eventName: string, listener: any) {
-    switch (eventName) {
-      case 'fail':
-        this.onFail.listen(listener);
-        break;
-      case 'pass':
-        this.onPass.listen(listener);
-        break;
-      case 'run':
-        this.onRun.listen(listener);
-        break;
-      case 'skip':
-        this.onSkip.listen(listener);
-        break;
-      default:
-        throw new Error(`Unsupported event ${eventName}.`);
     }
 
     return this;

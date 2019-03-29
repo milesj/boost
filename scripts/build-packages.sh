@@ -12,14 +12,7 @@ build_pkg() {
   node ../../node_modules/.bin/tsc
 }
 
+build_pkg "./packages/event"
 build_pkg "./packages/core"
-cd "$root" || exit
-
-REGEX="/(core|theme)"
-
-for pkg in ./packages/*; do
-  if ! [[ "$pkg" =~ $REGEX ]]
-  then
-    build_pkg "$pkg"
-  fi
-done
+build_pkg "./packages/reporter-nyan"
+build_pkg "./packages/test-utils"

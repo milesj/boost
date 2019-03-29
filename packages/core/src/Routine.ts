@@ -266,24 +266,6 @@ export default abstract class Routine<
   }
 
   /**
-   * Temporary bridge until v2.
-   */
-  on(eventName: string, listener: any) {
-    switch (eventName) {
-      case 'command':
-        this.onCommand.listen(listener);
-        break;
-      case 'command.data':
-        this.onCommandData.listen(listener);
-        break;
-      default:
-        throw new Error(`Unsupported event ${eventName}.`);
-    }
-
-    return this;
-  }
-
-  /**
    * Execute the current routine and return a new value.
    * This method *must* be overridden in a subclass.
    */

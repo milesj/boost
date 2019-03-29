@@ -57,6 +57,7 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    * Execute a routine with the provided value.
    */
   executeRoutine = async <T>(routine: Routine<Ctx, any>, value?: T): Promise<any> => {
+    this.tool.console.emit('routine', [routine, value, this.parallel]);
     this.tool.console.onRoutine.emit([routine, value, this.parallel]);
 
     return routine.run(this.context, value);
@@ -66,6 +67,7 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    * Execute a task with the provided value.
    */
   executeTask = async <T>(task: Task<Ctx>, value?: T): Promise<any> => {
+    this.tool.console.emit('task', [task, value, this.parallel]);
     this.tool.console.onTask.emit([task, value, this.parallel]);
 
     return task.run(this.context, value);
@@ -75,6 +77,7 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    * Run all routines with the defined executor.
    */
   runRoutines<T>(routines: Routine<Ctx, any>[], value?: T): Promise<any> {
+    this.tool.console.emit(this.parallel ? 'routines.parallel' : 'routines', [routines, value]);
     this.tool.console.onRoutines.emit([routines, value, this.parallel]);
 
     return this.run(this.executeRoutine as any, routines, value);
@@ -84,6 +87,7 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    * Run all tasks with the defined executor.
    */
   runTasks<T>(tasks: Task<Ctx>[], value?: T): Promise<any> {
+    this.tool.console.emit(this.parallel ? 'tasks.parallel' : 'tasks', [tasks, value]);
     this.tool.console.onTasks.emit([tasks, value, this.parallel]);
 
     return this.run(this.executeTask, tasks, value);
