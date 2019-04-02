@@ -1,4 +1,4 @@
-import { EVENT_NAME_PATTERN } from './constants';
+import { EVENT_NAME_PATTERN, DEFAULT_SCOPE } from './constants';
 import { Listener, Scope } from './types';
 
 export default abstract class BaseEvent<Args extends unknown[], Return> {
@@ -26,7 +26,7 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
   /**
    * Return a set of listeners for a specific event scope.
    */
-  getListeners(scope: Scope = '*'): Set<Listener<Args, Return>> {
+  getListeners(scope: Scope = DEFAULT_SCOPE): Set<Listener<Args, Return>> {
     const key = this.validateName(scope, 'scope');
 
     if (!this.listeners.has(key)) {
@@ -90,7 +90,7 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
    * Validate the name/scope match a defined pattern.
    */
   protected validateName(name: string, type: string): string {
-    if (type === 'scope' && name === '*') {
+    if (type === 'scope' && name === DEFAULT_SCOPE) {
       return name;
     }
 
