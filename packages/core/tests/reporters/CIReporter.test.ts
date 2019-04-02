@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { mockTool, mockConsole } from '../../src/testUtils';
+import { mockTool, mockConsole, mockRoutine } from '../../src/testUtils';
 import CIReporter from '../../src/reporters/CIReporter';
 
 describe('CIReporter', () => {
@@ -53,13 +53,13 @@ describe('CIReporter', () => {
     it('increments count', () => {
       expect(reporter.routineCount).toBe(0);
 
-      reporter.handleRoutine();
+      reporter.handleRoutine(mockRoutine(reporter.tool));
 
       expect(reporter.routineCount).toBe(1);
     });
 
     it('logs a period', () => {
-      reporter.handleRoutine();
+      reporter.handleRoutine(mockRoutine(reporter.tool));
 
       expect(outSpy).toHaveBeenCalledWith('.');
     });

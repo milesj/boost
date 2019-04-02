@@ -1,54 +1,53 @@
-import Emitter from '../src/Emitter';
-import { Listener, WaterfallListener, ParallelListener } from '../src/types';
+import { Event, BailEvent, ParallelEvent, WaterfallEvent } from '../src';
 
-const emitter = new Emitter<{
-  args: Listener<number, boolean, string>;
-  'no.args': Listener;
-  parallel: ParallelListener<object, unknown[]>;
-  waterfall: WaterfallListener<string>;
-}>();
+const foo = new Event<[number, string?]>('foo');
+const bar = new BailEvent<[number, number, object]>('bar');
+const baz = new ParallelEvent<unknown[]>('baz');
+const qux = new WaterfallEvent<string>('qux');
 
 // VALID
-
-emitter.on('args', () => {});
-emitter.on('args', (num, bool, str) => {});
-emitter.on('no.args', () => false);
-emitter.on('parallel', () => Promise.resolve());
-emitter.on('waterfall', str => str);
-
-emitter.emit('args', [123, true, 'abc']);
-emitter.emitBail('no.args', []);
-emitter.emitParallel('parallel', [{ test: true }, ['a', 'b', 'c']]);
-emitter.emitWaterfall('waterfall', 'abc');
+foo.listen(() => {});
+foo.listen((num, str) => {});
+foo.emit([123]);
+foo.emit([123, 'abc']);
 
 // INVALID
+foo.listen((num, str, bool) => {});
+foo.emit([true]);
+foo.emit([123, 456]);
+foo.emit([123, 'abc', true]);
 
-// Unknown event name
-emitter.on('unknown.name', () => {});
+// VALID
+bar.listen(() => {});
+bar.listen((num, str) => true);
+bar.listen((num, str, obj) => false);
+bar.emit([123, 456, {}]);
 
-// Extra arg
-emitter.on('args', (num, bool, str, other) => {});
+// INVALID
+bar.listen(() => 123);
+bar.emit([true]);
+bar.emit([123, 'abc']);
+bar.emit([123, 456, 'abc']);
+const notBoolReturn: string = bar.emit([123, 456, {}]);
 
-// Return not boolean or void
-emitter.on('no.args', () => ({}));
+// VALID
+baz.listen(() => Promise.resolve());
+baz.listen((num, str) => Promise.reject());
+baz.emit([]);
+baz.emit([123, 456, {}]);
 
-// Return not promise
-emitter.on('parallel', () => {});
+// INVALID
+baz.listen(() => 123);
+const notPromiseReturn: string = baz.emit(['abc']);
 
-// Missing args
-emitter.emit('args', [123]);
+// VALID
+qux.listen(() => 'abc');
+qux.listen(str => str.toUpperCase());
+qux.emit('qux');
 
-// Invalid arg type
-emitter.emit('args', [123, {}, 'abc']);
-
-// Extra arg
-emitter.emit('no.args', ['abc']);
-
-// Empty args
-emitter.emitParallel('parallel', []);
-
-// Waterfall only 1 arg
-emitter.emitWaterfall('waterfall', ['foo']);
-
-// Args must be a string
-emitter.once('waterfall', (value: number) => value);
+// INVALID
+qux.listen(() => 123);
+qux.listen(() => {});
+qux.emit(123);
+qux.emit(['qux']);
+const notStringReturn: number = qux.emit('abc');

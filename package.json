@@ -43,6 +43,11 @@
     ],
     "settings": {
       "node": true
+    },
+    "typescript": {
+      "exclude": [
+        "tests/typings.ts"
+      ]
     }
   }
 }
