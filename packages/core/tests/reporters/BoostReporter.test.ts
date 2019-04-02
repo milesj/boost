@@ -54,11 +54,11 @@ describe('BoostReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = jest.spyOn(reporter.console, 'on');
+      const spy = jest.spyOn(reporter.console.onRoutine, 'listen');
 
       reporter.bootstrap();
 
-      expect(spy).toHaveBeenCalledWith('routine', expect.anything());
+      expect(spy).toHaveBeenCalledWith(expect.anything());
     });
   });
 
@@ -87,7 +87,7 @@ describe('BoostReporter', () => {
     it('marks as final when `skip` event is emitted', () => {
       reporter.handleRoutine(parent);
 
-      parent.emit('skip');
+      parent.onSkip.emit(['']);
 
       expect(reporter.console.outputQueue[0].isFinal()).toBe(true);
     });
@@ -95,7 +95,7 @@ describe('BoostReporter', () => {
     it('marks as final when `pass` event is emitted', () => {
       reporter.handleRoutine(parent);
 
-      parent.emit('pass');
+      parent.onPass.emit(['']);
 
       expect(reporter.console.outputQueue[0].isFinal()).toBe(true);
     });
@@ -103,7 +103,7 @@ describe('BoostReporter', () => {
     it('marks as final when `fail` event is emitted', () => {
       reporter.handleRoutine(parent);
 
-      parent.emit('fail');
+      parent.onFail.emit([null]);
 
       expect(reporter.console.outputQueue[0].isFinal()).toBe(true);
     });

@@ -14,11 +14,11 @@ describe('ErrorReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = jest.spyOn(reporter.console, 'on');
+      const errorSpy = jest.spyOn(reporter.console.onError, 'listen');
 
       reporter.bootstrap();
 
-      expect(spy).toHaveBeenCalledWith('error', expect.anything());
+      expect(errorSpy).toHaveBeenCalledWith(expect.anything());
     });
   });
 

@@ -20,16 +20,15 @@ describe('CIReporter', () => {
 
   describe('bootstrap()', () => {
     it('binds events', () => {
-      const spy = jest.spyOn(reporter.console, 'on');
+      const startSpy = jest.spyOn(reporter.console.onStart, 'listen');
+      const routineSpy = jest.spyOn(reporter.console.onRoutine, 'listen');
+      const taskSpy = jest.spyOn(reporter.console.onTask, 'listen');
 
       reporter.bootstrap();
 
-      expect(spy).toHaveBeenCalledWith('stop', expect.anything());
-      expect(spy).toHaveBeenCalledWith('task', expect.anything());
-      expect(spy).toHaveBeenCalledWith('routine', expect.anything());
-      expect(spy).toHaveBeenCalledWith('routine.skip', expect.anything());
-      expect(spy).toHaveBeenCalledWith('routine.pass', expect.anything());
-      expect(spy).toHaveBeenCalledWith('routine.fail', expect.anything());
+      expect(startSpy).toHaveBeenCalledWith(expect.anything());
+      expect(routineSpy).toHaveBeenCalledWith(expect.anything());
+      expect(taskSpy).toHaveBeenCalledWith(expect.anything());
     });
   });
 

@@ -11,8 +11,8 @@ export default class CIReporter extends Reporter {
 
     this.console.disable();
     this.console.onStop.listen(this.handleStop);
-    this.console.onTask.listen(this.handleTask);
     this.console.onRoutine.listen(this.handleRoutine);
+    this.console.onTask.listen(this.handleTask);
   }
 
   handleRoutine = (routine: Routine<any, any>) => {

@@ -80,7 +80,7 @@ export default class Emitter {
     }
 
     console.warn(
-      `Boost emitter has been deprecated. Please migrate \`on('${eventName}', listener)\` to the new event system, \`on${upperFirst(
+      `Boost emitter has been deprecated. Please migrate \`on('${eventName}', listener)\` to the new @boost/event system, \`on${upperFirst(
         camelCase(eventProp),
       )}.listen(${args.join(', ')})\`.'`,
     );

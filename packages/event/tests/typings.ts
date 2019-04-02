@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Event, BailEvent, ParallelEvent, WaterfallEvent } from '../src';
 
 const foo = new Event<[number, string?]>('foo');
