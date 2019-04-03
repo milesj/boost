@@ -1,6 +1,6 @@
-# Events
+# Event System
 
-A strict type-safe event system with multiple emitter patterns.
+A type-safe event system with multiple emitter patterns.
 
 ## Installation
 

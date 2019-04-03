@@ -17,6 +17,7 @@
 #### 🛠 Internal
 
 - Started writing [documentation using GitBook](https://milesj.gitbook.io/boost/).
+- Updated dependencies.
 
 # 1.10.1 - 2019-03-24
 

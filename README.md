@@ -5,3 +5,7 @@
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/core)](https://www.npmjs.com/package/@boost/core)
 
 Create dev tools using a robust pipeline that separates logic into routines and tasks.
+
+## Requirements
+
+- Node 8.9+
