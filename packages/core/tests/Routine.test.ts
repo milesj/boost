@@ -221,23 +221,16 @@ describe('Routine', () => {
     });
 
     it('pipes stdout/stderr to handler', async () => {
-      const spy1 = jest.spyOn(routine, 'emit');
-      const spy2 = jest.spyOn(routine.tool.console, 'emit');
+      const commandSpy = jest.spyOn(routine.onCommand, 'emit');
+      const commandDataSpy = jest.spyOn(routine.onCommandData, 'emit');
       const task = new Task('title', () => {});
 
       task.status = STATUS_RUNNING;
 
       await routine.executeCommand('yarn', ['-v'], { task });
 
-      expect(spy1).toHaveBeenCalledWith('command', ['yarn']);
-      expect(spy1).toHaveBeenCalledWith('command.data', ['yarn', expect.anything()]);
-
-      expect(spy2).toHaveBeenCalledWith('command', ['yarn', expect.anything()]);
-      expect(spy2).toHaveBeenCalledWith('command.data', [
-        'yarn',
-        expect.anything(),
-        expect.anything(),
-      ]);
+      expect(commandSpy).toHaveBeenCalledWith(['yarn']);
+      expect(commandDataSpy).toHaveBeenCalledWith(['yarn', expect.anything()]);
     });
 
     it('sets `statusText` on task', async () => {

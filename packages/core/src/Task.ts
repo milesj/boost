@@ -1,5 +1,6 @@
-import Context from './Context';
+import { Event, BailEvent } from '@boost/event';
 import Emitter from './Emitter';
+import Context from './Context';
 import {
   STATUS_PENDING,
   STATUS_RUNNING,
@@ -13,7 +14,7 @@ export type TaskAction<Ctx extends Context> = (
   context: Ctx,
   value: any,
   task: Task<Ctx>,
-) => any | Promise<any>;
+) => unknown | Promise<unknown>;
 
 export interface TaskMetadata {
   depth: number;
@@ -37,7 +38,15 @@ export default class Task<Ctx extends Context> extends Emitter {
     stopTime: 0,
   };
 
-  output: string = '';
+  onFail: Event<[Error | null]>;
+
+  onPass: Event<[unknown]>;
+
+  onRun: BailEvent<[unknown]>;
+
+  onSkip: Event<[unknown]>;
+
+  output: unknown = '';
 
   parent: Task<Ctx> | null = null;
 
@@ -59,6 +68,10 @@ export default class Task<Ctx extends Context> extends Emitter {
     this.action = action;
     this.status = STATUS_PENDING;
     this.title = title;
+    this.onFail = new Event('fail');
+    this.onPass = new Event('pass');
+    this.onRun = new BailEvent('run');
+    this.onSkip = new Event('skip');
   }
 
   /**
@@ -110,9 +123,12 @@ export default class Task<Ctx extends Context> extends Emitter {
     this.setContext(context);
     this.emit('run', [value]);
 
-    if (this.isSkipped()) {
+    const skip = this.onRun.emit([value]);
+
+    if (skip || this.isSkipped()) {
       this.status = STATUS_SKIPPED;
       this.emit('skip', [value]);
+      this.onSkip.emit([value]);
 
       return Promise.resolve(value);
     }
@@ -125,10 +141,12 @@ export default class Task<Ctx extends Context> extends Emitter {
       this.status = STATUS_PASSED;
       this.metadata.stopTime = Date.now();
       this.emit('pass', [this.output]);
+      this.onPass.emit([this.output]);
     } catch (error) {
       this.status = STATUS_FAILED;
       this.metadata.stopTime = Date.now();
       this.emit('fail', [error]);
+      this.onFail.emit([error]);
 
       throw error;
     }

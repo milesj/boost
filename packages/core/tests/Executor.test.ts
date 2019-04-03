@@ -67,7 +67,7 @@ describe('Executor', () => {
       expect(routine.status).toBe(STATUS_FAILED);
     });
 
-    it('emits console events when skipped', async () => {
+    it('emits console event `routine` when skipped', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -77,10 +77,9 @@ describe('Executor', () => {
       await executor.executeRoutine(routine, 123);
 
       expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('routine.skip', [routine, 123, false]);
     });
 
-    it('emits console events if a success', async () => {
+    it('emits console event `routine` if a success', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -88,10 +87,9 @@ describe('Executor', () => {
       await executor.executeRoutine(routine, 123);
 
       expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, false]);
     });
 
-    it('emits console events if a failure', async () => {
+    it('emits console event `routine` if a failure', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -108,10 +106,9 @@ describe('Executor', () => {
       }
 
       expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-      expect(spy).toHaveBeenCalledWith('routine.fail', [routine, new Error('Oops'), false]);
     });
 
-    it('emits console events with parallel flag', async () => {
+    it('emits console event `routine` with parallel flag', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -120,7 +117,6 @@ describe('Executor', () => {
       await executor.executeRoutine(routine, 123);
 
       expect(spy).toHaveBeenCalledWith('routine', [routine, 123, true]);
-      expect(spy).toHaveBeenCalledWith('routine.pass', [routine, 123, true]);
     });
   });
 
@@ -159,7 +155,7 @@ describe('Executor', () => {
       expect(task.status).toBe(STATUS_FAILED);
     });
 
-    it('emits console events when skipped', async () => {
+    it('emits console event `task` when skipped', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -169,10 +165,9 @@ describe('Executor', () => {
       await executor.executeTask(task, 123);
 
       expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
-      expect(spy).toHaveBeenCalledWith('task.skip', [task, 123, false]);
     });
 
-    it('emits console events if a success', async () => {
+    it('emits console event `task` if a success', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -180,10 +175,9 @@ describe('Executor', () => {
       await executor.executeTask(task, 123);
 
       expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
-      expect(spy).toHaveBeenCalledWith('task.pass', [task, 369, false]);
     });
 
-    it('emits console events if a failure', async () => {
+    it('emits console event `task` if a failure', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -199,10 +193,9 @@ describe('Executor', () => {
       }
 
       expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
-      expect(spy).toHaveBeenCalledWith('task.fail', [task, new Error('Oops'), false]);
     });
 
-    it('emits console events with parallel flag', async () => {
+    it('emits console event `task` with parallel flag', async () => {
       const spy = jest.fn();
 
       executor.tool.console.emit = spy;
@@ -211,7 +204,6 @@ describe('Executor', () => {
       await executor.executeTask(task, 123);
 
       expect(spy).toHaveBeenCalledWith('task', [task, 123, true]);
-      expect(spy).toHaveBeenCalledWith('task.pass', [task, 369, true]);
     });
   });
 

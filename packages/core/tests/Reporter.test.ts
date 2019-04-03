@@ -24,12 +24,13 @@ describe('Reporter', () => {
 
   describe('bootstrap()', () => {
     it('sets start and stop events', () => {
-      const spy = jest.spyOn(reporter.console, 'on');
+      const startSpy = jest.spyOn(reporter.console.onStart, 'listen');
+      const stopSpy = jest.spyOn(reporter.console.onStop, 'listen');
 
       reporter.bootstrap();
 
-      expect(spy).toHaveBeenCalledWith('start', expect.anything());
-      expect(spy).toHaveBeenCalledWith('stop', expect.anything());
+      expect(startSpy).toHaveBeenCalledWith(expect.anything());
+      expect(stopSpy).toHaveBeenCalledWith(expect.anything());
     });
   });
 

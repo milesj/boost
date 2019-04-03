@@ -70,7 +70,7 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     }
 
     // Compile our template
-    const progress = Math.min(Math.max(current / total, 0.0), 1.0);
+    const progress = Math.min(Math.max(current / total, 0), 1);
     const percent = Math.floor(progress * 100);
     const elapsed = Date.now() - this.startTime;
     const estimated = percent === 100 ? 0 : elapsed * (total / current - 1);

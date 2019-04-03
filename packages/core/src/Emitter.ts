@@ -1,3 +1,5 @@
+import camelCase from 'lodash/camelCase';
+import upperFirst from 'lodash/upperFirst';
 import { EVENT_NAME_PATTERN } from './constants';
 
 export type EventArguments = any[];
@@ -24,22 +26,6 @@ export default class Emitter {
 
     return this;
   }
-
-  /**
-   * Syncronously execute listeners for the defined event and arguments,
-   * with the ability to intercept and abort early with a value.
-   */
-  // emitCascade<T>(name: string, args: EventArguments = []): T | void {
-  //   let value;
-
-  //   Array.from(this.getListeners(this.createEventName(name))).some(listener => {
-  //     value = listener(...args);
-
-  //     return typeof value !== 'undefined';
-  //   });
-
-  //   return value;
-  // }
 
   /**
    * Return all event names with registered listeners.
@@ -82,6 +68,22 @@ export default class Emitter {
     if (typeof listener !== 'function') {
       throw new TypeError(`Invalid event listener for "${eventName}", must be a function.`);
     }
+
+    let eventProp = eventName;
+    const args = ['listener'];
+
+    if (eventName.includes('.')) {
+      const [scope, event] = eventName.split('.', 2);
+
+      args.push(`'${scope}'`);
+      eventProp = event;
+    }
+
+    console.warn(
+      `Boost emitter has been deprecated. Please migrate \`on('${eventName}', listener)\` to the new @boost/event system, \`on${upperFirst(
+        camelCase(eventProp),
+      )}.listen(${args.join(', ')})\`.'`,
+    );
 
     this.getListeners(eventName).add(listener);
 

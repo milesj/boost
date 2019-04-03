@@ -57,52 +57,20 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    * Execute a routine with the provided value.
    */
   executeRoutine = async <T>(routine: Routine<Ctx, any>, value?: T): Promise<any> => {
-    const { console: cli } = this.tool;
-    let result = null;
+    this.tool.console.emit('routine', [routine, value, this.parallel]);
+    this.tool.console.onRoutine.emit([routine, value, this.parallel]);
 
-    cli.emit('routine', [routine, value, this.parallel]);
-
-    try {
-      result = await routine.run(this.context, value);
-
-      if (routine.isSkipped()) {
-        cli.emit('routine.skip', [routine, value, this.parallel]);
-      } else {
-        cli.emit('routine.pass', [routine, result, this.parallel]);
-      }
-    } catch (error) {
-      cli.emit('routine.fail', [routine, error, this.parallel]);
-
-      throw error;
-    }
-
-    return result;
+    return routine.run(this.context, value);
   };
 
   /**
    * Execute a task with the provided value.
    */
   executeTask = async <T>(task: Task<Ctx>, value?: T): Promise<any> => {
-    const { console: cli } = this.tool;
-    let result = null;
+    this.tool.console.emit('task', [task, value, this.parallel]);
+    this.tool.console.onTask.emit([task, value, this.parallel]);
 
-    cli.emit('task', [task, value, this.parallel]);
-
-    try {
-      result = await task.run(this.context, value);
-
-      if (task.isSkipped()) {
-        cli.emit('task.skip', [task, value, this.parallel]);
-      } else {
-        cli.emit('task.pass', [task, result, this.parallel]);
-      }
-    } catch (error) {
-      cli.emit('task.fail', [task, error, this.parallel]);
-
-      throw error;
-    }
-
-    return result;
+    return task.run(this.context, value);
   };
 
   /**
@@ -110,6 +78,7 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    */
   runRoutines<T>(routines: Routine<Ctx, any>[], value?: T): Promise<any> {
     this.tool.console.emit(this.parallel ? 'routines.parallel' : 'routines', [routines, value]);
+    this.tool.console.onRoutines.emit([routines, value, this.parallel]);
 
     return this.run(this.executeRoutine as any, routines, value);
   }
@@ -119,6 +88,7 @@ export default abstract class Executor<Ctx extends Context, Options = {}> {
    */
   runTasks<T>(tasks: Task<Ctx>[], value?: T): Promise<any> {
     this.tool.console.emit(this.parallel ? 'tasks.parallel' : 'tasks', [tasks, value]);
+    this.tool.console.onTasks.emit([tasks, value, this.parallel]);
 
     return this.run(this.executeTask, tasks, value);
   }

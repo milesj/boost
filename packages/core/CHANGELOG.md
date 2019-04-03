@@ -1,3 +1,23 @@
+# 1.11.0
+
+#### 🚀 New
+
+- Added a new package, [@boost/event](https://www.npmjs.com/package/@boost/event), to provide a
+  type-safe static event system. The old event emitter is deprecated, so please migrate to the new
+  system!
+  - Added `onError`, `onRoutine`, `onRoutines`, `onStart`, `onStop`, `onTask`, and `onTasks` events
+    to `Console`.
+  - Added `onRoutine`, `onRoutines`,`onTask`, and `onTasks` events to `Executor`.
+  - Added `onCommand` and `onCommandData` events to `Routine`.
+  - Added `onFail`, `onPass`, `onRun`, and `onSkip` to `Task` and `Routine`.
+  - Added `onExit` to `Tool`.
+- Tasks and Routines can be skipped during their run process if an `onRun` event listener returns
+  `false`.
+
+#### 🛠 Internal
+
+- Started writing [documentation using GitBook](https://milesj.gitbook.io/boost/).
+
 # 1.10.1 - 2019-03-24
 
 #### 🐞 Fixes

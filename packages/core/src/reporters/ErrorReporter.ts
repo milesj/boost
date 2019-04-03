@@ -4,7 +4,7 @@ export default class ErrorReporter extends Reporter {
   bootstrap() {
     super.bootstrap();
 
-    this.console.on('error', this.handleError);
+    this.console.onError.listen(this.handleError);
   }
 
   handleError = (error: Error) => {

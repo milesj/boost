@@ -13,7 +13,7 @@ export default class BoostReporter extends Reporter {
   bootstrap() {
     super.bootstrap();
 
-    this.console.on('routine', this.handleRoutine);
+    this.console.onRoutine.listen(this.handleRoutine);
   }
 
   handleRoutine = (routine: Routine<any, any>) => {
@@ -26,9 +26,9 @@ export default class BoostReporter extends Reporter {
       output.enqueue(true);
     };
 
-    routine.on('skip', handler);
-    routine.on('pass', handler);
-    routine.on('fail', handler);
+    routine.onFail.listen(handler);
+    routine.onPass.listen(handler);
+    routine.onSkip.listen(handler);
   };
 
   getRoutineLineParts(routine: Routine<any, any>): LineParts {

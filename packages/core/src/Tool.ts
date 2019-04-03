@@ -12,6 +12,7 @@ import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
+import { Event } from '@boost/event';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
@@ -85,6 +86,8 @@ export default class Tool<
 
   debug: Debugger;
 
+  onExit: Event<[number]>;
+
   options: Required<ToolOptions>;
 
   package: PackageConfig = { name: '', version: '0.0.0' };
@@ -132,6 +135,8 @@ export default class Tool<
       },
     );
 
+    this.onExit = new Event('exit');
+
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
 
@@ -160,6 +165,7 @@ export default class Tool<
       // Cleanup when an exit occurs
       process.on('exit', code => {
         this.emit('exit', [code]);
+        this.onExit.emit([code]);
       });
     }
   }

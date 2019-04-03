@@ -2,6 +2,7 @@ import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 
 import split from 'split';
 import { Readable } from 'stream';
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
+import { Event } from '@boost/event';
 import Context from './Context';
 import Task, { TaskAction } from './Task';
 import CoreTool from './Tool';
@@ -31,6 +32,10 @@ export default abstract class Routine<
 
   key: string = '';
 
+  onCommand: Event<[string]>;
+
+  onCommandData: Event<[string, string]>;
+
   options: Options;
 
   parent: Routine<Ctx, Tool> | null = null;
@@ -55,6 +60,9 @@ export default abstract class Routine<
     this.options = optimal(options, this.blueprint(predicates), {
       name: this.constructor.name,
     });
+
+    this.onCommand = new Event('command');
+    this.onCommandData = new Event('command.data');
   }
 
   /**
@@ -102,8 +110,7 @@ export default abstract class Routine<
       ? execa.shell(`${command} ${args.join(' ')}`.trim(), opts)
       : execa(command, args, opts);
 
-    this.emit('command', [command]);
-    this.tool.console.emit('command', [command, this]);
+    this.onCommand.emit([command]);
 
     // Push chunks to the reporter
     const unit = task || this;
@@ -116,8 +123,7 @@ export default abstract class Routine<
           unit.statusText = line;
         }
 
-        this.emit('command.data', [command, line]);
-        this.tool.console.emit('command.data', [command, line, this]);
+        this.onCommandData.emit([command, line]);
       }
     };
 

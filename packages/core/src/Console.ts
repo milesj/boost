@@ -3,9 +3,12 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
+import { Event } from '@boost/event';
 import Emitter from './Emitter';
+import Task from './Task';
 import Tool from './Tool';
 import Output from './Output';
+import Routine from './Routine';
 import SignalError from './SignalError';
 import { Debugger } from './types';
 
@@ -41,6 +44,20 @@ export default class Console extends Emitter {
 
   logs: string[] = [];
 
+  onError: Event<[Error]>;
+
+  onRoutine: Event<[Routine<any, any>, unknown, boolean]>;
+
+  onRoutines: Event<[Routine<any, any>[], unknown, boolean]>;
+
+  onStart: Event<unknown[]>;
+
+  onStop: Event<[Error | null]>;
+
+  onTask: Event<[Task<any>, unknown, boolean]>;
+
+  onTasks: Event<[Task<any>[], unknown, boolean]>;
+
   outputQueue: Output[] = [];
 
   tool: Tool<any>;
@@ -62,6 +79,14 @@ export default class Console extends Emitter {
     this.debug = tool.createDebugger('console');
     this.tool = tool;
     this.writers = testWriters;
+
+    this.onError = new Event('error');
+    this.onRoutine = new Event('routine');
+    this.onRoutines = new Event('routines');
+    this.onStart = new Event('start');
+    this.onStop = new Event('stop');
+    this.onTask = new Event('task');
+    this.onTasks = new Event('tasks');
 
     // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
@@ -324,6 +349,7 @@ export default class Console extends Emitter {
       }
 
       this.emit('error', [error]);
+      this.onError.emit([error]);
     } else {
       if (this.logs.length > 0) {
         this.out(`\n${this.logs.join('\n')}\n`);
@@ -371,6 +397,7 @@ export default class Console extends Emitter {
 
     this.debug('Starting console render loop');
     this.emit('start', args);
+    this.onStart.emit(args);
     this.wrapStreams();
     this.displayHeader();
     this.state.started = true;
@@ -411,6 +438,7 @@ export default class Console extends Emitter {
     this.renderFinalOutput(error);
     this.unwrapStreams();
     this.emit('stop', [error]);
+    this.onStop.emit([error]);
     this.state.stopped = true;
     this.state.started = false;
   }
