@@ -77,9 +77,22 @@ event.emit(['abc']);
 
 > The array values and its types should match the [generics defined](#usage) on the constructor.
 
-## Scopes
+### Scopes
 
-TODO
+Scopes are a mechanism for restricting listeners to a unique subset. Scopes are defined as the 2nd
+argument to `Event#listen`, `unlisten`, `once`, and `emit`.
+
+```ts
+event.listen(listener);
+event.listen(listener, 'foo');
+event.listen(listener, 'bar');
+
+// Will only execute the 1st listener
+event.emit([]);
+
+// Will only execute the 2nd listener
+event.emit([], 'foo');
+```
 
 ## Types
 
