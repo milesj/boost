@@ -1,7 +1,7 @@
 import BaseEvent from './BaseEvent';
 import { Scope } from './types';
 
-export default class ParallelEvent<Args extends unknown[]> extends BaseEvent<
+export default class ConcurrentEvent<Args extends unknown[]> extends BaseEvent<
   Args,
   Promise<unknown>
 > {

@@ -1,10 +1,10 @@
-import ParallelEvent from '../src/ParallelEvent';
+import ConcurrentEvent from '../src/ConcurrentEvent';
 
-describe('ParallelEvent', () => {
-  let event: ParallelEvent<[number]>;
+describe('ConcurrentEvent', () => {
+  let event: ConcurrentEvent<[number]>;
 
   beforeEach(() => {
-    event = new ParallelEvent('parallel.test');
+    event = new ConcurrentEvent('parallel.test');
   });
 
   beforeEach(() => {

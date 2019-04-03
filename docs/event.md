@@ -134,14 +134,14 @@ event.listen(() => {});
 const bailed = event.emit([{ example: true }]);
 ```
 
-### `ParallelEvent`
+### `ConcurrentEvent`
 
 Executes listeners in parallel and returns a promise with the result of all listeners.
 
 ```ts
-import { ParallelEvent } from '@boost/event';
+import { ConcurrentEvent } from '@boost/event';
 
-const event = new ParallelEvent<[]>('parallel');
+const event = new ConcurrentEvent<[]>('parallel');
 
 event.listen(doHeavyProcess);
 event.listen(doBackgroundJob);

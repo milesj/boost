@@ -1,10 +1,10 @@
 /* eslint-disable */
 
-import { Event, BailEvent, ParallelEvent, WaterfallEvent } from '../src';
+import { Event, BailEvent, ConcurrentEvent, WaterfallEvent } from '../src';
 
 const foo = new Event<[number, string?]>('foo');
 const bar = new BailEvent<[number, number, object]>('bar');
-const baz = new ParallelEvent<unknown[]>('baz');
+const baz = new ConcurrentEvent<unknown[]>('baz');
 const qux = new WaterfallEvent<string>('qux');
 
 // VALID

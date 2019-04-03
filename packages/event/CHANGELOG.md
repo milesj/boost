@@ -8,7 +8,7 @@
 
 - Added `Event`, which synchronously fires listeners.
 - Added `BailEvent`, which will bail the loop if a listener returns `false`.
-- Added `ParallelEvent`, which asynchronously fires listeners and return a promise.
+- Added `ConcurrentEvent`, which asynchronously fires listeners and return a promise.
 - Added `WaterfallEvent`, which passes the return value to each listener.
 
 #### 🛠 Internals
