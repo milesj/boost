@@ -76,7 +76,7 @@ export default class NyanReporter extends Reporter {
 
     for (let i = 0; i < 6 * 7; i += 1) {
       const pi3 = Math.floor(Math.PI / 3);
-      const n = i * (1.0 / 6);
+      const n = i * (1 / 6);
       const r = Math.floor(3 * Math.sin(n) + 3);
       const g = Math.floor(3 * Math.sin(n + 2 * pi3) + 3);
       const b = Math.floor(3 * Math.sin(n + 4 * pi3) + 3);
