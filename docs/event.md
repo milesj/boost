@@ -18,6 +18,8 @@ To begin using events, instantiate an `Event` with a unique name -- the name is 
 purposes.
 
 ```ts
+import { Event } from '@boost/event';
+
 const event = new Event<[string]>('example');
 ```
 
@@ -88,6 +90,8 @@ There are 4 types of events that can be instantiated and emitted.
 Standard event that executes listeners in the order they were registered.
 
 ```ts
+import { Event } from '@boost/event';
+
 const event = new Event<[string, number]>('standard');
 
 event.listen(listener);
@@ -101,6 +105,8 @@ Like `Event` but can bail the execution loop early if a listener returns `false`
 will return `true` if a bail occurs.
 
 ```ts
+import { BailEvent } from '@boost/event';
+
 const event = new BailEvent<[object]>('bail');
 
 // Will execute
@@ -120,6 +126,8 @@ const bailed = event.emit([{ example: true }]);
 Executes listeners in parallel and returns a promise with the result of all listeners.
 
 ```ts
+import { ParallelEvent } from '@boost/event';
+
 const event = new ParallelEvent<[]>('parallel');
 
 event.listen(doHeavyProcess);
@@ -138,6 +146,8 @@ Executes each listener in order, passing the previous listeners return value as 
 next listener.
 
 ```ts
+import { WaterfallEvent } from '@boost/event';
+
 const event = new WaterfallEvent<number>('waterfall');
 
 event.listen(num => num * 2);
