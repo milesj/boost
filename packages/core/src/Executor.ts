@@ -13,21 +13,23 @@ export interface AggregatedResponse {
   results: any[];
 }
 
-export default abstract class Executor<Ctx extends Context, Options = {}> {
+export default abstract class Executor<Ctx extends Context, Options extends object = {}> {
   context: Ctx;
 
   debug: Debugger;
 
-  options: Partial<Options>;
+  options: Options;
 
   parallel: boolean = false;
 
   tool: Tool<any>;
 
-  constructor(tool: Tool<any>, context: Ctx, options: Partial<Options> = {}) {
+  constructor(tool: Tool<any>, context: Ctx, options?: Options) {
     this.context = context;
     this.debug = tool.createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;
+
+    // @ts-ignore Allow spread
     this.options = { ...options };
 
     this.debug('Instantiating task executor');

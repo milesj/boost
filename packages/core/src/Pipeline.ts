@@ -1,5 +1,5 @@
 import exit from 'exit';
-import { Predicates } from 'optimal';
+import { Blueprint, Predicates } from 'optimal';
 import Context from './Context';
 import CrashLogger from './CrashLogger';
 import ExitError from './ExitError';
@@ -8,7 +8,7 @@ import CoreTool from './Tool';
 import instanceOf from './helpers/instanceOf';
 
 export interface PipelineOptions {
-  exit: (code: number) => void;
+  exit?: (code: number) => void;
 }
 
 export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> extends Routine<
@@ -16,7 +16,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
   Tool,
   PipelineOptions
 > {
-  constructor(tool: Tool, context: Ctx, options: Partial<PipelineOptions> = {}) {
+  constructor(tool: Tool, context: Ctx, options?: PipelineOptions) {
     super('root', 'Pipeline', options);
 
     if (instanceOf(tool, CoreTool)) {
@@ -34,7 +34,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
     this.setContext(context);
   }
 
-  blueprint({ func }: Predicates) /* infer */ {
+  blueprint({ func }: Predicates): Blueprint<Required<PipelineOptions>> {
     return {
       exit: func(exit).notNullable(),
     };

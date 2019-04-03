@@ -8,15 +8,15 @@ export default class Plugin<Options extends object = {}> {
 
   name: string = '';
 
-  options: Options;
+  options: Required<Options>;
 
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
   // @ts-ignore Set after instantiation
   tool: Tool<any>;
 
-  constructor(options: Partial<Options> = {}) {
-    this.options = optimal(options, this.blueprint(predicates), {
+  constructor(options?: Options) {
+    this.options = optimal({ ...options }, this.blueprint(predicates), {
       name: this.constructor.name,
     });
   }
@@ -25,7 +25,7 @@ export default class Plugin<Options extends object = {}> {
    * Define an optimal blueprint in which to validate and build the
    * options passed to the constructor.
    */
-  blueprint(preds: Predicates): Blueprint<Options> {
+  blueprint(preds: Predicates): Blueprint<Required<Options>> {
     return {} as any;
   }
 

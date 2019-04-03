@@ -18,6 +18,7 @@
 
 - Started writing [documentation using GitBook](https://milesj.gitbook.io/boost/).
 - Updated dependencies.
+- TS: Reworked how options objects are handled.
 
 # 1.10.1 - 2019-03-24
 

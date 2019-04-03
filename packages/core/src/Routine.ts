@@ -36,7 +36,7 @@ export default abstract class Routine<
 
   onCommandData: Event<[string, string]>;
 
-  options: Options;
+  options: Required<Options>;
 
   parent: Routine<Ctx, Tool> | null = null;
 
@@ -49,7 +49,7 @@ export default abstract class Routine<
   // @ts-ignore Set after instantiation
   tool: Tool;
 
-  constructor(key: string, title: string, options: Partial<Options> = {}) {
+  constructor(key: string, title: string, options?: Options) {
     super(title, (context, value) => this.execute(context, value));
 
     if (!key || typeof key !== 'string') {
@@ -57,7 +57,7 @@ export default abstract class Routine<
     }
 
     this.key = key;
-    this.options = optimal(options, this.blueprint(predicates), {
+    this.options = optimal({ ...options }, this.blueprint(predicates), {
       name: this.constructor.name,
     });
 
@@ -69,7 +69,7 @@ export default abstract class Routine<
    * Define an optimal blueprint in which to validate and build the
    * options passed to the constructor.
    */
-  blueprint(preds: Predicates): Blueprint<Options> {
+  blueprint(preds: Predicates): Blueprint<Required<Options>> {
     return {} as any;
   }
 

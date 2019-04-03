@@ -6,9 +6,9 @@ import Task from '../Task';
 import Tool from '../Tool';
 
 export interface PoolExecutorOptions {
-  concurrency: number;
-  fifo: boolean;
-  timeout: number;
+  concurrency?: number;
+  fifo?: boolean;
+  timeout?: number;
 }
 
 export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, PoolExecutorOptions> {
@@ -26,11 +26,11 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
 
   timeoutTimer?: NodeJS.Timer;
 
-  constructor(tool: Tool<any>, context: Ctx, options: Partial<PoolExecutorOptions> = {}) {
+  constructor(tool: Tool<any>, context: Ctx, options?: PoolExecutorOptions) {
     super(tool, context, options);
 
     this.options = optimal(
-      options,
+      { ...options },
       {
         concurrency: number(os.cpus().length).gte(1),
         fifo: bool(true),
