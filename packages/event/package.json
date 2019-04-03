@@ -2,7 +2,7 @@
   "name": "@boost/event",
   "version": "0.0.0",
   "description": "A type-safe event system. Designed for Boost applications.",
-  "keywords": [],
+  "keywords": ["boost", "event", "emitter", "type-safe"],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "engines": {
@@ -12,6 +12,5 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  },
-  "priority": 100
+  }
 }
