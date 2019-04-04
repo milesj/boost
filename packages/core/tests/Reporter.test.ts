@@ -12,10 +12,16 @@ describe('Reporter', () => {
   let reporter: Reporter<any>;
   let tool: Tool<any, any>;
 
+  class TestReporter extends Reporter {
+    blueprint() {
+      return {};
+    }
+  }
+
   beforeEach(() => {
     tool = mockTool();
 
-    reporter = new Reporter();
+    reporter = new TestReporter();
     reporter.console = mockConsole(tool);
     reporter.tool = tool;
 

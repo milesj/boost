@@ -9,6 +9,8 @@ export { Blueprint, Predicates };
 
 export type Constructor<T> = new (...args: any[]) => T;
 
+export type AbstractConstructor<T> = Function & { prototype: T };
+
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
   invariant(condition: boolean, message: string, pass: string, fail: string): void;

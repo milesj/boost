@@ -10,6 +10,10 @@ export interface LineParts {
 }
 
 export default class BoostReporter extends Reporter {
+  blueprint() {
+    return {};
+  }
+
   bootstrap() {
     super.bootstrap();
 
