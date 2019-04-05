@@ -5,14 +5,14 @@ import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 import instanceOf from './helpers/instanceOf';
 import Tool from './Tool';
-import { Constructor, Debugger } from './types';
+import { AbstractConstructor, Constructor, Debugger } from './types';
 
 export interface OptionsObject {
   [key: string]: any;
 }
 
 export default class ModuleLoader<Tm> {
-  contract: Constructor<Tm> | null = null;
+  contract: AbstractConstructor<Tm> | Constructor<Tm> | null = null;
 
   debug: Debugger;
 
@@ -25,7 +25,7 @@ export default class ModuleLoader<Tm> {
   constructor(
     tool: Tool<any>,
     typeName: string,
-    contract: Constructor<Tm> | null = null,
+    contract: AbstractConstructor<Tm> | Constructor<Tm> | null = null,
     scopes: string[] = [],
   ) {
     this.contract = contract;
@@ -176,7 +176,7 @@ export default class ModuleLoader<Tm> {
    */
   loadModule(module: string | OptionsObject | Tm, args: any[] = []): Tm {
     if (this.contract && instanceOf(module, this.contract)) {
-      return module;
+      return module as Tm;
     } else if (typeof module === 'string') {
       return this.importModule(module, args);
     } else if (isObject(module)) {

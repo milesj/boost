@@ -3,8 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Predicates } from 'optimal';
+import { Blueprint, Predicates } from 'optimal';
 import Optionable from './Optionable';
 
-// eslint-disable-next-line import/prefer-default-export
-export { Optionable, Predicates };
+export { Optionable, Blueprint, Predicates };

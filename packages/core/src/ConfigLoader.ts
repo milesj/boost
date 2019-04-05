@@ -16,7 +16,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import Tool, { ToolConfig } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { Debugger, PackageConfig, PluginSetting } from './types';
+import { Constructor, Debugger, PackageConfig, PluginSetting } from './types';
 
 export interface ConfigLike {
   extends?: ToolConfig['extends'];
@@ -278,7 +278,7 @@ export default class ConfigLoader {
       pluginsBlueprint[pluralName] = array(union<PluginSetting<Function>>([
         string().notEmpty(),
         shape({ [singularName]: string().notEmpty() }),
-        instance(contract, true),
+        instance(contract as Constructor<any>, true),
       ], []));
     });
 

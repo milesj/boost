@@ -149,7 +149,7 @@ describe('Tool', () => {
     it('errors if type has not been registered', () => {
       expect(() => {
         // @ts-ignore Allow invalid type
-        toolWithPlugins.addPlugin('qux', new Plugin());
+        toolWithPlugins.addPlugin('qux', new Baz());
       }).toThrowErrorMatchingSnapshot();
     });
 

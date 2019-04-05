@@ -1,4 +1,4 @@
-import { Constructor } from '../types';
+import { AbstractConstructor, Constructor } from '../types';
 
 /**
  * Native `instanceof` checks are problematic, as cross realm checks fail.
@@ -7,7 +7,7 @@ import { Constructor } from '../types';
  */
 export default function instanceOf<T = any>(
   object: any,
-  contract: Constructor<T> | Function,
+  contract: AbstractConstructor<T> | Constructor<T> | Function,
 ): object is T {
   if (!object || typeof object !== 'object') {
     return false;

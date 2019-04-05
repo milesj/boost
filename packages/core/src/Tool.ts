@@ -31,7 +31,6 @@ import instanceOf from './helpers/instanceOf';
 import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
   AbstractConstructor,
-  Constructor,
   Debugger,
   Translator,
   PackageConfig,
@@ -562,7 +561,7 @@ export default class Tool<
    */
   registerPlugin<K extends keyof PluginRegistry>(
     typeName: K,
-    contract: Constructor<PluginRegistry[K]> | AbstractConstructor<PluginRegistry[K]>,
+    contract: AbstractConstructor<PluginRegistry[K]>,
     options: Partial<
       Pick<PluginType<PluginRegistry[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'scopes'>
     > = {},
@@ -572,7 +571,6 @@ export default class Tool<
     }
 
     const name = String(typeName);
-    const typedContract = contract as Constructor<PluginRegistry[K]>;
     const { afterBootstrap = null, beforeBootstrap = null, scopes = [] } = options;
 
     this.debug('Registering new plugin type: %s', chalk.magenta(name));
@@ -582,8 +580,8 @@ export default class Tool<
     this.pluginTypes[typeName] = {
       afterBootstrap,
       beforeBootstrap,
-      contract: typedContract,
-      loader: new ModuleLoader(this, name, typedContract, scopes),
+      contract,
+      loader: new ModuleLoader(this, name, contract, scopes),
       pluralName: pluralize(name),
       scopes,
       singularName: name,

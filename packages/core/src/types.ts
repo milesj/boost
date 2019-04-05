@@ -23,7 +23,7 @@ export interface Translator extends i18next.i18n {}
 export interface PluginType<T> {
   afterBootstrap: ((plugin: T) => void) | null;
   beforeBootstrap: ((plugin: T) => void) | null;
-  contract: Constructor<T>;
+  contract: AbstractConstructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
   scopes: string[];

@@ -3,8 +3,18 @@
 import { bool } from 'optimal';
 import { Tool, ToolConfig, ToolPluginRegistry, Plugin, PluginSetting } from '../src';
 
-class Adapter extends Plugin {}
-class Renderer extends Plugin {}
+class Adapter extends Plugin {
+  blueprint() {
+    return {};
+  }
+}
+
+class Renderer extends Plugin {
+  blueprint() {
+    return {};
+  }
+}
+
 class Controller {}
 
 interface ExamplePlugins extends ToolPluginRegistry {

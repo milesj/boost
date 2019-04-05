@@ -51,7 +51,7 @@
     "i18next": "^15.0.9",
     "json5": "^2.1.0",
     "lodash": "^4.17.11",
-    "optimal": "^2.1.1",
+    "optimal": "^3.0.0",
     "os-locale": "^3.1.0",
     "pluralize": "^7.0.0",
     "pretty-ms": "^4.0.0",
