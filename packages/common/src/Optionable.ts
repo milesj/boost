@@ -19,7 +19,7 @@ export default abstract class Optionable<T extends object = {}> {
   /**
    * Protected helper to execute optimal.
    */
-  protected doConfigure(options?: Partial<T>): Required<T> {
+  private doConfigure(options?: Partial<T>): Required<T> {
     return optimal(
       {
         ...this.options,

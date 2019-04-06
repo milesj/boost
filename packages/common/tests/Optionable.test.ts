@@ -69,9 +69,31 @@ describe('Optionable', () => {
   });
 
   describe('configure()', () => {
-    it('can set an option', () => {
-      const opts = new OptionalProps();
+    let opts: OptionalProps;
 
+    beforeEach(() => {
+      opts = new OptionalProps();
+    });
+
+    it('errors for invalid option type passed', () => {
+      expect(() => {
+        opts.configure({
+          // @ts-ignore Allow invalid type
+          foo: 123,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('errors for unknown option', () => {
+      expect(() => {
+        opts.configure({
+          // @ts-ignore Allow unknown
+          unknown: 'abc',
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('can set an option', () => {
       expect(opts.options.foo).toBe('default');
 
       opts.configure({
@@ -82,7 +104,7 @@ describe('Optionable', () => {
     });
 
     it('persists other options not being configured', () => {
-      const opts = new OptionalProps({
+      opts = new OptionalProps({
         foo: 'abc',
         bar: 123,
       });
