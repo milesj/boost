@@ -1,6 +1,6 @@
 {
   "name": "@boost/reporter-nyan",
-  "version": "1.0.6",
+  "version": "1.1.0-alpha.0",
   "description": "A nyan cat console reporter for Boost applications.",
   "keywords": [
     "boost",
