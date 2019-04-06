@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Optionable configure() errors for invalid option type passed 1`] = `"Invalid OptionalProps field \\"foo\\". Must be a string."`;
+
+exports[`Optionable configure() errors for unknown option 1`] = `"Unknown fields: unknown."`;
+
 exports[`Optionable constructor() errors for invalid option type passed 1`] = `"Invalid OptionalProps field \\"foo\\". Must be a string."`;
 
 exports[`Optionable constructor() errors for unknown option 1`] = `"Unknown fields: unknown."`;

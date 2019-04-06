@@ -3,3 +3,7 @@
 #### 🎉 Release
 
 - Initial release!
+
+#### 🚀 Updates
+
+- Added `Optionable` abstract class.
