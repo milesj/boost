@@ -24,6 +24,10 @@ export default class NyanReporter extends Reporter {
 
   tick: 1 | 2 | 3 | 4 = 1;
 
+  blueprint() {
+    return {};
+  }
+
   bootstrap() {
     super.bootstrap();
 

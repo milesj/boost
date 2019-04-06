@@ -2,6 +2,9 @@
 
 #### 🚀 New
 
+- Added a new package, [@boost/common](https://www.npmjs.com/package/@boost/common), to house common
+  utilities and helpers for building Boost or general purpose applications.
+  - Added an `Optionable` abstract class.
 - Added a new package, [@boost/event](https://www.npmjs.com/package/@boost/event), to provide a
   type-safe static event system. The old event emitter is deprecated, so please migrate to the new
   system!
@@ -19,6 +22,7 @@
 - Started writing [documentation using GitBook](https://milesj.gitbook.io/boost/).
 - Updated dependencies.
 - TS: Reworked how options objects are handled.
+- TS: Marked `Plugin` and `Reporter` as abstract.
 
 # 1.10.1 - 2019-03-24
 

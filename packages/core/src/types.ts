@@ -9,6 +9,8 @@ export { Blueprint, Predicates };
 
 export type Constructor<T> = new (...args: any[]) => T;
 
+export type AbstractConstructor<T> = Function & { prototype: T };
+
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
   invariant(condition: boolean, message: string, pass: string, fail: string): void;
@@ -21,7 +23,7 @@ export interface Translator extends i18next.i18n {}
 export interface PluginType<T> {
   afterBootstrap: ((plugin: T) => void) | null;
   beforeBootstrap: ((plugin: T) => void) | null;
-  contract: Constructor<T>;
+  contract: AbstractConstructor<T>;
   loader: ModuleLoader<T>;
   pluralName: string;
   scopes: string[];

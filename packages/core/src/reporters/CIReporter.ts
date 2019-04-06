@@ -6,6 +6,10 @@ export default class CIReporter extends Reporter {
 
   taskCount: number = 0;
 
+  blueprint() {
+    return {};
+  }
+
   bootstrap() {
     super.bootstrap();
 

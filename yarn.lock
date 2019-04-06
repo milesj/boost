@@ -818,6 +818,14 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.3.2"
 
+"@babel/runtime-corejs3@^7.4.3":
+  version "7.4.3"
+  resolved "https://registry.npmjs.org/@babel/runtime-corejs3/-/runtime-corejs3-7.4.3.tgz#32a5114bdf255f2eed3078f07d675f774adbb394"
+  integrity sha512-12jcdiSTZu6bLXyjCqD4E8/rFoctaLjR/MvIiI4I4kvqFEnifeDbaChDpYHrt9meOXbkDpykXdqhXfRJCJYHxQ==
+  dependencies:
+    core-js-pure "^3.0.0"
+    regenerator-runtime "^0.13.2"
+
 "@babel/runtime@^7.3.1":
   version "7.4.0"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.4.0.tgz#d523416573f19aa12784639e631257c7fc58c0aa"
@@ -1717,10 +1725,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.159.2":
-  version "0.159.2"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.159.2.tgz#b06edc3fbbd9cd04a22a4f43de1a203e00de3aa7"
-  integrity sha512-xor3EiAj+LTD9pk7HX/ChggviwE7UVU+Zmsd0uLYANbgi/8MiROB9cSqGtICufxYa9icBdo8T2VtgwkPYzjjbw==
+"@milesj/build-tool-config@^0.159.3":
+  version "0.159.3"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.159.3.tgz#93c6f66e1cf25186dbd11b0495622e286edaa428"
+  integrity sha512-m8+QvcDP0wfAzNGr3PFKRtknTuKPRub0sUoVBaY4fFeS9hvgzG05O/xsOElvheP1X1Dpar6StMmnW9UwaOHUfQ==
   dependencies:
     "@babel/cli" "^7.4.3"
     "@babel/core" "^7.4.3"
@@ -1783,12 +1791,12 @@
     prettier "^1.16.4"
     typescript "^3.4.1"
 
-"@milesj/build-tools@^0.37.2":
-  version "0.37.2"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.37.2.tgz#9eff87b1e249835775b26ca1f79b5d17ae6ad110"
-  integrity sha512-GdvR0BbM/alH4hzrIAfrwaScrbsKBLLv/E13iVdTaTO5kUs0FsooRnvnG9j23uD/0a5u6O4sEWEXghmNhsiwxw==
+"@milesj/build-tools@^0.37.3":
+  version "0.37.3"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.37.3.tgz#82b7d063b4719f9912f95037be0794d58438f174"
+  integrity sha512-sA6Tio3I47Z/I63KM4O8U6Zqgsp+50lOSIm+irDUEOzXcrJNjP24dUu0m8sUQJgBVcwpKzgDmhSIKl8oypzhOA==
   dependencies:
-    "@milesj/build-tool-config" "^0.159.2"
+    "@milesj/build-tool-config" "^0.159.3"
     "@milesj/build-tool-runtime" "^0.33.0"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
@@ -3200,7 +3208,7 @@ core-js-compat@^3.0.0:
     core-js-pure "3.0.0"
     semver "^5.6.0"
 
-core-js-pure@3.0.0:
+core-js-pure@3.0.0, core-js-pure@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/core-js-pure/-/core-js-pure-3.0.0.tgz#a5679adb4875427c8c0488afc93e6f5b7125859b"
   integrity sha512-yPiS3fQd842RZDgo/TAKGgS0f3p2nxssF1H65DIZvZv0Od5CygP8puHXn3IQiM/39VAvgCbdaMQpresrbGgt9g==
@@ -7155,6 +7163,13 @@ optimal@^2.1.1:
   integrity sha512-M2J0hZTenzevjPErXW4YRefQt1erPGW6Ewsb8/5sGL9SAXDfR+zOw8A9SO1085Qt2e5bGtWvXOi6sN+WZNhzZw==
   dependencies:
     "@babel/runtime" "^7.3.1"
+
+optimal@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-3.0.0.tgz#c1a1614731f1521767fc35746da44d6e41eba157"
+  integrity sha512-mPsvOhEaZ0Qtwqtw8m4fi+W+lySFQbOejJafNyQd69Dpug7TZL2VN0iptm4iv5Wd/ZzCzzWp6siWsb0qRSxq4w==
+  dependencies:
+    "@babel/runtime-corejs3" "^7.4.3"
 
 optimist@^0.6.1:
   version "0.6.1"

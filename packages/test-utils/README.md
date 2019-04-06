@@ -15,6 +15,4 @@ Jest testing utilities for [Boost](https://github.com/milesj/boost/) powered app
 
 ```
 yarn add @boost/test-utils
-// Or
-npm install @boost/test-utils
 ```

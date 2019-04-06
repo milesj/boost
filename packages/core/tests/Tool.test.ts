@@ -15,8 +15,18 @@ import Reporter from '../src/Reporter';
 import BoostReporter from '../src/reporters/BoostReporter';
 import ExitError from '../src/ExitError';
 
-class Foo extends Plugin {}
-class Bar extends Plugin {}
+class Foo extends Plugin {
+  blueprint() {
+    return {};
+  }
+}
+
+class Bar extends Plugin {
+  blueprint() {
+    return {};
+  }
+}
+
 class Baz {}
 
 interface ToolWithPlugins {
@@ -139,7 +149,7 @@ describe('Tool', () => {
     it('errors if type has not been registered', () => {
       expect(() => {
         // @ts-ignore Allow invalid type
-        toolWithPlugins.addPlugin('qux', new Plugin());
+        toolWithPlugins.addPlugin('qux', new Baz());
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -293,7 +303,7 @@ describe('Tool', () => {
     });
 
     it('returns plugin by name', () => {
-      const plugin = new Plugin();
+      const plugin = new Foo();
       plugin.name = 'foo';
 
       // @ts-ignore Allow access
@@ -473,7 +483,7 @@ describe('Tool', () => {
     });
 
     it('returns true when using instances and name matches', () => {
-      const plugin = new Plugin();
+      const plugin = new Foo();
       plugin.name = 'foo';
 
       tool.config.plugins = [plugin];
@@ -482,7 +492,7 @@ describe('Tool', () => {
     });
 
     it('returns false when using instances and name doesnt match', () => {
-      const plugin = new Plugin();
+      const plugin = new Bar();
       plugin.name = 'bar';
 
       tool.config.plugins = [plugin];
@@ -591,7 +601,7 @@ describe('Tool', () => {
     });
 
     it('bootstraps plugins on load', () => {
-      const plugin = new Plugin();
+      const plugin = new Foo();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
       tool.config = stubToolConfig<TestToolConfig>({ plugins: [plugin] });
@@ -603,6 +613,10 @@ describe('Tool', () => {
 
     it('bootstraps plugins with tool if bootstrap() is overridden', () => {
       class TestPlugin extends Plugin {
+        blueprint() {
+          return {};
+        }
+
         bootstrap() {}
       }
 
@@ -616,9 +630,9 @@ describe('Tool', () => {
     });
 
     it('sorts by priority', () => {
-      const foo = new Plugin();
-      const bar = new Plugin();
-      const baz = new Plugin();
+      const foo = new Foo();
+      const bar = new Foo();
+      const baz = new Foo();
 
       baz.priority = 1;
       bar.priority = 2;

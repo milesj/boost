@@ -18,7 +18,7 @@ let restoreCursorOnExit = false;
 
 export const SLOW_THRESHOLD = 10000; // ms
 
-export default class Reporter<Options extends object = {}> extends Plugin<Options> {
+export default abstract class Reporter<Options extends object = {}> extends Plugin<Options> {
   // eslint-disable-next-line no-magic-numbers
   static BUFFER = 10;
 

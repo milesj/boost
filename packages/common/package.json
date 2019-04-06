@@ -1,0 +1,22 @@
+{
+  "name": "@boost/common",
+  "version": "0.0.0",
+  "description": "Common utilities for Boost applications.",
+  "keywords": ["boost", "common", "utils", "helpers"],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/common",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "optimal": "^3.0.0"
+  },
+  "devDependencies": {
+    "optimal": "^3.0.0"
+  }
+}

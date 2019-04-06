@@ -30,7 +30,7 @@ import FileBackend from './i18n/FileBackend';
 import instanceOf from './helpers/instanceOf';
 import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
-  Constructor,
+  AbstractConstructor,
   Debugger,
   Translator,
   PackageConfig,
@@ -561,7 +561,7 @@ export default class Tool<
    */
   registerPlugin<K extends keyof PluginRegistry>(
     typeName: K,
-    contract: Constructor<PluginRegistry[K]>,
+    contract: AbstractConstructor<PluginRegistry[K]>,
     options: Partial<
       Pick<PluginType<PluginRegistry[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'scopes'>
     > = {},
