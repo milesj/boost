@@ -10,8 +10,6 @@ A strict type-safe event system with multiple emitter patterns.
 
 ```
 yarn add @boost/event
-// Or
-npm install @boost/event
 ```
 
 ## Documentation

@@ -4,9 +4,32 @@ export default abstract class Optionable<T extends object = {}> {
   options: Required<T>;
 
   constructor(options?: T) {
-    this.options = optimal({ ...options }, this.blueprint(predicates), {
-      name: this.constructor.name,
-    });
+    this.options = this.doConfigure(options);
+  }
+
+  /**
+   * Validate and build the options object using optimal.
+   */
+  configure(options: Partial<T>): this {
+    this.options = this.doConfigure(options);
+
+    return this;
+  }
+
+  /**
+   * Protected helper to execute optimal.
+   */
+  protected doConfigure(options?: Partial<T>): Required<T> {
+    return optimal(
+      {
+        ...this.options,
+        ...options,
+      },
+      this.blueprint(predicates),
+      {
+        name: this.constructor.name,
+      },
+    );
   }
 
   /**

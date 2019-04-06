@@ -14,6 +14,4 @@ A nyan cat reporter for [Boost](https://github.com/milesj/boost/) powered applic
 
 ```
 yarn add @boost/reporter-nyan
-// Or
-npm install @boost/reporter-nyan
 ```

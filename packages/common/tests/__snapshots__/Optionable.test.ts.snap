@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Optionable constructor() errors for invalid option type passed 1`] = `"Invalid OptionalProps field \\"foo\\". Must be a string."`;
+
+exports[`Optionable constructor() errors for unknown option 1`] = `"Unknown fields: unknown."`;
+
+exports[`Optionable constructor() requires non-optional options to be passed 1`] = `"Invalid RequiredProps field \\"bar\\". Field is required and must be defined."`;
