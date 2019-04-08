@@ -14,6 +14,7 @@
   - Added `onCommand` and `onCommandData` events to `Routine`.
   - Added `onFail`, `onPass`, `onRun`, and `onSkip` to `Task` and `Routine`.
   - Added `onExit` to `Tool`.
+- Updated `Routine#execute` to serialize tasks by default.
 - Tasks and Routines can be skipped during their run process if an `onRun` event listener returns
   `false`.
 
@@ -23,6 +24,7 @@
 - Updated dependencies.
 - TS: Reworked how options objects are handled.
 - TS: Marked `Plugin` and `Reporter` as abstract.
+- TS: Unmarked `Routine#execute` as abstract.
 
 # 1.10.1 - 2019-03-24
 

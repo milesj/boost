@@ -41,14 +41,6 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
   }
 
   /**
-   * No-op implementation.
-   */
-  // istanbul ignore next
-  execute() {
-    return Promise.resolve();
-  }
-
-  /**
    * Execute all routines in order.
    */
   run<T>(initialValue?: T): Promise<any> {

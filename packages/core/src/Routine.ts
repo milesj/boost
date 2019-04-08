@@ -98,6 +98,13 @@ export default abstract class Routine<
   }
 
   /**
+   * Execute the current routine and return a new value.
+   */
+  async execute(context: Ctx, value: any): Promise<any> {
+    return this.serializeTasks();
+  }
+
+  /**
    * Execute a command with the given arguments and pass the results through a promise.
    */
   async executeCommand(
@@ -264,10 +271,4 @@ export default abstract class Routine<
 
     return task;
   }
-
-  /**
-   * Execute the current routine and return a new value.
-   * This method *must* be overridden in a subclass.
-   */
-  abstract async execute(context: Ctx, value: any): Promise<any>;
 }
