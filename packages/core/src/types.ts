@@ -7,9 +7,11 @@ import ModuleLoader from './ModuleLoader';
 
 export { Blueprint, Predicates };
 
-export type Constructor<T> = new (...args: any[]) => T;
-
 export type AbstractConstructor<T> = Function & { prototype: T };
+
+export type ConcreteConstructor<T> = new (...args: any[]) => T;
+
+export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 
 export interface Debugger extends debug.IDebugger {
   (message: any, ...args: any[]): void;
