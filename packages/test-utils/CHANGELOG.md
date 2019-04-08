@@ -1,6 +1,6 @@
-# 1.0.1-1.0.4 - 2019-02-22
+### 1.0.1-1.0.4 - 2019-02-22
 
-#### 🛠 Internal
+#### 🛠 Internals
 
 - Updated dependencies.
 
