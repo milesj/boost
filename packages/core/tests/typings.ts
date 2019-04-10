@@ -48,5 +48,7 @@ tool.registerPlugin('controller', Controller);
 tool.addPlugin('adapter', new Adapter());
 tool.addPlugin('renderer', new Renderer());
 
+tool.onLoadPlugin.emit([new Adapter()], 'adapter');
+
 const adapter = tool.getPlugin('adapter', 'foo');
 const renderer = tool.getPlugin('renderer', 'foo');

@@ -13,7 +13,7 @@
   - Added `onRoutine`, `onRoutines`,`onTask`, and `onTasks` events to `Executor`.
   - Added `onCommand` and `onCommandData` events to `Routine`.
   - Added `onFail`, `onPass`, `onRun`, and `onSkip` to `Task` and `Routine`.
-  - Added `onExit` to `Tool`.
+  - Added `onExit`, `onInit`, and `onLoadPlugin` to `Tool`.
 - Updated `Routine#execute` to serialize tasks by default.
 - Tasks and Routines can be skipped during their run process if an `onRun` event listener returns
   `false`.

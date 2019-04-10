@@ -1,7 +1,10 @@
 import BaseEvent from './BaseEvent';
-import { Scope } from './types';
 
-export default class Event<Args extends unknown[]> extends BaseEvent<Args, void> {
+export default class Event<Args extends unknown[], Scope extends string = string> extends BaseEvent<
+  void,
+  Args,
+  Scope
+> {
   /**
    * Synchronously execute listeners with the defined arguments.
    */

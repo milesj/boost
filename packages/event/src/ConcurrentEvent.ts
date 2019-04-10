@@ -1,10 +1,9 @@
 import BaseEvent from './BaseEvent';
-import { Scope } from './types';
 
-export default class ConcurrentEvent<Args extends unknown[]> extends BaseEvent<
-  Args,
-  Promise<unknown>
-> {
+export default class ConcurrentEvent<
+  Args extends unknown[],
+  Scope extends string = string
+> extends BaseEvent<Promise<unknown>, Args, Scope> {
   /**
    * Asynchronously execute listeners for with the defined arguments.
    * Will return a promise with an array of each listener result.

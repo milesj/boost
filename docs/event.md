@@ -24,7 +24,8 @@ const event = new Event<[string]>('example');
 ```
 
 `Event`s utilize TypeScript generics for typing the arguments passed to listener functions. This can
-be defined using a tuple or an array.
+be defined using a tuple or an array in the 1st generic slot. The 2nd slot is reserved for
+[scopes](#scopes).
 
 ```ts
 // One argument of type number
@@ -92,6 +93,13 @@ event.emit([]);
 
 // Will only execute the 2nd listener
 event.emit([], 'foo');
+```
+
+A list of acceptable scope names can be passed as the 2nd generic slot to `Event`, otherwise all
+strings are allowed.
+
+```ts
+new Event<[number], 'foo' | 'bar' | 'baz'>('event');
 ```
 
 ## Types

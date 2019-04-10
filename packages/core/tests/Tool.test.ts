@@ -174,7 +174,7 @@ describe('Tool', () => {
       expect(plugin.tool).toBe(toolWithPlugins);
     });
 
-    it('calls bootstrap() on plugin', () => {
+    it('bootstraps plugin', () => {
       const plugin = new Foo();
       const spy = jest.spyOn(plugin, 'bootstrap');
 
@@ -234,6 +234,21 @@ describe('Tool', () => {
       toolWithPlugins.addPlugin('foo', plugin);
 
       expect(spy).toHaveBeenCalledWith(plugin);
+    });
+
+    it('emits `onLoadPlugin` with a scope', () => {
+      const fooSpy = jest.fn();
+      const barSpy = jest.fn();
+
+      toolWithPlugins.onLoadPlugin.listen(fooSpy, 'foo');
+      toolWithPlugins.onLoadPlugin.listen(barSpy, 'bar');
+
+      const plugin = new Foo();
+
+      toolWithPlugins.addPlugin('foo', plugin);
+
+      expect(fooSpy).toHaveBeenCalledWith(plugin);
+      expect(barSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -440,6 +455,18 @@ describe('Tool', () => {
       tool.initialize();
       tool.initialize();
 
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('emits `onInit` after initializing', () => {
+      const spy = jest.fn();
+
+      tool.onInit.listen(spy);
+      tool.initialize();
+      tool.initialize();
+      tool.initialize();
+
+      expect(spy).toHaveBeenCalledWith();
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });

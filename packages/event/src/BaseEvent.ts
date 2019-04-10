@@ -1,8 +1,12 @@
-import { EVENT_NAME_PATTERN, DEFAULT_SCOPE } from './constants';
-import { Listener, Scope } from './types';
+import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
+import { Listener, WildstarScope } from './types';
 
-export default abstract class BaseEvent<Args extends unknown[], Return> {
-  listeners: Map<string, Set<Listener<Args, Return>>> = new Map();
+export default abstract class BaseEvent<
+  Return,
+  Args extends unknown[],
+  Scope extends string = string
+> {
+  listeners: Map<Scope | WildstarScope, Set<Listener<Args, Return>>> = new Map();
 
   name: string;
 
@@ -26,8 +30,8 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
   /**
    * Return a set of listeners for a specific event scope.
    */
-  getListeners(scope: Scope = DEFAULT_SCOPE): Set<Listener<Args, Return>> {
-    const key = this.validateName(scope, 'scope');
+  getListeners(scope?: Scope): Set<Listener<Args, Return>> {
+    const key = this.validateName(scope || WILDCARD_SCOPE, 'scope');
 
     if (!this.listeners.has(key)) {
       this.listeners.set(key, new Set());
@@ -39,8 +43,8 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
   /**
    * Return a list of all scopes with listeners.
    */
-  getScopes(): string[] {
-    return Array.from(this.listeners.keys());
+  getScopes(): (Scope | WildstarScope)[] {
+    return Array.from(this.listeners.keys()) as (Scope | WildstarScope)[];
   }
 
   /**
@@ -89,8 +93,8 @@ export default abstract class BaseEvent<Args extends unknown[], Return> {
   /**
    * Validate the name/scope match a defined pattern.
    */
-  protected validateName(name: string, type: string): string {
-    if (type === 'scope' && name === DEFAULT_SCOPE) {
+  protected validateName<N extends string>(name: N, type: string): N {
+    if (type === 'scope' && name === WILDCARD_SCOPE) {
       return name;
     }
 

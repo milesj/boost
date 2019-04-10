@@ -1,7 +1,10 @@
 import BaseEvent from './BaseEvent';
-import { Scope } from './types';
 
-export default class WaterfallEvent<Arg> extends BaseEvent<[Arg], Arg> {
+export default class WaterfallEvent<Arg, Scope extends string = string> extends BaseEvent<
+  Arg,
+  [Arg],
+  Scope
+> {
   /**
    * Synchronously execute listeners with the defined argument value.
    * The return value of each listener will be passed as an argument to the next listener.

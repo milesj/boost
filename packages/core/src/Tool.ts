@@ -86,7 +86,14 @@ export default class Tool<
 
   debug: Debugger;
 
-  onExit: Event<[number]>;
+  onExit = new Event<[number]>('exit');
+
+  onInit = new Event<[]>('init');
+
+  onLoadPlugin = new Event<
+    [PluginRegistry[keyof PluginRegistry]],
+    Extract<keyof PluginRegistry, string>
+  >('load-plugin');
 
   options: Required<ToolOptions>;
 
@@ -134,8 +141,6 @@ export default class Tool<
         name: this.constructor.name,
       },
     );
-
-    this.onExit = new Event('exit');
 
     // Core debugger for the entire tool
     this.debug = this.createDebugger('core');
@@ -197,6 +202,8 @@ export default class Tool<
     }
 
     this.plugins[typeName]!.add(plugin);
+
+    this.onLoadPlugin.emit([plugin], typeName as Extract<K, string>);
 
     return this;
   }
@@ -448,6 +455,7 @@ export default class Tool<
     this.loadReporters();
 
     this.initialized = true;
+    this.onInit.emit([]);
 
     return this;
   }

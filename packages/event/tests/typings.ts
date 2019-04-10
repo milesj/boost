@@ -6,6 +6,7 @@ const foo = new Event<[number, string?]>('foo');
 const bar = new BailEvent<[number, number, object]>('bar');
 const baz = new ConcurrentEvent<unknown[]>('baz');
 const qux = new WaterfallEvent<string>('qux');
+const scope = new Event<[], 'a' | 'b' | 'c'>('scope');
 
 // VALID
 foo.listen(() => {});
@@ -53,3 +54,14 @@ qux.listen(() => {});
 qux.emit(123);
 qux.emit(['qux']);
 const notStringReturn: number = qux.emit('abc');
+
+// VALID
+scope.listen(() => {});
+scope.listen(() => {}, 'b');
+scope.emit([]);
+scope.emit([], 'c');
+
+// INVALID
+scope.listen(() => {}, 'z');
+scope.emit([123]);
+scope.emit([], 'y');
