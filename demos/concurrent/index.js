@@ -13,7 +13,7 @@ class ConcurrentReporter extends Reporter {
 
     this.handleRoutine = this.handleRoutine.bind(this);
 
-    this.console.on('routine', this.handleRoutine);
+    this.console.onRoutine.listen(this.handleRoutine);
   }
 
   handleRoutine(routine) {
@@ -31,9 +31,9 @@ class ConcurrentReporter extends Reporter {
       output.enqueue(true);
     };
 
-    routine.on('skip', handler);
-    routine.on('pass', handler);
-    routine.on('fail', handler);
+    routine.onSkip.listen(handler);
+    routine.onPass.listen(handler);
+    routine.onFail.listen(handler);
   }
 }
 

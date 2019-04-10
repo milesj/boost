@@ -212,40 +212,40 @@ describe('Task', () => {
       expect(spy).toHaveBeenCalledWith({}, 123, task);
     });
 
-    it('emits `skip` event when skipped', async () => {
+    it('emits `onSkip` event when skipped', async () => {
       const spy = jest.fn();
 
-      task.on('skip', spy);
+      task.onSkip.listen(spy);
 
       await task.skip().run({}, 123);
 
       expect(spy).toHaveBeenCalledWith(123);
     });
 
-    it('emits `run` event when running', async () => {
+    it('emits `onRun` event before running', async () => {
       const spy = jest.fn();
 
-      task.on('run', spy);
+      task.onRun.listen(spy);
 
       await task.run({}, 123);
 
       expect(spy).toHaveBeenCalledWith(123);
     });
 
-    it('emits `pass` event on success', async () => {
+    it('emits `onPass` event on success', async () => {
       const spy = jest.fn();
 
-      task.on('pass', spy);
+      task.onPass.listen(spy);
 
       await task.run({}, 123);
 
       expect(spy).toHaveBeenCalledWith(246);
     });
 
-    it('emits `fail` event on error', async () => {
+    it('emits `onFail` event on error', async () => {
       const spy = jest.fn();
 
-      task.on('fail', spy);
+      task.onFail.listen(spy);
 
       try {
         task.action = () => {
@@ -256,6 +256,22 @@ describe('Task', () => {
       } catch (error) {
         expect(spy).toHaveBeenCalledWith(error);
       }
+    });
+
+    it('can skip if `onRun` listener returns false', async () => {
+      const skipSpy = jest.fn();
+      const otherSpy = jest.fn();
+
+      task.onRun.listen(() => false);
+      task.onSkip.listen(skipSpy);
+      task.onPass.listen(otherSpy);
+      task.onFail.listen(otherSpy);
+
+      await task.run({}, 123);
+
+      expect(task.isSkipped()).toBe(true);
+      expect(skipSpy).toHaveBeenCalledWith(123);
+      expect(otherSpy).not.toHaveBeenCalled();
     });
   });
 

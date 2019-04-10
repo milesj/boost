@@ -66,58 +66,6 @@ describe('Executor', () => {
 
       expect(routine.status).toBe(STATUS_FAILED);
     });
-
-    it('emits console event `routine` when skipped', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-
-      routine.skip();
-
-      await executor.executeRoutine(routine, 123);
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-    });
-
-    it('emits console event `routine` if a success', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-
-      await executor.executeRoutine(routine, 123);
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-    });
-
-    it('emits console event `routine` if a failure', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-
-      // @ts-ignore
-      routine.action = () => {
-        throw new Error('Oops');
-      };
-
-      try {
-        await executor.executeRoutine(routine, 123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Oops'));
-      }
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, false]);
-    });
-
-    it('emits console event `routine` with parallel flag', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-      executor.parallel = true;
-
-      await executor.executeRoutine(routine, 123);
-
-      expect(spy).toHaveBeenCalledWith('routine', [routine, 123, true]);
-    });
   });
 
   describe('executeTask()', () => {
@@ -154,57 +102,6 @@ describe('Executor', () => {
 
       expect(task.status).toBe(STATUS_FAILED);
     });
-
-    it('emits console event `task` when skipped', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-
-      task.skip();
-
-      await executor.executeTask(task, 123);
-
-      expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
-    });
-
-    it('emits console event `task` if a success', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-
-      await executor.executeTask(task, 123);
-
-      expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
-    });
-
-    it('emits console event `task` if a failure', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-
-      task = new Task('title', () => {
-        throw new Error('Oops');
-      });
-
-      try {
-        await executor.executeTask(task, 123);
-      } catch (error) {
-        expect(error).toEqual(new Error('Oops'));
-      }
-
-      expect(spy).toHaveBeenCalledWith('task', [task, 123, false]);
-    });
-
-    it('emits console event `task` with parallel flag', async () => {
-      const spy = jest.fn();
-
-      executor.tool.console.emit = spy;
-      executor.parallel = true;
-
-      await executor.executeTask(task, 123);
-
-      expect(spy).toHaveBeenCalledWith('task', [task, 123, true]);
-    });
   });
 
   describe('runRoutines()', () => {
@@ -220,25 +117,25 @@ describe('Executor', () => {
       expect(executor.run).toHaveBeenCalledWith(executor.executeRoutine, routines, 123);
     });
 
-    it('emits `routines` event', async () => {
+    it('emits `onRoutines` event', async () => {
       const spy = jest.fn();
 
-      executor.tool.console.emit = spy;
+      executor.tool.console.onRoutines.listen(spy);
 
       await executor.runRoutines(routines, 123);
 
-      expect(spy).toHaveBeenCalledWith('routines', [routines, 123]);
+      expect(spy).toHaveBeenCalledWith(routines, 123, false);
     });
 
-    it('emits `routines.parallel` event when parallel', async () => {
+    it('emits `onRoutines` event when parallel', async () => {
       const spy = jest.fn();
 
-      executor.tool.console.emit = spy;
+      executor.tool.console.onRoutines.listen(spy);
       executor.parallel = true;
 
       await executor.runRoutines(routines, 123);
 
-      expect(spy).toHaveBeenCalledWith('routines.parallel', [routines, 123]);
+      expect(spy).toHaveBeenCalledWith(routines, 123, true);
     });
   });
 
@@ -259,25 +156,25 @@ describe('Executor', () => {
       expect(executor.run).toHaveBeenCalledWith(executor.executeTask, tasks, 123);
     });
 
-    it('emits `routines` event', async () => {
+    it('emits `onTasks` event', async () => {
       const spy = jest.fn();
 
-      executor.tool.console.emit = spy;
+      executor.tool.console.onTasks.listen(spy);
 
       await executor.runTasks(tasks, 123);
 
-      expect(spy).toHaveBeenCalledWith('tasks', [tasks, 123]);
+      expect(spy).toHaveBeenCalledWith(tasks, 123, false);
     });
 
-    it('emits `routines.parallel` event when parallel', async () => {
+    it('emits `onTasks` event when parallel', async () => {
       const spy = jest.fn();
 
-      executor.tool.console.emit = spy;
+      executor.tool.console.onTasks.listen(spy);
       executor.parallel = true;
 
       await executor.runTasks(tasks, 123);
 
-      expect(spy).toHaveBeenCalledWith('tasks.parallel', [tasks, 123]);
+      expect(spy).toHaveBeenCalledWith(tasks, 123, true);
     });
   });
 });

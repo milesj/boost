@@ -44,12 +44,12 @@ describe('Pipeline', () => {
       const spy = jest.fn();
       const routine = mockRoutine(pipeline.tool);
 
-      pipeline.tool.console.emit = spy;
+      pipeline.tool.console.onStart.listen(spy);
       pipeline.pipe(routine);
 
       await pipeline.run(123);
 
-      expect(spy).toHaveBeenCalledWith('start', [[routine], 123]);
+      expect(spy).toHaveBeenCalledWith([routine], 123);
     });
 
     it('stops the console on success', async () => {

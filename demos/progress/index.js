@@ -7,7 +7,7 @@ class ProgressReporter extends Reporter {
 
     this.handleStart = this.handleStart.bind(this);
 
-    this.console.on('start', this.handleStart);
+    this.console.onStart.listen(this.handleStart);
   }
 
   handleStart(parents) {

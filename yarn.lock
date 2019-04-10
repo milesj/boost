@@ -1775,10 +1775,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.161.0":
-  version "0.161.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.161.0.tgz#6f5f780447ae24bb6a2aba094f5aca43f5de619d"
-  integrity sha512-Fv9pH3LSj7StqTDR5doLA+23o6s2zqXvelQksWZuKOgZBTjbOo5ISr3pCCVmSEAn5/lT4ZXWUsCPhJkbKo+ubw==
+"@milesj/build-tool-config@^0.161.1":
+  version "0.161.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.161.1.tgz#3607599d619edc063b67fe59698f4489a745fd29"
+  integrity sha512-bdvdM1OM+VoCU4HHPakUytQl3SHD7SlN602qChQ5SWitiE/61PcSmX9yZKqQ/SRWpEcH32CwmPM/QuCayZypzA==
   dependencies:
     "@babel/cli" "^7.4.3"
     "@babel/core" "^7.4.3"
@@ -1812,7 +1812,7 @@
     eslint-plugin-promise "^4.1.1"
     eslint-plugin-react "^7.12.4"
     eslint-plugin-react-hooks "^1.6.0"
-    eslint-plugin-unicorn "^8.0.1"
+    eslint-plugin-unicorn "^8.0.2"
     execa "^1.0.0"
     fast-glob "^2.2.6"
     fs-extra "^7.0.1"
@@ -1822,12 +1822,12 @@
     react "^16.8.6"
     react-dom "^16.8.6"
     react-test-renderer "^16.8.6"
-    typescript "~3.4.2"
+    typescript "~3.4.3"
 
-"@milesj/build-tool-runtime@^0.34.0":
-  version "0.34.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.34.0.tgz#ea52b5fc79c30d655d07973c064e85cc2167b35b"
-  integrity sha512-kVjyI/5q1j43VfxVE/u4LcA9jxvMQiwllorrvWh7uJ+TfNfCxLKTUEGaDZMdkpRrUM3Yo7VvQrz6VrmEMrNJQw==
+"@milesj/build-tool-runtime@^0.34.1":
+  version "0.34.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-0.34.1.tgz#b7a82205c6b7153edc0c00e65d13e9d1a52d2214"
+  integrity sha512-R5NEpi2gL6WBE096rOIKcky+fMG0JVADWc/9Dou/wVTnzqxdjK90S0aYCrU43SJgri3ZdCRxCtqLskicmlH9UA==
   dependencies:
     "@babel/core" "^7.4.3"
     "@beemo/cli" "^1.0.0-alpha.3"
@@ -1840,15 +1840,15 @@
     eslint "^5.16.0"
     jest "^24.7.1"
     prettier "^1.16.4"
-    typescript "^3.4.2"
+    typescript "^3.4.3"
 
-"@milesj/build-tools@^0.39.0":
-  version "0.39.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.39.0.tgz#2069b335b1bab46d13dfb309bb64eeccf2ff5696"
-  integrity sha512-GrUkWCNYUR2DNgMawqh2eTTc5oBFcPJfZ8iGb4CA/aqWCSJQyiJoGwWazEr0lyuLXoQMzGtXvvAVr2hbz3m7lA==
+"@milesj/build-tools@^0.39.1":
+  version "0.39.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.39.1.tgz#a74cc0aa984d30f921eb9950f506838f5aede1e9"
+  integrity sha512-3sH1lu2f0iWBn8ExQTDUHRhi5iEKhMj3UJHfFEbjd7RVJVekzswRQlf+Jw3ZKjrUx5Adkzx41BxsfhqcrchLzA==
   dependencies:
-    "@milesj/build-tool-config" "^0.161.0"
-    "@milesj/build-tool-runtime" "^0.34.0"
+    "@milesj/build-tool-config" "^0.161.1"
+    "@milesj/build-tool-runtime" "^0.34.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -4044,10 +4044,10 @@ eslint-plugin-react@^7.12.4:
     prop-types "^15.6.2"
     resolve "^1.9.0"
 
-eslint-plugin-unicorn@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.npmjs.org/eslint-plugin-unicorn/-/eslint-plugin-unicorn-8.0.1.tgz#9212c4d8dd729785db846db920148ca97d545696"
-  integrity sha512-BIkPbCww71GZPnT1U4jzlNQyabmV7JlHu3qhCGLkZZKFp7jWkWdCQziadYdpLFLD5A+Z2nSi1LPe8/fkesvPVg==
+eslint-plugin-unicorn@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.npmjs.org/eslint-plugin-unicorn/-/eslint-plugin-unicorn-8.0.2.tgz#a1f6192c39916d7385c057f79a95ffcdf47f4636"
+  integrity sha512-Ik2/Bt/PvPnf1lZgUnNFK2310XoRn/4LYiP5gkEPVDa4w9HCoii7I6SeKh2X5Rdp2WLy4eUiLcYtiBUp+q2IRw==
   dependencies:
     clean-regexp "^1.0.0"
     eslint-ast-utils "^1.0.0"
@@ -9228,10 +9228,10 @@ typedarray@^0.0.6:
   resolved "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.4.2, typescript@~3.4.2:
-  version "3.4.2"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-3.4.2.tgz#9ed4e6475d906f589200193be056f5913caed481"
-  integrity sha512-Og2Vn6Mk7JAuWA1hQdDQN/Ekm/SchX80VzLhjKN9ETYrIepBFAd8PkOdOTK2nKt0FCkmMZKBJvQ1dV1gIxPu/A==
+typescript@^3.4.3, typescript@~3.4.3:
+  version "3.4.3"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-3.4.3.tgz#0eb320e4ace9b10eadf5bc6103286b0f8b7c224f"
+  integrity sha512-FFgHdPt4T/duxx6Ndf7hwgMZZjZpB+U0nMNGVCYPq0rEzWKjEDobm4J6yb3CS7naZ0yURFqdw9Gwc7UOh/P9oQ==
 
 uglify-js@^3.1.4:
   version "3.4.10"

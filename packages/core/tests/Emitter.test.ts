@@ -2,9 +2,15 @@ import Emitter from '../src/Emitter';
 
 describe('Emitter', () => {
   let emitter: Emitter;
+  const oldWarn = console.warn.bind(console);
 
   beforeEach(() => {
     emitter = new Emitter();
+    console.warn = jest.fn();
+  });
+
+  afterEach(() => {
+    console.warn = oldWarn;
   });
 
   describe('clearListeners()', () => {

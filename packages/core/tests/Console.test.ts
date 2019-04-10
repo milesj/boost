@@ -240,7 +240,7 @@ describe('Console', () => {
   });
 
   describe('handleFailure()', () => {
-    it('calls exit with error', () => {
+    it('stops with error', () => {
       const error = new Error('Oops');
 
       cli.stop = jest.fn();
@@ -257,7 +257,7 @@ describe('Console', () => {
   });
 
   describe('handleSignal()', () => {
-    it('calls exit with error', () => {
+    it('stops with an error', () => {
       cli.stop = jest.fn();
       cli.handleSignal('SIGINT');
 
@@ -467,20 +467,20 @@ describe('Console', () => {
       expect(out).not.toHaveBeenCalledWith('Footer');
     });
 
-    it('emits `error` event on failure', () => {
+    it('emits `onError` event on failure', () => {
       const spy = jest.fn();
       const error = new Error('Stop');
 
-      cli.on('error', spy);
+      cli.onError.listen(spy);
       cli.renderFinalOutput(error);
 
       expect(spy).toHaveBeenCalledWith(error);
     });
 
-    it('doesnt emit `error` event on success', () => {
+    it('doesnt emit `onError` event on success', () => {
       const spy = jest.fn();
 
-      cli.on('error', spy);
+      cli.onError.listen(spy);
       cli.renderFinalOutput(null);
 
       expect(spy).not.toHaveBeenCalled();
@@ -524,10 +524,10 @@ describe('Console', () => {
       expect(cli.displayHeader).toHaveBeenCalled();
     });
 
-    it('emits `start` event', () => {
+    it('emits `onStart` event', () => {
       const spy = jest.fn();
 
-      cli.on('start', spy);
+      cli.onStart.listen(spy);
       cli.wrapStreams = jest.fn();
       cli.displayHeader = jest.fn();
       cli.startRenderLoop = jest.fn();
@@ -613,20 +613,20 @@ describe('Console', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    it('calls `stop` with null (no error)', () => {
+    it('emits `onStop` with null (no error)', () => {
       const spy = jest.fn();
 
-      cli.on('stop', spy);
+      cli.onStop.listen(spy);
       cli.stop();
 
       expect(spy).toHaveBeenCalledWith(null);
     });
 
-    it('calls `stop` with error', () => {
+    it('emits `onStop` with error', () => {
       const spy = jest.fn();
       const error = new Error('Oops');
 
-      cli.on('stop', spy);
+      cli.onStop.listen(spy);
       cli.stop(error);
 
       expect(spy).toHaveBeenCalledWith(error);

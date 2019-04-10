@@ -79,6 +79,7 @@ export default class Emitter {
       eventProp = event;
     }
 
+    // eslint-disable-next-line no-console
     console.warn(
       `Boost emitter has been deprecated. Please migrate \`on('${eventName}', listener)\` to the new @boost/event system, \`on${upperFirst(
         camelCase(eventProp),
