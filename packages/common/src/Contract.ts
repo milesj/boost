@@ -2,35 +2,12 @@ import optimal, { predicates, Blueprint, Predicates } from 'optimal';
 import { Optionable } from './types';
 
 export default abstract class Contract<T extends object = {}> implements Optionable<T> {
-  options: Required<T>;
+  readonly options: Required<T>;
 
   constructor(options?: T) {
-    this.options = this.doConfigure(options);
-  }
-
-  /**
-   * Validate and build the options object using optimal.
-   */
-  configure(options: Partial<T>): this {
-    this.options = this.doConfigure(options);
-
-    return this;
-  }
-
-  /**
-   * Protected helper to execute optimal.
-   */
-  private doConfigure(options?: Partial<T>): Required<T> {
-    return optimal(
-      {
-        ...this.options,
-        ...options,
-      },
-      this.blueprint(predicates),
-      {
-        name: this.constructor.name,
-      },
-    );
+    this.options = optimal({ ...options }, this.blueprint(predicates), {
+      name: this.constructor.name,
+    });
   }
 
   /**

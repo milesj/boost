@@ -12,13 +12,13 @@ yarn add @boost/common
 
 ### `Contract`
 
-A `Contract` is an abstract class that implements the `Optionable` interface, which provides a
-configurable options object layer, and is meant to be inherited from as a super class. All classes
-that extend `Contract` accept an options object through the constructor, which is validated and
-built using [optimal](https://milesj.gitbook.io/optimal).
+A `Contract` is an abstract class that implements the `Optionable` interface, which provides an
+options object layer, and is meant to be inherited from as a super class. All classes that extend
+`Contract` accept an options object through the constructor, which is validated and built using
+[optimal](https://milesj.gitbook.io/optimal).
 
 To start, extend `Contract` with a generic interface that represents the shape of the options
-object. Next, implement the `blueprint` method, which is passed
+object. Next, implement the abstract `blueprint` method, which is passed
 [optimal predicates](https://milesj.gitbook.io/optimal/predicates) as an argument, and must return
 an [optimal blueprint](https://milesj.gitbook.io/optimal/usage#blueprint) that matches the generic
 interface.
@@ -42,24 +42,16 @@ export default class Plugin extends Contract<PluginOptions> {
 ```
 
 When the class is instantiated, the provided values will be checked and validated using the
-blueprint. If invalid, an error will be thrown.
+blueprint. If invalid, an error will be thrown. Furthermore, the `Contract#options` property is
+`readonly`, and will error when mutated.
 
 ```ts
 const plugin = new Plugin({
   name: 'Boost',
 });
-```
 
-#### Configuring Options
-
-Besides options being passed to the constructor, they can also be configured using the
-`Contract#configure` method, which accepts an object. Options passed to this method are checked and
-validated using the same optiomal process.
-
-```ts
-plugin.configure({
-  priority: 100,
-});
+// Boost
+const { name } = plugin.options;
 ```
 
 #### Required Options
