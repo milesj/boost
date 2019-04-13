@@ -1,8 +1,8 @@
-import Optionable from '../src/Optionable';
+import Contract from '../src/Contract';
 import { Predicates } from '../src';
 
-describe('Optionable', () => {
-  class OptionalProps extends Optionable<{ foo?: string; bar?: number }> {
+describe('Contract', () => {
+  class OptionalProps extends Contract<{ foo?: string; bar?: number }> {
     blueprint({ number, string }: Predicates) {
       return {
         foo: string('default'),
@@ -11,7 +11,7 @@ describe('Optionable', () => {
     }
   }
 
-  class RequiredProps extends Optionable<{ bar: number }> {
+  class RequiredProps extends Contract<{ bar: number }> {
     // eslint-disable-next-line no-useless-constructor
     constructor(options: { bar: number }) {
       super(options);

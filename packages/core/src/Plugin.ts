@@ -1,9 +1,9 @@
-import { Optionable } from '@boost/common';
+import { Contract } from '@boost/common';
 import Tool from './Tool';
 
 export const DEFAULT_PLUGIN_PRIORITY = 100;
 
-export default abstract class Plugin<Options extends object = {}> extends Optionable<Options> {
+export default abstract class Plugin<Options extends object = {}> extends Contract<Options> {
   moduleName: string = '';
 
   name: string = '';

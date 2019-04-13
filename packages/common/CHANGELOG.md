@@ -6,4 +6,4 @@
 
 #### 🚀 Updates
 
-- Added `Optionable` abstract class.
+- Added `Contract` abstract class.

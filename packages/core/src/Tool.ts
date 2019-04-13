@@ -551,7 +551,7 @@ export default class Tool<
   /**
    * Retrieve a translated message from a resource bundle.
    */
-  msg(key: string | string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
+  msg(key: string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
     if (!this.translator) {
       this.translator = this.createTranslator();
     }

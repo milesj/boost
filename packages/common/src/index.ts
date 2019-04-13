@@ -4,6 +4,8 @@
  */
 
 import { Blueprint, Predicates } from 'optimal';
-import Optionable from './Optionable';
+import Contract from './Contract';
 
-export { Optionable, Blueprint, Predicates };
+export * from './types';
+
+export { Contract, Blueprint, Predicates };

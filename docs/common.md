@@ -10,28 +10,28 @@ yarn add @boost/common
 
 ## Classes
 
-### `Optionable`
+### `Contract`
 
-The `Optionable` class is an abstract class, that provides a configurable options object layer, and
-is meant to be the base super class. All classes that extend `Optionable` accept an options object
-through the constructor, which is validated and built using
-[optimal](https://milesj.gitbook.io/optimal).
+A `Contract` is an abstract class that implements the `Optionable` interface, which provides a
+configurable options object layer, and is meant to be inherited from as a super class. All classes
+that extend `Contract` accept an options object through the constructor, which is validated and
+built using [optimal](https://milesj.gitbook.io/optimal).
 
-To start, extend `Optionable` with an interface that represents the shape of the options object, and
-implement the `blueprint` method, which is passed
-[optimal predicates](https://milesj.gitbook.io/optimal/predicates) as an argument and must return an
-[optimal blueprint](https://milesj.gitbook.io/optimal/usage#blueprint) that matches the interface
-shape.
+To start, extend `Contract` with a generic interface that represents the shape of the options
+object. Next, implement the `blueprint` method, which is passed
+[optimal predicates](https://milesj.gitbook.io/optimal/predicates) as an argument, and must return
+an [optimal blueprint](https://milesj.gitbook.io/optimal/usage#blueprint) that matches the generic
+interface.
 
 ```ts
-import { Optionable, Predicates } from '@boost/common';
+import { Contract, Predicates } from '@boost/common';
 
 export interface PluginOptions {
   name?: string;
   priority?: number;
 }
 
-export default class Plugin extends Optionable<PluginOptions> {
+export default class Plugin extends Contract<PluginOptions> {
   blueprint({ number, string }: Predicates) {
     return {
       name: string().notEmpty(),
@@ -53,8 +53,8 @@ const plugin = new Plugin({
 #### Configuring Options
 
 Besides options being passed to the constructor, they can also be configured using the
-`Optionable#configure` method, which accepts an object. Options passed to this method are checked
-and validated using the same optiomal process.
+`Contract#configure` method, which accepts an object. Options passed to this method are checked and
+validated using the same optiomal process.
 
 ```ts
 plugin.configure({
@@ -74,7 +74,7 @@ export interface PluginOptions {
   priority?: number;
 }
 
-export default class Plugin extends Optionable<PluginOptions> {
+export default class Plugin extends Contract<PluginOptions> {
   constructor(options: PluginOptions) {
     super(options);
   }
