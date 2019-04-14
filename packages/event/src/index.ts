@@ -10,8 +10,6 @@ import ConcurrentEvent from './ConcurrentEvent';
 import WaterfallEvent from './WaterfallEvent';
 
 export * from './constants';
-
-// eslint-disable-next-line import/export
 export * from './types';
 
 export { BailEvent, BaseEvent, Event, ConcurrentEvent, WaterfallEvent };
