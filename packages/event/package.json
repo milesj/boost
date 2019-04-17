@@ -1,6 +1,6 @@
 {
   "name": "@boost/event",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0",
   "description": "A type-safe event system. Designed for Boost applications.",
   "keywords": [
     "boost",
@@ -19,6 +19,8 @@
     "access": "public"
   },
   "tsconfig": {
-    "exclude": ["src/typeTests.ts"]
+    "exclude": [
+      "src/typeTests.ts"
+    ]
   }
 }
