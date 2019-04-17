@@ -9,3 +9,7 @@ Create dev tools using a robust pipeline that separates logic into routines and 
 ## Requirements
 
 - Node 8.9+
+
+## Documentation
+
+[https://milesj.gitbook.io/boost](https://milesj.gitbook.io/boost)
