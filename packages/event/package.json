@@ -17,5 +17,8 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "tsconfig": {
+    "exclude": ["src/typeTests.ts"]
   }
 }

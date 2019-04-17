@@ -3,7 +3,7 @@
   "name": "boost-root",
   "scripts": {
     "setup": "bash ./scripts/build-packages.sh",
-    "build": "beemo typescript --workspaces=\"@boost/!(theme-*)\"",
+    "build": "yarn run type",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
@@ -11,14 +11,14 @@
     "pretest": "yarn run type",
     "test": "yarn run jest",
     "posttest": "yarn run eslint",
-    "type": "beemo typescript --workspaces=\"@boost/!(theme-*)\" --noEmit",
+    "type": "beemo typescript --reference-workspaces --build",
     "prerelease": "yarn test && yarn run build",
     "release": "lerna publish"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^0.40.0",
+    "@milesj/build-tools": "^0.41.0",
     "fs-extra": "^7.0.1",
-    "lerna": "^3.13.2"
+    "lerna": "^3.13.3"
   },
   "publishConfig": {
     "access": "public"

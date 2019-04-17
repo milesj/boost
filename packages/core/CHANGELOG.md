@@ -1,4 +1,4 @@
-## 1.11.0
+## 1.11.0 - 2019-04-16
 
 #### 🚀 Updates
 
@@ -22,9 +22,10 @@
 
 - Started writing [documentation using GitBook](https://milesj.gitbook.io/boost/).
 - Updated dependencies.
-- TS: Reworked how options objects are handled.
-- TS: Marked `Plugin` and `Reporter` as abstract.
-- TS: Unmarked `Routine#execute` as abstract.
+- **[ts]** Switched to project references.
+- **[ts]** Reworked how options objects are handled.
+- **[ts]** Marked `Plugin` and `Reporter` as abstract.
+- **[ts]** Unmarked `Routine#execute` as abstract.
 
 ### 1.10.1 - 2019-03-24
 

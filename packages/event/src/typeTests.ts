@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable */
 
 import { Event, BailEvent, ConcurrentEvent, WaterfallEvent } from '../src';
