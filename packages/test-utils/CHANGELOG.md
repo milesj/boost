@@ -1,3 +1,9 @@
+## 1.2.0 - 2019-04-20
+
+#### 🛠 Internals
+
+- Decoupled `@boost/core` dependency.
+
 ### 1.0.1-1.0.4 - 2019-02-22
 
 #### 🛠 Internals
