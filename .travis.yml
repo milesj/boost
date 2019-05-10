@@ -2,16 +2,13 @@ language: node_js
 node_js:
   - '8'
   - '10'
-  - 'node'
+  - '12'
 matrix:
   fast_finish: true
-  allow_failures:
-    # v11.11 is broken with Jest
-    - node_js: 'node'
-before_script:
+before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
-  - yarn install --frozen-lockfile
+before_script:
   - yarn run setup
 script: yarn test -w 2
 notifications:

@@ -2,8 +2,8 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "setup": "bash ./scripts/build-packages.sh",
-    "build": "yarn run type --clean",
+    "setup": "rm -rf ./packages/*/lib && bash ./scripts/build-packages.sh",
+    "build": "yarn run type",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
