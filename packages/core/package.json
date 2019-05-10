@@ -1,6 +1,6 @@
 {
   "name": "@boost/core",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "Robust pipeline for creating dev tools that separate logic into routines and tasks.",
   "keywords": [
     "boost",
@@ -22,7 +22,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^1.0.0",
+    "@boost/common": "^1.0.1",
     "@boost/event": "^1.0.0",
     "@types/cli-truncate": "*",
     "@types/debug": "^4.1.4",
