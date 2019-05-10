@@ -3,7 +3,7 @@
   "name": "boost-root",
   "scripts": {
     "setup": "bash ./scripts/build-packages.sh",
-    "build": "yarn run type",
+    "build": "yarn run type --clean",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
