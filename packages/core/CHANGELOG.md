@@ -1,3 +1,13 @@
+### 1.11.1 - 2019-05-09
+
+#### 📦 Dependencies
+
+- Updated `i18next` to v15.1.
+- Updated `optimal` to v3.2.
+- Updated `pretty-ms` to v5.0.
+- Updated `term-size` to v2.0.
+- Updated `yargs-parser` to v13.1.
+
 ## 1.11.0 - 2019-04-16
 
 #### 🚀 Updates

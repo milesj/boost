@@ -198,7 +198,7 @@ describe('ModuleLoader', () => {
 
     it('merges options correctly', () => {
       fixtures.push(
-        copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition-merge-opts'),
+        copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-definition-with-opts'),
       );
 
       const plugin = loader.importModuleFromOptions(
