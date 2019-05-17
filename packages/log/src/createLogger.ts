@@ -1,12 +1,15 @@
 import util from 'util';
 import chalk from 'chalk';
 import { Logger, LogLevel } from './types';
+import isValidLogLevel from './isValidLogLevel';
 
 function logFactory(stream: NodeJS.WriteStream, level: LogLevel, prefix?: string) {
   return function log(message: string, ...args: any[]) {
     const output = util.format(message, ...args);
 
-    stream.write(prefix ? `${prefix} ${output}` : output);
+    if (isValidLogLevel(level)) {
+      stream.write(prefix ? `${prefix} ${output}` : output);
+    }
   };
 }
 
@@ -20,7 +23,7 @@ export default function createLogger({
   stdout = process.stdout,
 }: LoggerOptions): Logger {
   function logger(message: string, ...args: any[]) {
-    const level = process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel | undefined;
+    const level = process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel;
 
     if (logger[level]) {
       logger[level](message, ...args);
@@ -29,7 +32,7 @@ export default function createLogger({
     }
   }
 
-  logger.debug = logFactory(stdout, 'debug', chalk.gray('[debug]'));
+  logger.debug = logFactory(stdout, 'debug', chalk.magenta('[debug]'));
   logger.error = logFactory(stderr, 'error', chalk.red('[error]'));
   logger.log = logFactory(stdout, 'log');
   logger.info = logFactory(stdout, 'info', chalk.cyan('[info]'));
