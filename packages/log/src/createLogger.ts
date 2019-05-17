@@ -1,5 +1,3 @@
-/* eslint-disable babel/no-invalid-this */
-
 import util from 'util';
 import isAllowedLogLevel from './isAllowedLogLevel';
 import { Logger, LogLevel, LogLevelColors, LogLevelLabels } from './types';
