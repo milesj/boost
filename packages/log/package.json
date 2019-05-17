@@ -17,5 +17,8 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2"
   }
 }
