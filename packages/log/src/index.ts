@@ -4,9 +4,9 @@
  */
 
 import createLogger, { LoggerOptions } from './createLogger';
-import isValidLogLevel from './isValidLogLevel';
+import isAllowedLogLevel from './isAllowedLogLevel';
 
 export * from './constants';
 export * from './types';
 
-export { createLogger, isValidLogLevel, LoggerOptions };
+export { createLogger, isAllowedLogLevel, LoggerOptions };

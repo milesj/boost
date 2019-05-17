@@ -1,9 +1,7 @@
 import { LogLevel } from './types';
 import { LOG_LEVELS } from './constants';
 
-export default function isValidLogLevel(level: LogLevel): boolean {
-  const maxLevel = process.env.BOOST_LOG_MAX_LEVEL;
-
+export default function isAllowedLogLevel(level: LogLevel, maxLevel?: LogLevel): boolean {
   if (!maxLevel) {
     return true;
   }
