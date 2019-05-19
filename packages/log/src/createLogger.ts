@@ -20,6 +20,8 @@ export default function createLogger({
   stderr = process.stderr,
   stdout = process.stdout,
 }: LoggerOptions = {}): Logger {
+  let silent = false;
+
   function logger(message: string, ...args: any[]) {
     const self = logger as Logger;
 
@@ -38,14 +40,22 @@ export default function createLogger({
 
     Object.defineProperty(logger, level, {
       value: function log(message: string, ...args: any[]) {
-        const output = util.format(message, ...args);
+        if (!silent && isAllowedLogLevel(level, maxLevel)) {
+          const output = util.format(message, ...args);
 
-        if (isAllowedLogLevel(level, maxLevel)) {
           stream.write(level === 'log' ? output : `${prefix} ${output}`);
         }
       },
     });
   });
+
+  logger.enable = () => {
+    silent = false;
+  };
+
+  logger.disable = () => {
+    silent = true;
+  };
 
   return logger as Logger;
 }

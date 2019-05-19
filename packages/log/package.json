@@ -1,12 +1,13 @@
 {
   "name": "@boost/log",
   "version": "0.0.0",
-  "description": "Logging utilities for Boost applications.",
+  "description": "Lightweight level based logging system.",
   "keywords": [
     "boost",
     "log",
     "logger",
-    "logging"
+    "logging",
+    "levels"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

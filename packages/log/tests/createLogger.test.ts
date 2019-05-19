@@ -139,4 +139,47 @@ describe('createLogger()', () => {
     expect(outStream.write).toHaveBeenCalledWith(`${chalk.white('[trace]')} Trace`);
     expect(errStream.write).toHaveBeenCalledWith(`${chalk.white('[warn]')} Warning`);
   });
+
+  it('can silence output', () => {
+    logger = mockLogger({
+      colors: {
+        debug: chalk.white,
+        error: chalk.white,
+        info: chalk.white,
+        trace: chalk.white,
+        warn: chalk.white,
+      },
+    });
+    logger.debug('Debug');
+    logger.error('Error');
+    logger.log('Log');
+    logger.info('Info');
+    logger.trace('Trace');
+    logger.warn('Warning');
+
+    expect(errStream.write).toHaveBeenCalledTimes(3);
+    expect(outStream.write).toHaveBeenCalledTimes(3);
+
+    logger.disable();
+    logger.debug('Debug');
+    logger.error('Error');
+    logger.log('Log');
+    logger.info('Info');
+    logger.trace('Trace');
+    logger.warn('Warning');
+
+    expect(errStream.write).toHaveBeenCalledTimes(3);
+    expect(outStream.write).toHaveBeenCalledTimes(3);
+
+    logger.enable();
+    logger.debug('Debug');
+    logger.error('Error');
+    logger.log('Log');
+    logger.info('Info');
+    logger.trace('Trace');
+    logger.warn('Warning');
+
+    expect(errStream.write).toHaveBeenCalledTimes(6);
+    expect(outStream.write).toHaveBeenCalledTimes(6);
+  });
 });
