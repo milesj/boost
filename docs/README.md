@@ -1,6 +1,6 @@
 # Boost
 
-Create dev tools using a robust pipeline that separates logic into routines and tasks.
+A framework for building robust Node.js command line applications and developer tools.
 
 ## Requirements
 

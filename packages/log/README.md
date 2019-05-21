@@ -9,10 +9,10 @@ Lightweight level based logging system.
 ## Features
 
 - Isolated custom logger instances.
-- Supports 8 logging levels, in order of priority: log, trace, debug, info, warn, error.
+- Supports 6 logging levels, in order of priority: log, trace, debug, info, warn, error.
 - Handles default and max logging levels.
 - Customizable colors, labels, and writable streams.
-- Toggle logging at runtime.
+- Toggleable logging at runtime.
 
 ## Installation
 
