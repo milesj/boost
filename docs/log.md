@@ -20,7 +20,7 @@ import { createLogger } from '@boost/log';
 
 const log = createLogger();
 
-log('Something has happened...');
+log('Something has happened…');
 ```
 
 Each logger method requires a message string as the 1st argument, and an optional rest of arguments
@@ -54,11 +54,8 @@ import chalk from 'chalk';
 import { createLogger } from '@boost/log';
 
 const log = createLogger({
-  colors: {
-    error: chalk.bgRed.white,
-  },
   labels: {
-    error: 'FAIL',
+    error: chalk.bgRed.black.bold(' FAIL '),
   },
   stderr: customStream,
 });
@@ -75,7 +72,7 @@ interpolate into the message.
 log.trace('Code path hit: %s', stackTrace);
 log.debug('What is going on here?');
 log.info('Systems are stable');
-log.warn('Something is definitely going on...');
+log.warn('Something is definitely going on…');
 log.error('Systems are down! %s', error.message);
 ```
 

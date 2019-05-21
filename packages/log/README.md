@@ -6,6 +6,14 @@
 
 Lightweight level based logging system.
 
+```ts
+import { createLogger } from '@boost/log';
+
+const log = createLogger();
+
+log('Something has happened…');
+```
+
 ## Features
 
 - Isolated custom logger instances.
