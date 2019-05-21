@@ -1,10 +1,18 @@
 import util from 'util';
+import chalk from 'chalk';
 import isAllowedLogLevel from './isAllowedLogLevel';
-import { Logger, LogLevel, LogLevelColors, LogLevelLabels } from './types';
-import { LOG_LEVELS, LOG_LEVEL_COLORS } from './constants';
+import { Logger, LogLevel, LogLevelLabels } from './types';
+import { LOG_LEVELS } from './constants';
+
+export const DEFAULT_LABELS: LogLevelLabels = {
+  debug: chalk.gray('[debug]'),
+  error: chalk.red('[error]'),
+  info: chalk.cyan('[info]'),
+  trace: chalk.magenta('[trace]'),
+  warn: chalk.yellow('[warn]'),
+};
 
 export interface LoggerOptions {
-  colors?: LogLevelColors;
   defaultLevel?: LogLevel;
   labels?: LogLevelLabels;
   maxLevel?: LogLevel;
@@ -13,7 +21,6 @@ export interface LoggerOptions {
 }
 
 export default function createLogger({
-  colors = {},
   defaultLevel,
   labels = {},
   maxLevel,
@@ -33,9 +40,7 @@ export default function createLogger({
   }
 
   LOG_LEVELS.forEach(level => {
-    const color = colors[level] || LOG_LEVEL_COLORS[level];
-    const label = labels[level] || level;
-    const prefix = color ? color(`[${label}]`) : label;
+    const label = labels[level] || DEFAULT_LABELS[level] || '';
     const stream = level === 'debug' || level === 'error' || level === 'warn' ? stderr : stdout;
 
     Object.defineProperty(logger, level, {
@@ -43,7 +48,7 @@ export default function createLogger({
         if (!silent && isAllowedLogLevel(level, maxLevel)) {
           const output = util.format(message, ...args);
 
-          stream.write(level === 'log' ? output : `${prefix} ${output}`);
+          stream.write(level === 'log' ? `${output}\n` : `${label} ${output}\n`);
         }
       },
     });
