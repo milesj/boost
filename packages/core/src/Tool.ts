@@ -13,7 +13,7 @@ import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import { Event } from '@boost/event';
-import { createLogger, Logger } from '@boost/log';
+import { createLogger, Logger, LogLevel } from '@boost/log';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
@@ -149,6 +149,7 @@ export default class Tool<
     this.debug = this.createDebugger('core');
 
     this.log = createLogger({
+      defaultLevel: process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel,
       labels: {
         debug: chalk.gray(this.msg('app:logLevelDebug')),
         error: chalk.red(this.msg('app:logLevelError')),
@@ -156,6 +157,7 @@ export default class Tool<
         trace: chalk.magenta(this.msg('app:logLevelTrace')),
         warn: chalk.yellow(this.msg('app:logLevelWarn')),
       },
+      maxLevel: process.env.BOOST_LOG_MAX_LEVEL as LogLevel,
     });
 
     // eslint-disable-next-line global-require
