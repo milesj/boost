@@ -14,6 +14,7 @@ build_pkg() {
 
 build_pkg "./packages/common"
 build_pkg "./packages/event"
+build_pkg "./packages/log"
 build_pkg "./packages/core"
 build_pkg "./packages/reporter-nyan"
 build_pkg "./packages/test-utils"

@@ -7,5 +7,10 @@
   "cliOptionSilent": "Hide all output",
   "cliOptionTheme": "Change output colors",
   "cliSkipped": "skipped",
-  "cliFailed": "failed"
+  "cliFailed": "failed",
+  "logLevelDebug": "debug",
+  "logLevelError": "error",
+  "logLevelInfo": "info",
+  "logLevelTrace": "trace",
+  "logLevelWarn": "warn"
 }

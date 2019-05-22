@@ -1,0 +1,6 @@
+src/
+tests/
+types/
+*.lock
+*.log
+tsconfig.json

@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-console */
 
 import fs from 'fs-extra';
 import path from 'path';
@@ -13,6 +13,7 @@ import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import { Event } from '@boost/event';
+import { createLogger, Logger, LogLevel } from '@boost/log';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
@@ -86,6 +87,8 @@ export default class Tool<
 
   debug: Debugger;
 
+  log: Logger;
+
   onExit = new Event<[number]>('exit');
 
   onInit = new Event<[]>('init');
@@ -142,8 +145,20 @@ export default class Tool<
       },
     );
 
-    // Core debugger for the entire tool
+    // Core debugger and logger for the entire tool
     this.debug = this.createDebugger('core');
+
+    this.log = createLogger({
+      defaultLevel: process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel,
+      labels: {
+        debug: chalk.gray(this.msg('app:logLevelDebug')),
+        error: chalk.red(this.msg('app:logLevelError')),
+        info: chalk.cyan(this.msg('app:logLevelInfo')),
+        trace: chalk.magenta(this.msg('app:logLevelTrace')),
+        warn: chalk.yellow(this.msg('app:logLevelWarn')),
+      },
+      maxLevel: process.env.BOOST_LOG_MAX_LEVEL as LogLevel,
+    });
 
     // eslint-disable-next-line global-require
     this.debug('Using boost v%s', require('../package.json').version);
@@ -513,27 +528,21 @@ export default class Tool<
   loadWorkspacePackages<CustomConfig extends object = {}>(
     options: WorkspaceOptions = {},
   ): (WorkspacePackageConfig & CustomConfig)[] {
-    // eslint-disable-next-line no-console
     console.warn(
-      'Tool#loadWorkspacePackages is deprecated. Use Tool#getWorkspacePackages instead.',
+      '`tool.loadWorkspacePackages` is deprecated. Use `tool.getWorkspacePackages` instead.',
     );
 
     return this.getWorkspacePackages<CustomConfig>(options);
   }
 
   /**
-   * Log a message to the console to display on success.
-   */
-  log(message: string, ...args: any[]): this {
-    this.console.log(util.format(message, ...args));
-
-    return this;
-  }
-
-  /**
    * Log a live message to the console to display while a process is running.
+   *
+   * @deprecated
    */
   logLive(message: string, ...args: any[]): this {
+    console.warn('`tool.logLive` is deprecated. Use `console.log` instead.');
+
     this.console.logLive(util.format(message, ...args));
 
     return this;
@@ -541,8 +550,14 @@ export default class Tool<
 
   /**
    * Log an error to the console to display on failure.
+   *
+   * @deprecated
    */
   logError(message: string, ...args: any[]): this {
+    console.warn(
+      '`tool.logError` is deprecated. Use `tool.log.error` or `tool.console.logError` instead.',
+    );
+
     this.console.logError(util.format(message, ...args));
 
     return this;

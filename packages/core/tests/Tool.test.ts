@@ -752,16 +752,6 @@ describe('Tool', () => {
     });
   });
 
-  describe('log()', () => {
-    it('sends log to console', () => {
-      const spy = jest.spyOn(tool.console, 'log');
-
-      tool.log('Some message: %s', 'foo');
-
-      expect(spy).toHaveBeenCalledWith('Some message: foo');
-    });
-  });
-
   describe('logLive()', () => {
     it('sends log to console', () => {
       const old = process.stdout.write.bind(process.stdout);
