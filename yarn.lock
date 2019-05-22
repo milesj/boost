@@ -2012,7 +2012,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cli-truncate@*":
+"@types/cli-truncate@^1.1.0":
   version "1.1.0"
   resolved "https://registry.npmjs.org/@types/cli-truncate/-/cli-truncate-1.1.0.tgz#c966b1f4755acc087aa93d15148b2b13b297a9cf"
   integrity sha512-8Di+NY9OA4iavrSDYtX6krxTOFS1Onypx5q4nvZB/UjUmor6cxNSRVAq4CfDoWDCiUmd8gBlvu48gHKBIruNUA==
