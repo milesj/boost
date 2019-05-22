@@ -25,8 +25,7 @@ log('Something has happened…');
 
 Each logger method requires a message string as the 1st argument, and an optional rest of arguments
 to interpolate into the message using
-[util.format()](https://nodejs.org/api/util.html#util_util_format_format_args) (the same
-functionality as `console.*` methods).
+[util.format()](https://nodejs.org/api/util.html#util_util_format_format_args).
 
 ```ts
 log('Name: %s %s', user.first_name, user.last_name);
@@ -42,8 +41,8 @@ fact.
   (the examples above). Defaults to the lowest level, `log`.
 - `labels` (`object`) - A mapping of log level names to strings to use as the message prefix. Can be
   used with [chalk](https://www.npmjs.com/package/chalk).
-- `maxLevel` (`LogLevel`) - The maximum level to write to a stream. All levels higher than the
-  maximum will be ignored. Defaults to allowing all levels.
+- `maxLevel` (`LogLevel`) - The maximum level, based on priority, to write to a stream. All levels
+  higher than the maximum will be ignored. Defaults to allowing all levels.
 - `stderr` (`WriteStream`) - The writable stream to log error-like output. Defaults to
   `process.stderr`.
 - `stdout` (`WriteStream`) - The writable stream to log standard output. Defaults to
@@ -64,12 +63,12 @@ const log = createLogger({
 ### Log Levels
 
 There are 5 distinct logging levels outside the standard level, each represented as a unique method
-on the logger instance. The levels in order of priority are `trace`, `debug`, `info`, `warn`, and
-`error`. Each method requires a message as the 1st argument, and an optional rest of arguments to
-interpolate into the message.
+on the logger instance. The levels in order of **priority** are `trace`, `debug`, `info`, `warn`,
+and `error`. Each method requires a message as the 1st argument, and an optional rest of arguments
+to interpolate into the message.
 
 ```ts
-log.trace('Code path hit: %s', stackTrace);
+log.trace('Code path hit?');
 log.debug('What is going on here?');
 log.info('Systems are stable');
 log.warn('Something is definitely going on…');
