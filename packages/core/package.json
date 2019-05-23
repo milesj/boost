@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@boost/common": "^1.0.1",
+    "@boost/debug": "^0.0.0",
     "@boost/event": "^1.0.0",
     "@boost/log": "^0.0.0",
     "@types/cli-truncate": "^1.1.0",

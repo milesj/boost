@@ -9,7 +9,7 @@ function run(command: string): string {
 }
 
 function resolveHome(path: string): string {
-  return (path || '').replace(process.env.HOME, '~');
+  return (path || '').replace(process.env.HOME!, '~');
 }
 
 function extractVersion(value: string): string {
@@ -22,7 +22,7 @@ export default class CrashReporter {
   contents: string = '';
 
   /**
-   * Add a label with a single or multiple values to the last added section.
+   * Add a label with a value, or multiple values, to the last added section.
    */
   add(label: string, ...messages: (string | number)[]) {
     this.contents += `${label}:\n`;
@@ -33,7 +33,7 @@ export default class CrashReporter {
   }
 
   /**
-   * Add a new section divider with a title.
+   * Start a new section with a title.
    */
   addSection(title: string): this {
     this.contents += `\n\n${title.toUpperCase()}\n`;
@@ -57,7 +57,7 @@ export default class CrashReporter {
     Object.keys(bins).forEach(bin => {
       try {
         this.add(
-          bins[bin],
+          bins[bin as keyof typeof bins],
           extractVersion(run(`${bin} --version`)),
           resolveHome(run(`which ${bin}`)),
         );
@@ -115,7 +115,11 @@ export default class CrashReporter {
       }
 
       if (version) {
-        this.add(languages[bin], version, resolveHome(run(`which ${bin}`)));
+        this.add(
+          languages[bin as keyof typeof languages],
+          version,
+          resolveHome(run(`which ${bin}`)),
+        );
       }
     });
 
@@ -150,7 +154,7 @@ export default class CrashReporter {
    * Report information about the platform and operating system.
    */
   reportSystem(): this {
-    this.addSection('Platform');
+    this.addSection('System');
     this.add('OS', process.platform);
     this.add('Architecture', process.arch);
     this.add('CPUs', os.cpus().length);
