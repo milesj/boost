@@ -1,0 +1,106 @@
+import debug from 'debug';
+import chalk from 'chalk';
+import createDebugger from '../src/createDebugger';
+import { Debugger } from '../src/types';
+
+describe('createDebugger()', () => {
+  let errSpy: jest.SpyInstance;
+  let debugFunc: Debugger;
+
+  beforeEach(() => {
+    debugFunc = createDebugger('debug');
+
+    // Doesn't write unless an env var is set, so force it
+    debugFunc.enable();
+
+    errSpy = jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
+  });
+
+  afterEach(() => {
+    errSpy.mockRestore();
+  });
+
+  it('returns a debug function', () => {
+    expect(typeof debugFunc).toBe('function');
+  });
+
+  it('inherits a namespace', () => {
+    debugFunc = createDebugger('ns');
+
+    expect(debugFunc.namespace).toBe('ns');
+  });
+
+  it('inherits app namespace from env var', () => {
+    process.env.BOOST_DEBUG_APP_NAMESPACE = 'boost';
+
+    debugFunc = createDebugger('ns');
+
+    expect(debugFunc.namespace).toBe('boost:ns');
+
+    delete process.env.BOOST_DEBUG_APP_NAMESPACE;
+  });
+
+  it('inherits multiple namespaces and joins with a `:`', () => {
+    debugFunc = createDebugger(['foo', 'bar', 'baz']);
+
+    expect(debugFunc.namespace).toBe('foo:bar:baz');
+  });
+
+  it('provides an `enable` function', () => {
+    expect(typeof debugFunc.enable).toBe('function');
+  });
+
+  it('provides an `invariant` function', () => {
+    expect(typeof debugFunc.invariant).toBe('function');
+  });
+
+  it('provides an `verbose` function', () => {
+    expect(typeof debugFunc.verbose).toBe('function');
+  });
+
+  it('writes when called as a function', () => {
+    debugFunc('Log!');
+
+    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('Log!'));
+  });
+
+  it('writes invariant pass message when condition is truthy', () => {
+    debugFunc.invariant(true, 'Comparing', 'Pass', 'Fail');
+
+    expect(errSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`Comparing: ${chalk.green('Pass')}`),
+    );
+  });
+
+  it('writes invariant fail message when condition is falsy', () => {
+    debugFunc.invariant(false, 'Comparing', 'Pass', 'Fail');
+
+    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining(`Comparing: ${chalk.red('Fail')}`));
+  });
+
+  it('doesnt write verbose logs unless env var is set', () => {
+    debugFunc.verbose('Loonnnggg log!');
+
+    expect(errSpy).not.toHaveBeenCalled();
+  });
+
+  it('writes verbose logs when env var is set', () => {
+    process.env.BOOST_DEBUG_VERBOSE = 'true';
+
+    debugFunc.verbose('Loonnnggg log!');
+
+    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('Loonnnggg log!'));
+
+    delete process.env.BOOST_DEBUG_VERBOSE;
+  });
+
+  it('enables the namespace on `debug`', () => {
+    const spy = jest.spyOn(debug, 'enable');
+
+    debugFunc.enable();
+
+    expect(spy).toBeCalledWith('debug');
+
+    spy.mockRestore();
+  });
+});

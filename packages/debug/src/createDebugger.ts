@@ -2,8 +2,9 @@ import chalk from 'chalk';
 import debug from 'debug';
 import { Debugger } from './types';
 
-export default function createDebugger(...namespaces: string[]): Debugger {
+export default function createDebugger(namespace: string | string[]): Debugger {
   const appNamespace = process.env.BOOST_DEBUG_APP_NAMESPACE;
+  const namespaces = Array.isArray(namespace) ? namespace : [namespace];
 
   if (appNamespace) {
     namespaces.unshift(appNamespace);
