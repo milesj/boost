@@ -98,6 +98,13 @@ export default class CrashReporter {
       rustup: 'Rust',
     };
 
+    // When running on OSX and Java is not installed,
+    // OSX will interrupt the process with a prompt to install Java.
+    // This is super annoying, so let's not disrupt consumers.
+    if (os.platform() === 'darwin' && os.hostname().endsWith('local')) {
+      delete languages.javac;
+    }
+
     Object.keys(languages).forEach(bin => {
       let version;
 
@@ -152,10 +159,10 @@ export default class CrashReporter {
    */
   reportSystem(): this {
     this.addSection('System');
-    this.add('OS', process.platform);
-    this.add('Architecture', process.arch);
+    this.add('OS', os.platform());
+    this.add('Architecture', os.arch());
     this.add('CPUs', os.cpus().length);
-    this.add('Uptime (sec)', process.uptime());
+    this.add('Uptime (sec)', os.uptime());
     this.add(
       'Memory usage',
       `${Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100} MB`,

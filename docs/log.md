@@ -89,4 +89,4 @@ log.disable();
 log.debug('Something is broken!');
 ```
 
-Messages that are logged while silenced are _lost_ and are _not_ buffered.
+> Messages that are logged while silenced are _lost_ and are _not_ buffered.

@@ -77,8 +77,6 @@ Bash:
   0.0.0 - /bash
 Go:
   0.0.0 - /go
-Java:
-  0.0.0 - /javac
 Perl:
   0.0.0 - /perl
 PHP:
