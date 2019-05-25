@@ -1,7 +1,7 @@
 import path from 'path';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Arguments } from 'yargs';
-import { Debugger } from '@boost/debug';
+import { mockDebugger } from '@boost/debug/lib/testing';
 import Console from './Console';
 import Context from './Context';
 import Plugin from './Plugin';
@@ -9,6 +9,8 @@ import Routine from './Routine';
 import Task, { TaskAction } from './Task';
 import Tool, { ToolConfig, ToolOptions, ToolPluginRegistry } from './Tool';
 import { PackageConfig, PluginSetting } from './types';
+
+export { mockDebugger };
 
 export interface TestToolPlugins extends ToolPluginRegistry {
   plugin: Plugin;
@@ -51,15 +53,6 @@ export function stubToolConfig<T extends ToolConfig = TestToolConfig>(config?: P
     theme: 'default',
     ...config,
   } as any;
-}
-
-export function mockDebugger(): Debugger {
-  const debug = jest.fn();
-
-  // @ts-ignore Allow property access
-  debug.invariant = jest.fn();
-
-  return debug as any;
 }
 
 export function mockTool<
