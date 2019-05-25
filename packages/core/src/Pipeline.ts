@@ -85,7 +85,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
       .reportProcess()
       .reportSystem();
 
-    reporter.addTitle('Tool Instance');
+    reporter.addSection('Tool Instance');
     reporter.add('App name', options.appName);
     reporter.add('App path', options.appPath);
     reporter.add('Plugin types', Object.keys(this.tool.getRegisteredPlugins()).join(', '));

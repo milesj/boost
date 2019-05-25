@@ -1,13 +1,14 @@
 import path from 'path';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Arguments } from 'yargs';
+import { Debugger } from '@boost/debug';
 import Console from './Console';
 import Context from './Context';
 import Plugin from './Plugin';
 import Routine from './Routine';
 import Task, { TaskAction } from './Task';
 import Tool, { ToolConfig, ToolOptions, ToolPluginRegistry } from './Tool';
-import { Debugger, PackageConfig, PluginSetting } from './types';
+import { PackageConfig, PluginSetting } from './types';
 
 export interface TestToolPlugins extends ToolPluginRegistry {
   plugin: Plugin;
@@ -85,7 +86,6 @@ export function mockTool<
 
   // Stub out methods
   tool.debug = mockDebugger();
-  tool.createDebugger = mockDebugger;
 
   // @ts-ignore Allow private access to avoid loaders
   tool.initialized = true;

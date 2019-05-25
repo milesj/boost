@@ -3,6 +3,7 @@
 import exit from 'exit';
 import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
+import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Emitter from './Emitter';
 import Task from './Task';
@@ -10,7 +11,6 @@ import Tool from './Tool';
 import Output from './Output';
 import Routine from './Routine';
 import SignalError from './SignalError';
-import { Debugger } from './types';
 
 // 8 FPS (60 FPS is actually too fast as it tears)
 export const FPS_RATE = 125;
@@ -76,7 +76,7 @@ export default class Console extends Emitter {
   constructor(tool: Tool<any>, /* test only */ testWriters: typeof BOUND_WRITERS = BOUND_WRITERS) {
     super();
 
-    this.debug = tool.createDebugger('console');
+    this.debug = createDebugger('console');
     this.tool = tool;
     this.writers = testWriters;
 

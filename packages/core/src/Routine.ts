@@ -2,6 +2,7 @@ import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 
 import split from 'split';
 import { Readable } from 'stream';
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
+import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
 import Task, { TaskAction } from './Task';
@@ -14,7 +15,6 @@ import SyncExecutor from './executors/Sync';
 import instanceOf from './helpers/instanceOf';
 import wrapWithPromise from './helpers/wrapWithPromise';
 import { STATUS_RUNNING } from './constants';
-import { Debugger } from './types';
 
 export interface CommandOptions {
   shell?: boolean;
@@ -27,7 +27,6 @@ export default abstract class Routine<
   Tool extends CoreTool<any>,
   Options extends object = {}
 > extends Task<Ctx> {
-  // @ts-ignore Set after instantiation
   debug: Debugger;
 
   key: string = '';
@@ -61,6 +60,7 @@ export default abstract class Routine<
       name: this.constructor.name,
     });
 
+    this.debug = createDebugger(['routine', this.key]);
     this.onCommand = new Event('command');
     this.onCommandData = new Event('command.data');
   }
@@ -82,14 +82,12 @@ export default abstract class Routine<
    * Configure the routine after it has been instantiated.
    */
   configure(parent: Routine<Ctx, Tool>): this {
+    this.debug('Bootstrapping routine');
+
     this.parent = parent;
     this.tool = parent.tool;
     this.context = parent.context;
     this.metadata.depth = parent.metadata.depth + 1;
-
-    // Custom debugger for this routine
-    this.debug = this.tool.createDebugger('routine', this.key);
-    this.debug('Bootstrapping routine');
 
     // Initialize routine
     this.bootstrap();

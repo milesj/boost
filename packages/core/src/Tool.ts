@@ -191,6 +191,10 @@ export default class Tool<
         this.onExit.emit([code]);
       });
     }
+
+    // TODO Backwards compat, remove in 2.0
+    // @ts-ignore
+    this.createDebugger = createDebugger;
   }
 
   /**

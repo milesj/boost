@@ -1,10 +1,10 @@
 import kebabCase from 'lodash/kebabCase';
+import { createDebugger, Debugger } from '@boost/debug';
 import Context from './Context';
 import Routine from './Routine';
 import Task from './Task';
 import Tool from './Tool';
 import instanceOf from './helpers/instanceOf';
-import { Debugger } from './types';
 
 export type ExecuteHandler<Ctx extends Context> = (task: Task<Ctx>, value?: any) => Promise<any>;
 
@@ -26,7 +26,7 @@ export default abstract class Executor<Ctx extends Context, Options extends obje
 
   constructor(tool: Tool<any>, context: Ctx, options?: Options) {
     this.context = context;
-    this.debug = tool.createDebugger(kebabCase(this.constructor.name));
+    this.debug = createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;
 
     // @ts-ignore Allow spread

@@ -18,6 +18,8 @@ describe('createDebugger()', () => {
 
   afterEach(() => {
     errSpy.mockRestore();
+
+    delete process.env.BOOST_DEBUG_APP_NAMESPACE;
   });
 
   it('returns a debug function', () => {
@@ -36,8 +38,6 @@ describe('createDebugger()', () => {
     debugFunc = createDebugger('ns');
 
     expect(debugFunc.namespace).toBe('boost:ns');
-
-    delete process.env.BOOST_DEBUG_APP_NAMESPACE;
   });
 
   it('inherits multiple namespaces and joins with a `:`', () => {

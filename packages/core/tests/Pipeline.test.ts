@@ -4,6 +4,8 @@ import Routine from '../src/Routine';
 import Context from '../src/Context';
 import ExitError from '../src/ExitError';
 
+jest.mock('execa');
+
 describe('Pipeline', () => {
   let pipeline: Pipeline<any, any>;
 

@@ -8,6 +8,7 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import { Arguments } from 'yargs-parser';
+import { createDebugger, Debugger } from '@boost/debug';
 import optimal, { array, bool, instance, number, shape, string, union, object } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import handleMerge from './helpers/handleMerge';
@@ -16,7 +17,7 @@ import isEmptyObject from './helpers/isEmptyObject';
 import requireModule from './helpers/requireModule';
 import Tool, { ToolConfig } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
-import { Debugger, PackageConfig, PluginSetting } from './types';
+import { PackageConfig, PluginSetting } from './types';
 
 export interface ConfigLike {
   extends?: ToolConfig['extends'];
@@ -41,7 +42,7 @@ export default class ConfigLoader {
   workspaceRoot: string = '';
 
   constructor(tool: Tool<any>) {
-    this.debug = tool.createDebugger('config-loader');
+    this.debug = createDebugger('config-loader');
     this.tool = tool;
   }
 

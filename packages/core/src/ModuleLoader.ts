@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 import path from 'path';
+import { createDebugger, Debugger } from '@boost/debug';
 import formatModuleName from './helpers/formatModuleName';
 import isObject from './helpers/isObject';
 import requireModule from './helpers/requireModule';
 import instanceOf from './helpers/instanceOf';
 import Tool from './Tool';
-import { Constructor, ConcreteConstructor, Debugger } from './types';
+import { Constructor, ConcreteConstructor } from './types';
 
 export interface OptionsObject {
   [key: string]: any;
@@ -29,7 +30,7 @@ export default class ModuleLoader<Tm> {
     scopes: string[] = [],
   ) {
     this.contract = contract;
-    this.debug = tool.createDebugger(`${typeName}-loader`);
+    this.debug = createDebugger(`${typeName}-loader`);
     this.scopes = scopes;
     this.tool = tool;
     this.typeName = typeName;

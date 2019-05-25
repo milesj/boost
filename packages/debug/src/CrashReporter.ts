@@ -26,17 +26,14 @@ export default class CrashReporter {
    */
   add(label: string, ...messages: (string | number)[]) {
     this.contents += `${label}:\n`;
-
-    messages.forEach(message => {
-      this.contents += `  ${message}\n`;
-    });
+    this.contents += `  ${messages.join(' - ')}\n`;
   }
 
   /**
    * Start a new section with a title.
    */
   addSection(title: string): this {
-    this.contents += `\n\n${title.toUpperCase()}\n`;
+    this.contents += `\n${title.toUpperCase()}\n`;
     this.contents += `${'='.repeat(title.length)}\n\n`;
 
     return this;
@@ -96,7 +93,7 @@ export default class CrashReporter {
       javac: 'Java',
       perl: 'Perl',
       php: 'PHP',
-      python: 'python',
+      python: 'Python',
       ruby: 'Ruby',
       rustup: 'Rust',
     };
@@ -135,7 +132,7 @@ export default class CrashReporter {
     this.add('Title', process.title);
     this.add('Timestamp', new Date().toISOString());
     this.add('CWD', process.cwd());
-    this.add('ARGV', process.argv.join('\n  '));
+    this.add('ARGV', process.argv.map(v => `- ${v}`).join('\n  '));
 
     return this;
   }
