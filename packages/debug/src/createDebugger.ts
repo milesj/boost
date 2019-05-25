@@ -3,14 +3,23 @@ import debug from 'debug';
 import { Debugger } from './types';
 
 export default function createDebugger(namespace: string | string[]): Debugger {
-  const appNamespace = process.env.BOOST_DEBUG_APP_NAMESPACE;
+  const globalNamespace = process.env.BOOST_DEBUG_GLOBAL_NAMESPACE;
   const namespaces = Array.isArray(namespace) ? namespace : [namespace];
 
-  if (appNamespace) {
-    namespaces.unshift(appNamespace);
+  if (globalNamespace) {
+    namespaces.unshift(globalNamespace);
   }
 
   const logger = debug(namespaces.join(':')) as Debugger;
+
+  // `debug` doesn't support this on an individual namespace basis,
+  // so we have to manually support it using this hacky regex.
+  logger.disable = () => {
+    process.env.DEBUG = (process.env.DEBUG || '')
+      .replace(new RegExp(`${logger.namespace}(:\\*)?`, 'u'), '')
+      .replace(/(^,)|(,$)/u, '')
+      .replace(',,', ',');
+  };
 
   logger.enable = () => {
     debug.enable(logger.namespace);

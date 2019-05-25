@@ -1,15 +1,15 @@
 {
   "name": "@boost/debug",
   "version": "0.0.0",
-  "description": "Lightweight debugging and crash dumping.",
+  "description": "Lightweight debugging and crash reporting.",
   "keywords": [
     "boost",
     "debug",
     "debugger",
     "debugging",
     "crash",
-    "dump",
-    "dumping"
+    "report",
+    "reporting"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

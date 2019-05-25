@@ -4,19 +4,22 @@
 [![npm version](https://badge.fury.io/js/%40boost%debug.svg)](https://www.npmjs.com/package/@boost/debug)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/debug)](https://www.npmjs.com/package/@boost/debug)
 
-Lightweight debugging and crash dumping.
+Lightweight debugging and crash reporting. Wraps the popular
+[debug](https://www.npmjs.com/package/debug) library to provide additional functionality.
 
 ```ts
 import { createDebugger } from '@boost/debug';
 
-const debug = createDebugger();
+const debug = createDebugger('boost');
 
 debug('Something is broken!');
 ```
 
 ## Features
 
-TODO
+- Crash reporter that logs binary versions, programming languages, running process, system, and
+  more.
+- Toggleable verbose debugging via an environment variable.
 
 ## Installation
 

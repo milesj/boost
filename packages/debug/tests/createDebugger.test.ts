@@ -6,8 +6,10 @@ import { Debugger } from '../src/types';
 describe('createDebugger()', () => {
   let errSpy: jest.SpyInstance;
   let debugFunc: Debugger;
+  let oldDebugEnvVar: string | undefined;
 
   beforeEach(() => {
+    oldDebugEnvVar = process.env.DEBUG;
     debugFunc = createDebugger('debug');
 
     // Doesn't write unless an env var is set, so force it
@@ -19,7 +21,8 @@ describe('createDebugger()', () => {
   afterEach(() => {
     errSpy.mockRestore();
 
-    delete process.env.BOOST_DEBUG_APP_NAMESPACE;
+    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = '';
+    process.env.DEBUG = oldDebugEnvVar;
   });
 
   it('returns a debug function', () => {
@@ -33,7 +36,7 @@ describe('createDebugger()', () => {
   });
 
   it('inherits app namespace from env var', () => {
-    process.env.BOOST_DEBUG_APP_NAMESPACE = 'boost';
+    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = 'boost';
 
     debugFunc = createDebugger('ns');
 
@@ -64,43 +67,93 @@ describe('createDebugger()', () => {
     expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('Log!'));
   });
 
-  it('writes invariant pass message when condition is truthy', () => {
-    debugFunc.invariant(true, 'Comparing', 'Pass', 'Fail');
+  describe('invariant()', () => {
+    it('writes invariant pass message when condition is truthy', () => {
+      debugFunc.invariant(true, 'Comparing', 'Pass', 'Fail');
 
-    expect(errSpy).toHaveBeenCalledWith(
-      expect.stringContaining(`Comparing: ${chalk.green('Pass')}`),
-    );
+      expect(errSpy).toHaveBeenCalledWith(
+        expect.stringContaining(`Comparing: ${chalk.green('Pass')}`),
+      );
+    });
+
+    it('writes invariant fail message when condition is falsy', () => {
+      debugFunc.invariant(false, 'Comparing', 'Pass', 'Fail');
+
+      expect(errSpy).toHaveBeenCalledWith(
+        expect.stringContaining(`Comparing: ${chalk.red('Fail')}`),
+      );
+    });
   });
 
-  it('writes invariant fail message when condition is falsy', () => {
-    debugFunc.invariant(false, 'Comparing', 'Pass', 'Fail');
+  describe('verbose()', () => {
+    it('doesnt write verbose logs unless env var is set', () => {
+      debugFunc.verbose('Loonnnggg log!');
 
-    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining(`Comparing: ${chalk.red('Fail')}`));
+      expect(errSpy).not.toHaveBeenCalled();
+    });
+
+    it('writes verbose logs when env var is set', () => {
+      process.env.BOOST_DEBUG_VERBOSE = 'true';
+
+      debugFunc.verbose('Loonnnggg log!');
+
+      expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('Loonnnggg log!'));
+
+      delete process.env.BOOST_DEBUG_VERBOSE;
+    });
   });
 
-  it('doesnt write verbose logs unless env var is set', () => {
-    debugFunc.verbose('Loonnnggg log!');
+  describe('enable()', () => {
+    it('enables the namespace on `debug`', () => {
+      const spy = jest.spyOn(debug, 'enable');
 
-    expect(errSpy).not.toHaveBeenCalled();
+      debugFunc.enable();
+
+      expect(spy).toBeCalledWith('debug');
+
+      spy.mockRestore();
+    });
   });
 
-  it('writes verbose logs when env var is set', () => {
-    process.env.BOOST_DEBUG_VERBOSE = 'true';
+  describe('disable()', () => {
+    it('disables the namespace by modifying the `DEBUG` env var', () => {
+      process.env.DEBUG = 'debug';
 
-    debugFunc.verbose('Loonnnggg log!');
+      debugFunc.disable();
 
-    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('Loonnnggg log!'));
+      expect(process.env.DEBUG).toBe('');
+    });
 
-    delete process.env.BOOST_DEBUG_VERBOSE;
-  });
+    it('supports wildcard namespaces', () => {
+      process.env.DEBUG = 'debug:*';
 
-  it('enables the namespace on `debug`', () => {
-    const spy = jest.spyOn(debug, 'enable');
+      debugFunc.disable();
 
-    debugFunc.enable();
+      expect(process.env.DEBUG).toBe('');
+    });
 
-    expect(spy).toBeCalledWith('debug');
+    it('supports the namespace at the beginning', () => {
+      process.env.DEBUG = 'debug,other:*,name';
 
-    spy.mockRestore();
+      debugFunc.disable();
+
+      expect(process.env.DEBUG).toBe('other:*,name');
+    });
+
+    it('supports the namespace in the middle', () => {
+      process.env.DEBUG = 'other,debug,name:*';
+
+      debugFunc.disable();
+
+      expect(process.env.DEBUG).toBe('other,name:*');
+    });
+
+    it('supports the namespace at the end', () => {
+      process.env.DEBUG = 'other,name,debug:*';
+
+      debugFunc.disable();
+
+      expect(process.env.DEBUG).toBe('other,name');
+    });
   });
 });

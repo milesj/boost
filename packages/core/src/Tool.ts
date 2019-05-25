@@ -146,7 +146,7 @@ export default class Tool<
     );
 
     // Set environment variables
-    process.env.BOOST_DEBUG_APP_NAMESPACE = this.options.appName;
+    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = this.options.appName;
 
     // Core debugger and logger for the entire tool
     this.debug = createDebugger('core');
