@@ -20,7 +20,7 @@ debug('Something is broken!');
 - Isolated and namespaced debugger instances, controlled with the `DEBUG` environment variable.
 - Crash reporter that logs binary versions, programming languages, running process, system
   information, and much more.
-- Standard and verbose debugging.
+- Standard and verbose debug output.
 - Toggleable debugging at runtime.
 
 ## Installation
@@ -31,4 +31,4 @@ yarn add @boost/debug
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost](https://milesj.gitbook.io/boost)
+[https://milesj.gitbook.io/boost/debug](https://milesj.gitbook.io/boost/debug)

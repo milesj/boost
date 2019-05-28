@@ -85,19 +85,20 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
       .reportProcess()
       .reportSystem();
 
-    reporter.addSection('Tool Instance');
-    reporter.add('App name', options.appName);
-    reporter.add('App path', options.appPath);
-    reporter.add('Plugin types', Object.keys(this.tool.getRegisteredPlugins()).join(', '));
-    reporter.add('Scoped package', options.scoped ? 'Yes' : 'No');
-    reporter.add('Root', options.root);
-    reporter.add('Config name', options.configName);
-    reporter.add('Package path', path.join(options.root, 'package.json'));
-    reporter.add('Workspaces root', options.workspaceRoot || '(Not enabled)');
-    reporter.add(
-      'Extending configs',
-      config.extends.length > 0 ? util.inspect(config.extends) : '(Not extending)',
-    );
+    reporter
+      .addSection('Tool Instance')
+      .add('App name', options.appName)
+      .add('App path', options.appPath)
+      .add('Plugin types', Object.keys(this.tool.getRegisteredPlugins()).join(', '))
+      .add('Scoped package', options.scoped ? 'Yes' : 'No')
+      .add('Root', options.root)
+      .add('Config name', options.configName)
+      .add('Package path', path.join(options.root, 'package.json'))
+      .add('Workspaces root', options.workspaceRoot || '(Not enabled)')
+      .add(
+        'Extending configs',
+        config.extends.length > 0 ? util.inspect(config.extends) : '(Not extending)',
+      );
 
     reporter
       .reportLanguages()

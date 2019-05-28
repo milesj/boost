@@ -10,6 +10,7 @@ import Task, { TaskAction } from './Task';
 import Tool, { ToolConfig, ToolOptions, ToolPluginRegistry } from './Tool';
 import { PackageConfig, PluginSetting } from './types';
 
+// TODO Remove in 2.0
 export { mockDebugger };
 
 export interface TestToolPlugins extends ToolPluginRegistry {
@@ -79,6 +80,10 @@ export function mockTool<
 
   // Stub out methods
   tool.debug = mockDebugger();
+
+  // TODO Remove in 2.0
+  // @ts-ignore
+  tool.createDebugger = mockDebugger;
 
   // @ts-ignore Allow private access to avoid loaders
   tool.initialized = true;
