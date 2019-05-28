@@ -10,7 +10,7 @@ yarn add @boost/log
 
 ## Usage
 
-Logging is based around the concept of a "logger", which provides a set of methods of variable
+Logging is based around the concept of a "logger", which provides a set of functions of variable
 levels to log with. Logs are written to a defined writable stream, or `process.stdout` and
 `process.stderr` if not defined. To begin, instantiate a logger with `createLogger`, which returns a
 function that can be used for standard level logging.
@@ -23,8 +23,8 @@ const log = createLogger();
 log('Something has happened…');
 ```
 
-Each logger method requires a message string as the 1st argument, and an optional rest of arguments
-to interpolate into the message using
+Each function that logs requires a message string as the 1st argument, and an optional rest of
+arguments to interpolate into the message using
 [util.format()](https://nodejs.org/api/util.html#util_util_format_format_args).
 
 ```ts
@@ -62,10 +62,10 @@ const log = createLogger({
 
 ### Log Levels
 
-There are 5 distinct logging levels outside the standard level, each represented as a unique method
-on the logger instance. The levels in order of **priority** are `trace`, `debug`, `info`, `warn`,
-and `error`. Each method requires a message as the 1st argument, and an optional rest of arguments
-to interpolate into the message.
+There are 5 distinct logging levels outside the standard level, each represented as a unique
+function on the logger instance. The levels in order of **priority** are `trace`, `debug`, `info`,
+`warn`, and `error`. Each function requires a message as the 1st argument, and an optional rest of
+arguments to interpolate into the message.
 
 ```ts
 log.trace('Code path hit?');
@@ -75,12 +75,13 @@ log.warn('Something is definitely going on…');
 log.error('Systems are down! %s', error.message);
 ```
 
-> Log, trace, and info methods write to `stdout`, while debug, warn, and error write to `stderr`.
+> Log, trace, and info functions write to `stdout`, while debug, warn, and error write to `stderr`.
 
 ### Silencing Output
 
 By default, all logged messages are immediately written to the configured streams. To silence output
-and disable stream writes, call the `disable()` method, and to re-enable, call `enable()`.
+and disable stream writes, call the `logger.disable()` function, and to re-enable, call
+`logger.enable()`.
 
 ```ts
 log.disable();

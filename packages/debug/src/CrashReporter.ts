@@ -24,9 +24,11 @@ export default class CrashReporter {
   /**
    * Add a label with a value, or multiple values, to the last added section.
    */
-  add(label: string, ...messages: (string | number)[]) {
+  add(label: string, ...messages: (string | number)[]): this {
     this.contents += `${label}:\n`;
     this.contents += `  ${messages.join(' - ')}\n`;
+
+    return this;
   }
 
   /**
@@ -179,7 +181,9 @@ export default class CrashReporter {
   /**
    * Write the reported content to the defined file path.
    */
-  write(filePath: string) {
+  write(filePath: string): this {
     fs.writeFileSync(filePath, this.contents.trim(), 'utf8');
+
+    return this;
   }
 }
