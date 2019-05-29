@@ -2,7 +2,8 @@
 
 import execa from 'execa';
 import { Predicates } from 'optimal';
-import { mockTool, mockRoutine, mockDebugger, stubToolConfig } from '../src/testUtils';
+import { mockDebugger } from '@boost/debug/lib/testing';
+import { mockTool, mockRoutine, stubToolConfig } from '../src/testUtils';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import Tool from '../src/Tool';

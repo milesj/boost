@@ -13,6 +13,7 @@ import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
 import { Event } from '@boost/event';
+import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger, LogLevel } from '@boost/log';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
@@ -32,7 +33,6 @@ import instanceOf from './helpers/instanceOf';
 import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
   AbstractConstructor,
-  Debugger,
   Translator,
   PackageConfig,
   PluginType,
@@ -145,8 +145,11 @@ export default class Tool<
       },
     );
 
+    // Set environment variables
+    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = this.options.appName;
+
     // Core debugger and logger for the entire tool
-    this.debug = this.createDebugger('core');
+    this.debug = createDebugger('core');
 
     this.log = createLogger({
       defaultLevel: process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel,
@@ -188,6 +191,10 @@ export default class Tool<
         this.onExit.emit([code]);
       });
     }
+
+    // TODO Backwards compat, remove in 2.0
+    // @ts-ignore
+    this.createDebugger = createDebugger;
   }
 
   /**
@@ -221,19 +228,6 @@ export default class Tool<
     this.onLoadPlugin.emit([plugin], typeName as Extract<K, string>);
 
     return this;
-  }
-
-  /**
-   * Create a debugger instance with a namespace.
-   */
-  createDebugger(...namespaces: string[]): Debugger {
-    const handler = debug(`${this.options.appName}:${namespaces.join(':')}`) as Debugger;
-
-    handler.invariant = (condition: boolean, message: string, pass: string, fail) => {
-      handler('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
-    };
-
-    return handler;
   }
 
   /**

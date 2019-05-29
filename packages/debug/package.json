@@ -1,0 +1,31 @@
+{
+  "name": "@boost/debug",
+  "version": "0.0.0",
+  "description": "Lightweight debugging and crash reporting.",
+  "keywords": [
+    "boost",
+    "debug",
+    "debugger",
+    "debugging",
+    "crash",
+    "report",
+    "reporting"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/debug",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@types/debug": "^4.1.4",
+    "@types/execa": "^0.9.0",
+    "chalk": "^2.4.2",
+    "debug": "^4.1.1",
+    "execa": "^1.0.0"
+  }
+}

@@ -14,4 +14,4 @@ yarn add @boost/event
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost](https://milesj.gitbook.io/boost)
+[https://milesj.gitbook.io/boost/event](https://milesj.gitbook.io/boost/event)

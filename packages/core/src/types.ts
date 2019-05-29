@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import debug from 'debug';
 import i18next from 'i18next';
 import { Blueprint, Predicates } from 'optimal';
 import ModuleLoader from './ModuleLoader';
@@ -12,11 +11,6 @@ export type AbstractConstructor<T> = Function & { prototype: T };
 export type ConcreteConstructor<T> = new (...args: any[]) => T;
 
 export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
-
-export interface Debugger extends debug.IDebugger {
-  (message: any, ...args: any[]): void;
-  invariant(condition: boolean, message: string, pass: string, fail: string): void;
-}
 
 export interface Translator extends i18next.i18n {}
 

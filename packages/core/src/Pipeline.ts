@@ -1,7 +1,9 @@
 import exit from 'exit';
+import path from 'path';
+import util from 'util';
 import { Blueprint, Predicates } from 'optimal';
+import { CrashReporter } from '@boost/debug';
 import Context from './Context';
-import CrashLogger from './CrashLogger';
 import ExitError from './ExitError';
 import Routine from './Routine';
 import CoreTool from './Tool';
@@ -61,7 +63,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
       .catch(error => {
         cli.stop(error);
 
-        new CrashLogger(this.tool).log(error);
+        this.reportCrash(error);
 
         if (instanceOf(error, ExitError)) {
           this.options.exit(error.code);
@@ -71,5 +73,37 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
 
         return error;
       });
+  }
+
+  /**
+   * Report the pipeline failure by writing a crash log.
+   */
+  reportCrash(error: Error) {
+    const { config, options } = this.tool;
+    const reporter = new CrashReporter()
+      .reportBinaries()
+      .reportProcess()
+      .reportSystem();
+
+    reporter
+      .addSection('Tool Instance')
+      .add('App name', options.appName)
+      .add('App path', options.appPath)
+      .add('Plugin types', Object.keys(this.tool.getRegisteredPlugins()).join(', '))
+      .add('Scoped package', options.scoped ? 'Yes' : 'No')
+      .add('Root', options.root)
+      .add('Config name', options.configName)
+      .add('Package path', path.join(options.root, 'package.json'))
+      .add('Workspaces root', options.workspaceRoot || '(Not enabled)')
+      .add(
+        'Extending configs',
+        config.extends.length > 0 ? util.inspect(config.extends) : '(Not extending)',
+      );
+
+    reporter
+      .reportLanguages()
+      .reportStackTrace(error)
+      .reportEnvVars()
+      .write(path.join(options.root, `${options.appName}-error.log`));
   }
 }

@@ -252,20 +252,6 @@ describe('Tool', () => {
     });
   });
 
-  describe('createDebugger()', () => {
-    it('returns a debug function', () => {
-      const debugFunc = tool.createDebugger('foo');
-
-      expect(typeof debugFunc).toBe('function');
-    });
-
-    it('provides an invariant function', () => {
-      const debugFunc = tool.createDebugger('foo');
-
-      expect(typeof debugFunc.invariant).toBe('function');
-    });
-  });
-
   describe('createTranslator', () => {
     it('returns an i18n instance', () => {
       const i18n = tool.createTranslator();
