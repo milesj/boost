@@ -12,6 +12,7 @@ import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
+import { isEmpty } from '@boost/common';
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
@@ -25,7 +26,6 @@ import Reporter from './Reporter';
 import BoostReporter from './reporters/BoostReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import handleMerge from './helpers/handleMerge';
-import isEmptyObject from './helpers/isEmptyObject';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
@@ -644,7 +644,7 @@ export default class Tool<
       return this;
     }
 
-    if (isEmptyObject(this.config)) {
+    if (isEmpty(this.config)) {
       throw new Error(this.msg('errors:configNotLoaded', { name: 'plugins' }));
     }
 
@@ -681,7 +681,7 @@ export default class Tool<
       return this;
     }
 
-    if (isEmptyObject(this.config)) {
+    if (isEmpty(this.config)) {
       throw new Error(this.msg('errors:configNotLoaded', { name: 'reporters' }));
     }
 

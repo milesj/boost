@@ -1,4 +1,4 @@
-import isObject from './helpers/isObject';
+import { isObject } from '@boost/common';
 
 export default class Context {
   /**
