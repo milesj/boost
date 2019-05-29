@@ -12,7 +12,7 @@ import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
-import { isEmpty } from '@boost/common';
+import { instanceOf, isEmpty, AbstractConstructor } from '@boost/common';
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
@@ -29,10 +29,8 @@ import handleMerge from './helpers/handleMerge';
 import CIReporter from './reporters/CIReporter';
 import LanguageDetector from './i18n/LanguageDetector';
 import FileBackend from './i18n/FileBackend';
-import instanceOf from './helpers/instanceOf';
 import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
-  AbstractConstructor,
   Translator,
   PackageConfig,
   PluginType,

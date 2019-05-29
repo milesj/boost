@@ -8,6 +8,7 @@ import { Constructor } from '../types';
 export default function instanceOf<T = any>(
   object: any,
   contract: Constructor<T> | Function,
+  loose: boolean = true,
 ): object is T {
   if (!object || typeof object !== 'object') {
     return false;
@@ -15,6 +16,10 @@ export default function instanceOf<T = any>(
 
   if (object instanceof contract) {
     return true;
+  }
+
+  if (!loose) {
+    return false;
   }
 
   let current = object;

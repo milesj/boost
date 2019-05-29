@@ -2,6 +2,7 @@ import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 
 import split from 'split';
 import { Readable } from 'stream';
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
+import { instanceOf } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
@@ -12,7 +13,6 @@ import ParallelExecutor from './executors/Parallel';
 import PoolExecutor, { PoolExecutorOptions } from './executors/Pool';
 import SerialExecutor from './executors/Serial';
 import SyncExecutor from './executors/Sync';
-import instanceOf from './helpers/instanceOf';
 import wrapWithPromise from './helpers/wrapWithPromise';
 import { STATUS_RUNNING } from './constants';
 
