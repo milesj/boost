@@ -74,3 +74,13 @@ export default class Plugin extends Contract<PluginOptions> {
   // ...
 }
 ```
+
+## Helpers
+
+### `formatMs`
+
+### `isEmpty`
+
+### `isObject`
+
+### `requireModule`
