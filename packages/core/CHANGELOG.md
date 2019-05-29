@@ -1,3 +1,19 @@
+## 1.12.0
+
+#### 🚀 Updates
+
+- Added a new package, [@boost/log](https://www.npmjs.com/package/@boost/log), to provide a logger
+  with common log level functionality.
+- Added a new package, [@boost/debug](https://www.npmjs.com/package/@boost/debug), to provide
+  debugging and crash reporting capabilities.
+  - The new `createDebugger` function supersedes the `Tool#createDebugger` method.
+- Updated the crash log to report more information (like binary paths).
+
+#### 🛠 Internals
+
+- The `Tool#createDebugger`, `Tool#log`, `Tool#logLive`, and `Tool#logError` methods have been
+  deprecated.
+
 ### 1.11.1 - 2019-05-09
 
 #### 📦 Dependencies
