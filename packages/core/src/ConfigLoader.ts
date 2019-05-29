@@ -426,7 +426,7 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configUnsupportedExt', { ext }));
     }
 
-    if (!isObject(value)) {
+    if (!isObject<T>(value)) {
       throw new Error(this.tool.msg('errors:configInvalidNamed', { name }));
     }
 
