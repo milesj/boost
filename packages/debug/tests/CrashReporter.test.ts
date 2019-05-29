@@ -79,7 +79,8 @@ Label:
   it('reports languages', () => {
     reporter.reportLanguages();
 
-    expect(reporter.contents).toMatchSnapshot();
+    expect(reporter.contents).toContain('Ruby');
+    expect(reporter.contents).toContain('0.0.0 - /php');
   });
 
   it('reports current process', () => {

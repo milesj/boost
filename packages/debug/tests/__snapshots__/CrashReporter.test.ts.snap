@@ -67,25 +67,3 @@ FOO:
   foo
 "
 `;
-
-exports[`CrashReporter reports languages 1`] = `
-"
-LANGUAGES
-=========
-
-Bash:
-  0.0.0 - /bash
-Go:
-  0.0.0 - /go
-Perl:
-  0.0.0 - /perl
-PHP:
-  0.0.0 - /php
-Python:
-  0.0.0 - /python
-Ruby:
-  0.0.0 - /ruby
-Rust:
-  0.0.0 - /rustup
-"
-`;
