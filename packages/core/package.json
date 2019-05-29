@@ -54,7 +54,6 @@
     "optimal": "^3.2.1",
     "os-locale": "^3.1.0",
     "pluralize": "^7.0.0",
-    "pretty-ms": "^5.0.0",
     "split": "^1.0.1",
     "strip-ansi": "^5.2.0",
     "term-size": "^2.0.0",

@@ -4,6 +4,7 @@ import cliTruncate from 'cli-truncate';
 import cliSize from 'term-size';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
+import { formatMs } from '@boost/common';
 import Console from './Console';
 import ModuleLoader from './ModuleLoader';
 import Output, { StringRenderer } from './Output';
@@ -11,7 +12,6 @@ import ProgressOutput, { ProgressRenderer } from './outputs/ProgressOutput';
 import Plugin from './Plugin';
 import Routine from './Routine';
 import Task from './Task';
-import formatTime from './helpers/formatTime';
 import { Color, ColorType, ColorPalette, OutputLevel } from './types';
 
 let restoreCursorOnExit = false;
@@ -134,7 +134,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
   getElapsedTime(start: number, stop: number = 0, highlight: boolean = true): string {
     const time = (stop || Date.now()) - start;
     const isSlow = time > SLOW_THRESHOLD;
-    const elapsed = formatTime(time);
+    const elapsed = formatMs(time);
 
     return isSlow && highlight ? this.style(elapsed, 'failure') : elapsed;
   }

@@ -1,9 +1,8 @@
 import path from 'path';
 import chalk from 'chalk';
-import { isObject } from '@boost/common';
+import { isObject, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import formatModuleName from './helpers/formatModuleName';
-import requireModule from './helpers/requireModule';
 import instanceOf from './helpers/instanceOf';
 import Tool from './Tool';
 import { Constructor, ConcreteConstructor } from './types';
