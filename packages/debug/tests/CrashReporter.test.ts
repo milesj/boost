@@ -94,7 +94,7 @@ Label:
     reporter.reportStackTrace(new Error('Oops'));
 
     expect(reporter.contents).toContain('Error: Oops');
-    expect(reporter.contents).toContain('at Object.it (');
+    expect(reporter.contents).toContain('at Object');
   });
 
   it('reports current system', () => {
