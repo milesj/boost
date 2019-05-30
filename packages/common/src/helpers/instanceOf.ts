@@ -7,14 +7,14 @@ import { Constructor } from '../types';
  */
 export default function instanceOf<T = any>(
   object: any,
-  contract: Constructor<T> | Function,
+  declaration: Constructor<T>,
   loose: boolean = true,
 ): object is T {
   if (!object || typeof object !== 'object') {
     return false;
   }
 
-  if (object instanceof contract) {
+  if (object instanceof declaration) {
     return true;
   }
 
@@ -30,8 +30,8 @@ export default function instanceOf<T = any>(
     }
 
     if (
-      current.constructor.name === contract.name ||
-      (current instanceof Error && current.name === contract.name)
+      current.constructor.name === declaration.name ||
+      (current instanceof Error && current.name === declaration.name)
     ) {
       return true;
     }
