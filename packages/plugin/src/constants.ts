@@ -1,0 +1,1 @@
+export const DEFAULT_PLUGIN_PRIORITY = 100;
