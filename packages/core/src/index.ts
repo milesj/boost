@@ -4,6 +4,7 @@
  */
 
 import { ExitError, SignalError } from '@boost/internal';
+import { Plugin } from '@boost/plugin';
 import CLI from './CLI';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
@@ -13,7 +14,6 @@ import { AggregatedResponse } from './Executor';
 import ModuleLoader from './ModuleLoader';
 import Output from './Output';
 import Pipeline, { PipelineOptions } from './Pipeline';
-import Plugin from './Plugin';
 import Reporter from './Reporter';
 import Routine, { CommandOptions } from './Routine';
 import Task, { TaskAction, TaskMetadata } from './Task';

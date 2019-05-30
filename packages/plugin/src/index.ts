@@ -4,8 +4,9 @@
  */
 
 import Plugin from './Plugin';
+import Registry from './Registry';
 
 export * from './constants';
 export * from './types';
 
-export { Plugin };
+export { Plugin, Registry };

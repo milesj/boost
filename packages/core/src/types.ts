@@ -4,20 +4,6 @@ import ModuleLoader from './ModuleLoader';
 
 export { Blueprint, Predicates };
 
-// PLUGINS
-
-export interface PluginType<T> {
-  afterBootstrap: ((plugin: T) => void) | null;
-  beforeBootstrap: ((plugin: T) => void) | null;
-  contract: AbstractConstructor<T>;
-  loader: ModuleLoader<T>;
-  pluralName: string;
-  scopes: string[];
-  singularName: string;
-}
-
-export type PluginSetting<P> = (string | { [key: string]: any } | P)[];
-
 // CONSOLE
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';

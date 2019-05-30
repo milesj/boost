@@ -3,10 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import color from 'chalk';
 import createLogger, { LoggerOptions } from './createLogger';
 import isAllowedLogLevel from './isAllowedLogLevel';
 
 export * from './constants';
 export * from './types';
 
-export { createLogger, isAllowedLogLevel, LoggerOptions };
+export { color, createLogger, isAllowedLogLevel, LoggerOptions };

@@ -19,6 +19,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^1.0.1"
+    "@boost/common": "^1.0.1",
+    "@boost/debug": "^0.0.0",
+    "@types/pluralize": "^0.0.29",
+    "pluralize": "^7.0.0"
   }
 }

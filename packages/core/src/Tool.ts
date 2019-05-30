@@ -7,21 +7,20 @@ import chalk from 'chalk';
 import debug from 'debug';
 import envCI from 'env-ci';
 import glob from 'fast-glob';
-import pluralize from 'pluralize';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
-import { instanceOf, isEmpty, AbstractConstructor } from '@boost/common';
-import { Event } from '@boost/event';
+import { instanceOf, isEmpty } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
+import { Event } from '@boost/event';
 import { createLogger, Logger } from '@boost/log';
 import { ExitError } from '@boost/internal';
 import { createTranslator, Translator } from '@boost/translate';
+import { Registry } from '@boost/plugin';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
 import ModuleLoader from './ModuleLoader';
-import Plugin from './Plugin';
 import Reporter from './Reporter';
 import BoostReporter from './reporters/BoostReporter';
 import ErrorReporter from './reporters/ErrorReporter';
@@ -30,8 +29,6 @@ import CIReporter from './reporters/CIReporter';
 import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
   PackageConfig,
-  PluginType,
-  PluginSetting,
   WorkspaceMetadata,
   WorkspacePackageConfig,
   WorkspaceOptions,
@@ -103,9 +100,7 @@ export default class Tool<
 
   private initialized: boolean = false;
 
-  private plugins: { [K in keyof PluginRegistry]?: Set<PluginRegistry[K]> } = {};
-
-  private pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
+  private pluginRegistry = new Registry<ToolPluginRegistry>();
 
   constructor(options: ToolOptions, argv: string[] = []) {
     super();
@@ -162,6 +157,21 @@ export default class Tool<
       },
     );
 
+    // TODO Backwards compat, remove in 2.0
+    // @ts-ignore
+    this.createDebugger = createDebugger;
+    this.getPlugin = this.pluginRegistry.getPlugin;
+    this.getPlugins = this.pluginRegistry.getPlugins;
+    this.getRegisteredPlugin = this.pluginRegistry.getRegisteredType;
+    this.getRegisteredPlugins = this.pluginRegistry.getRegisteredTypes;
+    this.isPluginEnabled = (typeName, name) => {
+      const type = this.pluginRegistry.getRegisteredType(typeName);
+-     const setting = (this.config as any)[type.pluralName];
+
+      return this.pluginRegistry.isPluginEnabled(typeName, name, setting);
+    };
+    this.registerPlugin = this.pluginRegistry.registerPlugin;
+
     // eslint-disable-next-line global-require
     this.debug('Using boost v%s', require('../package.json').version);
 
@@ -176,7 +186,7 @@ export default class Tool<
       beforeBootstrap: reporter => {
         reporter.console = this.console;
       },
-      scopes: ['boost'],
+      moduleScopes: ['boost'],
     });
 
     // istanbul ignore next
@@ -262,54 +272,6 @@ export default class Tool<
     }
 
     throw error;
-  }
-
-  /**
-   * Return a plugin by name and type.
-   */
-  getPlugin<K extends keyof PluginRegistry>(typeName: K, name: string): PluginRegistry[K] {
-    const plugin = this.getPlugins(typeName).find(p => instanceOf(p, Plugin) && p.name === name);
-
-    if (plugin) {
-      return plugin;
-    }
-
-    throw new Error(
-      this.msg('errors:pluginNotFound', {
-        name,
-        typeName,
-      }),
-    );
-  }
-
-  /**
-   * Return all plugins by type.
-   */
-  getPlugins<K extends keyof PluginRegistry>(typeName: K): PluginRegistry[K][] {
-    // Trigger check
-    this.getRegisteredPlugin(typeName);
-
-    return Array.from(this.plugins[typeName]!);
-  }
-
-  /**
-   * Return a registered plugin type by name.
-   */
-  getRegisteredPlugin<K extends keyof PluginRegistry>(typeName: K): PluginType<PluginRegistry[K]> {
-    const type = this.pluginTypes[typeName];
-
-    if (!type) {
-      throw new Error(this.msg('errors:pluginContractNotFound', { typeName }));
-    }
-
-    return type as any;
-  }
-
-  /**
-   * Return the registered plugin types.
-   */
-  getRegisteredPlugins() {
-    return this.pluginTypes;
   }
 
   /**
@@ -438,43 +400,6 @@ export default class Tool<
   }
 
   /**
-   * Return true if a plugin by type has been enabled in the configuration file
-   * by property name of the same type.  The following variants are supported:
-   *
-   * - As a string using the plugins name: "foo"
-   * - As an object with a property by plugin type: { plugin: "foo" }
-   * - As an instance of the plugin class: new Plugin()
-   */
-  isPluginEnabled<K extends keyof PluginRegistry>(typeName: K, name: string): boolean {
-    const type = this.getRegisteredPlugin(typeName);
-    const setting = (this.config as any)[type.pluralName] as PluginSetting<any>;
-
-    if (!setting || !Array.isArray(setting)) {
-      return false;
-    }
-
-    return setting.some(value => {
-      if (typeof value === 'string' && value === name) {
-        return true;
-      }
-
-      if (
-        typeof value === 'object' &&
-        value[type.singularName] &&
-        value[type.singularName] === name
-      ) {
-        return true;
-      }
-
-      if (typeof value === 'object' && value.constructor && value.name === name) {
-        return true;
-      }
-
-      return false;
-    });
-  }
-
-  /**
    * Load all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
    *
@@ -514,41 +439,6 @@ export default class Tool<
     );
 
     this.console.logError(util.format(message, ...args));
-
-    return this;
-  }
-
-  /**
-   * Register a custom type of plugin, with a defined contract that all instances should extend.
-   * The type name should be in singular form, as plural variants are generated automatically.
-   */
-  registerPlugin<K extends keyof PluginRegistry>(
-    typeName: K,
-    contract: AbstractConstructor<PluginRegistry[K]>,
-    options: Partial<
-      Pick<PluginType<PluginRegistry[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'scopes'>
-    > = {},
-  ): this {
-    if (this.pluginTypes[typeName]) {
-      throw new Error(this.msg('errors:pluginContractExists', { typeName }));
-    }
-
-    const name = String(typeName);
-    const { afterBootstrap = null, beforeBootstrap = null, scopes = [] } = options;
-
-    this.debug('Registering new plugin type: %s', chalk.magenta(name));
-
-    this.plugins[typeName] = new Set();
-
-    this.pluginTypes[typeName] = {
-      afterBootstrap,
-      beforeBootstrap,
-      contract,
-      loader: new ModuleLoader(this, name, contract, scopes),
-      pluralName: pluralize(name),
-      scopes,
-      singularName: name,
-    };
 
     return this;
   }

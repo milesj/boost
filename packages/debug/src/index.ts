@@ -3,9 +3,10 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import color from 'chalk';
 import createDebugger from './createDebugger';
 import CrashReporter from './CrashReporter';
 
 export * from './types';
 
-export { createDebugger, CrashReporter };
+export { color, createDebugger, CrashReporter };
