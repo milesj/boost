@@ -9,6 +9,12 @@ describe('isEmpty()', () => {
     expect(isEmpty(false)).toBe(true);
   });
 
+  it('returns false for truthy values', () => {
+    expect(isEmpty('abc')).toBe(false);
+    expect(isEmpty(123)).toBe(false);
+    expect(isEmpty(true)).toBe(false);
+  });
+
   it('returns true for an empty object', () => {
     expect(isEmpty({})).toBe(true);
   });

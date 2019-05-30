@@ -6,7 +6,7 @@ import { Constructor } from '../types';
  * So emulate an `instanceof` check by comparing constructor names.
  */
 export default function instanceOf<T = any>(
-  object: any,
+  object: unknown,
   declaration: Constructor<T>,
   loose: boolean = true,
 ): object is T {
