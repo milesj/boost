@@ -21,6 +21,11 @@ describe('createLogger()', () => {
     logger = mockLogger();
   });
 
+  afterEach(() => {
+    delete process.env.BOOST_LOG_DEFAULT_LEVEL;
+    delete process.env.BOOST_LOG_MAX_LEVEL;
+  });
+
   it('writes `log` level by default', () => {
     logger('Hello');
 
@@ -28,10 +33,11 @@ describe('createLogger()', () => {
   });
 
   it('writes to custom default level', () => {
-    logger = mockLogger({ defaultLevel: 'debug' });
+    process.env.BOOST_LOG_DEFAULT_LEVEL = 'trace';
+
     logger('Hello');
 
-    expect(errStream.write).toHaveBeenCalledWith(`${DEFAULT_LABELS.debug} Hello\n`);
+    expect(outStream.write).toHaveBeenCalledWith(`${DEFAULT_LABELS.trace} Hello\n`);
   });
 
   it('writes `debug` to stream', () => {
@@ -71,7 +77,8 @@ describe('createLogger()', () => {
   });
 
   it('doesnt write levels below max level', () => {
-    logger = mockLogger({ maxLevel: 'debug' });
+    process.env.BOOST_LOG_MAX_LEVEL = 'debug';
+
     logger.log('Log');
     logger.trace('Trace');
     logger.debug('Debug');

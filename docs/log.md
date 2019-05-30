@@ -8,6 +8,13 @@ Lightweight level based logging system.
 yarn add @boost/log
 ```
 
+## Environment Variables
+
+- `BOOST_LOG_DEFAULT_LEVEL` (`LogLevel`) - The default log level to use when calling the logger
+  function stand alone (the usage examples below). Defaults to the lowest level, `log`.
+- `BOOST_LOG_MAX_LEVEL` (`LogLevel`) - The maximum level, based on priority, to write to a stream.
+  All levels higher than the maximum will be ignored. Defaults to allowing all levels.
+
 ## Usage
 
 Logging is based around the concept of a "logger", which provides a set of functions of variable
@@ -37,12 +44,8 @@ log('Object: %O', data);
 The following options can be defined when creating a logger. They _cannot_ be customized after the
 fact.
 
-- `defaultLevel` (`LogLevel`) - The default log level to use when calling the logger function as-is
-  (the examples above). Defaults to the lowest level, `log`.
 - `labels` (`object`) - A mapping of log level names to strings to use as the message prefix. Can be
   used with [chalk](https://www.npmjs.com/package/chalk).
-- `maxLevel` (`LogLevel`) - The maximum level, based on priority, to write to a stream. All levels
-  higher than the maximum will be ignored. Defaults to allowing all levels.
 - `stderr` (`WriteStream`) - The writable stream to log error-like output. Defaults to
   `process.stderr`.
 - `stdout` (`WriteStream`) - The writable stream to log standard output. Defaults to

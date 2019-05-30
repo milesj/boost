@@ -11,10 +11,11 @@ yarn add @boost/debug
 
 ## Environment Variables
 
-- `BOOST_DEBUG_GLOBAL_NAMESPACE` - A prefix to append to all debugger namespaces when created with
-  `createDebugger()`. Is commonly set by a Boost `Tool` instance.
-- `BOOST_DEBUG_VERBOSE` - Print verbose messages logged from `debugger.verbose()`, otherwise they
-  are hidden.
+- `BOOST_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix to append to all debugger namespaces when
+  created with `createDebugger()`. Is commonly set by a command line application or Boost `Tool`
+  instance.
+- `BOOST_DEBUG_VERBOSE` (`boolean`) - Print verbose messages logged from `debugger.verbose()`,
+  otherwise they are hidden.
 
 ## Usage
 

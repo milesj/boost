@@ -13,17 +13,13 @@ export const DEFAULT_LABELS: LogLevelLabels = {
 };
 
 export interface LoggerOptions {
-  defaultLevel?: LogLevel;
   labels?: LogLevelLabels;
-  maxLevel?: LogLevel;
   stderr?: NodeJS.WriteStream;
   stdout?: NodeJS.WriteStream;
 }
 
 export default function createLogger({
-  defaultLevel,
   labels = {},
-  maxLevel,
   stderr = process.stderr,
   stdout = process.stdout,
 }: LoggerOptions = {}): Logger {
@@ -31,6 +27,7 @@ export default function createLogger({
 
   function logger(message: string, ...args: any[]) {
     const self = logger as Logger;
+    const defaultLevel = process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel;
 
     if (defaultLevel && self[defaultLevel]) {
       self[defaultLevel](message, ...args);
@@ -45,6 +42,8 @@ export default function createLogger({
 
     Object.defineProperty(logger, level, {
       value: function log(message: string, ...args: any[]) {
+        const maxLevel = process.env.BOOST_LOG_MAX_LEVEL as LogLevel;
+
         if (!silent && isAllowedLogLevel(level, maxLevel)) {
           const output = util.format(message, ...args);
 
