@@ -2,12 +2,12 @@ import exit from 'exit';
 import path from 'path';
 import util from 'util';
 import { Blueprint, Predicates } from 'optimal';
+import { instanceOf } from '@boost/common';
 import { CrashReporter } from '@boost/debug';
 import Context from './Context';
 import ExitError from './ExitError';
 import Routine from './Routine';
 import CoreTool from './Tool';
-import instanceOf from './helpers/instanceOf';
 
 export interface PipelineOptions {
   exit?: (code: number) => void;

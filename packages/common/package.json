@@ -18,6 +18,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "pretty-ms": "^5.0.0"
+  },
   "peerDependencies": {
     "optimal": "^3.0.0"
   },

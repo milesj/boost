@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import cliSize from 'term-size';
 import optimal, { bool, number, string } from 'optimal';
-import formatTime from '../helpers/formatTime';
+import { formatMs } from '@boost/common';
 import Output from '../Output';
 
 const STYLES = {
@@ -78,8 +78,8 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
     const partialTemplate = template
       .replace('{progress}', `${current}/${total}`)
       .replace('{current}', String(current))
-      .replace('{elapsed}', formatTime(elapsed))
-      .replace('{estimated}', formatTime(estimated))
+      .replace('{elapsed}', formatMs(elapsed))
+      .replace('{estimated}', formatMs(estimated))
       .replace('{percent}', `${percent.toFixed(0)}%`)
       .replace('{rate}', String(rate.toFixed(2)))
       .replace('{total}', String(total));

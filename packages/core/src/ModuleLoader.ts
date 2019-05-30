@@ -1,12 +1,15 @@
-import chalk from 'chalk';
 import path from 'path';
+import chalk from 'chalk';
+import {
+  instanceOf,
+  isObject,
+  requireModule,
+  Constructor,
+  ConcreteConstructor,
+} from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import formatModuleName from './helpers/formatModuleName';
-import isObject from './helpers/isObject';
-import requireModule from './helpers/requireModule';
-import instanceOf from './helpers/instanceOf';
 import Tool from './Tool';
-import { Constructor, ConcreteConstructor } from './types';
 
 export interface OptionsObject {
   [key: string]: any;

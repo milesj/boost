@@ -74,3 +74,92 @@ export default class Plugin extends Contract<PluginOptions> {
   // ...
 }
 ```
+
+## Helpers
+
+### `formatMs`
+
+The `formatMs(time: number, options?: Options)` function can be used to format a UNIX timestamp in
+milliseconds into a shorthand human readable format. Wraps the
+[pretty-ms](https://www.npmjs.com/package/pretty-ms) package to handle infinite numbers, zeros, and
+more.
+
+```ts
+import { formatMs } from '@boost/common';
+
+formatMs(1337000000); // 15d 11h 23m 20s
+```
+
+### `instanceOf`
+
+The `instanceOf(object: unknown, declaration: Constructor, loose?: boolean)` function performs a
+loose instance check by comparing class names up the prototype chain if `instanceof` initially
+fails. To disable this loose check, pass `false` as the 3rd argument.
+
+```ts
+import { instanceOf } from '@boost/common';
+
+if (instanceOf(error, Error)) {
+  console.log(error.stack);
+}
+```
+
+Generics can be used to type the object being checked. This will default to the declaration passed
+to the 2nd argument.
+
+```ts
+instanceOf<ParseError>(error, Error);
+```
+
+> Loose checks can be useful if multiple copies of the same class declaration exists in the module
+> tree. For example, multiple versions of the same package are imported.
+
+### `isEmpty`
+
+The `isEmpty(value: unknown)` function returns `true` if an object has no properties, an array has
+no items, or the value is falsy, otherwise, it returns `false`.
+
+```ts
+import { isEmpty } from '@boost/common';
+
+isEmpty({}); // true
+isEmpty({ name: 'Boost' }); // false
+
+isEmpty([]); // true
+isEmpty(['Boost']); // false
+```
+
+### `isObject`
+
+The `isObject(value: unknown)` function returns `true` if the value is a plain object.
+
+```ts
+import { isObject } from '@boost/common';
+
+isObject({}); // true
+isObject([]); // false
+```
+
+Generics can be used to type the return value of the object (when necessary).
+
+```ts
+interface Person {
+  name: string;
+}
+
+if (isObject<Person>(person)) {
+  console.log(person.name);
+}
+```
+
+### `requireModule`
+
+The `requireModule(path: string)` function works in a similar fashion to the native NodeJS
+`require()`, but also handles files built with Babel or TypeScript, by properly returning the
+`default` export, and also allowing the expected type to be defined.
+
+```ts
+import { requireModule } from '@boost/common';
+
+requireModule<ReturnShape>('../../some/module');
+```

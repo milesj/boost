@@ -49,8 +49,9 @@ debug('Object: %O', data);
 ### Invariant Messages
 
 Invariant debugging logs either a success or a failure message, depending on the truthy evaluation
-of a condition. This can be achieved with `debugger.invariant()`, which requires the condition to
-evaluate, a message to always display, and a success and failure message.
+of a condition. This can be achieved with
+`debugger.invariant(condition: boolean, message: string, pass: string, fail: string)`, which
+requires the condition to evaluate, a message to always display, and a success and failure message.
 
 ```ts
 debug.invariant(fs.existsSync(filePath), 'Does file exist?', 'Yes!', 'No');
@@ -59,8 +60,9 @@ debug.invariant(fs.existsSync(filePath), 'Does file exist?', 'Yes!', 'No');
 ### Verbose Output
 
 Debug messages are already hidden behind the `DEBUG` environment variable, but Boost takes it a step
-further to support verbose debugging. Messages logged with `debugger.verbose()` will not be
-displayed unless the `BOOST_DEBUG_VERBOSE` environment variable is set -- even if `DEBUG` is set.
+further to support verbose debugging. Messages logged with
+`debugger.verbose(message: string, ...args: any[])` will not be displayed unless the
+`BOOST_DEBUG_VERBOSE` environment variable is set -- even if `DEBUG` is set.
 
 ```ts
 // Will not write!

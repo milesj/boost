@@ -6,15 +6,20 @@ import { Constructor } from '../types';
  * So emulate an `instanceof` check by comparing constructor names.
  */
 export default function instanceOf<T = any>(
-  object: any,
-  contract: Constructor<T> | Function,
+  object: unknown,
+  declaration: Constructor<T>,
+  loose: boolean = true,
 ): object is T {
   if (!object || typeof object !== 'object') {
     return false;
   }
 
-  if (object instanceof contract) {
+  if (object instanceof declaration) {
     return true;
+  }
+
+  if (!loose) {
+    return false;
   }
 
   let current = object;
@@ -25,8 +30,8 @@ export default function instanceOf<T = any>(
     }
 
     if (
-      current.constructor.name === contract.name ||
-      (current instanceof Error && current.name === contract.name)
+      current.constructor.name === declaration.name ||
+      (current instanceof Error && current.name === declaration.name)
     ) {
       return true;
     }

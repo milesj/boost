@@ -2,15 +2,10 @@
 
 import i18next from 'i18next';
 import { Blueprint, Predicates } from 'optimal';
+import { AbstractConstructor } from '@boost/common';
 import ModuleLoader from './ModuleLoader';
 
 export { Blueprint, Predicates };
-
-export type AbstractConstructor<T> = Function & { prototype: T };
-
-export type ConcreteConstructor<T> = new (...args: any[]) => T;
-
-export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 
 export interface Translator extends i18next.i18n {}
 

@@ -10,11 +10,9 @@ import mergeWith from 'lodash/mergeWith';
 import { Arguments } from 'yargs-parser';
 import { createDebugger, Debugger } from '@boost/debug';
 import optimal, { array, bool, instance, number, shape, string, union, object } from 'optimal';
+import { isEmpty, isObject, requireModule } from '@boost/common';
 import formatModuleName from './helpers/formatModuleName';
 import handleMerge from './helpers/handleMerge';
-import isObject from './helpers/isObject';
-import isEmptyObject from './helpers/isEmptyObject';
-import requireModule from './helpers/requireModule';
 import Tool, { ToolConfig } from './Tool';
 import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { PackageConfig, PluginSetting } from './types';
@@ -252,7 +250,7 @@ export default class ConfigLoader {
    * Support both JSON and JS file formats by globbing the config directory.
    */
   loadConfig<T>(args: Arguments): T {
-    if (isEmptyObject(this.package) || !this.package.name) {
+    if (isEmpty(this.package) || !this.package.name) {
       throw new Error(this.tool.msg('errors:packageJsonNotLoaded'));
     }
 
@@ -293,7 +291,7 @@ export default class ConfigLoader {
         locale: string(),
         output: number(2).between(1, 3, true),
         // shape() requires a non-empty object
-        settings: isEmptyObject(settingsBlueprint) ? object() : shape(settingsBlueprint),
+        settings: isEmpty(settingsBlueprint) ? object() : shape(settingsBlueprint),
         silent: bool(),
         theme: string('default').notEmpty(),
       },
@@ -427,7 +425,7 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configUnsupportedExt', { ext }));
     }
 
-    if (!isObject(value)) {
+    if (!isObject<T>(value)) {
       throw new Error(this.tool.msg('errors:configInvalidNamed', { name }));
     }
 

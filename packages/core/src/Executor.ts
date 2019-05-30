@@ -1,10 +1,10 @@
 import kebabCase from 'lodash/kebabCase';
+import { instanceOf } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import Context from './Context';
 import Routine from './Routine';
 import Task from './Task';
 import Tool from './Tool';
-import instanceOf from './helpers/instanceOf';
 
 export type ExecuteHandler<Ctx extends Context> = (task: Task<Ctx>, value?: any) => Promise<any>;
 

@@ -1,7 +1,7 @@
+import { instanceOf } from '@boost/common';
 import Reporter from '../Reporter';
 import Routine from '../Routine';
 import Task from '../Task';
-import instanceOf from '../helpers/instanceOf';
 
 export interface LineParts {
   prefix: string;
