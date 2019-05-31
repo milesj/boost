@@ -166,7 +166,7 @@ export default class Tool<
     this.getRegisteredPlugins = this.pluginRegistry.getRegisteredTypes;
     this.isPluginEnabled = (typeName, name) => {
       const type = this.pluginRegistry.getRegisteredType(typeName);
--     const setting = (this.config as any)[type.pluralName];
+      const setting = (this.config as any)[type.pluralName];
 
       return this.pluginRegistry.isPluginEnabled(typeName, name, setting);
     };

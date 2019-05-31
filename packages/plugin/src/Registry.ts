@@ -1,14 +1,26 @@
-import pluralize from 'pluralize';
-import { instanceOf, AbstractConstructor } from '@boost/common';
-import { color, createDebugger } from '@boost/debug';
-import { PluginType, PluginSetting } from './types';
+/* eslint-disable  */
 
-export default class Registry<Types extends object> {
+import pluralize from 'pluralize';
+import { instanceOf } from '@boost/common';
+import { color, createDebugger } from '@boost/debug';
+import Loader from './Loader';
+import { PluginType, PluginSetting, Pluggable } from './types';
+
+type ExtendPluggable<T> = { [K in keyof T]: T[K] extends Pluggable<any> ? T[K] : never };
+
+export default class Registry<Types extends { [type: string]: Pluggable<any> }> {
   debug = createDebugger('plugin-registry');
 
   private plugins: { [K in keyof Types]?: Set<Types[K]> } = {};
 
   private types: { [K in keyof Types]?: PluginType<Types[K]> } = {};
+
+  /**
+   * Return a plugin loader for the defined type.
+   */
+  createLoader<K extends keyof Types>(typeName: K): Loader<Types[K]> {
+    return new Loader(this.getRegisteredType(typeName));
+  }
 
   /**
    * Return a plugin by name and type.
@@ -45,7 +57,7 @@ export default class Registry<Types extends object> {
       throw new Error(`Plugin type "${typeName}" could not be found. Has it been registered?`);
     }
 
-    return type;
+    return type!;
   }
 
   /**
@@ -67,7 +79,7 @@ export default class Registry<Types extends object> {
   isPluginEnabled<K extends keyof Types>(
     typeName: K,
     name: string,
-    setting: PluginSetting<Types[K]>,
+    setting: PluginSetting<Types[K]>[],
   ): boolean {
     const type = this.getRegisteredType(typeName);
 
@@ -97,14 +109,13 @@ export default class Registry<Types extends object> {
   }
 
   /**
-   * Register a custom type of plugin, with a defined contract that all instances should extend.
+   * Register a custom type of plugin, with an optional declaration that instances should extend.
    * The type name should be in singular form, as plural variants are generated automatically.
    */
   registerType<K extends keyof Types>(
     typeName: K,
-    declaration: AbstractConstructor<Types[K]>,
     options: Partial<
-      Pick<PluginType<Types[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'moduleScopes'>
+      Pick<PluginType<Types[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'declaration'>
     > = {},
   ): this {
     if (this.types[typeName]) {
@@ -113,7 +124,7 @@ export default class Registry<Types extends object> {
     }
 
     const name = String(typeName);
-    const { afterBootstrap = null, beforeBootstrap = null, moduleScopes = [] } = options;
+    const { afterBootstrap = null, beforeBootstrap = null, declaration = null } = options;
 
     this.debug('Registering new plugin type: %s', color.magenta(name));
 
@@ -123,8 +134,6 @@ export default class Registry<Types extends object> {
       afterBootstrap,
       beforeBootstrap,
       declaration,
-      // loader: new ModuleLoader(this, name, declaration, scopes),
-      moduleScopes,
       pluralName: pluralize(name),
       singularName: name,
     };

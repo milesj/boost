@@ -53,52 +53,6 @@ export default class ModuleLoader<Tm> {
     let importedModule: any = null;
     let moduleName;
 
-    // File path
-    if (name.match(/^\.|\/|\\|[A-Z]:/u)) {
-      this.debug('Locating %s from path %s', typeName, chalk.cyan(name));
-
-      modulesToAttempt.push(path.normalize(name));
-      isFilePath = true;
-
-      // Module name
-    } else {
-      this.debug('Locating %s module %s', typeName, chalk.yellow(name));
-
-      if (scoped) {
-        modulesToAttempt.push(formatModuleName(appName, typeName, name, true));
-      }
-
-      modulesToAttempt.push(formatModuleName(appName, typeName, name));
-
-      // Additional scopes to load
-      this.scopes.forEach(otherScope => {
-        modulesToAttempt.push(
-          formatModuleName(otherScope, typeName, name, true),
-          formatModuleName(otherScope, typeName, name),
-        );
-      });
-
-      this.debug('Resolving in order: %s', modulesToAttempt.join(', '));
-    }
-
-    modulesToAttempt.some(modName => {
-      try {
-        importedModule = requireModule(modName);
-        moduleName = modName;
-
-        return true;
-      } catch (error) {
-        if (error.message.startsWith(`Cannot find module '${modName}'`)) {
-          this.debug('Failed to import module: %s', error.message);
-
-          return false;
-        }
-
-        // Unknown error occurred, abort process
-        throw error;
-      }
-    });
-
     if (!importedModule || !moduleName) {
       throw new Error(
         this.tool.msg('errors:moduleImportFailed', {

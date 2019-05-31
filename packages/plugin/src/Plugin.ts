@@ -4,11 +4,11 @@ import { Pluggable } from './types';
 
 export default abstract class Plugin<Options extends object = {}> extends Contract<Options>
   implements Pluggable<Options> {
-  moduleName: string = '';
-
   name: string = '';
 
   priority: number = DEFAULT_PLUGIN_PRIORITY;
+
+  source: string = '';
 
   /**
    * Called once the plugin has been loaded.
