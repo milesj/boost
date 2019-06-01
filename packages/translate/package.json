@@ -1,13 +1,14 @@
 {
-  "name": "@boost/log",
+  "name": "@boost/translate",
   "version": "0.0.0",
-  "description": "Lightweight level based logging system.",
+  "description": "Translating packages made easy.",
   "keywords": [
     "boost",
-    "log",
-    "logger",
-    "logging",
-    "levels"
+    "translate",
+    "translator",
+    "i18n",
+    "message",
+    "resources"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -20,7 +21,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/translate": "^0.0.0",
-    "chalk": "^2.4.2"
+    "@boost/common": "^0.0.0",
+    "i18next": "^15.1.1",
+    "os-locale": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/os-locale": "^2.1.0"
   }
 }

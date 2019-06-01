@@ -163,3 +163,16 @@ import { requireModule } from '@boost/common';
 
 requireModule<ReturnShape>('../../some/module');
 ```
+
+### `toArray`
+
+The `toArray(value: unknown)` function does exactly as its name states, it converts a non-array to
+an array.
+
+```ts
+import { toArray } from '@boost/common';
+
+toArray(123); // [123]
+toArray('abc'); // ['abc']
+toArray(['a', 'b', 'c']); // ['a', 'b', 'c']
+```

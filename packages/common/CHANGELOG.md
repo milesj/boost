@@ -2,7 +2,8 @@
 
 #### 🚀 Updates
 
-- Adds `formatMs`, `instanceOf`, `isEmpty`, `isObject`, and `requireModule` helper functions.
+- Adds `formatMs`, `instanceOf`, `isEmpty`, `isObject`, `requireModule`, and `toArray` helper
+  functions.
 
 ### 1.0.1 - 2019-05-09
 

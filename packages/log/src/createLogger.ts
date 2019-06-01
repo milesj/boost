@@ -2,14 +2,14 @@ import util from 'util';
 import chalk from 'chalk';
 import isAllowedLogLevel from './isAllowedLogLevel';
 import { Logger, LogLevel, LogLevelLabels } from './types';
-import { LOG_LEVELS } from './constants';
+import { msg, LOG_LEVELS } from './constants';
 
 export const DEFAULT_LABELS: LogLevelLabels = {
-  debug: chalk.gray('debug'),
-  error: chalk.red('error'),
-  info: chalk.cyan('info'),
-  trace: chalk.magenta('trace'),
-  warn: chalk.yellow('warn'),
+  debug: chalk.gray(msg('log:levelDebug')),
+  error: chalk.red(msg('log:levelError')),
+  info: chalk.cyan(msg('log:levelInfo')),
+  trace: chalk.magenta(msg('log:levelTrace')),
+  warn: chalk.yellow(msg('log:levelWarn')),
 };
 
 export interface LoggerOptions {

@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import i18next from 'i18next';
 import { Blueprint, Predicates } from 'optimal';
 import { AbstractConstructor } from '@boost/common';
 import ModuleLoader from './ModuleLoader';
 
 export { Blueprint, Predicates };
-
-export interface Translator extends i18next.i18n {}
 
 // PLUGINS
 

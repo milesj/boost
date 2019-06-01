@@ -227,40 +227,6 @@ export default class Tool<
   }
 
   /**
-   * Create an i18n translator instance.
-   */
-  createTranslator(): Translator {
-    const translator = i18next
-      .createInstance()
-      .use(new LanguageDetector())
-      .use(new FileBackend());
-
-    translator.init(
-      {
-        backend: {
-          resourcePaths: [
-            path.join(__dirname, '../resources'),
-            path.join(this.options.appPath, 'resources'),
-          ],
-        },
-        defaultNS: 'app',
-        fallbackLng: ['en'],
-        initImmediate: false,
-        lowerCaseLng: true,
-        ns: ['app', 'errors', 'prompts'],
-      },
-      error => {
-        // istanbul ignore next
-        if (error) {
-          throw error;
-        }
-      },
-    );
-
-    return translator;
-  }
-
-  /**
    * Create a workspace metadata object composed of absolute file paths.
    */
   createWorkspaceMetadata(jsonPath: string): WorkspaceMetadata {
@@ -545,21 +511,6 @@ export default class Tool<
     this.console.logError(util.format(message, ...args));
 
     return this;
-  }
-
-  /**
-   * Retrieve a translated message from a resource bundle.
-   */
-  msg(key: string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
-    if (!this.translator) {
-      this.translator = this.createTranslator();
-    }
-
-    return this.translator.t(key, {
-      interpolation: { escapeValue: false },
-      replace: params,
-      ...options,
-    });
   }
 
   /**
