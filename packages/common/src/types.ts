@@ -9,7 +9,7 @@ export type ConcreteConstructor<T> = new (...args: any[]) => T;
 export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 
 export interface Optionable<T extends object = {}> {
-  options: Required<T>;
+  readonly options: Required<T>;
 
   blueprint(predicates: Predicates): Blueprint<T>;
 }

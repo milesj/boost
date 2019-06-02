@@ -5,7 +5,7 @@ import { parseFile, Contract, Path, Predicates } from '@boost/common';
 import { Locale, Format } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
-  js: ['js', 'mjs'],
+  js: ['js'],
   json: ['json', 'json5'],
   yaml: ['yml', 'yaml'],
 };
@@ -21,7 +21,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
 
   type: 'backend' = 'backend';
 
-  init(services: i18next.Services, options: Partial<FileBackendOptions>) {
+  init(services: unknown, options: Partial<FileBackendOptions>) {
     this.setOptions(options);
 
     // Validate resource paths are directories
@@ -37,7 +37,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
   blueprint({ array, string }: Predicates) /* infer */ {
     return {
       format: string('json').oneOf(['js', 'json', 'yaml']),
-      paths: array(string()),
+      paths: array(string()).notEmpty(),
     };
   }
 
@@ -55,7 +55,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
 
     paths.forEach(resourcePath => {
       EXTS[format].some(ext => {
-        const filePath = path.join(resourcePath, locale, `${namespace}.${ext}`);
+        const filePath = path.normalize(path.join(resourcePath, locale, `${namespace}.${ext}`));
 
         if (!this.fileCache[filePath] && !fs.existsSync(filePath)) {
           return false;

@@ -37,8 +37,6 @@ export default function createTranslator(
 
   if (namespaces.length === 0) {
     throw new Error('A namespace is required for translations.');
-  } else if (resourcePaths.length === 0) {
-    throw new Error('At least 1 resource directory is required.');
   } else if (!autoDetect && !locale) {
     throw new Error('A locale must be defined if auto-detection is disabled.');
   }
