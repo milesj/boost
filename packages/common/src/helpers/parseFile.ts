@@ -16,7 +16,6 @@ export default function parseFile<T>(filePath: Path): T {
   switch (ext) {
     case '.js':
     case '.jsx':
-    case '.mjs':
       return requireModule(filePath);
 
     case '.json':

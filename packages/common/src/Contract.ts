@@ -5,7 +5,7 @@ export default abstract class Contract<T extends object = {}> implements Optiona
   readonly options: Required<T>;
 
   constructor(options?: T) {
-    this.options = this.setOptions(options);
+    this.options = this.configure(options);
   }
 
   /**
@@ -13,7 +13,7 @@ export default abstract class Contract<T extends object = {}> implements Optiona
    * with the defined blueprint, while running all validation checks.
    * Freeze and return the options object.
    */
-  setOptions(options?: Partial<T>): Required<T> {
+  configure(options?: Partial<T>): Required<T> {
     // We don't want the options property to be modified directly,
     // so it's read only, but we still want to modify it with this function.
     (this as any).options = Object.freeze(

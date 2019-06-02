@@ -2,8 +2,10 @@
 
 #### 🚀 Updates
 
-- Adds `formatMs`, `instanceOf`, `isEmpty`, `isObject`, `requireModule`, and `toArray` helper
-  functions.
+- Adds `formatMs`, `instanceOf`, `isEmpty`, `isObject`, `parseFile`, `requireModule`, and `toArray`
+  helper functions.
+- Added `Contract#configure` as a means to update the options object after instantiation.
+- Updated the `Contract` options object to be frozen after each configure.
 
 ### 1.0.1 - 2019-05-09
 
