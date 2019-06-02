@@ -3,10 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import createLogger, { LoggerOptions } from './createLogger';
-import isAllowedLogLevel from './isAllowedLogLevel';
+import createTranslator, { TranslatorOptions } from './createTranslator';
 
-export * from './constants';
 export * from './types';
 
-export { createLogger, isAllowedLogLevel, LoggerOptions };
+export { createTranslator, TranslatorOptions };

@@ -19,12 +19,16 @@
     "access": "public"
   },
   "dependencies": {
+    "json5": "^2.1.0",
+    "js-yaml": "^3.13.1",
     "pretty-ms": "^5.0.0"
   },
   "peerDependencies": {
     "optimal": "^3.0.0"
   },
   "devDependencies": {
+    "@types/json5": "^0.0.30",
+    "@types/js-yaml": "^3.12.1",
     "optimal": "^3.2.1"
   }
 }

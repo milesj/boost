@@ -2,6 +2,8 @@ import i18next from 'i18next';
 
 export type Direction = 'ltr' | 'rtl';
 
+export type Format = 'js' | 'json' | 'yaml';
+
 export type Locale = string;
 
 export interface InterpolationParams {

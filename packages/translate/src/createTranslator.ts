@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import { Path, toArray } from '@boost/common';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
-import { Locale, Translator, InterpolationParams } from './types';
+import { Locale, Translator, InterpolationParams, Format } from './types';
 
 // istanbul ignore next
 function handleError(error: Error | null) {
@@ -12,16 +12,25 @@ function handleError(error: Error | null) {
 }
 
 export interface TranslatorOptions {
+  autoDetect?: boolean;
   debug?: boolean;
-  fallbackLocale?: Locale;
+  fallbackLocale?: Locale | Locale[];
   load?: i18next.InitOptions['load'];
   locale?: Locale;
+  resourceFormat?: Format;
 }
 
 export default function createTranslator(
   namespace: string | string[],
   resourcePath: Path | Path[],
-  { debug, fallbackLocale, load, locale }: TranslatorOptions = {},
+  {
+    autoDetect = true,
+    debug,
+    fallbackLocale = 'en',
+    resourceFormat = 'json',
+    load,
+    locale,
+  }: TranslatorOptions = {},
 ): Translator {
   const namespaces = toArray(namespace);
   const resourcePaths = toArray(resourcePath);
@@ -29,22 +38,26 @@ export default function createTranslator(
   if (namespaces.length === 0) {
     throw new Error('A namespace is required for translations.');
   } else if (resourcePaths.length === 0) {
-    throw new Error('At least 1 resource file path is required.');
+    throw new Error('At least 1 resource directory is required.');
+  } else if (!autoDetect && !locale) {
+    throw new Error('A locale must be defined if auto-detection is disabled.');
   }
 
-  const translator = i18next
-    .createInstance()
-    .use(new LocaleDetector())
-    .use(new FileBackend());
+  const translator = i18next.createInstance().use(new FileBackend());
+
+  if (autoDetect) {
+    translator.use(new LocaleDetector());
+  }
 
   translator.init(
     {
       backend: {
-        resourcePaths,
+        format: resourceFormat,
+        paths: resourcePaths,
       },
       debug,
       defaultNS: namespaces[0],
-      fallbackLng: fallbackLocale || 'en',
+      fallbackLng: fallbackLocale,
       initImmediate: false,
       lng: locale,
       load,
@@ -64,7 +77,7 @@ export default function createTranslator(
   msg.dir = translator.dir();
   msg.locale = translator.language;
 
-  msg.changeLocale = lang => {
+  msg.changeLocale = (lang: Locale) => {
     translator.changeLanguage(lang, error => {
       handleError(error);
 

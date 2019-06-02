@@ -3,12 +3,12 @@ import osLocale from 'os-locale';
 import { Locale } from './types';
 
 export default class LocaleDetector implements i18next.LanguageDetectorModule {
-  static type = 'languageDetector';
-
   locale: Locale = 'en';
 
+  type: 'languageDetector' = 'languageDetector';
+
   init() {
-    // Required
+    // We don't need this but is required by the interface
   }
 
   cacheUserLanguage(locale: Locale) {
