@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import { Path, toArray } from '@boost/common';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
-import { Locale, Translator, InterpolationParams, Format } from './types';
+import { Locale, Translator, InterpolationParams, Format, MessageOptions } from './types';
 
 // istanbul ignore next
 function handleError(error: Error | null) {
@@ -12,11 +12,17 @@ function handleError(error: Error | null) {
 }
 
 export interface TranslatorOptions {
+  /** Automatically detect the locale from the environment. Defaults to `true`. */
   autoDetect?: boolean;
+  /** Enable debugging by logging info to the console. */
   debug?: boolean;
+  /** Fallback locale(s) to use when the detected locale isn't translated. Defaults to `en` */
   fallbackLocale?: Locale | Locale[];
-  load?: i18next.InitOptions['load'];
+  /** Locale to explicitly override with and use. */
   locale?: Locale;
+  /** Order in which to load and lookup locale translations. */
+  localeLookup?: i18next.InitOptions['load'];
+  /** Format resource bundles are written in for the current translator. Defaults to `yaml`. */
   resourceFormat?: Format;
 }
 
@@ -25,11 +31,11 @@ export default function createTranslator(
   resourcePath: Path | Path[],
   {
     autoDetect = true,
-    debug,
+    debug = false,
     fallbackLocale = 'en',
-    resourceFormat = 'json',
-    load,
     locale,
+    localeLookup,
+    resourceFormat = 'yaml',
   }: TranslatorOptions = {},
 ): Translator {
   const namespaces = toArray(namespace);
@@ -37,6 +43,8 @@ export default function createTranslator(
 
   if (namespaces.length === 0) {
     throw new Error('A namespace is required for translations.');
+  } else if (resourcePaths.length === 0) {
+    throw new Error('At least 1 resource directory path is required.');
   } else if (!autoDetect && !locale) {
     throw new Error('A locale must be defined if auto-detection is disabled.');
   }
@@ -58,16 +66,23 @@ export default function createTranslator(
       fallbackLng: fallbackLocale,
       initImmediate: false,
       lng: locale,
-      load,
+      load: localeLookup,
       lowerCaseLng: true,
       ns: namespaces,
+      returnNull: false,
     },
     handleError,
   );
 
-  function msg(key: string | string[], params?: InterpolationParams) {
+  function msg(
+    key: string | string[],
+    params?: InterpolationParams,
+    { interpolation, locale: lng, ...options }: MessageOptions = {},
+  ): string {
     return translator.t(key, {
-      interpolation: { escapeValue: false },
+      interpolation: { escapeValue: false, ...interpolation },
+      ...options,
+      lng,
       replace: params,
     });
   }
@@ -83,6 +98,10 @@ export default function createTranslator(
       msg.locale = translator.language;
     });
   };
+
+  if (process.env.NODE_ENV === 'test') {
+    msg.i18n = translator;
+  }
 
   return msg;
 }

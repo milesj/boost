@@ -22,13 +22,11 @@ export default class FileBackend extends Contract<FileBackendOptions>
   type: 'backend' = 'backend';
 
   init(services: unknown, options: Partial<FileBackendOptions>) {
-    this.setOptions(options);
+    this.configure(options);
 
     // Validate resource paths are directories
     this.options.paths.forEach(resourcePath => {
-      const stats = fs.statSync(resourcePath);
-
-      if (!stats.isDirectory()) {
+      if (fs.existsSync(resourcePath) && !fs.statSync(resourcePath).isDirectory()) {
         throw new Error(`Resource path "${resourcePath}" must be a directory.`);
       }
     });
@@ -36,8 +34,8 @@ export default class FileBackend extends Contract<FileBackendOptions>
 
   blueprint({ array, string }: Predicates) /* infer */ {
     return {
-      format: string('json').oneOf(['js', 'json', 'yaml']),
-      paths: array(string()).notEmpty(),
+      format: string('yaml').oneOf(['js', 'json', 'yaml']),
+      paths: array(string()),
     };
   }
 

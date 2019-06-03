@@ -252,17 +252,6 @@ describe('Tool', () => {
     });
   });
 
-  describe('createTranslator', () => {
-    it('returns an i18n instance', () => {
-      const i18n = tool.createTranslator();
-
-      expect(typeof i18n).toBe('object');
-      expect(i18n.options.backend).toEqual({
-        resourcePaths: expect.arrayContaining([path.join(__dirname, '../resources')]),
-      });
-    });
-  });
-
   describe('exit()', () => {
     it('throws exit error', () => {
       try {
@@ -562,16 +551,6 @@ describe('Tool', () => {
 
       debug.enable = oldEnable;
     });
-
-    // it('updates locale if defined', () => {
-    //   const spy = jest.spyOn(tool.translator, 'changeLanguage');
-
-    //   // @ts-ignore Allow private access
-    //   tool.configLoader.loadConfig = jest.fn(() => ({ locale: 'fr' }));
-    //   tool.loadConfig();
-
-    //   expect(spy).toHaveBeenCalledWith('fr');
-    // });
   });
 
   describe('loadPlugins()', () => {

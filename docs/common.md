@@ -57,7 +57,7 @@ const { name } = plugin.options;
 To modify the options object after instantiation, the `Contract#configure` method should be used.
 
 ```ts
-plugin.configure({ name: 'name' });
+plugin.configure({ name: 'Boost' });
 ```
 
 #### Required Options

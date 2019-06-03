@@ -1,4 +1,5 @@
 import path from 'path';
+import { getFixturePath } from '@boost/test-utils';
 import FileBackend from '../src/FileBackend';
 
 describe('FileBackend', () => {
@@ -6,7 +7,7 @@ describe('FileBackend', () => {
 
   beforeEach(() => {
     backend = new FileBackend({
-      paths: [path.join(__dirname, 'res')],
+      paths: [getFixturePath('i18n-resources')],
     });
   });
 
@@ -31,37 +32,37 @@ describe('FileBackend', () => {
 
   describe('read()', () => {
     it('supports .js extension', () => {
-      backend.options.format = 'js';
+      backend.configure({ format: 'js' });
 
       expect(backend.read('en', 'type-js', () => {})).toEqual({ type: 'js' });
     });
 
     // it('supports .mjs extension', () => {
-    //   backend.options.format = 'js';
+    //   backend.configure({ format: 'js' });
 
     //   expect(backend.read('en', 'type-mjs', () => {})).toEqual({ type: 'mjs' });
     // });
 
     it('supports .json extension', () => {
-      backend.options.format = 'json';
+      backend.configure({ format: 'json' });
 
       expect(backend.read('en', 'type-json', () => {})).toEqual({ type: 'json' });
     });
 
     it('supports .json5 extension', () => {
-      backend.options.format = 'json';
+      backend.configure({ format: 'json' });
 
       expect(backend.read('en', 'type-json5', () => {})).toEqual({ type: 'json5' });
     });
 
     it('supports .yaml extension', () => {
-      backend.options.format = 'yaml';
+      backend.configure({ format: 'yaml' });
 
       expect(backend.read('en', 'type-yaml', () => {})).toEqual({ type: 'yaml' });
     });
 
     it('supports .yml extension', () => {
-      backend.options.format = 'yaml';
+      backend.configure({ format: 'yaml' });
 
       expect(backend.read('en', 'type-yaml-short', () => {})).toEqual({
         type: 'yaml',
@@ -78,7 +79,7 @@ describe('FileBackend', () => {
     });
 
     it('caches files after lookup', () => {
-      const key = path.normalize(path.join(__dirname, 'res/en/common.json'));
+      const key = getFixturePath('i18n-resources', 'en/common.yaml');
 
       expect(backend.fileCache[key]).toBeUndefined();
 
@@ -97,7 +98,7 @@ describe('FileBackend', () => {
     });
 
     it('merges objects from multiple resource paths', () => {
-      backend.options.paths.push(path.join(__dirname, 'res-more'));
+      backend.options.paths.push(getFixturePath('i18n-resources-more'));
 
       expect(backend.read('en', 'common', () => {})).toEqual({ key: 'value', more: true });
     });

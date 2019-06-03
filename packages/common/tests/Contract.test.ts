@@ -77,8 +77,8 @@ describe('Contract', () => {
 
     it('errors for invalid option type passed', () => {
       expect(() => {
+        // @ts-ignore Allow invalid type
         opts.configure({
-          // @ts-ignore Allow invalid type
           foo: 123,
         });
       }).toThrowErrorMatchingSnapshot();

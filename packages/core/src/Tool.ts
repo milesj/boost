@@ -185,6 +185,8 @@ export default class Tool<
     // TODO Backwards compat, remove in 2.0
     // @ts-ignore
     this.createDebugger = createDebugger;
+    // @ts-ignore
+    this.createTranslator = createTranslator;
   }
 
   /**
