@@ -150,7 +150,12 @@ export default class Tool<
 
     this.msg = createTranslator(
       ['app', 'errors'],
-      [path.join(__dirname, '../resources'), path.join(this.options.appPath, 'resources')],
+      [
+        path.join(__dirname, '../res'),
+        path.join(this.options.appPath, 'res'),
+        // TODO Remove in 2.0
+        path.join(this.options.appPath, 'resources'),
+      ],
     );
 
     // eslint-disable-next-line global-require
