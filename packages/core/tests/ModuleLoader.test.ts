@@ -268,8 +268,7 @@ describe('ModuleLoader', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
 
       const foo = createPlugin('foo');
-      // @ts-ignore Allow
-      foo.options.bar = true;
+      foo.configure({ bar: true });
 
       expect(loader.loadModules(['foo'], [{ bar: true }])).toEqual([foo]);
     });
@@ -278,8 +277,7 @@ describe('ModuleLoader', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-foo'));
 
       const foo = createPlugin('foo');
-      // @ts-ignore Allow
-      foo.options.bar = true;
+      foo.configure({ bar: true });
 
       expect(loader.loadModules([{ plugin: 'foo' }], [{ bar: true }])).toEqual([foo]);
     });

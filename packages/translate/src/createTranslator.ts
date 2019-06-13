@@ -21,7 +21,7 @@ export interface TranslatorOptions {
   /** Locale to explicitly override with and use. */
   locale?: Locale;
   /** Order in which to load and lookup locale translations. */
-  localeLookup?: i18next.InitOptions['load'];
+  lookupType?: i18next.InitOptions['load'];
   /** Format resource bundles are written in for the current translator. Defaults to `yaml`. */
   resourceFormat?: Format;
 }
@@ -34,7 +34,7 @@ export default function createTranslator(
     debug = false,
     fallbackLocale = 'en',
     locale,
-    localeLookup,
+    lookupType,
     resourceFormat = 'yaml',
   }: TranslatorOptions = {},
 ): Translator {
@@ -66,7 +66,7 @@ export default function createTranslator(
       fallbackLng: fallbackLocale,
       initImmediate: false,
       lng: locale,
-      load: localeLookup,
+      load: lookupType,
       lowerCaseLng: true,
       ns: namespaces,
       returnNull: false,

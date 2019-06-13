@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
-
 import { Blueprint, Predicates } from 'optimal';
 import { AbstractConstructor } from '@boost/common';
 import ModuleLoader from './ModuleLoader';

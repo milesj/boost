@@ -27,6 +27,8 @@ export interface MessageOptions {
 
 export interface Translator {
   dir: Direction;
+  /** Testing only. */
+  i18n: i18next.i18n;
   locale: Locale;
   (key: string | string[], params?: InterpolationParams, options?: MessageOptions): string;
   changeLocale(locale: Locale): void;

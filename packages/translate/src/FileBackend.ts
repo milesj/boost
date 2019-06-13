@@ -6,8 +6,8 @@ import { Locale, Format } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
   js: ['js'],
-  json: ['json', 'json5'],
-  yaml: ['yml', 'yaml'],
+  json: ['json5', 'json'],
+  yaml: ['yaml', 'yml'],
 };
 
 export interface FileBackendOptions {
@@ -68,7 +68,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
       });
     });
 
-    callback(null, { [namespace]: resources });
+    callback(null, resources);
 
     return resources;
   }

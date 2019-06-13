@@ -1,4 +1,3 @@
----
 absolutePathRequired: An absolute file path is required.
 configExtendsInvalid: Invalid `extends` configuration value. Must be an array of strings.
 configExtendsInvalidPath: Invalid `extends` configuration value "{{extendPath}}".

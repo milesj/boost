@@ -94,7 +94,7 @@ describe('FileBackend', () => {
 
       backend.read('en', 'common', spy);
 
-      expect(spy).toHaveBeenCalledWith(null, { common: { key: 'value' } });
+      expect(spy).toHaveBeenCalledWith(null, { key: 'value' });
     });
 
     it('merges objects from multiple resource paths', () => {
