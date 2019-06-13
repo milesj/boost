@@ -156,6 +156,10 @@ export default class Tool<
         // TODO Remove in 2.0
         path.join(this.options.appPath, 'resources'),
       ],
+      {
+        // TODO Change to yaml in 2.0
+        resourceFormat: 'json',
+      },
     );
 
     // eslint-disable-next-line global-require

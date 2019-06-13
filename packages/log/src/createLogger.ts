@@ -5,11 +5,11 @@ import { Logger, LogLevel, LogLevelLabels } from './types';
 import { msg, LOG_LEVELS } from './constants';
 
 export const DEFAULT_LABELS: LogLevelLabels = {
-  debug: chalk.gray(msg('levelDebug')),
-  error: chalk.red(msg('levelError')),
-  info: chalk.cyan(msg('levelInfo')),
-  trace: chalk.magenta(msg('levelTrace')),
-  warn: chalk.yellow(msg('levelWarn')),
+  debug: chalk.gray(msg('log:levelDebug')),
+  error: chalk.red(msg('log:levelError')),
+  info: chalk.cyan(msg('log:levelInfo')),
+  trace: chalk.magenta(msg('log:levelTrace')),
+  warn: chalk.yellow(msg('log:levelWarn')),
 };
 
 export interface LoggerOptions {

@@ -1,0 +1,11 @@
+{
+  "ciRanIn": "Ran {{routineCount}} routine(s) and {{taskCount}} task(s) in {{time}}",
+  "cliOptionConfig": "Path to a configuration file",
+  "cliOptionDebug": "Show debug messages",
+  "cliOptionLocale": "Locale to display output in",
+  "cliOptionOutput": "Control output size (1-3)",
+  "cliOptionSilent": "Hide all output",
+  "cliOptionTheme": "Change output colors",
+  "cliSkipped": "skipped",
+  "cliFailed": "failed"
+}
