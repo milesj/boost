@@ -1,7 +1,7 @@
 {
   "name": "@boost/translate",
   "version": "0.0.0",
-  "description": "Translating packages made easy.",
+  "description": "Package and application level translations made easy.",
   "keywords": [
     "boost",
     "translate",

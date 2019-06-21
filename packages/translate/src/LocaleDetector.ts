@@ -32,9 +32,6 @@ export default class LocaleDetector implements i18next.LanguageDetectorModule {
   }
 
   detectFromOS(): Locale {
-    return osLocale
-      .sync()
-      .toLowerCase()
-      .replace(/_/gu, '-');
+    return osLocale.sync().replace(/_/gu, '-');
   }
 }

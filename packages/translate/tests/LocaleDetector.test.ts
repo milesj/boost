@@ -1,7 +1,7 @@
 import LocaleDetector from '../src/LocaleDetector';
 
 jest.mock('os-locale', () => ({
-  sync: () => 'en-us',
+  sync: () => 'en-US',
 }));
 
 describe('LocaleDetector', () => {
@@ -18,9 +18,9 @@ describe('LocaleDetector', () => {
   });
 
   it('returns the locale explicitly defined', () => {
-    detector.cacheUserLanguage('fr-fr');
+    detector.cacheUserLanguage('fr-FR');
 
-    expect(detector.detect()).toBe('fr-fr');
+    expect(detector.detect()).toBe('fr-FR');
   });
 
   it('returns the locale from argv', () => {
@@ -30,18 +30,18 @@ describe('LocaleDetector', () => {
   });
 
   it('returns the locale from the OS', () => {
-    expect(detector.detect()).toBe('en-us');
+    expect(detector.detect()).toBe('en-US');
   });
 
   it('handles missing locale arg', () => {
     process.argv = [];
 
-    expect(detector.detect()).toBe('en-us');
+    expect(detector.detect()).toBe('en-US');
   });
 
   it('handles no locale arg value', () => {
     process.argv = ['--locale', '--foo'];
 
-    expect(detector.detect()).toBe('en-us');
+    expect(detector.detect()).toBe('en-US');
   });
 });

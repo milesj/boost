@@ -16,13 +16,13 @@ export interface TranslatorOptions {
   autoDetect?: boolean;
   /** Enable debugging by logging info to the console. */
   debug?: boolean;
-  /** Fallback locale(s) to use when the detected locale isn't translated. Defaults to `en` */
+  /** Fallback locale(s) to use when the detected locale isn't translated. Defaults to `en`. */
   fallbackLocale?: Locale | Locale[];
-  /** Locale to explicitly override with and use. */
+  /** Locale to explicitly use. */
   locale?: Locale;
   /** Order in which to load and lookup locale translations. */
   lookupType?: i18next.InitOptions['load'];
-  /** Format resource bundles are written in for the current translator. Defaults to `yaml`. */
+  /** File format resource bundles are written in. Defaults to `yaml`. */
   resourceFormat?: Format;
 }
 
