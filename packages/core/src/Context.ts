@@ -21,7 +21,7 @@ export default class Context {
         value = new Set(value);
       } else if (value instanceof Date) {
         value = new Date(value.getTime());
-      } else if (isObject(value)) {
+      } else if (isObject<object>(value)) {
         // Dont dereference instances, only plain objects
         if (value.constructor === Object) {
           value = { ...value };

@@ -90,7 +90,7 @@ export default class ConfigLoader {
   findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
     const configName = this.getConfigName();
     const relPath = `configs/${configName}.{js,json,json5}`;
-    const configPaths = glob.sync<string>(relPath, {
+    const configPaths = glob.sync(relPath, {
       absolute: true,
       cwd: root,
       onlyFiles: true,
@@ -300,7 +300,7 @@ export default class ConfigLoader {
       },
     );
 
-    return config as T;
+    return (config as unknown) as T;
   }
 
   /**
@@ -318,7 +318,7 @@ export default class ConfigLoader {
     }
 
     this.package = optimal(
-      this.parseFile(filePath),
+      this.parseFile<PackageConfig>(filePath),
       {
         name: string().notEmpty(),
         version: string('0.0.0'),

@@ -351,7 +351,7 @@ export default class Tool<
     const root = options.root || this.options.root;
 
     return glob
-      .sync<string>(
+      .sync(
         this.getWorkspacePaths({
           ...options,
           relative: true,
@@ -375,14 +375,12 @@ export default class Tool<
   getWorkspacePackagePaths(options: WorkspaceOptions = {}): string[] {
     const root = options.root || this.options.root;
 
-    return glob
-      .sync(this.getWorkspacePaths({ ...options, relative: true, root }), {
-        absolute: !options.relative,
-        cwd: root,
-        onlyDirectories: true,
-        onlyFiles: false,
-      })
-      .map(pkgPath => String(pkgPath));
+    return glob.sync(this.getWorkspacePaths({ ...options, relative: true, root }), {
+      absolute: !options.relative,
+      cwd: root,
+      onlyDirectories: true,
+      onlyFiles: false,
+    });
   }
 
   /**

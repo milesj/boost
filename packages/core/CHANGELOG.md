@@ -9,11 +9,6 @@
   - The new `createDebugger` function supersedes the `Tool#createDebugger` method.
 - Updated the crash log to report more information (like binary paths).
 
-#### 🛠 Internals
-
-- The `Tool#createDebugger`, `Tool#log`, `Tool#logLive`, and `Tool#logError` methods have been
-  deprecated.
-
 #### 📦 Dependencies
 
 - Updated `cli-truncate` to v2.0 from v1.1.
@@ -23,6 +18,11 @@
 - Updated `os-locale` to v4.0 from v3.1.
 - Updated `pluralize` to v8.0 from v7.0.
 - Updated `wrap-ansi` to v6.0 from v5.1.
+
+#### 🛠 Internals
+
+- Deprecated `Tool#createDebugger`, `Tool#log`, `Tool#logLive`, and `Tool#logError` methods.
+- **[TS]** Updated to support TypeScript v3.5.
 
 ### 1.11.1 - 2019-05-09
 

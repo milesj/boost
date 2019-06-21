@@ -546,8 +546,9 @@ describe('ConfigLoader', () => {
   describe('parseAndExtend()', () => {
     it('errors if a non-string or non-object is provided', () => {
       expect(() => {
-        // @ts-ignore
+        // @ts-ignore Allow invalid type
         loader.parseAndExtend(123);
+        // @ts-ignore Allow invalid type
         loader.parseAndExtend([]);
       }).toThrowErrorMatchingSnapshot();
     });
