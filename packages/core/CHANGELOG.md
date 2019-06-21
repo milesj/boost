@@ -14,6 +14,16 @@
 - The `Tool#createDebugger`, `Tool#log`, `Tool#logLive`, and `Tool#logError` methods have been
   deprecated.
 
+#### 📦 Dependencies
+
+- Updated `cli-truncate` to v2.0 from v1.1.
+- Updated `env-ci` to v4.1 from v3.2.
+- Updated `fast-glob` to v3.0 from v2.2.
+- Updated `i18next` to v17.0 from v15.1.
+- Updated `os-locale` to v4.0 from v3.1.
+- Updated `pluralize` to v8.0 from v7.0.
+- Updated `wrap-ansi` to v6.0 from v5.1.
+
 ### 1.11.1 - 2019-05-09
 
 #### 📦 Dependencies

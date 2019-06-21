@@ -351,7 +351,7 @@ export default class Tool<
     const root = options.root || this.options.root;
 
     return glob
-      .sync(
+      .sync<string>(
         this.getWorkspacePaths({
           ...options,
           relative: true,
@@ -362,14 +362,10 @@ export default class Tool<
           cwd: root,
         },
       )
-      .map(filePath => {
-        const jsonPath = String(filePath);
-
-        return {
-          ...fs.readJsonSync(jsonPath),
-          workspace: this.createWorkspaceMetadata(jsonPath),
-        };
-      });
+      .map(filePath => ({
+        ...fs.readJsonSync(filePath),
+        workspace: this.createWorkspaceMetadata(filePath),
+      }));
   }
 
   /**

@@ -90,13 +90,11 @@ export default class ConfigLoader {
   findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
     const configName = this.getConfigName();
     const relPath = `configs/${configName}.{js,json,json5}`;
-    const configPaths = glob
-      .sync(relPath, {
-        absolute: true,
-        cwd: root,
-        onlyFiles: true,
-      })
-      .map(filePath => String(filePath));
+    const configPaths = glob.sync<string>(relPath, {
+      absolute: true,
+      cwd: root,
+      onlyFiles: true,
+    });
 
     this.debug.invariant(
       configPaths.length === 1,
