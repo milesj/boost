@@ -4,3 +4,4 @@
 - [Debugging & Crash Reporting](./debug.md)
 - [Event System](./event.md)
 - [Logging](./log.md)
+- [Translations](./translate.md)

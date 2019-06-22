@@ -68,60 +68,66 @@ describe('Contract', () => {
     });
   });
 
-  // describe('configure()', () => {
-  //   let opts: OptionalProps;
+  describe('configure()', () => {
+    let opts: OptionalProps;
 
-  //   beforeEach(() => {
-  //     opts = new OptionalProps();
-  //   });
+    beforeEach(() => {
+      opts = new OptionalProps();
+    });
 
-  //   it('errors for invalid option type passed', () => {
-  //     expect(() => {
-  //       opts.configure({
-  //         // @ts-ignore Allow invalid type
-  //         foo: 123,
-  //       });
-  //     }).toThrowErrorMatchingSnapshot();
-  //   });
+    it('errors for invalid option type passed', () => {
+      expect(() => {
+        // @ts-ignore Allow invalid type
+        opts.configure({
+          foo: 123,
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
 
-  //   it('errors for unknown option', () => {
-  //     expect(() => {
-  //       opts.configure({
-  //         // @ts-ignore Allow unknown
-  //         unknown: 'abc',
-  //       });
-  //     }).toThrowErrorMatchingSnapshot();
-  //   });
+    it('errors for unknown option', () => {
+      expect(() => {
+        opts.configure({
+          // @ts-ignore Allow unknown
+          unknown: 'abc',
+        });
+      }).toThrowErrorMatchingSnapshot();
+    });
 
-  //   it('can set an option', () => {
-  //     expect(opts.options.foo).toBe('default');
+    it('can set an option', () => {
+      expect(opts.options.foo).toBe('default');
 
-  //     opts.configure({
-  //       foo: 'new',
-  //     });
+      opts.configure({
+        foo: 'new',
+      });
 
-  //     expect(opts.options.foo).toBe('new');
-  //   });
+      expect(opts.options.foo).toBe('new');
+    });
 
-  //   it('persists other options not being configured', () => {
-  //     opts = new OptionalProps({
-  //       foo: 'abc',
-  //       bar: 123,
-  //     });
+    it('persists other options not being configured', () => {
+      opts = new OptionalProps({
+        foo: 'abc',
+        bar: 123,
+      });
 
-  //     expect(opts.options).toEqual({
-  //       foo: 'abc',
-  //       bar: 123,
-  //     });
+      expect(opts.options).toEqual({
+        foo: 'abc',
+        bar: 123,
+      });
 
-  //     opts.configure({
-  //       bar: 456,
-  //     });
+      opts.configure({
+        bar: 456,
+      });
 
-  //     expect(opts.options).toEqual({
-  //       foo: 'abc',
-  //       bar: 456,
-  //     });
-  //   });
-  // });
+      expect(opts.options).toEqual({
+        foo: 'abc',
+        bar: 456,
+      });
+    });
+
+    it('freezes the object', () => {
+      expect(() => {
+        opts.options.foo = 'override';
+      }).toThrowErrorMatchingSnapshot();
+    });
+  });
 });

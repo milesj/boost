@@ -54,6 +54,12 @@ const plugin = new Plugin({
 const { name } = plugin.options;
 ```
 
+To modify the options object after instantiation, the `Contract#configure` method should be used.
+
+```ts
+plugin.configure({ name: 'Boost' });
+```
+
 #### Required Options
 
 By default, the options argument in the constructor is optional, and if your interface has a
@@ -152,6 +158,18 @@ if (isObject<Person>(person)) {
 }
 ```
 
+### `parseFile`
+
+The `parseFile(path: string)` function can be used to *sync*hronously parse and return an object for
+the following file types & extensions: `js`, `jsx`, `json`, `json5`, `yaml`, `yml`. The function
+requires an absolute file path, and any unsupported file type will throw an error.
+
+```ts
+import { parseFile } from '@boost/common';
+
+const data: ReturnShape = parseFile('/absolute/file/path');
+```
+
 ### `requireModule`
 
 The `requireModule(path: string)` function works in a similar fashion to the native NodeJS
@@ -161,5 +179,18 @@ The `requireModule(path: string)` function works in a similar fashion to the nat
 ```ts
 import { requireModule } from '@boost/common';
 
-requireModule<ReturnShape>('../../some/module');
+const defaultImport: ReturnShape = requireModule('../../some/module');
+```
+
+### `toArray`
+
+The `toArray(value: unknown)` function does exactly as its name states, it converts a non-array to
+an array.
+
+```ts
+import { toArray } from '@boost/common';
+
+toArray(123); // [123]
+toArray('abc'); // ['abc']
+toArray(['a', 'b', 'c']); // ['a', 'b', 'c']
 ```

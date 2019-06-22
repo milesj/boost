@@ -12,10 +12,16 @@ build_pkg() {
   node ../../node_modules/.bin/tsc
 }
 
+# Important order
 build_pkg "./packages/common"
+build_pkg "./packages/translate"
+build_pkg "./packages/debug"
 build_pkg "./packages/event"
 build_pkg "./packages/log"
-build_pkg "./packages/debug"
+
+# Requires everything above
 build_pkg "./packages/core"
+
+# Low priority
 build_pkg "./packages/reporter-nyan"
 build_pkg "./packages/test-utils"

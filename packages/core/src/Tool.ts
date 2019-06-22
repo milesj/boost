@@ -8,7 +8,6 @@ import debug from 'debug';
 import envCI from 'env-ci';
 import glob from 'fast-glob';
 import pluralize from 'pluralize';
-import i18next from 'i18next';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
@@ -16,6 +15,7 @@ import { instanceOf, isEmpty, AbstractConstructor } from '@boost/common';
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
+import { createTranslator, Translator } from '@boost/translate';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Emitter from './Emitter';
@@ -27,11 +27,8 @@ import BoostReporter from './reporters/BoostReporter';
 import ErrorReporter from './reporters/ErrorReporter';
 import handleMerge from './helpers/handleMerge';
 import CIReporter from './reporters/CIReporter';
-import LanguageDetector from './i18n/LanguageDetector';
-import FileBackend from './i18n/FileBackend';
 import { APP_NAME_PATTERN, CONFIG_NAME_PATTERN } from './constants';
 import {
-  Translator,
   PackageConfig,
   PluginType,
   PluginSetting,
@@ -87,6 +84,8 @@ export default class Tool<
 
   log: Logger;
 
+  msg: Translator;
+
   onExit = new Event<[number]>('exit');
 
   onInit = new Event<[]>('init');
@@ -107,8 +106,6 @@ export default class Tool<
   private plugins: { [K in keyof PluginRegistry]?: Set<PluginRegistry[K]> } = {};
 
   private pluginTypes: { [K in keyof PluginRegistry]?: PluginType<PluginRegistry[K]> } = {};
-
-  private translator: Translator | null = null;
 
   constructor(options: ToolOptions, argv: string[] = []) {
     super();
@@ -146,18 +143,24 @@ export default class Tool<
     // Set environment variables
     process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = this.options.appName;
 
-    // Core debugger and logger for the entire tool
+    // Core debugger, logger, and translator for the entire tool
     this.debug = createDebugger('core');
 
-    this.log = createLogger({
-      labels: {
-        debug: chalk.gray(this.msg('app:logLevelDebug')),
-        error: chalk.red(this.msg('app:logLevelError')),
-        info: chalk.cyan(this.msg('app:logLevelInfo')),
-        trace: chalk.magenta(this.msg('app:logLevelTrace')),
-        warn: chalk.yellow(this.msg('app:logLevelWarn')),
+    this.log = createLogger();
+
+    this.msg = createTranslator(
+      ['app', 'errors'],
+      [
+        path.join(__dirname, '../res'),
+        path.join(this.options.appPath, 'res'),
+        // TODO Remove in 2.0
+        path.join(this.options.appPath, 'resources'),
+      ],
+      {
+        // TODO Change to yaml in 2.0
+        resourceFormat: 'json',
       },
-    });
+    );
 
     // eslint-disable-next-line global-require
     this.debug('Using boost v%s', require('../package.json').version);
@@ -191,6 +194,8 @@ export default class Tool<
     // TODO Backwards compat, remove in 2.0
     // @ts-ignore
     this.createDebugger = createDebugger;
+    // @ts-ignore
+    this.createTranslator = createTranslator;
   }
 
   /**
@@ -224,40 +229,6 @@ export default class Tool<
     this.onLoadPlugin.emit([plugin], typeName as Extract<K, string>);
 
     return this;
-  }
-
-  /**
-   * Create an i18n translator instance.
-   */
-  createTranslator(): Translator {
-    const translator = i18next
-      .createInstance()
-      .use(new LanguageDetector())
-      .use(new FileBackend());
-
-    translator.init(
-      {
-        backend: {
-          resourcePaths: [
-            path.join(__dirname, '../resources'),
-            path.join(this.options.appPath, 'resources'),
-          ],
-        },
-        defaultNS: 'app',
-        fallbackLng: ['en'],
-        initImmediate: false,
-        lowerCaseLng: true,
-        ns: ['app', 'errors', 'prompts'],
-      },
-      error => {
-        // istanbul ignore next
-        if (error) {
-          throw error;
-        }
-      },
-    );
-
-    return translator;
   }
 
   /**
@@ -548,21 +519,6 @@ export default class Tool<
   }
 
   /**
-   * Retrieve a translated message from a resource bundle.
-   */
-  msg(key: string, params?: { [key: string]: any }, options?: i18next.TOptions): string {
-    if (!this.translator) {
-      this.translator = this.createTranslator();
-    }
-
-    return this.translator.t(key, {
-      interpolation: { escapeValue: false },
-      replace: params,
-      ...options,
-    });
-  }
-
-  /**
    * Register a custom type of plugin, with a defined contract that all instances should extend.
    * The type name should be in singular form, as plural variants are generated automatically.
    */
@@ -616,11 +572,6 @@ export default class Tool<
     // Enable debugger (a bit late but oh well)
     if (this.config.debug) {
       debug.enable(`${this.options.appName}:*`);
-    }
-
-    // Update locale
-    if (this.config.locale && this.translator) {
-      this.translator.changeLanguage(this.config.locale);
     }
 
     return this;

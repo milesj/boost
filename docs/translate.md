@@ -1,0 +1,219 @@
+# Translations
+
+Package and application level translations made easy.
+
+## Installation
+
+```
+yarn add @boost/translate
+```
+
+## Environment Variables
+
+- `LANGUAGE`, `LANG` - The locale to explicitly use for translation loading.
+
+## Usage
+
+Translating messages is based around the concept of a "translator", which is an implementation
+around [i18next](https://www.npmjs.com/package/i18next) that provides file system based resources
+bundles, in-memory caching, sane default configuration, automatic locale detection, plus all the
+features found in i18next.
+
+The translator is _designed for Node.js_, primarily for package level translations, command line
+scripts, developer tools, and even applications, but _not_ for the web or the browser.
+
+To begin, instantiate a translator with `createTranslator` with a list of [namespaces](#namespaces)
+to load, a list of [resource paths](#resources) to locate bundles in, and an optional
+[options](#options) object. This returns a function that can be used for loading and retrieving
+translations.
+
+```ts
+import { createTranslator } from '@boost/translate';
+
+const msg = createTranslator(['common', 'errors'], '../path/to/resources');
+```
+
+> The first namespace provided becomes the "default namespace".
+
+The returned translator function, aptly named `msg` above, should be used anywhere that a message
+string should be translated. It accepts [translation key(s)](#translations) as the 1st argument, an
+optional object for interpolation as the 2nd argument, and an optional
+[options object](#message-options) as the 3rd argument.
+
+```ts
+msg('common:welcome', { name: 'Boost' }); // Hello Boost!
+```
+
+> Once the translator has been created, associated [resource files](#resources) must also be
+> created.
+
+### Options
+
+The following options can be passed to `createTranslator`. They _cannot_ be customized after
+creation.
+
+- `autoDetect` (`boolean`) - Automatically detect the locale from the environment. Defaults to
+  `true`.
+- `debug` (`boolean`) - Enable i18next debugging by logging info to the console. Defaults to
+  `false`.
+- `fallbackLocale` (`Locale | Locale[]`) - Fallback locale(s) to use when the detected locale isn't
+  translated. Defaults to `en`.
+- `locale` (`Locale`) - Locale to explicitly use.
+- `lookupType` (`'all' | 'currentOnly' | 'languageOnly'`) - Order in which to load and lookup locale
+  translations. Based on the i18next `load` option.
+- `resourceFormat` (`'js' | 'json' | 'yaml'`) - File format resource bundles are written in.
+  Defaults to `yaml`.
+
+#### Message Options
+
+And these options can be passed to the created translator function (`msg` above).
+
+- `defaultValue` (`string`) - Default value to return if a translation was not found.
+- `count` (`number`) - Count used to determine plurals.
+  [More information](https://www.i18next.com/translation-function/plurals).
+- `context` (`string`) - Context used for special parsing (male, female, etc).
+  [More information](https://www.i18next.com/translation-function/context).
+- `interpolation` (`i18next.InterpolationOptions`) - Interpolation options to pass down to i18next.
+  [More information](https://www.i18next.com/translation-function/interpolation#additional-options).
+- `locale` (`Locale`) - Force translation to this locale.
+- `postProcess` (`string | string[]`) - Post-processors to run on the translation.
+
+### Locale Detection
+
+To load resource bundles, we require a locale. A locale is code based representation of a human
+language and is based on [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag).
+Boost locales align with ISO 639, with the language being lowercased (`en`), and the optional region
+being uppercased and separated by a dash (`en-US`).
+
+The locale is automatically detected from the environment using the following lookup strategies, one
+by one, until a valid locale is found.
+
+- Defined by the `locale` option or through the translator's `changeLocale` method.
+- Passed on the command line with the `--locale` option.
+- Defined a `LANGUAGE` or `LANG` environment variable.
+- Inherited from the operating system.
+
+### Resources
+
+A resource bundle is a per locale collection of [namespaced](#namespaces)
+[translation](#translations) files, located within a resource path passed to `createTranslator`.
+
+An example file structure of a resources folder, with multiple locale bundles, would look something
+like the following.
+
+```
+res/
+├── en/
+│   ├── common.yaml
+│   ├── errors.yaml
+│   └── validations.yaml
+├── en-GB/
+│   ├── common.yaml
+│   └── validations.yaml
+└── fr/
+    └── ...
+```
+
+#### Namespaces
+
+A [namespace](https://www.i18next.com/principles/namespaces) is a file that contains
+[translations](#translations), is located within a locale bundle, and can be written in JavaScript,
+JSON, or YAML (default and preferred).
+
+```js
+// res/en/common.js
+module.exports = {
+  welcome: 'Hello {{name}}!',
+};
+```
+
+```json
+// res/en/common.json
+{
+  "welcome": "Hello {{name}}!"
+}
+```
+
+```yaml
+# res/en/common.yaml
+welcome: Hello {{name}}!
+```
+
+When retrieving messages with the translator function, the namespace can be targeted by prefixing
+the key and separating with a colon.
+
+```ts
+msg('common:welcome'); // Hello {{name}}!
+```
+
+### Translations
+
+A translation is a message string (also known as copy) identified by a unique key (per namespace).
+They can be retrieved using the translator function (`msg` above).
+
+> Translations inherit all functionality from i18next, so I suggest reading up on the
+> [essentials](https://www.i18next.com/translation-function/essentials).
+
+#### Context
+
+[Contextual messages](https://www.i18next.com/translation-function/context) allow for different
+messages based on contextual data, through the combination of multiple keys and the `context`
+option.
+
+```yaml
+# res/en/user.yaml
+partner: Significant other
+partner_male: Husband
+partner_female: Wife
+```
+
+```ts
+msg('user:partner', {}, { context: 'male' }); // Husband
+msg('user:partner', {}, { context: 'female' }); // Wife
+```
+
+#### Plurals
+
+[Pluralizing messages](https://www.i18next.com/translation-function/plurals) is easily solved
+through the combination of multiple keys and the `count` option.
+
+```yaml
+# res/en/cart.yaml
+item: {{count}} item
+item_plural: {{count}} items
+```
+
+```ts
+msg('cart:item', {}, { count: 1 }); // 1 item
+msg('cart:item', {}, { count: 10 }); // 10 items
+```
+
+#### Nesting
+
+There are 2 forms of nesting. The first is
+[nested keys](https://www.i18next.com/translation-function/essentials#accessing-keys) within a
+namespace file, and they can be accessed using dot notation.
+
+```yaml
+# res/en/prompts.yaml
+dialog:
+  confirm: Are you sure?
+  back: Go back!
+```
+
+```ts
+msg('prompts:dialog.back'); // Go back!
+```
+
+The second form is [nested messages](https://www.i18next.com/translation-function/nesting) through a
+special `$t()` syntax.
+
+```yaml
+# res/en/prompts.yaml
+confirm: Are you sure? $t(warning)
+warning: This cannot be undone!
+```
+
+```ts
+msg('prompts:confirm'); // Are you sure? This cannot be undone!
+```
