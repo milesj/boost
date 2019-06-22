@@ -10,7 +10,7 @@
     "side"
   ],
   "main": "./index.js",
-  "repository": "https://github.com/milesj/boost/tree/master/packages/theme-moon-dark",
+  "repository": "https://github.com/milesj/boost/tree/master/themes/moon-dark",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

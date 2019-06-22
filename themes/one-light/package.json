@@ -9,7 +9,7 @@
     "light"
   ],
   "main": "./index.js",
-  "repository": "https://github.com/milesj/boost/tree/master/packages/theme-one-light",
+  "repository": "https://github.com/milesj/boost/tree/master/themes/one-light",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

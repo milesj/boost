@@ -9,7 +9,7 @@
     "dark"
   ],
   "main": "./index.js",
-  "repository": "https://github.com/milesj/boost/tree/master/packages/theme-one-dark",
+  "repository": "https://github.com/milesj/boost/tree/master/themes/one-dark",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

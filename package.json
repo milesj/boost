@@ -24,7 +24,8 @@
     "access": "public"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "themes/*"
   ],
   "beemo": {
     "module": "@milesj/build-tools",

@@ -8,7 +8,7 @@
     "dracula"
   ],
   "main": "./index.js",
-  "repository": "https://github.com/milesj/boost/tree/master/packages/theme-dracula",
+  "repository": "https://github.com/milesj/boost/tree/master/themes/dracula",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

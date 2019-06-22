@@ -6,7 +6,6 @@ import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import { formatMs } from '@boost/common';
 import Console from './Console';
-import ModuleLoader from './ModuleLoader';
 import Output, { StringRenderer } from './Output';
 import ProgressOutput, { ProgressRenderer } from './outputs/ProgressOutput';
 import Plugin from './Plugin';
@@ -98,10 +97,21 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
    */
   getColorPalette(): ColorPalette {
     const { theme = 'default' } = this.tool.config;
-    const palette =
-      chalk.level >= 2 && theme !== 'default'
-        ? new ModuleLoader<ColorPalette>(this.tool, 'theme', null, ['boost']).loadModule(theme)
-        : {};
+    let palette = {};
+
+    if (chalk.level >= 2 && theme !== 'default') {
+      try {
+        palette = require(`@boost/theme-${theme}`);
+      } catch {
+        try {
+          palette = require(`boost-theme-${theme}`);
+        } catch {
+          throw new Error(
+            `Theme could not be loaded. Attempted @boost/theme-${theme} and boost-theme-${theme}.`,
+          );
+        }
+      }
+    }
 
     return {
       default: 'white',
