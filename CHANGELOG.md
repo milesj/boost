@@ -2,6 +2,9 @@
 
 - [@boost/common](./packages/common/CHANGELOG.md)
 - [@boost/core](./packages/core/CHANGELOG.md)
+- [@boost/debug](./packages/debug/CHANGELOG.md)
 - [@boost/event](./packages/event/CHANGELOG.md)
+- [@boost/log](./packages/log/CHANGELOG.md)
 - [@boost/reporter-nyan](./packages/reporter-nyan/CHANGELOG.md)
 - [@boost/test-utils](./packages/test-utils/CHANGELOG.md)
+- [@boost/translate](./packages/translate/CHANGELOG.md)

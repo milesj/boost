@@ -1,4 +1,8 @@
-## 1.12.0
+## 1.12.0 - 2019-06-21
+
+#### 🎉 Release
+
+In an effort to modularize Boost even further, 3 new packages have been created!
 
 #### 🚀 Updates
 
@@ -25,6 +29,7 @@
 #### 🛠 Internals
 
 - Deprecated `Tool#createDebugger`, `Tool#log`, `Tool#logLive`, and `Tool#logError` methods.
+- Renamed the `resources` folder to `res`.
 - **[TS]** Updated to support TypeScript v3.5.
 
 ### 1.11.1 - 2019-05-09
