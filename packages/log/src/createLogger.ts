@@ -13,8 +13,11 @@ export const DEFAULT_LABELS: LogLevelLabels = {
 };
 
 export interface LoggerOptions {
+  /** Custom labels to use for each log type. */
   labels?: LogLevelLabels;
+  /** Writable stream to send `stderr` messages to. */
   stderr?: NodeJS.WriteStream;
+  /** Writable stream to send `stdout` messages to. */
   stdout?: NodeJS.WriteStream;
 }
 
