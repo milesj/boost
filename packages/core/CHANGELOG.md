@@ -7,6 +7,9 @@
 - Added a new package, [@boost/debug](https://www.npmjs.com/package/@boost/debug), to provide
   debugging and crash reporting capabilities.
   - The new `createDebugger` function supersedes the `Tool#createDebugger` method.
+- Added a new package, [@boost/translate](https://www.npmjs.com/package/@boost/translate), to
+  provide easy package level internationalization (i18n).
+  - The new `createTranslator` function supersedes the `Tool#createTranslator` method.
 - Updated the crash log to report more information (like binary paths).
 
 #### 📦 Dependencies

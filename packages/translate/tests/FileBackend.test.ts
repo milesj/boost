@@ -26,7 +26,7 @@ describe('FileBackend', () => {
             paths: [path.join(__dirname, '../package.json')],
           },
         );
-      }).toThrowErrorMatchingSnapshot();
+      }).toThrowError();
     });
   });
 

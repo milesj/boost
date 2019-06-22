@@ -6,7 +6,7 @@ import { Locale, Format } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
   js: ['js'],
-  json: ['json5', 'json'],
+  json: ['json', 'json5'],
   yaml: ['yaml', 'yml'],
 };
 

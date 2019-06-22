@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`FileBackend init() errors if resource path is not a directory 1`] = `"Resource path \\"/Users/Miles/Sites/boost/packages/translate/package.json\\" must be a directory."`;
