@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import osLocale from 'os-locale';
+import { debug } from './constants';
 import { Locale } from './types';
 
 export default class LocaleDetector implements i18next.LanguageDetectorModule {
@@ -16,7 +17,13 @@ export default class LocaleDetector implements i18next.LanguageDetectorModule {
   }
 
   detect(): Locale {
-    return this.locale || this.detectFromArgv() || this.detectFromOS();
+    if (this.locale) {
+      debug('Locale manually provided');
+
+      return this.locale;
+    }
+
+    return this.detectFromArgv() || this.detectFromOS();
   }
 
   detectFromArgv(): Locale | undefined {
@@ -25,6 +32,8 @@ export default class LocaleDetector implements i18next.LanguageDetectorModule {
     const nextIndex = index + 1;
 
     if (index >= 0 && args[nextIndex] && !args[nextIndex].startsWith('-')) {
+      debug('Locale detected from --locale option');
+
       return args[nextIndex];
     }
 
@@ -32,6 +41,8 @@ export default class LocaleDetector implements i18next.LanguageDetectorModule {
   }
 
   detectFromOS(): Locale {
+    debug('Locale detected from operating system');
+
     return osLocale.sync().replace(/_/gu, '-');
   }
 }

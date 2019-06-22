@@ -28,6 +28,7 @@ In an effort to modularize Boost even further, 3 new packages have been created!
 
 #### 🛠 Internals
 
+- Added debugging to all new packages. Can be enabled with `DEBUG=boost:*`.
 - Deprecated `Tool#createDebugger`, `Tool#log`, `Tool#logLive`, and `Tool#logError` methods.
 - Renamed the `resources` folder to `res`.
 - **[TS]** Updated to support TypeScript v3.5.

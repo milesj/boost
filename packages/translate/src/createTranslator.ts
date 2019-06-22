@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import { Path, toArray } from '@boost/common';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
+import { debug } from './constants';
 import { Locale, Translator, InterpolationParams, Format, MessageOptions } from './types';
 
 // istanbul ignore next
@@ -31,7 +32,7 @@ export default function createTranslator(
   resourcePath: Path | Path[],
   {
     autoDetect = true,
-    debug = false,
+    debug: debugOpt = false,
     fallbackLocale = 'en',
     locale,
     lookupType,
@@ -49,6 +50,10 @@ export default function createTranslator(
     throw new Error('A locale must be defined if auto-detection is disabled.');
   }
 
+  debug('New translator created');
+  debug('  Namespaces: %s', namespaces.join(', '));
+  debug('  Resource paths: %s', resourcePaths.join(', '));
+
   const translator = i18next.createInstance().use(new FileBackend());
 
   if (autoDetect) {
@@ -61,7 +66,7 @@ export default function createTranslator(
         format: resourceFormat,
         paths: resourcePaths,
       },
-      debug,
+      debug: debugOpt,
       defaultNS: namespaces[0],
       fallbackLng: fallbackLocale,
       initImmediate: false,
@@ -91,6 +96,8 @@ export default function createTranslator(
   msg.locale = translator.language;
 
   msg.changeLocale = (lang: Locale) => {
+    debug('Locale manually changed to %s', lang);
+
     translator.changeLanguage(lang, error => {
       handleError(error);
 

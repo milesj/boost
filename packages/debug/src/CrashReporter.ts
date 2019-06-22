@@ -3,6 +3,7 @@
 import fs from 'fs';
 import os from 'os';
 import execa from 'execa';
+import { debug } from './constants';
 
 function run(command: string): string {
   return String(execa.shellSync(command).stdout);
@@ -37,6 +38,8 @@ export default class CrashReporter {
   addSection(title: string): this {
     this.contents += `\n${title.toUpperCase()}\n`;
     this.contents += `${'='.repeat(title.length)}\n\n`;
+
+    debug('Reporting crash with %s', title.toLowerCase());
 
     return this;
   }

@@ -1,20 +1,31 @@
 import chalk from 'chalk';
-import debug from 'debug';
+import coreDebug from 'debug';
+import { toArray } from '@boost/common';
+import { debug } from './constants';
 import { Debugger } from './types';
 
 export default function createDebugger(namespace: string | string[]): Debugger {
   const globalNamespace = process.env.BOOST_DEBUG_GLOBAL_NAMESPACE;
-  const namespaces = Array.isArray(namespace) ? namespace : [namespace];
+  const namespaces = toArray(namespace);
 
   if (globalNamespace) {
     namespaces.unshift(globalNamespace);
   }
 
-  const logger = debug(namespaces.join(':')) as Debugger;
+  const mainNamespace = namespaces.join(':');
+
+  debug('New debugger created');
+  debug('  Namespace: %s', mainNamespace);
+  debug('  Global namespace: %s', globalNamespace);
+  debug('  Verbose enabled: %s', process.env.BOOST_DEBUG_VERBOSE);
+
+  const logger = coreDebug(mainNamespace) as Debugger;
 
   // `debug` doesn't support this on an individual namespace basis,
   // so we have to manually support it using this hacky regex.
   logger.disable = () => {
+    debug('Debugger %s disabled', mainNamespace);
+
     process.env.DEBUG = (process.env.DEBUG || '')
       .replace(new RegExp(`${logger.namespace}(:\\*)?`, 'u'), '')
       .replace(/(^,)|(,$)/u, '')
@@ -22,7 +33,9 @@ export default function createDebugger(namespace: string | string[]): Debugger {
   };
 
   logger.enable = () => {
-    debug.enable(logger.namespace);
+    debug('Debugger %s enabled', mainNamespace);
+
+    coreDebug.enable(mainNamespace);
   };
 
   logger.invariant = (condition, message, pass, fail) => {

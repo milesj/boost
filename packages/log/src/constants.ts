@@ -1,6 +1,9 @@
 import path from 'path';
+import factoryDebug from 'debug';
 import { createTranslator } from '@boost/translate';
 import { LogLevel } from './types';
+
+export const debug = factoryDebug('boost:log');
 
 export const msg = createTranslator('log', path.join(__dirname, '../res'));
 

@@ -1,8 +1,8 @@
 import util from 'util';
 import chalk from 'chalk';
 import isAllowedLogLevel from './isAllowedLogLevel';
+import { debug, msg, LOG_LEVELS } from './constants';
 import { Logger, LogLevel, LogLevelLabels } from './types';
-import { msg, LOG_LEVELS } from './constants';
 
 export const DEFAULT_LABELS: LogLevelLabels = {
   debug: chalk.gray(msg('log:levelDebug')),
@@ -27,6 +27,10 @@ export default function createLogger({
   stdout = process.stdout,
 }: LoggerOptions = {}): Logger {
   let silent = false;
+
+  debug('New logger created');
+  debug('  Default level: %s', process.env.BOOST_LOG_DEFAULT_LEVEL);
+  debug('  Max level: %s', process.env.BOOST_LOG_MAX_LEVEL);
 
   function logger(message: string, ...args: any[]) {
     const self = logger as Logger;
@@ -57,10 +61,12 @@ export default function createLogger({
   });
 
   logger.enable = () => {
+    debug('Logger enabled');
     silent = false;
   };
 
   logger.disable = () => {
+    debug('Logger disabled');
     silent = true;
   };
 
