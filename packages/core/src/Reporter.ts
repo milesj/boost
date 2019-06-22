@@ -99,6 +99,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
     const { theme = 'default' } = this.tool.config;
     let palette = {};
 
+    /* eslint-disable global-require, import/no-dynamic-require */
     if (chalk.level >= 2 && theme !== 'default') {
       try {
         palette = require(`@boost/theme-${theme}`);
