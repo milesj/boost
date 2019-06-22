@@ -22,11 +22,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^1.0.1",
-    "@boost/debug": "^0.0.0",
+    "@boost/common": "^1.1.0",
+    "@boost/debug": "^1.0.0",
     "@boost/event": "^1.0.0",
-    "@boost/log": "^0.0.0",
-    "@boost/translate": "^0.0.0",
+    "@boost/log": "^1.0.0",
+    "@boost/translate": "^1.0.0",
     "@types/debug": "^4.1.4",
     "@types/execa": "^0.9.0",
     "@types/exit": "^0.1.30",
