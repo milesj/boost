@@ -2,7 +2,7 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "setup": "rm -rf ./packages/*/{lib,*.tsbuildinfo} && bash ./scripts/build-packages.sh",
+    "setup": "rm -rf ./packages/*/{lib,*.tsbuildinfo} && tsc --build",
     "build": "yarn run type",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
@@ -11,7 +11,7 @@
     "pretest": "yarn run type",
     "test": "yarn run jest",
     "posttest": "yarn run eslint",
-    "type": "beemo typescript --reference-workspaces --build",
+    "type": "beemo typescript --reference-workspaces --build --clean",
     "prerelease": "yarn test",
     "release": "lerna publish"
   },

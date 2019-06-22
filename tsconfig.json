@@ -1,0 +1,51 @@
+{
+  "extends": "./tsconfig.options.json",
+  "files": [],
+  "references": [
+    {
+      "path": "packages/common"
+    },
+    {
+      "path": "packages/common/tests"
+    },
+    {
+      "path": "packages/core"
+    },
+    {
+      "path": "packages/core/tests"
+    },
+    {
+      "path": "packages/debug"
+    },
+    {
+      "path": "packages/debug/tests"
+    },
+    {
+      "path": "packages/event"
+    },
+    {
+      "path": "packages/event/tests"
+    },
+    {
+      "path": "packages/log"
+    },
+    {
+      "path": "packages/log/tests"
+    },
+    {
+      "path": "packages/reporter-nyan"
+    },
+    {
+      "path": "packages/reporter-nyan/tests"
+    },
+    {
+      "path": "packages/test-utils"
+    },
+    {
+      "path": "packages/translate"
+    },
+    {
+      "path": "packages/translate/tests"
+    }
+  ]
+}
