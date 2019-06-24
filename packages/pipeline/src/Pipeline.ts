@@ -7,7 +7,7 @@ import WorkUnit from './WorkUnit';
 import { Action, Runnable } from './types';
 
 class Pipeline<Input = unknown, Ctx extends Context = Context> {
-  parent?: Pipeline<any>;
+  parent?: Pipeline<any, Ctx>;
 
   work?: Runnable<Input, any>;
 
@@ -17,12 +17,12 @@ class Pipeline<Input = unknown, Ctx extends Context = Context> {
     this.value = initialValue;
   }
 
-  pipe<Output = unknown>(title: string, action: Action<Ctx, Input, Output>): Pipeline<Output>;
-  pipe<Output = unknown>(workUnit: Runnable<Input, Output>): Pipeline<Output>;
+  pipe<Output = unknown>(title: string, action: Action<Ctx, Input, Output>): Pipeline<Output, Ctx>;
+  pipe<Output = unknown>(workUnit: Runnable<Input, Output>): Pipeline<Output, Ctx>;
   pipe<Output = unknown>(
     titleOrWorkUnit: string | Runnable<Input, Output>,
     action?: Action<Ctx, Input, Output>,
-  ): Pipeline<Output> {
+  ): Pipeline<Output, Ctx> {
     if (titleOrWorkUnit instanceof WorkUnit) {
       this.work = titleOrWorkUnit;
     } else if (typeof titleOrWorkUnit === 'string' && typeof action === 'function') {
@@ -31,13 +31,13 @@ class Pipeline<Input = unknown, Ctx extends Context = Context> {
       throw new TypeError('Unknown work unit type. Must be a `Routine` or `Task`.');
     }
 
-    const pipeline = new Pipeline<Output>();
+    const pipeline = new Pipeline<Output, Ctx>();
     pipeline.parent = this;
 
     return pipeline;
   }
 
-  run<Result = unknown>(): Result {
+  async run<Result = unknown>(): Promise<Result> {
     return this.value;
   }
 }

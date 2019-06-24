@@ -20,42 +20,40 @@ export interface WorkUnitMetadata {
 export default abstract class WorkUnit<Options extends object, Input, Output = Input>
   extends Contract<Options>
   implements Runnable<Input, Output> {
-  action: Action<any, Input, Output>;
+  output: unknown = '';
 
-  title: string;
+  statusText: string = '';
 
-  metadata: WorkUnitMetadata = {
+  readonly metadata: WorkUnitMetadata = {
     depth: 0,
     index: 0,
     startTime: 0,
     stopTime: 0,
   };
 
-  onFail = new Event<[Error | null]>('fail');
+  readonly onFail = new Event<[Error | null]>('fail');
 
-  onPass = new Event<[unknown]>('pass');
+  readonly onPass = new Event<[unknown]>('pass');
 
-  onRun = new BailEvent<[unknown]>('run');
+  readonly onRun = new BailEvent<[unknown]>('run');
 
-  onSkip = new Event<[unknown]>('skip');
+  readonly onSkip = new Event<[unknown]>('skip');
 
-  output: unknown = '';
+  readonly title: string;
 
-  parent: WorkUnit<any, any, any> | null = null;
+  private action: Action<any, Input, Output>;
 
-  status: Status = STATUS_PENDING;
-
-  statusText: string = '';
+  private status: Status = STATUS_PENDING;
 
   constructor(title: string, action: Action<any, Input, Output>, options?: Options) {
     super(options);
 
     if (!title || typeof title !== 'string') {
-      throw new Error('Tasks require a title.');
+      throw new Error('Work units require a title.');
     }
 
     if (action !== null && typeof action !== 'function') {
-      throw new Error('Tasks require an executable function.');
+      throw new Error('Work units require an executable function.');
     }
 
     this.action = action;
@@ -110,8 +108,9 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
    */
   async run<Ctx extends Context>(context: Ctx, value: Input): Promise<Output> {
     const skip = this.onRun.emit([value]);
+    const runner: Action<Ctx, Input, Output> = this.action;
 
-    if (skip || this.isSkipped()) {
+    if (skip || this.isSkipped() || !runner) {
       this.status = STATUS_SKIPPED;
       this.onSkip.emit([value]);
 
@@ -122,7 +121,7 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
     this.metadata.startTime = Date.now();
 
     try {
-      this.output = await this.action(context, value);
+      this.output = await runner(context, value);
       this.status = STATUS_PASSED;
       this.metadata.stopTime = Date.now();
       this.onPass.emit([this.output]);

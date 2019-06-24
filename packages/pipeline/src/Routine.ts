@@ -8,15 +8,13 @@ export default abstract class Routine<
   Input,
   Output = Input
 > extends WorkUnit<Options, Input, Output> {
-  debug: Debugger;
+  readonly debug: Debugger;
 
-  key: string = '';
+  readonly key: string;
 
-  onCommand = new Event<[string]>('command');
+  readonly onCommand = new Event<[string]>('command');
 
-  onCommandData = new Event<[string, string]>('command.data');
-
-  parent: Routine<any, any, any> | null = null;
+  readonly onCommandData = new Event<[string, string]>('command.data');
 
   constructor(key: string, title: string, options?: Options) {
     super(title, (context, value) => this.execute(context, value), options);
