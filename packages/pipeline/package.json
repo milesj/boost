@@ -1,13 +1,13 @@
 {
   "name": "@boost/pipeline",
   "version": "1.0.0",
-  "description": "Lightweight level based logging system.",
+  "description": "TODO",
   "keywords": [
     "boost",
     "pipeline",
     "routine",
-    "subroutine",
-    "task"
+    "task",
+    "work unit"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

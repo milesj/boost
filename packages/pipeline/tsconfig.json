@@ -16,7 +16,13 @@
   ],
   "references": [
     {
-      "path": "../translate"
+      "path": "../common"
+    },
+    {
+      "path": "../debug"
+    },
+    {
+      "path": "../event"
     }
   ]
 }
