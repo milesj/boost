@@ -1,25 +1,29 @@
 /* eslint-disable */
 
 import Context from './Context';
-import Routine from './Routine';
 import Task from './Task';
 import WorkUnit from './WorkUnit';
 import { Action, Runnable } from './types';
 
-class Pipeline<Input = unknown, Ctx extends Context = Context> {
-  parent?: Pipeline<any, Ctx>;
+export default abstract class Pipeline<Input, Ctx extends Context = Context> {
+  next?: Pipeline<any, Ctx>;
+
+  prev?: Pipeline<any, Ctx>;
+
+  root: Pipeline<any, Ctx>;
 
   work?: Runnable<Input, any>;
 
-  value?: Input;
+  value: Input;
 
-  constructor(initialValue?: Input) {
-    this.value = initialValue;
+  constructor(value: Input) {
+    this.value = value;
+    this.root = this;
   }
 
-  pipe<Output = unknown>(title: string, action: Action<Ctx, Input, Output>): Pipeline<Output, Ctx>;
-  pipe<Output = unknown>(workUnit: Runnable<Input, Output>): Pipeline<Output, Ctx>;
-  pipe<Output = unknown>(
+  pipe<Output>(title: string, action: Action<Ctx, Input, Output>): Pipeline<Output, Ctx>;
+  pipe<Output>(workUnit: Runnable<Input, Output>): Pipeline<Output, Ctx>;
+  pipe<Output>(
     titleOrWorkUnit: string | Runnable<Input, Output>,
     action?: Action<Ctx, Input, Output>,
   ): Pipeline<Output, Ctx> {
@@ -31,73 +35,30 @@ class Pipeline<Input = unknown, Ctx extends Context = Context> {
       throw new TypeError('Unknown work unit type. Must be a `Routine` or `Task`.');
     }
 
-    const pipeline = new Pipeline<Output, Ctx>();
-    pipeline.parent = this;
+    const NextPipeline = this.constructor;
+    const next = new NextPipeline<Output, Ctx>();
 
-    return pipeline;
+    next.prev = this;
+    next.root = this.root;
+    this.next = next;
+
+    return next;
   }
 
-  async run<Result = unknown>(): Promise<Result> {
-    return this.value;
-  }
-}
+  abstract async run(context: Ctx): Promise<any>;
 
-// Implicit tasks
-new Pipeline(0)
-  .pipe(
-    'one',
-    (c, n) => n + 123,
-  )
-  .pipe(
-    'two',
-    (c, n) => String(n),
-  )
-  .pipe(
-    'three',
-    (c, s) => s.toUpperCase(),
-  )
-  .run();
+  protected getWorkUnits(): Runnable<any, any>[] {
+    const units: Runnable<any, any>[] = [];
+    let current: Pipeline<any, Ctx> | undefined = this.root;
 
-// Explicit tasks
-new Pipeline(0)
-  .pipe(new Task('one', (c, n) => n + 123))
-  .pipe(new Task('two', (c, n) => String(n)))
-  .pipe(new Task('three', (c, s) => s.toUpperCase()))
-  .run();
+    while (current) {
+      if (current.work) {
+        units.push(current.work);
+      }
 
-// Routines
-class One extends Routine<{}, number, number> {
-  blueprint() {
-    return {};
-  }
+      current = current.next;
+    }
 
-  async execute(c: Context, n: number): Promise<number> {
-    return n + 123;
+    return units;
   }
 }
-
-class Two extends Routine<{}, number, string> {
-  blueprint() {
-    return {};
-  }
-
-  async execute(c: Context, n: number): Promise<string> {
-    return String(n);
-  }
-}
-
-class Three extends Routine<{}, string, string> {
-  blueprint() {
-    return {};
-  }
-
-  async execute(c: Context, s: string): Promise<string> {
-    return s.toUpperCase();
-  }
-}
-
-new Pipeline(0)
-  .pipe(new One('one', 'One'))
-  .pipe(new Two('two', 'Two'))
-  .pipe(new Three('three', 'Three'))
-  .run();
