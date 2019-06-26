@@ -1,50 +1,53 @@
 import os from 'os';
 import { Predicates } from '@boost/common';
+import AsyncPipeline from './AsyncPipeline';
 import Context from './Context';
-import Pipeline from './Pipeline';
 import { AggregatedResult, Runnable } from './types';
 
 export interface PooledOptions {
+  /** How many work units to process in parallel. */
   concurrency?: number;
-  fifo?: boolean;
+  /** Process in first-in-last-out order instead of first-in-first-out. */
+  filo?: boolean;
+  /** Timeout in milliseconds that each work unit may run. */
   timeout?: number;
 }
 
-export default class PooledPipeline<Input, Ctx extends Context = Context> extends Pipeline<
+export default class PooledPipeline<
   Input,
-  Ctx,
-  PooledOptions
-> {
-  queue: Runnable<any, any>[] = [];
+  Output = Input,
+  Ctx extends Context = Context
+> extends AsyncPipeline<PooledOptions, Input, Output, Ctx> {
+  resolver?: (response: AggregatedResult<Output>) => void;
 
-  resolver: ((response: AggregatedResult<any>) => void) | null = null;
+  results: (Error | Output)[] = [];
 
-  results: unknown[] = [];
-
-  running: Runnable<any, any>[] = [];
+  running: Runnable<Input, Output>[] = [];
 
   blueprint({ bool, number }: Predicates) {
     return {
       concurrency: number(os.cpus().length).gte(1),
-      fifo: bool(true),
+      filo: bool(),
       timeout: number(0).gte(0),
     };
   }
 
   /**
-   * Execute all pipeline work units in parallel and return an array of all results.
+   * Execute all work units in parallel, in a pool with a max concurrency,
+   * with a value being passed to each work unit.
+   * Work units will synchronize regardless of race conditions and errors.
    */
-  async run<Result>(context: Ctx): Promise<AggregatedResult<Result>> {
+  async run(context: Ctx): Promise<AggregatedResult<Output>> {
     return new Promise(resolve => {
-      const units = this.getWorkUnits();
+      const queue = [...this.queue];
 
-      if (units.length === 0) {
+      if (queue.length === 0) {
         resolve(this.aggregateResult([]));
 
         return;
       }
 
-      this.queue = units;
+      this.queue = queue;
       this.resolver = resolve;
 
       // eslint-disable-next-line promise/catch-or-return
@@ -60,7 +63,8 @@ export default class PooledPipeline<Input, Ctx extends Context = Context> extend
    * Run a single work unit from the queue, and start the next work unit when it passes or fails.
    */
   protected runWorkUnit(context: Ctx, value: Input): Promise<void> {
-    const unit = this.options.fifo ? this.queue.shift() : this.queue.pop();
+    const { concurrency, filo, timeout } = this.options;
+    const unit = filo ? this.queue.pop() : this.queue.shift();
 
     if (!unit) {
       return Promise.resolve();
@@ -68,25 +72,23 @@ export default class PooledPipeline<Input, Ctx extends Context = Context> extend
 
     this.running.push(unit);
 
-    const handleResult = (result: unknown) => {
+    const handleResult = (result: Error | Output) => {
       this.running = this.running.filter(running => running !== unit);
       this.results.push(result);
 
-      if (this.queue.length > 0 && this.running.length < this.options.concurrency) {
+      if (this.queue.length > 0 && this.running.length < concurrency) {
         this.runWorkUnit(context, value);
       } else if (this.queue.length === 0 && this.running.length === 0 && this.resolver) {
         this.resolver(this.aggregateResult(this.results));
       }
     };
 
-    const { timeout } = this.options;
-
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let timer: NodeJS.Timeout;
 
       if (timeout > 0) {
         timer = setTimeout(() => {
-          reject(new Error('Work unit has timed out.'));
+          resolve(handleResult(new Error('Work unit has timed out.')));
         }, timeout);
       }
 
@@ -100,7 +102,7 @@ export default class PooledPipeline<Input, Ctx extends Context = Context> extend
           return resolve(handleResult(result));
         })
         .catch(error => {
-          return reject(handleResult(error));
+          return resolve(handleResult(error));
         });
     });
   }

@@ -10,26 +10,16 @@ import {
 } from './constants';
 import { Action, Status, Runnable } from './types';
 
-export interface WorkUnitMetadata {
-  depth: number;
-  index: number;
-  startTime: number;
-  stopTime: number;
-}
-
 export default abstract class WorkUnit<Options extends object, Input, Output = Input>
   extends Contract<Options>
   implements Runnable<Input, Output> {
   output: unknown = '';
 
+  startTime: number = 0;
+
   statusText: string = '';
 
-  readonly metadata: WorkUnitMetadata = {
-    depth: 0,
-    index: 0,
-    startTime: 0,
-    stopTime: 0,
-  };
+  stopTime: number = 0;
 
   readonly onFail = new Event<[Error | null]>('fail');
 
@@ -114,20 +104,20 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
       this.status = STATUS_SKIPPED;
       this.onSkip.emit([value]);
 
-      return Promise.resolve(value);
+      return Promise.resolve(value as any);
     }
 
     this.status = STATUS_RUNNING;
-    this.metadata.startTime = Date.now();
+    this.startTime = Date.now();
 
     try {
       this.output = await runner(context, value);
       this.status = STATUS_PASSED;
-      this.metadata.stopTime = Date.now();
+      this.stopTime = Date.now();
       this.onPass.emit([this.output]);
     } catch (error) {
       this.status = STATUS_FAILED;
-      this.metadata.stopTime = Date.now();
+      this.stopTime = Date.now();
       this.onFail.emit([error]);
 
       throw error;
@@ -135,7 +125,7 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
 
     this.statusText = '';
 
-    return this.output;
+    return this.output as any;
   }
 
   /**
