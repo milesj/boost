@@ -18,6 +18,7 @@ export default class SynchronizedPipeline<
   async run(context: Ctx): Promise<AggregatedResult<Output>> {
     const { value } = this;
 
+    this.debug('Synchronizing %d work units', this.work.length);
     this.onRun.emit([value]);
 
     return Promise.all(

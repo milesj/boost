@@ -43,7 +43,7 @@ export default abstract class SyncPipeline<
   /**
    * Traverse the linked list to return a list of work units in defined order.
    */
-  protected getWorkUnits(): WorkUnit<any, Input, unknown>[] {
+  protected getWorkUnits(): WorkUnit<any, Input, any>[] {
     const units: WorkUnit<any, Input, unknown>[] = [];
     let current: SyncPipeline<Options, any, Ctx> | undefined = this.root;
 

@@ -17,6 +17,7 @@ export default class ConcurrentPipeline<
   async run(context: Ctx): Promise<Output[]> {
     const { value } = this;
 
+    this.debug('Parallelizing %d work units', this.work.length);
     this.onRun.emit([value]);
 
     return Promise.all(

@@ -39,6 +39,7 @@ export default class PooledPipeline<
    * Work units will synchronize regardless of race conditions and errors.
    */
   async run(context: Ctx): Promise<AggregatedResult<Output>> {
+    this.debug('Pooling %d work units', this.work.length);
     this.onRun.emit([this.value]);
 
     return new Promise(resolve => {

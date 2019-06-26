@@ -77,7 +77,7 @@ export default abstract class Routine<
       wrap(stream);
     }
 
-    return stream;
+    return stream as any;
   }
 
   /**

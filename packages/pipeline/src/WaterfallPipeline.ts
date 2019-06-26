@@ -17,11 +17,13 @@ export default class WaterfallPipeline<Input, Ctx extends Context = Context> ext
    * work unit being passed to the next work unit in the chain.
    */
   async run<Result>(context: Ctx): Promise<Result> {
+    const work = this.getWorkUnits();
     let { value } = this;
 
+    this.debug('Serializing %d work units', work.length);
     this.onRun.emit([value]);
 
-    for (const unit of this.getWorkUnits()) {
+    for (const unit of work) {
       this.onRunWorkUnit.emit([unit, value]);
 
       value = await unit.run(context, value);
