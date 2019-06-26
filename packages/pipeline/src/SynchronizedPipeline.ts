@@ -16,8 +16,16 @@ export default class SynchronizedPipeline<
    * Work units will synchronize regardless of race conditions and errors.
    */
   async run(context: Ctx): Promise<AggregatedResult<Output>> {
+    const { value } = this;
+
+    this.onRun.emit([value]);
+
     return Promise.all(
-      this.queue.map(unit => unit.run(context, this.value).catch(error => error)),
+      this.work.map(unit => {
+        this.onRunWorkUnit.emit([unit, value]);
+
+        return unit.run(context, value).catch(error => error);
+      }),
     ).then(responses => this.aggregateResult(responses));
   }
 }

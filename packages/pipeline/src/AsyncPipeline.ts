@@ -1,34 +1,29 @@
-import { Contract, instanceOf } from '@boost/common';
+import { instanceOf } from '@boost/common';
 import Context from './Context';
-import { Action, AggregatedResult, Runnable } from './types';
+import Pipeline from './Pipeline';
+import WorkUnit from './WorkUnit';
 import createWorkUnit from './createWorkUnit';
+import { Action, AggregatedResult } from './types';
 
 export default abstract class AsyncPipeline<
   Options extends object,
   Input,
   Output = Input,
   Ctx extends Context = Context
-> extends Contract<Options> {
-  queue: Runnable<Input, Output>[] = [];
-
-  value: Input;
-
-  constructor(value: Input, options?: Options) {
-    super(options);
-
-    this.value = value;
-  }
+> extends Pipeline<Options, Input, Output, Ctx> {
+  work: WorkUnit<any, Input, Output>[] = [];
 
   /**
-   * Enqueue a work unit to the end of the queue.
+   * Add a work unit to the list of items to process.
    */
-  push(title: string, action: Action<Ctx, Input, Output>): this;
-  push(workUnit: Runnable<Input, Output>): this;
-  push(
-    titleOrWorkUnit: string | Runnable<Input, Output>,
+  add(title: string, action: Action<Ctx, Input, Output>, scope?: unknown): this;
+  add(workUnit: WorkUnit<any, Input, Output>): this;
+  add(
+    titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
     action?: Action<Ctx, Input, Output>,
+    scope?: unknown,
   ): this {
-    this.queue.push(createWorkUnit(titleOrWorkUnit, action));
+    this.work.push(createWorkUnit(titleOrWorkUnit, action, scope));
 
     return this;
   }
@@ -50,9 +45,4 @@ export default abstract class AsyncPipeline<
 
     return { errors, results };
   }
-
-  /**
-   * Run and process the entire work unit queue.
-   */
-  abstract async run(context: Ctx): Promise<any>;
 }

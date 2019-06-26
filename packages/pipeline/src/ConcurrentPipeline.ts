@@ -15,6 +15,16 @@ export default class ConcurrentPipeline<
    * If an error occurs, the pipeline will abort early, otherwise return a list of all results.
    */
   async run(context: Ctx): Promise<Output[]> {
-    return Promise.all(this.queue.map(unit => unit.run(context, this.value)));
+    const { value } = this;
+
+    this.onRun.emit([value]);
+
+    return Promise.all(
+      this.work.map(unit => {
+        this.onRunWorkUnit.emit([unit, value]);
+
+        return unit.run(context, value);
+      }),
+    );
   }
 }

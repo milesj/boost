@@ -2,7 +2,8 @@ import os from 'os';
 import { Predicates } from '@boost/common';
 import AsyncPipeline from './AsyncPipeline';
 import Context from './Context';
-import { AggregatedResult, Runnable } from './types';
+import WorkUnit from './WorkUnit';
+import { AggregatedResult } from './types';
 
 export interface PooledOptions {
   /** How many work units to process in parallel. */
@@ -22,7 +23,7 @@ export default class PooledPipeline<
 
   results: (Error | Output)[] = [];
 
-  running: Runnable<Input, Output>[] = [];
+  running: WorkUnit<any, Input, Output>[] = [];
 
   blueprint({ bool, number }: Predicates) {
     return {
@@ -38,21 +39,23 @@ export default class PooledPipeline<
    * Work units will synchronize regardless of race conditions and errors.
    */
   async run(context: Ctx): Promise<AggregatedResult<Output>> {
-    return new Promise(resolve => {
-      const queue = [...this.queue];
+    this.onRun.emit([this.value]);
 
-      if (queue.length === 0) {
+    return new Promise(resolve => {
+      const work = [...this.work];
+
+      if (work.length === 0) {
         resolve(this.aggregateResult([]));
 
         return;
       }
 
-      this.queue = queue;
+      this.work = work;
       this.resolver = resolve;
 
       // eslint-disable-next-line promise/catch-or-return
       Promise.all(
-        this.queue
+        this.work
           .slice(0, this.options.concurrency)
           .map(() => this.runWorkUnit(context, this.value)),
       );
@@ -64,7 +67,7 @@ export default class PooledPipeline<
    */
   protected runWorkUnit(context: Ctx, value: Input): Promise<void> {
     const { concurrency, filo, timeout } = this.options;
-    const unit = filo ? this.queue.pop() : this.queue.shift();
+    const unit = filo ? this.work.pop() : this.work.shift();
 
     if (!unit) {
       return Promise.resolve();
@@ -76,9 +79,9 @@ export default class PooledPipeline<
       this.running = this.running.filter(running => running !== unit);
       this.results.push(result);
 
-      if (this.queue.length > 0 && this.running.length < concurrency) {
+      if (this.work.length > 0 && this.running.length < concurrency) {
         this.runWorkUnit(context, value);
-      } else if (this.queue.length === 0 && this.running.length === 0 && this.resolver) {
+      } else if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
         this.resolver(this.aggregateResult(this.results));
       }
     };
@@ -91,6 +94,8 @@ export default class PooledPipeline<
           resolve(handleResult(new Error('Work unit has timed out.')));
         }, timeout);
       }
+
+      this.onRunWorkUnit.emit([unit, value]);
 
       unit
         .run(context, value)

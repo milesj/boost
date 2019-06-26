@@ -19,7 +19,11 @@ export default class WaterfallPipeline<Input, Ctx extends Context = Context> ext
   async run<Result>(context: Ctx): Promise<Result> {
     let { value } = this;
 
+    this.onRun.emit([value]);
+
     for (const unit of this.getWorkUnits()) {
+      this.onRunWorkUnit.emit([unit, value]);
+
       value = await unit.run(context, value);
     }
 

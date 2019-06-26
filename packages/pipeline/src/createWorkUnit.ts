@@ -1,6 +1,6 @@
 import Task from './Task';
 import WorkUnit from './WorkUnit';
-import { Action, Runnable } from './types';
+import { Action } from './types';
 
 /**
  * Create or return an executable work unit. Supports the following patterns:
@@ -11,15 +11,16 @@ import { Action, Runnable } from './types';
  * - A title and function that returns a `Task` instance.
  */
 export default function createWorkUnit<Input, Output = Input>(
-  titleOrWorkUnit: string | Runnable<Input, Output>,
+  titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
   action?: Action<any, Input, Output>,
+  scope?: unknown,
 ): WorkUnit<any, Input, Output> {
   if (titleOrWorkUnit instanceof WorkUnit) {
     return titleOrWorkUnit;
   }
 
   if (typeof titleOrWorkUnit === 'string' && typeof action === 'function') {
-    return new Task(titleOrWorkUnit, action);
+    return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
   }
 
   throw new TypeError(

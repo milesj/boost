@@ -10,7 +10,7 @@ export interface AggregatedResult<T> {
   results: T[];
 }
 
-export interface Runnable<Input, Output = Input> {
+export interface Runnable<Input, Output> {
   run<Ctx extends Context>(context: Ctx, value: Input): Promise<Output>;
 }
 

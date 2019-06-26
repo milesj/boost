@@ -22,6 +22,9 @@
   "dependencies": {
     "@boost/common": "^1.0.0",
     "@boost/debug": "^1.0.0",
-    "@boost/event": "^1.0.0"
+    "@boost/event": "^1.0.0",
+    "@types/split": "^1.0.0",
+    "execa": "^2.0.0",
+    "split": "^1.0.1"
   }
 }
