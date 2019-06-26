@@ -1,5 +1,7 @@
+import { RuntimeError } from '@boost/common';
 import Task from './Task';
 import WorkUnit from './WorkUnit';
+import { msg } from './constants';
 import { Action } from './types';
 
 /**
@@ -23,7 +25,5 @@ export default function createWorkUnit<Input, Output = Input>(
     return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
   }
 
-  throw new TypeError(
-    'Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.',
-  );
+  throw new RuntimeError('INVALID_WORK_UNIT_TYPE', msg('error:INVALID_WORK_UNIT_TYPE'));
 }

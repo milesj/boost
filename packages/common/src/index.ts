@@ -5,6 +5,7 @@
 
 import { Blueprint, Predicates } from 'optimal';
 import Contract from './Contract';
+import RuntimeError from './RuntimeError';
 import formatMs from './helpers/formatMs';
 import instanceOf from './helpers/instanceOf';
 import isEmpty from './helpers/isEmpty';
@@ -19,6 +20,7 @@ export {
   Contract,
   Blueprint,
   Predicates,
+  RuntimeError,
   formatMs,
   instanceOf,
   isEmpty,
