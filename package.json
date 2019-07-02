@@ -13,7 +13,7 @@
     "posttest": "yarn run eslint",
     "type": "beemo typescript --reference-workspaces --build --clean",
     "prerelease": "yarn test",
-    "release": "lerna publish"
+    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "devDependencies": {
     "@milesj/build-tools": "^0.48.3",
