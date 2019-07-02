@@ -138,17 +138,19 @@ export default abstract class Routine<
 
     // Allow consumer to wrap functionality
     if (typeof wrap === 'function') {
-      wrap(stream as ExecaChildProcess);
+      wrap(stream);
     }
 
     // Backwards compat with v1
-    const compatHandler = result => {
+    const compatHandler = (result: any) => {
       // @ts-ignore
       result.cmd = result.command; // eslint-disable-line no-param-reassign
 
       if (result instanceof Error) {
         throw result;
       }
+
+      return result;
     };
 
     return wrapWithPromise(stream)
