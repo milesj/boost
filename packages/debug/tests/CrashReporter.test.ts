@@ -9,8 +9,9 @@ describe('CrashReporter', () => {
   let writeSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    (execa.shellSync as jest.Mock).mockImplementation(cmd => ({
-      stdout: cmd.includes('version') ? '0.0.0' : cmd.replace('which ', '/'),
+    (execa.sync as jest.Mock).mockImplementation((command, args = []) => ({
+      stderr: '',
+      stdout: command === 'which' ? `/${args.join(' ')}` : '0.0.0',
     }));
 
     reporter = new CrashReporter();

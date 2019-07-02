@@ -1,4 +1,4 @@
-import execa, { Options as ExecaOptions, ExecaChildProcess, ExecaReturns } from 'execa';
+import execa, { Options as ExecaOptions, ExecaChildProcess } from 'execa';
 import split from 'split';
 import { Readable } from 'stream';
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
@@ -109,11 +109,12 @@ export default abstract class Routine<
     command: string,
     args: string[],
     options: ExecaOptions & CommandOptions = {},
-  ): Promise<ExecaReturns> {
-    const { shell, task, wrap, ...opts } = options;
-    const stream = shell
-      ? execa.shell(`${command} ${args.join(' ')}`.trim(), opts)
-      : execa(command, args, opts);
+  ): Promise<ExecaChildProcess> {
+    const { task, wrap, ...opts } = options;
+    const stream = execa(command, args, {
+      preferLocal: true,
+      ...opts,
+    });
 
     this.onCommand.emit([command]);
 
@@ -132,17 +133,27 @@ export default abstract class Routine<
       }
     };
 
-    if (!shell) {
-      (stream.stdout as Readable).pipe(split()).on('data', handler);
-      (stream.stderr as Readable).pipe(split()).on('data', handler);
-    }
+    (stream.stdout as Readable).pipe(split()).on('data', handler);
+    (stream.stderr as Readable).pipe(split()).on('data', handler);
 
     // Allow consumer to wrap functionality
     if (typeof wrap === 'function') {
       wrap(stream as ExecaChildProcess);
     }
 
-    return wrapWithPromise(stream);
+    // Backwards compat with v1
+    const compatHandler = result => {
+      // @ts-ignore
+      result.cmd = result.command; // eslint-disable-line no-param-reassign
+
+      if (result instanceof Error) {
+        throw result;
+      }
+    };
+
+    return wrapWithPromise(stream)
+      .then(compatHandler)
+      .catch(compatHandler);
   }
 
   /**

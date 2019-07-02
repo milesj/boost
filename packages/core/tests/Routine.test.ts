@@ -184,33 +184,24 @@ describe('Routine', () => {
     }
 
     beforeEach(() => {
-      ((execa as any) as jest.Mock).mockImplementation((cmd, args) => ({
-        cmd: `${cmd} ${args.join(' ')}`,
+      ((execa as any) as jest.Mock).mockImplementation((command, args) => ({
+        command: `${command} ${args.join(' ')}`,
         stdout: new FakeStream(),
         stderr: new FakeStream(),
       }));
-
-      (execa.shell as jest.Mock).mockImplementation(cmd => ({ cmd: `/bin/sh -c ${cmd}` }));
     });
 
     it('runs a local command', async () => {
       const result = await routine.executeCommand('yarn', ['-v']);
 
-      expect(result).toEqual(expect.objectContaining({ cmd: 'yarn -v' }));
+      expect(result).toEqual(expect.objectContaining({ command: 'yarn -v' }));
     });
 
     it('runs a local command in a shell', async () => {
       const result = await routine.executeCommand('echo', ['boost'], { shell: true });
 
-      expect(execa.shell).toHaveBeenCalledWith('echo boost', {});
-      expect(result).toEqual({ cmd: '/bin/sh -c echo boost' });
-    });
-
-    it('runs a local command in a shell with args used directly', async () => {
-      const result = await routine.executeCommand('echo boost', [], { shell: true });
-
-      expect(execa.shell).toHaveBeenCalledWith('echo boost', {});
-      expect(result).toEqual({ cmd: '/bin/sh -c echo boost' });
+      expect(execa).toHaveBeenCalledWith('echo', ['boost'], { preferLocal: true, shell: true });
+      expect(result).toEqual(expect.objectContaining({ command: 'echo boost' }));
     });
 
     it('calls callback with stream', async () => {

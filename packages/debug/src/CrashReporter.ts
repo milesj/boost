@@ -5,8 +5,8 @@ import os from 'os';
 import execa from 'execa';
 import { debug } from './constants';
 
-function run(command: string): string {
-  return String(execa.shellSync(command).stdout);
+function run(command: string, args: string[]): string {
+  return String(execa.sync(command, args, { preferLocal: true }).stdout);
 }
 
 function resolveHome(path: string): string {
@@ -60,8 +60,8 @@ export default class CrashReporter {
       try {
         this.add(
           bins[bin as keyof typeof bins],
-          extractVersion(run(`${bin} --version`)),
-          resolveHome(run(`which ${bin}`)),
+          extractVersion(run(bin, ['--version'])),
+          resolveHome(run('which', [bin])),
         );
       } catch {
         // Ignore
@@ -114,10 +114,10 @@ export default class CrashReporter {
       let version;
 
       try {
-        version = extractVersion(run(`${bin} --version`));
+        version = extractVersion(run(bin, ['--version']));
 
         if (!version) {
-          version = extractVersion(run(`${bin} version`));
+          version = extractVersion(run(bin, ['version']));
         }
       } catch {
         // Ignore
@@ -127,7 +127,7 @@ export default class CrashReporter {
         this.add(
           languages[bin as keyof typeof languages],
           version,
-          resolveHome(run(`which ${bin}`)),
+          resolveHome(run('which', [bin])),
         );
       }
     });
