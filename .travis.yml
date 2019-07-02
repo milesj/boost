@@ -9,6 +9,7 @@ before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
 before_script:
+  - yarn danger ci --use-github-checks
   - yarn run setup
 script: yarn test -w 2
 notifications:
