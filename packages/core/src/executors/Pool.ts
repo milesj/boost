@@ -18,7 +18,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
 
   queue: Task<Ctx>[] = [];
 
-  resolver: ((response: AggregatedResponse) => void) | null = null;
+  resolver: ((response: AggregatedResponse<any>) => void) | null = null;
 
   results: any[] = [];
 
@@ -45,7 +45,11 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
   /**
    * Execute tasks using a pool with a max concurrency.
    */
-  run<T>(handler: ExecuteHandler<Ctx>, tasks: Task<Ctx>[], value?: T): Promise<AggregatedResponse> {
+  run<T, R = any>(
+    handler: ExecuteHandler<Ctx>,
+    tasks: Task<Ctx>[],
+    value?: T,
+  ): Promise<AggregatedResponse<R>> {
     if (tasks.length === 0) {
       return Promise.resolve(this.aggregateResponse([]));
     }

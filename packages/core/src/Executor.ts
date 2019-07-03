@@ -8,9 +8,9 @@ import Tool from './Tool';
 
 export type ExecuteHandler<Ctx extends Context> = (task: Task<Ctx>, value?: any) => Promise<any>;
 
-export interface AggregatedResponse {
+export interface AggregatedResponse<T> {
   errors: Error[];
-  results: any[];
+  results: T[];
 }
 
 export default abstract class Executor<Ctx extends Context, Options extends object = {}> {
@@ -38,13 +38,13 @@ export default abstract class Executor<Ctx extends Context, Options extends obje
   /**
    * Aggregate and partition errors and results into separate collections.
    */
-  aggregateResponse(responses: any[]): AggregatedResponse {
-    const results: any[] = [];
+  aggregateResponse<T>(responses: T[]): AggregatedResponse<T> {
+    const results: T[] = [];
     const errors: Error[] = [];
 
     this.debug('Aggregating results');
 
-    responses.forEach((response: any) => {
+    responses.forEach((response: T | Error) => {
       if (instanceOf(response, Error)) {
         errors.push(response);
       } else {

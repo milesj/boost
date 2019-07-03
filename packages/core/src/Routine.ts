@@ -197,11 +197,11 @@ export default abstract class Routine<
   /**
    * Execute routines in a pool.
    */
-  async poolRoutines<T>(
+  async poolRoutines<T, R = any>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
     routines?: Routine<Ctx, Tool>[],
-  ): Promise<AggregatedResponse> {
+  ): Promise<AggregatedResponse<R>> {
     return new PoolExecutor(this.tool, this.context, options).runRoutines(
       Array.from(routines || this.routines),
       value,
@@ -211,11 +211,11 @@ export default abstract class Routine<
   /**
    * Execute tasks in a pool.
    */
-  async poolTasks<T>(
+  async poolTasks<T, R = any>(
     value?: T,
     options?: Partial<PoolExecutorOptions>,
     tasks?: Task<Ctx>[],
-  ): Promise<AggregatedResponse> {
+  ): Promise<AggregatedResponse<R>> {
     return new PoolExecutor(this.tool, this.context, options).runTasks(
       Array.from(tasks || this.tasks),
       value,
@@ -245,10 +245,10 @@ export default abstract class Routine<
   /**
    * Execute routines in sync.
    */
-  async synchronizeRoutines<T>(
+  async synchronizeRoutines<T, R = any>(
     value?: T,
     routines?: Routine<Ctx, Tool>[],
-  ): Promise<AggregatedResponse> {
+  ): Promise<AggregatedResponse<R>> {
     return new SyncExecutor(this.tool, this.context).runRoutines(
       Array.from(routines || this.routines),
       value,
@@ -258,7 +258,10 @@ export default abstract class Routine<
   /**
    * Execute tasks in sync.
    */
-  async synchronizeTasks<T>(value?: T, tasks?: Task<Ctx>[]): Promise<AggregatedResponse> {
+  async synchronizeTasks<T, R = any>(
+    value?: T,
+    tasks?: Task<Ctx>[],
+  ): Promise<AggregatedResponse<R>> {
     return new SyncExecutor(this.tool, this.context).runTasks(
       Array.from(tasks || this.tasks),
       value,
