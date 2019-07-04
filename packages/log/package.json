@@ -1,6 +1,6 @@
 {
   "name": "@boost/log",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight level based logging system.",
   "keywords": [
     "boost",
@@ -20,7 +20,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/translate": "^1.0.0",
+    "@boost/translate": "^1.0.1",
     "chalk": "^2.4.2",
     "debug": "^4.1.1"
   }

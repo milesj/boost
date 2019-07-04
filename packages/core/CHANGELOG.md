@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.12.1 - 2019-07-04
+
+#### 🐞 Fixes
+
+- Removed dots from CIReporter output. ([6790c69](https://github.com/milesj/boost/tree/master/packages/core/commit/6790c69))
+- Updated AggregatedResponse type to infer the result type. ([607c694](https://github.com/milesj/boost/tree/master/packages/core/commit/607c694))
+
+#### 📦 Dependencies
+
+- Bump minor patch deps. ([3f7dcec](https://github.com/milesj/boost/tree/master/packages/core/commit/3f7dcec))
+- Update execa to v2. ([9bad9b1](https://github.com/milesj/boost/tree/master/packages/core/commit/9bad9b1))
+- Update fs-extra to v8.1. ([a8ddeaa](https://github.com/milesj/boost/tree/master/packages/core/commit/a8ddeaa))
+
+#### 🛠 Internals
+
+- Added more files to npmignore. ([16f46b8](https://github.com/milesj/boost/tree/master/packages/core/commit/16f46b8))
+- Setup DangerJS and conventional changelog (#54) ([a18dd45](https://github.com/milesj/boost/tree/master/packages/core/commit/a18dd45)), closes [#54](https://github.com/milesj/boost/tree/master/packages/core/issues/54)
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ## 1.12.0 - 2019-06-21
 
 #### 🎉 Release

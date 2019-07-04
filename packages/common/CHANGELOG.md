@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.1 - 2019-07-04
+
+#### 🐞 Fixes
+
+- Updated AggregatedResponse type to infer the result type. ([607c694](https://github.com/milesj/boost/tree/master/packages/common/commit/607c694))
+
+#### 🛠 Internals
+
+- Added more files to npmignore. ([16f46b8](https://github.com/milesj/boost/tree/master/packages/common/commit/16f46b8))
+- Fix common and test utils reference. ([304a867](https://github.com/milesj/boost/tree/master/packages/common/commit/304a867))
+- Setup DangerJS and conventional changelog (#54) ([a18dd45](https://github.com/milesj/boost/tree/master/packages/common/commit/a18dd45)), closes [#54](https://github.com/milesj/boost/tree/master/packages/common/issues/54)
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 1.1.0 - 2019-06-21
 
 #### 🚀 Updates
