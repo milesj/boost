@@ -88,9 +88,14 @@ export default class ModuleLoader<Tm> {
 
         return true;
       } catch (error) {
-        this.debug('Failed to import module: %s', error.message);
+        if (error.message.startsWith(`Cannot find module '${modName}'`)) {
+          this.debug('Failed to import module: %s', error.message);
 
-        return false;
+          return false;
+        }
+
+        // Unknown error occurred, abort process
+        throw error;
       }
     });
 
