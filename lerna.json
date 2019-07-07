@@ -4,7 +4,10 @@
   "useWorkspaces": true,
   "command": {
     "publish": {
-      "ignoreChanges": ["*.md"],
+      "ignoreChanges": [
+        "*.md",
+        "*.test.ts"
+      ],
       "message": "Release [ci skip]"
     }
   }
