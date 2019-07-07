@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.12.2 - 2019-07-07
+
+#### 🐞 Fixes
+
+- **[ModuleLoader]** Re-throw errors that aren't 'cannot find module'. ([e340f17](https://github.com/milesj/boost/tree/master/packages/core/commit/e340f17))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.12.1 - 2019-07-04
 
 #### 🐞 Fixes

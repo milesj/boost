@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.2 - 2019-07-07
+
+#### 📦 Dependencies
+
+- Updated dev and build deps. ([c94e3e8](https://github.com/milesj/boost/tree/master/packages/common/commit/c94e3e8))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 1.1.1 - 2019-07-04
 
 #### 🐞 Fixes
