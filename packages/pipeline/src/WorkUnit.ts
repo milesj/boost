@@ -1,8 +1,7 @@
-import { Contract, RuntimeError } from '@boost/common';
+import { Contract } from '@boost/common';
 import { Event, BailEvent } from '@boost/event';
 import Context from './Context';
 import {
-  msg,
   STATUS_PENDING,
   STATUS_RUNNING,
   STATUS_SKIPPED,
@@ -40,11 +39,11 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
     super(options);
 
     if (!title || typeof title !== 'string') {
-      throw new RuntimeError('INVALID_WORK_UNIT_TITLE', msg('error:INVALID_WORK_UNIT_TITLE'));
+      throw new Error('Work units require a title.');
     }
 
     if (action !== null && typeof action !== 'function') {
-      throw new RuntimeError('INVALID_WORK_UNIT_ACTION', msg('error:INVALID_WORK_UNIT_ACTION'));
+      throw new Error('Work units require an executable function.');
     }
 
     this.action = action;

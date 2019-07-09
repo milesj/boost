@@ -1,11 +1,9 @@
 import execa, { Options as ExecaOptions, ExecaChildProcess } from 'execa';
 import split from 'split';
-import { RuntimeError } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
-import { msg } from './constants';
 
 export interface CommandOptions {
   workUnit?: WorkUnit<any, any, any>;
@@ -29,7 +27,7 @@ export default abstract class Routine<
     super(title, (context, value) => this.execute(context, value), options);
 
     if (!key || typeof key !== 'string') {
-      throw new RuntimeError('INVALID_ROUTINE_KEY', msg('error:INVALID_ROUTINE_KEY'));
+      throw new Error('Routine key must be a valid unique string.');
     }
 
     this.key = key;

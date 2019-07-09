@@ -1,9 +1,8 @@
 import os from 'os';
-import { RuntimeError, Predicates } from '@boost/common';
+import { Predicates } from '@boost/common';
 import AsyncPipeline from './AsyncPipeline';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
-import { msg } from './constants';
 import { AggregatedResult } from './types';
 
 export interface PooledOptions {
@@ -93,9 +92,7 @@ export default class PooledPipeline<
 
       if (timeout > 0) {
         timer = setTimeout(() => {
-          resolve(
-            handleResult(new RuntimeError('WORK_UNIT_TIMED_OUT', msg('error:WORK_UNIT_TIMED_OUT'))),
-          );
+          resolve(handleResult(new Error('Work unit has timed out.')));
         }, timeout);
       }
 
