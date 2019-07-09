@@ -24,8 +24,12 @@
     "@boost/debug": "^1.0.0",
     "@boost/event": "^1.0.0",
     "@boost/translate": "^1.0.0",
-    "@types/split": "^1.0.0",
     "execa": "^2.0.0",
+    "lodash": "^4.17.11",
     "split": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.136",
+    "@types/split": "^1.0.0"
   }
 }

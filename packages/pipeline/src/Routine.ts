@@ -1,4 +1,5 @@
 import execa, { Options as ExecaOptions, ExecaChildProcess } from 'execa';
+import kebabCase from 'lodash/kebabCase';
 import split from 'split';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
@@ -30,7 +31,7 @@ export default abstract class Routine<
       throw new Error('Routine key must be a valid unique string.');
     }
 
-    this.key = key;
+    this.key = kebabCase(key);
     this.debug = createDebugger(['routine', this.key]);
   }
 
