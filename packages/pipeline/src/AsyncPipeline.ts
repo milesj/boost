@@ -7,10 +7,10 @@ import { Action, AggregatedResult } from './types';
 
 export default abstract class AsyncPipeline<
   Options extends object,
+  Ctx extends Context,
   Input,
-  Output = Input,
-  Ctx extends Context = Context
-> extends Pipeline<Options, Input, Output, Ctx> {
+  Output = Input
+> extends Pipeline<Options, Ctx, Input, Output> {
   work: WorkUnit<any, Input, Output>[] = [];
 
   /**

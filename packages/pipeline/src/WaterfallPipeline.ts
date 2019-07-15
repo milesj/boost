@@ -3,10 +3,10 @@
 import Context from './Context';
 import SyncPipeline from './SyncPipeline';
 
-export default class WaterfallPipeline<Input, Ctx extends Context = Context> extends SyncPipeline<
+export default class WaterfallPipeline<Ctx extends Context, Input> extends SyncPipeline<
   {},
-  Input,
-  Ctx
+  Ctx,
+  Input
 > {
   blueprint() {
     return {};
@@ -16,7 +16,7 @@ export default class WaterfallPipeline<Input, Ctx extends Context = Context> ext
    * Execute the pipeline in sequential order with the output of each
    * work unit being passed to the next work unit in the chain.
    */
-  async run<Result>(context: Ctx): Promise<Result> {
+  async run<Result>(): Promise<Result> {
     const work = this.getWorkUnits();
     let { value } = this;
 
@@ -26,7 +26,7 @@ export default class WaterfallPipeline<Input, Ctx extends Context = Context> ext
     for (const unit of work) {
       this.onRunWorkUnit.emit([unit, value]);
 
-      value = await unit.run(context, value);
+      value = await unit.run(this.context, value);
     }
 
     return value as any;

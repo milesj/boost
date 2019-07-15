@@ -2,10 +2,10 @@ import AsyncPipeline from './AsyncPipeline';
 import Context from './Context';
 
 export default class ConcurrentPipeline<
+  Ctx extends Context,
   Input,
-  Output = Input,
-  Ctx extends Context = Context
-> extends AsyncPipeline<{}, Input, Output, Ctx> {
+  Output = Input
+> extends AsyncPipeline<{}, Ctx, Input, Output> {
   blueprint() {
     return {};
   }
@@ -14,8 +14,8 @@ export default class ConcurrentPipeline<
    * Execute all work units in parallel with a value being passed to each work unit.
    * If an error occurs, the pipeline will abort early, otherwise return a list of all results.
    */
-  async run(context: Ctx): Promise<Output[]> {
-    const { value } = this;
+  async run(): Promise<Output[]> {
+    const { context, value } = this;
 
     this.debug('Parallelizing %d work units', this.work.length);
     this.onRun.emit([value]);

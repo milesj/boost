@@ -15,10 +15,10 @@ export interface PooledOptions {
 }
 
 export default class PooledPipeline<
+  Ctx extends Context,
   Input,
-  Output = Input,
-  Ctx extends Context = Context
-> extends AsyncPipeline<PooledOptions, Input, Output, Ctx> {
+  Output = Input
+> extends AsyncPipeline<PooledOptions, Ctx, Input, Output> {
   resolver?: (response: AggregatedResult<Output>) => void;
 
   results: (Error | Output)[] = [];
@@ -38,7 +38,7 @@ export default class PooledPipeline<
    * with a value being passed to each work unit.
    * Work units will synchronize regardless of race conditions and errors.
    */
-  async run(context: Ctx): Promise<AggregatedResult<Output>> {
+  async run(): Promise<AggregatedResult<Output>> {
     this.debug('Pooling %d work units', this.work.length);
     this.onRun.emit([this.value]);
 
@@ -58,7 +58,7 @@ export default class PooledPipeline<
       Promise.all(
         this.work
           .slice(0, this.options.concurrency)
-          .map(() => this.runWorkUnit(context, this.value)),
+          .map(() => this.runWorkUnit(this.context, this.value)),
       );
     });
   }

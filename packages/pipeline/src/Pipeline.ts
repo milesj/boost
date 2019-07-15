@@ -1,3 +1,4 @@
+import kebabCase from 'lodash/kebabCase';
 import { Contract } from '@boost/common';
 import { Debugger, createDebugger } from '@boost/debug';
 import { Event } from '@boost/event';
@@ -6,11 +7,13 @@ import WorkUnit from './WorkUnit';
 
 export default abstract class Pipeline<
   Options extends object,
+  Ctx extends Context,
   Input,
-  Output,
-  Ctx extends Context = Context
+  Output
 > extends Contract<Options> {
-  value: Input;
+  readonly context: Ctx;
+
+  readonly value: Input;
 
   readonly onRun = new Event<[Input]>('run');
 
@@ -18,15 +21,12 @@ export default abstract class Pipeline<
 
   protected debug: Debugger;
 
-  constructor(value: Input, options?: Options) {
+  constructor(context: Ctx, value: Input, options?: Options) {
     super(options);
 
-    const name = this.constructor.name
-      .replace(/[A-Z]/gu, match => `-${match.toLowerCase()}`)
-      .slice(1);
-
+    this.context = context;
     this.value = value;
-    this.debug = createDebugger(name);
+    this.debug = createDebugger(kebabCase(this.constructor.name));
 
     this.debug('Instantiating pipeline');
   }
@@ -34,5 +34,5 @@ export default abstract class Pipeline<
   /**
    * Run and process the entire work unit queue.
    */
-  abstract async run(context: Ctx): Promise<any>;
+  abstract async run(): Promise<any>;
 }

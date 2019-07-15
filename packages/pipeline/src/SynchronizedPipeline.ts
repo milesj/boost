@@ -3,10 +3,10 @@ import Context from './Context';
 import { AggregatedResult } from './types';
 
 export default class SynchronizedPipeline<
+  Ctx extends Context,
   Input,
-  Output = Input,
-  Ctx extends Context = Context
-> extends AsyncPipeline<{}, Input, Output, Ctx> {
+  Output = Input
+> extends AsyncPipeline<{}, Ctx, Input, Output> {
   blueprint() {
     return {};
   }
@@ -15,8 +15,8 @@ export default class SynchronizedPipeline<
    * Execute all work units in parallel with a value being passed to each work unit.
    * Work units will synchronize regardless of race conditions and errors.
    */
-  async run(context: Ctx): Promise<AggregatedResult<Output>> {
-    const { value } = this;
+  async run(): Promise<AggregatedResult<Output>> {
+    const { context, value } = this;
 
     this.debug('Synchronizing %d work units', this.work.length);
     this.onRun.emit([value]);

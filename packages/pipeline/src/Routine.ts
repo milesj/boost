@@ -5,6 +5,10 @@ import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
+import ConcurrentPipeline from './ConcurrentPipeline';
+import PooledPipeline, { PooledOptions } from './PooledPipeline';
+import SynchronizedPipeline from './SynchronizedPipeline';
+import WaterfallPipeline from './WaterfallPipeline';
 
 export interface CommandOptions {
   workUnit?: WorkUnit<any, any, any>;
@@ -70,8 +74,8 @@ export default abstract class Routine<
       }
     };
 
-    stream.stdout!.pipe(split()).on('data', handler);
     stream.stderr!.pipe(split()).on('data', handler);
+    stream.stdout!.pipe(split()).on('data', handler);
 
     // Allow consumer to wrap functionality
     if (typeof wrap === 'function') {
@@ -79,6 +83,34 @@ export default abstract class Routine<
     }
 
     return stream as any;
+  }
+
+  /**
+   * Create and return a `ConcurrentPipeline`.
+   */
+  createConcurrentPipeline<C extends Context, I, O = I>(context: C, value: I) {
+    return new ConcurrentPipeline<C, I, O>(context, value);
+  }
+
+  /**
+   * Create and return a `PooledPipeline`.
+   */
+  createPooledPipeline<C extends Context, I, O = I>(context: C, value: I, options?: PooledOptions) {
+    return new PooledPipeline<C, I, O>(context, value, options);
+  }
+
+  /**
+   * Create and return a `SynchronizedPipeline`.
+   */
+  createSynchronizedPipeline<C extends Context, I, O = I>(context: C, value: I) {
+    return new SynchronizedPipeline<C, I, O>(context, value);
+  }
+
+  /**
+   * Create and return a `WaterfallPipeline`.
+   */
+  createWaterfallPipeline<C extends Context, I>(context: C, value: I) {
+    return new WaterfallPipeline<C, I>(context, value);
   }
 
   /**

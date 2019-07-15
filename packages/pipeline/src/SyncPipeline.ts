@@ -6,12 +6,12 @@ import { Action } from './types';
 
 export default abstract class SyncPipeline<
   Options extends object,
-  Input,
-  Ctx extends Context = Context
-> extends Pipeline<Options, Input, unknown, Ctx> {
-  next?: SyncPipeline<Options, any, Ctx>;
+  Ctx extends Context,
+  Input
+> extends Pipeline<Options, Ctx, Input, unknown> {
+  next?: SyncPipeline<Options, Ctx, any>;
 
-  root: SyncPipeline<Options, any, Ctx> = this;
+  root: SyncPipeline<Options, Ctx, any> = this;
 
   work?: WorkUnit<any, Input, unknown>;
 
@@ -22,13 +22,13 @@ export default abstract class SyncPipeline<
     title: string,
     action: Action<Ctx, Input, Output>,
     scope?: unknown,
-  ): SyncPipeline<Options, Output, Ctx>;
-  pipe<Output>(workUnit: WorkUnit<any, Input, Output>): SyncPipeline<Options, Output, Ctx>;
+  ): SyncPipeline<Options, Ctx, Output>;
+  pipe<Output>(workUnit: WorkUnit<any, Input, Output>): SyncPipeline<Options, Ctx, Output>;
   pipe<Output>(
     titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
-  ): SyncPipeline<Options, Output, Ctx> {
+  ): SyncPipeline<Options, Ctx, Output> {
     this.work = createWorkUnit(titleOrWorkUnit, action, scope);
 
     // @ts-ignore How to type/call this?
@@ -45,7 +45,7 @@ export default abstract class SyncPipeline<
    */
   protected getWorkUnits(): WorkUnit<any, Input, any>[] {
     const units: WorkUnit<any, Input, unknown>[] = [];
-    let current: SyncPipeline<Options, any, Ctx> | undefined = this.root;
+    let current: SyncPipeline<Options, Ctx, any> | undefined = this.root;
 
     while (current) {
       if (current.work) {
