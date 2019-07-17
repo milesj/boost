@@ -13,7 +13,7 @@ export default abstract class SyncPipeline<
 
   root: SyncPipeline<Options, Ctx, any> = this;
 
-  work?: WorkUnit<any, Input, unknown>;
+  work?: WorkUnit<any, Input, any>;
 
   /**
    * Pipe a work unit to be ran with the return value of the previous work unit.

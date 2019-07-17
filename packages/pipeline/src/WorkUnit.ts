@@ -111,7 +111,7 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
     this.startTime = Date.now();
 
     try {
-      this.output = await runner(context, value);
+      this.output = await runner(context, value, this);
       this.status = STATUS_PASSED;
       this.stopTime = Date.now();
       this.onPass.emit([this.output]);
