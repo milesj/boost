@@ -8,7 +8,7 @@ export default abstract class SyncPipeline<
   Options extends object,
   Ctx extends Context,
   Input
-> extends Pipeline<Options, Ctx, Input, unknown> {
+> extends Pipeline<Options, Ctx, Input, Input> {
   next?: SyncPipeline<Options, Ctx, any>;
 
   root: SyncPipeline<Options, Ctx, any> = this;

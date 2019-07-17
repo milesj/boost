@@ -16,9 +16,9 @@ export default class WaterfallPipeline<Ctx extends Context, Input> extends SyncP
    * Execute the pipeline in sequential order with the output of each
    * work unit being passed to the next work unit in the chain.
    */
-  async run<Result>(): Promise<Result> {
+  async run(): Promise<Input> {
     const work = this.getWorkUnits();
-    let { value } = this;
+    let { value } = this.root;
 
     this.debug('Serializing %d work units', work.length);
     this.onRun.emit([value]);
@@ -29,6 +29,6 @@ export default class WaterfallPipeline<Ctx extends Context, Input> extends SyncP
       value = await unit.run(this.context, value);
     }
 
-    return value as any;
+    return value;
   }
 }

@@ -34,5 +34,5 @@ export default abstract class Pipeline<
   /**
    * Run and process the entire work unit queue.
    */
-  abstract async run(): Promise<any>;
+  abstract async run(): Promise<Output>;
 }
