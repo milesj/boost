@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Routine errors if key is not a string 1`] = `"Routine key must be a valid unique string."`;
+
+exports[`Routine errors if no key is provided 1`] = `"Routine key must be a valid unique string."`;

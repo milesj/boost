@@ -7,12 +7,11 @@ import Context from './Context';
 import WorkUnit from './WorkUnit';
 import ConcurrentPipeline from './ConcurrentPipeline';
 import PooledPipeline, { PooledOptions } from './PooledPipeline';
-import SynchronizedPipeline from './SynchronizedPipeline';
+import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
 
-export interface CommandOptions {
+export interface ExecuteCommandOptions {
   workUnit?: WorkUnit<any, any, any>;
-  wrap?: (process: ExecaChildProcess) => void;
 }
 
 export default abstract class Routine<
@@ -24,8 +23,10 @@ export default abstract class Routine<
 
   readonly key: string;
 
+  // Emits before the command is ran
   readonly onCommand = new Event<[string]>('command');
 
+  // Emits on each line chunk of the running command
   readonly onCommandData = new Event<[string, string]>('command-data');
 
   constructor(key: string, title: string, options?: Options) {
@@ -40,21 +41,14 @@ export default abstract class Routine<
   }
 
   /**
-   * Called once the routine has been configured and is ready to execute.
-   */
-  async bootstrap() {
-    // Empty
-  }
-
-  /**
    * Execute a command with the given arguments and pass the results through a promise.
    */
   async executeCommand(
     command: string,
     args: string[],
-    options: ExecaOptions & CommandOptions = {},
+    options: ExecaOptions & ExecuteCommandOptions = {},
   ): Promise<ExecaChildProcess> {
-    const { workUnit, wrap, ...opts } = options;
+    const { workUnit, ...opts } = options;
     const stream = execa(command, args, opts);
 
     this.onCommand.emit([command]);
@@ -77,12 +71,14 @@ export default abstract class Routine<
     stream.stderr!.pipe(split()).on('data', handler);
     stream.stdout!.pipe(split()).on('data', handler);
 
-    // Allow consumer to wrap functionality
-    if (typeof wrap === 'function') {
-      wrap(stream);
-    }
-
     return stream as any;
+  }
+
+  /**
+   * Create and return a `AggregatedPipeline`.
+   */
+  createAggregatedPipeline<C extends Context, I, O = I>(context: C, value: I) {
+    return new AggregatedPipeline<C, I, O>(context, value);
   }
 
   /**
@@ -97,13 +93,6 @@ export default abstract class Routine<
    */
   createPooledPipeline<C extends Context, I, O = I>(context: C, value: I, options?: PooledOptions) {
     return new PooledPipeline<C, I, O>(context, value, options);
-  }
-
-  /**
-   * Create and return a `SynchronizedPipeline`.
-   */
-  createSynchronizedPipeline<C extends Context, I, O = I>(context: C, value: I) {
-    return new SynchronizedPipeline<C, I, O>(context, value);
   }
 
   /**

@@ -8,7 +8,7 @@ import { AggregatedResult } from './types';
 export interface PooledOptions {
   /** How many work units to process in parallel. */
   concurrency?: number;
-  /** Process in first-in-last-out order instead of first-in-first-out. */
+  /** Process with first-in-last-out order, instead of first-in-first-out. */
   filo?: boolean;
   /** Timeout in milliseconds that each work unit may run. */
   timeout?: number;
@@ -68,11 +68,7 @@ export default class PooledPipeline<
    */
   protected runWorkUnit(context: Ctx, value: Input): Promise<void> {
     const { concurrency, filo, timeout } = this.options;
-    const unit = filo ? this.work.pop() : this.work.shift();
-
-    if (!unit) {
-      return Promise.resolve();
-    }
+    const unit = filo ? this.work.pop()! : this.work.shift()!;
 
     this.running.push(unit);
 

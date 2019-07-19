@@ -1,25 +1,38 @@
 import Context from '../src/Context';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
-import ConcurrentPipeline from '../src/ConcurrentPipeline';
+import AggregatedPipeline from '../src/AggregatedPipeline';
+import { AggregatedResult } from '../src/types';
 
-describe('ConcurrentPipeline', () => {
+describe('AggregatedPipeline', () => {
+  function sortAggregated(result: AggregatedResult<any>) {
+    result.errors.sort();
+    result.results.sort();
+
+    return result;
+  }
+
+  const expectedResult = {
+    errors: [],
+    results: ['FOO', 'bar', 'BAZ'].sort(),
+  };
+
   it('supports piping action functions and passing a value to each', async () => {
-    const pipeline = new ConcurrentPipeline(new Context(), 'foo')
+    const pipeline = new AggregatedPipeline(new Context(), 'foo')
       .add('One', (ctx, value) => value.toUpperCase())
       .add('Two', () => 'bar')
       .add('Three', () => 'BAZ');
 
-    expect((await pipeline.run()).sort()).toEqual(['FOO', 'bar', 'BAZ'].sort());
+    expect(sortAggregated(await pipeline.run())).toEqual(expectedResult);
   });
 
   it('supports piping `Task` instances and passing a value to each', async () => {
-    const pipeline = new ConcurrentPipeline(new Context(), 'foo')
+    const pipeline = new AggregatedPipeline(new Context(), 'foo')
       .add(new Task('One', (ctx, value) => value.toUpperCase()))
       .add(new Task('Two', () => 'bar'))
       .add(new Task('Three', () => 'BAZ'));
 
-    expect((await pipeline.run()).sort()).toEqual(['FOO', 'bar', 'BAZ'].sort());
+    expect(sortAggregated(await pipeline.run())).toEqual(expectedResult);
   });
 
   it('supports piping `Routine` instances and passing a value to each', async () => {
@@ -53,17 +66,17 @@ describe('ConcurrentPipeline', () => {
       }
     }
 
-    const pipeline = new ConcurrentPipeline(new Context(), 'foo')
+    const pipeline = new AggregatedPipeline(new Context(), 'foo')
       .add(new One('one', 'One'))
       .add(new Two('two', 'Two'))
       .add(new Three('three', 'Three'));
 
-    expect((await pipeline.run()).sort()).toEqual(['FOO', 'bar', 'BAZ'].sort());
+    expect(sortAggregated(await pipeline.run())).toEqual(expectedResult);
   });
 
   it('can define a custom scope for actions', async () => {
     const scope = { test: true };
-    const pipeline = new ConcurrentPipeline(new Context(), 'foo').add(
+    const pipeline = new AggregatedPipeline(new Context(), 'foo').add(
       'Scope',
       function scopeAction() {
         // @ts-ignore Allow this
@@ -74,12 +87,12 @@ describe('ConcurrentPipeline', () => {
       scope,
     );
 
-    expect(await pipeline.run()).toEqual(['bar']);
+    expect(await pipeline.run()).toEqual({ errors: [], results: ['bar'] });
   });
 
   it('emits `onRun` for each work unit', async () => {
     const action = (ctx: Context, value: string) => value;
-    const pipeline = new ConcurrentPipeline(new Context(), 'abc')
+    const pipeline = new AggregatedPipeline(new Context(), 'abc')
       .add(new Task('One', action))
       .add(new Task('Two', action))
       .add(new Task('Three', action));
@@ -97,7 +110,7 @@ describe('ConcurrentPipeline', () => {
     const one = new Task('One', (ctx, value: string) => value.repeat(1));
     const two = new Task('Two', (ctx, value: string) => value.repeat(2));
     const three = new Task('Three', (ctx, value: string) => value.repeat(3));
-    const pipeline = new ConcurrentPipeline(new Context(), 'o')
+    const pipeline = new AggregatedPipeline(new Context(), 'o')
       .add(one)
       .add(two)
       .add(three);
@@ -111,11 +124,11 @@ describe('ConcurrentPipeline', () => {
     expect(spy).toHaveBeenCalledWith(one, 'o');
     expect(spy).toHaveBeenCalledWith(two, 'o');
     expect(spy).toHaveBeenCalledWith(three, 'o');
-    expect(result.sort()).toEqual(['o', 'oo', 'ooo'].sort());
+    expect(sortAggregated(result)).toEqual({ errors: [], results: ['o', 'oo', 'ooo'].sort() });
   });
 
-  it('aborts the pipeline if a work unit throws an error', async () => {
-    const pipeline = new ConcurrentPipeline(new Context(), '')
+  it('doesnt abort the pipeline if a work unit throws an error', async () => {
+    const pipeline = new AggregatedPipeline(new Context(), '')
       .add('One', () => 'foo')
       .add('Two', () => {
         throw new Error('Oops');
@@ -123,17 +136,21 @@ describe('ConcurrentPipeline', () => {
       .add('Three', () => 'bar');
 
     try {
-      await pipeline.run();
-
+      expect(sortAggregated(await pipeline.run())).toEqual({
+        errors: [new Error('Oops')],
+        results: ['bar', 'foo'],
+      });
+    } catch {
       expect(1).toBe(2);
-    } catch (error) {
-      expect(error).toEqual(new Error('Oops'));
     }
   });
 
-  it('resolves an empty list when no work units are defined', async () => {
-    const pipeline = new ConcurrentPipeline(new Context(), '');
+  it('resolves an empty result when no work units are defined', async () => {
+    const pipeline = new AggregatedPipeline(new Context(), '');
 
-    expect(await pipeline.run()).toEqual([]);
+    expect(sortAggregated(await pipeline.run())).toEqual({
+      errors: [],
+      results: [],
+    });
   });
 });

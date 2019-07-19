@@ -121,4 +121,10 @@ describe('WaterfallPipeline', () => {
     expect(spy).toHaveBeenCalledWith(two, 123);
     expect(spy).toHaveBeenCalledWith(three, 246);
   });
+
+  it('resolves the initial value when no work units are defined', async () => {
+    const pipeline = new WaterfallPipeline(new Context(), 123);
+
+    expect(await pipeline.run()).toBe(123);
+  });
 });

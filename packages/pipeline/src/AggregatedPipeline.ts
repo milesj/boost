@@ -2,7 +2,7 @@ import AsyncPipeline from './AsyncPipeline';
 import Context from './Context';
 import { AggregatedResult } from './types';
 
-export default class SynchronizedPipeline<
+export default class AggregatedPipeline<
   Ctx extends Context,
   Input,
   Output = Input
