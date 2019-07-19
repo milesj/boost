@@ -15,8 +15,10 @@ export default abstract class Pipeline<
 
   readonly value: Input;
 
+  // Emits before work units are ran
   readonly onRun = new Event<[Input]>('run');
 
+  // Emits before a single work unit is ran
   readonly onRunWorkUnit = new Event<[WorkUnit<any, Input, Output>, Input]>('run-work-unit');
 
   protected debug: Debugger;
@@ -30,9 +32,4 @@ export default abstract class Pipeline<
 
     this.debug('Instantiating pipeline');
   }
-
-  /**
-   * Run and process the entire work unit queue.
-   */
-  abstract async run(): Promise<Output>;
 }

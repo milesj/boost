@@ -47,4 +47,10 @@ export default abstract class AsyncPipeline<
 
     return { errors, results };
   }
+
+  /**
+   * Run and process the work unit's asynchronously.
+   * Return `any` so that sub-classes can override the output type.
+   */
+  abstract async run(): Promise<any>;
 }

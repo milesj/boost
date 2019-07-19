@@ -7,8 +7,9 @@ import { Action } from './types';
 export default abstract class SyncPipeline<
   Options extends object,
   Ctx extends Context,
-  Input
-> extends Pipeline<Options, Ctx, Input, Input> {
+  Input,
+  Output = Input
+> extends Pipeline<Options, Ctx, Input, Output> {
   next?: SyncPipeline<Options, Ctx, any>;
 
   root: SyncPipeline<Options, Ctx, any> = this;
@@ -57,4 +58,9 @@ export default abstract class SyncPipeline<
 
     return units;
   }
+
+  /**
+   * Run and process the work units synchronously.
+   */
+  abstract async run(): Promise<Output>;
 }
