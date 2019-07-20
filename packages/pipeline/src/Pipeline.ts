@@ -13,6 +13,8 @@ export default abstract class Pipeline<
 > extends Contract<Options> {
   readonly context: Ctx;
 
+  readonly debug: Debugger;
+
   readonly value: Input;
 
   // Emits before work units are ran
@@ -20,8 +22,6 @@ export default abstract class Pipeline<
 
   // Emits before a single work unit is ran
   readonly onRunWorkUnit = new Event<[WorkUnit<any, Input, Output>, Input]>('run-work-unit');
-
-  protected debug: Debugger;
 
   constructor(context: Ctx, value: Input, options?: Options) {
     super(options);

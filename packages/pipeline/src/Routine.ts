@@ -75,28 +75,34 @@ export default abstract class Routine<
   }
 
   /**
-   * Create and return a `AggregatedPipeline`.
+   * Create and return a `AggregatedPipeline`. This pipeline will execute all work units
+   * in parallel without interruption. Returns a list of errors and results once all resolve.
    */
   createAggregatedPipeline<C extends Context, I, O = I>(context: C, value: I) {
     return new AggregatedPipeline<C, I, O>(context, value);
   }
 
   /**
-   * Create and return a `ConcurrentPipeline`.
+   * Create and return a `ConcurrentPipeline`. This pipeline will execute all work units
+   * in parallel. Returns a list of values once all resolve.
    */
   createConcurrentPipeline<C extends Context, I, O = I>(context: C, value: I) {
     return new ConcurrentPipeline<C, I, O>(context, value);
   }
 
   /**
-   * Create and return a `PooledPipeline`.
+   * Create and return a `PooledPipeline`. This pipeline will execute a distinct set of work units
+   * in parallel without interruption, based on a max concurrency, until all work units have ran.
+   * Returns a list of errors and results once all resolve.
    */
   createPooledPipeline<C extends Context, I, O = I>(context: C, value: I, options?: PooledOptions) {
     return new PooledPipeline<C, I, O>(context, value, options);
   }
 
   /**
-   * Create and return a `WaterfallPipeline`.
+   * Create and return a `WaterfallPipeline`. This pipeline will execute each work unit one by one,
+   * with the return value of the previous being passed to the next. Returns the final value once
+   * all resolve.
    */
   createWaterfallPipeline<C extends Context, I>(context: C, value: I) {
     return new WaterfallPipeline<C, I>(context, value);

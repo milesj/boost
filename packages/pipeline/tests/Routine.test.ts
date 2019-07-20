@@ -89,12 +89,18 @@ describe('Routine', () => {
 
   describe('executeCommand()', () => {
     class FakeStream {
+      value: string;
+
+      constructor(value: string) {
+        this.value = value;
+      }
+
       pipe() {
         return this;
       }
 
       on(event: string, handler: (line: string) => any) {
-        handler('Mocked stream line');
+        handler(this.value);
 
         return this;
       }
@@ -104,12 +110,16 @@ describe('Routine', () => {
       }
     }
 
-    beforeEach(() => {
+    function mockExeca(value: string) {
       ((execa as unknown) as jest.Mock).mockImplementation((command, args) => ({
         command: `${command} ${args.join(' ')}`,
-        stdout: new FakeStream(),
-        stderr: new FakeStream(),
+        stdout: new FakeStream(value),
+        stderr: new FakeStream(value),
       }));
+    }
+
+    beforeEach(() => {
+      mockExeca('Mocked stream line');
     });
 
     it('runs a local command', async () => {
@@ -152,6 +162,20 @@ describe('Routine', () => {
 
       expect(task.statusText).toBe('Mocked stream line');
       expect(task.output).toBe('Mocked stream lineMocked stream line');
+    });
+
+    it('doesnt set `statusText` when chunk line is empty', async () => {
+      mockExeca('');
+
+      const task = new Task('title', () => {});
+
+      // @ts-ignore Allow
+      task.status = STATUS_RUNNING;
+      task.statusText = 'Should not be changed';
+
+      await routine.executeCommand('yarn', ['-v'], { workUnit: task });
+
+      expect(task.statusText).toBe('Should not be changed');
     });
 
     it('doesnt set `statusText` or `output` on work unit when not running', async () => {
