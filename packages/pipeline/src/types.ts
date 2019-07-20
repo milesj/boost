@@ -11,6 +11,11 @@ export interface AggregatedResult<T> {
   results: T[];
 }
 
+export interface Hierarchical {
+  depth: number;
+  index: number;
+}
+
 export interface Runnable<Input, Output> {
   run<Ctx extends Context>(context: Ctx, value: Input): Promise<Output>;
 }

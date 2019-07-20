@@ -8,11 +8,15 @@ import {
   STATUS_PASSED,
   STATUS_FAILED,
 } from './constants';
-import { Action, Status, Runnable } from './types';
+import { Action, Status, Hierarchical, Runnable } from './types';
 
 export default abstract class WorkUnit<Options extends object, Input, Output = Input>
   extends Contract<Options>
-  implements Runnable<Input, Output> {
+  implements Runnable<Input, Output>, Hierarchical {
+  depth: number = 0;
+
+  index: number = 0;
+
   output: unknown = '';
 
   startTime: number = 0;

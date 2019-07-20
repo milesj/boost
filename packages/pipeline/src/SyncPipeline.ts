@@ -30,7 +30,12 @@ export default abstract class SyncPipeline<
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): SyncPipeline<Options, Ctx, Output> {
-    this.work = createWorkUnit(titleOrWorkUnit, action, scope);
+    const workUnit = createWorkUnit(titleOrWorkUnit, action, scope);
+
+    workUnit.depth = this.depth;
+    workUnit.index = this.getWorkUnits().length;
+
+    this.work = workUnit;
 
     // @ts-ignore How to type/call this?
     const next = new this.constructor(this.value, this.options);

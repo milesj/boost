@@ -4,13 +4,15 @@ import { Debugger, createDebugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
+import { Hierarchical } from './types';
 
-export default abstract class Pipeline<
-  Options extends object,
-  Ctx extends Context,
-  Input,
-  Output
-> extends Contract<Options> {
+export default abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>
+  extends Contract<Options>
+  implements Hierarchical {
+  depth: number = 0;
+
+  index: number = 0;
+
   readonly context: Ctx;
 
   readonly debug: Debugger;

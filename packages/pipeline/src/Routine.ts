@@ -9,6 +9,7 @@ import ConcurrentPipeline from './ConcurrentPipeline';
 import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
+import Pipeline from './Pipeline';
 
 export interface ExecuteCommandOptions {
   workUnit?: WorkUnit<any, any, any>;
@@ -79,7 +80,7 @@ export default abstract class Routine<
    * in parallel without interruption. Returns a list of errors and results once all resolve.
    */
   createAggregatedPipeline<C extends Context, I, O = I>(context: C, value: I) {
-    return new AggregatedPipeline<C, I, O>(context, value);
+    return this.updateHierarchy(new AggregatedPipeline<C, I, O>(context, value));
   }
 
   /**
@@ -87,7 +88,7 @@ export default abstract class Routine<
    * in parallel. Returns a list of values once all resolve.
    */
   createConcurrentPipeline<C extends Context, I, O = I>(context: C, value: I) {
-    return new ConcurrentPipeline<C, I, O>(context, value);
+    return this.updateHierarchy(new ConcurrentPipeline<C, I, O>(context, value));
   }
 
   /**
@@ -96,7 +97,7 @@ export default abstract class Routine<
    * Returns a list of errors and results once all resolve.
    */
   createPooledPipeline<C extends Context, I, O = I>(context: C, value: I, options?: PooledOptions) {
-    return new PooledPipeline<C, I, O>(context, value, options);
+    return this.updateHierarchy(new PooledPipeline<C, I, O>(context, value, options));
   }
 
   /**
@@ -105,7 +106,17 @@ export default abstract class Routine<
    * all resolve.
    */
   createWaterfallPipeline<C extends Context, I>(context: C, value: I) {
-    return new WaterfallPipeline<C, I>(context, value);
+    return this.updateHierarchy(new WaterfallPipeline<C, I>(context, value));
+  }
+
+  /**
+   * Update the hierarchical depth when creating a nested pipeline.
+   */
+  protected updateHierarchy<P extends Pipeline<any, any, any, any>>(pipeline: P): P {
+    // eslint-disable-next-line no-param-reassign
+    pipeline.depth = this.depth + 1;
+
+    return pipeline;
   }
 
   /**

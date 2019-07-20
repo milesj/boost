@@ -23,7 +23,12 @@ export default abstract class AsyncPipeline<
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): this {
-    this.work.push(createWorkUnit(titleOrWorkUnit, action, scope));
+    const workUnit = createWorkUnit(titleOrWorkUnit, action, scope);
+
+    workUnit.depth = this.depth;
+    workUnit.index = this.work.length;
+
+    this.work.push(workUnit);
 
     return this;
   }
