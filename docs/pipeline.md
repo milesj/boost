@@ -10,9 +10,16 @@ yarn add @boost/pipeline
 
 ## Usage
 
+A pipeline can be used to process an input, either in parallel or serial, through a series actions
+known as work units, to produce a final output. There are multiple types of
+[work units](#work-types) and [pipelines](#pipeline-types), so choose the best one for each use
+case.
+
+TODO contexts
+
 ## Work Types
 
-There are 2 types of work units that can be registered in pipelines for processing.
+There are 2 types of work units that can be registered in a pipeline.
 
 ### `Task`
 
@@ -20,11 +27,14 @@ A task is simply a function that accepts an input and returns an output. It can 
 standard function or a `Task` instance.
 
 ```ts
+import { Context } from '@boost/pipeline';
+
 function task(context: Context, value: number): string {
   return String(value).toLocaleString();
 }
 
 parallelPipeline.add('A title for this task', task);
+
 serialPipeline.pipe(
   'A title for this task',
   task,
@@ -32,19 +42,76 @@ serialPipeline.pipe(
 ```
 
 ```ts
-import { Task } from '@boost/pipeline';
+import { Context, Task } from '@boost/pipeline';
 
 const task = new Task('A title for this task', (context: Context, value: number) =>
   String(value).toLocaleString(),
 );
 
 parallelPipeline.add(task);
+
 serialPipeline.pipe(task);
 ```
 
 ### `Routine`
 
-### Custom `WorkUnit`s
+A `Routine` is a specialized work unit implemented with a class. It provides helper methods, the
+ability to create nested hierarchical pipelines, and an implicit encapsulation of similar logic and
+tasks.
+
+To begin, import the `Routine` class and implement the `blueprint()` and `execute()` methods. The
+class requires 3 generics to be defined, starting with an options interface (provide an empty object
+if no options needed), an input type, and an output type.
+
+The `blueprint()` method is inherited from [`Contract`](./common.md#contract), and should return an
+object that matches the structure of the generic options interface. The `execute()` method should
+accept the input type and return the expected output type.
+
+```ts
+import { Predicates } from '@boost/common';
+import { Routine } from '@boost/pipeline';
+
+export interface ExampleOptions {
+  limit?: number;
+}
+
+export default class ExampleRoutine extends Routine<ExampleOptions, number, string> {
+  blueprint({ number }: Predicates) {
+    return {
+      limit: number(10),
+    };
+  }
+
+  async execute(context: Context, value: number): Promise<string> {
+    return this.createWaterfallPipeline(context, value)
+      .pipe(
+        'Rounding to cents',
+        this.roundToCents,
+      )
+      .pipe(
+        'Converting to readable format',
+        this.makeReadable,
+      )
+      .pipe(
+        'Adding currency',
+        this.addCurrency,
+      )
+      .run();
+  }
+
+  roundToCents(context: Context, value: number): number {
+    return Number(value.toFixed(2));
+  }
+
+  makeReadable(context: Context, value: number): string {
+    return String(value).toLocaleString();
+  }
+
+  addCurrency(context: Context, value: string): string {
+    return `$${value}`;
+  }
+}
+```
 
 ## Pipeline Types
 
