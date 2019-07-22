@@ -4,12 +4,12 @@
  */
 
 import AggregatedPipeline from './AggregatedPipeline';
-import AsyncPipeline from './AsyncPipeline';
+import ParallelPipeline from './ParallelPipeline';
 import ConcurrentPipeline from './ConcurrentPipeline';
 import Context from './Context';
 import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import Routine, { ExecuteCommandOptions } from './Routine';
-import SyncPipeline from './SyncPipeline';
+import SerialPipeline from './SerialPipeline';
 import Task from './Task';
 import WaterfallPipeline from './WaterfallPipeline';
 import WorkUnit from './WorkUnit';
@@ -19,14 +19,14 @@ export * from './types';
 
 export {
   AggregatedPipeline,
-  AsyncPipeline,
+  ParallelPipeline,
   ConcurrentPipeline,
   Context,
   ExecuteCommandOptions,
   PooledPipeline,
   PooledOptions,
   Routine,
-  SyncPipeline,
+  SerialPipeline,
   Task,
   WaterfallPipeline,
   WorkUnit,

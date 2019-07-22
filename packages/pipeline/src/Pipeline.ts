@@ -25,6 +25,8 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
   // Emits before a single work unit is ran
   readonly onRunWorkUnit = new Event<[WorkUnit<any, Input, Output>, Input]>('run-work-unit');
 
+  protected work: WorkUnit<any, Input, Output>[] = [];
+
   constructor(context: Ctx, value: Input, options?: Options) {
     super(options);
 
@@ -33,5 +35,12 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
     this.debug = createDebugger(kebabCase(this.constructor.name));
 
     this.debug('Instantiating pipeline');
+  }
+
+  /**
+   * Return a list of registered work units for the current pipeline.
+   */
+  getWorkUnits(): WorkUnit<any, Input, any>[] {
+    return this.work;
   }
 }

@@ -1,9 +1,9 @@
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
 
 import Context from './Context';
-import SyncPipeline from './SyncPipeline';
+import SerialPipeline from './SerialPipeline';
 
-export default class WaterfallPipeline<Ctx extends Context, Input> extends SyncPipeline<
+export default class WaterfallPipeline<Ctx extends Context, Input> extends SerialPipeline<
   {},
   Ctx,
   Input

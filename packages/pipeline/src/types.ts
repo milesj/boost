@@ -3,7 +3,7 @@ import Context from './Context';
 export type Action<Ctx extends Context, Input, Output = Input> = (
   context: Ctx,
   value: Input,
-  runner: Runnable<Input, Output>,
+  runner: Runnable<Input, Output> & Hierarchical,
 ) => Output | Promise<Output>;
 
 export interface AggregatedResult<T> {

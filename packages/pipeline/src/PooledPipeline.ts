@@ -1,6 +1,6 @@
 import os from 'os';
 import { Predicates } from '@boost/common';
-import AsyncPipeline from './AsyncPipeline';
+import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
 import { AggregatedResult } from './types';
@@ -18,7 +18,7 @@ export default class PooledPipeline<
   Ctx extends Context,
   Input,
   Output = Input
-> extends AsyncPipeline<PooledOptions, Ctx, Input, Output> {
+> extends ParallelPipeline<PooledOptions, Ctx, Input, Output> {
   resolver?: (response: AggregatedResult<Output>) => void;
 
   results: (Error | Output)[] = [];
@@ -43,15 +43,12 @@ export default class PooledPipeline<
     this.onRun.emit([this.value]);
 
     return new Promise(resolve => {
-      const work = [...this.work];
-
-      if (work.length === 0) {
+      if (this.work.length === 0) {
         resolve(this.aggregateResult([]));
 
         return;
       }
 
-      this.work = work;
       this.resolver = resolve;
 
       // eslint-disable-next-line promise/catch-or-return

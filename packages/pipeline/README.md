@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/%40boost%pipeline.svg)](https://www.npmjs.com/package/@boost/pipeline)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/pipeline)](https://www.npmjs.com/package/@boost/pipeline)
 
-TODO
+Process data in a pipeline through a series of routines and tasks.
 
 ## Features
 

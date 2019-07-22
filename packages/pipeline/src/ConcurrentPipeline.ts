@@ -1,11 +1,11 @@
-import AsyncPipeline from './AsyncPipeline';
+import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
 
 export default class ConcurrentPipeline<
   Ctx extends Context,
   Input,
   Output = Input
-> extends AsyncPipeline<{}, Ctx, Input, Output> {
+> extends ParallelPipeline<{}, Ctx, Input, Output> {
   blueprint() {
     return {};
   }
@@ -16,12 +16,13 @@ export default class ConcurrentPipeline<
    */
   async run(): Promise<Output[]> {
     const { context, value } = this;
+    const work = this.getWorkUnits();
 
-    this.debug('Parallelizing %d work units', this.work.length);
+    this.debug('Parallelizing %d work units', work.length);
     this.onRun.emit([value]);
 
     return Promise.all(
-      this.work.map(unit => {
+      work.map(unit => {
         this.onRunWorkUnit.emit([unit, value]);
 
         return unit.run(context, value);

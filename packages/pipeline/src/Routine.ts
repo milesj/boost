@@ -77,7 +77,8 @@ export default abstract class Routine<
 
   /**
    * Create and return a `AggregatedPipeline`. This pipeline will execute all work units
-   * in parallel without interruption. Returns a list of errors and results once all resolve.
+   * in parallel without interruption. Returns an object with a list of errors and results
+   * once all resolve.
    */
   createAggregatedPipeline<C extends Context, I, O = I>(context: C, value: I) {
     return this.updateHierarchy(new AggregatedPipeline<C, I, O>(context, value));

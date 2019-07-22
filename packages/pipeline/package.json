@@ -1,12 +1,13 @@
 {
   "name": "@boost/pipeline",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "0.0.0",
+  "description": "Process data in a pipeline through a series of routines and tasks.",
   "keywords": [
     "boost",
     "pipeline",
     "routine",
     "task",
+    "work",
     "work unit"
   ],
   "main": "./lib/index.js",

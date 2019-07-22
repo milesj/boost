@@ -5,14 +5,12 @@ import WorkUnit from './WorkUnit';
 import createWorkUnit from './createWorkUnit';
 import { Action, AggregatedResult } from './types';
 
-export default abstract class AsyncPipeline<
+export default abstract class ParallelPipeline<
   Options extends object,
   Ctx extends Context,
   Input,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
-  work: WorkUnit<any, Input, Output>[] = [];
-
   /**
    * Add a work unit to the list of items to process.
    */
