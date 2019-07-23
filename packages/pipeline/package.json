@@ -1,7 +1,7 @@
 {
   "name": "@boost/pipeline",
   "version": "0.0.0",
-  "description": "Process data in a pipeline through a series of routines and tasks.",
+  "description": "Pipe an input through a series of routines and tasks to produce an output.",
   "keywords": [
     "boost",
     "pipeline",

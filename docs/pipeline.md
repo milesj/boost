@@ -1,6 +1,6 @@
 # Pipelines
 
-Process data in a pipeline through a series of routines and tasks.
+Pipe an input through a series of routines and tasks to produce an output.
 
 ## Installation
 
@@ -10,8 +10,8 @@ yarn add @boost/pipeline
 
 ## Usage
 
-A pipeline can be used to process an input, either in parallel or serial, through a series actions
-known as work units, to produce a final output. There are multiple types of
+A pipeline can be used to process an input, either in parallel or serial, through a series of
+actions known as work units, to produce a final output. There are multiple types of
 [work units](#work-types) and [pipelines](#pipeline-types), so choose the best one for each use
 case.
 
@@ -23,32 +23,25 @@ There are 2 types of work units that can be registered in a pipeline.
 
 ### `Task`
 
-A task is simply a function that accepts an input and returns an output. It can be represented by a
-standard function or a `Task` instance.
+A task is simply a function or method that accepts an input and returns an output. It can be
+represented by a standard function or a `Task` instance.
 
 ```ts
 import { Context } from '@boost/pipeline';
 
 function task(context: Context, value: number): string {
-  return String(value).toLocaleString();
+  return value.toLocaleString();
 }
 
 parallelPipeline.add('A title for this task', task);
-
-serialPipeline.pipe(
-  'A title for this task',
-  task,
-);
 ```
 
 ```ts
 import { Context, Task } from '@boost/pipeline';
 
 const task = new Task('A title for this task', (context: Context, value: number) =>
-  String(value).toLocaleString(),
+  value.toLocaleString(),
 );
-
-parallelPipeline.add(task);
 
 serialPipeline.pipe(task);
 ```
@@ -59,30 +52,33 @@ A `Routine` is a specialized work unit implemented with a class. It provides hel
 ability to create nested hierarchical pipelines, and an implicit encapsulation of similar logic and
 tasks.
 
-To begin, import the `Routine` class and implement the `blueprint()` and `execute()` methods. The
-class requires 3 generics to be defined, starting with an options interface (provide an empty object
-if no options needed), an input type, and an output type.
+To begin, import the `Routine` class and implement the `Routine#blueprint` and `Routine#execute`
+methods. The class requires 3 generics to be defined, starting with an options interface (provide an
+empty object if no options needed), an input type, and an output type.
 
-The `blueprint()` method is inherited from [`Contract`](./common.md#contract), and should return an
-object that matches the structure of the generic options interface. The `execute()` method should
-accept the input type and return the expected output type.
+The `Routine#blueprint` method is inherited from [`Contract`](./common.md#contract), and should
+return an object that matches the structure of the generic options interface. The `Routine#execute`
+method should accept the input type and return the expected output type.
 
 ```ts
 import { Predicates } from '@boost/common';
 import { Routine } from '@boost/pipeline';
 
-export interface ExampleOptions {
+interface ExampleOptions {
   limit?: number;
 }
 
-export default class ExampleRoutine extends Routine<ExampleOptions, number, string> {
+type Input = number;
+type Output = string;
+
+export default class ExampleRoutine extends Routine<ExampleOptions, Input, Output> {
   blueprint({ number }: Predicates) {
     return {
       limit: number(10),
     };
   }
 
-  async execute(context: Context, value: number): Promise<string> {
+  async execute(context: Context, value: Input): Promise<Output> {
     return this.createWaterfallPipeline(context, value)
       .pipe(
         'Rounding to cents',
@@ -104,12 +100,48 @@ export default class ExampleRoutine extends Routine<ExampleOptions, number, stri
   }
 
   makeReadable(context: Context, value: number): string {
-    return String(value).toLocaleString();
+    return value.toLocaleString();
   }
 
   addCurrency(context: Context, value: string): string {
     return `$${value}`;
   }
+}
+```
+
+#### Creating Hierarchical Pipelines
+
+The most prominent feature of `Routine` is the ability to create hierarchical pipelines that can be
+nested or executed in any fashion. This can be achieved with the `Routine#createAggregatedPipeline`,
+`createConcurrentPipeline`, `createPooledPipeline`, and `createWaterfallPipeline` methods, all of
+which require a [context](#contexts) and an initial value.
+
+```ts
+async execute(context: Context, items: Item[]): Promise<Item[]> {
+  return this.createConcurrentPipeline(context, [])
+    .add('Load items from cache', this.loadItemsFromCache)
+    .add('Fetch remote items', this.fetchItems)
+    .add('Sort and enqueue items', () => {
+      return this.createWaterfallPipeline(context, items)
+        .pipe(new SortRoutine('sort', 'Sorting items'))
+        .pipe(new QueueRoutine('queue', 'Enqueueing items'))
+        .run(),
+    })
+    .run();
+}
+```
+
+#### Executing Local Binaries
+
+The `Routine#executeCommand` method can be used to execute binaries and commands on the host machine
+(it uses [execa](https://github.com/sindresorhus/execa) under the hood). This is extremely useful
+for executing locally installed NPM/Yarn binaries.
+
+```ts
+async execute(context: Context): Promise<string> {
+  return this.executeCommand('babel', ['./src', '--out-dir', './lib'], { preferLocal: true }).then(
+    result => result.stdout,
+  );
 }
 ```
 
@@ -119,8 +151,8 @@ There are 4 types of pipelines, grouped into parallel and serial based patterns.
 
 ### Parallel
 
-Parallel pipelines register work units with `add()`, and process the work units in parallel when
-`run()` is executed.
+Parallel pipelines register work units with `ParallelPipeline#add`, and process the work units in
+parallel when executing `ParallelPipeline#run`.
 
 #### `ConcurrentPipeline`
 
@@ -190,8 +222,8 @@ The following options can be passed as a 3rd argument to `PooledPipeline`.
 
 ### Serial
 
-Serial pipelines register work units in order with `pipe()`, and process the work units one by one
-when `run()` is executed.
+Serial pipelines register work units in a sequence with `SerialPipeline#pipe`, and process the work
+units one by one when executing `SerialPipeline#run`.
 
 #### `WaterfallPipeline`
 
@@ -208,7 +240,7 @@ const pipeline = new WaterfallPipeline(new Context(), 1000)
   )
   .pipe(
     'Convert to a readable string',
-    (ctx, value) => String(value).toLocaleString(),
+    (ctx, value) => value.toLocaleString(),
   )
   .pipe(
     'Convert to an array for reasons unknown',
