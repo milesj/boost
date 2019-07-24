@@ -1,6 +1,7 @@
 # Pipelines
 
-Pipe an input through a series of type-safe routines and tasks to produce an output.
+Pipe an input through a series of type-safe routines and tasks to produce an output, or simply, run
+logic in a series of stages.
 
 ## Installation
 
@@ -24,7 +25,8 @@ yarn add @boost/pipeline
 ## Usage
 
 A pipeline can be used to process an input, either in parallel or serial, through a series of
-actions known as work units, to produce an output. There are multiple types of
+actions known as work units, to produce an output. If you don't need an input, but merely need to
+process work in stages, the pipeline supports that as well. There are multiple types of
 [work units](#work-types) and [pipelines](#pipeline-types), so choose the best one for each use
 case.
 
@@ -71,7 +73,27 @@ const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context()
 
 ## Contexts
 
-TODO
+A `Context` is merely a plain class that provides contextual information to all work units, and is
+passed as the 1st argument when executing. It's highly encouraged to create custom contexts with
+typed properties, helper methods, and more.
+
+```ts
+import { Context } from '@boost/pipeline';
+
+export default class ProcessContext extends Context {
+  cwd: string;
+
+  root: string;
+
+  constructor(root: string, cwd?: string) {
+    this.cwd = cwd || process.cwd();
+    this.root = root;
+  }
+}
+```
+
+> A good example of context usage can be found in the
+> [Beemo project](https://github.com/beemojs/beemo/tree/master/packages/core/src/contexts).
 
 ## Work Types
 
