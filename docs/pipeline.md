@@ -1,6 +1,6 @@
 # Pipelines
 
-Pipe an input through a series of routines and tasks to produce an output.
+Pipe an input through a series of type-safe routines and tasks to produce an output.
 
 ## Installation
 
@@ -8,14 +8,70 @@ Pipe an input through a series of routines and tasks to produce an output.
 yarn add @boost/pipeline
 ```
 
+## Events
+
+| Event                    | Arguments                         | Description                                                                     |
+| ------------------------ | --------------------------------- | ------------------------------------------------------------------------------- |
+| `Pipeline#onRun`         | `input: Input`                    | Called before the pipeline executes work units.                                 |
+| `Pipeline#onRunWorkUnit` | `work: WorkUnit, input: Input`    | Called before a single work unit is executed.                                   |
+| `Routine#onCommand`      | `command: string, args: string[]` | Called after `execa` was executed.                                              |
+| `Routine#onCommandData`  | `command: string, line: string`   | Called while a command is being executed.                                       |
+| `WorkUnit#onFail`        | `error: Error | null`             | Called when an execution fails.                                                 |
+| `WorkUnit#onPass`        | `output: Output`                  | Called when an execution succeeds.                                              |
+| `WorkUnit#onRun`         | `input: Input`                    | Called before a work unit is executed. Can return `true` to skip the work unit. |
+| `WorkUnit#onSkip`        | `input: Input`                    | Called when an execution is skipped.                                            |
+
 ## Usage
 
 A pipeline can be used to process an input, either in parallel or serial, through a series of
-actions known as work units, to produce a final output. There are multiple types of
+actions known as work units, to produce an output. There are multiple types of
 [work units](#work-types) and [pipelines](#pipeline-types), so choose the best one for each use
 case.
 
-TODO contexts
+To begin, instantiate a pipeline with a [context](#contexts) and input value.
+
+```ts
+import { Context, ConcurrentPipeline } from '@boost/pipeline';
+import { referenceFunction } from './example';
+
+const input = 123;
+const pipeline = new ConcurrentPipeline(new Context(), input);
+```
+
+Once instantiated, we must register work units (either a [task](#task) or [routine](#routine)) that
+will process the input value, either with `ParallelPipeline#add` or `SerialPipeline#pipe`. All work
+units require a descriptive title, and are passed the context and current value when being executed.
+
+```ts
+// Tasks
+pipeline.add('Task using an anonymous function', (context, value) => value);
+pipeline.add('Task using a function reference', referenceFunction);
+pipeline.add(new Task('Task using a class instance', referenceFunction));
+
+// Routines
+pipeline.add(new ExampleRoutine('key', 'Explicit routine using a class instance'));
+```
+
+And to finish, we can execute our pipeline to process each work unit and produce the final output
+value.
+
+```ts
+const output = await pipeline.run();
+```
+
+### Custom Input & Output Types
+
+The input type is inferred from the 2nd constructor argument, while the output type defaults to the
+input type. If you need to customize either the input or output type manually, the pipeline generics
+can be customized upon instantiation.
+
+```ts
+const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
+```
+
+## Contexts
+
+TODO
 
 ## Work Types
 
@@ -23,8 +79,8 @@ There are 2 types of work units that can be registered in a pipeline.
 
 ### `Task`
 
-A task is simply a function or method that accepts an input and returns an output. It can be
-represented by a standard function or a `Task` instance.
+A task is simply a function/method (in any form) that accepts an input and returns an output. It can
+be represented by a standard function or a `Task` instance.
 
 ```ts
 import { Context } from '@boost/pipeline';
@@ -109,6 +165,13 @@ export default class ExampleRoutine extends Routine<ExampleOptions, Input, Outpu
 }
 ```
 
+When instantiating a routine, a unique key and title must be provided, both of which are primarily
+used for streaming to a console. An options object can be passed as the 3rd argument.
+
+```ts
+new ExampleRoutine('key', 'Custom title here', { limit: 5 });
+```
+
 #### Creating Hierarchical Pipelines
 
 The most prominent feature of `Routine` is the ability to create hierarchical pipelines that can be
@@ -130,6 +193,9 @@ async execute(context: Context, items: Item[]): Promise<Item[]> {
     .run();
 }
 ```
+
+The `Routine#depth` property denotes the current depth within the hierarchy tree, while
+`Routine#index` is the current index amongst all work at the same depth.
 
 #### Executing Local Binaries
 

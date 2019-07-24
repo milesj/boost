@@ -148,11 +148,11 @@ describe('Routine', () => {
 
       await routine.executeCommand('yarn', ['-v'], { workUnit: task });
 
-      expect(commandSpy).toHaveBeenCalledWith('yarn');
+      expect(commandSpy).toHaveBeenCalledWith('yarn', ['-v']);
       expect(commandDataSpy).toHaveBeenCalledWith('yarn', expect.anything());
     });
 
-    it('sets `statusText` and `output` on work unit', async () => {
+    it('sets `statusText` on work unit', async () => {
       const task = new Task('title', () => {});
 
       // @ts-ignore Allow
@@ -161,7 +161,6 @@ describe('Routine', () => {
       await routine.executeCommand('yarn', ['--help'], { workUnit: task });
 
       expect(task.statusText).toBe('Mocked stream line');
-      expect(task.output).toBe('Mocked stream lineMocked stream line');
     });
 
     it('doesnt set `statusText` when chunk line is empty', async () => {
@@ -184,7 +183,7 @@ describe('Routine', () => {
       await routine.executeCommand('yarn', ['-v'], { workUnit: task });
 
       expect(task.statusText).toBe('');
-      expect(task.output).toBe('');
+      expect(task.output).toBeUndefined();
     });
   });
 });

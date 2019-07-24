@@ -11,7 +11,7 @@ describe('Work', () => {
   beforeEach(() => {
     context = new Context();
     passWork = new Task('title', (ctx, value) => value * 2);
-    failWork = new Task('title', () => {
+    failWork = new Task<any, any>('title', () => {
       throw new Error('Oops');
     });
   });

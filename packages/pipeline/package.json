@@ -1,14 +1,16 @@
 {
   "name": "@boost/pipeline",
   "version": "0.0.0",
-  "description": "Pipe an input through a series of routines and tasks to produce an output.",
+  "description": "Pipe an input through a series of type-safe routines and tasks to produce an output.",
   "keywords": [
     "boost",
     "pipeline",
     "routine",
     "task",
     "work",
-    "work unit"
+    "work unit",
+    "parallel",
+    "serial"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

@@ -19,11 +19,11 @@ export default class PooledPipeline<
   Input,
   Output = Input
 > extends ParallelPipeline<PooledOptions, Ctx, Input, Output> {
-  resolver?: (response: AggregatedResult<Output>) => void;
+  protected resolver?: (response: AggregatedResult<Output>) => void;
 
-  results: (Error | Output)[] = [];
+  protected results: (Error | Output)[] = [];
 
-  running: WorkUnit<any, Input, Output>[] = [];
+  protected running: WorkUnit<any, Input, Output>[] = [];
 
   blueprint({ bool, number }: Predicates) {
     return {

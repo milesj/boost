@@ -17,7 +17,7 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
 
   index: number = 0;
 
-  output: unknown = '';
+  output?: Output;
 
   startTime: number = 0;
 
@@ -27,11 +27,11 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
 
   readonly onFail = new Event<[Error | null]>('fail');
 
-  readonly onPass = new Event<[unknown]>('pass');
+  readonly onPass = new Event<[Output]>('pass');
 
-  readonly onRun = new BailEvent<[unknown]>('run');
+  readonly onRun = new BailEvent<[Input]>('run');
 
-  readonly onSkip = new Event<[unknown]>('skip');
+  readonly onSkip = new Event<[Input]>('skip');
 
   readonly title: string;
 
@@ -129,7 +129,7 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
 
     this.statusText = '';
 
-    return this.output as any;
+    return this.output;
   }
 
   /**

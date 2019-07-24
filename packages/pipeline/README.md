@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/%40boost%pipeline.svg)](https://www.npmjs.com/package/@boost/pipeline)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/pipeline)](https://www.npmjs.com/package/@boost/pipeline)
 
-Pipe an input through a series of routines and tasks to produce an output.
+Pipe an input through a series of type-safe routines and tasks to produce an output.
 
 ## Features
 

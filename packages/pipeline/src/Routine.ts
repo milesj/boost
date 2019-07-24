@@ -25,7 +25,7 @@ export default abstract class Routine<
   readonly key: string;
 
   // Emits before the command is ran
-  readonly onCommand = new Event<[string]>('command');
+  readonly onCommand = new Event<[string, string[]]>('command');
 
   // Emits on each line chunk of the running command
   readonly onCommandData = new Event<[string, string]>('command-data');
@@ -52,14 +52,12 @@ export default abstract class Routine<
     const { workUnit, ...opts } = options;
     const stream = execa(command, args, opts);
 
-    this.onCommand.emit([command]);
+    this.onCommand.emit([command, args]);
 
     // Push chunks to the reporter
     const unit = workUnit || this;
     const handler = (line: string) => {
       if (unit.isRunning()) {
-        unit.output += line;
-
         // Only capture the status when not empty
         if (line) {
           unit.statusText = line;
