@@ -33,6 +33,12 @@
       "path": "packages/log/tests"
     },
     {
+      "path": "packages/pipeline"
+    },
+    {
+      "path": "packages/pipeline/tests"
+    },
+    {
       "path": "packages/reporter-nyan"
     },
     {

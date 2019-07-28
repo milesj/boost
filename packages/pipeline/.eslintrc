@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "no-dupe-class-members": "off",
+    "lines-between-class-members": "off"
+  }
+}
