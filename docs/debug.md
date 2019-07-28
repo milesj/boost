@@ -1,7 +1,7 @@
 # Debugging
 
-Lightweight debugging and crash reporting. Wraps the amazing
-[debug](https://www.npmjs.com/package/debug) library to provide additional functionality.
+Lightweight debugging. Wraps the amazing [debug](https://www.npmjs.com/package/debug) library to
+provide additional functionality.
 
 ## Installation
 
@@ -11,17 +11,16 @@ yarn add @boost/debug
 
 ## Environment Variables
 
-- `BOOST_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix to append to all debugger namespaces when
-  created with `createDebugger()`. Is commonly set by a command line application or Boost `Tool`
-  instance.
+- `BOOST_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix for all debugger namespaces when created with
+  `createDebugger()`. Is commonly set by a command line application or Boost `Tool` instance.
 - `BOOST_DEBUG_VERBOSE` (`boolean`) - Print verbose messages logged from `debugger.verbose()`,
   otherwise they are hidden.
 
 ## Usage
 
 Like [logging](./log.md), a "debugger" is a collection of functions that write to `process.stderr`.
-The key difference is that debug messages are only displayed if the `DEBUG` environment variable
-contains the debugger's namespace (logic provided by the
+The key difference is that debug messages are only displayed if the `DEBUG` environment variable is
+set and contains the debugger's namespace (logic provided by the
 [debug](https://www.npmjs.com/package/debug) package). The namespace can be defined when
 instantiating a debugger using `createDebugger`.
 
@@ -89,60 +88,12 @@ debug('Something is broken!');
 
 > Messages that are logged while silenced are _lost_ and are _not_ buffered.
 
-## Crash Reporting
-
-Sometimes an application or script fails. Sometimes we want to write an error log with environmental
-information about the failure. Boost supports this exact scenario. Take advantage of crash reporting
-by importing and instantiating the `CrashReporter` class.
-
-```ts
-import { CrashReporter } from '@boost/debug';
-
-const reporter = new CrashReporter();
-```
-
-The reporter supports a collection of chainable methods that log targeted information, grouped into
-sections. The following methods are available.
-
-- `reportBinaries()` - Reports binary versions and paths for Node, NPM, and Yarn.
-- `reportEnvVars()` - Sorts and reports all environment variables.
-- `reportLanguages()` - Reports versions and paths for common programming languages, like Java,
-  Python, Ruby, and more.
-- `reportProcess()` - Reports information about the currently running process.
-- `reportStackTrace(error: Error)` - Reports the stack trace for the provided `Error`.
-- `reportSystem()`- Reports information about the system, OS, and platform.
-
-```ts
-reporter
-  .reportBinaries()
-  .reportEnvVars()
-  .reportSystem();
-```
-
-If you'd like to add your own section and label value pairs, use `addSection()` which requires a
-title, and `add()` which accepts a label and one or many values.
-
-```ts
-reporter
-  .addSection('User')
-  .add('ID', user.id)
-  .add('Name', user.name)
-  .add('Location', user.address, user.country);
-```
-
-Once all the information has been buffered, we can write the content to a log file by using the
-`write()` method, which requires an absolute file path.
-
-```ts
-reporter.write(path.join(process.cwd(), 'error.log'));
-```
-
 ## Test Utilities
 
 The following [Jest](https://github.com/facebook/jest) utilities are available in the
 `@boost/debug/lib/testing` module.
 
-### Mocking Debugger
+### `mockDebugger`
 
 The `mockDebugger` function returns a Jest spy that matches the return value shape of
 `createDebugger`.

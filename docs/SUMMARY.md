@@ -1,7 +1,8 @@
 # Summary
 
 - [Common Utilities](./common.md)
-- [Debugging & Crash Reporting](./debug.md)
+- [Crash Reporting](./crash.md)
+- [Debugging](./debug.md)
 - [Event System](./event.md)
 - [Logging](./log.md)
 - [Pipelines](./pipeline.md)
