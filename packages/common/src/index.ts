@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Blueprint, Predicates } from 'optimal';
+import optimal, { Blueprint, Predicates } from 'optimal';
 import Contract from './Contract';
 import formatMs from './helpers/formatMs';
 import instanceOf from './helpers/instanceOf';
@@ -23,6 +23,7 @@ export {
   instanceOf,
   isEmpty,
   isObject,
+  optimal,
   parseFile,
   requireModule,
   toArray,
