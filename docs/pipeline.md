@@ -81,9 +81,9 @@ typed properties, helper methods, and more.
 import { Context } from '@boost/pipeline';
 
 export default class ProcessContext extends Context {
-  cwd: string;
+  readonly cwd: string;
 
-  root: string;
+  readonly root: string;
 
   constructor(root: string, cwd?: string) {
     this.cwd = cwd || process.cwd();
@@ -94,6 +94,14 @@ export default class ProcessContext extends Context {
 
 > A good example of context usage can be found in the
 > [Beemo project](https://github.com/beemojs/beemo/tree/master/packages/core/src/contexts).
+
+A unique feature of contexts is the ability to deep clone itself using `Context#clone`. This method
+is extremely useful when a context of the same shape must be passed to another pipeline without
+collisions or mutations occurring.
+
+```ts
+const newContext = context.clone();
+```
 
 ## Work Types
 

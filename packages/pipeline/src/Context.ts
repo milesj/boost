@@ -1,5 +1,9 @@
 import { isObject } from '@boost/common';
 
+interface Cloneable {
+  clone?(): unknown;
+}
+
 export default class Context {
   /**
    * Create a new instance of the current context and shallow clone all properties.
@@ -21,9 +25,11 @@ export default class Context {
         value = new Set(value);
       } else if (value instanceof Date) {
         value = new Date(value.getTime());
-      } else if (isObject<object>(value)) {
-        // Dont dereference instances, only plain objects
-        if (value.constructor === Object) {
+      } else if (isObject<Cloneable>(value)) {
+        if (typeof value.clone === 'function') {
+          value = value.clone();
+          // Dont dereference instances, only plain objects
+        } else if (value.constructor === Object) {
           value = { ...value };
         }
       }

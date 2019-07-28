@@ -113,6 +113,17 @@ describe('Context', () => {
 
       expect(ctx.object).toEqual({ foo: 'foo', bar: 'bar', baz: 'baz' });
     });
+
+    it('calls the clone method', () => {
+      const ctx = new ObjectContext('foo', 'bar', 'baz');
+      // @ts-ignore
+      ctx.object.clone = () => ({ foo: 123 });
+
+      const clone = ctx.clone();
+
+      expect(clone).not.toBe(ctx);
+      expect(clone.object).toEqual({ foo: 123 });
+    });
   });
 
   describe('dates', () => {
@@ -207,6 +218,12 @@ describe('Context', () => {
       }
     }
 
+    class TestClone extends Test {
+      clone() {
+        return 'cloned';
+      }
+    }
+
     class ClassContext extends Context {
       instance: Test;
 
@@ -230,6 +247,15 @@ describe('Context', () => {
       clone.instance.flag = true;
 
       expect(ctx.instance.flag).toBe(true);
+    });
+
+    it('calls the clone method', () => {
+      const inst = new TestClone('foo');
+      const ctx = new ClassContext(inst);
+      const clone = ctx.clone();
+
+      expect(clone).not.toBe(ctx);
+      expect(clone.instance).toBe('cloned');
     });
   });
 });
