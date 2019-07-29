@@ -61,6 +61,8 @@ export default abstract class BaseEvent<
    */
   once(listener: Listener<Args, Return>, scope?: Scope): this {
     const func = this.validateListener(listener);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handler: any = (...args: unknown[]) => {
       this.unlisten(handler);
 

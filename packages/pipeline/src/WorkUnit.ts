@@ -35,10 +35,12 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
 
   readonly title: string;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private action: Action<any, Input, Output>;
 
   private status: Status = STATUS_PENDING;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(title: string, action: Action<any, Input, Output>, options?: Options) {
     super(options);
 
@@ -108,7 +110,8 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
       this.status = STATUS_SKIPPED;
       this.onSkip.emit([value]);
 
-      return Promise.resolve(value as any);
+      // @ts-ignore Allow input as output
+      return Promise.resolve(value);
     }
 
     this.status = STATUS_RUNNING;

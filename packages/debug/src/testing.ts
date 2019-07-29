@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Debugger } from './types';
 
 export function mockDebugger(): Debugger {

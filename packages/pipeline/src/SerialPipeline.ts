@@ -10,6 +10,7 @@ export default abstract class SerialPipeline<
   Input,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   root: SerialPipeline<Options, Ctx, any> = this;
 
   /**
@@ -20,9 +21,9 @@ export default abstract class SerialPipeline<
     action: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): SerialPipeline<Options, Ctx, Output>;
-  pipe<Output>(workUnit: WorkUnit<any, Input, Output>): SerialPipeline<Options, Ctx, Output>;
+  pipe<Output>(workUnit: WorkUnit<{}, Input, Output>): SerialPipeline<Options, Ctx, Output>;
   pipe<Output>(
-    titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
+    titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): SerialPipeline<Options, Ctx, Output> {
@@ -45,7 +46,7 @@ export default abstract class SerialPipeline<
   /**
    * Traverse the linked list to return a list of work units in defined order.
    */
-  getWorkUnits(): WorkUnit<any, Input, any>[] {
+  getWorkUnits(): WorkUnit<{}, Input, Output>[] {
     return this.root.work;
   }
 

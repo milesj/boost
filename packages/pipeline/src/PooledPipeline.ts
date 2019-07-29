@@ -23,7 +23,7 @@ export default class PooledPipeline<
 
   protected results: (Error | Output)[] = [];
 
-  protected running: WorkUnit<any, Input, Output>[] = [];
+  protected running: WorkUnit<{}, Input, Output>[] = [];
 
   blueprint({ bool, number }: Predicates) {
     return {

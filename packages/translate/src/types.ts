@@ -7,7 +7,7 @@ export type Format = 'js' | 'json' | 'yaml';
 export type Locale = string;
 
 export interface InterpolationParams {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface MessageOptions {
