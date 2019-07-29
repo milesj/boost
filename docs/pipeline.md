@@ -17,7 +17,7 @@ yarn add @boost/pipeline
 | `Pipeline#onRunWorkUnit` | `work: WorkUnit, input: Input`    | Called before a single work unit is executed.                                   |
 | `Routine#onCommand`      | `command: string, args: string[]` | Called after `execa` was executed.                                              |
 | `Routine#onCommandData`  | `command: string, line: string`   | Called while a command is being executed.                                       |
-| `WorkUnit#onFail`        | `error: Error | null`             | Called when an execution fails.                                                 |
+| `WorkUnit#onFail`        | `error: Error`                    | Called when an execution fails.                                                 |
 | `WorkUnit#onPass`        | `output: Output`                  | Called when an execution succeeds.                                              |
 | `WorkUnit#onRun`         | `input: Input`                    | Called before a work unit is executed. Can return `true` to skip the work unit. |
 | `WorkUnit#onSkip`        | `input: Input`                    | Called when an execution is skipped.                                            |

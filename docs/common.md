@@ -18,7 +18,7 @@ options object layer, and is meant to be inherited from as a super class. All cl
 [optimal](https://milesj.gitbook.io/optimal).
 
 To start, extend `Contract` with a generic interface that represents the shape of the options
-object. Next, implement the abstract `blueprint` method, which is passed
+object. Next, implement the abstract `Contract#blueprint` method, which is passed
 [optimal predicates](https://milesj.gitbook.io/optimal/predicates) as an argument, and must return
 an [optimal blueprint](https://milesj.gitbook.io/optimal/usage#blueprint) that matches the generic
 interface.
