@@ -12,7 +12,7 @@ describe('SerialPipeline', () => {
     }
 
     function testTask(depth: number, index: number) {
-      return (ctx: Context, value: any, work: Runnable<any, any>) => {
+      return (ctx: Context, value: string, work: Runnable<string, string>) => {
         log(depth, index);
 
         if (work instanceof WorkUnit) {
@@ -24,7 +24,7 @@ describe('SerialPipeline', () => {
       };
     }
 
-    class TestHierarchy extends Routine<{ depth: number; index: number }, any, any> {
+    class TestHierarchy extends Routine<{ depth: number; index: number }, string, string> {
       blueprint({ number }: Predicates) {
         return {
           depth: number(),
@@ -32,7 +32,7 @@ describe('SerialPipeline', () => {
         };
       }
 
-      async execute(ctx: Context, value: any) {
+      async execute(ctx: Context, value: string) {
         log(this.depth, this.index);
 
         expect(this.depth).toBe(this.options.depth);
@@ -42,12 +42,12 @@ describe('SerialPipeline', () => {
       }
     }
 
-    class OneTwo extends Routine<{}, any, any> {
+    class OneTwo extends Routine<{}, string, string> {
       blueprint() {
         return {};
       }
 
-      async execute(ctx: Context, value: any) {
+      async execute(ctx: Context, value: string) {
         log(this.depth, this.index);
 
         expect(this.depth).toBe(1);
@@ -70,12 +70,12 @@ describe('SerialPipeline', () => {
       }
     }
 
-    class ZeroZero extends Routine<{}, any, any> {
+    class ZeroZero extends Routine<{}, string, string> {
       blueprint() {
         return {};
       }
 
-      async execute(ctx: Context, value: any) {
+      async execute(ctx: Context, value: string) {
         log(this.depth, this.index);
 
         expect(this.depth).toBe(0);

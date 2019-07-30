@@ -5,7 +5,7 @@ import AggregatedPipeline from '../src/AggregatedPipeline';
 import { AggregatedResult } from '../src/types';
 
 describe('AggregatedPipeline', () => {
-  function sortAggregated(result: AggregatedResult<any>) {
+  function sortAggregated(result: AggregatedResult<unknown>) {
     result.errors.sort();
     result.results.sort();
 

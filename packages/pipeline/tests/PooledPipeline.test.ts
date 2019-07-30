@@ -5,7 +5,7 @@ import PooledPipeline from '../src/PooledPipeline';
 import { AggregatedResult } from '../src/types';
 
 describe('PooledPipeline', () => {
-  function sortAggregated(result: AggregatedResult<any>) {
+  function sortAggregated(result: AggregatedResult<unknown>) {
     result.errors.sort();
     result.results.sort();
 

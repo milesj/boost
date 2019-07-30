@@ -11,10 +11,11 @@ import { Action } from './types';
  * - A title and function that returns a `Task` instance.
  */
 export default function createWorkUnit<Input, Output = Input>(
-  titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
+  titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action?: Action<any, Input, Output>,
   scope?: unknown,
-): WorkUnit<any, Input, Output> {
+): WorkUnit<{}, Input, Output> {
   if (titleOrWorkUnit instanceof WorkUnit) {
     return titleOrWorkUnit;
   }

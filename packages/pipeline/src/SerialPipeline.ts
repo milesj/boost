@@ -10,6 +10,9 @@ export default abstract class SerialPipeline<
   Input,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
+  // Unknown does not work here as the output type changes for each
+  // node in the linked list chain.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   root: SerialPipeline<Options, Ctx, any> = this;
 
   /**
@@ -20,9 +23,9 @@ export default abstract class SerialPipeline<
     action: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): SerialPipeline<Options, Ctx, Output>;
-  pipe<Output>(workUnit: WorkUnit<any, Input, Output>): SerialPipeline<Options, Ctx, Output>;
+  pipe<Output>(workUnit: WorkUnit<{}, Input, Output>): SerialPipeline<Options, Ctx, Output>;
   pipe<Output>(
-    titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
+    titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): SerialPipeline<Options, Ctx, Output> {
@@ -34,7 +37,7 @@ export default abstract class SerialPipeline<
     this.root.work.push(workUnit);
 
     // @ts-ignore How to type/call this?
-    const next = new this.constructor(this.value, this.options);
+    const next = new this.constructor(this.context, this.value, this.options);
 
     next.depth = this.depth;
     next.root = this.root;
@@ -45,7 +48,7 @@ export default abstract class SerialPipeline<
   /**
    * Traverse the linked list to return a list of work units in defined order.
    */
-  getWorkUnits(): WorkUnit<any, Input, any>[] {
+  getWorkUnits(): WorkUnit<{}, Input, Output>[] {
     return this.root.work;
   }
 

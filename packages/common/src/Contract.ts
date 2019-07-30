@@ -16,7 +16,8 @@ export default abstract class Contract<T extends object = {}> implements Optiona
   configure(options?: Partial<T>): Required<T> {
     // We don't want the options property to be modified directly,
     // so it's read only, but we still want to modify it with this function.
-    (this as any).options = Object.freeze(
+    // @ts-ignore
+    this.options = Object.freeze(
       optimal({ ...this.options, ...options }, this.blueprint(predicates), {
         name: this.constructor.name,
       }),

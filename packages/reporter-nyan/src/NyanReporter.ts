@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable no-magic-numbers, @typescript-eslint/no-explicit-any */
 
 import chalk from 'chalk';
 import { Reporter, Routine, Task } from '@boost/core';

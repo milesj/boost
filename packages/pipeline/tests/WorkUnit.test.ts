@@ -5,13 +5,17 @@ import { STATUS_RUNNING } from '../src/constants';
 
 describe('Work', () => {
   let context: Context;
-  let passWork: WorkUnit<any, any, any>;
-  let failWork: WorkUnit<any, any, any>;
+  let passWork: WorkUnit<{}, number, number>;
+  let failWork: WorkUnit<{}, string, string>;
+
+  class CountContext extends Context {
+    count = 0;
+  }
 
   beforeEach(() => {
     context = new Context();
     passWork = new Task('title', (ctx, value) => value * 2);
-    failWork = new Task<any, any>('title', () => {
+    failWork = new Task<string, string>('title', () => {
       throw new Error('Oops');
     });
   });
@@ -49,7 +53,7 @@ describe('Work', () => {
       expect(failWork.hasFailed()).toBe(false);
 
       try {
-        await failWork.run(context, null);
+        await failWork.run(context, '');
       } catch {
         // Ignore
       }
@@ -62,7 +66,7 @@ describe('Work', () => {
     it('returns a boolean for STATUS_PASSED status state', async () => {
       expect(passWork.hasPassed()).toBe(false);
 
-      await passWork.run(context, null);
+      await passWork.run(context, 0);
 
       expect(passWork.hasPassed()).toBe(true);
     });
@@ -72,7 +76,7 @@ describe('Work', () => {
     it('returns true when passed', async () => {
       expect(passWork.isComplete()).toBe(false);
 
-      await passWork.run(context, null);
+      await passWork.run(context, 0);
 
       expect(passWork.isComplete()).toBe(true);
     });
@@ -81,7 +85,7 @@ describe('Work', () => {
       expect(failWork.isComplete()).toBe(false);
 
       try {
-        await failWork.run(context, null);
+        await failWork.run(context, '');
       } catch {
         // Ignore
       }
@@ -92,7 +96,7 @@ describe('Work', () => {
     it('returns true when skipped', async () => {
       expect(passWork.isComplete()).toBe(false);
 
-      await passWork.skip().run(context, null);
+      await passWork.skip().run(context, 0);
 
       expect(passWork.isComplete()).toBe(true);
     });
@@ -166,7 +170,7 @@ describe('Work', () => {
 
     it('rejects the value if the action throws an error', async () => {
       try {
-        await failWork.run(context, 123);
+        await failWork.run(context, '');
 
         expect(true).toBe(false);
       } catch (error) {
@@ -176,8 +180,11 @@ describe('Work', () => {
     });
 
     it('passes a context to the action', async () => {
-      passWork = new Task('title', ctx => {
+      context = new CountContext();
+      passWork = new Task('title', (ctx: CountContext) => {
         ctx.count = 1;
+
+        return ctx.count;
       });
 
       await passWork.run(context, 123);
@@ -198,7 +205,7 @@ describe('Work', () => {
 
     it('sets times on failure', async () => {
       try {
-        await failWork.run(context, 123);
+        await failWork.run(context, '');
       } catch (error) {
         // Ignore
       }
@@ -253,7 +260,7 @@ describe('Work', () => {
       failWork.onFail.listen(spy);
 
       try {
-        await failWork.run(context, 123);
+        await failWork.run(context, '');
       } catch (error) {
         expect(spy).toHaveBeenCalledWith(error);
       }

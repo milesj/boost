@@ -1957,10 +1957,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.172.4":
-  version "0.172.4"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.172.4.tgz#1929899d397771ff0708f4551404baeb8bda46d9"
-  integrity sha512-lTdGVUXLkP2JsTInrpuP2IROfpkoAwwnXADGCbL44KuK+L7CB2PdnxlLYiWG866AepsQCv/8LMb+NpTWYWZCyQ==
+"@milesj/build-tool-config@^0.172.5":
+  version "0.172.5"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.172.5.tgz#f6b6817865b1074ba9aaa115106a426d3685fcb1"
+  integrity sha512-b77Vvvf86IiTE0yr32oO9nhcpdkyJHYNx4dsm9woaPxuVDMyxqdJQK3p4SG6q+/iJFJdvyQnkzf8druEo48e7g==
   dependencies:
     "@babel/cli" "^7.5.5"
     "@babel/core" "^7.5.5"
@@ -1973,7 +1973,7 @@
     "@babel/preset-react" "^7.0.0"
     "@babel/preset-typescript" "^7.3.3"
     "@types/enzyme" "^3.10.3"
-    "@types/jest" "^24.0.15"
+    "@types/jest" "^24.0.16"
     "@typescript-eslint/eslint-plugin" "~1.13.0"
     "@typescript-eslint/parser" "~1.13.0"
     babel-plugin-transform-dev "^2.0.1"
@@ -2022,12 +2022,12 @@
     prettier "^1.18.2"
     typescript "^3.5.3"
 
-"@milesj/build-tools@^0.50.4":
-  version "0.50.4"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.50.4.tgz#3a7bacae988a57e8494ed4410f31a1f600d434f3"
-  integrity sha512-aXI79Ai9uejuqKcWNycFKdM8D7VQvgQ5I73viSEUEphTn+/7G/lDdzVOlNTT08xEoXdbeEOzi7FAIORt3GbA0A==
+"@milesj/build-tools@^0.50.5":
+  version "0.50.5"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.50.5.tgz#b2b80f2f1217fb8e6e756cb0c92a2fdbb6a17421"
+  integrity sha512-WRFcx87tWh2UbdeGVlVMxCzf7zJj8muIhWRL+hqP3zreIrODFSi3z3XQSHhTV7DuEBAd7tdNTKsjS+zPtTavLQ==
   dependencies:
-    "@milesj/build-tool-config" "^0.172.4"
+    "@milesj/build-tool-config" "^0.172.5"
     "@milesj/build-tool-runtime" "^0.44.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
@@ -2289,10 +2289,10 @@
   resolved "https://registry.npmjs.org/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
   integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
 
-"@types/jest@^24.0.15":
-  version "24.0.15"
-  resolved "https://registry.npmjs.org/@types/jest/-/jest-24.0.15.tgz#6c42d5af7fe3b44ffff7cc65de7bf741e8fa427f"
-  integrity sha512-MU1HIvWUme74stAoc3mgAi+aMlgKOudgEvQDIm1v4RkrDudBh1T+NFp5sftpBAdXdx1J0PbdpJ+M2EsSOi1djA==
+"@types/jest@^24.0.16":
+  version "24.0.16"
+  resolved "https://registry.npmjs.org/@types/jest/-/jest-24.0.16.tgz#8d3e406ec0f0dc1688d6711af3062ff9bd428066"
+  integrity sha512-JrAiyV+PPGKZzw6uxbI761cHZ0G7QMOHXPhtSpcl08rZH6CswXaaejckn3goFKmF7M3nzEoJ0lwYCbqLMmjziQ==
   dependencies:
     "@types/jest-diff" "*"
 
@@ -2401,10 +2401,10 @@
   resolved "https://registry.npmjs.org/@types/yargs/-/yargs-12.0.10.tgz#17a8ec65cd8e88f51b418ceb271af18d3137df67"
   integrity sha512-WsVzTPshvCSbHThUduGGxbmnwcpkgSctHGHTqzWyFg4lYAuV5qXlyFPOsP3OWqCINfmg/8VXP+zJaa4OxEsBQQ==
 
-"@types/yargs@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.npmjs.org/@types/yargs/-/yargs-13.0.0.tgz#d2acb3bec0047d8f648ebacdab6b928a900c42c4"
-  integrity sha512-hY0o+kcz9M6kH32NUeb6VURghqMuCVkiUx+8Btsqhj4Hhov/hVGUx9DmBJeIkzlp1uAQK4wngQBCjqWdUUkFyA==
+"@types/yargs@^13.0.0", "@types/yargs@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.npmjs.org/@types/yargs/-/yargs-13.0.1.tgz#a45b3c9faadd7adfdb40646d14a7f6b70f4e8233"
+  integrity sha512-7X+FaCpRQ1scFQnWUY0TnVuuNaP5ajN45IGmwHVkAbsH1g4txz4hNb6sjJeR/wLaqUdNoInOwLk7oRL5M4zVFA==
   dependencies:
     "@types/yargs-parser" "*"
 
@@ -5581,10 +5581,10 @@ hyperlinker@^1.0.0:
   resolved "https://registry.npmjs.org/hyperlinker/-/hyperlinker-1.0.0.tgz#23dc9e38a206b208ee49bc2d6c8ef47027df0c0e"
   integrity sha512-Ty8UblRWFEcfSuIaajM34LdPXIhbs1ajEX/BBPv24J+enSVaEVY63xQ6lTO9VRYS5LAoghIG0IDJ+p+IPzKUQQ==
 
-i18next@^17.0.6:
-  version "17.0.6"
-  resolved "https://registry.npmjs.org/i18next/-/i18next-17.0.6.tgz#01079cc2bcef408139ea8ce24d18ac0d512fbe85"
-  integrity sha512-bdNhzhcM6RG5m82RypVguCrAQNie/ycxW0Q5C6K9UDWD5hqApZfdJFbj4Ikz9jxIR+Ja1eg0yCQLhlCT+opwIg==
+i18next@^17.0.7:
+  version "17.0.7"
+  resolved "https://registry.npmjs.org/i18next/-/i18next-17.0.7.tgz#aae8591634b109c0ecec755b46c6414b0d743e07"
+  integrity sha512-fQn+gcyDaHb3qXIeahjCnGMsCeHaKveSORclang55stBjOL13oK7ZYxXVz1AaFV6p3SzOSu/KW+tgZcUuDdf6Q==
   dependencies:
     "@babel/runtime" "^7.3.1"
 

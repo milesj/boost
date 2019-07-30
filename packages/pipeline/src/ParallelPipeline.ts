@@ -15,9 +15,9 @@ export default abstract class ParallelPipeline<
    * Add a work unit to the list of items to process.
    */
   add(title: string, action: Action<Ctx, Input, Output>, scope?: unknown): this;
-  add(workUnit: WorkUnit<any, Input, Output>): this;
+  add(workUnit: WorkUnit<{}, Input, Output>): this;
   add(
-    titleOrWorkUnit: string | WorkUnit<any, Input, Output>,
+    titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): this {
@@ -55,5 +55,5 @@ export default abstract class ParallelPipeline<
    * Run and process the work unit's asynchronously.
    * Return `any` so that sub-classes can override the output type.
    */
-  abstract async run(): Promise<any>;
+  abstract async run(): Promise<unknown>;
 }

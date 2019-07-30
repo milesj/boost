@@ -7,9 +7,10 @@ describe('createLogger()', () => {
   let errStream: { write: jest.Mock };
 
   function mockLogger(options?: LoggerOptions) {
+    // @ts-ignore Allow invalid streams
     return createLogger({
-      stderr: errStream as any,
-      stdout: outStream as any,
+      stderr: errStream,
+      stdout: outStream,
       ...options,
     });
   }

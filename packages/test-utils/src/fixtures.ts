@@ -33,7 +33,7 @@ export function copyFixtureToMock(fixture: string, name: string): () => void {
   return () => jest.dontMock(name);
 }
 
-export function createTempFileInFixture(fixture: string, file: string, data: any): () => void {
+export function createTempFileInFixture(fixture: string, file: string, data: unknown): () => void {
   const filePath = getFixturePath(fixture, file);
 
   fs.writeFileSync(filePath, data);

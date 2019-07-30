@@ -1,7 +1,7 @@
 import Event from '../src/Event';
 
 describe('Event', () => {
-  let event: Event<any[]>;
+  let event: Event<unknown[]>;
 
   beforeEach(() => {
     event = new Event('event.test');

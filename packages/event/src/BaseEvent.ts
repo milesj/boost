@@ -61,11 +61,11 @@ export default abstract class BaseEvent<
    */
   once(listener: Listener<Args, Return>, scope?: Scope): this {
     const func = this.validateListener(listener);
-    const handler: any = (...args: unknown[]) => {
+    const handler = ((...args: unknown[]) => {
       this.unlisten(handler);
 
       return func(...args);
-    };
+    }) as Listener<Args, Return>;
 
     return this.listen(handler, scope);
   }

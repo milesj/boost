@@ -12,7 +12,7 @@ import { STATUS_RUNNING } from '../src/constants';
 jest.mock('execa');
 
 describe('Routine', () => {
-  class TestRoutine extends Routine<{ test: number }, any, any> {
+  class TestRoutine extends Routine<{ test: number }, string, string> {
     blueprint({ number }: Predicates) {
       return {
         test: number(),
@@ -20,7 +20,7 @@ describe('Routine', () => {
     }
 
     async execute() {
-      return null;
+      return '';
     }
   }
 
@@ -99,7 +99,7 @@ describe('Routine', () => {
         return this;
       }
 
-      on(event: string, handler: (line: string) => any) {
+      on(event: string, handler: (line: string) => string) {
         handler(this.value);
 
         return this;
@@ -138,7 +138,7 @@ describe('Routine', () => {
     it('pipes stdout/stderr to handler', async () => {
       const commandSpy = jest.fn();
       const commandDataSpy = jest.fn();
-      const task = new Task('title', () => {});
+      const task = new Task<string, string>('title', () => '');
 
       // @ts-ignore Allow
       task.status = STATUS_RUNNING;

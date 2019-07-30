@@ -4,7 +4,7 @@ export type Path = string;
 
 export type AbstractConstructor<T> = Function & { prototype: T };
 
-export type ConcreteConstructor<T> = new (...args: any[]) => T;
+export type ConcreteConstructor<T> = new (...args: unknown[]) => T;
 
 export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 

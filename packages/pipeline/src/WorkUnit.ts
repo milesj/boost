@@ -35,10 +35,13 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
 
   readonly title: string;
 
-  private action: Action<any, Input, Output>;
+  private action: Action<Context, Input, Output>;
 
   private status: Status = STATUS_PENDING;
 
+  // We want to support all contexts, so we use any.
+  // Unknown and `Context` will not work because of the constraint.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(title: string, action: Action<any, Input, Output>, options?: Options) {
     super(options);
 
@@ -108,7 +111,10 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
       this.status = STATUS_SKIPPED;
       this.onSkip.emit([value]);
 
-      return Promise.resolve(value as any);
+      // Allow input as output. This is problematic for skipping
+      // since the expected output is no longer in sync. Revisit.
+      // @ts-ignore
+      return Promise.resolve(value);
     }
 
     this.status = STATUS_RUNNING;

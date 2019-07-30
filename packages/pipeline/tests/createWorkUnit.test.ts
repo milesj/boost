@@ -4,23 +4,23 @@ import Task from '../src/Task';
 import WorkUnit from '../src/WorkUnit';
 
 describe('createWorkUnit()', () => {
-  class TestRoutine extends Routine<{}, any, any> {
+  class TestRoutine extends Routine<{}, string, string> {
     blueprint() {
       return {};
     }
 
     async execute() {
-      return null;
+      return '';
     }
   }
 
-  class TestWork extends WorkUnit<{}, any, any> {
+  class TestWork extends WorkUnit<{}, string, string> {
     blueprint() {
       return {};
     }
 
     async execute() {
-      return null;
+      return '';
     }
   }
 
@@ -37,13 +37,13 @@ describe('createWorkUnit()', () => {
   });
 
   it('returns a custom `WorkUnit`', () => {
-    const work = new TestWork('title', value => value);
+    const work = new TestWork('title', (ctx, value) => value);
 
     expect(createWorkUnit(work)).toBe(work);
   });
 
   it('returns a `Task` when a function is provided', () => {
-    const action = (value: any) => value;
+    const action = (value: string) => value;
     const work = createWorkUnit('title', action);
 
     expect(work).toBeInstanceOf(Task);

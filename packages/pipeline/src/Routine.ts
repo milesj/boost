@@ -1,4 +1,4 @@
-import execa, { Options as ExecaOptions, ExecaChildProcess } from 'execa';
+import execa, { Options as ExecaOptions } from 'execa';
 import kebabCase from 'lodash/kebabCase';
 import split from 'split';
 import { createDebugger, Debugger } from '@boost/debug';
@@ -9,10 +9,12 @@ import ConcurrentPipeline from './ConcurrentPipeline';
 import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
-import Pipeline from './Pipeline';
+import { Hierarchical } from './types';
 
 export interface ExecuteCommandOptions {
-  workUnit?: WorkUnit<any, any, any>;
+  // Unknown does not work here as it conflicts with event tuples.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  workUnit?: WorkUnit<{}, any, any>;
 }
 
 export default abstract class Routine<
@@ -48,7 +50,7 @@ export default abstract class Routine<
     command: string,
     args: string[],
     options: ExecaOptions & ExecuteCommandOptions = {},
-  ): Promise<ExecaChildProcess> {
+  ) /* infer */ {
     const { workUnit, ...opts } = options;
     const stream = execa(command, args, opts);
 
@@ -70,7 +72,7 @@ export default abstract class Routine<
     stream.stderr!.pipe(split()).on('data', handler);
     stream.stdout!.pipe(split()).on('data', handler);
 
-    return stream as any;
+    return stream;
   }
 
   /**
@@ -111,7 +113,7 @@ export default abstract class Routine<
   /**
    * Update the hierarchical depth when creating a nested pipeline.
    */
-  protected updateHierarchy<P extends Pipeline<any, any, any, any>>(pipeline: P): P {
+  protected updateHierarchy<P extends Hierarchical>(pipeline: P): P {
     // eslint-disable-next-line no-param-reassign
     pipeline.depth = this.depth + 1;
 

@@ -12,7 +12,7 @@ describe('Context', () => {
 
     qux = () => {};
 
-    fixed: any = null;
+    fixed: unknown = null;
 
     noop() {}
   }
