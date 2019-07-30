@@ -51,7 +51,7 @@ describe('Routine', () => {
       };
     }
 
-    async execute(): Promise<any> {
+    execute(): Promise<any> {
       throw new Error('Failure');
     }
   }
@@ -75,7 +75,7 @@ describe('Routine', () => {
       };
     }
 
-    async execute(context: any, value: any): Promise<any> {
+    execute(context: any, value: any): Promise<any> {
       context.count *= this.options.multiplier;
       context[this.key] = true;
 
