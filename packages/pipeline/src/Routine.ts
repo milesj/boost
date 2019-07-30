@@ -1,4 +1,4 @@
-import execa, { Options as ExecaOptions, ExecaChildProcess } from 'execa';
+import execa, { Options as ExecaOptions } from 'execa';
 import kebabCase from 'lodash/kebabCase';
 import split from 'split';
 import { createDebugger, Debugger } from '@boost/debug';
@@ -12,7 +12,9 @@ import WaterfallPipeline from './WaterfallPipeline';
 import { Hierarchical } from './types';
 
 export interface ExecuteCommandOptions {
-  workUnit?: WorkUnit<{}, unknown, unknown>;
+  // Unknown does not work here as it conflicts with event tuples.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  workUnit?: WorkUnit<{}, any, any>;
 }
 
 export default abstract class Routine<
@@ -48,7 +50,7 @@ export default abstract class Routine<
     command: string,
     args: string[],
     options: ExecaOptions & ExecuteCommandOptions = {},
-  ) {
+  ) /* infer */ {
     const { workUnit, ...opts } = options;
     const stream = execa(command, args, opts);
 

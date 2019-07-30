@@ -35,7 +35,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/split": "^1.0.0",
     "@types/wrap-ansi": "^3.0.0",
-    "@types/yargs": "^13.0.0",
+    "@types/yargs": "^13.0.1",
     "@types/yargs-parser": "^13.0.0",
     "ansi-escapes": "^4.2.0",
     "chalk": "^2.4.2",

@@ -10,6 +10,8 @@ export default abstract class SerialPipeline<
   Input,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
+  // Unknown does not work here as the output type changes for each
+  // node in the linked list chain.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   root: SerialPipeline<Options, Ctx, any> = this;
 
@@ -35,7 +37,7 @@ export default abstract class SerialPipeline<
     this.root.work.push(workUnit);
 
     // @ts-ignore How to type/call this?
-    const next = new this.constructor(this.value, this.options);
+    const next = new this.constructor(this.context, this.value, this.options);
 
     next.depth = this.depth;
     next.root = this.root;

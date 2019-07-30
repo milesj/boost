@@ -1,10 +1,10 @@
-import { Tool, STATUS_FAILED, STATUS_PASSED, STATUS_PENDING } from '@boost/core';
-import { mockTool, mockConsole, mockRoutine, mockTask } from '@boost/core/test-utils';
+import { STATUS_FAILED, STATUS_PASSED, STATUS_PENDING } from '@boost/core';
+import { mockTool, mockConsole, mockRoutine, mockTask, TestTool } from '@boost/core/test-utils';
 import NyanReporter from '../src/NyanReporter';
 
 describe('NyanReporter', () => {
   let reporter: NyanReporter;
-  let tool: Tool<any>;
+  let tool: TestTool;
 
   beforeEach(() => {
     tool = mockTool();
