@@ -188,7 +188,15 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
    * Return true if the user's terminal supports color.
    */
   hasColorSupport(level: number = 1): boolean {
-    return chalk.supportsColor && chalk.supportsColor.level >= level;
+    if (!chalk.enabled) {
+      return false;
+    }
+
+    if (level > 1) {
+      return chalk.level >= level;
+    }
+
+    return chalk.supportsColor.level > 1;
   }
 
   /**

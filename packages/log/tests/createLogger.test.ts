@@ -27,6 +27,22 @@ describe('createLogger()', () => {
     delete process.env.BOOST_LOG_MAX_LEVEL;
   });
 
+  it('hooks up to process by default', () => {
+    logger = createLogger();
+
+    const outSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    const errSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+    logger('Hello');
+    logger.error('Oops');
+
+    expect(outSpy).toHaveBeenCalledWith('Hello\n');
+    expect(errSpy).toHaveBeenCalledWith(`${DEFAULT_LABELS.error} Oops\n`);
+
+    outSpy.mockRestore();
+    errSpy.mockRestore();
+  });
+
   it('writes `log` level by default', () => {
     logger('Hello');
 

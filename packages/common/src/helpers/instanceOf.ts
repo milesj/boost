@@ -26,11 +26,12 @@ export default function instanceOf<T = unknown>(
 
   while (current) {
     if (current.constructor.name === 'Object') {
-      return false;
+      break;
     }
 
     if (
       current.constructor.name === declaration.name ||
+      // istanbul ignore next
       (current instanceof Error && current.name === declaration.name)
     ) {
       return true;

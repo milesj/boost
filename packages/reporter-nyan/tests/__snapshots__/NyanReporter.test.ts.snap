@@ -12,6 +12,23 @@ exports[`NyanReporter getCatFace() returns an open eyes face when routine is pen
 
 exports[`NyanReporter getCatFace() returns an open eyes face when routine is skipped 1`] = `"( [37mo .o[39m)"`;
 
+exports[`NyanReporter increaseRainbowWidth() doesnt apply color if terminal does not support it 1`] = `
+Array [
+  Array [
+    "-",
+  ],
+  Array [
+    "-",
+  ],
+  Array [
+    "-",
+  ],
+  Array [
+    "-",
+  ],
+]
+`;
+
 exports[`NyanReporter increaseRainbowWidth() increases width each call 1`] = `
 Array [
   Array [

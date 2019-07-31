@@ -10,11 +10,11 @@ function run(command: string, args: string[]): string {
 }
 
 function resolveHome(path: string): string {
-  return (path || '').replace(process.env.HOME!, '~');
+  return path.replace(process.env.HOME!, '~');
 }
 
 function extractVersion(value: string): string {
-  const match = (value || '').match(/\d+\.\d+\.\d+([.-a-z0-9])?/u);
+  const match = value.match(/\d+\.\d+\.\d+([.-a-z0-9])?/u);
 
   return match ? match[0] : '';
 }
@@ -106,6 +106,7 @@ export default class CrashReporter {
     // When running on OSX and Java is not installed,
     // OSX will interrupt the process with a prompt to install Java.
     // This is super annoying, so let's not disrupt consumers.
+    // istanbul ignore next
     if (os.platform() === 'darwin' && os.hostname().endsWith('local')) {
       delete languages.javac;
     }

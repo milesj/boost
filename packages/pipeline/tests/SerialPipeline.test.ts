@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-standalone-expect */
+
 import { Predicates } from '@boost/common';
 import Context from '../src/Context';
 import Routine from '../src/Routine';

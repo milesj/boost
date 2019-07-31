@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { STATUS_FAILED, STATUS_PASSED, STATUS_PENDING } from '@boost/core';
 import { mockTool, mockConsole, mockRoutine, mockTask, TestTool } from '@boost/core/test-utils';
 import NyanReporter from '../src/NyanReporter';
@@ -49,9 +50,17 @@ describe('NyanReporter', () => {
       expect(reporter.console.outputQueue).not.toEqual([]);
     });
 
+    it('renders an output', () => {
+      reporter.handleStart();
+      jest.advanceTimersByTime(1000);
+
+      expect(reporter.console.out).toHaveBeenCalled();
+    });
+
     it('hides the cursor', () => {
       const spy = jest.spyOn(reporter.console, 'hideCursor');
 
+      reporter.bootstrap();
       reporter.handleStart();
 
       expect(spy).toHaveBeenCalled();
@@ -169,6 +178,16 @@ describe('NyanReporter', () => {
       reporter.increaseRainbowWidth();
 
       expect(reporter.rainbows[0]).toHaveLength(3);
+    });
+
+    it('doesnt apply color if terminal does not support it', () => {
+      chalk.enabled = false;
+
+      reporter.increaseRainbowWidth();
+
+      expect(reporter.rainbows).toMatchSnapshot();
+
+      chalk.enabled = true;
     });
   });
 

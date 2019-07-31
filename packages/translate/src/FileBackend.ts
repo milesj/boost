@@ -39,6 +39,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
     };
   }
 
+  // istanbul ignore next
   create() {
     // We don't need this but is required by the interface
   }

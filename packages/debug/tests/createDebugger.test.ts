@@ -155,5 +155,13 @@ describe('createDebugger()', () => {
 
       expect(process.env.DEBUG).toBe('other,name');
     });
+
+    it('does nothing if not set', () => {
+      delete process.env.DEBUG;
+
+      debugFunc.disable();
+
+      expect(process.env.DEBUG).toBe('');
+    });
   });
 });

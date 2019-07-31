@@ -9,10 +9,20 @@ describe('CrashReporter', () => {
   let writeSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    (execa.sync as jest.Mock).mockImplementation((command, args = []) => ({
-      stderr: '',
-      stdout: command === 'which' ? `/${args.join(' ')}` : '0.0.0',
-    }));
+    (execa.sync as jest.Mock).mockImplementation((command, args = []) => {
+      // Test the fallback to `version`
+      if (command === 'php' && args[0] === '--version') {
+        return {
+          stderr: '',
+          stdout: '',
+        };
+      }
+
+      return {
+        stderr: '',
+        stdout: command === 'which' ? `/${args.join(' ')}` : '0.0.0',
+      };
+    });
 
     reporter = new CrashReporter();
     writeSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(jest.fn());

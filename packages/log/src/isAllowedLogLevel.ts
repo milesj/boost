@@ -13,7 +13,7 @@ export default function isAllowedLogLevel(level: LogLevel, maxLevel?: LogLevel):
     }
 
     if (currentLevel === maxLevel) {
-      return false;
+      break;
     }
   }
 
