@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.12.3 - 2019-08-01
+
+#### ⚙️ Types
+
+- Refine types and replace `any` with `unknown`. (#58) ([43512fc](https://github.com/milesj/boost/tree/master/packages/core/commit/43512fc)), closes [#58](https://github.com/milesj/boost/tree/master/packages/core/issues/58)
+
+#### 📦 Dependencies
+
+- Update all dependencies. ([7127236](https://github.com/milesj/boost/tree/master/packages/core/commit/7127236))
+
+#### 🛠 Internals
+
+- Disable specific lint rules. ([81e863a](https://github.com/milesj/boost/tree/master/packages/core/commit/81e863a))
+- Increase statement and function code coverage to 100%. ([7c98aa7](https://github.com/milesj/boost/tree/master/packages/core/commit/7c98aa7))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.12.2 - 2019-07-07
 
 #### 🐞 Fixes

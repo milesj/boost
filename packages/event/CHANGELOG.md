@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.0.3 - 2019-08-01
+
+#### ⚙️ Types
+
+- Refine types and replace `any` with `unknown`. (#58) ([43512fc](https://github.com/milesj/boost/tree/master/packages/event/commit/43512fc)), closes [#58](https://github.com/milesj/boost/tree/master/packages/event/issues/58)
+
+#### 📘 Docs
+
+- Add examples to readmes. ([fa6a90c](https://github.com/milesj/boost/tree/master/packages/event/commit/fa6a90c))
+
+**Note:** Version bump only for package @boost/event
+
+
+
+
+
 ### 1.0.2 - 2019-07-04
 
 #### 🛠 Internals

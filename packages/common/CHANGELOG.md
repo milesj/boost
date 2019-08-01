@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.3 - 2019-08-01
+
+#### 🐞 Fixes
+
+- Remove optimal as a peer dependency. Now a normal dependency. ([dc41cd7](https://github.com/milesj/boost/tree/master/packages/common/commit/dc41cd7))
+
+#### ⚙️ Types
+
+- Refine types and replace `any` with `unknown`. (#58) ([43512fc](https://github.com/milesj/boost/tree/master/packages/common/commit/43512fc)), closes [#58](https://github.com/milesj/boost/tree/master/packages/common/issues/58)
+
+#### 🛠 Internals
+
+- Increase statement and function code coverage to 100%. ([7c98aa7](https://github.com/milesj/boost/tree/master/packages/common/commit/7c98aa7))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 1.1.2 - 2019-07-07
 
 #### 📦 Dependencies

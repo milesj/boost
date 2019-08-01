@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.2.4 - 2019-08-01
+
+#### ⚙️ Types
+
+- Refine types and replace `any` with `unknown`. (#58) ([43512fc](https://github.com/milesj/boost/tree/master/packages/test-utils/commit/43512fc)), closes [#58](https://github.com/milesj/boost/tree/master/packages/test-utils/issues/58)
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ### 1.2.3 - 2019-07-04
 
 #### 📦 Dependencies
