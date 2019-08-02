@@ -27,6 +27,12 @@
       "path": "packages/event/tests"
     },
     {
+      "path": "packages/internal"
+    },
+    {
+      "path": "packages/internal/tests"
+    },
+    {
       "path": "packages/log"
     },
     {

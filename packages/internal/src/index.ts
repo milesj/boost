@@ -4,5 +4,6 @@
  */
 
 import createInternalDebugger from './createInternalDebugger';
+import RuntimeError from './RuntimeError';
 
-export { createInternalDebugger };
+export { createInternalDebugger, RuntimeError };
