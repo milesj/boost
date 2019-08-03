@@ -1,3 +1,5 @@
+import util from 'util';
+
 interface MessageMap {
   [key: string]: string | undefined;
 }
@@ -9,8 +11,8 @@ export default class RuntimeError extends Error {
 
   module: string;
 
-  constructor(moduleName: string, code: string) {
-    super(RuntimeError.loadMessageForCode(moduleName, code));
+  constructor(moduleName: string, code: string, params?: unknown[]) {
+    super(RuntimeError.loadMessageForCode(moduleName, code, params));
 
     this.code = code;
     this.module = moduleName;
@@ -23,7 +25,7 @@ export default class RuntimeError extends Error {
     }
   }
 
-  static loadMessageForCode(moduleName: string, code: string): string {
+  static loadMessageForCode(moduleName: string, code: string, params: unknown[] = []): string {
     let data: MessageMap = {};
 
     if (messageCache.has(moduleName)) {
@@ -39,6 +41,6 @@ export default class RuntimeError extends Error {
       messageCache.set(moduleName, data);
     }
 
-    return data[code] || '';
+    return data[code] ? util.format(data[code], ...params) : '';
   }
 }
