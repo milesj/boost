@@ -1,0 +1,4 @@
+{
+  "EV_INVALID_NAME": "Invalid event %s \"%s\". May only contain dashes, periods, and lowercase characters.",
+  "EV_INVALID_LISTENER": "Invalid event listener for \"%s\", must be a function."
+}

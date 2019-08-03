@@ -1,0 +1,4 @@
+{
+  "CM_PARSE_INVALID_EXT": "Unable to parse file \"%s\". Unsupported file extension.",
+  "CM_REQ_ABS_PATH": "An absolute file path is required."
+}

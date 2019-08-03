@@ -3,6 +3,7 @@ import kebabCase from 'lodash/kebabCase';
 import split from 'split';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
+import { RuntimeError } from '@boost/internal';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
 import ConcurrentPipeline from './ConcurrentPipeline';
@@ -36,7 +37,7 @@ export default abstract class Routine<
     super(title, (context, value) => this.execute(context, value), options);
 
     if (!key || typeof key !== 'string') {
-      throw new Error('Routine key must be a valid unique string.');
+      throw new RuntimeError('pipeline', 'PL_REQ_ROUTINE_KEY');
     }
 
     this.key = kebabCase(key);

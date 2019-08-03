@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import i18next from 'i18next';
 import { parseFile, Contract, Path, Predicates } from '@boost/common';
+import { RuntimeError } from '@boost/internal';
 import { Locale, Format } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
@@ -27,7 +28,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
     // Validate resource paths are directories
     this.options.paths.forEach(resourcePath => {
       if (fs.existsSync(resourcePath) && !fs.statSync(resourcePath).isDirectory()) {
-        throw new Error(`Resource path "${resourcePath}" must be a directory.`);
+        throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [resourcePath]);
       }
     });
   }

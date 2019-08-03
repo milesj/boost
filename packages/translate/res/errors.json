@@ -1,0 +1,6 @@
+{
+  "TL_INVALID_RES_PATH": "Resource path \"%s\" must be a directory.",
+  "TL_REQ_MANUAL_LOCALE": "A locale must be defined if auto-detection is disabled.",
+  "TL_REQ_NAMESPACE": "A namespace is required for translations.",
+  "TL_REQ_RES_PATHS": "At least 1 resource directory path is required."
+}

@@ -18,6 +18,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@boost/internal": "^0.0.0"
+  },
   "tsconfig": {
     "exclude": [
       "src/typeTests.ts"

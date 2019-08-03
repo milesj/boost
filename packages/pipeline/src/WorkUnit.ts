@@ -1,5 +1,6 @@
 import { Contract } from '@boost/common';
 import { Event, BailEvent } from '@boost/event';
+import { RuntimeError } from '@boost/internal';
 import Context from './Context';
 import {
   STATUS_PENDING,
@@ -46,11 +47,11 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
     super(options);
 
     if (!title || typeof title !== 'string') {
-      throw new Error('Work units require a title.');
+      throw new RuntimeError('pipeline', 'PL_REQ_TITLE');
     }
 
     if (action !== null && typeof action !== 'function') {
-      throw new Error('Work units require an executable function.');
+      throw new RuntimeError('pipeline', 'PL_REQ_ACTION');
     }
 
     this.action = action;

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import JSON5 from 'json5';
 import YAML from 'js-yaml';
+import { RuntimeError } from '@boost/internal';
 import { Path } from '../types';
 import requireModule from './requireModule';
 
@@ -10,7 +11,7 @@ export default function parseFile<T>(filePath: Path): T {
   const ext = path.extname(filePath);
 
   if (!path.isAbsolute(filePath)) {
-    throw new Error('An absolute file path is required.');
+    throw new RuntimeError('common', 'CM_REQ_ABS_PATH');
   }
 
   switch (ext) {
@@ -27,6 +28,6 @@ export default function parseFile<T>(filePath: Path): T {
       return YAML.safeLoad(fs.readFileSync(filePath, 'utf8'));
 
     default:
-      throw new Error(`Unable to parse file "${name}". Unsupported file extension.`);
+      throw new RuntimeError('common', 'CM_PARSE_INVALID_EXT', [name]);
   }
 }

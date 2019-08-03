@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import { Path, toArray } from '@boost/common';
+import { RuntimeError } from '@boost/internal';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
 import { debug } from './constants';
@@ -43,11 +44,11 @@ export default function createTranslator(
   const resourcePaths = toArray(resourcePath);
 
   if (namespaces.length === 0) {
-    throw new Error('A namespace is required for translations.');
+    throw new RuntimeError('translate', 'TL_REQ_NAMESPACE');
   } else if (resourcePaths.length === 0) {
-    throw new Error('At least 1 resource directory path is required.');
+    throw new RuntimeError('translate', 'TL_REQ_RES_PATHS');
   } else if (!autoDetect && !locale) {
-    throw new Error('A locale must be defined if auto-detection is disabled.');
+    throw new RuntimeError('translate', 'TL_REQ_MANUAL_LOCALE');
   }
 
   debug('New translator created');

@@ -1,3 +1,4 @@
+import { RuntimeError } from '@boost/internal';
 import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
 import { Listener, WildstarScope } from './types';
 
@@ -84,7 +85,7 @@ export default abstract class BaseEvent<
    */
   protected validateListener<L>(listener: L): L {
     if (typeof listener !== 'function') {
-      throw new TypeError(`Invalid event listener for "${this.name}", must be a function.`);
+      throw new RuntimeError('event', 'EV_INVALID_LISTENER', [this.name]);
     }
 
     return listener;
@@ -99,9 +100,7 @@ export default abstract class BaseEvent<
     }
 
     if (!name.match(EVENT_NAME_PATTERN)) {
-      throw new Error(
-        `Invalid event ${type} "${name}". May only contain dashes, periods, and lowercase characters.`,
-      );
+      throw new RuntimeError('event', 'EV_INVALID_NAME', [type, name]);
     }
 
     return name;

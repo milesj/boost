@@ -1,3 +1,4 @@
+import { RuntimeError } from '@boost/internal';
 import Task from './Task';
 import WorkUnit from './WorkUnit';
 import { Action } from './types';
@@ -24,5 +25,5 @@ export default function createWorkUnit<Input, Output = Input>(
     return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
   }
 
-  throw new Error('Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.');
+  throw new RuntimeError('pipeline', 'PL_INVALID_WORK_UNIT');
 }
