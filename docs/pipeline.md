@@ -30,7 +30,7 @@ process work in stages, the pipeline supports that as well. There are multiple t
 [work units](#work-types) and [pipelines](#pipeline-types), so choose the best one for each use
 case.
 
-To begin, instantiate a pipeline with a [context](#contexts), and an optional input value.
+To begin, instantiate a pipeline with a [context](#contexts), and an _optional_ input value.
 
 ```ts
 import { Context, ConcurrentPipeline } from '@boost/pipeline';
@@ -69,6 +69,64 @@ can be customized upon instantiation.
 
 ```ts
 const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
+```
+
+### Serial Pipeline Caveats
+
+[Serial pipelines](#serial) are designed using a linked list, with each call to
+`SerialPipeline#pipe` returning a new instance. It was designed this way so that input and output
+types would cascade correctly down the chain. However, this pattern causes issues where pipes are
+called within conditionals, resulting in new pipes to be lost. For example, this is _invalid_.
+
+<!-- prettier-ignore -->
+```ts
+const pipeline = new WaterfallPipeline(new Context());
+
+if (condition) {
+  pipeline.pipe('Do this', thisAction);
+} else {
+  pipeline.pipe('Do that', thatAction);
+}
+
+await pipeline
+  .pipe('Then finish', finishAction)
+  .run();
+```
+
+While this is technically valid (note the `let` and `pipeline` assignment), but will break down if
+types conflict.
+
+<!-- prettier-ignore -->
+```ts
+let pipeline = new WaterfallPipeline(new Context());
+
+if (condition) {
+  pipeline = pipeline.pipe('Do this', thisAction);
+} else {
+  pipeline = pipeline.pipe('Do that', thatAction);
+}
+
+await pipeline
+  .pipe('Then finish', finishAction)
+  .run();
+```
+
+Instead, it's suggested to use separate pipelines within each conditional block. This approach
+requires a bit of duplication, but avoids all other issues.
+
+<!-- prettier-ignore -->
+```ts
+if (condition) {
+  await new WaterfallPipeline(new Context())
+    .pipe('Do this', thisAction)
+    .pipe('Then finish', finishAction)
+    .run()
+} else {
+  await new WaterfallPipeline(new Context())
+    .pipe('Do that', thatAction)
+    .pipe('Then finish', finishAction)
+    .run()
+}
 ```
 
 ## Contexts
@@ -211,17 +269,19 @@ nested or executed in any fashion. This can be achieved with the `Routine#create
 which require a [context](#contexts) and an initial value.
 
 ```ts
-async execute(context: Context, items: Item[]): Promise<Item[]> {
-  return this.createConcurrentPipeline(context, [])
-    .add('Load items from cache', this.loadItemsFromCache)
-    .add('Fetch remote items', this.fetchItems)
-    .add('Sort and enqueue items', () => {
-      return this.createWaterfallPipeline(context, items)
-        .pipe(new SortRoutine('sort', 'Sorting items'))
-        .pipe(new QueueRoutine('queue', 'Enqueueing items'))
-        .run(),
-    })
-    .run();
+class ExampleRoutine extends Routine<Item[]> {
+  async execute(context: Context, items: Item[]): Promise<Item[]> {
+    return this.createConcurrentPipeline(context, [])
+      .add('Load items from cache', this.loadItemsFromCache)
+      .add('Fetch remote items', this.fetchItems)
+      .add('Sort and enqueue items', () => {
+        return this.createWaterfallPipeline(context, items)
+          .pipe(new SortRoutine('sort', 'Sorting items'))
+          .pipe(new QueueRoutine('queue', 'Enqueueing items'))
+          .run(),
+      })
+      .run();
+  }
 }
 ```
 
@@ -235,10 +295,12 @@ The `Routine#executeCommand` method can be used to execute binaries and commands
 for executing locally installed NPM/Yarn binaries.
 
 ```ts
-async execute(context: Context): Promise<string> {
-  return this.executeCommand('babel', ['./src', '--out-dir', './lib'], { preferLocal: true }).then(
-    result => result.stdout,
-  );
+class ExampleRoutine extends Routine<string> {
+  async execute(context: Context): Promise<string> {
+    return this.executeCommand('babel', ['./src', '--out-dir', './lib'], {
+      preferLocal: true,
+    }).then(result => result.stdout);
+  }
 }
 ```
 
