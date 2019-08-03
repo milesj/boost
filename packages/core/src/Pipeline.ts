@@ -4,8 +4,8 @@ import util from 'util';
 import { Blueprint, Predicates } from 'optimal';
 import { instanceOf } from '@boost/common';
 import { CrashReporter } from '@boost/debug';
+import { ExitError } from '@boost/internal';
 import Context from './Context';
-import ExitError from './ExitError';
 import Routine from './Routine';
 import CoreTool from './Tool';
 

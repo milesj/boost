@@ -1,8 +1,8 @@
+import { ExitError } from '@boost/internal';
 import { mockTool, mockRoutine } from '../src/testUtils';
 import Pipeline from '../src/Pipeline';
 import Routine from '../src/Routine';
 import Context from '../src/Context';
-import ExitError from '../src/ExitError';
 
 jest.mock('execa');
 

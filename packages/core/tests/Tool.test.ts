@@ -1,6 +1,7 @@
 import debug from 'debug';
 import path from 'path';
 import { string } from 'optimal';
+import { ExitError } from '@boost/internal';
 import { copyFixtureToMock, getFixturePath } from '@boost/test-utils';
 import {
   mockConsole,
@@ -13,7 +14,6 @@ import Tool from '../src/Tool';
 import Plugin from '../src/Plugin';
 import Reporter from '../src/Reporter';
 import BoostReporter from '../src/reporters/BoostReporter';
-import ExitError from '../src/ExitError';
 
 class Foo extends Plugin {
   blueprint() {

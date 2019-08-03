@@ -4,7 +4,8 @@
  */
 
 import createInternalDebugger from './createInternalDebugger';
+import ExitError from './ExitError';
 import RuntimeError from './RuntimeError';
 import SignalError from './SignalError';
 
-export { createInternalDebugger, RuntimeError, SignalError };
+export { createInternalDebugger, ExitError, RuntimeError, SignalError };
