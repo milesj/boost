@@ -1,6 +1,6 @@
 {
   "name": "@boost/pipeline",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Pipe an input through a series of type-safe routines and tasks to produce an output, or simply, run logic in a series of stages.",
   "keywords": [
     "boost",

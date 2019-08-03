@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.0 - 2019-08-03
+
+#### 🚀 Updates
+
+- Reworked `Pipeline` initial values to support optional. Input type now defaults to `unknown`. ([beca9c6](https://github.com/milesj/boost/tree/master/packages/pipeline/commit/beca9c6))
+
+#### ⚙️ Types
+
+- Removed `Context` constraint from `WorkUnit#run` and `Routine#execute`. ([b470ec3](https://github.com/milesj/boost/tree/master/packages/pipeline/commit/b470ec3))
+- Reversed `Routine` generic slots. ([0cebefc](https://github.com/milesj/boost/tree/master/packages/pipeline/commit/0cebefc))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ## 1.1.0 - 2019-08-03
 
 #### 🚀 Updates
