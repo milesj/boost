@@ -32,7 +32,7 @@ describe('WaterfallPipeline', () => {
   });
 
   it('supports piping `Routine` instances and passing a value between each', async () => {
-    class One extends Routine<{}, number, number> {
+    class One extends Routine<number, number, {}> {
       blueprint() {
         return {};
       }
@@ -42,7 +42,7 @@ describe('WaterfallPipeline', () => {
       }
     }
 
-    class Two extends Routine<{}, number, string> {
+    class Two extends Routine<string, number, {}> {
       blueprint() {
         return {};
       }
@@ -52,7 +52,7 @@ describe('WaterfallPipeline', () => {
       }
     }
 
-    class Three extends Routine<{}, string, string[]> {
+    class Three extends Routine<string[], string, {}> {
       blueprint() {
         return {};
       }

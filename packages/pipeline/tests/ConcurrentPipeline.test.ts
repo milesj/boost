@@ -23,7 +23,7 @@ describe('ConcurrentPipeline', () => {
   });
 
   it('supports piping `Routine` instances and passing a value to each', async () => {
-    class One extends Routine<{}, string, string> {
+    class One extends Routine<string, string, {}> {
       blueprint() {
         return {};
       }
@@ -33,7 +33,7 @@ describe('ConcurrentPipeline', () => {
       }
     }
 
-    class Two extends Routine<{}, string, string> {
+    class Two extends Routine<string, string, {}> {
       blueprint() {
         return {};
       }
@@ -43,7 +43,7 @@ describe('ConcurrentPipeline', () => {
       }
     }
 
-    class Three extends Routine<{}, string, string> {
+    class Three extends Routine<string, string, {}> {
       blueprint() {
         return {};
       }

@@ -4,7 +4,7 @@ import Task from '../src/Task';
 import WorkUnit from '../src/WorkUnit';
 
 describe('createWorkUnit()', () => {
-  class TestRoutine extends Routine<{}, string, string> {
+  class TestRoutine extends Routine<string, string, {}> {
     blueprint() {
       return {};
     }

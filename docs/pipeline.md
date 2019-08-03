@@ -30,7 +30,7 @@ process work in stages, the pipeline supports that as well. There are multiple t
 [work units](#work-types) and [pipelines](#pipeline-types), so choose the best one for each use
 case.
 
-To begin, instantiate a pipeline with a [context](#contexts) and input value.
+To begin, instantiate a pipeline with a [context](#contexts), and an optional input value.
 
 ```ts
 import { Context, ConcurrentPipeline } from '@boost/pipeline';
@@ -139,8 +139,9 @@ ability to create nested hierarchical pipelines, and an implicit encapsulation o
 tasks.
 
 To begin, import the `Routine` class and implement the `Routine#blueprint` and `Routine#execute`
-methods. The class requires 3 generics to be defined, starting with an options interface (provide an
-empty object if no options needed), an input type, and an output type.
+methods. The class requires 3 generics to be defined, starting with an output type (defaults to
+`unknown`), an input type (defaults to `unknown`), and an options interface (defaults to an empty
+object).
 
 The `Routine#blueprint` method is inherited from [`Contract`](./common.md#contract), and should
 return an object that matches the structure of the generic options interface. The `Routine#execute`
@@ -157,7 +158,7 @@ interface ExampleOptions {
 type Input = number;
 type Output = string;
 
-export default class ExampleRoutine extends Routine<ExampleOptions, Input, Output> {
+export default class ExampleRoutine extends Routine<Output, Input, ExampleOptions> {
   blueprint({ number }: Predicates) {
     return {
       limit: number(10),
@@ -181,17 +182,17 @@ export default class ExampleRoutine extends Routine<ExampleOptions, Input, Outpu
       .run();
   }
 
-  roundToCents(context: Context, value: number): number {
+  roundToCents = (context: Context, value: number): number => {
     return Number(value.toFixed(2));
-  }
+  };
 
-  makeReadable(context: Context, value: number): string {
+  makeReadable = (context: Context, value: number): string => {
     return value.toLocaleString();
-  }
+  };
 
-  addCurrency(context: Context, value: string): string {
+  addCurrency = (context: Context, value: string): string => {
     return `$${value}`;
-  }
+  };
 }
 ```
 

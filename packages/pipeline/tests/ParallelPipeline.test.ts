@@ -25,7 +25,7 @@ describe('ParallelPipeline', () => {
     };
   }
 
-  class TestHierarchy extends Routine<{ depth: number; index: number }, string, string> {
+  class TestHierarchy extends Routine<string, string, { depth: number; index: number }> {
     blueprint({ number }: Predicates) {
       return {
         depth: number(),
@@ -50,7 +50,7 @@ describe('ParallelPipeline', () => {
   });
 
   it('properly handles a hierarchy', async () => {
-    class OneTwo extends Routine<{}, string, string> {
+    class OneTwo extends Routine<string, string, {}> {
       blueprint() {
         return {};
       }
@@ -71,7 +71,7 @@ describe('ParallelPipeline', () => {
       }
     }
 
-    class ZeroZero extends Routine<{}, string, string> {
+    class ZeroZero extends Routine<string, string, {}> {
       blueprint() {
         return {};
       }

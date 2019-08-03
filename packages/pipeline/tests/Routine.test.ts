@@ -12,7 +12,7 @@ import { STATUS_RUNNING } from '../src/constants';
 jest.mock('execa');
 
 describe('Routine', () => {
-  class TestRoutine extends Routine<{ test: number }, string, string> {
+  class TestRoutine extends Routine<string, string, { test: number }> {
     blueprint({ number }: Predicates) {
       return {
         test: number(),
