@@ -1,0 +1,5 @@
+{
+  "PG_EXISTS_TYPE": "Plugin type \"%s\" already exists.",
+  "PG_MISSING_PLUGIN": "Failed to find %s \"%s\". Have you installed it?",
+  "PG_MISSING_TYPE": "Plugin type \"%s\" could not be found. Has it been registered?"
+}

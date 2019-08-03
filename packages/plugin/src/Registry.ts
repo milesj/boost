@@ -1,10 +1,9 @@
 import pluralize from 'pluralize';
 import { instanceOf } from '@boost/common';
 import { createDebugger } from '@boost/debug';
+import { RuntimeError } from '@boost/internal';
 import Loader from './Loader';
 import { PluginType, PluginSetting, Pluggable } from './types';
-
-type ExtendPluggable<T> = { [K in keyof T]: T[K] extends Pluggable<{}> ? T[K] : never };
 
 export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
   readonly debug = createDebugger('plugin-registry');
@@ -30,8 +29,7 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
       return plugin;
     }
 
-    // errors:pluginNotFound
-    throw new Error(`Failed to find ${typeName} "${name}". Have you installed it?`);
+    throw new RuntimeError('plugin', 'PG_MISSING_PLUGIN', [typeName, name]);
   }
 
   /**
@@ -51,8 +49,7 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
     const type = this.types[typeName];
 
     if (!type) {
-      // errors:pluginContractNotFound
-      throw new Error(`Plugin type "${typeName}" could not be found. Has it been registered?`);
+      throw new RuntimeError('plugin', 'PG_MISSING_TYPE', [typeName]);
     }
 
     return type!;
@@ -117,8 +114,7 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
     > = {},
   ): this {
     if (this.types[typeName]) {
-      // errors:pluginContractExists
-      throw new Error(`Plugin type "${typeName}" already exists.`);
+      throw new RuntimeError('plugin', 'PG_EXISTS_TYPE', [typeName]);
     }
 
     const name = String(typeName);
