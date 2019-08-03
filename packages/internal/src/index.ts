@@ -5,5 +5,6 @@
 
 import createInternalDebugger from './createInternalDebugger';
 import RuntimeError from './RuntimeError';
+import SignalError from './SignalError';
 
-export { createInternalDebugger, RuntimeError };
+export { createInternalDebugger, RuntimeError, SignalError };

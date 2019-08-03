@@ -3,13 +3,13 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import { SignalError } from '@boost/internal';
 import CLI from './CLI';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
 import Context from './Context';
 import Emitter, { EventArguments, EventListener } from './Emitter';
 import ExitError from './ExitError';
-import SignalError from './SignalError';
 import { AggregatedResponse } from './Executor';
 import ModuleLoader from './ModuleLoader';
 import Output from './Output';

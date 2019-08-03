@@ -5,12 +5,12 @@ import cliSize from 'term-size';
 import ansiEscapes from 'ansi-escapes';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
+import { SignalError } from '@boost/internal';
 import Emitter from './Emitter';
 import Task from './Task';
 import Tool from './Tool';
 import Output from './Output';
 import Routine from './Routine';
-import SignalError from './SignalError';
 
 // 8 FPS (60 FPS is actually too fast as it tears)
 export const FPS_RATE = 125;

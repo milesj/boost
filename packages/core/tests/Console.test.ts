@@ -1,8 +1,8 @@
 import exit from 'exit';
+import { SignalError } from '@boost/internal';
 import { mockTool } from '../src/testUtils';
 import Console, { WRAPPED_STREAMS } from '../src/Console';
 import Output from '../src/Output';
-import { SignalError } from '../src';
 
 jest.mock('exit');
 
