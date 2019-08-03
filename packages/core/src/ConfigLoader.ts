@@ -1,6 +1,5 @@
 /* eslint-disable no-cond-assign */
 
-import chalk from 'chalk';
 import fs from 'fs-extra';
 import glob from 'fast-glob';
 import path from 'path';
@@ -8,9 +7,10 @@ import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import { Arguments } from 'yargs-parser';
-import { createDebugger, Debugger } from '@boost/debug';
-import optimal, { array, bool, instance, number, shape, string, union, object } from 'optimal';
 import { isEmpty, isObject, requireModule } from '@boost/common';
+import { createDebugger, Debugger } from '@boost/debug';
+import { color } from '@boost/internal';
+import optimal, { array, bool, instance, number, shape, string, union, object } from 'optimal';
 import formatModuleName from './helpers/formatModuleName';
 import handleMerge from './helpers/handleMerge';
 import Tool, { ToolConfig } from './Tool';
@@ -67,7 +67,7 @@ export default class ConfigLoader {
 
     this.debug.invariant(
       !!config,
-      `Looking in package.json under ${chalk.yellow(configName)} property`,
+      `Looking in package.json under ${color.toolName(configName)} property`,
       'Found',
       'Not found',
     );
@@ -104,7 +104,7 @@ export default class ConfigLoader {
     );
 
     if (configPaths.length === 1) {
-      this.debug('Found %s', chalk.cyan(path.basename(configPaths[0])));
+      this.debug('Found %s', color.filePath(path.basename(configPaths[0])));
 
       return configPaths[0];
     }
@@ -170,7 +170,7 @@ export default class ConfigLoader {
 
     this.debug.invariant(
       match,
-      `Matching patterns: ${workspacePatterns.map(p => chalk.cyan(p)).join(', ')}`,
+      `Matching patterns: ${workspacePatterns.map(p => color.filePath(p)).join(', ')}`,
       'Match found',
       'Invalid workspace package',
     );
@@ -269,7 +269,7 @@ export default class ConfigLoader {
     Object.values(this.tool.getRegisteredPlugins()).forEach(type => {
       const { contract, singularName, pluralName } = type!;
 
-      this.debug('Generating %s blueprint', chalk.magenta(singularName));
+      this.debug('Generating %s blueprint', color.pluginName(singularName));
 
       // prettier-ignore
       pluginsBlueprint[pluralName] = array(union<PluginSetting<Function>>([
@@ -311,7 +311,7 @@ export default class ConfigLoader {
     const { root } = this.tool.options;
     const filePath = path.join(root, 'package.json');
 
-    this.debug('Locating package.json in %s', chalk.cyan(root));
+    this.debug('Locating package.json in %s', color.filePath(root));
 
     if (!fs.existsSync(filePath)) {
       throw new Error(this.tool.msg('errors:packageJsonNotFound'));
@@ -377,7 +377,7 @@ export default class ConfigLoader {
         throw new Error(this.tool.msg('errors:presetConfigInvalid', { extendPath }));
       }
 
-      this.debug('Extending from file %s', chalk.cyan(extendPath));
+      this.debug('Extending from file %s', color.filePath(extendPath));
 
       mergeWith(nextConfig, this.parseAndExtend(extendPath), handleMerge);
     });
@@ -401,7 +401,7 @@ export default class ConfigLoader {
     const ext = path.extname(filePath);
     let value: any = null;
 
-    this.debug('Parsing file %s', chalk.cyan(filePath));
+    this.debug('Parsing file %s', color.filePath(filePath));
 
     if (!path.isAbsolute(filePath)) {
       throw new Error(this.tool.msg('errors:absolutePathRequired'));

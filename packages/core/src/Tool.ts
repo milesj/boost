@@ -3,7 +3,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import util from 'util';
-import chalk from 'chalk';
 import debug from 'debug';
 import envCI from 'env-ci';
 import glob from 'fast-glob';
@@ -15,7 +14,7 @@ import { instanceOf, isEmpty, AbstractConstructor } from '@boost/common';
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
-import { ExitError } from '@boost/internal';
+import { color, ExitError } from '@boost/internal';
 import { createTranslator, Translator } from '@boost/translate';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
@@ -404,7 +403,7 @@ export default class Tool<
     const { appName } = this.options;
     const pluginNames = Object.keys(this.pluginTypes);
 
-    this.debug('Initializing %s application', chalk.yellow(appName));
+    this.debug('Initializing %s application', color.toolName(appName));
 
     this.args = parseArgs(
       this.argv,
@@ -536,7 +535,7 @@ export default class Tool<
     const name = String(typeName);
     const { afterBootstrap = null, beforeBootstrap = null, scopes = [] } = options;
 
-    this.debug('Registering new plugin type: %s', chalk.magenta(name));
+    this.debug('Registering new plugin type: %s', color.pluginName(name));
 
     this.plugins[typeName] = new Set();
 
@@ -634,7 +633,7 @@ export default class Tool<
     // Use a special reporter when in a CI
     // istanbul ignore next
     if (this.isCI() && !process.env.BOOST_ENV) {
-      loader.debug('CI environment detected, using %s CI reporter', chalk.yellow('boost'));
+      loader.debug('CI environment detected, using %s CI reporter', color.moduleName('boost'));
 
       this.addPlugin('reporter', new CIReporter());
 
@@ -643,7 +642,7 @@ export default class Tool<
       reporters.size === 0 ||
       (reporters.size === 1 && instanceOf(Array.from(reporters)[0], ErrorReporter))
     ) {
-      loader.debug('Using default %s reporter', chalk.yellow('boost'));
+      loader.debug('Using default %s reporter', color.moduleName('boost'));
 
       this.addPlugin('reporter', new BoostReporter());
     }

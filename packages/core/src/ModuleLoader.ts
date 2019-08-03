@@ -1,5 +1,4 @@
 import path from 'path';
-import chalk from 'chalk';
 import {
   instanceOf,
   isObject,
@@ -8,6 +7,7 @@ import {
   ConcreteConstructor,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
+import { color } from '@boost/internal';
 import formatModuleName from './helpers/formatModuleName';
 import Tool from './Tool';
 
@@ -55,14 +55,14 @@ export default class ModuleLoader<Tm> {
 
     // File path
     if (name.match(/^\.|\/|\\|[A-Z]:/u)) {
-      this.debug('Locating %s from path %s', typeName, chalk.cyan(name));
+      this.debug('Locating %s from path %s', typeName, color.filePath(name));
 
       modulesToAttempt.push(path.normalize(name));
       isFilePath = true;
 
       // Module name
     } else {
-      this.debug('Locating %s module %s', typeName, chalk.yellow(name));
+      this.debug('Locating %s module %s', typeName, color.moduleName(name));
 
       if (scoped) {
         modulesToAttempt.push(formatModuleName(appName, typeName, name, true));
@@ -138,9 +138,9 @@ export default class ModuleLoader<Tm> {
     }
 
     if (isFilePath) {
-      this.debug('Found with file path %s', chalk.cyan(moduleName));
+      this.debug('Found with file path %s', color.filePath(moduleName));
     } else {
-      this.debug('Found with module %s', chalk.yellow(moduleName));
+      this.debug('Found with module %s', color.moduleName(moduleName));
 
       (module as any).name = name;
       (module as any).moduleName = moduleName;

@@ -1,5 +1,5 @@
 import debug from 'debug';
-import chalk from 'chalk';
+import { color } from '@boost/internal';
 import createDebugger from '../src/createDebugger';
 import { Debugger } from '../src/types';
 
@@ -72,7 +72,7 @@ describe('createDebugger()', () => {
       debugFunc.invariant(true, 'Comparing', 'Pass', 'Fail');
 
       expect(errSpy).toHaveBeenCalledWith(
-        expect.stringContaining(`Comparing: ${chalk.green('Pass')}`),
+        expect.stringContaining(`Comparing: ${color.pass('Pass')}`),
       );
     });
 
@@ -80,7 +80,7 @@ describe('createDebugger()', () => {
       debugFunc.invariant(false, 'Comparing', 'Pass', 'Fail');
 
       expect(errSpy).toHaveBeenCalledWith(
-        expect.stringContaining(`Comparing: ${chalk.red('Fail')}`),
+        expect.stringContaining(`Comparing: ${color.fail('Fail')}`),
       );
     });
   });

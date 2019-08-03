@@ -1,6 +1,6 @@
-import chalk from 'chalk';
 import coreDebug from 'debug';
 import { toArray } from '@boost/common';
+import { color } from '@boost/internal';
 import { debug } from './constants';
 import { Debugger } from './types';
 
@@ -39,7 +39,7 @@ export default function createDebugger(namespace: string | string[]): Debugger {
   };
 
   logger.invariant = (condition, message, pass, fail) => {
-    logger('%s: %s', message, condition ? chalk.green(pass) : chalk.red(fail));
+    logger('%s: %s', message, condition ? color.pass(pass) : color.fail(fail));
   };
 
   logger.verbose = (message, ...args) => {
