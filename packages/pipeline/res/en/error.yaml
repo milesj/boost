@@ -1,6 +1,0 @@
-INVALID_ROUTINE_KEY: Routine key must be a valid unique string.
-INVALID_WORK_UNIT_ACTION: Work units require an executable function.
-INVALID_WORK_UNIT_TITLE: Work units require a title.
-INVALID_WORK_UNIT_TYPE:
-  Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.
-WORK_UNIT_TIMED_OUT: Work unit has timed out.
