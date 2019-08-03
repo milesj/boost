@@ -60,6 +60,13 @@ describe('Routine', () => {
     expect(pipeline.value).toBe(123);
   });
 
+  it('creates an returns an `AggregatedPipeline` with optional value', () => {
+    const context = new Context();
+    const pipeline = routine.createAggregatedPipeline(context);
+
+    expect(pipeline.value).toBeUndefined();
+  });
+
   it('creates an returns an `ConcurrentPipeline`', () => {
     const context = new Context();
     const pipeline = routine.createConcurrentPipeline(context, 123);
@@ -67,6 +74,13 @@ describe('Routine', () => {
     expect(pipeline).toBeInstanceOf(ConcurrentPipeline);
     expect(pipeline.context).toBe(context);
     expect(pipeline.value).toBe(123);
+  });
+
+  it('creates an returns an `ConcurrentPipeline` with optional value', () => {
+    const context = new Context();
+    const pipeline = routine.createConcurrentPipeline(context);
+
+    expect(pipeline.value).toBeUndefined();
   });
 
   it('creates an returns an `PooledPipeline`', () => {
@@ -78,6 +92,13 @@ describe('Routine', () => {
     expect(pipeline.value).toBe(123);
   });
 
+  it('creates an returns an `PooledPipeline` with optional value', () => {
+    const context = new Context();
+    const pipeline = routine.createPooledPipeline(context);
+
+    expect(pipeline.value).toBeUndefined();
+  });
+
   it('creates an returns an `WaterfallPipeline`', () => {
     const context = new Context();
     const pipeline = routine.createWaterfallPipeline(context, 123);
@@ -85,6 +106,13 @@ describe('Routine', () => {
     expect(pipeline).toBeInstanceOf(WaterfallPipeline);
     expect(pipeline.context).toBe(context);
     expect(pipeline.value).toBe(123);
+  });
+
+  it('creates an returns an `WaterfallPipeline` with optional value', () => {
+    const context = new Context();
+    const pipeline = routine.createWaterfallPipeline(context);
+
+    expect(pipeline.value).toBeUndefined();
   });
 
   describe('executeCommand()', () => {

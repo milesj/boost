@@ -17,7 +17,7 @@ export interface PooledOptions {
 
 export default class PooledPipeline<
   Ctx extends Context,
-  Input,
+  Input = unknown,
   Output = Input
 > extends ParallelPipeline<PooledOptions, Ctx, Input, Output> {
   protected resolver?: (response: AggregatedResult<Output>) => void;

@@ -7,7 +7,7 @@ import { Action } from './types';
 export default abstract class SerialPipeline<
   Options extends object,
   Ctx extends Context,
-  Input,
+  Input = unknown,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
   // Unknown does not work here as the output type changes for each

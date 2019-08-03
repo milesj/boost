@@ -43,6 +43,12 @@ describe('SerialPipeline', () => {
     }
   }
 
+  it('supports an optional constructor value', () => {
+    const pipeline = new WaterfallPipeline(new Context());
+
+    expect(pipeline.value).toBeUndefined();
+  });
+
   it('properly handles a hierarchy', async () => {
     class OneTwo extends Routine<{}, string, string> {
       blueprint() {

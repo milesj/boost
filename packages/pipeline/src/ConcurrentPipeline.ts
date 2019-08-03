@@ -3,7 +3,7 @@ import Context from './Context';
 
 export default class ConcurrentPipeline<
   Ctx extends Context,
-  Input,
+  Input = unknown,
   Output = Input
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
   blueprint() {

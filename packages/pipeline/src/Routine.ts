@@ -19,8 +19,8 @@ export interface ExecuteCommandOptions {
 }
 
 export default abstract class Routine<
-  Options extends object,
-  Input,
+  Options extends object = {},
+  Input = unknown,
   Output = Input
 > extends WorkUnit<Options, Input, Output> {
   readonly debug: Debugger;
@@ -81,7 +81,7 @@ export default abstract class Routine<
    * in parallel without interruption. Returns an object with a list of errors and results
    * once all resolve.
    */
-  createAggregatedPipeline<C extends Context, I, O = I>(context: C, value: I) {
+  createAggregatedPipeline<C extends Context, I = unknown, O = I>(context: C, value?: I) {
     return this.updateHierarchy(new AggregatedPipeline<C, I, O>(context, value));
   }
 
@@ -89,7 +89,7 @@ export default abstract class Routine<
    * Create and return a `ConcurrentPipeline`. This pipeline will execute all work units
    * in parallel. Returns a list of values once all resolve.
    */
-  createConcurrentPipeline<C extends Context, I, O = I>(context: C, value: I) {
+  createConcurrentPipeline<C extends Context, I = unknown, O = I>(context: C, value?: I) {
     return this.updateHierarchy(new ConcurrentPipeline<C, I, O>(context, value));
   }
 
@@ -98,7 +98,11 @@ export default abstract class Routine<
    * in parallel without interruption, based on a max concurrency, until all work units have ran.
    * Returns a list of errors and results once all resolve.
    */
-  createPooledPipeline<C extends Context, I, O = I>(context: C, value: I, options?: PooledOptions) {
+  createPooledPipeline<C extends Context, I = unknown, O = I>(
+    context: C,
+    value?: I,
+    options?: PooledOptions,
+  ) {
     return this.updateHierarchy(new PooledPipeline<C, I, O>(context, value, options));
   }
 
@@ -107,7 +111,7 @@ export default abstract class Routine<
    * with the return value of the previous being passed to the next. Returns the final value once
    * all resolve.
    */
-  createWaterfallPipeline<C extends Context, I>(context: C, value: I) {
+  createWaterfallPipeline<C extends Context, I = unknown>(context: C, value?: I) {
     return this.updateHierarchy(new WaterfallPipeline<C, I>(context, value));
   }
 

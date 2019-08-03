@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-standalone-expect */
+
 import { Predicates } from '@boost/common';
 import Context from '../src/Context';
 import ConcurrentPipeline from '../src/ConcurrentPipeline';
@@ -6,42 +8,48 @@ import WorkUnit from '../src/WorkUnit';
 import { Runnable } from '../src/types';
 
 describe('ParallelPipeline', () => {
-  it('properly handles a hierarchy', async () => {
-    function log(depth: number, index: number) {
-      // console.log(`${depth}:${index}`);
-    }
+  function log(depth: number, index: number) {
+    // console.log(`${depth}:${index}`);
+  }
 
-    function testTask(depth: number, index: number) {
-      return (ctx: Context, value: string, work: Runnable<string, string>) => {
-        log(depth, index);
+  function testTask(depth: number, index: number) {
+    return (ctx: Context, value: string, work: Runnable<string, string>) => {
+      log(depth, index);
 
-        if (work instanceof WorkUnit) {
-          expect(work.depth).toBe(depth);
-          expect(work.index).toBe(index);
-        }
+      if (work instanceof WorkUnit) {
+        expect(work.depth).toBe(depth);
+        expect(work.index).toBe(index);
+      }
 
-        return value;
+      return value;
+    };
+  }
+
+  class TestHierarchy extends Routine<{ depth: number; index: number }, string, string> {
+    blueprint({ number }: Predicates) {
+      return {
+        depth: number(),
+        index: number(),
       };
     }
 
-    class TestHierarchy extends Routine<{ depth: number; index: number }, string, string> {
-      blueprint({ number }: Predicates) {
-        return {
-          depth: number(),
-          index: number(),
-        };
-      }
+    async execute(ctx: Context, value: string) {
+      log(this.depth, this.index);
 
-      async execute(ctx: Context, value: string) {
-        log(this.depth, this.index);
+      expect(this.depth).toBe(this.options.depth);
+      expect(this.index).toBe(this.options.index);
 
-        expect(this.depth).toBe(this.options.depth);
-        expect(this.index).toBe(this.options.index);
-
-        return value;
-      }
+      return value;
     }
+  }
 
+  it('supports an optional constructor value', () => {
+    const pipeline = new ConcurrentPipeline(new Context());
+
+    expect(pipeline.value).toBeUndefined();
+  });
+
+  it('properly handles a hierarchy', async () => {
     class OneTwo extends Routine<{}, string, string> {
       blueprint() {
         return {};

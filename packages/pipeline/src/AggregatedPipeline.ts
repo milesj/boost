@@ -4,7 +4,7 @@ import { AggregatedResult } from './types';
 
 export default class AggregatedPipeline<
   Ctx extends Context,
-  Input,
+  Input = unknown,
   Output = Input
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
   blueprint() {

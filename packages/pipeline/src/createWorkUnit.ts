@@ -11,7 +11,7 @@ import { Action } from './types';
  * - A custom `WorkUnit` instance.
  * - A title and function that returns a `Task` instance.
  */
-export default function createWorkUnit<Input, Output = Input>(
+export default function createWorkUnit<Input = unknown, Output = Input>(
   titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action?: Action<any, Input, Output>,

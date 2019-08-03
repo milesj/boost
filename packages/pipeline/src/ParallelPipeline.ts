@@ -8,7 +8,7 @@ import { Action, AggregatedResult } from './types';
 export default abstract class ParallelPipeline<
   Options extends object,
   Ctx extends Context,
-  Input,
+  Input = unknown,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
   /**

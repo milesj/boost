@@ -3,7 +3,7 @@
 import Context from './Context';
 import SerialPipeline from './SerialPipeline';
 
-export default class WaterfallPipeline<Ctx extends Context, Input> extends SerialPipeline<
+export default class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
   {},
   Ctx,
   Input

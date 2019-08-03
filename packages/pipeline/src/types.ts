@@ -1,6 +1,6 @@
 import Context from './Context';
 
-export type Action<Ctx extends Context, Input, Output = Input> = (
+export type Action<Ctx extends Context, Input = unknown, Output = Input> = (
   context: Ctx,
   value: Input,
   runner: Runnable<Input, Output> & Hierarchical,

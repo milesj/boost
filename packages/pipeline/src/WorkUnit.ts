@@ -11,7 +11,7 @@ import {
 } from './constants';
 import { Action, Status, Hierarchical, Runnable } from './types';
 
-export default abstract class WorkUnit<Options extends object, Input, Output = Input>
+export default abstract class WorkUnit<Options extends object, Input = unknown, Output = Input>
   extends Contract<Options>
   implements Runnable<Input, Output>, Hierarchical {
   depth: number = 0;

@@ -27,12 +27,16 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
 
   protected work: WorkUnit<{}, Input, Output>[] = [];
 
-  constructor(context: Ctx, value: Input, options?: Options) {
+  constructor(context: Ctx, value?: Input, options?: Options) {
     super(options);
 
     this.context = context;
-    this.value = value;
     this.debug = createDebugger(kebabCase(this.constructor.name));
+
+    // This is technically invalid, but we want to allow optional values.
+    // Luckily the input type defaults to `unknown`, so it forces consumers to validate.
+    // @ts-ignore
+    this.value = value;
 
     this.debug('Instantiating pipeline');
   }
