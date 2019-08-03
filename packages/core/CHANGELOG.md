@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.13.0 - 2019-08-03
+
+#### 🚀 Updates
+
+- Add new shared color system with defined presets. ([8c0e123](https://github.com/milesj/boost/tree/master/packages/core/commit/8c0e123))
+- Move ExitError to internal package. ([ceba173](https://github.com/milesj/boost/tree/master/packages/core/commit/ceba173))
+- Move SignalError to internal package. ([2f7e4ad](https://github.com/milesj/boost/tree/master/packages/core/commit/2f7e4ad))
+
+#### 🛠 Internals
+
+- Fix chalk and color support crashing tests. ([f1367f7](https://github.com/milesj/boost/tree/master/packages/core/commit/f1367f7))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.12.3 - 2019-08-01
 
 #### ⚙️ Types

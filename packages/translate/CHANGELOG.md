@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.0 - 2019-08-03
+
+#### 🚀 Updates
+
+- Migrate to new RuntimeError layer. ([0793ffd](https://github.com/milesj/boost/tree/master/packages/log/commit/0793ffd))
+- Support the internal debugger. ([4b3a6e4](https://github.com/milesj/boost/tree/master/packages/log/commit/4b3a6e4))
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 1.0.3 - 2019-08-01
 
 #### ⚙️ Types
