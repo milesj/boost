@@ -1,0 +1,29 @@
+{
+  "name": "@boost/plugin",
+  "version": "0.0.0",
+  "description": "Plugin based system that supports module loading, custom types, scopes, and more.",
+  "keywords": [
+    "boost",
+    "plugin",
+    "pluggable",
+    "system"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/plugin",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@boost/common": "^1.1.3",
+    "@boost/debug": "^1.0.3",
+    "pluralize": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/pluralize": "^0.0.29"
+  }
+}
