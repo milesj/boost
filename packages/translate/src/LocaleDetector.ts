@@ -18,7 +18,7 @@ export default class LocaleDetector implements i18next.LanguageDetectorModule {
 
   detect(): Locale {
     if (this.locale) {
-      debug('Locale manually provided');
+      debug('Locale %s manually provided', this.locale);
 
       return this.locale;
     }
@@ -32,17 +32,21 @@ export default class LocaleDetector implements i18next.LanguageDetectorModule {
     const nextIndex = index + 1;
 
     if (index >= 0 && args[nextIndex] && !args[nextIndex].startsWith('-')) {
-      debug('Locale detected from --locale option');
+      const locale = args[nextIndex];
 
-      return args[nextIndex];
+      debug('Locale %s detected from --locale option', locale);
+
+      return locale;
     }
 
     return undefined;
   }
 
   detectFromOS(): Locale {
-    debug('Locale detected from operating system');
+    const locale = osLocale.sync().replace(/_/gu, '-');
 
-    return osLocale.sync().replace(/_/gu, '-');
+    debug('Locale %s detected from operating system', locale);
+
+    return locale;
   }
 }

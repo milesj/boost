@@ -39,7 +39,7 @@ export default class CrashReporter {
     this.contents += `\n${title.toUpperCase()}\n`;
     this.contents += `${'='.repeat(title.length)}\n\n`;
 
-    debug('Reporting crash with %s', title.toLowerCase());
+    debug('Reporting crash with %s', title);
 
     return this;
   }

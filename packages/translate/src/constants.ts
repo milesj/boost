@@ -1,3 +1,3 @@
-import factoryDebug from 'debug';
+import { createInternalDebugger } from '@boost/internal';
 
-export const debug = factoryDebug('boost:translate');
+export const debug = createInternalDebugger('translate');

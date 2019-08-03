@@ -20,8 +20,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@boost/internal": "^0.0.0",
     "@boost/translate": "^1.0.3",
-    "chalk": "^2.4.2",
-    "debug": "^4.1.1"
+    "chalk": "^2.4.2"
   }
 }
