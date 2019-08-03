@@ -124,5 +124,5 @@ export default abstract class Routine<
   /**
    * Execute the current routine and return a new value.
    */
-  abstract async execute<Ctx extends Context>(context: Ctx, value: Input): Promise<Output>;
+  abstract async execute(context: Context, value: Input): Promise<Output>;
 }

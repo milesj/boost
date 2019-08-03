@@ -104,9 +104,9 @@ export default abstract class WorkUnit<Options extends object, Input, Output = I
   /**
    * Run the current task by executing it and performing any before and after processes.
    */
-  async run<Ctx extends Context>(context: Ctx, value: Input): Promise<Output> {
+  async run(context: Context, value: Input): Promise<Output> {
     const skip = this.onRun.emit([value]);
-    const runner: Action<Ctx, Input, Output> = this.action;
+    const runner: Action<Context, Input, Output> = this.action;
 
     if (skip || this.isSkipped() || !runner) {
       this.status = STATUS_SKIPPED;
