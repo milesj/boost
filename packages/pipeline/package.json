@@ -1,6 +1,6 @@
 {
   "name": "@boost/pipeline",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Pipe an input through a series of type-safe routines and tasks to produce an output, or simply, run logic in a series of stages.",
   "keywords": [
     "boost",
@@ -24,10 +24,10 @@
   },
   "dependencies": {
     "@boost/common": "^1.2.0",
-    "@boost/debug": "^1.1.0",
+    "@boost/debug": "^1.1.1",
     "@boost/event": "^1.1.0",
     "@boost/internal": "^1.0.0",
-    "@boost/translate": "^1.1.0",
+    "@boost/translate": "^1.1.1",
     "execa": "^2.0.4",
     "lodash": "^4.17.15",
     "split": "^1.0.1"

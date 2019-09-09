@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.1 - 2019-09-09
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([500bec6](https://github.com/milesj/boost/tree/master/packages/debug/commit/500bec6))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ## 1.1.0 - 2019-08-03
 
 #### 🚀 Updates

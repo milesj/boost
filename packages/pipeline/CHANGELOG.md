@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.2.1 - 2019-09-09
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([500bec6](https://github.com/milesj/boost/tree/master/packages/pipeline/commit/500bec6))
+
+#### 🛠 Internals
+
+- Remove depracated error config file. ([d0684a3](https://github.com/milesj/boost/tree/master/packages/pipeline/commit/d0684a3))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ## 1.2.0 - 2019-08-03
 
 #### 🚀 Updates
