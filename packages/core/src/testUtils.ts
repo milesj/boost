@@ -24,21 +24,23 @@ export interface TestToolConfig extends ToolConfig {
 export type TestTool = Tool<TestToolPlugins, TestToolConfig>;
 
 export function stubArgs<T extends object = {}>(fields?: Partial<T>): Arguments<T> {
+  // @ts-ignore
   return {
     $0: '',
     _: [],
     ...fields,
-  } as Arguments<T>;
+  };
 }
 
 export function stubPackageJson<T extends object = {}>(
   fields?: Partial<PackageConfig & T>,
 ): PackageConfig & T {
+  // @ts-ignore
   return {
     name: 'test-boost',
     version: '0.0.0',
     ...fields,
-  } as PackageConfig & T;
+  };
 }
 
 export function stubToolConfig<T extends ToolConfig = TestToolConfig>(config?: Partial<T>): T {

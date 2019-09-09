@@ -48,7 +48,7 @@ export default class FileBackend extends Contract<FileBackendOptions>
   read(
     locale: Locale,
     namespace: string,
-    callback: (error: Error | null, resources: i18next.ResourceLanguage) => void,
+    callback: (error: Error | null, resources: i18next.Resource) => void,
   ): i18next.ResourceKey {
     const { format, paths } = this.options;
     const resources: i18next.ResourceKey = {};
