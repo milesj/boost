@@ -55,6 +55,6 @@
     "strip-ansi": "^5.2.0",
     "term-size": "^2.1.0",
     "wrap-ansi": "^6.0.0",
-    "yargs-parser": "^13.1.1"
+    "yargs-parser": "^14.0.0"
   }
 }
