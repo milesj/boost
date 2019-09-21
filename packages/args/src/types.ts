@@ -7,6 +7,7 @@ export interface AliasMap {
 }
 
 export interface Arguments<T extends object = {}> {
+  aliases: AliasMap;
   args: T;
   argv: Argv;
   command: string;
@@ -23,7 +24,9 @@ export type ArgumentOptions<T extends object = {}> = {
     ? SingleOption<'number', number>
     : T[K] extends string[]
     ? MultipleOption<'string', string>
-    : SingleOption<'string', string>;
+    : T[K] extends string
+    ? SingleOption<'string', string>
+    : never;
 };
 
 export type ArgumentPositionals = Positional[];
@@ -59,9 +62,9 @@ export interface Positional {
   usage?: string;
 }
 
-export interface Scope {
+export interface Scope<T extends object> {
   flag: boolean;
-  name: string;
+  name: keyof T;
   negated: boolean;
   type: OptionType;
   value: ValueType;

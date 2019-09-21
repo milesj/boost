@@ -10,6 +10,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
+      aliases: {},
       args: {
         fooBar: 'baz',
       },
@@ -29,6 +30,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
+      aliases: {},
       args: {
         fooBar: 'baz',
       },
@@ -48,6 +50,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
+      aliases: {},
       args: {
         flag: true,
       },
@@ -69,6 +72,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           opt: 'foo',
         },
@@ -88,6 +92,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           opt: '',
         },
@@ -107,6 +112,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           opt: 'foo',
         },
@@ -126,6 +132,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           opt: 'foo',
         },
@@ -146,6 +153,9 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {
+          O: 'opt',
+        },
         args: {
           opt: 'foo',
         },
@@ -166,6 +176,9 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {
+          O: 'opt',
+        },
         args: {
           opt: 'foo',
         },
@@ -187,6 +200,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           opt: ['qux', 'foo', 'bar', 'baz'],
         },
@@ -215,6 +229,7 @@ describe('parse()', () => {
       );
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           flag: true,
           opt: ['foo', 'bar'],
@@ -238,6 +253,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           flag: true,
         },
@@ -257,6 +273,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           flag: false,
         },
@@ -277,6 +294,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           flag: true,
         },
@@ -297,6 +315,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           flag: true,
         },
@@ -317,6 +336,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {},
         args: {
           flag: false,
         },
@@ -338,6 +358,9 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        aliases: {
+          F: 'flag',
+        },
         args: {
           flag: true,
         },

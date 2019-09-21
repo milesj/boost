@@ -32,15 +32,20 @@ import { checkAliasExists } from './validate';
 // scope - Argument currently being parsed.
 
 // FEATURES
-// ? - Alias - A short alias (single character) for an existing option or flag: --verbose -v
+// Alias - A short alias (single character) for an existing option or flag: --verbose -v
 // ? - Dot options - Options with a dot in their name will expand to an object: --foo.bar
 // ? - Flag grouping - When multiple aliases are passed under a single flag: -abc
-// ? - Inline values - Option values that are immediately set using an equals sign: --foo=bar
+// Inline values - Option values that are immediately set using an equals sign: --foo=bar
+// ? - Nargs count - Maximum count of argument values to consume for option multiples.
+
+// TODO
+// Globals
+// Allow list of choices
 
 export default function parse<T extends object = {}>(
   argv: Argv,
   optionConfigs: ArgumentOptions<T>,
-  positionalConfigs?: ArgumentPositionals,
+  positionalConfigs: ArgumentPositionals = [],
 ): Arguments<T> {
   const args: Partial<T> = {};
   const command = path.basename(argv[1]);
@@ -75,7 +80,7 @@ export default function parse<T extends object = {}>(
 
     // Rest arguments found, extract remaining and exit
     if (arg === '--') {
-      rest.push(...argv.slice(i + 1, argv.length));
+      rest.push(...argv.slice(i + 1));
       break;
     }
 
@@ -133,6 +138,7 @@ export default function parse<T extends object = {}>(
   commitScope();
 
   return {
+    aliases,
     args: args as T,
     argv,
     command,

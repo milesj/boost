@@ -28,7 +28,7 @@ export function createScopeFromOption<T extends object>(
   inlineValue: string,
   optionConfigs: ArgumentOptions<T>,
   args: Partial<T>,
-): Scope {
+): Scope<T> {
   let name = optionName;
   let negated = false;
 

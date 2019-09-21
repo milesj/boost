@@ -3,6 +3,12 @@
   "files": [],
   "references": [
     {
+      "path": "packages/args"
+    },
+    {
+      "path": "packages/args/tests"
+    },
+    {
       "path": "packages/common"
     },
     {
