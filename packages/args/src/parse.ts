@@ -56,7 +56,7 @@ export default function parse<T extends object = {}>(
     }
   }
 
-  // Map option values and aliases
+  // Map values and aliases
   Object.keys(optionConfigs).forEach(key => {
     const config: OptionConfig = optionConfigs[key];
     const { alias } = config;
@@ -75,26 +75,32 @@ export default function parse<T extends object = {}>(
 
     // Rest arguments found, extract remaining and exit
     if (arg === '--') {
-      rest.push(...argv.slice(i, argv.length));
+      rest.push(...argv.slice(i + 1, argv.length));
       break;
     }
 
     // Options
     if (isOption(arg)) {
-      let optionName = '';
+      let optionName = arg;
+      let inlineValue = '';
 
       // Commit previous scope
       commitScope();
 
+      // Extract option and inline value
+      if (optionName.includes('=')) {
+        [optionName, inlineValue] = optionName.split('=', 2);
+      }
+
       // Expand alias to full option
-      if (isAliasOption(arg)) {
-        optionName = expandAliasOption(arg.slice(1), aliases);
+      if (isAliasOption(optionName)) {
+        optionName = expandAliasOption(optionName.slice(1), aliases);
       } else {
-        optionName = arg.slice(2);
+        optionName = optionName.slice(2);
       }
 
       // Parse next scope
-      const scope = createScopeFromOption(optionName, optionConfigs, args);
+      const scope = createScopeFromOption(optionName, inlineValue, optionConfigs, args);
 
       // Flag found, so set value immediately and discard scope
       if (scope.flag) {
@@ -107,12 +113,13 @@ export default function parse<T extends object = {}>(
 
       // Option values
     } else if (currentScope) {
-      const config: OptionConfig = optionConfigs[currentScope.name];
+      const value = castValue(arg, currentScope.type);
 
       if (Array.isArray(currentScope.value)) {
-        currentScope.value.push(castValue(arg, config.type));
+        // @ts-ignore
+        currentScope.value.push(value);
       } else {
-        currentScope.value = castValue(arg, config.type);
+        currentScope.value = value;
         commitScope();
       }
 
@@ -126,7 +133,7 @@ export default function parse<T extends object = {}>(
   commitScope();
 
   return {
-    args,
+    args: args as T,
     argv,
     command,
     positionals,

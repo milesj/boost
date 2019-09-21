@@ -25,22 +25,17 @@ export function castValue<T extends OptionType>(
 
 export function createScopeFromOption<T extends object>(
   optionName: string,
+  inlineValue: string,
   optionConfigs: ArgumentOptions<T>,
   args: Partial<T>,
 ): Scope {
   let name = optionName;
   let negated = false;
-  let inlineValue = '';
 
   // Check for negated types
   if (name.slice(0, 3) === 'no-') {
     negated = true;
     name = name.slice(3);
-  }
-
-  // Check for values set inline
-  if (name.includes('=')) {
-    [name, inlineValue] = name.split('=', 2);
   }
 
   // Convert option to camel case
@@ -59,6 +54,7 @@ export function createScopeFromOption<T extends object>(
     flag,
     name,
     negated,
+    type: config.type,
     value,
   };
 }
@@ -93,10 +89,10 @@ export function getDefaultValue(config: OptionConfig): ValueType {
   return value;
 }
 
-export function isAliasOption(arg: string): boolean {
-  return arg.charAt(0) === '-' && arg.charAt(1) !== '-';
+export function isOption(arg: string): boolean {
+  return arg.charAt(0) === '-';
 }
 
-export function isOption(arg: string): boolean {
-  return arg.charAt(0) === '-' || arg.charAt(1) === '-';
+export function isAliasOption(arg: string): boolean {
+  return isOption(arg) && arg.charAt(1) !== '-';
 }

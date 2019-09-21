@@ -9,11 +9,17 @@ export function checkAliasExists(alias: string, aliases: AliasMap) {
 }
 
 export function checkScopeValue(optionName: string, value: unknown, config: OptionConfig) {
-  if (config.multiple && !Array.isArray(value)) {
-    throw new TypeError(
-      `Option "${optionName}" is enabled for multiple values, but non-array value found.`,
-    );
-  } else if (config.type === 'boolean' && typeof value !== 'boolean') {
+  if (config.multiple) {
+    if (!Array.isArray(value)) {
+      throw new TypeError(
+        `Option "${optionName}" is enabled for multiple values, but non-array value found.`,
+      );
+    }
+
+    return;
+  }
+
+  if (config.type === 'boolean' && typeof value !== 'boolean') {
     throw new TypeError(`Option "${optionName}" is set to boolean, but non-boolean value found.`);
   } else if (config.type === 'string' && typeof value !== 'string') {
     throw new TypeError(`Option "${optionName}" is set to string, but non-string value found.`);

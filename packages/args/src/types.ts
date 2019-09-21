@@ -7,7 +7,7 @@ export interface AliasMap {
 }
 
 export interface Arguments<T extends object = {}> {
-  args: Partial<T>;
+  args: T;
   argv: Argv;
   command: string;
   positionals: ArgList;
@@ -41,12 +41,11 @@ export interface Option<T extends OptionType> {
 
 export interface SingleOption<T extends OptionType, V> extends Option<T> {
   default?: V;
-  multiple?: false;
 }
 
 export interface MultipleOption<T extends OptionType, V> extends Option<T> {
   default?: V[];
-  multiple?: true;
+  multiple: true;
 }
 
 export type Flag = SingleOption<'boolean', boolean>;
@@ -64,5 +63,6 @@ export interface Scope {
   flag: boolean;
   name: string;
   negated: boolean;
+  type: OptionType;
   value: ValueType;
 }
