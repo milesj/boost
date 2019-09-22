@@ -77,8 +77,10 @@ export interface Scope {
   value: ValueType;
 }
 
+// Without leading "--"
 export type LongOptionName = string;
 
+// Without leading "-"
 export type ShortOptionName =
   | 'a'
   | 'b'
