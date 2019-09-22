@@ -7,8 +7,9 @@ import {
   ArgumentOptions,
   ArgumentPositionals,
   Scope,
-  AliasMap,
   OptionConfig,
+  Mapping,
+  ValueMap,
 } from './types';
 import { checkAliasExists } from './validate';
 import getDefaultValue from './helpers/getDefaultValue';
@@ -22,7 +23,7 @@ import castValue from './helpers/castValue';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
-// option - An optional argument that requires a value(s). Starts with "--" or "-" (short alias).
+// option - An optional argument that requires a value(s). Starts with "--" (long) or "-" (short).
 // flag - A specialized option that only supports booleans. Can be toggled on an off (default).
 // positional arg - An optional or required argument, that is not an option or option value,
 //    supports any raw value, and enforces a defined order.
@@ -31,8 +32,8 @@ import castValue from './helpers/castValue';
 // scope - Argument currently being parsed.
 
 // FEATURES
-// Alias - A short alias (single character) for an existing option or flag: --verbose -v
-// Flag grouping - When multiple aliases are passed under a single alias flag: -abc
+// Short name - A short name (single character) for an existing option or flag: --verbose -v
+// Flag grouping - When multiple short flags are passed under a single option: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
 // ? - Nargs count - Maximum count of argument values to consume for option multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
@@ -45,10 +46,10 @@ export default function parse<T extends object = {}>(
   optionConfigs: ArgumentOptions<T>,
   positionalConfigs: ArgumentPositionals = [],
 ): Arguments<T> {
-  const options: Partial<T> = {};
+  const options: ValueMap = {};
   const positionals: ArgList = [];
   const rest: ArgList = [];
-  const aliases: AliasMap = {};
+  const mapping: Mapping = {};
   let currentScope: Scope | null = null;
 
   function commitScope() {
@@ -58,14 +59,14 @@ export default function parse<T extends object = {}>(
     }
   }
 
-  // Map values and aliases
+  // Map default values and short names
   Object.keys(optionConfigs).forEach(key => {
-    const config: OptionConfig = optionConfigs[key];
-    const { alias } = config;
+    const config: OptionConfig = optionConfigs[key as keyof T];
+    const { short } = config;
 
-    if (alias) {
-      checkAliasExists(alias, aliases);
-      aliases[alias] = key;
+    if (short) {
+      checkAliasExists(short, mapping);
+      mapping[short] = key;
     }
 
     options[key] = getDefaultValue(config);
@@ -98,7 +99,7 @@ export default function parse<T extends object = {}>(
       if (isFlagGroup(optionName)) {
         // TODO error if inline value set
 
-        expandFlagGroup(optionName.slice(1), aliases).forEach(flagName => {
+        expandFlagGroup(optionName.slice(1), mapping).forEach(flagName => {
           // TODO verfiy options are actually flags
           options[flagName] = true;
         });
@@ -109,7 +110,7 @@ export default function parse<T extends object = {}>(
 
         // Short option "-f"
       } else if (isShortOption(optionName)) {
-        optionName = expandShortOption(optionName.slice(1), aliases);
+        optionName = expandShortOption(optionName.slice(1), mapping);
 
         // Long option "--foo"
       } else if (isLongOption(optionName)) {
@@ -168,7 +169,7 @@ export default function parse<T extends object = {}>(
   commitScope();
 
   return {
-    aliases,
+    mapping,
     options: options as T,
     positionals,
     rest,

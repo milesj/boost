@@ -1,13 +1,13 @@
-import { AliasMap } from '../types';
+import { Mapping } from '../types';
 import expandShortOption from './expandShortOption';
 
-// Expand a group of aliased flags to a list of long option names
-export default function expandFlagGroup(group: string, map: AliasMap): string[] {
+// Expand a group of short flags to a list of long option names
+export default function expandFlagGroup(group: string, map: Mapping): string[] {
   const options = [];
 
   // eslint-disable-next-line no-restricted-syntax
-  for (const alias of group) {
-    options.push(expandShortOption(alias, map));
+  for (const short of group) {
+    options.push(expandShortOption(short, map));
   }
 
   return options;

@@ -1,15 +1,15 @@
-import { Scope, ArgumentOptions, OptionConfig } from '../types';
+import { Scope, OptionConfig, ValueMap } from '../types';
 import castValue from './castValue';
 
 function camelCase(value: string): string {
   return value.replace(/-([a-z])/giu, (match, char) => char.toUpperCase());
 }
 
-export default function createScope<T extends object>(
+export default function createScope(
   optionName: string,
   inlineValue: string,
-  optionConfigs: ArgumentOptions<T>,
-  options: Partial<T>,
+  optionConfigs: { [key: string]: OptionConfig },
+  options: ValueMap,
 ): Scope {
   let name = optionName;
   let negated = false;
@@ -25,7 +25,7 @@ export default function createScope<T extends object>(
     name = camelCase(name);
   }
 
-  const config: OptionConfig = optionConfigs[name] || { type: 'string' };
+  const config = optionConfigs[name] || { type: 'string' };
   const flag = config.type === 'boolean';
   const value = inlineValue && !flag ? castValue(inlineValue, config.type) : options[name];
 

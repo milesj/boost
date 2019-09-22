@@ -10,7 +10,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {
         fooBar: 'baz',
       },
@@ -28,7 +28,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {
         fooBar: 'baz',
       },
@@ -46,7 +46,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {
         flag: true,
       },
@@ -59,7 +59,7 @@ describe('parse()', () => {
     const result = parse(['foo', 'bar', 'baz'], {});
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {},
       positionals: ['foo', 'bar', 'baz'],
       rest: [],
@@ -84,7 +84,7 @@ describe('parse()', () => {
     );
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {
         flag: true,
         opt: ['foo', 'bar'],
@@ -105,7 +105,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {
         opt: ['qux', 'foo', 'bar', 'baz'],
       },
@@ -114,17 +114,17 @@ describe('parse()', () => {
     });
   });
 
-  it('expands alias name in the result and sets value', () => {
+  it('expands short name in the result and sets value', () => {
     const result = parse<{ opt: string }>(['-O', 'foo'], {
       opt: {
-        alias: 'O',
+        short: 'O',
         description: '',
         type: 'string',
       },
     });
 
     expect(result).toEqual({
-      aliases: {
+      mapping: {
         O: 'opt',
       },
       options: {
@@ -135,17 +135,17 @@ describe('parse()', () => {
     });
   });
 
-  it('expands alias name in the result and sets inline value', () => {
+  it('expands short name in the result and sets inline value', () => {
     const result = parse<{ opt: string }>(['-O=foo'], {
       opt: {
-        alias: 'O',
+        short: 'O',
         description: '',
         type: 'string',
       },
     });
 
     expect(result).toEqual({
-      aliases: {
+      mapping: {
         O: 'opt',
       },
       options: {
@@ -166,7 +166,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
-      aliases: {},
+      mapping: {},
       options: {
         opt: 'baz',
       },
@@ -200,7 +200,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 'foo',
         },
@@ -218,7 +218,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: '',
         },
@@ -236,7 +236,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 'foo',
         },
@@ -254,7 +254,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 'foo',
         },
@@ -273,7 +273,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 'baz',
         },
@@ -293,7 +293,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: ['qux', 'foo', 'bar', 'baz'],
         },
@@ -311,7 +311,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 'foo\nbar',
         },
@@ -332,7 +332,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 123,
         },
@@ -350,7 +350,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 0,
         },
@@ -368,7 +368,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 0,
         },
@@ -386,7 +386,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 123,
         },
@@ -404,7 +404,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 123,
         },
@@ -423,7 +423,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 2,
         },
@@ -443,7 +443,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: [0, 1, 2, 3],
         },
@@ -461,7 +461,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           opt: 12.3,
         },
@@ -482,7 +482,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           flag: true,
         },
@@ -500,7 +500,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           flag: false,
         },
@@ -519,7 +519,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           flag: true,
         },
@@ -538,7 +538,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           flag: true,
         },
@@ -557,7 +557,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {},
+        mapping: {},
         options: {
           flag: false,
         },
@@ -566,10 +566,10 @@ describe('parse()', () => {
       });
     });
 
-    it('expands alias', () => {
+    it('expands short', () => {
       const result = parse<{ flag: boolean }>(['-F'], {
         flag: {
-          alias: 'F',
+          short: 'F',
           default: false,
           description: '',
           type: 'boolean',
@@ -577,7 +577,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {
+        mapping: {
           F: 'flag',
         },
         options: {
@@ -588,22 +588,22 @@ describe('parse()', () => {
       });
     });
 
-    it('sets all to `true` in alias flag group', () => {
+    it('sets all to `true` in short flag group', () => {
       const result = parse<{ foo: boolean; bar: boolean; baz: boolean }>(['-bBf'], {
         foo: {
-          alias: 'f',
+          short: 'f',
           default: false,
           description: '',
           type: 'boolean',
         },
         bar: {
-          alias: 'b',
+          short: 'b',
           default: false,
           description: '',
           type: 'boolean',
         },
         baz: {
-          alias: 'B',
+          short: 'B',
           default: false,
           description: '',
           type: 'boolean',
@@ -611,7 +611,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        aliases: {
+        mapping: {
           B: 'baz',
           b: 'bar',
           f: 'foo',

@@ -1,6 +1,6 @@
-import { AliasMap, OptionConfig } from './types';
+import { OptionConfig, Mapping } from './types';
 
-export function checkAliasExists(alias: string, aliases: AliasMap) {
+export function checkAliasExists(alias: string, aliases: Mapping) {
   if (aliases[alias]) {
     throw new Error(`Alias "${alias}" has already been defined for "${aliases[alias]}".`);
   } else if (alias.length !== 1) {

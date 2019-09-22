@@ -21,5 +21,5 @@ export default function getDefaultValue(config: OptionConfig): ValueType {
     value = castValue(value, config.type);
   }
 
-  return value;
+  return value!;
 }

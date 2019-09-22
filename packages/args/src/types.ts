@@ -2,12 +2,12 @@ export type Argv = string[];
 
 export type ArgList = string[];
 
-export interface AliasMap {
-  [alias: string]: string;
+export interface Mapping {
+  [name: string]: string;
 }
 
 export interface Arguments<T extends object = {}> {
-  aliases: AliasMap;
+  mapping: Mapping;
   options: T;
   positionals: ArgList;
   rest: ArgList;
@@ -31,11 +31,15 @@ export type ArgumentPositionals = Positional[];
 
 export type ValueType = boolean | number | number[] | string | string[];
 
+export interface ValueMap {
+  [key: string]: ValueType;
+}
+
 export type OptionType = 'boolean' | 'number' | 'string';
 
 export interface Option<T extends OptionType> {
-  alias?: string;
   description: string;
+  short?: string;
   usage?: string;
   type: T;
 }
