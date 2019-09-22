@@ -10,17 +10,15 @@ import {
   AliasMap,
   OptionConfig,
 } from './types';
-import {
-  castValue,
-  createScopeFromOption,
-  expandAliasOption,
-  getDefaultValue,
-  isAliasOption,
-  isFlagGroup,
-  isOption,
-  expandFlagGroup,
-} from './helpers';
 import { checkAliasExists } from './validate';
+import getDefaultValue from './helpers/getDefaultValue';
+import isFlagGroup from './helpers/isFlagGroup';
+import isShortOption from './helpers/isShortOption';
+import isLongOption from './helpers/isLongOption';
+import expandFlagGroup from './helpers/expandFlagGroup';
+import expandShortOption from './helpers/expandShortOption';
+import createScope from './helpers/createScope';
+import castValue from './helpers/castValue';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -98,7 +96,10 @@ export default function parse<T extends object = {}>(
 
       // Flag group "-frl"
       if (isFlagGroup(optionName)) {
+        // TODO error if inline value set
+
         expandFlagGroup(optionName.slice(1), aliases).forEach(flagName => {
+          // TODO verfiy options are actually flags
           options[flagName] = true;
         });
 
@@ -106,12 +107,12 @@ export default function parse<T extends object = {}>(
         // eslint-disable-next-line no-continue
         continue;
 
-        // Short option "-f" (aliased option)
-      } else if (isAliasOption(optionName)) {
-        optionName = expandAliasOption(optionName.slice(1), aliases);
+        // Short option "-f"
+      } else if (isShortOption(optionName)) {
+        optionName = expandShortOption(optionName.slice(1), aliases);
 
-        // Long option "--foo" (option)
-      } else if (isOption(optionName)) {
+        // Long option "--foo"
+      } else if (isLongOption(optionName)) {
         optionName = optionName.slice(2);
 
         // Unknown format
@@ -120,10 +121,12 @@ export default function parse<T extends object = {}>(
       }
 
       // Parse next scope
-      const scope = createScopeFromOption(optionName, inlineValue, optionConfigs, options);
+      const scope = createScope(optionName, inlineValue, optionConfigs, options);
 
       // Flag found, so set value immediately and discard scope
       if (scope.flag) {
+        // TODO error if inline value set
+
         options[scope.name] = !scope.negated;
 
         // Otherwise keep scope open, to capture next value

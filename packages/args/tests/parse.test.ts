@@ -1,7 +1,5 @@
 import parse from '../src/parse';
 
-console.log(process.argv);
-
 describe('parse()', () => {
   it('supports camel case option names by default', () => {
     const result = parse<{ fooBar: string }>(['--fooBar', 'baz'], {
