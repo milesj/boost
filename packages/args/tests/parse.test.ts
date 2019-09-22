@@ -96,6 +96,26 @@ describe('parse()', () => {
     });
   });
 
+  it('captures multiple values from separate options of the same name', () => {
+    const result = parse<{ opt: string[] }>(['--opt', 'foo', '--opt', 'bar', '--opt', 'baz'], {
+      opt: {
+        default: ['qux'],
+        description: '',
+        multiple: true,
+        type: 'string',
+      },
+    });
+
+    expect(result).toEqual({
+      aliases: {},
+      options: {
+        opt: ['qux', 'foo', 'bar', 'baz'],
+      },
+      positionals: [],
+      rest: [],
+    });
+  });
+
   it('expands alias name in the result and sets value', () => {
     const result = parse<{ opt: string }>(['-O', 'foo'], {
       opt: {
@@ -132,6 +152,25 @@ describe('parse()', () => {
       },
       options: {
         opt: 'foo',
+      },
+      positionals: [],
+      rest: [],
+    });
+  });
+
+  it('subsequent options of the same name override previous value', () => {
+    const result = parse<{ opt: string }>(['--opt', 'foo', '--opt', 'bar', '--opt', 'baz'], {
+      opt: {
+        default: 'qux',
+        description: '',
+        type: 'string',
+      },
+    });
+
+    expect(result).toEqual({
+      aliases: {},
+      options: {
+        opt: 'baz',
       },
       positionals: [],
       rest: [],
@@ -545,6 +584,44 @@ describe('parse()', () => {
         },
         options: {
           flag: true,
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('sets all to `true` in alias flag group', () => {
+      const result = parse<{ foo: boolean; bar: boolean; baz: boolean }>(['-bBf'], {
+        foo: {
+          alias: 'f',
+          default: false,
+          description: '',
+          type: 'boolean',
+        },
+        bar: {
+          alias: 'b',
+          default: false,
+          description: '',
+          type: 'boolean',
+        },
+        baz: {
+          alias: 'B',
+          default: false,
+          description: '',
+          type: 'boolean',
+        },
+      });
+
+      expect(result).toEqual({
+        aliases: {
+          B: 'baz',
+          b: 'bar',
+          f: 'foo',
+        },
+        options: {
+          foo: true,
+          bar: true,
+          baz: true,
         },
         positionals: [],
         rest: [],

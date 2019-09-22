@@ -16,7 +16,9 @@ import {
   expandAliasOption,
   getDefaultValue,
   isAliasOption,
+  isFlagGroup,
   isOption,
+  expandFlagGroup,
 } from './helpers';
 import { checkAliasExists } from './validate';
 
@@ -32,8 +34,7 @@ import { checkAliasExists } from './validate';
 
 // FEATURES
 // Alias - A short alias (single character) for an existing option or flag: --verbose -v
-// ? - Dot options - Options with a dot in their name will expand to an object: --foo.bar
-// ? - Flag grouping - When multiple aliases are passed under a single flag: -abc
+// Flag grouping - When multiple aliases are passed under a single alias flag: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
 // ? - Nargs count - Maximum count of argument values to consume for option multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
@@ -83,7 +84,7 @@ export default function parse<T extends object = {}>(
     }
 
     // Options
-    if (isOption(arg)) {
+    if (arg.charAt(0) === '-') {
       let optionName = arg;
       let inlineValue = '';
 
@@ -95,11 +96,27 @@ export default function parse<T extends object = {}>(
         [optionName, inlineValue] = optionName.split('=', 2);
       }
 
-      // Expand alias to full option
-      if (isAliasOption(optionName)) {
+      // Flag group "-frl"
+      if (isFlagGroup(optionName)) {
+        expandFlagGroup(optionName.slice(1), aliases).forEach(flagName => {
+          options[flagName] = true;
+        });
+
+        // Skip to next argument
+        // eslint-disable-next-line no-continue
+        continue;
+
+        // Short option "-f" (aliased option)
+      } else if (isAliasOption(optionName)) {
         optionName = expandAliasOption(optionName.slice(1), aliases);
-      } else {
+
+        // Long option "--foo" (option)
+      } else if (isOption(optionName)) {
         optionName = optionName.slice(2);
+
+        // Unknown format
+      } else {
+        throw new Error('Unknown option.');
       }
 
       // Parse next scope

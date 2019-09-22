@@ -69,6 +69,17 @@ export function expandAliasOption(alias: string, aliasToOption: AliasMap): strin
   return aliasToOption[alias];
 }
 
+export function expandFlagGroup(group: string, aliasToOption: AliasMap): string[] {
+  const options = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const alias of group) {
+    options.push(expandAliasOption(alias, aliasToOption));
+  }
+
+  return options;
+}
+
 export function getDefaultValue(config: OptionConfig): ValueType {
   let value = config.default;
 
@@ -91,10 +102,20 @@ export function getDefaultValue(config: OptionConfig): ValueType {
   return value;
 }
 
+const OPTION = /^--[a-z]{1}[-a-z]*$/iu;
+
 export function isOption(arg: string): boolean {
-  return arg.charAt(0) === '-';
+  return OPTION.test(arg);
 }
 
+const ALIAS_OPTION = /^-[a-z]{1}$/iu;
+
 export function isAliasOption(arg: string): boolean {
-  return isOption(arg) && arg.charAt(1) !== '-';
+  return ALIAS_OPTION.test(arg);
+}
+
+const FLAG_GROUP = /^-[a-z]{2,}$/iu;
+
+export function isFlagGroup(arg: string): boolean {
+  return FLAG_GROUP.test(arg);
 }
