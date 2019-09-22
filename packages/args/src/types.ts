@@ -41,6 +41,7 @@ export interface Option<T extends OptionType> {
 }
 
 export interface SingleOption<T extends OptionType, V> extends Option<T> {
+  choices?: V[];
   default?: V;
 }
 
@@ -51,7 +52,11 @@ export interface MultipleOption<T extends OptionType, V> extends Option<T> {
 
 export type Flag = SingleOption<'boolean', boolean>;
 
-export type OptionConfig = Option<OptionType> & { default?: ValueType; multiple?: boolean };
+export type OptionConfig = Option<OptionType> & {
+  choices?: ValueType[];
+  default?: ValueType;
+  multiple?: boolean;
+};
 
 export interface Positional {
   description: string;
@@ -61,9 +66,9 @@ export interface Positional {
 }
 
 export interface Scope {
+  config: OptionConfig;
   flag: boolean;
   name: string;
   negated: boolean;
-  type: OptionType;
   value: ValueType;
 }

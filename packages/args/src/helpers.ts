@@ -15,8 +15,10 @@ export function castValue<T extends OptionType>(
   }
 
   if (type === 'number') {
+    const number = Number(value);
+
     // @ts-ignore
-    return Number(value);
+    return Number.isNaN(number) ? 0 : number;
   }
 
   // @ts-ignore
@@ -51,10 +53,10 @@ export function createScopeFromOption<T extends object>(
   checkScopeValue(name, value, config);
 
   return {
+    config,
     flag,
     name,
     negated,
-    type: config.type,
     value,
   };
 }

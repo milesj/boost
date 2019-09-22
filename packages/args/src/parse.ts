@@ -36,10 +36,10 @@ import { checkAliasExists } from './validate';
 // ? - Flag grouping - When multiple aliases are passed under a single flag: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
 // ? - Nargs count - Maximum count of argument values to consume for option multiples.
+// Choices - List of valid values to choose from. Errors otherwise.
 
 // TODO
 // Globals
-// Allow list of choices
 
 export default function parse<T extends object = {}>(
   argv: Argv,
@@ -116,13 +116,25 @@ export default function parse<T extends object = {}>(
 
       // Option values
     } else if (currentScope) {
-      const value = castValue(arg, currentScope.type);
+      const { config, name } = currentScope;
+      const value = castValue(arg, config.type);
 
+      // Multiple values
       if (Array.isArray(currentScope.value)) {
-        // @ts-ignore
-        currentScope.value.push(value);
+        (currentScope.value as unknown[]).push(value);
+
+        // Single value
       } else {
+        // Verify value against a list of choices
+        if (Array.isArray(config.choices) && !config.choices.includes(value)) {
+          throw new Error(
+            `Invalid --${name} value, must be one of ${config.choices.join(', ')}, found ${value}.`,
+          );
+        }
+
         currentScope.value = value;
+
+        // Stop capturing after a value is found (must be last)
         commitScope();
       }
 
