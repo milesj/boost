@@ -1,6 +1,5 @@
 /* eslint-disable complexity, no-restricted-syntax */
 
-import path from 'path';
 import {
   Arguments,
   Argv,
@@ -47,8 +46,7 @@ export default function parse<T extends object = {}>(
   optionConfigs: ArgumentOptions<T>,
   positionalConfigs: ArgumentPositionals = [],
 ): Arguments<T> {
-  const args: Partial<T> = {};
-  const command = path.basename(argv[1]);
+  const options: Partial<T> = {};
   const positionals: ArgList = [];
   const rest: ArgList = [];
   const aliases: AliasMap = {};
@@ -56,7 +54,7 @@ export default function parse<T extends object = {}>(
 
   function commitScope() {
     if (currentScope) {
-      args[currentScope.name] = currentScope.value;
+      options[currentScope.name] = currentScope.value;
       currentScope = null;
     }
   }
@@ -71,11 +69,11 @@ export default function parse<T extends object = {}>(
       aliases[alias] = key;
     }
 
-    args[key] = getDefaultValue(config);
+    options[key] = getDefaultValue(config);
   });
 
   // eslint-disable-next-line unicorn/no-for-loop
-  for (let i = 2; i < argv.length; i += 1) {
+  for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
 
     // Rest arguments found, extract remaining and exit
@@ -105,11 +103,11 @@ export default function parse<T extends object = {}>(
       }
 
       // Parse next scope
-      const scope = createScopeFromOption(optionName, inlineValue, optionConfigs, args);
+      const scope = createScopeFromOption(optionName, inlineValue, optionConfigs, options);
 
       // Flag found, so set value immediately and discard scope
       if (scope.flag) {
-        args[scope.name] = !scope.negated;
+        options[scope.name] = !scope.negated;
 
         // Otherwise keep scope open, to capture next value
       } else {
@@ -139,9 +137,7 @@ export default function parse<T extends object = {}>(
 
   return {
     aliases,
-    args: args as T,
-    argv,
-    command,
+    options: options as T,
     positionals,
     rest,
   };

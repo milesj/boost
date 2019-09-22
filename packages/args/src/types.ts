@@ -8,9 +8,7 @@ export interface AliasMap {
 
 export interface Arguments<T extends object = {}> {
   aliases: AliasMap;
-  args: T;
-  argv: Argv;
-  command: string;
+  options: T;
   positionals: ArgList;
   rest: ArgList;
 }
@@ -62,9 +60,9 @@ export interface Positional {
   usage?: string;
 }
 
-export interface Scope<T extends object> {
+export interface Scope {
   flag: boolean;
-  name: keyof T;
+  name: string;
   negated: boolean;
   type: OptionType;
   value: ValueType;

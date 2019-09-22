@@ -27,8 +27,8 @@ export function createScopeFromOption<T extends object>(
   optionName: string,
   inlineValue: string,
   optionConfigs: ArgumentOptions<T>,
-  args: Partial<T>,
-): Scope<T> {
+  options: Partial<T>,
+): Scope {
   let name = optionName;
   let negated = false;
 
@@ -45,7 +45,7 @@ export function createScopeFromOption<T extends object>(
 
   const config: OptionConfig = optionConfigs[name] || { type: 'string' };
   const flag = config.type === 'boolean';
-  const value = inlineValue && !flag ? castValue(inlineValue, config.type) : args[name];
+  const value = inlineValue && !flag ? castValue(inlineValue, config.type) : options[name];
 
   // Verify value is still accurate
   checkScopeValue(name, value, config);

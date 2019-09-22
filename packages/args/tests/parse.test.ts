@@ -2,7 +2,7 @@ import parse from '../src/parse';
 
 describe('parse()', () => {
   it('supports camel case option names by default', () => {
-    const result = parse<{ fooBar: string }>(['node', 'cmd', '--fooBar', 'baz'], {
+    const result = parse<{ fooBar: string }>(['--fooBar', 'baz'], {
       fooBar: {
         description: '',
         type: 'string',
@@ -11,18 +11,16 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       aliases: {},
-      args: {
+      options: {
         fooBar: 'baz',
       },
-      argv: ['node', 'cmd', '--fooBar', 'baz'],
-      command: 'cmd',
       positionals: [],
       rest: [],
     });
   });
 
   it('converts dashed option names to camel case', () => {
-    const result = parse<{ fooBar: string }>(['node', 'cmd', '--foo-bar', 'baz'], {
+    const result = parse<{ fooBar: string }>(['--foo-bar', 'baz'], {
       fooBar: {
         description: '',
         type: 'string',
@@ -31,18 +29,16 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       aliases: {},
-      args: {
+      options: {
         fooBar: 'baz',
       },
-      argv: ['node', 'cmd', '--foo-bar', 'baz'],
-      command: 'cmd',
       positionals: [],
       rest: [],
     });
   });
 
   it('captures all rest arguments after `--`', () => {
-    const result = parse<{ flag: boolean }>(['node', 'cmd', '--flag', '--', '--foo', '-B', 'baz'], {
+    const result = parse<{ flag: boolean }>(['--flag', '--', '--foo', '-B', 'baz'], {
       flag: {
         description: '',
         type: 'boolean',
@@ -51,11 +47,9 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       aliases: {},
-      args: {
+      options: {
         flag: true,
       },
-      argv: ['node', 'cmd', '--flag', '--', '--foo', '-B', 'baz'],
-      command: 'cmd',
       positionals: [],
       rest: ['--foo', '-B', 'baz'],
     });
@@ -63,7 +57,7 @@ describe('parse()', () => {
 
   describe('string options', () => {
     it('inherits default value', () => {
-      const result = parse<{ opt: string }>(['node', 'cmd'], {
+      const result = parse<{ opt: string }>([], {
         opt: {
           default: 'foo',
           description: '',
@@ -73,18 +67,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           opt: 'foo',
         },
-        argv: ['node', 'cmd'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('sets to empty string when `default` not defined', () => {
-      const result = parse<{ opt: string }>(['node', 'cmd'], {
+      const result = parse<{ opt: string }>([], {
         opt: {
           description: '',
           type: 'string',
@@ -93,18 +85,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           opt: '',
         },
-        argv: ['node', 'cmd'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('sets value when option is passed', () => {
-      const result = parse<{ opt: string }>(['node', 'cmd', '--opt', 'foo'], {
+      const result = parse<{ opt: string }>(['--opt', 'foo'], {
         opt: {
           description: '',
           type: 'string',
@@ -113,18 +103,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           opt: 'foo',
         },
-        argv: ['node', 'cmd', '--opt', 'foo'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('sets value when option is passed and is using inline value', () => {
-      const result = parse<{ opt: string }>(['node', 'cmd', '--opt=foo'], {
+      const result = parse<{ opt: string }>(['--opt=foo'], {
         opt: {
           description: '',
           type: 'string',
@@ -133,18 +121,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           opt: 'foo',
         },
-        argv: ['node', 'cmd', '--opt=foo'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('expands alias and sets value', () => {
-      const result = parse<{ opt: string }>(['node', 'cmd', '-O', 'foo'], {
+      const result = parse<{ opt: string }>(['-O', 'foo'], {
         opt: {
           alias: 'O',
           description: '',
@@ -156,18 +142,16 @@ describe('parse()', () => {
         aliases: {
           O: 'opt',
         },
-        args: {
+        options: {
           opt: 'foo',
         },
-        argv: ['node', 'cmd', '-O', 'foo'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('expands alias and sets inline value', () => {
-      const result = parse<{ opt: string }>(['node', 'cmd', '-O=foo'], {
+      const result = parse<{ opt: string }>(['-O=foo'], {
         opt: {
           alias: 'O',
           description: '',
@@ -179,18 +163,16 @@ describe('parse()', () => {
         aliases: {
           O: 'opt',
         },
-        args: {
+        options: {
           opt: 'foo',
         },
-        argv: ['node', 'cmd', '-O=foo'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('captures multiple values', () => {
-      const result = parse<{ opt: string[] }>(['node', 'cmd', '--opt', 'foo', 'bar', 'baz'], {
+      const result = parse<{ opt: string[] }>(['--opt', 'foo', 'bar', 'baz'], {
         opt: {
           default: ['qux'],
           description: '',
@@ -201,11 +183,9 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           opt: ['qux', 'foo', 'bar', 'baz'],
         },
-        argv: ['node', 'cmd', '--opt', 'foo', 'bar', 'baz'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
@@ -213,7 +193,7 @@ describe('parse()', () => {
 
     it('captures multiple values until next option is found', () => {
       const result = parse<{ flag: boolean; opt: string[] }>(
-        ['node', 'cmd', '--opt', 'foo', 'bar', '--flag', 'baz'],
+        ['--opt', 'foo', 'bar', '--flag', 'baz'],
         {
           flag: {
             description: '',
@@ -230,12 +210,10 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           flag: true,
           opt: ['foo', 'bar'],
         },
-        argv: ['node', 'cmd', '--opt', 'foo', 'bar', '--flag', 'baz'],
-        command: 'cmd',
         positionals: ['baz'],
         rest: [],
       });
@@ -244,7 +222,7 @@ describe('parse()', () => {
 
   describe('flags', () => {
     it('inherits default value', () => {
-      const result = parse<{ flag: boolean }>(['node', 'cmd'], {
+      const result = parse<{ flag: boolean }>([], {
         flag: {
           default: true,
           description: '',
@@ -254,18 +232,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           flag: true,
         },
-        argv: ['node', 'cmd'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('sets to `false` when `default` not defined', () => {
-      const result = parse<{ flag: boolean }>(['node', 'cmd'], {
+      const result = parse<{ flag: boolean }>([], {
         flag: {
           description: '',
           type: 'boolean',
@@ -274,18 +250,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           flag: false,
         },
-        argv: ['node', 'cmd'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('sets to `true` when option passed', () => {
-      const result = parse<{ flag: boolean }>(['node', 'cmd', '--flag'], {
+      const result = parse<{ flag: boolean }>(['--flag'], {
         flag: {
           default: false,
           description: '',
@@ -295,18 +269,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           flag: true,
         },
-        argv: ['node', 'cmd', '--flag'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('ignores inline value', () => {
-      const result = parse<{ flag: boolean }>(['node', 'cmd', '--flag=123'], {
+      const result = parse<{ flag: boolean }>(['--flag=123'], {
         flag: {
           default: false,
           description: '',
@@ -316,18 +288,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           flag: true,
         },
-        argv: ['node', 'cmd', '--flag=123'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('negates value when option starts with `no-`', () => {
-      const result = parse<{ flag: boolean }>(['node', 'cmd', '--flag', '--no-flag'], {
+      const result = parse<{ flag: boolean }>(['--flag', '--no-flag'], {
         flag: {
           default: false,
           description: '',
@@ -337,18 +307,16 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         aliases: {},
-        args: {
+        options: {
           flag: false,
         },
-        argv: ['node', 'cmd', '--flag', '--no-flag'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
     });
 
     it('expands alias', () => {
-      const result = parse<{ flag: boolean }>(['node', 'cmd', '-F'], {
+      const result = parse<{ flag: boolean }>(['-F'], {
         flag: {
           alias: 'F',
           default: false,
@@ -361,11 +329,9 @@ describe('parse()', () => {
         aliases: {
           F: 'flag',
         },
-        args: {
+        options: {
           flag: true,
         },
-        argv: ['node', 'cmd', '-F'],
-        command: 'cmd',
         positionals: [],
         rest: [],
       });
