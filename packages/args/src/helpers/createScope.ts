@@ -1,4 +1,4 @@
-import { Scope, OptionConfig, ValueMap } from '../types';
+import { Scope, OptionConfig, ValueMap, LongOptionName } from '../types';
 import castValue from './castValue';
 
 function camelCase(value: string): string {
@@ -6,7 +6,7 @@ function camelCase(value: string): string {
 }
 
 export default function createScope(
-  optionName: string,
+  optionName: LongOptionName,
   inlineValue: string,
   optionConfigs: { [key: string]: OptionConfig },
   options: ValueMap,

@@ -10,6 +10,7 @@ import {
   OptionConfig,
   Mapping,
   ValueMap,
+  ShortOptionName,
 } from './types';
 import { checkAliasExists } from './validate';
 import getDefaultValue from './helpers/getDefaultValue';
@@ -110,7 +111,7 @@ export default function parse<T extends object = {}>(
 
         // Short option "-f"
       } else if (isShortOption(optionName)) {
-        optionName = expandShortOption(optionName.slice(1), mapping);
+        optionName = expandShortOption(optionName.slice(1) as ShortOptionName, mapping);
 
         // Long option "--foo"
       } else if (isLongOption(optionName)) {
