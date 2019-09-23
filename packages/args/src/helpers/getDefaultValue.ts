@@ -1,5 +1,4 @@
 import { OptionConfig, ValueType } from '../types';
-import castValue from './castValue';
 
 export default function getDefaultValue(config: OptionConfig): ValueType {
   let value = config.default;
@@ -14,12 +13,7 @@ export default function getDefaultValue(config: OptionConfig): ValueType {
     } else {
       value = '';
     }
-  } else if (Array.isArray(value)) {
-    // @ts-ignore
-    value = value.map(val => castValue(val, config.type));
-  } else {
-    value = castValue(value, config.type);
   }
 
-  return value!;
+  return value;
 }

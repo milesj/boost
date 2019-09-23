@@ -14,34 +14,30 @@ export interface Arguments<T extends object = {}> {
 }
 
 export type ArgumentOptions<T extends object = {}> = {
-  [K in keyof T]: T[K] extends boolean
-    ? Flag
-    : T[K] extends number[]
-    ? MultipleOption<number>
-    : T[K] extends number
-    ? SingleOption<number>
-    : T[K] extends string[]
-    ? MultipleOption<string>
-    : T[K] extends string
-    ? SingleOption<string>
-    : never;
+  [K in keyof T]: InferOptionConfig<T[K]>;
 };
 
-export type ArgumentPositionals = Positional[];
+export type ArgumentPositionals = Positional<unknown>[];
 
-export type ValueType = boolean | number | number[] | string | string[];
+export type PrimitiveType = boolean | number | string;
+
+export type ValueType = PrimitiveType | number[] | string[];
 
 export interface ValueMap {
   [key: string]: ValueType;
 }
 
-export type OptionType = 'boolean' | 'number' | 'string';
+// ARGUMENT TYPES
 
-export interface Option<T> {
+export interface Arg<T> {
   description: string;
-  short?: ShortOptionName;
+  hidden?: boolean;
   usage?: string;
   type: T extends boolean ? 'boolean' : T extends number ? 'number' : 'string';
+}
+
+export interface Option<T> extends Arg<T> {
+  short?: ShortOptionName;
 }
 
 export interface SingleOption<T> extends Option<T> {
@@ -54,27 +50,43 @@ export interface MultipleOption<T> extends Option<T> {
   multiple: true;
 }
 
-export type Flag = SingleOption<boolean>;
+export interface Flag extends Option<boolean> {
+  default?: boolean;
+}
 
-export type OptionConfig = Option<boolean | number | string> & {
-  choices?: unknown[];
+export interface Positional<T> extends Arg<T> {
+  label: LongOptionName;
+  required?: boolean;
+}
+
+// Determine option based on type
+export type InferOptionConfig<T> = T extends boolean
+  ? Flag
+  : T extends number[]
+  ? MultipleOption<number>
+  : T extends number
+  ? SingleOption<number>
+  : T extends string[]
+  ? MultipleOption<string>
+  : T extends string
+  ? SingleOption<string>
+  : never;
+
+// Abstract type for easier typing
+export type OptionConfig = Option<PrimitiveType> & {
+  choices?: PrimitiveType[];
   default?: ValueType;
   multiple?: boolean;
 };
 
-export interface Positional {
-  description: string;
-  label: LongOptionName;
-  required?: boolean;
-  usage?: string;
-}
+// PARSER
 
 export interface Scope {
   config: OptionConfig;
   flag: boolean;
   name: LongOptionName;
   negated: boolean;
-  value: ValueType;
+  value: string | string[] | undefined;
 }
 
 // Without leading "--"

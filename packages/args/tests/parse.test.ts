@@ -1,6 +1,88 @@
 import parse from '../src/parse';
+import { SingleOption, Flag, MultipleOption } from '../src/types';
 
 describe('parse()', () => {
+  const optConfig: SingleOption<string> = {
+    description: '',
+    type: 'string',
+  };
+
+  const optConfigExpanded: SingleOption<string> = {
+    default: 'foobar',
+    description: '',
+    short: 'O',
+    type: 'string',
+  };
+
+  const optsConfig: MultipleOption<string> = {
+    default: [],
+    description: '',
+    multiple: true,
+    type: 'string',
+  };
+
+  const optsConfigExpanded: MultipleOption<string> = {
+    default: ['qux'],
+    description: '',
+    multiple: true,
+    short: 's',
+    type: 'string',
+  };
+
+  const numConfig: SingleOption<number> = {
+    description: '',
+    type: 'number',
+  };
+
+  const numConfigExpanded: SingleOption<number> = {
+    default: 123,
+    description: '',
+    short: 'n',
+    type: 'number',
+  };
+
+  const numsConfig: MultipleOption<number> = {
+    description: '',
+    multiple: true,
+    type: 'number',
+  };
+
+  const flagConfig: Flag = {
+    default: false,
+    description: '',
+    type: 'boolean',
+  };
+
+  // For strings
+  const SPECIAL_CHARS = [
+    // empty string
+    '',
+    // space
+    ' ',
+    // dash (not to confuse with an option)
+    '-',
+    // underscore
+    '_',
+    // newline
+    '\n',
+    // tab
+    '\t',
+  ];
+
+  // For numbers
+  const SPECIAL_NUMBERS = [
+    // zero
+    '0',
+    // float zero
+    '0.0',
+    // negative
+    '-123',
+    // float
+    '12.45',
+    // negative float
+    '-12.45',
+  ];
+
   it('supports camel case option names by default', () => {
     const result = parse<{ fooBar: string }>(['--fooBar', 'baz'], {
       fooBar: {
@@ -37,6 +119,26 @@ describe('parse()', () => {
     });
   });
 
+  it('supports numbers in option name', () => {
+    const result = parse<{ foo123: string; bar456: string }>(
+      ['--foo123', 'val1', '--bar-456', 'val2'],
+      {
+        foo123: optConfig,
+        bar456: optConfig,
+      },
+    );
+
+    expect(result).toEqual({
+      mapping: {},
+      options: {
+        foo123: 'val1',
+        bar456: 'val2',
+      },
+      positionals: [],
+      rest: [],
+    });
+  });
+
   it('captures all rest arguments after `--`', () => {
     const result = parse<{ flag: boolean }>(['--flag', '--', '--foo', '-B', 'baz'], {
       flag: {
@@ -66,115 +168,6 @@ describe('parse()', () => {
     });
   });
 
-  it('captures multiple values until next option is found', () => {
-    const result = parse<{ flag: boolean; opt: string[] }>(
-      ['--opt', 'foo', 'bar', '--flag', 'baz'],
-      {
-        flag: {
-          description: '',
-          type: 'boolean',
-        },
-        opt: {
-          default: [],
-          description: '',
-          multiple: true,
-          type: 'string',
-        },
-      },
-    );
-
-    expect(result).toEqual({
-      mapping: {},
-      options: {
-        flag: true,
-        opt: ['foo', 'bar'],
-      },
-      positionals: ['baz'],
-      rest: [],
-    });
-  });
-
-  it('captures multiple values from separate options of the same name', () => {
-    const result = parse<{ opt: string[] }>(['--opt', 'foo', '--opt', 'bar', '--opt', 'baz'], {
-      opt: {
-        default: ['qux'],
-        description: '',
-        multiple: true,
-        type: 'string',
-      },
-    });
-
-    expect(result).toEqual({
-      mapping: {},
-      options: {
-        opt: ['qux', 'foo', 'bar', 'baz'],
-      },
-      positionals: [],
-      rest: [],
-    });
-  });
-
-  it('expands short name in the result and sets value', () => {
-    const result = parse<{ opt: string }>(['-O', 'foo'], {
-      opt: {
-        short: 'O',
-        description: '',
-        type: 'string',
-      },
-    });
-
-    expect(result).toEqual({
-      mapping: {
-        O: 'opt',
-      },
-      options: {
-        opt: 'foo',
-      },
-      positionals: [],
-      rest: [],
-    });
-  });
-
-  it('expands short name in the result and sets inline value', () => {
-    const result = parse<{ opt: string }>(['-O=foo'], {
-      opt: {
-        short: 'O',
-        description: '',
-        type: 'string',
-      },
-    });
-
-    expect(result).toEqual({
-      mapping: {
-        O: 'opt',
-      },
-      options: {
-        opt: 'foo',
-      },
-      positionals: [],
-      rest: [],
-    });
-  });
-
-  it('subsequent options of the same name override previous value', () => {
-    const result = parse<{ opt: string }>(['--opt', 'foo', '--opt', 'bar', '--opt', 'baz'], {
-      opt: {
-        default: 'qux',
-        description: '',
-        type: 'string',
-      },
-    });
-
-    expect(result).toEqual({
-      mapping: {},
-      options: {
-        opt: 'baz',
-      },
-      positionals: [],
-      rest: [],
-    });
-  });
-
   describe('errors', () => {
     it('errors when an invalid choice value is used', () => {
       expect(() => {
@@ -189,20 +182,382 @@ describe('parse()', () => {
     });
   });
 
-  describe('string options', () => {
-    it('inherits default value', () => {
-      const result = parse<{ opt: string }>([], {
-        opt: {
-          default: 'foo',
+  describe('options', () => {
+    describe('single', () => {
+      it('sets value from next subsequent arg', () => {
+        const result = parse<{ opt: string }>(['--opt', 'foo'], {
+          opt: optConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            opt: 'foo',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('sets value from right hand side of `=` (inline value)', () => {
+        const result = parse<{ opt: string }>(['--opt=foo'], {
+          opt: optConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            opt: 'foo',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('only captures the next subsequent arg', () => {
+        const result = parse<{ opt: string }>(['--opt', 'foo', 'bar'], {
+          opt: optConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            opt: 'foo',
+          },
+          positionals: ['bar'],
+          rest: [],
+        });
+      });
+
+      it('uses default value if no subsequent arg passed', () => {
+        const result = parse<{ opt: string }>(['--opt'], {
+          opt: optConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            O: 'opt',
+          },
+          options: {
+            opt: 'foobar',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('subsequent options of the same name override previous value', () => {
+        const result = parse<{ opt: string }>(['--opt', 'foo', '--opt', 'bar', '--opt', 'baz'], {
+          opt: optConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            O: 'opt',
+          },
+          options: {
+            opt: 'baz',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+    });
+
+    describe('multiple', () => {
+      it('sets multiple values until next option is found', () => {
+        const result = parse<{ flag: boolean; opts: string[] }>(
+          ['--opts', 'foo', 'bar', '--flag', 'baz'],
+          {
+            flag: flagConfig,
+            opts: optsConfig,
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            flag: true,
+            opts: ['foo', 'bar'],
+          },
+          positionals: ['baz'],
+          rest: [],
+        });
+      });
+
+      it('sets multiple values from separate options of the same name', () => {
+        const result = parse<{ opts: string[] }>(
+          ['arg', '--opts', 'foo', '--opts', 'bar', '--opts', 'baz'],
+          {
+            opts: optsConfigExpanded,
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            opts: ['foo', 'bar', 'baz'],
+          },
+          positionals: ['arg'],
+          rest: [],
+        });
+      });
+
+      it('sets multiple inline values from separate options of the same name', () => {
+        const result = parse<{ opts: string[] }>(
+          ['arg', '--opts=foo', '--opts=bar', '--opts=baz'],
+          {
+            opts: optsConfigExpanded,
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            opts: ['foo', 'bar', 'baz'],
+          },
+          positionals: ['arg'],
+          rest: [],
+        });
+      });
+
+      it('sets multiple values using all patterns', () => {
+        const result = parse<{ flag: boolean; opts: string[] }>(
+          ['--opts', 'foo', '--opts=bar', '--flag', '-s', 'baz', '-s=qux'],
+          {
+            flag: flagConfig,
+            opts: optsConfigExpanded,
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            flag: true,
+            opts: ['foo', 'bar', 'baz', 'qux'],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('sets initial inline value and captures subsequent values', () => {
+        const result = parse<{ flag: boolean; opts: string[] }>(
+          ['--opts=foo', 'bar', 'baz', '--flag'],
+          {
+            flag: flagConfig,
+            opts: optsConfigExpanded,
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            flag: true,
+            opts: ['foo', 'bar', 'baz'],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('sets default value to an empty array if `default` not defined', () => {
+        const result = parse<{ opts: string[] }>([], {
+          opts: {
+            description: '',
+            multiple: true,
+            type: 'string',
+          },
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            opts: [],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('inherits default value when nothing passed', () => {
+        const result = parse<{ opts: string[] }>([], {
+          opts: optsConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            opts: ['qux'],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('overwrites default value if a value is passed', () => {
+        const result = parse<{ opts: string[] }>(['--opts', 'baz'], {
+          opts: optsConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            opts: ['baz'],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('doesnt unique or flatten duplicates', () => {
+        const result = parse<{ opts: string[] }>(['-s=foo', 'foo', 'foo'], {
+          opts: optsConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            s: 'opts',
+          },
+          options: {
+            opts: ['foo', 'foo', 'foo'],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+    });
+
+    describe('short names', () => {
+      it('expands short name and sets value', () => {
+        const result = parse<{ opt: string }>(['-O', 'foo'], {
+          opt: optConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            O: 'opt',
+          },
+          options: {
+            opt: 'foo',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('expands short name and sets inline value', () => {
+        const result = parse<{ opt: string }>(['-O=foo'], {
+          opt: optConfigExpanded,
+        });
+
+        expect(result).toEqual({
+          mapping: {
+            O: 'opt',
+          },
+          options: {
+            opt: 'foo',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('sets multiple short names correctly', () => {
+        const result = parse<{ host: string; opt: string; port: number }>(
+          ['-O', 'foo', '-h', '127.0.0.1', '-p', '1337'],
+          {
+            host: {
+              description: '',
+              short: 'h',
+              type: 'string',
+            },
+            opt: optConfigExpanded,
+            port: {
+              description: '',
+              short: 'p',
+              type: 'number',
+            },
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {
+            h: 'host',
+            O: 'opt',
+            p: 'port',
+          },
+          options: {
+            host: '127.0.0.1',
+            opt: 'foo',
+            port: 1337,
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('expands flag group and sets all to truthy', () => {
+        const baseConfig: Flag = {
+          default: false,
           description: '',
-          type: 'string',
-        },
+          type: 'boolean',
+        };
+
+        const result = parse<{ foo: boolean; bar: boolean; baz: boolean; qux: boolean }>(
+          ['random', '-ZqF', 'arg'],
+          {
+            bar: { ...baseConfig, short: 'b' },
+            baz: { ...baseConfig, short: 'Z' },
+            foo: { ...baseConfig, short: 'F' },
+            qux: { ...baseConfig, short: 'q' },
+          },
+        );
+
+        expect(result).toEqual({
+          mapping: {
+            b: 'bar',
+            F: 'foo',
+            q: 'qux',
+            Z: 'baz',
+          },
+          options: {
+            bar: false,
+            baz: true,
+            foo: true,
+            qux: true,
+          },
+          positionals: ['random', 'arg'],
+          rest: [],
+        });
+      });
+    });
+  });
+
+  describe('string options', () => {
+    it('inherits default value when nothing passed', () => {
+      const result = parse<{ opt: string }>([], {
+        opt: optConfigExpanded,
       });
 
       expect(result).toEqual({
-        mapping: {},
+        mapping: {
+          O: 'opt',
+        },
         options: {
-          opt: 'foo',
+          opt: 'foobar',
         },
         positionals: [],
         rest: [],
@@ -211,10 +566,7 @@ describe('parse()', () => {
 
     it('sets to empty string when `default` not defined', () => {
       const result = parse<{ opt: string }>([], {
-        opt: {
-          description: '',
-          type: 'string',
-        },
+        opt: optConfig,
       });
 
       expect(result).toEqual({
@@ -227,43 +579,99 @@ describe('parse()', () => {
       });
     });
 
-    it('sets value when option is passed', () => {
-      const result = parse<{ opt: string }>(['--opt', 'foo'], {
-        opt: {
-          description: '',
-          type: 'string',
-        },
+    it('supports newlines in string', () => {
+      const result = parse<{ opt: string }>(['--opt', 'foo\nbar'], {
+        opt: optConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 'foo',
+          opt: 'foo\nbar',
         },
         positionals: [],
         rest: [],
       });
     });
 
-    it('sets value when option is passed and is using inline value', () => {
-      const result = parse<{ opt: string }>(['--opt=foo'], {
-        opt: {
-          description: '',
-          type: 'string',
-        },
+    it('supports other whitespace characters in string', () => {
+      const result = parse<{ opt: string }>(['--opt', 'foo\tbar baz'], {
+        opt: optConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 'foo',
+          opt: 'foo\tbar baz',
         },
         positionals: [],
         rest: [],
       });
     });
 
-    it('sets value based on a list of choices', () => {
+    it('should not convert number like strings to numbers', () => {
+      const result = parse<{ opt: string }>(['--opt', '123456'], {
+        opt: optConfig,
+      });
+
+      expect(result).toEqual({
+        mapping: {},
+        options: {
+          opt: '123456',
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    SPECIAL_CHARS.forEach(char => {
+      it(`supports "${char}"`, () => {
+        const result = parse<{ opt: string }>(['--opt', char], {
+          opt: optConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            opt: char,
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it(`supports "${char}" when using an inline value`, () => {
+        const result = parse<{ opt: string }>([`--opt=${char}`], {
+          opt: optConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            opt: char,
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+    });
+
+    it('supports capturing multiples of all special chars', () => {
+      const result = parse<{ opts: string[] }>(['--opts', ...SPECIAL_CHARS], {
+        opts: optsConfig,
+      });
+
+      expect(result).toEqual({
+        mapping: {},
+        options: {
+          opts: SPECIAL_CHARS,
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it.skip('sets value based on a list of choices', () => {
       const result = parse<{ opt: string }>(['--opt', 'baz'], {
         opt: {
           choices: ['foo', 'bar', 'baz'],
@@ -282,7 +690,7 @@ describe('parse()', () => {
       });
     });
 
-    it('captures multiple values', () => {
+    it.skip('captures multiple values', () => {
       const result = parse<{ opt: string[] }>(['--opt', 'foo', 'bar', 'baz'], {
         opt: {
           default: ['qux'],
@@ -301,40 +709,20 @@ describe('parse()', () => {
         rest: [],
       });
     });
-
-    it('supports newlines in string', () => {
-      const result = parse<{ opt: string }>(['--opt', 'foo\nbar'], {
-        opt: {
-          description: '',
-          type: 'string',
-        },
-      });
-
-      expect(result).toEqual({
-        mapping: {},
-        options: {
-          opt: 'foo\nbar',
-        },
-        positionals: [],
-        rest: [],
-      });
-    });
   });
 
   describe('number options', () => {
-    it('inherits default value', () => {
-      const result = parse<{ opt: number }>([], {
-        opt: {
-          default: 123,
-          description: '',
-          type: 'number',
-        },
+    it('inherits default value when nothing passed', () => {
+      const result = parse<{ num: number }>([], {
+        num: numConfigExpanded,
       });
 
       expect(result).toEqual({
-        mapping: {},
+        mapping: {
+          n: 'num',
+        },
         options: {
-          opt: 123,
+          num: 123,
         },
         positionals: [],
         rest: [],
@@ -342,17 +730,14 @@ describe('parse()', () => {
     });
 
     it('sets to zero when `default` not defined', () => {
-      const result = parse<{ opt: number }>([], {
-        opt: {
-          description: '',
-          type: 'number',
-        },
+      const result = parse<{ num: number }>([], {
+        num: numConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 0,
+          num: 0,
         },
         positionals: [],
         rest: [],
@@ -360,17 +745,14 @@ describe('parse()', () => {
     });
 
     it('sets to zero when option passed is an invalid number', () => {
-      const result = parse<{ opt: number }>(['--opt', 'foo'], {
-        opt: {
-          description: '',
-          type: 'number',
-        },
+      const result = parse<{ num: number }>(['--num', 'foo'], {
+        num: numConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 0,
+          num: 0,
         },
         positionals: [],
         rest: [],
@@ -378,17 +760,14 @@ describe('parse()', () => {
     });
 
     it('sets value when option is passed', () => {
-      const result = parse<{ opt: number }>(['--opt', '123'], {
-        opt: {
-          description: '',
-          type: 'number',
-        },
+      const result = parse<{ num: number }>(['--num', '123'], {
+        num: numConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 123,
+          num: 123,
         },
         positionals: [],
         rest: [],
@@ -396,24 +775,21 @@ describe('parse()', () => {
     });
 
     it('sets value when option is passed and is using inline value', () => {
-      const result = parse<{ opt: number }>(['--opt=123'], {
-        opt: {
-          description: '',
-          type: 'number',
-        },
+      const result = parse<{ num: number }>(['--num=123'], {
+        num: numConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 123,
+          num: 123,
         },
         positionals: [],
         rest: [],
       });
     });
 
-    it('sets value based on a list of choices', () => {
+    it.skip('sets value based on a list of choices', () => {
       const result = parse<{ opt: number }>(['--opt', '2'], {
         opt: {
           choices: [1, 2, 3],
@@ -432,7 +808,7 @@ describe('parse()', () => {
       });
     });
 
-    it('captures multiple values', () => {
+    it.skip('captures multiple values', () => {
       const result = parse<{ opt: number[] }>(['--opt', '1', '2', '3'], {
         opt: {
           default: [0],
@@ -452,18 +828,47 @@ describe('parse()', () => {
       });
     });
 
-    it('supports floats/decimals', () => {
-      const result = parse<{ opt: number }>(['--opt', '12.3'], {
-        opt: {
-          description: '',
-          type: 'number',
-        },
+    SPECIAL_NUMBERS.forEach(char => {
+      it(`supports "${char}"`, () => {
+        const result = parse<{ num: number }>(['--num', char], {
+          num: numConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            num: Number(char),
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it(`supports "${char}" when using an inline value`, () => {
+        const result = parse<{ num: number }>([`--num=${char}`], {
+          num: numConfig,
+        });
+
+        expect(result).toEqual({
+          mapping: {},
+          options: {
+            num: Number(char),
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+    });
+
+    it('supports capturing multiples of all special numbers', () => {
+      const result = parse<{ nums: number[] }>(['--nums', ...SPECIAL_NUMBERS], {
+        nums: numsConfig,
       });
 
       expect(result).toEqual({
         mapping: {},
         options: {
-          opt: 12.3,
+          nums: SPECIAL_NUMBERS.map(no => Number(no)),
         },
         positionals: [],
         rest: [],
@@ -472,7 +877,7 @@ describe('parse()', () => {
   });
 
   describe('flags', () => {
-    it('inherits default value', () => {
+    it('inherits default value when nothing passed', () => {
       const result = parse<{ flag: boolean }>([], {
         flag: {
           default: true,
@@ -511,11 +916,7 @@ describe('parse()', () => {
 
     it('sets to `true` when option passed', () => {
       const result = parse<{ flag: boolean }>(['--flag'], {
-        flag: {
-          default: false,
-          description: '',
-          type: 'boolean',
-        },
+        flag: flagConfig,
       });
 
       expect(result).toEqual({
@@ -530,11 +931,7 @@ describe('parse()', () => {
 
     it('ignores inline value', () => {
       const result = parse<{ flag: boolean }>(['--flag=123'], {
-        flag: {
-          default: false,
-          description: '',
-          type: 'boolean',
-        },
+        flag: flagConfig,
       });
 
       expect(result).toEqual({
@@ -549,11 +946,7 @@ describe('parse()', () => {
 
     it('negates value when option starts with `no-`', () => {
       const result = parse<{ flag: boolean }>(['--flag', '--no-flag'], {
-        flag: {
-          default: false,
-          description: '',
-          type: 'boolean',
-        },
+        flag: flagConfig,
       });
 
       expect(result).toEqual({
@@ -566,13 +959,11 @@ describe('parse()', () => {
       });
     });
 
-    it('expands short', () => {
+    it('expands short name', () => {
       const result = parse<{ flag: boolean }>(['-F'], {
         flag: {
+          ...flagConfig,
           short: 'F',
-          default: false,
-          description: '',
-          type: 'boolean',
         },
       });
 
@@ -582,44 +973,6 @@ describe('parse()', () => {
         },
         options: {
           flag: true,
-        },
-        positionals: [],
-        rest: [],
-      });
-    });
-
-    it('sets all to `true` in short flag group', () => {
-      const result = parse<{ foo: boolean; bar: boolean; baz: boolean }>(['-bBf'], {
-        foo: {
-          short: 'f',
-          default: false,
-          description: '',
-          type: 'boolean',
-        },
-        bar: {
-          short: 'b',
-          default: false,
-          description: '',
-          type: 'boolean',
-        },
-        baz: {
-          short: 'B',
-          default: false,
-          description: '',
-          type: 'boolean',
-        },
-      });
-
-      expect(result).toEqual({
-        mapping: {
-          B: 'baz',
-          b: 'bar',
-          f: 'foo',
-        },
-        options: {
-          foo: true,
-          bar: true,
-          baz: true,
         },
         positionals: [],
         rest: [],

@@ -1,13 +1,13 @@
 import { Scope, OptionConfig, ValueMap, LongOptionName } from '../types';
-import castValue from './castValue';
+import updateScopeValue from './updateScopeValue';
 
 function camelCase(value: string): string {
-  return value.replace(/-([a-z])/giu, (match, char) => char.toUpperCase());
+  return value.replace(/-([a-z0-9])/giu, (match, char) => char.toUpperCase());
 }
 
 export default function createScope(
   optionName: LongOptionName,
-  inlineValue: string,
+  inlineValue: string | undefined,
   optionConfigs: { [key: string]: OptionConfig },
   options: ValueMap,
 ): Scope {
@@ -25,18 +25,32 @@ export default function createScope(
     name = camelCase(name);
   }
 
+  // Create scope
   const config = optionConfigs[name] || { type: 'string' };
   const flag = config.type === 'boolean';
-  const value = inlineValue && !flag ? castValue(inlineValue, config.type) : options[name];
-
-  // Verify value is still accurate
-  // checkScopeValue(name, value, config);
-
-  return {
+  const scope = {
     config,
     flag,
     name,
     negated,
-    value,
+    value: undefined,
   };
+
+  // When capturing multiples, we need to persist the array
+  // so we can append. Avoid using the default array though.
+  if (config.multiple) {
+    // @ts-ignore I know types don't match, yolo
+    scope.value = options[name] === config.default ? [] : options[name];
+  }
+
+  // Update scope value if an inline value exists
+  if (inlineValue !== undefined && !flag) {
+    updateScopeValue(scope, inlineValue);
+    // TODO error if inline values set for flags
+  }
+
+  // Verify value is still accurate
+  // checkScopeValue(name, value, config);
+
+  return scope;
 }

@@ -20,6 +20,8 @@ import isLongOption from './helpers/isLongOption';
 import expandFlagGroup from './helpers/expandFlagGroup';
 import expandShortOption from './helpers/expandShortOption';
 import createScope from './helpers/createScope';
+import isOptionLike from './helpers/isOptionLike';
+import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
 
 // TERMINOLOGY
@@ -41,6 +43,7 @@ import castValue from './helpers/castValue';
 
 // TODO
 // Globals
+// Validate option?
 
 export default function parse<T extends object = {}>(
   argv: Argv,
@@ -54,10 +57,16 @@ export default function parse<T extends object = {}>(
   let currentScope: Scope | null = null;
 
   function commitScope() {
-    if (currentScope) {
-      options[currentScope.name] = currentScope.value;
-      currentScope = null;
+    if (!currentScope) {
+      return;
     }
+
+    // Set and cast value if defined
+    if (currentScope.value !== undefined) {
+      options[currentScope.name] = castValue(currentScope.value, currentScope.config.type);
+    }
+
+    currentScope = null;
   }
 
   // Map default values and short names
@@ -84,9 +93,9 @@ export default function parse<T extends object = {}>(
     }
 
     // Options
-    if (arg.charAt(0) === '-') {
+    if (isOptionLike(arg)) {
       let optionName = arg;
-      let inlineValue = '';
+      let inlineValue;
 
       // Commit previous scope
       commitScope();
@@ -119,7 +128,7 @@ export default function parse<T extends object = {}>(
 
         // Unknown format
       } else {
-        throw new Error('Unknown option.');
+        throw new Error(`Unknown option ${arg}.`);
       }
 
       // Parse next scope
@@ -138,25 +147,11 @@ export default function parse<T extends object = {}>(
 
       // Option values
     } else if (currentScope) {
-      const { config, name } = currentScope;
-      const value = castValue(arg, config.type);
+      // Update the scope with this new value
+      updateScopeValue(currentScope, arg);
 
-      // Multiple values
-      if (Array.isArray(currentScope.value)) {
-        (currentScope.value as unknown[]).push(value);
-
-        // Single value
-      } else {
-        // Verify value against a list of choices
-        if (Array.isArray(config.choices) && !config.choices.includes(value)) {
-          throw new Error(
-            `Invalid --${name} value, must be one of ${config.choices.join(', ')}, found ${value}.`,
-          );
-        }
-
-        currentScope.value = value;
-
-        // Stop capturing after a value is found (must be last)
+      // Commit scope after a value is found (must be last)
+      if (!currentScope.config.multiple) {
         commitScope();
       }
 

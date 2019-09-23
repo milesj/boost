@@ -1,18 +1,24 @@
-import { OptionType } from '../types';
+import { ValueType } from '../types';
 
-export default function castValue(value: unknown, type: OptionType): boolean | number | string {
-  if (type === 'boolean') {
-    // @ts-ignore
-    return Boolean(value);
+export default function castValue(
+  value: unknown,
+  type: 'boolean' | 'number' | 'string',
+): ValueType {
+  if (Array.isArray(value)) {
+    return value.map(val => castValue(val, type)) as string[];
   }
 
-  if (type === 'number') {
-    const number = Number(value);
+  switch (type) {
+    case 'boolean':
+      return Boolean(value);
 
-    // @ts-ignore
-    return Number.isNaN(number) ? 0 : number;
+    case 'number': {
+      const number = Number(value);
+
+      return Number.isNaN(number) ? 0 : number;
+    }
+
+    default:
+      return String(value);
   }
-
-  // @ts-ignore
-  return String(value);
 }
