@@ -103,7 +103,7 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       errors: [],
-      mapping: {},
+
       options: {
         fooBar: 'baz',
       },
@@ -122,7 +122,7 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       errors: [],
-      mapping: {},
+
       options: {
         fooBar: 'baz',
       },
@@ -142,7 +142,7 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       errors: [],
-      mapping: {},
+
       options: {
         foo123: 'val1',
         bar456: 'val2',
@@ -162,7 +162,7 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       errors: [],
-      mapping: {},
+
       options: {
         flag: true,
       },
@@ -176,7 +176,7 @@ describe('parse()', () => {
 
     expect(result).toEqual({
       errors: [],
-      mapping: {},
+
       options: {},
       positionals: ['foo', 'bar', 'baz'],
       rest: [],
@@ -206,7 +206,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             opt: 'foo',
           },
@@ -222,7 +222,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             opt: 'foo',
           },
@@ -238,7 +238,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             opt: 'foo',
           },
@@ -254,9 +254,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            O: 'opt',
-          },
           options: {
             opt: 'foobar',
           },
@@ -272,9 +269,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            O: 'opt',
-          },
           options: {
             opt: 'baz',
           },
@@ -296,7 +290,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             flag: true,
             opts: ['foo', 'bar'],
@@ -316,9 +310,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['foo', 'bar', 'baz'],
           },
@@ -337,9 +328,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['foo', 'bar', 'baz'],
           },
@@ -359,9 +347,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             flag: true,
             opts: ['foo', 'bar', 'baz', 'qux'],
@@ -382,9 +367,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             flag: true,
             opts: ['foo', 'bar', 'baz'],
@@ -405,7 +387,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             opts: [],
           },
@@ -421,9 +403,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['qux'],
           },
@@ -439,9 +418,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['baz'],
           },
@@ -457,9 +433,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['foo', 'foo', 'foo'],
           },
@@ -477,9 +450,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['foo', 'bar'],
           },
@@ -495,9 +465,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['foo', 'bar'],
           },
@@ -517,10 +484,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            a: 'ars',
-            s: 'opts',
-          },
           options: {
             ars: [123, 456],
             opts: ['foo', 'qux'],
@@ -537,9 +500,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [new ParseError('Not enough arity arguments. Require 2, found 1.')],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: ['foo'],
           },
@@ -555,9 +515,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            s: 'opts',
-          },
           options: {
             opts: [],
           },
@@ -575,9 +532,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            O: 'opt',
-          },
           options: {
             opt: 'foo',
           },
@@ -593,9 +547,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            O: 'opt',
-          },
           options: {
             opt: 'foo',
           },
@@ -624,11 +575,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            h: 'host',
-            O: 'opt',
-            p: 'port',
-          },
           options: {
             host: '127.0.0.1',
             opt: 'foo',
@@ -658,12 +604,6 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {
-            b: 'bar',
-            F: 'foo',
-            q: 'qux',
-            Z: 'baz',
-          },
           options: {
             bar: false,
             baz: true,
@@ -685,9 +625,6 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {
-          O: 'opt',
-        },
         options: {
           opt: 'foobar',
         },
@@ -703,7 +640,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: '',
         },
@@ -719,7 +656,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: 'foo\nbar',
         },
@@ -735,7 +672,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: 'foo\tbar baz',
         },
@@ -751,7 +688,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: '123456',
         },
@@ -768,7 +705,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             opt: char,
           },
@@ -784,7 +721,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             opt: char,
           },
@@ -801,7 +738,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opts: SPECIAL_CHARS,
         },
@@ -821,7 +758,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: 'baz',
         },
@@ -842,7 +779,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: ['qux', 'foo', 'bar', 'baz'],
         },
@@ -860,9 +797,6 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {
-          n: 'num',
-        },
         options: {
           num: 123,
         },
@@ -878,7 +812,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           num: 0,
         },
@@ -894,7 +828,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           num: 0,
         },
@@ -910,7 +844,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           num: 123,
         },
@@ -926,7 +860,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           num: 123,
         },
@@ -946,7 +880,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: 2,
         },
@@ -967,7 +901,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           opt: [0, 1, 2, 3],
         },
@@ -984,7 +918,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             num: Number(char),
           },
@@ -1000,7 +934,7 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           errors: [],
-          mapping: {},
+
           options: {
             num: Number(char),
           },
@@ -1017,7 +951,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           nums: SPECIAL_NUMBERS.map(no => Number(no)),
         },
@@ -1039,7 +973,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           flag: true,
         },
@@ -1058,7 +992,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           flag: false,
         },
@@ -1074,7 +1008,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           flag: true,
         },
@@ -1090,7 +1024,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           flag: true,
         },
@@ -1106,7 +1040,7 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {},
+
         options: {
           flag: false,
         },
@@ -1125,9 +1059,6 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         errors: [],
-        mapping: {
-          F: 'flag',
-        },
         options: {
           flag: true,
         },

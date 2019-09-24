@@ -8,7 +8,6 @@ export interface Mapping {
 
 export interface Arguments<T extends object = {}> {
   errors: Error[];
-  mapping: Mapping;
   options: T;
   positionals: ArgList;
   rest: ArgList;

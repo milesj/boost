@@ -1,4 +1,4 @@
-/* eslint-disable complexity, no-continue, no-restricted-syntax */
+/* eslint-disable no-continue */
 
 import {
   Arguments,
@@ -112,7 +112,6 @@ export default function parse<T extends object = {}>(
     options[key] = getDefaultValue(config);
   });
 
-  // eslint-disable-next-line unicorn/no-for-loop
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
 
@@ -207,7 +206,6 @@ export default function parse<T extends object = {}>(
 
   return {
     errors,
-    mapping,
     options: options as T,
     positionals,
     rest,
