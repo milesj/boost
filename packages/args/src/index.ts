@@ -4,7 +4,8 @@
  */
 
 import parse from './parse';
+import ParseError from './ParseError';
 
 export * from './types';
 
-export { parse };
+export { parse, ParseError };

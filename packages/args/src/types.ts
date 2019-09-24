@@ -7,6 +7,7 @@ export interface Mapping {
 }
 
 export interface Arguments<T extends object = {}> {
+  errors: Error[];
   mapping: Mapping;
   options: T;
   positionals: ArgList;
@@ -46,6 +47,7 @@ export interface SingleOption<T> extends Option<T> {
 }
 
 export interface MultipleOption<T> extends Option<T> {
+  arity?: number;
   default?: T[];
   multiple: true;
 }
@@ -74,6 +76,7 @@ export type InferOptionConfig<T> = T extends boolean
 
 // Abstract type for easier typing
 export type OptionConfig = Option<PrimitiveType> & {
+  arity?: number;
   choices?: PrimitiveType[];
   default?: ValueType;
   multiple?: boolean;

@@ -1,4 +1,4 @@
-/* eslint-disable complexity, no-restricted-syntax */
+/* eslint-disable complexity, no-continue, no-restricted-syntax */
 
 import {
   Arguments,
@@ -23,6 +23,7 @@ import createScope from './helpers/createScope';
 import isOptionLike from './helpers/isOptionLike';
 import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
+import ParseError from './ParseError';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -38,11 +39,12 @@ import castValue from './helpers/castValue';
 // Short name - A short name (single character) for an existing option or flag: --verbose -v
 // Flag grouping - When multiple short flags are passed under a single option: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
-// ? - Nargs count - Maximum count of argument values to consume for option multiples.
+// Arity count - Required number of argument values to consume for option multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
 // TODO
-// Globals
+// Globals / categories
+// Positionals
 // Validate option?
 
 export default function parse<T extends object = {}>(
@@ -50,11 +52,18 @@ export default function parse<T extends object = {}>(
   optionConfigs: ArgumentOptions<T>,
   positionalConfigs: ArgumentPositionals = [],
 ): Arguments<T> {
+  const errors: Error[] = [];
   const options: ValueMap = {};
   const positionals: ArgList = [];
   const rest: ArgList = [];
   const mapping: Mapping = {};
   let currentScope: Scope | null = null;
+
+  function logError(condition: boolean, message: string, arg?: string) {
+    if (condition) {
+      errors.push(new ParseError(message, arg));
+    }
+  }
 
   function commitScope() {
     if (!currentScope) {
@@ -67,6 +76,27 @@ export default function parse<T extends object = {}>(
     }
 
     currentScope = null;
+  }
+
+  function captureValue(value: string) {
+    if (!currentScope) {
+      return;
+    }
+
+    // Update the scope with this new value
+    updateScopeValue(currentScope, value);
+
+    // Commit scope after a value is found (must be last)
+    const { config } = currentScope;
+
+    if (
+      !config.multiple ||
+      (config.arity &&
+        Array.isArray(currentScope.value) &&
+        currentScope.value.length >= config.arity)
+    ) {
+      commitScope();
+    }
   }
 
   // Map default values and short names
@@ -114,8 +144,6 @@ export default function parse<T extends object = {}>(
           options[flagName] = true;
         });
 
-        // Skip to next argument
-        // eslint-disable-next-line no-continue
         continue;
 
         // Short option "-f"
@@ -126,13 +154,15 @@ export default function parse<T extends object = {}>(
       } else if (isLongOption(optionName)) {
         optionName = optionName.slice(2);
 
-        // Unknown format
+        // Unknown option format
       } else {
-        throw new Error(`Unknown option ${arg}.`);
+        logError(true, 'Unknown argument or option.', arg);
+
+        continue;
       }
 
-      // Parse next scope
-      const scope = createScope(optionName, inlineValue, optionConfigs, options);
+      // Parse and create next scope
+      const scope = createScope(optionName, optionConfigs, options);
 
       // Flag found, so set value immediately and discard scope
       if (scope.flag) {
@@ -143,17 +173,16 @@ export default function parse<T extends object = {}>(
         // Otherwise keep scope open, to capture next value
       } else {
         currentScope = scope;
+
+        // Update scope value if an inline value exists
+        if (inlineValue !== undefined) {
+          captureValue(inlineValue);
+        }
       }
 
       // Option values
     } else if (currentScope) {
-      // Update the scope with this new value
-      updateScopeValue(currentScope, arg);
-
-      // Commit scope after a value is found (must be last)
-      if (!currentScope.config.multiple) {
-        commitScope();
-      }
+      captureValue(arg);
 
       // Positionals
     } else {
@@ -164,7 +193,20 @@ export default function parse<T extends object = {}>(
   // Commit final scope
   commitScope();
 
+  // Final checks
+  Object.keys(optionConfigs).forEach(key => {
+    const config: OptionConfig = optionConfigs[key as keyof T];
+    const value = options[key];
+
+    logError(
+      !!config.arity && Array.isArray(value) && value.length > 0 && value.length < config.arity,
+      `Not enough arity arguments. Require ${config.arity}, found ${(value as unknown[]).length}.`,
+      `--${key}`,
+    );
+  });
+
   return {
+    errors,
     mapping,
     options: options as T,
     positionals,

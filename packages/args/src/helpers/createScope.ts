@@ -1,5 +1,4 @@
 import { Scope, OptionConfig, ValueMap, LongOptionName } from '../types';
-import updateScopeValue from './updateScopeValue';
 
 function camelCase(value: string): string {
   return value.replace(/-([a-z0-9])/giu, (match, char) => char.toUpperCase());
@@ -7,7 +6,6 @@ function camelCase(value: string): string {
 
 export default function createScope(
   optionName: LongOptionName,
-  inlineValue: string | undefined,
   optionConfigs: { [key: string]: OptionConfig },
   options: ValueMap,
 ): Scope {
@@ -28,7 +26,7 @@ export default function createScope(
   // Create scope
   const config = optionConfigs[name] || { type: 'string' };
   const flag = config.type === 'boolean';
-  const scope = {
+  const scope: Scope = {
     config,
     flag,
     name,
@@ -41,12 +39,6 @@ export default function createScope(
   if (config.multiple) {
     // @ts-ignore I know types don't match, yolo
     scope.value = options[name] === config.default ? [] : options[name];
-  }
-
-  // Update scope value if an inline value exists
-  if (inlineValue !== undefined && !flag) {
-    updateScopeValue(scope, inlineValue);
-    // TODO error if inline values set for flags
   }
 
   // Verify value is still accurate
