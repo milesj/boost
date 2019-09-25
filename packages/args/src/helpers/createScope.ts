@@ -5,6 +5,7 @@ function camelCase(value: string): string {
 }
 
 export default function createScope(
+  arg: string,
   optionName: LongOptionName,
   optionConfigs: { [key: string]: OptionConfig },
   options: ValueMap,
@@ -27,6 +28,7 @@ export default function createScope(
   const config = optionConfigs[name] || { type: 'string' };
   const flag = config.type === 'boolean';
   const scope: Scope = {
+    arg,
     config,
     flag,
     name,

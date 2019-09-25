@@ -1,4 +1,4 @@
-/* eslint-disable no-continue */
+/* eslint-disable  complexity, no-continue */
 
 import {
   Arguments,
@@ -24,6 +24,8 @@ import isOptionLike from './helpers/isOptionLike';
 import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
 import ParseError from './ParseError';
+import verifyFlagIsOption from './checks/verifyFlagIsOption';
+import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -36,7 +38,7 @@ import ParseError from './ParseError';
 // scope - Argument currently being parsed.
 
 // FEATURES
-// Short name - A short name (single character) for an existing option or flag: --verbose -v
+// Short name - A short name (single character) for an existing option or flag: --verbose, -v
 // Flag grouping - When multiple short flags are passed under a single option: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
 // Arity count - Required number of argument values to consume for option multiples.
@@ -59,9 +61,9 @@ export default function parse<T extends object = {}>(
   const mapping: Mapping = {};
   let currentScope: Scope | null = null;
 
-  function logError(condition: boolean, message: string, arg?: string) {
-    if (condition) {
-      errors.push(new ParseError(message, arg));
+  function invariant(condition: boolean, message: string, arg?: string) {
+    if (!condition) {
+      errors.push(new ParseError(message, arg || (currentScope && currentScope.arg) || ''));
     }
   }
 
@@ -121,71 +123,82 @@ export default function parse<T extends object = {}>(
       break;
     }
 
-    // Options
-    if (isOptionLike(arg)) {
-      let optionName = arg;
-      let inlineValue;
+    try {
+      // Options
+      if (isOptionLike(arg)) {
+        let optionName = arg;
+        let inlineValue;
 
-      // Commit previous scope
-      commitScope();
+        // Commit previous scope
+        commitScope();
 
-      // Extract option and inline value
-      if (optionName.includes('=')) {
-        [optionName, inlineValue] = optionName.split('=', 2);
-      }
-
-      // Flag group "-frl"
-      if (isFlagGroup(optionName)) {
-        // TODO error if inline value set
-
-        expandFlagGroup(optionName.slice(1), mapping).forEach(flagName => {
-          // TODO verfiy options are actually flags
-          options[flagName] = true;
-        });
-
-        continue;
-
-        // Short option "-f"
-      } else if (isShortOption(optionName)) {
-        optionName = expandShortOption(optionName.slice(1) as ShortOptionName, mapping);
-
-        // Long option "--foo"
-      } else if (isLongOption(optionName)) {
-        optionName = optionName.slice(2);
-
-        // Unknown option format
-      } else {
-        logError(true, 'Unknown argument or option.', arg);
-
-        continue;
-      }
-
-      // Parse and create next scope
-      const scope = createScope(optionName, optionConfigs, options);
-
-      // Flag found, so set value immediately and discard scope
-      if (scope.flag) {
-        // TODO error if inline value set
-
-        options[scope.name] = !scope.negated;
-
-        // Otherwise keep scope open, to capture next value
-      } else {
-        currentScope = scope;
-
-        // Update scope value if an inline value exists
-        if (inlineValue !== undefined) {
-          captureValue(inlineValue);
+        // Extract option and inline value
+        if (optionName.includes('=')) {
+          [optionName, inlineValue] = optionName.split('=', 2);
         }
+
+        // Flag group "-frl"
+        if (isFlagGroup(optionName)) {
+          verifyNoFlagInlineValue(invariant, inlineValue);
+
+          expandFlagGroup(optionName.slice(1), mapping).forEach(flagName => {
+            verifyFlagIsOption(invariant, flagName, optionConfigs);
+            options[flagName] = true;
+          });
+
+          continue;
+
+          // Short option "-f"
+        } else if (isShortOption(optionName)) {
+          optionName = expandShortOption(optionName.slice(1) as ShortOptionName, mapping);
+
+          // Long option "--foo"
+        } else if (isLongOption(optionName)) {
+          optionName = optionName.slice(2);
+
+          // Unknown option format
+        } else {
+          invariant(false, 'Unknown option format.', arg);
+
+          continue;
+        }
+
+        // Parse and create next scope
+        const scope = createScope(arg, optionName, optionConfigs, options);
+
+        // Flag found, so set value immediately and discard scope
+        if (scope.flag) {
+          verifyNoFlagInlineValue(invariant, inlineValue);
+
+          options[scope.name] = !scope.negated;
+
+          // Otherwise keep scope open, to capture next value
+        } else {
+          currentScope = scope;
+
+          // Update scope value if an inline value exists
+          if (inlineValue !== undefined) {
+            captureValue(inlineValue);
+          }
+        }
+
+        // Option values
+      } else if (currentScope) {
+        captureValue(arg);
+
+        // Positionals
+      } else {
+        positionals.push(arg);
+      }
+    } catch (error) {
+      if (error instanceof ParseError) {
+        errors.push(error);
+      } else if (error instanceof Error) {
+        errors.push(new ParseError(error.message, arg));
       }
 
-      // Option values
-    } else if (currentScope) {
-      captureValue(arg);
-
-      // Positionals
-    } else {
-      positionals.push(arg);
+      // Commit open scope and continue
+      commitScope();
     }
   }
 
@@ -197,11 +210,15 @@ export default function parse<T extends object = {}>(
     const config: OptionConfig = optionConfigs[key as keyof T];
     const value = options[key];
 
-    logError(
-      !!config.arity && Array.isArray(value) && value.length > 0 && value.length < config.arity,
-      `Not enough arity arguments. Require ${config.arity}, found ${(value as unknown[]).length}.`,
-      `--${key}`,
-    );
+    if (Array.isArray(value)) {
+      if (config.arity && value.length > 0) {
+        invariant(
+          value.length === config.arity,
+          `Not enough arity arguments. Require ${config.arity}, found ${value.length}.`,
+          `--${key}`,
+        );
+      }
+    }
   });
 
   return {

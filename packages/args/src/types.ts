@@ -84,12 +84,15 @@ export type OptionConfig = Option<PrimitiveType> & {
 // PARSER
 
 export interface Scope {
+  arg: string;
   config: OptionConfig;
   flag: boolean;
   name: LongOptionName;
   negated: boolean;
   value: string | string[] | undefined;
 }
+
+export type Invariant = (condition: boolean, message: string, arg?: string) => void;
 
 // Without leading "--"
 export type LongOptionName = string;
