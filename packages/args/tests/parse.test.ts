@@ -15,21 +15,21 @@ describe('parse()', () => {
     type: 'string',
   };
 
-  const optsConfig: MultipleOption<string> = {
+  const optsConfig: MultipleOption<string[]> = {
     default: [],
     description: '',
     multiple: true,
     type: 'string',
   };
 
-  const optsConfigExpanded: MultipleOption<string> = {
+  const optsConfigExpanded: MultipleOption<string[]> = {
     default: ['qux'],
     description: '',
     multiple: true,
     short: 's',
   };
 
-  const optsConfigArity: MultipleOption<string> = {
+  const optsConfigArity: MultipleOption<string[]> = {
     arity: 2,
     default: [],
     description: '',
@@ -50,7 +50,7 @@ describe('parse()', () => {
     type: 'number',
   };
 
-  const numsConfig: MultipleOption<number> = {
+  const numsConfig: MultipleOption<number[]> = {
     description: '',
     multiple: true,
     type: 'number',
@@ -253,6 +253,28 @@ describe('parse()', () => {
           rest: [],
         });
       });
+
+      it('runs custom validation using `validate`', () => {
+        const result = parse<{ opt: string }>(['--opt', '2019-01'], {
+          opt: {
+            ...optConfigExpanded,
+            validate(value) {
+              if (!value.match(/^\d{4}-\d{2}-\d{2}$/u)) {
+                throw new Error('Invalid date.');
+              }
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          errors: [new ValidationError('Invalid date.', 'opt')],
+          options: {
+            opt: '2019-01',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
     });
 
     describe('single - choices', () => {
@@ -438,6 +460,28 @@ describe('parse()', () => {
           rest: [],
         });
       });
+
+      it('runs custom validation using `validate`', () => {
+        const result = parse<{ nums: number[] }>(['--nums', '1', '5', '10'], {
+          nums: {
+            ...numsConfig,
+            validate(value) {
+              if (!value.every(val => val >= 5)) {
+                throw new Error('All values must be >= 5.');
+              }
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          errors: [new ValidationError('All values must be >= 5.', 'num')],
+          options: {
+            nums: [1, 5, 10],
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
     });
 
     describe('multiple - arity', () => {
@@ -475,7 +519,7 @@ describe('parse()', () => {
         const result = parse<{ ars: number[]; opts: string[] }>(
           ['-s', 'foo', '--ars', '123', '456', '--opts=qux'],
           {
-            ars: { ...optsConfigArity, default: [], short: 'a', type: 'number' },
+            ars: { default: [], description: '', multiple: true, short: 'a', type: 'number' },
             opts: optsConfigArity,
           },
         );

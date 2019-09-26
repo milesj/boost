@@ -51,7 +51,6 @@ import ValidationError from './ValidationError';
 // TODO
 // Globals / categories
 // Positionals
-// Validate option?
 // Required by
 
 export default function parse<T extends object = {}>(
@@ -208,6 +207,10 @@ export default function parse<T extends object = {}>(
     try {
       const config: OptionConfig = optionConfigs[key as keyof T];
       const value = options[key];
+
+      if (config.validate) {
+        config.validate(value);
+      }
 
       verifyArityIsMet(config, value);
       verifyChoiceIsMet(config, value);

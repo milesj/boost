@@ -33,8 +33,8 @@ export interface Arg<T> {
   description: string;
   hidden?: boolean;
   usage?: string;
-  type?: T extends boolean ? 'boolean' : T extends number ? 'number' : 'string';
-  // validate?: (value: T) => void;
+  type?: T extends boolean ? 'boolean' : T extends number | number[] ? 'number' : 'string';
+  validate?: (value: T) => void;
 }
 
 export interface Option<T> extends Arg<T> {
@@ -48,7 +48,7 @@ export interface SingleOption<T> extends Option<T> {
 
 export interface MultipleOption<T> extends Option<T> {
   arity?: number;
-  default?: T[];
+  default?: T;
   multiple: true;
 }
 
@@ -64,18 +64,15 @@ export interface Positional<T> extends Arg<T> {
 // Determine option based on type
 export type InferOptionConfig<T> = T extends boolean
   ? Flag
-  : T extends number[]
-  ? MultipleOption<number>
-  : T extends number
-  ? SingleOption<number>
-  : T extends string[]
-  ? MultipleOption<string>
-  : T extends string
-  ? SingleOption<string>
+  : T extends number[] | string[]
+  ? MultipleOption<T>
+  : T extends number | string
+  ? SingleOption<T>
   : never;
 
 // Abstract type for easier typing
-export type OptionConfig = Option<PrimitiveType> & {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type OptionConfig = Option<any> & {
   arity?: number;
   choices?: PrimitiveType[];
   default?: ValueType;
