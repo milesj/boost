@@ -1,4 +1,4 @@
-/* eslint-disable  complexity, no-continue */
+/* eslint-disable complexity, no-continue */
 
 import {
   Arguments,

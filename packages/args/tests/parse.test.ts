@@ -6,7 +6,6 @@ import { SingleOption, Flag, MultipleOption } from '../src/types';
 describe('parse()', () => {
   const optConfig: SingleOption<string> = {
     description: '',
-    type: 'string',
   };
 
   const optConfigExpanded: SingleOption<string> = {
@@ -28,7 +27,6 @@ describe('parse()', () => {
     description: '',
     multiple: true,
     short: 's',
-    type: 'string',
   };
 
   const optsConfigArity: MultipleOption<string> = {
@@ -499,7 +497,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
-          errors: [new ValidationError('Not enough arity arguments. Require 2, found 1.')],
+          errors: [new ValidationError('Not enough arity arguments. Require 2, found 1.', 'opts')],
           options: {
             opts: ['foo'],
           },

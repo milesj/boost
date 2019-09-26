@@ -2,7 +2,7 @@ import { ValueType } from '../types';
 
 export default function castValue(
   value: unknown,
-  type: 'boolean' | 'number' | 'string',
+  type?: 'boolean' | 'number' | 'string',
 ): ValueType {
   if (Array.isArray(value)) {
     return value.map(val => castValue(val, type)) as string[];

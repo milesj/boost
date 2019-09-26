@@ -33,7 +33,8 @@ export interface Arg<T> {
   description: string;
   hidden?: boolean;
   usage?: string;
-  type: T extends boolean ? 'boolean' : T extends number ? 'number' : 'string';
+  type?: T extends boolean ? 'boolean' : T extends number ? 'number' : 'string';
+  // validate?: (value: T) => void;
 }
 
 export interface Option<T> extends Arg<T> {
