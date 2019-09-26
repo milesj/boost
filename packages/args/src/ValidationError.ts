@@ -1,7 +1,10 @@
 export default class ValidationError extends Error {
-  constructor(message: string) {
+  option: string;
+
+  constructor(message: string, option: string) {
     super(message);
 
     this.name = 'ValidationError';
+    this.option = option;
   }
 }

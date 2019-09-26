@@ -24,6 +24,7 @@ import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
 import ParseError from './ParseError';
 import verifyArityIsMet from './checks/verifyArityIsMet';
+import verifyChoiceIsMet from './checks/verifyChoiceIsMet';
 import verifyDefaultValue from './checks/verifyDefaultValue';
 import verifyGroupFlagIsOption from './checks/verifyGroupFlagIsOption';
 import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
@@ -52,7 +53,6 @@ import ValidationError from './ValidationError';
 // Positionals
 // Validate option?
 // Required by
-// Arity * +
 
 export default function parse<T extends object = {}>(
   argv: Argv,
@@ -114,7 +114,7 @@ export default function parse<T extends object = {}>(
       options[key] = getDefaultValue(config);
       verifyDefaultValue(key, options[key], config);
     } catch (error) {
-      errors.push(new ValidationError(error.message));
+      errors.push(new ValidationError(error.message, key));
     }
   });
 
@@ -210,8 +210,9 @@ export default function parse<T extends object = {}>(
       const value = options[key];
 
       verifyArityIsMet(config, value);
+      verifyChoiceIsMet(config, value);
     } catch (error) {
-      errors.push(new ValidationError(error.message));
+      errors.push(new ValidationError(error.message, key));
     }
   });
 

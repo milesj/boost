@@ -179,20 +179,6 @@ describe('parse()', () => {
     });
   });
 
-  describe('errors', () => {
-    it.skip('errors when an invalid choice value is used', () => {
-      expect(() => {
-        parse<{ opt: string }>(['--opt', 'qux'], {
-          opt: {
-            choices: ['foo', 'bar', 'baz'],
-            description: '',
-            type: 'string',
-          },
-        });
-      }).toThrowError('Invalid --opt value, must be one of foo, bar, baz, found qux.');
-    });
-  });
-
   describe('options', () => {
     describe('single', () => {
       it('sets value from next subsequent arg', () => {
@@ -264,6 +250,29 @@ describe('parse()', () => {
           errors: [],
           options: {
             opt: 'baz',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+    });
+
+    describe('single - choices', () => {
+      it('errors when an invalid choice value is used', () => {
+        const result = parse<{ opt: string }>(['--opt', 'qux'], {
+          opt: {
+            choices: ['foo', 'bar', 'baz'],
+            description: '',
+            type: 'string',
+          },
+        });
+
+        expect(result).toEqual({
+          errors: [
+            new ValidationError('Invalid value, must be one of foo, bar, baz, found qux.', 'opt'),
+          ],
+          options: {
+            opt: 'qux',
           },
           positionals: [],
           rest: [],
@@ -433,7 +442,7 @@ describe('parse()', () => {
       });
     });
 
-    describe('multiple arity', () => {
+    describe('multiple - arity', () => {
       it('captures values up until the arity count', () => {
         const result = parse<{ opts: string[] }>(['--opts', 'foo', 'bar', 'baz'], {
           opts: optsConfigArity,
@@ -731,7 +740,7 @@ describe('parse()', () => {
       });
     });
 
-    it.skip('sets value based on a list of choices', () => {
+    it('sets value based on a list of choices', () => {
       const result = parse<{ opt: string }>(['--opt', 'baz'], {
         opt: {
           choices: ['foo', 'bar', 'baz'],
@@ -744,26 +753,6 @@ describe('parse()', () => {
         errors: [],
         options: {
           opt: 'baz',
-        },
-        positionals: [],
-        rest: [],
-      });
-    });
-
-    it.skip('captures multiple values', () => {
-      const result = parse<{ opt: string[] }>(['--opt', 'foo', 'bar', 'baz'], {
-        opt: {
-          default: ['qux'],
-          description: '',
-          multiple: true,
-          type: 'string',
-        },
-      });
-
-      expect(result).toEqual({
-        errors: [],
-        options: {
-          opt: ['qux', 'foo', 'bar', 'baz'],
         },
         positionals: [],
         rest: [],
@@ -847,7 +836,7 @@ describe('parse()', () => {
       });
     });
 
-    it.skip('sets value based on a list of choices', () => {
+    it('sets value based on a list of choices', () => {
       const result = parse<{ opt: number }>(['--opt', '2'], {
         opt: {
           choices: [1, 2, 3],
@@ -860,26 +849,6 @@ describe('parse()', () => {
         errors: [],
         options: {
           opt: 2,
-        },
-        positionals: [],
-        rest: [],
-      });
-    });
-
-    it.skip('captures multiple values', () => {
-      const result = parse<{ opt: number[] }>(['--opt', '1', '2', '3'], {
-        opt: {
-          default: [0],
-          description: '',
-          multiple: true,
-          type: 'number',
-        },
-      });
-
-      expect(result).toEqual({
-        errors: [],
-        options: {
-          opt: [0, 1, 2, 3],
         },
         positionals: [],
         rest: [],
@@ -927,6 +896,21 @@ describe('parse()', () => {
         errors: [],
         options: {
           nums: SPECIAL_NUMBERS.map(no => Number(no)),
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('converts `Number.MAX_SAFE_INTEGER` to a number', () => {
+      const result = parse<{ num: number }>(['--num', String(Number.MAX_SAFE_INTEGER)], {
+        num: numConfig,
+      });
+
+      expect(result).toEqual({
+        errors: [],
+        options: {
+          num: Number.MAX_SAFE_INTEGER,
         },
         positionals: [],
         rest: [],
