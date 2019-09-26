@@ -7,7 +7,6 @@ import {
   ArgumentOptions,
   ArgumentPositionals,
   Scope,
-  OptionConfig,
   Mapping,
   ValueMap,
   ShortOptionName,
@@ -22,14 +21,14 @@ import createScope from './helpers/createScope';
 import isOptionLike from './helpers/isOptionLike';
 import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
-import ParseError from './ParseError';
+import mapOptionConfigs from './helpers/mapOptionConfigs';
 import verifyArityIsMet from './checks/verifyArityIsMet';
 import verifyChoiceIsMet from './checks/verifyChoiceIsMet';
 import verifyDefaultValue from './checks/verifyDefaultValue';
 import verifyGroupFlagIsOption from './checks/verifyGroupFlagIsOption';
 import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
 import verifyUniqueShortName from './checks/verifyUniqueShortName';
-import ValidationError from './ValidationError';
+import ParseError from './ParseError';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -49,7 +48,6 @@ import ValidationError from './ValidationError';
 // Choices - List of valid values to choose from. Errors otherwise.
 
 // TODO
-// Globals / categories
 // Positionals
 // Required by
 
@@ -100,9 +98,8 @@ export default function parse<T extends object = {}>(
   }
 
   // Map default values and short names
-  Object.keys(optionConfigs).forEach(key => {
-    try {
-      const config: OptionConfig = optionConfigs[key as keyof T];
+  errors.push(
+    ...mapOptionConfigs(optionConfigs, options, ({ key, config }) => {
       const { short } = config;
 
       if (short) {
@@ -112,10 +109,8 @@ export default function parse<T extends object = {}>(
 
       options[key] = getDefaultValue(config);
       verifyDefaultValue(key, options[key], config);
-    } catch (error) {
-      errors.push(new ValidationError(error.message, key));
-    }
-  });
+    }),
+  );
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -202,22 +197,17 @@ export default function parse<T extends object = {}>(
   // Commit final scope
   commitScope();
 
-  // Final checks
-  Object.keys(optionConfigs).forEach(key => {
-    try {
-      const config: OptionConfig = optionConfigs[key as keyof T];
-      const value = options[key];
-
+  // Run final checks
+  errors.push(
+    ...mapOptionConfigs(optionConfigs, options, ({ config, value }) => {
       if (config.validate) {
         config.validate(value);
       }
 
       verifyArityIsMet(config, value);
       verifyChoiceIsMet(config, value);
-    } catch (error) {
-      errors.push(new ValidationError(error.message, key));
-    }
-  });
+    }),
+  );
 
   return {
     errors,

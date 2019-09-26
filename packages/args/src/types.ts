@@ -27,6 +27,16 @@ export interface ValueMap {
   [key: string]: ValueType;
 }
 
+// PARSER
+
+export interface Scope {
+  config: OptionConfig;
+  flag: boolean;
+  name: LongOptionName;
+  negated: boolean;
+  value: string | string[] | undefined;
+}
+
 // ARGUMENT TYPES
 
 export interface Arg<T> {
@@ -38,6 +48,7 @@ export interface Arg<T> {
 }
 
 export interface Option<T> extends Arg<T> {
+  group?: GroupName;
   short?: ShortOptionName;
 }
 
@@ -79,15 +90,11 @@ export type OptionConfig = Option<any> & {
   multiple?: boolean;
 };
 
-// PARSER
-
-export interface Scope {
-  config: OptionConfig;
-  flag: boolean;
-  name: LongOptionName;
-  negated: boolean;
-  value: string | string[] | undefined;
+export interface OptionConfigMap {
+  [key: string]: OptionConfig;
 }
+
+export type GroupName = string;
 
 // Without leading "--"
 export type LongOptionName = string;
