@@ -5,7 +5,8 @@
 
 import parse from './parse';
 import ParseError from './ParseError';
+import ValidationError from './ValidationError';
 
 export * from './types';
 
-export { parse, ParseError };
+export { parse, ParseError, ValidationError };

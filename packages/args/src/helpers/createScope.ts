@@ -5,7 +5,6 @@ function camelCase(value: string): string {
 }
 
 export default function createScope(
-  arg: string,
   optionName: LongOptionName,
   optionConfigs: { [key: string]: OptionConfig },
   options: ValueMap,
@@ -28,7 +27,6 @@ export default function createScope(
   const config = optionConfigs[name] || { type: 'string' };
   const flag = config.type === 'boolean';
   const scope: Scope = {
-    arg,
     config,
     flag,
     name,
@@ -42,9 +40,6 @@ export default function createScope(
     // @ts-ignore I know types don't match, yolo
     scope.value = options[name] === config.default ? [] : options[name];
   }
-
-  // Verify value is still accurate
-  // checkScopeValue(name, value, config);
 
   return scope;
 }

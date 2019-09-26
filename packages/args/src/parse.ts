@@ -12,7 +12,6 @@ import {
   ValueMap,
   ShortOptionName,
 } from './types';
-import { checkAliasExists } from './validate';
 import getDefaultValue from './helpers/getDefaultValue';
 import isFlagGroup from './helpers/isFlagGroup';
 import isShortOption from './helpers/isShortOption';
@@ -24,8 +23,12 @@ import isOptionLike from './helpers/isOptionLike';
 import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
 import ParseError from './ParseError';
-import verifyFlagIsOption from './checks/verifyFlagIsOption';
+import verifyArityIsMet from './checks/verifyArityIsMet';
+import verifyDefaultValue from './checks/verifyDefaultValue';
+import verifyGroupFlagIsOption from './checks/verifyGroupFlagIsOption';
 import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
+import verifyUniqueShortName from './checks/verifyUniqueShortName';
+import ValidationError from './ValidationError';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -48,6 +51,8 @@ import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
 // Globals / categories
 // Positionals
 // Validate option?
+// Required by
+// Arity * +
 
 export default function parse<T extends object = {}>(
   argv: Argv,
@@ -60,12 +65,6 @@ export default function parse<T extends object = {}>(
   const rest: ArgList = [];
   const mapping: Mapping = {};
   let currentScope: Scope | null = null;
-
-  function invariant(condition: boolean, message: string, arg?: string) {
-    if (!condition) {
-      errors.push(new ParseError(message, arg || (currentScope && currentScope.arg) || ''));
-    }
-  }
 
   function commitScope() {
     if (!currentScope) {
@@ -103,15 +102,20 @@ export default function parse<T extends object = {}>(
 
   // Map default values and short names
   Object.keys(optionConfigs).forEach(key => {
-    const config: OptionConfig = optionConfigs[key as keyof T];
-    const { short } = config;
+    try {
+      const config: OptionConfig = optionConfigs[key as keyof T];
+      const { short } = config;
 
-    if (short) {
-      checkAliasExists(short, mapping);
-      mapping[short] = key;
+      if (short) {
+        verifyUniqueShortName(short, mapping);
+        mapping[short] = key;
+      }
+
+      options[key] = getDefaultValue(config);
+      verifyDefaultValue(key, options[key], config);
+    } catch (error) {
+      errors.push(new ValidationError(error.message));
     }
-
-    options[key] = getDefaultValue(config);
   });
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -139,10 +143,10 @@ export default function parse<T extends object = {}>(
 
         // Flag group "-frl"
         if (isFlagGroup(optionName)) {
-          verifyNoFlagInlineValue(invariant, inlineValue);
+          verifyNoFlagInlineValue(inlineValue);
 
           expandFlagGroup(optionName.slice(1), mapping).forEach(flagName => {
-            verifyFlagIsOption(invariant, flagName, optionConfigs);
+            verifyGroupFlagIsOption(flagName, optionConfigs);
             options[flagName] = true;
           });
 
@@ -158,19 +162,17 @@ export default function parse<T extends object = {}>(
 
           // Unknown option format
         } else {
-          invariant(false, 'Unknown option format.', arg);
-
-          continue;
+          throw new Error('Unknown option format.');
         }
 
         // Parse and create next scope
-        const scope = createScope(arg, optionName, optionConfigs, options);
+        const scope = createScope(optionName, optionConfigs, options);
 
         // Flag found, so set value immediately and discard scope
         if (scope.flag) {
-          verifyNoFlagInlineValue(invariant, inlineValue);
-
           options[scope.name] = !scope.negated;
+
+          verifyNoFlagInlineValue(inlineValue);
 
           // Otherwise keep scope open, to capture next value
         } else {
@@ -191,11 +193,7 @@ export default function parse<T extends object = {}>(
         positionals.push(arg);
       }
     } catch (error) {
-      if (error instanceof ParseError) {
-        errors.push(error);
-      } else if (error instanceof Error) {
-        errors.push(new ParseError(error.message, arg));
-      }
+      errors.push(new ParseError(error.message, arg));
 
       // Commit open scope and continue
       commitScope();
@@ -207,17 +205,13 @@ export default function parse<T extends object = {}>(
 
   // Final checks
   Object.keys(optionConfigs).forEach(key => {
-    const config: OptionConfig = optionConfigs[key as keyof T];
-    const value = options[key];
+    try {
+      const config: OptionConfig = optionConfigs[key as keyof T];
+      const value = options[key];
 
-    if (Array.isArray(value)) {
-      if (config.arity && value.length > 0) {
-        invariant(
-          value.length === config.arity,
-          `Not enough arity arguments. Require ${config.arity}, found ${value.length}.`,
-          `--${key}`,
-        );
-      }
+      verifyArityIsMet(config, value);
+    } catch (error) {
+      errors.push(new ValidationError(error.message));
     }
   });
 

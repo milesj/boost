@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 
 import { Scope } from '../types';
-import ParseError from '../ParseError';
 
 function updateMultipleValues(scope: Scope, value: string) {
   // Create array if none set yet
@@ -17,10 +16,7 @@ function updateSingleValue(scope: Scope, value: string) {
 
   // Verify value against a list of choices
   if (Array.isArray(config.choices) && !config.choices.includes(value)) {
-    throw new ParseError(
-      `Invalid value, must be one of ${config.choices.join(', ')}, found ${value}.`,
-      scope.arg,
-    );
+    throw new Error(`Invalid value, must be one of ${config.choices.join(', ')}, found ${value}.`);
   }
 
   scope.value = value;

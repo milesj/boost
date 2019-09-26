@@ -1,5 +1,6 @@
 import parse from '../src/parse';
 import ParseError from '../src/ParseError';
+import ValidationError from '../src/ValidationError';
 import { SingleOption, Flag, MultipleOption } from '../src/types';
 
 describe('parse()', () => {
@@ -489,7 +490,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
-          errors: [new ParseError('Not enough arity arguments. Require 2, found 1.')],
+          errors: [new ValidationError('Not enough arity arguments. Require 2, found 1.')],
           options: {
             opts: ['foo'],
           },
@@ -992,7 +993,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        errors: [new ParseError('Flags and flag groups may not use inline values.')],
+        errors: [new ParseError('Flags and flag groups may not use inline values.', '--flag=123')],
         options: {
           flag: true,
         },
