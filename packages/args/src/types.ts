@@ -15,6 +15,7 @@ export interface AliasMap {
 }
 
 export interface Arguments<T extends object = {}> {
+  command: string[];
   errors: Error[];
   options: T;
   positionals: ArgList;

@@ -103,6 +103,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
+      command: [],
       errors: [],
       options: {
         fooBar: 'baz',
@@ -123,6 +124,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
+      command: [],
       errors: [],
       options: {
         fooBar: 'baz',
@@ -144,6 +146,7 @@ describe('parse()', () => {
     );
 
     expect(result).toEqual({
+      command: [],
       errors: [],
       options: {
         foo123: 'val1',
@@ -165,6 +168,7 @@ describe('parse()', () => {
     });
 
     expect(result).toEqual({
+      command: [],
       errors: [],
       options: {
         flag: true,
@@ -178,6 +182,7 @@ describe('parse()', () => {
     const result = parse(['foo', 'bar', 'baz'], { options: {} });
 
     expect(result).toEqual({
+      command: [],
       errors: [],
       options: {},
       positionals: ['foo', 'bar', 'baz'],
@@ -195,6 +200,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'foo',
@@ -212,6 +218,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'foo',
@@ -229,6 +236,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'foo',
@@ -246,6 +254,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'foobar',
@@ -263,6 +272,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'baz',
@@ -287,6 +297,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [new ValidationError('Invalid date.', 'opt')],
           options: {
             opt: '2019-01',
@@ -310,6 +321,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [
             new ValidationError('Invalid value, must be one of foo, bar, baz, found qux.', 'opt'),
           ],
@@ -335,6 +347,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             flag: true,
@@ -356,6 +369,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['foo', 'bar', 'baz'],
@@ -376,6 +390,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['foo', 'bar', 'baz'],
@@ -397,6 +412,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             flag: true,
@@ -419,6 +435,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             flag: true,
@@ -441,6 +458,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: [],
@@ -458,6 +476,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['qux'],
@@ -475,6 +494,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['baz'],
@@ -492,6 +512,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['foo', 'foo', 'foo'],
@@ -516,6 +537,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [new ValidationError('All values must be >= 5.', 'num')],
           options: {
             nums: [1, 5, 10],
@@ -535,6 +557,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['foo', 'bar'],
@@ -552,6 +575,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: ['foo', 'bar'],
@@ -573,6 +597,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             ars: [123, 456],
@@ -591,6 +616,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [new ValidationError('Not enough arity arguments. Require 2, found 1.', 'opts')],
           options: {
             opts: ['foo'],
@@ -608,6 +634,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opts: [],
@@ -627,6 +654,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'foo',
@@ -644,6 +672,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: 'foo',
@@ -674,6 +703,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             host: '127.0.0.1',
@@ -705,6 +735,7 @@ describe('parse()', () => {
         );
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             bar: false,
@@ -728,6 +759,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: 'foobar',
@@ -745,6 +777,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: '',
@@ -762,6 +795,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: 'foo\nbar',
@@ -779,6 +813,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: 'foo\tbar baz',
@@ -796,6 +831,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: '123456',
@@ -814,6 +850,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: char,
@@ -831,6 +868,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             opt: char,
@@ -849,6 +887,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opts: SPECIAL_CHARS,
@@ -870,6 +909,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: 'baz',
@@ -889,6 +929,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           num: 123,
@@ -906,6 +947,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           num: 0,
@@ -923,6 +965,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           num: 0,
@@ -940,6 +983,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           num: 123,
@@ -957,6 +1001,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           num: 123,
@@ -978,6 +1023,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           opt: 2,
@@ -996,6 +1042,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             num: Number(char),
@@ -1013,6 +1060,7 @@ describe('parse()', () => {
         });
 
         expect(result).toEqual({
+          command: [],
           errors: [],
           options: {
             num: Number(char),
@@ -1031,6 +1079,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           nums: SPECIAL_NUMBERS.map(no => Number(no)),
@@ -1048,6 +1097,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           num: Number.MAX_SAFE_INTEGER,
@@ -1071,6 +1121,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           flag: true,
@@ -1091,6 +1142,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           flag: false,
@@ -1108,6 +1160,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           flag: true,
@@ -1125,7 +1178,10 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        errors: [new ParseError('Flags and flag groups may not use inline values.', '--flag=123')],
+        command: [],
+        errors: [
+          new ParseError('Flags and flag groups may not use inline values.', '--flag=123', 0),
+        ],
         options: {
           flag: true,
         },
@@ -1142,6 +1198,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           flag: false,
@@ -1162,10 +1219,135 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
+        command: [],
         errors: [],
         options: {
           flag: true,
         },
+        positionals: [],
+        rest: [],
+      });
+    });
+  });
+
+  describe('commands', () => {
+    it('sets as a positional if no commands defined', () => {
+      const result = parse<{}>(['cmd', 'foo', 'bar'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        positionals: ['cmd', 'foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('sets as a command if defined', () => {
+      const result = parse<{}>(['cmd', 'foo', 'bar'], {
+        commands: ['cmd', 'command'],
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: ['cmd'],
+        errors: [],
+        options: {},
+        positionals: ['foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('sets as a command if defined and using sub-commands', () => {
+      const result = parse<{}>(['command:sub', 'foo', 'bar'], {
+        commands: ['cmd', 'command'],
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: ['command', 'sub'],
+        errors: [],
+        options: {},
+        positionals: ['foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('errors if same command found multiple times', () => {
+      const result = parse<{}>(['cmd', 'foo', 'cmd', 'bar'], {
+        commands: ['cmd', 'command'],
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: ['cmd'],
+        errors: [
+          new ParseError('Command has been defined as "cmd", received another "cmd".', 'cmd', 2),
+        ],
+        options: {},
+        positionals: ['foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('errors if multiple commands are passed', () => {
+      const result = parse<{}>(['cmd', 'foo', 'command', 'bar'], {
+        commands: ['cmd', 'command'],
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: ['cmd'],
+        errors: [
+          new ParseError(
+            'Command has been defined as "cmd", received another "command".',
+            'command',
+            2,
+          ),
+        ],
+        options: {},
+        positionals: ['foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('errors if command is passed after positionals', () => {
+      const result = parse<{}>(['foo', 'cmd', 'bar'], {
+        commands: ['cmd', 'command'],
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ParseError(
+            'Command must be passed as the first non-option, non-positional argument.',
+            'cmd',
+            1,
+          ),
+        ],
+        options: {},
+        positionals: ['foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('errors if command has an invalid format', () => {
+      const result = parse<{}>([], {
+        commands: ['comm-and'],
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError(
+            'Invalid "comm-and" command format. Must be letters, numbers, and underscores.',
+          ),
+        ],
+        options: {},
         positionals: [],
         rest: [],
       });

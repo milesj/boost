@@ -28,13 +28,19 @@ import verifyGroupFlagIsOption from './checks/verifyGroupFlagIsOption';
 import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
 import verifyUniqueShortName from './checks/verifyUniqueShortName';
 import ParseError from './ParseError';
+import ValidationError from './ValidationError';
+import isCommand from './helpers/isCommand';
+import verifyCommandOrder from './checks/verifyCommandOrder';
+import verifyCommandFormat from './checks/verifyCommandFormat';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
+// command - An optional "command" being ran that allows for branching functionality.
+//    Supports alnum chars and underscores. Sub-commands are separated with ":".
 // option - An optional argument that requires a value(s). Starts with "--" (long) or "-" (short).
 // flag - A specialized option that only supports booleans. Can be toggled on an off (default).
 // positional arg - An optional or required argument, that is not an option or option value,
-//    supports any raw value, and enforces a defined order.
+//    Supports any raw value, and enforces a defined order.
 // rest arg - All remaining arguments that appear after a stand alone "--".
 //    Usually passed to subsequent scripts.
 // scope - Argument currently being parsed.
@@ -47,6 +53,7 @@ import ParseError from './ParseError';
 // Choices - List of valid values to choose from. Errors otherwise.
 
 // TODO
+// Commands
 // Positionals
 // Required by
 
@@ -63,7 +70,9 @@ export default function parse<T extends object = {}>(
   const positionals: ArgList = [];
   const rest: ArgList = [];
   const mapping: AliasMap = {};
+  let command = '';
   let currentScope: Scope | null = null;
+  let positionalIndex = 0;
 
   function commitScope() {
     if (!currentScope) {
@@ -98,6 +107,15 @@ export default function parse<T extends object = {}>(
       commitScope();
     }
   }
+
+  // Verify commands
+  commandConfigs.forEach(cmd => {
+    try {
+      verifyCommandFormat(cmd);
+    } catch (error) {
+      errors.push(new ValidationError(error.message));
+    }
+  });
 
   // Map default values and short names
   errors.push(
@@ -184,12 +202,18 @@ export default function parse<T extends object = {}>(
       } else if (currentScope) {
         captureValue(arg);
 
+        // Commands
+      } else if (isCommand(arg, commandConfigs)) {
+        verifyCommandOrder(arg, command, positionals.length);
+
+        command = arg;
+
         // Positionals
       } else {
         positionals.push(arg);
       }
     } catch (error) {
-      errors.push(new ParseError(error.message, arg));
+      errors.push(new ParseError(error.message, arg, i));
 
       // Commit open scope and continue
       commitScope();
@@ -212,6 +236,7 @@ export default function parse<T extends object = {}>(
   );
 
   return {
+    command: command === '' ? [] : command.split(':'),
     errors,
     options: options as T,
     positionals,
