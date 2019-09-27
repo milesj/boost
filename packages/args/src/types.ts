@@ -2,7 +2,15 @@ export type Argv = string[];
 
 export type ArgList = string[];
 
-export interface Mapping {
+export type PrimitiveType = boolean | number | string;
+
+export type ValueType = PrimitiveType | number[] | string[];
+
+export interface OptionMap {
+  [key: string]: ValueType;
+}
+
+export interface AliasMap {
   [name: string]: string;
 }
 
@@ -13,21 +21,13 @@ export interface Arguments<T extends object = {}> {
   rest: ArgList;
 }
 
-export type ArgumentOptions<T extends object = {}> = {
-  [K in keyof T]: InferOptionConfig<T[K]>;
-};
-
-export type ArgumentPositionals = Positional<unknown>[];
-
-export type PrimitiveType = boolean | number | string;
-
-export type ValueType = PrimitiveType | number[] | string[];
-
-export interface ValueMap {
-  [key: string]: ValueType;
-}
-
 // PARSER
+
+export interface ParserOptions<T extends object = {}> {
+  commands?: string[];
+  options: { [K in keyof T]: InferOptionConfig<T[K]> };
+  positional?: Positional<unknown>[];
+}
 
 export interface Scope {
   config: OptionConfig;

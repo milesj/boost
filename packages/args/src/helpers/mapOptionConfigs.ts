@@ -1,9 +1,9 @@
-import { OptionConfigMap, ValueMap, OptionConfig, ValueType } from '../types';
+import { OptionConfigMap, OptionMap, OptionConfig, ValueType } from '../types';
 import ValidationError from '../ValidationError';
 
 export default function mapOptionConfigs(
   configs: OptionConfigMap,
-  options: ValueMap,
+  options: OptionMap,
   cb: (data: { key: string; config: OptionConfig; value: ValueType }) => void,
 ): Error[] {
   const errors: Error[] = [];

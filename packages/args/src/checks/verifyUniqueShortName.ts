@@ -1,6 +1,6 @@
-import { Mapping, ShortOptionName } from '../types';
+import { AliasMap, ShortOptionName } from '../types';
 
-export default function verifyUniqueShortName(short: ShortOptionName, map: Mapping) {
+export default function verifyUniqueShortName(short: ShortOptionName, map: AliasMap) {
   if (map[short]) {
     throw new Error(`Short option "${short}" has already been defined for "${map[short]}".`);
   }

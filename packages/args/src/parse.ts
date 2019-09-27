@@ -4,12 +4,11 @@ import {
   Arguments,
   Argv,
   ArgList,
-  ArgumentOptions,
-  ArgumentPositionals,
   Scope,
-  Mapping,
-  ValueMap,
+  AliasMap,
+  OptionMap,
   ShortOptionName,
+  ParserOptions,
 } from './types';
 import getDefaultValue from './helpers/getDefaultValue';
 import isFlagGroup from './helpers/isFlagGroup';
@@ -53,14 +52,17 @@ import ParseError from './ParseError';
 
 export default function parse<T extends object = {}>(
   argv: Argv,
-  optionConfigs: ArgumentOptions<T>,
-  positionalConfigs: ArgumentPositionals = [],
+  {
+    commands: commandConfigs = [],
+    options: optionConfigs,
+    positional: positionalConfigs = [],
+  }: ParserOptions<T>,
 ): Arguments<T> {
   const errors: Error[] = [];
-  const options: ValueMap = {};
+  const options: OptionMap = {};
   const positionals: ArgList = [];
   const rest: ArgList = [];
-  const mapping: Mapping = {};
+  const mapping: AliasMap = {};
   let currentScope: Scope | null = null;
 
   function commitScope() {

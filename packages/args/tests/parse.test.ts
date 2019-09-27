@@ -94,9 +94,11 @@ describe('parse()', () => {
 
   it('supports camel case option names by default', () => {
     const result = parse<{ fooBar: string }>(['--fooBar', 'baz'], {
-      fooBar: {
-        description: '',
-        type: 'string',
+      options: {
+        fooBar: {
+          description: '',
+          type: 'string',
+        },
       },
     });
 
@@ -112,9 +114,11 @@ describe('parse()', () => {
 
   it('converts dashed option names to camel case', () => {
     const result = parse<{ fooBar: string }>(['--foo-bar', 'baz'], {
-      fooBar: {
-        description: '',
-        type: 'string',
+      options: {
+        fooBar: {
+          description: '',
+          type: 'string',
+        },
       },
     });
 
@@ -132,8 +136,10 @@ describe('parse()', () => {
     const result = parse<{ foo123: string; bar456: string }>(
       ['--foo123', 'val1', '--bar-456', 'val2'],
       {
-        foo123: optConfig,
-        bar456: optConfig,
+        options: {
+          foo123: optConfig,
+          bar456: optConfig,
+        },
       },
     );
 
@@ -150,9 +156,11 @@ describe('parse()', () => {
 
   it('captures all rest arguments after `--`', () => {
     const result = parse<{ flag: boolean }>(['--flag', '--', '--foo', '-B', 'baz'], {
-      flag: {
-        description: '',
-        type: 'boolean',
+      options: {
+        flag: {
+          description: '',
+          type: 'boolean',
+        },
       },
     });
 
@@ -167,7 +175,7 @@ describe('parse()', () => {
   });
 
   it('captures bare arguments as positionals', () => {
-    const result = parse(['foo', 'bar', 'baz'], {});
+    const result = parse(['foo', 'bar', 'baz'], { options: {} });
 
     expect(result).toEqual({
       errors: [],
@@ -181,7 +189,9 @@ describe('parse()', () => {
     describe('single', () => {
       it('sets value from next subsequent arg', () => {
         const result = parse<{ opt: string }>(['--opt', 'foo'], {
-          opt: optConfig,
+          options: {
+            opt: optConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -196,7 +206,9 @@ describe('parse()', () => {
 
       it('sets value from right hand side of `=` (inline value)', () => {
         const result = parse<{ opt: string }>(['--opt=foo'], {
-          opt: optConfig,
+          options: {
+            opt: optConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -211,7 +223,9 @@ describe('parse()', () => {
 
       it('only captures the next subsequent arg', () => {
         const result = parse<{ opt: string }>(['--opt', 'foo', 'bar'], {
-          opt: optConfig,
+          options: {
+            opt: optConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -226,7 +240,9 @@ describe('parse()', () => {
 
       it('uses default value if no subsequent arg passed', () => {
         const result = parse<{ opt: string }>(['--opt'], {
-          opt: optConfigExpanded,
+          options: {
+            opt: optConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -241,7 +257,9 @@ describe('parse()', () => {
 
       it('subsequent options of the same name override previous value', () => {
         const result = parse<{ opt: string }>(['--opt', 'foo', '--opt', 'bar', '--opt', 'baz'], {
-          opt: optConfigExpanded,
+          options: {
+            opt: optConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -256,12 +274,14 @@ describe('parse()', () => {
 
       it('runs custom validation using `validate`', () => {
         const result = parse<{ opt: string }>(['--opt', '2019-01'], {
-          opt: {
-            ...optConfigExpanded,
-            validate(value) {
-              if (!value.match(/^\d{4}-\d{2}-\d{2}$/u)) {
-                throw new Error('Invalid date.');
-              }
+          options: {
+            opt: {
+              ...optConfigExpanded,
+              validate(value) {
+                if (!value.match(/^\d{4}-\d{2}-\d{2}$/u)) {
+                  throw new Error('Invalid date.');
+                }
+              },
             },
           },
         });
@@ -280,10 +300,12 @@ describe('parse()', () => {
     describe('single - choices', () => {
       it('errors when an invalid choice value is used', () => {
         const result = parse<{ opt: string }>(['--opt', 'qux'], {
-          opt: {
-            choices: ['foo', 'bar', 'baz'],
-            description: '',
-            type: 'string',
+          options: {
+            opt: {
+              choices: ['foo', 'bar', 'baz'],
+              description: '',
+              type: 'string',
+            },
           },
         });
 
@@ -305,8 +327,10 @@ describe('parse()', () => {
         const result = parse<{ flag: boolean; opts: string[] }>(
           ['--opts', 'foo', 'bar', '--flag', 'baz'],
           {
-            flag: flagConfig,
-            opts: optsConfig,
+            options: {
+              flag: flagConfig,
+              opts: optsConfig,
+            },
           },
         );
 
@@ -325,7 +349,9 @@ describe('parse()', () => {
         const result = parse<{ opts: string[] }>(
           ['arg', '--opts', 'foo', '--opts', 'bar', '--opts', 'baz'],
           {
-            opts: optsConfigExpanded,
+            options: {
+              opts: optsConfigExpanded,
+            },
           },
         );
 
@@ -343,7 +369,9 @@ describe('parse()', () => {
         const result = parse<{ opts: string[] }>(
           ['arg', '--opts=foo', '--opts=bar', '--opts=baz'],
           {
-            opts: optsConfigExpanded,
+            options: {
+              opts: optsConfigExpanded,
+            },
           },
         );
 
@@ -361,8 +389,10 @@ describe('parse()', () => {
         const result = parse<{ flag: boolean; opts: string[] }>(
           ['--opts', 'foo', '--opts=bar', '--flag', '-s', 'baz', '-s=qux'],
           {
-            flag: flagConfig,
-            opts: optsConfigExpanded,
+            options: {
+              flag: flagConfig,
+              opts: optsConfigExpanded,
+            },
           },
         );
 
@@ -381,8 +411,10 @@ describe('parse()', () => {
         const result = parse<{ flag: boolean; opts: string[] }>(
           ['--opts=foo', 'bar', 'baz', '--flag'],
           {
-            flag: flagConfig,
-            opts: optsConfigExpanded,
+            options: {
+              flag: flagConfig,
+              opts: optsConfigExpanded,
+            },
           },
         );
 
@@ -399,10 +431,12 @@ describe('parse()', () => {
 
       it('sets default value to an empty array if `default` not defined', () => {
         const result = parse<{ opts: string[] }>([], {
-          opts: {
-            description: '',
-            multiple: true,
-            type: 'string',
+          options: {
+            opts: {
+              description: '',
+              multiple: true,
+              type: 'string',
+            },
           },
         });
 
@@ -418,7 +452,9 @@ describe('parse()', () => {
 
       it('inherits default value when nothing passed', () => {
         const result = parse<{ opts: string[] }>([], {
-          opts: optsConfigExpanded,
+          options: {
+            opts: optsConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -433,7 +469,9 @@ describe('parse()', () => {
 
       it('overwrites default value if a value is passed', () => {
         const result = parse<{ opts: string[] }>(['--opts', 'baz'], {
-          opts: optsConfigExpanded,
+          options: {
+            opts: optsConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -448,7 +486,9 @@ describe('parse()', () => {
 
       it('doesnt unique or flatten duplicates', () => {
         const result = parse<{ opts: string[] }>(['-s=foo', 'foo', 'foo'], {
-          opts: optsConfigExpanded,
+          options: {
+            opts: optsConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -463,12 +503,14 @@ describe('parse()', () => {
 
       it('runs custom validation using `validate`', () => {
         const result = parse<{ nums: number[] }>(['--nums', '1', '5', '10'], {
-          nums: {
-            ...numsConfig,
-            validate(value) {
-              if (!value.every(val => val >= 5)) {
-                throw new Error('All values must be >= 5.');
-              }
+          options: {
+            nums: {
+              ...numsConfig,
+              validate(value) {
+                if (!value.every(val => val >= 5)) {
+                  throw new Error('All values must be >= 5.');
+                }
+              },
             },
           },
         });
@@ -487,7 +529,9 @@ describe('parse()', () => {
     describe('multiple - arity', () => {
       it('captures values up until the arity count', () => {
         const result = parse<{ opts: string[] }>(['--opts', 'foo', 'bar', 'baz'], {
-          opts: optsConfigArity,
+          options: {
+            opts: optsConfigArity,
+          },
         });
 
         expect(result).toEqual({
@@ -502,7 +546,9 @@ describe('parse()', () => {
 
       it('works with short names and inline values', () => {
         const result = parse<{ opts: string[] }>(['-s', 'foo', '-s=bar', 'baz'], {
-          opts: optsConfigArity,
+          options: {
+            opts: optsConfigArity,
+          },
         });
 
         expect(result).toEqual({
@@ -519,8 +565,10 @@ describe('parse()', () => {
         const result = parse<{ ars: number[]; opts: string[] }>(
           ['-s', 'foo', '--ars', '123', '456', '--opts=qux'],
           {
-            ars: { default: [], description: '', multiple: true, short: 'a', type: 'number' },
-            opts: optsConfigArity,
+            options: {
+              ars: { default: [], description: '', multiple: true, short: 'a', type: 'number' },
+              opts: optsConfigArity,
+            },
           },
         );
 
@@ -537,7 +585,9 @@ describe('parse()', () => {
 
       it('errors if not enough values are captured', () => {
         const result = parse<{ opts: string[] }>(['--opts', 'foo'], {
-          opts: optsConfigArity,
+          options: {
+            opts: optsConfigArity,
+          },
         });
 
         expect(result).toEqual({
@@ -552,7 +602,9 @@ describe('parse()', () => {
 
       it('doesnt error if no values but arity is enabled', () => {
         const result = parse<{ opts: string[] }>([], {
-          opts: optsConfigArity,
+          options: {
+            opts: optsConfigArity,
+          },
         });
 
         expect(result).toEqual({
@@ -569,7 +621,9 @@ describe('parse()', () => {
     describe('short names', () => {
       it('expands short name and sets value', () => {
         const result = parse<{ opt: string }>(['-O', 'foo'], {
-          opt: optConfigExpanded,
+          options: {
+            opt: optConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -584,7 +638,9 @@ describe('parse()', () => {
 
       it('expands short name and sets inline value', () => {
         const result = parse<{ opt: string }>(['-O=foo'], {
-          opt: optConfigExpanded,
+          options: {
+            opt: optConfigExpanded,
+          },
         });
 
         expect(result).toEqual({
@@ -601,16 +657,18 @@ describe('parse()', () => {
         const result = parse<{ host: string; opt: string; port: number }>(
           ['-O', 'foo', '-h', '127.0.0.1', '-p', '1337'],
           {
-            host: {
-              description: '',
-              short: 'h',
-              type: 'string',
-            },
-            opt: optConfigExpanded,
-            port: {
-              description: '',
-              short: 'p',
-              type: 'number',
+            options: {
+              host: {
+                description: '',
+                short: 'h',
+                type: 'string',
+              },
+              opt: optConfigExpanded,
+              port: {
+                description: '',
+                short: 'p',
+                type: 'number',
+              },
             },
           },
         );
@@ -637,10 +695,12 @@ describe('parse()', () => {
         const result = parse<{ foo: boolean; bar: boolean; baz: boolean; qux: boolean }>(
           ['random', '-ZqF', 'arg'],
           {
-            bar: { ...baseConfig, short: 'b' },
-            baz: { ...baseConfig, short: 'Z' },
-            foo: { ...baseConfig, short: 'F' },
-            qux: { ...baseConfig, short: 'q' },
+            options: {
+              bar: { ...baseConfig, short: 'b' },
+              baz: { ...baseConfig, short: 'Z' },
+              foo: { ...baseConfig, short: 'F' },
+              qux: { ...baseConfig, short: 'q' },
+            },
           },
         );
 
@@ -662,7 +722,9 @@ describe('parse()', () => {
   describe('string options', () => {
     it('inherits default value when nothing passed', () => {
       const result = parse<{ opt: string }>([], {
-        opt: optConfigExpanded,
+        options: {
+          opt: optConfigExpanded,
+        },
       });
 
       expect(result).toEqual({
@@ -677,7 +739,9 @@ describe('parse()', () => {
 
     it('sets to empty string when `default` not defined', () => {
       const result = parse<{ opt: string }>([], {
-        opt: optConfig,
+        options: {
+          opt: optConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -692,7 +756,9 @@ describe('parse()', () => {
 
     it('supports newlines in string', () => {
       const result = parse<{ opt: string }>(['--opt', 'foo\nbar'], {
-        opt: optConfig,
+        options: {
+          opt: optConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -707,7 +773,9 @@ describe('parse()', () => {
 
     it('supports other whitespace characters in string', () => {
       const result = parse<{ opt: string }>(['--opt', 'foo\tbar baz'], {
-        opt: optConfig,
+        options: {
+          opt: optConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -722,7 +790,9 @@ describe('parse()', () => {
 
     it('should not convert number like strings to numbers', () => {
       const result = parse<{ opt: string }>(['--opt', '123456'], {
-        opt: optConfig,
+        options: {
+          opt: optConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -738,7 +808,9 @@ describe('parse()', () => {
     SPECIAL_CHARS.forEach(char => {
       it(`supports "${char}"`, () => {
         const result = parse<{ opt: string }>(['--opt', char], {
-          opt: optConfig,
+          options: {
+            opt: optConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -753,7 +825,9 @@ describe('parse()', () => {
 
       it(`supports "${char}" when using an inline value`, () => {
         const result = parse<{ opt: string }>([`--opt=${char}`], {
-          opt: optConfig,
+          options: {
+            opt: optConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -769,7 +843,9 @@ describe('parse()', () => {
 
     it('supports capturing multiples of all special chars', () => {
       const result = parse<{ opts: string[] }>(['--opts', ...SPECIAL_CHARS], {
-        opts: optsConfig,
+        options: {
+          opts: optsConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -784,10 +860,12 @@ describe('parse()', () => {
 
     it('sets value based on a list of choices', () => {
       const result = parse<{ opt: string }>(['--opt', 'baz'], {
-        opt: {
-          choices: ['foo', 'bar', 'baz'],
-          description: '',
-          type: 'string',
+        options: {
+          opt: {
+            choices: ['foo', 'bar', 'baz'],
+            description: '',
+            type: 'string',
+          },
         },
       });
 
@@ -805,7 +883,9 @@ describe('parse()', () => {
   describe('number options', () => {
     it('inherits default value when nothing passed', () => {
       const result = parse<{ num: number }>([], {
-        num: numConfigExpanded,
+        options: {
+          num: numConfigExpanded,
+        },
       });
 
       expect(result).toEqual({
@@ -820,7 +900,9 @@ describe('parse()', () => {
 
     it('sets to zero when `default` not defined', () => {
       const result = parse<{ num: number }>([], {
-        num: numConfig,
+        options: {
+          num: numConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -835,7 +917,9 @@ describe('parse()', () => {
 
     it('sets to zero when option passed is an invalid number', () => {
       const result = parse<{ num: number }>(['--num', 'foo'], {
-        num: numConfig,
+        options: {
+          num: numConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -850,7 +934,9 @@ describe('parse()', () => {
 
     it('sets value when option is passed', () => {
       const result = parse<{ num: number }>(['--num', '123'], {
-        num: numConfig,
+        options: {
+          num: numConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -865,7 +951,9 @@ describe('parse()', () => {
 
     it('sets value when option is passed and is using inline value', () => {
       const result = parse<{ num: number }>(['--num=123'], {
-        num: numConfig,
+        options: {
+          num: numConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -880,10 +968,12 @@ describe('parse()', () => {
 
     it('sets value based on a list of choices', () => {
       const result = parse<{ opt: number }>(['--opt', '2'], {
-        opt: {
-          choices: [1, 2, 3],
-          description: '',
-          type: 'number',
+        options: {
+          opt: {
+            choices: [1, 2, 3],
+            description: '',
+            type: 'number',
+          },
         },
       });
 
@@ -900,7 +990,9 @@ describe('parse()', () => {
     SPECIAL_NUMBERS.forEach(char => {
       it(`supports "${char}"`, () => {
         const result = parse<{ num: number }>(['--num', char], {
-          num: numConfig,
+          options: {
+            num: numConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -915,7 +1007,9 @@ describe('parse()', () => {
 
       it(`supports "${char}" when using an inline value`, () => {
         const result = parse<{ num: number }>([`--num=${char}`], {
-          num: numConfig,
+          options: {
+            num: numConfig,
+          },
         });
 
         expect(result).toEqual({
@@ -931,7 +1025,9 @@ describe('parse()', () => {
 
     it('supports capturing multiples of all special numbers', () => {
       const result = parse<{ nums: number[] }>(['--nums', ...SPECIAL_NUMBERS], {
-        nums: numsConfig,
+        options: {
+          nums: numsConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -946,7 +1042,9 @@ describe('parse()', () => {
 
     it('converts `Number.MAX_SAFE_INTEGER` to a number', () => {
       const result = parse<{ num: number }>(['--num', String(Number.MAX_SAFE_INTEGER)], {
-        num: numConfig,
+        options: {
+          num: numConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -963,10 +1061,12 @@ describe('parse()', () => {
   describe('flags', () => {
     it('inherits default value when nothing passed', () => {
       const result = parse<{ flag: boolean }>([], {
-        flag: {
-          default: true,
-          description: '',
-          type: 'boolean',
+        options: {
+          flag: {
+            default: true,
+            description: '',
+            type: 'boolean',
+          },
         },
       });
 
@@ -982,9 +1082,11 @@ describe('parse()', () => {
 
     it('sets to `false` when `default` not defined', () => {
       const result = parse<{ flag: boolean }>([], {
-        flag: {
-          description: '',
-          type: 'boolean',
+        options: {
+          flag: {
+            description: '',
+            type: 'boolean',
+          },
         },
       });
 
@@ -1000,7 +1102,9 @@ describe('parse()', () => {
 
     it('sets to `true` when option passed', () => {
       const result = parse<{ flag: boolean }>(['--flag'], {
-        flag: flagConfig,
+        options: {
+          flag: flagConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -1015,7 +1119,9 @@ describe('parse()', () => {
 
     it('ignores inline value', () => {
       const result = parse<{ flag: boolean }>(['--flag=123'], {
-        flag: flagConfig,
+        options: {
+          flag: flagConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -1030,7 +1136,9 @@ describe('parse()', () => {
 
     it('negates value when option starts with `no-`', () => {
       const result = parse<{ flag: boolean }>(['--flag', '--no-flag'], {
-        flag: flagConfig,
+        options: {
+          flag: flagConfig,
+        },
       });
 
       expect(result).toEqual({
@@ -1045,9 +1153,11 @@ describe('parse()', () => {
 
     it('expands short name', () => {
       const result = parse<{ flag: boolean }>(['-F'], {
-        flag: {
-          ...flagConfig,
-          short: 'F',
+        options: {
+          flag: {
+            ...flagConfig,
+            short: 'F',
+          },
         },
       });
 

@@ -1,4 +1,4 @@
-import { Scope, OptionConfig, ValueMap, LongOptionName } from '../types';
+import { Scope, OptionConfig, OptionMap, LongOptionName } from '../types';
 
 function camelCase(value: string): string {
   return value.replace(/-([a-z0-9])/giu, (match, char) => char.toUpperCase());
@@ -7,7 +7,7 @@ function camelCase(value: string): string {
 export default function createScope(
   optionName: LongOptionName,
   optionConfigs: { [key: string]: OptionConfig },
-  options: ValueMap,
+  options: OptionMap,
 ): Scope {
   let name = optionName;
   let negated = false;
