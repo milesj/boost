@@ -30,14 +30,6 @@ export interface ParserOptions<T extends object = {}> {
   positional?: Positional<unknown>[];
 }
 
-export interface Scope {
-  config: OptionConfig;
-  flag: boolean;
-  name: LongOptionName;
-  negated: boolean;
-  value: string | string[] | undefined;
-}
-
 // ARGUMENT TYPES
 
 export interface Arg<T> {

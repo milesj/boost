@@ -1,4 +1,5 @@
-import { Scope, OptionConfig, OptionMap, LongOptionName } from '../types';
+import Scope from '../Scope';
+import { OptionConfig, OptionMap, LongOptionName } from '../types';
 
 function camelCase(value: string): string {
   return value.replace(/-([a-z0-9])/giu, (match, char) => char.toUpperCase());
@@ -24,21 +25,14 @@ export default function createScope(
   }
 
   // Create scope
-  const config = optionConfigs[name] || { type: 'string' };
-  const flag = config.type === 'boolean';
-  const scope: Scope = {
-    config,
-    flag,
-    name,
-    negated,
-    value: undefined,
-  };
+  const scope = new Scope(name, optionConfigs[name] || { type: 'string' });
+
+  scope.negated = negated;
 
   // When capturing multiples, we need to persist the array
   // so we can append. Avoid using the default array though.
-  if (config.multiple) {
-    // @ts-ignore I know types don't match, yolo
-    scope.value = options[name] === config.default ? [] : options[name];
+  if (scope.config.multiple) {
+    scope.value = options[name] === scope.config.default ? [] : (options[name] as string);
   }
 
   return scope;

@@ -4,7 +4,6 @@ import {
   Arguments,
   Argv,
   ArgList,
-  Scope,
   AliasMap,
   OptionMap,
   ShortOptionName,
@@ -18,11 +17,10 @@ import expandFlagGroup from './helpers/expandFlagGroup';
 import expandShortOption from './helpers/expandShortOption';
 import createScope from './helpers/createScope';
 import isOptionLike from './helpers/isOptionLike';
-import updateScopeValue from './helpers/updateScopeValue';
-import castValue from './helpers/castValue';
 import mapOptionConfigs from './helpers/mapOptionConfigs';
 import isCommand from './helpers/isCommand';
 import Checker from './Checker';
+import Scope from './Scope';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -44,7 +42,6 @@ import Checker from './Checker';
 // Choices - List of valid values to choose from. Errors otherwise.
 
 // TODO
-// Commands
 // Positionals
 // Required by
 
@@ -71,31 +68,10 @@ export default function parse<T extends object = {}>(
 
     // Set and cast value if defined
     if (currentScope.value !== undefined) {
-      options[currentScope.name] = castValue(currentScope.value, currentScope.config.type);
+      options[currentScope.name] = currentScope.finalValue;
     }
 
     currentScope = null;
-  }
-
-  function captureValue(value: string) {
-    if (!currentScope) {
-      return;
-    }
-
-    // Update the scope with this new value
-    updateScopeValue(currentScope, value);
-
-    // Commit scope after a value is found (must be last)
-    const { config } = currentScope;
-
-    if (
-      !config.multiple ||
-      (config.arity &&
-        Array.isArray(currentScope.value) &&
-        currentScope.value.length >= config.arity)
-    ) {
-      commitScope();
-    }
   }
 
   // Verify commands
@@ -186,13 +162,13 @@ export default function parse<T extends object = {}>(
 
         // Update scope value if an inline value exists
         if (inlineValue !== undefined) {
-          captureValue(inlineValue);
+          currentScope.captureValue(inlineValue, commitScope);
         }
       }
 
       // Option values
     } else if (currentScope) {
-      captureValue(arg);
+      currentScope.captureValue(arg, commitScope);
 
       // Commands
     } else if (isCommand(arg, commandConfigs)) {
