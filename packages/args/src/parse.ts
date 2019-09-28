@@ -8,6 +8,7 @@ import {
   OptionMap,
   ShortOptionName,
   ParserOptions,
+  PrimitiveType,
 } from './types';
 import getDefaultValue from './helpers/getDefaultValue';
 import isFlagGroup from './helpers/isFlagGroup';
@@ -21,6 +22,7 @@ import mapParserOptions from './helpers/mapParserOptions';
 import isCommand from './helpers/isCommand';
 import Checker from './Checker';
 import Scope from './Scope';
+import castValue from './helpers/castValue';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -41,18 +43,18 @@ import Scope from './Scope';
 // Arity count - Required number of argument values to consume for option multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
-export default function parse<T extends object = {}>(
+export default function parse<O extends object = {}, P extends unknown[] = ArgList>(
   argv: Argv,
-  parserOptions: ParserOptions<T>,
-): Arguments<T> {
+  parserOptions: ParserOptions<O>,
+): Arguments<O, P> {
   const {
     commands: commandConfigs = [],
     options: optionConfigs,
-    // positional: positionalConfigs = [],
+    positionals: positionalConfigs = [],
   } = parserOptions;
   const checker = new Checker();
   const options: OptionMap = {};
-  const positionals: ArgList = [];
+  const positionals: PrimitiveType[] = [];
   const rest: ArgList = [];
   const mapping: AliasMap = {};
   let command = '';
@@ -72,7 +74,7 @@ export default function parse<T extends object = {}>(
   }
 
   // Run validations and map defaults
-  mapParserOptions(parserOptions, options, {
+  mapParserOptions(parserOptions, options, positionals, {
     onCommand(cmd) {
       checker.validateCommandFormat(cmd);
     },
@@ -177,6 +179,10 @@ export default function parse<T extends object = {}>(
       }
 
       // Positionals
+    } else if (positionalConfigs[positionals.length]) {
+      const config = positionalConfigs[positionals.length];
+
+      positionals.push(castValue(arg, config.type) as PrimitiveType);
     } else {
       positionals.push(arg);
     }
@@ -186,19 +192,22 @@ export default function parse<T extends object = {}>(
   commitScope();
 
   // Run final checks
-  mapParserOptions(parserOptions, options, {
+  mapParserOptions(parserOptions, options, positionals, {
     onOption(config, value, name) {
-      checker.validateConfig(name, config, value);
+      checker.validateParsedOption(name, config, value);
       checker.validateArityIsMet(name, config, value);
       checker.validateChoiceIsMet(name, config, value);
+    },
+    onPositional(config, value, index) {
+      checker.validateParsedPositional(index, config, value);
     },
   });
 
   return {
     command: command === '' ? [] : command.split(':'),
     errors: [...checker.parseErrors, ...checker.validationErrors],
-    options: options as T,
-    positionals,
+    options: options as O,
+    positionals: positionals as P,
     rest,
   };
 }

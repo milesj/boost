@@ -1,3 +1,4 @@
+import castValue from './helpers/castValue';
 import { LongOptionName, OptionConfig, ValueType } from './types';
 
 export default class Scope {
@@ -19,29 +20,7 @@ export default class Scope {
   }
 
   get finalValue(): ValueType {
-    return this.castValue(this.value!);
-  }
-
-  castValue(value: unknown): ValueType {
-    const { type } = this.config;
-
-    if (Array.isArray(value)) {
-      return value.map(val => this.castValue(val)) as string[];
-    }
-
-    switch (type) {
-      case 'boolean':
-        return Boolean(value);
-
-      case 'number': {
-        const number = Number(value);
-
-        return Number.isNaN(number) ? 0 : number;
-      }
-
-      default:
-        return String(value);
-    }
+    return castValue(this.value, this.config.type);
   }
 
   captureValue(value: string, commit: () => void) {

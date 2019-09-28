@@ -14,11 +14,11 @@ export interface AliasMap {
   [name: string]: string;
 }
 
-export interface Arguments<T extends object = {}> {
+export interface Arguments<O extends object = {}, P extends unknown[] = ArgList> {
   command: string[];
   errors: Error[];
-  options: T;
-  positionals: ArgList;
+  options: O;
+  positionals: P;
   rest: ArgList;
 }
 
@@ -27,7 +27,7 @@ export interface Arguments<T extends object = {}> {
 export interface ParserOptions<T extends object = {}> {
   commands?: string[];
   options: { [K in keyof T]: InferOptionConfig<T[K]> };
-  positional?: Positional<unknown>[];
+  positionals?: PositionalConfig[];
 }
 
 // ARGUMENT TYPES
@@ -82,6 +82,10 @@ export type OptionConfig = Option<any> & {
   default?: ValueType;
   multiple?: boolean;
 };
+
+// Abstract type for easier typing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PositionalConfig = Positional<any>;
 
 export interface OptionConfigMap {
   [key: string]: OptionConfig;

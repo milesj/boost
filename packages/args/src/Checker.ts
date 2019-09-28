@@ -7,6 +7,7 @@ import {
   ShortOptionName,
   AliasMap,
   OptionConfigMap,
+  PositionalConfig,
 } from './types';
 import { COMMAND_FORMAT } from './constants';
 
@@ -103,13 +104,27 @@ export default class Checker {
     }
   }
 
-  validateConfig(option: LongOptionName, config: OptionConfig, value: unknown) {
+  validateParsedOption(option: LongOptionName, config: OptionConfig, value: unknown) {
     if (config.validate) {
       try {
         config.validate(value);
       } catch (error) {
         this.logInvalid(error.message, option);
       }
+    }
+  }
+
+  validateParsedPositional(index: number, config: PositionalConfig, value: unknown) {
+    if (config.validate) {
+      try {
+        config.validate(value);
+      } catch (error) {
+        this.logInvalid(error.message);
+      }
+    }
+
+    if (config.required && value === undefined) {
+      this.logInvalid(`Positional ${index} is required but value is undefined.`);
     }
   }
 
