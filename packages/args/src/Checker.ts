@@ -103,6 +103,16 @@ export default class Checker {
     }
   }
 
+  validateConfig(option: LongOptionName, config: OptionConfig, value: unknown) {
+    if (config.validate) {
+      try {
+        config.validate(value);
+      } catch (error) {
+        this.logInvalid(error.message, option);
+      }
+    }
+  }
+
   validateUniqueShortName(option: LongOptionName, short: ShortOptionName, map: AliasMap) {
     if (map[short]) {
       this.logInvalid(

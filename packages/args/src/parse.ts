@@ -17,7 +17,7 @@ import expandFlagGroup from './helpers/expandFlagGroup';
 import expandShortOption from './helpers/expandShortOption';
 import createScope from './helpers/createScope';
 import isOptionLike from './helpers/isOptionLike';
-import mapOptionConfigs from './helpers/mapOptionConfigs';
+import mapParserOptions from './helpers/mapParserOptions';
 import isCommand from './helpers/isCommand';
 import Checker from './Checker';
 import Scope from './Scope';
@@ -41,18 +41,15 @@ import Scope from './Scope';
 // Arity count - Required number of argument values to consume for option multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
-// TODO
-// Positionals
-// Required by
-
 export default function parse<T extends object = {}>(
   argv: Argv,
-  {
+  parserOptions: ParserOptions<T>,
+): Arguments<T> {
+  const {
     commands: commandConfigs = [],
     options: optionConfigs,
-    positional: positionalConfigs = [],
-  }: ParserOptions<T>,
-): Arguments<T> {
+    // positional: positionalConfigs = [],
+  } = parserOptions;
   const checker = new Checker();
   const options: OptionMap = {};
   const positionals: ArgList = [];
@@ -74,24 +71,25 @@ export default function parse<T extends object = {}>(
     currentScope = null;
   }
 
-  // Verify commands
-  commandConfigs.forEach(cmd => {
-    checker.validateCommandFormat(cmd);
+  // Run validations and map defaults
+  mapParserOptions(parserOptions, options, {
+    onCommand(cmd) {
+      checker.validateCommandFormat(cmd);
+    },
+    onOption(config, value, name) {
+      const { short } = config;
+
+      if (short) {
+        checker.validateUniqueShortName(name, short, mapping);
+        mapping[short] = name;
+      }
+
+      options[name] = getDefaultValue(config);
+      checker.validateDefaultValue(name, options[name], config);
+    },
   });
 
-  // Map default values and short names
-  mapOptionConfigs(optionConfigs, options, ({ key, config }) => {
-    const { short } = config;
-
-    if (short) {
-      checker.validateUniqueShortName(key, short, mapping);
-      mapping[short] = key;
-    }
-
-    options[key] = getDefaultValue(config);
-    checker.validateDefaultValue(key, options[key], config);
-  });
-
+  // Process each argument
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
 
@@ -188,17 +186,12 @@ export default function parse<T extends object = {}>(
   commitScope();
 
   // Run final checks
-  mapOptionConfigs(optionConfigs, options, ({ config, key, value }) => {
-    if (config.validate) {
-      try {
-        config.validate(value);
-      } catch (error) {
-        checker.logInvalid(error.message, key);
-      }
-    }
-
-    checker.validateArityIsMet(key, config, value);
-    checker.validateChoiceIsMet(key, config, value);
+  mapParserOptions(parserOptions, options, {
+    onOption(config, value, name) {
+      checker.validateConfig(name, config, value);
+      checker.validateArityIsMet(name, config, value);
+      checker.validateChoiceIsMet(name, config, value);
+    },
   });
 
   return {
