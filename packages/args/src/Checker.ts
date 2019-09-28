@@ -128,6 +128,26 @@ export default class Checker {
     }
   }
 
+  validatePositionalOrder(configs: PositionalConfig[]) {
+    const optionals: PositionalConfig[] = [];
+
+    configs.forEach(config => {
+      if (config.required) {
+        if (optionals.length > 0) {
+          const labels = optionals.map(opt => `"${opt.label}"`);
+
+          this.logInvalid(
+            `Optional positional(s) ${labels.join(', ')} found before required positional "${
+              config.label
+            }". Required must be first.`,
+          );
+        }
+      } else {
+        optionals.push(config);
+      }
+    });
+  }
+
   validateUniqueShortName(option: LongOptionName, short: ShortOptionName, map: AliasMap) {
     if (map[short]) {
       this.logInvalid(

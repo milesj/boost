@@ -1,7 +1,7 @@
 import { OptionMap, OptionConfig, ValueType, ParserOptions, PositionalConfig } from '../types';
 
-export default function mapParserOptions<T extends object>(
-  configs: ParserOptions<T>,
+export default function mapParserOptions<O extends object, P extends unknown[]>(
+  configs: ParserOptions<O, P>,
   options: OptionMap,
   positionals: ValueType[],
   {
@@ -22,7 +22,7 @@ export default function mapParserOptions<T extends object>(
 
   if (onOption) {
     Object.keys(configs.options).forEach(name => {
-      onOption(configs.options[name as keyof T], options[name], name);
+      onOption(configs.options[name as keyof O], options[name], name);
     });
   }
 

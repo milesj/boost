@@ -14,29 +14,101 @@ export interface AliasMap {
   [name: string]: string;
 }
 
-export interface Arguments<O extends object = {}, P extends unknown[] = ArgList> {
+// Determine option based on type. Only primitives are allowed.
+export type InferPositionalConfig<T> = T extends PrimitiveType ? Positional<T> : never;
+
+// This is janky but we dont have mapped array/tuples.
+// This assumes no more than 5 typed positionals, which is usually enough.
+export type MapPositionalConfig<T extends unknown[]> = T extends [
+  infer A,
+  infer B,
+  infer C,
+  infer D,
+  infer E,
+]
+  ? [
+      InferPositionalConfig<A>,
+      InferPositionalConfig<B>,
+      InferPositionalConfig<C>,
+      InferPositionalConfig<D>,
+      InferPositionalConfig<E>,
+    ]
+  : T extends [infer A, infer B, infer C, infer D]
+  ? [
+      InferPositionalConfig<A>,
+      InferPositionalConfig<B>,
+      InferPositionalConfig<C>,
+      InferPositionalConfig<D>,
+    ]
+  : T extends [infer A, infer B, infer C]
+  ? [InferPositionalConfig<A>, InferPositionalConfig<B>, InferPositionalConfig<C>]
+  : T extends [infer A, infer B]
+  ? [InferPositionalConfig<A>, InferPositionalConfig<B>]
+  : T extends [infer A]
+  ? [InferPositionalConfig<A>]
+  : never;
+
+// Like the above but for the types themselves.
+// If nothing, we just fallback to an array of primitive types.
+export type MapPositionalType<T extends unknown[]> = T extends [
+  infer A,
+  infer B,
+  infer C,
+  infer D,
+  infer E,
+]
+  ? [A, B, C, D, E, ...ArgList]
+  : T extends [infer A, infer B, infer C, infer D]
+  ? [A, B, C, D, ...ArgList]
+  : T extends [infer A, infer B, infer C]
+  ? [A, B, C, ...ArgList]
+  : T extends [infer A, infer B]
+  ? [A, B, ...ArgList]
+  : T extends [infer A]
+  ? [A, ...ArgList]
+  : T extends ArgList
+  ? ArgList
+  : never;
+
+// Determine option based on type.
+export type InferOptionConfig<T> = T extends boolean
+  ? Flag
+  : T extends number[] | string[]
+  ? MultipleOption<T>
+  : T extends number | string
+  ? SingleOption<T>
+  : never;
+
+// Map over option types to infer the configs.
+export type MapOptionConfig<T extends object> = { [K in keyof T]: InferOptionConfig<T[K]> };
+
+export interface Arguments<O extends object, P extends unknown[]> {
   command: string[];
   errors: Error[];
   options: O;
-  positionals: P;
+  positionals: MapPositionalType<P>;
   rest: ArgList;
 }
 
-// PARSER
-
-export interface ParserOptions<T extends object = {}> {
+export interface ParserOptions<T extends object, P extends unknown[]> {
   commands?: string[];
-  options: { [K in keyof T]: InferOptionConfig<T[K]> };
-  positionals?: PositionalConfig[];
+  options: MapOptionConfig<T>;
+  positionals?: MapPositionalConfig<P>;
 }
 
 // ARGUMENT TYPES
+
+export type InferArgType<T> = T extends boolean
+  ? 'boolean'
+  : T extends number | number[]
+  ? 'number'
+  : 'string';
 
 export interface Arg<T> {
   description: string;
   hidden?: boolean;
   usage?: string;
-  type?: T extends boolean ? 'boolean' : T extends number | number[] ? 'number' : 'string';
+  type: InferArgType<T>;
   validate?: (value: T) => void;
 }
 
@@ -64,15 +136,6 @@ export interface Positional<T> extends Arg<T> {
   label: LongOptionName;
   required?: boolean;
 }
-
-// Determine option based on type
-export type InferOptionConfig<T> = T extends boolean
-  ? Flag
-  : T extends number[] | string[]
-  ? MultipleOption<T>
-  : T extends number | string
-  ? SingleOption<T>
-  : never;
 
 // Abstract type for easier typing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

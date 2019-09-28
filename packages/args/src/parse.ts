@@ -9,6 +9,8 @@ import {
   ShortOptionName,
   ParserOptions,
   PrimitiveType,
+  MapPositionalType,
+  PositionalConfig,
 } from './types';
 import getDefaultValue from './helpers/getDefaultValue';
 import isFlagGroup from './helpers/isFlagGroup';
@@ -45,7 +47,7 @@ import castValue from './helpers/castValue';
 
 export default function parse<O extends object = {}, P extends unknown[] = ArgList>(
   argv: Argv,
-  parserOptions: ParserOptions<O>,
+  parserOptions: ParserOptions<O, P>,
 ): Arguments<O, P> {
   const {
     commands: commandConfigs = [],
@@ -74,6 +76,8 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
   }
 
   // Run validations and map defaults
+  checker.validatePositionalOrder(positionalConfigs);
+
   mapParserOptions(parserOptions, options, positionals, {
     onCommand(cmd) {
       checker.validateCommandFormat(cmd);
@@ -180,7 +184,7 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
 
       // Positionals
     } else if (positionalConfigs[positionals.length]) {
-      const config = positionalConfigs[positionals.length];
+      const config = positionalConfigs[positionals.length] as PositionalConfig;
 
       positionals.push(castValue(arg, config.type) as PrimitiveType);
     } else {
@@ -207,7 +211,7 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
     command: command === '' ? [] : command.split(':'),
     errors: [...checker.parseErrors, ...checker.validationErrors],
     options: options as O,
-    positionals: positionals as P,
+    positionals: positionals as MapPositionalType<P>,
     rest,
   };
 }

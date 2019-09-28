@@ -6,6 +6,7 @@ import { SingleOption, Flag, MultipleOption } from '../src/types';
 describe('parse()', () => {
   const optConfig: SingleOption<string> = {
     description: '',
+    type: 'string',
   };
 
   const optConfigExpanded: SingleOption<string> = {
@@ -27,6 +28,7 @@ describe('parse()', () => {
     description: '',
     multiple: true,
     short: 's',
+    type: 'string',
   };
 
   const optsConfigArity: MultipleOption<string[]> = {
@@ -1349,6 +1351,60 @@ describe('parse()', () => {
         ],
         options: {},
         positionals: [],
+        rest: [],
+      });
+    });
+  });
+
+  describe('positionals', () => {
+    it('errors if a required positional comes after an optional', () => {
+      const result = parse<{}, [string, string]>(['foo', 'bar'], {
+        options: {},
+        positionals: [
+          { description: '', label: 'first', required: false, type: 'string' },
+          { description: '', label: 'second', required: true, type: 'string' },
+        ],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError(
+            'Optional positional(s) "first" found before required positional "second". Required must be first.',
+          ),
+        ],
+        options: {},
+        positionals: ['foo', 'bar'],
+        rest: [],
+      });
+    });
+
+    it('casts to value if a config exists, otherwise is a string', () => {
+      const result = parse<{}, [number]>(['123', 'bar'], {
+        options: {},
+        positionals: [{ description: '', label: 'first', type: 'number' }],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        positionals: [123, 'bar'],
+        rest: [],
+      });
+    });
+
+    it('casts to boolean using keywords', () => {
+      const result = parse<{}, [boolean]>(['off', 'bar'], {
+        options: {},
+        positionals: [{ description: '', label: 'first', type: 'boolean' }],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        positionals: [false, 'bar'],
         rest: [],
       });
     });
