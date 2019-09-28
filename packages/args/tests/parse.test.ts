@@ -1320,7 +1320,7 @@ describe('parse()', () => {
       });
 
       expect(result).toEqual({
-        command: [],
+        command: ['cmd'],
         errors: [
           new ParseError(
             'Command must be passed as the first non-option, non-positional argument.',
@@ -1336,7 +1336,7 @@ describe('parse()', () => {
 
     it('errors if command has an invalid format', () => {
       const result = parse<{}>([], {
-        commands: ['comm-and'],
+        commands: ['comm_and'],
         options: {},
       });
 
@@ -1344,7 +1344,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Invalid "comm-and" command format. Must be letters, numbers, and underscores.',
+            'Invalid "comm_and" command format. Must be letters, numbers, and dashes.',
           ),
         ],
         options: {},

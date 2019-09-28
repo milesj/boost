@@ -21,17 +21,8 @@ import isOptionLike from './helpers/isOptionLike';
 import updateScopeValue from './helpers/updateScopeValue';
 import castValue from './helpers/castValue';
 import mapOptionConfigs from './helpers/mapOptionConfigs';
-import verifyArityIsMet from './checks/verifyArityIsMet';
-import verifyChoiceIsMet from './checks/verifyChoiceIsMet';
-import verifyDefaultValue from './checks/verifyDefaultValue';
-import verifyGroupFlagIsOption from './checks/verifyGroupFlagIsOption';
-import verifyNoFlagInlineValue from './checks/verifyNoFlagInlineValue';
-import verifyUniqueShortName from './checks/verifyUniqueShortName';
-import ParseError from './ParseError';
-import ValidationError from './ValidationError';
 import isCommand from './helpers/isCommand';
-import verifyCommandOrder from './checks/verifyCommandOrder';
-import verifyCommandFormat from './checks/verifyCommandFormat';
+import Checker from './Checker';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -65,14 +56,13 @@ export default function parse<T extends object = {}>(
     positional: positionalConfigs = [],
   }: ParserOptions<T>,
 ): Arguments<T> {
-  const errors: Error[] = [];
+  const checker = new Checker();
   const options: OptionMap = {};
   const positionals: ArgList = [];
   const rest: ArgList = [];
   const mapping: AliasMap = {};
   let command = '';
   let currentScope: Scope | null = null;
-  let positionalIndex = 0;
 
   function commitScope() {
     if (!currentScope) {
@@ -110,30 +100,27 @@ export default function parse<T extends object = {}>(
 
   // Verify commands
   commandConfigs.forEach(cmd => {
-    try {
-      verifyCommandFormat(cmd);
-    } catch (error) {
-      errors.push(new ValidationError(error.message));
-    }
+    checker.validateCommandFormat(cmd);
   });
 
   // Map default values and short names
-  errors.push(
-    ...mapOptionConfigs(optionConfigs, options, ({ key, config }) => {
-      const { short } = config;
+  mapOptionConfigs(optionConfigs, options, ({ key, config }) => {
+    const { short } = config;
 
-      if (short) {
-        verifyUniqueShortName(short, mapping);
-        mapping[short] = key;
-      }
+    if (short) {
+      checker.validateUniqueShortName(key, short, mapping);
+      mapping[short] = key;
+    }
 
-      options[key] = getDefaultValue(config);
-      verifyDefaultValue(key, options[key], config);
-    }),
-  );
+    options[key] = getDefaultValue(config);
+    checker.validateDefaultValue(key, options[key], config);
+  });
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
+
+    checker.arg = arg;
+    checker.argIndex = i;
 
     // Rest arguments found, extract remaining and exit
     if (arg === '--') {
@@ -141,26 +128,26 @@ export default function parse<T extends object = {}>(
       break;
     }
 
-    try {
-      // Options
-      if (isOptionLike(arg)) {
-        let optionName = arg;
-        let inlineValue;
+    // Options
+    if (isOptionLike(arg)) {
+      let optionName = arg;
+      let inlineValue;
 
-        // Commit previous scope
-        commitScope();
+      // Commit previous scope
+      commitScope();
 
-        // Extract option and inline value
-        if (optionName.includes('=')) {
-          [optionName, inlineValue] = optionName.split('=', 2);
-        }
+      // Extract option and inline value
+      if (optionName.includes('=')) {
+        [optionName, inlineValue] = optionName.split('=', 2);
+      }
 
+      try {
         // Flag group "-frl"
         if (isFlagGroup(optionName)) {
-          verifyNoFlagInlineValue(inlineValue);
+          checker.checkFlagHasNoInlineValue(inlineValue);
 
           expandFlagGroup(optionName.slice(1), mapping).forEach(flagName => {
-            verifyGroupFlagIsOption(flagName, optionConfigs);
+            checker.checkFlagGroupIsBoolOption(flagName, optionConfigs);
             options[flagName] = true;
           });
 
@@ -178,45 +165,46 @@ export default function parse<T extends object = {}>(
         } else {
           throw new Error('Unknown option format.');
         }
+      } catch (error) {
+        checker.logFailure(error.message);
 
-        // Parse and create next scope
-        const scope = createScope(optionName, optionConfigs, options);
-
-        // Flag found, so set value immediately and discard scope
-        if (scope.flag) {
-          options[scope.name] = !scope.negated;
-
-          verifyNoFlagInlineValue(inlineValue);
-
-          // Otherwise keep scope open, to capture next value
-        } else {
-          currentScope = scope;
-
-          // Update scope value if an inline value exists
-          if (inlineValue !== undefined) {
-            captureValue(inlineValue);
-          }
-        }
-
-        // Option values
-      } else if (currentScope) {
-        captureValue(arg);
-
-        // Commands
-      } else if (isCommand(arg, commandConfigs)) {
-        verifyCommandOrder(arg, command, positionals.length);
-
-        command = arg;
-
-        // Positionals
-      } else {
-        positionals.push(arg);
+        continue;
       }
-    } catch (error) {
-      errors.push(new ParseError(error.message, arg, i));
 
-      // Commit open scope and continue
-      commitScope();
+      // Parse and create next scope
+      const scope = createScope(optionName, optionConfigs, options);
+
+      // Flag found, so set value immediately and discard scope
+      if (scope.flag) {
+        options[scope.name] = !scope.negated;
+
+        checker.checkFlagHasNoInlineValue(inlineValue);
+
+        // Otherwise keep scope open, to capture next value
+      } else {
+        currentScope = scope;
+
+        // Update scope value if an inline value exists
+        if (inlineValue !== undefined) {
+          captureValue(inlineValue);
+        }
+      }
+
+      // Option values
+    } else if (currentScope) {
+      captureValue(arg);
+
+      // Commands
+    } else if (isCommand(arg, commandConfigs)) {
+      checker.checkCommandOrder(arg, command, positionals.length);
+
+      if (!command) {
+        command = arg;
+      }
+
+      // Positionals
+    } else {
+      positionals.push(arg);
     }
   }
 
@@ -224,20 +212,22 @@ export default function parse<T extends object = {}>(
   commitScope();
 
   // Run final checks
-  errors.push(
-    ...mapOptionConfigs(optionConfigs, options, ({ config, value }) => {
-      if (config.validate) {
+  mapOptionConfigs(optionConfigs, options, ({ config, key, value }) => {
+    if (config.validate) {
+      try {
         config.validate(value);
+      } catch (error) {
+        checker.logInvalid(error.message, key);
       }
+    }
 
-      verifyArityIsMet(config, value);
-      verifyChoiceIsMet(config, value);
-    }),
-  );
+    checker.validateArityIsMet(key, config, value);
+    checker.validateChoiceIsMet(key, config, value);
+  });
 
   return {
     command: command === '' ? [] : command.split(':'),
-    errors,
+    errors: [...checker.parseErrors, ...checker.validationErrors],
     options: options as T,
     positionals,
     rest,
