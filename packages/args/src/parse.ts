@@ -202,8 +202,8 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
       checker.validateArityIsMet(name, config, value);
       checker.validateChoiceIsMet(name, config, value);
     },
-    onPositional(config, value, index) {
-      checker.validateParsedPositional(index, config, value);
+    onPositional(config, value) {
+      checker.validateParsedPositional(config, value);
     },
   });
 

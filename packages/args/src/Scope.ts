@@ -38,7 +38,7 @@ export default class Scope {
     }
 
     // Commit scope when a single value is set,
-    // or when a multiple arity is met
+    // or when a multiple arity is met.
     if (
       !config.multiple ||
       (config.arity && Array.isArray(this.value) && this.value.length >= config.arity)

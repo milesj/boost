@@ -1379,6 +1379,21 @@ describe('parse()', () => {
       });
     });
 
+    it('errors if a required positional is undefined', () => {
+      const result = parse<{}, [string]>([], {
+        options: {},
+        positionals: [{ description: '', label: 'first', required: true, type: 'string' }],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ValidationError('Positional "first" is required but value is undefined.')],
+        options: {},
+        positionals: [],
+        rest: [],
+      });
+    });
+
     it('casts to value if a config exists, otherwise is a string', () => {
       const result = parse<{}, [number]>(['123', 'bar'], {
         options: {},
@@ -1395,16 +1410,46 @@ describe('parse()', () => {
     });
 
     it('casts to boolean using keywords', () => {
-      const result = parse<{}, [boolean]>(['off', 'bar'], {
+      const result = parse<{}, [boolean, string, boolean]>(['off', 'bar', 'on'], {
         options: {},
-        positionals: [{ description: '', label: 'first', type: 'boolean' }],
+        positionals: [
+          { description: '', label: 'first', type: 'boolean' },
+          { description: '', label: 'second', type: 'string' },
+          { description: '', label: 'third', type: 'boolean' },
+        ],
       });
 
       expect(result).toEqual({
         command: [],
         errors: [],
         options: {},
-        positionals: [false, 'bar'],
+        positionals: [false, 'bar', true],
+        rest: [],
+      });
+    });
+
+    it('runs custom validation using `validate`', () => {
+      const result = parse<{}, [string]>(['2019-01'], {
+        options: {},
+        positionals: [
+          {
+            description: '',
+            label: 'date',
+            type: 'string',
+            validate(value) {
+              if (!value.match(/^\d{4}-\d{2}-\d{2}$/u)) {
+                throw new Error('Invalid date.');
+              }
+            },
+          },
+        ],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ValidationError('Invalid date.')],
+        options: {},
+        positionals: ['2019-01'],
         rest: [],
       });
     });

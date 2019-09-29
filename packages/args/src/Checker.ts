@@ -114,7 +114,7 @@ export default class Checker {
     }
   }
 
-  validateParsedPositional(index: number, config: PositionalConfig, value: unknown) {
+  validateParsedPositional(config: PositionalConfig, value: unknown) {
     if (config.validate) {
       try {
         config.validate(value);
@@ -124,7 +124,7 @@ export default class Checker {
     }
 
     if (config.required && value === undefined) {
-      this.logInvalid(`Positional ${index} is required but value is undefined.`);
+      this.logInvalid(`Positional "${config.label}" is required but value is undefined.`);
     }
   }
 
