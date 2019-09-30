@@ -21,7 +21,7 @@ export const SHORT_OPTION_FORMAT = /^-[a-z]{1}$/iu;
 
 // Single dash followed by N short names.
 // Minimum 2 characters, otherwise its a single short option.
-export const FLAG_GROUP_FORMAT = /^-[a-z]{2,}$/iu;
+export const SHORT_OPTION_GROUP_FORMAT = /^-[a-z]{2,}$/iu;
 
 // Pattern to match all the above, with the addition
 // of an inline value check.

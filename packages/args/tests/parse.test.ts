@@ -61,6 +61,7 @@ describe('parse()', () => {
   const flagConfig: Flag = {
     default: false,
     description: '',
+    short: 'F',
     type: 'boolean',
   };
 
@@ -329,6 +330,128 @@ describe('parse()', () => {
           ],
           options: {
             opt: 'qux',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+    });
+
+    describe('single - count', () => {
+      it('errors when a non-number uses the `count` setting', () => {
+        const result = parse<{ opt: string }>([], {
+          options: {
+            opt: {
+              count: true,
+              description: '',
+              type: 'string',
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [new ValidationError('Only numeric options may use the `count` setting.', 'opt')],
+          options: {
+            opt: '',
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('errors when passed in a group but not `count` enabled', () => {
+        const result = parse<{ flag: boolean; num: number }>(['-Fn'], {
+          options: {
+            flag: flagConfig,
+            num: numConfigExpanded,
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [
+            new ParseError(
+              'Numeric options must have `count` enabled when passed in a short option group.',
+              '-Fn',
+              0,
+            ),
+          ],
+          options: {
+            flag: true,
+            num: 123,
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('increments count for each occurrence of a short name', () => {
+        const result = parse<{ flag: boolean; num: number }>(['-nnnn'], {
+          options: {
+            flag: flagConfig,
+            num: {
+              ...numConfigExpanded,
+              default: 0,
+              count: true,
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [],
+          options: {
+            flag: false,
+            num: 4,
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('can interweave options and still increment', () => {
+        const result = parse<{ flag: boolean; num: number }>(['-nFnn'], {
+          options: {
+            flag: flagConfig,
+            num: {
+              ...numConfigExpanded,
+              default: 0,
+              count: true,
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [],
+          options: {
+            flag: true,
+            num: 3,
+          },
+          positionals: [],
+          rest: [],
+        });
+      });
+
+      it('sets value to 1 if using the long form', () => {
+        const result = parse<{ flag: boolean; num: number }>(['--num'], {
+          options: {
+            flag: flagConfig,
+            num: {
+              ...numConfigExpanded,
+              default: 0,
+              count: true,
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [],
+          options: {
+            flag: false,
+            num: 1,
           },
           positionals: [],
           rest: [],
@@ -717,7 +840,7 @@ describe('parse()', () => {
         });
       });
 
-      it('expands flag group and sets all to truthy', () => {
+      it('expands short option group and sets all to truthy', () => {
         const baseConfig: Flag = {
           default: false,
           description: '',
@@ -1182,7 +1305,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ParseError('Flags and flag groups may not use inline values.', '--flag=123', 0),
+          new ParseError(
+            'Flags and short option groups may not use inline values.',
+            '--flag=123',
+            0,
+          ),
         ],
         options: {
           flag: true,

@@ -13,18 +13,18 @@ import {
   PositionalConfig,
 } from './types';
 import getDefaultValue from './helpers/getDefaultValue';
-import isFlagGroup from './helpers/isFlagGroup';
 import isShortOption from './helpers/isShortOption';
+import isShortOptionGroup from './helpers/isShortOptionGroup';
 import isLongOption from './helpers/isLongOption';
-import expandFlagGroup from './helpers/expandFlagGroup';
 import expandShortOption from './helpers/expandShortOption';
 import createScope from './helpers/createScope';
 import isOptionLike from './helpers/isOptionLike';
 import mapParserOptions from './helpers/mapParserOptions';
 import isCommand from './helpers/isCommand';
+import castValue from './helpers/castValue';
+import processShortOptionGroup from './helpers/processShortOptionGroup';
 import Checker from './Checker';
 import Scope from './Scope';
-import castValue from './helpers/castValue';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -40,9 +40,10 @@ import castValue from './helpers/castValue';
 
 // FEATURES
 // Short name - A short name (single character) for an existing option or flag: --verbose, -v
-// Flag grouping - When multiple short flags are passed under a single option: -abc
+// Option grouping - When multiple short options are passed under a single option: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
 // Arity count - Required number of argument values to consume for option multiples.
+// Group count - Increment a number each time a short option is found in a group.
 // Choices - List of valid values to choose from. Errors otherwise.
 
 export default function parse<O extends object = {}, P extends unknown[] = ArgList>(
@@ -91,7 +92,9 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
       }
 
       options[name] = getDefaultValue(config);
+
       checker.validateDefaultValue(name, options[name], config);
+      checker.validateNumberCount(name, config);
     },
   });
 
@@ -122,14 +125,11 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
       }
 
       try {
-        // Flag group "-frl"
-        if (isFlagGroup(optionName)) {
-          checker.checkFlagHasNoInlineValue(inlineValue);
+        // Short option group "-frl"
+        if (isShortOptionGroup(optionName)) {
+          checker.checkNoInlineValue(inlineValue);
 
-          expandFlagGroup(optionName.slice(1), mapping).forEach(flagName => {
-            checker.checkFlagGroupIsBoolOption(flagName, optionConfigs);
-            options[flagName] = true;
-          });
+          processShortOptionGroup(optionName.slice(1), optionConfigs, options, mapping);
 
           continue;
 
@@ -158,7 +158,7 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
       if (scope.flag) {
         options[scope.name] = !scope.negated;
 
-        checker.checkFlagHasNoInlineValue(inlineValue);
+        checker.checkNoInlineValue(inlineValue);
 
         // Otherwise keep scope open, to capture next value
       } else {
@@ -167,6 +167,10 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
         // Update scope value if an inline value exists
         if (inlineValue !== undefined) {
           currentScope.captureValue(inlineValue, commitScope);
+
+          // Increment count when using long form
+        } else if (scope.config.count) {
+          currentScope.captureValue('1', commitScope);
         }
       }
 

@@ -119,6 +119,7 @@ export interface Option<T> extends Arg<T> {
 
 export interface SingleOption<T> extends Option<T> {
   choices?: T[];
+  count?: boolean;
   default?: T;
 }
 
@@ -142,6 +143,7 @@ export interface Positional<T> extends Arg<T> {
 export type OptionConfig = Option<any> & {
   arity?: number;
   choices?: PrimitiveType[];
+  count?: boolean;
   default?: ValueType;
   multiple?: boolean;
 };

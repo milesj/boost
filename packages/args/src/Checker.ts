@@ -6,7 +6,6 @@ import {
   LongOptionName,
   ShortOptionName,
   AliasMap,
-  OptionConfigMap,
   PositionalConfig,
 } from './types';
 import { COMMAND_FORMAT } from './constants';
@@ -30,15 +29,9 @@ export default class Checker {
     }
   }
 
-  checkFlagHasNoInlineValue(inlineValue?: string) {
+  checkNoInlineValue(inlineValue?: string) {
     if (inlineValue !== undefined) {
-      this.logFailure('Flags and flag groups may not use inline values.');
-    }
-  }
-
-  checkFlagGroupIsBoolOption(name: LongOptionName, configs: OptionConfigMap) {
-    if (!configs[name] || configs[name].type !== 'boolean') {
-      this.logFailure('Only boolean options may use flag groups.');
+      this.logFailure('Flags and short option groups may not use inline values.');
     }
   }
 
@@ -101,6 +94,12 @@ export default class Checker {
   validateCommandFormat(command: string) {
     if (!COMMAND_FORMAT.test(command)) {
       this.logInvalid(`Invalid "${command}" command format. Must be letters, numbers, and dashes.`);
+    }
+  }
+
+  validateNumberCount(option: LongOptionName, config: OptionConfig) {
+    if (config.count && config.type !== 'number') {
+      this.logInvalid('Only numeric options may use the `count` setting.', option);
     }
   }
 
