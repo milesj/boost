@@ -42,6 +42,14 @@ describe('NyanReporter', () => {
   });
 
   describe('handleStart()', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it('enqueues an output', () => {
       expect(reporter.console.outputQueue).toEqual([]);
 
