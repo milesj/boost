@@ -1,13 +1,6 @@
-import i18next from 'i18next';
 import { getFixturePath } from '@boost/test-utils';
 import createTranslator from '../src/createTranslator';
 import { Translator } from '../src/types';
-
-declare global {
-  interface Translator {
-    i18n: i18next.i18n;
-  }
-}
 
 describe('createTranslator()', () => {
   let translator: Translator;

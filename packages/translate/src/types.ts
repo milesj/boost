@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import { i18n, InterpolationOptions } from 'i18next';
 
 export type Direction = 'ltr' | 'rtl';
 
@@ -18,7 +18,7 @@ export interface MessageOptions {
   /** Context used for special parsing (male, female, etc). */
   context?: string;
   /** Interpolation options to pass down. */
-  interpolation?: i18next.InterpolationOptions;
+  interpolation?: InterpolationOptions;
   /** Force translation to this locale. */
   locale?: Locale;
   /** Post-processors to run on the translation. */
@@ -32,5 +32,5 @@ export interface Translator {
   changeLocale(locale: Locale): void;
   // Testing only
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  i18n: i18next.i18n;
+  i18n: i18n;
 }

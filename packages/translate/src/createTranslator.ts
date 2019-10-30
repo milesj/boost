@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import i18next, { InitOptions } from 'i18next';
 import { Path, toArray } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import LocaleDetector from './LocaleDetector';
@@ -23,7 +23,7 @@ export interface TranslatorOptions {
   /** Locale to explicitly use. */
   locale?: Locale;
   /** Order in which to load and lookup locale translations. */
-  lookupType?: i18next.InitOptions['load'];
+  lookupType?: InitOptions['load'];
   /** File format resource bundles are written in. Defaults to `yaml`. */
   resourceFormat?: Format;
 }

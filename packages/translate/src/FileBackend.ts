@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import i18next from 'i18next';
+import { BackendModule, Resource, ResourceKey } from 'i18next';
 import { parseFile, Contract, Path, Predicates } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import { Locale, Format } from './types';
@@ -16,9 +16,8 @@ export interface FileBackendOptions {
   paths?: Path[];
 }
 
-export default class FileBackend extends Contract<FileBackendOptions>
-  implements i18next.BackendModule {
-  fileCache: { [path: string]: i18next.ResourceKey } = {};
+export default class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
+  fileCache: { [path: string]: ResourceKey } = {};
 
   type: 'backend' = 'backend';
 
@@ -48,10 +47,10 @@ export default class FileBackend extends Contract<FileBackendOptions>
   read(
     locale: Locale,
     namespace: string,
-    callback: (error: Error | null, resources: i18next.Resource) => void,
-  ): i18next.ResourceKey {
+    callback: (error: Error | null, resources: Resource) => void,
+  ): ResourceKey {
     const { format, paths } = this.options;
-    const resources: i18next.ResourceKey = {};
+    const resources: ResourceKey = {};
 
     paths.forEach(resourcePath => {
       EXTS[format].some(ext => {

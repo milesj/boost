@@ -1,9 +1,9 @@
-import i18next from 'i18next';
+import { LanguageDetectorModule } from 'i18next';
 import osLocale from 'os-locale';
 import { debug } from './constants';
 import { Locale } from './types';
 
-export default class LocaleDetector implements i18next.LanguageDetectorModule {
+export default class LocaleDetector implements LanguageDetectorModule {
   locale: Locale = 'en';
 
   type: 'languageDetector' = 'languageDetector';
