@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.2 - 2019-10-30
+
+#### 📦 Dependencies
+
+- **[i18next]** Update to v19. ([292632f](https://github.com/milesj/boost/tree/master/packages/log/commit/292632f))
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 1.1.1 - 2019-09-09
 
 #### 📦 Dependencies

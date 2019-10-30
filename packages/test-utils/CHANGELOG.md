@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.2.5 - 2019-10-30
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([870dd85](https://github.com/milesj/boost/tree/master/packages/test-utils/commit/870dd85))
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ### 1.2.4 - 2019-08-01
 
 #### ⚙️ Types

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.2 - 2019-10-30
+
+#### 🐞 Fixes
+
+- Remove `javac` from reported languages on OSX. ([099d1f6](https://github.com/milesj/boost/tree/master/packages/debug/commit/099d1f6))
+
+#### 📦 Dependencies
+
+- **[execa]** Update to v3. ([2af89f0](https://github.com/milesj/boost/tree/master/packages/debug/commit/2af89f0))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 1.1.1 - 2019-09-09
 
 #### 📦 Dependencies

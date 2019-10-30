@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.13.2 - 2019-10-30
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([870dd85](https://github.com/milesj/boost/tree/master/packages/core/commit/870dd85))
+- **[execa]** Update to v3. ([2af89f0](https://github.com/milesj/boost/tree/master/packages/core/commit/2af89f0))
+- **[yargs-parser]** Update to v16. ([900a04c](https://github.com/milesj/boost/tree/master/packages/core/commit/900a04c))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.13.1 - 2019-09-09
 
 #### 📦 Dependencies
