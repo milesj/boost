@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 
+import { RuntimeError } from '@boost/internal';
 import { AliasMap, ShortOptionName, OptionConfigMap, OptionMap } from '../types';
 import expandShortOption from './expandShortOption';
 
@@ -17,9 +18,7 @@ export default function processShortOptionGroup(
     const config = configs[name];
 
     if (!config || config.type === 'string') {
-      throw new Error(
-        'Only boolean and countable number options may be used in a short option group.',
-      );
+      throw new RuntimeError('args', 'AG_GROUP_UNSUPPORTED_TYPE');
 
       // Flag
     } else if (config.type === 'boolean') {
@@ -30,9 +29,7 @@ export default function processShortOptionGroup(
       if (config.count) {
         options[name] = Number(options[name]) + 1;
       } else {
-        throw new Error(
-          'Numeric options must have `count` enabled when passed in a short option group.',
-        );
+        throw new RuntimeError('args', 'AG_GROUP_MISSING_COUNT');
       }
     }
   });

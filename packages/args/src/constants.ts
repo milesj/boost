@@ -4,8 +4,6 @@ import { createTranslator } from '@boost/translate';
 
 export const debug = createInternalDebugger('args');
 
-export const msg = createTranslator('args', path.join(__dirname, '../res'));
-
 // Supports letters, numbers, dashes, and camel case.
 // Minimum 2 characters. Must start and end with a letter.
 export const COMMAND_FORMAT = /^[a-z][-a-z0-9]*[a-z]$/iu;

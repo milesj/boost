@@ -1,5 +1,6 @@
 /* eslint-disable complexity, no-continue */
 
+import { RuntimeError } from '@boost/internal';
 import {
   Arguments,
   Argv,
@@ -29,7 +30,7 @@ import Scope from './Scope';
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
 // command - An optional "command" being ran that allows for branching functionality.
-//    Supports alnum chars and underscores. Sub-commands are separated with ":".
+//    Sub-commands are separated with ":".
 // option - An optional argument that requires a value(s). Starts with "--" (long) or "-" (short).
 // flag - A specialized option that only supports booleans. Can be toggled on an off (default).
 // positional arg - An optional or required argument, that is not an option or option value,
@@ -42,8 +43,8 @@ import Scope from './Scope';
 // Short name - A short name (single character) for an existing option or flag: --verbose, -v
 // Option grouping - When multiple short options are passed under a single option: -abc
 // Inline values - Option values that are immediately set using an equals sign: --foo=bar
-// Arity count - Required number of argument values to consume for option multiples.
-// Group count - Increment a number each time a short option is found in a group.
+// Group count - Increment a number each time a short option is found in a group: -vvv
+// Arity count - Required number of argument values to consume for multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
 export default function parse<O extends object = {}, P extends unknown[] = ArgList>(
@@ -143,10 +144,10 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
 
           // Unknown option format
         } else {
-          throw new Error('Unknown option format.');
+          throw new RuntimeError('args', 'AG_OPTION_UNKNOWN_FORMAT');
         }
       } catch (error) {
-        checker.logFailure(error.message);
+        checker.parseErrors.push(error.message);
 
         continue;
       }

@@ -1413,7 +1413,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: ['cmd'],
         errors: [
-          new ParseError('Command has been defined as "cmd", received another "cmd".', 'cmd', 2),
+          new ParseError(
+            'Command has already been provided as "cmd", received another "cmd".',
+            'cmd',
+            2,
+          ),
         ],
         options: {},
         positionals: ['foo', 'bar'],
@@ -1431,7 +1435,7 @@ describe('parse()', () => {
         command: ['cmd'],
         errors: [
           new ParseError(
-            'Command has been defined as "cmd", received another "command".',
+            'Command has already been provided as "cmd", received another "command".',
             'command',
             2,
           ),

@@ -1,3 +1,4 @@
+import { RuntimeError } from '@boost/internal';
 import ParseError from './ParseError';
 import ValidationError from './ValidationError';
 import {
@@ -21,17 +22,15 @@ export default class Checker {
 
   checkCommandOrder(anotherCommand: string, providedCommand: string, positionalsLength: number) {
     if (providedCommand !== '') {
-      this.logFailure(
-        `Command has been defined as "${providedCommand}", received another "${anotherCommand}".`,
-      );
+      this.logFailure('AG_COMMAND_PROVIDED', [providedCommand, anotherCommand]);
     } else if (positionalsLength !== 0) {
-      this.logFailure('Command must be passed as the first non-option, non-positional argument.');
+      this.logFailure('AG_COMMAND_NOT_FIRST');
     }
   }
 
   checkNoInlineValue(inlineValue?: string) {
     if (inlineValue !== undefined) {
-      this.logFailure('Flags and short option groups may not use inline values.');
+      this.logFailure('AG_VALUE_NO_INLINE');
     }
   }
 
@@ -41,65 +40,47 @@ export default class Checker {
     }
 
     if (value.length > 0 && value.length !== config.arity) {
-      this.logInvalid(
-        `Not enough arity arguments. Require ${config.arity}, found ${value.length}.`,
-        option,
-      );
+      this.logInvalid('AG_VALUE_ARITY_UNMET', option, [config.arity, value.length]);
     }
   }
 
   validateDefaultValue(option: LongOptionName, value: unknown, config: OptionConfig) {
     if (config.multiple) {
       if (!Array.isArray(value)) {
-        this.logInvalid(
-          `Option "${option}" is enabled for multiple values, but non-array default value found.`,
-          option,
-        );
+        this.logInvalid('AG_VALUE_NON_ARRAY', option, [option]);
       }
 
       return;
     }
 
     if (config.type === 'boolean' && typeof value !== 'boolean') {
-      this.logInvalid(
-        `Option "${option}" is set to boolean, but non-boolean default value found.`,
-        option,
-      );
-    }
-
-    if (config.type === 'string' && typeof value !== 'string') {
-      this.logInvalid(
-        `Option "${option}" is set to string, but non-string default value found.`,
-        option,
-      );
+      this.logInvalid('AG_VALUE_NON_BOOL', option, [option]);
     }
 
     if (config.type === 'number' && typeof value !== 'number') {
-      this.logInvalid(
-        `Option "${option}" is set to number, but non-number default value found.`,
-        option,
-      );
+      this.logInvalid('AG_VALUE_NON_NUMBER', option, [option]);
+    }
+
+    if (config.type === 'string' && typeof value !== 'string') {
+      this.logInvalid('AG_VALUE_NON_STRING', option, [option]);
     }
   }
 
   validateChoiceIsMet(option: LongOptionName, config: OptionConfig, value: ValueType) {
     if (Array.isArray(config.choices) && !config.choices.includes(value as 'string')) {
-      this.logInvalid(
-        `Invalid value, must be one of ${config.choices.join(', ')}, found ${value}.`,
-        option,
-      );
+      this.logInvalid('AG_VALUE_INVALID_CHOICE', option, [config.choices.join(', '), value]);
     }
   }
 
   validateCommandFormat(command: string) {
     if (!COMMAND_FORMAT.test(command)) {
-      this.logInvalid(`Invalid "${command}" command format. Must be letters, numbers, and dashes.`);
+      this.logInvalid('AG_COMMAND_INVALID_FORMAT', '', [command]);
     }
   }
 
   validateNumberCount(option: LongOptionName, config: OptionConfig) {
     if (config.count && config.type !== 'number') {
-      this.logInvalid('Only numeric options may use the `count` setting.', option);
+      this.logInvalid('AG_OPTION_NUMBER_COUNT', option);
     }
   }
 
@@ -108,7 +89,7 @@ export default class Checker {
       try {
         config.validate(value);
       } catch (error) {
-        this.logInvalid(error.message, option);
+        this.validationErrors.push(new ValidationError(error.message, option));
       }
     }
   }
@@ -118,12 +99,12 @@ export default class Checker {
       try {
         config.validate(value);
       } catch (error) {
-        this.logInvalid(error.message);
+        this.validationErrors.push(new ValidationError(error.message));
       }
     }
 
     if (config.required && value === undefined) {
-      this.logInvalid(`Positional "${config.label}" is required but value is undefined.`);
+      this.logInvalid('AG_POSITIONAL_REQUIRED', '', [config.label]);
     }
   }
 
@@ -135,11 +116,7 @@ export default class Checker {
         if (optionals.length > 0) {
           const labels = optionals.map(opt => `"${opt.label}"`);
 
-          this.logInvalid(
-            `Optional positional(s) ${labels.join(', ')} found before required positional "${
-              config.label
-            }". Required must be first.`,
-          );
+          this.logInvalid('AG_POSITIONAL_MISORDERED', '', [labels.join(', '), config.label]);
         }
       } else {
         optionals.push(config);
@@ -149,22 +126,23 @@ export default class Checker {
 
   validateUniqueShortName(option: LongOptionName, short: ShortOptionName, map: AliasMap) {
     if (map[short]) {
-      this.logInvalid(
-        `Short option "${short}" has already been defined for "${map[short]}".`,
-        option,
-      );
+      this.logInvalid('AG_SHORT_DEFINED', option, [short, map[option]]);
     }
 
     if (short.length !== 1) {
-      this.logInvalid(`Short option "${short}" may only be a single letter.`, option);
+      this.logInvalid('AG_SHORT_SINGLE_CHAR', option, [short]);
     }
   }
 
-  logFailure(message: string) {
-    this.parseErrors.push(new ParseError(message, this.arg, this.argIndex));
+  logFailure(module: string, args?: unknown[]) {
+    this.parseErrors.push(
+      new ParseError(new RuntimeError('args', module, args).message, this.arg, this.argIndex),
+    );
   }
 
-  logInvalid(message: string, option?: LongOptionName) {
-    this.validationErrors.push(new ValidationError(message, option));
+  logInvalid(module: string, option?: LongOptionName, args?: unknown[]) {
+    this.validationErrors.push(
+      new ValidationError(new RuntimeError('args', module, args).message, option),
+    );
   }
 }
