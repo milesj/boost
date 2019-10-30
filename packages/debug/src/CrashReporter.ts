@@ -107,7 +107,7 @@ export default class CrashReporter {
     // OSX will interrupt the process with a prompt to install Java.
     // This is super annoying, so let's not disrupt consumers.
     // istanbul ignore next
-    if (os.platform() === 'darwin' && os.hostname().endsWith('local')) {
+    if (os.platform() === 'darwin') {
       delete languages.javac;
     }
 
