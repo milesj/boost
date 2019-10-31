@@ -28,11 +28,7 @@ export default class Scope {
 
     // Update the scope with this new value
     if (config.multiple) {
-      if (!Array.isArray(this.value)) {
-        this.value = [];
-      }
-
-      this.value.push(value);
+      (this.value as string[]).push(value);
     } else {
       this.value = value;
     }

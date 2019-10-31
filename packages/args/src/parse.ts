@@ -1,6 +1,5 @@
 /* eslint-disable complexity, no-continue */
 
-import { RuntimeError } from '@boost/internal';
 import {
   Arguments,
   Argv,
@@ -141,13 +140,9 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
           // Long option "--foo"
         } else if (isLongOption(optionName)) {
           optionName = optionName.slice(2);
-
-          // Unknown option format
-        } else {
-          throw new RuntimeError('args', 'AG_OPTION_UNKNOWN_FORMAT');
         }
       } catch (error) {
-        checker.parseErrors.push(error.message);
+        checker.logFailure(error.message);
 
         continue;
       }
@@ -206,6 +201,12 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
       checker.validateParsedOption(name, config, value);
       checker.validateArityIsMet(name, config, value);
       checker.validateChoiceIsMet(name, config, value);
+
+      // Since default values avoid scope,
+      // they are not cast. Do it manually after parsing.
+      if (value === getDefaultValue(config)) {
+        options[name] = castValue(value, config.type, config.multiple);
+      }
     },
     onPositional(config, value) {
       checker.validateParsedPositional(config, value);

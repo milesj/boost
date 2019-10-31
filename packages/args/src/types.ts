@@ -17,7 +17,7 @@ export interface AliasMap {
 // Determine option based on type. Only primitives are allowed.
 export type InferPositionalConfig<T> = T extends PrimitiveType ? Positional<T> : never;
 
-// This is janky but we dont have mapped array/tuples.
+// This is janky but we don't have mapped array/tuples.
 // This assumes no more than 5 typed positionals, which is usually enough.
 export type MapPositionalConfig<T extends unknown[]> = T extends [
   infer A,

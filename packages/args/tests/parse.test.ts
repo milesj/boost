@@ -1585,4 +1585,162 @@ describe('parse()', () => {
       });
     });
   });
+
+  describe('validations', () => {
+    it('errors if boolean default value is not boolean', () => {
+      const result = parse<{ foo: boolean }>([], {
+        options: {
+          foo: {
+            description: '',
+            type: 'boolean',
+            // @ts-ignore
+            default: 123,
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError(
+            'Option "foo" is set to boolean, but non-boolean default value found.',
+          ),
+        ],
+        options: {
+          foo: true,
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('errors if string default value is not string', () => {
+      const result = parse<{ foo: string }>([], {
+        options: {
+          foo: {
+            description: '',
+            type: 'string',
+            // @ts-ignore
+            default: 123,
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError('Option "foo" is set to string, but non-string default value found.'),
+        ],
+        options: {
+          foo: '123',
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('errors if number default value is not number', () => {
+      const result = parse<{ foo: number }>([], {
+        options: {
+          foo: {
+            description: '',
+            type: 'number',
+            // @ts-ignore
+            default: 'abc',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError('Option "foo" is set to number, but non-number default value found.'),
+        ],
+        options: {
+          foo: 0,
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('errors if multiple default value is not an array', () => {
+      const result = parse<{ foo: number[] }>([], {
+        options: {
+          foo: {
+            description: '',
+            multiple: true,
+            type: 'number',
+            // @ts-ignore
+            default: 'abc',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError(
+            'Option "foo" is enabled for multiple values, but non-array default value found.',
+          ),
+        ],
+        options: {
+          foo: [],
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('errors if short name is not 1 character', () => {
+      const result = parse<{ foo: string }>([], {
+        options: {
+          foo: {
+            description: '',
+            type: 'string',
+            // @ts-ignore
+            short: 'ab',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ValidationError('Short option "ab" may only be a single letter.')],
+        options: {
+          foo: '',
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+
+    it('errors for duplicate short names', () => {
+      const result = parse<{ foo: string; bar: string }>([], {
+        options: {
+          foo: {
+            description: '',
+            type: 'string',
+            short: 'a',
+          },
+          bar: {
+            description: '',
+            type: 'string',
+            short: 'a',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ValidationError('Short option "a" has already been defined for "foo".')],
+        options: {
+          bar: '',
+          foo: '',
+        },
+        positionals: [],
+        rest: [],
+      });
+    });
+  });
 });

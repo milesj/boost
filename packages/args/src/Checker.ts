@@ -22,15 +22,15 @@ export default class Checker {
 
   checkCommandOrder(anotherCommand: string, providedCommand: string, positionalsLength: number) {
     if (providedCommand !== '') {
-      this.logFailure('AG_COMMAND_PROVIDED', [providedCommand, anotherCommand]);
+      this.logFailureError('AG_COMMAND_PROVIDED', [providedCommand, anotherCommand]);
     } else if (positionalsLength !== 0) {
-      this.logFailure('AG_COMMAND_NOT_FIRST');
+      this.logFailureError('AG_COMMAND_NOT_FIRST');
     }
   }
 
   checkNoInlineValue(inlineValue?: string) {
     if (inlineValue !== undefined) {
-      this.logFailure('AG_VALUE_NO_INLINE');
+      this.logFailureError('AG_VALUE_NO_INLINE');
     }
   }
 
@@ -40,47 +40,47 @@ export default class Checker {
     }
 
     if (value.length > 0 && value.length !== config.arity) {
-      this.logInvalid('AG_VALUE_ARITY_UNMET', option, [config.arity, value.length]);
+      this.logInvalidError('AG_VALUE_ARITY_UNMET', [config.arity, value.length], option);
     }
   }
 
   validateDefaultValue(option: LongOptionName, value: unknown, config: OptionConfig) {
     if (config.multiple) {
       if (!Array.isArray(value)) {
-        this.logInvalid('AG_VALUE_NON_ARRAY', option, [option]);
+        this.logInvalidError('AG_VALUE_NON_ARRAY', [option], option);
       }
 
       return;
     }
 
     if (config.type === 'boolean' && typeof value !== 'boolean') {
-      this.logInvalid('AG_VALUE_NON_BOOL', option, [option]);
+      this.logInvalidError('AG_VALUE_NON_BOOL', [option], option);
     }
 
     if (config.type === 'number' && typeof value !== 'number') {
-      this.logInvalid('AG_VALUE_NON_NUMBER', option, [option]);
+      this.logInvalidError('AG_VALUE_NON_NUMBER', [option], option);
     }
 
     if (config.type === 'string' && typeof value !== 'string') {
-      this.logInvalid('AG_VALUE_NON_STRING', option, [option]);
+      this.logInvalidError('AG_VALUE_NON_STRING', [option], option);
     }
   }
 
   validateChoiceIsMet(option: LongOptionName, config: OptionConfig, value: ValueType) {
     if (Array.isArray(config.choices) && !config.choices.includes(value as 'string')) {
-      this.logInvalid('AG_VALUE_INVALID_CHOICE', option, [config.choices.join(', '), value]);
+      this.logInvalidError('AG_VALUE_INVALID_CHOICE', [config.choices.join(', '), value], option);
     }
   }
 
   validateCommandFormat(command: string) {
     if (!COMMAND_FORMAT.test(command)) {
-      this.logInvalid('AG_COMMAND_INVALID_FORMAT', '', [command]);
+      this.logInvalidError('AG_COMMAND_INVALID_FORMAT', [command]);
     }
   }
 
   validateNumberCount(option: LongOptionName, config: OptionConfig) {
     if (config.count && config.type !== 'number') {
-      this.logInvalid('AG_OPTION_NUMBER_COUNT', option);
+      this.logInvalidError('AG_OPTION_NUMBER_COUNT', [], option);
     }
   }
 
@@ -89,7 +89,7 @@ export default class Checker {
       try {
         config.validate(value);
       } catch (error) {
-        this.validationErrors.push(new ValidationError(error.message, option));
+        this.logInvalid(error.message, option);
       }
     }
   }
@@ -99,12 +99,12 @@ export default class Checker {
       try {
         config.validate(value);
       } catch (error) {
-        this.validationErrors.push(new ValidationError(error.message));
+        this.logInvalid(error.message);
       }
     }
 
     if (config.required && value === undefined) {
-      this.logInvalid('AG_POSITIONAL_REQUIRED', '', [config.label]);
+      this.logInvalidError('AG_POSITIONAL_REQUIRED', [config.label]);
     }
   }
 
@@ -116,7 +116,7 @@ export default class Checker {
         if (optionals.length > 0) {
           const labels = optionals.map(opt => `"${opt.label}"`);
 
-          this.logInvalid('AG_POSITIONAL_MISORDERED', '', [labels.join(', '), config.label]);
+          this.logInvalidError('AG_POSITIONAL_MISORDERED', [labels.join(', '), config.label]);
         }
       } else {
         optionals.push(config);
@@ -126,23 +126,27 @@ export default class Checker {
 
   validateUniqueShortName(option: LongOptionName, short: ShortOptionName, map: AliasMap) {
     if (map[short]) {
-      this.logInvalid('AG_SHORT_DEFINED', option, [short, map[option]]);
+      this.logInvalidError('AG_SHORT_DEFINED', [short, map[short]], option);
     }
 
     if (short.length !== 1) {
-      this.logInvalid('AG_SHORT_SINGLE_CHAR', option, [short]);
+      this.logInvalidError('AG_SHORT_SINGLE_CHAR', [short], option);
     }
   }
 
-  logFailure(module: string, args?: unknown[]) {
-    this.parseErrors.push(
-      new ParseError(new RuntimeError('args', module, args).message, this.arg, this.argIndex),
-    );
+  logFailureError(module: string, args?: unknown[]) {
+    this.logFailure(new RuntimeError('args', module, args).message);
   }
 
-  logInvalid(module: string, option?: LongOptionName, args?: unknown[]) {
-    this.validationErrors.push(
-      new ValidationError(new RuntimeError('args', module, args).message, option),
-    );
+  logFailure(message: string) {
+    this.parseErrors.push(new ParseError(message, this.arg, this.argIndex));
+  }
+
+  logInvalidError(module: string, args?: unknown[], option?: LongOptionName) {
+    this.logInvalid(new RuntimeError('args', module, args).message, option);
+  }
+
+  logInvalid(message: string, option?: LongOptionName) {
+    this.validationErrors.push(new ValidationError(message, option));
   }
 }
