@@ -22,7 +22,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^1.0.0",
-    "@boost/translate": "^1.1.1"
+    "@boost/internal": "^1.0.0"
   }
 }
