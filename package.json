@@ -18,7 +18,6 @@
   "devDependencies": {
     "@milesj/build-tools": "^0.57.0",
     "conventional-changelog-beemo": "^1.5.1",
-    "danger": "^9.2.2",
     "fs-extra": "^8.1.0",
     "lerna": "^3.18.3"
   },

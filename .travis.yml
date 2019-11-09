@@ -11,7 +11,6 @@ before_install:
 install:
   - yarn install --ignore-engines --frozen-lockfile
 before_script:
-  - yarn danger ci --use-github-checks
   - yarn run setup
 script:
   - yarn test -w 2
