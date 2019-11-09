@@ -19,14 +19,16 @@ describe('FileBackend', () => {
     });
 
     it('errors if resource path is not a directory', () => {
+      const resPath = path.join(__dirname, '../package.json');
+
       expect(() => {
         backend.init(
           {},
           {
-            paths: [path.join(__dirname, '../package.json')],
+            paths: [resPath],
           },
         );
-      }).toThrowError();
+      }).toThrow(`Resource path "${resPath}" must be a directory.`);
     });
   });
 

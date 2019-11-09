@@ -106,7 +106,7 @@ describe('Tool', () => {
             appName: 'is-kebab',
             appPath: '.',
           }),
-      ).not.toThrowError();
+      ).not.toThrow();
     });
 
     it('errors if `configName` is not camel case', () => {
@@ -135,7 +135,7 @@ describe('Tool', () => {
             appName: 'test',
             appPath: '.',
           }),
-      ).not.toThrowError();
+      ).not.toThrow();
     });
   });
 
@@ -541,7 +541,7 @@ describe('Tool', () => {
     it('enables debug if debug config is true', () => {
       const oldEnable = debug.enable;
 
-      debug.enable = jest.fn();
+      jest.spyOn(debug, 'enable').mockImplementation();
 
       tool.args = { $0: '', _: [], debug: true };
       // @ts-ignore Allow protected access

@@ -54,7 +54,7 @@ describe('createWorkUnit()', () => {
   it('errors when a work unit is not provided', () => {
     expect(() => {
       createWorkUnit('title');
-    }).toThrowError();
+    }).toThrow('Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.');
   });
 
   it('errors when a non-function work unit is not provided', () => {
@@ -64,6 +64,6 @@ describe('createWorkUnit()', () => {
         // @ts-ignore Allow invalid type
         123,
       );
-    }).toThrowError();
+    }).toThrow('Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.');
   });
 });

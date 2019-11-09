@@ -6,7 +6,7 @@ describe('Emitter', () => {
 
   beforeEach(() => {
     emitter = new Emitter();
-    console.warn = jest.fn();
+    jest.spyOn(console, 'warn').mockImplementation();
   });
 
   afterEach(() => {

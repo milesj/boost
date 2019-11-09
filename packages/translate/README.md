@@ -1,6 +1,6 @@
 # Boost Translate
 
-[![Build Status](https://travis-ci.org/milesj/boost.svg?branch=master)](https://travis-ci.org/milesj/boost)
+[![Build Status](https://github.com/milesj/boost/workflows/build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
 [![npm version](https://badge.fury.io/js/%40boost%translate.svg)](https://www.npmjs.com/package/@boost/translate)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/translate)](https://www.npmjs.com/package/@boost/translate)
 

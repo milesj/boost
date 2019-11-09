@@ -109,7 +109,7 @@ describe('createDebugger()', () => {
 
       debugFunc.enable();
 
-      expect(spy).toBeCalledWith('debug');
+      expect(spy).toHaveBeenCalledWith('debug');
 
       spy.mockRestore();
     });

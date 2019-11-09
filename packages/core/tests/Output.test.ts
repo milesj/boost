@@ -11,7 +11,7 @@ describe('Output', () => {
 
   beforeEach(() => {
     cli = mockConsole(mockTool());
-    cli.render = jest.fn();
+    jest.spyOn(cli, 'render').mockImplementation();
 
     output = new Output(cli, () => 'foo\nbar\nbaz');
   });

@@ -243,7 +243,7 @@ describe('Console', () => {
     it('stops with error', () => {
       const error = new Error('Oops');
 
-      cli.stop = jest.fn();
+      jest.spyOn(cli, 'stop').mockImplementation();
       cli.handleFailure(error);
 
       expect(cli.stop).toHaveBeenCalledWith(error);
@@ -258,7 +258,7 @@ describe('Console', () => {
 
   describe('handleSignal()', () => {
     it('stops with an error', () => {
-      cli.stop = jest.fn();
+      jest.spyOn(cli, 'stop').mockImplementation();
       cli.handleSignal('SIGINT');
 
       expect(cli.stop).toHaveBeenCalledWith(
@@ -516,8 +516,8 @@ describe('Console', () => {
     });
 
     it('triggers the initial process methods', () => {
-      cli.wrapStreams = jest.fn();
-      cli.displayHeader = jest.fn();
+      jest.spyOn(cli, 'wrapStreams').mockImplementation();
+      jest.spyOn(cli, 'displayHeader').mockImplementation();
       cli.start([]);
 
       expect(cli.wrapStreams).toHaveBeenCalled();
@@ -528,9 +528,9 @@ describe('Console', () => {
       const spy = jest.fn();
 
       cli.onStart.listen(spy);
-      cli.wrapStreams = jest.fn();
-      cli.displayHeader = jest.fn();
-      cli.startRenderLoop = jest.fn();
+      jest.spyOn(cli, 'wrapStreams').mockImplementation();
+      jest.spyOn(cli, 'displayHeader').mockImplementation();
+      jest.spyOn(cli, 'startRenderLoop').mockImplementation();
       cli.start([1, 2, 3]);
 
       expect(spy).toHaveBeenCalledWith(1, 2, 3);
@@ -684,7 +684,7 @@ describe('Console', () => {
   });
 
   describe('stopRenderLoop()', () => {
-    it('it clears the timer', () => {
+    it('clears the timer', () => {
       // @ts-ignore
       cli.renderTimer = 123;
       cli.stopRenderLoop();
