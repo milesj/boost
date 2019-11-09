@@ -53,7 +53,7 @@ describe('Event', () => {
     });
 
     it('doesnt error for default scope', () => {
-      expect(() => event.getListeners()).not.toThrowError();
+      expect(() => event.getListeners()).not.toThrow();
     });
 
     it('creates the listeners set if it does not exist', () => {

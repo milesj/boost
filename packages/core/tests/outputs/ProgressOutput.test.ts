@@ -30,7 +30,7 @@ describe('ProgressOutput', () => {
 
   beforeEach(() => {
     cli = mockConsole(mockTool());
-    cli.render = jest.fn();
+    jest.spyOn(cli, 'render').mockImplementation();
 
     output = new TestProgressOutput(cli, () => ({
       current: 25,

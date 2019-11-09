@@ -109,7 +109,7 @@ describe('Executor', () => {
     const routines = [mockRoutine(tool), mockRoutine(tool), mockRoutine(tool)];
 
     beforeEach(() => {
-      executor.run = jest.fn();
+      jest.spyOn(executor, 'run').mockImplementation();
     });
 
     it('calls `executeRoutine` with routines', async () => {
@@ -148,7 +148,7 @@ describe('Executor', () => {
     ];
 
     beforeEach(() => {
-      executor.run = jest.fn();
+      jest.spyOn(executor, 'run').mockImplementation();
     });
 
     it('calls `executeTask` with routines', async () => {
