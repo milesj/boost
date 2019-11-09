@@ -168,7 +168,7 @@ export default class ModuleLoader<Tm> {
 
     if (nextArgs.length === 0) {
       nextArgs.push(options);
-    } else if (isObject(nextArgs[0])) {
+    } else if (isObject<object>(nextArgs[0])) {
       nextArgs[0] = {
         ...nextArgs[0],
         ...options,
