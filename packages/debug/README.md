@@ -1,6 +1,6 @@
 # Boost Debugging
 
-[![Build Status](https://github.com/milesj/boost/workflows/build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
+[![Build Status](https://github.com/milesj/boost/workflows/Build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
 [![npm version](https://badge.fury.io/js/%40boost%debug.svg)](https://www.npmjs.com/package/@boost/debug)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/debug)](https://www.npmjs.com/package/@boost/debug)
 
