@@ -2,7 +2,7 @@ name: Build
 on: push
 jobs:
   test:
-    name: Type, Lint, and Test
+    name: Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,4 +15,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --ignore-engines --frozen-lockfile
       - run: yarn run setup
-      - run: yarn test
+      - run: yarn run jest -w 2
+      - run: yarn run eslint
