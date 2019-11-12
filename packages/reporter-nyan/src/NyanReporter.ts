@@ -42,12 +42,12 @@ export default class NyanReporter extends Reporter {
 
   handleStart = () => {
     this.createOutput(() => this.renderLines()).enqueue();
-    this.console.hideCursor();
+    this.hideCursor();
   };
 
   handleStop = (error: Error | null) => {
     this.failed = !!error;
-    this.console.showCursor();
+    this.showCursor();
   };
 
   handleRoutine = (routine: Routine<any, any>) => {

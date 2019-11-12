@@ -66,7 +66,7 @@ describe('NyanReporter', () => {
     });
 
     it('hides the cursor', () => {
-      const spy = jest.spyOn(reporter.console, 'hideCursor');
+      const spy = jest.spyOn(reporter, 'hideCursor');
 
       reporter.bootstrap();
       reporter.handleStart();
@@ -87,7 +87,7 @@ describe('NyanReporter', () => {
     });
 
     it('shows the cursor', () => {
-      const spy = jest.spyOn(reporter.console, 'showCursor');
+      const spy = jest.spyOn(reporter, 'showCursor');
 
       reporter.handleStop(null);
 
