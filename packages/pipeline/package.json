@@ -35,5 +35,9 @@
   "devDependencies": {
     "@types/lodash": "^4.14.144",
     "@types/split": "^1.0.0"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/milesjohnson"
   }
 }

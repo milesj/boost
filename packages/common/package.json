@@ -29,5 +29,9 @@
     "@boost/test-utils": "^1.2.5",
     "@types/js-yaml": "^3.12.1",
     "@types/json5": "^0.0.30"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/milesjohnson"
   }
 }

@@ -24,5 +24,9 @@
   },
   "peerDependencies": {
     "@boost/core": "^1.4.0"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/milesjohnson"
   }
 }
