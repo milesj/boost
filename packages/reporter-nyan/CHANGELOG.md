@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.3 - 2019-11-12
+
+#### 🐞 Fixes
+
+- Fix cursor deprecation warnings. ([774bf4f](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/commit/774bf4f))
+
+#### 📘 Docs
+
+- Fix GitHub CI badge. ([122c369](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/commit/122c369))
+
+#### 📦 Dependencies
+
+- **[chalk]** Update to v3. ([90b42f2](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/commit/90b42f2))
+
+#### 📋 Misc
+
+- Add funding to all packages. ([863a614](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/commit/863a614))
+
+#### 🛠 Internals
+
+- Fix fake timer console warning. ([a8051a9](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/commit/a8051a9))
+- Migrate to GitHub CI and actions. (#65) ([ce59e85](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/commit/ce59e85)), closes [#65](https://github.com/milesj/boost/tree/master/packages/reporter-nyan/issues/65)
+
+**Note:** Version bump only for package @boost/reporter-nyan
+
+
+
+
+
 ### 1.1.2 - 2019-08-01
 
 #### ⚙️ Types

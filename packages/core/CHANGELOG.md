@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.13.3 - 2019-11-12
+
+#### 📘 Docs
+
+- Fix GitHub CI badge. ([122c369](https://github.com/milesj/boost/tree/master/packages/core/commit/122c369))
+
+#### 📦 Dependencies
+
+- **[chalk]** Update to v3. ([90b42f2](https://github.com/milesj/boost/tree/master/packages/core/commit/90b42f2))
+- **[yargs-parser]** Update to v16.1. ([f5d108f](https://github.com/milesj/boost/tree/master/packages/core/commit/f5d108f))
+- Moved `[@types](https://github.com/types)` to the root and out of packages. ([497d312](https://github.com/milesj/boost/tree/master/packages/core/commit/497d312))
+- Update root dependencies. ([95d72a0](https://github.com/milesj/boost/tree/master/packages/core/commit/95d72a0))
+
+#### 📋 Misc
+
+- Add funding to all packages. ([863a614](https://github.com/milesj/boost/tree/master/packages/core/commit/863a614))
+
+#### 🛠 Internals
+
+- Migrate to GitHub CI and actions. (#65) ([ce59e85](https://github.com/milesj/boost/tree/master/packages/core/commit/ce59e85)), closes [#65](https://github.com/milesj/boost/tree/master/packages/core/issues/65)
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.13.2 - 2019-10-30
 
 #### 📦 Dependencies

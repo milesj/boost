@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.3 - 2019-11-12
+
+#### 📘 Docs
+
+- Fix GitHub CI badge. ([122c369](https://github.com/milesj/boost/tree/master/packages/debug/commit/122c369))
+
+#### 📋 Misc
+
+- Add funding to all packages. ([863a614](https://github.com/milesj/boost/tree/master/packages/debug/commit/863a614))
+
+#### 🛠 Internals
+
+- Migrate to GitHub CI and actions. (#65) ([ce59e85](https://github.com/milesj/boost/tree/master/packages/debug/commit/ce59e85)), closes [#65](https://github.com/milesj/boost/tree/master/packages/debug/issues/65)
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 1.1.2 - 2019-10-30
 
 #### 🐞 Fixes

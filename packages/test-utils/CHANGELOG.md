@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.2.6 - 2019-11-12
+
+#### 📘 Docs
+
+- Fix GitHub CI badge. ([122c369](https://github.com/milesj/boost/tree/master/packages/test-utils/commit/122c369))
+
+#### 📦 Dependencies
+
+- Moved `[@types](https://github.com/types)` to the root and out of packages. ([497d312](https://github.com/milesj/boost/tree/master/packages/test-utils/commit/497d312))
+
+#### 📋 Misc
+
+- Add funding to all packages. ([863a614](https://github.com/milesj/boost/tree/master/packages/test-utils/commit/863a614))
+
+#### 🛠 Internals
+
+- Migrate to GitHub CI and actions. (#65) ([ce59e85](https://github.com/milesj/boost/tree/master/packages/test-utils/commit/ce59e85)), closes [#65](https://github.com/milesj/boost/tree/master/packages/test-utils/issues/65)
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ### 1.2.5 - 2019-10-30
 
 #### 📦 Dependencies
