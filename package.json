@@ -16,6 +16,14 @@
   },
   "devDependencies": {
     "@milesj/build-tools": "^0.59.2",
+    "@types/exit": "^0.1.30",
+    "@types/fs-extra": "^8.0.1",
+    "@types/js-yaml": "^3.12.1",
+    "@types/json5": "^0.0.30",
+    "@types/lodash": "^4.14.146",
+    "@types/pluralize": "^0.0.29",
+    "@types/split": "^1.0.0",
+    "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^1.5.1",
     "fs-extra": "^8.1.0",
     "lerna": "^3.18.4"
