@@ -55,7 +55,7 @@
     "strip-ansi": "^6.0.0",
     "term-size": "^2.1.0",
     "wrap-ansi": "^6.2.0",
-    "yargs-parser": "^16.0.0"
+    "yargs-parser": "^16.1.0"
   },
   "funding": {
     "type": "ko-fi",
