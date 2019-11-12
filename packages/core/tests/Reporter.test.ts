@@ -271,22 +271,21 @@ describe('Reporter', () => {
   });
 
   describe('hasColorSupport()', () => {
-    const oldSupportLevel = chalk.supportsColor.level;
+    const oldSupportLevel = chalk.supportsColor;
+
+    beforeEach(() => {
+      chalk.supportsColor = { level: 2, has16m: true, hasBasic: true, has256: true };
+    });
 
     afterEach(() => {
-      chalk.supportsColor.level = oldSupportLevel;
+      chalk.supportsColor = oldSupportLevel;
     });
 
     it('returns false if support is below the requested level', () => {
-      chalk.supportsColor.level = 2;
-
       expect(reporter.hasColorSupport(3)).toBe(false);
     });
 
     it('returns true if support is equal or above the requested level', () => {
-      // @ts-ignore
-      chalk.supportsColor.level = 2;
-
       expect(reporter.hasColorSupport(1)).toBe(true);
       expect(reporter.hasColorSupport(2)).toBe(true);
     });

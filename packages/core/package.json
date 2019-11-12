@@ -39,7 +39,7 @@
     "@types/yargs": "^13.0.3",
     "@types/yargs-parser": "^13.1.0",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^2.4.2",
+    "chalk": "^3.0.0",
     "cli-truncate": "^2.0.0",
     "debug": "^4.1.1",
     "env-ci": "^4.5.1",
@@ -52,9 +52,9 @@
     "optimal": "^3.2.1",
     "pluralize": "^8.0.0",
     "split": "^1.0.1",
-    "strip-ansi": "^5.2.0",
+    "strip-ansi": "^6.0.0",
     "term-size": "^2.1.0",
-    "wrap-ansi": "^6.1.0",
+    "wrap-ansi": "^6.2.0",
     "yargs-parser": "^16.0.0"
   },
   "funding": {
