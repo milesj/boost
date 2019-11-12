@@ -62,18 +62,9 @@ describe('SerialPipeline', () => {
         expect(this.index).toBe(2);
 
         return this.createWaterfallPipeline(ctx, value)
-          .pipe(
-            '2:0',
-            testTask(2, 0),
-          )
-          .pipe(
-            '2:1',
-            testTask(2, 1),
-          )
-          .pipe(
-            '2:2',
-            testTask(2, 2),
-          )
+          .pipe('2:0', testTask(2, 0))
+          .pipe('2:1', testTask(2, 1))
+          .pipe('2:2', testTask(2, 2))
           .run();
       }
     }
@@ -109,10 +100,7 @@ describe('SerialPipeline', () => {
 
   it('passes context, value, and options to next pipeline', () => {
     const first = new WaterfallPipeline(new Context(), '', {});
-    const second = first.pipe(
-      'Test',
-      testTask(0, 1),
-    );
+    const second = first.pipe('Test', testTask(0, 1));
 
     expect(second.context).toBe(first.context);
     expect(second.value).toBe(first.value);

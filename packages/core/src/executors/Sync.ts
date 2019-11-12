@@ -16,8 +16,8 @@ export default class SyncExecutor<Ctx extends Context> extends Executor<Ctx> {
   ): Promise<AggregatedResponse<R>> {
     this.debug('Synchronizing %d tasks', tasks.length);
 
-    return Promise.all(tasks.map(task => handler(task, value).catch(error => error))).then(
-      responses => Promise.resolve(this.aggregateResponse(responses)),
-    );
+    return Promise.all(
+      tasks.map(task => handler(task, value).catch(error => error)),
+    ).then(responses => Promise.resolve(this.aggregateResponse(responses)));
   }
 }

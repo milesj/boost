@@ -225,18 +225,9 @@ export default class ExampleRoutine extends Routine<Output, Input, ExampleOption
 
   async execute(context: Context, value: Input): Promise<Output> {
     return this.createWaterfallPipeline(context, value)
-      .pipe(
-        'Rounding to cents',
-        this.roundToCents,
-      )
-      .pipe(
-        'Converting to readable format',
-        this.makeReadable,
-      )
-      .pipe(
-        'Adding currency',
-        this.addCurrency,
-      )
+      .pipe('Rounding to cents', this.roundToCents)
+      .pipe('Converting to readable format', this.makeReadable)
+      .pipe('Adding currency', this.addCurrency)
       .run();
   }
 
@@ -393,18 +384,9 @@ a value argument to the next work unit. Returns the final value once all resolve
 import { Context, WaterfallPipeline } from '@boost/pipeline';
 
 const pipeline = new WaterfallPipeline(new Context(), 1000)
-  .pipe(
-    'Multiply initial value',
-    (ctx, value) => value * 3,
-  )
-  .pipe(
-    'Convert to a readable string',
-    (ctx, value) => value.toLocaleString(),
-  )
-  .pipe(
-    'Convert to an array for reasons unknown',
-    (ctx, value) => [value],
-  );
+  .pipe('Multiply initial value', (ctx, value) => value * 3)
+  .pipe('Convert to a readable string', (ctx, value) => value.toLocaleString())
+  .pipe('Convert to an array for reasons unknown', (ctx, value) => [value]);
 
 const finalValue = await pipeline.run(); // ['3,000']
 ```

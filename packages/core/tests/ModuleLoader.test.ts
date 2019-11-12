@@ -248,9 +248,9 @@ describe('ModuleLoader', () => {
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-bar'));
       fixtures.push(copyFixtureToMock('plugin-exported-definition', 'test-boost-plugin-baz'));
 
-      expect(loader.loadModules([{ plugin: 'foo' }, { plugin: 'bar' }, { plugin: 'baz' }])).toEqual(
-        [createPlugin('foo'), createPlugin('bar'), createPlugin('baz')],
-      );
+      expect(
+        loader.loadModules([{ plugin: 'foo' }, { plugin: 'bar' }, { plugin: 'baz' }]),
+      ).toEqual([createPlugin('foo'), createPlugin('bar'), createPlugin('baz')]);
     });
 
     it('supports all 3 at once', () => {

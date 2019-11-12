@@ -348,13 +348,13 @@ describe('Tool', () => {
     });
 
     it('returns an array of all packages within all workspaces', () => {
-      expect(tool.getWorkspacePackagePaths({ root: getFixturePath('workspace-multiple') })).toEqual(
-        [
-          getFixturePath('workspace-multiple', 'packages/baz'),
-          getFixturePath('workspace-multiple', 'packages/foo'),
-          getFixturePath('workspace-multiple', 'modules/bar'),
-        ],
-      );
+      expect(
+        tool.getWorkspacePackagePaths({ root: getFixturePath('workspace-multiple') }),
+      ).toEqual([
+        getFixturePath('workspace-multiple', 'packages/baz'),
+        getFixturePath('workspace-multiple', 'packages/foo'),
+        getFixturePath('workspace-multiple', 'modules/bar'),
+      ]);
     });
 
     it('returns an array of all packages within all workspaces as relative paths', () => {

@@ -6,18 +6,9 @@ import WaterfallPipeline from '../src/WaterfallPipeline';
 describe('WaterfallPipeline', () => {
   it('supports piping action functions and passing a value between each', async () => {
     const pipeline = new WaterfallPipeline(new Context(), 123)
-      .pipe(
-        'One',
-        (ctx, value) => value * 2,
-      )
-      .pipe(
-        'Two',
-        (ctx, value) => String(value),
-      )
-      .pipe(
-        'Three',
-        (ctx, value) => [value],
-      );
+      .pipe('One', (ctx, value) => value * 2)
+      .pipe('Two', (ctx, value) => String(value))
+      .pipe('Three', (ctx, value) => [value]);
 
     expect(await pipeline.run()).toEqual(['246']);
   });
