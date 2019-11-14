@@ -1374,115 +1374,284 @@ describe('parse()', () => {
       });
     });
 
-    it('sets as a command if defined', () => {
-      const result = parse<{}>(['cmd', 'foo', 'bar'], {
-        commands: ['cmd', 'command'],
-        options: {},
+    describe('array', () => {
+      it('sets as a command if defined', () => {
+        const result = parse<{}>(['cmd', 'foo', 'bar'], {
+          commands: ['cmd', 'command'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
       });
 
-      expect(result).toEqual({
-        command: ['cmd'],
-        errors: [],
-        options: {},
-        positionals: ['foo', 'bar'],
-        rest: [],
+      it('sets as a command if defined and using sub-commands', () => {
+        const result = parse<{}>(['command:sub', 'foo', 'bar'], {
+          commands: ['cmd', 'command'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['command', 'sub'],
+          errors: [],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('errors if same command found multiple times', () => {
+        const result = parse<{}>(['cmd', 'foo', 'cmd', 'bar'], {
+          commands: ['cmd', 'command'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [
+            new ParseError(
+              'Command has already been provided as "cmd", received another "cmd".',
+              'cmd',
+              2,
+            ),
+          ],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('errors if multiple commands are passed', () => {
+        const result = parse<{}>(['cmd', 'foo', 'command', 'bar'], {
+          commands: ['cmd', 'command'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [
+            new ParseError(
+              'Command has already been provided as "cmd", received another "command".',
+              'command',
+              2,
+            ),
+          ],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('errors if command is passed after positionals', () => {
+        const result = parse<{}>(['foo', 'cmd', 'bar'], {
+          commands: ['cmd', 'command'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [
+            new ParseError(
+              'Command must be passed as the first non-option, non-positional argument.',
+              'cmd',
+              1,
+            ),
+          ],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('errors if command has an invalid format', () => {
+        const result = parse<{}>([], {
+          commands: ['comm_and'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [
+            new ValidationError(
+              'Invalid "comm_and" command format. Must be letters, numbers, and dashes.',
+            ),
+          ],
+          options: {},
+          positionals: [],
+          rest: [],
+        });
       });
     });
 
-    it('sets as a command if defined and using sub-commands', () => {
-      const result = parse<{}>(['command:sub', 'foo', 'bar'], {
-        commands: ['cmd', 'command'],
-        options: {},
+    describe('function', () => {
+      it('sets as a command if valid', () => {
+        const result = parse<{}>(['cmd', 'foo', 'bar'], {
+          commands: arg => arg === 'cmd',
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
       });
 
-      expect(result).toEqual({
-        command: ['command', 'sub'],
-        errors: [],
-        options: {},
-        positionals: ['foo', 'bar'],
-        rest: [],
-      });
-    });
+      it('doesnt set as a command if invalid', () => {
+        const result = parse<{}>(['cmd', 'foo', 'bar'], {
+          commands: arg => arg === 'command',
+          options: {},
+        });
 
-    it('errors if same command found multiple times', () => {
-      const result = parse<{}>(['cmd', 'foo', 'cmd', 'bar'], {
-        commands: ['cmd', 'command'],
-        options: {},
-      });
-
-      expect(result).toEqual({
-        command: ['cmd'],
-        errors: [
-          new ParseError(
-            'Command has already been provided as "cmd", received another "cmd".',
-            'cmd',
-            2,
-          ),
-        ],
-        options: {},
-        positionals: ['foo', 'bar'],
-        rest: [],
-      });
-    });
-
-    it('errors if multiple commands are passed', () => {
-      const result = parse<{}>(['cmd', 'foo', 'command', 'bar'], {
-        commands: ['cmd', 'command'],
-        options: {},
+        expect(result).toEqual({
+          command: [],
+          errors: [],
+          options: {},
+          positionals: ['cmd', 'foo', 'bar'],
+          rest: [],
+        });
       });
 
-      expect(result).toEqual({
-        command: ['cmd'],
-        errors: [
-          new ParseError(
-            'Command has already been provided as "cmd", received another "command".',
-            'command',
-            2,
-          ),
-        ],
-        options: {},
-        positionals: ['foo', 'bar'],
-        rest: [],
-      });
-    });
+      it('can validate sub-commands', () => {
+        function commands(arg: string): boolean {
+          const [main, sub] = arg.split(':');
 
-    it('errors if command is passed after positionals', () => {
-      const result = parse<{}>(['foo', 'cmd', 'bar'], {
-        commands: ['cmd', 'command'],
-        options: {},
+          if (main !== 'cmd') {
+            return false;
+          }
+
+          return !sub || sub === 'one' || sub === 'two';
+        }
+
+        const resultNoSub = parse<{}>(['cmd', 'foo', 'bar'], {
+          commands,
+          options: {},
+        });
+
+        expect(resultNoSub).toEqual({
+          command: ['cmd'],
+          errors: [],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+
+        const resultValidSub = parse<{}>(['cmd:one', 'foo', 'bar'], {
+          commands,
+          options: {},
+        });
+
+        expect(resultValidSub).toEqual({
+          command: ['cmd', 'one'],
+          errors: [],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+
+        const resultInvalidSub = parse<{}>(['cmd:three', 'foo', 'bar'], {
+          commands,
+          options: {},
+        });
+
+        expect(resultInvalidSub).toEqual({
+          command: [],
+          errors: [],
+          options: {},
+          positionals: ['cmd:three', 'foo', 'bar'],
+          rest: [],
+        });
       });
 
-      expect(result).toEqual({
-        command: ['cmd'],
-        errors: [
-          new ParseError(
-            'Command must be passed as the first non-option, non-positional argument.',
-            'cmd',
-            1,
-          ),
-        ],
-        options: {},
-        positionals: ['foo', 'bar'],
-        rest: [],
-      });
-    });
+      it('can throw errors for invalid commands', () => {
+        const result = parse<{}>(['cmd', 'foo', 'bar'], {
+          commands() {
+            throw new Error('Invalid');
+          },
+          options: {},
+        });
 
-    it('errors if command has an invalid format', () => {
-      const result = parse<{}>([], {
-        commands: ['comm_and'],
-        options: {},
+        expect(result).toEqual({
+          command: [],
+          errors: [
+            new ValidationError('Invalid'), // cmd
+            new ValidationError('Invalid'), // foo
+            new ValidationError('Invalid'), // bar
+          ],
+          options: {},
+          positionals: [],
+          rest: [],
+        });
       });
 
-      expect(result).toEqual({
-        command: [],
-        errors: [
-          new ValidationError(
-            'Invalid "comm_and" command format. Must be letters, numbers, and dashes.',
-          ),
-        ],
-        options: {},
-        positionals: [],
-        rest: [],
+      it('errors if same command found multiple times', () => {
+        const result = parse<{}>(['cmd', 'foo', 'cmd', 'bar'], {
+          commands: arg => arg === 'cmd' || arg === 'command',
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [
+            new ParseError(
+              'Command has already been provided as "cmd", received another "cmd".',
+              'cmd',
+              2,
+            ),
+          ],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('errors if multiple commands are passed', () => {
+        const result = parse<{}>(['cmd', 'foo', 'command', 'bar'], {
+          commands: arg => arg === 'cmd' || arg === 'command',
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [
+            new ParseError(
+              'Command has already been provided as "cmd", received another "command".',
+              'command',
+              2,
+            ),
+          ],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('errors if command is passed after positionals', () => {
+        const result = parse<{}>(['foo', 'cmd', 'bar'], {
+          commands: arg => arg === 'cmd' || arg === 'command',
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd'],
+          errors: [
+            new ParseError(
+              'Command must be passed as the first non-option, non-positional argument.',
+              'cmd',
+              1,
+            ),
+          ],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
       });
     });
   });

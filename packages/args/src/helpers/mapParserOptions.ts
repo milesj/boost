@@ -14,7 +14,7 @@ export default function mapParserOptions<O extends object, P extends unknown[]>(
     onPositional?: (config: PositionalConfig, value: ValueType, index: number) => void;
   },
 ) {
-  if (onCommand && configs.commands) {
+  if (onCommand && Array.isArray(configs.commands)) {
     configs.commands.forEach(command => {
       onCommand(command);
     });

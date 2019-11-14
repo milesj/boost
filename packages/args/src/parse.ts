@@ -111,20 +111,20 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
       break;
     }
 
-    // Options
-    if (isOptionLike(arg)) {
-      let optionName = arg;
-      let inlineValue;
+    try {
+      // Options
+      if (isOptionLike(arg)) {
+        let optionName = arg;
+        let inlineValue;
 
-      // Commit previous scope
-      commitScope();
+        // Commit previous scope
+        commitScope();
 
-      // Extract option and inline value
-      if (optionName.includes('=')) {
-        [optionName, inlineValue] = optionName.split('=', 2);
-      }
+        // Extract option and inline value
+        if (optionName.includes('=')) {
+          [optionName, inlineValue] = optionName.split('=', 2);
+        }
 
-      try {
         // Short option group "-frl"
         if (isShortOptionGroup(optionName)) {
           checker.checkNoInlineValue(inlineValue);
@@ -141,54 +141,54 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
         } else if (isLongOption(optionName)) {
           optionName = optionName.slice(2);
         }
-      } catch (error) {
-        checker.logFailure(error.message);
 
-        continue;
-      }
+        // Parse and create next scope
+        const scope = createScope(optionName, optionConfigs, options);
 
-      // Parse and create next scope
-      const scope = createScope(optionName, optionConfigs, options);
+        // Flag found, so set value immediately and discard scope
+        if (scope.flag) {
+          options[scope.name] = !scope.negated;
 
-      // Flag found, so set value immediately and discard scope
-      if (scope.flag) {
-        options[scope.name] = !scope.negated;
+          checker.checkNoInlineValue(inlineValue);
 
-        checker.checkNoInlineValue(inlineValue);
+          // Otherwise keep scope open, to capture next value
+        } else {
+          currentScope = scope;
 
-        // Otherwise keep scope open, to capture next value
-      } else {
-        currentScope = scope;
+          // Update scope value if an inline value exists
+          if (inlineValue !== undefined) {
+            currentScope.captureValue(inlineValue, commitScope);
 
-        // Update scope value if an inline value exists
-        if (inlineValue !== undefined) {
-          currentScope.captureValue(inlineValue, commitScope);
-
-          // Increment count when using long form
-        } else if (scope.config.count) {
-          currentScope.captureValue('1', commitScope);
+            // Increment count when using long form
+          } else if (scope.config.count) {
+            currentScope.captureValue('1', commitScope);
+          }
         }
+
+        // Option values
+      } else if (currentScope) {
+        currentScope.captureValue(arg, commitScope);
+
+        // Commands
+      } else if (isCommand(arg, commandConfigs)) {
+        checker.checkCommandOrder(arg, command, positionals.length);
+
+        if (!command) {
+          command = arg;
+        }
+
+        // Positionals
+      } else if (positionalConfigs[positionals.length]) {
+        const config = positionalConfigs[positionals.length] as PositionalConfig;
+
+        positionals.push(castValue(arg, config.type) as PrimitiveType);
+      } else {
+        positionals.push(arg);
       }
+    } catch (error) {
+      checker.logFailure(error.message);
 
-      // Option values
-    } else if (currentScope) {
-      currentScope.captureValue(arg, commitScope);
-
-      // Commands
-    } else if (isCommand(arg, commandConfigs)) {
-      checker.checkCommandOrder(arg, command, positionals.length);
-
-      if (!command) {
-        command = arg;
-      }
-
-      // Positionals
-    } else if (positionalConfigs[positionals.length]) {
-      const config = positionalConfigs[positionals.length] as PositionalConfig;
-
-      positionals.push(castValue(arg, config.type) as PrimitiveType);
-    } else {
-      positionals.push(arg);
+      continue;
     }
   }
 

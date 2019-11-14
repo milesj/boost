@@ -82,6 +82,8 @@ export type InferOptionConfig<T> = T extends boolean
 // Map over option types to infer the configs.
 export type MapOptionConfig<T extends object> = { [K in keyof T]: InferOptionConfig<T[K]> };
 
+export type CommandChecker = (arg: string) => boolean;
+
 export interface Arguments<O extends object, P extends unknown[]> {
   command: string[];
   errors: Error[];
@@ -91,7 +93,7 @@ export interface Arguments<O extends object, P extends unknown[]> {
 }
 
 export interface ParserOptions<T extends object, P extends unknown[]> {
-  commands?: string[];
+  commands?: string[] | CommandChecker;
   options: MapOptionConfig<T>;
   positionals?: MapPositionalConfig<P>;
 }
