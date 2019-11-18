@@ -4,7 +4,7 @@ export const debug = createInternalDebugger('args');
 
 // Supports letters, numbers, dashes, and camel case.
 // Minimum 2 characters. Must start and end with a letter.
-export const COMMAND_FORMAT = /^[a-z][-a-z0-9]*[a-z]$/iu;
+export const COMMAND_FORMAT = /^[a-z][-a-z0-9:]*[a-z]$/iu;
 
 // Double dash followed by a long name.
 // Supports letters, numbers, dashes, and camel case.

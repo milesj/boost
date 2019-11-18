@@ -115,7 +115,6 @@ export interface Arg<T> {
 }
 
 export interface Option<T> extends Arg<T> {
-  group?: GroupName;
   short?: ShortOptionName;
 }
 
@@ -136,7 +135,7 @@ export interface Flag extends Option<boolean> {
 }
 
 export interface Positional<T> extends Arg<T> {
-  label: LongOptionName;
+  label: string;
   required?: boolean;
 }
 
@@ -157,8 +156,6 @@ export type PositionalConfig = Positional<any>;
 export interface OptionConfigMap {
   [key: string]: OptionConfig;
 }
-
-export type GroupName = string;
 
 // Without leading "--"
 export type LongOptionName = string;

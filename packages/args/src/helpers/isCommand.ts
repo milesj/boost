@@ -7,7 +7,7 @@ import { CommandChecker } from '../types';
  */
 export default function isCommand(arg: string, commandCheck: string[] | CommandChecker): boolean {
   if (Array.isArray(commandCheck) && commandCheck.length > 0) {
-    return commandCheck.some(command => arg === command || arg.startsWith(`${command}:`));
+    return commandCheck.includes(arg);
   }
 
   if (typeof commandCheck === 'function') {

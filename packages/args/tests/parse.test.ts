@@ -1392,12 +1392,27 @@ describe('parse()', () => {
 
       it('sets as a command if defined and using sub-commands', () => {
         const result = parse<{}>(['command:sub', 'foo', 'bar'], {
-          commands: ['cmd', 'command'],
+          commands: ['cmd', 'command', 'command:sub'],
           options: {},
         });
 
         expect(result).toEqual({
           command: ['command', 'sub'],
+          errors: [],
+          options: {},
+          positionals: ['foo', 'bar'],
+          rest: [],
+        });
+      });
+
+      it('sets any sub-command depth', () => {
+        const result = parse<{}>(['cmd:sub:deep', 'foo', 'bar'], {
+          commands: ['cmd:sub:deep'],
+          options: {},
+        });
+
+        expect(result).toEqual({
+          command: ['cmd', 'sub', 'deep'],
           errors: [],
           options: {},
           positionals: ['foo', 'bar'],

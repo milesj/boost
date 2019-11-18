@@ -1,7 +1,7 @@
 {
   "name": "@boost/args",
   "version": "0.0.0",
-  "description": "TODO",
+  "description": "A type-safe and opinionated argument and option parsing library.",
   "keywords": [
     "boost",
     "argv",
