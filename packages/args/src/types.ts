@@ -98,6 +98,11 @@ export interface ParserOptions<T extends object, P extends unknown[]> {
   positionals?: MapPositionalConfig<P>;
 }
 
+export interface FormatOptions {
+  useInlineValues?: boolean;
+  useShort?: boolean;
+}
+
 // ARGUMENT TYPES
 
 export type InferArgType<T> = T extends boolean

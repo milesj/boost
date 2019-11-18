@@ -44,10 +44,11 @@ const { command, errors, options, positionals, rest } = parse<Options>(process.a
 
 - Commands and sub-commands: `cmd`, `cmd:sub`
 - Options (long and short) that set a value(s): `--foo value`, `--foo=value`, `-f value`, `-f=value`
-  - Camel or kebab cased option names.
+  - Camel (preferred) or kebab cased option names.
 - Flags (boolean options) that take no value: `--bar`, `-B`
   - With implicit negation support: `-no-bar`
 - Positional arguments (stand alone values) that act like parameters: `foo bar baz`
+  - With required support.
 - Rest arguments that are passed to subsequent scripts (aggregated after `--`): `foo -- bar`
 - Supports `string`, `number`, `boolean`, and list based values, with the addition of:
   - Single value based on a list of possible choices.
