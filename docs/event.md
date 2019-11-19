@@ -102,7 +102,7 @@ strings are allowed.
 new Event<[number], 'foo' | 'bar' | 'baz'>('event');
 ```
 
-## Types
+## Event Types
 
 There are 4 types of events that can be instantiated and emitted.
 

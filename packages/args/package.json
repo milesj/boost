@@ -1,7 +1,7 @@
 {
   "name": "@boost/args",
   "version": "0.0.0",
-  "description": "A type-safe and opinionated argument and option parsing library.",
+  "description": "A type-safe and convention based argument and option parsing library, with strict validation checks.",
   "keywords": [
     "boost",
     "argv",

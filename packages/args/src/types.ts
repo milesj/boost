@@ -135,7 +135,7 @@ export interface MultipleOption<T> extends Option<T> {
   multiple: true;
 }
 
-export interface Flag extends Option<boolean> {
+export interface Flag extends Omit<Option<boolean>, 'validate'> {
   default?: boolean;
 }
 
