@@ -17,11 +17,7 @@ export default function castValue(
     case 'boolean': {
       const bool = String(value).toLowerCase();
 
-      if (bool === 'false' || bool === 'off' || bool === 'no' || bool === '0') {
-        return false;
-      }
-
-      return Boolean(bool);
+      return bool === 'true' || bool === 'on' || bool === 'yes' || bool === '1';
     }
 
     case 'number': {

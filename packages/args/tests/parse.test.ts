@@ -1043,6 +1043,29 @@ describe('parse()', () => {
         rest: [],
       });
     });
+
+    it('supports unions with choices', () => {
+      const result = parse<{ modules: 'cjs' | 'esm' | 'umd' }>(['--modules', 'umd'], {
+        options: {
+          modules: {
+            choices: ['cjs', 'esm', 'umd'] as 'esm'[],
+            default: 'esm',
+            description: 'Choose module output',
+            type: 'string',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          modules: 'umd',
+        },
+        params: [],
+        rest: [],
+      });
+    });
   });
 
   describe('number options', () => {
@@ -1791,7 +1814,7 @@ describe('parse()', () => {
           ),
         ],
         options: {
-          foo: true,
+          foo: false,
         },
         params: [],
         rest: [],

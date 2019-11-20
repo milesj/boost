@@ -20,24 +20,26 @@ TODO
 
 An option is an optional argument that accepts a single value or multiple values. It has 2 forms,
 the first being the default form, also known as a long option, which starts with `--` and is
-followed by a word or phrase (either in camel or kebab case), for example, `--log`, `--log-level`,
-or `--logLevel` (preferred). The second form is known as the short form and is represented by a
-single alpha character (either lower or uppercase) prefixed with `-`, for example, `-l` or `-L`. The
-short option can be enabled with the `short` setting.
+followed by a word or phrase (either in camel or kebab case). For example, `--log`, `--log-level`,
+or `--logLevel` (preferred).
 
-For options to operate properly, they must be defined using a settings object when calling
-`parse()`. Each option supports the following settings:
+The second form is known as the short form and is represented by a single alpha character (either
+lower or uppercase) prefixed with `-`, for example, `-l` or `-L`. The short option can be enabled
+with the `short` setting.
+
+For options to parse correctly, they must be defined using a settings object. Each option supports
+the following settings:
 
 - `type` (`'boolean' | 'number' | 'string'`) - Expected type of the provided value. When a value is
   captured from the command line, it will be type casted. _(Required)_
+- `description` (`string`) - A description of what the option does. Primarily used in interface
+  output. _(Required)_
 - `default` (`*`) - The default value if option not provided on the command line. The value's type
   is dependent on the `type` and `multiple` settings. Furthermore, this value defaults to the
   following if not defined.
   - A zero (`0`) when type is `number`.
   - An empty string (`''`) when type is `string`.
   - And `false` when type is `boolean`.
-- `description` (`string`) - A description of what the option does. Primarily used in interfaces.
-  _(Required)_
 - `hidden` (`boolean`) - Hide the option from interface output. Defaults to `false`.
 - `short` (`string`) - Single character used as a the short option alias.
 - `usage` (`string`) - Example instructions on how to use the option.
@@ -135,17 +137,17 @@ Parameters (or positional arguments) are standalone arguments that are treated a
 parsed in a strict order. They're an important mechanism that serve 2 purposes.
 
 - They're a catch all bucket for arguments that _are not_ a command, option, or flag, nor do they
-  appear after a rest `--`.
+  appear after a rest `--` delimiter.
 - They're tightly coupled to commands (when being used). Think of a command as a function, where the
   params are the arguments that are passed to the function.
 
-Like [options](#options), params can be configured when calling `parse()`, but unlike options, the
-settings are not required. When a setting is not defined, a param is treated like a string. Params
-support all the same settings and types as options, with the addition of:
+Like [options](#options), params can be configured, but unlike options, the settings are not
+required. When a setting is not defined, a param is treated as a string. Params support all the same
+settings and types as options, with the addition of:
 
 - `label` (`string`) - Informational label to display in interface output. _(Required)_
 - `required` (`boolean`) - Whether the param is required or not. If required and not passed, the
-  parser will throw an error.
+  parser will throw an error. Defaults to `false`.
 
 ```ts
 const argv = ['off', 'value', '123.45'];
@@ -168,9 +170,9 @@ item configuring the corresponding position/index (hence the name positional arg
 
 ### Rest
 
-Rest arguments are rather simple, as they are everything after a standalone `--` (also known as [end
-of options delimiter][dash-dash]). They are not parsed and are usually passed to subsequent scripts
-or commands. Take the following for example:
+Rest arguments are rather simple, as they're everything after a standalone `--` argument (also known
+as [end of options delimiter][dash-dash]). They are _not_ parsed and are usually passed to
+subsequent scripts or commands.
 
 ```ts
 const args = parse(['foo', 'bar', '--', 'baz']);
@@ -183,11 +185,48 @@ args.rest; // ['baz']
 
 ### Short Option Groups
 
+#### Counters
+
 ### Choice Options
 
-### Counter Options
+For scenarios where you want to only accept an option value from a pre-defined list of choices, the
+`choices` setting can be used (single number/string values only). If an unsupported value is
+provided, the parser will throw an error.
+
+```ts
+const argv = ['--modules', 'umd'];
+const args = parse<{ modules: 'cjs' | 'esm' | 'umd' }>(argv, {
+  options: {
+    modules: {
+      choices: ['cjs', 'esm', 'umd'] as 'esm'[],
+      default: 'esm',
+      description: 'Choose module output',
+      type: 'string',
+    },
+  },
+});
+
+args.options.modules; // 'umd'
+```
+
+> TypeScript doesn't handle the mapping of unions very well, so we need to `as` the `choices`
+> setting. This isn't necessary when using a non-union.
 
 ### Type Casting
+
+While option and param values are configured as `boolean`, `number`, or `string` types, arguments
+passed on the command line are always strings. Because of this, the parser will type cast all
+captured values before returning the final result, as a means for easier interoperability.
+
+This type casting follows specific semantics (below) and may have side-effects depending on the
+input provided.
+
+- When a `boolean`, the following strings will be cast to `true`: true, on, yes, 1. The inverse will
+  be cast to `false`: false, off, no, 0. Other unsupported strings will also be cast to `false`.
+- When a `number`, the string will be cast using `Number()`. If a NaN occurs, the number will return
+  a `0`.
+- Strings are used as-is. Values with spaces or special characters should be wrapped in double
+  quotes.
 
 ### Validation Checks
 
