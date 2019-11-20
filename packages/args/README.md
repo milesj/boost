@@ -4,8 +4,8 @@
 [![npm version](https://badge.fury.io/js/%40boost%args.svg)](https://www.npmjs.com/package/@boost/args)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/args)](https://www.npmjs.com/package/@boost/args)
 
-A type-safe and convention based argument and option parsing library, with strict validation checks.
-It _is not_ a command line interface.
+A type-safe and convention based argument parsing library, with strict validation checks. It _is
+not_ a command line interface.
 
 ```ts
 import { parse } from '@boost/args';
@@ -46,9 +46,9 @@ const { command, errors, options, params, rest } = parse<Options>(process.argv.s
 - Options (long and short) that set a value(s): `--foo value`, `--foo=value`, `-f value`, `-f=value`
   - Camel (preferred) or kebab cased option names.
 - Flags (boolean options) that take no value: `--bar`, `-B`
-  - With implicit negation support: `-no-bar`
-- Parameters that act as stand alone values: `foo bar baz`
-  - With required support.
+  - With implicit negation support: `--no-bar`
+- Parameters that act as standalone values: `foo bar baz`
+  - Can be marked as required.
 - Rest arguments that are passed to subsequent scripts (aggregated after `--`): `foo -- bar`
 - Supports `string`, `number`, `boolean`, and list based values, with the addition of:
   - Single value based on a list of possible choices.

@@ -46,7 +46,7 @@ import Scope from './Scope';
 // Arity count - Required number of argument values to consume for multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
-export default function parse<O extends object = {}, P extends unknown[] = ArgList>(
+export default function parse<O extends object = {}, P extends PrimitiveType[] = ArgList>(
   argv: Argv,
   parserOptions: ParserOptions<O, P>,
 ): Arguments<O, P> {

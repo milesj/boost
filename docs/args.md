@@ -1,6 +1,6 @@
 # Args Parsing
 
-A type-safe and convention based argument and option parsing library, with strict validation checks.
+A type-safe and convention based argument parsing library, with strict validation checks.
 
 ## Installation
 
@@ -23,13 +23,19 @@ the first being the default form, also known as a long option, which starts with
 followed by a word or phrase (either in camel or kebab case), for example, `--log`, `--log-level`,
 or `--logLevel` (preferred). The second form is known as the short form and is represented by a
 single alpha character (either lower or uppercase) prefixed with `-`, for example, `-l` or `-L`. The
-short option is defined with the `short` setting.
+short option can be enabled with the `short` setting.
 
 For options to operate properly, they must be defined using a settings object when calling
 `parse()`. Each option supports the following settings:
 
 - `type` (`'boolean' | 'number' | 'string'`) - Expected type of the provided value. When a value is
   captured from the command line, it will be type casted. _(Required)_
+- `default` (`*`) - The default value if option not provided on the command line. The value's type
+  is dependent on the `type` and `multiple` settings. Furthermore, this value defaults to the
+  following if not defined.
+  - A zero (`0`) when type is `number`.
+  - An empty string (`''`) when type is `string`.
+  - And `false` when type is `boolean`.
 - `description` (`string`) - A description of what the option does. Primarily used in interfaces.
   _(Required)_
 - `hidden` (`boolean`) - Hide the option from interface output. Defaults to `false`.
@@ -38,7 +44,8 @@ For options to operate properly, they must be defined using a settings object wh
 - `validate` (`(value: T) => void`) - An optional function to validate the provided value.
 
 ```ts
-const args = parse<{ logLevel: number }>(['--logLevel=2'], {
+const argv = ['--logLevel=2'];
+const args = parse<{ logLevel: number }>(argv, {
   options: {
     logLevel: {
       description: 'Increase log output verbosity',
@@ -56,30 +63,61 @@ const args = parse<{ logLevel: number }>(['--logLevel=2'], {
 args.options.logLevel; // 2
 ```
 
-> The name of options used on the command line are derived from the `options` keys (above), which
-> are preferred to be camel case. Even though they are defined as camel case, kebab case variants
-> are supported on the command line.
+The name of options used on the command line are derived from the `options` keys (above), which are
+preferred to be camel case. Even though they are defined as camel case, kebab case variants are
+supported on the command line.
+
+> When using TypeScript, a mapping of option names to expected types is defined as the 1st generic
+> slot of `parse()`. If not provided, it defaults to `object`. It's highly encouraged to type
+> options correctly.
 
 #### Single Value
 
-TODO
+A value can be passed as either an additional argument separated by a space, like `--option value`
+(preferred), or with an equals sign and no space (also known as an inline value), like
+`--option=value`.
+
+If you are passing a string that contains spaces or special characters, you must wrap the value in
+double quotes. For example, `--option "long value"` or `--option="long value"`.
 
 #### Multiple Values
 
-TODO
+To pass multiple values for an option, the `multiple` setting must be enabled (numbers and strings
+only), and if using TypeScript, the option type must be a typed array.
+
+```ts
+const args = parse<{ files: string[] }>(argv, {
+  options: {
+    files: {
+      description: 'List of files to process',
+      multiple: true,
+      type: 'string',
+    },
+  },
+});
+```
+
+Like single values, there are 2 patterns for passing multiple values, but the semantics are slightly
+different. When using inlines values (the equals sign), the option must be repeated for each value,
+like `--option=foo --option=bar --option=baz`.
+
+Otherwise, each value can be passed as a standalone argument, like `--option foo bar baz`. When
+using this approach, all values will be captured until another option is passed, or the end of the
+list is met.
 
 ### Flags
 
-A flag is a special type of [option](#options) that is boolean and accepts no value, and represents
-a binary on-off switch. When the flag is passed on the command line (without a value), for example,
-`--color`, the value is assumed to be `true`. To negate a truthy value and pass a falsy one, prefix
-the option with `no-`, for example, `--no-color`.
+A flag is a special type of [option](#options) that accepts no value, is always boolean, and
+represents a binary on-off switch. When the flag is passed on the command line (without a value),
+for example, `--color`, the value is assumed to be `true`. To negate a truthy value and pass a falsy
+one, prefix the option with `no-`, for example, `--no-color`.
 
 Each flag supports the `type` (required), `description` (required), `default` (is `false` if not
 provided), `hidden`, `usage`, and `short` settings mentioned above.
 
 ```ts
-const args = parse<{ color: boolean }>(['--color'], {
+const argv = ['--color'];
+const args = parse<{ color: boolean }>(argv, {
   options: {
     color: {
       description: 'Enable colored output',
@@ -93,16 +131,65 @@ args.options.color; // true
 
 ### Params
 
-TODO
+Parameters (or positional arguments) are standalone arguments that are treated as values, and are
+parsed in a strict order. They're an important mechanism that serve 2 purposes.
+
+- They're a catch all bucket for arguments that _are not_ a command, option, or flag, nor do they
+  appear after a rest `--`.
+- They're tightly coupled to commands (when being used). Think of a command as a function, where the
+  params are the arguments that are passed to the function.
+
+Like [options](#options), params can be configured when calling `parse()`, but unlike options, the
+settings are not required. When a setting is not defined, a param is treated like a string. Params
+support all the same settings and types as options, with the addition of:
+
+- `label` (`string`) - Informational label to display in interface output. _(Required)_
+- `required` (`boolean`) - Whether the param is required or not. If required and not passed, the
+  parser will throw an error.
+
+```ts
+const argv = ['off', 'value', '123.45'];
+const args = parse<{}, [boolean, string, number]>(argv, {
+  params: [
+    { description: 'First parameter', label: 'First', type: 'boolean', required: true },
+    { description: 'Second parameter', label: 'Second', type: 'string' },
+    { description: 'Third parameter', label: 'Third', type: 'number' },
+  ],
+});
+
+args.params; // [false, 'value', 123.45]
+```
+
+Since parameters are order based and not named based, the `params` setting is an array, with each
+item configuring the corresponding position/index (hence the name positional arguments).
+
+> When using TypeScript, the expected type of each param is defined as a tuple in the 2nd generic
+> slot of `parse()`. If not provided, it defaults to `string[]`.
 
 ### Rest
 
-TODO
+Rest arguments are rather simple, as they are everything after a standalone `--` (also known as [end
+of options delimiter][dash-dash]). They are not parsed and are usually passed to subsequent scripts
+or commands. Take the following for example:
+
+```ts
+const args = parse(['foo', 'bar', '--', 'baz']);
+
+args.params; // ['foo', 'bar']
+args.rest; // ['baz']
+```
 
 ## Advanced Features
 
 ### Short Option Groups
 
+### Choice Options
+
 ### Counter Options
 
+### Type Casting
+
 ### Validation Checks
+
+<!-- prettier-ignore -->
+[dash-dash]: https://unix.stackexchange.com/questions/147143/when-and-how-was-the-double-dash-introduced-as-an-end-of-options-delimiter

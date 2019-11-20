@@ -1,6 +1,13 @@
-import { OptionMap, OptionConfig, ValueType, ParserOptions, ParamConfig } from '../types';
+import {
+  OptionMap,
+  OptionConfig,
+  ValueType,
+  ParserOptions,
+  ParamConfig,
+  PrimitiveType,
+} from '../types';
 
-export default function mapParserOptions<O extends object, P extends unknown[]>(
+export default function mapParserOptions<O extends object, P extends PrimitiveType[]>(
   configs: ParserOptions<O, P>,
   options: OptionMap,
   params: ValueType[],

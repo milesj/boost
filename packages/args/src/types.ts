@@ -2,9 +2,13 @@ export type Argv = string[];
 
 export type ArgList = string[];
 
-export type PrimitiveType = boolean | number | string;
+export type ListType = number[] | string[];
 
-export type ValueType = PrimitiveType | number[] | string[];
+export type ScalarType = number | string;
+
+export type PrimitiveType = boolean | ScalarType;
+
+export type ValueType = PrimitiveType | ListType;
 
 export interface OptionMap {
   [key: string]: ValueType;
@@ -19,7 +23,7 @@ export type InferParamConfig<T> = T extends PrimitiveType ? Param<T> : never;
 
 // This is janky but we don't have mapped array/tuples.
 // This assumes no more than 5 typed params, which is usually enough.
-export type MapParamConfig<T extends unknown[]> = T extends [
+export type MapParamConfig<T extends PrimitiveType[]> = T extends [
   infer A,
   infer B,
   infer C,
@@ -44,8 +48,8 @@ export type MapParamConfig<T extends unknown[]> = T extends [
   : never;
 
 // Like the above but for the types themselves.
-// If nothing, we just fallback to an array of primitive types.
-export type MapParamType<T extends unknown[]> = T extends [
+// If nothing, we just fallback to an array of strings.
+export type MapParamType<T extends PrimitiveType[]> = T extends [
   infer A,
   infer B,
   infer C,
@@ -79,7 +83,7 @@ export type MapOptionConfig<T extends object> = { [K in keyof T]: InferOptionCon
 
 export type CommandChecker = (arg: string) => boolean;
 
-export interface Arguments<O extends object, P extends unknown[]> {
+export interface Arguments<O extends object, P extends PrimitiveType[]> {
   command: string[];
   errors: Error[];
   options: O;
@@ -87,7 +91,7 @@ export interface Arguments<O extends object, P extends unknown[]> {
   rest: ArgList;
 }
 
-export interface ParserOptions<T extends object, P extends unknown[]> {
+export interface ParserOptions<T extends object, P extends PrimitiveType[]> {
   commands?: string[] | CommandChecker;
   options: MapOptionConfig<T>;
   params?: MapParamConfig<P>;
@@ -114,17 +118,17 @@ export interface Arg<T> {
   validate?: (value: T) => void;
 }
 
-export interface Option<T> extends Arg<T> {
+export interface Option<T extends ValueType> extends Arg<T> {
   short?: ShortOptionName;
 }
 
-export interface SingleOption<T> extends Option<T> {
+export interface SingleOption<T extends ScalarType> extends Option<T> {
   choices?: T[];
   count?: boolean;
   default?: T;
 }
 
-export interface MultipleOption<T> extends Option<T> {
+export interface MultipleOption<T extends ListType> extends Option<T> {
   arity?: number;
   default?: T;
   multiple: true;
@@ -134,7 +138,7 @@ export interface Flag extends Omit<Option<boolean>, 'validate'> {
   default?: boolean;
 }
 
-export interface Param<T> extends Arg<T> {
+export interface Param<T extends PrimitiveType> extends Arg<T> {
   label: string;
   required?: boolean;
 }
