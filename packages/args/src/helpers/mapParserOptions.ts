@@ -1,17 +1,17 @@
-import { OptionMap, OptionConfig, ValueType, ParserOptions, PositionalConfig } from '../types';
+import { OptionMap, OptionConfig, ValueType, ParserOptions, ParamConfig } from '../types';
 
 export default function mapParserOptions<O extends object, P extends unknown[]>(
   configs: ParserOptions<O, P>,
   options: OptionMap,
-  positionals: ValueType[],
+  params: ValueType[],
   {
     onCommand,
     onOption,
-    onPositional,
+    onParam,
   }: {
     onCommand?: (command: string) => void;
     onOption?: (config: OptionConfig, value: ValueType, name: string) => void;
-    onPositional?: (config: PositionalConfig, value: ValueType, index: number) => void;
+    onParam?: (config: ParamConfig, value: ValueType, index: number) => void;
   },
 ) {
   if (onCommand && Array.isArray(configs.commands)) {
@@ -26,9 +26,9 @@ export default function mapParserOptions<O extends object, P extends unknown[]>(
     });
   }
 
-  if (onPositional && configs.positionals) {
-    configs.positionals.forEach((config, i) => {
-      onPositional(config, positionals[i], i);
+  if (onParam && configs.params) {
+    configs.params.forEach((config, i) => {
+      onParam(config, params[i], i);
     });
   }
 }

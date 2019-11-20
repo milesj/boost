@@ -91,7 +91,7 @@ const args = parse<{ color: boolean }>(['--color'], {
 args.options.color; // true
 ```
 
-### Positionals
+### Params
 
 TODO
 

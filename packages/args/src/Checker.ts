@@ -7,7 +7,7 @@ import {
   LongOptionName,
   ShortOptionName,
   AliasMap,
-  PositionalConfig,
+  ParamConfig,
 } from './types';
 import { COMMAND_FORMAT } from './constants';
 
@@ -20,10 +20,10 @@ export default class Checker {
 
   validationErrors: ValidationError[] = [];
 
-  checkCommandOrder(anotherCommand: string, providedCommand: string, positionalsLength: number) {
+  checkCommandOrder(anotherCommand: string, providedCommand: string, paramsLength: number) {
     if (providedCommand !== '') {
       this.logFailureError('AG_COMMAND_PROVIDED', [providedCommand, anotherCommand]);
-    } else if (positionalsLength !== 0) {
+    } else if (paramsLength !== 0) {
       this.logFailureError('AG_COMMAND_NOT_FIRST');
     }
   }
@@ -94,7 +94,7 @@ export default class Checker {
     }
   }
 
-  validateParsedPositional(config: PositionalConfig, value: unknown) {
+  validateParsedParam(config: ParamConfig, value: unknown) {
     if (config.validate) {
       try {
         config.validate(value);
@@ -104,19 +104,19 @@ export default class Checker {
     }
 
     if (config.required && value === undefined) {
-      this.logInvalidError('AG_POSITIONAL_REQUIRED', [config.label]);
+      this.logInvalidError('AG_PARAM_REQUIRED', [config.label]);
     }
   }
 
-  validatePositionalOrder(configs: PositionalConfig[]) {
-    const optionals: PositionalConfig[] = [];
+  validateParamOrder(configs: ParamConfig[]) {
+    const optionals: ParamConfig[] = [];
 
     configs.forEach(config => {
       if (config.required) {
         if (optionals.length > 0) {
           const labels = optionals.map(opt => `"${opt.label}"`);
 
-          this.logInvalidError('AG_POSITIONAL_MISORDERED', [labels.join(', '), config.label]);
+          this.logInvalidError('AG_PARAM_MISORDERED', [labels.join(', '), config.label]);
         }
       } else {
         optionals.push(config);

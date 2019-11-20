@@ -15,11 +15,11 @@ export interface AliasMap {
 }
 
 // Determine option based on type. Only primitives are allowed.
-export type InferPositionalConfig<T> = T extends PrimitiveType ? Positional<T> : never;
+export type InferParamConfig<T> = T extends PrimitiveType ? Param<T> : never;
 
 // This is janky but we don't have mapped array/tuples.
-// This assumes no more than 5 typed positionals, which is usually enough.
-export type MapPositionalConfig<T extends unknown[]> = T extends [
+// This assumes no more than 5 typed params, which is usually enough.
+export type MapParamConfig<T extends unknown[]> = T extends [
   infer A,
   infer B,
   infer C,
@@ -27,30 +27,25 @@ export type MapPositionalConfig<T extends unknown[]> = T extends [
   infer E,
 ]
   ? [
-      InferPositionalConfig<A>,
-      InferPositionalConfig<B>,
-      InferPositionalConfig<C>,
-      InferPositionalConfig<D>,
-      InferPositionalConfig<E>,
+      InferParamConfig<A>,
+      InferParamConfig<B>,
+      InferParamConfig<C>,
+      InferParamConfig<D>,
+      InferParamConfig<E>,
     ]
   : T extends [infer A, infer B, infer C, infer D]
-  ? [
-      InferPositionalConfig<A>,
-      InferPositionalConfig<B>,
-      InferPositionalConfig<C>,
-      InferPositionalConfig<D>,
-    ]
+  ? [InferParamConfig<A>, InferParamConfig<B>, InferParamConfig<C>, InferParamConfig<D>]
   : T extends [infer A, infer B, infer C]
-  ? [InferPositionalConfig<A>, InferPositionalConfig<B>, InferPositionalConfig<C>]
+  ? [InferParamConfig<A>, InferParamConfig<B>, InferParamConfig<C>]
   : T extends [infer A, infer B]
-  ? [InferPositionalConfig<A>, InferPositionalConfig<B>]
+  ? [InferParamConfig<A>, InferParamConfig<B>]
   : T extends [infer A]
-  ? [InferPositionalConfig<A>]
+  ? [InferParamConfig<A>]
   : never;
 
 // Like the above but for the types themselves.
 // If nothing, we just fallback to an array of primitive types.
-export type MapPositionalType<T extends unknown[]> = T extends [
+export type MapParamType<T extends unknown[]> = T extends [
   infer A,
   infer B,
   infer C,
@@ -88,14 +83,14 @@ export interface Arguments<O extends object, P extends unknown[]> {
   command: string[];
   errors: Error[];
   options: O;
-  positionals: MapPositionalType<P>;
+  params: MapParamType<P>;
   rest: ArgList;
 }
 
 export interface ParserOptions<T extends object, P extends unknown[]> {
   commands?: string[] | CommandChecker;
   options: MapOptionConfig<T>;
-  positionals?: MapPositionalConfig<P>;
+  params?: MapParamConfig<P>;
 }
 
 export interface FormatOptions {
@@ -139,7 +134,7 @@ export interface Flag extends Omit<Option<boolean>, 'validate'> {
   default?: boolean;
 }
 
-export interface Positional<T> extends Arg<T> {
+export interface Param<T> extends Arg<T> {
   label: string;
   required?: boolean;
 }
@@ -156,7 +151,7 @@ export type OptionConfig = Option<any> & {
 
 // Abstract type for easier typing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type PositionalConfig = Positional<any>;
+export type ParamConfig = Param<any>;
 
 export interface OptionConfigMap {
   [key: string]: OptionConfig;

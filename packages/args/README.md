@@ -16,7 +16,7 @@ interface Options {
   version: boolean;
 }
 
-const { command, errors, options, positionals, rest } = parse<Options>(process.argv.slice(2), {
+const { command, errors, options, params, rest } = parse<Options>(process.argv.slice(2), {
   commands: ['build', 'install', 'update'],
   options: {
     help: {
@@ -47,7 +47,7 @@ const { command, errors, options, positionals, rest } = parse<Options>(process.a
   - Camel (preferred) or kebab cased option names.
 - Flags (boolean options) that take no value: `--bar`, `-B`
   - With implicit negation support: `-no-bar`
-- Positional arguments (stand alone values) that act like parameters: `foo bar baz`
+- Parameters that act as stand alone values: `foo bar baz`
   - With required support.
 - Rest arguments that are passed to subsequent scripts (aggregated after `--`): `foo -- bar`
 - Supports `string`, `number`, `boolean`, and list based values, with the addition of:
@@ -56,7 +56,7 @@ const { command, errors, options, positionals, rest } = parse<Options>(process.a
 - Group multiple short options under a single argument: `-fBp`
   - Increment a counter each time a short option is found in a group.
 - Strict parser and validation checks, allowing for informative interfaces.
-  - Custom option and positional validation for increased accuracy.
+  - Custom option and param validation for increased accuracy.
 
 ## Installation
 

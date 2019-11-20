@@ -111,7 +111,7 @@ describe('parse()', () => {
       options: {
         fooBar: 'baz',
       },
-      positionals: [],
+      params: [],
       rest: [],
     });
   });
@@ -132,7 +132,7 @@ describe('parse()', () => {
       options: {
         fooBar: 'baz',
       },
-      positionals: [],
+      params: [],
       rest: [],
     });
   });
@@ -155,7 +155,7 @@ describe('parse()', () => {
         foo123: 'val1',
         bar456: 'val2',
       },
-      positionals: [],
+      params: [],
       rest: [],
     });
   });
@@ -176,19 +176,19 @@ describe('parse()', () => {
       options: {
         flag: true,
       },
-      positionals: [],
+      params: [],
       rest: ['--foo', '-B', 'baz'],
     });
   });
 
-  it('captures bare arguments as positionals', () => {
+  it('captures bare arguments as params', () => {
     const result = parse(['foo', 'bar', 'baz'], { options: {} });
 
     expect(result).toEqual({
       command: [],
       errors: [],
       options: {},
-      positionals: ['foo', 'bar', 'baz'],
+      params: ['foo', 'bar', 'baz'],
       rest: [],
     });
   });
@@ -208,7 +208,7 @@ describe('parse()', () => {
           options: {
             opt: 'foo',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -226,7 +226,7 @@ describe('parse()', () => {
           options: {
             opt: 'foo',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -244,7 +244,7 @@ describe('parse()', () => {
           options: {
             opt: 'foo',
           },
-          positionals: ['bar'],
+          params: ['bar'],
           rest: [],
         });
       });
@@ -262,7 +262,7 @@ describe('parse()', () => {
           options: {
             opt: 'foobar',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -280,7 +280,7 @@ describe('parse()', () => {
           options: {
             opt: 'baz',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -305,7 +305,7 @@ describe('parse()', () => {
           options: {
             opt: '2019-01',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -331,7 +331,7 @@ describe('parse()', () => {
           options: {
             opt: 'qux',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -355,7 +355,7 @@ describe('parse()', () => {
           options: {
             opt: '',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -381,7 +381,7 @@ describe('parse()', () => {
             flag: true,
             num: 123,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -405,7 +405,7 @@ describe('parse()', () => {
             flag: false,
             num: 4,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -429,7 +429,7 @@ describe('parse()', () => {
             flag: true,
             num: 3,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -453,7 +453,7 @@ describe('parse()', () => {
             flag: false,
             num: 1,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -478,7 +478,7 @@ describe('parse()', () => {
             flag: true,
             opts: ['foo', 'bar'],
           },
-          positionals: ['baz'],
+          params: ['baz'],
           rest: [],
         });
       });
@@ -499,7 +499,7 @@ describe('parse()', () => {
           options: {
             opts: ['foo', 'bar', 'baz'],
           },
-          positionals: ['arg'],
+          params: ['arg'],
           rest: [],
         });
       });
@@ -520,7 +520,7 @@ describe('parse()', () => {
           options: {
             opts: ['foo', 'bar', 'baz'],
           },
-          positionals: ['arg'],
+          params: ['arg'],
           rest: [],
         });
       });
@@ -543,7 +543,7 @@ describe('parse()', () => {
             flag: true,
             opts: ['foo', 'bar', 'baz', 'qux'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -566,7 +566,7 @@ describe('parse()', () => {
             flag: true,
             opts: ['foo', 'bar', 'baz'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -588,7 +588,7 @@ describe('parse()', () => {
           options: {
             opts: [],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -606,7 +606,7 @@ describe('parse()', () => {
           options: {
             opts: ['qux'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -624,7 +624,7 @@ describe('parse()', () => {
           options: {
             opts: ['baz'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -642,7 +642,7 @@ describe('parse()', () => {
           options: {
             opts: ['foo', 'foo', 'foo'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -667,7 +667,7 @@ describe('parse()', () => {
           options: {
             nums: [1, 5, 10],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -687,7 +687,7 @@ describe('parse()', () => {
           options: {
             opts: ['foo', 'bar'],
           },
-          positionals: ['baz'],
+          params: ['baz'],
           rest: [],
         });
       });
@@ -705,7 +705,7 @@ describe('parse()', () => {
           options: {
             opts: ['foo', 'bar'],
           },
-          positionals: ['baz'],
+          params: ['baz'],
           rest: [],
         });
       });
@@ -728,7 +728,7 @@ describe('parse()', () => {
             ars: [123, 456],
             opts: ['foo', 'qux'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -746,7 +746,7 @@ describe('parse()', () => {
           options: {
             opts: ['foo'],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -764,7 +764,7 @@ describe('parse()', () => {
           options: {
             opts: [],
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -784,7 +784,7 @@ describe('parse()', () => {
           options: {
             opt: 'foo',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -802,7 +802,7 @@ describe('parse()', () => {
           options: {
             opt: 'foo',
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -835,7 +835,7 @@ describe('parse()', () => {
             opt: 'foo',
             port: 1337,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -868,7 +868,7 @@ describe('parse()', () => {
             foo: true,
             qux: true,
           },
-          positionals: ['random', 'arg'],
+          params: ['random', 'arg'],
           rest: [],
         });
       });
@@ -889,7 +889,7 @@ describe('parse()', () => {
         options: {
           opt: 'foobar',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -907,7 +907,7 @@ describe('parse()', () => {
         options: {
           opt: '',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -925,7 +925,7 @@ describe('parse()', () => {
         options: {
           opt: 'foo\nbar',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -943,7 +943,7 @@ describe('parse()', () => {
         options: {
           opt: 'foo\tbar baz',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -961,7 +961,7 @@ describe('parse()', () => {
         options: {
           opt: '123456',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -980,7 +980,7 @@ describe('parse()', () => {
           options: {
             opt: char,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -998,7 +998,7 @@ describe('parse()', () => {
           options: {
             opt: char,
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -1017,7 +1017,7 @@ describe('parse()', () => {
         options: {
           opts: SPECIAL_CHARS,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1039,7 +1039,7 @@ describe('parse()', () => {
         options: {
           opt: 'baz',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1059,7 +1059,7 @@ describe('parse()', () => {
         options: {
           num: 123,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1077,7 +1077,7 @@ describe('parse()', () => {
         options: {
           num: 0,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1095,7 +1095,7 @@ describe('parse()', () => {
         options: {
           num: 0,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1113,7 +1113,7 @@ describe('parse()', () => {
         options: {
           num: 123,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1131,7 +1131,7 @@ describe('parse()', () => {
         options: {
           num: 123,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1153,7 +1153,7 @@ describe('parse()', () => {
         options: {
           opt: 2,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1172,7 +1172,7 @@ describe('parse()', () => {
           options: {
             num: Number(char),
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -1190,7 +1190,7 @@ describe('parse()', () => {
           options: {
             num: Number(char),
           },
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -1209,7 +1209,7 @@ describe('parse()', () => {
         options: {
           nums: SPECIAL_NUMBERS.map(no => Number(no)),
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1227,7 +1227,7 @@ describe('parse()', () => {
         options: {
           num: Number.MAX_SAFE_INTEGER,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1251,7 +1251,7 @@ describe('parse()', () => {
         options: {
           flag: true,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1272,7 +1272,7 @@ describe('parse()', () => {
         options: {
           flag: false,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1290,7 +1290,7 @@ describe('parse()', () => {
         options: {
           flag: true,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1314,7 +1314,7 @@ describe('parse()', () => {
         options: {
           flag: true,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1332,7 +1332,7 @@ describe('parse()', () => {
         options: {
           flag: false,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1353,14 +1353,14 @@ describe('parse()', () => {
         options: {
           flag: true,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
   });
 
   describe('commands', () => {
-    it('sets as a positional if no commands defined', () => {
+    it('sets as a param if no commands defined', () => {
       const result = parse<{}>(['cmd', 'foo', 'bar'], {
         options: {},
       });
@@ -1369,7 +1369,7 @@ describe('parse()', () => {
         command: [],
         errors: [],
         options: {},
-        positionals: ['cmd', 'foo', 'bar'],
+        params: ['cmd', 'foo', 'bar'],
         rest: [],
       });
     });
@@ -1385,7 +1385,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1400,7 +1400,7 @@ describe('parse()', () => {
           command: ['command', 'sub'],
           errors: [],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1415,7 +1415,7 @@ describe('parse()', () => {
           command: ['cmd', 'sub', 'deep'],
           errors: [],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1436,7 +1436,7 @@ describe('parse()', () => {
             ),
           ],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1457,12 +1457,12 @@ describe('parse()', () => {
             ),
           ],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
 
-      it('errors if command is passed after positionals', () => {
+      it('errors if command is passed after params', () => {
         const result = parse<{}>(['foo', 'cmd', 'bar'], {
           commands: ['cmd', 'command'],
           options: {},
@@ -1472,13 +1472,13 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command must be passed as the first non-option, non-positional argument.',
+              'Command must be passed as the first non-option, non-param argument.',
               'cmd',
               1,
             ),
           ],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1497,7 +1497,7 @@ describe('parse()', () => {
             ),
           ],
           options: {},
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -1514,7 +1514,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1529,7 +1529,7 @@ describe('parse()', () => {
           command: [],
           errors: [],
           options: {},
-          positionals: ['cmd', 'foo', 'bar'],
+          params: ['cmd', 'foo', 'bar'],
           rest: [],
         });
       });
@@ -1554,7 +1554,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
 
@@ -1567,7 +1567,7 @@ describe('parse()', () => {
           command: ['cmd', 'one'],
           errors: [],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
 
@@ -1580,7 +1580,7 @@ describe('parse()', () => {
           command: [],
           errors: [],
           options: {},
-          positionals: ['cmd:three', 'foo', 'bar'],
+          params: ['cmd:three', 'foo', 'bar'],
           rest: [],
         });
       });
@@ -1601,7 +1601,7 @@ describe('parse()', () => {
             new ValidationError('Invalid'), // bar
           ],
           options: {},
-          positionals: [],
+          params: [],
           rest: [],
         });
       });
@@ -1622,7 +1622,7 @@ describe('parse()', () => {
             ),
           ],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
@@ -1643,12 +1643,12 @@ describe('parse()', () => {
             ),
           ],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
 
-      it('errors if command is passed after positionals', () => {
+      it('errors if command is passed after params', () => {
         const result = parse<{}>(['foo', 'cmd', 'bar'], {
           commands: arg => arg === 'cmd' || arg === 'command',
           options: {},
@@ -1658,24 +1658,24 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command must be passed as the first non-option, non-positional argument.',
+              'Command must be passed as the first non-option, non-param argument.',
               'cmd',
               1,
             ),
           ],
           options: {},
-          positionals: ['foo', 'bar'],
+          params: ['foo', 'bar'],
           rest: [],
         });
       });
     });
   });
 
-  describe('positionals', () => {
-    it('errors if a required positional comes after an optional', () => {
+  describe('params', () => {
+    it('errors if a required param comes after an optional', () => {
       const result = parse<{}, [string, string]>(['foo', 'bar'], {
         options: {},
-        positionals: [
+        params: [
           { description: '', label: 'first', required: false, type: 'string' },
           { description: '', label: 'second', required: true, type: 'string' },
         ],
@@ -1685,26 +1685,26 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Optional positional(s) "first" found before required positional "second". Required must be first.',
+            'Optional param(s) "first" found before required param "second". Required must be first.',
           ),
         ],
         options: {},
-        positionals: ['foo', 'bar'],
+        params: ['foo', 'bar'],
         rest: [],
       });
     });
 
-    it('errors if a required positional is undefined', () => {
+    it('errors if a required param is undefined', () => {
       const result = parse<{}, [string]>([], {
         options: {},
-        positionals: [{ description: '', label: 'first', required: true, type: 'string' }],
+        params: [{ description: '', label: 'first', required: true, type: 'string' }],
       });
 
       expect(result).toEqual({
         command: [],
-        errors: [new ValidationError('Positional "first" is required but value is undefined.')],
+        errors: [new ValidationError('Param "first" is required but value is undefined.')],
         options: {},
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1712,14 +1712,14 @@ describe('parse()', () => {
     it('casts to value if a config exists, otherwise is a string', () => {
       const result = parse<{}, [number]>(['123', 'bar'], {
         options: {},
-        positionals: [{ description: '', label: 'first', type: 'number' }],
+        params: [{ description: '', label: 'first', type: 'number' }],
       });
 
       expect(result).toEqual({
         command: [],
         errors: [],
         options: {},
-        positionals: [123, 'bar'],
+        params: [123, 'bar'],
         rest: [],
       });
     });
@@ -1727,7 +1727,7 @@ describe('parse()', () => {
     it('casts to boolean using keywords', () => {
       const result = parse<{}, [boolean, string, boolean]>(['off', 'bar', 'on'], {
         options: {},
-        positionals: [
+        params: [
           { description: '', label: 'first', type: 'boolean' },
           { description: '', label: 'second', type: 'string' },
           { description: '', label: 'third', type: 'boolean' },
@@ -1738,7 +1738,7 @@ describe('parse()', () => {
         command: [],
         errors: [],
         options: {},
-        positionals: [false, 'bar', true],
+        params: [false, 'bar', true],
         rest: [],
       });
     });
@@ -1746,7 +1746,7 @@ describe('parse()', () => {
     it('runs custom validation using `validate`', () => {
       const result = parse<{}, [string]>(['2019-01'], {
         options: {},
-        positionals: [
+        params: [
           {
             description: '',
             label: 'date',
@@ -1764,7 +1764,7 @@ describe('parse()', () => {
         command: [],
         errors: [new ValidationError('Invalid date.')],
         options: {},
-        positionals: ['2019-01'],
+        params: ['2019-01'],
         rest: [],
       });
     });
@@ -1793,7 +1793,7 @@ describe('parse()', () => {
         options: {
           foo: true,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1818,7 +1818,7 @@ describe('parse()', () => {
         options: {
           foo: '123',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1843,7 +1843,7 @@ describe('parse()', () => {
         options: {
           foo: 0,
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1871,7 +1871,7 @@ describe('parse()', () => {
         options: {
           foo: [],
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1894,7 +1894,7 @@ describe('parse()', () => {
         options: {
           foo: '',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });
@@ -1922,7 +1922,7 @@ describe('parse()', () => {
           bar: '',
           foo: '',
         },
-        positionals: [],
+        params: [],
         rest: [],
       });
     });

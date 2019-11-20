@@ -9,6 +9,7 @@
     "arguments",
     "options",
     "flags",
+    "params",
     "cli"
   ],
   "main": "./lib/index.js",

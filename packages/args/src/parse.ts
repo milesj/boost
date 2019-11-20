@@ -9,8 +9,8 @@ import {
   ShortOptionName,
   ParserOptions,
   PrimitiveType,
-  MapPositionalType,
-  PositionalConfig,
+  MapParamType,
+  ParamConfig,
 } from './types';
 import getDefaultValue from './helpers/getDefaultValue';
 import isShortOption from './helpers/isShortOption';
@@ -32,7 +32,7 @@ import Scope from './Scope';
 //    Sub-commands are separated with ":".
 // option - An optional argument that requires a value(s). Starts with "--" (long) or "-" (short).
 // flag - A specialized option that only supports booleans. Can be toggled on an off (default).
-// positional arg - An optional or required argument, that is not an option or option value,
+// param - An optional or required argument, that is not an option or option value,
 //    Supports any raw value, and enforces a defined order.
 // rest arg - All remaining arguments that appear after a stand alone "--".
 //    Usually passed to subsequent scripts.
@@ -53,11 +53,11 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
   const {
     commands: commandConfigs = [],
     options: optionConfigs,
-    positionals: positionalConfigs = [],
+    params: paramConfigs = [],
   } = parserOptions;
   const checker = new Checker();
   const options: OptionMap = {};
-  const positionals: PrimitiveType[] = [];
+  const params: PrimitiveType[] = [];
   const rest: ArgList = [];
   const mapping: AliasMap = {};
   let command = '';
@@ -77,9 +77,9 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
   }
 
   // Run validations and map defaults
-  checker.validatePositionalOrder(positionalConfigs);
+  checker.validateParamOrder(paramConfigs);
 
-  mapParserOptions(parserOptions, options, positionals, {
+  mapParserOptions(parserOptions, options, params, {
     onCommand(cmd) {
       checker.validateCommandFormat(cmd);
     },
@@ -171,19 +171,19 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
 
         // Commands
       } else if (isCommand(arg, commandConfigs)) {
-        checker.checkCommandOrder(arg, command, positionals.length);
+        checker.checkCommandOrder(arg, command, params.length);
 
         if (!command) {
           command = arg;
         }
 
-        // Positionals
-      } else if (positionalConfigs[positionals.length]) {
-        const config = positionalConfigs[positionals.length] as PositionalConfig;
+        // Params
+      } else if (paramConfigs[params.length]) {
+        const config = paramConfigs[params.length] as ParamConfig;
 
-        positionals.push(castValue(arg, config.type) as PrimitiveType);
+        params.push(castValue(arg, config.type) as PrimitiveType);
       } else {
-        positionals.push(arg);
+        params.push(arg);
       }
     } catch (error) {
       checker.logFailure(error.message);
@@ -196,7 +196,7 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
   commitScope();
 
   // Run final checks
-  mapParserOptions(parserOptions, options, positionals, {
+  mapParserOptions(parserOptions, options, params, {
     onOption(config, value, name) {
       checker.validateParsedOption(name, config, value);
       checker.validateArityIsMet(name, config, value);
@@ -208,8 +208,8 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
         options[name] = castValue(value, config.type, config.multiple);
       }
     },
-    onPositional(config, value) {
-      checker.validateParsedPositional(config, value);
+    onParam(config, value) {
+      checker.validateParsedParam(config, value);
     },
   });
 
@@ -217,7 +217,7 @@ export default function parse<O extends object = {}, P extends unknown[] = ArgLi
     command: command === '' ? [] : command.split(':'),
     errors: [...checker.parseErrors, ...checker.validationErrors],
     options: options as O,
-    positionals: positionals as MapPositionalType<P>,
+    params: params as MapParamType<P>,
     rest,
   };
 }

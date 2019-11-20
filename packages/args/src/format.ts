@@ -15,7 +15,7 @@ function formatValue(val: PrimitiveType): string {
 }
 
 export default function format(
-  { command = [], options = {}, positionals = [], rest = [] }: Arguments<OptionMap, ArgList>,
+  { command = [], options = {}, params = [], rest = [] }: Arguments<OptionMap, ArgList>,
   optionConfig: OptionConfigMap,
   { useInlineValues, useShort }: FormatOptions = {},
 ): Argv {
@@ -58,8 +58,8 @@ export default function format(
     args.push(`${prefix}${name}`, ...values);
   });
 
-  // Positionals
-  args.push(...positionals);
+  // Params
+  args.push(...params);
 
   // Rest
   if (rest.length > 0) {
