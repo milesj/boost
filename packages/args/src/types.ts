@@ -124,7 +124,7 @@ export interface Option<T extends ValueType> extends Arg<T> {
 
 export interface SingleOption<T extends ScalarType> extends Option<T> {
   choices?: T[];
-  count?: boolean;
+  count?: T extends number ? true : never;
   default?: T;
 }
 

@@ -185,7 +185,39 @@ args.rest; // ['baz']
 
 ### Short Option Groups
 
-#### Counters
+Short options support a shortcut known as a short option group, where multiple short option names
+can be placed under a single leading `-`. For example, instead of passing `-a -b -c`, you can pass
+`-abc`. This shortcut is only available for [flags](#flags) (boolean options) and
+[counters](#counters) (numeric options with `count`), otherwise an error is thrown.
+
+When passing flags within a group, it will mark the value as `true`. Flag negation is not supported
+within a group.
+
+### Counter Options
+
+Counters are a `number` option only feature, where each occurence of the option in a short option
+group will increment the option's value (starting from the `default` value). For example, passing
+`-vvv` will increment the value 3 times, once for each "v", resulting in a sum of 3. If not using a
+group, the numeric value will need to be explicitly passed, like `--verbose 3`.
+
+To make use of this feature, enable the `count` setting on a numeric option.
+
+```ts
+const argv = ['-vvv'];
+const args = parse<{ verbose: number }>(argv, {
+  options: {
+    verbose: {
+      count: true,
+      default: 0,
+      description: 'Increase output verbosity',
+      short: 'v',
+      type: 'number',
+    },
+  },
+});
+
+args.options.verbose; // 3
+```
 
 ### Choice Options
 
@@ -212,6 +244,10 @@ args.options.modules; // 'umd'
 > TypeScript doesn't handle the mapping of unions very well, so we need to `as` the `choices`
 > setting. This isn't necessary when using a non-union.
 
+### Arity Requirements
+
+TODO
+
 ### Type Casting
 
 While option and param values are configured as `boolean`, `number`, or `string` types, arguments
@@ -224,11 +260,13 @@ input provided.
 - When a `boolean`, the following strings will be cast to `true`: true, on, yes, 1. The inverse will
   be cast to `false`: false, off, no, 0. Other unsupported strings will also be cast to `false`.
 - When a `number`, the string will be cast using `Number()`. If a NaN occurs, the number will return
-  a `0`.
+  a `0` (use the `validate` setting for more control).
 - Strings are used as-is. Values with spaces or special characters should be wrapped in double
   quotes.
 
 ### Validation Checks
+
+TODO
 
 <!-- prettier-ignore -->
 [dash-dash]: https://unix.stackexchange.com/questions/147143/when-and-how-was-the-double-dash-introduced-as-an-end-of-options-delimiter

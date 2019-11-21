@@ -342,6 +342,7 @@ describe('parse()', () => {
         const result = parse<{ opt: string }>([], {
           options: {
             opt: {
+              // @ts-ignore Allow invalid type
               count: true,
               description: '',
               type: 'string',
@@ -410,7 +411,7 @@ describe('parse()', () => {
         });
       });
 
-      it('can interweave options and still increment', () => {
+      it('can interweave other short options and still increment', () => {
         const result = parse<{ flag: boolean; num: number }>(['-nFnn'], {
           options: {
             flag: flagConfig,
@@ -434,8 +435,8 @@ describe('parse()', () => {
         });
       });
 
-      it('sets value to 1 if using the long form', () => {
-        const result = parse<{ flag: boolean; num: number }>(['--num'], {
+      it('sets value if using the long form', () => {
+        const result = parse<{ flag: boolean; num: number }>(['--num', '3', 'other value'], {
           options: {
             flag: flagConfig,
             num: {
@@ -451,9 +452,9 @@ describe('parse()', () => {
           errors: [],
           options: {
             flag: false,
-            num: 1,
+            num: 3,
           },
-          params: [],
+          params: ['other value'],
           rest: [],
         });
       });

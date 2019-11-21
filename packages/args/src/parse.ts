@@ -158,10 +158,6 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
           // Update scope value if an inline value exists
           if (inlineValue !== undefined) {
             currentScope.captureValue(inlineValue, commitScope);
-
-            // Increment count when using long form
-          } else if (scope.config.count) {
-            currentScope.captureValue('1', commitScope);
           }
         }
 
