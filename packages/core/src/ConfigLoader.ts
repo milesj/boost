@@ -106,7 +106,7 @@ export default class ConfigLoader {
     if (configPaths.length === 1) {
       this.debug('Found %s', color.filePath(path.basename(configPaths[0])));
 
-      return configPaths[0];
+      return path.normalize(configPaths[0]);
     }
 
     if (configPaths.length > 1) {
@@ -121,7 +121,7 @@ export default class ConfigLoader {
    */
   // eslint-disable-next-line complexity
   findConfigInWorkspaceRoot(root: string): ConfigPathOrObject | null {
-    let currentDir = path.dirname(root);
+    let currentDir = path.normalize(path.dirname(root));
 
     if (currentDir.includes('node_modules')) {
       return null;
@@ -179,7 +179,7 @@ export default class ConfigLoader {
       return null;
     }
 
-    this.workspaceRoot = workspaceRoot;
+    this.workspaceRoot = path.normalize(workspaceRoot);
 
     return (
       this.findConfigInPackageJSON(workspacePackage) ||
@@ -309,7 +309,7 @@ export default class ConfigLoader {
    */
   loadPackageJSON(): PackageConfig {
     const { root } = this.tool.options;
-    const filePath = path.join(root, 'package.json');
+    const filePath = path.normalize(path.join(root, 'package.json'));
 
     this.debug('Locating package.json in %s', color.filePath(root));
 

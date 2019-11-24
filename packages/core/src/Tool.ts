@@ -359,8 +359,8 @@ export default class Tool<
    */
   getWorkspacePaths(options: WorkspaceOptions = {}): string[] {
     const root = options.root || this.options.root;
-    const pkgPath = path.join(root, 'package.json');
-    const lernaPath = path.join(root, 'lerna.json');
+    const pkgPath = path.normalize(path.join(root, 'package.json'));
+    const lernaPath = path.normalize(path.join(root, 'lerna.json'));
     const workspacePaths = [];
 
     // Yarn

@@ -9,10 +9,10 @@
     "jest": "beemo jest",
     "prettier": "beemo prettier",
     "pretest": "yarn run type",
-    "test": "yarn run coverage",
+    "test": "yarn run jest",
     "posttest": "yarn run eslint",
     "type": "beemo typescript --reference-workspaces --build --clean",
-    "prerelease": "yarn run clean && yarn test",
+    "prerelease": "yarn run build && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "devDependencies": {
