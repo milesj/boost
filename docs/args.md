@@ -246,7 +246,27 @@ args.options.modules; // 'umd'
 
 ### Arity Requirements
 
-TODO
+Another scenario may require an exact number of [option values](#multiple-values), otherwise an
+error is thrown. This feature is known as arity (like function argument arity), and can be enabled
+with the `arity` + `multiple` settings.
+
+```ts
+const argv = ['--colors', 'red', 'blue', 'green'];
+const args = parse<{ colors: string[] }>(argv, {
+  options: {
+    colors: {
+      arity: 3,
+      description: 'Pick 3 favorite colors',
+      multiple: true,
+      type: 'string',
+    },
+  },
+});
+
+args.options.colors; // ['red', 'blue', 'green']
+```
+
+> Arity will not error when 0 values are passed. To control this logic, use the `validate` setting.
 
 ### Type Casting
 
