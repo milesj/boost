@@ -1,0 +1,28 @@
+{
+  "name": "@boost/args",
+  "version": "0.0.0",
+  "description": "A type-safe and convention based argument parsing library, with strict validation checks.",
+  "keywords": [
+    "boost",
+    "argv",
+    "args",
+    "arguments",
+    "options",
+    "flags",
+    "params",
+    "cli"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/args",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@boost/internal": "^1.0.0"
+  }
+}
