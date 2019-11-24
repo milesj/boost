@@ -1,39 +1,27 @@
+import fs from 'fs';
 import path from 'path';
+import { FilePath } from './types';
 
 export default class Path {
   static SEP = path.sep;
 
   private path: string = '';
 
-  constructor(...parts: string[]) {
+  constructor(...parts: FilePath[]) {
     this.append(...parts);
   }
 
   /**
    * Append path parts to the end of the current path.
    */
-  append(...parts: string[]): this {
-    this.path = path.resolve(process.cwd(), path.join(this.path, ...parts));
+  append(...parts: FilePath[]): this {
+    this.path = path.normalize(path.join(this.path, ...parts));
 
     return this;
   }
 
   /**
-   * Return the base name (and extension when applicable) for the current path.
-   */
-  baseName(): string {
-    return path.basename(this.path);
-  }
-
-  /**
-   * Return the directory name for the current path.
-   */
-  dirName(): string {
-    return path.dirname(this.path);
-  }
-
-  /**
-   * Return the extension if applicable, with optional leading period.
+   * Return the extension (if applicable) with or without leading period.
    */
   ext(withoutPeriod: boolean = false): string {
     const ext = path.extname(this.path);
@@ -42,16 +30,51 @@ export default class Path {
   }
 
   /**
-   * Return the file name without extension.
+   * Return true if the current path exists.
    */
-  name(): string {
-    return this.baseName().replace(this.ext(), '');
+  exists(): boolean {
+    return fs.existsSync(this.path);
   }
 
   /**
-   * Return a normalized path as a string.
+   * Return true if the current path is absolute.
    */
-  toString(): string {
+  isAbsolute(): boolean {
+    return path.isAbsolute(this.path);
+  }
+
+  /**
+   * Return the file name (with optional extension) or folder name.
+   */
+  name(withoutExtension: boolean = false): string {
+    let name = path.basename(this.path);
+
+    if (withoutExtension) {
+      name = name.replace(this.ext(), '');
+    }
+
+    return name;
+  }
+
+  /**
+   * Return the parent folder as a new `Path` instance.
+   */
+  parent(): Path {
+    return new Path(path.dirname(this.path));
+  }
+
+  /**
+   * Return a new `Path` instance where the current path is accurately
+   * resolved against the defined current working directory.
+   */
+  resolve(cwd?: string): Path {
+    return new Path(path.resolve(cwd || process.cwd(), this.path));
+  }
+
+  /**
+   * Return the current path as a normalized string.
+   */
+  toString(): FilePath {
     return path.normalize(this.path);
   }
 }

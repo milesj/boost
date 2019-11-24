@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { BackendModule, Resource, ResourceKey } from 'i18next';
-import { parseFile, Contract, Path, Predicates } from '@boost/common';
+import { parseFile, Contract, FilePath, Predicates } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import { Locale, Format } from './types';
 
@@ -13,7 +13,7 @@ const EXTS: { [K in Format]: string[] } = {
 
 export interface FileBackendOptions {
   format?: Format;
-  paths?: Path[];
+  paths?: FilePath[];
 }
 
 export default class FileBackend extends Contract<FileBackendOptions> implements BackendModule {

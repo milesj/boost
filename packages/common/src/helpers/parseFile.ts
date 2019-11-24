@@ -13,7 +13,7 @@ export default function parseFile<T>(filePath: Path | FilePath): T {
   let absPath = '';
 
   if (filePath instanceof Path) {
-    name = filePath.baseName();
+    name = filePath.name();
     ext = filePath.ext();
     absPath = filePath.toString();
   } else {
