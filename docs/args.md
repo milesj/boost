@@ -10,14 +10,14 @@ yarn add @boost/args
 
 ## Usage
 
-This library is strict argument parser for command line arguments, primarily `process.argv` in
-Node.js, that supports [commands](#commands), [options](#options), [flags](#flags),
-[params](#params), and [much more](#advanced-features)! It is _not_ a command line interface or
-application but provides the bounding blocks for providing such functionality.
+This library is strict parser for command line arguments, primarily `process.argv` in Node.js, that
+supports [commands](#commands), [options](#options), [flags](#flags), [params](#params), and
+[much more](#advanced-features)! It is _not_ a command line interface or application but provides
+the building blocks for such functionality.
 
 Parsing arguments is accomplished with the `parse()` function, which requires a list of strings
-(arguments also known as `argv`), and a settings object to control what commands, options, etc, are
-supported. It also utilizes TypeScript generics to type all options and params.
+(arguments also known as `argv`), and a settings object to control whats supported. It also utilizes
+TypeScript generics to type options and params respectively.
 
 ```ts
 import { parse } from '@boost/args';
@@ -25,7 +25,7 @@ import { parse } from '@boost/args';
 // Remove node binary and script
 const argv = process.argv.slice(2);
 
-// Parse argv into an args object
+// Parse argv into a consumable object
 const { command, errors, options, params, rest } = parse<{ help: boolean }, [string]>(argv, {
   options: {
     help: {
