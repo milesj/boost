@@ -23,7 +23,7 @@
     "js-yaml": "^3.13.1",
     "json5": "^2.1.1",
     "optimal": "^3.2.1",
-    "pretty-ms": "^5.0.0"
+    "pretty-ms": "^5.1.0"
   },
   "devDependencies": {
     "@boost/test-utils": "^1.2.6"
