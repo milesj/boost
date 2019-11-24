@@ -1,7 +1,4 @@
-import parse from '../src/parse';
-import ParseError from '../src/ParseError';
-import ValidationError from '../src/ValidationError';
-import { SingleOption, Flag, MultipleOption } from '../src/types';
+import { parse, ParseError, ValidationError, SingleOption, Flag, MultipleOption } from '../src';
 
 describe('parse()', () => {
   const optConfig: SingleOption<string> = {

@@ -97,11 +97,6 @@ export interface ParserOptions<T extends object, P extends PrimitiveType[]> {
   params?: MapParamConfig<P>;
 }
 
-export interface FormatOptions {
-  useInlineValues?: boolean;
-  useShort?: boolean;
-}
-
 // ARGUMENT TYPES
 
 export type InferArgType<T> = T extends boolean

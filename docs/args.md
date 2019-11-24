@@ -379,5 +379,24 @@ An error has occurred:
 
 ```
 
+### Formatting Args
+
+If for some reason you need to format the args object from `parse()` back into an array of string
+arguments, the `format()` function can be used. This function will use the values as is and does not
+reference the settings object, so all formatted arguments will be in their long form, and will not
+use inline values.
+
+```ts
+import { format } from '@boost/args';
+
+// cmd --string abc --numbers 123 456 --bool foo bar baz -- qux --version
+const argv = format({
+  command: ['cmd'],
+  options: { string: 'abc', numbers: [123, 456], bool: true },
+  params: ['foo', 'bar', 'baz'],
+  rest: ['qux', '--version'],
+});
+```
+
 <!-- prettier-ignore -->
 [dash-dash]: https://unix.stackexchange.com/questions/147143/when-and-how-was-the-double-dash-introduced-as-an-end-of-options-delimiter
