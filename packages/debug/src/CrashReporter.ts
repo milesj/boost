@@ -3,13 +3,14 @@
 import fs from 'fs';
 import os from 'os';
 import execa from 'execa';
+import { Path, FilePath } from '@boost/common';
 import { debug } from './constants';
 
 function run(command: string, args: string[]): string {
   return String(execa.sync(command, args, { preferLocal: true }).stdout);
 }
 
-function resolveHome(path: string): string {
+function resolveHome(path: FilePath): string {
   return path.replace(process.env.HOME!, '~');
 }
 
@@ -185,8 +186,8 @@ export default class CrashReporter {
   /**
    * Write the reported content to the defined file path.
    */
-  write(filePath: string): this {
-    fs.writeFileSync(filePath, this.contents.trim(), 'utf8');
+  write(filePath: Path | FilePath): this {
+    fs.writeFileSync(String(filePath), this.contents.trim(), 'utf8');
 
     return this;
   }
