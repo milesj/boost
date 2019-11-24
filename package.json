@@ -2,8 +2,7 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "prepare": "beemo create-config --silent",
-    "build": "rm -rf ./packages/*/{lib,*.tsbuildinfo} && tsc --build",
+    "build": "rm -rf ./packages/*/{lib,*.tsbuildinfo} && tsc --build && beemo create-config --silent",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
