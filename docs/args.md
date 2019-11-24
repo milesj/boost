@@ -14,7 +14,41 @@ TODO
 
 ### Commands
 
-TODO
+Commands are a feature that allow for branching logic, full isolation, and distinct code paths. That
+being said, the parser does not handle this functionality, as that's the CLIs job. The parser
+however, will detect a command, and sub-commands, and validate them accordingly.
+
+A command in Boost should be the first argument passed, before [options](#options), and definitely
+before [params](#params). They support numbers, letters, and dashes, with sub-commands being
+separated by a colon (`:`).
+
+To detect and parse commands, pass a list of all command and sub-command names to the `commands`
+setting, or use a custom function to manually do the checks. The detected command will be returned
+as an array, split on `:`.
+
+```ts
+const args = parse<{}>(argv, {
+  commands: ['build', 'build:esm', 'build:cjs', 'install'],
+  // OR
+  commands(arg) {
+    return arg === 'build'; // etc
+  },
+});
+
+// build:esm src/ --out lib/
+args.command; // ['build', 'esm']
+args.options; // { out: 'lib/' }
+args.params; // ['src/']
+```
+
+If an argument is not found in the commands list or function, it will be treated as a parameter.
+
+```ts
+// build:umd src/ --out lib/
+args.command; // []
+args.options; // { out: 'lib/' }
+args.params; // ['build:umd', 'src/']
+```
 
 ### Options
 
@@ -153,7 +187,12 @@ settings and types as options, with the addition of:
 const argv = ['off', 'value', '123.45'];
 const args = parse<{}, [boolean, string, number]>(argv, {
   params: [
-    { description: 'First parameter', label: 'First', type: 'boolean', required: true },
+    {
+      description: 'First parameter',
+      label: 'First',
+      type: 'boolean',
+      required: true,
+    },
     { description: 'Second parameter', label: 'Second', type: 'string' },
     { description: 'Third parameter', label: 'Third', type: 'number' },
   ],
@@ -286,7 +325,26 @@ input provided.
 
 ### Validation Checks
 
-TODO
+For improved interoperability and usability, the parser is strict, logging the following parse and
+validation errors.
+
+- `ParseError`s are logged for invalid syntax and formatting (uncommon). The failed argument and its
+  index are stored as `arg` and `index` properties on the error instance, respectively.
+- `ValidationError`s are logged for invalid values, types, settings, and more (common). The invalid
+  option (when applicable), is stored as the `option` property.
+
+Furthermore, errors are not thrown and instead are returned as an array in the `parse()` result,
+under the `errors` property. It's designed this way so that command line interfaces and or
+applications have full control, and can theoretically provide output like the following.
+
+```
+An error has occurred:
+
+  foo_bar --progressive --interactive -Y
+  └──┬──┘
+     └─ Invalid "foo_bar" command format. Must be letters, numbers, and dashes.
+
+```
 
 <!-- prettier-ignore -->
 [dash-dash]: https://unix.stackexchange.com/questions/147143/when-and-how-was-the-double-dash-introduced-as-an-end-of-options-delimiter
