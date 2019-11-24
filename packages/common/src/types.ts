@@ -1,6 +1,6 @@
 import { Blueprint, Predicates } from 'optimal';
 
-export type Path = string;
+export type FilePath = string;
 
 export type AbstractConstructor<T> = Function & { prototype: T };
 
