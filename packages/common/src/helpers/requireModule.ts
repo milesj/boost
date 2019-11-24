@@ -1,7 +1,8 @@
-import { Path } from '../types';
+import Path from '../Path';
+import { FilePath } from '../types';
 
-export default function requireModule<T>(path: Path): T {
-  let value = require(path); // eslint-disable-line
+export default function requireModule<T>(path: Path | FilePath): T {
+  let value = require(String(path)); // eslint-disable-line
 
   // Support Babel compiled files
   // eslint-disable-next-line no-underscore-dangle

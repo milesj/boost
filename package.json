@@ -9,7 +9,7 @@
     "jest": "beemo jest",
     "prettier": "beemo prettier",
     "pretest": "yarn run type",
-    "test": "yarn run jest",
+    "test": "yarn run coverage",
     "posttest": "yarn run eslint",
     "type": "beemo typescript --reference-workspaces --build --clean",
     "prerelease": "yarn run clean && yarn test",

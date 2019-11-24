@@ -1,5 +1,6 @@
 import { getFixturePath } from '@boost/test-utils';
 import parseFile from '../../src/helpers/parseFile';
+import Path from '../../src/Path';
 
 describe('parseFile()', () => {
   it('errors if path is not absolute', () => {
@@ -16,6 +17,10 @@ describe('parseFile()', () => {
 
   it('supports .js extension', () => {
     expect(parseFile(getFixturePath('file-types', 'js.js'))).toEqual({ type: 'js' });
+  });
+
+  it('supports .js extension via the `Path` class', () => {
+    expect(parseFile(new Path(getFixturePath('file-types', 'js.js')))).toEqual({ type: 'js' });
   });
 
   it('supports .jsx extension', () => {

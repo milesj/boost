@@ -5,6 +5,7 @@
 
 import optimal, { Blueprint, Predicates } from 'optimal';
 import Contract from './Contract';
+import Path from './Path';
 import formatMs from './helpers/formatMs';
 import instanceOf from './helpers/instanceOf';
 import isEmpty from './helpers/isEmpty';
@@ -18,6 +19,7 @@ export * from './types';
 export {
   Contract,
   Blueprint,
+  Path,
   Predicates,
   formatMs,
   instanceOf,

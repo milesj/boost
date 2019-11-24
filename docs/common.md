@@ -81,6 +81,43 @@ export default class Plugin extends Contract<PluginOptions> {
 }
 ```
 
+### `Path`
+
+The `Path` class is an abstraction around file paths and the Node.js `fs` and `path` modules. It
+aims to solve cross platform and operating system related issues in a straight forward way. To
+begin, import and instantiate the `Path` class, with either a single path, or a list of path parts
+that will be joined.
+
+```ts
+import { Path } from '@boost/common';
+
+const absPath = new Path('/root/some/path');
+const relPath = new Path('some/path', '../move/around', 'again');
+```
+
+The following methods are available on the class instance.
+
+- `append(...parts: string[])` - Append path parts to the end of the current path.
+- `ext(withoutPeriod?: boolean)` - Return the extension (if applicable) with or without leading
+  period.
+- `exists()` - Return true if the current path exists on the file system.
+- `isAbsolute()` - Return true if the current path is absolute.
+- `name(withoutExtension?: boolean)` - Return the file name (with optional extension) or folder
+  name.
+- `parent()` - Return the parent folder as a new `Path` instance.
+- `toString()` - Return the current path as a normalized string.
+
+By default, the `Path` class operates on the defined path parts as-is, and doesn't verify against
+the actual file system. If you would prefer to operate against real paths, use the `resolve()`
+method, which returns a new `Path` instance where the current path is accurately
+[resolved against](https://nodejs.org/api/path.html#path_path_resolve_paths) the defined current
+working directory (`process.cwd()`).
+
+```ts
+path.toString(); // Possible inaccurate
+path.resolve().toString(); // Resolved
+```
+
 ## Helpers
 
 ### `formatMs`

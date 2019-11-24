@@ -1,5 +1,5 @@
 import i18next, { InitOptions } from 'i18next';
-import { Path, toArray } from '@boost/common';
+import { FilePath, toArray } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
@@ -30,7 +30,7 @@ export interface TranslatorOptions {
 
 export default function createTranslator(
   namespace: string | string[],
-  resourcePath: Path | Path[],
+  resourcePath: FilePath | FilePath[],
   {
     autoDetect = true,
     debug: debugOpt = false,
