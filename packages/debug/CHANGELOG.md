@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.0 - 2019-11-24
+
+#### 🚀 Updates
+
+- Add new `Path` class for managing file paths. (#67) ([736ec2b](https://github.com/milesj/boost/commit/736ec2b)), closes [#67](https://github.com/milesj/boost/issues/67)
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([24c80fc](https://github.com/milesj/boost/commit/24c80fc))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 1.1.3 - 2019-11-12
 
 #### 📘 Docs

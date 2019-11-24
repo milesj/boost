@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.13.4 - 2019-11-24
+
+#### 🐞 Fixes
+
+- Normalize some paths to better support Windows. ([e944b19](https://github.com/milesj/boost/commit/e944b19))
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([24c80fc](https://github.com/milesj/boost/commit/24c80fc))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.13.3 - 2019-11-12
 
 #### 📘 Docs

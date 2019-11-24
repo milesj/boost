@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.2.4 - 2019-11-24
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([24c80fc](https://github.com/milesj/boost/commit/24c80fc))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ### 1.2.3 - 2019-11-12
 
 #### 📘 Docs
