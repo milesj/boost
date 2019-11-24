@@ -3,6 +3,8 @@ import path from 'path';
 import { FilePath } from './types';
 
 export default class Path {
+  static DELIMITER = path.delimiter;
+
   static SEP = path.sep;
 
   private path: string = '';

@@ -100,7 +100,7 @@ The following methods are available on the class instance.
 - `append(...parts: string[])` - Append path parts to the end of the current path.
 - `ext(withoutPeriod?: boolean)` - Return the extension (if applicable) with or without leading
   period.
-- `exists()` - Return true if the current path exists.
+- `exists()` - Return true if the current path exists on the file system.
 - `isAbsolute()` - Return true if the current path is absolute.
 - `name(withoutExtension?: boolean)` - Return the file name (with optional extension) or folder
   name.
