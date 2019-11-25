@@ -1,6 +1,6 @@
-import path from 'path';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Arguments } from 'yargs';
+import { Path } from '@boost/common';
 import { mockDebugger } from '@boost/debug/lib/testing';
 import Console from './Console';
 import Context from './Context';
@@ -65,7 +65,7 @@ export function mockTool<
   const tool = new Tool<P, C>({
     appName: 'test-boost',
     // Match fixtures path
-    appPath: path.join(process.cwd(), 'tests/__fixtures__/app'),
+    appPath: new Path(process.cwd(), 'tests/__fixtures__/app').path(),
     ...options,
   });
 

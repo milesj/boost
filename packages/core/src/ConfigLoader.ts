@@ -2,12 +2,11 @@
 
 import fs from 'fs-extra';
 import glob from 'fast-glob';
-import path from 'path';
 import JSON5 from 'json5';
 import camelCase from 'lodash/camelCase';
 import mergeWith from 'lodash/mergeWith';
 import { Arguments } from 'yargs-parser';
-import { isEmpty, isObject, requireModule } from '@boost/common';
+import { isEmpty, isObject, requireModule, Path, FilePath, PortablePath } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import optimal, { array, bool, instance, number, shape, string, union, object } from 'optimal';
@@ -22,7 +21,7 @@ export interface ConfigLike {
   [key: string]: unknown;
 }
 
-export type ConfigPathOrObject = string | ConfigLike;
+export type ConfigPathOrObject = Path | ConfigLike;
 
 export interface ParseOptions {
   errorOnFunction?: boolean;
@@ -47,7 +46,7 @@ export default class ConfigLoader {
   /**
    * Find the config using the --config file path option.
    */
-  findConfigFromArg(filePath?: string): ConfigPathOrObject | null {
+  findConfigFromArg(filePath?: FilePath): ConfigPathOrObject | null {
     this.debug.invariant(
       !!filePath,
       'Looking in --config command line option',
@@ -87,12 +86,12 @@ export default class ConfigLoader {
   /**
    * Find the config using local files commonly located in a configs/ folder.
    */
-  findConfigInLocalFiles(root: string): ConfigPathOrObject | null {
+  findConfigInLocalFiles(root: PortablePath): ConfigPathOrObject | null {
     const configName = this.getConfigName();
     const relPath = `configs/${configName}.{js,json,json5}`;
     const configPaths = glob.sync(relPath, {
       absolute: true,
-      cwd: root,
+      cwd: String(root),
       onlyFiles: true,
     });
 
@@ -104,9 +103,11 @@ export default class ConfigLoader {
     );
 
     if (configPaths.length === 1) {
-      this.debug('Found %s', color.filePath(path.basename(configPaths[0])));
+      const localPath = new Path(configPaths[0]);
 
-      return path.normalize(configPaths[0]);
+      this.debug('Found %s', color.filePath(localPath.name()));
+
+      return localPath;
     }
 
     if (configPaths.length > 1) {
@@ -120,8 +121,10 @@ export default class ConfigLoader {
    * Find the config within the root when in a workspace.
    */
   // eslint-disable-next-line complexity
-  findConfigInWorkspaceRoot(root: string): ConfigPathOrObject | null {
-    let currentDir = path.normalize(path.dirname(root));
+  findConfigInWorkspaceRoot(root: PortablePath): ConfigPathOrObject | null {
+    const rootPath = Path.create(root);
+    let currentPath = rootPath.parent();
+    let currentDir = currentPath.path();
 
     if (currentDir.includes('node_modules')) {
       return null;
@@ -129,7 +132,7 @@ export default class ConfigLoader {
 
     this.debug('Detecting if in a workspace');
 
-    let workspaceRoot = '';
+    let workspaceRoot: Path | null = null;
     let workspacePackage: any = {};
     let workspacePatterns: string[] = [];
 
@@ -139,13 +142,13 @@ export default class ConfigLoader {
         break;
       }
 
-      const pkgPath = path.join(currentDir, 'package.json');
+      const pkgPath = currentPath.append('package.json');
 
-      if (fs.existsSync(pkgPath)) {
+      if (pkgPath.exists()) {
         workspacePackage = this.parseFile(pkgPath);
       }
 
-      workspaceRoot = currentDir;
+      workspaceRoot = currentPath;
       workspacePatterns = this.tool.getWorkspacePaths({
         relative: true,
         root: currentDir,
@@ -155,7 +158,8 @@ export default class ConfigLoader {
         break;
       }
 
-      currentDir = path.dirname(currentDir);
+      currentPath = currentPath.parent();
+      currentDir = currentPath.path();
     }
 
     if (!workspaceRoot) {
@@ -167,9 +171,7 @@ export default class ConfigLoader {
     // Needs forward slash for globs to work on Windows
     const match = workspacePatterns.some(
       (pattern: string) =>
-        !!root
-          .replace(/\\/gu, '/')
-          .match(new RegExp(path.join(workspaceRoot, pattern).replace(/\\/gu, '/'), 'u')),
+        !!rootPath.path().match(new RegExp(workspaceRoot!.append(pattern).path(), 'u')),
     );
 
     this.debug.invariant(
@@ -183,7 +185,7 @@ export default class ConfigLoader {
       return null;
     }
 
-    this.workspaceRoot = path.normalize(workspaceRoot);
+    this.workspaceRoot = workspaceRoot.path();
 
     return (
       this.findConfigInPackageJSON(workspacePackage) ||
@@ -298,7 +300,7 @@ export default class ConfigLoader {
         theme: string('default').notEmpty(),
       },
       {
-        file: typeof configPath === 'string' ? path.basename(configPath) : '',
+        file: configPath instanceof Path ? configPath.name() : '',
         name: 'ConfigLoader',
         unknown: true,
       },
@@ -312,12 +314,12 @@ export default class ConfigLoader {
    * as we require the dev tool to be ran from the project root.
    */
   loadPackageJSON(): PackageConfig {
-    const { root } = this.tool.options;
-    const filePath = path.normalize(path.join(root, 'package.json'));
+    const rootPath = new Path(this.tool.options.root);
+    const filePath = rootPath.append('package.json');
 
-    this.debug('Locating package.json in %s', color.filePath(root));
+    this.debug('Locating package.json in %s', color.filePath(rootPath));
 
-    if (!fs.existsSync(filePath)) {
+    if (!filePath.exists()) {
       throw new Error(this.tool.msg('errors:packageJsonNotFound'));
     }
 
@@ -347,9 +349,9 @@ export default class ConfigLoader {
     let baseDir = '';
 
     // Parse out the object if a file path
-    if (typeof fileOrConfig === 'string') {
+    if (fileOrConfig instanceof Path) {
       config = this.parseFile(fileOrConfig);
-      baseDir = path.dirname(fileOrConfig);
+      baseDir = fileOrConfig.parent().path();
     } else {
       config = fileOrConfig;
     }
@@ -371,13 +373,13 @@ export default class ConfigLoader {
     const resolvedPaths = this.resolveExtendPaths(extendPaths, baseDir);
 
     resolvedPaths.forEach(extendPath => {
-      if (this.parsedFiles.has(extendPath)) {
+      if (this.parsedFiles.has(extendPath.path())) {
         return;
       }
 
-      if (!fs.existsSync(extendPath)) {
+      if (!extendPath.exists()) {
         throw new Error(this.tool.msg('errors:presetConfigNotFound', { extendPath }));
-      } else if (!fs.statSync(extendPath).isFile()) {
+      } else if (!extendPath.isFile()) {
         throw new Error(this.tool.msg('errors:presetConfigInvalid', { extendPath }));
       }
 
@@ -387,7 +389,7 @@ export default class ConfigLoader {
     });
 
     // Apply the current config after extending preset configs
-    config.extends = resolvedPaths;
+    config.extends = resolvedPaths.map(String);
 
     mergeWith(nextConfig, config, handleMerge);
 
@@ -400,19 +402,20 @@ export default class ConfigLoader {
    * If the file ends in "js", import the file and use the default object.
    * Otherwise throw an error.
    */
-  parseFile<T>(filePath: string, args: any[] = [], options: ParseOptions = {}): T {
-    const name = path.basename(filePath);
-    const ext = path.extname(filePath);
+  parseFile<T>(basePath: PortablePath, args: any[] = [], options: ParseOptions = {}): T {
+    const filePath = Path.create(basePath);
+    const name = filePath.name();
+    const ext = filePath.ext();
     let value: any = null;
 
     this.debug('Parsing file %s', color.filePath(filePath));
 
-    if (!path.isAbsolute(filePath)) {
+    if (!filePath.isAbsolute()) {
       throw new Error(this.tool.msg('errors:absolutePathRequired'));
     }
 
     if (ext === '.json' || ext === '.json5') {
-      value = JSON5.parse(fs.readFileSync(filePath, 'utf8'));
+      value = JSON5.parse(fs.readFileSync(filePath.path(), 'utf8'));
     } else if (ext === '.js') {
       value = requireModule(filePath);
 
@@ -431,7 +434,7 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configInvalidNamed', { name }));
     }
 
-    this.parsedFiles.add(filePath);
+    this.parsedFiles.add(filePath.path());
 
     return value;
   }
@@ -445,7 +448,7 @@ export default class ConfigLoader {
    *  - Strings that match a node module name should resolve to a config file relative to the CWD.
    *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
-  resolveExtendPaths(extendPaths: string[], baseDir: string = ''): string[] {
+  resolveExtendPaths(extendPaths: string[], baseDir: string = ''): Path[] {
     return extendPaths.map(extendPath => {
       if (typeof extendPath !== 'string') {
         throw new TypeError(this.tool.msg('errors:configExtendsInvalid'));
@@ -453,15 +456,16 @@ export default class ConfigLoader {
 
       const { appName, scoped, root } = this.tool.options;
       const configName = this.getConfigName();
+      const extendPathInstance = new Path(extendPath);
       let match = null;
 
       // Absolute path, use it directly
-      if (path.isAbsolute(extendPath)) {
-        return path.normalize(extendPath);
+      if (extendPathInstance.isAbsolute()) {
+        return extendPathInstance;
 
         // Relative path, resolve with parent folder or cwd
       } else if (extendPath[0] === '.') {
-        return path.resolve(baseDir || root, extendPath);
+        return extendPathInstance.resolve(baseDir || root);
 
         // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
@@ -488,9 +492,15 @@ export default class ConfigLoader {
     moduleName: string,
     preset: boolean = false,
     ext: string = 'js',
-  ): string {
+  ): Path {
     const fileName = preset ? `${configName}.preset.${ext}` : `${configName}.${ext}`;
 
-    return path.resolve(this.tool.options.root, 'node_modules', moduleName, 'configs', fileName);
+    return new Path(
+      this.tool.options.root,
+      'node_modules',
+      moduleName,
+      'configs',
+      fileName,
+    ).resolve();
   }
 }

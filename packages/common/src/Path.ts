@@ -7,13 +7,13 @@ export default class Path {
 
   static SEP = '/';
 
-  private path: string = '';
+  private internalPath: string = '';
 
   private stats: fs.Stats | null = null;
 
   constructor(...parts: FilePath[]) {
     // Always use forward slashes for better interop
-    this.path = path.normalize(path.join(...parts)).replace(/\\/gu, Path.SEP);
+    this.internalPath = path.normalize(path.join(...parts)).replace(/\\/gu, Path.SEP);
   }
 
   /**
@@ -29,14 +29,14 @@ export default class Path {
    * and return a new `Path` instance.
    */
   append(...parts: FilePath[]): Path {
-    return new Path(this.path, ...parts);
+    return new Path(this.internalPath, ...parts);
   }
 
   /**
    * Return the extension (if applicable) with or without leading period.
    */
   ext(withoutPeriod: boolean = false): string {
-    const ext = path.extname(this.path);
+    const ext = path.extname(this.internalPath);
 
     return withoutPeriod && ext.startsWith('.') ? ext.slice(1) : ext;
   }
@@ -45,14 +45,14 @@ export default class Path {
    * Return true if the current path exists.
    */
   exists(): boolean {
-    return fs.existsSync(this.path);
+    return fs.existsSync(this.internalPath);
   }
 
   /**
    * Return true if the current path is absolute.
    */
   isAbsolute(): boolean {
-    return path.isAbsolute(this.path);
+    return path.isAbsolute(this.internalPath);
   }
 
   /**
@@ -73,7 +73,7 @@ export default class Path {
    * Return the file name (with optional extension) or folder name.
    */
   name(withoutExtension: boolean = false): string {
-    let name = path.basename(this.path);
+    let name = path.basename(this.internalPath);
 
     if (withoutExtension) {
       name = name.replace(this.ext(), '');
@@ -86,7 +86,14 @@ export default class Path {
    * Return the parent folder as a new `Path` instance.
    */
   parent(): Path {
-    return new Path(path.dirname(this.path));
+    return new Path(path.dirname(this.internalPath));
+  }
+
+  /**
+   * Return the current path as a normalized string.
+   */
+  path(): FilePath {
+    return this.internalPath;
   }
 
   /**
@@ -94,30 +101,24 @@ export default class Path {
    * and return a new `Path` instance.
    */
   prepend(...parts: FilePath[]): Path {
-    return new Path(...parts, this.path);
+    return new Path(...parts, this.internalPath);
   }
 
   /**
    * Return a new `Path` instance where the current path is accurately
    * resolved against the defined current working directory.
    */
-  resolve(cwd?: string): Path {
-    return new Path(path.resolve(cwd || process.cwd(), this.path));
+  resolve(cwd?: PortablePath): Path {
+    return new Path(path.resolve(String(cwd || process.cwd()), this.internalPath));
   }
 
-  /**
-   * Return the current path as a normalized string.
-   */
   toString(): FilePath {
-    return this.path;
+    return this.path();
   }
 
-  /**
-   * Lazily load stats for the file.
-   */
   private stat(): fs.Stats {
     if (!this.stats) {
-      this.stats = fs.statSync(this.path);
+      this.stats = fs.statSync(this.internalPath);
     }
 
     return this.stats;

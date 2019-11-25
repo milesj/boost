@@ -20,11 +20,11 @@ export default function parseFile<T>(filePath: PortablePath): T {
 
     case '.json':
     case '.json5':
-      return JSON5.parse(fs.readFileSync(path.toString(), 'utf8'));
+      return JSON5.parse(fs.readFileSync(path.path(), 'utf8'));
 
     case '.yml':
     case '.yaml':
-      return YAML.safeLoad(fs.readFileSync(path.toString(), 'utf8'));
+      return YAML.safeLoad(fs.readFileSync(path.path(), 'utf8'));
 
     default:
       throw new RuntimeError('common', 'CM_PARSE_INVALID_EXT', [path.name()]);

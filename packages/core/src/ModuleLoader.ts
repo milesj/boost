@@ -1,10 +1,10 @@
-import path from 'path';
 import {
   instanceOf,
   isObject,
   requireModule,
   Constructor,
   ConcreteConstructor,
+  Path,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
@@ -57,7 +57,7 @@ export default class ModuleLoader<Tm> {
     if (name.match(/^\.|\/|\\|[A-Z]:/u)) {
       this.debug('Locating %s from path %s', typeName, color.filePath(name));
 
-      modulesToAttempt.push(path.normalize(name));
+      modulesToAttempt.push(Path.create(name).path());
       isFilePath = true;
 
       // Module name

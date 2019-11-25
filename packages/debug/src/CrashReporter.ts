@@ -26,9 +26,9 @@ export default class CrashReporter {
   /**
    * Add a label with a value, or multiple values, to the last added section.
    */
-  add(label: string, ...messages: (string | number)[]): this {
+  add(label: string, ...messages: (string | number | PortablePath)[]): this {
     this.contents += `${label}:\n`;
-    this.contents += `  ${messages.join(' - ')}\n`;
+    this.contents += `  ${messages.map(String).join(' - ')}\n`;
 
     return this;
   }

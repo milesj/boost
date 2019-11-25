@@ -108,6 +108,7 @@ The following methods are available on the class instance.
 - `name(withoutExtension?: boolean): string` - Return the file name (with optional extension) or
   folder name.
 - `parent(): Path` - Return the parent folder as a new `Path` instance.
+- `path(): FilePath` - Return the current path as a normalized string.
 - `prepend(...parts: string[]): Path` - Prepend path parts to the beginning of the current path and
   return a new `Path` instance.
 - `toString(): FilePath` - Return the current path as a normalized string.
@@ -119,8 +120,8 @@ method, which returns a new `Path` instance where the current path is
 working directory (`process.cwd()`).
 
 ```ts
-path.toString(); // Possibly inaccurate
-path.resolve().toString(); // Resolved accurately
+path.path(); // Possibly inaccurate
+path.resolve().path(); // Resolved accurately
 ```
 
 Furthermore, the static `Path.create()` method can be used to factory a `Path` instance from a

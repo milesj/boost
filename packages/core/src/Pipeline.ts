@@ -1,8 +1,7 @@
 import exit from 'exit';
-import path from 'path';
 import util from 'util';
 import { Blueprint, Predicates } from 'optimal';
-import { instanceOf } from '@boost/common';
+import { instanceOf, Path } from '@boost/common';
 import { CrashReporter } from '@boost/debug';
 import { ExitError } from '@boost/internal';
 import Context from './Context';
@@ -93,7 +92,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
       .add('Scoped package', options.scoped ? 'Yes' : 'No')
       .add('Root', options.root)
       .add('Config name', options.configName)
-      .add('Package path', path.join(options.root, 'package.json'))
+      .add('Package path', new Path(options.root, 'package.json'))
       .add('Workspaces root', options.workspaceRoot || '(Not enabled)')
       .add(
         'Extending configs',
@@ -104,6 +103,6 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
       .reportLanguages()
       .reportStackTrace(error)
       .reportEnvVars()
-      .write(path.join(options.root, `${options.appName}-error.log`));
+      .write(new Path(options.root, `${options.appName}-error.log`));
   }
 }

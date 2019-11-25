@@ -25,7 +25,7 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     // Validate resource paths are directories
     this.options.paths.forEach(path => {
       if (path.exists() && !path.isDirectory()) {
-        throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [path.toString()]);
+        throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [path.path()]);
       }
     });
   }
