@@ -135,7 +135,7 @@ export default class ConfigLoader {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      if (!currentDir || currentDir === '.' || currentDir === '/') {
+      if (!currentDir || currentDir === '.' || currentDir === '/' || currentDir === '\\') {
         break;
       }
 
@@ -164,8 +164,12 @@ export default class ConfigLoader {
       return null;
     }
 
+    // Needs forward slash for globs to work on Windows
     const match = workspacePatterns.some(
-      (pattern: string) => !!root.match(new RegExp(path.join(workspaceRoot, pattern), 'u')),
+      (pattern: string) =>
+        !!root
+          .replace(/\\/g, '/')
+          .match(new RegExp(path.join(workspaceRoot, pattern).replace(/\\/g, '/'), 'u')),
     );
 
     this.debug.invariant(

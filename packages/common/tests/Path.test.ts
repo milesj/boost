@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { normalize, resolve } from 'path';
 import Path from '../src/Path';
 
 describe('Path', () => {
@@ -6,7 +6,7 @@ describe('Path', () => {
     it('joins multiple parts', () => {
       const path = new Path('/foo/bar', '../baz', 'file.js');
 
-      expect(path.toString()).toBe('/foo/baz/file.js');
+      expect(path.toString()).toBe(normalize('/foo/baz/file.js'));
     });
   });
 
@@ -14,12 +14,12 @@ describe('Path', () => {
     it('appends to existing path', () => {
       const path = new Path('/foo/bar', '../baz');
 
-      expect(path.toString()).toBe('/foo/baz');
+      expect(path.toString()).toBe(normalize('/foo/baz'));
 
       path.append('qux/foo');
       path.append('..', './current');
 
-      expect(path.toString()).toBe('/foo/baz/qux/current');
+      expect(path.toString()).toBe(normalize('/foo/baz/qux/current'));
     });
   });
 

@@ -236,10 +236,10 @@ export default class Tool<
   createWorkspaceMetadata(jsonPath: string): WorkspaceMetadata {
     const metadata: any = {};
 
-    metadata.jsonPath = jsonPath;
-    metadata.packagePath = path.dirname(jsonPath);
+    metadata.jsonPath = path.normalize(jsonPath);
+    metadata.packagePath = path.normalize(path.dirname(jsonPath));
     metadata.packageName = path.basename(metadata.packagePath);
-    metadata.workspacePath = path.dirname(metadata.packagePath);
+    metadata.workspacePath = path.normalize(path.dirname(metadata.packagePath));
     metadata.workspaceName = path.basename(metadata.workspacePath);
 
     return metadata;
@@ -350,7 +350,7 @@ export default class Tool<
       cwd: root,
       onlyDirectories: true,
       onlyFiles: false,
-    });
+    }).map(filePath => path.normalize(filePath));
   }
 
   /**
@@ -389,7 +389,7 @@ export default class Tool<
       return workspacePaths;
     }
 
-    return workspacePaths.map(workspace => path.join(root, workspace));
+    return workspacePaths.map(workspace => path.normalize(path.join(root, workspace)));
   }
 
   /**

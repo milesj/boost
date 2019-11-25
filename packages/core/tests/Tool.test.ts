@@ -363,7 +363,11 @@ describe('Tool', () => {
           root: getFixturePath('workspace-multiple'),
           relative: true,
         }),
-      ).toEqual(['packages/baz', 'packages/foo', 'modules/bar']);
+      ).toEqual([
+        path.normalize('packages/baz'),
+        path.normalize('packages/foo'),
+        path.normalize('modules/bar'),
+      ]);
     });
   });
 
