@@ -1,25 +1,35 @@
 import fs from 'fs';
 import path from 'path';
-import { FilePath } from './types';
+import { FilePath, PortablePath } from './types';
 
 export default class Path {
   static DELIMITER = path.delimiter;
 
-  static SEP = path.sep;
+  static SEP = '/';
 
   private path: string = '';
 
+  private stats: fs.Stats | null = null;
+
   constructor(...parts: FilePath[]) {
-    this.append(...parts);
+    // Always use forward slashes for better interop
+    this.path = path.normalize(path.join(...parts)).replace(/\\/gu, Path.SEP);
   }
 
   /**
-   * Append path parts to the end of the current path.
+   * Create and return a new `Path` instance if a string.
+   * If already a `Path`, return as is.
    */
-  append(...parts: FilePath[]): this {
-    this.path = path.normalize(path.join(this.path, ...parts));
+  static create(filePath: PortablePath): Path {
+    return filePath instanceof Path ? filePath : new Path(filePath);
+  }
 
-    return this;
+  /**
+   * Append path parts to the end of the current path
+   * and return a new `Path` instance.
+   */
+  append(...parts: FilePath[]): Path {
+    return new Path(this.path, ...parts);
   }
 
   /**
@@ -46,6 +56,20 @@ export default class Path {
   }
 
   /**
+   * Return true if the current path is a folder.
+   */
+  isDirectory(): boolean {
+    return this.stat().isDirectory();
+  }
+
+  /**
+   * Return true if the current path is a file.
+   */
+  isFile(): boolean {
+    return this.stat().isFile();
+  }
+
+  /**
    * Return the file name (with optional extension) or folder name.
    */
   name(withoutExtension: boolean = false): string {
@@ -66,6 +90,14 @@ export default class Path {
   }
 
   /**
+   * Prepend path parts to the beginning of the current path
+   * and return a new `Path` instance.
+   */
+  prepend(...parts: FilePath[]): Path {
+    return new Path(...parts, this.path);
+  }
+
+  /**
    * Return a new `Path` instance where the current path is accurately
    * resolved against the defined current working directory.
    */
@@ -77,6 +109,17 @@ export default class Path {
    * Return the current path as a normalized string.
    */
   toString(): FilePath {
-    return path.normalize(this.path);
+    return this.path;
+  }
+
+  /**
+   * Lazily load stats for the file.
+   */
+  private stat(): fs.Stats {
+    if (!this.stats) {
+      this.stats = fs.statSync(this.path);
+    }
+
+    return this.stats;
   }
 }

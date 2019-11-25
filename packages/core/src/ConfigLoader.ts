@@ -168,8 +168,8 @@ export default class ConfigLoader {
     const match = workspacePatterns.some(
       (pattern: string) =>
         !!root
-          .replace(/\\/g, '/')
-          .match(new RegExp(path.join(workspaceRoot, pattern).replace(/\\/g, '/'), 'u')),
+          .replace(/\\/gu, '/')
+          .match(new RegExp(path.join(workspaceRoot, pattern).replace(/\\/gu, '/'), 'u')),
     );
 
     this.debug.invariant(

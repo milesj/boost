@@ -3,7 +3,7 @@
 import fs from 'fs';
 import os from 'os';
 import execa from 'execa';
-import { Path, FilePath } from '@boost/common';
+import { PortablePath, FilePath } from '@boost/common';
 import { debug } from './constants';
 
 function run(command: string, args: string[]): string {
@@ -186,7 +186,7 @@ export default class CrashReporter {
   /**
    * Write the reported content to the defined file path.
    */
-  write(filePath: Path | FilePath): this {
+  write(filePath: PortablePath): this {
     fs.writeFileSync(String(filePath), this.contents.trim(), 'utf8');
 
     return this;

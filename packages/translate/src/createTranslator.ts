@@ -1,5 +1,5 @@
 import i18next, { InitOptions } from 'i18next';
-import { FilePath, toArray } from '@boost/common';
+import { FilePath, Path, toArray } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
@@ -41,7 +41,7 @@ export default function createTranslator(
   }: TranslatorOptions = {},
 ): Translator {
   const namespaces = toArray(namespace);
-  const resourcePaths = toArray(resourcePath);
+  const resourcePaths = toArray(resourcePath).map(Path.create);
 
   if (namespaces.length === 0) {
     throw new RuntimeError('translate', 'TL_REQ_NAMESPACE');

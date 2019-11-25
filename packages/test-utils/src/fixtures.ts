@@ -3,12 +3,16 @@ import fs from 'fs-extra';
 
 export const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
 
+export function normalizePath(filePath: string) {
+  return path.normalize(filePath).replace(/\\/gu, '/');
+}
+
 export function getFixturePath(fixture: string, file: string = ''): string {
-  return path.normalize(path.join(FIXTURES_DIR, fixture, file));
+  return normalizePath(path.join(FIXTURES_DIR, fixture, file));
 }
 
 export function getNodeModulePath(fixture: string, name: string, file: string = ''): string {
-  return path.normalize(path.join(getFixturePath(fixture), `./node_modules/${name}`, file));
+  return normalizePath(path.join(getFixturePath(fixture), `./node_modules/${name}`, file));
 }
 
 export function copyFixtureToNodeModule(from: string, to: string, name: string): () => void {

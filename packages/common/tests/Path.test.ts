@@ -1,25 +1,61 @@
-import { normalize, resolve } from 'path';
+import { resolve } from 'path';
 import Path from '../src/Path';
 
 describe('Path', () => {
+  describe('create()', () => {
+    it('returns an instance for a string', () => {
+      expect(Path.create('./foo')).toEqual(new Path('./foo'));
+    });
+
+    it('returns instance as is', () => {
+      const path = new Path('./foo');
+
+      expect(Path.create(path)).toBe(path);
+    });
+  });
+
   describe('constructor()', () => {
     it('joins multiple parts', () => {
       const path = new Path('/foo/bar', '../baz', 'file.js');
 
-      expect(path.toString()).toBe(normalize('/foo/baz/file.js'));
+      expect(path.toString()).toBe('/foo/baz/file.js');
+    });
+
+    it('removes leading relative dot', () => {
+      const path = new Path('./foo');
+
+      expect(path.toString()).toBe('foo');
+    });
+
+    it('persists leading dots', () => {
+      const path = new Path('../foo');
+
+      expect(path.toString()).toBe('../foo');
+    });
+
+    it('persists multiple leading dots', () => {
+      const path = new Path('../../foo');
+
+      expect(path.toString()).toBe('../../foo');
     });
   });
 
   describe('append()', () => {
-    it('appends to existing path', () => {
-      const path = new Path('/foo/bar', '../baz');
+    it('appends to existing path and returns a new instance', () => {
+      const p1 = new Path('/foo/bar', '../baz');
 
-      expect(path.toString()).toBe(normalize('/foo/baz'));
+      expect(p1.toString()).toBe('/foo/baz');
 
-      path.append('qux/foo');
-      path.append('..', './current');
+      const p2 = p1.append('qux/foo');
 
-      expect(path.toString()).toBe(normalize('/foo/baz/qux/current'));
+      expect(p1.toString()).toBe('/foo/baz');
+      expect(p2.toString()).toBe('/foo/baz/qux/foo');
+
+      const p3 = p2.append('..', './current');
+
+      expect(p1.toString()).toBe('/foo/baz');
+      expect(p2.toString()).toBe('/foo/baz/qux/foo');
+      expect(p3.toString()).toBe('/foo/baz/qux/current');
     });
   });
 
@@ -52,6 +88,12 @@ describe('Path', () => {
 
     it('returns false if relative', () => {
       const path = new Path('foo/bar');
+
+      expect(path.isAbsolute()).toBe(false);
+    });
+
+    it('returns false if relative using leading dot', () => {
+      const path = new Path('./foo/bar');
 
       expect(path.isAbsolute()).toBe(false);
     });
@@ -94,6 +136,25 @@ describe('Path', () => {
       const path = new Path('/foo/bar/baz');
 
       expect(path.parent()).toEqual(new Path('/foo/bar'));
+    });
+  });
+
+  describe('prepend()', () => {
+    it('prepends to existing path and returns a new instance', () => {
+      const p1 = new Path('/foo/bar', '../baz');
+
+      expect(p1.toString()).toBe('/foo/baz');
+
+      const p2 = p1.prepend('qux/foo');
+
+      expect(p1.toString()).toBe('/foo/baz');
+      expect(p2.toString()).toBe('qux/foo/foo/baz');
+
+      const p3 = p2.prepend('..', './current');
+
+      expect(p1.toString()).toBe('/foo/baz');
+      expect(p2.toString()).toBe('qux/foo/foo/baz');
+      expect(p3.toString()).toBe('../current/qux/foo/foo/baz');
     });
   });
 
