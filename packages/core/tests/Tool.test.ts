@@ -1,6 +1,6 @@
 import debug from 'debug';
-import path from 'path';
 import { string } from 'optimal';
+import { Path } from '@boost/common';
 import { ExitError } from '@boost/internal';
 import { copyFixtureToMock, getFixturePath } from '@boost/test-utils';
 import {
@@ -312,23 +312,30 @@ describe('Tool', () => {
 
     it('loads all package.jsons and appends metadata', () => {
       const root = getFixturePath('workspace-multiple');
+      const rootPath = new Path(root);
       const packages = tool.getWorkspacePackages({ root });
 
       expect(packages).toEqual([
         {
           name: 'test-boost-workspace-multiple-baz',
           version: '0.0.0',
-          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/baz/package.json')),
+          workspace: tool.createWorkspaceMetadata(
+            rootPath.append('packages/baz/package.json').path(),
+          ),
         },
         {
           name: 'test-boost-workspace-multiple-foo',
           version: '0.0.0',
-          workspace: tool.createWorkspaceMetadata(path.join(root, 'packages/foo/package.json')),
+          workspace: tool.createWorkspaceMetadata(
+            rootPath.append('packages/foo/package.json').path(),
+          ),
         },
         {
           name: 'test-boost-workspace-multiple-bar',
           version: '0.0.0',
-          workspace: tool.createWorkspaceMetadata(path.join(root, 'modules/bar/package.json')),
+          workspace: tool.createWorkspaceMetadata(
+            rootPath.append('modules/bar/package.json').path(),
+          ),
         },
       ]);
     });
@@ -363,11 +370,7 @@ describe('Tool', () => {
           root: getFixturePath('workspace-multiple'),
           relative: true,
         }),
-      ).toEqual([
-        path.normalize('packages/baz'),
-        path.normalize('packages/foo'),
-        path.normalize('modules/bar'),
-      ]);
+      ).toEqual(['packages/baz', 'packages/foo', 'modules/bar']);
     });
   });
 

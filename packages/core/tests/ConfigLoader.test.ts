@@ -563,9 +563,11 @@ describe('ConfigLoader', () => {
     });
 
     it('errors if preset is not a file', () => {
+      const curPath = new Path(__dirname).path();
+
       expect(() => {
-        loader.parseAndExtend({ extends: [__dirname] });
-      }).toThrow(`Preset configuration ${__dirname} must be a valid file.`);
+        loader.parseAndExtend({ extends: [curPath] });
+      }).toThrow(`Preset configuration ${curPath} must be a valid file.`);
     });
 
     it('parses a file path if a string is provided', () => {

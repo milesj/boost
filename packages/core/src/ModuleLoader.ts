@@ -57,7 +57,7 @@ export default class ModuleLoader<Tm> {
     if (name.match(/^\.|\/|\\|[A-Z]:/u)) {
       this.debug('Locating %s from path %s', typeName, color.filePath(name));
 
-      modulesToAttempt.push(Path.create(name).path());
+      modulesToAttempt.push(new Path(name).path());
       isFilePath = true;
 
       // Module name

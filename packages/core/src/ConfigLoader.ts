@@ -138,7 +138,7 @@ export default class ConfigLoader {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      if (!currentDir || currentDir === '.' || currentDir === '/' || currentDir === '\\') {
+      if (!currentDir || currentDir === '.' || currentDir === '/') {
         break;
       }
 
@@ -317,7 +317,7 @@ export default class ConfigLoader {
     const rootPath = new Path(this.tool.options.root);
     const filePath = rootPath.append('package.json');
 
-    this.debug('Locating package.json in %s', color.filePath(rootPath));
+    this.debug('Locating package.json in %s', color.filePath(rootPath.path()));
 
     if (!filePath.exists()) {
       throw new Error(this.tool.msg('errors:packageJsonNotFound'));

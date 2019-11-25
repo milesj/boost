@@ -1,4 +1,3 @@
-import path from 'path';
 import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
 import FileBackend from '../src/FileBackend';
@@ -20,16 +19,16 @@ describe('FileBackend', () => {
     });
 
     it('errors if resource path is not a directory', () => {
-      const resPath = path.join(__dirname, '../package.json');
+      const resPath = new Path(__dirname, '../package.json');
 
       expect(() => {
         backend.init(
           {},
           {
-            paths: [Path.create(resPath)],
+            paths: [resPath],
           },
         );
-      }).toThrow(`Resource path "${resPath}" must be a directory.`);
+      }).toThrow(`Resource path "${resPath.path()}" must be a directory.`);
     });
   });
 
