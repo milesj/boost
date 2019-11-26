@@ -16,7 +16,7 @@
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^0.60.0",
+    "@milesj/build-tools": "^0.60.3",
     "@types/exit": "^0.1.30",
     "@types/fs-extra": "^8.0.1",
     "@types/js-yaml": "^3.12.1",

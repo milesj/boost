@@ -1862,10 +1862,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.182.0":
-  version "0.182.0"
-  resolved "https://registry.yarnpkg.com/@milesj/build-tool-config/-/build-tool-config-0.182.0.tgz#bf3522d4a5455d005024a5ec292870d64fb750ff"
-  integrity sha512-G+VcI72gHU8o7zjw8N0xz3oqucVrHX3y6VjpSvdL58KBnJs+4uDSQ6TiPhNAcXDzsSRwVG4W8/O6eOVRTvEpgg==
+"@milesj/build-tool-config@^0.182.1":
+  version "0.182.1"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.182.1.tgz#328d0eb1a5ff25b91b0ae6fb951c146ceb4e212a"
+  integrity sha512-MqzkpslJAppV/tbJqUwVOGbE91bC3N410roqy2GumbXcmwGy3Ud4GpylySjpsoOzxus82HiCnyvR4D2mbfl+OQ==
   dependencies:
     "@babel/cli" "^7.7.4"
     "@babel/core" "^7.7.4"
@@ -1919,12 +1919,12 @@
     prettier "^1.19.1"
     typescript "^3.7.2"
 
-"@milesj/build-tools@^0.60.0":
-  version "0.60.2"
-  resolved "https://registry.yarnpkg.com/@milesj/build-tools/-/build-tools-0.60.2.tgz#54575640c4141c5a2a4f2e0ddb4049b72f2eb7f4"
-  integrity sha512-XnDHJ8kRH0vBDTkFIbHZJ+nLMeB02GPonZgnTzm4jcmuDFSb/54FWQG7RiR5SmhR+ZXXkKWFePTv2ZvOxcr+uw==
+"@milesj/build-tools@^0.60.3":
+  version "0.60.3"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.60.3.tgz#1297546df12a79de0d873c679a282bbf35bc0ef0"
+  integrity sha512-DGXJHsdh+WiPtcjSwSqOKx5uOl7kMjGVUhKskAvprIo4udHuaGZzuiiUrJnxyHa0rZlMo0rwF19CZ0KCFjBU4w==
   dependencies:
-    "@milesj/build-tool-config" "^0.182.0"
+    "@milesj/build-tool-config" "^0.182.1"
     "@milesj/build-tool-runtime" "^0.53.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
@@ -4053,10 +4053,10 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^3.2.0, execa@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/execa/-/execa-3.3.0.tgz#7e348eef129a1937f21ecbbd53390942653522c1"
-  integrity sha512-j5Vit5WZR/cbHlqU97+qcnw9WHRCIL4V1SVe75VcHcD1JRBdt8fv0zw89b7CQHQdUHTt2VjuhcF5ibAgVOxqpg==
+execa@^3.2.0, execa@^3.3.0, execa@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.npmjs.org/execa/-/execa-3.4.0.tgz#c08ed4550ef65d858fac269ffc8572446f37eb89"
+  integrity sha512-r9vdGQk4bmCuK1yKQu1KTwcT2zwfWdbdaXfCtAh+5nU/4fSX+JAb7vZGvI5naJrQlvONrEB20jeruESI69530g==
   dependencies:
     cross-spawn "^7.0.0"
     get-stream "^5.0.0"
