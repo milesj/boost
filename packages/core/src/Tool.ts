@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign, no-console */
 
 import fs from 'fs-extra';
-import path from 'path';
 import util from 'util';
 import debug from 'debug';
 import envCI from 'env-ci';
@@ -10,7 +9,7 @@ import pluralize from 'pluralize';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
-import { instanceOf, isEmpty, AbstractConstructor } from '@boost/common';
+import { instanceOf, isEmpty, AbstractConstructor, Path, FilePath } from '@boost/common';
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
@@ -70,6 +69,8 @@ export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
   Config extends ToolConfig = ToolConfig
 > extends Emitter {
+  appPath: Path;
+
   args?: Arguments;
 
   argv: string[] = [];
@@ -97,6 +98,8 @@ export default class Tool<
   options: Required<ToolOptions>;
 
   package: PackageConfig = { name: '', version: '0.0.0' };
+
+  rootPath: Path;
 
   private configLoader: ConfigLoader;
 
@@ -139,6 +142,9 @@ export default class Tool<
       },
     );
 
+    this.appPath = Path.resolve(this.options.appPath);
+    this.rootPath = Path.resolve(this.options.root);
+
     // Set environment variables
     process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = this.options.appName;
 
@@ -150,10 +156,10 @@ export default class Tool<
     this.msg = createTranslator(
       ['app', 'errors'],
       [
-        path.join(__dirname, '../res'),
-        path.join(this.options.appPath, 'res'),
+        new Path(__dirname, '../res'),
+        this.appPath.append('res'),
         // TODO Remove in 2.0
-        path.join(this.options.appPath, 'resources'),
+        this.appPath.append('resources'),
       ],
       {
         // TODO Change to yaml in 2.0
@@ -233,14 +239,17 @@ export default class Tool<
   /**
    * Create a workspace metadata object composed of absolute file paths.
    */
-  createWorkspaceMetadata(jsonPath: string): WorkspaceMetadata {
+  createWorkspaceMetadata(jsonPath: FilePath): WorkspaceMetadata {
     const metadata: any = {};
+    const filePath = new Path(jsonPath);
+    const pkgPath = filePath.parent();
+    const wsPath = pkgPath.parent();
 
-    metadata.jsonPath = jsonPath;
-    metadata.packagePath = path.dirname(jsonPath);
-    metadata.packageName = path.basename(metadata.packagePath);
-    metadata.workspacePath = path.dirname(metadata.packagePath);
-    metadata.workspaceName = path.basename(metadata.workspacePath);
+    metadata.jsonPath = filePath.path();
+    metadata.packagePath = pkgPath.path();
+    metadata.packageName = pkgPath.name();
+    metadata.workspacePath = wsPath.path();
+    metadata.workspaceName = wsPath.name();
 
     return metadata;
   }
@@ -342,7 +351,7 @@ export default class Tool<
    * Return a list of absolute package folder paths, across all workspaces,
    * for the defined root.
    */
-  getWorkspacePackagePaths(options: WorkspaceOptions = {}): string[] {
+  getWorkspacePackagePaths(options: WorkspaceOptions = {}): FilePath[] {
     const root = options.root || this.options.root;
 
     return glob.sync(this.getWorkspacePaths({ ...options, relative: true, root }), {
@@ -357,15 +366,15 @@ export default class Tool<
    * Return a list of workspace folder paths, with wildstar glob in tact,
    * for the defined root.
    */
-  getWorkspacePaths(options: WorkspaceOptions = {}): string[] {
-    const root = options.root || this.options.root;
-    const pkgPath = path.normalize(path.join(root, 'package.json'));
-    const lernaPath = path.normalize(path.join(root, 'lerna.json'));
+  getWorkspacePaths(options: WorkspaceOptions = {}): FilePath[] {
+    const rootPath = new Path(options.root || this.options.root);
+    const pkgPath = rootPath.append('package.json');
+    const lernaPath = rootPath.append('lerna.json');
     const workspacePaths = [];
 
     // Yarn
-    if (fs.existsSync(pkgPath)) {
-      const pkg = fs.readJsonSync(pkgPath);
+    if (pkgPath.exists()) {
+      const pkg = fs.readJsonSync(pkgPath.path());
 
       if (pkg.workspaces) {
         if (Array.isArray(pkg.workspaces)) {
@@ -377,8 +386,8 @@ export default class Tool<
     }
 
     // Lerna
-    if (workspacePaths.length === 0 && fs.existsSync(lernaPath)) {
-      const lerna = fs.readJsonSync(lernaPath);
+    if (workspacePaths.length === 0 && lernaPath.exists()) {
+      const lerna = fs.readJsonSync(lernaPath.path());
 
       if (Array.isArray(lerna.packages)) {
         workspacePaths.push(...lerna.packages);
@@ -389,7 +398,7 @@ export default class Tool<
       return workspacePaths;
     }
 
-    return workspacePaths.map(workspace => path.join(root, workspace));
+    return workspacePaths.map(workspace => rootPath.append(workspace).path());
   }
 
   /**

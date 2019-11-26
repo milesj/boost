@@ -64,8 +64,6 @@ describe('PoolExecutor', () => {
   });
 
   it('maxes at concurrency limit', async () => {
-    jest.useRealTimers();
-
     executor.options.concurrency = 1;
     executor.nextItem = () => {}; // Stop it exhausting
 
@@ -77,8 +75,6 @@ describe('PoolExecutor', () => {
 
     expect(executor.queue).toHaveLength(2);
     expect(executor.running).toHaveLength(0);
-
-    jest.useFakeTimers();
   });
 
   it('cycles 1 by 1', async () => {

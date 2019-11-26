@@ -28,7 +28,7 @@
     "@boost/event": "^1.1.1",
     "@boost/internal": "^1.0.1",
     "@boost/translate": "^1.2.0",
-    "execa": "^3.3.0",
+    "execa": "^3.4.0",
     "lodash": "^4.17.15",
     "split": "^1.0.1"
   },

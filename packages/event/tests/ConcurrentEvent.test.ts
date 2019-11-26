@@ -5,11 +5,6 @@ describe('ConcurrentEvent', () => {
 
   beforeEach(() => {
     event = new ConcurrentEvent('parallel.test');
-    jest.useRealTimers();
-  });
-
-  afterEach(() => {
-    jest.useFakeTimers();
   });
 
   it('returns a promise', () => {

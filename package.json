@@ -2,9 +2,9 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "yarn run clean && tsc --build && beemo create-config --silent",
-    "clean": "rm -rf ./packages/*/{lib,*.tsbuildinfo}",
-    "coverage": "yarn run jest --coverage",
+    "build": "yarn run clean && tsc --build",
+    "clean": "rm -rf packages/*/{lib,*.tsbuildinfo}",
+    "coverage": "yarn run jest --coverage --detectOpenHandles --forceExit",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
     "prettier": "beemo prettier",
@@ -16,7 +16,7 @@
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^0.60.0",
+    "@milesj/build-tools": "^0.60.4",
     "@types/exit": "^0.1.30",
     "@types/fs-extra": "^8.0.1",
     "@types/js-yaml": "^3.12.1",

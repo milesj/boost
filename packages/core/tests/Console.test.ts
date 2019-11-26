@@ -18,6 +18,12 @@ describe('Console', () => {
       stderr: err,
       stdout: out,
     });
+
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('disable()', () => {
@@ -565,8 +571,6 @@ describe('Console', () => {
     });
 
     it('flushes output and resets timer', () => {
-      jest.useFakeTimers();
-
       const spy = jest.spyOn(cli, 'flushOutputQueue');
 
       cli.startRenderLoop();
@@ -580,8 +584,6 @@ describe('Console', () => {
 
       // @ts-ignore Allow access
       expect(cli.renderTimer).toBeNull();
-
-      jest.useRealTimers();
     });
   });
 

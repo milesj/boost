@@ -1,4 +1,4 @@
-import path from 'path';
+import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
 import FileBackend from '../src/FileBackend';
 
@@ -7,7 +7,7 @@ describe('FileBackend', () => {
 
   beforeEach(() => {
     backend = new FileBackend({
-      paths: [getFixturePath('i18n-resources')],
+      paths: [new Path(getFixturePath('i18n-resources'))],
     });
   });
 
@@ -19,7 +19,7 @@ describe('FileBackend', () => {
     });
 
     it('errors if resource path is not a directory', () => {
-      const resPath = path.join(__dirname, '../package.json');
+      const resPath = new Path(__dirname, '../package.json');
 
       expect(() => {
         backend.init(
@@ -28,7 +28,7 @@ describe('FileBackend', () => {
             paths: [resPath],
           },
         );
-      }).toThrow(`Resource path "${resPath}" must be a directory.`);
+      }).toThrow(`Resource path "${resPath.path()}" must be a directory.`);
     });
   });
 
@@ -81,14 +81,11 @@ describe('FileBackend', () => {
     });
 
     it('caches files after lookup', () => {
-      const key = getFixturePath('i18n-resources', 'en/common.yaml');
-
-      expect(backend.fileCache[key]).toBeUndefined();
+      expect(backend.fileCache.size).toBe(0);
 
       backend.read('en', 'common', () => {});
 
-      expect(backend.fileCache[key]).toBeDefined();
-      expect(backend.fileCache[key]).toEqual({ key: 'value' });
+      expect(backend.fileCache.size).toBe(1);
     });
 
     it('passes the resources to the callback', () => {
@@ -100,7 +97,7 @@ describe('FileBackend', () => {
     });
 
     it('merges objects from multiple resource paths', () => {
-      backend.options.paths.push(getFixturePath('i18n-resources-more'));
+      backend.options.paths.push(new Path(getFixturePath('i18n-resources-more')));
 
       expect(backend.read('en', 'common', () => {})).toEqual({ key: 'value', more: true });
     });

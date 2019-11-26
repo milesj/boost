@@ -1,7 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import { BackendModule, Resource, ResourceKey } from 'i18next';
-import { parseFile, Contract, FilePath, Predicates } from '@boost/common';
+import { parseFile, Contract, Path, Predicates } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import { Locale, Format } from './types';
 
@@ -13,11 +11,11 @@ const EXTS: { [K in Format]: string[] } = {
 
 export interface FileBackendOptions {
   format?: Format;
-  paths?: FilePath[];
+  paths?: Path[];
 }
 
 export default class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
-  fileCache: { [path: string]: ResourceKey } = {};
+  fileCache: Map<Path, ResourceKey> = new Map();
 
   type: 'backend' = 'backend';
 
@@ -25,17 +23,18 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     this.configure(options);
 
     // Validate resource paths are directories
-    this.options.paths.forEach(resourcePath => {
-      if (fs.existsSync(resourcePath) && !fs.statSync(resourcePath).isDirectory()) {
-        throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [resourcePath]);
+    this.options.paths.forEach(path => {
+      if (path.exists() && !path.isDirectory()) {
+        throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [path.path()]);
       }
     });
   }
 
-  blueprint({ array, string }: Predicates) /* infer */ {
+  blueprint({ array, instance, string }: Predicates) /* infer */ {
     return {
       format: string('yaml').oneOf(['js', 'json', 'yaml']),
-      paths: array(string()),
+      // @ts-ignore TODO: Fix upstream
+      paths: array<Path>(instance(Path, true)),
     };
   }
 
@@ -52,18 +51,20 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     const { format, paths } = this.options;
     const resources: ResourceKey = {};
 
-    paths.forEach(resourcePath => {
+    paths.forEach(path => {
       EXTS[format].some(ext => {
-        const filePath = path.normalize(path.join(resourcePath, locale, `${namespace}.${ext}`));
+        const resPath = path.append(locale, `${namespace}.${ext}`);
+        const isCached = this.fileCache.has(resPath);
 
-        if (!this.fileCache[filePath] && !fs.existsSync(filePath)) {
+        if (!resPath.exists()) {
           return false;
         }
 
-        Object.assign(
-          resources,
-          this.fileCache[filePath] || (this.fileCache[filePath] = parseFile(filePath)),
-        );
+        if (!isCached) {
+          this.fileCache.set(resPath, parseFile(resPath));
+        }
+
+        Object.assign(resources, this.fileCache.get(resPath));
 
         return true;
       });

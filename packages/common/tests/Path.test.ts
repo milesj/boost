@@ -2,24 +2,92 @@ import { resolve } from 'path';
 import Path from '../src/Path';
 
 describe('Path', () => {
+  describe('.create()', () => {
+    it('returns an instance for a string', () => {
+      expect(Path.create('./foo')).toEqual(new Path('./foo'));
+    });
+
+    it('returns instance as is', () => {
+      const path = new Path('./foo');
+
+      expect(Path.create(path)).toBe(path);
+    });
+  });
+
+  describe('.resolve()', () => {
+    it('returns an instance for a string', () => {
+      expect(Path.resolve('./foo')).toEqual(new Path(resolve('./foo')));
+    });
+
+    it('returns instance resolved', () => {
+      const path = new Path('./foo');
+
+      expect(Path.resolve(path)).toEqual(new Path(resolve('./foo')));
+    });
+  });
+
   describe('constructor()', () => {
     it('joins multiple parts', () => {
       const path = new Path('/foo/bar', '../baz', 'file.js');
 
-      expect(path.toString()).toBe('/foo/baz/file.js');
+      expect(path.path()).toBe('/foo/baz/file.js');
+    });
+
+    it('removes leading relative dot', () => {
+      const path = new Path('./foo');
+
+      expect(path.path()).toBe('foo');
+    });
+
+    it('persists leading dots', () => {
+      const path = new Path('../foo');
+
+      expect(path.path()).toBe('../foo');
+    });
+
+    it('persists multiple leading dots', () => {
+      const path = new Path('../../foo');
+
+      expect(path.path()).toBe('../../foo');
     });
   });
 
   describe('append()', () => {
-    it('appends to existing path', () => {
-      const path = new Path('/foo/bar', '../baz');
+    it('appends to existing path and returns a new instance', () => {
+      const p1 = new Path('/foo/bar', '../baz');
 
-      expect(path.toString()).toBe('/foo/baz');
+      expect(p1.path()).toBe('/foo/baz');
 
-      path.append('qux/foo');
-      path.append('..', './current');
+      const p2 = p1.append('qux/foo');
 
-      expect(path.toString()).toBe('/foo/baz/qux/current');
+      expect(p1.path()).toBe('/foo/baz');
+      expect(p2.path()).toBe('/foo/baz/qux/foo');
+
+      const p3 = p2.append('..', './current');
+
+      expect(p1.path()).toBe('/foo/baz');
+      expect(p2.path()).toBe('/foo/baz/qux/foo');
+      expect(p3.path()).toBe('/foo/baz/qux/current');
+    });
+  });
+
+  describe('exists()', () => {
+    it('returns true if a folder', () => {
+      const path = new Path(__dirname);
+
+      expect(path.exists()).toBe(true);
+    });
+
+    it('returns true if a file', () => {
+      const path = new Path(__filename);
+
+      expect(path.exists()).toBe(true);
+    });
+
+    it('returns false for an invalid path', () => {
+      const path = new Path(__dirname, 'some/fake/path');
+
+      expect(path.exists()).toBe(false);
     });
   });
 
@@ -54,6 +122,40 @@ describe('Path', () => {
       const path = new Path('foo/bar');
 
       expect(path.isAbsolute()).toBe(false);
+    });
+
+    it('returns false if relative using leading dot', () => {
+      const path = new Path('./foo/bar');
+
+      expect(path.isAbsolute()).toBe(false);
+    });
+  });
+
+  describe('isDirectory()', () => {
+    it('returns true if a folder', () => {
+      const path = new Path(__dirname);
+
+      expect(path.isDirectory()).toBe(true);
+    });
+
+    it('returns false if a file', () => {
+      const path = new Path(__filename);
+
+      expect(path.isDirectory()).toBe(false);
+    });
+  });
+
+  describe('isFile()', () => {
+    it('returns true if a file', () => {
+      const path = new Path(__filename);
+
+      expect(path.isFile()).toBe(true);
+    });
+
+    it('returns false if a folder', () => {
+      const path = new Path(__dirname);
+
+      expect(path.isFile()).toBe(false);
     });
   });
 
@@ -94,6 +196,25 @@ describe('Path', () => {
       const path = new Path('/foo/bar/baz');
 
       expect(path.parent()).toEqual(new Path('/foo/bar'));
+    });
+  });
+
+  describe('prepend()', () => {
+    it('prepends to existing path and returns a new instance', () => {
+      const p1 = new Path('/foo/bar', '../baz');
+
+      expect(p1.path()).toBe('/foo/baz');
+
+      const p2 = p1.prepend('qux/foo');
+
+      expect(p1.path()).toBe('/foo/baz');
+      expect(p2.path()).toBe('qux/foo/foo/baz');
+
+      const p3 = p2.prepend('..', './current');
+
+      expect(p1.path()).toBe('/foo/baz');
+      expect(p2.path()).toBe('qux/foo/foo/baz');
+      expect(p3.path()).toBe('../current/qux/foo/foo/baz');
     });
   });
 
