@@ -17,7 +17,7 @@ jobs:
       - run: yarn install --ignore-engines --frozen-lockfile
       - run: yarn run build
       - run: yarn run type
-      - run: yarn run jest -w 2 --detectOpenHandles --forceExit --stdio=inherit
+      - run: yarn run jest --forceExit
+      - run: yarn run eslint
         env:
           DEBUG: 'beemo:*'
-      - run: yarn run eslint
