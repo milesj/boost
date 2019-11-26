@@ -69,6 +69,8 @@ export default class Tool<
   PluginRegistry extends ToolPluginRegistry,
   Config extends ToolConfig = ToolConfig
 > extends Emitter {
+  appPath: Path;
+
   args?: Arguments;
 
   argv: string[] = [];
@@ -96,6 +98,8 @@ export default class Tool<
   options: Required<ToolOptions>;
 
   package: PackageConfig = { name: '', version: '0.0.0' };
+
+  rootPath: Path;
 
   private configLoader: ConfigLoader;
 
@@ -138,6 +142,9 @@ export default class Tool<
       },
     );
 
+    this.appPath = Path.resolve(this.options.appPath);
+    this.rootPath = Path.resolve(this.options.root);
+
     // Set environment variables
     process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = this.options.appName;
 
@@ -150,9 +157,9 @@ export default class Tool<
       ['app', 'errors'],
       [
         new Path(__dirname, '../res'),
-        new Path(this.options.appPath, 'res'),
+        this.appPath.append('res'),
         // TODO Remove in 2.0
-        new Path(this.options.appPath, 'resources'),
+        this.appPath.append('resources'),
       ],
       {
         // TODO Change to yaml in 2.0

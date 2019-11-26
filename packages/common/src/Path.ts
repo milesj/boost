@@ -25,6 +25,13 @@ export default class Path {
   }
 
   /**
+   * Like `create()` but also resolves the path against CWD.
+   */
+  static resolve(filePath: PortablePath, cwd?: PortablePath): Path {
+    return Path.create(filePath).resolve(cwd);
+  }
+
+  /**
    * Append path parts to the end of the current path
    * and return a new `Path` instance.
    */

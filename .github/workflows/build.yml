@@ -1,5 +1,9 @@
 name: Build
-on: push
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 jobs:
   test:
     name: Test
@@ -7,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [8, 10, 12]
+        node-version: [8, 10, 12, 13]
       fail-fast: false
     steps:
       - uses: actions/checkout@v1
