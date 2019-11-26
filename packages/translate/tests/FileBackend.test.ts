@@ -7,7 +7,7 @@ describe('FileBackend', () => {
 
   beforeEach(() => {
     backend = new FileBackend({
-      paths: [Path.create(getFixturePath('i18n-resources'))],
+      paths: [new Path(getFixturePath('i18n-resources'))],
     });
   });
 
@@ -97,7 +97,7 @@ describe('FileBackend', () => {
     });
 
     it('merges objects from multiple resource paths', () => {
-      backend.options.paths.push(Path.create(getFixturePath('i18n-resources-more')));
+      backend.options.paths.push(new Path(getFixturePath('i18n-resources-more')));
 
       expect(backend.read('en', 'common', () => {})).toEqual({ key: 'value', more: true });
     });

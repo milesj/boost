@@ -572,7 +572,7 @@ describe('ConfigLoader', () => {
 
     it('parses a file path if a string is provided', () => {
       expect(
-        loader.parseAndExtend(Path.create(getFixturePath('app', 'configs/testBoost.json'))),
+        loader.parseAndExtend(new Path(getFixturePath('app', 'configs/testBoost.json'))),
       ).toEqual({
         foo: 'bar',
       });

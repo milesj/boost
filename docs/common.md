@@ -125,7 +125,8 @@ path.resolve().path(); // Resolved accurately
 ```
 
 Furthermore, the static `Path.create()` method can be used to factory a `Path` instance from a
-string or an existing instance. Useful when used in combination with the `PortablePath` type.
+string or an existing instance. Especially useful when used in combination with the `PortablePath`
+type.
 
 ```ts
 Path.create('some/file/path'); // Path

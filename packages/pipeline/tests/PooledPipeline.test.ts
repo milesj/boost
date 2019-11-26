@@ -181,16 +181,8 @@ describe('PooledPipeline', () => {
   });
 
   describe('timeout', () => {
-    beforeEach(() => {
-      jest.useRealTimers();
-    });
-
-    afterEach(() => {
-      jest.useFakeTimers();
-    });
-
     it('times out individual work units that are taking too long', async () => {
-      const pipeline = new PooledPipeline(new Context(), '', { timeout: 1000 })
+      const pipeline = new PooledPipeline(new Context(), '', { timeout: 500 })
         .add('One', () => 'foo')
         .add(
           'Two',
@@ -198,7 +190,7 @@ describe('PooledPipeline', () => {
             new Promise(resolve => {
               setTimeout(() => {
                 resolve('bar');
-              }, 2000);
+              }, 1000);
             }),
         )
         .add('Three', () => 'baz');
