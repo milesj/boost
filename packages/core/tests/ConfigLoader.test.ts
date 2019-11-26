@@ -767,19 +767,25 @@ describe('ConfigLoader', () => {
     it('parses .json files', () => {
       fixtures.push(createTempFileInFixture('app', 'test.json', JSON.stringify({ name: 'foo' })));
 
-      expect(loader.parseFile(getFixturePath('app', 'test.json'))).toEqual({ name: 'foo' });
+      expect(loader.parseFile(getFixturePath('app', 'test.json'))).toEqual({
+        name: 'foo',
+      });
     });
 
     it('parses .json files in JSON5 format', () => {
       fixtures.push(createTempFileInFixture('app', 'test.json', JSON5.stringify({ name: 'foo' })));
 
-      expect(loader.parseFile(getFixturePath('app', 'test.json'))).toEqual({ name: 'foo' });
+      expect(loader.parseFile(getFixturePath('app', 'test.json'))).toEqual({
+        name: 'foo',
+      });
     });
 
     it('parses .json5 files', () => {
       fixtures.push(createTempFileInFixture('app', 'test.json5', JSON5.stringify({ name: 'foo' })));
 
-      expect(loader.parseFile(getFixturePath('app', 'test.json5'))).toEqual({ name: 'foo' });
+      expect(loader.parseFile(getFixturePath('app', 'test.json5'))).toEqual({
+        name: 'foo',
+      });
     });
 
     it('parses .js files', () => {
@@ -787,7 +793,9 @@ describe('ConfigLoader', () => {
         createTempFileInFixture('app', 'test.js', createJavascriptFile({ name: 'foo' })),
       );
 
-      expect(loader.parseFile(getFixturePath('app', 'test.js'))).toEqual({ name: 'foo' });
+      expect(loader.parseFile(getFixturePath('app', 'test.js'))).toEqual({
+        name: 'foo',
+      });
     });
 
     it('parses .js files and handles babel default exports', () => {
@@ -814,7 +822,9 @@ describe('ConfigLoader', () => {
         ),
       );
 
-      expect(loader.parseFile(getFixturePath('app', 'test-func.js'))).toEqual({ name: 'foo' });
+      expect(loader.parseFile(getFixturePath('app', 'test-func.js'))).toEqual({
+        name: 'foo',
+      });
     });
 
     it('parses .js files that return functions with options passed', () => {
@@ -845,7 +855,9 @@ describe('ConfigLoader', () => {
       );
 
       expect(() => {
-        loader.parseFile(getFixturePath('app', 'test-func.js'), [], { errorOnFunction: true });
+        loader.parseFile(getFixturePath('app', 'test-func.js'), [], {
+          errorOnFunction: true,
+        });
       }).toThrowErrorMatchingSnapshot();
     });
   });
@@ -934,20 +946,20 @@ describe('ConfigLoader', () => {
 
   describe('resolveModuleConfigPath()', () => {
     it('returns file path with correct naming', () => {
-      expect(loader.resolveModuleConfigPath('foo', 'bar')).toEqual(
-        new Path(getNodeModulePath('app', 'bar', 'configs/foo.js')),
+      expect(loader.resolveModuleConfigPath('foo', 'bar')).toBe(
+        getNodeModulePath('app', 'bar', 'configs/foo.js'),
       );
     });
 
     it('can flag as preset', () => {
-      expect(loader.resolveModuleConfigPath('foo', 'bar', true)).toEqual(
-        new Path(getNodeModulePath('app', 'bar', 'configs/foo.preset.js')),
+      expect(loader.resolveModuleConfigPath('foo', 'bar', true)).toBe(
+        getNodeModulePath('app', 'bar', 'configs/foo.preset.js'),
       );
     });
 
     it('can change the extension', () => {
-      expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json')).toEqual(
-        new Path(getNodeModulePath('app', 'bar', 'configs/foo.preset.json')),
+      expect(loader.resolveModuleConfigPath('foo', 'bar', true, 'json')).toBe(
+        getNodeModulePath('app', 'bar', 'configs/foo.preset.json'),
       );
     });
   });

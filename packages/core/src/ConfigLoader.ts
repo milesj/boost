@@ -469,14 +469,16 @@ export default class ConfigLoader {
 
         // Node module, resolve to a config file
       } else if (extendPath.match(MODULE_NAME_PATTERN)) {
-        return this.resolveModuleConfigPath(configName, extendPath, true);
+        return new Path(this.resolveModuleConfigPath(configName, extendPath, true));
 
         // Plugin, resolve to a node module
       } else if ((match = extendPath.match(PLUGIN_NAME_PATTERN))) {
-        return this.resolveModuleConfigPath(
-          configName,
-          formatModuleName(appName, match[1], extendPath, scoped),
-          true,
+        return new Path(
+          this.resolveModuleConfigPath(
+            configName,
+            formatModuleName(appName, match[1], extendPath, scoped),
+            true,
+          ),
         );
       }
 
@@ -492,15 +494,12 @@ export default class ConfigLoader {
     moduleName: string,
     preset: boolean = false,
     ext: string = 'js',
-  ): Path {
+  ): FilePath {
     const fileName = preset ? `${configName}.preset.${ext}` : `${configName}.${ext}`;
 
-    return new Path(
-      this.tool.options.root,
-      'node_modules',
-      moduleName,
-      'configs',
-      fileName,
-    ).resolve();
+    // Return a string for backwards compat
+    return new Path(this.tool.options.root, 'node_modules', moduleName, 'configs', fileName)
+      .resolve()
+      .path();
   }
 }
