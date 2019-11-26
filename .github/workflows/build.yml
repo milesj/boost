@@ -19,5 +19,3 @@ jobs:
       - run: yarn run type
       - run: yarn run jest --forceExit
       - run: yarn run eslint
-        env:
-          DEBUG: 'beemo:*'

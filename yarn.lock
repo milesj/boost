@@ -1862,10 +1862,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^0.182.1":
-  version "0.182.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.182.1.tgz#328d0eb1a5ff25b91b0ae6fb951c146ceb4e212a"
-  integrity sha512-MqzkpslJAppV/tbJqUwVOGbE91bC3N410roqy2GumbXcmwGy3Ud4GpylySjpsoOzxus82HiCnyvR4D2mbfl+OQ==
+"@milesj/build-tool-config@^0.182.2":
+  version "0.182.2"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-0.182.2.tgz#61ec0cf4352afe4f949443c1fde3f2d7ace5d811"
+  integrity sha512-GFfrJ3fFzh7i2CJ3h2D7/JmeHVvFE/viPFtDpJVBaeri75cLIEiBSIOtHV607tFgxXTjP273wOHDTEUxnsAevg==
   dependencies:
     "@babel/cli" "^7.7.4"
     "@babel/core" "^7.7.4"
@@ -1919,12 +1919,12 @@
     prettier "^1.19.1"
     typescript "^3.7.2"
 
-"@milesj/build-tools@^0.60.3":
-  version "0.60.3"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.60.3.tgz#1297546df12a79de0d873c679a282bbf35bc0ef0"
-  integrity sha512-DGXJHsdh+WiPtcjSwSqOKx5uOl7kMjGVUhKskAvprIo4udHuaGZzuiiUrJnxyHa0rZlMo0rwF19CZ0KCFjBU4w==
+"@milesj/build-tools@^0.60.4":
+  version "0.60.4"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-0.60.4.tgz#7c68342ad603b395d94ed9854a931200b02f131d"
+  integrity sha512-/FRNsQPsahhdOYq0+NrhPqzjMtJ+CfID1KdrvA0YPTH23d3LCbrWfUt0jKikvqc+tAnwOD6PcrbRhRlyuXoHvw==
   dependencies:
-    "@milesj/build-tool-config" "^0.182.1"
+    "@milesj/build-tool-config" "^0.182.2"
     "@milesj/build-tool-runtime" "^0.53.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
