@@ -4,8 +4,8 @@
 [![npm version](https://badge.fury.io/js/%40boost%2Fcore.svg)](https://www.npmjs.com/package/@boost/core)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/core)](https://www.npmjs.com/package/@boost/core)
 
-A framework for building robust Node.js command line applications and developer tools. Supports
-Linux, Windows, and OSX platforms.
+A cross-platform framework for building robust Node.js command line applications and developer
+tools.
 
 ## Features
 

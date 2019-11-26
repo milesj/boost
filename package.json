@@ -4,7 +4,7 @@
   "scripts": {
     "build": "yarn run clean && tsc --build && beemo create-config --silent",
     "clean": "rm -rf packages/*/{lib,*.tsbuildinfo}",
-    "coverage": "yarn run jest --coverage",
+    "coverage": "yarn run jest --coverage --detectOpenHandles --forceExit",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
     "prettier": "beemo prettier",

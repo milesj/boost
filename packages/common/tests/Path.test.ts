@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import Path from '../src/Path';
 
 describe('Path', () => {
-  describe('create()', () => {
+  describe('.create()', () => {
     it('returns an instance for a string', () => {
       expect(Path.create('./foo')).toEqual(new Path('./foo'));
     });
@@ -11,6 +11,18 @@ describe('Path', () => {
       const path = new Path('./foo');
 
       expect(Path.create(path)).toBe(path);
+    });
+  });
+
+  describe('.resolve()', () => {
+    it('returns an instance for a string', () => {
+      expect(Path.resolve('./foo')).toEqual(new Path(resolve('./foo')));
+    });
+
+    it('returns instance resolved', () => {
+      const path = new Path('./foo');
+
+      expect(Path.resolve(path)).toEqual(new Path(resolve('./foo')));
     });
   });
 
@@ -59,6 +71,26 @@ describe('Path', () => {
     });
   });
 
+  describe('exists()', () => {
+    it('returns true if a folder', () => {
+      const path = new Path(__dirname);
+
+      expect(path.exists()).toBe(true);
+    });
+
+    it('returns true if a file', () => {
+      const path = new Path(__filename);
+
+      expect(path.exists()).toBe(true);
+    });
+
+    it('returns false for an invalid path', () => {
+      const path = new Path(__dirname, 'some/fake/path');
+
+      expect(path.exists()).toBe(false);
+    });
+  });
+
   describe('ext()', () => {
     it('returns extension for file', () => {
       const path = new Path('/foo/bar.js');
@@ -96,6 +128,34 @@ describe('Path', () => {
       const path = new Path('./foo/bar');
 
       expect(path.isAbsolute()).toBe(false);
+    });
+  });
+
+  describe('isDirectory()', () => {
+    it('returns true if a folder', () => {
+      const path = new Path(__dirname);
+
+      expect(path.isDirectory()).toBe(true);
+    });
+
+    it('returns false if a file', () => {
+      const path = new Path(__filename);
+
+      expect(path.isDirectory()).toBe(false);
+    });
+  });
+
+  describe('isFile()', () => {
+    it('returns true if a file', () => {
+      const path = new Path(__filename);
+
+      expect(path.isFile()).toBe(true);
+    });
+
+    it('returns false if a folder', () => {
+      const path = new Path(__dirname);
+
+      expect(path.isFile()).toBe(false);
     });
   });
 
