@@ -19,16 +19,20 @@ describe('Path', () => {
       expect(Path.resolve('./foo')).toEqual(new Path(resolve('./foo')));
     });
 
-    it('returns instance resolved', () => {
-      const path = new Path('./foo');
-
-      expect(Path.resolve(path)).toEqual(new Path(resolve('./foo')));
+    it('returns an instance for a `Path`', () => {
+      expect(Path.resolve(new Path('./foo'))).toEqual(new Path(resolve('./foo')));
     });
   });
 
   describe('constructor()', () => {
     it('joins multiple parts', () => {
       const path = new Path('/foo/bar', '../baz', 'file.js');
+
+      expect(path.path()).toBe('/foo/baz/file.js');
+    });
+
+    it('joins multiple parts with `Path` instances', () => {
+      const path = new Path('/foo/bar', new Path('../baz'), Path.create('file.js'));
 
       expect(path.path()).toBe('/foo/baz/file.js');
     });
@@ -68,6 +72,17 @@ describe('Path', () => {
       expect(p1.path()).toBe('/foo/baz');
       expect(p2.path()).toBe('/foo/baz/qux/foo');
       expect(p3.path()).toBe('/foo/baz/qux/current');
+    });
+
+    it('appends with a `Path` instance', () => {
+      const p1 = new Path('/foo/bar', '../baz');
+
+      expect(p1.path()).toBe('/foo/baz');
+
+      const p2 = p1.append(new Path('qux/foo'));
+
+      expect(p1.path()).toBe('/foo/baz');
+      expect(p2.path()).toBe('/foo/baz/qux/foo');
     });
   });
 
@@ -215,6 +230,17 @@ describe('Path', () => {
       expect(p1.path()).toBe('/foo/baz');
       expect(p2.path()).toBe('qux/foo/foo/baz');
       expect(p3.path()).toBe('../current/qux/foo/foo/baz');
+    });
+
+    it('prepends with a `Path` instance', () => {
+      const p1 = new Path('/foo/bar', '../baz');
+
+      expect(p1.path()).toBe('/foo/baz');
+
+      const p2 = p1.prepend(new Path('qux/foo'));
+
+      expect(p1.path()).toBe('/foo/baz');
+      expect(p2.path()).toBe('qux/foo/foo/baz');
     });
   });
 

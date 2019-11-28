@@ -11,9 +11,9 @@ export default class Path {
 
   private stats: fs.Stats | null = null;
 
-  constructor(...parts: FilePath[]) {
+  constructor(...parts: PortablePath[]) {
     // Always use forward slashes for better interop
-    this.internalPath = path.normalize(path.join(...parts)).replace(/\\/gu, Path.SEP);
+    this.internalPath = path.normalize(path.join(...parts.map(String))).replace(/\\/gu, Path.SEP);
   }
 
   /**
@@ -35,7 +35,7 @@ export default class Path {
    * Append path parts to the end of the current path
    * and return a new `Path` instance.
    */
-  append(...parts: FilePath[]): Path {
+  append(...parts: PortablePath[]): Path {
     return new Path(this.internalPath, ...parts);
   }
 
@@ -107,7 +107,7 @@ export default class Path {
    * Prepend path parts to the beginning of the current path
    * and return a new `Path` instance.
    */
-  prepend(...parts: FilePath[]): Path {
+  prepend(...parts: PortablePath[]): Path {
     return new Path(...parts, this.internalPath);
   }
 
