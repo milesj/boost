@@ -11,9 +11,9 @@ export default class Path {
 
   private stats: fs.Stats | null = null;
 
-  constructor(...parts: FilePath[]) {
+  constructor(...parts: PortablePath[]) {
     // Always use forward slashes for better interop
-    this.internalPath = path.normalize(path.join(...parts)).replace(/\\/gu, Path.SEP);
+    this.internalPath = path.normalize(path.join(...parts.map(String))).replace(/\\/gu, Path.SEP);
   }
 
   /**
@@ -35,8 +35,15 @@ export default class Path {
    * Append path parts to the end of the current path
    * and return a new `Path` instance.
    */
-  append(...parts: FilePath[]): Path {
+  append(...parts: PortablePath[]): Path {
     return new Path(this.internalPath, ...parts);
+  }
+
+  /**
+   * Returns true if both paths are equal using strict equality.
+   */
+  equals(filePath: PortablePath): boolean {
+    return this.path() === String(filePath);
   }
 
   /**
@@ -107,8 +114,45 @@ export default class Path {
    * Prepend path parts to the beginning of the current path
    * and return a new `Path` instance.
    */
-  prepend(...parts: FilePath[]): Path {
+  prepend(...parts: PortablePath[]): Path {
     return new Path(...parts, this.internalPath);
+  }
+
+  /**
+   * Returns a canonical path by resolving directories and symlinks.
+   */
+  // istanbul ignore next
+  realPath(): FilePath {
+    const filePath = this.path();
+
+    if (typeof fs.realpathSync.native === 'function') {
+      try {
+        return fs.realpathSync.native(filePath);
+      } catch {
+        // Skip
+      }
+    }
+
+    // @ts-ignore
+    const fsBinding = process.binding('fs');
+
+    if (fsBinding.realpath) {
+      try {
+        return fsBinding.realpath(filePath, 'utf8');
+      } catch {
+        // Skip
+      }
+    }
+
+    return fs.realpathSync(filePath);
+  }
+
+  /**
+   * Return a new relative `Path` instance from the current
+   * "from" path to the defined "to" path.
+   */
+  relativeTo(to: PortablePath): Path {
+    return new Path(path.relative(this.path(), String(to)));
   }
 
   /**
