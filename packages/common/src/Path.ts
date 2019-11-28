@@ -112,6 +112,35 @@ export default class Path {
   }
 
   /**
+   * Returns a canonical path by resolving directories and symlinks.
+   */
+  // istanbul ignore next
+  realPath(): FilePath {
+    const filePath = this.path();
+
+    if (typeof fs.realpathSync.native === 'function') {
+      try {
+        return fs.realpathSync.native(filePath);
+      } catch {
+        // Skip
+      }
+    }
+
+    // @ts-ignore
+    const fsBinding = process.binding('fs');
+
+    if (fsBinding.realpath) {
+      try {
+        return fsBinding.realpath(filePath, 'utf8');
+      } catch {
+        // Skip
+      }
+    }
+
+    return fs.realpathSync(filePath);
+  }
+
+  /**
    * Return a new relative `Path` instance from the current
    * "from" path to the defined "to" path.
    */
