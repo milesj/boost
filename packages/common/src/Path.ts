@@ -112,6 +112,14 @@ export default class Path {
   }
 
   /**
+   * Return a new relative `Path` instance from the current
+   * "from" path to the defined "to" path.
+   */
+  relativeTo(to: PortablePath): Path {
+    return new Path(path.relative(this.path(), String(to)));
+  }
+
+  /**
    * Return a new `Path` instance where the current path is accurately
    * resolved against the defined current working directory.
    */

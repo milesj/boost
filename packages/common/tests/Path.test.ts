@@ -218,6 +218,20 @@ describe('Path', () => {
     });
   });
 
+  describe('relativeTo()', () => {
+    it('returns relative path using a string', () => {
+      const from = new Path('/foo/bar/baz');
+
+      expect(from.relativeTo('/foo/qux')).toEqual(new Path('../../qux'));
+    });
+
+    it('returns relative path using a path', () => {
+      const from = new Path('/foo/bar/baz');
+
+      expect(from.relativeTo(new Path('/foo/qux'))).toEqual(new Path('../../qux'));
+    });
+  });
+
   describe('resolve()', () => {
     it('returns a new instance with path resolved to cwd', () => {
       const path = new Path('foo/bar/baz');
