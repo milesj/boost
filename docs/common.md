@@ -97,8 +97,10 @@ const relPath = new Path('some/path', '../move/around', 'again');
 
 The following methods are available on the class instance.
 
-- `append(...parts: string[]): Path` - Append path parts to the end of the current path and return a
-  new `Path` instance.
+- `append(...parts: PortablePath[]): Path` - Append path parts to the end of the current path and
+  return a new `Path` instance.
+- `equals(path: PortablePath): boolean` - Returns true if both paths are equal using strict
+  equality.
 - `ext(withoutPeriod?: boolean): string` - Return the extension (if applicable) with or without
   leading period.
 - `exists(): boolean` - Return true if the current path exists on the file system.
@@ -109,15 +111,16 @@ The following methods are available on the class instance.
   folder name.
 - `parent(): Path` - Return the parent folder as a new `Path` instance.
 - `path(): FilePath` - Return the current path as a normalized string.
-- `prepend(...parts: string[]): Path` - Prepend path parts to the beginning of the current path and
-  return a new `Path` instance.
+- `prepend(...parts: PortablePath[]): Path` - Prepend path parts to the beginning of the current
+  path and return a new `Path` instance.
+- `relativeTo(to: PortablePath): Path` - Return a new relative `Path` instance from the current
+  "from" path to the defined "to" path.
 - `toString(): FilePath` - Return the current path as a normalized string.
 
-By default, the `Path` class operates on the defined path parts as-is, and doesn't verify against
-the actual file system. If you would prefer to operate against real paths, use the `resolve()`
-method, which returns a new `Path` instance where the current path is
-[resolved against](https://nodejs.org/api/path.html#path_path_resolve_paths) the defined current
-working directory (`process.cwd()`).
+By default, the `Path` class operates on the defined path parts as-is. If you would prefer to
+operate against real or resolved paths, use the `realPath()` and `resolve()` methods respectively.
+The current path is [resolved against](https://nodejs.org/api/path.html#path_path_resolve_paths) the
+defined current working directory (`process.cwd()`).
 
 ```ts
 path.path(); // Possibly inaccurate

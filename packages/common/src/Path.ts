@@ -40,6 +40,13 @@ export default class Path {
   }
 
   /**
+   * Returns true if both paths are equal using strict equality.
+   */
+  equals(filePath: PortablePath): boolean {
+    return this.path() === String(filePath);
+  }
+
+  /**
    * Return the extension (if applicable) with or without leading period.
    */
   ext(withoutPeriod: boolean = false): string {

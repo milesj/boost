@@ -86,6 +86,20 @@ describe('Path', () => {
     });
   });
 
+  describe('equals()', () => {
+    it('returns true if a match', () => {
+      const path = new Path('foo/bar');
+
+      expect(path.equals('foo/bar')).toBe(true);
+    });
+
+    it('returns false if not a match', () => {
+      const path = new Path('foo/bar');
+
+      expect(path.equals(new Path('foo/qux'))).toBe(false);
+    });
+  });
+
   describe('exists()', () => {
     it('returns true if a folder', () => {
       const path = new Path(__dirname);
