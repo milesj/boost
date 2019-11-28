@@ -9,7 +9,14 @@ import pluralize from 'pluralize';
 import mergeWith from 'lodash/mergeWith';
 import optimal, { bool, object, string, Blueprint } from 'optimal';
 import parseArgs, { Arguments, Options as ArgOptions } from 'yargs-parser';
-import { instanceOf, isEmpty, AbstractConstructor, Path, FilePath } from '@boost/common';
+import {
+  instanceOf,
+  isEmpty,
+  AbstractConstructor,
+  Path,
+  FilePath,
+  PortablePath,
+} from '@boost/common';
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
@@ -239,9 +246,9 @@ export default class Tool<
   /**
    * Create a workspace metadata object composed of absolute file paths.
    */
-  createWorkspaceMetadata(jsonPath: FilePath): WorkspaceMetadata {
+  createWorkspaceMetadata(jsonPath: PortablePath): WorkspaceMetadata {
     const metadata: any = {};
-    const filePath = new Path(jsonPath);
+    const filePath = Path.create(jsonPath);
     const pkgPath = filePath.parent();
     const wsPath = pkgPath.parent();
 
@@ -338,7 +345,7 @@ export default class Tool<
         }).map(ws => `${ws}/package.json`),
         {
           absolute: true,
-          cwd: root,
+          cwd: String(root),
         },
       )
       .map(filePath => ({
@@ -352,7 +359,7 @@ export default class Tool<
    * for the defined root.
    */
   getWorkspacePackagePaths(options: WorkspaceOptions = {}): FilePath[] {
-    const root = options.root || this.options.root;
+    const root = String(options.root || this.options.root);
 
     return glob.sync(this.getWorkspacePaths({ ...options, relative: true, root }), {
       absolute: !options.relative,
@@ -367,7 +374,7 @@ export default class Tool<
    * for the defined root.
    */
   getWorkspacePaths(options: WorkspaceOptions = {}): FilePath[] {
-    const rootPath = new Path(options.root || this.options.root);
+    const rootPath = Path.create(options.root || this.options.root);
     const pkgPath = rootPath.append('package.json');
     const lernaPath = rootPath.append('lerna.json');
     const workspacePaths = [];

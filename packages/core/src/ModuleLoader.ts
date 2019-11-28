@@ -43,7 +43,7 @@ export default class ModuleLoader<Tm> {
    * Import a class definition from a Node module and instantiate the class
    * with the provided options object.
    */
-  importModule(name: string, args: any[] = []): Tm {
+  importModule(name: string | Path, args: any[] = []): Tm {
     const { typeName } = this;
     const { appName, scoped } = this.tool.options;
 
@@ -54,10 +54,10 @@ export default class ModuleLoader<Tm> {
     let moduleName;
 
     // File path
-    if (name.match(/^\.|\/|\\|[A-Z]:/u)) {
+    if (name instanceof Path || name.match(/^\.|\/|\\|[A-Z]:/u)) {
       this.debug('Locating %s from path %s', typeName, color.filePath(name));
 
-      modulesToAttempt.push(new Path(name).path());
+      modulesToAttempt.push(Path.create(name).path());
       isFilePath = true;
 
       // Module name

@@ -1,5 +1,5 @@
 import { Blueprint, Predicates } from 'optimal';
-import { AbstractConstructor } from '@boost/common';
+import { AbstractConstructor, PortablePath } from '@boost/common';
 import ModuleLoader from './ModuleLoader';
 
 export { Blueprint, Predicates };
@@ -114,5 +114,5 @@ export interface WorkspacePackageConfig extends PackageConfig {
 
 export interface WorkspaceOptions {
   relative?: boolean;
-  root?: string;
+  root?: PortablePath;
 }
