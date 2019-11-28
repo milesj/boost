@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.15.0 - 2019-11-28
+
+#### 🚀 Updates
+
+- **[Tool]** Support `PortablePath` and `Path` in workspace methods. (#70) ([a444ff8](https://github.com/milesj/boost/commit/a444ff8)), closes [#70](https://github.com/milesj/boost/issues/70)
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ## 1.14.0 - 2019-11-26
 
 #### 🚀 Updates

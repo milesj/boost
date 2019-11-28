@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.5.0 - 2019-11-28
+
+#### 🚀 Updates
+
+- **[Path]** Add `equals`, `relativeTo`, `realPath`, and more. (#69) ([2f72628](https://github.com/milesj/boost/commit/2f72628)), closes [#69](https://github.com/milesj/boost/issues/69)
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 1.4.0 - 2019-11-26
 
 #### 🚀 Updates
