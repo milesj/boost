@@ -15,8 +15,19 @@ describe('PathResolver', () => {
     resolver.lookupNodeModule('bar-baz');
 
     expect(() => {
-      resolver.resolve();
+      resolver.resolvePath();
     }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('returns first resolved node module or file path', () => {
+    const cwd = getFixturePath('module-basic');
+
+    resolver.lookupFilePath('qux.js', cwd); // Doesnt exist
+    resolver.lookupNodeModule('@boost/unknown'); // Doesnt exist
+    resolver.lookupFilePath('bar.js'); // Doesnt exist at this cwd
+    resolver.lookupNodeModule('@boost/common'); // Exists
+
+    expect(resolver.resolvePath()).toEqual(new Path(require.resolve('@boost/common')));
   });
 
   describe('file system', () => {
@@ -27,7 +38,7 @@ describe('PathResolver', () => {
       resolver.lookupFilePath('bar.js', cwd); // Exists
       resolver.lookupFilePath('foo.js', cwd); // Exists
 
-      expect(resolver.resolve()).toEqual(new Path(cwd, 'bar.js'));
+      expect(resolver.resolvePath()).toEqual(new Path(cwd, 'bar.js'));
     });
 
     it('supports different cwds', () => {
@@ -37,7 +48,7 @@ describe('PathResolver', () => {
       resolver.lookupFilePath('bar.js'); // Doesnt exist at this cwd
       resolver.lookupFilePath('foo.js', cwd); // Exists
 
-      expect(resolver.resolve()).toEqual(new Path(cwd, 'foo.js'));
+      expect(resolver.resolvePath()).toEqual(new Path(cwd, 'foo.js'));
     });
 
     it('works with completely different parent folders and file extensions', () => {
@@ -47,7 +58,7 @@ describe('PathResolver', () => {
       resolver.lookupFilePath('bar.js', src); // Doesnt exist
       resolver.lookupFilePath('toArray.ts', src.append('helpers')); // Exists
 
-      expect(resolver.resolve()).toEqual(new Path(src, 'helpers/toArray.ts'));
+      expect(resolver.resolvePath()).toEqual(new Path(src, 'helpers/toArray.ts'));
     });
   });
 
@@ -57,7 +68,7 @@ describe('PathResolver', () => {
       resolver.lookupNodeModule('@boost/common'); // Exists
       resolver.lookupNodeModule('@boost/log'); // Exists
 
-      expect(resolver.resolve()).toEqual(new Path(require.resolve('@boost/common')));
+      expect(resolver.resolvePath()).toEqual(new Path(require.resolve('@boost/common')));
     });
 
     it('works with sub-paths', () => {
@@ -67,7 +78,7 @@ describe('PathResolver', () => {
       resolver.lookupNodeModule('test-module-path-resolver/bar'); // Exists (without extension)
       resolver.lookupNodeModule('test-module-path-resolver/foo.js'); // Exists
 
-      expect(resolver.resolve()).toEqual(
+      expect(resolver.resolvePath()).toEqual(
         new Path(getNodeModulePath('test-module-path-resolver', 'bar.js')),
       );
 

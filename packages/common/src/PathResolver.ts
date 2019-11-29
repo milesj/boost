@@ -1,19 +1,16 @@
 import { RuntimeError } from '@boost/internal';
-import { PortablePath } from './types';
+import { PortablePath, Lookup, LookupType } from './types';
 import Path from './Path';
-
-export enum LookupType {
-  FILE_SYSTEM = 'FILE_SYSTEM',
-  NODE_MODULE = 'NODE_MODULE',
-}
-
-export interface Lookup {
-  path: Path;
-  type: LookupType;
-}
 
 export default class PathResolver {
   private lookups: Lookup[] = [];
+
+  /**
+   * Return a list of all lookup paths.
+   */
+  getLookupPaths(): string[] {
+    return this.lookups.map(lookup => lookup.path.path());
+  }
 
   /**
    * Add a file system path to look for, resolved against the defined current
@@ -41,17 +38,24 @@ export default class PathResolver {
   }
 
   /**
-   * Given a list of lookup paths (either a file system path or a Node.js module path),
-   * attempt to find the first real/existing path and return a resolved absolute path.
+   * Given a list of lookups, attempt to find the first real/existing path and
+   * return a resolved absolute path. If a file system path, will check using `fs.exists`.
+   * If a node module path, will check using `require.resolve`.
    */
-  resolve(): Path {
+  resolve(): {
+    lookupPath: Path;
+    resolvedPath: Path;
+    type: LookupType;
+  } {
     let resolvedPath: PortablePath = '';
+    let resolvedLookup: Lookup | undefined;
 
     this.lookups.some(lookup => {
       // Check that the file exists on the file system.
       if (lookup.type === LookupType.FILE_SYSTEM) {
         if (lookup.path.exists()) {
           resolvedPath = lookup.path;
+          resolvedLookup = lookup;
         } else {
           return false;
         }
@@ -61,6 +65,7 @@ export default class PathResolver {
       } else if (lookup.type === LookupType.NODE_MODULE) {
         try {
           resolvedPath = require.resolve(lookup.path.path());
+          resolvedLookup = lookup;
         } catch (error) {
           return false;
         }
@@ -73,12 +78,23 @@ export default class PathResolver {
       return true;
     });
 
-    if (!resolvedPath) {
+    if (!resolvedPath || !resolvedLookup) {
       throw new RuntimeError('common', 'CM_PATH_RESOLVE_LOOKUPS', [
         this.lookups.map(lookup => `  - ${lookup.path} (${lookup.type})`).join('\n'),
       ]);
     }
 
-    return Path.create(resolvedPath);
+    return {
+      lookupPath: resolvedLookup.path,
+      resolvedPath: Path.create(resolvedPath),
+      type: resolvedLookup.type,
+    };
+  }
+
+  /**
+   * Like `resolve()` but only returns the resolved path.
+   */
+  resolvePath(): Path {
+    return this.resolve().resolvedPath;
   }
 }
