@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 
 export const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
 
-export function normalizePath(filePath: string) {
+export function normalizePath(filePath: string): string {
   return path.normalize(filePath).replace(/\\/gu, '/');
 }
 
@@ -11,30 +11,41 @@ export function getFixturePath(fixture: string, file: string = ''): string {
   return normalizePath(path.join(FIXTURES_DIR, fixture, file));
 }
 
-export function getNodeModulePath(fixture: string, name: string, file: string = ''): string {
-  return normalizePath(path.join(getFixturePath(fixture), `./node_modules/${name}`, file));
+export function getFixtureNodeModulePath(
+  fixture: string,
+  moduleName: string,
+  file: string = '',
+): string {
+  return normalizePath(path.join(FIXTURES_DIR, fixture, 'node_modules', moduleName, file));
 }
 
-export function copyFixtureToNodeModule(from: string, to: string, name: string): () => void {
-  const modulePath = getNodeModulePath(to, name);
+export function getNodeModulePath(moduleName: string, file: string = ''): string {
+  return normalizePath(path.join(process.cwd(), 'node_modules', moduleName, file));
+}
 
-  fs.copySync(getFixturePath(from), modulePath, { overwrite: true });
+export function copyFixtureToNodeModule(fixture: string, moduleName: string): () => void {
+  const modulePath = getNodeModulePath(moduleName);
+  const pkgPath = normalizePath(path.join(modulePath, 'package.json'));
 
-  fs.writeJsonSync(path.join(modulePath, 'package.json'), {
-    main: './index.js',
-    name,
-    version: '0.0.0',
-  });
+  fs.copySync(getFixturePath(fixture), modulePath, { overwrite: true });
+
+  if (!fs.existsSync(pkgPath)) {
+    fs.writeJsonSync(pkgPath, {
+      main: './index.js',
+      name: moduleName,
+      version: '0.0.0',
+    });
+  }
 
   return () => fs.removeSync(modulePath);
 }
 
-export function copyFixtureToMock(fixture: string, name: string): () => void {
+export function copyFixtureToMock(fixture: string, mockName: string): () => void {
   const module = require.requireActual(getFixturePath(fixture));
 
-  jest.doMock(name, () => module, { virtual: true });
+  jest.doMock(mockName, () => module, { virtual: true });
 
-  return () => jest.dontMock(name);
+  return () => jest.dontMock(mockName);
 }
 
 export function createTempFileInFixture(fixture: string, file: string, data: unknown): () => void {

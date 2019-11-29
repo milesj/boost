@@ -1,10 +1,10 @@
-import { RuntimeError } from '@boost/internal/src';
+import { RuntimeError } from '@boost/internal';
 import { PortablePath } from './types';
 import Path from './Path';
 
 export enum LookupType {
-  FILE_PATH,
-  NODE_MODULE,
+  FILE_SYSTEM = 'FILE_SYSTEM',
+  NODE_MODULE = 'NODE_MODULE',
 }
 
 export interface Lookup {
@@ -22,7 +22,7 @@ export default class PathResolver {
   lookupFilePath(filePath: PortablePath, cwd?: PortablePath): this {
     this.lookups.push({
       path: Path.resolve(filePath, cwd),
-      type: LookupType.FILE_PATH,
+      type: LookupType.FILE_SYSTEM,
     });
 
     return this;
@@ -49,7 +49,7 @@ export default class PathResolver {
 
     this.lookups.some(lookup => {
       // Check that the file exists on the file system.
-      if (LookupType.FILE_PATH) {
+      if (lookup.type === LookupType.FILE_SYSTEM) {
         if (lookup.path.exists()) {
           resolvedPath = lookup.path;
         } else {
@@ -58,10 +58,10 @@ export default class PathResolver {
 
         // Check that the module path exists using Node's module resolution.
         // The `require.resolve` function will throw an error if not found.
-      } else if (LookupType.NODE_MODULE) {
+      } else if (lookup.type === LookupType.NODE_MODULE) {
         try {
           resolvedPath = require.resolve(lookup.path.path());
-        } catch {
+        } catch (error) {
           return false;
         }
 
@@ -75,7 +75,7 @@ export default class PathResolver {
 
     if (!resolvedPath) {
       throw new RuntimeError('common', 'CM_PATH_RESOLVE_LOOKUPS', [
-        this.lookups.map(lookup => `  - ${lookup.path}`).join('\n'),
+        this.lookups.map(lookup => `  - ${lookup.path} (${lookup.type})`).join('\n'),
       ]);
     }
 

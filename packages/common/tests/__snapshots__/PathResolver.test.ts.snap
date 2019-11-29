@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PathResolver throws an error if no path is resolved 1`] = `
+"Failed to resolve a path using the following lookups (in order):
+  - foo-bar (NODE_MODULE)
+  - /Users/Miles/Projects/boost/foo/bar (FILE_SYSTEM)
+  - /Users/Miles/Projects/boost/bar/baz (FILE_SYSTEM)
+  - bar-baz (NODE_MODULE)"
+`;

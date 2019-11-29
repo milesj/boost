@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import Path from '../src/Path';
+import { Path } from '../src';
 
 describe('Path', () => {
   describe('.create()', () => {
