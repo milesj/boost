@@ -375,7 +375,13 @@ describe('ConfigLoader', () => {
       });
 
       it('supports a string and converts it to `extends`', () => {
-        fixtures.push(copyFixtureToNodeModule('preset', 'test-boost-preset'));
+        fixtures.push(
+          copyFixtureToNodeModule(
+            'preset',
+            getFixtureNodeModulePath('app', 'test-boost-preset'),
+            true,
+          ),
+        );
 
         loader.package = stubPackageJson({
           name: 'boost',
