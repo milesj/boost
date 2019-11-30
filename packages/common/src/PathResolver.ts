@@ -47,7 +47,7 @@ export default class PathResolver {
    * If a node module path, will check using `require.resolve`.
    */
   resolve(): {
-    lookupPath: Path;
+    originalPath: Path;
     resolvedPath: Path;
     type: LookupType;
   } {
@@ -89,7 +89,7 @@ export default class PathResolver {
     }
 
     return {
-      lookupPath: resolvedLookup.raw,
+      originalPath: resolvedLookup.raw,
       resolvedPath: Path.create(resolvedPath),
       type: resolvedLookup.type,
     };

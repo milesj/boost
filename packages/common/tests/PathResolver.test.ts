@@ -39,7 +39,7 @@ describe('PathResolver', () => {
       resolver.lookupFilePath('foo.js', cwd); // Exists
 
       expect(resolver.resolve()).toEqual({
-        lookupPath: new Path('bar.js'),
+        originalPath: new Path('bar.js'),
         resolvedPath: new Path(cwd, 'bar.js'),
         type: LookupType.FILE_SYSTEM,
       });
@@ -73,7 +73,7 @@ describe('PathResolver', () => {
       resolver.lookupNodeModule('@boost/log'); // Exists
 
       expect(resolver.resolve()).toEqual({
-        lookupPath: new Path('@boost/common'),
+        originalPath: new Path('@boost/common'),
         resolvedPath: new Path(require.resolve('@boost/common')),
         type: LookupType.NODE_MODULE,
       });
