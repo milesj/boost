@@ -43,7 +43,7 @@ export default class Path {
    * Returns true if both paths are equal using strict equality.
    */
   equals(filePath: PortablePath): boolean {
-    return this.path() === String(filePath);
+    return this.path() === Path.create(filePath).path();
   }
 
   /**

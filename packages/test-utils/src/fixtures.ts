@@ -1,40 +1,65 @@
 import path from 'path';
 import fs from 'fs-extra';
 
-export const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
+const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
 
-export function normalizePath(filePath: string) {
-  return path.normalize(filePath).replace(/\\/gu, '/');
+const TEMPORARY_FILES = new Set<string>();
+
+export function normalizePath(...parts: string[]): string {
+  return path.normalize(path.join(...parts)).replace(/\\/gu, '/');
 }
 
 export function getFixturePath(fixture: string, file: string = ''): string {
-  return normalizePath(path.join(FIXTURES_DIR, fixture, file));
+  return normalizePath(FIXTURES_DIR, fixture, file);
 }
 
-export function getNodeModulePath(fixture: string, name: string, file: string = ''): string {
-  return normalizePath(path.join(getFixturePath(fixture), `./node_modules/${name}`, file));
+export function getFixtureNodeModulePath(
+  fixture: string,
+  moduleName: string,
+  file: string = '',
+): string {
+  return normalizePath(FIXTURES_DIR, fixture, 'node_modules', moduleName, file);
 }
 
-export function copyFixtureToNodeModule(from: string, to: string, name: string): () => void {
-  const modulePath = getNodeModulePath(to, name);
-
-  fs.copySync(getFixturePath(from), modulePath, { overwrite: true });
-
-  fs.writeJsonSync(path.join(modulePath, 'package.json'), {
-    main: './index.js',
-    name,
-    version: '0.0.0',
-  });
-
-  return () => fs.removeSync(modulePath);
+export function getNodeModulePath(moduleName: string, file: string = ''): string {
+  return normalizePath(process.cwd(), 'node_modules', moduleName, file);
 }
 
-export function copyFixtureToMock(fixture: string, name: string): () => void {
+export function removeTempFile(filePath: string) {
+  if (fs.existsSync(filePath)) {
+    fs.removeSync(filePath);
+  }
+
+  TEMPORARY_FILES.delete(filePath);
+}
+
+export function copyFixtureToNodeModule(
+  fixture: string,
+  moduleName: string,
+  customModulePath: boolean = false,
+): () => void {
+  const modulePath = customModulePath ? normalizePath(moduleName) : getNodeModulePath(moduleName);
+  const pkgPath = normalizePath(path.join(modulePath, 'package.json'));
+
+  fs.copySync(getFixturePath(fixture), modulePath, { overwrite: true });
+
+  if (!fs.existsSync(pkgPath)) {
+    fs.writeJsonSync(pkgPath, {
+      main: './index.js',
+      name: moduleName,
+      version: '0.0.0',
+    });
+  }
+
+  return () => removeTempFile(modulePath);
+}
+
+export function copyFixtureToMock(fixture: string, mockName: string): () => void {
   const module = require.requireActual(getFixturePath(fixture));
 
-  jest.doMock(name, () => module, { virtual: true });
+  jest.doMock(mockName, () => module, { virtual: true });
 
-  return () => jest.dontMock(name);
+  return () => jest.dontMock(mockName);
 }
 
 export function createTempFileInFixture(fixture: string, file: string, data: unknown): () => void {
@@ -42,5 +67,13 @@ export function createTempFileInFixture(fixture: string, file: string, data: unk
 
   fs.writeFileSync(filePath, data);
 
-  return () => fs.removeSync(filePath);
+  return () => removeTempFile(filePath);
+}
+
+if (typeof afterAll === 'function') {
+  afterAll(() => {
+    Array.from(TEMPORARY_FILES).forEach(tempFile => {
+      removeTempFile(tempFile);
+    });
+  });
 }

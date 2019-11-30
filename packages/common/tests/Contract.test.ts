@@ -1,5 +1,4 @@
-import Contract from '../src/Contract';
-import { Predicates } from '../src';
+import { Contract, Predicates } from '../src';
 
 describe('Contract', () => {
   class OptionalProps extends Contract<{ foo?: string; bar?: number }> {

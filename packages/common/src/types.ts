@@ -16,3 +16,14 @@ export interface Optionable<T extends object = {}> {
 
   blueprint(predicates: Predicates): Blueprint<T>;
 }
+
+export enum LookupType {
+  FILE_SYSTEM = 'FILE_SYSTEM',
+  NODE_MODULE = 'NODE_MODULE',
+}
+
+export interface Lookup {
+  path: Path;
+  raw: Path;
+  type: LookupType;
+}
