@@ -5,12 +5,12 @@ const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
 
 const TEMPORARY_FILES = new Set<string>();
 
-export function normalizePath(filePath: string): string {
-  return path.normalize(filePath).replace(/\\/gu, '/');
+export function normalizePath(...parts: string[]): string {
+  return path.normalize(path.join(...parts)).replace(/\\/gu, '/');
 }
 
 export function getFixturePath(fixture: string, file: string = ''): string {
-  return normalizePath(path.join(FIXTURES_DIR, fixture, file));
+  return normalizePath(FIXTURES_DIR, fixture, file);
 }
 
 export function getFixtureNodeModulePath(
@@ -18,11 +18,11 @@ export function getFixtureNodeModulePath(
   moduleName: string,
   file: string = '',
 ): string {
-  return normalizePath(path.join(FIXTURES_DIR, fixture, 'node_modules', moduleName, file));
+  return normalizePath(FIXTURES_DIR, fixture, 'node_modules', moduleName, file);
 }
 
 export function getNodeModulePath(moduleName: string, file: string = ''): string {
-  return normalizePath(path.join(process.cwd(), 'node_modules', moduleName, file));
+  return normalizePath(process.cwd(), 'node_modules', moduleName, file);
 }
 
 export function removeTempFile(filePath: string) {

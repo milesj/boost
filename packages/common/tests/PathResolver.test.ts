@@ -1,4 +1,9 @@
-import { getFixturePath, copyFixtureToNodeModule, getNodeModulePath } from '@boost/test-utils';
+import {
+  normalizePath,
+  getFixturePath,
+  copyFixtureToNodeModule,
+  getNodeModulePath,
+} from '@boost/test-utils';
 import { PathResolver, Path, LookupType } from '../src';
 
 describe('PathResolver', () => {
@@ -14,9 +19,15 @@ describe('PathResolver', () => {
     resolver.lookupFilePath('bar/baz');
     resolver.lookupNodeModule('bar-baz');
 
+    const error = `Failed to resolve a path using the following lookups (in order):
+  - foo-bar (NODE_MODULE)
+  - ${normalizePath(process.cwd(), 'foo/bar')} (FILE_SYSTEM)
+  - ${normalizePath(process.cwd(), 'bar/baz')} (FILE_SYSTEM)
+  - bar-baz (NODE_MODULE)`;
+
     expect(() => {
       resolver.resolvePath();
-    }).toThrowErrorMatchingSnapshot();
+    }).toThrow(new Error(error));
   });
 
   it('returns first resolved node module or file path', () => {
