@@ -24,5 +24,6 @@ export enum LookupType {
 
 export interface Lookup {
   path: Path;
+  raw: Path;
   type: LookupType;
 }

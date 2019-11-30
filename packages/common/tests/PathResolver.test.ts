@@ -1,5 +1,5 @@
 import { getFixturePath, copyFixtureToNodeModule, getNodeModulePath } from '@boost/test-utils';
-import { PathResolver, Path } from '../src';
+import { PathResolver, Path, LookupType } from '../src';
 
 describe('PathResolver', () => {
   let resolver: PathResolver;
@@ -38,7 +38,11 @@ describe('PathResolver', () => {
       resolver.lookupFilePath('bar.js', cwd); // Exists
       resolver.lookupFilePath('foo.js', cwd); // Exists
 
-      expect(resolver.resolvePath()).toEqual(new Path(cwd, 'bar.js'));
+      expect(resolver.resolve()).toEqual({
+        lookupPath: new Path('bar.js'),
+        resolvedPath: new Path(cwd, 'bar.js'),
+        type: LookupType.FILE_SYSTEM,
+      });
     });
 
     it('supports different cwds', () => {
@@ -68,7 +72,11 @@ describe('PathResolver', () => {
       resolver.lookupNodeModule('@boost/common'); // Exists
       resolver.lookupNodeModule('@boost/log'); // Exists
 
-      expect(resolver.resolvePath()).toEqual(new Path(require.resolve('@boost/common')));
+      expect(resolver.resolve()).toEqual({
+        lookupPath: new Path('@boost/common'),
+        resolvedPath: new Path(require.resolve('@boost/common')),
+        type: LookupType.NODE_MODULE,
+      });
     });
 
     it('works with sub-paths', () => {

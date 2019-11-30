@@ -19,6 +19,7 @@ export default class PathResolver {
   lookupFilePath(filePath: PortablePath, cwd?: PortablePath): this {
     this.lookups.push({
       path: Path.resolve(filePath, cwd),
+      raw: Path.create(filePath),
       type: LookupType.FILE_SYSTEM,
     });
 
@@ -29,8 +30,11 @@ export default class PathResolver {
    * Add a Node.js module, either by name or relative path, to look for.
    */
   lookupNodeModule(modulePath: PortablePath): this {
+    const path = Path.create(modulePath);
+
     this.lookups.push({
-      path: Path.create(modulePath),
+      path,
+      raw: path,
       type: LookupType.NODE_MODULE,
     });
 
@@ -85,7 +89,7 @@ export default class PathResolver {
     }
 
     return {
-      lookupPath: resolvedLookup.path,
+      lookupPath: resolvedLookup.raw,
       resolvedPath: Path.create(resolvedPath),
       type: resolvedLookup.type,
     };
