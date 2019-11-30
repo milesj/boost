@@ -5,7 +5,6 @@ import {
   Constructor,
   ConcreteConstructor,
   Path,
-  PathResolver,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
@@ -49,14 +48,16 @@ export default class ModuleLoader<Tm> {
     const { appName, scoped } = this.tool.options;
 
     // Determine modules to attempt to load
-    const resolver = new PathResolver();
+    const modulesToAttempt = [];
     let isFilePath = false;
+    let importedModule: any = null;
+    let moduleName;
 
     // File path
     if (name instanceof Path || name.match(/^\.|\/|\\|[A-Z]:/u)) {
       this.debug('Locating %s from path %s', typeName, color.filePath(name));
 
-      resolver.lookupFilePath(Path.create(name));
+      modulesToAttempt.push(Path.create(name).path());
       isFilePath = true;
 
       // Module name
@@ -64,24 +65,48 @@ export default class ModuleLoader<Tm> {
       this.debug('Locating %s module %s', typeName, color.moduleName(name));
 
       if (scoped) {
-        resolver.lookupNodeModule(formatModuleName(appName, typeName, name, true));
+        modulesToAttempt.push(formatModuleName(appName, typeName, name, true));
       }
 
-      resolver.lookupNodeModule(formatModuleName(appName, typeName, name));
+      modulesToAttempt.push(formatModuleName(appName, typeName, name));
 
       // Additional scopes to load
       this.scopes.forEach(otherScope => {
-        resolver.lookupNodeModule(formatModuleName(otherScope, typeName, name, true));
-        resolver.lookupNodeModule(formatModuleName(otherScope, typeName, name));
+        modulesToAttempt.push(
+          formatModuleName(otherScope, typeName, name, true),
+          formatModuleName(otherScope, typeName, name),
+        );
       });
 
-      this.debug('Resolving in order: %s', resolver.getLookupPaths().join(', '));
+      this.debug('Resolving in order: %s', modulesToAttempt.join(', '));
     }
 
-    // Attempt to resolve and load
-    const result = resolver.resolve();
-    const moduleName = result.lookupPath.path();
-    const importedModule = requireModule<Tm>(result.resolvedPath);
+    modulesToAttempt.some(modName => {
+      try {
+        importedModule = requireModule(modName);
+        moduleName = modName;
+
+        return true;
+      } catch (error) {
+        if (error.message.startsWith(`Cannot find module '${modName}'`)) {
+          this.debug('Failed to import module: %s', error.message);
+
+          return false;
+        }
+
+        // Unknown error occurred, abort process
+        throw error;
+      }
+    });
+
+    if (!importedModule || !moduleName) {
+      throw new Error(
+        this.tool.msg('errors:moduleImportFailed', {
+          modules: modulesToAttempt.join(', '),
+          typeName,
+        }),
+      );
+    }
 
     if (!this.contract) {
       return importedModule;
