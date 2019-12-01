@@ -1,5 +1,5 @@
 export interface Pluggable<T = unknown> {
-  bootstrap(tool: T): void;
+  bootstrap?: (tool: T) => void;
 }
 
 export interface PluginType<T extends Pluggable> {
@@ -10,4 +10,6 @@ export interface PluginType<T extends Pluggable> {
   validate: (plugin: T) => void;
 }
 
-export type PluginSetting<T extends Pluggable> = string | { [key: string]: unknown } | T;
+export type PluginSetting<T extends Pluggable> = string | [string, object] | T;
+
+export type Factory<T extends Pluggable, O extends object> = (options: Partial<O>) => T;

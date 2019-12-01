@@ -1,22 +1,29 @@
+import kebabCase from 'lodash/kebabCase';
 import pluralize from 'pluralize';
-import { instanceOf, isObject } from '@boost/common';
+import { instanceOf } from '@boost/common';
 import { createDebugger } from '@boost/debug';
-import { RuntimeError } from '@boost/internal';
+import { RuntimeError, color } from '@boost/internal';
 import Loader from './Loader';
 import { PluginType, PluginSetting, Pluggable } from './types';
 
-export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
+export default class Registry<Types extends { [type: string]: Pluggable }> {
   readonly debug = createDebugger('plugin-registry');
 
   private plugins: { [K in keyof Types]?: Set<Types[K]> } = {};
 
+  private toolName: string;
+
   private types: { [K in keyof Types]?: PluginType<Types[K]> } = {};
+
+  constructor(toolName: string) {
+    this.toolName = kebabCase(toolName);
+  }
 
   /**
    * Return a plugin loader for the defined type.
    */
   createLoader<K extends keyof Types>(typeName: K): Loader<Types[K]> {
-    return new Loader(this.getRegisteredType(typeName));
+    return new Loader(this.getRegisteredType(typeName), this.toolName);
   }
 
   /**
@@ -76,34 +83,22 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
     name: string,
     setting: PluginSetting<Types[K]>[],
   ): boolean {
-    const type = this.getRegisteredType(typeName);
-
     if (!setting || !Array.isArray(setting)) {
       return false;
     }
+
+    // TODO search in loaded plugins list
 
     return setting.some(value => {
       if (typeof value === 'string' && value === name) {
         return true;
       }
 
-      if (
-        isObject<{ [key: string]: string }>(value) &&
-        value[type.singularName] &&
-        value[type.singularName] === name
-      ) {
+      if (Array.isArray(value) && value[0] === name) {
         return true;
       }
 
-      // if (
-      //   type.declaration &&
-      //   instanceOf<Pluggable<{}>>(value, type.declaration) &&
-      //   value.name === name
-      // ) {
-      //   return true;
-      // }
-
-      return false;
+      return value === name;
     });
   }
 
@@ -122,7 +117,7 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
     const name = String(typeName);
     const { afterBootstrap, beforeBootstrap, validate } = options;
 
-    this.debug('Registering new plugin type: %s', name);
+    this.debug('Registering new plugin type: %s', color.pluginName(name));
 
     this.plugins[typeName] = new Set();
 

@@ -1,14 +1,12 @@
 export default function formatModuleName(
-  baseName: string,
-  pluginType: string,
-  name: string,
+  toolName: string,
+  typeName: string,
+  moduleName: string,
   scoped: boolean = false,
 ): string {
-  const moduleName = name.toLowerCase().replace(`${pluginType}:`, '');
-
   if (scoped) {
-    return `@${baseName}/${pluginType}-${moduleName}`;
+    return `@${toolName}/${typeName}-${moduleName}`;
   }
 
-  return `${baseName}-${pluginType}-${moduleName}`;
+  return `${toolName}-${typeName}-${moduleName}`;
 }
