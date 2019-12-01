@@ -1,8 +1,8 @@
 import { PathResolver, isObject, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import { PluginType, Pluggable, PluginSetting, Factory } from './types';
-import { MODULE_NAME_PATTERN } from './constants';
+import { PluginType, Pluggable, PluginSetting, Factory, LoadResult, ExplicitPlugin } from './types';
+import { MODULE_NAME_PATTERN, DEFAULT_PRIORITY } from './constants';
 import formatModuleName from './formatModuleName';
 
 export default class Loader<Plugin extends Pluggable> {
@@ -107,8 +107,12 @@ export default class Loader<Plugin extends Pluggable> {
   /**
    * Load a plugin by name or fully qualified module name, with an optional options object.
    */
-  load(name: string, options?: object): Plugin {
-    const resolvedPath = this.createResolver(name).resolvePath();
+  load(
+    name: string,
+    options: object = {},
+    priority: number = DEFAULT_PRIORITY,
+  ): LoadResult<Plugin> {
+    const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
     this.debug(
       'Loading %s "%s" from %s',
@@ -125,7 +129,13 @@ export default class Loader<Plugin extends Pluggable> {
       );
     }
 
-    return this.checkPlugin(factory(options || {}));
+    const plugin = this.checkPlugin(factory(options));
+
+    return {
+      name: originalPath.path(),
+      plugin,
+      priority,
+    };
   }
 
   /**
@@ -136,20 +146,28 @@ export default class Loader<Plugin extends Pluggable> {
    *    and the 2nd item an options object that will be passed to the factory function.
    * - If an object or class instance, will assume to be the plugin itself.
    */
-  loadFromSettings(settings: PluginSetting<Plugin>[]): Plugin[] {
+  loadFromSettings(settings: PluginSetting<Plugin>[]): LoadResult<Plugin>[] {
     return settings.map(setting => {
       if (typeof setting === 'string') {
         return this.load(setting);
       }
 
       if (Array.isArray(setting)) {
-        const [name, options = {}] = setting;
+        const [name, options, priority] = setting;
 
-        return this.load(name, options);
+        return this.load(name, options, priority);
       }
 
-      if (isObject(setting)) {
-        return this.checkPlugin(setting);
+      if (isObject<ExplicitPlugin>(setting)) {
+        if (setting.name) {
+          return {
+            name: setting.name,
+            plugin: this.checkPlugin(setting),
+            priority: setting.priority || DEFAULT_PRIORITY,
+          };
+        }
+
+        throw new Error('Plugin object or class instance found without a `name` property.');
       }
 
       throw new Error(`Unknown plugin setting: ${setting}`);

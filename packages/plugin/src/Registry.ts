@@ -1,6 +1,6 @@
 import kebabCase from 'lodash/kebabCase';
 import pluralize from 'pluralize';
-import { instanceOf } from '@boost/common';
+import { instanceOf, isObject } from '@boost/common';
 import { createDebugger } from '@boost/debug';
 import { RuntimeError, color } from '@boost/internal';
 import Loader from './Loader';
@@ -70,35 +70,38 @@ export default class Registry<Types extends { [type: string]: Pluggable }> {
   }
 
   /**
-   * Return true if a plugin by type has been enabled, by comparing it to a setting.
+   * Return true if a plugin by type has been enabled within a list of settings.
    * The setting is commonly loaded from a config file, and is a list of all plugin options.
    * The following setting variants are supported:
    *
    * - As a string using the plugins name: "foo"
-   * - As an object with a property of plugin type: { plugin: "foo" }
-   * - As an instance of the plugin class: new FooPlugin()
+   * - As an array with the name as the 1st item: ["foo", {}]
+   * - As an instance of the plugin class with a name property: new FooPlugin().name = "foo"
+   * - As an object with a name property: { "name": "foo" }
    */
   isPluginEnabled<K extends keyof Types>(
     typeName: K,
     name: string,
-    setting: PluginSetting<Types[K]>[],
+    settings: PluginSetting<Types[K]>[],
   ): boolean {
-    if (!setting || !Array.isArray(setting)) {
+    if (!settings || !Array.isArray(settings)) {
       return false;
     }
 
-    // TODO search in loaded plugins list
-
-    return setting.some(value => {
-      if (typeof value === 'string' && value === name) {
+    return settings.some(setting => {
+      if (typeof setting === 'string' && setting === name) {
         return true;
       }
 
-      if (Array.isArray(value) && value[0] === name) {
+      if (Array.isArray(setting) && setting[0] === name) {
         return true;
       }
 
-      return value === name;
+      if (isObject<{ name: string }>(setting) && setting.name === name) {
+        return true;
+      }
+
+      return false;
     });
   }
 
