@@ -1,5 +1,5 @@
 import pluralize from 'pluralize';
-import { instanceOf } from '@boost/common';
+import { instanceOf, isObject } from '@boost/common';
 import { createDebugger } from '@boost/debug';
 import { RuntimeError } from '@boost/internal';
 import Loader from './Loader';
@@ -68,8 +68,8 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
    * The following setting variants are supported:
    *
    * - As a string using the plugins name: "foo"
-   * - As an object with a property by plugin type: { plugin: "foo" }
-   * - As an instance of the plugin class: new Plugin()
+   * - As an object with a property of plugin type: { plugin: "foo" }
+   * - As an instance of the plugin class: new FooPlugin()
    */
   isPluginEnabled<K extends keyof Types>(
     typeName: K,
@@ -88,16 +88,20 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
       }
 
       if (
-        typeof value === 'object' &&
+        isObject<{ [key: string]: string }>(value) &&
         value[type.singularName] &&
         value[type.singularName] === name
       ) {
         return true;
       }
 
-      if (instanceOf<Pluggable<{}>>(value, type.declaration) && value.name === name) {
-        return true;
-      }
+      // if (
+      //   type.declaration &&
+      //   instanceOf<Pluggable<{}>>(value, type.declaration) &&
+      //   value.name === name
+      // ) {
+      //   return true;
+      // }
 
       return false;
     });
@@ -109,16 +113,14 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
    */
   registerType<K extends keyof Types>(
     typeName: K,
-    options: Partial<
-      Pick<PluginType<Types[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'declaration'>
-    > = {},
+    options: Pick<PluginType<Types[K]>, 'afterBootstrap' | 'beforeBootstrap' | 'validate'>,
   ): this {
     if (this.types[typeName]) {
       throw new RuntimeError('plugin', 'PG_EXISTS_TYPE', [typeName]);
     }
 
     const name = String(typeName);
-    const { afterBootstrap = null, beforeBootstrap = null, declaration = null } = options;
+    const { afterBootstrap, beforeBootstrap, validate } = options;
 
     this.debug('Registering new plugin type: %s', name);
 
@@ -127,9 +129,9 @@ export default class Registry<Types extends { [type: string]: Pluggable<{}> }> {
     this.types[typeName] = {
       afterBootstrap,
       beforeBootstrap,
-      declaration,
       pluralName: pluralize(name),
       singularName: name,
+      validate,
     };
 
     return this;
