@@ -1,7 +1,7 @@
 import { PathResolver, isObject, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import { PluginType, Pluggable, PluginSetting, Factory, LoadResult, ExplicitPlugin } from './types';
+import { PluginType, Pluggable, Setting, Factory, LoadResult, ExplicitPlugin } from './types';
 import { MODULE_NAME_PATTERN, DEFAULT_PRIORITY } from './constants';
 import formatModuleName from './formatModuleName';
 
@@ -43,6 +43,7 @@ export default class Loader<Plugin extends Pluggable> {
     const typeName = this.type.singularName;
     const moduleName = name.toLowerCase();
     const modulePattern = MODULE_NAME_PATTERN.source;
+    const isNotToolOrType = !moduleName.includes(toolName) && !moduleName.includes(typeName);
 
     this.debug('Resolving possible %s modules', color.pluginName(typeName));
 
@@ -70,6 +71,22 @@ export default class Loader<Plugin extends Pluggable> {
 
       resolver.lookupNodeModule(moduleName);
 
+      // @scope/name
+    } else if (
+      moduleName.match(new RegExp(`^@${modulePattern}/${modulePattern}$`, 'u')) &&
+      isNotToolOrType
+    ) {
+      const [scope, customName] = moduleName.split('/');
+      const customModuleName = `${scope}/${toolName}-${typeName}-${customName}`;
+
+      this.debug(
+        'Found an explicit shorthand %s module with custom scope: %s',
+        color.pluginName(typeName),
+        color.moduleName(moduleName),
+      );
+
+      resolver.lookupNodeModule(customModuleName);
+
       // tool-plugin-name
     } else if (moduleName.match(new RegExp(`^${toolName}-${typeName}-${modulePattern}$`, 'u'))) {
       this.debug(
@@ -81,11 +98,7 @@ export default class Loader<Plugin extends Pluggable> {
       resolver.lookupNodeModule(moduleName);
 
       // The previous 2 patterns if only name provided
-    } else if (
-      moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) &&
-      !moduleName.includes(toolName) &&
-      !moduleName.includes(typeName)
-    ) {
+    } else if (moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) && isNotToolOrType) {
       this.debug(
         'Resolving %s modules against internal "%s" scope and public "%s" prefix',
         color.pluginName(typeName),
@@ -105,7 +118,8 @@ export default class Loader<Plugin extends Pluggable> {
   }
 
   /**
-   * Load a plugin by name or fully qualified module name, with an optional options object.
+   * Load a plugin by short name or fully qualified module name, with an optional options object
+   * and sort priority.
    */
   load(
     name: string,
@@ -146,7 +160,7 @@ export default class Loader<Plugin extends Pluggable> {
    *    and the 2nd item an options object that will be passed to the factory function.
    * - If an object or class instance, will assume to be the plugin itself.
    */
-  loadFromSettings(settings: PluginSetting<Plugin>[]): LoadResult<Plugin>[] {
+  loadFromSettings(settings: Setting<Plugin>[]): LoadResult<Plugin>[] {
     return settings.map(setting => {
       if (typeof setting === 'string') {
         return this.load(setting);

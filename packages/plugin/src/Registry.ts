@@ -1,15 +1,15 @@
 import kebabCase from 'lodash/kebabCase';
 import pluralize from 'pluralize';
-import { instanceOf, isObject } from '@boost/common';
 import { createDebugger } from '@boost/debug';
 import { RuntimeError, color } from '@boost/internal';
 import Loader from './Loader';
-import { PluginType, PluginSetting, Pluggable } from './types';
+import { PluginType, Pluggable, LoadResult } from './types';
+import formatModuleName from './formatModuleName';
 
 export default class Registry<Types extends { [type: string]: Pluggable }> {
   readonly debug = createDebugger('plugin-registry');
 
-  private plugins: { [K in keyof Types]?: Set<Types[K]> } = {};
+  private plugins: { [K in keyof Types]?: LoadResult<Types[K]>[] } = {};
 
   private toolName: string;
 
@@ -30,10 +30,16 @@ export default class Registry<Types extends { [type: string]: Pluggable }> {
    * Return a plugin by name and type.
    */
   getPlugin<K extends keyof Types>(typeName: K, name: string): Types[K] {
-    const plugin = this.getPlugins(typeName).find(p => instanceOf(p, Plugin) && p.name === name);
+    const type = this.getRegisteredType(typeName);
+    const publicModule = formatModuleName(this.toolName, type.singularName, name);
+    const internalModule = formatModuleName(this.toolName, type.singularName, name, true);
+    const plugin = this.getPluginsByType(typeName).find(
+      result =>
+        result.name === name || result.name === publicModule || result.name === internalModule,
+    );
 
     if (plugin) {
-      return plugin;
+      return plugin.plugin;
     }
 
     throw new RuntimeError('plugin', 'PG_MISSING_PLUGIN', [typeName, name]);
@@ -43,10 +49,7 @@ export default class Registry<Types extends { [type: string]: Pluggable }> {
    * Return all plugins by type.
    */
   getPlugins<K extends keyof Types>(typeName: K): Types[K][] {
-    // Trigger type check
-    this.getRegisteredType(typeName);
-
-    return Array.from(this.plugins[typeName]!);
+    return this.getPluginsByType(typeName).map(result => result.plugin);
   }
 
   /**
@@ -70,39 +73,10 @@ export default class Registry<Types extends { [type: string]: Pluggable }> {
   }
 
   /**
-   * Return true if a plugin by type has been enabled within a list of settings.
-   * The setting is commonly loaded from a config file, and is a list of all plugin options.
-   * The following setting variants are supported:
-   *
-   * - As a string using the plugins name: "foo"
-   * - As an array with the name as the 1st item: ["foo", {}]
-   * - As an instance of the plugin class with a name property: new FooPlugin().name = "foo"
-   * - As an object with a name property: { "name": "foo" }
+   * Return true if a plugin by type has been loaded and enabled.
    */
-  isPluginEnabled<K extends keyof Types>(
-    typeName: K,
-    name: string,
-    settings: PluginSetting<Types[K]>[],
-  ): boolean {
-    if (!settings || !Array.isArray(settings)) {
-      return false;
-    }
-
-    return settings.some(setting => {
-      if (typeof setting === 'string' && setting === name) {
-        return true;
-      }
-
-      if (Array.isArray(setting) && setting[0] === name) {
-        return true;
-      }
-
-      if (isObject<{ name: string }>(setting) && setting.name === name) {
-        return true;
-      }
-
-      return false;
-    });
+  isPluginLoaded<K extends keyof Types>(typeName: K, name: string): boolean {
+    return !!this.getPlugin(typeName, name);
   }
 
   /**
@@ -122,7 +96,7 @@ export default class Registry<Types extends { [type: string]: Pluggable }> {
 
     this.debug('Registering new plugin type: %s', color.pluginName(name));
 
-    this.plugins[typeName] = new Set();
+    this.plugins[typeName] = [];
 
     this.types[typeName] = {
       afterBootstrap,
@@ -133,5 +107,15 @@ export default class Registry<Types extends { [type: string]: Pluggable }> {
     };
 
     return this;
+  }
+
+  /**
+   * Return a list of plugin results by type.
+   */
+  protected getPluginsByType<K extends keyof Types>(typeName: K) /* infer */ {
+    // Trigger type check
+    this.getRegisteredType(typeName);
+
+    return Array.from(this.plugins[typeName]!);
   }
 }

@@ -15,7 +15,7 @@ export interface PluginType<T extends Pluggable> {
   validate: (plugin: T) => void;
 }
 
-export type PluginSetting<T extends Pluggable> =
+export type Setting<T extends Pluggable> =
   | string
   | [string, object, number?]
   | (T & ExplicitPlugin);
