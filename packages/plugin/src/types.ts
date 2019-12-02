@@ -1,5 +1,6 @@
 export interface Pluggable<T = unknown> {
-  bootstrap?: (tool: T) => void;
+  shutdown?: () => void;
+  startup?: (tool: T) => void;
 }
 
 export interface ExplicitPlugin {
@@ -7,12 +8,14 @@ export interface ExplicitPlugin {
   priority?: number;
 }
 
-export interface PluginType<T extends Pluggable> {
-  afterBootstrap?: (plugin: T) => void;
-  beforeBootstrap?: (plugin: T) => void;
-  pluralName: string;
-  singularName: string;
-  validate: (plugin: T) => void;
+export type Callback<T> = (plugin: T) => void;
+
+export interface ManagerOptions<T extends Pluggable> {
+  afterShutdown?: Callback<T>;
+  afterStartup?: Callback<T>;
+  beforeShutdown?: Callback<T>;
+  beforeStartup?: Callback<T>;
+  validate: Callback<T>;
 }
 
 export type Setting<T extends Pluggable> =
@@ -20,7 +23,7 @@ export type Setting<T extends Pluggable> =
   | [string, object, number?]
   | (T & ExplicitPlugin);
 
-export type Factory<T extends Pluggable, O extends object> = (options: Partial<O>) => T;
+export type Factory<T extends Pluggable, O extends object = object> = (options: Partial<O>) => T;
 
 export interface LoadResult<T extends Pluggable> {
   name: string;

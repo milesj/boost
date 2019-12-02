@@ -3,11 +3,10 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Loader from './Loader';
+import Manager from './Manager';
 import Plugin from './Plugin';
-import Registry from './Registry';
 
 export * from './constants';
 export * from './types';
 
-export { Loader, Plugin, Registry };
+export { Manager, Plugin };

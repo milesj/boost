@@ -1,36 +1,18 @@
 import { PathResolver, isObject, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import { PluginType, Pluggable, Setting, Factory, LoadResult, ExplicitPlugin } from './types';
+import { Pluggable, Setting, Factory, LoadResult, ExplicitPlugin } from './types';
 import { MODULE_NAME_PATTERN, DEFAULT_PRIORITY } from './constants';
-import formatModuleName from './formatModuleName';
+import Manager from './Manager';
 
 export default class Loader<Plugin extends Pluggable> {
   readonly debug: Debugger;
 
-  readonly type: PluginType<Plugin>;
+  private manager: Manager<Plugin>;
 
-  private toolName: string;
-
-  constructor(type: PluginType<Plugin>, toolName: string) {
-    this.type = type;
-    this.toolName = toolName;
-    this.debug = createDebugger(`${type.singularName}-loader`);
-  }
-
-  /**
-   * Check and verify that the plugin and its structure is accurate.
-   */
-  checkPlugin(plugin: Plugin): Plugin {
-    if (!isObject(plugin)) {
-      throw new TypeError(
-        `Expected an object or class instance from the plugin factory function, found ${typeof plugin}.`,
-      );
-    }
-
-    this.type.validate(plugin);
-
-    return plugin;
+  constructor(manager: Manager<Plugin>) {
+    this.manager = manager;
+    this.debug = createDebugger([manager.singularName, 'loader']);
   }
 
   /**
@@ -39,8 +21,7 @@ export default class Loader<Plugin extends Pluggable> {
    */
   createResolver(name: string): PathResolver {
     const resolver = new PathResolver();
-    const { toolName } = this;
-    const typeName = this.type.singularName;
+    const { singularName: typeName, toolName } = this.manager;
     const moduleName = name.toLowerCase();
     const modulePattern = MODULE_NAME_PATTERN.source;
     const isNotToolOrType = !moduleName.includes(toolName) && !moduleName.includes(typeName);
@@ -106,8 +87,9 @@ export default class Loader<Plugin extends Pluggable> {
         color.toolName(toolName),
       );
 
-      resolver.lookupNodeModule(formatModuleName(toolName, typeName, moduleName, true));
-      resolver.lookupNodeModule(formatModuleName(toolName, typeName, moduleName));
+      // Detect internal scopes before public ones
+      resolver.lookupNodeModule(this.manager.formatModuleName(moduleName, true));
+      resolver.lookupNodeModule(this.manager.formatModuleName(moduleName));
 
       // Unknown plugin module pattern
     } else {
@@ -130,12 +112,12 @@ export default class Loader<Plugin extends Pluggable> {
 
     this.debug(
       'Loading %s "%s" from %s',
-      color.pluginName(this.type.singularName),
+      color.pluginName(this.manager.singularName),
       name,
       color.filePath(resolvedPath),
     );
 
-    const factory: Factory<Plugin, object> = requireModule(resolvedPath);
+    const factory: Factory<Plugin> = requireModule(resolvedPath);
 
     if (typeof factory !== 'function') {
       throw new TypeError(
@@ -143,11 +125,9 @@ export default class Loader<Plugin extends Pluggable> {
       );
     }
 
-    const plugin = this.checkPlugin(factory(options));
-
     return {
       name: originalPath.path(),
-      plugin,
+      plugin: factory(options),
       priority,
     };
   }
@@ -176,7 +156,7 @@ export default class Loader<Plugin extends Pluggable> {
         if (setting.name) {
           return {
             name: setting.name,
-            plugin: this.checkPlugin(setting),
+            plugin: setting,
             priority: setting.priority || DEFAULT_PRIORITY,
           };
         }
