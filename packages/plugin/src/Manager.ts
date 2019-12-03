@@ -1,10 +1,10 @@
 import { Contract, Predicates, isObject } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
-import { RuntimeError } from '@boost/internal';
+import { RuntimeError, color } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
 import Loader from './Loader';
-import { ManagerOptions, Pluggable, Certificate } from './types';
+import { ManagerOptions, Pluggable, Certificate, Setting } from './types';
 
 export default class Manager<Plugin extends Pluggable, Tool = unknown> extends Contract<
   ManagerOptions<Plugin>
@@ -29,6 +29,8 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
     this.pluralName = pluralize(this.singularName);
     this.debug = createDebugger([this.singularName, 'manager']);
     this.loader = new Loader(this);
+
+    this.debug('Creating new plugin type: %s', color.pluginName(name));
   }
 
   blueprint({ func }: Predicates) {
@@ -49,10 +51,10 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
    */
   formatModuleName(name: string, scoped: boolean = false): string {
     if (scoped) {
-      return `@${this.toolName}/${this.singularName}-${name}`;
+      return `@${this.toolName}/${this.singularName}-${name.toLowerCase()}`;
     }
 
-    return `${this.toolName}-${this.singularName}-${name}`;
+    return `${this.toolName}-${this.singularName}-${name.toLowerCase()}`;
   }
 
   /**
@@ -77,6 +79,46 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
     plugins.sort((a, b) => a.priority - b.priority);
 
     return plugins.map(cert => cert.plugin);
+  }
+
+  load(name: string, options?: object, priority?: number): Plugin {
+    const cert = this.loader.load(name, options, priority);
+  }
+
+  /**
+   * Load multiple plugins based on a list of settings. The possible setting variants are:
+   *
+   * - If a string, will load based on Node module name.
+   * - If an array of 2 items, the 1st item will be considered the Node module name,
+   *    and the 2nd item an options object that will be passed to the factory function.
+   * - If an object or class instance, will assume to be the plugin itself.
+   */
+  loadFromSettings(settings: Setting<Plugin>[]): Certificate<Plugin>[] {
+    return settings.map(setting => {
+      if (typeof setting === 'string') {
+        return this.load(setting);
+      }
+
+      if (Array.isArray(setting)) {
+        const [name, options, priority] = setting;
+
+        return this.load(name, options, priority);
+      }
+
+      if (isObject<Pluggable>(setting)) {
+        if (setting.name) {
+          return {
+            name: setting.name,
+            plugin: setting,
+            priority: setting.priority || DEFAULT_PRIORITY,
+          };
+        }
+
+        throw new Error('Plugin object or class instance found without a `name` property.');
+      }
+
+      throw new Error(`Unknown plugin setting: ${setting}`);
+    });
   }
 
   /**

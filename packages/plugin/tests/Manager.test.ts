@@ -14,6 +14,24 @@ describe('Manager', () => {
     expect(manager.pluralName).toBe('renderers');
   });
 
+  describe('formatModuleName()', () => {
+    it('allows a custom name', () => {
+      expect(manager.formatModuleName('bar')).toBe('boost-test-renderer-bar');
+    });
+
+    it('lowercases plugin name', () => {
+      expect(manager.formatModuleName('BAR')).toBe('boost-test-renderer-bar');
+    });
+
+    it('supports dashes', () => {
+      expect(manager.formatModuleName('bar-baz')).toBe('boost-test-renderer-bar-baz');
+    });
+
+    it('supports scoped', () => {
+      expect(manager.formatModuleName('bar', true)).toBe('@boost-test/renderer-bar');
+    });
+  });
+
   describe('isRegistered()', () => {
     it('returns false if plugin not found', () => {
       expect(manager.isRegistered('foo')).toBe(false);

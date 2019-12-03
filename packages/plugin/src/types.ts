@@ -1,3 +1,5 @@
+export type ModuleName = string;
+
 export interface Pluggable<T = unknown> {
   name: string;
   priority?: number;
