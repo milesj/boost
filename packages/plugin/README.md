@@ -31,6 +31,7 @@ yarn add @boost/plugin
 | [Parcel asset][parcel-asset]   | Class that extends `Asset`                     | Constructor                            | parcel-asset-foo, @parcel/asset-foo                                   |                  |
 | [Parcel plugin][parcel-plugin] | Function that binds events                     | N/A                                    | parcel-plugin-foo, @parcel/plugin-foo                                 |                  |
 | [Prettier][prettier]           | Named exports                                  | N/A                                    | prettier-plugin-foo, @prettier/plugin-foo, @scope/prettier-plugin-foo |                  |
+| [Rollup][rollup]               | Function that returns an object                | Function argument                      | rollup-plugin-foo                                                     | Many             |
 | [Webpack][webpack]             | Stand-alone class                              | Constructor (implementation dependent) | N/A                                                                   | apply()          |
 | [Yarn][yarn]                   | Object with `factory()` that returns an object | N/A                                    | N/A                                                                   | factory()        |
 
@@ -41,5 +42,6 @@ yarn add @boost/plugin
 [parcel-asset]: https://parceljs.org/asset_types.html
 [parcel-plugin]: https://parceljs.org/plugins.html
 [prettier]: https://prettier.io/docs/en/plugins.html
+[rollup]: https://rollupjs.org/guide/en/#plugins-overview
 [webpack]: https://webpack.js.org/contribute/writing-a-plugin/
 [yarn]: https://next.yarnpkg.com/advanced/plugin-tutorial

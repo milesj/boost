@@ -1,5 +1,5 @@
 export interface Pluggable<T = unknown> {
-  name?: string;
+  name: string;
   priority?: number;
   shutdown?: (tool: T) => void;
   startup?: (tool: T) => void;
@@ -15,10 +15,7 @@ export interface ManagerOptions<T extends Pluggable> {
   validate: Callback<T>;
 }
 
-export type Setting<T extends Pluggable> =
-  | string
-  | [string, object, number?]
-  | (T & { name: string });
+export type Setting<T extends Pluggable> = string | [string, object, number?] | T;
 
 export type Factory<T extends Pluggable, O extends object = object> = (options: Partial<O>) => T;
 
