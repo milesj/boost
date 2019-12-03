@@ -1,7 +1,7 @@
 import { PathResolver, isObject, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import { Pluggable, Setting, Factory, LoadResult, ExplicitPlugin } from './types';
+import { Pluggable, Setting, Factory, Certificate } from './types';
 import { MODULE_NAME_PATTERN, DEFAULT_PRIORITY } from './constants';
 import Manager from './Manager';
 
@@ -61,7 +61,7 @@ export default class Loader<Plugin extends Pluggable> {
       const customModuleName = `${scope}/${toolName}-${typeName}-${customName}`;
 
       this.debug(
-        'Found an explicit shorthand %s module with custom scope: %s',
+        'Found a shorthand %s module with custom scope: %s',
         color.pluginName(typeName),
         color.moduleName(moduleName),
       );
@@ -107,7 +107,7 @@ export default class Loader<Plugin extends Pluggable> {
     name: string,
     options: object = {},
     priority: number = DEFAULT_PRIORITY,
-  ): LoadResult<Plugin> {
+  ): Certificate<Plugin> {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
     this.debug(
@@ -140,7 +140,7 @@ export default class Loader<Plugin extends Pluggable> {
    *    and the 2nd item an options object that will be passed to the factory function.
    * - If an object or class instance, will assume to be the plugin itself.
    */
-  loadFromSettings(settings: Setting<Plugin>[]): LoadResult<Plugin>[] {
+  loadFromSettings(settings: Setting<Plugin>[]): Certificate<Plugin>[] {
     return settings.map(setting => {
       if (typeof setting === 'string') {
         return this.load(setting);
@@ -152,7 +152,7 @@ export default class Loader<Plugin extends Pluggable> {
         return this.load(name, options, priority);
       }
 
-      if (isObject<ExplicitPlugin>(setting)) {
+      if (isObject<Pluggable>(setting)) {
         if (setting.name) {
           return {
             name: setting.name,

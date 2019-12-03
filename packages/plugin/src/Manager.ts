@@ -4,7 +4,7 @@ import { RuntimeError } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
 import Loader from './Loader';
-import { ManagerOptions, Pluggable, LoadResult } from './types';
+import { ManagerOptions, Pluggable, Certificate } from './types';
 
 export default class Manager<Plugin extends Pluggable, Tool = unknown> extends Contract<
   ManagerOptions<Plugin>
@@ -19,7 +19,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
 
   private loader: Loader<Plugin>;
 
-  private plugins: LoadResult<Plugin>[] = [];
+  private plugins: Certificate<Plugin>[] = [];
 
   constructor(toolName: string, typeName: string, options: ManagerOptions<Plugin>) {
     super(options);
@@ -33,44 +33,14 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
 
   blueprint({ func }: Predicates) {
     return {
-      afterShutdown: func().nullable(),
-      afterStartup: func().nullable(),
-      beforeShutdown: func().nullable(),
-      beforeStartup: func().nullable(),
-      validate: func(),
-      // eslint-disable-next-line
-    } as any;
-  }
-
-  /**
-   * Manually add a plugin and trigger startup with the provided tool.
-   */
-  addPlugin(result: LoadResult<Plugin>, tool: Tool): this {
-    const { name, plugin } = result;
-
-    if (!name) {
-      throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
-    }
-
-    if (!isObject(plugin)) {
-      throw new TypeError(
-        `Expected an object or class instance for the ${
-          this.singularName
-        }, found ${typeof plugin}.`,
-      );
-    }
-
-    this.debug('Validating plugin "%s"', name);
-
-    this.options.validate(plugin);
-
-    this.debug('Adding plugin "%s" with defined tool and triggering startup', name);
-
-    this.triggerStartup(plugin, tool);
-
-    this.plugins.push(result);
-
-    return this;
+      afterShutdown: func(),
+      afterStartup: func(),
+      beforeShutdown: func(),
+      beforeStartup: func(),
+      validate: func()
+        .notNullable()
+        .required(),
+    };
   }
 
   /**
@@ -88,8 +58,8 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Return a single plugin by module name.
    */
-  getPlugin(name: string): Plugin {
-    const plugin = this.plugins.find(result => this.isMatchingName(result, name));
+  get(name: string): Plugin {
+    const plugin = this.plugins.find(cert => this.isMatchingName(cert, name));
 
     if (plugin) {
       return plugin.plugin;
@@ -101,32 +71,67 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Return all plugins sorted by priority.
    */
-  getPlugins(): Plugin[] {
+  getAll(): Plugin[] {
     const plugins = [...this.plugins];
 
     plugins.sort((a, b) => a.priority - b.priority);
 
-    return plugins.map(result => result.plugin);
+    return plugins.map(cert => cert.plugin);
   }
 
   /**
-   * Return true if a plugin has been loaded and added.
+   * Return true if a plugin has been loaded and registered.
    */
-  isPluginLoaded(name: string): boolean {
-    return !!this.getPlugin(name);
+  isRegistered(name: string): boolean {
+    try {
+      this.get(name);
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
-   * Remove a plugin by name and trigger shutdown process.
+   * Register a plugin and trigger startup with the provided tool.
    */
-  removePlugin(name: string): this {
-    const plugin = this.getPlugin(name);
+  register(cert: Certificate<Plugin>, tool: Tool): this {
+    const { name, plugin } = cert;
 
-    this.debug('Removing plugin "%s" and triggering shutdown', name);
+    if (!name) {
+      throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
+    } else if (!isObject(plugin)) {
+      throw new TypeError(
+        `Expected an object or class instance for the ${
+          this.singularName
+        }, found ${typeof plugin}.`,
+      );
+    }
 
-    this.triggerShutdown(plugin);
+    this.debug('Validating plugin "%s"', name);
 
-    this.plugins = this.plugins.filter(result => !this.isMatchingName(result, name));
+    this.options.validate(plugin);
+
+    this.debug('Registering plugin "%s" with defined tool and triggering startup', name);
+
+    this.triggerStartup(plugin, tool);
+
+    this.plugins.push(cert);
+
+    return this;
+  }
+
+  /**
+   * Unregister a plugin by name and trigger shutdown process.
+   */
+  unregister(name: string, tool: Tool): this {
+    const plugin = this.get(name);
+
+    this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
+
+    this.triggerShutdown(plugin, tool);
+
+    this.plugins = this.plugins.filter(cert => !this.isMatchingName(cert, name));
 
     return this;
   }
@@ -134,17 +139,17 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Verify a passed name matches one of many possible module name variants for this plugin.
    */
-  protected isMatchingName(result: LoadResult<Plugin>, name: string): boolean {
+  protected isMatchingName(cert: Certificate<Plugin>, name: string): boolean {
     const internalModule = this.formatModuleName(name, true);
     const publicModule = this.formatModuleName(name);
 
-    return result.name === name || result.name === publicModule || result.name === internalModule;
+    return cert.name === name || cert.name === publicModule || cert.name === internalModule;
   }
 
   /**
    * Trigger shutdown events for the manager and plugin.
    */
-  protected triggerShutdown(plugin: Plugin) {
+  protected triggerShutdown(plugin: Plugin, tool: Tool) {
     const { afterShutdown, beforeShutdown } = this.options;
 
     if (beforeShutdown) {
@@ -152,7 +157,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
     }
 
     if (typeof plugin.shutdown === 'function') {
-      plugin.shutdown();
+      plugin.shutdown(tool);
     }
 
     if (afterShutdown) {

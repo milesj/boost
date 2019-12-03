@@ -6,5 +6,5 @@ export default abstract class Plugin<T = unknown, Options extends object = {}>
   implements Pluggable<T> {
   startup(tool: T) {}
 
-  shutdown() {}
+  shutdown(tool: T) {}
 }
