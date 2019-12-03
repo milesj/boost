@@ -1,10 +1,11 @@
-import { Contract, Predicates, isObject } from '@boost/common';
+import { Contract, Predicates, isObject, ModuleName } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { RuntimeError, color } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
 import Loader from './Loader';
-import { ManagerOptions, Pluggable, Certificate, Setting } from './types';
+import { ManagerOptions, Pluggable, Container, Setting, PluginOptions } from './types';
+import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN } from './constants';
 
 export default class Manager<Plugin extends Pluggable, Tool = unknown> extends Contract<
   ManagerOptions<Plugin>
@@ -13,18 +14,18 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
 
   readonly pluralName: string;
 
-  readonly singularName: string;
+  readonly projectName: string;
 
-  readonly toolName: string;
+  readonly singularName: string;
 
   private loader: Loader<Plugin>;
 
-  private plugins: Certificate<Plugin>[] = [];
+  private plugins: Container<Plugin>[] = [];
 
-  constructor(toolName: string, typeName: string, options: ManagerOptions<Plugin>) {
+  constructor(projectName: string, typeName: string, options: ManagerOptions<Plugin>) {
     super(options);
 
-    this.toolName = toolName;
+    this.projectName = kebabCase(projectName);
     this.singularName = kebabCase(typeName);
     this.pluralName = pluralize(this.singularName);
     this.debug = createDebugger([this.singularName, 'manager']);
@@ -46,22 +47,23 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   }
 
   /**
-   * Format a name into a fully qualified and compatible NPM module name,
+   * Format a name into a fully qualified and compatible Node/NPM module name,
    * with the tool and type names being used as scopes and prefixes.
    */
-  formatModuleName(name: string, scoped: boolean = false): string {
+  formatModuleName(name: string, scoped: boolean = false): ModuleName {
     if (scoped) {
-      return `@${this.toolName}/${this.singularName}-${name.toLowerCase()}`;
+      return `@${this.projectName}/${this.singularName}-${name.toLowerCase()}`;
     }
 
-    return `${this.toolName}-${this.singularName}-${name.toLowerCase()}`;
+    return `${this.projectName}-${this.singularName}-${name.toLowerCase()}`;
   }
 
   /**
-   * Return a single plugin by module name.
+   * Return a single registered plugin by module name. If the plugin cannot be found,
+   * an error will be thrown.
    */
-  get(name: string): Plugin {
-    const plugin = this.plugins.find(cert => this.isMatchingName(cert, name));
+  get(name: ModuleName): Plugin {
+    const plugin = this.plugins.find(container => this.isMatchingName(container, name));
 
     if (plugin) {
       return plugin.plugin;
@@ -71,60 +73,73 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   }
 
   /**
-   * Return all plugins sorted by priority.
+   * Return all registered plugins.
    */
   getAll(): Plugin[] {
-    const plugins = [...this.plugins];
-
-    plugins.sort((a, b) => a.priority - b.priority);
-
-    return plugins.map(cert => cert.plugin);
-  }
-
-  load(name: string, options?: object, priority?: number): Plugin {
-    const cert = this.loader.load(name, options, priority);
+    return this.plugins.map(container => container.plugin);
   }
 
   /**
-   * Load multiple plugins based on a list of settings. The possible setting variants are:
+   * Return multiple registered plugins by module name.
+   */
+  getMany(names: ModuleName[]): Plugin[] {
+    return names.map(name => this.get(name));
+  }
+
+  /**
+   * Load and register a single plugin based on a setting. The possible setting variants are:
    *
-   * - If a string, will load based on Node module name.
-   * - If an array of 2 items, the 1st item will be considered the Node module name,
+   * - If a string, will load based on module name.
+   * - If an array, the 1st item will be considered the module name,
    *    and the 2nd item an options object that will be passed to the factory function.
    * - If an object or class instance, will assume to be the plugin itself.
    */
-  loadFromSettings(settings: Setting<Plugin>[]): Certificate<Plugin>[] {
-    return settings.map(setting => {
-      if (typeof setting === 'string') {
-        return this.load(setting);
-      }
+  load(setting: Setting<Plugin>, tool: Tool, options?: object): Plugin {
+    let name: string;
+    let plugin: Plugin;
+    let priority: number | undefined;
 
-      if (Array.isArray(setting)) {
-        const [name, options, priority] = setting;
+    // Module name
+    if (typeof setting === 'string') {
+      name = setting;
+      plugin = this.loader.load(setting, options);
 
-        return this.load(name, options, priority);
-      }
+      // Module name with options
+    } else if (Array.isArray(setting)) {
+      [name, , priority] = setting;
+      plugin = this.loader.load(name, setting[1] || options);
 
-      if (isObject<Pluggable>(setting)) {
-        if (setting.name) {
-          return {
-            name: setting.name,
-            plugin: setting,
-            priority: setting.priority || DEFAULT_PRIORITY,
-          };
-        }
-
+      // Plugin directly
+    } else if (isObject<Plugin>(setting)) {
+      if (setting.name) {
+        name = setting.name;
+        plugin = setting;
+        priority = setting.priority;
+      } else {
         throw new Error('Plugin object or class instance found without a `name` property.');
       }
 
+      // Unknown setting
+    } else {
       throw new Error(`Unknown plugin setting: ${setting}`);
-    });
+    }
+
+    this.register(plugin.name || name, plugin, tool, { priority });
+
+    return plugin;
   }
 
   /**
-   * Return true if a plugin has been loaded and registered.
+   * Load and register multiple plugins based on a list of settings.
    */
-  isRegistered(name: string): boolean {
+  loadMany(settings: Setting<Plugin>[], tool: Tool): Plugin[] {
+    return settings.map(setting => this.load(setting, tool));
+  }
+
+  /**
+   * Return true if a plugin has been registered.
+   */
+  isRegistered(name: ModuleName): boolean {
     try {
       this.get(name);
 
@@ -137,12 +152,12 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Register a plugin and trigger startup with the provided tool.
    */
-  register(cert: Certificate<Plugin>, tool: Tool): this {
-    const { name, plugin } = cert;
-
-    if (!name) {
+  register(name: ModuleName, plugin: Plugin, tool: Tool, options?: PluginOptions): this {
+    if (!name.match(MODULE_NAME_PATTERN)) {
       throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
-    } else if (!isObject(plugin)) {
+    }
+
+    if (!isObject(plugin)) {
       throw new TypeError(
         `Expected an object or class instance for the ${
           this.singularName
@@ -158,7 +173,16 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
 
     this.triggerStartup(plugin, tool);
 
-    this.plugins.push(cert);
+    this.plugins.push({
+      priority: DEFAULT_PRIORITY,
+      ...options,
+      name,
+      plugin,
+    });
+
+    this.debug('Sorting by priority');
+
+    this.plugins.sort((a, b) => a.priority! - b.priority!);
 
     return this;
   }
@@ -166,14 +190,14 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Unregister a plugin by name and trigger shutdown process.
    */
-  unregister(name: string, tool: Tool): this {
+  unregister(name: ModuleName, tool: Tool): this {
     const plugin = this.get(name);
 
     this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
 
     this.triggerShutdown(plugin, tool);
 
-    this.plugins = this.plugins.filter(cert => !this.isMatchingName(cert, name));
+    this.plugins = this.plugins.filter(container => !this.isMatchingName(container, name));
 
     return this;
   }
@@ -181,11 +205,15 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Verify a passed name matches one of many possible module name variants for this plugin.
    */
-  protected isMatchingName(cert: Certificate<Plugin>, name: string): boolean {
+  protected isMatchingName(container: Container<Plugin>, name: string): boolean {
     const internalModule = this.formatModuleName(name, true);
     const publicModule = this.formatModuleName(name);
 
-    return cert.name === name || cert.name === publicModule || cert.name === internalModule;
+    return (
+      container.name === internalModule ||
+      container.name === publicModule ||
+      container.name === name
+    );
   }
 
   /**

@@ -1,8 +1,8 @@
-import { PathResolver, requireModule } from '@boost/common';
+import { PathResolver, requireModule, ModuleName, isObject } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { Pluggable, Factory } from './types';
-import { MODULE_NAME_PATTERN } from './constants';
+import { MODULE_PART_PATTERN } from './constants';
 import Manager from './Manager';
 
 export default class Loader<Plugin extends Pluggable> {
@@ -19,19 +19,19 @@ export default class Loader<Plugin extends Pluggable> {
    * Create a path resolver that will attempt to find a plugin at a defined Node module,
    * based on a list of acceptable plugin module name patterns.
    */
-  createResolver(name: string): PathResolver {
+  createResolver(name: ModuleName): PathResolver {
     const resolver = new PathResolver();
-    const { singularName: typeName, toolName } = this.manager;
+    const { singularName: typeName, projectName } = this.manager;
     const moduleName = name.toLowerCase();
-    const modulePattern = MODULE_NAME_PATTERN.source;
-    const isNotToolOrType = !moduleName.includes(toolName) && !moduleName.includes(typeName);
+    const modulePattern = MODULE_PART_PATTERN.source;
+    const isNotToolOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
     this.debug('Resolving possible %s modules', color.pluginName(typeName));
 
     // @scope/tool-plugin-name
     if (
       moduleName.match(
-        new RegExp(`^@${modulePattern}/${toolName}-${typeName}-${modulePattern}$`, 'u'),
+        new RegExp(`^@${modulePattern}/${projectName}-${typeName}-${modulePattern}$`, 'u'),
       )
     ) {
       this.debug('Found an explicit module with custom scope: %s', color.moduleName(moduleName));
@@ -39,7 +39,9 @@ export default class Loader<Plugin extends Pluggable> {
       resolver.lookupNodeModule(moduleName);
 
       // @tool/plugin-name
-    } else if (moduleName.match(new RegExp(`^@${toolName}/${typeName}-${modulePattern}$`, 'u'))) {
+    } else if (
+      moduleName.match(new RegExp(`^@${projectName}/${typeName}-${modulePattern}$`, 'u'))
+    ) {
       this.debug('Found an explicit internal module with scope: %s', color.moduleName(moduleName));
 
       resolver.lookupNodeModule(moduleName);
@@ -50,14 +52,14 @@ export default class Loader<Plugin extends Pluggable> {
       isNotToolOrType
     ) {
       const [scope, customName] = moduleName.split('/');
-      const customModuleName = `${scope}/${toolName}-${typeName}-${customName}`;
+      const customModuleName = `${scope}/${projectName}-${typeName}-${customName}`;
 
       this.debug('Found a shorthand module with custom scope: %s', color.moduleName(moduleName));
 
       resolver.lookupNodeModule(customModuleName);
 
       // tool-plugin-name
-    } else if (moduleName.match(new RegExp(`^${toolName}-${typeName}-${modulePattern}$`, 'u'))) {
+    } else if (moduleName.match(new RegExp(`^${projectName}-${typeName}-${modulePattern}$`, 'u'))) {
       this.debug('Found an explicit public module: %s', color.moduleName(moduleName));
 
       resolver.lookupNodeModule(moduleName);
@@ -66,8 +68,8 @@ export default class Loader<Plugin extends Pluggable> {
     } else if (moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) && isNotToolOrType) {
       this.debug(
         'Resolving modules with internal "%s" scope and public "%s" prefix',
-        color.toolName(`@${toolName}`),
-        color.toolName(toolName),
+        color.toolName(`@${projectName}`),
+        color.toolName(projectName),
       );
 
       // Detect internal scopes before public ones
@@ -86,7 +88,7 @@ export default class Loader<Plugin extends Pluggable> {
    * Load a plugin by short name or fully qualified module name, with an optional options object
    * and sort priority.
    */
-  load(name: string, options: object = {}): Plugin {
+  load(name: ModuleName, options: object = {}): Plugin {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
     this.debug('Loading "%s" from %s', name, color.filePath(resolvedPath));
@@ -101,7 +103,7 @@ export default class Loader<Plugin extends Pluggable> {
 
     const plugin = factory(options);
 
-    if (!plugin.name) {
+    if (isObject(plugin) && !plugin.name) {
       plugin.name = originalPath.path();
     }
 
