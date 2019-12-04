@@ -7,28 +7,8 @@ import optimal, { Blueprint, Predicates } from 'optimal';
 import Contract from './Contract';
 import Path from './Path';
 import PathResolver from './PathResolver';
-import formatMs from './helpers/formatMs';
-import instanceOf from './helpers/instanceOf';
-import isEmpty from './helpers/isEmpty';
-import isObject from './helpers/isObject';
-import parseFile from './helpers/parseFile';
-import requireModule from './helpers/requireModule';
-import toArray from './helpers/toArray';
 
+export * from './helpers';
 export * from './types';
 
-export {
-  Contract,
-  Blueprint,
-  Path,
-  PathResolver,
-  Predicates,
-  formatMs,
-  instanceOf,
-  isEmpty,
-  isObject,
-  optimal,
-  parseFile,
-  requireModule,
-  toArray,
-};
+export { Contract, Blueprint, Path, PathResolver, Predicates, optimal };

@@ -1,4 +1,5 @@
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
+import deepFreeze from './helpers/deepFreeze';
 import { Optionable } from './types';
 
 export default abstract class Contract<T extends object = {}> implements Optionable<T> {
@@ -17,7 +18,7 @@ export default abstract class Contract<T extends object = {}> implements Optiona
     // We don't want the options property to be modified directly,
     // so it's read only, but we still want to modify it with this function.
     // @ts-ignore
-    this.options = Object.freeze(
+    this.options = deepFreeze<T>(
       optimal({ ...this.options, ...options }, this.blueprint(predicates), {
         name: this.constructor.name,
       }),

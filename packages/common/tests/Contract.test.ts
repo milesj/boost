@@ -1,11 +1,12 @@
 import { Contract, Predicates } from '../src';
 
 describe('Contract', () => {
-  class OptionalProps extends Contract<{ foo?: string; bar?: number }> {
-    blueprint({ number, string }: Predicates) {
+  class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {
+    blueprint({ number, string, shape }: Predicates) {
       return {
         foo: string('default'),
         bar: number(),
+        baz: shape({ qux: string() }),
       };
     }
   }
@@ -111,6 +112,7 @@ describe('Contract', () => {
       expect(opts.options).toEqual({
         foo: 'abc',
         bar: 123,
+        baz: { qux: '' },
       });
 
       opts.configure({
@@ -120,12 +122,19 @@ describe('Contract', () => {
       expect(opts.options).toEqual({
         foo: 'abc',
         bar: 456,
+        baz: { qux: '' },
       });
     });
 
     it('freezes the object', () => {
       expect(() => {
         opts.options.foo = 'override';
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('freezes deeply nested properties', () => {
+      expect(() => {
+        opts.options.baz.qux = 'override';
       }).toThrowErrorMatchingSnapshot();
     });
   });
