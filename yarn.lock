@@ -4095,10 +4095,10 @@ fast-glob@^2.2.6:
     merge2 "^1.2.3"
     micromatch "^3.1.10"
 
-fast-glob@^3.0.4, fast-glob@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.1.0.tgz#77375a7e3e6f6fc9b18f061cddd28b8d1eec75ae"
-  integrity sha512-TrUz3THiq2Vy3bjfQUB2wNyPdGBeGmdjbzzBLhfHN4YFurYptCKwGq/TfiRavbGywFRzY6U2CdmQ1zmsY5yYaw==
+fast-glob@^3.0.4, fast-glob@^3.1.0, fast-glob@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/fast-glob/-/fast-glob-3.1.1.tgz#87ee30e9e9f3eb40d6f254a7997655da753d7c82"
+  integrity sha512-nTCREpBY8w8r+boyFYAx21iL6faSsQynliPHM4Uf56SbkyohCNxpVPEH9xrF5TXKy+IsjkPUHDKiUkzBVRXn9g==
   dependencies:
     "@nodelib/fs.stat" "^2.0.2"
     "@nodelib/fs.walk" "^1.2.3"
@@ -6669,10 +6669,10 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-optimal@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/optimal/-/optimal-3.2.1.tgz#947303696c2fc1055b15ccea2a44be4c8c23195b"
-  integrity sha512-pqjiNtgEB4WcFxGegWJfozQQSnqK+PwunrGbTPGj3RuTwiB8SVrTe3Ejd4OwNGftSSf7OZedezV1a2Dvb/0lPA==
+optimal@^3.2.1, optimal@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-3.3.0.tgz#dbc5f7e86cf191e765814ba397190b289a7f4681"
+  integrity sha512-7glCAFiZcj43nzWCxudppVZmdnu+zfoYkk7dVP4JyQlBhGw1zMnEH6dpeBsnEa3ihYgO6SD31QW2e5k8f7S58Q==
 
 optimist@^0.6.1:
   version "0.6.1"
