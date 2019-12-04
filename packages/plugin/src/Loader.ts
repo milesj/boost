@@ -85,8 +85,7 @@ export default class Loader<Plugin extends Pluggable> {
   }
 
   /**
-   * Load a plugin by short name or fully qualified module name, with an optional options object
-   * and sort priority.
+   * Load a plugin by short name or fully qualified module name, with an optional options object.
    */
   load(name: ModuleName, options: object = {}): Plugin {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();

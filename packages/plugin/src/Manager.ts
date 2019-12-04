@@ -31,7 +31,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
     this.debug = createDebugger([this.singularName, 'manager']);
     this.loader = new Loader(this);
 
-    this.debug('Creating new plugin type: %s', color.pluginName(name));
+    this.debug('Creating new plugin type: %s', color.pluginName(typeName));
   }
 
   blueprint({ func }: Predicates) {
@@ -94,7 +94,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
    *    and the 2nd item an options object that will be passed to the factory function.
    * - If an object or class instance, will assume to be the plugin itself.
    */
-  load(setting: Setting<Plugin>, tool: Tool, options?: object): Plugin {
+  load(setting: Setting<Plugin>, options?: object, tool?: Tool): Plugin {
     let name: string;
     let plugin: Plugin;
     let priority: number | undefined;
@@ -124,7 +124,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
       throw new Error(`Unknown plugin setting: ${setting}`);
     }
 
-    this.register(plugin.name || name, plugin, tool, { priority });
+    this.register(plugin.name || name, plugin, { priority }, tool);
 
     return plugin;
   }
@@ -132,8 +132,8 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Load and register multiple plugins based on a list of settings.
    */
-  loadMany(settings: Setting<Plugin>[], tool: Tool): Plugin[] {
-    return settings.map(setting => this.load(setting, tool));
+  loadMany(settings: Setting<Plugin>[], tool?: Tool): Plugin[] {
+    return settings.map(setting => this.load(setting, {}, tool));
   }
 
   /**
@@ -152,7 +152,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Register a plugin and trigger startup with the provided tool.
    */
-  register(name: ModuleName, plugin: Plugin, tool: Tool, options?: PluginOptions): this {
+  register(name: ModuleName, plugin: Plugin, options?: PluginOptions, tool?: Tool): this {
     if (!name.match(MODULE_NAME_PATTERN)) {
       throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
     }
@@ -190,7 +190,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Unregister a plugin by name and trigger shutdown process.
    */
-  unregister(name: ModuleName, tool: Tool): this {
+  unregister(name: ModuleName, tool?: Tool): this {
     const plugin = this.get(name);
 
     this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
@@ -219,7 +219,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Trigger shutdown events for the manager and plugin.
    */
-  protected triggerShutdown(plugin: Plugin, tool: Tool) {
+  protected triggerShutdown(plugin: Plugin, tool?: Tool) {
     const { afterShutdown, beforeShutdown } = this.options;
 
     if (beforeShutdown) {
@@ -238,7 +238,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Trigger startup events for the manager and plugin.
    */
-  protected triggerStartup(plugin: Plugin, tool: Tool) {
+  protected triggerStartup(plugin: Plugin, tool?: Tool) {
     const { afterStartup, beforeStartup } = this.options;
 
     if (beforeStartup) {
