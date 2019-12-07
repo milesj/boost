@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.4.0 - 2019-12-07
+
+#### 🚀 Updates
+
+- **[PathResolver]** Add a mechanism for finding and resolving a path amongst a list of file paths or node modules. (#71) ([465e535](https://github.com/milesj/boost/commit/465e535)), closes [#71](https://github.com/milesj/boost/issues/71)
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ## 1.3.0 - 2019-11-26
 
 #### 🚀 Updates

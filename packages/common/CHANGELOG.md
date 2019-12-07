@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.6.0 - 2019-12-07
+
+#### 🚀 Updates
+
+- **[PathResolver]** Add a mechanism for finding and resolving a path amongst a list of file paths or node modules. (#71) ([465e535](https://github.com/milesj/boost/commit/465e535)), closes [#71](https://github.com/milesj/boost/issues/71)
+- Add `deepFreeze` helper function. ([03472fa](https://github.com/milesj/boost/commit/03472fa))
+
+#### ⚙️ Types
+
+- Add `ModuleName` and `Toolable` types. ([80d739f](https://github.com/milesj/boost/commit/80d739f))
+
+#### 📦 Dependencies
+
+- **[optimal]** Update to v3.3. ([968d36b](https://github.com/milesj/boost/commit/968d36b))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 1.5.0 - 2019-11-28
 
 #### 🚀 Updates

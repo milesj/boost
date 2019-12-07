@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Common utilities for Boost applications.",
   "keywords": [
     "boost",
@@ -26,7 +26,7 @@
     "pretty-ms": "^5.1.0"
   },
   "devDependencies": {
-    "@boost/test-utils": "^1.3.0"
+    "@boost/test-utils": "^1.4.0"
   },
   "funding": {
     "type": "ko-fi",
