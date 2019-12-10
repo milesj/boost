@@ -28,9 +28,16 @@ export default function createLogger({
 }: LoggerOptions = {}): Logger {
   let silent = false;
 
-  debug('New logger created');
-  debug('  Default level: %s', process.env.BOOST_LOG_DEFAULT_LEVEL);
-  debug('  Max level: %s', process.env.BOOST_LOG_MAX_LEVEL);
+  {
+    const defaultLevel = process.env.BOOST_LOG_DEFAULT_LEVEL;
+    const maxLevel = process.env.BOOST_LOG_MAX_LEVEL;
+
+    debug(
+      'New logger created: %s %s',
+      defaultLevel ? `${defaultLevel} level` : 'all levels',
+      maxLevel ? `(max ${maxLevel})` : '',
+    );
+  }
 
   function logger(message: string, ...args: any[]) {
     const self = logger as Logger;

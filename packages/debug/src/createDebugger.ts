@@ -14,10 +14,11 @@ export default function createDebugger(namespace: string | string[]): Debugger {
 
   const mainNamespace = namespaces.join(':');
 
-  debug('New debugger created');
-  debug('  Namespace: %s', mainNamespace);
-  debug('  Global namespace: %s', globalNamespace);
-  debug('  Verbose enabled: %s', process.env.BOOST_DEBUG_VERBOSE);
+  debug(
+    'New debugger created: %s %s',
+    mainNamespace,
+    process.env.BOOST_DEBUG_VERBOSE ? '(verbose enabled)' : '',
+  );
 
   const logger = coreDebug(mainNamespace) as Debugger;
 

@@ -33,8 +33,7 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
   blueprint({ array, instance, string }: Predicates) /* infer */ {
     return {
       format: string('yaml').oneOf(['js', 'json', 'yaml']),
-      // @ts-ignore TODO: Fix upstream
-      paths: array<Path>(instance(Path, true)),
+      paths: array(instance(Path, true).notNullable()),
     };
   }
 

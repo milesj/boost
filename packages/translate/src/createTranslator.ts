@@ -51,9 +51,7 @@ export default function createTranslator(
     throw new RuntimeError('translate', 'TL_REQ_MANUAL_LOCALE');
   }
 
-  debug('New translator created');
-  debug('  Namespaces: %s', namespaces.join(', '));
-  debug('  Resource paths: %s', resourcePaths.join(', '));
+  debug('New translator created: %s namespace(s)', namespaces.join(', '));
 
   const translator = i18next.createInstance().use(new FileBackend());
 
@@ -97,7 +95,7 @@ export default function createTranslator(
   msg.locale = translator.language;
 
   msg.changeLocale = (lang: Locale) => {
-    debug('Locale manually changed to %s', lang);
+    debug('Locale manually changed to "%s"', lang);
 
     translator.changeLanguage(lang, error => {
       handleError(error);

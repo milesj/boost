@@ -18,7 +18,7 @@ export default class LocaleDetector implements LanguageDetectorModule {
 
   detect(): Locale {
     if (this.locale) {
-      debug('Locale %s manually provided', this.locale);
+      debug('Locale "%s" manually provided', this.locale);
 
       return this.locale;
     }
@@ -34,7 +34,7 @@ export default class LocaleDetector implements LanguageDetectorModule {
     if (index >= 0 && args[nextIndex] && !args[nextIndex].startsWith('-')) {
       const locale = args[nextIndex];
 
-      debug('Locale %s detected from --locale option', locale);
+      debug('Locale "%s" detected from --locale option', locale);
 
       return locale;
     }
@@ -45,7 +45,7 @@ export default class LocaleDetector implements LanguageDetectorModule {
   detectFromOS(): Locale {
     const locale = osLocale.sync().replace(/_/gu, '-');
 
-    debug('Locale %s detected from operating system', locale);
+    debug('Locale "%s" detected from operating system', locale);
 
     return locale;
   }
