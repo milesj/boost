@@ -76,36 +76,58 @@ export interface WorkspaceMetadata {
 }
 
 export interface PackageConfig {
-  name: string;
-  version: string;
-  description?: string;
-  keywords?: string[];
-  homepage?: string;
-  bugs?: string | BugSetting;
-  license?: string | TypeSetting | TypeSetting[];
   author?: string | PeopleSetting;
-  contributors?: string[] | PeopleSetting[];
-  files?: string[];
-  main?: string;
-  browser?: string;
   bin?: any;
+  browser?: string;
+  browserslist?: string[];
+  bugs?: string | BugSetting;
+  bundledDependencies?: string[];
+  config?: SettingMap;
+  contributors?: string[] | PeopleSetting[];
+  cpu?: string[];
+  dependencies?: DependencyMap;
+  description?: string;
+  devDependencies?: DependencyMap;
+  engines?: SettingMap;
+  exports?: { [path: string]: string | string[] | SettingMap };
+  files?: string[];
+  homepage?: string;
+  keywords?: string[];
+  license?: string | TypeSetting | TypeSetting[];
+  main?: string;
   man?: string | string[];
+  name: string;
+  optionalDependencies?: DependencyMap;
+  os?: string[];
+  peerDependencies?: DependencyMap;
+  private?: boolean;
+  publishConfig?: {
+    access?: 'public' | 'restricted';
+    registry?: string;
+    tag?: string;
+  };
   repository?: string | TypeSetting;
   scripts?: SettingMap;
-  config?: SettingMap;
-  dependencies?: DependencyMap;
-  devDependencies?: DependencyMap;
-  peerDependencies?: DependencyMap;
-  bundledDependencies?: string[];
-  optionalDependencies?: DependencyMap;
-  engines?: SettingMap;
-  os?: string[];
-  cpu?: string[];
-  private?: boolean;
-  publishConfig?: SettingMap;
+  type?: 'commonjs' | 'module';
+  version: string;
+  // TypeScript
+  types?: string;
+  typesVersions?: {
+    [version: string]: {
+      [glob: string]: string[];
+    };
+  };
+  typings?: string;
   // Webpack
   module?: string;
   sideEffects?: boolean | string[];
+  // Yarn
+  workspaces?:
+    | string[]
+    | {
+        packages?: string[];
+        nohoist?: string[];
+      };
 }
 
 export interface WorkspacePackageConfig extends PackageConfig {
