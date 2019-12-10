@@ -26,7 +26,8 @@
     "@boost/internal": "^1.0.1",
     "@types/debug": "^4.1.5",
     "debug": "^4.1.1",
-    "execa": "^3.4.0"
+    "execa": "^3.4.0",
+    "fast-glob": "^3.1.1"
   },
   "funding": {
     "type": "ko-fi",

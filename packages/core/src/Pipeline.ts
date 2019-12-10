@@ -79,14 +79,15 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
    */
   reportCrash(error: Error) {
     const { appPath, rootPath, config, options } = this.tool;
+    const { appName } = options;
     const reporter = new CrashReporter()
       .reportBinaries()
       .reportProcess()
       .reportSystem();
 
     reporter
-      .addSection('Tool Instance')
-      .add('App name', options.appName)
+      .addSection(appName)
+      .add('App name', appName)
       .add('App path', appPath)
       .add('Plugin types', Object.keys(this.tool.getRegisteredPlugins()).join(', '))
       .add('Scoped package', options.scoped ? 'Yes' : 'No')
@@ -100,6 +101,11 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
       );
 
     reporter
+      .reportPackageVersions(
+        options.scoped ? [`@${appName}/*`, `${appName}-*`] : `${appName}-*`,
+        `${appName} Packages`,
+      )
+      .reportPackageVersions(['@boost/*', 'boost-*'], 'Boost Packages')
       .reportLanguages()
       .reportStackTrace(error)
       .reportEnvVars()

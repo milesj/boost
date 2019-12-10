@@ -2,16 +2,18 @@
 
 import fs from 'fs';
 import os from 'os';
+import path from 'path';
 import execa from 'execa';
-import { PortablePath, FilePath } from '@boost/common';
+import glob from 'fast-glob';
+import { PortablePath, FilePath, requireModule, toArray } from '@boost/common';
 import { debug } from './constants';
 
 function run(command: string, args: string[]): string {
   return String(execa.sync(command, args, { preferLocal: true }).stdout);
 }
 
-function resolveHome(path: FilePath): string {
-  return path.replace(process.env.HOME!, '~');
+function resolveHome(filePath: FilePath): string {
+  return filePath.replace(process.env.HOME!, '~');
 }
 
 function extractVersion(value: string): string {
@@ -157,6 +159,7 @@ export default class CrashReporter {
   reportStackTrace(error: Error): this {
     this.addSection('Stack Trace');
     this.contents += error.stack;
+    this.contents += '\n';
 
     return this;
   }
@@ -179,6 +182,34 @@ export default class CrashReporter {
       this.add('Group ID', process.getgid());
       this.add('User ID', process.getuid());
     }
+
+    return this;
+  }
+
+  /**
+   * Report NPM package versions for all that match the defined pattern.
+   * Only searches in the root node modules folder.
+   */
+  reportPackageVersions(patterns: string | string[], title: string = 'Packages'): this {
+    this.addSection(title);
+
+    glob
+      .sync(
+        toArray(patterns).map(pattern => path.join('node_modules', pattern)),
+        {
+          absolute: true,
+          deep: 1,
+          onlyDirectories: true,
+          onlyFiles: false,
+        },
+      )
+      .forEach(pkgPath => {
+        const pkg: { name: string; version: string } = requireModule(
+          path.join(pkgPath, 'package.json'),
+        );
+
+        this.add(pkg.name, pkg.version);
+      });
 
     return this;
   }

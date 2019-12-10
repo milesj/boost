@@ -28,12 +28,14 @@ sections. The following methods are available on `CrashReporter`.
 - `reportEnvVars()` - Sorts and reports all environment variables.
 - `reportLanguages()` - Reports versions and paths for common programming languages, like Java,
   Python, Ruby, and more.
+- `reportPackageVersions()` - Report NPM package versions for all that match the defined pattern(s).
 - `reportProcess()` - Reports information about the currently running process.
 - `reportStackTrace(error: Error)` - Reports the stack trace for the provided `Error`.
 - `reportSystem()`- Reports information about the system, OS, and platform.
 
 ```ts
 reporter
+  .reportPackageVersions('@boost/*')
   .reportBinaries()
   .reportEnvVars()
   .reportSystem();
