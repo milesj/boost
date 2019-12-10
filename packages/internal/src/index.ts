@@ -5,8 +5,9 @@
 
 import color from './color';
 import createInternalDebugger from './createInternalDebugger';
+import env from './env';
 import ExitError from './ExitError';
 import RuntimeError from './RuntimeError';
 import SignalError from './SignalError';
 
-export { color, createInternalDebugger, ExitError, RuntimeError, SignalError };
+export { color, createInternalDebugger, env, ExitError, RuntimeError, SignalError };

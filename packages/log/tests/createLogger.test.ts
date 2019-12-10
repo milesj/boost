@@ -23,8 +23,8 @@ describe('createLogger()', () => {
   });
 
   afterEach(() => {
-    delete process.env.BOOST_LOG_DEFAULT_LEVEL;
-    delete process.env.BOOST_LOG_MAX_LEVEL;
+    delete process.env.BOOSTJS_LOG_DEFAULT_LEVEL;
+    delete process.env.BOOSTJS_LOG_MAX_LEVEL;
   });
 
   it('hooks up to process by default', () => {
@@ -50,7 +50,7 @@ describe('createLogger()', () => {
   });
 
   it('writes to custom default level', () => {
-    process.env.BOOST_LOG_DEFAULT_LEVEL = 'trace';
+    process.env.BOOSTJS_LOG_DEFAULT_LEVEL = 'trace';
 
     logger('Hello');
 
@@ -94,7 +94,7 @@ describe('createLogger()', () => {
   });
 
   it('doesnt write levels below max level', () => {
-    process.env.BOOST_LOG_MAX_LEVEL = 'debug';
+    process.env.BOOSTJS_LOG_MAX_LEVEL = 'debug';
 
     logger.log('Log');
     logger.trace('Trace');

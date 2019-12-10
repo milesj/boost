@@ -20,7 +20,7 @@ import {
 import { Event } from '@boost/event';
 import { createDebugger, Debugger } from '@boost/debug';
 import { createLogger, Logger } from '@boost/log';
-import { color, ExitError } from '@boost/internal';
+import { color, env, ExitError } from '@boost/internal';
 import { createTranslator, Translator } from '@boost/translate';
 import ConfigLoader from './ConfigLoader';
 import Console from './Console';
@@ -153,7 +153,7 @@ export default class Tool<
     this.rootPath = Path.resolve(this.options.root);
 
     // Set environment variables
-    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = this.options.appName;
+    env('DEBUG_GLOBAL_NAMESPACE', this.options.appName);
 
     // Core debugger, logger, and translator for the entire tool
     this.debug = createDebugger('core');
@@ -648,7 +648,7 @@ export default class Tool<
 
     // Use a special reporter when in a CI
     // istanbul ignore next
-    if (this.isCI() && !process.env.BOOST_ENV) {
+    if (this.isCI() && !env('ENV')) {
       loader.debug('CI environment detected, using %s CI reporter', color.moduleName('boost'));
 
       this.addPlugin('reporter', new CIReporter());

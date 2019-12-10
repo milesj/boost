@@ -11,9 +11,9 @@ yarn add @boost/debug
 
 ## Environment Variables
 
-- `BOOST_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix for all debugger namespaces when created with
-  `createDebugger()`. Is commonly set by a command line application or Boost `Tool` instance.
-- `BOOST_DEBUG_VERBOSE` (`boolean`) - Print verbose messages logged from `debugger.verbose()`,
+- `BOOSTJS_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix for all debugger namespaces when created
+  with `createDebugger()`. Is commonly set by a command line application or Boost `Tool` instance.
+- `BOOSTJS_DEBUG_VERBOSE` (`boolean`) - Print verbose messages logged from `debugger.verbose()`,
   otherwise they are hidden.
 
 ## Usage
@@ -61,13 +61,13 @@ debug.invariant(fs.existsSync(filePath), 'Does file exist?', 'Yes!', 'No');
 Debug messages are already hidden behind the `DEBUG` environment variable, but Boost takes it a step
 further to support verbose debugging. Messages logged with
 `debugger.verbose(message: string, ...args: any[])` will not be displayed unless the
-`BOOST_DEBUG_VERBOSE` environment variable is set -- even if `DEBUG` is set.
+`BOOSTJS_DEBUG_VERBOSE` environment variable is set -- even if `DEBUG` is set.
 
 ```ts
 // Will not write!
 debug.verbose('We need extra information');
 
-process.env.BOOST_DEBUG_VERBOSE = 'true';
+process.env.BOOSTJS_DEBUG_VERBOSE = 'true';
 
 // Will write!
 debug.verbose('We need extra information (again)');

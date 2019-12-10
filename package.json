@@ -45,7 +45,7 @@
         "driver": "jest",
         "env": {
           "NODE_ENV": "test",
-          "BOOST_ENV": "test"
+          "BOOSTJS_ENV": "test"
         }
       },
       "prettier",

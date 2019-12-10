@@ -1,5 +1,6 @@
 import util from 'util';
 import chalk from 'chalk';
+import { env } from '@boost/internal';
 import isAllowedLogLevel from './isAllowedLogLevel';
 import { debug, msg, LOG_LEVELS } from './constants';
 import { Logger, LogLevel, LogLevelLabels } from './types';
@@ -29,8 +30,8 @@ export default function createLogger({
   let silent = false;
 
   {
-    const defaultLevel = process.env.BOOST_LOG_DEFAULT_LEVEL;
-    const maxLevel = process.env.BOOST_LOG_MAX_LEVEL;
+    const defaultLevel = env('LOG_DEFAULT_LEVEL');
+    const maxLevel = env('LOG_MAX_LEVEL');
 
     debug(
       'New logger created: %s %s',
@@ -41,7 +42,7 @@ export default function createLogger({
 
   function logger(message: string, ...args: any[]) {
     const self = logger as Logger;
-    const defaultLevel = process.env.BOOST_LOG_DEFAULT_LEVEL as LogLevel;
+    const defaultLevel: LogLevel | undefined = env('LOG_DEFAULT_LEVEL');
 
     if (defaultLevel && self[defaultLevel]) {
       self[defaultLevel](message, ...args);
@@ -56,7 +57,7 @@ export default function createLogger({
 
     Object.defineProperty(logger, level, {
       value: function log(message: string, ...args: any[]) {
-        const maxLevel = process.env.BOOST_LOG_MAX_LEVEL as LogLevel;
+        const maxLevel: LogLevel | undefined = env('LOG_MAX_LEVEL');
 
         if (!silent && isAllowedLogLevel(level, maxLevel)) {
           const output = util.format(message, ...args);

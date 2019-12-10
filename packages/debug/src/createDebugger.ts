@@ -1,11 +1,11 @@
 import coreDebug from 'debug';
 import { toArray } from '@boost/common';
-import { color } from '@boost/internal';
+import { color, env } from '@boost/internal';
 import { debug } from './constants';
 import { Debugger } from './types';
 
 export default function createDebugger(namespace: string | string[]): Debugger {
-  const globalNamespace = process.env.BOOST_DEBUG_GLOBAL_NAMESPACE;
+  const globalNamespace = env('DEBUG_GLOBAL_NAMESPACE');
   const namespaces = toArray(namespace);
 
   if (globalNamespace) {
@@ -17,7 +17,7 @@ export default function createDebugger(namespace: string | string[]): Debugger {
   debug(
     'New debugger created: %s %s',
     mainNamespace,
-    process.env.BOOST_DEBUG_VERBOSE ? '(verbose enabled)' : '',
+    env('DEBUG_VERBOSE') ? '(verbose enabled)' : '',
   );
 
   const logger = coreDebug(mainNamespace) as Debugger;
@@ -44,7 +44,7 @@ export default function createDebugger(namespace: string | string[]): Debugger {
   };
 
   logger.verbose = (message, ...args) => {
-    if (process.env.BOOST_DEBUG_VERBOSE) {
+    if (env('DEBUG_VERBOSE')) {
       logger(message, ...args);
     }
   };

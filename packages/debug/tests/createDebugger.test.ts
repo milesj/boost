@@ -21,7 +21,7 @@ describe('createDebugger()', () => {
   afterEach(() => {
     errSpy.mockRestore();
 
-    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = '';
+    process.env.BOOSTJS_DEBUG_GLOBAL_NAMESPACE = '';
     process.env.DEBUG = oldDebugEnvVar;
   });
 
@@ -36,7 +36,7 @@ describe('createDebugger()', () => {
   });
 
   it('inherits app namespace from env var', () => {
-    process.env.BOOST_DEBUG_GLOBAL_NAMESPACE = 'boost';
+    process.env.BOOSTJS_DEBUG_GLOBAL_NAMESPACE = 'boost';
 
     debugFunc = createDebugger('ns');
 
@@ -93,13 +93,13 @@ describe('createDebugger()', () => {
     });
 
     it('writes verbose logs when env var is set', () => {
-      process.env.BOOST_DEBUG_VERBOSE = 'true';
+      process.env.BOOSTJS_DEBUG_VERBOSE = 'true';
 
       debugFunc.verbose('Loonnnggg log!');
 
       expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('Loonnnggg log!'));
 
-      delete process.env.BOOST_DEBUG_VERBOSE;
+      delete process.env.BOOSTJS_DEBUG_VERBOSE;
     });
   });
 

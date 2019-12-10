@@ -10,9 +10,9 @@ yarn add @boost/log
 
 ## Environment Variables
 
-- `BOOST_LOG_DEFAULT_LEVEL` (`LogLevel`) - The default log level to use when calling the logger
+- `BOOSTJS_LOG_DEFAULT_LEVEL` (`LogLevel`) - The default log level to use when calling the logger
   function stand alone (the usage examples below). Defaults to the lowest level, `log`.
-- `BOOST_LOG_MAX_LEVEL` (`LogLevel`) - The maximum level, based on priority, to write to a stream.
+- `BOOSTJS_LOG_MAX_LEVEL` (`LogLevel`) - The maximum level, based on priority, to write to a stream.
   All levels higher than the maximum will be ignored. Defaults to allowing all levels.
 
 ## Usage
