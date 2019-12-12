@@ -103,6 +103,16 @@ describe('Contract', () => {
       expect(opts.options.foo).toBe('new');
     });
 
+    it('can set an option using a callback function', () => {
+      expect(opts.options.foo).toBe('default');
+
+      opts.configure(prev => ({
+        foo: `${prev.foo}-new`,
+      }));
+
+      expect(opts.options.foo).toBe('default-new');
+    });
+
     it('persists other options not being configured', () => {
       opts = new OptionalProps({
         foo: 'abc',

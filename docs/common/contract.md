@@ -43,9 +43,18 @@ const { name } = plugin.options;
 ```
 
 To modify the options object after instantiation, the `Contract#configure()` method should be used.
+This method accepts a partial object, or a function that receives the current full options object
+and must return a partial object.
 
 ```ts
 plugin.configure({ name: 'Boost' });
+
+plugin.configure(prevOptions => ({
+  nestedObject: {
+    ...prevOptions.nestedObject,
+    some: 'value',
+  },
+}));
 ```
 
 ## Required Options

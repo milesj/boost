@@ -13,12 +13,14 @@ export default abstract class Contract<T extends object = {}> implements Optiona
    * with the defined blueprint, while running all validation checks.
    * Freeze and return the options object.
    */
-  configure(options?: Partial<T>): Readonly<Required<T>> {
+  configure(options?: Partial<T> | ((options: Required<T>) => Partial<T>)): Readonly<Required<T>> {
+    const nextOptions = typeof options === 'function' ? options(this.options) : options;
+
     // We don't want the options property to be modified directly,
     // so it's read only, but we still want to modify it with this function.
     // @ts-ignore
     this.options = Object.freeze(
-      optimal({ ...this.options, ...options }, this.blueprint(predicates), {
+      optimal({ ...this.options, ...nextOptions }, this.blueprint(predicates), {
         name: this.constructor.name,
       }),
     );
