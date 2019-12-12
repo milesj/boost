@@ -1,9 +1,8 @@
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
-import deepFreeze from './helpers/deepFreeze';
 import { Optionable } from './types';
 
 export default abstract class Contract<T extends object = {}> implements Optionable<T> {
-  readonly options: Required<T>;
+  readonly options: Readonly<Required<T>>;
 
   constructor(options?: T) {
     this.options = this.configure(options);
@@ -14,11 +13,11 @@ export default abstract class Contract<T extends object = {}> implements Optiona
    * with the defined blueprint, while running all validation checks.
    * Freeze and return the options object.
    */
-  configure(options?: Partial<T>): Required<T> {
+  configure(options?: Partial<T>): Readonly<Required<T>> {
     // We don't want the options property to be modified directly,
     // so it's read only, but we still want to modify it with this function.
     // @ts-ignore
-    this.options = deepFreeze<T>(
+    this.options = Object.freeze(
       optimal({ ...this.options, ...options }, this.blueprint(predicates), {
         name: this.constructor.name,
       }),

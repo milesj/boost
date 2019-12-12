@@ -4,8 +4,6 @@ exports[`Contract configure() errors for invalid option type passed 1`] = `"Inva
 
 exports[`Contract configure() errors for unknown option 1`] = `"Unknown fields: unknown."`;
 
-exports[`Contract configure() freezes deeply nested properties 1`] = `"Cannot assign to read only property 'qux' of object '#<Object>'"`;
-
 exports[`Contract configure() freezes the object 1`] = `"Cannot assign to read only property 'foo' of object '#<Object>'"`;
 
 exports[`Contract constructor() errors for invalid option type passed 1`] = `"Invalid OptionalProps field \\"foo\\". Must be a string."`;

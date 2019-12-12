@@ -128,13 +128,8 @@ describe('Contract', () => {
 
     it('freezes the object', () => {
       expect(() => {
+        // @ts-ignore Allow mutate
         opts.options.foo = 'override';
-      }).toThrowErrorMatchingSnapshot();
-    });
-
-    it('freezes deeply nested properties', () => {
-      expect(() => {
-        opts.options.baz.qux = 'override';
       }).toThrowErrorMatchingSnapshot();
     });
   });
