@@ -9,6 +9,12 @@
       "path": "packages/args/tests"
     },
     {
+      "path": "packages/cli"
+    },
+    {
+      "path": "packages/cli/tests"
+    },
+    {
       "path": "packages/common"
     },
     {

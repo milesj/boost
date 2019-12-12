@@ -11,7 +11,7 @@
     "pretest": "yarn run type",
     "test": "yarn run jest",
     "posttest": "yarn run eslint",
-    "type": "beemo typescript --reference-workspaces --build --clean",
+    "type": "beemo typescript --reference-workspaces --build --clean --decorators",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run build && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
