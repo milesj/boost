@@ -9,6 +9,7 @@ export default function NumberOption(
 ) {
   return createOptionFactory<SingleOption<number>>({
     ...config,
+    default: 0,
     description,
     type: 'number',
   });

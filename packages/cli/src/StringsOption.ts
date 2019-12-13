@@ -3,14 +3,15 @@ import { MultipleOption } from '@boost/args';
 import createOptionFactory from './metadata/createOptionFactory';
 import { PartialConfig } from './types';
 
-export default function NumberOptionList(
+export default function StringsOption(
   description: string,
-  config?: PartialConfig<MultipleOption<number[]>>,
+  config?: PartialConfig<MultipleOption<string[]>>,
 ) {
-  return createOptionFactory<MultipleOption<number[]>>({
+  return createOptionFactory<MultipleOption<string[]>>({
     ...config,
+    default: [],
     description,
     multiple: true,
-    type: 'number',
+    type: 'string',
   });
 }

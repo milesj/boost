@@ -1,1 +1,1 @@
-export type PartialConfig<T> = Omit<T, 'description' | 'type'>;
+export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;

@@ -9,6 +9,7 @@ export default function StringOption(
 ) {
   return createOptionFactory<SingleOption<string>>({
     ...config,
+    default: '',
     description,
     type: 'string',
   });
