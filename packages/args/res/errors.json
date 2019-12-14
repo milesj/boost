@@ -2,6 +2,7 @@
   "AG_COMMAND_INVALID_FORMAT": "Invalid \"%s\" command format. Must be letters, numbers, and dashes.",
   "AG_COMMAND_NOT_FIRST": "Command must be passed as the first non-option, non-param argument.",
   "AG_COMMAND_PROVIDED": "Command has already been provided as \"%s\", received another \"%s\".",
+  "AG_CONTEXT_NOT_PROVIDED": "Contextual parser options were not provided from the factory function.",
   "AG_GROUP_MISSING_COUNT": "Numeric options must have `count` enabled when passed in a short option group.",
   "AG_GROUP_UNSUPPORTED_TYPE": "Only boolean and countable number options may be used in a short option group.",
   "AG_OPTION_NUMBER_COUNT": "Only numeric options may use the `count` setting.",

@@ -1,97 +1,19 @@
-import { parse, ParseError, ValidationError, SingleOption, Flag, MultipleOption } from '../src';
+import { parse, ParseError, ValidationError, Flag } from '../src';
+import {
+  optConfig,
+  optConfigExpanded,
+  optsConfig,
+  optsConfigExpanded,
+  optsConfigArity,
+  flagConfig,
+  numConfig,
+  numConfigExpanded,
+  numsConfig,
+  SPECIAL_CHARS,
+  SPECIAL_NUMBERS,
+} from './__mocks__/options';
 
 describe('parse()', () => {
-  const optConfig: SingleOption<string> = {
-    description: '',
-    type: 'string',
-  };
-
-  const optConfigExpanded: SingleOption<string> = {
-    default: 'foobar',
-    description: '',
-    short: 'O',
-    type: 'string',
-  };
-
-  const optsConfig: MultipleOption<string[]> = {
-    default: [],
-    description: '',
-    multiple: true,
-    type: 'string',
-  };
-
-  const optsConfigExpanded: MultipleOption<string[]> = {
-    default: ['qux'],
-    description: '',
-    multiple: true,
-    short: 's',
-    type: 'string',
-  };
-
-  const optsConfigArity: MultipleOption<string[]> = {
-    arity: 2,
-    default: [],
-    description: '',
-    multiple: true,
-    short: 's',
-    type: 'string',
-  };
-
-  const numConfig: SingleOption<number> = {
-    description: '',
-    type: 'number',
-  };
-
-  const numConfigExpanded: SingleOption<number> = {
-    default: 123,
-    description: '',
-    short: 'n',
-    type: 'number',
-  };
-
-  const numsConfig: MultipleOption<number[]> = {
-    description: '',
-    multiple: true,
-    type: 'number',
-  };
-
-  const flagConfig: Flag = {
-    default: false,
-    description: '',
-    short: 'F',
-    type: 'boolean',
-  };
-
-  // For strings
-  const SPECIAL_CHARS = [
-    // empty string
-    '',
-    // space
-    ' ',
-    // dash (not to confuse with an option)
-    '-',
-    // underscore
-    '_',
-    // newline
-    '\n',
-    // tab
-    '\t',
-  ];
-
-  // For numbers
-  const SPECIAL_NUMBERS = [
-    // zero
-    '0',
-    // float zero
-    '0.0',
-    // negative
-    '-123',
-    // float
-    '12.45',
-    // negative float
-    '-12.45',
-  ];
-
   it('supports camel case option names by default', () => {
     const result = parse<{ fooBar: string }>(['--fooBar', 'baz'], {
       options: {

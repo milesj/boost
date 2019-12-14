@@ -68,7 +68,11 @@ export default class Checker {
 
   validateChoiceIsMet(option: LongOptionName, config: OptionConfig, value: ValueType) {
     if (Array.isArray(config.choices) && !config.choices.includes(value as 'string')) {
-      this.logInvalidError('AG_VALUE_INVALID_CHOICE', [config.choices.join(', '), value], option);
+      this.logInvalidError(
+        'AG_VALUE_INVALID_CHOICE',
+        [config.choices.join(', '), value || '""'],
+        option,
+      );
     }
   }
 

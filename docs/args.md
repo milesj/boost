@@ -381,7 +381,7 @@ An error has occurred:
 
 ### Formatting Args
 
-If for some reason you need to format the args object from `parse()` back into an array of string
+If for some reason you need to format the args result from `parse()` back into an array of string
 arguments, the `format()` function can be used. This function will use the values as is and does not
 reference the settings object, so all formatted arguments will be in their long form, and will not
 use inline values.
@@ -395,6 +395,58 @@ const argv = format({
   options: { string: 'abc', numbers: [123, 456], bool: true },
   params: ['foo', 'bar', 'baz'],
   rest: ['qux', '--version'],
+});
+```
+
+## Contextual Parsing
+
+While the above is straight forward (I hope so), it doesn't leave much room for customization. What
+if we want different options based on the command passed? Or different params? Or how to handle
+global options? So on and so forth.
+
+To provide this functionality, the `parseInContext()` function can be used. Like `parse()`, this
+function requires a list of strings (`argv`), but unlike, it requires a factory function that
+returns contextual parser options.
+
+The parser will loop through each argument, executing the factory function with the argument and
+argv list, until a match is found and options were returned.
+
+```ts
+import { parseInContext } from '@boost/args';
+
+// Remove node binary and script
+const argv = process.argv.slice(2);
+
+// Parse argv into a consumable object
+const { command, errors, options, params, rest } = parseInContext(argv, arg => {
+  // Build command found, define build specific options
+  if (arg === 'build') {
+    return {
+      command: ['build'],
+      options: {
+        dest: {
+          description: 'Destination path',
+          type: 'string',
+        },
+      },
+    };
+  }
+
+  // Install command found, require params
+  if (arg === 'install') {
+    return {
+      command: ['install'],
+      params: [
+        {
+          description: 'Package name(s)',
+          type: 'string',
+          required: true,
+        },
+      ],
+    };
+  }
+
+  return undefined;
 });
 ```
 

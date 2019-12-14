@@ -45,6 +45,8 @@ export type MapParamConfig<T extends PrimitiveType[]> = T extends [
   ? [InferParamConfig<A>, InferParamConfig<B>]
   : T extends [infer A]
   ? [InferParamConfig<A>]
+  : T extends ArgList
+  ? Param<string>[]
   : never;
 
 // Like the above but for the types themselves.
@@ -91,11 +93,13 @@ export interface Arguments<O extends object, P extends PrimitiveType[]> {
   rest: ArgList;
 }
 
-export interface ParserOptions<T extends object, P extends PrimitiveType[]> {
+export interface ParserOptions<T extends object, P extends PrimitiveType[] = ArgList> {
   commands?: string[] | CommandChecker;
   options: MapOptionConfig<T>;
   params?: MapParamConfig<P>;
 }
+
+export type ContextFactory = (arg: string, argv: Argv) => ParserOptions<{}> | undefined;
 
 // ARGUMENT TYPES
 
@@ -106,6 +110,7 @@ export type InferArgType<T> = T extends boolean
   : 'string';
 
 export interface Arg<T> {
+  default?: T;
   description: string;
   hidden?: boolean;
   usage?: string;
@@ -134,7 +139,7 @@ export interface Flag extends Omit<Option<boolean>, 'validate'> {
 }
 
 export interface Param<T extends PrimitiveType> extends Arg<T> {
-  label: string;
+  label?: string;
   required?: boolean;
 }
 
