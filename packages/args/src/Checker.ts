@@ -34,6 +34,10 @@ export default class Checker {
     }
   }
 
+  checkUnknownOption(option: ShortOptionName | LongOptionName) {
+    this.logFailureError('AG_OPTION_UNKNOWN', [option]);
+  }
+
   validateArityIsMet(option: LongOptionName, config: OptionConfig, value: ValueType) {
     if (!config.arity || !Array.isArray(value)) {
       return;

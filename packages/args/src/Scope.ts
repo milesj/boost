@@ -8,11 +8,19 @@ export default class Scope {
 
   negated: boolean = false;
 
+  unknown: boolean = false;
+
   value?: string | string[];
 
-  constructor(name: LongOptionName, config: OptionConfig) {
+  constructor(name: LongOptionName, config?: OptionConfig) {
     this.name = name;
-    this.config = config;
+
+    if (config) {
+      this.config = config;
+    } else {
+      this.config = { description: '', type: 'string' };
+      this.unknown = true;
+    }
   }
 
   get flag(): boolean {

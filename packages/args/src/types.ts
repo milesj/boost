@@ -11,7 +11,11 @@ export type PrimitiveType = boolean | ScalarType;
 export type ValueType = PrimitiveType | ListType;
 
 export interface OptionMap {
-  [key: string]: ValueType;
+  [option: string]: ValueType;
+}
+
+export interface UnknownOptionMap {
+  [option: string]: string;
 }
 
 export interface AliasMap {
@@ -91,12 +95,14 @@ export interface Arguments<O extends object, P extends PrimitiveType[]> {
   options: O;
   params: MapParamType<P>;
   rest: ArgList;
+  unknown: UnknownOptionMap;
 }
 
 export interface ParserOptions<T extends object, P extends PrimitiveType[] = ArgList> {
   commands?: string[] | CommandChecker;
   options: MapOptionConfig<T>;
   params?: MapParamConfig<P>;
+  unknown?: boolean;
 }
 
 export type ContextFactory = (arg: string, argv: Argv) => ParserOptions<{}> | undefined;

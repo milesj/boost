@@ -174,6 +174,32 @@ Otherwise, each value can be passed as a standalone argument, like `--option foo
 using this approach, all values will be captured until another option is passed, or the end of the
 list is met.
 
+#### Unknown Options
+
+If an option is passed to `parse()` that is not configured in the `options` settings object, it will
+be [logged as a parse error](#validation-checks) unless the `unknown` setting is set to true. When
+true, all unknown options can be found in the result's `unknown` object and not in `options`, as a
+means to avoid collision.
+
+```ts
+const argv = ['--legit', 'foo', '--unknown', 'bar'];
+const args = parse<{ legit: string }>(argv, {
+  options: {
+    legit: {
+      description: 'A legitimate option',
+      type: 'string',
+    },
+  },
+  unknown: true,
+});
+
+args.options; // { legit: 'foo' }
+args.unknown; // { unknown: 'bar' }
+```
+
+> Unknown short options will still throw an error, as they require a parent long option to
+> reference.
+
 ### Flags
 
 A flag is a special type of [option](#options) that accepts no value, is always boolean, and
@@ -361,10 +387,10 @@ input provided.
 For improved interoperability and usability, the parser is strict, logging the following parse and
 validation errors.
 
-- `ParseError`s are logged for invalid syntax and formatting (uncommon). The failed argument and its
-  index are stored as `arg` and `index` properties on the error instance, respectively.
-- `ValidationError`s are logged for invalid values, types, settings, and more (common). The invalid
-  option (when applicable), is stored as the `option` property.
+- `ParseError`s are logged for invalid syntax, unknown options, and formatting. The failed argument
+  and its index are stored as `arg` and `index` properties on the error instance, respectively.
+- `ValidationError`s are logged for invalid values, types, settings, and more. The invalid option
+  (when applicable), is stored as the `option` property.
 
 Furthermore, errors are not thrown and instead are returned as an array in the `parse()` result,
 under the `errors` property. It's designed this way so that command line interfaces and or

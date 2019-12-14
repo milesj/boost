@@ -21,6 +21,7 @@ describe('parseInContext()', () => {
       flag: flagConfig,
       opt: optConfig,
     },
+    unknown: true,
   };
 
   interface BarOptions {
@@ -38,6 +39,7 @@ describe('parseInContext()', () => {
       },
       nums: numsConfig,
     },
+    unknown: true,
   };
 
   interface BazOptions {
@@ -54,6 +56,7 @@ describe('parseInContext()', () => {
         default: 'a',
       },
     },
+    unknown: true,
   };
 
   const contextFactory: ContextFactory = (arg, argv) => {
@@ -81,6 +84,7 @@ describe('parseInContext()', () => {
       },
       params: [],
       rest: [],
+      unknown: {},
     });
 
     const barResult = parseInContext<BarOptions>(
@@ -97,6 +101,7 @@ describe('parseInContext()', () => {
       },
       params: [],
       rest: [],
+      unknown: {},
     });
   });
 
@@ -113,6 +118,9 @@ describe('parseInContext()', () => {
       },
       params: [],
       rest: [],
+      unknown: {
+        unknownOption: '',
+      },
     });
   });
 
@@ -127,6 +135,9 @@ describe('parseInContext()', () => {
       },
       params: ['baz'],
       rest: [],
+      unknown: {
+        allow: '',
+      },
     });
 
     expect(() => {

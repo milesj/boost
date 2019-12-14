@@ -32,6 +32,7 @@ describe('parse()', () => {
       },
       params: [],
       rest: [],
+      unknown: {},
     });
   });
 
@@ -53,6 +54,7 @@ describe('parse()', () => {
       },
       params: [],
       rest: [],
+      unknown: {},
     });
   });
 
@@ -76,6 +78,7 @@ describe('parse()', () => {
       },
       params: [],
       rest: [],
+      unknown: {},
     });
   });
 
@@ -97,6 +100,7 @@ describe('parse()', () => {
       },
       params: [],
       rest: ['--foo', '-B', 'baz'],
+      unknown: {},
     });
   });
 
@@ -109,6 +113,7 @@ describe('parse()', () => {
       options: {},
       params: ['foo', 'bar', 'baz'],
       rest: [],
+      unknown: {},
     });
   });
 
@@ -129,6 +134,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -147,6 +153,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -165,6 +172,7 @@ describe('parse()', () => {
           },
           params: ['bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -183,6 +191,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -201,6 +210,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -226,6 +236,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -252,6 +263,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -277,6 +289,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -303,6 +316,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -327,6 +341,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -351,6 +366,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -375,6 +391,7 @@ describe('parse()', () => {
           },
           params: ['other value'],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -400,6 +417,7 @@ describe('parse()', () => {
           },
           params: ['baz'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -421,6 +439,7 @@ describe('parse()', () => {
           },
           params: ['arg'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -442,6 +461,7 @@ describe('parse()', () => {
           },
           params: ['arg'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -465,6 +485,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -488,6 +509,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -510,6 +532,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -528,6 +551,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -546,6 +570,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -564,6 +589,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -589,6 +615,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -609,6 +636,7 @@ describe('parse()', () => {
           },
           params: ['baz'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -627,6 +655,7 @@ describe('parse()', () => {
           },
           params: ['baz'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -650,6 +679,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -668,6 +698,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -686,6 +717,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -706,6 +738,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -724,6 +757,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -757,6 +791,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -790,6 +825,7 @@ describe('parse()', () => {
           },
           params: ['random', 'arg'],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -811,6 +847,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -829,6 +866,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -847,6 +885,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -865,6 +904,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -883,6 +923,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -902,6 +943,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -920,6 +962,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -939,6 +982,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -961,6 +1005,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -984,6 +1029,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
   });
@@ -1004,6 +1050,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1022,6 +1069,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1040,6 +1088,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1058,6 +1107,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1076,6 +1126,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1098,6 +1149,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1117,6 +1169,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1135,6 +1188,7 @@ describe('parse()', () => {
           },
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -1154,6 +1208,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1172,6 +1227,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
   });
@@ -1196,6 +1252,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1217,6 +1274,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1235,6 +1293,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1259,6 +1318,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1277,6 +1337,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1298,6 +1359,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
   });
@@ -1314,6 +1376,7 @@ describe('parse()', () => {
         options: {},
         params: ['cmd', 'foo', 'bar'],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1330,6 +1393,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1345,6 +1409,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1360,6 +1425,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1381,6 +1447,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1402,6 +1469,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1423,6 +1491,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1442,6 +1511,7 @@ describe('parse()', () => {
           options: {},
           params: [],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -1459,6 +1529,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1474,6 +1545,7 @@ describe('parse()', () => {
           options: {},
           params: ['cmd', 'foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1499,6 +1571,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
 
         const resultValidSub = parse<{}>(['cmd:one', 'foo', 'bar'], {
@@ -1512,6 +1585,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
 
         const resultInvalidSub = parse<{}>(['cmd:three', 'foo', 'bar'], {
@@ -1525,6 +1599,7 @@ describe('parse()', () => {
           options: {},
           params: ['cmd:three', 'foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1546,6 +1621,7 @@ describe('parse()', () => {
           options: {},
           params: [],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1567,6 +1643,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1588,6 +1665,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
 
@@ -1609,6 +1687,7 @@ describe('parse()', () => {
           options: {},
           params: ['foo', 'bar'],
           rest: [],
+          unknown: {},
         });
       });
     });
@@ -1634,6 +1713,7 @@ describe('parse()', () => {
         options: {},
         params: ['foo', 'bar'],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1649,6 +1729,7 @@ describe('parse()', () => {
         options: {},
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1664,6 +1745,7 @@ describe('parse()', () => {
         options: {},
         params: [123, 'bar'],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1683,6 +1765,7 @@ describe('parse()', () => {
         options: {},
         params: [false, 'bar', true],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1709,6 +1792,7 @@ describe('parse()', () => {
         options: {},
         params: ['2019-01'],
         rest: [],
+        unknown: {},
       });
     });
   });
@@ -1738,6 +1822,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1763,6 +1848,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1788,6 +1874,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1816,6 +1903,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1839,6 +1927,7 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
       });
     });
 
@@ -1867,6 +1956,159 @@ describe('parse()', () => {
         },
         params: [],
         rest: [],
+        unknown: {},
+      });
+    });
+  });
+
+  describe('unknown options', () => {
+    it('errors if an unknown option with value is provided', () => {
+      const result = parse(['foo', '--unknown', 'value'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ParseError('Unknown option "--unknown" found.', '--unknown', 1)],
+        options: {},
+        params: ['foo', 'value'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('errors if an unknown option with inline value is provided', () => {
+      const result = parse(['foo', '--unknown=value'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ParseError('Unknown option "--unknown=value" found.', '--unknown=value', 1)],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('errors if an unknown option with no value is provided', () => {
+      const result = parse(['foo', '--unknown'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [new ParseError('Unknown option "--unknown" found.', '--unknown', 1)],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('errors if an unknown short option with value is provided', () => {
+      const result = parse(['foo', '-U', 'value'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ParseError('Unknown short option "U". No associated long option found.', '-U', 1),
+        ],
+        options: {},
+        params: ['foo', 'value'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('errors if an unknown short option with inline value is provided', () => {
+      const result = parse(['foo', '-U=value'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ParseError('Unknown short option "U". No associated long option found.', '-U', 1),
+        ],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('errors if an unknown short option with no value is provided', () => {
+      const result = parse(['foo', '-U'], {
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ParseError('Unknown short option "U". No associated long option found.', '-U', 1),
+        ],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('handles unknown option with value when `unknown` is true', () => {
+      const result = parse(['foo', '--unknown', 'value'], {
+        options: {},
+        unknown: true,
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {
+          unknown: 'value',
+        },
+      });
+    });
+
+    it('handles unknown option with inline value when `unknown` is true', () => {
+      const result = parse(['foo', '--unknown=value'], {
+        options: {},
+        unknown: true,
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {
+          unknown: 'value',
+        },
+      });
+    });
+
+    it('handles unknown option with no value when `unknown` is true', () => {
+      const result = parse(['foo', '--unknown'], {
+        options: {},
+        unknown: true,
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {
+          unknown: '',
+        },
       });
     });
   });

@@ -11,6 +11,7 @@ import {
   PrimitiveType,
   MapParamType,
   ParamConfig,
+  UnknownOptionMap,
 } from './types';
 import getDefaultValue from './helpers/getDefaultValue';
 import isShortOption from './helpers/isShortOption';
@@ -54,11 +55,13 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
     commands: commandConfigs = [],
     options: optionConfigs,
     params: paramConfigs = [],
+    unknown: allowUnknown = false,
   } = parserOptions;
   const checker = new Checker();
   const options: OptionMap = {};
   const params: PrimitiveType[] = [];
   const rest: ArgList = [];
+  const unknown: UnknownOptionMap = {};
   const mapping: AliasMap = {};
   let command = '';
   let currentScope: Scope | null = null;
@@ -68,8 +71,15 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
       return;
     }
 
-    // Set and cast value if defined
-    if (currentScope.value !== undefined) {
+    // Set an unknown value
+    if (currentScope.unknown) {
+      if (allowUnknown) {
+        unknown[currentScope.name] =
+          currentScope.value === undefined ? '' : String(currentScope.finalValue);
+      }
+
+      // Set and cast value if defined
+    } else if (currentScope.value !== undefined) {
       options[currentScope.name] = currentScope.finalValue;
     }
 
@@ -145,8 +155,12 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
         // Parse and create next scope
         const scope = createScope(optionName, optionConfigs, options);
 
-        // Flag found, so set value immediately and discard scope
-        if (scope.flag) {
+        // Unknown option found, handle accordingly
+        if (scope.unknown && !allowUnknown) {
+          checker.checkUnknownOption(arg);
+
+          // Flag found, so set value immediately and discard scope
+        } else if (scope.flag) {
           options[scope.name] = !scope.negated;
 
           checker.checkNoInlineValue(inlineValue);
@@ -215,5 +229,6 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
     options: options as O,
     params: params as MapParamType<P>,
     rest,
+    unknown,
   };
 }

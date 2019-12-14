@@ -6,6 +6,7 @@
   "AG_GROUP_MISSING_COUNT": "Numeric options must have `count` enabled when passed in a short option group.",
   "AG_GROUP_UNSUPPORTED_TYPE": "Only boolean and countable number options may be used in a short option group.",
   "AG_OPTION_NUMBER_COUNT": "Only numeric options may use the `count` setting.",
+  "AG_OPTION_UNKNOWN": "Unknown option \"%s\" found.",
   "AG_OPTION_UNKNOWN_FORMAT": "Unknown option format.",
   "AG_PARAM_MISORDERED": "Optional param(s) %s found before required param \"%s\". Required must be first.",
   "AG_PARAM_REQUIRED": "Param \"%s\" is required but value is undefined.",

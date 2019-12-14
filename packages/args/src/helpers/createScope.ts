@@ -25,7 +25,7 @@ export default function createScope(
   }
 
   // Create scope
-  const scope = new Scope(name, optionConfigs[name] || { type: 'string' });
+  const scope = new Scope(name, optionConfigs[name]);
 
   scope.negated = negated;
 
