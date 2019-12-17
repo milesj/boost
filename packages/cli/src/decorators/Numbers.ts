@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { MultipleOption } from '@boost/args';
-import createOptionFactory from './metadata/createOptionFactory';
-import { PartialConfig } from './types';
+import createOptionFactory from '../metadata/createOptionFactory';
+import { PartialConfig } from '../types';
 
-export default function NumbersOption(
+export default function Numbers(
   description: string,
   config?: PartialConfig<MultipleOption<number[]>>,
 ) {

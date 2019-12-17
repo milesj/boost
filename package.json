@@ -52,6 +52,7 @@
       "typescript"
     ],
     "settings": {
+      "decorators": true,
       "node": true
     },
     "prettier": {

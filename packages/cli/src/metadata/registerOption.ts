@@ -13,4 +13,6 @@ export default function registerOption<T extends Object>(
   options[name] = config;
 
   Reflect.defineMetadata(META_OPTIONS, options, target);
+
+  console.log('Option', { property, target, config, options });
 }

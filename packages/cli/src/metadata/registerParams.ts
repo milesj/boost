@@ -15,4 +15,6 @@ export default function registerParams<T extends Object>(
     },
     target,
   );
+
+  console.log('Params', { target, property, config });
 }
