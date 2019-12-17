@@ -117,6 +117,7 @@ export type InferArgType<T> = T extends boolean
 
 export interface Arg<T> {
   default?: T;
+  deprecated?: boolean;
   description: string;
   hidden?: boolean;
   usage?: string;
