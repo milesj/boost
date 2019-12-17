@@ -26,6 +26,7 @@ import castValue from './helpers/castValue';
 import processShortOptionGroup from './helpers/processShortOptionGroup';
 import Checker from './Checker';
 import Scope from './Scope';
+import { DEFAULT_STRING_VALUE } from './constants';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -75,7 +76,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
     if (currentScope.unknown) {
       if (allowUnknown) {
         unknown[currentScope.name] =
-          currentScope.value === undefined ? '' : String(currentScope.finalValue);
+          currentScope.value === undefined ? DEFAULT_STRING_VALUE : String(currentScope.finalValue);
       }
 
       // Set and cast value if defined

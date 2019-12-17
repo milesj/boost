@@ -1,4 +1,4 @@
-import { RuntimeError } from '@boost/internal/src';
+import { RuntimeError } from '@boost/internal';
 import parse from './parse';
 import { Argv, ArgList, Arguments, ContextFactory, PrimitiveType, ParserOptions } from './types';
 

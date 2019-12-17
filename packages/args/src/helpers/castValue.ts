@@ -1,4 +1,5 @@
 import { ValueType } from '../types';
+import { DEFAULT_NUMBER_VALUE } from '../constants';
 
 export default function castValue(
   value: unknown,
@@ -23,7 +24,7 @@ export default function castValue(
     case 'number': {
       const number = Number(value);
 
-      return Number.isNaN(number) ? 0 : number;
+      return Number.isNaN(number) ? DEFAULT_NUMBER_VALUE : number;
     }
 
     default:

@@ -1,4 +1,5 @@
 import { OptionConfig, ValueType } from '../types';
+import { DEFAULT_STRING_VALUE, DEFAULT_BOOLEAN_VALUE, DEFAULT_NUMBER_VALUE } from '../constants';
 
 export default function getDefaultValue(config: OptionConfig): ValueType {
   let value = config.default;
@@ -7,11 +8,11 @@ export default function getDefaultValue(config: OptionConfig): ValueType {
     if (config.multiple) {
       value = [];
     } else if (config.type === 'boolean') {
-      value = false;
+      value = DEFAULT_BOOLEAN_VALUE;
     } else if (config.type === 'number') {
-      value = 0;
+      value = DEFAULT_NUMBER_VALUE;
     } else {
-      value = '';
+      value = DEFAULT_STRING_VALUE;
     }
   }
 

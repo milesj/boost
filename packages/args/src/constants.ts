@@ -2,6 +2,11 @@ import { createInternalDebugger } from '@boost/internal';
 
 export const debug = createInternalDebugger('args');
 
+// Default values for option types.
+export const DEFAULT_BOOLEAN_VALUE = false;
+export const DEFAULT_NUMBER_VALUE = 0;
+export const DEFAULT_STRING_VALUE = '';
+
 // Supports letters, numbers, dashes, and camel case.
 // Minimum 2 characters. Must start and end with a letter.
 export const COMMAND_FORMAT = /^[a-z][-a-z0-9:]*[a-z]$/iu;
