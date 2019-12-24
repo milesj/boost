@@ -7,6 +7,7 @@ export default function Numbers(
   description: string,
   config?: PartialConfig<MultipleOption<number[]>>,
 ) {
+  // Property
   return createOptionFactory<MultipleOption<number[]>>({
     ...config,
     default: [],

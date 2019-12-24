@@ -10,36 +10,68 @@ import {
 import { Arg } from './decorators';
 import registerOption from './metadata/registerOption';
 import registerParams from './metadata/registerParams';
-import { GlobalOptions } from './types';
-import { msg, META_OPTIONS, META_PARAMS } from './constants';
+import { GlobalArgumentOptions, Commandable, CommandMetadata } from './types';
+import { msg, META_OPTIONS, META_PARAMS, META_COMMANDS, META_NAME, META_REST } from './constants';
+import registerCommand from './metadata/registerCommand';
 
 export default abstract class Command<
-  O extends GlobalOptions,
+  O extends GlobalArgumentOptions,
   P extends PrimitiveType[] = ArgList
-> {
-  wtf: boolean = true;
-
+> implements Commandable {
   @Arg.Flag(msg('cli:optionHelpDescription'), { short: 'h' })
-  help: boolean = false;
+  help: O['help'] = false;
 
   @Arg.String(msg('cli:optionLocaleDescription'))
-  locale: string = 'en';
+  locale: O['locale'] = 'en';
 
   @Arg.Rest()
-  rest: string[] = ['foo'];
+  rest: string[] = [];
 
   @Arg.Flag(msg('cli:optionVersionDescription'), { short: 'v' })
-  version: boolean = true;
+  version: O['version'] = false;
 
-  getMetadata() {}
-
-  getParserOptions(): ParserOptions<O, P> {
+  /**
+   * Return all metadata registered to this instance.
+   */
+  getMetadata(): CommandMetadata {
     return {
+      commands: Reflect.getMetadata(META_COMMANDS, this) || {},
+      name: Reflect.getMetadata(META_NAME, this.constructor) || '',
       options: Reflect.getMetadata(META_OPTIONS, this) || {},
       params: Reflect.getMetadata(META_PARAMS, this),
+      rest: Reflect.getMetadata(META_REST, this),
     };
   }
 
+  /**
+   * Return metadata as options for argument parsing.
+   */
+  getParserOptions(): ParserOptions<O, P> {
+    const { name, options, params } = this.getMetadata();
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return {
+      commands: [name],
+      options,
+      params: params?.config,
+    } as ParserOptions<O, P>;
+  }
+
+  /**
+   * Register a sub-command for the current command.
+   */
+  registerCommand(command: Commandable): this {
+    registerCommand(this, command);
+
+    return this;
+  }
+
+  /**
+   * Register argument options that this command should parse and support.
+   * The object keys are class properties that the option values will be set to.
+   *
+   * This method should only be called if not using decorators.
+   */
   registerOptions(options: MapOptionConfig<O>): this {
     Object.entries(options).forEach(([option, config]) => {
       registerOption(this, option as keyof this, config as OptionConfig);
@@ -48,11 +80,20 @@ export default abstract class Command<
     return this;
   }
 
+  /**
+   * Register argument parameters that this command should parse and support.
+   * The first argument is a class property that the params will be set to.
+   *
+   * This method should only be called if not using decorators.
+   */
   registerParams(property: keyof this, params: MapParamConfig<P>): this {
     registerParams(this, property, params);
 
     return this;
   }
 
-  abstract async execute(): Promise<unknown>;
+  /**
+   * Executed when the command is being ran.
+   */
+  abstract async execute(): Promise<void>;
 }

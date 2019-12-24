@@ -1,18 +1,17 @@
 import 'reflect-metadata';
-import { OptionConfig, OptionConfigMap } from '@boost/args';
+import { OptionConfig } from '@boost/args';
 import { META_OPTIONS } from '../constants';
+import { CommandMetadata } from '../types';
 
 export default function registerOption<T extends Object>(
   target: T,
   property: keyof T,
   config: OptionConfig,
 ) {
-  const options: OptionConfigMap = Reflect.getMetadata(META_OPTIONS, target) ?? {};
+  const options: CommandMetadata['options'] = Reflect.getMetadata(META_OPTIONS, target) ?? {};
   const name = String(property);
 
   options[name] = config;
 
   Reflect.defineMetadata(META_OPTIONS, options, target);
-
-  console.log('Option', { property, target, config, options });
 }

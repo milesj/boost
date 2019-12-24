@@ -1,20 +1,14 @@
 import 'reflect-metadata';
 import { ParamConfig } from '@boost/args';
 import { META_PARAMS } from '../constants';
+import { CommandMetadata } from '../types';
 
 export default function registerParams<T extends Object>(
   target: T,
   property: keyof T,
   config: ParamConfig[],
 ) {
-  Reflect.defineMetadata(
-    META_PARAMS,
-    {
-      config,
-      property,
-    },
-    target,
-  );
+  const metadata: CommandMetadata['params'] = { config, property: String(property) };
 
-  console.log('Params', { target, property, config });
+  Reflect.defineMetadata(META_PARAMS, metadata, target);
 }
