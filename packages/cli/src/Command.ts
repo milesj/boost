@@ -69,7 +69,7 @@ export default abstract class Command<
   /**
    * Register a sub-command for the current command.
    */
-  registerCommand(command: Commandable): this {
+  protected registerCommand(command: Commandable): this {
     registerCommand(this, command);
 
     return this;
@@ -81,7 +81,7 @@ export default abstract class Command<
    *
    * This method should only be called if not using decorators.
    */
-  registerOptions(options: MapOptionConfig<O>): this {
+  protected registerOptions(options: MapOptionConfig<O>): this {
     Object.entries(options).forEach(([option, config]) => {
       registerOption(this, option as keyof this, config as OptionConfig);
     });
@@ -95,7 +95,7 @@ export default abstract class Command<
    *
    * This method should only be called if not using decorators.
    */
-  registerParams(params: MapParamConfig<P>): this {
+  protected registerParams(params: MapParamConfig<P>): this {
     registerParams(this, 'execute', params);
 
     return this;
