@@ -15,14 +15,15 @@ export interface GlobalArgumentOptions {
 }
 
 export interface CommandMetadata {
+  description: string;
   commands: { [name: string]: Commandable };
   name: string;
   options: { [property: string]: OptionConfig };
-  params: { config: ParamConfig[]; property: string } | undefined;
+  params: ParamConfig[];
   rest: string; // Property name
 }
 
-export interface Commandable {
-  execute(): Promise<void>;
+export interface Commandable<P extends unknown[] = unknown[]> {
+  execute(...params: P): Promise<void>;
   getMetadata(): CommandMetadata;
 }

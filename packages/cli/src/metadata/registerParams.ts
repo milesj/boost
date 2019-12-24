@@ -5,10 +5,14 @@ import { CommandMetadata } from '../types';
 
 export default function registerParams<T extends Object>(
   target: T,
-  property: keyof T,
+  method: keyof T,
   config: ParamConfig[],
 ) {
-  const metadata: CommandMetadata['params'] = { config, property: String(property) };
+  if (method !== 'execute') {
+    throw new Error('Parameters must be registered on the `execute()` method.');
+  }
+
+  const metadata: CommandMetadata['params'] = config;
 
   Reflect.defineMetadata(META_PARAMS, metadata, target);
 }

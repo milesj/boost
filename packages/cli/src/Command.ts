@@ -11,13 +11,21 @@ import { Arg } from './decorators';
 import registerOption from './metadata/registerOption';
 import registerParams from './metadata/registerParams';
 import { GlobalArgumentOptions, Commandable, CommandMetadata } from './types';
-import { msg, META_OPTIONS, META_PARAMS, META_COMMANDS, META_NAME, META_REST } from './constants';
+import {
+  msg,
+  META_OPTIONS,
+  META_PARAMS,
+  META_COMMANDS,
+  META_NAME,
+  META_REST,
+  META_DESCRIPTION,
+} from './constants';
 import registerCommand from './metadata/registerCommand';
 
 export default abstract class Command<
   O extends GlobalArgumentOptions,
   P extends PrimitiveType[] = ArgList
-> implements Commandable {
+> implements Commandable<P> {
   @Arg.Flag(msg('cli:optionHelpDescription'), { short: 'h' })
   help: O['help'] = false;
 
@@ -36,9 +44,10 @@ export default abstract class Command<
   getMetadata(): CommandMetadata {
     return {
       commands: Reflect.getMetadata(META_COMMANDS, this) || {},
+      description: Reflect.getMetadata(META_DESCRIPTION, this.constructor) || '',
       name: Reflect.getMetadata(META_NAME, this.constructor) || '',
       options: Reflect.getMetadata(META_OPTIONS, this) || {},
-      params: Reflect.getMetadata(META_PARAMS, this),
+      params: Reflect.getMetadata(META_PARAMS, this) || [],
       rest: Reflect.getMetadata(META_REST, this),
     };
   }
@@ -53,7 +62,7 @@ export default abstract class Command<
     return {
       commands: [name],
       options,
-      params: params?.config,
+      params,
     } as ParserOptions<O, P>;
   }
 
@@ -82,12 +91,12 @@ export default abstract class Command<
 
   /**
    * Register argument parameters that this command should parse and support.
-   * The first argument is a class property that the params will be set to.
+   * Each parameter will be a method argument passed to `execute()`.
    *
    * This method should only be called if not using decorators.
    */
-  registerParams(property: keyof this, params: MapParamConfig<P>): this {
-    registerParams(this, property, params);
+  registerParams(params: MapParamConfig<P>): this {
+    registerParams(this, 'execute', params);
 
     return this;
   }
@@ -95,5 +104,5 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract async execute(): Promise<void>;
+  abstract async execute(...params: P): Promise<void>;
 }
