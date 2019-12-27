@@ -1,6 +1,6 @@
 {
   "name": "@boost/args",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A type-safe and convention based argument parsing library, with strict validation checks.",
   "keywords": [
     "boost",
@@ -23,6 +23,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^1.0.0"
+    "@boost/internal": "^1.0.2"
   }
 }

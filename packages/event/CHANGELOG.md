@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.0 - 2019-12-27
+
+#### 🚀 Updates
+
+- Support Windows OS and Node v13. (#68) ([bca6786](https://github.com/milesj/boost/commit/bca6786)), closes [#68](https://github.com/milesj/boost/issues/68)
+
+**Note:** Version bump only for package @boost/event
+
+
+
+
+
 ### 1.1.1 - 2019-11-12
 
 #### 📘 Docs

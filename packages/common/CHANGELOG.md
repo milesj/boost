@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.7.0 - 2019-12-27
+
+#### 🚀 Updates
+
+- **[Contract]** Updated `configure()` to accept a setter function. ([2938a9f](https://github.com/milesj/boost/commit/2938a9f))
+
+#### 🐞 Fixes
+
+- **[Contract]** Dont deep freeze the options object. ([b378abf](https://github.com/milesj/boost/commit/b378abf))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 1.6.0 - 2019-12-07
 
 #### 🚀 Updates

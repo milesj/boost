@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.0 - 2019-12-27
+
+#### 🚀 Updates
+
+- Update to use new terminal utilities. ([452c96c](https://github.com/milesj/boost/commit/452c96c))
+
+**Note:** Version bump only for package @boost/reporter-nyan
+
+
+
+
+
 ### 1.1.3 - 2019-11-12
 
 #### 🐞 Fixes

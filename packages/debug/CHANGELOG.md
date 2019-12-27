@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.4.0 - 2019-12-27
+
+#### 🚀 Updates
+
+- **[CrashReporter]** Add `reportPackageVersions` to log all matching package versions. ([406fe78](https://github.com/milesj/boost/commit/406fe78))
+
+#### 🐞 Fixes
+
+- Reduce internal debug output verbosity. ([4b11141](https://github.com/milesj/boost/commit/4b11141))
+- Rename env vars to not collide with Boost C++ library. ([b3d1153](https://github.com/milesj/boost/commit/b3d1153))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 1.3.2 - 2019-12-07
 
 **Note:** Version bump only for package @boost/debug

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.3.3 - 2019-12-27
+
+#### 🐞 Fixes
+
+- Reduce internal debug output verbosity. ([4b11141](https://github.com/milesj/boost/commit/4b11141))
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 1.3.2 - 2019-12-07
 
 **Note:** Version bump only for package @boost/translate

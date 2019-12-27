@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.17.0 - 2019-12-27
+
+#### 🚀 Updates
+
+- **[CrashReporter]** Add `reportPackageVersions` to log all matching package versions. ([406fe78](https://github.com/milesj/boost/commit/406fe78))
+- Update to use new terminal utilities. ([452c96c](https://github.com/milesj/boost/commit/452c96c))
+
+#### 🐞 Fixes
+
+- Rename env vars to not collide with Boost C++ library. ([b3d1153](https://github.com/milesj/boost/commit/b3d1153))
+
+#### ⚙️ Types
+
+- Add more properties to `PackageConfig`. ([0adef0b](https://github.com/milesj/boost/commit/0adef0b))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ## 1.16.0 - 2019-12-07
 
 #### 🚀 Updates

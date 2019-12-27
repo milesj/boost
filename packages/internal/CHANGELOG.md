@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.0.2 - 2019-12-27
+
+#### 🐞 Fixes
+
+- Rename env vars to not collide with Boost C++ library. ([b3d1153](https://github.com/milesj/boost/commit/b3d1153))
+
+**Note:** Version bump only for package @boost/internal
+
+
+
+
+
 ### 1.0.1 - 2019-11-12
 
 #### 📘 Docs

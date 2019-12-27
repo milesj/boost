@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.8 - 2019-12-27
+
+#### 🐞 Fixes
+
+- Reduce internal debug output verbosity. ([4b11141](https://github.com/milesj/boost/commit/4b11141))
+- Rename env vars to not collide with Boost C++ library. ([b3d1153](https://github.com/milesj/boost/commit/b3d1153))
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 1.1.7 - 2019-12-07
 
 **Note:** Version bump only for package @boost/log
