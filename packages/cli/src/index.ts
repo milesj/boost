@@ -3,11 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import CLI from './CLI';
 import Command from './Command';
+import Program from './Program';
 
 export * from './decorators';
 export * from './constants';
 export * from './types';
 
-export { CLI, Command };
+export { Command, Program };

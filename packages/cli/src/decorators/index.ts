@@ -1,5 +1,5 @@
 import Flag from './Flag';
-import Name from './Name';
+import Meta from './Meta';
 import Number from './Number';
 import Numbers from './Numbers';
 import Params from './Params';
@@ -17,4 +17,4 @@ export const Arg = {
   Strings,
 };
 
-export { Flag, Name, Number, Numbers, Params, Rest, String, Strings };
+export { Flag, Meta, Number, Numbers, Params, Rest, String, Strings };

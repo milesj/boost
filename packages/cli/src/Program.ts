@@ -1,9 +1,9 @@
 import { Argv, parseInContext, PrimitiveType } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
-import { CLIOptions, Commandable, GlobalArgumentOptions } from './types';
+import { ProgramOptions, Commandable, GlobalArgumentOptions } from './types';
 import Command from './Command';
 
-export default class CLI extends Contract<CLIOptions> {
+export default class Program extends Contract<ProgramOptions> {
   protected commands: { [name: string]: Commandable } = {};
 
   blueprint({ string }: Predicates) {
@@ -83,6 +83,6 @@ export default class CLI extends Contract<CLIOptions> {
     }
 
     // Execute command
-    await command.execute(...params);
+    await command.run(...params);
   }
 }

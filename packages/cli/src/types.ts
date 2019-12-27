@@ -1,8 +1,8 @@
-import { ParamConfig, OptionConfig } from '@boost/args/src';
+import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boost/args/src';
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
 
-export interface CLIOptions {
+export interface ProgramOptions {
   bin: string;
   name: string;
   version: string;
@@ -14,16 +14,18 @@ export interface GlobalArgumentOptions {
   version: boolean;
 }
 
-export interface CommandMetadata {
-  description: string;
-  commands: { [name: string]: Commandable };
-  name: string;
-  options: { [property: string]: OptionConfig };
-  params: ParamConfig[];
-  rest: string; // Property name
+export interface CommandConstructorMetadata extends Required<CommandConfig> {
+  path: string; // Canonical name used on the command line
+}
+
+export interface CommandMetadata extends CommandConstructorMetadata {
+  commands: { [path: string]: Commandable };
+  options: OptionConfigMap;
+  params: ParamConfigList;
+  rest: string; // Property name to set rest args to
 }
 
 export interface Commandable<P extends unknown[] = unknown[]> {
-  execute(...params: P): Promise<void>;
   getMetadata(): CommandMetadata;
+  run(...params: P): Promise<void>;
 }

@@ -1,9 +1,9 @@
-import { Command, Name, Arg, GlobalArgumentOptions } from '../src';
+import { Command, Meta, Arg, GlobalArgumentOptions } from '../src';
 
 describe('Command', () => {
   interface Args extends GlobalArgumentOptions {}
 
-  @Name('test', 'A test command')
+  @Meta('test', 'A test command', { deprecated: true })
   class TestCommand extends Command<Args> {
     @Arg.String('Test')
     foo: string = 'foo';
@@ -14,7 +14,7 @@ describe('Command', () => {
     }
   }
 
-  @Name('foo', 'A sub-command')
+  @Meta('foo', 'A sub-command')
   class FooCommand extends Command<Args, [string, number, boolean]> {
     @Arg.Params<[string, number, boolean]>(
       { description: '', type: 'string' },
