@@ -10,5 +10,183 @@ yarn add @boost/terminal
 
 ## Usage
 
-There are many libraries and utilities available in the NPM ecosystem, many of which Boost
-consolidates into a single package. The currently supported are as follows.
+There are many terminal based libraries and utilities available in the NPM ecosystem, many of which
+Boost consolidates into a single package. The currently supported are as follows.
+
+### Cursor
+
+The `cursor` object provides a set of
+[ANSI escapes codes](https://www.npmjs.com/package/ansi-escapes) for use in manipulating the
+terminal cursor.
+
+```ts
+import { cursor } from '@boost/terminal';
+
+process.stdout.write(cursor.to(10, 10));
+```
+
+The following properties are available.
+
+- `backward` (`(count: number) => string`) - Number of columns to move backward. Defaults to `1`.
+- `down` (`(count: number) => string`) - Number of rows to move down. Defaults to `1`.
+- `forward` (`(count: number) => string`) - Number of columns to move forward. Defaults to `1`.
+- `hide` (`string`) - Hide the cursor.
+- `nextLine` (`string`) - Move cursor to the next line.
+- `position` (`string`) - Return the current cursur position.
+- `prevLine` (`string`) - Move cursor to the previous line.
+- `restorePosition` (`string`) - Restores the cursor position/state.
+- `savePosition` (`string`) - Saves the cursor position/state.
+- `show` (`string`) - Show the cursor.
+- `startLine` (`string`) - Move cursor to the start of the current line.
+- `to` (`(x: number, y?: number) => string`) - Set the relative position of the cursor.
+- `toAbsolute` (`(x: number, y?: number) => string`) - Set the absolute position of the cursor,
+  starting from the top left.
+- `up` (`(count: number) => string`) - Number of rows to move up. Defaults to `1`.
+
+### Figures
+
+The `figures` object provides a set of cross-platform symbols.
+[View the official NPM package for a full list](https://www.npmjs.com/package/figures).
+
+```ts
+import { figures } from '@boost/terminal';
+
+process.stdout.write(figures.tick);
+```
+
+### Screen
+
+The `screen` object provides a set of
+[ANSI escapes codes](https://www.npmjs.com/package/ansi-escapes) for use in manipulating the
+terminal screen.
+
+```ts
+import { screen } from '@boost/terminal';
+
+process.stdout.write(screen.eraseLine);
+```
+
+The following properties are available.
+
+- `clear` (`string`) - Clear the terminal screen.
+- `clearTerminal` (`string`) - Clear the whole terminal, including scrollback buffer.
+- `erase` (`string`) - Erase the screen and move the cursor the top left position.
+- `eraseDown` (`string`) - Erase the screen from the current line down to the bottom of the screen.
+- `eraseEndLine` (`string`) - Erase from the current cursor position to the end of the current line.
+- `eraseLine` (`string`) - Erase the entire current line.
+- `eraseLines` (`(count: number) => string`) - Erase from the current cursor position up the
+  specified amount of rows.
+- `eraseStartLine` (`string`) - Erase from the current cursor position to the start of the current
+  line.
+- `eraseUp` (`string`) - Erase the screen from the current line up to the top of the screen.
+- `scrollDown` (`string`) - Scroll down the screen by 1 line.
+- `scrollUp` (`string`) - Scroll up the screen by 1 line.
+- `size` (`() => Size`) - Reliably and accurately get the screen size (in `columns` and `rows`).
+
+### Styles
+
+The `style` export is an instance of [chalk](https://www.npmjs.com/package/chalk), for use in simple
+color and text styling.
+
+```ts
+import { style } from '@boost/terminal';
+
+const pass = style.bgGreen.black.bold(' PASS ');
+```
+
+### Text
+
+The following functions can be used to operate on ANSI-aware strings.
+
+#### `annotate`
+
+The `annotate(text: string, annotation: string)` function can be used to wrap a piece of text with a
+visual annotation _(iTerm only)_. If a terminal does not support annotations, it will pass the text
+through.
+
+```ts
+import { annotate } from '@boost/terminal';
+
+const text = annotate('fileName.js', fullFilePath);
+```
+
+#### `calculateWidth`
+
+Calculate and return the visual width of a string (number of terminal columns required) using
+`calculateWidth(text: string)`. Based on [string-width](https://www.npmjs.com/package/string-width).
+
+```ts
+import { calculateWidth } from '@boost/terminal';
+
+calculateWidth('古'); // 2
+```
+
+#### `hasAnsi`
+
+The `hasAnsi(text: string)` function returns true if the string contains ANSI escape codes. Based on
+[ansi-regex](https://www.npmjs.com/package/ansi-regex).
+
+```ts
+import { hasAnsi } from '@boost/terminal';
+
+hasAnsi('\u001B[4mTest\u001B[0m'); // true
+```
+
+#### `link`
+
+The `link(text: string, url: string)` function can be used to wrap a piece of text in an ANSI escape
+code hyperlink. If a terminal does not support hyperlinks, it will pass the text through.
+
+```ts
+import { link } from '@boost/terminal';
+
+const text = link('Read the manual', 'https://milesj.gitbook.io/boost');
+```
+
+#### `sliceAnsi`
+
+Slice a string while preserving ANSI escape codes with
+`sliceAnsi(text: string, start: number, end?: number)`. Based on
+[slice-ansi](https://www.npmjs.com/package/slice-ansi).
+
+```ts
+import { sliceAnsi } from '@boost/terminal';
+
+const text = sliceAnsi(aStringThatMayContainAnsi, 15, 25);
+```
+
+#### `stripAnsi`
+
+Strip all ANSI escape codes from the provided string with `stripAnsi(text: string)`. Based on
+[strip-ansi](https://www.npmjs.com/package/strip-ansi).
+
+```ts
+import { stripAnsi } from '@boost/terminal';
+
+const text = stripAnsi(aStringThatContainsAnsi);
+```
+
+#### `truncate`
+
+Truncate a string to a desired terminal width while preserving ANSI escape codes, Unicode surrogate
+pairs, and fullwidth characters, using
+`truncate(text: string, width: number, options?: TruncateOptions)`. Based on
+[cli-truncate](https://www.npmjs.com/package/cli-truncate).
+
+```ts
+import { truncate } from '@boost/terminal';
+
+const text = truncate(aStringThatMayContainAnsi, 10, { position: 'middle' });
+```
+
+#### `wrapAnsi`
+
+Wrap a string that contains ANSI escape codes to a desired terminal width using
+`wrapAnsi(text: string, width: number, options?: WrapOptions)`. Based on
+[wrap-ansi](https://www.npmjs.com/package/wrap-ansi).
+
+```ts
+import { wrapAnsi } from '@boost/terminal';
+
+const text = wrapAnsi(aStringThatContainsAnsi, 20);
+```

@@ -1,4 +1,5 @@
 import ansiEscapes from 'ansi-escapes';
+import termSize from 'term-size';
 
 export default {
   clear: ansiEscapes.clearScreen,
@@ -12,4 +13,5 @@ export default {
   eraseUp: ansiEscapes.eraseUp,
   scrollDown: ansiEscapes.scrollDown,
   scrollUp: ansiEscapes.scrollUp,
+  size: termSize,
 };

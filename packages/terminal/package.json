@@ -29,6 +29,7 @@
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.0",
     "supports-hyperlinks": "^2.0.0",
+    "term-size": "^2.1.1",
     "wrap-ansi": "^6.2.0"
   },
   "funding": {
