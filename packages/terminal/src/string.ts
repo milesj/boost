@@ -3,6 +3,7 @@ import ansiRegex from 'ansi-regex';
 import slice from 'slice-ansi';
 import strip from 'strip-ansi';
 import wrap from 'wrap-ansi';
+import width from 'string-width';
 import cliTruncate from 'cli-truncate';
 import supportsHyperlinks from 'supports-hyperlinks';
 
@@ -14,6 +15,10 @@ export function annotate(text: string, annotation: string): string {
   }
 
   return text;
+}
+
+export function calculateWidth(text: string): number {
+  return width(text);
 }
 
 export function hasAnsi(value: string): boolean {
