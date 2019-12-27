@@ -57,6 +57,9 @@
       "path": "packages/reporter-nyan/tests"
     },
     {
+      "path": "packages/terminal"
+    },
+    {
       "path": "packages/test-utils"
     },
     {
