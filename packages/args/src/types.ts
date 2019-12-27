@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export type Argv = string[];
 
 export type ArgList = string[];
@@ -89,6 +91,8 @@ export type MapOptionConfig<T extends object> = { [K in keyof T]: InferOptionCon
 
 export type CommandChecker = (arg: string) => boolean;
 
+export type ContextFactory = (arg: string, argv: Argv) => ParserOptions<{}> | undefined;
+
 export interface Arguments<O extends object, P extends PrimitiveType[]> {
   command: string[];
   errors: Error[];
@@ -105,7 +109,23 @@ export interface ParserOptions<T extends object, P extends PrimitiveType[] = Arg
   unknown?: boolean;
 }
 
-export type ContextFactory = (arg: string, argv: Argv) => ParserOptions<{}> | undefined;
+// BASE TYPES
+
+export interface Config {
+  deprecated?: boolean;
+  description: string;
+  hidden?: boolean;
+}
+
+export interface Command extends Config {
+  usage?: string;
+}
+
+export interface Usage extends Command {
+  commands?: { [name: string]: Usage };
+  options?: OptionConfigMap;
+  params?: ParamConfigList;
+}
 
 // ARGUMENT TYPES
 
@@ -115,12 +135,8 @@ export type InferArgType<T> = T extends boolean
   ? 'number'
   : 'string';
 
-export interface Arg<T> {
+export interface Arg<T> extends Config {
   default?: T;
-  deprecated?: boolean;
-  description: string;
-  hidden?: boolean;
-  usage?: string;
   type: InferArgType<T>;
   validate?: (value: T) => void;
 }
@@ -151,7 +167,6 @@ export interface Param<T extends PrimitiveType> extends Arg<T> {
 }
 
 // Abstract type for easier typing
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OptionConfig = Option<any> & {
   arity?: number;
   choices?: PrimitiveType[];
@@ -160,13 +175,14 @@ export type OptionConfig = Option<any> & {
   multiple?: boolean;
 };
 
+export interface OptionConfigMap {
+  [name: string]: OptionConfig;
+}
+
 // Abstract type for easier typing
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ParamConfig = Param<any>;
 
-export interface OptionConfigMap {
-  [key: string]: OptionConfig;
-}
+export type ParamConfigList = ParamConfig[];
 
 // Without leading "--"
 export type LongOptionName = string;
