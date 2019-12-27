@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers, @typescript-eslint/no-explicit-any */
 
-import chalk from 'chalk';
+import { style } from '@boost/terminal';
 import { Reporter, Routine, Task } from '@boost/core';
 
 // Based on the wonderful reporter found in Mocha
@@ -109,7 +109,7 @@ export default class NyanReporter extends Reporter {
       eyes = 'x .x';
     }
 
-    return `( ${chalk.white(eyes)})`;
+    return `( ${style.white(eyes)})`;
   }
 
   increaseRainbowWidth() {
@@ -150,14 +150,14 @@ export default class NyanReporter extends Reporter {
     // Poptart
     output += this.rainbows[0].join('');
     output += ' ';
-    output += chalk.magenta(' ,------,');
+    output += style.magenta(' ,------,');
     output += '\n';
 
     // Ears
     output += this.rainbows[1].join('');
     output += ' ';
-    output += chalk.magenta(` |${tick ? ' .' : ' . '}`);
-    output += chalk.gray('/\\_/\\');
+    output += style.magenta(` |${tick ? ' .' : ' . '}`);
+    output += style.gray('/\\_/\\');
     output += '\n';
 
     // Face
@@ -165,14 +165,14 @@ export default class NyanReporter extends Reporter {
     output += ' ';
 
     if (tick) {
-      output += chalk.gray('~');
-      output += chalk.magenta('|_');
+      output += style.gray('~');
+      output += style.magenta('|_');
     } else {
-      output += chalk.gray('^');
-      output += chalk.magenta('|__');
+      output += style.gray('^');
+      output += style.magenta('|__');
     }
 
-    output += chalk.gray(this.getCatFace());
+    output += style.gray(this.getCatFace());
     output += '\n';
 
     // Feet
@@ -180,9 +180,9 @@ export default class NyanReporter extends Reporter {
     output += ' ';
 
     if (tick) {
-      output += chalk.gray(' "  ""  "');
+      output += style.gray(' "  ""  "');
     } else {
-      output += chalk.gray('  ""  ""');
+      output += style.gray('  ""  ""');
     }
 
     output += '\n';

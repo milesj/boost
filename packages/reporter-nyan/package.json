@@ -20,7 +20,7 @@
     "access": "public"
   },
   "dependencies": {
-    "chalk": "^3.0.0"
+    "@boost/terminal": "^0.0.0"
   },
   "peerDependencies": {
     "@boost/core": "^1.4.0"

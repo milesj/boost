@@ -16,6 +16,9 @@
   ],
   "references": [
     {
+      "path": "../terminal"
+    },
+    {
       "path": "../core"
     }
   ]

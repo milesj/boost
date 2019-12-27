@@ -31,6 +31,9 @@
       "path": "../log"
     },
     {
+      "path": "../terminal"
+    },
+    {
       "path": "../translate"
     }
   ]

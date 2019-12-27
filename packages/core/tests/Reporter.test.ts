@@ -1,5 +1,4 @@
-import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
+import { cursor, style } from '@boost/terminal';
 import { mockConsole, mockTool, mockRoutine } from '../src/testUtils';
 import Reporter, { testOnlyResetRestoreCursor } from '../src/Reporter';
 import ProgressOutput from '../src/outputs/ProgressOutput';
@@ -108,9 +107,9 @@ describe('Reporter', () => {
 
       reporter.displayError(error);
 
-      expect(reporter.console.err).toHaveBeenCalledWith(`\n${chalk.red.bold('Oops')}\n`);
+      expect(reporter.console.err).toHaveBeenCalledWith(`\n${style.red.bold('Oops')}\n`);
       expect(reporter.console.err).toHaveBeenCalledWith(
-        chalk.gray(error.stack!.replace('Error: Oops\n', '')),
+        style.gray(error.stack!.replace('Error: Oops\n', '')),
         1,
       );
     });
@@ -120,16 +119,16 @@ describe('Reporter', () => {
 
       reporter.displayError(error);
 
-      expect(reporter.console.err).toHaveBeenCalledWith(`\n${chalk.red.bold('Oops\nBroken')}\n`);
+      expect(reporter.console.err).toHaveBeenCalledWith(`\n${style.red.bold('Oops\nBroken')}\n`);
       expect(reporter.console.err).toHaveBeenCalledWith(
-        chalk.gray(error.stack!.replace('Error: Oops\nBroken\n', '')),
+        style.gray(error.stack!.replace('Error: Oops\nBroken\n', '')),
         1,
       );
     });
   });
 
   describe('getColorPalette()', () => {
-    const oldLevel = chalk.level;
+    const oldLevel = style.level;
     const basePalette = {
       default: 'white',
       failure: 'red',
@@ -139,31 +138,31 @@ describe('Reporter', () => {
     };
 
     afterEach(() => {
-      chalk.level = oldLevel;
+      style.level = oldLevel;
     });
 
     it('returns base palette if chalk level < 2', () => {
-      chalk.level = 1;
+      style.level = 1;
 
       expect(reporter.getColorPalette()).toEqual(basePalette);
     });
 
     it('returns base palette if chalk level >= 2 and theme is default', () => {
-      chalk.level = 2;
+      style.level = 2;
       reporter.tool.config.theme = 'default';
 
       expect(reporter.getColorPalette()).toEqual(basePalette);
     });
 
     it('errors if theme does not exist', () => {
-      chalk.level = 2;
+      style.level = 2;
       reporter.tool.config.theme = 'custom';
 
       expect(() => reporter.getColorPalette()).toThrowErrorMatchingSnapshot();
     });
 
     it('returns theme palette', () => {
-      chalk.level = 2;
+      style.level = 2;
       reporter.tool.config.theme = 'solarized';
 
       expect(reporter.getColorPalette()).toEqual({
@@ -212,7 +211,7 @@ describe('Reporter', () => {
     });
 
     it('colors red if higher than slow threshold', () => {
-      expect(reporter.getElapsedTime(1000, 15000)).toBe(chalk.red('14.0s'));
+      expect(reporter.getElapsedTime(1000, 15000)).toBe(style.red('14.0s'));
     });
 
     it('doesnt color if highlight is false', () => {
@@ -271,14 +270,14 @@ describe('Reporter', () => {
   });
 
   describe('hasColorSupport()', () => {
-    const oldSupportLevel = chalk.supportsColor;
+    const oldSupportLevel = style.supportsColor;
 
     beforeEach(() => {
-      chalk.supportsColor = { level: 2, has16m: true, hasBasic: true, has256: true };
+      style.supportsColor = { level: 2, has16m: true, hasBasic: true, has256: true };
     });
 
     afterEach(() => {
-      chalk.supportsColor = oldSupportLevel;
+      style.supportsColor = oldSupportLevel;
     });
 
     it('returns false if support is below the requested level', () => {
@@ -295,7 +294,7 @@ describe('Reporter', () => {
     it('writes ansi escape code', () => {
       reporter.hideCursor();
 
-      expect(reporter.console.out).toHaveBeenCalledWith(ansiEscapes.cursorHide);
+      expect(reporter.console.out).toHaveBeenCalledWith(cursor.hide);
     });
 
     it('sets restore listener', () => {
@@ -337,9 +336,7 @@ describe('Reporter', () => {
     it('writes ansi escape code', () => {
       reporter.resetCursor();
 
-      expect(reporter.console.out).toHaveBeenCalledWith(
-        ansiEscapes.cursorTo(0, reporter.size().rows),
-      );
+      expect(reporter.console.out).toHaveBeenCalledWith(cursor.to(0, reporter.size().rows));
     });
   });
 
@@ -347,7 +344,7 @@ describe('Reporter', () => {
     it('writes ansi escape code', () => {
       reporter.showCursor();
 
-      expect(reporter.console.out).toHaveBeenCalledWith(ansiEscapes.cursorShow);
+      expect(reporter.console.out).toHaveBeenCalledWith(cursor.show);
     });
   });
 
@@ -379,47 +376,47 @@ describe('Reporter', () => {
 
   describe('style()', () => {
     it('colors default', () => {
-      expect(reporter.style('foo')).toBe(chalk.white('foo'));
+      expect(reporter.style('foo')).toBe(style.white('foo'));
     });
 
     it('colors pending', () => {
-      expect(reporter.style('foo', 'pending')).toBe(chalk.gray('foo'));
+      expect(reporter.style('foo', 'pending')).toBe(style.gray('foo'));
     });
 
     it('colors failure', () => {
-      expect(reporter.style('foo', 'failure')).toBe(chalk.red('foo'));
+      expect(reporter.style('foo', 'failure')).toBe(style.red('foo'));
     });
 
     it('colors success', () => {
-      expect(reporter.style('foo', 'success')).toBe(chalk.green('foo'));
+      expect(reporter.style('foo', 'success')).toBe(style.green('foo'));
     });
 
     it('colors warning', () => {
-      expect(reporter.style('foo', 'warning')).toBe(chalk.yellow('foo'));
+      expect(reporter.style('foo', 'warning')).toBe(style.yellow('foo'));
     });
 
     it('can apply modifiers', () => {
       expect(reporter.style('foo', 'pending', ['bold', 'dim', 'italic'])).toBe(
-        chalk.gray.bold.dim.italic('foo'),
+        style.gray.bold.dim.italic('foo'),
       );
     });
   });
 
   describe('strip()', () => {
     it('stips ANSI escape codes', () => {
-      expect(reporter.strip(chalk.red('foo'))).toBe('foo');
+      expect(reporter.strip(style.red('foo'))).toBe('foo');
     });
   });
 
   describe('truncate()', () => {
     it('truncates with ANSI escape codes', () => {
-      expect(reporter.truncate(chalk.red('foobar'), 3)).not.toBe(chalk.red('foobar'));
+      expect(reporter.truncate(style.red('foobar'), 3)).not.toBe(style.red('foobar'));
     });
   });
 
   describe('wrap()', () => {
     it('wraps with ANSI escape codes', () => {
-      expect(reporter.wrap(chalk.red('foobar'), 3)).toBe(chalk.red('foo\nbar'));
+      expect(reporter.wrap(style.red('foobar'), 3)).toBe(style.red('foo\nbar'));
     });
   });
 });

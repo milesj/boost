@@ -1,5 +1,4 @@
-import cliSize from 'term-size';
-import ansiEscapes from 'ansi-escapes';
+import { screen } from '@boost/terminal';
 import Console from './Console';
 
 export type StringRenderer = () => string;
@@ -67,7 +66,7 @@ export default class Output<Renderer extends () => any = StringRenderer> {
    */
   erasePrevious(): this {
     if (this.previousHeight > 0) {
-      this.console.out(ansiEscapes.eraseLines(this.previousHeight));
+      this.console.out(screen.eraseLines(this.previousHeight));
     }
 
     return this;
@@ -119,7 +118,7 @@ export default class Output<Renderer extends () => any = StringRenderer> {
 
     // Content cannot be higher than the terminal
     const lines = content.split('\n');
-    const maxHeight = cliSize().rows - 1; // Buffer for input line
+    const maxHeight = screen.size().rows - 1; // Buffer for input line
 
     if (lines.length >= maxHeight) {
       content = lines.slice(-maxHeight).join('\n');

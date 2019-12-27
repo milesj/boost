@@ -1,9 +1,8 @@
 /* eslint-disable no-magic-numbers */
 
-import chalk from 'chalk';
-import cliSize from 'term-size';
 import optimal, { bool, number, string } from 'optimal';
 import { formatMs } from '@boost/common';
+import { screen, style } from '@boost/terminal';
 import Output from '../Output';
 
 const STYLES = {
@@ -45,7 +44,7 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
   }
 
   protected toString(state: ProgressState): string {
-    const { color, current, style, template, total, transparent } = optimal(
+    const { color, current, style: styleName, template, total, transparent } = optimal(
       state,
       {
         color: bool(),
@@ -86,9 +85,9 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
 
     // Render the progress bar
     const currentWidth = partialTemplate.replace('{bar}', '').length;
-    const remainingWidth = cliSize().columns - currentWidth;
+    const remainingWidth = screen.size().columns - currentWidth;
     const completed = Math.round(remainingWidth * progress);
-    const [complete, incomplete] = STYLES[style];
+    const [complete, incomplete] = STYLES[styleName];
     let bar = [
       complete.repeat(Math.max(0, completed)),
       (transparent ? ' ' : incomplete).repeat(Math.max(0, remainingWidth - completed)),
@@ -96,11 +95,11 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
 
     if (color) {
       if (percent >= 90) {
-        bar = chalk.green(bar);
+        bar = style.green(bar);
       } else if (percent >= 45) {
-        bar = chalk.yellow(bar);
+        bar = style.yellow(bar);
       } else {
-        bar = chalk.red(bar);
+        bar = style.red(bar);
       }
     }
 

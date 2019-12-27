@@ -1,4 +1,4 @@
-import ansiEscapes from 'ansi-escapes';
+import { screen } from '@boost/terminal';
 import { mockConsole, mockTool } from '../src/testUtils';
 import Console from '../src/Console';
 import Output from '../src/Output';
@@ -101,7 +101,7 @@ describe('Output', () => {
       output.erasePrevious();
 
       expect(cli.out).toHaveBeenCalledWith('foo\nbar\nbaz\n');
-      expect(cli.out).toHaveBeenCalledWith(ansiEscapes.eraseLines(4));
+      expect(cli.out).toHaveBeenCalledWith(screen.eraseLines(4));
     });
   });
 

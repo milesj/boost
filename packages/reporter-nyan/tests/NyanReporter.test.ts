@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { style } from '@boost/terminal';
 import { STATUS_FAILED, STATUS_PASSED, STATUS_PENDING } from '@boost/core';
 import { mockTool, mockConsole, mockRoutine, mockTask, TestTool } from '@boost/core/test-utils';
 import NyanReporter from '../src/NyanReporter';
@@ -191,15 +191,15 @@ describe('NyanReporter', () => {
     // Overriding chalk doesnt work
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('doesnt apply color if terminal does not support it', () => {
-      const oldSupports = chalk.supportsColor;
+      const oldSupports = style.supportsColor;
 
-      chalk.supportsColor = false;
+      style.supportsColor = false;
 
       reporter.increaseRainbowWidth();
 
       expect(reporter.rainbows).toMatchSnapshot();
 
-      chalk.supportsColor = oldSupports;
+      style.supportsColor = oldSupports;
     });
   });
 

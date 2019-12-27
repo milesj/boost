@@ -1,10 +1,5 @@
-import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
-import cliTruncate from 'cli-truncate';
-import cliSize from 'term-size';
-import stripAnsi from 'strip-ansi';
-import wrapAnsi from 'wrap-ansi';
 import { formatMs } from '@boost/common';
+import { cursor, screen, style, truncate, stripAnsi, wrapAnsi } from '@boost/terminal';
 import Console from './Console';
 import Output, { StringRenderer } from './Output';
 import ProgressOutput, { ProgressRenderer } from './outputs/ProgressOutput';
@@ -100,7 +95,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
     let palette = {};
 
     /* eslint-disable global-require, import/no-dynamic-require */
-    if (chalk.level >= 2 && theme !== 'default') {
+    if (style.level >= 2 && theme !== 'default') {
       try {
         palette = require(`@boost/theme-${theme}`);
       } catch {
@@ -188,20 +183,20 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
    * Return true if the user's terminal supports color.
    */
   hasColorSupport(level: number = 1): boolean {
-    return chalk.supportsColor && chalk.supportsColor.level >= level;
+    return style.supportsColor && style.supportsColor.level >= level;
   }
 
   /**
    * Hide the console cursor.
    */
   hideCursor(): this {
-    this.console.out(ansiEscapes.cursorHide);
+    this.console.out(cursor.hide);
 
     if (!restoreCursorOnExit) {
       restoreCursorOnExit = true;
 
       process.on('exit', () => {
-        process.stdout.write(ansiEscapes.cursorShow);
+        process.stdout.write(cursor.show);
       });
     }
 
@@ -233,7 +228,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
    * Reset the cursor back to the bottom of the console.
    */
   resetCursor(): this {
-    this.console.out(ansiEscapes.cursorTo(0, this.size().rows));
+    this.console.out(cursor.to(0, this.size().rows));
 
     return this;
   }
@@ -242,7 +237,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
    * Show the console cursor.
    */
   showCursor(): this {
-    this.console.out(ansiEscapes.cursorShow);
+    this.console.out(cursor.show);
 
     return this;
   }
@@ -251,7 +246,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
    * Return size information about the terminal window.
    */
   size(): { columns: number; rows: number } {
-    return cliSize();
+    return screen.size();
   }
 
   /**
@@ -281,7 +276,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
     }
 
     const color = this.getColorPalette()[type];
-    let out = color.charAt(0) === '#' ? chalk.hex(color) : chalk[color as Color];
+    let out = color.charAt(0) === '#' ? style.hex(color) : style[color as Color];
 
     modifiers.forEach(modifier => {
       out = out[modifier];
@@ -298,7 +293,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
     columns?: number,
     options?: { position?: 'start' | 'middle' | 'end' },
   ): string {
-    return cliTruncate(message, columns || this.size().columns, options);
+    return truncate(message, columns || this.size().columns, options);
   }
 
   /**

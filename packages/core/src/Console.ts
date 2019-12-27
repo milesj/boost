@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 
 import exit from 'exit';
-import cliSize from 'term-size';
-import ansiEscapes from 'ansi-escapes';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { SignalError } from '@boost/internal';
+import { cursor, screen } from '@boost/terminal';
 import Emitter from './Emitter';
 import Task from './Task';
 import Tool from './Tool';
@@ -221,7 +220,7 @@ export default class Console extends Emitter {
   hideCursor(): this {
     console.warn('Console#hideCursor is deprecated. Use Reporter#hideCursor instead.');
 
-    this.out(ansiEscapes.cursorHide);
+    this.out(cursor.hide);
 
     return this;
   }
@@ -362,7 +361,7 @@ export default class Console extends Emitter {
     this.flushBufferedStreams();
 
     // Show the cursor incase it has been hidden
-    this.out(ansiEscapes.cursorShow);
+    this.out(cursor.show);
   }
 
   /**
@@ -371,7 +370,7 @@ export default class Console extends Emitter {
   resetCursor(): this {
     console.warn('Console#resetCursor is deprecated. Use Reporter#resetCursor instead.');
 
-    this.out(ansiEscapes.cursorTo(0, cliSize().rows));
+    this.out(cursor.to(0, screen.size().rows));
 
     return this;
   }
@@ -382,7 +381,7 @@ export default class Console extends Emitter {
   showCursor(): this {
     console.warn('Console#showCursor is deprecated. Use Reporter#showCursor instead.');
 
-    this.out(ansiEscapes.cursorShow);
+    this.out(cursor.show);
 
     return this;
   }
