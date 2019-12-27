@@ -60,9 +60,6 @@
       "path": "packages/terminal"
     },
     {
-      "path": "packages/terminal/tests"
-    },
-    {
       "path": "packages/test-utils"
     },
     {

@@ -3,9 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import color from 'chalk';
+import style from 'chalk';
 import figures from 'figures';
+import cursor from './cursor';
+import screen from './screen';
 
-export * from './string';
+export * from './text';
 
-export { color, figures };
+export { cursor, figures, screen, style };
