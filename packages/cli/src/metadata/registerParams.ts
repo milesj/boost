@@ -8,8 +8,8 @@ export default function registerParams<T extends Object>(
   method: keyof T,
   config: ParamConfig[],
 ) {
-  if (method !== 'execute') {
-    throw new Error('Parameters must be registered on the `execute()` method.');
+  if (method !== 'run') {
+    throw new Error('Parameters must be registered on the `run()` method.');
   }
 
   const metadata: CommandMetadata['params'] = config;

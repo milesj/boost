@@ -27,5 +27,6 @@ export interface CommandMetadata extends CommandConstructorMetadata {
 
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
+  getPath(): string;
   run(...params: P): Promise<void>;
 }

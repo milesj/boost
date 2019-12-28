@@ -6,7 +6,9 @@ import {
   PrimitiveType,
   MapParamConfig,
   ParserOptions,
+  COMMAND_FORMAT,
 } from '@boost/args';
+import { RuntimeError } from '@boost/internal';
 import { Arg } from './decorators';
 import registerCommand from './metadata/registerCommand';
 import registerOption from './metadata/registerOption';
@@ -54,12 +56,11 @@ export default abstract class Command<
   version: O['version'] = false;
 
   /**
-   * Return all metadata registered to this instance.
+   * Return and validate all metadata registered to this instance.
    */
   getMetadata(): CommandMetadata {
     const ctor = (this.constructor as unknown) as CommandConstructorMetadata;
-
-    return {
+    const metadata: CommandMetadata = {
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
@@ -68,9 +69,21 @@ export default abstract class Command<
       commands: Reflect.getMetadata(META_COMMANDS, this) || {},
       options: Reflect.getMetadata(META_OPTIONS, this) || {},
       params: Reflect.getMetadata(META_PARAMS, this) || [],
-      path: Reflect.getMetadata(META_PATH, ctor) || ctor.path || '',
+      path: this.getPath(),
       rest: Reflect.getMetadata(META_REST, this),
     };
+
+    // VALIDATE
+
+    if (!metadata.path || typeof metadata.path !== 'string') {
+      throw new Error(
+        'Command registered without a canonical path. Have you decorated your command?',
+      );
+    } else if (!metadata.path.match(COMMAND_FORMAT)) {
+      throw new RuntimeError('args', 'AG_COMMAND_INVALID_FORMAT', [name]);
+    }
+
+    return metadata;
   }
 
   /**
@@ -88,9 +101,36 @@ export default abstract class Command<
   }
 
   /**
+   * Return the command path (canonical name on the command line).
+   */
+  getPath(): string {
+    const path =
+      Reflect.getMetadata(META_PATH, this.constructor) ||
+      ((this.constructor as unknown) as CommandConstructorMetadata).path ||
+      '';
+
+    if (!path || typeof path !== 'string') {
+      throw new Error(
+        'Command registered without a canonical path. Have you described the command?',
+      );
+    } else if (!path.match(COMMAND_FORMAT)) {
+      throw new RuntimeError('args', 'AG_COMMAND_INVALID_FORMAT', [path]);
+    }
+
+    return path;
+  }
+
+  /**
    * Register a sub-command for the current command.
    */
   protected registerCommand(command: Commandable): this {
+    const path = this.getPath();
+    const subPath = command.getPath();
+
+    if (!subPath.startsWith(path)) {
+      throw new Error(`Sub-command "${subPath}" must be prefixed with "${path}:".`);
+    }
+
     registerCommand(this, command);
 
     return this;
