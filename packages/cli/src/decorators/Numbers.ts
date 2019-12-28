@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { MultipleOption } from '@boost/args';
 import createOptionFactory from '../metadata/createOptionFactory';
+import { numbersOptionBlueprint } from '../metadata/blueprints';
 import { PartialConfig } from '../types';
 
 export default function Numbers(
@@ -8,11 +9,14 @@ export default function Numbers(
   config?: PartialConfig<MultipleOption<number[]>>,
 ) {
   // Property
-  return createOptionFactory<MultipleOption<number[]>>({
-    ...config,
-    default: [],
-    description,
-    multiple: true,
-    type: 'number',
-  });
+  return createOptionFactory<MultipleOption<number[]>>(
+    {
+      ...config,
+      default: [],
+      description,
+      multiple: true,
+      type: 'number',
+    },
+    numbersOptionBlueprint,
+  );
 }
