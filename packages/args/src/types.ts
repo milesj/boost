@@ -138,7 +138,7 @@ export type InferArgType<T> = T extends boolean
 export interface Arg<T> extends Config {
   default?: T;
   type: InferArgType<T>;
-  validate?: (value: T) => void;
+  validate?: ((value: T) => void) | null;
 }
 
 export interface Option<T extends ValueType> extends Arg<T> {
