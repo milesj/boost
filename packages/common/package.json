@@ -22,7 +22,7 @@
     "@boost/internal": "^1.0.2",
     "js-yaml": "^3.13.1",
     "json5": "^2.1.1",
-    "optimal": "^3.3.0",
+    "optimal": "^3.4.0",
     "pretty-ms": "^5.1.0"
   },
   "devDependencies": {
