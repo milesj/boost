@@ -8,11 +8,13 @@ import {
   ParserOptions,
   COMMAND_FORMAT,
 } from '@boost/args';
+import { optimal } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
 import { Arg } from './decorators';
 import registerCommand from './metadata/registerCommand';
 import registerOption from './metadata/registerOption';
 import registerParams from './metadata/registerParams';
+import { commandMetadataBlueprint } from './metadata/blueprints';
 import {
   msg,
   META_OPTIONS,
@@ -56,7 +58,7 @@ export default abstract class Command<
   version: O['version'] = false;
 
   /**
-   * Return and validate all metadata registered to this instance.
+   * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {
     const ctor = (this.constructor as unknown) as CommandConstructorMetadata;
@@ -73,17 +75,10 @@ export default abstract class Command<
       rest: Reflect.getMetadata(META_REST, this),
     };
 
-    // VALIDATE
-
-    if (!metadata.path || typeof metadata.path !== 'string') {
-      throw new Error(
-        'Command registered without a canonical path. Have you decorated your command?',
-      );
-    } else if (!metadata.path.match(COMMAND_FORMAT)) {
-      throw new RuntimeError('args', 'AG_COMMAND_INVALID_FORMAT', [name]);
-    }
-
-    return metadata;
+    return optimal(metadata, commandMetadataBlueprint, {
+      name: this.constructor.name,
+      unknown: true,
+    });
   }
 
   /**

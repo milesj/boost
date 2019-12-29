@@ -1,21 +1,40 @@
 import 'reflect-metadata';
-import { Option } from '@boost/args';
+import { OptionConfig } from '@boost/args';
 import { optimal, Blueprint } from '@boost/common';
 import { META_OPTIONS } from '../constants';
 import { CommandMetadata } from '../types';
+import {
+  flagBlueprint,
+  numbersOptionBlueprint,
+  numberOptionBlueprint,
+  stringsOptionBlueprint,
+  stringOptionBlueprint,
+} from './blueprints';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function registerOption<T extends Object, O extends Option<any>>(
+export default function registerOption<T extends Object, O extends OptionConfig>(
   target: T,
   property: keyof T,
   config: O,
-  blueprint: Blueprint<O>,
 ) {
+  if (typeof target[property] === 'undefined') {
+    throw new TypeError(`Cannot define option as class property "${property}" does not exist.`);
+  }
+
   const options: CommandMetadata['options'] = Reflect.getMetadata(META_OPTIONS, target) ?? {};
   const name = String(property);
+  let blueprint: Blueprint<object>;
 
-  options[name] = optimal(config, blueprint, {
-    name: `--${property}`,
+  if (config.type === 'boolean') {
+    blueprint = flagBlueprint;
+  } else if (config.type === 'number') {
+    blueprint = config.multiple ? numbersOptionBlueprint : numberOptionBlueprint;
+  } else {
+    blueprint = config.multiple ? stringsOptionBlueprint : stringOptionBlueprint;
+  }
+
+  options[name] = optimal(config, blueprint as Blueprint<O>, {
+    name: `Option "${name}"`,
     unknown: false,
   });
 

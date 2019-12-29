@@ -5,7 +5,7 @@ import { commandBlueprint } from '../metadata/blueprints';
 import { META_CONFIG, META_PATH } from '../constants';
 import { PartialConfig, CommandConstructorMetadata } from '../types';
 
-export default function Meta(
+export default function Usage(
   path: string,
   description: string,
   config: PartialConfig<CommandConfig> = {},

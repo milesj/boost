@@ -16,8 +16,9 @@ import {
   COMMAND_FORMAT,
 } from '@boost/args';
 import { predicates, Blueprint } from '@boost/common';
+import { CommandMetadata } from '../types';
 
-const { array, bool, func, number, string, union } = predicates;
+const { array, bool, func, number, object, string, union } = predicates;
 
 export const commonBlueprint: Blueprint<Config> = {
   deprecated: bool(),
@@ -38,14 +39,25 @@ export const commandBlueprint: Blueprint<Command & { path: string }> = {
   usage: string(),
 };
 
+export const commandMetadataBlueprint: Blueprint<Partial<CommandMetadata>> = {
+  ...commonBlueprint,
+  commands: object(),
+  options: object(),
+  params: array(),
+  path: string()
+    .notEmpty()
+    .required()
+    .match(COMMAND_FORMAT),
+  rest: string(),
+  usage: string(),
+};
+
 // ARGS
 
 export const argBlueprint: Blueprint<Arg<unknown>> = {
   ...commonBlueprint,
   default: union([bool(), number(), string()], ''),
-  type: string()
-    .oneOf(['boolean', 'number', 'string'])
-    .required(),
+  type: string<'string'>('string').required(),
   validate: func(),
 };
 
@@ -65,7 +77,7 @@ export const flagBlueprint: Blueprint<Flag> = {
 export const stringOptionBlueprint: Blueprint<SingleOption<string>> = {
   ...optionBlueprint,
   choices: array(string()),
-  count: bool(),
+  count: bool().never(),
   default: string(DEFAULT_STRING_VALUE),
   type: string().oneOf(['string']),
 };
@@ -74,14 +86,14 @@ export const stringsOptionBlueprint: Blueprint<MultipleOption<string[]>> = {
   ...optionBlueprint,
   arity: number(),
   default: array(string(), []),
-  multiple: bool(),
+  multiple: bool().onlyTrue(),
   type: string().oneOf(['string']),
 };
 
 export const numberOptionBlueprint: Blueprint<SingleOption<number>> = {
   ...optionBlueprint,
   choices: array(number()),
-  count: bool(),
+  count: bool().never(),
   default: number(DEFAULT_NUMBER_VALUE),
   type: string().oneOf(['number']),
 };
@@ -90,7 +102,7 @@ export const numbersOptionBlueprint: Blueprint<MultipleOption<number[]>> = {
   ...optionBlueprint,
   arity: number(),
   default: array(number(), []),
-  multiple: bool(),
+  multiple: bool().onlyTrue(),
   type: string().oneOf(['number']),
 };
 
