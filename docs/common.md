@@ -16,6 +16,23 @@ yarn add @boost/common
 
 ## Helpers
 
+### `createBlueprint`
+
+The `createBlueprint<T>(factory: BlueprintFactory<T>)` function should be used to generate a
+blueprint object for use within [optimal](https://github.com/milesj/optimal) checks. All supported
+optimal predicates are passed as an object to the factory.
+
+```ts
+import { optimal, createBlueprint } from '@boost/common';
+
+const blueprint = createBlueprint(({ string, number }) => ({
+  name: string().required(),
+  age: number().gt(0),
+}));
+
+const data = optimal({}, blueprint);
+```
+
 ### `formatMs`
 
 The `formatMs(time: number, options?: Options)` function can be used to format a UNIX timestamp in

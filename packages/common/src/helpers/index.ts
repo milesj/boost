@@ -1,3 +1,4 @@
+export { default as createBlueprint } from './createBlueprint';
 export { default as formatMs } from './formatMs';
 export { default as instanceOf } from './instanceOf';
 export { default as isEmpty } from './isEmpty';
