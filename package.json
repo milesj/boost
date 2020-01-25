@@ -16,10 +16,10 @@
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^0.60.5",
+    "@milesj/build-tools": "^0.62.0",
     "@types/exit": "^0.1.30",
     "@types/fs-extra": "^8.0.1",
-    "@types/js-yaml": "^3.12.1",
+    "@types/js-yaml": "^3.12.2",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.149",
     "@types/pluralize": "^0.0.29",
@@ -27,7 +27,7 @@
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^1.6.0",
     "fs-extra": "^8.1.0",
-    "lerna": "^3.19.0"
+    "lerna": "^3.20.2"
   },
   "publishConfig": {
     "access": "public"
