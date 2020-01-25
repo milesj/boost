@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.4.1 - 2020-01-25
+
+#### 🐞 Fixes
+
+- Bump all packages to fix build issues. ([a8e8112](https://github.com/milesj/boost/commit/a8e8112))
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ## 1.4.0 - 2019-12-07
 
 #### 🚀 Updates

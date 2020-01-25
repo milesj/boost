@@ -1,6 +1,6 @@
 {
   "name": "@boost/reporter-nyan",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A nyan cat console reporter for Boost applications.",
   "keywords": [
     "boost",
@@ -21,7 +21,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/terminal": "^1.0.0"
+    "@boost/terminal": "^1.0.1"
   },
   "peerDependencies": {
     "@boost/core": "^1.4.0"

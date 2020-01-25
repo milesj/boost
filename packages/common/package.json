@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Common utilities for Boost applications.",
   "keywords": [
     "boost",
@@ -20,14 +20,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^1.0.2",
+    "@boost/internal": "^1.0.3",
     "js-yaml": "^3.13.1",
     "json5": "^2.1.1",
     "optimal": "^4.1.1",
     "pretty-ms": "^5.1.0"
   },
   "devDependencies": {
-    "@boost/test-utils": "^1.4.0"
+    "@boost/test-utils": "^1.4.1"
   },
   "funding": {
     "type": "ko-fi",
