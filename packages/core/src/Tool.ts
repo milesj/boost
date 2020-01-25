@@ -130,7 +130,7 @@ export default class Tool<
         appPath: string()
           .required()
           .notEmpty(),
-        argOptions: object(),
+        argOptions: object<object>(),
         configBlueprint: object(),
         configName: string().custom(value => {
           if (value && !value.match(CONFIG_NAME_PATTERN)) {

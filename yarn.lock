@@ -6674,10 +6674,15 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-optimal@^3.2.1, optimal@^3.4.0:
+optimal@^3.2.1:
   version "3.4.0"
   resolved "https://registry.npmjs.org/optimal/-/optimal-3.4.0.tgz#1dd55b7ae0ad2d7222858f0bc9e96b07ccee7c58"
   integrity sha512-unexr3ZDSQeNP/5rMcoaVtjDgEnC+T8LGpLmfC6prt6OQx83j7ijE+E9v5x2WFlwjeph91/Vsaryn9AMQOIjnA==
+
+optimal@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/optimal/-/optimal-4.1.1.tgz#4592e51a90efd5fe5a9eb6890b2bcd1480223dfe"
+  integrity sha512-1lLxcK5oqrnod/ztzn5ZEm06WHOdn1kIDaojcy/xQpg4NYqrMSUKpUPzloCDyvCfFG39+JFRF3yRoHrkNawjJw==
 
 optimist@^0.6.1:
   version "0.6.1"
