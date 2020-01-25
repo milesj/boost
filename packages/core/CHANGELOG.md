@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.18.0 - 2020-01-25
+
+#### 🚀 Updates
+
+- Add `createBlueprint()` helper function. ([7047424](https://github.com/milesj/boost/commit/7047424))
+
+#### 📦 Dependencies
+
+- **[optimal]** Update to v3.4. ([2ef70ff](https://github.com/milesj/boost/commit/2ef70ff))
+- **[optimal]** Update to v4. ([d52cc7c](https://github.com/milesj/boost/commit/d52cc7c))
+- Update minor and patch versions. ([bdec427](https://github.com/milesj/boost/commit/bdec427))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ## 1.17.0 - 2019-12-27
 
 #### 🚀 Updates

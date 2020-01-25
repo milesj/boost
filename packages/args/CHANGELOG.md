@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.1 - 2020-01-25
+
+#### ⚙️ Types
+
+- **[Arg]** Add null support to `validate`. ([35e24e4](https://github.com/milesj/boost/commit/35e24e4))
+
+**Note:** Version bump only for package @boost/args
+
+
+
+
+
 ## 1.1.0 - 2019-12-27
 
 #### 🚀 Updates
