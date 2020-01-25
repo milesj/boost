@@ -60,6 +60,9 @@
       ]
     },
     "typescript": {
+      "compilerOptions": {
+        "useDefineForClassFields": false
+      },
       "exclude": [
         "tests/typings.ts"
       ]
