@@ -17,8 +17,8 @@ import { MODULE_NAME_PATTERN, PLUGIN_NAME_PATTERN } from './constants';
 import { PackageConfig, PluginSetting } from './types';
 
 export interface ConfigLike {
-  extends?: ToolConfig['extends'];
   [key: string]: unknown;
+  extends?: ToolConfig['extends'];
 }
 
 export type ConfigPathOrObject = Path | ConfigLike;
