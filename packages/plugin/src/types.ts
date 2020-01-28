@@ -1,5 +1,9 @@
 import { ModuleName } from '@boost/common';
 
+export interface PluginOptions {
+  priority?: number;
+}
+
 export interface Pluggable<T = unknown> {
   name: ModuleName;
   priority?: number;
@@ -7,15 +11,11 @@ export interface Pluggable<T = unknown> {
   startup?: (tool: T) => void;
 }
 
-export type Setting<T extends Pluggable> = ModuleName | [ModuleName, object, number?] | T;
+export type Setting<T extends Pluggable> = ModuleName | [ModuleName, object, PluginOptions?] | T;
 
 export type Factory<T extends Pluggable, O extends object = object> = (options: Partial<O>) => T;
 
 export type Callback<T = unknown> = (plugin: T) => void;
-
-export interface PluginOptions {
-  priority?: number;
-}
 
 export interface Registration<T extends Pluggable> extends PluginOptions {
   name: ModuleName;

@@ -1,12 +1,13 @@
 {
   "name": "@boost/plugin",
   "version": "0.0.0",
-  "description": "Plugin based system that supports module loading, custom types, scopes, and more.",
+  "description": "Plugin based architecture that supports module loading, custom types, scopes, and more.",
   "keywords": [
     "boost",
     "plugin",
     "pluggable",
-    "system"
+    "system",
+    "architecture"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -19,9 +20,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^1.5.0",
-    "@boost/debug": "^1.3.1",
-    "@boost/internal": "^1.0.1",
+    "@boost/common": "^1.8.1",
+    "@boost/debug": "^1.4.2",
+    "@boost/internal": "^1.0.3",
     "lodash": "^4.17.15",
     "pluralize": "^8.0.0"
   },

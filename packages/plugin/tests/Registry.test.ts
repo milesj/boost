@@ -3,8 +3,9 @@ import { Renderable, Renderer, createRendererRegistry } from './__mocks__/Render
 import { Registry, DEFAULT_PRIORITY } from '../src';
 
 describe('Registry', () => {
+  const tool = { name: 'Tool', tool: true };
   let fixtures: Function[];
-  let registry: Registry<Renderable>;
+  let registry: Registry<Renderable, typeof tool>;
 
   beforeEach(() => {
     fixtures = [];
@@ -66,7 +67,7 @@ describe('Registry', () => {
           // Full name with custom scope
           '@test/boost-test-renderer-baz',
         ],
-        {},
+        tool,
       );
 
       // @ts-ignore Allow access
@@ -109,23 +110,23 @@ describe('Registry', () => {
       registry.loadMany(
         [
           // Short names
-          ['foo', { value: 'foo' }, 3],
+          ['foo', { value: 'foo' }, { priority: 3 }],
           // Full names
-          ['@boost-test/renderer-bar', { value: 'bar' }, 2],
+          ['@boost-test/renderer-bar', { value: 'bar' }, { priority: 2 }],
           // Full name with shorthand scope
-          ['@test/baz', { value: 'baz' }, 1],
+          ['@test/baz', { value: 'baz' }, { priority: 1 }],
         ],
-        {},
+        tool,
       );
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([
         {
-          name: 'boost-test-renderer-foo',
+          name: '@test/boost-test-renderer-baz',
           plugin: expect.objectContaining({
-            options: { value: 'foo' },
+            options: { value: 'baz' },
           }),
-          priority: 3,
+          priority: 1,
         },
         {
           name: '@boost-test/renderer-bar',
@@ -135,11 +136,11 @@ describe('Registry', () => {
           priority: 2,
         },
         {
-          name: '@test/boost-test-renderer-baz',
+          name: 'boost-test-renderer-foo',
           plugin: expect.objectContaining({
-            options: { value: 'baz' },
+            options: { value: 'foo' },
           }),
-          priority: 1,
+          priority: 3,
         },
       ]);
     });
@@ -164,6 +165,14 @@ describe('Registry', () => {
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([
         {
+          name: '@test/boost-test-renderer-baz',
+          plugin: expect.objectContaining({
+            options: { value: 'baz' },
+            render,
+          }),
+          priority: 1,
+        },
+        {
           name: 'boost-test-renderer-foo',
           plugin: expect.objectContaining({ render }),
           priority: DEFAULT_PRIORITY,
@@ -176,14 +185,6 @@ describe('Registry', () => {
           }),
           priority: DEFAULT_PRIORITY,
         },
-        {
-          name: '@test/boost-test-renderer-baz',
-          plugin: expect.objectContaining({
-            options: { value: 'baz' },
-            render,
-          }),
-          priority: 1,
-        },
       ]);
     });
 
@@ -194,11 +195,17 @@ describe('Registry', () => {
       const bar = createClass('@boost-test/renderer-bar', { value: 'bar' });
       // With options and custom scope
       const baz = createClass('@test/boost-test-renderer-baz', { value: 'baz' });
+      baz.priority = 1;
 
-      registry.loadMany([foo, bar, baz], {});
+      registry.loadMany([foo, bar, baz], tool);
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([
+        {
+          name: '@test/boost-test-renderer-baz',
+          plugin: baz,
+          priority: 1,
+        },
         {
           name: 'boost-test-renderer-foo',
           plugin: foo,
@@ -208,11 +215,6 @@ describe('Registry', () => {
           name: '@boost-test/renderer-bar',
           plugin: bar,
           priority: DEFAULT_PRIORITY,
-        },
-        {
-          name: '@test/boost-test-renderer-baz',
-          plugin: baz,
-          priority: 1,
         },
       ]);
     });
@@ -235,7 +237,7 @@ describe('Registry', () => {
           },
           createClass('boost-test-renderer-qux', { value: 'qux' }),
         ],
-        {},
+        tool,
       );
 
       const qux = new Renderer({ value: 'qux' });
@@ -243,6 +245,11 @@ describe('Registry', () => {
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([
+        {
+          name: '@test/boost-test-renderer-baz',
+          plugin: expect.any(Object),
+          priority: 1,
+        },
         {
           name: 'boost-test-renderer-foo',
           plugin: expect.any(Object),
@@ -254,11 +261,6 @@ describe('Registry', () => {
             options: { value: 'bar' },
           }),
           priority: DEFAULT_PRIORITY,
-        },
-        {
-          name: '@test/boost-test-renderer-baz',
-          plugin: expect.any(Object),
-          priority: 1,
         },
         {
           name: 'boost-test-renderer-qux',
@@ -299,7 +301,7 @@ describe('Registry', () => {
             // @ts-ignore Allow invalid type
             new Renderer(),
           ],
-          {},
+          tool,
         );
       }).toThrow('Plugin object or class instance found without a `name` property.');
     });
@@ -311,7 +313,7 @@ describe('Registry', () => {
     });
 
     it('returns true if plugin is found', () => {
-      registry.register('foo', new Renderer(), {});
+      registry.register('foo', new Renderer());
 
       expect(registry.isRegistered('foo')).toBe(true);
     });
@@ -320,7 +322,7 @@ describe('Registry', () => {
   describe('register()', () => {
     it('errors if no name provided', () => {
       expect(() => {
-        registry.register('', new Renderer(), {});
+        registry.register('', new Renderer());
       }).toThrow('A fully qualified module name is required for renderers.');
     });
 
@@ -330,9 +332,8 @@ describe('Registry', () => {
           'foo',
           // @ts-ignore Allow invalid type
           123,
-          {},
         );
-      }).toThrow('Expected an object or class instance for the renderer, found number.');
+      }).toThrow('Renderers expect an object or class instance, found number.');
     });
 
     it('errors if `validate` option fails', () => {
@@ -340,7 +341,6 @@ describe('Registry', () => {
         registry.register(
           'foo',
           // @ts-ignore Allow invalid type
-          {},
           {},
         );
       }).toThrow('Renderer requires a `render()` method.');
@@ -350,9 +350,9 @@ describe('Registry', () => {
       const plugin = new Renderer();
       const spy = jest.spyOn(plugin, 'startup');
 
-      registry.register('foo', plugin, {}, { tool: true });
+      registry.register('foo', plugin, tool);
 
-      expect(spy).toHaveBeenCalledWith({ tool: true });
+      expect(spy).toHaveBeenCalledWith(tool);
     });
 
     it('triggers `beforeStartup` and `afterStartup` events', () => {
@@ -364,7 +364,7 @@ describe('Registry', () => {
         afterStartup: afterSpy,
       });
 
-      registry.register('foo', new Renderer(), {});
+      registry.register('foo', new Renderer());
 
       expect(beforeSpy).toHaveBeenCalled();
       expect(afterSpy).toHaveBeenCalled();
@@ -373,7 +373,7 @@ describe('Registry', () => {
     it('adds plugin and its metadata to the list', () => {
       const result = { name: 'foo', plugin: new Renderer(), priority: 1 };
 
-      registry.register('foo', result.plugin, {}, { priority: 1 });
+      registry.register('foo', result.plugin, tool, { priority: 1 });
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([result]);
@@ -382,21 +382,21 @@ describe('Registry', () => {
 
   describe('unregister()', () => {
     beforeEach(() => {
-      registry.register('foo', new Renderer(), {}, { priority: 1 });
+      registry.register('foo', new Renderer(), tool, { priority: 1 });
     });
 
     it('errors if name not found', () => {
       expect(() => {
-        registry.unregister('unknown', {});
+        registry.unregister('unknown');
       }).toThrow('Failed to find renderer "unknown". Have you installed it?');
     });
 
     it('triggers `shutdown` lifecycle with tool', () => {
       const spy = jest.spyOn(registry.get('foo'), 'shutdown');
 
-      registry.unregister('foo', { tool: true });
+      registry.unregister('foo', tool);
 
-      expect(spy).toHaveBeenCalledWith({ tool: true });
+      expect(spy).toHaveBeenCalledWith(tool);
     });
 
     it('triggers `beforeShutdown` and `afterShutdown` events', () => {
@@ -408,14 +408,14 @@ describe('Registry', () => {
         afterShutdown: afterSpy,
       });
 
-      registry.unregister('foo', {});
+      registry.unregister('foo');
 
       expect(beforeSpy).toHaveBeenCalled();
       expect(afterSpy).toHaveBeenCalled();
     });
 
     it('removes a plugin by name', () => {
-      registry.unregister('foo', {});
+      registry.unregister('foo');
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([]);

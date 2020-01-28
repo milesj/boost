@@ -3,6 +3,7 @@ import { createDebugger, Debugger } from '@boost/debug';
 import { RuntimeError, color } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
+import upperFirst from 'lodash/upperFirst';
 import Loader from './Loader';
 import { RegistryOptions, Pluggable, Registration, Setting, PluginOptions } from './types';
 import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN } from './constants';
@@ -52,10 +53,10 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    */
   formatModuleName(name: string, scoped: boolean = false): ModuleName {
     if (scoped) {
-      return `@${this.projectName}/${this.singularName}-${kebabCase(name)}`;
+      return `@${this.projectName}/${this.singularName}-${name.toLocaleLowerCase()}`;
     }
 
-    return `${this.projectName}-${this.singularName}-${kebabCase(name)}`;
+    return `${this.projectName}-${this.singularName}-${name.toLocaleLowerCase()}`;
   }
 
   /**
@@ -97,7 +98,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   load(setting: Setting<Plugin>, options?: object, tool?: Tool): Plugin {
     let name: string;
     let plugin: Plugin;
-    let priority: number | undefined;
+    const opts: PluginOptions = {};
 
     // Module name
     if (typeof setting === 'string') {
@@ -106,15 +107,22 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
       // Module name with options
     } else if (Array.isArray(setting)) {
-      [name, , priority] = setting;
+      name = setting[0]; // eslint-disable-line prefer-destructuring
       plugin = this.loader.load(name, setting[1] || options);
+
+      if (isObject(setting[2])) {
+        Object.assign(opts, setting[2]);
+      }
 
       // Plugin directly
     } else if (isObject<Plugin>(setting)) {
       if (setting.name) {
         name = setting.name;
         plugin = setting;
-        priority = setting.priority;
+
+        if (setting.priority) {
+          opts.priority = setting.priority;
+        }
       } else {
         throw new Error('Plugin object or class instance found without a `name` property.');
       }
@@ -124,7 +132,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       throw new Error(`Unknown plugin setting: ${setting}`);
     }
 
-    this.register(plugin.name || name, plugin, { priority, tool });
+    this.register(plugin.name || name, plugin, tool, opts);
 
     return plugin;
   }
@@ -152,18 +160,18 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   /**
    * Register a plugin and trigger startup with the provided tool.
    */
-  register(name: ModuleName, plugin: Plugin, options: PluginOptions & { tool?: Tool } = {}): this {
+  register(name: ModuleName, plugin: Plugin, tool?: Tool, options?: PluginOptions): this {
     if (!name.match(MODULE_NAME_PATTERN)) {
       throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
     }
 
     if (!isObject(plugin)) {
       throw new TypeError(
-        `Expected an object or class instance for a ${this.singularName}, found ${typeof plugin}.`,
+        `${upperFirst(
+          this.pluralName,
+        )} expect an object or class instance, found ${typeof plugin}.`,
       );
     }
-
-    const { tool, ...opts } = options;
 
     this.debug('Validating plugin "%s"', name);
 
@@ -175,7 +183,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.plugins.push({
       priority: DEFAULT_PRIORITY,
-      ...opts,
+      ...options,
       name,
       plugin,
     });

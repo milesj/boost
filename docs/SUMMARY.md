@@ -7,5 +7,6 @@
 - [Events](./event.md)
 - [Logging](./log.md)
 - [Pipelines](./pipeline.md)
+- [Plugins](./plugin.md)
 - [Terminal Utilities](./terminal.md)
 - [Translations](./translate.md)
