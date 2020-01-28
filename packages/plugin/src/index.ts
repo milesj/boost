@@ -3,10 +3,10 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Manager from './Manager';
+import Registry from './Registry';
 import Plugin from './Plugin';
 
 export * from './constants';
 export * from './types';
 
-export { Manager, Plugin };
+export { Registry, Plugin };

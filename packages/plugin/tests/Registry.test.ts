@@ -1,14 +1,14 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
-import { Renderable, Renderer, createRendererManager } from './__mocks__/Renderer';
-import { Manager, DEFAULT_PRIORITY } from '../src';
+import { Renderable, Renderer, createRendererRegistry } from './__mocks__/Renderer';
+import { Registry, DEFAULT_PRIORITY } from '../src';
 
-describe('Manager', () => {
+describe('Registry', () => {
   let fixtures: Function[];
-  let manager: Manager<Renderable>;
+  let registry: Registry<Renderable>;
 
   beforeEach(() => {
     fixtures = [];
-    manager = createRendererManager();
+    registry = createRendererRegistry();
   });
 
   afterEach(() => {
@@ -16,26 +16,26 @@ describe('Manager', () => {
   });
 
   it('sets correct properties', () => {
-    expect(manager.projectName).toBe('boost-test');
-    expect(manager.singularName).toBe('renderer');
-    expect(manager.pluralName).toBe('renderers');
+    expect(registry.projectName).toBe('boost-test');
+    expect(registry.singularName).toBe('renderer');
+    expect(registry.pluralName).toBe('renderers');
   });
 
   describe('formatModuleName()', () => {
     it('allows a custom name', () => {
-      expect(manager.formatModuleName('bar')).toBe('boost-test-renderer-bar');
+      expect(registry.formatModuleName('bar')).toBe('boost-test-renderer-bar');
     });
 
     it('lowercases plugin name', () => {
-      expect(manager.formatModuleName('BAR')).toBe('boost-test-renderer-bar');
+      expect(registry.formatModuleName('BAR')).toBe('boost-test-renderer-bar');
     });
 
     it('supports dashes', () => {
-      expect(manager.formatModuleName('bar-baz')).toBe('boost-test-renderer-bar-baz');
+      expect(registry.formatModuleName('bar-baz')).toBe('boost-test-renderer-bar-baz');
     });
 
     it('supports scoped', () => {
-      expect(manager.formatModuleName('bar', true)).toBe('@boost-test/renderer-bar');
+      expect(registry.formatModuleName('bar', true)).toBe('@boost-test/renderer-bar');
     });
   });
 
@@ -55,7 +55,7 @@ describe('Manager', () => {
         copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
       );
 
-      manager.loadMany(
+      registry.loadMany(
         [
           // Short names
           'foo',
@@ -70,7 +70,7 @@ describe('Manager', () => {
       );
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([
+      expect(registry.plugins).toEqual([
         {
           name: 'boost-test-renderer-foo',
           plugin: expect.any(Object),
@@ -106,7 +106,7 @@ describe('Manager', () => {
         copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
       );
 
-      manager.loadMany(
+      registry.loadMany(
         [
           // Short names
           ['foo', { value: 'foo' }, 3],
@@ -119,7 +119,7 @@ describe('Manager', () => {
       );
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([
+      expect(registry.plugins).toEqual([
         {
           name: 'boost-test-renderer-foo',
           plugin: expect.objectContaining({
@@ -147,7 +147,7 @@ describe('Manager', () => {
     it('uses objects as is', () => {
       const render = () => 'test';
 
-      manager.loadMany(
+      registry.loadMany(
         [
           // Basic
           { name: 'boost-test-renderer-foo', render },
@@ -162,7 +162,7 @@ describe('Manager', () => {
       );
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([
+      expect(registry.plugins).toEqual([
         {
           name: 'boost-test-renderer-foo',
           plugin: expect.objectContaining({ render }),
@@ -195,10 +195,10 @@ describe('Manager', () => {
       // With options and custom scope
       const baz = createClass('@test/boost-test-renderer-baz', { value: 'baz' });
 
-      manager.loadMany([foo, bar, baz], {});
+      registry.loadMany([foo, bar, baz], {});
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([
+      expect(registry.plugins).toEqual([
         {
           name: 'boost-test-renderer-foo',
           plugin: foo,
@@ -224,7 +224,7 @@ describe('Manager', () => {
         copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
       );
 
-      manager.loadMany(
+      registry.loadMany(
         [
           'foo',
           ['@boost-test/renderer-bar', { value: 'bar' }],
@@ -242,7 +242,7 @@ describe('Manager', () => {
       qux.name = 'boost-test-renderer-qux';
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([
+      expect(registry.plugins).toEqual([
         {
           name: 'boost-test-renderer-foo',
           plugin: expect.any(Object),
@@ -270,7 +270,7 @@ describe('Manager', () => {
 
     it('errors if unsupported setting passed', () => {
       expect(() => {
-        manager.loadMany(
+        registry.loadMany(
           [
             // @ts-ignore Allow invalid type
             123,
@@ -282,7 +282,7 @@ describe('Manager', () => {
 
     it('errors if object is passed without a name', () => {
       expect(() => {
-        manager.loadMany(
+        registry.loadMany(
           [
             // @ts-ignore Allow invalid type
             {},
@@ -294,7 +294,7 @@ describe('Manager', () => {
 
     it('errors if class instance is passed without a name', () => {
       expect(() => {
-        manager.loadMany(
+        registry.loadMany(
           [
             // @ts-ignore Allow invalid type
             new Renderer(),
@@ -307,26 +307,26 @@ describe('Manager', () => {
 
   describe('isRegistered()', () => {
     it('returns false if plugin not found', () => {
-      expect(manager.isRegistered('foo')).toBe(false);
+      expect(registry.isRegistered('foo')).toBe(false);
     });
 
     it('returns true if plugin is found', () => {
-      manager.register('foo', new Renderer(), {});
+      registry.register('foo', new Renderer(), {});
 
-      expect(manager.isRegistered('foo')).toBe(true);
+      expect(registry.isRegistered('foo')).toBe(true);
     });
   });
 
   describe('register()', () => {
     it('errors if no name provided', () => {
       expect(() => {
-        manager.register('', new Renderer(), {});
+        registry.register('', new Renderer(), {});
       }).toThrow('A fully qualified module name is required for renderers.');
     });
 
     it('errors if plugin is not an object', () => {
       expect(() => {
-        manager.register(
+        registry.register(
           'foo',
           // @ts-ignore Allow invalid type
           123,
@@ -337,7 +337,7 @@ describe('Manager', () => {
 
     it('errors if `validate` option fails', () => {
       expect(() => {
-        manager.register(
+        registry.register(
           'foo',
           // @ts-ignore Allow invalid type
           {},
@@ -350,7 +350,7 @@ describe('Manager', () => {
       const plugin = new Renderer();
       const spy = jest.spyOn(plugin, 'startup');
 
-      manager.register('foo', plugin, {}, { tool: true });
+      registry.register('foo', plugin, {}, { tool: true });
 
       expect(spy).toHaveBeenCalledWith({ tool: true });
     });
@@ -359,12 +359,12 @@ describe('Manager', () => {
       const beforeSpy = jest.fn();
       const afterSpy = jest.fn();
 
-      manager.configure({
+      registry.configure({
         beforeStartup: beforeSpy,
         afterStartup: afterSpy,
       });
 
-      manager.register('foo', new Renderer(), {});
+      registry.register('foo', new Renderer(), {});
 
       expect(beforeSpy).toHaveBeenCalled();
       expect(afterSpy).toHaveBeenCalled();
@@ -373,28 +373,28 @@ describe('Manager', () => {
     it('adds plugin and its metadata to the list', () => {
       const result = { name: 'foo', plugin: new Renderer(), priority: 1 };
 
-      manager.register('foo', result.plugin, {}, { priority: 1 });
+      registry.register('foo', result.plugin, {}, { priority: 1 });
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([result]);
+      expect(registry.plugins).toEqual([result]);
     });
   });
 
   describe('unregister()', () => {
     beforeEach(() => {
-      manager.register('foo', new Renderer(), {}, { priority: 1 });
+      registry.register('foo', new Renderer(), {}, { priority: 1 });
     });
 
     it('errors if name not found', () => {
       expect(() => {
-        manager.unregister('unknown', {});
+        registry.unregister('unknown', {});
       }).toThrow('Failed to find renderer "unknown". Have you installed it?');
     });
 
     it('triggers `shutdown` lifecycle with tool', () => {
-      const spy = jest.spyOn(manager.get('foo'), 'shutdown');
+      const spy = jest.spyOn(registry.get('foo'), 'shutdown');
 
-      manager.unregister('foo', { tool: true });
+      registry.unregister('foo', { tool: true });
 
       expect(spy).toHaveBeenCalledWith({ tool: true });
     });
@@ -403,22 +403,22 @@ describe('Manager', () => {
       const beforeSpy = jest.fn();
       const afterSpy = jest.fn();
 
-      manager.configure({
+      registry.configure({
         beforeShutdown: beforeSpy,
         afterShutdown: afterSpy,
       });
 
-      manager.unregister('foo', {});
+      registry.unregister('foo', {});
 
       expect(beforeSpy).toHaveBeenCalled();
       expect(afterSpy).toHaveBeenCalled();
     });
 
     it('removes a plugin by name', () => {
-      manager.unregister('foo', {});
+      registry.unregister('foo', {});
 
       // @ts-ignore Allow access
-      expect(manager.plugins).toEqual([]);
+      expect(registry.plugins).toEqual([]);
     });
   });
 });

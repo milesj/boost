@@ -4,11 +4,11 @@ import { RuntimeError, color } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
 import Loader from './Loader';
-import { ManagerOptions, Pluggable, Container, Setting, PluginOptions } from './types';
+import { RegistryOptions, Pluggable, Registration, Setting, PluginOptions } from './types';
 import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN } from './constants';
 
-export default class Manager<Plugin extends Pluggable, Tool = unknown> extends Contract<
-  ManagerOptions<Plugin>
+export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
+  RegistryOptions<Plugin>
 > {
   readonly debug: Debugger;
 
@@ -20,15 +20,15 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
 
   private loader: Loader<Plugin>;
 
-  private plugins: Container<Plugin>[] = [];
+  private plugins: Registration<Plugin>[] = [];
 
-  constructor(projectName: string, typeName: string, options: ManagerOptions<Plugin>) {
+  constructor(projectName: string, typeName: string, options: RegistryOptions<Plugin>) {
     super(options);
 
     this.projectName = kebabCase(projectName);
     this.singularName = kebabCase(typeName);
     this.pluralName = pluralize(this.singularName);
-    this.debug = createDebugger([this.singularName, 'manager']);
+    this.debug = createDebugger([this.singularName, 'registry']);
     this.loader = new Loader(this);
 
     this.debug('Creating new plugin type: %s', color.pluginName(typeName));
@@ -52,10 +52,10 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
    */
   formatModuleName(name: string, scoped: boolean = false): ModuleName {
     if (scoped) {
-      return `@${this.projectName}/${this.singularName}-${name.toLowerCase()}`;
+      return `@${this.projectName}/${this.singularName}-${kebabCase(name)}`;
     }
 
-    return `${this.projectName}-${this.singularName}-${name.toLowerCase()}`;
+    return `${this.projectName}-${this.singularName}-${kebabCase(name)}`;
   }
 
   /**
@@ -124,7 +124,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
       throw new Error(`Unknown plugin setting: ${setting}`);
     }
 
-    this.register(plugin.name || name, plugin, { priority }, tool);
+    this.register(plugin.name || name, plugin, { priority, tool });
 
     return plugin;
   }
@@ -152,18 +152,18 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Register a plugin and trigger startup with the provided tool.
    */
-  register(name: ModuleName, plugin: Plugin, options?: PluginOptions, tool?: Tool): this {
+  register(name: ModuleName, plugin: Plugin, options: PluginOptions & { tool?: Tool } = {}): this {
     if (!name.match(MODULE_NAME_PATTERN)) {
       throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
     }
 
     if (!isObject(plugin)) {
       throw new TypeError(
-        `Expected an object or class instance for the ${
-          this.singularName
-        }, found ${typeof plugin}.`,
+        `Expected an object or class instance for a ${this.singularName}, found ${typeof plugin}.`,
       );
     }
+
+    const { tool, ...opts } = options;
 
     this.debug('Validating plugin "%s"', name);
 
@@ -175,12 +175,12 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
 
     this.plugins.push({
       priority: DEFAULT_PRIORITY,
-      ...options,
+      ...opts,
       name,
       plugin,
     });
 
-    this.debug('Sorting by priority');
+    this.debug('Sorting plugins by priority');
 
     this.plugins.sort((a, b) => a.priority! - b.priority!);
 
@@ -205,7 +205,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   /**
    * Verify a passed name matches one of many possible module name variants for this plugin.
    */
-  protected isMatchingName(container: Container<Plugin>, name: string): boolean {
+  protected isMatchingName(container: Registration<Plugin>, name: string): boolean {
     const internalModule = this.formatModuleName(name, true);
     const publicModule = this.formatModuleName(name);
 
@@ -217,7 +217,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   }
 
   /**
-   * Trigger shutdown events for the manager and plugin.
+   * Trigger shutdown events for the registry and plugin.
    */
   protected triggerShutdown(plugin: Plugin, tool?: Tool) {
     const { afterShutdown, beforeShutdown } = this.options;
@@ -236,7 +236,7 @@ export default class Manager<Plugin extends Pluggable, Tool = unknown> extends C
   }
 
   /**
-   * Trigger startup events for the manager and plugin.
+   * Trigger startup events for the registry and plugin.
    */
   protected triggerStartup(plugin: Plugin, tool?: Tool) {
     const { afterStartup, beforeStartup } = this.options;

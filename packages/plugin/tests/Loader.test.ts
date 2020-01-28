@@ -1,5 +1,5 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
-import { Renderable, createRendererManager } from './__mocks__/Renderer';
+import { Renderable, createRendererRegistry } from './__mocks__/Renderer';
 import Loader from '../src/Loader';
 
 describe('Loader', () => {
@@ -8,7 +8,7 @@ describe('Loader', () => {
 
   beforeEach(() => {
     fixtures = [];
-    loader = new Loader<Renderable>(createRendererManager());
+    loader = new Loader<Renderable>(createRendererRegistry());
   });
 
   afterEach(() => {

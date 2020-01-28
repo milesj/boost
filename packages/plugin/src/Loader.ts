@@ -3,16 +3,16 @@ import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { Pluggable, Factory } from './types';
 import { MODULE_PART_PATTERN } from './constants';
-import Manager from './Manager';
+import Registry from './Registry';
 
 export default class Loader<Plugin extends Pluggable> {
   readonly debug: Debugger;
 
-  private manager: Manager<Plugin>;
+  private registry: Registry<Plugin>;
 
-  constructor(manager: Manager<Plugin>) {
-    this.manager = manager;
-    this.debug = createDebugger([manager.singularName, 'loader']);
+  constructor(registry: Registry<Plugin>) {
+    this.registry = registry;
+    this.debug = createDebugger([registry.singularName, 'loader']);
   }
 
   /**
@@ -21,7 +21,7 @@ export default class Loader<Plugin extends Pluggable> {
    */
   createResolver(name: ModuleName): PathResolver {
     const resolver = new PathResolver();
-    const { singularName: typeName, projectName } = this.manager;
+    const { singularName: typeName, projectName } = this.registry;
     const moduleName = name.toLowerCase();
     const modulePattern = MODULE_PART_PATTERN.source;
     const isNotToolOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
@@ -73,8 +73,8 @@ export default class Loader<Plugin extends Pluggable> {
       );
 
       // Detect internal scopes before public ones
-      resolver.lookupNodeModule(this.manager.formatModuleName(moduleName, true));
-      resolver.lookupNodeModule(this.manager.formatModuleName(moduleName));
+      resolver.lookupNodeModule(this.registry.formatModuleName(moduleName, true));
+      resolver.lookupNodeModule(this.registry.formatModuleName(moduleName));
 
       // Unknown plugin module pattern
     } else {
@@ -90,7 +90,7 @@ export default class Loader<Plugin extends Pluggable> {
   load(name: ModuleName, options: object = {}): Plugin {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
-    this.debug('Loading "%s" from %s', name, color.filePath(resolvedPath));
+    this.debug('Loading "%s" from %s', color.moduleName(name), color.filePath(resolvedPath));
 
     const factory: Factory<Plugin> = requireModule(resolvedPath);
 

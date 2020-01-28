@@ -1,5 +1,5 @@
 import { Predicates } from '@boost/common';
-import { Manager, Pluggable, Plugin, DEFAULT_PRIORITY, ManagerOptions } from '../../src';
+import { Registry, Pluggable, Plugin, DEFAULT_PRIORITY, RegistryOptions } from '../../src';
 
 export interface Renderable extends Pluggable {
   render(): string;
@@ -21,8 +21,8 @@ export class Renderer extends Plugin<unknown, { value: string }> implements Rend
   }
 }
 
-export function createRendererManager(options?: ManagerOptions<Renderable>) {
-  return new Manager<Renderable>('boost-test', 'renderer', {
+export function createRendererRegistry(options?: RegistryOptions<Renderable>) {
+  return new Registry<Renderable>('boost-test', 'renderer', {
     validate(plugin) {
       if (typeof plugin.render !== 'function') {
         throw new TypeError('Renderer requires a `render()` method.');

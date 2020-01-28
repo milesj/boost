@@ -11,18 +11,18 @@ export type Setting<T extends Pluggable> = ModuleName | [ModuleName, object, num
 
 export type Factory<T extends Pluggable, O extends object = object> = (options: Partial<O>) => T;
 
+export type Callback<T = unknown> = (plugin: T) => void;
+
 export interface PluginOptions {
   priority?: number;
 }
 
-export interface Container<T extends Pluggable> extends PluginOptions {
+export interface Registration<T extends Pluggable> extends PluginOptions {
   name: ModuleName;
   plugin: T;
 }
 
-export type Callback<T> = (plugin: T) => void;
-
-export interface ManagerOptions<T extends Pluggable> {
+export interface RegistryOptions<T extends Pluggable> {
   afterShutdown?: Callback<T> | null;
   afterStartup?: Callback<T> | null;
   beforeShutdown?: Callback<T> | null;
