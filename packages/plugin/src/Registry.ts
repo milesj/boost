@@ -96,19 +96,16 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * - If an object or class instance, will assume to be the plugin itself.
    */
   load(setting: Setting<Plugin>, options?: object, tool?: Tool): Plugin {
-    let name: string;
-    let plugin: Plugin;
     const opts: PluginOptions = {};
+    let plugin: Plugin;
 
     // Module name
     if (typeof setting === 'string') {
-      name = setting;
       plugin = this.loader.load(setting, options);
 
       // Module name with options
     } else if (Array.isArray(setting)) {
-      name = setting[0]; // eslint-disable-line prefer-destructuring
-      plugin = this.loader.load(name, setting[1] || options);
+      plugin = this.loader.load(setting[0], setting[1] || options);
 
       if (isObject(setting[2])) {
         Object.assign(opts, setting[2]);
@@ -117,7 +114,6 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       // Plugin directly
     } else if (isObject<Plugin>(setting)) {
       if (setting.name) {
-        name = setting.name;
         plugin = setting;
 
         if (setting.priority) {
@@ -132,7 +128,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       throw new Error(`Unknown plugin setting: ${setting}`);
     }
 
-    this.register(plugin.name || name, plugin, tool, opts);
+    this.register(plugin.name, plugin, tool, opts);
 
     return plugin;
   }
@@ -214,14 +210,14 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Verify a passed name matches one of many possible module name variants for this plugin.
    */
   protected isMatchingName(container: Registration<Plugin>, name: string): boolean {
+    if (container.name === name) {
+      return true;
+    }
+
     const internalModule = this.formatModuleName(name, true);
     const publicModule = this.formatModuleName(name);
 
-    return (
-      container.name === internalModule ||
-      container.name === publicModule ||
-      container.name === name
-    );
+    return container.name === internalModule || container.name === publicModule;
   }
 
   /**

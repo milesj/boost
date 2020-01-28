@@ -40,6 +40,94 @@ describe('Registry', () => {
     });
   });
 
+  describe('get()', () => {
+    const foo = new Renderer();
+    const barBaz = new Renderer();
+    const qux = new Renderer();
+
+    beforeEach(() => {
+      registry.register('boost-test-renderer-foo', foo, tool);
+      registry.register('@boost-test/renderer-bar-baz', barBaz, tool);
+      registry.register('@test/boost-test-renderer-qux', qux, tool);
+    });
+
+    it('errors if name is not registered', () => {
+      expect(() => {
+        registry.get('unknown');
+      }).toThrow('Failed to find renderer "unknown". Have you installed it?');
+    });
+
+    it('returns plugin by short name (public)', () => {
+      expect(registry.get('foo')).toBe(foo);
+    });
+
+    it('returns plugin by short name (internal)', () => {
+      expect(registry.get('bar-baz')).toBe(barBaz);
+    });
+
+    it('returns plugin by qualified public name', () => {
+      expect(registry.get('boost-test-renderer-foo')).toBe(foo);
+    });
+
+    it('returns plugin by qualified internal name', () => {
+      expect(registry.get('@boost-test/renderer-bar-baz')).toBe(barBaz);
+    });
+
+    it('returns plugin by qualified custom scope name', () => {
+      expect(registry.get('@test/boost-test-renderer-qux')).toBe(qux);
+    });
+  });
+
+  describe('getAll()', () => {
+    const foo = new Renderer();
+    const bar = new Renderer();
+    const baz = new Renderer();
+
+    beforeEach(() => {
+      registry.register('boost-test-renderer-foo', foo, tool);
+      registry.register('boost-test-renderer-bar', bar, tool);
+      registry.register('boost-test-renderer-baz', baz, tool);
+    });
+
+    it('returns all registered plugins', () => {
+      expect(registry.getAll()).toEqual([foo, bar, baz]);
+    });
+  });
+
+  describe('getMany()', () => {
+    const foo = new Renderer();
+    const bar = new Renderer();
+    const baz = new Renderer();
+
+    beforeEach(() => {
+      registry.register('boost-test-renderer-foo', foo, tool);
+      registry.register('@boost-test/renderer-bar', bar, tool);
+      registry.register('@test/boost-test-renderer-baz', baz, tool);
+    });
+
+    it('returns all by short name', () => {
+      expect(registry.getMany(['foo', 'bar'])).toEqual([foo, bar]);
+    });
+
+    it('returns all by qualified name', () => {
+      expect(
+        registry.getMany(['@test/boost-test-renderer-baz', '@boost-test/renderer-bar']),
+      ).toEqual([baz, bar]);
+    });
+
+    it('returns all by mixed names', () => {
+      expect(
+        registry.getMany([
+          '@test/boost-test-renderer-baz',
+          'foo',
+          '@boost-test/renderer-bar',
+          'bar',
+          'boost-test-renderer-foo',
+        ]),
+      ).toEqual([baz, foo, bar, bar, foo]);
+    });
+  });
+
   describe('loadMany()', () => {
     function createClass(name: string, options?: { value: string }) {
       const renderer = new Renderer(options);
