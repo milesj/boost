@@ -120,12 +120,12 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
           opts.priority = setting.priority;
         }
       } else {
-        throw new Error('Plugin object or class instance found without a `name` property.');
+        throw new RuntimeError('plugin', 'PG_MISSING_PLUGIN_NAME');
       }
 
       // Unknown setting
     } else {
-      throw new Error(`Unknown plugin setting: ${setting}`);
+      throw new RuntimeError('plugin', 'PG_UNKNOWN_SETTING', [setting]);
     }
 
     this.register(plugin.name, plugin, tool, opts);
@@ -158,15 +158,14 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    */
   register(name: ModuleName, plugin: Plugin, tool?: Tool, options?: PluginOptions): this {
     if (!name.match(MODULE_NAME_PATTERN)) {
-      throw new Error(`A fully qualified module name is required for ${this.pluralName}.`);
+      throw new RuntimeError('plugin', 'PG_INVALID_MODULE_NAME', [this.pluralName]);
     }
 
     if (!isObject(plugin)) {
-      throw new TypeError(
-        `${upperFirst(
-          this.pluralName,
-        )} expect an object or class instance, found ${typeof plugin}.`,
-      );
+      throw new RuntimeError('plugin', 'PG_INVALID_REGISTER', [
+        upperFirst(this.pluralName),
+        typeof plugin,
+      ]);
     }
 
     this.debug('Validating plugin "%s"', name);

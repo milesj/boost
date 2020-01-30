@@ -32,13 +32,13 @@ describe('Loader', () => {
       it('doesnt match if tool name wrong', () => {
         expect(() => {
           loader.createResolver('@scope/unknown-renderer-test');
-        }).toThrow('Unknown plugin module format "@scope/unknown-renderer-test".');
+        }).toThrow('Unknown plugin module format: @scope/unknown-renderer-test');
       });
 
       it('doesnt match if plugin type wrong', () => {
         expect(() => {
           loader.createResolver('@scope/boost-test-plugin-test');
-        }).toThrow('Unknown plugin module format "@scope/boost-test-plugin-test".');
+        }).toThrow('Unknown plugin module format: @scope/boost-test-plugin-test');
       });
     });
 
@@ -52,13 +52,13 @@ describe('Loader', () => {
       it('doesnt match if tool name wrong', () => {
         expect(() => {
           loader.createResolver('@unknown/renderer-test');
-        }).toThrow('Unknown plugin module format "@unknown/renderer-test".');
+        }).toThrow('Unknown plugin module format: @unknown/renderer-test');
       });
 
       it('doesnt match if plugin type wrong', () => {
         expect(() => {
           loader.createResolver('@boost-test/plugin-test');
-        }).toThrow('Unknown plugin module format "@boost-test/plugin-test".');
+        }).toThrow('Unknown plugin module format: @boost-test/plugin-test');
       });
     });
 
@@ -72,13 +72,13 @@ describe('Loader', () => {
       it('doesnt match if tool name wrong', () => {
         expect(() => {
           loader.createResolver('unknown-renderer-test');
-        }).toThrow('Unknown plugin module format "unknown-renderer-test".');
+        }).toThrow('Unknown plugin module format: unknown-renderer-test');
       });
 
       it('doesnt match if plugin type wrong', () => {
         expect(() => {
           loader.createResolver('boost-test-plugin-test');
-        }).toThrow('Unknown plugin module format "boost-test-plugin-test".');
+        }).toThrow('Unknown plugin module format: boost-test-plugin-test');
       });
     });
 

@@ -1,5 +1,9 @@
 export const DEFAULT_PRIORITY = 100;
 
-export const MODULE_PART_PATTERN = /[-a-z0-9]+/u;
+// https://github.com/npm/validate-npm-package-name
+export const MODULE_PART_PATTERN = /[a-z0-9]{1}[-a-z0-9_.]*/u;
 
-export const MODULE_NAME_PATTERN = /^(@[-a-z0-9]+\/)?[-a-z0-9]+$/u;
+export const MODULE_NAME_PATTERN = new RegExp(
+  `^(?:@(${MODULE_PART_PATTERN.source})/)?(${MODULE_PART_PATTERN.source})$`,
+  'u',
+);

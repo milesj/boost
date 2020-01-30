@@ -1,6 +1,6 @@
 import { PathResolver, requireModule, ModuleName, isObject } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
-import { color } from '@boost/internal';
+import { color, RuntimeError } from '@boost/internal';
 import { Pluggable, Factory } from './types';
 import { MODULE_PART_PATTERN } from './constants';
 import Registry from './Registry';
@@ -78,7 +78,7 @@ export default class Loader<Plugin extends Pluggable> {
 
       // Unknown plugin module pattern
     } else {
-      throw new Error(`Unknown plugin module format "${moduleName}".`);
+      throw new RuntimeError('plugin', 'PG_UNKNOWN_MODULE_FORMAT', [moduleName]);
     }
 
     return resolver;
@@ -95,9 +95,7 @@ export default class Loader<Plugin extends Pluggable> {
     const factory: Factory<Plugin> = requireModule(resolvedPath);
 
     if (typeof factory !== 'function') {
-      throw new TypeError(
-        `Plugin modules must export a default function, found ${typeof factory}.`,
-      );
+      throw new RuntimeError('plugin', 'PG_INVALID_FACTORY', [typeof factory]);
     }
 
     const plugin = factory(options);
