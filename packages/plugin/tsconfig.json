@@ -22,6 +22,9 @@
       "path": "../debug"
     },
     {
+      "path": "../event"
+    },
+    {
       "path": "../internal"
     },
     {

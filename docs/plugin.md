@@ -34,7 +34,7 @@ In our examples moving forward, we will use "renderer" as our plugin.
 ```ts
 import { Registry, Pluggable } from '@boost/plugin';
 
-export interface Renderable extends Pluggable {
+export interface Renderable<T> extends Pluggable<T> {
   render(): string;
 }
 
@@ -66,11 +66,83 @@ information on life cycles, continue to the next [plugins](#plugins) chapter.
 
 ### Plugins
 
+We keep talking about plugins, but what exactly is a plugin? In the context of this system, a plugin
+is either a plain object, or class instance that extends `Plugin`, with both abiding a defined
+contract (the `validate` option). A plugin must also have a unique `name` property, which is
+typically the NPM package name.
+
+Using our renderer example above, our plain object would look like the following.
+
+```ts
+const renderer = {
+  name: 'boost-renderer-example',
+  render() {
+    return 'Something happened here?';
+  },
+};
+```
+
+Simple, right? Now let's look at our class example, which is a bit more involved.
+
+```ts
+import { Plugin } from '@boost/plugin';
+
+class Renderer extends Plugin implements Renderable {
+  name = '@boost/renderer-example';
+
+  render() {
+    return 'Something also happens here!';
+  }
+}
+```
+
+Now why would we use a class instead of an object, as an object seems much simpler? For 2 reasons,
+the 1st being that `Plugin` extends from [`Contract`](./common/contract.md), which allows the plugin
+to inherit options through its constructor. This automatically happens when loading plugins from a
+configuration file.
+
+```ts
+import { Predicates } from '@boost/common';
+import { Plugin } from '@boost/plugin';
+
+interface RendererOptions {
+  async?: boolean;
+}
+
+class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
+  // ...
+
+  blueprint({ bool }: Predicates) {
+    return {
+      async: bool(),
+    };
+  }
+}
+
+const renderer = new Renderer({ async: true });
+```
+
+The 2nd reason is for TypeScript, as we can type our "tool" that is passed to
+[life cycle events](#life-cycles) -- more specifically, the `Pluggable` type. More information on
+the tool can be found in later chapters.
+
+```ts
+import { Plugin } from '@boost/plugin';
+import Tool from './Tool';
+
+class Renderer extends Plugin<Tool> implements Renderable<Tool> {
+  // ...
+}
+```
+
+#### Life Cycles
+
 ### Packages
 
 ### Loading Plugins
 
 - from settings
+- priority
 
 ## Third-party Ecosystem
 
