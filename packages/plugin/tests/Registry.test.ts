@@ -137,6 +137,24 @@ describe('Registry', () => {
       return renderer;
     }
 
+    it('emits `onLoad` event for each plugin', async () => {
+      fixtures.push(
+        copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
+        copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
+        copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
+      );
+
+      const spy = jest.fn();
+
+      registry.onLoad.listen(spy);
+
+      await registry.loadMany(['foo', 'bar'], tool);
+
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith('foo', {});
+      expect(spy).toHaveBeenCalledWith('bar', {});
+    });
+
     it('loads plugins based on name', () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
@@ -466,6 +484,17 @@ describe('Registry', () => {
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([result]);
     });
+
+    it('emits `onRegister` event', () => {
+      const plugin = new Renderer();
+      const spy = jest.fn();
+
+      registry.onRegister.listen(spy);
+      registry.register('foo', plugin, tool);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(plugin);
+    });
   });
 
   describe('unregister()', () => {
@@ -507,6 +536,16 @@ describe('Registry', () => {
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([]);
+    });
+
+    it('emits `onUnregister` event', () => {
+      const spy = jest.fn();
+
+      registry.onUnregister.listen(spy);
+      registry.unregister('foo');
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(new Renderer());
     });
   });
 });

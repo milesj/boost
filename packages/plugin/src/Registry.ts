@@ -1,5 +1,6 @@
 import { Contract, Predicates, isObject, ModuleName } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
+import { Event } from '@boost/event';
 import { RuntimeError, color } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
@@ -12,6 +13,15 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   RegistryOptions<Plugin>
 > {
   readonly debug: Debugger;
+
+  // Emits after a plugin is loaded but before its registered
+  readonly onLoad = new Event<[Setting<Plugin>, object?]>('load');
+
+  // Emits after a plugin is registered
+  readonly onRegister = new Event<[Plugin]>('register');
+
+  // Emits before a plugin is unregistered
+  readonly onUnregister = new Event<[Plugin]>('unregister');
 
   readonly pluralName: string;
 
@@ -128,6 +138,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       throw new RuntimeError('plugin', 'PG_UNKNOWN_SETTING', [setting]);
     }
 
+    this.onLoad.emit([setting, options]);
+
     this.register(plugin.name, plugin, tool, opts);
 
     return plugin;
@@ -187,6 +199,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.plugins.sort((a, b) => a.priority! - b.priority!);
 
+    this.onRegister.emit([plugin]);
+
     return this;
   }
 
@@ -195,6 +209,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    */
   unregister(name: ModuleName, tool?: Tool): this {
     const plugin = this.get(name);
+
+    this.onUnregister.emit([plugin]);
 
     this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
 

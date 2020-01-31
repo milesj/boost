@@ -22,6 +22,7 @@
   "dependencies": {
     "@boost/common": "^1.8.1",
     "@boost/debug": "^1.4.2",
+    "@boost/event": "^1.2.1",
     "@boost/internal": "^1.0.3",
     "lodash": "^4.17.15",
     "pluralize": "^8.0.0"
