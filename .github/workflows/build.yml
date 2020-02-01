@@ -24,4 +24,6 @@ jobs:
       # Not sure why, but have to force exit here as the tests would hang.
       # --runInBand and --detectOpenHandles didn't help diagnose the issue.
       - run: yarn run coverage
+        env:
+          BOOSTJS_ENV: 'development'
       - run: yarn run eslint
