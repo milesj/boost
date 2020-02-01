@@ -14,12 +14,12 @@ interface.
 ```ts
 import { Contract, Predicates } from '@boost/common';
 
-export interface PluginOptions {
+export interface AdapterOptions {
   name?: string;
   priority?: number;
 }
 
-export default class Plugin extends Contract<PluginOptions> {
+export default class Adapter extends Contract<AdapterOptions> {
   blueprint({ number, string }: Predicates) {
     return {
       name: string().notEmpty(),
@@ -34,12 +34,12 @@ blueprint. If invalid, an error will be thrown. Furthermore, the `Contract#optio
 `readonly`, and will error when mutated.
 
 ```ts
-const plugin = new Plugin({
+const adapter = new Adapter({
   name: 'Boost',
 });
 
 // Boost
-const { name } = plugin.options;
+const { name } = adapter.options;
 ```
 
 To modify the options object after instantiation, the `Contract#configure()` method should be used.
@@ -47,9 +47,9 @@ This method accepts a partial object, or a function that receives the current fu
 and must return a partial object.
 
 ```ts
-plugin.configure({ name: 'Boost' });
+adapter.configure({ name: 'Boost' });
 
-plugin.configure(prevOptions => ({
+adapter.configure(prevOptions => ({
   nestedObject: {
     ...prevOptions.nestedObject,
     some: 'value',
@@ -64,13 +64,13 @@ required property, it will not be bubbled up in TypeScript. To support this, the
 need to be overridden so that the argument can be marked as non-optional.
 
 ```ts
-export interface PluginOptions {
+export interface AdapterOptions {
   name: string;
   priority?: number;
 }
 
-export default class Plugin extends Contract<PluginOptions> {
-  constructor(options: PluginOptions) {
+export default class Adapter extends Contract<AdapterOptions> {
+  constructor(options: AdapterOptions) {
     super(options);
   }
 

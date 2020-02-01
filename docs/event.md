@@ -1,4 +1,4 @@
-# Event System
+# Events
 
 A type-safe event system with multiple emitter patterns.
 
