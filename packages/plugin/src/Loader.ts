@@ -27,7 +27,7 @@ export default class Loader<Plugin extends Pluggable> {
     const modulePattern = MODULE_PART_PATTERN.source;
     const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
-    this.debug('Resolving possible %s modules', color.pluginName(typeName));
+    this.debug('Resolving possible %s modules', color.pluginType(typeName));
 
     // Absolute or relative file path
     if (path.isAbsolute(name) || name.charAt(0) === '.') {
@@ -75,8 +75,8 @@ export default class Loader<Plugin extends Pluggable> {
     } else if (moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) && isNotProjectOrType) {
       this.debug(
         'Resolving modules with internal "%s" scope and public "%s" prefix',
-        color.toolName(`@${projectName}`),
-        color.toolName(projectName),
+        color.projectName(`@${projectName}`),
+        color.projectName(projectName),
       );
 
       // Detect internal scopes before public ones

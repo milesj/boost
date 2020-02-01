@@ -419,7 +419,7 @@ export default class Tool<
     const { appName } = this.options;
     const pluginNames = Object.keys(this.pluginTypes);
 
-    this.debug('Initializing %s application', color.toolName(appName));
+    this.debug('Initializing %s application', color.projectName(appName));
 
     this.args = parseArgs(
       this.argv,
@@ -551,7 +551,7 @@ export default class Tool<
     const name = String(typeName);
     const { afterBootstrap = null, beforeBootstrap = null, scopes = [] } = options;
 
-    this.debug('Registering new plugin type: %s', color.pluginName(name));
+    this.debug('Registering new plugin type: %s', color.pluginType(name));
 
     this.plugins[typeName] = new Set();
 

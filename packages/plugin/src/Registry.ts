@@ -49,7 +49,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     this.debug = createDebugger([this.singularName, 'registry']);
     this.loader = new Loader(this);
 
-    this.debug('Creating new plugin type: %s', color.pluginName(typeName));
+    this.debug('Creating new plugin type: %s', color.pluginType(typeName));
   }
 
   blueprint({ func }: Predicates) {

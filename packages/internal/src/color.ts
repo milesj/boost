@@ -1,11 +1,15 @@
+/* eslint-disable sort-keys */
+
 import chalk from 'chalk';
 
 export default {
+  // States
   fail: chalk.red,
-  filePath: chalk.cyan,
-  moduleName: chalk.yellow,
   mute: chalk.gray,
   pass: chalk.green,
-  pluginName: chalk.magenta,
-  toolName: chalk.blue,
+  // Types
+  filePath: chalk.cyan,
+  moduleName: chalk.yellow,
+  pluginType: chalk.magenta,
+  projectName: chalk.blue,
 };

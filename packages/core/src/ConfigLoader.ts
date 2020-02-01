@@ -66,7 +66,7 @@ export default class ConfigLoader {
 
     this.debug.invariant(
       !!config,
-      `Looking in package.json under ${color.toolName(configName)} property`,
+      `Looking in package.json under ${color.projectName(configName)} property`,
       'Found',
       'Not found',
     );
@@ -275,7 +275,7 @@ export default class ConfigLoader {
     Object.values(this.tool.getRegisteredPlugins()).forEach(type => {
       const { contract, singularName, pluralName } = type!;
 
-      this.debug('Generating %s blueprint', color.pluginName(singularName));
+      this.debug('Generating %s blueprint', color.pluginType(singularName));
 
       // prettier-ignore
       pluginsBlueprint[pluralName] = array(union<PluginSetting<Function>>([
