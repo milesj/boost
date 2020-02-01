@@ -214,7 +214,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.onRegister.emit([plugin]);
 
-    debug('Plugin "%s" registered', plugin.name);
+    debug('Plugin "%s" registered', plugin.name || name);
 
     return plugin;
   }
@@ -233,7 +233,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.plugins = this.plugins.filter(container => !this.isMatchingName(container, name));
 
-    debug('Plugin "%s" unregistered', plugin.name);
+    debug('Plugin "%s" unregistered', plugin.name || name);
 
     return plugin;
   }

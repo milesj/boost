@@ -43,7 +43,7 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
 
     this.debug('Instantiating pipeline');
 
-    debug('Creating %s pipeline', name.toLowerCase().replace('pipeline', ''));
+    debug('New %S created', name);
   }
 
   /**

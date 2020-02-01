@@ -14,7 +14,7 @@ export default abstract class BaseEvent<
   constructor(name: string) {
     this.name = this.validateName(name, 'name');
 
-    debug('Creating %s event: %s', this.constructor.name.toLowerCase().replace('event', ''), name);
+    debug('New %S created: %s', this.constructor.name, name);
   }
 
   /**
