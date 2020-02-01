@@ -1,4 +1,5 @@
 import BaseEvent from './BaseEvent';
+import { debug } from './constants';
 
 export default class ConcurrentEvent<
   Args extends unknown[],
@@ -9,6 +10,8 @@ export default class ConcurrentEvent<
    * Will return a promise with an array of each listener result.
    */
   emit(args: Args, scope?: Scope): Promise<unknown[]> {
+    debug('Emitting "%s%s" as concurrent', this.name, scope ? `:${scope}` : '');
+
     return Promise.all(Array.from(this.getListeners(scope)).map(listener => listener(...args)));
   }
 }

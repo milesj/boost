@@ -26,7 +26,7 @@ import castValue from './helpers/castValue';
 import processShortOptionGroup from './helpers/processShortOptionGroup';
 import Checker from './Checker';
 import Scope from './Scope';
-import { DEFAULT_STRING_VALUE } from './constants';
+import { DEFAULT_STRING_VALUE, debug } from './constants';
 
 // TERMINOLOGY
 // arg - All types of arguments passed on the command line, separated by a space.
@@ -66,6 +66,8 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
   const mapping: AliasMap = {};
   let command = '';
   let currentScope: Scope | null = null;
+
+  debug('Parsing arguments: %s', argv.join(' '));
 
   function commitScope() {
     if (!currentScope) {
