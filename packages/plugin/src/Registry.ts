@@ -74,10 +74,10 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * an error will be thrown.
    */
   get(name: ModuleName): Plugin {
-    const plugin = this.plugins.find(container => this.isMatchingName(container, name));
+    const container = this.plugins.find(c => this.isMatchingName(c, name));
 
-    if (plugin) {
-      return plugin.plugin;
+    if (container) {
+      return container.plugin;
     }
 
     throw new RuntimeError('plugin', 'PG_MISSING_PLUGIN', [this.singularName, name]);

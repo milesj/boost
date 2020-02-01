@@ -1,3 +1,4 @@
+import path from 'path';
 import { PathResolver, requireModule, ModuleName, isObject } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color, RuntimeError } from '@boost/internal';
@@ -28,8 +29,14 @@ export default class Loader<Plugin extends Pluggable> {
 
     this.debug('Resolving possible %s modules', color.pluginName(typeName));
 
-    // @scope/tool-plugin-name
-    if (
+    // Absolute or relative file path
+    if (path.isAbsolute(name) || name.charAt(0) === '.') {
+      this.debug('Found a file path: %s', color.filePath(name));
+
+      resolver.lookupFilePath(name);
+
+      // @scope/tool-plugin-name
+    } else if (
       moduleName.match(
         new RegExp(`^@${modulePattern}/${projectName}-${typeName}-${modulePattern}$`, 'u'),
       )

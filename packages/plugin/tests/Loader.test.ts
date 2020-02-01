@@ -1,3 +1,4 @@
+import { Path } from '@boost/common';
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { Renderable, createRendererRegistry } from './__mocks__/Renderer';
 import Loader from '../src/Loader';
@@ -16,6 +17,20 @@ describe('Loader', () => {
   });
 
   describe('createResolver()', () => {
+    describe('file paths', () => {
+      it('adds unix absolute path', () => {
+        const resolver = loader.createResolver('/foo/bar/baz.js');
+
+        expect(resolver.getLookupPaths()).toEqual(['/foo/bar/baz.js']);
+      });
+
+      it('adds relative path', () => {
+        const resolver = loader.createResolver('./bar/baz.js');
+
+        expect(resolver.getLookupPaths()).toEqual([Path.resolve('./bar/baz.js').path()]);
+      });
+    });
+
     describe('private scope', () => {
       it('adds lookup if pattern matches', () => {
         const resolver = loader.createResolver('@scope/boost-test-renderer-test');
