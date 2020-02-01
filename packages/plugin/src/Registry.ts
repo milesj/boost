@@ -107,9 +107,10 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   /**
    * Load and register a single plugin based on a setting. The possible setting variants are:
    *
-   * - If a string, will load based on module name.
-   * - If an array, the 1st item will be considered the module name,
+   * - If a string, will load based on module name or file path.
+   * - If an array, the 1st item will be considered the module name or file path,
    *    and the 2nd item an options object that will be passed to the factory function.
+   *    A 3rd object can be provided to customize priority.
    * - If an object or class instance, will assume to be the plugin itself.
    */
   async load(setting: Setting<Plugin>, options?: object, tool?: Tool): Promise<Plugin> {
@@ -118,11 +119,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     // Module name
     if (typeof setting === 'string') {
-      plugin = this.loader.load(setting, options);
+      plugin = await this.loader.load(setting, options);
 
       // Module name with options
     } else if (Array.isArray(setting)) {
-      plugin = this.loader.load(setting[0], setting[1] || options);
+      plugin = await this.loader.load(setting[0], setting[1] || options);
 
       if (isObject(setting[2])) {
         Object.assign(opts, setting[2]);

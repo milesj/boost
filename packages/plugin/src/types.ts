@@ -19,7 +19,9 @@ export type Setting<T extends Pluggable> =
   | [ModuleName | FilePath, object, PluginOptions?]
   | T;
 
-export type Factory<T extends Pluggable, O extends object = object> = (options: Partial<O>) => T;
+export type Factory<T extends Pluggable, O extends object = object> = (
+  options: Partial<O>,
+) => T | Promise<T>;
 
 export interface Registration<T extends Pluggable> extends PluginOptions {
   name: ModuleName;

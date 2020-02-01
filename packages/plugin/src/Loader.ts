@@ -94,7 +94,7 @@ export default class Loader<Plugin extends Pluggable> {
   /**
    * Load a plugin by short name or fully qualified module name, with an optional options object.
    */
-  load(name: ModuleName, options: object = {}): Plugin {
+  async load(name: ModuleName, options: object = {}): Promise<Plugin> {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
     this.debug('Loading "%s" from %s', color.moduleName(name), color.filePath(resolvedPath));
@@ -105,7 +105,7 @@ export default class Loader<Plugin extends Pluggable> {
       throw new RuntimeError('plugin', 'PG_INVALID_FACTORY', [typeof factory]);
     }
 
-    const plugin = factory(options);
+    const plugin = await factory(options);
 
     if (isObject(plugin) && !plugin.name) {
       plugin.name = originalPath.path();

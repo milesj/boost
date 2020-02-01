@@ -128,32 +128,30 @@ describe('Loader', () => {
   });
 
   describe('load()', () => {
-    it('errors if module is not found', () => {
-      expect(() => {
-        loader.load('missing');
-      }).toThrow(
+    it('errors if module is not found', async () => {
+      await expect(loader.load('missing')).rejects.toThrow(
         expect.objectContaining({
           message: expect.stringContaining('Failed to resolve a path'),
         }),
       );
     });
 
-    it('errors if module does not export a function', () => {
+    it('errors if module does not export a function', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-export-nonfunc', 'boost-test-renderer-nonfunc'),
       );
 
-      expect(() => {
-        loader.load('nonfunc');
-      }).toThrow('Plugin modules must export a default function, found object.');
+      await expect(loader.load('nonfunc')).rejects.toThrow(
+        'Plugin modules must export a default function, found object.',
+      );
     });
 
-    it('loads a plugin module that factories an object', () => {
+    it('loads a plugin module that factories an object', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-object'),
       );
 
-      const result = loader.load('object');
+      const result = await loader.load('object');
 
       expect(result).toEqual({
         name: 'boost-test-renderer-object',
@@ -162,12 +160,12 @@ describe('Loader', () => {
       });
     });
 
-    it('loads a plugin module that factories an object with options', () => {
+    it('loads a plugin module that factories an object with options', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-object-extra'),
       );
 
-      const result = loader.load('object-extra', { value: 'foo' });
+      const result = await loader.load('object-extra', { value: 'foo' });
 
       expect(result).toEqual({
         name: '@boost-test/renderer-object-extra',
@@ -176,10 +174,10 @@ describe('Loader', () => {
       });
     });
 
-    it('loads a plugin module that factories a class instance', () => {
+    it('loads a plugin module that factories a class instance', async () => {
       fixtures.push(copyFixtureToNodeModule('plugin-renderer-class', 'boost-test-renderer-class'));
 
-      const result = loader.load('class');
+      const result = await loader.load('class');
 
       expect(result).toEqual(
         expect.objectContaining({
@@ -190,12 +188,12 @@ describe('Loader', () => {
       expect(result.constructor.name).toBe('Renderer');
     });
 
-    it('loads a plugin module that factories a class instance with options', () => {
+    it('loads a plugin module that factories a class instance with options', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-class', '@boost-test/renderer-class-extra'),
       );
 
-      const result = loader.load('class-extra', { value: 'foo' });
+      const result = await loader.load('class-extra', { value: 'foo' });
 
       expect(result).toEqual(
         expect.objectContaining({

@@ -21,7 +21,7 @@ const registry = new Registry<Renderable>('boost', 'plugin', {
   },
 });
 
-const plugin = registry.load('boost-plugin-example');
+const plugin = await registry.load('boost-plugin-example');
 ```
 
 ## Features
@@ -31,6 +31,7 @@ const plugin = registry.load('boost-plugin-example');
 - Multiple module name formats: public, scoped public, scoped private.
 - Structural contracts with life cycle events.
 - Factory function pattern for plugin creation.
+- Asynchronous by default.
 
 ## Installation
 

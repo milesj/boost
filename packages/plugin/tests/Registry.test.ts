@@ -357,6 +357,11 @@ describe('Registry', () => {
           priority: 1,
         },
         {
+          name: 'boost-test-renderer-qux',
+          plugin: qux,
+          priority: DEFAULT_PRIORITY,
+        },
+        {
           name: 'boost-test-renderer-foo',
           plugin: expect.any(Object),
           priority: DEFAULT_PRIORITY,
@@ -366,11 +371,6 @@ describe('Registry', () => {
           plugin: expect.objectContaining({
             options: { value: 'bar' },
           }),
-          priority: DEFAULT_PRIORITY,
-        },
-        {
-          name: 'boost-test-renderer-qux',
-          plugin: qux,
           priority: DEFAULT_PRIORITY,
         },
       ]);

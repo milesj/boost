@@ -208,20 +208,21 @@ class Renderer extends Plugin<Tool> implements Renderable<Tool> {
 }
 ```
 
-### Packages
+### Modules
 
-Typically plugins are represented as an NPM package for easy consumption. This pattern is first
-class in Boost, but there are specific requirements to be followed. The 1st is that all plugin
-packages _must_ return a factory function from the default index import. Using a factory function
-provides the following benefits:
+Typically plugins are represented as an NPM package or file module for easy consumption. This
+pattern is first class in Boost, but there are specific requirements to be followed. The 1st is that
+all plugin modules _must_ return a factory function from the default index import. Using a factory
+function provides the following benefits:
 
 - The return value of the factory may change without breaking the import contract.
 - Option objects are passed to the factory, which allows implementors to handle it however they
   please.
 - Runtime and boostrap based logic is encapsulated within the function.
 - Multiple instances can be created from a single imported package.
+- Asynchronous aware and compatible.
 
-Using our renderer examples, we would have the following factories.
+Using our renderer examples, we would have the following factories. One sync and the other async.
 
 ```ts
 // Object based plugin
@@ -251,7 +252,9 @@ class Renderer extends Plugin implements Renderable {
   // ....
 }
 
-export default function(options: RendererOptions): Renderable {
+export default async function(options: RendererOptions): Renderable {
+  await someProcessThatNeedsToBeAwaited();
+
   return new Renderer(options);
 }
 ```
@@ -278,7 +281,39 @@ All name parts should be in kebab-case and abide the official
 
 ### Tools
 
-TODO
+Most projects have a central object or class instance that powers their entire process, for
+instance, Webpack has the `Compiler` and `Compilation` instances. In Boost this is called a tool (as
+in developer or build tool).
+
+Tools are optional, but when defined, they're passed to plugin life cycles, so that plugins may
+interact and integrate with them. For proper type-safety, the Tool type should be passed as a
+generic to `Registry`, `Plugin`, and `Pluggable`.
+
+```ts
+import { Registry, Pluggable, Plugin } from '@boost/plugin';
+import Tool from './Tool';
+
+export interface Renderable<T> extends Pluggable<T> {
+  render(): string | Promise<string>;
+}
+
+class Renderer<T> extends Plugin<T> implements Renderable<T> {}
+
+const registry = new Registry<Renderable, Tool>(/* ... */);
+const renderer = new Renderer<Tool>();
+```
+
+If you have a tool instance, pass the tool as the 3rd argument to `Registry#load()` and the 2nd
+argument to `Registry#loadMany()`.
+
+```ts
+import Tool from './Tool';
+
+const tool = new Tool();
+
+await registry.load('foo', {}, tool);
+await registry.loadMany(['foo', 'bar'], tool);
+```
 
 ### Loading Plugins
 

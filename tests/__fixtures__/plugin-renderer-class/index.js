@@ -12,6 +12,9 @@ class Renderer extends Plugin {
   }
 }
 
-module.exports = function rendererPlugin(options) {
+// Async
+module.exports = async function rendererPlugin(options) {
+  await Promise.resolve();
+
   return new Renderer(options);
 };
