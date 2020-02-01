@@ -51,6 +51,12 @@
       "path": "packages/pipeline/tests"
     },
     {
+      "path": "packages/plugin"
+    },
+    {
+      "path": "packages/plugin/tests"
+    },
+    {
       "path": "packages/reporter-nyan"
     },
     {

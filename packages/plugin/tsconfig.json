@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "declarationDir": "lib",
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "lib",
+    "tests"
+  ],
+  "extends": "../../tsconfig.options.json",
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "../../types/**/*"
+  ],
+  "references": [
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../debug"
+    },
+    {
+      "path": "../event"
+    },
+    {
+      "path": "../internal"
+    },
+    {
+      "path": "../test-utils"
+    }
+  ]
+}
