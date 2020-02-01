@@ -3,7 +3,7 @@ import { PathResolver, requireModule, ModuleName, isObject } from '@boost/common
 import { createDebugger, Debugger } from '@boost/debug';
 import { color, RuntimeError } from '@boost/internal';
 import { Pluggable, Factory } from './types';
-import { MODULE_PART_PATTERN } from './constants';
+import { MODULE_PART_PATTERN, debug } from './constants';
 import Registry from './Registry';
 
 export default class Loader<Plugin extends Pluggable> {
@@ -87,6 +87,8 @@ export default class Loader<Plugin extends Pluggable> {
     } else {
       throw new RuntimeError('plugin', 'PG_UNKNOWN_MODULE_FORMAT', [moduleName]);
     }
+
+    debug('Loading plugins from: %s', resolver.getLookupPaths().join(', '));
 
     return resolver;
   }

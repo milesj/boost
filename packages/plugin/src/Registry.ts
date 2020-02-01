@@ -14,7 +14,7 @@ import {
   PluginOptions,
   Callback,
 } from './types';
-import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN } from './constants';
+import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN, debug } from './constants';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
   RegistryOptions<Plugin>
@@ -49,7 +49,9 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     this.debug = createDebugger([this.singularName, 'registry']);
     this.loader = new Loader(this);
 
-    this.debug('Creating new plugin type: %s', color.pluginType(typeName));
+    this.debug('Creating new plugin type: %s', color.pluginType(this.singularName));
+
+    debug('New plugin type created: %s', this.singularName);
   }
 
   blueprint({ func }: Predicates) {
@@ -212,6 +214,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.onRegister.emit([plugin]);
 
+    debug('Plugin "%s" registered', plugin.name);
+
     return plugin;
   }
 
@@ -228,6 +232,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     await this.triggerShutdown(plugin, tool);
 
     this.plugins = this.plugins.filter(container => !this.isMatchingName(container, name));
+
+    debug('Plugin "%s" unregistered', plugin.name);
 
     return plugin;
   }

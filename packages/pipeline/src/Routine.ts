@@ -11,6 +11,7 @@ import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
 import { Hierarchical } from './types';
+import { debug } from './constants';
 
 export interface ExecuteCommandOptions {
   // Unknown does not work here as it conflicts with event tuples.
@@ -42,6 +43,8 @@ export default abstract class Routine<
 
     this.key = kebabCase(key);
     this.debug = createDebugger(['routine', this.key]);
+
+    debug('New routine created: %s (%s)', this.key, this.title);
   }
 
   /**

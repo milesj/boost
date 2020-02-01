@@ -1,5 +1,6 @@
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
+import { debug } from './constants';
 
 export default class ConcurrentPipeline<
   Ctx extends Context,
@@ -17,6 +18,8 @@ export default class ConcurrentPipeline<
   async run(): Promise<Output[]> {
     const { context, value } = this;
     const work = this.getWorkUnits();
+
+    debug('Running %d in parallel', work.length);
 
     this.debug('Parallelizing %d work units', work.length);
     this.onRun.emit([value]);

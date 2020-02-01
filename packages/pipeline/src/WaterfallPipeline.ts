@@ -2,6 +2,7 @@
 
 import Context from './Context';
 import SerialPipeline from './SerialPipeline';
+import { debug } from './constants';
 
 export default class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
   {},
@@ -19,6 +20,8 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
   async run(): Promise<Input> {
     const work = this.getWorkUnits();
     let { value } = this.root;
+
+    debug('Running %d as a waterfall', work.length);
 
     this.debug('Serializing %d work units', work.length);
     this.onRun.emit([value]);
