@@ -25,7 +25,7 @@ export default class Loader<Plugin extends Pluggable> {
     const { singularName: typeName, projectName } = this.registry;
     const moduleName = name.toLowerCase();
     const modulePattern = MODULE_PART_PATTERN.source;
-    const isNotToolOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
+    const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
     this.debug('Resolving possible %s modules', color.pluginName(typeName));
 
@@ -35,7 +35,7 @@ export default class Loader<Plugin extends Pluggable> {
 
       resolver.lookupFilePath(name);
 
-      // @scope/tool-plugin-name
+      // @scope/project-plugin-name
     } else if (
       moduleName.match(
         new RegExp(`^@${modulePattern}/${projectName}-${typeName}-${modulePattern}$`, 'u'),
@@ -45,7 +45,7 @@ export default class Loader<Plugin extends Pluggable> {
 
       resolver.lookupNodeModule(moduleName);
 
-      // @tool/plugin-name
+      // @project/plugin-name
     } else if (
       moduleName.match(new RegExp(`^@${projectName}/${typeName}-${modulePattern}$`, 'u'))
     ) {
@@ -56,7 +56,7 @@ export default class Loader<Plugin extends Pluggable> {
       // @scope/name
     } else if (
       moduleName.match(new RegExp(`^@${modulePattern}/${modulePattern}$`, 'u')) &&
-      isNotToolOrType
+      isNotProjectOrType
     ) {
       const [scope, customName] = moduleName.split('/');
       const customModuleName = `${scope}/${projectName}-${typeName}-${customName}`;
@@ -65,14 +65,14 @@ export default class Loader<Plugin extends Pluggable> {
 
       resolver.lookupNodeModule(customModuleName);
 
-      // tool-plugin-name
+      // project-plugin-name
     } else if (moduleName.match(new RegExp(`^${projectName}-${typeName}-${modulePattern}$`, 'u'))) {
       this.debug('Found an explicit public module: %s', color.moduleName(moduleName));
 
       resolver.lookupNodeModule(moduleName);
 
       // The previous 2 patterns if only name provided
-    } else if (moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) && isNotToolOrType) {
+    } else if (moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) && isNotProjectOrType) {
       this.debug(
         'Resolving modules with internal "%s" scope and public "%s" prefix',
         color.toolName(`@${projectName}`),

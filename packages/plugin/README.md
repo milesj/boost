@@ -7,10 +7,30 @@
 Plugin based architecture that supports module loading, custom types, scopes, and more.
 
 ```ts
-TODO;
+import { Registry, Pluggable } from '@boost/plugin';
+
+export interface Renderable<T> extends Pluggable<T> {
+  render(): string | Promise<string>;
+}
+
+const registry = new Registry<Renderable>('boost', 'plugin', {
+  validate(plugin) {
+    if (typeof plugin.render !== 'function') {
+      throw new TypeError('Plugins require a `render()` method.');
+    }
+  },
+});
+
+const plugin = registry.load('boost-plugin-example');
 ```
 
 ## Features
+
+- Custom plugin types and registries.
+- Node module, file path, and configuration file loading strategies.
+- Multiple module name formats: public, scoped public, scoped private.
+- Structural contracts with life cycle events.
+- Factory function pattern for plugin creation.
 
 ## Installation
 

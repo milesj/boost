@@ -123,8 +123,8 @@ const renderer = new Renderer({ async: true });
 ```
 
 The 2nd reason is for TypeScript, as we can type our [tool](#tools) that is passed to
-[life cycle events](#life-cycles) -- more specifically, the `Pluggable` type. More information on
-the tool can be found in later chapters.
+[life cycles](#life-cycles) -- more specifically, the `Pluggable` type. More information on the tool
+can be found in later chapters.
 
 ```ts
 import { Plugin } from '@boost/plugin';
@@ -137,7 +137,29 @@ class Renderer extends Plugin<Tool> implements Renderable<Tool> {
 
 #### Priority
 
-TODO
+After a plugin is loaded, the current plugins list is sorted based on priority. Priority is simply a
+number, in ascending order, that determines the order and precedence of plugins. Priority enables
+plugin authors and consumers to "mark" as high or low priority.
+
+Plugin authors can set a priority using the `priority` property.
+
+```ts
+const renderer = {
+  name: 'boost-renderer-example',
+  priority: 50,
+  render() {
+    return 'Something rendered here?';
+  },
+};
+```
+
+While [consumers can override](#loading-plugins) the priority using the `priority` option.
+
+```ts
+rendererRegistry.load(['boost-renderer-example', {}, { priority: 50 });
+```
+
+The default priority for all plugins is `100`.
 
 #### Life Cycles
 
@@ -217,6 +239,8 @@ export default function(options: RendererOptions): Renderable {
 // Class based plugin
 // @boost/renderer-example/src/index.ts
 
+import { Plugin } from '@boost/plugin';
+
 class Renderer extends Plugin implements Renderable {
   // ....
 }
@@ -252,14 +276,15 @@ TODO
 
 ### Loading Plugins
 
-Plugins are either loaded from an NPM package or a relative file system path, using the `Registry`
-class. The `load()` method can be used to load a single plugin, while `loadMany()` will load
-multiple. Loading accepts 3 different formats, which are outlined with the examples below.
+Plugins are either loaded from an NPM package, a relative file system path, or explicitly passed
+using the `Registry` class. The `load()` method can be used to load a single plugin, while
+`loadMany()` will load multiple. Loading accepts 3 different formats, which are outlined with the
+examples below.
 
-Passing a string will load based on module name. Names can either be short (just the plugin name),
-or in the long fully qualified form (project, type, and plugin name). When using the short form, the
-loader will attempt to find both the scoped (`@boost/renderer-example`) and non-scoped packages
-(`boost-renderer-example`).
+Passing a string will load based on module name or file path. Names can either be short (just the
+plugin name), or in the long fully qualified form (project, type, and plugin name). When using the
+short form, the loader will attempt to find both the scoped (`@boost/renderer-example`) and
+non-scoped packages (`boost-renderer-example`), with scoped taking precedence.
 
 ```ts
 // Load by short name
