@@ -18,18 +18,23 @@ yarn add @boost/plugin
 
 ## Usage
 
-The plugin system is based around the idea of loading plugins from third-party packages or file
-system paths, in which these plugins can be registered and hooked into a tool, project, pipeline, so
-on and so forth. Our system is generic and robust enough to be integrated into any and all projects,
-with the ability to handle multiple plugins in parallel, and configuration and setting based
-approaches.
+The plugin system is comprised of 2 parts -- one for projects or libraries that want plugins, and
+the other for plugin authors. [Project owners](#registries) can integrate into the system using a
+registry, which is based around the idea of loading plugins from third-party packages or file system
+paths. [Plugin authors](#plugins) can create and provide packages that register and hook into the
+project.
 
-To begin, we must define a unique plugin type, like "renderer", "engine", "asset", or simply
-"plugin" if you're not looking to be creative. We can accomplish this with the `Registry` class,
-which requires a project name (used as a package prefix and scope), plugin type name, and
-customizable options.
+Our system is generic and robust enough to be integrated into any and all projects, with the ability
+to handle multiple plugins in parallel through configuration and setting based approaches.
 
-In our examples moving forward, we will use "renderer" as our plugin.
+### Registries
+
+For project authors, we begin by defining a unique plugin type, like "renderer", "engine", "asset",
+or simply "plugin" if you're not looking to be creative. We can accomplish this with the `Registry`
+class, which requires a project name (used as a [package prefix and scope](#naming-requirements)),
+plugin type name, and customizable options.
+
+In our examples moving forward, we will use "renderer" as our plugin type.
 
 ```ts
 import { Registry, Pluggable } from '@boost/plugin';
@@ -66,10 +71,10 @@ information on life cycles, continue to the next [plugins](#plugins) chapter.
 
 ### Plugins
 
-We keep talking about plugins, but what exactly is a plugin? In the context of this system, a plugin
-is either a plain object, or class instance that extends `Plugin`, with both abiding a defined
-contract (the `validate` option). A plugin must also have a unique `name` property, which is
-typically the NPM package name.
+For both project owners and plugin authors, we keep talking about plugins, but what exactly is a
+plugin? In the context of this system, a plugin is either a plain object, or class instance that
+extends `Plugin`, with both abiding a defined contract (the `validate` option). A plugin must also
+have a unique `name` property, which is typically the NPM package name.
 
 Using our renderer example above, our plain object would look like the following.
 
