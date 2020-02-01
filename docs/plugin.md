@@ -60,14 +60,14 @@ passed instead? Nothing good.
 Besides `validate`, the following options can be passed, all of which are optional. For more
 information on life cycles, continue to the next [plugins](#plugins) chapter.
 
-- `beforeStartup` (`(plugin: T) => void`) - Callback fired before a plugin's `startup` life cycle is
-  executed.
-- `beforeShutdown` (`(plugin: T) => void`) - Callback fired before a plugin's `shutdown` life cycle
-  is executed.
-- `afterStartup` (`(plugin: T) => void`) - Callback fired after a plugin's `startup` life cycle is
-  executed.
-- `afterShutdown` (`(plugin: T) => void`) - Callback fired after a plugin's `shutdown` life cycle is
-  executed.
+- `beforeStartup` (`async (plugin: T) => void`) - Callback fired before a plugin's `startup` life
+  cycle is executed.
+- `beforeShutdown` (`async (plugin: T) => void`) - Callback fired before a plugin's `shutdown` life
+  cycle is executed.
+- `afterStartup` (`async (plugin: T) => void`) - Callback fired after a plugin's `startup` life
+  cycle is executed.
+- `afterShutdown` (`async (plugin: T) => void`) - Callback fired after a plugin's `shutdown` life
+  cycle is executed.
 
 ### Plugins
 
@@ -173,7 +173,7 @@ plugin. Currently, plugins support 2 life cycles, `startup` and `shutdown`. Star
 after a plugin is loaded and validated, but before it's registered in the registry. Shutdown on the
 otherhand is executed before a plugin is unregistered from the registry.
 
-All life cycles receive a [tool](#tools) as its only argument.
+All life cycles are asynchronouse and receive a [tool](#tools) as its only argument.
 
 ```ts
 import Tool from './Tool';
@@ -181,10 +181,11 @@ import Tool from './Tool';
 const renderer = {
   // ...
 
-  startup(tool: Tool) {
+  async startup(tool: Tool) {
     // Do something
   },
-  shutdown(tool: Tool) {
+
+  async shutdown(tool: Tool) {
     // Do something
   },
 };
@@ -197,11 +198,11 @@ import Tool from './Tool';
 class Renderer extends Plugin<Tool> implements Renderable<Tool> {
   // ...
 
-  startup(tool: Tool) {
+  async startup(tool: Tool) {
     // Do something
   }
 
-  shutdown(tool: Tool) {
+  async shutdown(tool: Tool) {
     // Do something
   }
 }
@@ -281,10 +282,10 @@ TODO
 
 ### Loading Plugins
 
-Plugins are either loaded from an NPM package, a relative file system path, or explicitly passed
-using the `Registry` class. The `load()` method can be used to load a single plugin, while
-`loadMany()` will load multiple. Loading accepts 3 different formats, which are outlined with the
-examples below.
+Plugins are either asynchronously loaded from an NPM package, a relative file system path, or
+explicitly passed using the `Registry` class. The `load()` method can be used to load a single
+plugin, while `loadMany()` will load multiple. Loading accepts 3 different formats, which are
+outlined with the examples below.
 
 Passing a string will load based on module name or file path. Names can either be short (just the
 plugin name), or in the long fully qualified form (project, type, and plugin name). When using the
@@ -293,13 +294,13 @@ non-scoped packages (`boost-renderer-example`), with scoped taking precedence.
 
 ```ts
 // Load by short name
-const renderer = rendererRegistry.load('foo');
+const renderer = await rendererRegistry.load('foo');
 
 // Load by long name with options
-const renderer = rendererRegistry.load('boost-renderer-foo', { async: true });
+const renderer = await rendererRegistry.load('boost-renderer-foo', { async: true });
 
 // Load by file path
-const renderer = rendererRegistry.load('./renderers/qux.js');
+const renderer = await rendererRegistry.load('./renderers/qux.js');
 ```
 
 Passing an array (tuple) allows for options to also be defined. This will precede the 2nd argument
@@ -308,7 +309,7 @@ set [priority](#priority).
 
 ```ts
 // Load many by different name forms
-const renderers = rendererRegistry.loadMany([
+const renderers = await rendererRegistry.loadMany([
   ['foo', { async: true }],
   ['@boost/renderer-bar', {}, { priority: 1 }],
   '@scope/boost-renderer-baz',
@@ -319,7 +320,7 @@ And lastly, passing a plugin object directly is also supported. This is primaril
 file feature.
 
 ```ts
-const renderer = rendererRegistry.load({
+const renderer = await rendererRegistry.load({
   name: '@scope/boost-renderer-baz',
   render() {
     return 'Hello world';
@@ -327,7 +328,7 @@ const renderer = rendererRegistry.load({
 });
 
 // Or
-const renderer = rendererRegistry.load(new Renderer());
+const renderer = await rendererRegistry.load(new Renderer());
 ```
 
 Loaded and registered plugins should then be accessed with `get()`, `getMany()`, or `getAll()`, all

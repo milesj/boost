@@ -155,14 +155,14 @@ describe('Registry', () => {
       expect(spy).toHaveBeenCalledWith('bar', {});
     });
 
-    it('loads plugins based on name', () => {
+    it('loads plugins based on name', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
         copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
         copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
       );
 
-      registry.loadMany(
+      await registry.loadMany(
         [
           // Short names
           'foo',
@@ -206,14 +206,14 @@ describe('Registry', () => {
       ]);
     });
 
-    it('loads plugins based on name with options and priority', () => {
+    it('loads plugins based on name with options and priority', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
         copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
         copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
       );
 
-      registry.loadMany(
+      await registry.loadMany(
         [
           // Short names
           ['foo', { value: 'foo' }, { priority: 3 }],
@@ -251,10 +251,10 @@ describe('Registry', () => {
       ]);
     });
 
-    it('uses objects as is', () => {
+    it('uses objects as is', async () => {
       const render = () => 'test';
 
-      registry.loadMany(
+      await registry.loadMany(
         [
           // Basic
           { name: 'boost-test-renderer-foo', render },
@@ -294,7 +294,7 @@ describe('Registry', () => {
       ]);
     });
 
-    it('uses class instances as is', () => {
+    it('uses class instances as is', async () => {
       // Basic
       const foo = createClass('boost-test-renderer-foo');
       // With options
@@ -303,7 +303,7 @@ describe('Registry', () => {
       const baz = createClass('@test/boost-test-renderer-baz', { value: 'baz' });
       baz.priority = 1;
 
-      registry.loadMany([foo, bar, baz], tool);
+      await registry.loadMany([foo, bar, baz], tool);
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([
@@ -325,14 +325,14 @@ describe('Registry', () => {
       ]);
     });
 
-    it('supports all the patterns at once', () => {
+    it('supports all the patterns at once', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
         copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
         copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
       );
 
-      registry.loadMany(
+      await registry.loadMany(
         [
           'foo',
           ['@boost-test/renderer-bar', { value: 'bar' }],
@@ -376,40 +376,40 @@ describe('Registry', () => {
       ]);
     });
 
-    it('errors if unsupported setting passed', () => {
-      expect(() => {
+    it('errors if unsupported setting passed', async () => {
+      await expect(
         registry.loadMany(
           [
             // @ts-ignore Allow invalid type
             123,
           ],
           {},
-        );
-      }).toThrow('Unknown plugin setting: 123');
+        ),
+      ).rejects.toThrow('Unknown plugin setting: 123');
     });
 
-    it('errors if object is passed without a name', () => {
-      expect(() => {
+    it('errors if object is passed without a name', async () => {
+      await expect(
         registry.loadMany(
           [
             // @ts-ignore Allow invalid type
             {},
           ],
           {},
-        );
-      }).toThrow('Plugin object or class instance found without a `name` property.');
+        ),
+      ).rejects.toThrow('Plugin object or class instance found without a `name` property.');
     });
 
-    it('errors if class instance is passed without a name', () => {
-      expect(() => {
+    it('errors if class instance is passed without a name', async () => {
+      await expect(
         registry.loadMany(
           [
             // @ts-ignore Allow invalid type
             new Renderer(),
           ],
           tool,
-        );
-      }).toThrow('Plugin object or class instance found without a `name` property.');
+        ),
+      ).rejects.toThrow('Plugin object or class instance found without a `name` property.');
     });
   });
 
@@ -418,50 +418,50 @@ describe('Registry', () => {
       expect(registry.isRegistered('foo')).toBe(false);
     });
 
-    it('returns true if plugin is found', () => {
-      registry.register('foo', new Renderer());
+    it('returns true if plugin is found', async () => {
+      await registry.register('foo', new Renderer());
 
       expect(registry.isRegistered('foo')).toBe(true);
     });
   });
 
   describe('register()', () => {
-    it('errors if no name provided', () => {
-      expect(() => {
-        registry.register('', new Renderer());
-      }).toThrow('A fully qualified module name is required for renderers.');
+    it('errors if no name provided', async () => {
+      await expect(registry.register('', new Renderer())).rejects.toThrow(
+        'A fully qualified module name is required for renderers.',
+      );
     });
 
-    it('errors if plugin is not an object', () => {
-      expect(() => {
+    it('errors if plugin is not an object', async () => {
+      await expect(
         registry.register(
           'foo',
           // @ts-ignore Allow invalid type
           123,
-        );
-      }).toThrow('Renderers expect an object or class instance, found number.');
+        ),
+      ).rejects.toThrow('Renderers expect an object or class instance, found number.');
     });
 
-    it('errors if `validate` option fails', () => {
-      expect(() => {
+    it('errors if `validate` option fails', async () => {
+      await expect(
         registry.register(
           'foo',
           // @ts-ignore Allow invalid type
           {},
-        );
-      }).toThrow('Renderer requires a `render()` method.');
+        ),
+      ).rejects.toThrow('Renderer requires a `render()` method.');
     });
 
-    it('triggers `startup` lifecycle with tool', () => {
+    it('triggers `startup` lifecycle with tool', async () => {
       const plugin = new Renderer();
       const spy = jest.spyOn(plugin, 'startup');
 
-      registry.register('foo', plugin, tool);
+      await registry.register('foo', plugin, tool);
 
       expect(spy).toHaveBeenCalledWith(tool);
     });
 
-    it('triggers `beforeStartup` and `afterStartup` events', () => {
+    it('triggers `beforeStartup` and `afterStartup` events', async () => {
       const beforeSpy = jest.fn();
       const afterSpy = jest.fn();
 
@@ -470,27 +470,28 @@ describe('Registry', () => {
         afterStartup: afterSpy,
       });
 
-      registry.register('foo', new Renderer());
+      await registry.register('foo', new Renderer());
 
       expect(beforeSpy).toHaveBeenCalled();
       expect(afterSpy).toHaveBeenCalled();
     });
 
-    it('adds plugin and its metadata to the list', () => {
+    it('adds plugin and its metadata to the list', async () => {
       const result = { name: 'foo', plugin: new Renderer(), priority: 1 };
 
-      registry.register('foo', result.plugin, tool, { priority: 1 });
+      await registry.register('foo', result.plugin, tool, { priority: 1 });
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([result]);
     });
 
-    it('emits `onRegister` event', () => {
+    it('emits `onRegister` event', async () => {
       const plugin = new Renderer();
       const spy = jest.fn();
 
       registry.onRegister.listen(spy);
-      registry.register('foo', plugin, tool);
+
+      await registry.register('foo', plugin, tool);
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(plugin);
@@ -498,25 +499,25 @@ describe('Registry', () => {
   });
 
   describe('unregister()', () => {
-    beforeEach(() => {
-      registry.register('foo', new Renderer(), tool, { priority: 1 });
+    beforeEach(async () => {
+      await registry.register('foo', new Renderer(), tool, { priority: 1 });
     });
 
-    it('errors if name not found', () => {
-      expect(() => {
-        registry.unregister('unknown');
-      }).toThrow('Failed to find renderer "unknown". Have you installed it?');
+    it('errors if name not found', async () => {
+      await expect(registry.unregister('unknown')).rejects.toThrow(
+        'Failed to find renderer "unknown". Have you installed it?',
+      );
     });
 
-    it('triggers `shutdown` lifecycle with tool', () => {
+    it('triggers `shutdown` lifecycle with tool', async () => {
       const spy = jest.spyOn(registry.get('foo'), 'shutdown');
 
-      registry.unregister('foo', tool);
+      await registry.unregister('foo', tool);
 
       expect(spy).toHaveBeenCalledWith(tool);
     });
 
-    it('triggers `beforeShutdown` and `afterShutdown` events', () => {
+    it('triggers `beforeShutdown` and `afterShutdown` events', async () => {
       const beforeSpy = jest.fn();
       const afterSpy = jest.fn();
 
@@ -525,24 +526,25 @@ describe('Registry', () => {
         afterShutdown: afterSpy,
       });
 
-      registry.unregister('foo');
+      await registry.unregister('foo');
 
       expect(beforeSpy).toHaveBeenCalled();
       expect(afterSpy).toHaveBeenCalled();
     });
 
-    it('removes a plugin by name', () => {
-      registry.unregister('foo');
+    it('removes a plugin by name', async () => {
+      await registry.unregister('foo');
 
       // @ts-ignore Allow access
       expect(registry.plugins).toEqual([]);
     });
 
-    it('emits `onUnregister` event', () => {
+    it('emits `onUnregister` event', async () => {
       const spy = jest.fn();
 
       registry.onUnregister.listen(spy);
-      registry.unregister('foo');
+
+      await registry.unregister('foo');
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(new Renderer());

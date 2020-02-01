@@ -6,7 +6,14 @@ import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
 import upperFirst from 'lodash/upperFirst';
 import Loader from './Loader';
-import { RegistryOptions, Pluggable, Registration, Setting, PluginOptions } from './types';
+import {
+  RegistryOptions,
+  Pluggable,
+  Registration,
+  Setting,
+  PluginOptions,
+  Callback,
+} from './types';
 import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN } from './constants';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
@@ -47,11 +54,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
   blueprint({ func }: Predicates) {
     return {
-      afterShutdown: func(),
-      afterStartup: func(),
-      beforeShutdown: func(),
-      beforeStartup: func(),
-      validate: func()
+      afterShutdown: func<Callback>(),
+      afterStartup: func<Callback>(),
+      beforeShutdown: func<Callback>(),
+      beforeStartup: func<Callback>(),
+      validate: func<Callback>()
         .notNullable()
         .required(),
     };
@@ -105,7 +112,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    *    and the 2nd item an options object that will be passed to the factory function.
    * - If an object or class instance, will assume to be the plugin itself.
    */
-  load(setting: Setting<Plugin>, options?: object, tool?: Tool): Plugin {
+  async load(setting: Setting<Plugin>, options?: object, tool?: Tool): Promise<Plugin> {
     const opts: PluginOptions = {};
     let plugin: Plugin;
 
@@ -140,16 +147,14 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.onLoad.emit([setting, options]);
 
-    this.register(plugin.name, plugin, tool, opts);
-
-    return plugin;
+    return this.register(plugin.name, plugin, tool, opts);
   }
 
   /**
    * Load and register multiple plugins based on a list of settings.
    */
-  loadMany(settings: Setting<Plugin>[], tool?: Tool): Plugin[] {
-    return settings.map(setting => this.load(setting, {}, tool));
+  async loadMany(settings: Setting<Plugin>[], tool?: Tool): Promise<Plugin[]> {
+    return Promise.all(settings.map(setting => this.load(setting, {}, tool)));
   }
 
   /**
@@ -168,7 +173,12 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   /**
    * Register a plugin and trigger startup with the provided tool.
    */
-  register(name: ModuleName, plugin: Plugin, tool?: Tool, options?: PluginOptions): this {
+  async register(
+    name: ModuleName,
+    plugin: Plugin,
+    tool?: Tool,
+    options?: PluginOptions,
+  ): Promise<Plugin> {
     if (!name.match(MODULE_NAME_PATTERN)) {
       throw new RuntimeError('plugin', 'PG_INVALID_MODULE_NAME', [this.pluralName]);
     }
@@ -182,11 +192,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.debug('Validating plugin "%s"', name);
 
-    this.options.validate(plugin);
+    await this.options.validate(plugin);
 
     this.debug('Registering plugin "%s" with defined tool and triggering startup', name);
 
-    this.triggerStartup(plugin, tool);
+    await this.triggerStartup(plugin, tool);
 
     this.plugins.push({
       priority: DEFAULT_PRIORITY,
@@ -201,24 +211,24 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.onRegister.emit([plugin]);
 
-    return this;
+    return plugin;
   }
 
   /**
    * Unregister a plugin by name and trigger shutdown process.
    */
-  unregister(name: ModuleName, tool?: Tool): this {
+  async unregister(name: ModuleName, tool?: Tool): Promise<Plugin> {
     const plugin = this.get(name);
 
     this.onUnregister.emit([plugin]);
 
     this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
 
-    this.triggerShutdown(plugin, tool);
+    await this.triggerShutdown(plugin, tool);
 
     this.plugins = this.plugins.filter(container => !this.isMatchingName(container, name));
 
-    return this;
+    return plugin;
   }
 
   /**
@@ -238,38 +248,38 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   /**
    * Trigger shutdown events for the registry and plugin.
    */
-  protected triggerShutdown(plugin: Plugin, tool?: Tool) {
+  protected async triggerShutdown(plugin: Plugin, tool?: Tool) {
     const { afterShutdown, beforeShutdown } = this.options;
 
     if (beforeShutdown) {
-      beforeShutdown(plugin);
+      await beforeShutdown(plugin);
     }
 
     if (typeof plugin.shutdown === 'function') {
-      plugin.shutdown(tool);
+      await plugin.shutdown(tool);
     }
 
     if (afterShutdown) {
-      afterShutdown(plugin);
+      await afterShutdown(plugin);
     }
   }
 
   /**
    * Trigger startup events for the registry and plugin.
    */
-  protected triggerStartup(plugin: Plugin, tool?: Tool) {
+  protected async triggerStartup(plugin: Plugin, tool?: Tool) {
     const { afterStartup, beforeStartup } = this.options;
 
     if (beforeStartup) {
-      beforeStartup(plugin);
+      await beforeStartup(plugin);
     }
 
     if (typeof plugin.startup === 'function') {
-      plugin.startup(tool);
+      await plugin.startup(tool);
     }
 
     if (afterStartup) {
-      afterStartup(plugin);
+      await afterStartup(plugin);
     }
   }
 }
