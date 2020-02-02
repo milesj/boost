@@ -1,14 +1,13 @@
 import 'reflect-metadata';
-import { Command as CommandConfig } from '@boost/args';
 import { optimal } from '@boost/common';
-import { commandBlueprint } from '../metadata/blueprints';
+import { commandConstructorBlueprint } from '../metadata/blueprints';
 import { META_CONFIG, META_PATH } from '../constants';
 import { PartialConfig, CommandConstructorMetadata } from '../types';
 
-export default function Usage(
+export default function Config(
   path: string,
   description: string,
-  config: PartialConfig<CommandConfig> = {},
+  config?: Partial<PartialConfig<CommandConstructorMetadata>>,
 ) {
   // Class
   return (target: Object) => {
@@ -18,7 +17,7 @@ export default function Usage(
         description,
         path,
       },
-      commandBlueprint,
+      commandConstructorBlueprint,
       {
         name: path,
         unknown: false,

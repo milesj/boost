@@ -43,7 +43,7 @@ export default abstract class Command<
 
   static path: string = '';
 
-  static usage: string = '';
+  static usage: string | string[] = '';
 
   @Arg.Flag(msg('cli:optionHelpDescription'), { short: 'h' })
   help: O['help'] = false;
@@ -68,9 +68,9 @@ export default abstract class Command<
       hidden: ctor.hidden,
       usage: ctor.usage,
       ...Reflect.getMetadata(META_CONFIG, ctor),
-      commands: Reflect.getMetadata(META_COMMANDS, this) || {},
-      options: Reflect.getMetadata(META_OPTIONS, this) || {},
-      params: Reflect.getMetadata(META_PARAMS, this) || [],
+      commands: Reflect.getMetadata(META_COMMANDS, this) ?? {},
+      options: Reflect.getMetadata(META_OPTIONS, this) ?? {},
+      params: Reflect.getMetadata(META_PARAMS, this) ?? [],
       path: this.getPath(),
       rest: Reflect.getMetadata(META_REST, this),
     };
@@ -106,7 +106,7 @@ export default abstract class Command<
 
     if (!path || typeof path !== 'string') {
       throw new Error(
-        'Command registered without a canonical path. Have you described the command?',
+        'Command registered without a canonical path. Have you configured the command?',
       );
     } else if (!path.match(COMMAND_FORMAT)) {
       throw new RuntimeError('args', 'AG_COMMAND_INVALID_FORMAT', [path]);

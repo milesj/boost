@@ -12,15 +12,14 @@ import {
   DEFAULT_STRING_VALUE,
   DEFAULT_NUMBER_VALUE,
   DEFAULT_BOOLEAN_VALUE,
-  Command,
   COMMAND_FORMAT,
 } from '@boost/args';
 import { predicates, Blueprint } from '@boost/common';
-import { CommandMetadata } from '../types';
+import { CommandMetadata, CommandConstructorMetadata } from '../types';
 
 const { array, bool, func, number, object, string, union } = predicates;
 
-export const commonBlueprint: Blueprint<Config> = {
+export const commonBlueprint: Blueprint<Required<Config>> = {
   deprecated: bool(),
   description: string()
     .notEmpty()
@@ -30,16 +29,16 @@ export const commonBlueprint: Blueprint<Config> = {
 
 // COMMANDS
 
-export const commandBlueprint: Blueprint<Command & { path: string }> = {
+export const commandConstructorBlueprint: Blueprint<CommandConstructorMetadata> = {
   ...commonBlueprint,
   path: string()
     .notEmpty()
     .required()
     .match(COMMAND_FORMAT),
-  usage: string(),
+  usage: union([string(), array(string())], []),
 };
 
-export const commandMetadataBlueprint: Blueprint<Partial<CommandMetadata>> = {
+export const commandMetadataBlueprint: Blueprint<CommandMetadata> = {
   ...commonBlueprint,
   commands: object(),
   options: object(),
@@ -49,7 +48,7 @@ export const commandMetadataBlueprint: Blueprint<Partial<CommandMetadata>> = {
     .required()
     .match(COMMAND_FORMAT),
   rest: string(),
-  usage: string(),
+  usage: union([string(), array(string())], []),
 };
 
 // ARGS

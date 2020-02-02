@@ -1,3 +1,3 @@
 optionHelpDescription: Display help and usage menu
-optionLocaleDescription: Display messages in the chosen locale (e.g. en, en-US)
+optionLocaleDescription: Display output in the chosen locale (e.g. en, en-US)
 optionVersionDescription: Display version number

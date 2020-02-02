@@ -3,7 +3,9 @@ import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boo
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
 
 export interface ProgramOptions {
+  banner: string;
   bin: string;
+  footer: string;
   name: string;
   version: string;
 }
@@ -14,8 +16,9 @@ export interface GlobalArgumentOptions {
   version: boolean;
 }
 
-export interface CommandConstructorMetadata extends Required<CommandConfig> {
+export interface CommandConstructorMetadata extends Required<Omit<CommandConfig, 'usage'>> {
   path: string; // Canonical name used on the command line
+  usage: string | string[];
 }
 
 export interface CommandMetadata extends CommandConstructorMetadata {
