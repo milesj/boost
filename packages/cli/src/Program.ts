@@ -1,33 +1,50 @@
 import { Argv, parseInContext, PrimitiveType } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
-import { ProgramOptions, Commandable, GlobalArgumentOptions } from './types';
+import { ExitError } from '@boost/internal';
+import {
+  ProgramOptions,
+  Commandable,
+  GlobalArgumentOptions,
+  ProgramContext,
+  ExitCode,
+} from './types';
 import Command from './Command';
+import { VERSION_FORMAT } from './constants';
 
 export default class Program extends Contract<ProgramOptions> {
-  protected commands: { [name: string]: Commandable } = {};
+  protected commands = new Map<string, Commandable>();
 
   blueprint({ string }: Predicates) {
     return {
       banner: string(),
-      bin: string().required(),
+      bin: string()
+        .required()
+        .kebabCase(),
       footer: string(),
       name: string().required(),
-      version: string().required(),
+      version: string()
+        .required()
+        .match(VERSION_FORMAT),
     };
   }
 
+  /**
+   * Return a command or sub-command by name. If a sub-command is provided,
+   * it will attempt to drill down from the parent command.
+   * If no command can be found, `null` will be returned.
+   */
   getCommand<O extends GlobalArgumentOptions, P extends PrimitiveType[]>(
     name: string | string[],
   ): Command<O, P> | null {
     const names = Array.isArray(name) ? [...name] : name.split(':');
     const baseName = names.shift()!;
-    let command: Commandable = this.commands[baseName];
-
-    if (!command) {
-      return null;
-    }
+    let command = this.commands.get(baseName);
 
     while (names.length > 0) {
+      if (!command) {
+        return null;
+      }
+
       const subName = names.shift()!;
       const subCommands = command.getMetadata().commands;
 
@@ -41,24 +58,43 @@ export default class Program extends Contract<ProgramOptions> {
     return command as Command<O, P>;
   }
 
+  /**
+   * Register a root command and its canonical path. Paths must be unique,
+   * otherwise an error is thrown. Furthermore, sub-commands should not be
+   * registered here, and instead should be registered in the parent command.
+   */
   register(command: Commandable): this {
+    const path = command.getPath();
+
+    if (this.commands.has(path)) {
+      throw new Error(`A command already exists with the canonical path "${path}".`);
+    }
+
+    this.commands.set(path, command);
+
     return this;
   }
 
   // TODO unknown options
   // TODO index command
   // TODO error handling
-  async run(argv: Argv): Promise<void> {
-    const { command: cmd, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
+  async run(argv: Argv, context?: ProgramContext): Promise<ExitCode> {
+    const { stdin, stderr, stdout } = {
+      stderr: process.stderr,
+      stdin: process.stdin,
+      stdout: process.stdout,
+      ...context,
+    };
+    const { command: path, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
       argv,
       arg => this.getCommand(arg)?.getParserOptions(),
     );
 
     // Display version and exit
     if (options.version) {
-      console.log(this.options.version);
+      stdout.write(this.options.version);
 
-      return;
+      return 0;
     }
 
     // Display errors and exit
@@ -66,7 +102,7 @@ export default class Program extends Contract<ProgramOptions> {
       throw new Error('TODO');
     }
 
-    const command = this.getCommand(cmd)!;
+    const command = this.getCommand(path)!;
     const metadata = command.getMetadata();
 
     // Apply arguments to command
@@ -83,6 +119,18 @@ export default class Program extends Contract<ProgramOptions> {
     }
 
     // Execute command
-    await command.run(...params);
+    let exitCode: ExitCode = 0;
+
+    try {
+      exitCode = await command.run(...params);
+    } catch (error) {
+      exitCode = error instanceof ExitError ? error.code : 1;
+    }
+
+    return exitCode ?? 0;
+  }
+
+  async runAndExit(argv: Argv, context?: ProgramContext): Promise<void> {
+    process.exitCode = await this.run(argv, context);
   }
 }

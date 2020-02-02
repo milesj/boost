@@ -29,6 +29,7 @@ import {
   Commandable,
   CommandMetadata,
   CommandConstructorMetadata,
+  ExitCode,
 } from './types';
 
 export default abstract class Command<
@@ -46,16 +47,26 @@ export default abstract class Command<
   static usage: string | string[] = '';
 
   @Arg.Flag(msg('cli:optionHelpDescription'), { short: 'h' })
-  help: O['help'] = false;
+  readonly help: O['help'] = false;
 
   @Arg.String(msg('cli:optionLocaleDescription'))
-  locale: O['locale'] = 'en';
+  readonly locale: O['locale'] = 'en';
 
   @Arg.Rest()
-  rest: string[] = [];
+  readonly rest: string[] = [];
 
   @Arg.Flag(msg('cli:optionVersionDescription'), { short: 'v' })
-  version: O['version'] = false;
+  readonly version: O['version'] = false;
+
+  constructor() {
+    this.bootstrap();
+  }
+
+  /**
+   * Life cycle that is executed on instantiation, so that commands,
+   * params, and other settings can be defined.
+   */
+  bootstrap() {}
 
   /**
    * Validate and return all metadata registered to this command instance.
@@ -160,5 +171,5 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract async run(...params: P): Promise<void>;
+  abstract async run(...params: P): Promise<ExitCode>;
 }

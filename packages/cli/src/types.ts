@@ -1,6 +1,8 @@
-import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boost/args/src';
+import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boost/args';
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
+
+export type ExitCode = number;
 
 export interface ProgramOptions {
   banner: string;
@@ -8,6 +10,12 @@ export interface ProgramOptions {
   footer: string;
   name: string;
   version: string;
+}
+
+export interface ProgramContext {
+  stderr: NodeJS.WritableStream;
+  stdin: NodeJS.ReadableStream;
+  stdout: NodeJS.WritableStream;
 }
 
 export interface GlobalArgumentOptions {
@@ -31,5 +39,5 @@ export interface CommandMetadata extends CommandConstructorMetadata {
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
-  run(...params: P): Promise<void>;
+  run(...params: P): Promise<ExitCode>;
 }
