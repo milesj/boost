@@ -1,5 +1,5 @@
 import { RuntimeError } from '@boost/internal';
-import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
+import { EVENT_NAME_PATTERN, WILDCARD_SCOPE, debug } from './constants';
 import { Listener, WildstarScope } from './types';
 
 export default abstract class BaseEvent<
@@ -13,6 +13,8 @@ export default abstract class BaseEvent<
 
   constructor(name: string) {
     this.name = this.validateName(name, 'name');
+
+    debug('New %S created: %s', this.constructor.name, name);
   }
 
   /**
@@ -52,6 +54,8 @@ export default abstract class BaseEvent<
    * Register a listener to the event.
    */
   listen(listener: Listener<Args, Return>, scope?: Scope): this {
+    debug('Registering "%s" listener', this.name);
+
     this.getListeners(scope).add(this.validateListener(listener));
 
     return this;
@@ -75,6 +79,8 @@ export default abstract class BaseEvent<
    * Remove a listener from the event.
    */
   unlisten(listener: Listener<Args, Return>, scope?: Scope): this {
+    debug('Unregistering "%s" listener', this.name);
+
     this.getListeners(scope).delete(listener);
 
     return this;

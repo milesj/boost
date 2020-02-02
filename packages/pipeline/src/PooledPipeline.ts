@@ -4,6 +4,7 @@ import { RuntimeError } from '@boost/internal';
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
+import { debug } from './constants';
 import { AggregatedResult } from './types';
 
 export interface PooledOptions {
@@ -40,6 +41,8 @@ export default class PooledPipeline<
    * Work units will synchronize regardless of race conditions and errors.
    */
   async run(): Promise<AggregatedResult<Output>> {
+    debug('Running %d as a pool', this.work.length);
+
     this.debug('Pooling %d work units', this.work.length);
     this.onRun.emit([this.value]);
 

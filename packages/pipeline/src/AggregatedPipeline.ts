@@ -1,6 +1,7 @@
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
 import { AggregatedResult } from './types';
+import { debug } from './constants';
 
 export default class AggregatedPipeline<
   Ctx extends Context,
@@ -18,6 +19,8 @@ export default class AggregatedPipeline<
   async run(): Promise<AggregatedResult<Output>> {
     const { context, value } = this;
     const work = this.getWorkUnits();
+
+    debug('Running %d as an aggregate', work.length);
 
     this.debug('Aggregating %d work units', work.length);
     this.onRun.emit([value]);

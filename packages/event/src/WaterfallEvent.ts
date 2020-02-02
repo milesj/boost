@@ -1,4 +1,5 @@
 import BaseEvent from './BaseEvent';
+import { debug } from './constants';
 
 export default class WaterfallEvent<Arg, Scope extends string = string> extends BaseEvent<
   Arg,
@@ -10,6 +11,8 @@ export default class WaterfallEvent<Arg, Scope extends string = string> extends 
    * The return value of each listener will be passed as an argument to the next listener.
    */
   emit(arg: Arg, scope?: Scope): Arg {
+    debug('Emitting "%s%s" as waterfall', this.name, scope ? `:${scope}` : '');
+
     return Array.from(this.getListeners(scope)).reduce(
       (nextValue, listener) => listener(nextValue),
       arg,
