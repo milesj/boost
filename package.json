@@ -53,7 +53,8 @@
     ],
     "settings": {
       "decorators": true,
-      "node": true
+      "node": true,
+      "react": true
     },
     "prettier": {
       "ignore": [

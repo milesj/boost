@@ -1,3 +1,4 @@
+import React from 'react';
 import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boost/args';
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
@@ -13,9 +14,9 @@ export interface ProgramOptions {
 }
 
 export interface ProgramContext {
-  stderr: NodeJS.WritableStream;
-  stdin: NodeJS.ReadableStream;
-  stdout: NodeJS.WritableStream;
+  stderr: NodeJS.WriteStream;
+  stdin: NodeJS.ReadStream;
+  stdout: NodeJS.WriteStream;
 }
 
 export interface GlobalArgumentOptions {
@@ -39,5 +40,5 @@ export interface CommandMetadata extends CommandConstructorMetadata {
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
-  run(...params: P): Promise<ExitCode>;
+  run(...params: P): Promise<string | React.ReactElement>;
 }

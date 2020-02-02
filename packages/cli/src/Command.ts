@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import React from 'react';
 import {
   ArgList,
   MapOptionConfig,
@@ -29,7 +30,6 @@ import {
   Commandable,
   CommandMetadata,
   CommandConstructorMetadata,
-  ExitCode,
 } from './types';
 
 export default abstract class Command<
@@ -171,5 +171,5 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract async run(...params: P): Promise<ExitCode>;
+  abstract async run(...params: P): Promise<string | React.ReactElement>;
 }

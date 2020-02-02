@@ -1,3 +1,5 @@
+import React from 'react';
+import { render } from 'ink';
 import { Argv, parseInContext, PrimitiveType } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
 import { ExitError } from '@boost/internal';
@@ -10,6 +12,7 @@ import {
 } from './types';
 import Command from './Command';
 import { VERSION_FORMAT } from './constants';
+import Usage from './Usage';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands = new Map<string, Commandable>();
@@ -78,21 +81,21 @@ export default class Program extends Contract<ProgramOptions> {
   // TODO unknown options
   // TODO index command
   // TODO error handling
-  async run(argv: Argv, context?: ProgramContext): Promise<ExitCode> {
-    const { stdin, stderr, stdout } = {
+  async run(argv: Argv, ctx?: ProgramContext): Promise<ExitCode> {
+    const context = {
       stderr: process.stderr,
       stdin: process.stdin,
       stdout: process.stdout,
-      ...context,
+      ...ctx,
     };
     const { command: path, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
       argv,
       arg => this.getCommand(arg)?.getParserOptions(),
     );
 
-    // Display version and exit
+    // Display version
     if (options.version) {
-      stdout.write(this.options.version);
+      context.stdout.write(this.options.version);
 
       return 0;
     }
@@ -104,6 +107,11 @@ export default class Program extends Contract<ProgramOptions> {
 
     const command = this.getCommand(path)!;
     const metadata = command.getMetadata();
+
+    // Display help and usage
+    if (options.help) {
+      return this.render(<Usage metadata={metadata} />, context);
+    }
 
     // Apply arguments to command
     Object.entries(options).forEach(([key, value]) => {
@@ -122,15 +130,38 @@ export default class Program extends Contract<ProgramOptions> {
     let exitCode: ExitCode = 0;
 
     try {
-      exitCode = await command.run(...params);
+      exitCode = await this.render(await command.run(...params), context);
     } catch (error) {
       exitCode = error instanceof ExitError ? error.code : 1;
     }
 
-    return exitCode ?? 0;
+    return exitCode;
   }
 
   async runAndExit(argv: Argv, context?: ProgramContext): Promise<void> {
     process.exitCode = await this.run(argv, context);
+  }
+
+  protected async render(
+    element: string | React.ReactElement,
+    { stdin, stdout }: ProgramContext,
+  ): Promise<ExitCode> {
+    if (typeof element === 'string') {
+      stdout.write(element);
+
+      return 0;
+    }
+
+    const { unmount, waitUntilExit } = render(element, {
+      experimental: true,
+      stdin,
+      stdout,
+    });
+
+    setTimeout(unmount, 1000);
+
+    await waitUntilExit();
+
+    return 0;
   }
 }
