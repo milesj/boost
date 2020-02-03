@@ -9,6 +9,8 @@ import {
   GlobalArgumentOptions,
   ProgramContext,
   ExitCode,
+  CommandMetadata,
+  CommandMetadataMap,
 } from './types';
 import Command from './Command';
 import { VERSION_FORMAT } from './constants';
@@ -110,7 +112,15 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display help and usage
     if (options.help) {
-      return this.render(<Usage metadata={metadata} />, context);
+      return this.render(
+        <Usage
+          config={metadata}
+          commands={this.mapCommandMetadata(metadata.commands)}
+          options={metadata.options}
+          params={metadata.params}
+        />,
+        context,
+      );
     }
 
     // Apply arguments to command
@@ -140,6 +150,16 @@ export default class Program extends Contract<ProgramOptions> {
 
   async runAndExit(argv: Argv, context?: ProgramContext): Promise<void> {
     process.exitCode = await this.run(argv, context);
+  }
+
+  protected mapCommandMetadata(commands: CommandMetadata['commands']): CommandMetadataMap {
+    const map: CommandMetadataMap = {};
+
+    Object.entries(commands).forEach(([path, config]) => {
+      map[path] = config.getMetadata();
+    });
+
+    return map;
   }
 
   protected async render(

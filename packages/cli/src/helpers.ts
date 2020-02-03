@@ -1,5 +1,6 @@
 import { stripAnsi, style } from '@boost/terminal';
 import { PrimitiveType } from '@boost/args/src';
+import { CommandMetadata } from './types';
 
 export function applyMarkdown(text: string): string {
   return text.replace(/(?:\*|~|_){1,2}([^*~_]+)(?:\*|~|_){1,2}/giu, (match, body) => {
@@ -81,6 +82,19 @@ export function formatType(
   }
 
   return style.gray(type);
+}
+
+export function formatCommandCall(name: string, metadata: CommandMetadata): string {
+  let output = name;
+
+  if (metadata.params) {
+    metadata.params.forEach(param => {
+      output += ' ';
+      output += formatType(param, true);
+    });
+  }
+
+  return output;
 }
 
 export function getLongestWidth(values: string[]): number {

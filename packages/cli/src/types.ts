@@ -37,6 +37,10 @@ export interface CommandMetadata extends CommandConstructorMetadata {
   rest: string; // Property name to set rest args to
 }
 
+export interface CommandMetadataMap {
+  [path: string]: CommandMetadata;
+}
+
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
