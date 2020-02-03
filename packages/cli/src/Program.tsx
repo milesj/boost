@@ -123,7 +123,7 @@ export default class Program extends Contract<ProgramOptions> {
       );
     }
 
-    // Apply arguments to command
+    // Apply arguments to command properties
     Object.entries(options).forEach(([key, value]) => {
       const config = metadata.options[key];
 
@@ -168,17 +168,13 @@ export default class Program extends Contract<ProgramOptions> {
   ): Promise<ExitCode> {
     if (typeof element === 'string') {
       stdout.write(element);
-
-      return 0;
+    } else {
+      await render(element, {
+        experimental: true,
+        stdin,
+        stdout,
+      }).waitUntilExit();
     }
-
-    const { waitUntilExit } = render(element, {
-      experimental: true,
-      stdin,
-      stdout,
-    });
-
-    await waitUntilExit();
 
     return 0;
   }

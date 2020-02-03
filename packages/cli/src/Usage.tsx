@@ -6,10 +6,10 @@ import { CommandMetadataMap, CommandConstructorMetadata } from './types';
 import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
 
 export interface UsageProps {
-  config: CommandConstructorMetadata;
-  commands: CommandMetadataMap;
-  options: OptionConfigMap;
-  params: ParamConfigList;
+  config?: CommandConstructorMetadata;
+  commands?: CommandMetadataMap;
+  options?: OptionConfigMap;
+  params?: ParamConfigList;
 }
 
 export default class Usage extends React.Component<UsageProps> {
@@ -173,7 +173,7 @@ export default class Usage extends React.Component<UsageProps> {
 
     return (
       <Box>
-        <Box>{formatDescription(config)}</Box>
+        {config && <Box>{formatDescription(config)}</Box>}
 
         {params && this.renderParams(params)}
 
