@@ -19,6 +19,7 @@
     "strict": true,
     "target": "es2016",
     "useDefineForClassFields": false,
+    "jsx": "react",
     "composite": true,
     "declarationMap": true
   }

@@ -152,13 +152,11 @@ export default class Program extends Contract<ProgramOptions> {
       return 0;
     }
 
-    const { unmount, waitUntilExit } = render(element, {
+    const { waitUntilExit } = render(element, {
       experimental: true,
       stdin,
       stdout,
     });
-
-    setTimeout(unmount, 1000);
 
     await waitUntilExit();
 

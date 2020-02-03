@@ -1,7 +1,7 @@
-import { Command, Config, Arg, GlobalArgumentOptions } from '../src';
+// import { Command, Config, Arg, GlobalArgumentOptions } from '../src';
 
 describe('Command', () => {
-  interface Args extends GlobalArgumentOptions {}
+  /* interface Args extends GlobalArgumentOptions {}
 
   @Config('test', 'A test command', { deprecated: true })
   class TestCommand extends Command<Args> {
@@ -31,5 +31,5 @@ describe('Command', () => {
     command.registerCommand(new FooCommand());
 
     console.log(command.getMetadata());
-  });
+  }); */
 });

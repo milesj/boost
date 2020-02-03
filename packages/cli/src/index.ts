@@ -5,9 +5,11 @@
 
 import Command from './Command';
 import Program from './Program';
+import Header from './Header';
 
-export * from './decorators';
 export * from './constants';
+export * from './decorators';
+export * from './helpers';
 export * from './types';
 
-export { Command, Program };
+export { Command, Program, Header };
