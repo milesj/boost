@@ -44,4 +44,84 @@ export interface Toolable {
   name: string;
 }
 
-// MISC
+// PACKAGES
+
+export interface BugSetting {
+  url?: string;
+  email?: string;
+}
+
+export interface TypeSetting {
+  type: string;
+  url: string;
+}
+
+export interface PeopleSetting {
+  name: string;
+  email?: string;
+  url?: string;
+}
+
+export interface SettingMap {
+  [key: string]: string;
+}
+
+export interface DependencyMap {
+  [module: string]: string;
+}
+
+export interface PackageStructure {
+  author?: string | PeopleSetting;
+  bin?: string | SettingMap;
+  browser?: string;
+  browserslist?: string[];
+  bugs?: string | BugSetting;
+  bundledDependencies?: string[];
+  config?: SettingMap;
+  contributors?: string[] | PeopleSetting[];
+  cpu?: string[];
+  dependencies?: DependencyMap;
+  description?: string;
+  devDependencies?: DependencyMap;
+  directories?: SettingMap;
+  engines?: SettingMap;
+  exports?: { [path: string]: string | string[] | SettingMap };
+  files?: string[];
+  homepage?: string;
+  keywords?: string[];
+  license?: string | TypeSetting | TypeSetting[];
+  main?: string;
+  man?: string | string[];
+  name: string;
+  optionalDependencies?: DependencyMap;
+  os?: string[];
+  peerDependencies?: DependencyMap;
+  private?: boolean;
+  publishConfig?: {
+    access?: 'public' | 'restricted';
+    registry?: string;
+    tag?: string;
+  };
+  repository?: string | TypeSetting;
+  scripts?: SettingMap;
+  type?: 'commonjs' | 'module';
+  version: string;
+  // TypeScript
+  types?: string;
+  typesVersions?: {
+    [version: string]: {
+      [glob: string]: string[];
+    };
+  };
+  typings?: string;
+  // Webpack
+  module?: string;
+  sideEffects?: boolean | string[];
+  // Yarn
+  workspaces?:
+    | string[]
+    | {
+        packages?: string[];
+        nohoist?: string[];
+      };
+}
