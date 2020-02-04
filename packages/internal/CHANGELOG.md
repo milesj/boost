@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.0 - 2020-02-04
+
+#### 🚀 Updates
+
+- Add more internal debugging. (#74) ([70c42c8](https://github.com/milesj/boost/commit/70c42c8)), closes [#74](https://github.com/milesj/boost/issues/74)
+
+#### 🛠 Internals
+
+- Rename color helper names. ([29e0791](https://github.com/milesj/boost/commit/29e0791))
+
+**Note:** Version bump only for package @boost/internal
+
+
+
+
+
 ### 1.0.3 - 2020-01-25
 
 #### 🐞 Fixes

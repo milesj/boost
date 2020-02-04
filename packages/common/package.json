@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "Common utilities for Boost applications.",
   "keywords": [
     "boost",
@@ -20,7 +20,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^1.0.3",
+    "@boost/internal": "^1.1.0",
     "js-yaml": "^3.13.1",
     "json5": "^2.1.1",
     "optimal": "^4.2.0",

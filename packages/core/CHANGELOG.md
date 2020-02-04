@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.18.2 - 2020-02-04
+
+#### 📦 Dependencies
+
+- Update all and rebuild lock file. ([0ac8459](https://github.com/milesj/boost/commit/0ac8459))
+- **[optimal]** Update to v4.2. ([85aeb76](https://github.com/milesj/boost/commit/85aeb76))
+- Update minor and patch versions. ([d65729e](https://github.com/milesj/boost/commit/d65729e))
+
+#### 🛠 Internals
+
+- Rename color helper names. ([29e0791](https://github.com/milesj/boost/commit/29e0791))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.18.1 - 2020-01-25
 
 #### 🐞 Fixes
