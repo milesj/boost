@@ -1,18 +1,19 @@
 import React from 'react';
 import { Box } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
+import { toArray } from '@boost/common';
 import Header from './Header';
-import { CommandMetadataMap, CommandConstructorMetadata } from './types';
+import { CommandMetadataMap, CommandStaticMetadata } from './types';
 import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
 
-export interface UsageProps {
-  config?: CommandConstructorMetadata;
+export interface HelpProps {
+  config?: CommandStaticMetadata;
   commands?: CommandMetadataMap;
   options?: OptionConfigMap;
   params?: ParamConfigList;
 }
 
-export default class Usage extends React.Component<UsageProps> {
+export default class Help extends React.Component<HelpProps> {
   gatherOptionTags(config: OptionConfig): string[] {
     const tags: string[] = [];
 
@@ -45,7 +46,7 @@ export default class Usage extends React.Component<UsageProps> {
     const nameWidth = getLongestWidth(names);
 
     return (
-      <Box>
+      <Box flexDirection="column">
         <Header label="Commands" />
 
         {Object.entries(commands).map(([path, config], index) => {
@@ -54,8 +55,8 @@ export default class Usage extends React.Component<UsageProps> {
           }
 
           return (
-            <Box key={`${path}-${index}`} width="100%">
-              <Box width={nameWidth} paddingLeft={2} alignItems="flex-end">
+            <Box key={`${path}-${index}`} flexDirection="row">
+              <Box width={nameWidth + 2} paddingLeft={2} alignItems="flex-end">
                 {names[index]}
               </Box>
 
@@ -97,7 +98,7 @@ export default class Usage extends React.Component<UsageProps> {
     const showShortColumn = shortWidth > 0;
 
     return (
-      <Box>
+      <Box flexDirection="column">
         <Header label="Options" />
 
         {Object.entries(options).map(([name, config], index) => {
@@ -105,15 +106,17 @@ export default class Usage extends React.Component<UsageProps> {
             return null;
           }
 
+          const indent = showShortColumn ? 1 : 2;
+
           return (
-            <Box key={`${name}-${index}`} width="100%">
+            <Box key={`${name}-${index}`} flexDirection="row">
               {showShortColumn && (
-                <Box width={shortWidth} paddingLeft={2}>
+                <Box width={shortWidth + 2} paddingLeft={2}>
                   {shortNames[index]}
                 </Box>
               )}
 
-              <Box width={longWidth} paddingLeft={showShortColumn ? 1 : 2}>
+              <Box width={longWidth + indent} paddingLeft={indent}>
                 {longNames[index]}
               </Box>
 
@@ -140,7 +143,7 @@ export default class Usage extends React.Component<UsageProps> {
     const typeWidth = getLongestWidth(types);
 
     return (
-      <Box>
+      <Box flexDirection="column">
         <Header label="Params" />
 
         {params.map((config, index) => {
@@ -149,12 +152,12 @@ export default class Usage extends React.Component<UsageProps> {
           }
 
           return (
-            <Box key={`${labels[index]}-${index}`} width="100%">
-              <Box width={labelWidth} paddingLeft={2} alignItems="flex-end">
+            <Box key={`${labels[index]}-${index}`} flexDirection="row">
+              <Box width={labelWidth + 2} paddingLeft={2} justifyContent="flex-end">
                 {labels[index]}
               </Box>
 
-              <Box width={typeWidth} paddingLeft={1}>
+              <Box width={typeWidth + 1} paddingLeft={1}>
                 {types[index]}
               </Box>
 
@@ -168,12 +171,32 @@ export default class Usage extends React.Component<UsageProps> {
     );
   }
 
+  renderUsage(usage: string | string[]) {
+    if (!usage || usage.length === 0) {
+      return null;
+    }
+
+    return (
+      <Box flexDirection="column">
+        <Header label="Usage" />
+
+        {toArray(usage).map(example => (
+          <Box key={example} paddingLeft={2}>
+            {example}
+          </Box>
+        ))}
+      </Box>
+    );
+  }
+
   render() {
     const { commands, options, params, config } = this.props;
 
     return (
-      <Box>
+      <Box flexDirection="column" paddingY={1}>
         {config && <Box>{formatDescription(config)}</Box>}
+
+        {config?.usage && this.renderUsage(config.usage)}
 
         {params && this.renderParams(params)}
 

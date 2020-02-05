@@ -6,11 +6,11 @@
 import Command from './Command';
 import Program from './Program';
 import Header from './Header';
-import Usage from './Usage';
+import Help from './Help';
 
 export * from './constants';
 export * from './decorators';
 export * from './helpers';
 export * from './types';
 
-export { Command, Program, Header, Usage };
+export { Command, Program, Header, Help };

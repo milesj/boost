@@ -29,7 +29,7 @@ import {
   GlobalArgumentOptions,
   Commandable,
   CommandMetadata,
-  CommandConstructorMetadata,
+  CommandStaticMetadata,
 } from './types';
 
 export default abstract class Command<
@@ -72,7 +72,7 @@ export default abstract class Command<
    * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {
-    const ctor = (this.constructor as unknown) as CommandConstructorMetadata;
+    const ctor = (this.constructor as unknown) as CommandStaticMetadata;
     const metadata: CommandMetadata = {
       deprecated: ctor.deprecated,
       description: ctor.description,
@@ -112,7 +112,7 @@ export default abstract class Command<
   getPath(): string {
     const path =
       Reflect.getMetadata(META_PATH, this.constructor) ||
-      ((this.constructor as unknown) as CommandConstructorMetadata).path ||
+      ((this.constructor as unknown) as CommandStaticMetadata).path ||
       '';
 
     if (!path || typeof path !== 'string') {

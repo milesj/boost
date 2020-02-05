@@ -7,7 +7,7 @@ export interface HeaderProps {
 
 export default function Header({ label }: HeaderProps) {
   return (
-    <Box paddingTop={1} paddingBottom={2}>
+    <Box paddingTop={1} paddingBottom={1}>
       <Color bgWhite black bold>
         {`  ${label.toLocaleUpperCase()}  `}
       </Color>

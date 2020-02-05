@@ -13,8 +13,8 @@ import {
   CommandMetadataMap,
 } from './types';
 import Command from './Command';
+import Help from './Help';
 import { VERSION_FORMAT } from './constants';
-import Usage from './Usage';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands = new Map<string, Commandable>();
@@ -113,7 +113,7 @@ export default class Program extends Contract<ProgramOptions> {
     // Display help and usage
     if (options.help) {
       return this.render(
-        <Usage
+        <Help
           config={metadata}
           commands={this.mapCommandMetadata(metadata.commands)}
           options={metadata.options}
