@@ -17,4 +17,4 @@ export const Arg = {
   Strings,
 };
 
-export { Flag, Number, Numbers, Params, Rest, String, Strings, Config };
+export { Config };

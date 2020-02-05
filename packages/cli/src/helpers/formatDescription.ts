@@ -2,6 +2,7 @@ import { style } from '@boost/terminal';
 import { PrimitiveType } from '@boost/args';
 import applyMarkdown from './applyMarkdown';
 import formatValue from './formatValue';
+import { msg } from '../constants';
 
 export default function formatDescription(
   config: {
@@ -17,19 +18,20 @@ export default function formatDescription(
   // Append choices after the description
   if (config.choices) {
     const choices = config.choices.map(
-      choice => formatValue(choice) + (config.default === choice ? ' (default)' : ''),
+      choice =>
+        formatValue(choice) + (config.default === choice ? ` (${msg('cli:tagDefault')})` : ''),
     );
 
-    output += ` (choices: ${choices.join(', ')})`;
+    output += ` (${msg('cli:tagChoices')}: ${choices.join(', ')})`;
 
     // Append default after description if no choices
   } else if (config.default) {
-    output += ` (default: ${formatValue(config.default)})`;
+    output += ` (${msg('cli:tagDefault')}: ${formatValue(config.default)})`;
   }
 
   // Tags go at the end of the description
   if (config.deprecated) {
-    tags.unshift('deprecated');
+    tags.unshift(msg('cli:tagDeprecated'));
   }
 
   if (tags.length > 0) {

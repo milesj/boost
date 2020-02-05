@@ -1,3 +1,13 @@
+labelCommands: Commands
+labelOptions: Options
+labelParams: Params
+labelUsage: Usage
 optionHelpDescription: Display help and usage menu
 optionLocaleDescription: Display output in the chosen locale (e.g. en, en-US)
 optionVersionDescription: Display version number
+tagChoices: choices
+tagCount: counter
+tagDefault: default
+tagDeprecated: deprecated
+tagMultiple: multiple
+tagRequired: required

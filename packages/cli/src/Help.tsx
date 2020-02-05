@@ -3,6 +3,7 @@ import { Box } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
 import Header from './Header';
+import { msg } from './constants';
 import { CommandMetadataMap, CommandStaticMetadata } from './types';
 import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
 
@@ -18,11 +19,11 @@ export default class Help extends React.Component<HelpProps> {
     const tags: string[] = [];
 
     if (config.count) {
-      tags.push('counter');
+      tags.push(msg('cli:tagCount'));
     }
 
     if (config.multiple) {
-      tags.push(`multiple${config.arity ? `(${config.arity})` : ''}`);
+      tags.push(msg('cli:tagMultiple') + (config.arity ? `(${config.arity})` : ''));
     }
 
     return tags;
@@ -32,7 +33,7 @@ export default class Help extends React.Component<HelpProps> {
     const tags: string[] = [];
 
     if (config.required) {
-      tags.push('required');
+      tags.push(msg('cli:tagRequired'));
     }
 
     return tags;
@@ -47,7 +48,7 @@ export default class Help extends React.Component<HelpProps> {
 
     return (
       <Box flexDirection="column">
-        <Header label="Commands" />
+        <Header label={msg('cli:labelCommands')} />
 
         {Object.entries(commands).map(([path, config], index) => {
           if (config.hidden) {
@@ -99,7 +100,7 @@ export default class Help extends React.Component<HelpProps> {
 
     return (
       <Box flexDirection="column">
-        <Header label="Options" />
+        <Header label={msg('cli:labelOptions')} />
 
         {Object.entries(options).map(([name, config], index) => {
           if (config.hidden) {
@@ -144,7 +145,7 @@ export default class Help extends React.Component<HelpProps> {
 
     return (
       <Box flexDirection="column">
-        <Header label="Params" />
+        <Header label={msg('cli:labelParams')} />
 
         {params.map((config, index) => {
           if (config.hidden) {
@@ -178,7 +179,7 @@ export default class Help extends React.Component<HelpProps> {
 
     return (
       <Box flexDirection="column">
-        <Header label="Usage" />
+        <Header label={msg('cli:labelUsage')} />
 
         {toArray(usage).map(example => (
           <Box key={example} paddingLeft={2}>
