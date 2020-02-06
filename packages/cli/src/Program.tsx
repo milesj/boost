@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'ink';
-import { Argv, parseInContext, PrimitiveType } from '@boost/args';
+import { Argv, parseInContext, PrimitiveType, ParseError, ValidationError } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
 import { ExitError } from '@boost/internal';
 import {
@@ -13,6 +13,7 @@ import {
   CommandMetadataMap,
 } from './types';
 import Command from './Command';
+import Failure from './Failure';
 import Help from './Help';
 import { VERSION_FORMAT } from './constants';
 
@@ -104,7 +105,7 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display errors and exit
     if (errors.length > 0) {
-      throw new Error('TODO');
+      return this.handleErrors(errors, context);
     }
 
     const command = this.getCommand(path)!;
@@ -120,6 +121,7 @@ export default class Program extends Contract<ProgramOptions> {
           params={metadata.params}
         />,
         context,
+        0,
       );
     }
 
@@ -140,9 +142,13 @@ export default class Program extends Contract<ProgramOptions> {
     let exitCode: ExitCode = 0;
 
     try {
-      exitCode = await this.render(await command.run(...params), context);
+      exitCode = await this.render(await command.run(...params), context, 0);
     } catch (error) {
-      exitCode = error instanceof ExitError ? error.code : 1;
+      exitCode = await this.render(
+        <Failure error={error} />,
+        context,
+        error instanceof ExitError ? error.code : 1,
+      );
     }
 
     return exitCode;
@@ -150,6 +156,18 @@ export default class Program extends Contract<ProgramOptions> {
 
   async runAndExit(argv: Argv, context?: ProgramContext): Promise<void> {
     process.exitCode = await this.run(argv, context);
+  }
+
+  protected handleErrors(errors: Error[], context: ProgramContext) {
+    const parseErrors = errors.filter(error => error instanceof ParseError);
+    const validErrors = errors.filter(error => error instanceof ValidationError);
+    let mainError = parseErrors.shift();
+
+    if (!mainError) {
+      mainError = validErrors.shift();
+    }
+
+    return this.render(<Failure error={mainError!} warnings={validErrors} />, context, 1);
   }
 
   protected mapCommandMetadata(commands: CommandMetadata['commands']): CommandMetadataMap {
@@ -163,10 +181,13 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   protected async render(
-    element: string | React.ReactElement,
+    element: undefined | string | React.ReactElement,
     { stdin, stdout }: ProgramContext,
+    exitCode: ExitCode,
   ): Promise<ExitCode> {
-    if (typeof element === 'string') {
+    if (!element) {
+      return exitCode;
+    } else if (typeof element === 'string') {
       stdout.write(element);
     } else {
       await render(element, {
@@ -176,6 +197,6 @@ export default class Program extends Contract<ProgramOptions> {
       }).waitUntilExit();
     }
 
-    return 0;
+    return exitCode;
   }
 }

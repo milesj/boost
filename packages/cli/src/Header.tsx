@@ -11,8 +11,8 @@ export interface HeaderProps {
 export default function Header({ label, type = 'default' }: HeaderProps) {
   return (
     <Box paddingTop={1} paddingBottom={1}>
-      <Style bold inverted type={type}>
-        {`  ${label.toLocaleUpperCase()}  `}
+      <Style inverted type={type}>
+        {` ${label.toLocaleUpperCase()} `}
       </Style>
     </Box>
   );

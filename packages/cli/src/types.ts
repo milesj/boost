@@ -50,7 +50,7 @@ export interface CommandMetadataMap {
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
-  run(...params: P): Promise<string | React.ReactElement>;
+  run(...params: P): Promise<undefined | string | React.ReactElement>;
 }
 
 // THEMES

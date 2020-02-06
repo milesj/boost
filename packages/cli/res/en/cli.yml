@@ -1,7 +1,10 @@
 labelCommands: Commands
+labelError: Error
 labelOptions: Options
 labelParams: Params
+labelStackTrace: Stack Trace
 labelUsage: Usage
+labelWarnings: Warnings
 optionHelpDescription: Display help and usage menu
 optionLocaleDescription: Display output in the chosen locale (e.g. en, en-US)
 optionVersionDescription: Display version number
