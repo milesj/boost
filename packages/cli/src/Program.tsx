@@ -15,10 +15,17 @@ import {
 import Command from './Command';
 import Failure from './Failure';
 import Help from './Help';
-import { VERSION_FORMAT } from './constants';
+import Wrapper from './Wrapper';
+import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands = new Map<string, Commandable>();
+
+  protected context: ProgramContext = {
+    stderr: process.stderr,
+    stdin: process.stdin,
+    stdout: process.stdout,
+  };
 
   blueprint({ string }: Predicates) {
     return {
@@ -85,12 +92,9 @@ export default class Program extends Contract<ProgramOptions> {
   // TODO index command
   // TODO error handling
   async run(argv: Argv, ctx?: ProgramContext): Promise<ExitCode> {
-    const context = {
-      stderr: process.stderr,
-      stdin: process.stdin,
-      stdout: process.stdout,
-      ...ctx,
-    };
+    Object.assign(this.context, ctx);
+
+    const $ = argv.join(' ');
     const { command: path, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
       argv,
       arg => this.getCommand(arg)?.getParserOptions(),
@@ -98,14 +102,14 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display version
     if (options.version) {
-      context.stdout.write(this.options.version);
+      this.context.stdout.write(this.options.version);
 
-      return 0;
+      return EXIT_PASS;
     }
 
     // Display errors and exit
     if (errors.length > 0) {
-      return this.handleErrors(errors, context);
+      return this.handleErrors($, errors);
     }
 
     const command = this.getCommand(path)!;
@@ -120,8 +124,7 @@ export default class Program extends Contract<ProgramOptions> {
           options={metadata.options}
           params={metadata.params}
         />,
-        context,
-        0,
+        EXIT_PASS,
       );
     }
 
@@ -139,16 +142,12 @@ export default class Program extends Contract<ProgramOptions> {
     }
 
     // Execute command
-    let exitCode: ExitCode = 0;
+    let exitCode: ExitCode;
 
     try {
-      exitCode = await this.render(await command.run(...params), context, 0);
+      exitCode = await this.render(await command.run(...params), EXIT_PASS);
     } catch (error) {
-      exitCode = await this.render(
-        <Failure error={error} />,
-        context,
-        error instanceof ExitError ? error.code : 1,
-      );
+      exitCode = await this.handleErrors($, [error]);
     }
 
     return exitCode;
@@ -158,7 +157,7 @@ export default class Program extends Contract<ProgramOptions> {
     process.exitCode = await this.run(argv, context);
   }
 
-  protected handleErrors(errors: Error[], context: ProgramContext) {
+  protected handleErrors(command: string, errors: Error[]) {
     const parseErrors = errors.filter(error => error instanceof ParseError);
     const validErrors = errors.filter(error => error instanceof ValidationError);
     let mainError = parseErrors.shift();
@@ -167,7 +166,14 @@ export default class Program extends Contract<ProgramOptions> {
       mainError = validErrors.shift();
     }
 
-    return this.render(<Failure error={mainError!} warnings={validErrors} />, context, 1);
+    if (!mainError) {
+      mainError = errors.shift();
+    }
+
+    return this.render(
+      <Failure command={command} error={mainError!} warnings={validErrors} />,
+      mainError instanceof ExitError ? mainError.code : EXIT_FAIL,
+    );
   }
 
   protected mapCommandMetadata(commands: CommandMetadata['commands']): CommandMetadataMap {
@@ -182,15 +188,18 @@ export default class Program extends Contract<ProgramOptions> {
 
   protected async render(
     element: undefined | string | React.ReactElement,
-    { stdin, stdout }: ProgramContext,
     exitCode: ExitCode,
   ): Promise<ExitCode> {
     if (!element) {
       return exitCode;
-    } else if (typeof element === 'string') {
+    }
+
+    const { stdin, stdout } = this.context;
+
+    if (typeof element === 'string') {
       stdout.write(element);
     } else {
-      await render(element, {
+      await render(<Wrapper>{element}</Wrapper>, {
         experimental: true,
         stdin,
         stdout,

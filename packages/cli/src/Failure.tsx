@@ -1,17 +1,42 @@
 import React from 'react';
 import { Box } from 'ink';
+import { ParseError } from '@boost/args';
 import { figures } from '@boost/terminal';
 import Header from './Header';
-import { msg } from './constants';
 import Style from './Style';
+import { msg } from './constants';
+import applyStyle from './helpers/applyStyle';
 
 export interface FailureProps {
+  command: string;
   error: Error;
   warnings?: Error[];
 }
 
 export default class Failure extends React.Component<FailureProps> {
   renderCodeFrame() {
+    const { command, error } = this.props;
+
+    if (error instanceof ParseError) {
+      return (
+        <>
+          <Box paddingLeft={4}>
+            <Style type="failure">
+              {'┌'.padStart(error.index + 1, ' ')}
+              {'─'.repeat(error.arg.length - 2)}
+              {'┐'}
+            </Style>
+          </Box>
+
+          <Box paddingLeft={4}>
+            <Style type="muted">
+              {command.replace(error.arg, applyStyle(error.arg, 'failure'))}
+            </Style>
+          </Box>
+        </>
+      );
+    }
+
     return null;
   }
 
@@ -27,7 +52,9 @@ export default class Failure extends React.Component<FailureProps> {
         <Header label={msg('cli:labelStackTrace')} type="muted" />
 
         <Box width="100%">
-          <Style type="muted">{error.stack.replace(`Error: ${error.message}\n`, '')}</Style>
+          <Style type="muted">
+            {error.stack.replace(`${error.constructor.name}: ${error.message}\n`, '')}
+          </Style>
         </Box>
       </Box>
     );
