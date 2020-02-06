@@ -1,6 +1,6 @@
-import { style } from '@boost/terminal';
 import { PrimitiveType } from '@boost/args';
 import applyMarkdown from './applyMarkdown';
+import applyStyle from './applyStyle';
 import formatValue from './formatValue';
 import { msg } from '../constants';
 
@@ -36,7 +36,7 @@ export default function formatDescription(
 
   if (tags.length > 0) {
     output += ' ';
-    output += style.gray(`[${tags.join(', ')}]`);
+    output += applyStyle(`[${tags.join(', ')}]`, 'muted');
   }
 
   return output;

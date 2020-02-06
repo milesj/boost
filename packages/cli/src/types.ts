@@ -3,6 +3,10 @@ import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boo
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
 
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+// PROGRAM
+
 export type ExitCode = number;
 
 export interface ProgramOptions {
@@ -18,6 +22,8 @@ export interface ProgramContext {
   stdin: NodeJS.ReadStream;
   stdout: NodeJS.WriteStream;
 }
+
+// COMMANDS
 
 export interface GlobalArgumentOptions {
   help: boolean;
@@ -46,3 +52,9 @@ export interface Commandable<P extends unknown[] = unknown[]> {
   getPath(): string;
   run(...params: P): Promise<string | React.ReactElement>;
 }
+
+// THEMES
+
+export type StyleType = 'default' | 'inverted' | 'failure' | 'muted' | 'success' | 'warning';
+
+export type ThemePalette = { [T in StyleType]: string };

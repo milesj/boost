@@ -1,4 +1,4 @@
-import { style } from '@boost/terminal';
+import applyStyle from './applyStyle';
 
 export default function formatType(
   config: {
@@ -19,5 +19,5 @@ export default function formatType(
     type = config.required ? `<${type}>` : `[${type}]`;
   }
 
-  return style.gray(type);
+  return applyStyle(type, 'muted');
 }
