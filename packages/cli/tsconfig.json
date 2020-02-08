@@ -25,6 +25,9 @@
       "path": "../internal"
     },
     {
+      "path": "../log"
+    },
+    {
       "path": "../terminal"
     },
     {

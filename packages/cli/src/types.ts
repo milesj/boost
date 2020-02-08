@@ -36,15 +36,16 @@ export interface ProgramContextType {
 
 // COMMANDS
 
+export type RunResult = undefined | string | React.ReactElement;
+
 export interface GlobalArgumentOptions {
   help: boolean;
   locale: string;
   version: boolean;
 }
 
-export interface CommandStaticConfig extends Required<Omit<CommandConfig, 'usage'>> {
+export interface CommandStaticConfig extends Required<CommandConfig> {
   path: string; // Canonical name used on the command line
-  usage: string | string[];
 }
 
 export interface CommandMetadata extends CommandStaticConfig {
@@ -61,7 +62,7 @@ export interface CommandMetadataMap {
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
-  run(...params: P): Promise<undefined | string | React.ReactElement>;
+  run(...params: P): Promise<RunResult>;
 }
 
 // THEMES

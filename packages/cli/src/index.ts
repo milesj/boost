@@ -5,6 +5,7 @@
 
 import Command from './Command';
 import Program from './Program';
+import ProgramContext from './ProgramContext';
 import Failure from './Failure';
 import Header from './Header';
 import Help from './Help';
@@ -15,4 +16,4 @@ export * from './decorators';
 export * from './helpers';
 export * from './types';
 
-export { Command, Program, Failure, Header, Help, Style };
+export { Command, Program, ProgramContext, Failure, Header, Help, Style };

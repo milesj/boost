@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import React from 'react';
 import {
   ArgList,
   MapOptionConfig,
@@ -32,6 +31,7 @@ import {
   CommandMetadata,
   CommandStaticConfig,
   ExitHandler,
+  RunResult,
 } from './types';
 
 export default abstract class Command<
@@ -173,5 +173,5 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract async run(...params: P): Promise<undefined | string | React.ReactElement>;
+  abstract async run(...params: P): Promise<RunResult>;
 }

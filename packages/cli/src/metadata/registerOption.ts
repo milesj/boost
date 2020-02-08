@@ -11,7 +11,6 @@ import {
   stringOptionBlueprint,
 } from './blueprints';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function registerOption<T extends Object, O extends OptionConfig>(
   target: T,
   property: keyof T,

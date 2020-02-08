@@ -21,6 +21,7 @@ import {
   ExitCode,
   CommandMetadata,
   CommandMetadataMap,
+  RunResult,
 } from './types';
 import Command from './Command';
 import Failure from './Failure';
@@ -210,33 +211,41 @@ export default class Program extends Contract<ProgramOptions> {
       case 0:
         throw new Error('No commands have been defined. At least 1 is required.');
 
-      case 1:
-        return parse(
-          argv,
-          this.getCommand<O, P>(Array.from(this.commands.keys())[0])!.getParserOptions(),
-        );
+      case 1: {
+        const command = this.getCommand<O, P>(this.options.bin);
+
+        if (!command) {
+          throw new Error(
+            'Single command programs must match the command path to the binary name.',
+          );
+        }
+
+        return parse(argv, command.getParserOptions());
+      }
 
       default:
         return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
     }
   }
 
-  protected async render(
-    element: undefined | string | React.ReactElement,
-    exitCode: ExitCode,
-  ): Promise<ExitCode> {
-    if (!element) {
+  /**
+   * Render the result of a command's run to the defined stream.
+   * If a string has been returned, write it immediately.
+   * If a React component, render with Ink and wait for it to finish.
+   */
+  protected async render(result: RunResult, exitCode: ExitCode): Promise<ExitCode> {
+    if (!result) {
       return exitCode;
     }
 
     const { stdin, stdout } = this.streams;
 
-    if (typeof element === 'string') {
-      stdout.write(element);
+    if (typeof result === 'string') {
+      stdout.write(result);
     } else {
       await render(
         <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
-          {element}
+          {result}
         </Wrapper>,
         {
           experimental: true,
