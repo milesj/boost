@@ -2,12 +2,13 @@ import React from 'react';
 import { render } from 'ink';
 import { Argv, parseInContext, PrimitiveType, ParseError, ValidationError } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
+import { Logger, createLogger } from '@boost/log';
 import { ExitError } from '@boost/internal';
 import {
   ProgramOptions,
   Commandable,
   GlobalArgumentOptions,
-  ProgramContext,
+  ProgramStreams,
   ExitCode,
   CommandMetadata,
   CommandMetadataMap,
@@ -21,11 +22,19 @@ import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 export default class Program extends Contract<ProgramOptions> {
   protected commands = new Map<string, Commandable>();
 
-  protected context: ProgramContext = {
+  protected logger: Logger = createLogger();
+
+  protected streams: ProgramStreams = {
     stderr: process.stderr,
     stdin: process.stdin,
     stdout: process.stdout,
   };
+
+  constructor(options: ProgramOptions, streams?: ProgramStreams) {
+    super(options);
+
+    Object.assign(this.streams, streams);
+  }
 
   blueprint({ string }: Predicates) {
     return {
@@ -34,7 +43,9 @@ export default class Program extends Contract<ProgramOptions> {
         .required()
         .kebabCase(),
       footer: string(),
-      name: string().required(),
+      name: string()
+        .notEmpty()
+        .required(),
       version: string()
         .required()
         .match(VERSION_FORMAT),
@@ -68,7 +79,26 @@ export default class Program extends Contract<ProgramOptions> {
       }
     }
 
-    return command as Command<O, P>;
+    if (!command) {
+      return null;
+    }
+
+    // Bootstrap command
+    const cmd = command as Command<O, P>;
+
+    cmd.exit = this.exit;
+    cmd.log = this.logger;
+    cmd.bootstrap();
+
+    return cmd;
+  }
+
+  /**
+   * Exit the program with an error code.
+   * Should be called within a command or component.
+   */
+  exit(message: string, code: ExitCode) {
+    throw new ExitError(message, code || 1);
   }
 
   /**
@@ -90,26 +120,32 @@ export default class Program extends Contract<ProgramOptions> {
 
   // TODO unknown options
   // TODO index command
-  // TODO error handling
-  async run(argv: Argv, ctx?: ProgramContext): Promise<ExitCode> {
-    Object.assign(this.context, ctx);
-
+  async run(argv: Argv): Promise<ExitCode> {
     const $ = argv.join(' ');
-    const { command: path, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
-      argv,
-      arg => this.getCommand(arg)?.getParserOptions(),
-    );
+    let path: string[] = [];
+    let errors: Error[] = [];
+    let options: GlobalArgumentOptions;
+    let params = [];
+    let rest: string[] = [];
+
+    try {
+      ({ command: path, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
+        argv,
+        arg => this.getCommand(arg)?.getParserOptions(),
+      ));
+    } catch {
+      // TODO render index
+      return this.renderErrors($, [error]);
+    }
+
+    // Display errors
+    if (errors.length > 0) {
+      return this.renderErrors($, errors);
+    }
 
     // Display version
     if (options.version) {
-      this.context.stdout.write(this.options.version);
-
-      return EXIT_PASS;
-    }
-
-    // Display errors and exit
-    if (errors.length > 0) {
-      return this.handleErrors($, errors);
+      return this.render(this.options.version, EXIT_PASS);
     }
 
     const command = this.getCommand(path)!;
@@ -117,15 +153,7 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display help and usage
     if (options.help) {
-      return this.render(
-        <Help
-          config={metadata}
-          commands={this.mapCommandMetadata(metadata.commands)}
-          options={metadata.options}
-          params={metadata.params}
-        />,
-        EXIT_PASS,
-      );
+      return this.renderHelp(metadata);
     }
 
     // Apply arguments to command properties
@@ -147,33 +175,14 @@ export default class Program extends Contract<ProgramOptions> {
     try {
       exitCode = await this.render(await command.run(...params), EXIT_PASS);
     } catch (error) {
-      exitCode = await this.handleErrors($, [error]);
+      exitCode = await this.renderErrors($, [error]);
     }
 
     return exitCode;
   }
 
-  async runAndExit(argv: Argv, context?: ProgramContext): Promise<void> {
-    process.exitCode = await this.run(argv, context);
-  }
-
-  protected handleErrors(command: string, errors: Error[]) {
-    const parseErrors = errors.filter(error => error instanceof ParseError);
-    const validErrors = errors.filter(error => error instanceof ValidationError);
-    let mainError = parseErrors.shift();
-
-    if (!mainError) {
-      mainError = validErrors.shift();
-    }
-
-    if (!mainError) {
-      mainError = errors.shift();
-    }
-
-    return this.render(
-      <Failure command={command} error={mainError!} warnings={validErrors} />,
-      mainError instanceof ExitError ? mainError.code : EXIT_FAIL,
-    );
+  async runAndExit(argv: Argv): Promise<void> {
+    process.exitCode = await this.run(argv);
   }
 
   protected mapCommandMetadata(commands: CommandMetadata['commands']): CommandMetadataMap {
@@ -194,18 +203,54 @@ export default class Program extends Contract<ProgramOptions> {
       return exitCode;
     }
 
-    const { stdin, stdout } = this.context;
+    const { stdin, stdout } = this.streams;
 
     if (typeof element === 'string') {
       stdout.write(element);
     } else {
-      await render(<Wrapper>{element}</Wrapper>, {
-        experimental: true,
-        stdin,
-        stdout,
-      }).waitUntilExit();
+      await render(
+        <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
+          {element}
+        </Wrapper>,
+        {
+          experimental: true,
+          stdin,
+          stdout,
+        },
+      ).waitUntilExit();
     }
 
     return exitCode;
+  }
+
+  protected renderErrors(command: string, errors: Error[]): Promise<ExitCode> {
+    const parseErrors = errors.filter(error => error instanceof ParseError);
+    const validErrors = errors.filter(error => error instanceof ValidationError);
+    let mainError = parseErrors.shift();
+
+    if (!mainError) {
+      mainError = validErrors.shift();
+    }
+
+    if (!mainError) {
+      mainError = errors.shift();
+    }
+
+    return this.render(
+      <Failure command={command} error={mainError!} warnings={validErrors} />,
+      mainError instanceof ExitError ? mainError.code : EXIT_FAIL,
+    );
+  }
+
+  protected renderHelp(metadata: CommandMetadata): Promise<ExitCode> {
+    return this.render(
+      <Help
+        config={metadata}
+        commands={this.mapCommandMetadata(metadata.commands)}
+        options={metadata.options}
+        params={metadata.params}
+      />,
+      EXIT_PASS,
+    );
   }
 }

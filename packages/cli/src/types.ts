@@ -1,5 +1,6 @@
 import React from 'react';
 import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boost/args';
+import { Logger } from '@boost/log';
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
 
@@ -11,6 +12,8 @@ export type StreamType = 'stderr' | 'stdout';
 
 export type ExitCode = number;
 
+export type ExitHandler = (message: string, code: ExitCode) => void;
+
 export interface ProgramOptions {
   banner: string;
   bin: string;
@@ -19,10 +22,16 @@ export interface ProgramOptions {
   version: string;
 }
 
-export interface ProgramContext {
+export interface ProgramStreams {
   stderr: NodeJS.WriteStream;
   stdin: NodeJS.ReadStream;
   stdout: NodeJS.WriteStream;
+}
+
+export interface ProgramContextType {
+  exit: ExitHandler;
+  log: Logger;
+  program: ProgramOptions;
 }
 
 // COMMANDS

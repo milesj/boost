@@ -10,7 +10,8 @@ import {
   COMMAND_FORMAT,
 } from '@boost/args';
 import { optimal } from '@boost/common';
-import { RuntimeError, ExitError } from '@boost/internal';
+import { Logger } from '@boost/log';
+import { RuntimeError } from '@boost/internal';
 import { Arg } from './decorators';
 import registerCommand from './metadata/registerCommand';
 import registerOption from './metadata/registerOption';
@@ -30,7 +31,7 @@ import {
   Commandable,
   CommandMetadata,
   CommandStaticConfig,
-  ExitCode,
+  ExitHandler,
 } from './types';
 
 export default abstract class Command<
@@ -59,22 +60,15 @@ export default abstract class Command<
   @Arg.Flag(msg('cli:optionVersionDescription'), { short: 'v' })
   readonly version: O['version'] = false;
 
-  constructor() {
-    this.bootstrap();
-  }
+  exit!: ExitHandler;
+
+  log!: Logger;
 
   /**
    * Life cycle that is executed on instantiation, so that commands,
    * params, and other settings can be defined.
    */
   bootstrap() {}
-
-  /**
-   * Exit the program with an error code.
-   */
-  exit(message: string, code: ExitCode) {
-    throw new ExitError(message, code || 1);
-  }
 
   /**
    * Validate and return all metadata registered to this command instance.

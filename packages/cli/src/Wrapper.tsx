@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { Static } from 'ink';
+import { Logger } from '@boost/log';
 import Failure from './Failure';
-import { StreamType } from './types';
+import ProgramContext from './ProgramContext';
+import { ProgramOptions, StreamType, ExitHandler } from './types';
 
 export const BOUND_WRITERS = {
   stderr: process.stderr.write.bind(process.stderr),
@@ -12,12 +14,18 @@ export const BOUND_WRITERS = {
 
 export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];
 
+export interface WrapperProps {
+  exit: ExitHandler;
+  logger: Logger;
+  program: ProgramOptions;
+}
+
 export interface WrapperState {
   error: Error | null;
   log: string[];
 }
 
-export default class Wrapper extends React.Component<{}, WrapperState> {
+export default class Wrapper extends React.Component<WrapperProps, WrapperState> {
   buffer: string[] = [];
 
   state: WrapperState = {
@@ -97,17 +105,17 @@ export default class Wrapper extends React.Component<{}, WrapperState> {
 
   render() {
     const { log, error } = this.state;
-    const { children } = this.props;
+    const { children, exit, logger, program } = this.props;
 
     if (error) {
       return <Failure error={error} />;
     }
 
     return (
-      <>
+      <ProgramContext.Provider value={{ exit, log: logger, program }}>
         <Static>{log}</Static>
         {children}
-      </>
+      </ProgramContext.Provider>
     );
   }
 }
