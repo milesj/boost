@@ -118,13 +118,7 @@ export interface Config {
 }
 
 export interface Command extends Config {
-  usage?: string;
-}
-
-export interface Usage extends Command {
-  commands?: { [name: string]: Usage };
-  options?: OptionConfigMap;
-  params?: ParamConfigList;
+  usage?: string | string[];
 }
 
 // ARGUMENT TYPES

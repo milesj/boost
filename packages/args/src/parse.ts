@@ -29,14 +29,15 @@ import Scope from './Scope';
 import { DEFAULT_STRING_VALUE, debug } from './constants';
 
 // TERMINOLOGY
-// arg - All types of arguments passed on the command line, separated by a space.
+// command line - The entire line that encompasses the following parts.
+// arg - Each type of argument (or part) passed on the command line, separated by a space.
 // command - An optional "command" being ran that allows for branching functionality.
 //    Sub-commands are separated with ":".
 // option - An optional argument that requires a value(s). Starts with "--" (long) or "-" (short).
 // flag - A specialized option that only supports booleans. Can be toggled on an off (default).
 // param - An optional or required argument, that is not an option or option value,
 //    Supports any raw value, and enforces a defined order.
-// rest arg - All remaining arguments that appear after a stand alone "--".
+// rest - All remaining arguments that appear after a stand alone "--".
 //    Usually passed to subsequent scripts.
 // scope - Argument currently being parsed.
 
