@@ -4,11 +4,11 @@ import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@bo
 import { toArray } from '@boost/common';
 import Header from './Header';
 import { msg } from './constants';
-import { CommandMetadataMap, CommandStaticMetadata } from './types';
+import { CommandMetadataMap, CommandStaticConfig } from './types';
 import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
 
 export interface HelpProps {
-  config?: CommandStaticMetadata;
+  config?: CommandStaticConfig;
   commands?: CommandMetadataMap;
   options?: OptionConfigMap;
   params?: ParamConfigList;

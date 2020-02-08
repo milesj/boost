@@ -1,14 +1,17 @@
+/* eslint-disable react/jsx-curly-brace-presence */
+
 import React from 'react';
 import { Box } from 'ink';
-import { ParseError } from '@boost/args';
-import { figures } from '@boost/terminal';
+import { ParseError, ValidationError } from '@boost/args';
+import { figures, screen } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
 import { msg } from './constants';
 import applyStyle from './helpers/applyStyle';
+import { StyleType } from './types';
 
 export interface FailureProps {
-  command: string;
+  command?: string;
   error: Error;
   warnings?: Error[];
 }
@@ -17,27 +20,47 @@ export default class Failure extends React.Component<FailureProps> {
   renderCodeFrame() {
     const { command, error } = this.props;
 
-    if (error instanceof ParseError) {
-      return (
-        <>
-          <Box paddingLeft={4}>
-            <Style type="failure">
-              {'┌'.padStart(error.index + 1, ' ')}
-              {'─'.repeat(error.arg.length - 2)}
-              {'┐'}
-            </Style>
-          </Box>
-
-          <Box paddingLeft={4}>
-            <Style type="muted">
-              {command.replace(error.arg, applyStyle(error.arg, 'failure'))}
-            </Style>
-          </Box>
-        </>
-      );
+    if (!command) {
+      return null;
     }
 
-    return null;
+    const width = screen.size().columns;
+    let type: StyleType = 'failure';
+    let arg = '';
+    let idx = 0;
+    let cmd = command;
+
+    if (error instanceof ParseError) {
+      arg = error.arg;
+      idx = error.index;
+    } else if (error instanceof ValidationError) {
+      type = 'warning';
+      arg = `--${error.option}`;
+      idx = cmd.indexOf(arg);
+    } else {
+      return null;
+    }
+
+    while (idx > width) {
+      cmd = command.slice(width / 2);
+      idx -= width / 2;
+    }
+
+    return (
+      <>
+        <Box paddingLeft={2}>
+          <Style type={type}>
+            {'┌'.padStart(idx + 1, ' ')}
+            {'─'.repeat(arg.length - 2)}
+            {'┐'}
+          </Style>
+        </Box>
+
+        <Box paddingLeft={2}>
+          <Style type="muted">{cmd.replace(arg, applyStyle(arg, type))}</Style>
+        </Box>
+      </>
+    );
   }
 
   renderStackTrace() {

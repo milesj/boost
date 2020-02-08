@@ -1,4 +1,5 @@
 import React from 'react';
+import Failure from './Failure';
 
 export interface WrapperProps {
   foo?: string;
@@ -14,14 +15,14 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
   };
 
   static getDerivedStateFromError(error: Error) {
-    console.log({ error });
-
     return { error };
   }
 
   render() {
-    if (this.state.error) {
-      return this.state.error.message;
+    const { error } = this.state;
+
+    if (error) {
+      return <Failure error={error} />;
     }
 
     return this.props.children;

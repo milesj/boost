@@ -15,7 +15,7 @@ import {
   COMMAND_FORMAT,
 } from '@boost/args';
 import { predicates, Blueprint } from '@boost/common';
-import { CommandMetadata, CommandStaticMetadata } from '../types';
+import { CommandMetadata, CommandStaticConfig } from '../types';
 
 const { array, bool, func, number, object, string, union } = predicates;
 
@@ -29,7 +29,7 @@ export const commonBlueprint: Blueprint<Required<Config>> = {
 
 // COMMANDS
 
-export const commandConstructorBlueprint: Blueprint<CommandStaticMetadata> = {
+export const commandConstructorBlueprint: Blueprint<CommandStaticConfig> = {
   ...commonBlueprint,
   path: string()
     .notEmpty()

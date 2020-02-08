@@ -31,12 +31,12 @@ export interface GlobalArgumentOptions {
   version: boolean;
 }
 
-export interface CommandStaticMetadata extends Required<Omit<CommandConfig, 'usage'>> {
+export interface CommandStaticConfig extends Required<Omit<CommandConfig, 'usage'>> {
   path: string; // Canonical name used on the command line
   usage: string | string[];
 }
 
-export interface CommandMetadata extends CommandStaticMetadata {
+export interface CommandMetadata extends CommandStaticConfig {
   commands: { [path: string]: Commandable };
   options: OptionConfigMap;
   params: ParamConfigList;

@@ -2,12 +2,12 @@ import 'reflect-metadata';
 import { optimal } from '@boost/common';
 import { commandConstructorBlueprint } from '../metadata/blueprints';
 import { META_CONFIG, META_PATH } from '../constants';
-import { PartialConfig, CommandStaticMetadata } from '../types';
+import { PartialConfig, CommandStaticConfig } from '../types';
 
 export default function Config(
   path: string,
   description: string,
-  config?: Partial<PartialConfig<CommandStaticMetadata>>,
+  config?: Partial<PartialConfig<CommandStaticConfig>>,
 ) {
   // Class
   return (target: Object) => {
@@ -28,7 +28,7 @@ export default function Config(
     Reflect.defineMetadata(META_CONFIG, meta, target);
 
     // Also update static properties on constructor
-    const ctor = target as CommandStaticMetadata;
+    const ctor = target as CommandStaticConfig;
 
     ctor.description = meta.description;
     ctor.deprecated = meta.deprecated;

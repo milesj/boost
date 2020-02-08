@@ -10,7 +10,7 @@ import {
   COMMAND_FORMAT,
 } from '@boost/args';
 import { optimal } from '@boost/common';
-import { RuntimeError } from '@boost/internal';
+import { RuntimeError, ExitError } from '@boost/internal';
 import { Arg } from './decorators';
 import registerCommand from './metadata/registerCommand';
 import registerOption from './metadata/registerOption';
@@ -29,7 +29,8 @@ import {
   GlobalArgumentOptions,
   Commandable,
   CommandMetadata,
-  CommandStaticMetadata,
+  CommandStaticConfig,
+  ExitCode,
 } from './types';
 
 export default abstract class Command<
@@ -69,10 +70,17 @@ export default abstract class Command<
   bootstrap() {}
 
   /**
+   * Exit the program with an error code.
+   */
+  exit(message: string, code: ExitCode) {
+    throw new ExitError(message, code || 1);
+  }
+
+  /**
    * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {
-    const ctor = (this.constructor as unknown) as CommandStaticMetadata;
+    const ctor = (this.constructor as unknown) as CommandStaticConfig;
     const metadata: CommandMetadata = {
       deprecated: ctor.deprecated,
       description: ctor.description,
@@ -112,7 +120,7 @@ export default abstract class Command<
   getPath(): string {
     const path =
       Reflect.getMetadata(META_PATH, this.constructor) ||
-      ((this.constructor as unknown) as CommandStaticMetadata).path ||
+      ((this.constructor as unknown) as CommandStaticConfig).path ||
       '';
 
     if (!path || typeof path !== 'string') {
@@ -171,5 +179,5 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract async run(...params: P): Promise<string | React.ReactElement>;
+  abstract async run(...params: P): Promise<undefined | string | React.ReactElement>;
 }
