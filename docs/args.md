@@ -45,6 +45,25 @@ const { command, errors, options, params, rest } = parse<{ help: boolean }, [str
 });
 ```
 
+A command line breaks down to the following parts. This terminology pertains to Boost but is based
+on common patterns seen throughout the community.
+
+```
+┌ 1 ┐ ┌ 2 ┐ ┌─── 3 ───┐ ┌─── 4 ───┐ ┌── 5 ─┐ ┌ 6 ┐ ┌─── 7 ───┐    ┌─── 8 ────┐
+boost build --key value --key=value -flag -F -aBDc foo bar baz -- --foo bar -B
+└───────────────────────────────────── 9 ────────────────────────────────────┘
+```
+
+1. Binary that was executed. Also known as a script or command, and is never passed to `argv`.
+2. [Command](#commands) being executed. Should always be first.
+3. [Option](#options) with a value.
+4. [Option](#options) with a value using an equals sign.
+5. [Flag](#flags) in both long and short form.
+6. A group of [short options](#short-option-groups), most commonly used by flags.
+7. [Parameters](#params) passed to a command.
+8. [Rest](#rest) arguments that are not parsed. Always appear after a `--`.
+9. The command line.
+
 ### Commands
 
 Commands are a feature that allow for branching logic, full isolation, and distinct code paths. That
