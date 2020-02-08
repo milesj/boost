@@ -11,16 +11,16 @@ import applyStyle from './helpers/applyStyle';
 import { StyleType } from './types';
 
 export interface FailureProps {
-  command?: string;
+  commandLine?: string;
   error: Error;
   warnings?: Error[];
 }
 
 export default class Failure extends React.Component<FailureProps> {
   renderCodeFrame() {
-    const { command, error } = this.props;
+    const { commandLine, error } = this.props;
 
-    if (!command) {
+    if (!commandLine) {
       return null;
     }
 
@@ -28,7 +28,7 @@ export default class Failure extends React.Component<FailureProps> {
     let type: StyleType = 'failure';
     let arg = '';
     let idx = 0;
-    let cmd = command;
+    let cmd = commandLine;
 
     if (error instanceof ParseError) {
       arg = error.arg;
@@ -42,7 +42,7 @@ export default class Failure extends React.Component<FailureProps> {
     }
 
     while (idx > width) {
-      cmd = command.slice(width / 2);
+      cmd = commandLine.slice(width / 2);
       idx -= width / 2;
     }
 

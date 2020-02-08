@@ -1,6 +1,15 @@
 import React from 'react';
 import { render } from 'ink';
-import { Argv, parseInContext, PrimitiveType, ParseError, ValidationError } from '@boost/args';
+import {
+  Argv,
+  parse,
+  parseInContext,
+  PrimitiveType,
+  ParseError,
+  ValidationError,
+  Arguments,
+  ArgList,
+} from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
 import { Logger, createLogger } from '@boost/log';
 import { ExitError } from '@boost/internal';
@@ -21,6 +30,8 @@ import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands = new Map<string, Commandable>();
+
+  protected commandLine: string = '';
 
   protected logger: Logger = createLogger();
 
@@ -57,7 +68,7 @@ export default class Program extends Contract<ProgramOptions> {
    * it will attempt to drill down from the parent command.
    * If no command can be found, `null` will be returned.
    */
-  getCommand<O extends GlobalArgumentOptions, P extends PrimitiveType[]>(
+  getCommand<O extends GlobalArgumentOptions, P extends PrimitiveType[] = ArgList>(
     name: string | string[],
   ): Command<O, P> | null {
     const names = Array.isArray(name) ? [...name] : name.split(':');
@@ -120,27 +131,30 @@ export default class Program extends Contract<ProgramOptions> {
 
   // TODO unknown options
   // TODO index command
-  async run(argv: Argv): Promise<ExitCode> {
-    const $ = argv.join(' ');
-    let path: string[] = [];
-    let errors: Error[] = [];
-    let options: GlobalArgumentOptions;
-    let params = [];
-    let rest: string[] = [];
+  async run(argv: Argv): Promise<void> {
+    this.commandLine = argv.join(' ');
+
+    let exitCode: ExitCode;
 
     try {
-      ({ command: path, errors, options, params, rest } = parseInContext<GlobalArgumentOptions>(
-        argv,
-        arg => this.getCommand(arg)?.getParserOptions(),
-      ));
-    } catch {
-      // TODO render index
-      return this.renderErrors($, [error]);
+      exitCode = await this.doRun(argv);
+    } catch (error) {
+      exitCode = await this.renderErrors([error]);
     }
+
+    process.exitCode = exitCode;
+  }
+
+  /**
+   * Internal run that does all the heavy lifting and parsing,
+   * while the public run exists to catch any unexpected errors.
+   */
+  protected async doRun(argv: Argv): Promise<ExitCode> {
+    const { command: path, errors, options, params, rest } = this.parseArguments(argv);
 
     // Display errors
     if (errors.length > 0) {
-      return this.renderErrors($, errors);
+      return this.renderErrors(errors);
     }
 
     // Display version
@@ -160,31 +174,22 @@ export default class Program extends Contract<ProgramOptions> {
     Object.entries(options).forEach(([key, value]) => {
       const config = metadata.options[key];
 
-      if (config && value !== config.default) {
-        (command as any)[key] = value;
+      if (config) {
+        command[key as 'help'] = value as boolean;
       }
     });
 
     if (metadata.rest) {
-      (command as any)[metadata.rest] = rest;
+      command[metadata.rest as 'rest'] = rest;
     }
 
-    // Execute command
-    let exitCode: ExitCode;
-
-    try {
-      exitCode = await this.render(await command.run(...params), EXIT_PASS);
-    } catch (error) {
-      exitCode = await this.renderErrors($, [error]);
-    }
-
-    return exitCode;
+    // Render command with params
+    return this.render(await command.run(...params), EXIT_PASS);
   }
 
-  async runAndExit(argv: Argv): Promise<void> {
-    process.exitCode = await this.run(argv);
-  }
-
+  /**
+   * Map a list of commands to their registered metadata.
+   */
   protected mapCommandMetadata(commands: CommandMetadata['commands']): CommandMetadataMap {
     const map: CommandMetadataMap = {};
 
@@ -193,6 +198,27 @@ export default class Program extends Contract<ProgramOptions> {
     });
 
     return map;
+  }
+
+  /**
+   * Parse the arguments list according to the number of commands that have been registered.
+   */
+  protected parseArguments<O extends GlobalArgumentOptions, P extends PrimitiveType[] = ArgList>(
+    argv: Argv,
+  ): Arguments<O, P> {
+    switch (this.commands.size) {
+      case 0:
+        throw new Error('No commands have been defined. At least 1 is required.');
+
+      case 1:
+        return parse(
+          argv,
+          this.getCommand<O, P>(Array.from(this.commands.keys())[0])!.getParserOptions(),
+        );
+
+      default:
+        return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
+    }
   }
 
   protected async render(
@@ -223,25 +249,24 @@ export default class Program extends Contract<ProgramOptions> {
     return exitCode;
   }
 
-  protected renderErrors(command: string, errors: Error[]): Promise<ExitCode> {
+  /**
+   * Render an error and warnings menu based on the list provided.
+   * If argument parser or validation errors are found, treat them with special logic.
+   */
+  protected renderErrors(errors: Error[]): Promise<ExitCode> {
     const parseErrors = errors.filter(error => error instanceof ParseError);
     const validErrors = errors.filter(error => error instanceof ValidationError);
-    let mainError = parseErrors.shift();
-
-    if (!mainError) {
-      mainError = validErrors.shift();
-    }
-
-    if (!mainError) {
-      mainError = errors.shift();
-    }
+    const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
 
     return this.render(
-      <Failure command={command} error={mainError!} warnings={validErrors} />,
-      mainError instanceof ExitError ? mainError.code : EXIT_FAIL,
+      <Failure commandLine={this.commandLine} error={error} warnings={validErrors} />,
+      error instanceof ExitError ? error.code : EXIT_FAIL,
     );
   }
 
+  /**
+   * Render a command help menu using the command's metadata.
+   */
   protected renderHelp(metadata: CommandMetadata): Promise<ExitCode> {
     return this.render(
       <Help

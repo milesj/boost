@@ -49,16 +49,16 @@ export default abstract class Command<
   static usage: string | string[] = '';
 
   @Arg.Flag(msg('cli:optionHelpDescription'), { short: 'h' })
-  readonly help: O['help'] = false;
+  help: O['help'] = false;
 
   @Arg.String(msg('cli:optionLocaleDescription'))
-  readonly locale: O['locale'] = 'en';
+  locale: O['locale'] = 'en';
 
   @Arg.Rest()
-  readonly rest: string[] = [];
+  rest: string[] = [];
 
   @Arg.Flag(msg('cli:optionVersionDescription'), { short: 'v' })
-  readonly version: O['version'] = false;
+  version: O['version'] = false;
 
   exit!: ExitHandler;
 
