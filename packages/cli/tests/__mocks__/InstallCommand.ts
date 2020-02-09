@@ -8,6 +8,7 @@ export type InstallParams = [string, ...string[]];
 
 @Config('install', 'Install package(s)', { deprecated: true, hidden: true })
 export default class InstallCommand extends Command<InstallOptions, InstallParams> {
+  // --save
   @Arg.Flag('Save dependency to lock file')
   save: boolean = true;
 

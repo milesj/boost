@@ -15,9 +15,12 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
 
   static path = 'install';
 
+  // --save
   save: boolean = true;
 
-  bootstrap() {
+  constructor() {
+    super();
+
     this.registerOptions({
       save: {
         default: true,

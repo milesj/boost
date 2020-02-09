@@ -7,9 +7,11 @@ export interface BuildOptions extends GlobalArgumentOptions {
 
 @Config('build', 'Build a project', { usage: '$ build -S ./src -D ./lib' })
 class BuildCommand extends Command<BuildOptions> {
+  // --dst, -D
   @Arg.String('Destination path', { short: 'D' })
   dst: string = '';
 
+  // --src, -S
   @Arg.String('Source path', { short: 'S' })
   src: string = './src';
 

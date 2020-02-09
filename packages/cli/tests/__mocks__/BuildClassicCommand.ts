@@ -12,18 +12,24 @@ export default class BuildClassicCommand extends Command<BuildOptions> {
 
   static usage = '$ build -S ./src -D ./lib';
 
+  // --dst, -D
   dst: string = '';
 
+  // --src, -S
   src: string = './src';
 
-  bootstrap() {
+  constructor() {
+    super();
+
     this.registerOptions({
       dst: {
         description: 'Destination path',
+        short: 'D',
         type: 'string',
       },
       src: {
         description: 'Source path',
+        short: 'S',
         type: 'string',
       },
     });
