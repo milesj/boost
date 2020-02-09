@@ -92,7 +92,7 @@ export const stringsOptionBlueprint: Blueprint<MultipleOption<string[]>> = {
 export const numberOptionBlueprint: Blueprint<SingleOption<number>> = {
   ...optionBlueprint,
   choices: array(number()),
-  count: bool().never(),
+  count: bool().onlyTrue(),
   default: number(DEFAULT_NUMBER_VALUE),
   type: string().oneOf(['number']),
 };

@@ -100,7 +100,6 @@ export default class Program extends Contract<ProgramOptions> {
 
     cmd.exit = this.exit;
     cmd.log = this.logger;
-    cmd.bootstrap();
 
     return cmd;
   }
@@ -187,6 +186,8 @@ export default class Program extends Contract<ProgramOptions> {
     }
 
     // Render command with params
+    command.bootstrap();
+
     return this.render(await command.run(...params), EXIT_PASS);
   }
 

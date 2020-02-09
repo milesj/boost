@@ -11,7 +11,7 @@ import {
 import { optimal } from '@boost/common';
 import { Logger } from '@boost/log';
 import { RuntimeError } from '@boost/internal';
-import { Arg } from './decorators';
+import captureRest from './metadata/captureRest';
 import registerCommand from './metadata/registerCommand';
 import registerOption from './metadata/registerOption';
 import registerParams from './metadata/registerParams';
@@ -82,8 +82,7 @@ export default abstract class Command<
   }
 
   /**
-   * Life cycle that is executed on instantiation, so that commands,
-   * params, and other settings can be defined.
+   * Life cycle that is triggered before the command is run.
    */
   bootstrap() {}
 
@@ -143,6 +142,15 @@ export default abstract class Command<
     }
 
     return path;
+  }
+
+  /**
+   * Capture all rest arguments and assign them to the defined property.
+   */
+  protected captureRest(property: keyof this): this {
+    captureRest(this, String(property));
+
+    return this;
   }
 
   /**

@@ -1,8 +1,6 @@
 import 'reflect-metadata';
-import { META_REST } from '../constants';
+import captureRest from '../metadata/captureRest';
 
 export default function Rest(): PropertyDecorator {
-  return (target, property) => {
-    Reflect.defineMetadata(META_REST, property, target);
-  };
+  return captureRest;
 }
