@@ -5,9 +5,9 @@ import { paramBlueprint } from './blueprints';
 import { META_PARAMS } from '../constants';
 import { CommandMetadata } from '../types';
 
-export default function registerParams<T extends Object>(
-  target: T,
-  method: keyof T,
+export default function registerParams(
+  target: Object,
+  method: string | symbol,
   config: ParamConfig[],
 ) {
   if (method !== 'run') {

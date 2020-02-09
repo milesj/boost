@@ -8,9 +8,8 @@ export default function Config(
   path: string,
   description: string,
   config?: Partial<PartialConfig<CommandStaticConfig>>,
-) {
-  // Class
-  return (target: Object) => {
+): ClassDecorator {
+  return target => {
     const meta = optimal(
       {
         ...config,
@@ -28,7 +27,7 @@ export default function Config(
     Reflect.defineMetadata(META_CONFIG, meta, target);
 
     // Also update static properties on constructor
-    const ctor = target as CommandStaticConfig;
+    const ctor = (target as unknown) as CommandStaticConfig;
 
     ctor.description = meta.description;
     ctor.deprecated = meta.deprecated;

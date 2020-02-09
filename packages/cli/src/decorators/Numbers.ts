@@ -6,8 +6,7 @@ import { PartialConfig } from '../types';
 export default function Numbers(
   description: string,
   config?: PartialConfig<MultipleOption<number[]>>,
-) {
-  // Property
+): PropertyDecorator {
   return createOptionFactory<MultipleOption<number[]>>({
     ...config,
     default: [],

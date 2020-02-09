@@ -11,15 +11,15 @@ import {
   stringOptionBlueprint,
 } from './blueprints';
 
-export default function registerOption<T extends Object, O extends OptionConfig>(
-  target: T,
-  property: keyof T,
+export default function registerOption<O extends OptionConfig>(
+  baseTarget: Object,
+  property: string | symbol,
   config: O,
+  // Decorators apply metadata to the prototype, while `Command#registerOptions`
+  // apply to the instance. Because of this, we need to extract the prototype for the latter.
+  prototype: boolean = false,
 ) {
-  if (typeof target[property] === 'undefined') {
-    throw new TypeError(`Cannot define option as class property "${property}" does not exist.`);
-  }
-
+  const target = prototype ? Object.getPrototypeOf(baseTarget) : baseTarget;
   const options: CommandMetadata['options'] = Reflect.getMetadata(META_OPTIONS, target) ?? {};
   const name = String(property);
   let blueprint: Blueprint<object>;

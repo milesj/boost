@@ -176,12 +176,14 @@ export default class Program extends Contract<ProgramOptions> {
       const config = metadata.options[key];
 
       if (config) {
-        command[key as 'help'] = value as boolean;
+        // @ts-ignore Allow this
+        command[key] = value;
       }
     });
 
     if (metadata.rest) {
-      command[metadata.rest as 'rest'] = rest;
+      // @ts-ignore Allow this
+      command[metadata.rest] = rest;
     }
 
     // Render command with params

@@ -35,7 +35,7 @@ import {
 } from './types';
 
 export default abstract class Command<
-  O extends GlobalArgumentOptions,
+  O extends GlobalArgumentOptions = GlobalArgumentOptions,
   P extends PrimitiveType[] = ArgList
 > implements Commandable<P> {
   static description: string = '';
@@ -48,21 +48,38 @@ export default abstract class Command<
 
   static usage: string | string[] = '';
 
-  @Arg.Flag(msg('cli:optionHelpDescription'), { short: 'h' })
-  help: O['help'] = false;
+  help: boolean = false;
 
-  @Arg.String(msg('cli:optionLocaleDescription'))
-  locale: O['locale'] = 'en';
+  locale: string = 'en';
 
-  @Arg.Rest()
-  rest: string[] = [];
-
-  @Arg.Flag(msg('cli:optionVersionDescription'), { short: 'v' })
-  version: O['version'] = false;
+  version: boolean = false;
 
   exit!: ExitHandler;
 
   log!: Logger;
+
+  constructor() {
+    // Decorators will apply these global options to the `Command` prototype
+    // and not the sub-classes. So we must declare them imperatively.
+    this.registerOptions({
+      // @ts-ignore We omit below so this is now invalid
+      help: {
+        description: msg('cli:optionHelpDescription'),
+        short: 'h',
+        type: 'boolean',
+      },
+      locale: {
+        default: 'en',
+        description: msg('cli:optionLocaleDescription'),
+        type: 'string',
+      },
+      version: {
+        description: msg('cli:optionVersionDescription'),
+        short: 'v',
+        type: 'boolean',
+      },
+    });
+  }
 
   /**
    * Life cycle that is executed on instantiation, so that commands,
@@ -150,9 +167,9 @@ export default abstract class Command<
    *
    * This method should only be called if not using decorators.
    */
-  protected registerOptions(options: MapOptionConfig<O>): this {
+  protected registerOptions(options: MapOptionConfig<Omit<O, keyof GlobalArgumentOptions>>): this {
     Object.entries(options).forEach(([option, config]) => {
-      registerOption(this, option as keyof this, config as OptionConfig);
+      registerOption(this, option, config as OptionConfig, true);
     });
 
     return this;
