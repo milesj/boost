@@ -5,7 +5,8 @@ import InstallClassicCommand from './InstallClassicCommand';
 @Config('client', 'Client', { usage: ['$ client:install @foo/bar', '$ client:build'] })
 class ClientCommand extends Command {
   bootstrap() {
-    this.registerCommand(new BuildCommand()).registerCommand(new InstallClassicCommand());
+    this.register(new BuildCommand());
+    this.register(new InstallClassicCommand());
   }
 
   async run() {

@@ -1,13 +1,12 @@
-import 'reflect-metadata';
 import { Flag as FlagConfig } from '@boost/args';
-import createOptionFactory from '../metadata/createOptionFactory';
+import createOptionDecorator from '../metadata/createOptionDecorator';
 import { PartialConfig } from '../types';
 
 export default function Flag(
   description: string,
   config?: PartialConfig<FlagConfig>,
 ): PropertyDecorator {
-  return createOptionFactory<FlagConfig>({
+  return createOptionDecorator<FlagConfig>({
     ...config,
     description,
     type: 'boolean',

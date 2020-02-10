@@ -38,10 +38,6 @@ export default class AllCommand extends Command<AllOptions, AllParams> {
   })
   strs: string[] = [];
 
-  // --
-  @Arg.Rest()
-  remaining: string[] = [];
-
   @Arg.Params<AllParams>(
     {
       description: 'String',

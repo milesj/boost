@@ -1,8 +1,15 @@
 import React from 'react';
-import { Command as CommandConfig, OptionConfigMap, ParamConfigList } from '@boost/args';
+import {
+  Command as CommandConfig,
+  OptionConfigMap,
+  ParamConfigList,
+  MapOptionConfig,
+  MapParamConfig,
+  PrimitiveType,
+} from '@boost/args';
 import { Logger } from '@boost/log';
 
-export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'type'>;
+export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'path' | 'type'>;
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -44,15 +51,19 @@ export interface GlobalArgumentOptions {
   version: boolean;
 }
 
+export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalArgumentOptions>>;
+
+export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
+
 export interface CommandStaticConfig extends Required<CommandConfig> {
+  options: OptionConfigMap;
+  params: ParamConfigList;
   path: string; // Canonical name used on the command line
+  rest: string[];
 }
 
 export interface CommandMetadata extends CommandStaticConfig {
   commands: { [path: string]: Commandable };
-  options: OptionConfigMap;
-  params: ParamConfigList;
-  rest: string; // Property name to set rest args to
 }
 
 export interface CommandMetadataMap {
@@ -62,6 +73,7 @@ export interface CommandMetadataMap {
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
+  register(command: Commandable): this;
   run(...params: P): Promise<RunResult>;
 }
 

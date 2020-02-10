@@ -29,26 +29,24 @@ export const commonBlueprint: Blueprint<Required<Config>> = {
 
 // COMMANDS
 
-export const commandConstructorBlueprint: Blueprint<CommandStaticConfig> = {
+export const commandConstructorBlueprint: Blueprint<Omit<
+  CommandStaticConfig,
+  'options' | 'params'
+>> = {
   ...commonBlueprint,
   path: string()
     .notEmpty()
     .required()
     .match(COMMAND_FORMAT),
+  rest: array(string()),
   usage: union([string(), array(string())], []),
 };
 
 export const commandMetadataBlueprint: Blueprint<CommandMetadata> = {
-  ...commonBlueprint,
+  ...commandConstructorBlueprint,
   commands: object(),
   options: object(),
   params: array(),
-  path: string()
-    .notEmpty()
-    .required()
-    .match(COMMAND_FORMAT),
-  rest: string(),
-  usage: union([string(), array(string())], []),
 };
 
 // ARGS

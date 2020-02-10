@@ -28,6 +28,7 @@ import Failure from './Failure';
 import Help from './Help';
 import Wrapper from './Wrapper';
 import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
+import getConstructor from './metadata/getConstructor';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands = new Map<string, Commandable>();
@@ -180,10 +181,7 @@ export default class Program extends Contract<ProgramOptions> {
       }
     });
 
-    if (metadata.rest) {
-      // @ts-ignore Allow this
-      command[metadata.rest] = rest;
-    }
+    getConstructor(command).rest = rest;
 
     // Render command with params
     command.bootstrap();

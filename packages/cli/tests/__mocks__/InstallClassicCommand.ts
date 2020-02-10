@@ -1,4 +1,4 @@
-import { Command, GlobalArgumentOptions } from '../../src';
+import { Command, GlobalArgumentOptions, Options, Params } from '../../src';
 
 export interface InstallOptions extends GlobalArgumentOptions {
   save: boolean;
@@ -7,37 +7,33 @@ export interface InstallOptions extends GlobalArgumentOptions {
 export type InstallParams = [string, ...string[]];
 
 export default class InstallClassicCommand extends Command<InstallOptions, InstallParams> {
-  static deprecated = true;
+  static path = 'install';
 
   static description = 'Install package(s)';
 
+  static deprecated = true;
+
   static hidden = true;
 
-  static path = 'install';
+  static options: Options<InstallOptions> = {
+    save: {
+      default: true,
+      description: 'Save dependency to lock file',
+      type: 'boolean',
+    },
+  };
+
+  static params: Params<InstallParams> = [
+    {
+      description: 'Package name',
+      label: 'pkg',
+      required: true,
+      type: 'string',
+    },
+  ];
 
   // --save
   save: boolean = true;
-
-  constructor() {
-    super();
-
-    this.registerOptions({
-      save: {
-        default: true,
-        description: 'Save dependency to lock file',
-        type: 'boolean',
-      },
-    });
-
-    this.registerParams([
-      {
-        description: 'Package name',
-        label: 'pkg',
-        required: true,
-        type: 'string',
-      },
-    ]);
-  }
 
   async run(pkgName: string, ...morePkgNames: string[]) {
     await Promise.resolve();

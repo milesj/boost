@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { MapParamConfig, PrimitiveType, ParamConfig } from '@boost/args';
 import registerParams from '../metadata/registerParams';
 

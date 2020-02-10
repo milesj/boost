@@ -1,38 +1,25 @@
-import 'reflect-metadata';
 import {
   ArgList,
-  MapOptionConfig,
-  OptionConfig,
   PrimitiveType,
-  MapParamConfig,
   ParserOptions,
-  COMMAND_FORMAT,
+  ParamConfigList,
+  OptionConfigMap,
 } from '@boost/args';
 import { optimal } from '@boost/common';
 import { Logger } from '@boost/log';
-import { RuntimeError } from '@boost/internal';
-import captureRest from './metadata/captureRest';
-import registerCommand from './metadata/registerCommand';
-import registerOption from './metadata/registerOption';
-import registerParams from './metadata/registerParams';
 import { commandMetadataBlueprint } from './metadata/blueprints';
-import {
-  msg,
-  META_OPTIONS,
-  META_PARAMS,
-  META_COMMANDS,
-  META_REST,
-  META_CONFIG,
-  META_PATH,
-} from './constants';
+import { msg } from './constants';
 import {
   GlobalArgumentOptions,
   Commandable,
   CommandMetadata,
-  CommandStaticConfig,
   ExitHandler,
   RunResult,
 } from './types';
+import validateParams from './metadata/validateParams';
+import getConstructor from './metadata/getConstructor';
+import validateOptions from './metadata/validateOptions';
+import validateConfig from './metadata/validateConfig';
 
 export default abstract class Command<
   O extends GlobalArgumentOptions = GlobalArgumentOptions,
@@ -44,7 +31,29 @@ export default abstract class Command<
 
   static hidden: boolean = false;
 
+  static options: OptionConfigMap = {
+    help: {
+      description: msg('cli:optionHelpDescription'),
+      short: 'h',
+      type: 'boolean',
+    },
+    locale: {
+      default: 'en',
+      description: msg('cli:optionLocaleDescription'),
+      type: 'string',
+    },
+    version: {
+      description: msg('cli:optionVersionDescription'),
+      short: 'v',
+      type: 'boolean',
+    },
+  };
+
+  static params: ParamConfigList = [];
+
   static path: string = '';
+
+  static rest: string[] = [];
 
   static usage: string | string[] = '';
 
@@ -58,27 +67,15 @@ export default abstract class Command<
 
   log!: Logger;
 
+  protected subCommands: CommandMetadata['commands'] = {};
+
   constructor() {
-    // Decorators will apply these global options to the `Command` prototype
-    // and not the sub-classes. So we must declare them imperatively.
-    this.registerOptions({
-      // @ts-ignore We omit below so this is now invalid
-      help: {
-        description: msg('cli:optionHelpDescription'),
-        short: 'h',
-        type: 'boolean',
-      },
-      locale: {
-        default: 'en',
-        description: msg('cli:optionLocaleDescription'),
-        type: 'string',
-      },
-      version: {
-        description: msg('cli:optionVersionDescription'),
-        short: 'v',
-        type: 'boolean',
-      },
-    });
+    const ctor = getConstructor(this);
+
+    validateConfig(this.constructor.name, ctor);
+
+    ctor.options = validateOptions(ctor.options);
+    ctor.params = validateParams(ctor.params);
   }
 
   /**
@@ -90,18 +87,17 @@ export default abstract class Command<
    * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {
-    const ctor = (this.constructor as unknown) as CommandStaticConfig;
+    const ctor = getConstructor(this);
     const metadata: CommandMetadata = {
+      commands: this.subCommands,
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
+      options: ctor.options,
+      params: ctor.params,
+      path: ctor.path,
+      rest: ctor.rest,
       usage: ctor.usage,
-      ...Reflect.getMetadata(META_CONFIG, ctor),
-      commands: Reflect.getMetadata(META_COMMANDS, this) ?? {},
-      options: Reflect.getMetadata(META_OPTIONS, this) ?? {},
-      params: Reflect.getMetadata(META_PARAMS, this) ?? [],
-      path: this.getPath(),
-      rest: Reflect.getMetadata(META_REST, this),
     };
 
     return optimal(metadata, commandMetadataBlueprint, {
@@ -128,69 +124,25 @@ export default abstract class Command<
    * Return the command path (canonical name on the command line).
    */
   getPath(): string {
-    const path =
-      Reflect.getMetadata(META_PATH, this.constructor) ||
-      ((this.constructor as unknown) as CommandStaticConfig).path ||
-      '';
-
-    if (!path || typeof path !== 'string') {
-      throw new Error(
-        'Command registered without a canonical path. Have you configured the command?',
-      );
-    } else if (!path.match(COMMAND_FORMAT)) {
-      throw new RuntimeError('args', 'AG_COMMAND_INVALID_FORMAT', [path]);
-    }
-
-    return path;
-  }
-
-  /**
-   * Capture all rest arguments and assign them to the defined property.
-   */
-  protected captureRest(property: keyof this): this {
-    captureRest(this, String(property));
-
-    return this;
+    return getConstructor(this).path;
   }
 
   /**
    * Register a sub-command for the current command.
    */
-  protected registerCommand(command: Commandable): this {
+  register(command: Commandable): this {
     const path = this.getPath();
     const subPath = command.getPath();
 
     if (!subPath.startsWith(path)) {
-      throw new Error(`Sub-command "${subPath}" must be prefixed with "${path}:".`);
+      throw new Error(`Sub-command "${subPath}" must start with "${path}:".`);
     }
 
-    registerCommand(this, command);
+    if (this.subCommands[subPath] && this.subCommands[subPath] !== command) {
+      throw new Error(`A command already exists with the canonical path "${subPath}".`);
+    }
 
-    return this;
-  }
-
-  /**
-   * Register argument options that this command should parse and support.
-   * The object keys are class properties that the option values will be set to.
-   *
-   * This method should only be called if not using decorators.
-   */
-  protected registerOptions(options: MapOptionConfig<Omit<O, keyof GlobalArgumentOptions>>): this {
-    Object.entries(options).forEach(([option, config]) => {
-      registerOption(this, option, config as OptionConfig, true);
-    });
-
-    return this;
-  }
-
-  /**
-   * Register argument parameters that this command should parse and support.
-   * Each parameter will be a method argument passed to `execute()`.
-   *
-   * This method should only be called if not using decorators.
-   */
-  protected registerParams(params: MapParamConfig<P>): this {
-    registerParams(this, 'run', params);
+    this.subCommands[subPath] = command;
 
     return this;
   }

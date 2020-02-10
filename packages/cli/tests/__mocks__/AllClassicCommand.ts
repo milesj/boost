@@ -1,4 +1,4 @@
-import { Command, GlobalArgumentOptions } from '../../src';
+import { Command, GlobalArgumentOptions, Options, Params } from '../../src';
 
 export interface AllOptions extends GlobalArgumentOptions {
   flag: boolean;
@@ -11,9 +11,69 @@ export interface AllOptions extends GlobalArgumentOptions {
 export type AllParams = [string, boolean, number];
 
 export default class AllClassicCommand extends Command<AllOptions, AllParams> {
+  static path = 'all';
+
   static description = 'All options and params';
 
-  static path = 'all';
+  static options: Options<AllOptions> = {
+    // --flag, -F
+    flag: {
+      description: 'Boolean flag',
+      short: 'F',
+      type: 'boolean',
+    },
+    // --num, -N
+    num: {
+      count: true,
+      description: 'Single number',
+      short: 'N',
+      type: 'number',
+    },
+    // --nums
+    nums: {
+      deprecated: true,
+      description: 'List of numbers',
+      multiple: true,
+      type: 'number',
+    },
+    // --str
+    str: {
+      choices: ['a', 'b', 'c'],
+      default: 'a',
+      description: 'Single string',
+      hidden: true,
+      type: 'string',
+    },
+    // --strs, -S
+    strs: {
+      arity: 5,
+      description: 'List of strings',
+      multiple: true,
+      short: 'S',
+      type: 'string',
+      validate() {
+        throw new Error('Oh no...');
+      },
+    },
+  };
+
+  static params: Params<AllParams> = [
+    {
+      description: 'String',
+      label: 'char',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Boolean',
+      type: 'boolean',
+    },
+    {
+      description: 'Number',
+      label: 'int',
+      type: 'number',
+    },
+  ];
 
   flag: boolean = false;
 
@@ -24,67 +84,6 @@ export default class AllClassicCommand extends Command<AllOptions, AllParams> {
   str: string = 'a';
 
   strs: string[] = [];
-
-  remaining: string[] = [];
-
-  constructor() {
-    super();
-
-    this.captureRest('remaining')
-      .registerOptions({
-        flag: {
-          description: 'Boolean flag',
-          short: 'F',
-          type: 'boolean',
-        },
-        num: {
-          count: true,
-          description: 'Single number',
-          short: 'N',
-          type: 'number',
-        },
-        nums: {
-          deprecated: true,
-          description: 'List of numbers',
-          multiple: true,
-          type: 'number',
-        },
-        str: {
-          choices: ['a', 'b', 'c'],
-          default: 'a',
-          description: 'Single string',
-          hidden: true,
-          type: 'string',
-        },
-        strs: {
-          arity: 5,
-          description: 'List of strings',
-          multiple: true,
-          short: 'S',
-          type: 'string',
-          validate() {
-            throw new Error('Oh no...');
-          },
-        },
-      })
-      .registerParams([
-        {
-          description: 'String',
-          label: 'char',
-          required: true,
-          type: 'string',
-        },
-        {
-          description: 'Boolean',
-          type: 'boolean',
-        },
-        {
-          description: 'Number',
-          label: 'int',
-          type: 'number',
-        },
-      ]);
-  }
 
   async run(str: string, bool: boolean, num: number) {
     await Promise.resolve();

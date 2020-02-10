@@ -1,4 +1,4 @@
-import { Command, GlobalArgumentOptions } from '../../src';
+import { Command, GlobalArgumentOptions, Options } from '../../src';
 
 export interface BuildOptions extends GlobalArgumentOptions {
   dst: string;
@@ -6,34 +6,27 @@ export interface BuildOptions extends GlobalArgumentOptions {
 }
 
 export default class BuildClassicCommand extends Command<BuildOptions> {
-  static description = 'Build a project';
-
   static path = 'build';
+
+  static description = 'Build a project';
 
   static usage = '$ build -S ./src -D ./lib';
 
-  // --dst, -D
-  dst: string = '';
-
-  // --src, -S
-  src: string = './src';
-
-  constructor() {
-    super();
-
-    this.registerOptions({
-      dst: {
-        description: 'Destination path',
-        short: 'D',
-        type: 'string',
-      },
-      src: {
-        description: 'Source path',
-        short: 'S',
-        type: 'string',
-      },
-    });
-  }
+  static options: Options<BuildOptions> = {
+    // --dst, -D
+    dst: {
+      description: 'Destination path',
+      short: 'D',
+      type: 'string',
+    },
+    // --src, -S
+    src: {
+      default: './src',
+      description: 'Source path',
+      short: 'S',
+      type: 'string',
+    },
+  };
 
   async run() {
     await Promise.resolve();

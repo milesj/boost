@@ -27,8 +27,7 @@
     "@boost/log": "^1.1.11",
     "@boost/terminal": "^1.0.1",
     "@boost/translate": "^1.3.6",
-    "@types/react": "*",
-    "reflect-metadata": "^0.1.13"
+    "@types/react": "*"
   },
   "peerDependencies": {
     "ink": "^2.6.0",

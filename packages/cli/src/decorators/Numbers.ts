@@ -1,13 +1,12 @@
-import 'reflect-metadata';
 import { MultipleOption } from '@boost/args';
-import createOptionFactory from '../metadata/createOptionFactory';
+import createOptionDecorator from '../metadata/createOptionDecorator';
 import { PartialConfig } from '../types';
 
 export default function Numbers(
   description: string,
   config?: PartialConfig<MultipleOption<number[]>>,
 ): PropertyDecorator {
-  return createOptionFactory<MultipleOption<number[]>>({
+  return createOptionDecorator<MultipleOption<number[]>>({
     ...config,
     default: [],
     description,
