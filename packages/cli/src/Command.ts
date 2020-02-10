@@ -5,9 +5,7 @@ import {
   ParamConfigList,
   OptionConfigMap,
 } from '@boost/args';
-import { optimal } from '@boost/common';
 import { Logger } from '@boost/log';
-import { commandMetadataBlueprint } from './metadata/blueprints';
 import { msg } from './constants';
 import {
   GlobalArgumentOptions,
@@ -16,8 +14,9 @@ import {
   ExitHandler,
   RunResult,
 } from './types';
-import validateParams from './metadata/validateParams';
 import getConstructor from './metadata/getConstructor';
+import getInheritedOptions from './metadata/getInheritedOptions';
+import validateParams from './metadata/validateParams';
 import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
 
@@ -72,10 +71,16 @@ export default abstract class Command<
   constructor() {
     const ctor = getConstructor(this);
 
-    validateConfig(this.constructor.name, ctor);
-
-    ctor.options = validateOptions(ctor.options);
-    ctor.params = validateParams(ctor.params);
+    validateConfig(this.constructor.name, {
+      deprecated: ctor.deprecated,
+      description: ctor.description,
+      hidden: ctor.hidden,
+      path: ctor.path,
+      rest: ctor.rest,
+      usage: ctor.usage,
+    });
+    validateOptions(ctor.options);
+    validateParams(ctor.params);
   }
 
   /**
@@ -88,22 +93,18 @@ export default abstract class Command<
    */
   getMetadata(): CommandMetadata {
     const ctor = getConstructor(this);
-    const metadata: CommandMetadata = {
+
+    return {
       commands: this.subCommands,
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
-      options: ctor.options,
+      options: getInheritedOptions(this),
       params: ctor.params,
       path: ctor.path,
       rest: ctor.rest,
       usage: ctor.usage,
     };
-
-    return optimal(metadata, commandMetadataBlueprint, {
-      name: this.constructor.name,
-      unknown: true,
-    });
   }
 
   /**

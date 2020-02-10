@@ -16,6 +16,7 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
   static hidden = true;
 
   static options: Options<InstallOptions> = {
+    // --save
     save: {
       default: true,
       description: 'Save dependency to lock file',
@@ -32,7 +33,6 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
     },
   ];
 
-  // --save
   save: boolean = true;
 
   async run(pkgName: string, ...morePkgNames: string[]) {

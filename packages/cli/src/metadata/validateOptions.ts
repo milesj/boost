@@ -8,8 +8,8 @@ import {
   stringOptionBlueprint,
 } from './blueprints';
 
-export default function validateOptions<T extends OptionConfigMap>(options: T): T {
-  return Object.entries(options).reduce((object, [name, config]) => {
+export default function validateOptions(options: OptionConfigMap) {
+  Object.entries(options).forEach(([name, config]) => {
     let blueprint: Blueprint<object>;
 
     if (config.type === 'boolean') {
@@ -20,12 +20,9 @@ export default function validateOptions<T extends OptionConfigMap>(options: T): 
       blueprint = config.multiple ? stringsOptionBlueprint : stringOptionBlueprint;
     }
 
-    return {
-      ...object,
-      [name]: optimal(config, blueprint as Blueprint<OptionConfig>, {
-        name: `Option "${name}"`,
-        unknown: false,
-      }),
-    };
-  }, {}) as T;
+    optimal(config, blueprint as Blueprint<OptionConfig>, {
+      name: `Option "${name}"`,
+      unknown: false,
+    });
+  });
 }

@@ -1,5 +1,3 @@
-// import { Command, Config, Arg, GlobalArgumentOptions } from '../src';
-
 import AllCommand from './__mocks__/AllCommand';
 import AllClassicCommand from './__mocks__/AllClassicCommand';
 import BuildCommand from './__mocks__/BuildCommand';
@@ -41,57 +39,15 @@ describe('Command', () => {
       const { options } = command.getMetadata();
 
       expect(options).toEqual({
-        help: {
-          short: 'h',
-          description: 'Display help and usage menu',
-          type: 'boolean',
-          deprecated: false,
-          hidden: false,
-          default: false,
-          validate: null,
-        },
+        dst: { short: 'D', description: 'Destination path', type: 'string' },
+        src: { short: 'S', description: 'Source path', type: 'string' },
+        help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
         locale: {
+          default: 'en',
           description: 'Display output in the chosen locale (e.g. en, en-US)',
           type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: 'en',
-          validate: null,
-          short: '',
-          choices: [],
-          count: false,
         },
-        version: {
-          short: 'v',
-          description: 'Display version number',
-          type: 'boolean',
-          deprecated: false,
-          hidden: false,
-          default: false,
-          validate: null,
-        },
-        dst: {
-          short: 'D',
-          description: 'Destination path',
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          choices: [],
-          count: false,
-        },
-        src: {
-          short: 'S',
-          description: 'Source path',
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          choices: [],
-          count: false,
-        },
+        version: { description: 'Display version number', short: 'v', type: 'boolean' },
       });
     });
 
@@ -100,16 +56,7 @@ describe('Command', () => {
       const { params } = command.getMetadata();
 
       expect(params).toEqual([
-        {
-          description: 'Package name',
-          label: 'pkg',
-          required: true,
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-        },
+        { description: 'Package name', label: 'pkg', required: true, type: 'string' },
       ]);
     });
 
@@ -119,47 +66,20 @@ describe('Command', () => {
 
       expect(options).toEqual(
         expect.objectContaining({
-          flag: {
-            short: 'F',
-            description: 'Boolean flag',
-            type: 'boolean',
-            deprecated: false,
-            hidden: false,
-            default: false,
-            validate: null,
-          },
-          num: {
-            count: true,
-            short: 'N',
-            description: 'Single number',
-            type: 'number',
-            deprecated: false,
-            hidden: false,
-            default: 0,
-            validate: null,
-            choices: [],
-          },
+          flag: { short: 'F', description: 'Boolean flag', type: 'boolean' },
+          num: { count: true, short: 'N', description: 'Single number', type: 'number' },
           nums: {
             deprecated: true,
             default: [],
             description: 'List of numbers',
             multiple: true,
             type: 'number',
-            hidden: false,
-            validate: null,
-            short: '',
-            arity: 0,
           },
           str: {
             choices: ['a', 'b', 'c'],
             hidden: true,
             description: 'Single string',
             type: 'string',
-            deprecated: false,
-            default: '',
-            validate: null,
-            short: '',
-            count: false,
           },
           strs: {
             arity: 5,
@@ -169,51 +89,22 @@ describe('Command', () => {
             description: 'List of strings',
             multiple: true,
             type: 'string',
-            deprecated: false,
-            hidden: false,
           },
+          help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
+          locale: {
+            default: 'en',
+            description: 'Display output in the chosen locale (e.g. en, en-US)',
+            type: 'string',
+          },
+          version: { description: 'Display version number', short: 'v', type: 'boolean' },
         }),
       );
 
       expect(params).toEqual([
-        {
-          description: 'String',
-          label: 'char',
-          required: true,
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-        },
-        {
-          description: 'Boolean',
-          type: 'boolean',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          label: '',
-          required: false,
-        },
-        {
-          description: 'Number',
-          label: 'int',
-          type: 'number',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          required: false,
-        },
+        { description: 'String', label: 'char', required: true, type: 'string' },
+        { description: 'Boolean', type: 'boolean' },
+        { description: 'Number', label: 'int', type: 'number' },
       ]);
-    });
-
-    it('maps @Arg.Rest to a property', () => {
-      const command = new AllCommand();
-      const { rest } = command.getMetadata();
-
-      expect(rest).toBe('remaining');
     });
   });
 
@@ -250,57 +141,15 @@ describe('Command', () => {
       const { options } = command.getMetadata();
 
       expect(options).toEqual({
-        help: {
-          short: 'h',
-          description: 'Display help and usage menu',
-          type: 'boolean',
-          deprecated: false,
-          hidden: false,
-          default: false,
-          validate: null,
-        },
+        dst: { short: 'D', description: 'Destination path', type: 'string' },
+        src: { short: 'S', default: './src', description: 'Source path', type: 'string' },
+        help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
         locale: {
+          default: 'en',
           description: 'Display output in the chosen locale (e.g. en, en-US)',
           type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: 'en',
-          validate: null,
-          short: '',
-          choices: [],
-          count: false,
         },
-        version: {
-          short: 'v',
-          description: 'Display version number',
-          type: 'boolean',
-          deprecated: false,
-          hidden: false,
-          default: false,
-          validate: null,
-        },
-        dst: {
-          short: 'D',
-          description: 'Destination path',
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          choices: [],
-          count: false,
-        },
-        src: {
-          short: 'S',
-          description: 'Source path',
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          choices: [],
-          count: false,
-        },
+        version: { description: 'Display version number', short: 'v', type: 'boolean' },
       });
     });
 
@@ -309,16 +158,7 @@ describe('Command', () => {
       const { params } = command.getMetadata();
 
       expect(params).toEqual([
-        {
-          description: 'Package name',
-          label: 'pkg',
-          required: true,
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-        },
+        { description: 'Package name', label: 'pkg', required: true, type: 'string' },
       ]);
     });
 
@@ -326,103 +166,44 @@ describe('Command', () => {
       const command = new AllClassicCommand();
       const { options, params } = command.getMetadata();
 
-      expect(options).toEqual(
-        expect.objectContaining({
-          flag: {
-            short: 'F',
-            description: 'Boolean flag',
-            type: 'boolean',
-            deprecated: false,
-            hidden: false,
-            default: false,
-            validate: null,
-          },
-          num: {
-            count: true,
-            short: 'N',
-            description: 'Single number',
-            type: 'number',
-            deprecated: false,
-            hidden: false,
-            default: 0,
-            validate: null,
-            choices: [],
-          },
-          nums: {
-            deprecated: true,
-            default: [],
-            description: 'List of numbers',
-            multiple: true,
-            type: 'number',
-            hidden: false,
-            validate: null,
-            short: '',
-            arity: 0,
-          },
-          str: {
-            choices: ['a', 'b', 'c'],
-            hidden: true,
-            description: 'Single string',
-            type: 'string',
-            deprecated: false,
-            default: 'a',
-            validate: null,
-            short: '',
-            count: false,
-          },
-          strs: {
-            arity: 5,
-            short: 'S',
-            validate: expect.any(Function),
-            default: [],
-            description: 'List of strings',
-            multiple: true,
-            type: 'string',
-            deprecated: false,
-            hidden: false,
-          },
-        }),
-      );
+      expect(options).toEqual({
+        flag: { short: 'F', description: 'Boolean flag', type: 'boolean' },
+        num: { count: true, short: 'N', description: 'Single number', type: 'number' },
+        nums: {
+          deprecated: true,
+          description: 'List of numbers',
+          multiple: true,
+          type: 'number',
+        },
+        str: {
+          default: 'a',
+          choices: ['a', 'b', 'c'],
+          hidden: true,
+          description: 'Single string',
+          type: 'string',
+        },
+        strs: {
+          arity: 5,
+          short: 'S',
+          validate: expect.any(Function),
+          description: 'List of strings',
+          multiple: true,
+          type: 'string',
+        },
+        help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
+        locale: {
+          default: 'en',
+          description: 'Display output in the chosen locale (e.g. en, en-US)',
+          type: 'string',
+        },
+        version: { description: 'Display version number', short: 'v', type: 'boolean' },
+      });
 
       expect(params).toEqual([
-        {
-          description: 'String',
-          label: 'char',
-          required: true,
-          type: 'string',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-        },
-        {
-          description: 'Boolean',
-          type: 'boolean',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          label: '',
-          required: false,
-        },
-        {
-          description: 'Number',
-          label: 'int',
-          type: 'number',
-          deprecated: false,
-          hidden: false,
-          default: '',
-          validate: null,
-          required: false,
-        },
+        { description: 'String', label: 'char', required: true, type: 'string' },
+        { description: 'Boolean', type: 'boolean' },
+        { description: 'Number', label: 'int', type: 'number' },
       ]);
-    });
-
-    it('maps rest to a property', () => {
-      const command = new AllClassicCommand();
-      const { rest } = command.getMetadata();
-
-      expect(rest).toBe('remaining');
     });
   });
 });

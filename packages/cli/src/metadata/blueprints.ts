@@ -15,9 +15,9 @@ import {
   COMMAND_FORMAT,
 } from '@boost/args';
 import { predicates, Blueprint } from '@boost/common';
-import { CommandMetadata, CommandStaticConfig } from '../types';
+import { CommandStaticConfig } from '../types';
 
-const { array, bool, func, number, object, string, union } = predicates;
+const { array, bool, func, number, string, union } = predicates;
 
 export const commonBlueprint: Blueprint<Required<Config>> = {
   deprecated: bool(),
@@ -40,13 +40,6 @@ export const commandConstructorBlueprint: Blueprint<Omit<
     .match(COMMAND_FORMAT),
   rest: array(string()),
   usage: union([string(), array(string())], []),
-};
-
-export const commandMetadataBlueprint: Blueprint<CommandMetadata> = {
-  ...commandConstructorBlueprint,
-  commands: object(),
-  options: object(),
-  params: array(),
 };
 
 // ARGS
