@@ -4,6 +4,7 @@ import BuildCommand from './__mocks__/BuildCommand';
 import BuildClassicCommand from './__mocks__/BuildClassicCommand';
 import InstallCommand from './__mocks__/InstallCommand';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
+import { Command, Arg } from '../src';
 
 describe('Command', () => {
   describe('declarative', () => {
@@ -106,6 +107,54 @@ describe('Command', () => {
         { description: 'Number', label: 'int', type: 'number' },
       ]);
     });
+
+    it('errors if @Params is not on the run method', () => {
+      expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        class TestCommand extends Command {
+          @Arg.Params()
+          unknown() {}
+
+          run() {
+            return Promise.resolve('');
+          }
+        }
+      }).toThrow('Parameters must be defined on the `run()` method.');
+    });
+
+    it('returns command line path', () => {
+      const command = new BuildCommand();
+
+      expect(command.getPath()).toBe('build');
+    });
+
+    it('returns parser options', () => {
+      const command = new BuildCommand();
+
+      expect(command.getParserOptions()).toEqual({
+        commands: ['build'],
+        options: {
+          dst: { short: 'D', description: 'Destination path', type: 'string' },
+          src: { short: 'S', description: 'Source path', type: 'string' },
+          help: {
+            description: 'Display help and usage menu',
+            short: 'h',
+            type: 'boolean',
+          },
+          locale: {
+            default: 'en',
+            description: 'Display output in the chosen locale (e.g. en, en-US)',
+            type: 'string',
+          },
+          version: {
+            description: 'Display version number',
+            short: 'v',
+            type: 'boolean',
+          },
+        },
+        params: [],
+      });
+    });
   });
 
   describe('imperative', () => {
@@ -204,6 +253,113 @@ describe('Command', () => {
         { description: 'Boolean', type: 'boolean' },
         { description: 'Number', label: 'int', type: 'number' },
       ]);
+    });
+
+    it('returns command line path', () => {
+      const command = new BuildClassicCommand();
+
+      expect(command.getPath()).toBe('build');
+    });
+
+    it('returns parser options', () => {
+      const command = new BuildClassicCommand();
+
+      expect(command.getParserOptions()).toEqual({
+        commands: ['build'],
+        options: {
+          dst: { short: 'D', description: 'Destination path', type: 'string' },
+          src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
+          help: {
+            description: 'Display help and usage menu',
+            short: 'h',
+            type: 'boolean',
+          },
+          locale: {
+            default: 'en',
+            description: 'Display output in the chosen locale (e.g. en, en-US)',
+            type: 'string',
+          },
+          version: {
+            description: 'Display version number',
+            short: 'v',
+            type: 'boolean',
+          },
+        },
+        params: [],
+      });
+    });
+  });
+
+  describe('sub-commands', () => {
+    function createClass(path: string, description?: string) {
+      return class SubCommand extends Command {
+        static description = description || 'Description';
+
+        static path = path;
+
+        run() {
+          return Promise.resolve('');
+        }
+      };
+    }
+
+    const Parent = createClass('parent');
+    const Child = createClass('parent:child');
+    const GrandChild = createClass('parent:child:grandchild');
+    const UnknownChild = createClass('unknown');
+    const UnknownGrandChild = createClass('parent:unknown');
+
+    it('errors if child is not prefixed with parent', () => {
+      const command = new Parent();
+
+      expect(() => {
+        command.register(new UnknownChild());
+      }).toThrow('Sub-command "unknown" must start with "parent:".');
+    });
+
+    it('errors if child is not prefixed with parent (grand depth)', () => {
+      const child = new Child();
+
+      expect(() => {
+        child.register(new UnknownGrandChild());
+      }).toThrow('Sub-command "parent:unknown" must start with "parent:child:".');
+    });
+
+    it('errors if the same path is registered', () => {
+      const command = new Parent();
+
+      expect(() => {
+        command.register(new Child());
+        command.register(new Child());
+      }).toThrow('A command already exists with the canonical path "parent:child".');
+    });
+
+    it('supports children', () => {
+      const parent = new Parent();
+      const child = new Child();
+
+      parent.register(child);
+
+      expect(parent.getMetadata().commands).toEqual({
+        'parent:child': child,
+      });
+    });
+
+    it('supports grand children', () => {
+      const parent = new Parent();
+      const child = new Child();
+      const grandChild = new GrandChild();
+
+      parent.register(child);
+      child.register(grandChild);
+
+      expect(parent.getMetadata().commands).toEqual({
+        'parent:child': child,
+      });
+
+      expect(child.getMetadata().commands).toEqual({
+        'parent:child:grandchild': grandChild,
+      });
     });
   });
 });

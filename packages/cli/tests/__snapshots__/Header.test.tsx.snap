@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Header /> renders \`default\` 1`] = `
+"
+[30m[47m TITLE [49m[39m
+"
+`;
+
+exports[`<Header /> renders \`failure\` 1`] = `
+"
+[30m[41m TITLE [49m[39m
+"
+`;
+
+exports[`<Header /> renders \`muted\` 1`] = `
+"
+[30m[100m TITLE [49m[39m
+"
+`;
+
+exports[`<Header /> renders \`success\` 1`] = `
+"
+[30m[42m TITLE [49m[39m
+"
+`;
+
+exports[`<Header /> renders \`warning\` 1`] = `
+"
+[30m[43m TITLE [49m[39m
+"
+`;

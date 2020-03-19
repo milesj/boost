@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Failure /> renders a common error 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Something is broken!
+"
+`;
+
+exports[`<Failure /> renders a parse error 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Flags and short option groups may not use inline values.
+"
+`;
+
+exports[`<Failure /> renders a parse error with a command line 1`] = `
+"
+
+ ERROR 
+
+  Flags and short option groups may not use inline values.
+                  ┌────────┐
+  bin --foo value --flag=123 -gSA
+"
+`;
+
+exports[`<Failure /> renders a validation error 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Not enough arity arguments.
+"
+`;
+
+exports[`<Failure /> renders a validation error with a command line 1`] = `
+"
+
+ ERROR 
+
+  Not enough arity arguments.
+      ┌───┐
+  bin --foo value --flag=123 -gSA
+"
+`;
+
+exports[`<Failure /> renders an error with warnings 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Something is broken!
+
+[30m[43m WARNINGS [49m[39m
+
+  ● This is invalid.
+  ● This is also invalid. Please fix.
+"
+`;

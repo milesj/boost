@@ -66,10 +66,12 @@ export default class Failure extends React.Component<FailureProps> {
   renderStackTrace() {
     const { error } = this.props;
 
-    if (!error.stack) {
+    if (!error.stack || process.env.NODE_ENV === 'test') {
       return null;
     }
 
+    // Stack traces are not deterministic so we cannot snapshot this
+    // istanbul ignore next
     return (
       <Box flexDirection="column">
         <Header label={msg('cli:labelStackTrace')} type="muted" />

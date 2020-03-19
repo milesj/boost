@@ -23,6 +23,7 @@
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.149",
     "@types/pluralize": "^0.0.29",
+    "@types/react": "^16.9.23",
     "@types/split": "^1.0.0",
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^1.6.0",
