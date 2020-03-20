@@ -4,12 +4,12 @@ import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@bo
 import { toArray } from '@boost/common';
 import Header from './Header';
 import { msg } from './constants';
-import { CommandMetadataMap, CommandStaticConfig } from './types';
+import { CommandConfigMap, CommandConfig } from './types';
 import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
 
 export interface HelpProps {
-  config?: CommandStaticConfig;
-  commands?: CommandMetadataMap;
+  config?: CommandConfig;
+  commands?: CommandConfigMap;
   options?: OptionConfigMap;
   params?: ParamConfigList;
 }
@@ -39,7 +39,7 @@ export default class Help extends React.Component<HelpProps> {
     return tags;
   }
 
-  renderCommands(commands: CommandMetadataMap) {
+  renderCommands(commands: CommandConfigMap) {
     // Create column for names
     const names = Object.entries(commands).map(([path, config]) => formatCommandCall(path, config));
 
@@ -173,10 +173,6 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderUsage(usage: string | string[]) {
-    if (!usage || usage.length === 0) {
-      return null;
-    }
-
     return (
       <Box flexDirection="column">
         <Header label={msg('cli:labelUsage')} />
@@ -195,7 +191,7 @@ export default class Help extends React.Component<HelpProps> {
 
     return (
       <Box flexDirection="column" paddingY={1}>
-        {config && <Box>{formatDescription(config)}</Box>}
+        {config?.description && <Box>{formatDescription(config)}</Box>}
 
         {config?.usage && this.renderUsage(config.usage)}
 

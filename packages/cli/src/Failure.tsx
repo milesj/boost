@@ -41,9 +41,15 @@ export default class Failure extends React.Component<FailureProps> {
       return null;
     }
 
-    while (idx > width) {
-      cmd = commandLine.slice(width / 2);
-      idx -= width / 2;
+    while (idx + arg.length > width) {
+      const half = Math.round(width / 2);
+
+      cmd = `… ${cmd.slice(half + 2)}`;
+      idx -= half;
+    }
+
+    if (cmd.length > width) {
+      cmd = `${cmd.slice(0, width - 2)} …`;
     }
 
     return (

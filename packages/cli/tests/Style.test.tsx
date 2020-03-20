@@ -17,13 +17,13 @@ describe('<Style />', () => {
     }));
   });
 
-  it('renders `default`', () => {
-    expect(renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
+  it('renders `default`', async () => {
+    expect(await renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `default` inverted', () => {
+  it('renders `default` inverted', async () => {
     expect(
-      renderToString(
+      await renderToString(
         <Style inverted type="default">
           Test
         </Style>,
@@ -31,21 +31,21 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders `inverted`', () => {
-    expect(renderToString(<Style type="inverted">Test</Style>)).toMatchSnapshot();
+  it('renders `inverted`', async () => {
+    expect(await renderToString(<Style type="inverted">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `inverted` inverted', () => {
-    expect(renderToString(<Style type="inverted">Test</Style>)).toMatchSnapshot();
+  it('renders `inverted` inverted', async () => {
+    expect(await renderToString(<Style type="inverted">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `failure`', () => {
-    expect(renderToString(<Style type="failure">Test</Style>)).toMatchSnapshot();
+  it('renders `failure`', async () => {
+    expect(await renderToString(<Style type="failure">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `failure` inverted', () => {
+  it('renders `failure` inverted', async () => {
     expect(
-      renderToString(
+      await renderToString(
         <Style inverted type="failure">
           Test
         </Style>,
@@ -53,13 +53,13 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders `muted`', () => {
-    expect(renderToString(<Style type="muted">Test</Style>)).toMatchSnapshot();
+  it('renders `muted`', async () => {
+    expect(await renderToString(<Style type="muted">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `muted` inverted', () => {
+  it('renders `muted` inverted', async () => {
     expect(
-      renderToString(
+      await renderToString(
         <Style inverted type="muted">
           Test
         </Style>,
@@ -67,13 +67,13 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders `success`', () => {
-    expect(renderToString(<Style type="success">Test</Style>)).toMatchSnapshot();
+  it('renders `success`', async () => {
+    expect(await renderToString(<Style type="success">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `success` inverted', () => {
+  it('renders `success` inverted', async () => {
     expect(
-      renderToString(
+      await renderToString(
         <Style inverted type="success">
           Test
         </Style>,
@@ -81,13 +81,13 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders `warning`', () => {
-    expect(renderToString(<Style type="warning">Test</Style>)).toMatchSnapshot();
+  it('renders `warning`', async () => {
+    expect(await renderToString(<Style type="warning">Test</Style>)).toMatchSnapshot();
   });
 
-  it('renders `warning` inverted', () => {
+  it('renders `warning` inverted', async () => {
     expect(
-      renderToString(
+      await renderToString(
         <Style inverted type="warning">
           Test
         </Style>,
@@ -95,9 +95,9 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  it('supports bold, italics, etc', () => {
+  it('supports bold, italics, etc', async () => {
     expect(
-      renderToString(
+      await renderToString(
         <Style bold italic type="default">
           Test
         </Style>,
@@ -105,7 +105,7 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  it('supports hexcodes', () => {
+  it('supports hexcodes', async () => {
     (loadTheme as jest.Mock).mockImplementation(() => ({
       default: '#fff',
       failure: 'red',
@@ -115,6 +115,6 @@ describe('<Style />', () => {
       warning: 'yellow',
     }));
 
-    expect(renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
+    expect(await renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
   });
 });

@@ -1,13 +1,32 @@
 import React from 'react';
 import {
-  Command as CommandConfig,
-  OptionConfigMap,
-  ParamConfigList,
+  Argv,
+  ArgList,
+  Arguments,
+  Command as BaseCommandConfig,
   MapOptionConfig,
   MapParamConfig,
+  Option,
+  OptionConfig,
+  OptionConfigMap,
+  Param,
+  ParamConfig,
+  ParamConfigList,
   PrimitiveType,
 } from '@boost/args';
 import { Logger } from '@boost/log';
+
+export {
+  Argv,
+  ArgList,
+  Arguments,
+  Option,
+  OptionConfig,
+  OptionConfigMap,
+  Param,
+  ParamConfig,
+  ParamConfigList,
+};
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'path' | 'type'>;
 
@@ -55,12 +74,18 @@ export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalArgu
 
 export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
 
-export interface CommandStaticConfig extends Required<CommandConfig> {
-  options: OptionConfigMap;
-  params: ParamConfigList;
-  path: string; // Canonical name used on the command line
-  rest: string[];
+export interface CommandConfig extends BaseCommandConfig {
+  options?: OptionConfigMap;
+  params?: ParamConfigList;
+  path?: string; // Canonical name used on the command line
+  rest?: string[];
 }
+
+export interface CommandConfigMap {
+  [path: string]: CommandConfig;
+}
+
+export type CommandStaticConfig = Required<CommandConfig>; // Constructor
 
 export interface CommandMetadata extends CommandStaticConfig {
   commands: { [path: string]: Commandable };

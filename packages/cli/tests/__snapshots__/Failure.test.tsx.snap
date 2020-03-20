@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<Failure /> doesnt render code frame if a common error 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Something is broken!
+"
+`;
+
+exports[`<Failure /> reduces command line by half when index appears off screen 1`] = `
+"
+
+ ERROR 
+
+  Flags and short option groups may not use inline values.
+                                                                                                                                    ┌────────┐
+  … wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\\" --flag=123 -gSA \\"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm …
+"
+`;
+
 exports[`<Failure /> renders a common error 1`] = `
 "
 

@@ -24,18 +24,24 @@ class Stream {
   }
 }
 
-export function renderToString(element: React.ReactElement, columns?: number): string {
-  const stream = new Stream({ columns });
+export async function renderToString(
+  element: React.ReactElement,
+  columns?: number,
+): Promise<string> {
+  const stdout = new Stream({ columns });
 
-  render(element, {
+  await render(element, {
     debug: true,
     experimental: true,
-    stdout: (stream as unknown) as NodeJS.WriteStream,
+    stdout: (stdout as unknown) as NodeJS.WriteStream,
   });
 
-  return stream.get();
+  return stdout.get();
 }
 
-export function renderToStrippedString(element: React.ReactElement, columns?: number): string {
-  return stripAnsi(renderToString(element, columns));
+export async function renderToStrippedString(
+  element: React.ReactElement,
+  columns?: number,
+): Promise<string> {
+  return stripAnsi(await renderToString(element, columns));
 }
