@@ -4,6 +4,7 @@ import BuildCommand from './__mocks__/BuildCommand';
 import BuildClassicCommand from './__mocks__/BuildClassicCommand';
 import InstallCommand from './__mocks__/InstallCommand';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
+import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
 import { Command, Arg } from '../src';
 
 describe('Command', () => {
@@ -291,24 +292,6 @@ describe('Command', () => {
   });
 
   describe('sub-commands', () => {
-    function createClass(path: string, description?: string) {
-      return class SubCommand extends Command {
-        static description = description || 'Description';
-
-        static path = path;
-
-        run() {
-          return Promise.resolve('');
-        }
-      };
-    }
-
-    const Parent = createClass('parent');
-    const Child = createClass('parent:child');
-    const GrandChild = createClass('parent:child:grandchild');
-    const UnknownChild = createClass('unknown');
-    const UnknownGrandChild = createClass('parent:unknown');
-
     it('errors if child is not prefixed with parent', () => {
       const command = new Parent();
 

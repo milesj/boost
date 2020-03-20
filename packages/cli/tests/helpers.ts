@@ -1,16 +1,25 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable no-magic-numbers, max-classes-per-file */
 
 import React from 'react';
 import { render } from 'ink';
 import { stripAnsi } from '@boost/terminal';
 
-// Fake process.stdout
-class Stream {
+export class ReadStream {
+  isTTY = false;
+
+  setEncoding() {}
+
+  off() {}
+
+  on() {}
+}
+
+export class WriteStream {
   columns: number;
 
   output: string;
 
-  constructor({ columns }: { columns?: number }) {
+  constructor({ columns }: { columns?: number } = {}) {
     this.columns = columns || 100;
     this.output = '';
   }
@@ -28,7 +37,7 @@ export async function renderToString(
   element: React.ReactElement,
   columns?: number,
 ): Promise<string> {
-  const stdout = new Stream({ columns });
+  const stdout = new WriteStream({ columns });
 
   await render(element, {
     debug: true,

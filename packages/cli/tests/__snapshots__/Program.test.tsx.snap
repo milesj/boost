@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Program /> errors for invalid version format 1`] = `"Invalid Program field \\"version\\". String does not match. (pattern \\"^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\\+([0-9a-zA-Z-]+(?:\\\\.[0-9a-zA-Z-]+)*))?$\\")"`;
+
+exports[`<Program /> errors if bin is not kebab case 1`] = `"Invalid Program field \\"bin\\". String must be in kebab case. (pattern \\"^[a-z][\\\\x2D0-9a-z]+$\\")"`;
+
+exports[`<Program /> running renders failure when args parsing fails 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Unknown option \\"--foo\\" found.
+  [31m┌───┐[39m
+  [90m[31m--foo[39m[90m[39m
+"
+`;
+
+exports[`<Program /> running renders failure when no commands have been registered 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  No commands have been registered. At least 1 is required.
+"
+`;
+
+exports[`<Program /> running renders failure when single command has mismatched names 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Single command programs must match the command path to the binary name.
+"
+`;
+
+exports[`<Program /> running renders failure with custom exit error 1`] = `
+"
+
+[30m[41m ERROR [49m[39m
+
+  Oops
+"
+`;

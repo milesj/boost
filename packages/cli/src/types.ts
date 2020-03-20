@@ -38,12 +38,12 @@ export type StreamType = 'stderr' | 'stdout';
 
 export type ExitCode = number;
 
-export type ExitHandler = (message: string, code: ExitCode) => void;
+export type ExitHandler = (message: string, code?: ExitCode) => void;
 
 export interface ProgramOptions {
-  banner: string;
+  banner?: string;
   bin: string;
-  footer: string;
+  footer?: string;
   name: string;
   version: string;
 }
@@ -62,7 +62,7 @@ export interface ProgramContextType {
 
 // COMMANDS
 
-export type RunResult = undefined | string | React.ReactElement;
+export type RunResult = void | undefined | string | React.ReactElement;
 
 export interface GlobalArgumentOptions {
   help: boolean;
