@@ -163,6 +163,10 @@ export default class Path {
     return new Path(path.resolve(String(cwd || process.cwd()), this.internalPath));
   }
 
+  toJSON(): FilePath {
+    return this.path();
+  }
+
   toString(): FilePath {
     return this.path();
   }

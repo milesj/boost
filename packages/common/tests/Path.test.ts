@@ -279,4 +279,20 @@ describe('Path', () => {
       expect(path.resolve()).toEqual(new Path(resolve('foo/bar/baz')));
     });
   });
+
+  describe('toJSON()', () => {
+    it('returns path', () => {
+      const path = new Path('foo/bar/baz');
+
+      expect(JSON.stringify({ path })).toBe('{"path":"foo/bar/baz"}');
+    });
+  });
+
+  describe('toString()', () => {
+    it('returns path', () => {
+      const path = new Path('foo/bar/baz');
+
+      expect(String(path)).toBe('foo/bar/baz');
+    });
+  });
 });
