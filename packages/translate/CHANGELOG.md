@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.3.7 - 2020-03-22
+
+#### 📦 Dependencies
+
+- **[i18next]** Update to v19.3. ([519518e](https://github.com/milesj/boost/commit/519518e))
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 1.3.6 - 2020-02-04
 
 #### 📦 Dependencies

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.2.1 - 2020-03-22
+
+#### ⚙️ Types
+
+- Update `Command` usage to support arrays. ([ad04465](https://github.com/milesj/boost/commit/ad04465))
+
+**Note:** Version bump only for package @boost/args
+
+
+
+
+
 ## 1.2.0 - 2020-02-04
 
 #### 🚀 Updates

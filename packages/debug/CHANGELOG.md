@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.4.4 - 2020-03-22
+
+#### 📦 Dependencies
+
+- Update `fast-glob`. ([3ea1d74](https://github.com/milesj/boost/commit/3ea1d74))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 1.4.3 - 2020-02-04
 
 **Note:** Version bump only for package @boost/debug

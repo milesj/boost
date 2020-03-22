@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.0.3 - 2020-03-22
+
+#### 📦 Dependencies
+
+- Update terminal related dependencies. ([34dcebd](https://github.com/milesj/boost/commit/34dcebd))
+
+**Note:** Version bump only for package @boost/terminal
+
+
+
+
+
 ### 1.0.2 - 2020-02-04
 
 #### 📦 Dependencies

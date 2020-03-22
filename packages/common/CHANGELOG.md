@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.8.3 - 2020-03-22
+
+#### 🐞 Fixes
+
+- **[Path]** When cast to JSON, will now use the file path. ([fc225b2](https://github.com/milesj/boost/commit/fc225b2))
+
+#### 📦 Dependencies
+
+- **[json5]** Update to latest. ([796e287](https://github.com/milesj/boost/commit/796e287))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 1.8.2 - 2020-02-04
 
 #### ⚙️ Types

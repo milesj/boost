@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.18.3 - 2020-03-22
+
+#### 📦 Dependencies
+
+- **[json5]** Update to latest. ([796e287](https://github.com/milesj/boost/commit/796e287))
+- **[yargs-parser]** Update to v18.1. ([8aabd30](https://github.com/milesj/boost/commit/8aabd30))
+- Update `fast-glob`. ([3ea1d74](https://github.com/milesj/boost/commit/3ea1d74))
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.18.2 - 2020-02-04
 
 #### 📦 Dependencies

@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.5.0 - 2020-03-22
+
+#### 🚀 Updates
+
+- **[Pipeline]** Add `onFinish` event. ([a95fe50](https://github.com/milesj/boost/commit/a95fe50))
+- **[Routine]** Updated `key` to support an array of strings. ([fdd13f7](https://github.com/milesj/boost/commit/fdd13f7))
+- **[WorkUnit]** Add new `id` property. ([948e1b2](https://github.com/milesj/boost/commit/948e1b2))
+
+#### 🛠 Internals
+
+- Removed a lot of noisy debug logging. ([39b59dc](https://github.com/milesj/boost/commit/39b59dc))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ## 1.4.0 - 2020-02-04
 
 #### 🚀 Updates
