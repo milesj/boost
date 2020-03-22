@@ -4893,10 +4893,10 @@ hygen@^5.0.3:
     ts-jest "^24.1.0"
     yargs-parser "^13.0.0"
 
-i18next@^19.1.0:
-  version "19.1.0"
-  resolved "https://registry.npmjs.org/i18next/-/i18next-19.1.0.tgz#fe1a1da3d208872946307c7d2d115da45d46159f"
-  integrity sha512-ISbmukX4L6Dz0QoH9+EW1AnBw7j+NRLoMu9uLPMaNSSTP9Eie9/oUL0dOyWX15baB3gYOpkHJpGZRHOqcnl0ew==
+i18next@^19.3.3:
+  version "19.3.3"
+  resolved "https://registry.npmjs.org/i18next/-/i18next-19.3.3.tgz#04bd79b315e5fe2c87ab8f411e5d55eda0a17bd8"
+  integrity sha512-CnuPqep5/JsltkGvQqzYN4d79eCe0TreCBRF3a8qHHi8x4SON1qqZ/pvR2X7BfNkNqpA5HXIqw0E731H+VsgSg==
   dependencies:
     "@babel/runtime" "^7.3.1"
 
