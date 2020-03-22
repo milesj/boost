@@ -41,8 +41,6 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
     // @ts-ignore
     this.value = value;
 
-    this.debug('Instantiating pipeline');
-
     debug('New %S created', name);
   }
 

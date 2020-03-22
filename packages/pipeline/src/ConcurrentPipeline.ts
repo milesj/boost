@@ -21,7 +21,6 @@ export default class ConcurrentPipeline<
 
     debug('Running %d in parallel', work.length);
 
-    this.debug('Parallelizing %d work units', work.length);
     this.onRun.emit([value]);
 
     return Promise.all(

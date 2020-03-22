@@ -38,8 +38,6 @@ export default abstract class ParallelPipeline<
     const errors: Error[] = [];
     const results: Output[] = [];
 
-    this.debug('Aggregating results');
-
     responses.forEach(response => {
       if (instanceOf(response, Error)) {
         errors.push(response);

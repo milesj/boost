@@ -22,7 +22,6 @@ export default class AggregatedPipeline<
 
     debug('Running %d as an aggregate', work.length);
 
-    this.debug('Aggregating %d work units', work.length);
     this.onRun.emit([value]);
 
     return Promise.all(

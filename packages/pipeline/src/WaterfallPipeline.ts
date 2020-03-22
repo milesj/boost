@@ -23,7 +23,6 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
 
     debug('Running %d as a waterfall', work.length);
 
-    this.debug('Serializing %d work units', work.length);
     this.onRun.emit([value]);
 
     for (const unit of work) {
