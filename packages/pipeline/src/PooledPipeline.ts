@@ -45,7 +45,7 @@ export default class PooledPipeline<
 
     this.onRun.emit([this.value]);
 
-    return new Promise(resolve => {
+    const result = await new Promise<AggregatedResult<Output>>(resolve => {
       if (this.work.length === 0) {
         resolve(this.aggregateResult([]));
 
@@ -61,6 +61,10 @@ export default class PooledPipeline<
           .map(() => this.runWorkUnit(this.context, this.value)),
       );
     });
+
+    this.onFinish.emit([]);
+
+    return result;
   }
 
   /**

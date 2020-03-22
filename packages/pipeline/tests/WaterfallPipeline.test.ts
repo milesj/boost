@@ -77,20 +77,23 @@ describe('WaterfallPipeline', () => {
     expect(await pipeline.run()).toEqual(246);
   });
 
-  it('emits `onRun` for each work unit', async () => {
+  it('emits `onRun` and `onFinish`', async () => {
     const action = (ctx: Context, value: number) => value;
     const pipeline = new WaterfallPipeline(new Context(), 123)
       .pipe(new Task('One', action))
       .pipe(new Task('Two', action))
       .pipe(new Task('Three', action));
-    const spy = jest.fn();
+    const runSpy = jest.fn();
+    const finSpy = jest.fn();
 
-    pipeline.onRun.listen(spy);
+    pipeline.onRun.listen(runSpy);
+    pipeline.onFinish.listen(finSpy);
 
     await pipeline.run();
 
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(123);
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy).toHaveBeenCalledWith(123);
+    expect(finSpy).toHaveBeenCalledTimes(1);
   });
 
   it('emits `onRunWorkUnit` for each work unit', async () => {

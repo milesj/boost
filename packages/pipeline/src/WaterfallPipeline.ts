@@ -31,6 +31,8 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
       value = await unit.run(this.context, value);
     }
 
+    this.onFinish.emit([]);
+
     return value;
   }
 }

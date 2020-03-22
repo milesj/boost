@@ -20,6 +20,9 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
 
   readonly value: Input;
 
+  // Emits after work units are ran
+  readonly onFinish = new Event('finish');
+
   // Emits before work units are ran
   readonly onRun = new Event<[Input]>('run');
 

@@ -23,12 +23,16 @@ export default class ConcurrentPipeline<
 
     this.onRun.emit([value]);
 
-    return Promise.all(
+    const result = await Promise.all(
       work.map(unit => {
         this.onRunWorkUnit.emit([unit, value]);
 
         return unit.run(context, value);
       }),
     );
+
+    this.onFinish.emit([]);
+
+    return result;
   }
 }

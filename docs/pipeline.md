@@ -13,6 +13,7 @@ yarn add @boost/pipeline
 
 | Event                    | Arguments                         | Description                                                                     |
 | ------------------------ | --------------------------------- | ------------------------------------------------------------------------------- |
+| `Pipeline#onFinish`      |                                   | Called after the pipeline executes work units.                                  |
 | `Pipeline#onRun`         | `input: Input`                    | Called before the pipeline executes work units.                                 |
 | `Pipeline#onRunWorkUnit` | `work: WorkUnit, input: Input`    | Called before a single work unit is executed.                                   |
 | `Routine#onCommand`      | `command: string, args: string[]` | Called after `execa` was executed.                                              |

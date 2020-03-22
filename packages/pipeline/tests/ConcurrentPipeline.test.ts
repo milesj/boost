@@ -77,20 +77,23 @@ describe('ConcurrentPipeline', () => {
     expect(await pipeline.run()).toEqual(['bar']);
   });
 
-  it('emits `onRun` for each work unit', async () => {
+  it('emits `onRun` and `onFinish`', async () => {
     const action = (ctx: Context, value: string) => value;
     const pipeline = new ConcurrentPipeline(new Context(), 'abc')
       .add(new Task('One', action))
       .add(new Task('Two', action))
       .add(new Task('Three', action));
-    const spy = jest.fn();
+    const runSpy = jest.fn();
+    const finSpy = jest.fn();
 
-    pipeline.onRun.listen(spy);
+    pipeline.onRun.listen(runSpy);
+    pipeline.onFinish.listen(finSpy);
 
     await pipeline.run();
 
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith('abc');
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy).toHaveBeenCalledWith('abc');
+    expect(finSpy).toHaveBeenCalledTimes(1);
   });
 
   it('emits `onRunWorkUnit` for each work unit', async () => {
