@@ -45,6 +45,18 @@ describe('Routine', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('sets key', () => {
+    routine = new TestRoutine('fooBar', 'title');
+
+    expect(routine.key).toBe('foo-bar');
+  });
+
+  it('sets key using an array', () => {
+    routine = new TestRoutine(['fooBar', 'baz'], 'title');
+
+    expect(routine.key).toBe('foo-bar:baz');
+  });
+
   it('inherits options', () => {
     routine = new TestRoutine('key', 'title', { test: 123 });
 

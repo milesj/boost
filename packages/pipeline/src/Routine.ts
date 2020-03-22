@@ -1,6 +1,7 @@
 import execa, { Options as ExecaOptions } from 'execa';
 import kebabCase from 'lodash/kebabCase';
 import split from 'split';
+import { toArray } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { RuntimeError } from '@boost/internal';
@@ -34,14 +35,16 @@ export default abstract class Routine<
   // Emits on each line chunk of the running command
   readonly onCommandData = new Event<[string, string]>('command-data');
 
-  constructor(key: string, title: string, options?: Options) {
+  constructor(key: string | string[], title: string, options?: Options) {
     super(title, (context, value) => this.execute(context, value), options);
 
-    if (!key || typeof key !== 'string') {
+    if (!key || key.length === 0 || (typeof key !== 'string' && !Array.isArray(key))) {
       throw new RuntimeError('pipeline', 'PL_REQ_ROUTINE_KEY');
     }
 
-    this.key = kebabCase(key);
+    this.key = toArray(key)
+      .map(kebabCase)
+      .join(':');
     this.debug = createDebugger(['routine', this.key]);
 
     debug('New routine created: %s (%s)', this.key, this.title);
