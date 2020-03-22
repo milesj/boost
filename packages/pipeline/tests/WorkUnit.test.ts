@@ -72,6 +72,15 @@ describe('Work', () => {
     });
   });
 
+  describe('id()', () => {
+    it('returns hierarchy ID', () => {
+      passWork.depth = 8;
+      passWork.index = 3;
+
+      expect(passWork.id).toBe('8:3');
+    });
+  });
+
   describe('isComplete()', () => {
     it('returns true when passed', async () => {
       expect(passWork.isComplete()).toBe(false);

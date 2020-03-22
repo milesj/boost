@@ -74,6 +74,13 @@ export default abstract class WorkUnit<Options extends object, Input = unknown, 
   }
 
   /**
+   * Return a unique hierarchical ID.
+   */
+  get id() {
+    return `${this.depth}:${this.index}`;
+  }
+
+  /**
    * Return true if the task has been completed in any form.
    */
   isComplete(): boolean {
