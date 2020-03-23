@@ -40,8 +40,14 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderCommands(commands: CommandConfigMap) {
+    const entries = Object.entries(commands);
+
+    if (entries.length === 0) {
+      return null;
+    }
+
     // Create column for names
-    const names = Object.entries(commands).map(([path, config]) => formatCommandCall(path, config));
+    const names = entries.map(([path, config]) => formatCommandCall(path, config));
 
     // Calculate longest column width
     const nameWidth = getLongestWidth(names);
@@ -72,11 +78,17 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderOptions(options: OptionConfigMap) {
+    const entries = Object.entries(options);
+
+    if (entries.length === 0) {
+      return null;
+    }
+
     // Create columns for the names and types
     const shortNames: string[] = [];
     const longNames: string[] = [];
 
-    Object.entries(options).forEach(([name, config]) => {
+    entries.forEach(([name, config]) => {
       if (config.short) {
         shortNames.push(`-${config.short},`);
       } else {
@@ -132,6 +144,10 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderParams(params: ParamConfigList) {
+    if (params.length === 0) {
+      return null;
+    }
+
     // Create columns and append the "rest bucket"
     const labels = [...params.map((config, index) => String(config.label || index)), '…'];
     const types = [

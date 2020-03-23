@@ -13,6 +13,7 @@ import {
 import { Contract, Predicates } from '@boost/common';
 import { Logger, createLogger } from '@boost/log';
 import { ExitError } from '@boost/internal';
+import levenary from 'levenary';
 import {
   ProgramOptions,
   Commandable,
@@ -31,9 +32,11 @@ import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 import getConstructor from './metadata/getConstructor';
 
 export default class Program extends Contract<ProgramOptions> {
-  protected commands = new Map<string, Commandable>();
+  protected commands: CommandMetadata['commands'] = {};
 
   protected commandLine: string = '';
+
+  protected indexCommand: string = '';
 
   protected logger: Logger = createLogger();
 
@@ -76,13 +79,9 @@ export default class Program extends Contract<ProgramOptions> {
   ): Command<O, P> | null {
     const names = name.split(':');
     const baseName = names.shift()!;
-    let command = this.commands.get(baseName);
+    let command = this.commands[baseName];
 
-    while (names.length > 0) {
-      if (!command) {
-        return null;
-      }
-
+    while (command && names.length > 0) {
       const subName = names.shift()!;
       const subPath = `${command.getPath()}:${subName}`;
       const subCommands = command.getMetadata().commands;
@@ -90,7 +89,7 @@ export default class Program extends Contract<ProgramOptions> {
       if (subCommands[subPath]) {
         command = subCommands[subPath];
       } else {
-        command = undefined;
+        return null;
       }
     }
 
@@ -102,6 +101,27 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
+   * Return a list of all registered command paths.
+   * If deep is true, will return all nested command paths.
+   */
+  getCommandPaths(deep: boolean = false): string[] {
+    const paths = new Set(Object.keys(this.commands));
+
+    function drill(commands: CommandMetadata['commands']) {
+      Object.entries(commands).forEach(([path, command]) => {
+        paths.add(path);
+        drill(command.getMetadata().commands);
+      });
+    }
+
+    if (deep) {
+      drill(this.commands);
+    }
+
+    return Array.from(paths);
+  }
+
+  /**
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
@@ -110,24 +130,45 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
-   * Register a root command and its canonical path. Paths must be unique,
+   * Register a command and its canonical path as the index or primary command.
+   * An index should be used when only a single command is required.
+   */
+  index(command: Commandable): this {
+    if (Object.keys(this.commands).length > 0) {
+      throw new Error(
+        'Other commands have been registered. Cannot mix index and non-index commands.',
+      );
+    }
+
+    this.register(command);
+    this.indexCommand = command.getPath();
+
+    return this;
+  }
+
+  /**
+   * Register a command and its canonical path. Paths must be unique,
    * otherwise an error is thrown. Furthermore, sub-commands should not be
    * registered here, and instead should be registered in the parent command.
    */
   register(command: Commandable): this {
     const path = command.getPath();
 
-    if (this.commands.has(path)) {
+    if (this.commands[path]) {
       throw new Error(`A command has already been registered with the canonical path "${path}".`);
+    } else if (this.indexCommand) {
+      throw new Error(
+        'An index command has been registered. Cannot mix index and non-index commands.',
+      );
     }
 
-    this.commands.set(path, command);
+    this.commands[path] = command;
 
     return this;
   }
 
   // TODO unknown options
-  // TODO index command
+  // index help
   async run(argv: Argv): Promise<ExitCode> {
     this.commandLine = argv.join(' ');
 
@@ -139,6 +180,7 @@ export default class Program extends Contract<ProgramOptions> {
       exitCode = await this.renderErrors([error]);
     }
 
+    // istanbul ignore next
     if (process.env.NODE_ENV !== 'test') {
       process.exitCode = exitCode;
     }
@@ -154,7 +196,7 @@ export default class Program extends Contract<ProgramOptions> {
     const { command: path, errors, options, params, rest } = this.parseArguments(argv);
 
     // Display errors
-    if (errors.length > 0) {
+    if (!options.help && errors.length > 0) {
       return this.renderErrors(errors);
     }
 
@@ -210,24 +252,26 @@ export default class Program extends Contract<ProgramOptions> {
   protected parseArguments<O extends GlobalArgumentOptions, P extends PrimitiveType[] = ArgList>(
     argv: Argv,
   ): Arguments<O, P> {
-    switch (this.commands.size) {
-      case 0:
-        throw new Error('No commands have been registered. At least 1 is required.');
+    if (Object.keys(this.commands).length === 0) {
+      throw new Error('No commands have been registered. At least 1 is required.');
+    }
 
-      case 1: {
-        const command = this.getCommand<O, P>(this.options.bin);
+    if (this.indexCommand) {
+      return parse(argv, this.getCommand<O, P>(this.indexCommand)!.getParserOptions());
+    }
 
-        if (!command) {
-          throw new Error(
-            'Single command programs must match the command path to the binary name.',
-          );
-        }
+    try {
+      return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
+    } catch {
+      const [possibleCmd] = argv.filter(arg => !arg.startsWith('-'));
 
-        return parse(argv, command.getParserOptions());
+      if (possibleCmd) {
+        const closestCmd = levenary(possibleCmd, this.getCommandPaths());
+
+        throw new Error(`Unknown command "${possibleCmd}". Did you mean "${closestCmd}"?`);
       }
 
-      default:
-        return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
+      throw new Error('Failed to determine a command to run.');
     }
   }
 

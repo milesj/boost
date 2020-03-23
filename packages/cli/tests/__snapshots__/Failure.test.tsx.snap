@@ -15,8 +15,8 @@ exports[`<Failure /> reduces command line by half when index appears off screen 
  ERROR 
 
   Flags and short option groups may not use inline values.
-                                                                                                                                    ┌────────┐
-  … wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\\" --flag=123 -gSA \\"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm …
+                                                                                                                                           ┌────────┐
+  … wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\\" --flag=123 -gSA \\"mmmmmmmmmmmmmmmmmmmm …
 "
 `;
 
