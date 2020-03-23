@@ -193,27 +193,32 @@ export default class Program extends Contract<ProgramOptions> {
    * while the public run exists to catch any unexpected errors.
    */
   protected async doRun(argv: Argv): Promise<ExitCode> {
-    const { command: path, errors, options, params, rest } = this.parseArguments(argv);
-
-    // Display errors
-    if (!options.help && errors.length > 0) {
-      return this.renderErrors(errors);
+    if (argv.length === 0) {
+      return this.renderIndex();
     }
+
+    const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
+    const path = cmd.join(':') || this.indexCommand;
 
     // Display version
     if (options.version) {
       return this.render(this.options.version, EXIT_PASS);
     }
 
-    const command = this.getCommand(path.join(':') || this.options.bin)!;
-    const metadata = command.getMetadata();
-
     // Display help and usage
     if (options.help) {
-      return this.renderHelp(metadata);
+      return this.renderHelp(path);
+    }
+
+    // Display errors
+    if (errors.length > 0) {
+      return this.renderErrors(errors);
     }
 
     // Apply arguments to command properties
+    const command = this.getCommand(path)!;
+    const metadata = command.getMetadata();
+
     Object.entries(options).forEach(([key, value]) => {
       const config = metadata.options[key];
 
@@ -324,7 +329,10 @@ export default class Program extends Contract<ProgramOptions> {
   /**
    * Render a command help menu using the command's metadata.
    */
-  protected renderHelp(metadata: CommandMetadata): Promise<ExitCode> {
+  protected renderHelp(path: string): Promise<ExitCode> {
+    const command = this.getCommand(path)!;
+    const metadata = command.getMetadata();
+
     return this.render(
       <Help
         config={metadata}
@@ -334,5 +342,13 @@ export default class Program extends Contract<ProgramOptions> {
       />,
       EXIT_PASS,
     );
+  }
+
+  /**
+   * Render the index screen when no args are passed.
+   * Should include banner, header, footer, and command (if applicable).
+   */
+  protected renderIndex(): Promise<ExitCode> {
+    return this.render('TODO', EXIT_PASS);
   }
 }
