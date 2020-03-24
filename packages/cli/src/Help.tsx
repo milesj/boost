@@ -10,6 +10,7 @@ import { formatType, getLongestWidth, formatDescription, formatCommandCall } fro
 export interface HelpProps {
   config?: CommandConfig;
   commands?: CommandConfigMap;
+  header?: boolean;
   options?: OptionConfigMap;
   params?: ParamConfigList;
 }
@@ -203,13 +204,17 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   render() {
-    const { commands, options, params, config } = this.props;
+    const { commands, options, header, params, config } = this.props;
+    const hasDesc = !!config?.description;
+    const hasUsage = config?.usage && config.usage.length > 0;
 
     return (
-      <Box flexDirection="column" paddingY={1}>
-        {config?.description && <Box>{formatDescription(config)}</Box>}
+      <Box flexDirection="column">
+        {(hasDesc || hasUsage) && header && <Header leading label={msg('cli:labelAbout')} />}
 
-        {config?.usage && this.renderUsage(config.usage)}
+        {hasDesc && <Box>{formatDescription(config!)}</Box>}
+
+        {hasUsage && this.renderUsage(config?.usage!)}
 
         {params && this.renderParams(params)}
 

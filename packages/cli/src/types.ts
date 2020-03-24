@@ -44,6 +44,7 @@ export interface ProgramOptions {
   banner?: string;
   bin: string;
   footer?: string;
+  header?: string;
   name: string;
   version: string;
 }

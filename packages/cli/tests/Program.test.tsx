@@ -264,6 +264,27 @@ describe('<Program />', () => {
     });
   });
 
+  describe('index', () => {
+    it('renders index help when no args passed', async () => {
+      program.index(new BuildCommand());
+
+      const exitCode = await program.run([]);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(0);
+    });
+
+    it('renders commands when no args passed', async () => {
+      program.register(new BuildCommand());
+      program.register(new InstallCommand());
+
+      const exitCode = await program.run([]);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(0);
+    });
+  });
+
   describe('failure', () => {
     it('renders when no commands have been registered', async () => {
       const exitCode = await program.run(['build']);

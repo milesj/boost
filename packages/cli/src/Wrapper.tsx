@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 
 import React from 'react';
-import { Static } from 'ink';
+import { Box, Static } from 'ink';
 import { Logger } from '@boost/log';
 import Failure from './Failure';
 import ProgramContext from './ProgramContext';
@@ -114,7 +114,7 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
     return (
       <ProgramContext.Provider value={{ exit, log: logger, program }}>
         <Static>{log}</Static>
-        {children}
+        <Box paddingY={1}>{children}</Box>
       </ProgramContext.Provider>
     );
   }

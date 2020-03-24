@@ -27,6 +27,7 @@ import {
 import Command from './Command';
 import Failure from './Failure';
 import Help from './Help';
+import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 import getConstructor from './metadata/getConstructor';
@@ -60,6 +61,7 @@ export default class Program extends Contract<ProgramOptions> {
         .required()
         .kebabCase(),
       footer: string(),
+      header: string(),
       name: string()
         .notEmpty()
         .required(),
@@ -168,7 +170,6 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   // TODO unknown options
-  // index help
   async run(argv: Argv): Promise<ExitCode> {
     this.commandLine = argv.join(' ');
 
@@ -194,7 +195,7 @@ export default class Program extends Contract<ProgramOptions> {
    */
   protected async doRun(argv: Argv): Promise<ExitCode> {
     if (argv.length === 0) {
-      return this.renderIndex();
+      return this.render(this.renderIndex());
     }
 
     const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
@@ -202,12 +203,12 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display version
     if (options.version) {
-      return this.render(this.options.version, EXIT_PASS);
+      return this.render(this.options.version);
     }
 
     // Display help and usage
     if (options.help) {
-      return this.renderHelp(path);
+      return this.render(this.renderHelp(path));
     }
 
     // Display errors
@@ -285,7 +286,7 @@ export default class Program extends Contract<ProgramOptions> {
    * If a string has been returned, write it immediately.
    * If a React component, render with Ink and wait for it to finish.
    */
-  protected async render(result: RunResult, exitCode: ExitCode): Promise<ExitCode> {
+  protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
     if (!result) {
       return exitCode;
     }
@@ -329,18 +330,18 @@ export default class Program extends Contract<ProgramOptions> {
   /**
    * Render a command help menu using the command's metadata.
    */
-  protected renderHelp(path: string): Promise<ExitCode> {
+  protected renderHelp(path: string, withHeader: boolean = false): React.ReactElement {
     const command = this.getCommand(path)!;
     const metadata = command.getMetadata();
 
-    return this.render(
+    return (
       <Help
         config={metadata}
         commands={this.mapCommandMetadata(metadata.commands)}
+        header={withHeader}
         options={metadata.options}
         params={metadata.params}
-      />,
-      EXIT_PASS,
+      />
     );
   }
 
@@ -348,7 +349,15 @@ export default class Program extends Contract<ProgramOptions> {
    * Render the index screen when no args are passed.
    * Should include banner, header, footer, and command (if applicable).
    */
-  protected renderIndex(): Promise<ExitCode> {
-    return this.render('TODO', EXIT_PASS);
+  protected renderIndex(): React.ReactElement {
+    return (
+      <IndexHelp {...this.options}>
+        {this.indexCommand ? (
+          this.renderHelp(this.indexCommand, true)
+        ) : (
+          <Help header commands={this.mapCommandMetadata(this.commands)} />
+        )}
+      </IndexHelp>
+    );
   }
 }
