@@ -24,6 +24,8 @@ export default abstract class Command<
   O extends GlobalArgumentOptions = GlobalArgumentOptions,
   P extends PrimitiveType[] = ArgList
 > implements Commandable<P> {
+  static allowUnknownOptions: boolean = false;
+
   static description: string = '';
 
   static deprecated: boolean = false;
@@ -118,6 +120,7 @@ export default abstract class Command<
       commands: [path],
       options,
       params,
+      unknown: getConstructor(this).allowUnknownOptions,
     } as ParserOptions<O, P>;
   }
 
@@ -151,5 +154,5 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract async run(...params: P): Promise<RunResult>;
+  abstract run(...params: P): RunResult | Promise<RunResult>;
 }

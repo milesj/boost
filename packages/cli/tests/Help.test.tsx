@@ -67,6 +67,10 @@ describe('<Help />', () => {
   });
 
   describe('params', () => {
+    it('doesnt render empty params', async () => {
+      expect(await renderToString(<Help params={[]} />)).toMatchSnapshot();
+    });
+
     it('renders params', async () => {
       expect(await renderToString(<Help params={params} />)).toMatchSnapshot();
     });
@@ -77,6 +81,10 @@ describe('<Help />', () => {
   });
 
   describe('commands', () => {
+    it('doesnt render empty commands', async () => {
+      expect(await renderToString(<Help commands={{}} />)).toMatchSnapshot();
+    });
+
     it('renders commands', async () => {
       expect(await renderToString(<Help commands={commands} />)).toMatchSnapshot();
     });
@@ -87,6 +95,10 @@ describe('<Help />', () => {
   });
 
   describe('options', () => {
+    it('doesnt render empty options', async () => {
+      expect(await renderToString(<Help options={{}} />)).toMatchSnapshot();
+    });
+
     it('renders options', async () => {
       expect(await renderToString(<Help options={options} />)).toMatchSnapshot();
     });

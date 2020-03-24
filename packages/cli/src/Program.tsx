@@ -39,7 +39,7 @@ export default class Program extends Contract<ProgramOptions> {
 
   protected indexCommand: string = '';
 
-  protected logger: Logger = createLogger();
+  protected logger: Logger;
 
   protected streams: ProgramStreams = {
     stderr: process.stderr,
@@ -51,6 +51,8 @@ export default class Program extends Contract<ProgramOptions> {
     super(options);
 
     Object.assign(this.streams, streams);
+
+    this.logger = createLogger(this.streams);
   }
 
   blueprint({ string }: Predicates) {
@@ -107,18 +109,19 @@ export default class Program extends Contract<ProgramOptions> {
    * If deep is true, will return all nested command paths.
    */
   getCommandPaths(deep: boolean = false): string[] {
-    const paths = new Set(Object.keys(this.commands));
+    const paths = new Set<string>();
 
     function drill(commands: CommandMetadata['commands']) {
       Object.entries(commands).forEach(([path, command]) => {
         paths.add(path);
-        drill(command.getMetadata().commands);
+
+        if (deep) {
+          drill(command.getMetadata().commands);
+        }
       });
     }
 
-    if (deep) {
-      drill(this.commands);
-    }
+    drill(this.commands);
 
     return Array.from(paths);
   }
@@ -169,7 +172,10 @@ export default class Program extends Contract<ProgramOptions> {
     return this;
   }
 
-  // TODO unknown options
+  /**
+   * Run the program by parsing argv into an object of options and parameters,
+   * while executing the found command.
+   */
   async run(argv: Argv): Promise<ExitCode> {
     this.commandLine = argv.join(' ');
 
@@ -195,7 +201,7 @@ export default class Program extends Contract<ProgramOptions> {
    */
   protected async doRun(argv: Argv): Promise<ExitCode> {
     if (argv.length === 0) {
-      return this.render(this.renderIndex());
+      return this.render(this.createIndex());
     }
 
     const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
@@ -208,7 +214,7 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display help and usage
     if (options.help) {
-      return this.render(this.renderHelp(path));
+      return this.render(this.createHelp(path));
     }
 
     // Display errors
@@ -237,6 +243,40 @@ export default class Program extends Contract<ProgramOptions> {
     command.log = this.logger;
 
     return this.render(await command.run(...params), EXIT_PASS);
+  }
+
+  /**
+   * Render a command help menu using the command's metadata.
+   */
+  protected createHelp(path: string, withHeader: boolean = false): React.ReactElement {
+    const command = this.getCommand(path)!;
+    const metadata = command.getMetadata();
+
+    return (
+      <Help
+        config={metadata}
+        commands={this.mapCommandMetadata(metadata.commands)}
+        header={withHeader}
+        options={metadata.options}
+        params={metadata.params}
+      />
+    );
+  }
+
+  /**
+   * Render the index screen when no args are passed.
+   * Should include banner, header, footer, and command (if applicable).
+   */
+  protected createIndex(): React.ReactElement {
+    return (
+      <IndexHelp {...this.options}>
+        {this.indexCommand ? (
+          this.createHelp(this.indexCommand, true)
+        ) : (
+          <Help header commands={this.mapCommandMetadata(this.commands)} />
+        )}
+      </IndexHelp>
+    );
   }
 
   /**
@@ -324,40 +364,6 @@ export default class Program extends Contract<ProgramOptions> {
     return this.render(
       <Failure commandLine={this.commandLine} error={error} warnings={validErrors} />,
       error instanceof ExitError ? error.code : EXIT_FAIL,
-    );
-  }
-
-  /**
-   * Render a command help menu using the command's metadata.
-   */
-  protected renderHelp(path: string, withHeader: boolean = false): React.ReactElement {
-    const command = this.getCommand(path)!;
-    const metadata = command.getMetadata();
-
-    return (
-      <Help
-        config={metadata}
-        commands={this.mapCommandMetadata(metadata.commands)}
-        header={withHeader}
-        options={metadata.options}
-        params={metadata.params}
-      />
-    );
-  }
-
-  /**
-   * Render the index screen when no args are passed.
-   * Should include banner, header, footer, and command (if applicable).
-   */
-  protected renderIndex(): React.ReactElement {
-    return (
-      <IndexHelp {...this.options}>
-        {this.indexCommand ? (
-          this.renderHelp(this.indexCommand, true)
-        ) : (
-          <Help header commands={this.mapCommandMetadata(this.commands)} />
-        )}
-      </IndexHelp>
     );
   }
 }

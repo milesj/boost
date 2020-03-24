@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/require-await */
+
 import { ExitError } from '@boost/internal';
 import { Program, Command } from '../src';
 import { WriteStream, ReadStream } from './helpers';

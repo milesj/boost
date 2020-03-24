@@ -12,7 +12,10 @@ class ClientInstallCommand extends InstallClassicCommand {
   static path = 'client:install';
 }
 
-@Config('client', 'Client', { usage: ['$ client:install @foo/bar', '$ client:build'] })
+@Config('client', 'Client', {
+  allowUnknownOptions: true,
+  usage: ['$ client:install @foo/bar', '$ client:build'],
+})
 class ClientCommand extends Command {
   constructor() {
     super();

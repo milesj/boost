@@ -49,6 +49,10 @@ export interface ProgramOptions {
   version: string;
 }
 
+export interface ProgramRunOptions {
+  allowUnknownOptions?: boolean;
+}
+
 export interface ProgramStreams {
   stderr: NodeJS.WriteStream;
   stdin: NodeJS.ReadStream;
@@ -86,7 +90,10 @@ export interface CommandConfigMap {
   [path: string]: CommandConfig;
 }
 
-export type CommandStaticConfig = Required<CommandConfig>; // Constructor
+// Constructor
+export interface CommandStaticConfig extends Required<CommandConfig> {
+  allowUnknownOptions?: boolean;
+}
 
 export interface CommandMetadata extends CommandStaticConfig {
   commands: { [path: string]: Commandable };
@@ -100,7 +107,7 @@ export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
   register(command: Commandable): this;
-  run(...params: P): Promise<RunResult>;
+  run(...params: P): RunResult | Promise<RunResult>;
 }
 
 // THEMES

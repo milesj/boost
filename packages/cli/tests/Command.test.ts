@@ -154,6 +154,7 @@ describe('Command', () => {
           },
         },
         params: [],
+        unknown: false,
       });
     });
   });
@@ -287,6 +288,7 @@ describe('Command', () => {
           },
         },
         params: [],
+        unknown: false,
       });
     });
   });

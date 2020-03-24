@@ -10,6 +10,7 @@ export default function applyMarkdown(text: string): string {
       return style.italic(body);
     }
 
+    // istanbul ignore next
     return match;
   });
 }

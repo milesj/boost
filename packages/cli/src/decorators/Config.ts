@@ -22,5 +22,9 @@ export default function Config(
     if (config.hidden !== undefined) {
       ctor.hidden = config.hidden;
     }
+
+    if (config.allowUnknownOptions !== undefined) {
+      ctor.allowUnknownOptions = config.allowUnknownOptions;
+    }
   };
 }

@@ -1,20 +1,19 @@
 // import { requireModule } from '@boost/common';
-import { env } from '@boost/internal';
+// import { env } from '@boost/internal';
 // import { style } from '@boost/terminal';
 import { ThemePalette } from '../types';
 
-const THEME = env('THEME') ?? '';
+// const THEME = env('THEME') ?? '';
+// const loadedThemes = new Map<string, ThemePalette>();
 
-const loadedThemes = new Map<string, ThemePalette>();
-
+// TODO enable in v2
 export default function loadTheme(): ThemePalette {
-  const palette = loadedThemes.get(THEME);
+  // const palette = loadedThemes.get(THEME);
 
-  if (palette) {
-    return palette;
-  }
+  // if (palette) {
+  //   return palette;
+  // }
 
-  // TODO enable in v2
   // if (style.level >= 2 && !!THEME) {
   //   try {
   //     palette = requireModule(`@boost/theme-${THEME}`);

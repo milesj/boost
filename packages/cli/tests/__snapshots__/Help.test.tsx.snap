@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<Help /> commands doesnt render empty commands 1`] = `""`;
+
 exports[`<Help /> commands renders commands (stripped) 1`] = `
 "
  COMMANDS 
@@ -24,6 +26,8 @@ exports[`<Help /> config renders description with markdown 1`] = `
 "This is the top level command description.
 All descriptions support markdown like [1mbold[22m, [1mstrong[22m, [3mitalics[23m, [3memphasis[23m, and [9mstrikethroughs[29m."
 `;
+
+exports[`<Help /> options doesnt render empty options 1`] = `""`;
 
 exports[`<Help /> options renders options (stripped) 1`] = `
 "
@@ -70,6 +74,8 @@ exports[`<Help /> options renders options 1`] = `
                                               negated. (default: true)
       --num [90mnumber[39m                            Standard number option."
 `;
+
+exports[`<Help /> params doesnt render empty params 1`] = `""`;
 
 exports[`<Help /> params renders params (stripped) 1`] = `
 "
