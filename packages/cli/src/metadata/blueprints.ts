@@ -39,7 +39,6 @@ export const commandConstructorBlueprint: Blueprint<Omit<
     .notEmpty()
     .required()
     .match(COMMAND_FORMAT),
-  rest: array(string()),
   usage: union([string(), array(string())], []),
 };
 

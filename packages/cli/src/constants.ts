@@ -9,3 +9,17 @@ export const VERSION_FORMAT = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:
 
 export const EXIT_PASS: ExitCode = 0;
 export const EXIT_FAIL: ExitCode = 1;
+
+export const RESERVED_OPTIONS = [
+  // Existing args
+  'help',
+  'locale',
+  'rest',
+  'version',
+  // Class methods
+  'bootstrap',
+  'exit',
+  'log',
+  'register',
+  'run',
+];

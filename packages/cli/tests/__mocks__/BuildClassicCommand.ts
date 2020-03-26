@@ -28,6 +28,10 @@ export default class BuildClassicCommand extends Command<BuildOptions> {
     },
   };
 
+  dst: string = '';
+
+  src: string = '';
+
   async run() {
     await Promise.resolve();
 

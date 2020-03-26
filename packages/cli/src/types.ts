@@ -83,7 +83,6 @@ export interface CommandConfig extends BaseCommandConfig {
   options?: OptionConfigMap;
   params?: ParamConfigList;
   path?: string; // Canonical name used on the command line
-  rest?: string[];
 }
 
 export interface CommandConfigMap {

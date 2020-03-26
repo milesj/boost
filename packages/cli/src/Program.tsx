@@ -12,7 +12,7 @@ import {
 } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
 import { Logger, createLogger } from '@boost/log';
-import { ExitError } from '@boost/internal';
+import { ExitError, env } from '@boost/internal';
 import levenary from 'levenary';
 import {
   ProgramOptions,
@@ -30,7 +30,6 @@ import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
-import getConstructor from './metadata/getConstructor';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands: CommandMetadata['commands'] = {};
@@ -224,23 +223,16 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Apply arguments to command properties
     const command = this.getCommand(path)!;
-    const metadata = command.getMetadata();
 
     Object.entries(options).forEach(([key, value]) => {
-      const config = metadata.options[key];
-
-      if (config) {
-        // @ts-ignore Allow this
-        command[key] = value;
-      }
+      // @ts-ignore Allow this
+      command[key] = value;
     });
 
-    getConstructor(command).rest = rest;
-
-    // Render command with params
-    command.bootstrap();
+    command.rest = rest;
     command.exit = this.exit;
     command.log = this.logger;
+    command.bootstrap();
 
     return this.render(await command.run(...params), EXIT_PASS);
   }
@@ -360,6 +352,11 @@ export default class Program extends Contract<ProgramOptions> {
     const parseErrors = errors.filter(error => error instanceof ParseError);
     const validErrors = errors.filter(error => error instanceof ValidationError);
     const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
+
+    // Mostly for testing, but useful for other things
+    if (env('CLI_FAIL_HARD')) {
+      throw error;
+    }
 
     return this.render(
       <Failure commandLine={this.commandLine} error={error} warnings={validErrors} />,

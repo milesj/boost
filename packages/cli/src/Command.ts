@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+
 import {
   ArgList,
   PrimitiveType,
@@ -54,15 +56,19 @@ export default abstract class Command<
 
   static path: string = '';
 
-  static rest: string[] = [];
-
   static usage: string | string[] = '';
+
+  // Args
 
   help: boolean = false;
 
   locale: string = 'en';
 
+  rest: string[] = [];
+
   version: boolean = false;
+
+  // Methods
 
   exit!: ExitHandler;
 
@@ -78,7 +84,6 @@ export default abstract class Command<
       description: ctor.description,
       hidden: ctor.hidden,
       path: ctor.path,
-      rest: ctor.rest,
       usage: ctor.usage,
     });
     validateOptions(ctor.options);
@@ -104,7 +109,6 @@ export default abstract class Command<
       options: getInheritedOptions(this),
       params: ctor.params,
       path: ctor.path,
-      rest: ctor.rest,
       usage: ctor.usage,
     };
   }
@@ -115,7 +119,6 @@ export default abstract class Command<
   getParserOptions(): ParserOptions<O, P> {
     const { options, params, path } = this.getMetadata();
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return {
       commands: [path],
       options,

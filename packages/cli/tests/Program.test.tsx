@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 
+import React from 'react';
+import { Box } from 'ink';
 import { ExitError } from '@boost/internal';
 import { Program, Command } from '../src';
 import { WriteStream, ReadStream } from './helpers';
@@ -8,13 +10,15 @@ import { Parent, Child, GrandChild } from './__mocks__/commands';
 import BuildCommand from './__mocks__/BuildCommand';
 import InstallCommand from './__mocks__/InstallCommand';
 import ClientCommand from './__mocks__/ClientCommand';
+import AllClassicCommand from './__mocks__/AllClassicCommand';
+import BuildClassicCommand from './__mocks__/BuildClassicCommand';
 
 // waitUntilExit() never resolves, so we need to mock the entire module ;/
 jest.mock('ink', () => {
-  const { render, Box, Color, Static } = require.requireActual('ink');
+  const { render, Box: Boxer, Color, Static } = require.requireActual('ink');
 
   return {
-    Box,
+    Box: Boxer,
     Color,
     Static,
     render(element: any, opts: any) {
@@ -372,6 +376,128 @@ describe('<Program />', () => {
 
       expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(123);
+    });
+  });
+
+  describe('success', () => {
+    beforeEach(() => {
+      process.env.BOOSTJS_CLI_FAIL_HARD = 'true';
+    });
+
+    afterEach(() => {
+      delete process.env.BOOSTJS_CLI_FAIL_HARD;
+    });
+
+    it('sets rest args to the rest command property', async () => {
+      const command = new BuildCommand();
+
+      program.register(command);
+
+      await program.run(['build', '-S', './src', '--', 'foo', 'bar', '--baz', '-f']);
+
+      expect(command.rest).toEqual(['foo', 'bar', '--baz', '-f']);
+    });
+
+    it('sets options as command properties (declarative)', async () => {
+      const command = new BuildCommand();
+
+      program.register(command);
+
+      await program.run(['build', '-S', './source', '-D', './library']);
+
+      expect(command.dst).toBe('./library');
+      expect(command.help).toBe(false);
+      expect(command.locale).toBe('en');
+      expect(command.src).toBe('./source');
+      expect(command.version).toBe(false);
+    });
+
+    it('sets options as command properties (imperative)', async () => {
+      const command = new BuildClassicCommand();
+
+      program.register(command);
+
+      await program.run(['build', '-S', './source']);
+
+      expect(command.dst).toBe('./lib');
+      expect(command.help).toBe(false);
+      expect(command.locale).toBe('en');
+      expect(command.src).toBe('./source');
+      expect(command.version).toBe(false);
+    });
+
+    it('passes params to run method', async () => {
+      const command = new AllClassicCommand();
+      const spy = jest.spyOn(command, 'run');
+
+      program.index(command);
+
+      await program.run(['-F', 'foo', 'true', '123']);
+
+      expect(spy).toHaveBeenCalledWith('foo', true, 123);
+    });
+
+    it('calls bootstrap method before running', async () => {
+      const command = new AllClassicCommand();
+      const spy = jest.spyOn(command, 'bootstrap');
+
+      program.index(command);
+
+      await program.run(['foo']);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('can return nothing', async () => {
+      class NoneCommand extends Command {
+        static description = 'Description';
+
+        static path = 'none';
+
+        run() {}
+      }
+
+      program.register(new NoneCommand());
+
+      await program.run(['none']);
+
+      expect(stdout.get()).toBe('');
+    });
+
+    it('can return a string that writes directly to stream', async () => {
+      class StringCommand extends Command {
+        static description = 'Description';
+
+        static path = 'string';
+
+        run() {
+          return 'Hello!';
+        }
+      }
+
+      program.register(new StringCommand());
+
+      await program.run(['string']);
+
+      expect(stdout.get()).toBe('Hello!');
+    });
+
+    it('can return an element that writes with ink', async () => {
+      class ComponentCommand extends Command {
+        static description = 'Description';
+
+        static path = 'comp';
+
+        run() {
+          return <Box>Hello!</Box>;
+        }
+      }
+
+      program.register(new ComponentCommand());
+
+      await program.run(['comp']);
+
+      expect(stdout.get()).toMatchSnapshot();
     });
   });
 });

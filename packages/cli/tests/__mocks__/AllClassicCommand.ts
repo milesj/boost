@@ -52,7 +52,7 @@ export default class AllClassicCommand extends Command<AllOptions, AllParams> {
       short: 'S',
       type: 'string',
       validate() {
-        throw new Error('Oh no...');
+        // throw new Error('Oh no...');
       },
     },
   };
