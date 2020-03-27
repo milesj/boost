@@ -13,3 +13,7 @@ export interface Logger {
   trace(message: string, ...args: unknown[]): void;
   warn(message: string, ...args: unknown[]): void;
 }
+
+export interface Loggable {
+  write(message: string): void;
+}

@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { env } from '@boost/internal';
 import isAllowedLogLevel from './isAllowedLogLevel';
 import { debug, msg, LOG_LEVELS } from './constants';
-import { Logger, LogLevel, LogLevelLabels } from './types';
+import { Logger, LogLevel, LogLevelLabels, Loggable } from './types';
 
 export const DEFAULT_LABELS: LogLevelLabels = {
   debug: chalk.gray(msg('log:levelDebug')),
@@ -17,9 +17,9 @@ export interface LoggerOptions {
   /** Custom labels to use for each log type. */
   labels?: LogLevelLabels;
   /** Writable stream to send `stderr` messages to. */
-  stderr?: NodeJS.WriteStream;
+  stderr?: Loggable;
   /** Writable stream to send `stdout` messages to. */
-  stdout?: NodeJS.WriteStream;
+  stdout?: Loggable;
 }
 
 export default function createLogger({
@@ -56,7 +56,7 @@ export default function createLogger({
     const stream = level === 'debug' || level === 'error' || level === 'warn' ? stderr : stdout;
 
     Object.defineProperty(logger, level, {
-      value: function log(message: string, ...args: any[]) {
+      value: function log(message: string, ...args: unknown[]) {
         const maxLevel: LogLevel | undefined = env('LOG_MAX_LEVEL');
 
         if (!silent && isAllowedLogLevel(level, maxLevel)) {
