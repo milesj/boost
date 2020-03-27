@@ -118,10 +118,21 @@ export default abstract class Command<
    */
   getParserOptions(): ParserOptions<O, P> {
     const { options, params, path } = this.getMetadata();
+    const defaultedOptions: OptionConfigMap = {};
+
+    // Since default values for options are represented as class properties,
+    // we need to inject the defaults into the argument parsing layer.
+    // We can easily do this here and avoid a lot of headache.
+    Object.entries(options).forEach(([option, config]) => {
+      defaultedOptions[option] = {
+        ...config,
+        default: this[option as keyof this] ?? config.default,
+      };
+    });
 
     return {
       commands: [path],
-      options,
+      options: defaultedOptions,
       params,
       unknown: getConstructor(this).allowUnknownOptions,
     } as ParserOptions<O, P>;

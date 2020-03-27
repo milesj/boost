@@ -123,6 +123,20 @@ describe('Command', () => {
       }).toThrow('Parameters must be defined on the `run()` method.');
     });
 
+    it('errors if option is using a reserved name', () => {
+      expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        class TestCommand extends Command {
+          @Arg.String('Description')
+          locale: string = '';
+
+          run() {
+            return Promise.resolve('');
+          }
+        }
+      }).toThrow('Option "locale" is a reserved name and cannot be used.');
+    });
+
     it('returns command line path', () => {
       const command = new BuildCommand();
 
@@ -135,9 +149,10 @@ describe('Command', () => {
       expect(command.getParserOptions()).toEqual({
         commands: ['build'],
         options: {
-          dst: { short: 'D', description: 'Destination path', type: 'string' },
-          src: { short: 'S', description: 'Source path', type: 'string' },
+          dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
+          src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
           help: {
+            default: false,
             description: 'Display help and usage menu',
             short: 'h',
             type: 'boolean',
@@ -148,6 +163,7 @@ describe('Command', () => {
             type: 'string',
           },
           version: {
+            default: false,
             description: 'Display version number',
             short: 'v',
             type: 'boolean',
@@ -193,7 +209,7 @@ describe('Command', () => {
 
       expect(options).toEqual({
         dst: { short: 'D', description: 'Destination path', type: 'string' },
-        src: { short: 'S', default: './src', description: 'Source path', type: 'string' },
+        src: { short: 'S', description: 'Source path', type: 'string' },
         help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
         locale: {
           default: 'en',
@@ -227,7 +243,6 @@ describe('Command', () => {
           type: 'number',
         },
         str: {
-          default: 'a',
           choices: ['a', 'b', 'c'],
           hidden: true,
           description: 'Single string',
@@ -269,9 +284,10 @@ describe('Command', () => {
       expect(command.getParserOptions()).toEqual({
         commands: ['build'],
         options: {
-          dst: { short: 'D', description: 'Destination path', type: 'string' },
+          dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
           src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
           help: {
+            default: false,
             description: 'Display help and usage menu',
             short: 'h',
             type: 'boolean',
@@ -282,6 +298,7 @@ describe('Command', () => {
             type: 'string',
           },
           version: {
+            default: false,
             description: 'Display version number',
             short: 'v',
             type: 'boolean',

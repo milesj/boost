@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-escape */
-
 import React from 'react';
 import { IndexHelp, Help } from '../src';
 import { renderToString } from './helpers';

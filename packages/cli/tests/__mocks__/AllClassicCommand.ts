@@ -39,7 +39,6 @@ export default class AllClassicCommand extends Command<AllOptions, AllParams> {
     // --str
     str: {
       choices: ['a', 'b', 'c'],
-      default: 'a',
       description: 'Single string',
       hidden: true,
       type: 'string',

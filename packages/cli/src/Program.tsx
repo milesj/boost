@@ -224,10 +224,7 @@ export default class Program extends Contract<ProgramOptions> {
     // Apply arguments to command properties
     const command = this.getCommand(path)!;
 
-    Object.entries(options).forEach(([key, value]) => {
-      // @ts-ignore Allow this
-      command[key] = value;
-    });
+    Object.assign(command, options);
 
     command.rest = rest;
     command.exit = this.exit;
@@ -354,6 +351,7 @@ export default class Program extends Contract<ProgramOptions> {
     const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
 
     // Mostly for testing, but useful for other things
+    // istanbul ignore next
     if (env('CLI_FAIL_HARD')) {
       throw error;
     }

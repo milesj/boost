@@ -1,6 +1,7 @@
 import { OptionConfig } from '@boost/args';
 import getConstructor from './getConstructor';
 import Command from '../Command';
+import { RESERVED_OPTIONS } from '../constants';
 
 export default function registerOption<O extends OptionConfig>(
   target: Object,
@@ -8,12 +9,17 @@ export default function registerOption<O extends OptionConfig>(
   config: O,
 ) {
   const ctor = getConstructor(target);
+  const key = String(property);
 
-  // Without this check we would add options to the base `Command`,
-  // which results in *all* sub-classes inheriting them.
+  // Without this check we would mutate the base `Command`,
+  // resulting in *all* sub-classes inheriting them.
   if (ctor.options === Command.options) {
     ctor.options = {};
   }
 
-  ctor.options[String(property)] = config;
+  if (RESERVED_OPTIONS.includes(key)) {
+    throw new Error(`Option "${key}" is a reserved name and cannot be used.`);
+  }
+
+  ctor.options[key] = config;
 }

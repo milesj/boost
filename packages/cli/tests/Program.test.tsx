@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import React from 'react';
 import { Box } from 'ink';
 import { ExitError } from '@boost/internal';
-import { Program, Command } from '../src';
+import { Program, Command, Arg, OptionConfigMap } from '../src';
 import { WriteStream, ReadStream } from './helpers';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
@@ -419,7 +417,7 @@ describe('<Program />', () => {
 
       await program.run(['build', '-S', './source']);
 
-      expect(command.dst).toBe('./lib');
+      expect(command.dst).toBe('');
       expect(command.help).toBe(false);
       expect(command.locale).toBe('en');
       expect(command.src).toBe('./source');
@@ -498,6 +496,257 @@ describe('<Program />', () => {
       await program.run(['comp']);
 
       expect(stdout.get()).toMatchSnapshot();
+    });
+  });
+
+  describe('option defaults', () => {
+    class DeclCommand extends Command {
+      static description = 'Description';
+
+      static path = 'cmd';
+
+      @Arg.Number('Number')
+      numNoDefault: number = 0;
+
+      @Arg.Number('Number (default)')
+      numWithDefault: number = 123;
+
+      @Arg.Flag('Flag (false)')
+      flagFalse: boolean = false;
+
+      @Arg.Flag('Flag (true)')
+      flagTrue: boolean = true;
+
+      @Arg.String('String')
+      strNoDefault: string = '';
+
+      @Arg.String('String (default)')
+      strWithDefault: string = 'foo';
+
+      @Arg.Numbers('Numbers')
+      numsNoDefault: number[] = [];
+
+      @Arg.Numbers('Numbers (default)')
+      numsWithDefault: number[] = [1, 2, 3];
+
+      @Arg.Strings('Strings')
+      strsNoDefault: string[] = [];
+
+      @Arg.Strings('Strings (default)')
+      strsWithDefault: string[] = ['a', 'b', 'c'];
+
+      run() {}
+    }
+
+    class ImpCommand extends Command {
+      static description = 'Description';
+
+      static path = 'cmd';
+
+      static options: OptionConfigMap = {
+        numNoDefault: {
+          description: 'Number',
+          type: 'number',
+        },
+        numWithDefault: {
+          default: 123,
+          description: 'Number (default)',
+          type: 'number',
+        },
+        flagFalse: {
+          description: 'Flag (false)',
+          type: 'boolean',
+        },
+        flagTrue: {
+          // Use property
+          // default: true,
+          description: 'Flag (true)',
+          type: 'boolean',
+        },
+        strNoDefault: {
+          description: 'String',
+          type: 'string',
+        },
+        strWithDefault: {
+          // Also with property
+          default: 'bar',
+          description: 'String (default)',
+          type: 'string',
+        },
+        numsNoDefault: {
+          description: 'Numbers',
+          multiple: true,
+          type: 'number',
+        },
+        numsWithDefault: {
+          default: [1, 2, 3],
+          description: 'Numbers (default)',
+          multiple: true,
+          type: 'number',
+        },
+        strsNoDefault: {
+          description: 'Strings',
+          multiple: true,
+          type: 'string',
+        },
+        strsWithDefault: {
+          description: 'Strings (default)',
+          multiple: true,
+          type: 'string',
+        },
+      };
+
+      numNoDefault!: number;
+
+      numWithDefault!: number;
+
+      flagFalse: boolean = false;
+
+      flagTrue: boolean = true;
+
+      strNoDefault: string = '';
+
+      strWithDefault: string = 'foo';
+
+      numsNoDefault: number[] = [];
+
+      numsWithDefault!: number[]; // Use config default
+
+      strsNoDefault!: string[]; // None set in either place
+
+      strsWithDefault: string[] = ['a', 'b', 'c'];
+
+      run() {}
+    }
+
+    const runners = {
+      declarative: () => new DeclCommand(),
+      imperative: () => new ImpCommand(),
+    };
+
+    Object.entries(runners).forEach(([type, factory]) => {
+      describe(`${type}`, () => {
+        let command: ImpCommand;
+
+        beforeEach(() => {
+          command = factory();
+
+          process.env.BOOSTJS_CLI_FAIL_HARD = 'true';
+        });
+
+        afterEach(() => {
+          delete process.env.BOOSTJS_CLI_FAIL_HARD;
+        });
+
+        it('returns number option if defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd', '--numNoDefault', '456', '--numWithDefault=789']);
+
+          expect(command.numNoDefault).toBe(456);
+          expect(command.numWithDefault).toBe(789);
+        });
+
+        it('returns default number option if not defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd']);
+
+          expect(command.numNoDefault).toBe(0);
+          expect(command.numWithDefault).toBe(123);
+        });
+
+        it('returns boolean option if defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd', '--flagFalse', '--no-flagTrue']);
+
+          expect(command.flagFalse).toBe(true);
+          expect(command.flagTrue).toBe(false);
+        });
+
+        it('returns default boolean option if not defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd']);
+
+          expect(command.flagFalse).toBe(false);
+          expect(command.flagTrue).toBe(true);
+        });
+
+        it('returns string option if defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd', '--strNoDefault', 'bar', '--strWithDefault=baz']);
+
+          expect(command.strNoDefault).toBe('bar');
+          expect(command.strWithDefault).toBe('baz');
+        });
+
+        it('returns default string option if not defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd']);
+
+          expect(command.strNoDefault).toBe('');
+          expect(command.strWithDefault).toBe('foo');
+        });
+
+        it('returns numbers option if defined', async () => {
+          program.register(command);
+
+          await program.run([
+            'cmd',
+            '--numsNoDefault',
+            '4',
+            '5',
+            '6',
+            '--numsWithDefault',
+            '7',
+            '8',
+            '9',
+          ]);
+
+          expect(command.numsNoDefault).toEqual([4, 5, 6]);
+          expect(command.numsWithDefault).toEqual([7, 8, 9]);
+        });
+
+        it('returns default numbers option if not defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd']);
+
+          expect(command.numsNoDefault).toEqual([]);
+          expect(command.numsWithDefault).toEqual([1, 2, 3]);
+        });
+
+        it('returns strings option if defined', async () => {
+          program.register(command);
+
+          await program.run([
+            'cmd',
+            '--strsNoDefault',
+            '4',
+            '5',
+            '6',
+            '--strsWithDefault',
+            'foo',
+            'bar',
+          ]);
+
+          expect(command.strsNoDefault).toEqual(['4', '5', '6']);
+          expect(command.strsWithDefault).toEqual(['foo', 'bar']);
+        });
+
+        it('returns strings numbers option if not defined', async () => {
+          program.register(command);
+
+          await program.run(['cmd']);
+
+          expect(command.strsNoDefault).toEqual([]);
+          expect(command.strsWithDefault).toEqual(['a', 'b', 'c']);
+        });
+      });
     });
   });
 });

@@ -21,7 +21,6 @@ export default class BuildClassicCommand extends Command<BuildOptions> {
     },
     // --src, -S
     src: {
-      default: './src',
       description: 'Source path',
       short: 'S',
       type: 'string',
@@ -30,7 +29,7 @@ export default class BuildClassicCommand extends Command<BuildOptions> {
 
   dst: string = '';
 
-  src: string = '';
+  src: string = './src';
 
   async run() {
     await Promise.resolve();
