@@ -42,7 +42,7 @@ describe('<IndexHelp />', () => {
       await renderToString(
         <IndexHelp {...props}>
           <Help
-            header
+            header="test"
             config={{
               description: 'I am a command that does cool things.',
               usage: '$ ink foo bar',
@@ -66,7 +66,7 @@ describe('<IndexHelp />', () => {
           footer="Powered by Boost CLI v1.2.3"
         >
           <Help
-            header
+            header="test"
             config={{
               description: 'I am a command that does cool things.',
               usage: '$ ink foo bar',

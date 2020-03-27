@@ -29,7 +29,7 @@ import Failure from './Failure';
 import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
-import { VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
+import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL, BOUND_STREAMS } from './constants';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands: CommandMetadata['commands'] = {};
@@ -199,21 +199,26 @@ export default class Program extends Contract<ProgramOptions> {
    * while the public run exists to catch any unexpected errors.
    */
   protected async doRun(argv: Argv): Promise<ExitCode> {
-    if (argv.length === 0) {
+    const showVersion = argv.some(arg => arg === '-v' || arg === '--version');
+    const showHelp = argv.some(arg => arg === '-h' || arg === '--help');
+
+    // Display index and or help
+    if (argv.length === 0 || (argv.length === 1 && showHelp)) {
       return this.render(this.createIndex());
     }
 
-    const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
-    const path = cmd.join(':') || this.indexCommand;
-
     // Display version
-    if (options.version) {
+    if (showVersion) {
       return this.render(this.options.version);
     }
 
-    // Display help and usage
+    // Parse the arguments
+    const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
+    const path = cmd.join(':') || this.indexCommand;
+
+    // Display command help
     if (options.help) {
-      return this.render(this.createHelp(path));
+      return this.render(this.createHelp(path, path));
     }
 
     // Display errors
@@ -237,7 +242,7 @@ export default class Program extends Contract<ProgramOptions> {
   /**
    * Render a command help menu using the command's metadata.
    */
-  protected createHelp(path: string, withHeader: boolean = false): React.ReactElement {
+  protected createHelp(path: string, header?: string): React.ReactElement {
     const command = this.getCommand(path)!;
     const metadata = command.getMetadata();
 
@@ -245,7 +250,7 @@ export default class Program extends Contract<ProgramOptions> {
       <Help
         config={metadata}
         commands={this.mapCommandMetadata(metadata.commands)}
-        header={withHeader}
+        header={header}
         options={metadata.options}
         params={metadata.params}
       />
@@ -260,9 +265,9 @@ export default class Program extends Contract<ProgramOptions> {
     return (
       <IndexHelp {...this.options}>
         {this.indexCommand ? (
-          this.createHelp(this.indexCommand, true)
+          this.createHelp(this.indexCommand, msg('cli:labelAbout'))
         ) : (
-          <Help header commands={this.mapCommandMetadata(this.commands)} />
+          <Help header={msg('cli:labelAbout')} commands={this.mapCommandMetadata(this.commands)} />
         )}
       </IndexHelp>
     );
@@ -279,6 +284,14 @@ export default class Program extends Contract<ProgramOptions> {
     });
 
     return map;
+  }
+
+  protected mockStdout() {
+    return {
+      columns: process.stdout.columns,
+      rows: process.stdout.rows,
+      write: BOUND_STREAMS.stdout,
+    };
   }
 
   /**

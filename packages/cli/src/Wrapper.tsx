@@ -5,14 +5,8 @@ import { Box, Static } from 'ink';
 import { Logger } from '@boost/log';
 import Failure from './Failure';
 import ProgramContext from './ProgramContext';
-import { ProgramOptions, StreamType, ExitHandler } from './types';
-
-export const BOUND_WRITERS = {
-  stderr: process.stderr.write.bind(process.stderr),
-  stdout: process.stdout.write.bind(process.stdout),
-};
-
-export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];
+// import { BOUND_STREAMS, STREAM_TYPES } from './constants';
+import { ProgramOptions, ExitHandler } from './types';
 
 export interface WrapperProps {
   exit: ExitHandler;
@@ -24,6 +18,8 @@ export interface WrapperState {
   error: Error | null;
   log: string[];
 }
+
+const CONSOLE_METHODS: (keyof typeof console)[] = ['log', 'error', 'warn', 'info'];
 
 export default class Wrapper extends React.Component<WrapperProps, WrapperState> {
   buffer: string[] = [];
@@ -52,16 +48,14 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
       return;
     }
 
-    STREAM_TYPES.forEach(name => {
-      if (this.wrapped[name]) {
-        return;
-      }
+    CONSOLE_METHODS.forEach(method => {
+      const old = console[method].bind(console);
 
-      process[name].write = (chunk: string) => {
-        this.buffer.push(String(chunk));
+      console[method] = (...chunks: string[]) => {
+        this.buffer.push(chunks.join(' '));
 
         if (this.timer) {
-          return true;
+          return;
         }
 
         this.timer = setTimeout(() => {
@@ -70,13 +64,14 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
           });
 
           clearTimeout(this.timer!);
+
           this.buffer = [];
         }, 1000);
 
-        return true;
+        return;
       };
 
-      this.wrapped[name] = true;
+      console[method].old = old;
     });
   }
 
@@ -88,18 +83,8 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
       log: this.buffer,
     });
 
-    if (process.env.NODE_ENV === 'test') {
-      return;
-    }
-
-    STREAM_TYPES.forEach(name => {
-      if (!this.wrapped[name]) {
-        return;
-      }
-
-      process[name].write = BOUND_WRITERS[name];
-
-      this.wrapped[name] = false;
+    CONSOLE_METHODS.forEach(method => {
+      console[method] = console[method].old;
     });
   }
 
@@ -112,10 +97,12 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
     }
 
     return (
-      <ProgramContext.Provider value={{ exit, log: logger, program }}>
-        <Static>{log}</Static>
-        <Box paddingY={1}>{children}</Box>
-      </ProgramContext.Provider>
+      <Box>
+        <ProgramContext.Provider value={{ exit, log: logger, program }}>
+          <Static>{log}</Static>
+          <Box paddingY={1}>{children}</Box>
+        </ProgramContext.Provider>
+      </Box>
     );
   }
 }

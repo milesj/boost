@@ -10,7 +10,7 @@ import { formatType, getLongestWidth, formatDescription, formatCommandCall } fro
 export interface HelpProps {
   config?: CommandConfig;
   commands?: CommandConfigMap;
-  header?: boolean;
+  header?: string;
   options?: OptionConfigMap;
   params?: ParamConfigList;
 }
@@ -68,7 +68,7 @@ export default class Help extends React.Component<HelpProps> {
                 {names[index]}
               </Box>
 
-              <Box flexGrow={1} paddingLeft={2} textWrap="wrap">
+              <Box flexGrow={2} paddingLeft={2} textWrap="wrap">
                 {formatDescription(config)}
               </Box>
             </Box>
@@ -134,7 +134,7 @@ export default class Help extends React.Component<HelpProps> {
                 {longNames[index]}
               </Box>
 
-              <Box flexGrow={1} paddingLeft={2} textWrap="wrap">
+              <Box flexGrow={2} paddingLeft={2} textWrap="wrap">
                 {formatDescription(config, this.gatherOptionTags(config))}
               </Box>
             </Box>
@@ -179,7 +179,7 @@ export default class Help extends React.Component<HelpProps> {
                 {types[index]}
               </Box>
 
-              <Box flexGrow={1} paddingLeft={2} textWrap="wrap">
+              <Box flexGrow={2} paddingLeft={2} textWrap="wrap">
                 {config ? formatDescription(config, this.gatherParamTags(config)) : ''}
               </Box>
             </Box>
@@ -205,12 +205,12 @@ export default class Help extends React.Component<HelpProps> {
 
   render() {
     const { commands, options, header, params, config } = this.props;
-    const hasDesc = !!config?.description;
-    const hasUsage = config?.usage && config.usage.length > 0;
+    const hasDesc = Boolean(config?.description);
+    const hasUsage = Boolean(config?.usage && config.usage.length > 0);
 
     return (
       <Box flexDirection="column">
-        {(hasDesc || hasUsage) && header && <Header leading label={msg('cli:labelAbout')} />}
+        {(hasDesc || hasUsage) && header && <Header leading label={header} />}
 
         {hasDesc && <Box>{formatDescription(config!)}</Box>}
 

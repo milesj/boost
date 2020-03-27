@@ -1,6 +1,6 @@
 import path from 'path';
 import { createTranslator } from '@boost/translate';
-import { ExitCode } from './types';
+import { ExitCode, StreamType } from './types';
 
 export const msg = createTranslator('cli', path.join(__dirname, '../res'));
 
@@ -23,3 +23,11 @@ export const RESERVED_OPTIONS = [
   'register',
   'run',
 ];
+
+export const BOUND_STREAMS = {
+  stderr: process.stderr.write.bind(process.stderr),
+  stdin: process.stdin.read.bind(process.stdin),
+  stdout: process.stdout.write.bind(process.stdout),
+};
+
+export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];
