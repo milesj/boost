@@ -13,8 +13,6 @@ export const DEFAULT_LABELS: LogLevelLabels = {
   warn: chalk.yellow(msg('log:levelWarn')),
 };
 
-console.error;
-
 export interface LoggerOptions {
   /** Custom labels to use for each log type. */
   labels?: LogLevelLabels;

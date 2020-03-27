@@ -1,35 +1,36 @@
 import React from 'react';
 import { render } from 'ink';
 import {
+  ArgList,
+  Arguments,
   Argv,
   parse,
+  ParseError,
   parseInContext,
   PrimitiveType,
-  ParseError,
   ValidationError,
-  Arguments,
-  ArgList,
 } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
 import { Logger, createLogger } from '@boost/log';
 import { ExitError, env } from '@boost/internal';
 import levenary from 'levenary';
-import {
-  ProgramOptions,
-  Commandable,
-  GlobalArgumentOptions,
-  ProgramStreams,
-  ExitCode,
-  CommandMetadata,
-  CommandMetadataMap,
-  RunResult,
-} from './types';
+import LogBuffer from './LogBuffer';
 import Command from './Command';
 import Failure from './Failure';
 import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
-import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL, BOUND_STREAMS } from './constants';
+import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
+import {
+  Commandable,
+  CommandMetadata,
+  CommandMetadataMap,
+  ExitCode,
+  GlobalArgumentOptions,
+  ProgramOptions,
+  ProgramStreams,
+  RunResult,
+} from './types';
 
 export default class Program extends Contract<ProgramOptions> {
   protected commands: CommandMetadata['commands'] = {};
@@ -46,12 +47,22 @@ export default class Program extends Contract<ProgramOptions> {
     stdout: process.stdout,
   };
 
+  private errBuffer: LogBuffer;
+
+  private outBuffer: LogBuffer;
+
   constructor(options: ProgramOptions, streams?: ProgramStreams) {
     super(options);
 
     Object.assign(this.streams, streams);
 
-    this.logger = createLogger(this.streams);
+    this.errBuffer = new LogBuffer('stderr');
+    this.outBuffer = new LogBuffer('stdout');
+
+    this.logger = createLogger({
+      stderr: this.errBuffer,
+      stdout: this.outBuffer,
+    });
   }
 
   blueprint({ string }: Predicates) {
@@ -286,14 +297,6 @@ export default class Program extends Contract<ProgramOptions> {
     return map;
   }
 
-  protected mockStdout() {
-    return {
-      columns: process.stdout.columns,
-      rows: process.stdout.rows,
-      write: BOUND_STREAMS.stdout,
-    };
-  }
-
   /**
    * Parse the arguments list according to the number of commands that have been registered.
    */
@@ -335,20 +338,34 @@ export default class Program extends Contract<ProgramOptions> {
 
     const { stdin, stdout } = this.streams;
 
-    if (typeof result === 'string') {
-      stdout.write(result);
-    } else {
-      await render(
-        <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
-          {result}
-        </Wrapper>,
-        {
-          debug: process.env.NODE_ENV === 'test',
-          experimental: true,
-          stdin,
-          stdout,
-        },
-      ).waitUntilExit();
+    try {
+      this.errBuffer.wrap();
+      this.outBuffer.wrap();
+
+      if (typeof result === 'string') {
+        stdout.write(result);
+      } else {
+        await render(
+          <Wrapper
+            errBuffer={this.errBuffer}
+            exit={this.exit}
+            logger={this.logger}
+            outBuffer={this.outBuffer}
+            program={this.options}
+          >
+            {result}
+          </Wrapper>,
+          {
+            debug: process.env.NODE_ENV === 'test',
+            experimental: true,
+            stdin,
+            stdout,
+          },
+        ).waitUntilExit();
+      }
+    } finally {
+      this.errBuffer.unwrap();
+      this.outBuffer.unwrap();
     }
 
     return exitCode;

@@ -24,10 +24,4 @@ export const RESERVED_OPTIONS = [
   'run',
 ];
 
-export const BOUND_STREAMS = {
-  stderr: process.stderr.write.bind(process.stderr),
-  stdin: process.stdin.read.bind(process.stdin),
-  stdout: process.stdout.write.bind(process.stdout),
-};
-
 export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];
