@@ -3,6 +3,8 @@ const { Box } = require('ink');
 const { Command, ProgramContext } = require('../../lib');
 const random = require('../random');
 
+let timer;
+
 function Logger() {
   const [count, setCount] = React.useState(0);
   const ctx = React.useContext(ProgramContext);
@@ -11,6 +13,10 @@ function Logger() {
     console.log('Initial render');
 
     function increment() {
+      if (timer) {
+        return;
+      }
+
       setCount(prev => prev + 1);
 
       const delay = random(5000, 1000);
@@ -18,7 +24,10 @@ function Logger() {
       console.log(`Sleeping for ${delay}ms`);
       ctx.log.error('Logging from context');
 
-      setTimeout(increment, delay);
+      timer = setTimeout(() => {
+        timer = null;
+        increment();
+      }, delay);
     }
 
     increment();

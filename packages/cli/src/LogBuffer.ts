@@ -8,8 +8,16 @@ type ConsoleMethod = keyof typeof console;
 
 const NOTIFY_DELAY = 250;
 const CONSOLE_METHODS: { [K in StreamType]: ConsoleMethod[] } = {
-  stderr: ['error', 'trace', 'warn'],
-  stdout: ['debug', 'log', 'info'],
+  stderr: [],
+  stdout: [
+    'debug',
+    'log',
+    'info',
+    // Until ink supports stderr
+    'error',
+    'trace',
+    'warn',
+  ],
 };
 
 export default class LogBuffer {
@@ -30,6 +38,14 @@ export default class LogBuffer {
   flush = () => {
     if (this.listener) {
       this.listener(this.logs);
+    } else {
+      this.logs.forEach(log => {
+        if (this.type === 'stderr') {
+          console.error(log);
+        } else {
+          console.log(log);
+        }
+      });
     }
 
     if (this.timer) {
@@ -51,6 +67,8 @@ export default class LogBuffer {
   }
 
   unwrap() {
+    this.flush();
+
     this.unwrappers.forEach(unwrap => {
       unwrap();
     });
@@ -73,7 +91,7 @@ export default class LogBuffer {
     // so trim surrounding new lines here
     this.logs.push(message.trim());
 
-    // Place in a timeout so that we can batch
+    // Place in a short timeout so that we can batch
     if (!this.timer) {
       this.timer = setTimeout(this.flush, NOTIFY_DELAY);
     }

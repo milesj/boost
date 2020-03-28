@@ -8,7 +8,7 @@ import {
   OptionConfigMap,
 } from '@boost/args';
 import { Logger } from '@boost/log';
-import { msg } from './constants';
+import { msg, LOCALE_FORMAT } from './constants';
 import {
   GlobalArgumentOptions,
   Commandable,
@@ -44,6 +44,11 @@ export default abstract class Command<
       default: 'en',
       description: msg('cli:optionLocaleDescription'),
       type: 'string',
+      validate(value: string) {
+        if (value && !value.match(LOCALE_FORMAT)) {
+          throw new Error(msg('cli:errorInvalidLocale'));
+        }
+      },
     },
     version: {
       description: msg('cli:optionVersionDescription'),

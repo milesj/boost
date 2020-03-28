@@ -1,7 +1,10 @@
+/* eslint-disable no-magic-numbers */
+
 import React from 'react';
 import { Box } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
+import { screen } from '@boost/terminal';
 import Header from './Header';
 import { msg } from './constants';
 import { CommandConfigMap, CommandConfig } from './types';
@@ -40,6 +43,10 @@ export default class Help extends React.Component<HelpProps> {
     return tags;
   }
 
+  getWrapType(columnWidth: number, otherWidths: number): 'wrap' | undefined {
+    return columnWidth + otherWidths > screen.size().columns ? 'wrap' : undefined;
+  }
+
   renderCommands(commands: CommandConfigMap) {
     const entries = Object.entries(commands);
 
@@ -50,11 +57,11 @@ export default class Help extends React.Component<HelpProps> {
     // Create column for names
     const names = entries.map(([path, config]) => formatCommandCall(path, config));
 
-    // Calculate longest column width
+    // Calculate longest name column width
     const nameWidth = getLongestWidth(names);
 
     return (
-      <Box flexDirection="column">
+      <Box marginBottom={1} flexDirection="column">
         <Header label={msg('cli:labelCommands')} />
 
         {Object.entries(commands).map(([path, config], index) => {
@@ -62,14 +69,20 @@ export default class Help extends React.Component<HelpProps> {
             return null;
           }
 
+          const desc = formatDescription(config);
+
           return (
             <Box key={`${path}-${index}`} flexDirection="row">
-              <Box width={nameWidth + 2} paddingLeft={2} alignItems="flex-end">
+              <Box flexGrow={0} width={nameWidth + 2} paddingLeft={2} alignItems="flex-end">
                 {names[index]}
               </Box>
 
-              <Box flexGrow={2} paddingLeft={2} textWrap="wrap">
-                {formatDescription(config)}
+              <Box
+                flexGrow={1}
+                paddingLeft={2}
+                textWrap={this.getWrapType(desc.length, nameWidth + 4)}
+              >
+                {desc}
               </Box>
             </Box>
           );
@@ -112,7 +125,7 @@ export default class Help extends React.Component<HelpProps> {
     const showShortColumn = shortWidth > 0;
 
     return (
-      <Box flexDirection="column">
+      <Box marginBottom={1} flexDirection="column">
         <Header label={msg('cli:labelOptions')} />
 
         {Object.entries(options).map(([name, config], index) => {
@@ -120,22 +133,28 @@ export default class Help extends React.Component<HelpProps> {
             return null;
           }
 
-          const indent = showShortColumn ? 1 : 2;
+          const desc = formatDescription(config, this.gatherOptionTags(config));
+          const longIndent = showShortColumn ? 1 : 2;
+          const otherWidths = (showShortColumn ? shortWidth + 2 : 0) + longWidth + longIndent;
 
           return (
             <Box key={`${name}-${index}`} flexDirection="row">
               {showShortColumn && (
-                <Box width={shortWidth + 2} paddingLeft={2}>
+                <Box flexGrow={0} width={shortWidth + 2} paddingLeft={2}>
                   {shortNames[index]}
                 </Box>
               )}
 
-              <Box width={longWidth + indent} paddingLeft={indent}>
+              <Box flexGrow={0} width={longWidth + longIndent} paddingLeft={longIndent}>
                 {longNames[index]}
               </Box>
 
-              <Box flexGrow={2} paddingLeft={2} textWrap="wrap">
-                {formatDescription(config, this.gatherOptionTags(config))}
+              <Box
+                flexGrow={1}
+                paddingLeft={2}
+                textWrap={this.getWrapType(desc.length, otherWidths + 2)}
+              >
+                {desc}
               </Box>
             </Box>
           );
@@ -161,7 +180,7 @@ export default class Help extends React.Component<HelpProps> {
     const typeWidth = getLongestWidth(types);
 
     return (
-      <Box flexDirection="column">
+      <Box marginBottom={1} flexDirection="column">
         <Header label={msg('cli:labelParams')} />
 
         {params.map((config, index) => {
@@ -169,18 +188,24 @@ export default class Help extends React.Component<HelpProps> {
             return null;
           }
 
+          const desc = config ? formatDescription(config, this.gatherParamTags(config)) : '';
+
           return (
             <Box key={`${labels[index]}-${index}`} flexDirection="row">
-              <Box width={labelWidth + 2} paddingLeft={2} justifyContent="flex-end">
+              <Box flexGrow={0} width={labelWidth + 2} paddingLeft={2} justifyContent="flex-end">
                 {labels[index]}
               </Box>
 
-              <Box width={typeWidth + 1} paddingLeft={1}>
+              <Box flexGrow={0} width={typeWidth + 1} paddingLeft={1}>
                 {types[index]}
               </Box>
 
-              <Box flexGrow={2} paddingLeft={2} textWrap="wrap">
-                {config ? formatDescription(config, this.gatherParamTags(config)) : ''}
+              <Box
+                flexGrow={1}
+                paddingLeft={2}
+                textWrap={this.getWrapType(desc.length, labelWidth + typeWidth + 5)}
+              >
+                {desc}
               </Box>
             </Box>
           );
@@ -191,7 +216,7 @@ export default class Help extends React.Component<HelpProps> {
 
   renderUsage(usage: string | string[]) {
     return (
-      <Box flexDirection="column">
+      <Box marginBottom={1} flexDirection="column">
         <Header label={msg('cli:labelUsage')} />
 
         {toArray(usage).map(example => (
@@ -203,24 +228,28 @@ export default class Help extends React.Component<HelpProps> {
     );
   }
 
+  // eslint-disable-next-line complexity
   render() {
     const { commands, options, header, params, config } = this.props;
     const hasDesc = Boolean(config?.description);
     const hasUsage = Boolean(config?.usage && config.usage.length > 0);
+    const hasParams = Boolean(params && params.length > 0);
+    const hasCommands = Boolean(commands && Object.keys(commands).length > 0);
+    const hasOptions = Boolean(options && Object.keys(options).length > 0);
 
     return (
-      <Box flexDirection="column">
-        {(hasDesc || hasUsage) && header && <Header leading label={header} />}
+      <Box marginTop={1} flexDirection="column">
+        {(hasDesc || hasUsage) && header && <Header label={header} />}
 
-        {hasDesc && <Box>{formatDescription(config!)}</Box>}
+        {hasDesc && <Box marginBottom={1}>{formatDescription(config!)}</Box>}
 
         {hasUsage && this.renderUsage(config?.usage!)}
 
-        {params && this.renderParams(params)}
+        {hasParams && this.renderParams(params!)}
 
-        {commands && this.renderCommands(commands)}
+        {hasCommands && this.renderCommands(commands!)}
 
-        {options && this.renderOptions(options)}
+        {hasOptions && this.renderOptions(options!)}
       </Box>
     );
   }

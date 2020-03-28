@@ -62,7 +62,7 @@ export default class Failure extends React.Component<FailureProps> {
           </Style>
         </Box>
 
-        <Box paddingLeft={2}>
+        <Box marginBottom={1} paddingLeft={2}>
           <Style type="muted">{cmd.replace(arg, applyStyle(arg, type))}</Style>
         </Box>
       </>
@@ -99,7 +99,7 @@ export default class Failure extends React.Component<FailureProps> {
     }
 
     return (
-      <Box flexDirection="column">
+      <Box marginBottom={1} flexDirection="column">
         <Header label={msg('cli:labelWarnings')} type="warning" />
 
         {warnings.map(warn => (
@@ -117,9 +117,11 @@ export default class Failure extends React.Component<FailureProps> {
 
     return (
       <Box flexDirection="column">
-        <Header leading label={msg('cli:labelError')} type="failure" />
+        <Header label={msg('cli:labelError')} type="failure" />
 
-        <Box paddingLeft={2}>{error.message}</Box>
+        <Box marginBottom={1} paddingLeft={2}>
+          {error.message}
+        </Box>
 
         {this.renderCodeFrame()}
 

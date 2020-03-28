@@ -46,8 +46,9 @@ describe('Command', () => {
         help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
         locale: {
           default: 'en',
-          description: 'Display output in the chosen locale (e.g. en, en-US)',
+          description: 'Display output in the chosen locale',
           type: 'string',
+          validate: expect.any(Function),
         },
         version: { description: 'Display version number', short: 'v', type: 'boolean' },
       });
@@ -95,8 +96,9 @@ describe('Command', () => {
           help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
           locale: {
             default: 'en',
-            description: 'Display output in the chosen locale (e.g. en, en-US)',
+            description: 'Display output in the chosen locale',
             type: 'string',
+            validate: expect.any(Function),
           },
           version: { description: 'Display version number', short: 'v', type: 'boolean' },
         }),
@@ -159,8 +161,9 @@ describe('Command', () => {
           },
           locale: {
             default: 'en',
-            description: 'Display output in the chosen locale (e.g. en, en-US)',
+            description: 'Display output in the chosen locale',
             type: 'string',
+            validate: expect.any(Function),
           },
           version: {
             default: false,
@@ -213,8 +216,9 @@ describe('Command', () => {
         help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
         locale: {
           default: 'en',
-          description: 'Display output in the chosen locale (e.g. en, en-US)',
+          description: 'Display output in the chosen locale',
           type: 'string',
+          validate: expect.any(Function),
         },
         version: { description: 'Display version number', short: 'v', type: 'boolean' },
       });
@@ -259,8 +263,9 @@ describe('Command', () => {
         help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
         locale: {
           default: 'en',
-          description: 'Display output in the chosen locale (e.g. en, en-US)',
+          description: 'Display output in the chosen locale',
           type: 'string',
+          validate: expect.any(Function),
         },
         version: { description: 'Display version number', short: 'v', type: 'boolean' },
       });
@@ -294,8 +299,9 @@ describe('Command', () => {
           },
           locale: {
             default: 'en',
-            description: 'Display output in the chosen locale (e.g. en, en-US)',
+            description: 'Display output in the chosen locale',
             type: 'string',
+            validate: expect.any(Function),
           },
           version: {
             default: false,

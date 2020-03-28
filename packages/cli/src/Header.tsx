@@ -5,14 +5,12 @@ import { StyleType } from './types';
 
 export interface HeaderProps {
   label: string;
-  leading?: boolean;
-  trailing?: boolean;
   type?: StyleType;
 }
 
-export default function Header({ label, leading, trailing, type = 'default' }: HeaderProps) {
+export default function Header({ label, type = 'default' }: HeaderProps) {
   return (
-    <Box paddingTop={leading ? 0 : 1} paddingBottom={trailing ? 0 : 1}>
+    <Box marginBottom={1}>
       <Style inverted type={type}>
         {` ${label.toLocaleUpperCase()} `}
       </Style>

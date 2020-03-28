@@ -38,15 +38,15 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
 
   componentDidMount() {
     this.props.errBuffer.on(errLogs => {
-      this.setState({ errLogs }, () => {
-        this.setState({ errLogs: [] });
-      });
+      this.setState(prev => ({
+        errLogs: prev.errLogs.concat(errLogs),
+      }));
     });
 
     this.props.outBuffer.on(outLogs => {
-      this.setState({ outLogs }, () => {
-        this.setState({ outLogs: [] });
-      });
+      this.setState(prev => ({
+        outLogs: prev.outLogs.concat(outLogs),
+      }));
     });
   }
 
@@ -56,13 +56,13 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
   }
 
   render() {
-    const { error, errLogs, outLogs } = this.state;
+    const { error, outLogs } = this.state;
     const { children, exit, logger, program } = this.props;
 
     return (
       <Box>
         <ProgramContext.Provider value={{ exit, log: logger, program }}>
-          <Static>{[...errLogs, ...outLogs]}</Static>
+          <Static>{outLogs}</Static>
 
           {error ? <Failure error={error} /> : <Box>{children}</Box>}
         </ProgramContext.Provider>

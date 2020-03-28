@@ -60,7 +60,8 @@ export default class Program extends Contract<ProgramOptions> {
     this.outBuffer = new LogBuffer('stdout');
 
     this.logger = createLogger({
-      stderr: this.errBuffer,
+      // Use outBuffer until ink supports stderr
+      stderr: this.outBuffer,
       stdout: this.outBuffer,
     });
   }
@@ -338,31 +339,33 @@ export default class Program extends Contract<ProgramOptions> {
 
     const { stdin, stdout } = this.streams;
 
+    if (typeof result === 'string') {
+      stdout.write(result);
+
+      return exitCode;
+    }
+
     try {
       this.errBuffer.wrap();
       this.outBuffer.wrap();
 
-      if (typeof result === 'string') {
-        stdout.write(result);
-      } else {
-        await render(
-          <Wrapper
-            errBuffer={this.errBuffer}
-            exit={this.exit}
-            logger={this.logger}
-            outBuffer={this.outBuffer}
-            program={this.options}
-          >
-            {result}
-          </Wrapper>,
-          {
-            debug: process.env.NODE_ENV === 'test',
-            experimental: true,
-            stdin,
-            stdout,
-          },
-        ).waitUntilExit();
-      }
+      await render(
+        <Wrapper
+          errBuffer={this.errBuffer}
+          exit={this.exit}
+          logger={this.logger}
+          outBuffer={this.outBuffer}
+          program={this.options}
+        >
+          {result}
+        </Wrapper>,
+        {
+          debug: process.env.NODE_ENV === 'test',
+          experimental: true,
+          stdin,
+          stdout,
+        },
+      ).waitUntilExit();
     } finally {
       this.errBuffer.unwrap();
       this.outBuffer.unwrap();

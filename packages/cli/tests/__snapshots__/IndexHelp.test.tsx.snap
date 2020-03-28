@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<IndexHelp /> renders a banner 1`] = `
-" _____ _____ _____ _____ _____
+"
+ _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|
 | __ -|  |  |  |  |__   | | |
 |_____|_____|_____|_____| |_|
@@ -11,23 +12,27 @@ Boost v1.2.3 [90mboost[39m
 `;
 
 exports[`<IndexHelp /> renders a footer 1`] = `
-"Boost v1.2.3 [90mboost[39m
+"
+Boost v1.2.3 [90mboost[39m
 
 
 Powered by Boost CLI v1.2.3"
 `;
 
 exports[`<IndexHelp /> renders a header 1`] = `
-"Boost v1.2.3 [90mboost[39m
+"
+Boost v1.2.3 [90mboost[39m
 
 For more information, see https://github.com/milesj/boost
 "
 `;
 
 exports[`<IndexHelp /> renders children 1`] = `
-"Boost v1.2.3 [90mboost[39m
+"
+Boost v1.2.3 [90mboost[39m
 
-[30m[47m ABOUT [49m[39m
+
+[30m[47m TEST [49m[39m
 
 I am a command that does cool things.
 
@@ -50,31 +55,28 @@ I am a command that does cool things.
 [30m[47m OPTIONS [49m[39m
 
       --str [90mstring[39m                            Standard string option.
-      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with custom label.
-                                              [90m[deprecated][39m
+      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with custom label. [90m[deprecated][39m
       --flag                                  Standard boolean option.
-  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: \\"foo\\", \\"bar\\"
-                                              (default), \\"baz\\")
-  -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3,
-                                               4, 5, 6, 7, 8, 9, 10) [90m[deprecated][39m
-  -C, --numberCountable [90mnumber[39m                Number option that increments a count for each
-                                              occurence. (default: 10) [90m[counter][39m
+  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: \\"foo\\", \\"bar\\" (default), \\"baz\\")
+  -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) [90m[deprecated][39m
+  -C, --numberCountable [90mnumber[39m                Number option that increments a count for each occurence. (default: 10) [90m[counter][39m
       --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
-      --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact
-                                              number of values. [90m[multiple(10)][39m
+      --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number of values. [90m[multiple(10)][39m
   -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
-  -t, --no-truthyBool                         Flag that is on by default, so name should be
-                                              negated. (default: true)
-      --num [90mnumber[39m                            Standard number option."
+  -t, --no-truthyBool                         Flag that is on by default, so name should be negated. (default: true)
+      --num [90mnumber[39m                            Standard number option.
+"
 `;
 
 exports[`<IndexHelp /> renders with base props 1`] = `
-"Boost v1.2.3 [90mboost[39m
+"
+Boost v1.2.3 [90mboost[39m
 "
 `;
 
 exports[`<IndexHelp /> renders with everything 1`] = `
-" _____ _____ _____ _____ _____
+"
+ _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|
 | __ -|  |  |  |  |__   | | |
 |_____|_____|_____|_____| |_|
@@ -83,7 +85,8 @@ Boost v1.2.3 [90mboost[39m
 
 For more information, see https://github.com/milesj/boost
 
-[30m[47m ABOUT [49m[39m
+
+[30m[47m TEST [49m[39m
 
 I am a command that does cool things.
 
@@ -95,6 +98,7 @@ I am a command that does cool things.
 
   foo [90m<src>[39m [90m[dst][39m  This is a normal command with params.
   barbar           This is a deprecated command with no params. [90m[deprecated][39m
+
 
 Powered by Boost CLI v1.2.3"
 `;
