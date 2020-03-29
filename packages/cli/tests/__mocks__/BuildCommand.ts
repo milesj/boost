@@ -1,6 +1,6 @@
-import { Arg, Command, Config, GlobalArgumentOptions } from '../../src';
+import { Arg, Command, Config, GlobalOptions } from '../../src';
 
-export interface BuildOptions extends GlobalArgumentOptions {
+export interface BuildOptions extends GlobalOptions {
   dst: string;
   src: string;
 }

@@ -69,13 +69,13 @@ export interface ProgramContextType {
 
 export type RunResult = void | undefined | string | React.ReactElement;
 
-export interface GlobalArgumentOptions {
+export interface GlobalOptions {
   help: boolean;
   locale: string;
   version: boolean;
 }
 
-export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalArgumentOptions>>;
+export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOptions>>;
 
 export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
 

@@ -5,52 +5,59 @@ exports[`<Program /> errors for invalid version format 1`] = `"Invalid Program f
 exports[`<Program /> errors if bin is not kebab case 1`] = `"Invalid Program field \\"bin\\". String must be in kebab case. (pattern \\"^[a-z][\\\\x2D0-9a-z]+$\\")"`;
 
 exports[`<Program /> failure renders if an error is thrown 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Broken!
 "
 `;
 
 exports[`<Program /> failure renders when args parsing fails 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Unknown option \\"--foo\\" found.
 
   [31m┌───┐[39m
-  [90m[31m--foo[39m[90m[39m
+  [90mboost [31m--foo[39m[90m[39m
 "
 `;
 
 exports[`<Program /> failure renders when invalid command name passed 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Unknown command \\"prune\\". Did you mean \\"build\\"?
 "
 `;
 
 exports[`<Program /> failure renders when misspelt command name passed 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Unknown command \\"buld\\". Did you mean \\"build\\"?
 "
 `;
 
 exports[`<Program /> failure renders when no commands could be found 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Failed to determine a command to run.
 "
 `;
 
 exports[`<Program /> failure renders when no commands have been registered 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   No commands have been registered. At least 1 is required.
 "
 `;
 
 exports[`<Program /> failure renders with custom exit error 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Oops
 "
@@ -262,13 +269,42 @@ Build a project
 `;
 
 exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
-"[30m[41m ERROR [49m[39m
+"
+[30m[41m ERROR [49m[39m
 
   Locale must be in the format of \\"en\\" or \\"en-US\\".
 
-  [33m┌──────┐[39m
-  [90m[33m--locale[39m[90m wtf[39m
+  [33m      ┌──────┐[39m
+  [90mboost [33m--locale[39m[90m wtf[39m
 "
+`;
+
+exports[`<Program /> logging captures console and logger logs when rendering a component 1`] = `
+"Log
+[90mdebug[39m Debug
+[33mwarn[39m Warn
+[31merror[39m Error
+[35mtrace[39m Trace
+[36minfo[39m Info
+Console log
+Console error
+Component log
+[31merror[39m Component error
+Console component log
+Console component error
+Returned from component!"
+`;
+
+exports[`<Program /> logging captures console and logger logs when returning a string 1`] = `
+"Log
+[90mdebug[39m Debug
+[33mwarn[39m Warn
+[31merror[39m Error
+[35mtrace[39m Trace
+[36minfo[39m Info
+Console log
+Console error
+Returned from command!"
 `;
 
 exports[`<Program /> success can return an element that writes with ink 1`] = `"Hello!"`;

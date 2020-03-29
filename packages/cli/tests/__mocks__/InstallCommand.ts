@@ -1,6 +1,6 @@
-import { Arg, Config, Command, GlobalArgumentOptions } from '../../src';
+import { Arg, Config, Command, GlobalOptions } from '../../src';
 
-export interface InstallOptions extends GlobalArgumentOptions {
+export interface InstallOptions extends GlobalOptions {
   save: boolean;
 }
 

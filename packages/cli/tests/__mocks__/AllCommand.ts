@@ -1,6 +1,6 @@
-import { Arg, Config, Command, GlobalArgumentOptions } from '../../src';
+import { Arg, Config, Command, GlobalOptions } from '../../src';
 
-export interface AllOptions extends GlobalArgumentOptions {
+export interface AllOptions extends GlobalOptions {
   flag: boolean;
   num: number;
   nums: number[];

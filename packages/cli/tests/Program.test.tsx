@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box } from 'ink';
 import { ExitError } from '@boost/internal';
-import { Program, Command, Arg, OptionConfigMap } from '../src';
+import { Program, Command, Arg, OptionConfigMap, ProgramContext, ProgramContextType } from '../src';
 import { WriteStream, ReadStream } from './helpers';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
@@ -758,6 +758,71 @@ describe('<Program />', () => {
           expect(command.strsWithDefault).toEqual(['a', 'b', 'c']);
         });
       });
+    });
+  });
+
+  describe('logging', () => {
+    function Log() {
+      const ctx = useContext(ProgramContext) as ProgramContextType;
+
+      ctx.log('Component log');
+      ctx.log.error('Component error');
+
+      console.log('Console component log');
+      console.error('Console component error');
+
+      return <Box>Returned from component!</Box>;
+    }
+
+    class LogCommand extends Command {
+      static description = 'Description';
+
+      static path = 'log';
+
+      static options: OptionConfigMap = {
+        component: {
+          description: 'With component',
+          type: 'boolean',
+        },
+      };
+
+      component = false;
+
+      run() {
+        this.log('Log');
+        this.log.debug('Debug');
+        this.log.warn('Warn');
+        this.log.error('Error');
+        this.log.trace('Trace');
+        this.log.info('Info');
+
+        console.log('Console log');
+        console.error('Console error');
+
+        if (this.component) {
+          return <Log />;
+        }
+
+        return 'Returned from command!';
+      }
+    }
+
+    it('captures console and logger logs when rendering a component', async () => {
+      program.register(new LogCommand());
+
+      const exitCode = await program.run(['log', '--component']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(0);
+    });
+
+    it('captures console and logger logs when returning a string', async () => {
+      program.register(new LogCommand());
+
+      const exitCode = await program.run(['log']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(0);
     });
   });
 });

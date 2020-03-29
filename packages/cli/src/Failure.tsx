@@ -116,7 +116,7 @@ export default class Failure extends React.Component<FailureProps> {
     const { error } = this.props;
 
     return (
-      <Box flexDirection="column">
+      <Box marginTop={1} flexDirection="column">
         <Header label={msg('cli:labelError')} type="failure" />
 
         <Box marginBottom={1} paddingLeft={2}>

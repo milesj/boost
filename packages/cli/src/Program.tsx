@@ -26,7 +26,7 @@ import {
   CommandMetadata,
   CommandMetadataMap,
   ExitCode,
-  GlobalArgumentOptions,
+  GlobalOptions,
   ProgramOptions,
   ProgramStreams,
   RunResult,
@@ -89,7 +89,7 @@ export default class Program extends Contract<ProgramOptions> {
    * it will attempt to drill down from the parent command.
    * If no command can be found, `null` will be returned.
    */
-  getCommand<O extends GlobalArgumentOptions, P extends PrimitiveType[] = ArgList>(
+  getCommand<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(
     name: string,
   ): Command<O, P> | null {
     const names = name.split(':');
@@ -188,7 +188,7 @@ export default class Program extends Contract<ProgramOptions> {
    * while executing the found command.
    */
   async run(argv: Argv): Promise<ExitCode> {
-    this.commandLine = argv.join(' ');
+    this.commandLine = [this.options.bin, ...argv].join(' ');
 
     let exitCode: ExitCode;
 
@@ -248,7 +248,7 @@ export default class Program extends Contract<ProgramOptions> {
     command.log = this.logger;
     command.bootstrap();
 
-    return this.render(await command.run(...params), EXIT_PASS);
+    return this.render(() => command.run(...params), EXIT_PASS);
   }
 
   /**
@@ -301,7 +301,7 @@ export default class Program extends Contract<ProgramOptions> {
   /**
    * Parse the arguments list according to the number of commands that have been registered.
    */
-  protected parseArguments<O extends GlobalArgumentOptions, P extends PrimitiveType[] = ArgList>(
+  protected parseArguments<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(
     argv: Argv,
   ): Arguments<O, P> {
     if (Object.keys(this.commands).length === 0) {
@@ -332,13 +332,17 @@ export default class Program extends Contract<ProgramOptions> {
    * If a string has been returned, write it immediately.
    * If a React component, render with Ink and wait for it to finish.
    */
-  protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
+  protected async render(
+    result: RunResult | (() => RunResult | Promise<RunResult>),
+    exitCode: ExitCode = EXIT_PASS,
+  ): Promise<ExitCode> {
     if (!result) {
       return exitCode;
     }
 
     const { stdin, stdout } = this.streams;
 
+    // For simple strings, ignore react and the buffer
     if (typeof result === 'string') {
       this.errBuffer.flush();
       this.outBuffer.flush();
@@ -352,6 +356,8 @@ export default class Program extends Contract<ProgramOptions> {
       this.errBuffer.wrap();
       this.outBuffer.wrap();
 
+      const children = typeof result === 'function' ? await result() : result;
+
       await render(
         <Wrapper
           errBuffer={this.errBuffer}
@@ -360,7 +366,7 @@ export default class Program extends Contract<ProgramOptions> {
           outBuffer={this.outBuffer}
           program={this.options}
         >
-          {result}
+          {children as React.ReactElement}
         </Wrapper>,
         {
           debug: process.env.NODE_ENV === 'test',

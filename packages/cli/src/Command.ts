@@ -9,13 +9,7 @@ import {
 } from '@boost/args';
 import { Logger } from '@boost/log';
 import { msg, LOCALE_FORMAT } from './constants';
-import {
-  GlobalArgumentOptions,
-  Commandable,
-  CommandMetadata,
-  ExitHandler,
-  RunResult,
-} from './types';
+import { GlobalOptions, Commandable, CommandMetadata, ExitHandler, RunResult } from './types';
 import getConstructor from './metadata/getConstructor';
 import getInheritedOptions from './metadata/getInheritedOptions';
 import validateParams from './metadata/validateParams';
@@ -23,7 +17,7 @@ import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
 
 export default abstract class Command<
-  O extends GlobalArgumentOptions = GlobalArgumentOptions,
+  O extends GlobalOptions = GlobalOptions,
   P extends PrimitiveType[] = ArgList
 > implements Commandable<P> {
   static allowUnknownOptions: boolean = false;

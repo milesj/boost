@@ -87,4 +87,12 @@ describe('LogBuffer', () => {
 
     logSpy.mockRestore();
   });
+
+  it('flushes when being unwrapped', () => {
+    const spy = jest.spyOn(buffer, 'flush');
+
+    buffer.unwrap();
+
+    expect(spy).toHaveBeenCalled();
+  });
 });
