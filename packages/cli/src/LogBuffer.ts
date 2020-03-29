@@ -21,9 +21,9 @@ const CONSOLE_METHODS: { [K in StreamType]: ConsoleMethod[] } = {
 };
 
 export default class LogBuffer {
-  protected listener?: BufferListener;
+  logs: string[] = [];
 
-  protected logs: string[] = [];
+  protected listener?: BufferListener;
 
   protected timer?: NodeJS.Timeout;
 
@@ -36,24 +36,26 @@ export default class LogBuffer {
   }
 
   flush = () => {
-    if (this.listener) {
-      this.listener(this.logs);
-    } else {
-      this.logs.forEach(log => {
-        if (this.type === 'stderr') {
-          console.error(log);
-        } else {
-          console.log(log);
-        }
-      });
+    if (this.logs.length > 0) {
+      if (this.listener) {
+        this.listener(this.logs);
+      } else {
+        this.logs.forEach(log => {
+          if (this.type === 'stderr') {
+            console.error(log);
+          } else {
+            console.log(log);
+          }
+        });
+      }
+
+      this.logs = [];
     }
 
     if (this.timer) {
       clearTimeout(this.timer);
       delete this.timer;
     }
-
-    this.logs = [];
   };
 
   off() {
@@ -76,7 +78,7 @@ export default class LogBuffer {
 
   wrap() {
     CONSOLE_METHODS[this.type].forEach(method => {
-      const original = console[method].bind(console);
+      const original = console[method];
 
       console[method] = this.write;
 

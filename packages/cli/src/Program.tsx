@@ -340,6 +340,9 @@ export default class Program extends Contract<ProgramOptions> {
     const { stdin, stdout } = this.streams;
 
     if (typeof result === 'string') {
+      this.errBuffer.flush();
+      this.outBuffer.flush();
+
       stdout.write(result);
 
       return exitCode;
@@ -390,7 +393,11 @@ export default class Program extends Contract<ProgramOptions> {
     }
 
     return this.render(
-      <Failure commandLine={this.commandLine} error={error} warnings={validErrors} />,
+      <Failure
+        commandLine={this.commandLine}
+        error={error}
+        warnings={validErrors.filter(verror => verror !== error)}
+      />,
       error instanceof ExitError ? error.code : EXIT_FAIL,
     );
   }

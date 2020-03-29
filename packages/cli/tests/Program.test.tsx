@@ -205,6 +205,17 @@ describe('<Program />', () => {
     });
   });
 
+  describe('locale', () => {
+    it('errors for invalid `--locale`', async () => {
+      program.index(new BuildCommand());
+
+      const exitCode = await program.run(['--locale', 'wtf']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(1);
+    });
+  });
+
   describe('help', () => {
     class HelpCommand extends Command {
       static description = 'Description';
