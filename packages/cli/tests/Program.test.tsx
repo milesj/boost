@@ -280,7 +280,7 @@ describe('<Program />', () => {
   });
 
   describe('index', () => {
-    it('renders index help when no args passed', async () => {
+    it('executes index when no args passed', async () => {
       program.index(new BuildCommand());
 
       const exitCode = await program.run([]);

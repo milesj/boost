@@ -169,7 +169,7 @@ exports[`<Program /> help outputs help when \`--help\` is passed 1`] = `
 Boost v1.2.3 [90mboost[39m
 
 
-[30m[47m ABOUT [49m[39m
+[30m[47m BOOST [49m[39m
 
 Description
 
@@ -204,7 +204,7 @@ exports[`<Program /> help outputs help when \`-h\` is passed 1`] = `
 Boost v1.2.3 [90mboost[39m
 
 
-[30m[47m ABOUT [49m[39m
+[30m[47m BOOST [49m[39m
 
 Description
 
@@ -234,6 +234,8 @@ Description
 "
 `;
 
+exports[`<Program /> index executes index when no args passed 1`] = `"Build!"`;
+
 exports[`<Program /> index renders commands when no args passed 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
@@ -242,29 +244,6 @@ Boost v1.2.3 [90mboost[39m
 [30m[47m COMMANDS [49m[39m
 
   build          Build a project
-"
-`;
-
-exports[`<Program /> index renders index help when no args passed 1`] = `
-"
-Boost v1.2.3 [90mboost[39m
-
-
-[30m[47m ABOUT [49m[39m
-
-Build a project
-
-[30m[47m USAGE [49m[39m
-
-  $ build -S ./src -D ./lib
-
-[30m[47m OPTIONS [49m[39m
-
-  -D, --dst [90mstring[39m     Destination path
-  -S, --src [90mstring[39m     Source path
-  -h, --help           Display help and usage menu
-      --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
-  -v, --version        Display version number
 "
 `;
 

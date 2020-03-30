@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
+import React from 'react';
 import {
   ArgList,
   PrimitiveType,
@@ -10,11 +11,13 @@ import {
 import { Logger } from '@boost/log';
 import { msg, LOCALE_FORMAT } from './constants';
 import { GlobalOptions, Commandable, CommandMetadata, ExitHandler, RunResult } from './types';
+import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import getInheritedOptions from './metadata/getInheritedOptions';
 import validateParams from './metadata/validateParams';
 import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
+import Help from './Help';
 
 export default abstract class Command<
   O extends GlobalOptions = GlobalOptions,
@@ -162,6 +165,23 @@ export default abstract class Command<
     this.subCommands[subPath] = command;
 
     return this;
+  }
+
+  /**
+   * Render a help menu for the current command.
+   */
+  renderHelp(): React.ReactElement {
+    const metadata = this.getMetadata();
+
+    return (
+      <Help
+        config={metadata}
+        commands={mapCommandMetadata(metadata.commands)}
+        header={metadata.path}
+        options={metadata.options}
+        params={metadata.params}
+      />
+    );
   }
 
   /**

@@ -106,6 +106,7 @@ export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
   getPath(): string;
   register(command: Commandable): this;
+  renderHelp(): string | React.ReactElement;
   run(...params: P): RunResult | Promise<RunResult>;
 }
 

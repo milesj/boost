@@ -20,11 +20,11 @@ import Failure from './Failure';
 import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
+import mapCommandMetadata from './helpers/mapCommandMetadata';
 import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 import {
   Commandable,
   CommandMetadata,
-  CommandMetadataMap,
   ExitCode,
   GlobalOptions,
   ProgramOptions,
@@ -215,7 +215,7 @@ export default class Program extends Contract<ProgramOptions> {
     const showHelp = argv.some(arg => arg === '-h' || arg === '--help');
 
     // Display index and or help
-    if (argv.length === 0 || (argv.length === 1 && showHelp)) {
+    if ((!this.indexCommand && argv.length === 0) || (argv.length === 1 && showHelp)) {
       return this.render(this.createIndex());
     }
 
@@ -227,10 +227,11 @@ export default class Program extends Contract<ProgramOptions> {
     // Parse the arguments
     const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
     const path = cmd.join(':') || this.indexCommand;
+    const command = this.getCommand(path)!;
 
     // Display command help
     if (options.help) {
-      return this.render(this.createHelp(path, path));
+      return this.render(command.renderHelp());
     }
 
     // Display errors
@@ -239,8 +240,6 @@ export default class Program extends Contract<ProgramOptions> {
     }
 
     // Apply arguments to command properties
-    const command = this.getCommand(path)!;
-
     Object.assign(command, options);
 
     command.rest = rest;
@@ -252,50 +251,19 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
-   * Render a command help menu using the command's metadata.
-   */
-  protected createHelp(path: string, header?: string): React.ReactElement {
-    const command = this.getCommand(path)!;
-    const metadata = command.getMetadata();
-
-    return (
-      <Help
-        config={metadata}
-        commands={this.mapCommandMetadata(metadata.commands)}
-        header={header}
-        options={metadata.options}
-        params={metadata.params}
-      />
-    );
-  }
-
-  /**
    * Render the index screen when no args are passed.
    * Should include banner, header, footer, and command (if applicable).
    */
   protected createIndex(): React.ReactElement {
+    const command = this.getCommand(this.indexCommand);
+
     return (
       <IndexHelp {...this.options}>
-        {this.indexCommand ? (
-          this.createHelp(this.indexCommand, msg('cli:labelAbout'))
-        ) : (
-          <Help header={msg('cli:labelAbout')} commands={this.mapCommandMetadata(this.commands)} />
+        {command?.renderHelp() || (
+          <Help header={msg('cli:labelAbout')} commands={mapCommandMetadata(this.commands)} />
         )}
       </IndexHelp>
     );
-  }
-
-  /**
-   * Map a list of commands to their registered metadata.
-   */
-  protected mapCommandMetadata(commands: CommandMetadata['commands']): CommandMetadataMap {
-    const map: CommandMetadataMap = {};
-
-    Object.entries(commands).forEach(([path, config]) => {
-      map[path] = config.getMetadata();
-    });
-
-    return map;
   }
 
   /**
@@ -336,10 +304,6 @@ export default class Program extends Contract<ProgramOptions> {
     result: RunResult | (() => RunResult | Promise<RunResult>),
     exitCode: ExitCode = EXIT_PASS,
   ): Promise<ExitCode> {
-    if (!result) {
-      return exitCode;
-    }
-
     const { stdin, stdout } = this.streams;
 
     // For simple strings, ignore react and the buffer
