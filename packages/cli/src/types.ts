@@ -79,10 +79,12 @@ export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOpti
 
 export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
 
+export type CommandPath = string;
+
 export interface CommandConfig extends BaseCommandConfig {
   options?: OptionConfigMap;
   params?: ParamConfigList;
-  path?: string; // Canonical name used on the command line
+  path?: CommandPath; // Canonical name used on the command line
 }
 
 export interface CommandConfigMap {
@@ -104,7 +106,7 @@ export interface CommandMetadataMap {
 
 export interface Commandable<P extends unknown[] = unknown[]> {
   getMetadata(): CommandMetadata;
-  getPath(): string;
+  getPath(): CommandPath;
   register(command: Commandable): this;
   renderHelp(): string | React.ReactElement;
   run(...params: P): RunResult | Promise<RunResult>;

@@ -45,6 +45,36 @@ class BoostCommand extends Command {
   }
 }
 
+class ErrorCommand extends Command {
+  static description = 'Description';
+
+  static path = 'boost';
+
+  run(): Promise<void> {
+    throw new Error('Broken!');
+  }
+}
+
+class StringCommand extends Command {
+  static description = 'Description';
+
+  static path = 'string';
+
+  run() {
+    return 'Hello!';
+  }
+}
+
+class ComponentCommand extends Command {
+  static description = 'Description';
+
+  static path = 'comp';
+
+  run() {
+    return <Box>Hello!</Box>;
+  }
+}
+
 describe('<Program />', () => {
   let program: Program;
   let stderr: WriteStream;
@@ -91,16 +121,32 @@ describe('<Program />', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  it('can exit', () => {
-    expect(() => {
-      program.exit('Oops');
-    }).toThrow(new ExitError('Oops', 1));
-  });
+  describe('exit', () => {
+    it('can exit', () => {
+      expect(() => {
+        program.exit('Oops');
+      }).toThrow(new ExitError('Oops', 1));
+    });
 
-  it('can exit with a custom code', () => {
-    expect(() => {
-      program.exit('Oops', 10);
-    }).toThrow(new ExitError('Oops', 10));
+    it('can exit with a custom code', () => {
+      expect(() => {
+        program.exit('Oops', 10);
+      }).toThrow(new ExitError('Oops', 10));
+    });
+
+    it('emits `onExit` event', () => {
+      const spy = jest.fn();
+
+      program.onExit.listen(spy);
+
+      try {
+        program.exit('Oops', 10);
+      } catch {
+        // Ignore
+      }
+
+      expect(spy).toHaveBeenCalledWith('Oops', 10);
+    });
   });
 
   describe('commands', () => {
@@ -182,6 +228,26 @@ describe('<Program />', () => {
 
       expect(program.getCommandPaths()).toEqual(['client']);
       expect(program.getCommandPaths(true)).toEqual(['client', 'client:build', 'client:install']);
+    });
+
+    it('emits `onCommandRegistered` event', () => {
+      const spy = jest.fn();
+      const cmd = new ClientCommand();
+
+      program.onCommandRegistered.listen(spy);
+      program.register(cmd);
+
+      expect(spy).toHaveBeenCalledWith('client', cmd);
+    });
+
+    it('emits `onCommandRegistered` event for index command', () => {
+      const spy = jest.fn();
+      const cmd = new ClientCommand();
+
+      program.onCommandRegistered.listen(spy);
+      program.index(cmd);
+
+      expect(spy).toHaveBeenCalledWith('client', cmd);
     });
   });
 
@@ -277,6 +343,28 @@ describe('<Program />', () => {
 
       expect(stdout.get()).toMatchSnapshot();
     });
+
+    it('emits `onHelp` event', async () => {
+      const spy = jest.fn();
+
+      program.onHelp.listen(spy);
+      program.register(new HelpCommand());
+
+      await program.run(['boost', '--help']);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('emits `onHelp` event for index', async () => {
+      const spy = jest.fn();
+
+      program.onHelp.listen(spy);
+      program.index(new HelpCommand());
+
+      await program.run(['--help']);
+
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('index', () => {
@@ -348,16 +436,6 @@ describe('<Program />', () => {
     });
 
     it('renders if an error is thrown', async () => {
-      class ErrorCommand extends Command {
-        static description = 'Description';
-
-        static path = 'boost';
-
-        run(): Promise<void> {
-          throw new Error('Broken!');
-        }
-      }
-
       program.register(new ErrorCommand());
 
       const exitCode = await program.run(['boost']);
@@ -385,6 +463,32 @@ describe('<Program />', () => {
 
       expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(123);
+    });
+
+    it('emits `onBeforeRun` and `onAfterRun` events', async () => {
+      const beforeSpy = jest.fn();
+      const afterSpy = jest.fn();
+
+      program.onBeforeRun.listen(beforeSpy);
+      program.onAfterRun.listen(afterSpy);
+
+      program.register(new ErrorCommand());
+
+      await program.run(['boost']);
+
+      expect(beforeSpy).toHaveBeenCalledWith(['boost']);
+      expect(afterSpy).toHaveBeenCalledWith(new Error('Broken!'));
+    });
+
+    it('emits `onCommandNotFound` event', async () => {
+      const spy = jest.fn();
+
+      program.onCommandNotFound.listen(spy);
+      program.register(new BuildCommand());
+
+      await program.run(['install', 'foo', 'bar']);
+
+      expect(spy).toHaveBeenCalledWith(['install', 'foo', 'bar'], 'install');
     });
   });
 
@@ -474,16 +578,6 @@ describe('<Program />', () => {
     });
 
     it('can return a string that writes directly to stream', async () => {
-      class StringCommand extends Command {
-        static description = 'Description';
-
-        static path = 'string';
-
-        run() {
-          return 'Hello!';
-        }
-      }
-
       program.register(new StringCommand());
 
       await program.run(['string']);
@@ -492,21 +586,51 @@ describe('<Program />', () => {
     });
 
     it('can return an element that writes with ink', async () => {
-      class ComponentCommand extends Command {
-        static description = 'Description';
-
-        static path = 'comp';
-
-        run() {
-          return <Box>Hello!</Box>;
-        }
-      }
-
       program.register(new ComponentCommand());
 
       await program.run(['comp']);
 
       expect(stdout.get()).toMatchSnapshot();
+    });
+
+    it('emits `onBeforeRun` and `onAfterRun` events', async () => {
+      const beforeSpy = jest.fn();
+      const afterSpy = jest.fn();
+
+      program.onBeforeRun.listen(beforeSpy);
+      program.onAfterRun.listen(afterSpy);
+      program.register(new BoostCommand());
+
+      await program.run(['boost', 'foo', 'bar']);
+
+      expect(beforeSpy).toHaveBeenCalledWith(['boost', 'foo', 'bar']);
+      expect(afterSpy).toHaveBeenCalled();
+    });
+
+    it('emits `onCommandFound` event', async () => {
+      const spy = jest.fn();
+      const cmd = new BoostCommand();
+
+      program.onCommandFound.listen(spy);
+      program.register(cmd);
+
+      await program.run(['boost', 'foo', 'bar']);
+
+      expect(spy).toHaveBeenCalledWith(['boost', 'foo', 'bar'], 'boost', cmd);
+    });
+
+    it('emits `onBeforeRender` and `onAfterRender` events for components', async () => {
+      const beforeSpy = jest.fn();
+      const afterSpy = jest.fn();
+
+      program.onBeforeRender.listen(beforeSpy);
+      program.onAfterRender.listen(afterSpy);
+      program.index(new ComponentCommand());
+
+      await program.run([]);
+
+      expect(beforeSpy).toHaveBeenCalledWith(<Box>Hello!</Box>);
+      expect(afterSpy).toHaveBeenCalled();
     });
   });
 

@@ -11,6 +11,7 @@ import {
   ValidationError,
 } from '@boost/args';
 import { Contract, Predicates } from '@boost/common';
+import { Event } from '@boost/event';
 import { Logger, createLogger } from '@boost/log';
 import { ExitError, env } from '@boost/internal';
 import levenary from 'levenary';
@@ -25,6 +26,7 @@ import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 import {
   Commandable,
   CommandMetadata,
+  CommandPath,
   ExitCode,
   GlobalOptions,
   ProgramOptions,
@@ -33,6 +35,24 @@ import {
 } from './types';
 
 export default class Program extends Contract<ProgramOptions> {
+  readonly onAfterRender = new Event('after-render');
+
+  readonly onAfterRun = new Event<[Error?]>('after-run');
+
+  readonly onBeforeRender = new Event<[RunResult]>('before-render');
+
+  readonly onBeforeRun = new Event<[Argv]>('before-run');
+
+  readonly onCommandFound = new Event<[Argv, CommandPath, Commandable]>('command-found');
+
+  readonly onCommandNotFound = new Event<[Argv, CommandPath]>('command-not-found');
+
+  readonly onCommandRegistered = new Event<[CommandPath, Commandable]>('command-registered');
+
+  readonly onExit = new Event<[string, ExitCode]>('exit');
+
+  readonly onHelp = new Event<[CommandPath?]>('help');
+
   protected commands: CommandMetadata['commands'] = {};
 
   protected commandLine: string = '';
@@ -141,9 +161,11 @@ export default class Program extends Contract<ProgramOptions> {
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
-  exit(message: string, code?: ExitCode) {
-    throw new ExitError(message, code || 1);
-  }
+  exit = (message: string, code: ExitCode = 1) => {
+    this.onExit.emit([message, code]);
+
+    throw new ExitError(message, code);
+  };
 
   /**
    * Register a command and its canonical path as the index or primary command.
@@ -180,6 +202,8 @@ export default class Program extends Contract<ProgramOptions> {
 
     this.commands[path] = command;
 
+    this.onCommandRegistered.emit([path, command]);
+
     return this;
   }
 
@@ -188,14 +212,20 @@ export default class Program extends Contract<ProgramOptions> {
    * while executing the found command.
    */
   async run(argv: Argv): Promise<ExitCode> {
+    this.onBeforeRun.emit([argv]);
+
     this.commandLine = [this.options.bin, ...argv].join(' ');
 
     let exitCode: ExitCode;
 
     try {
       exitCode = await this.doRun(argv);
+
+      this.onAfterRun.emit([]);
     } catch (error) {
       exitCode = await this.renderErrors([error]);
+
+      this.onAfterRun.emit([error]);
     }
 
     // istanbul ignore next
@@ -216,6 +246,8 @@ export default class Program extends Contract<ProgramOptions> {
 
     // Display index and or help
     if ((!this.indexCommand && argv.length === 0) || (argv.length === 1 && showHelp)) {
+      this.onHelp.emit([]);
+
       return this.render(this.createIndex());
     }
 
@@ -229,8 +261,12 @@ export default class Program extends Contract<ProgramOptions> {
     const path = cmd.join(':') || this.indexCommand;
     const command = this.getCommand(path)!;
 
+    this.onCommandFound.emit([argv, path, command]);
+
     // Display command help
     if (options.help) {
+      this.onHelp.emit([path]);
+
       return this.render(command.renderHelp());
     }
 
@@ -255,11 +291,9 @@ export default class Program extends Contract<ProgramOptions> {
    * Should include banner, header, footer, and command (if applicable).
    */
   protected createIndex(): React.ReactElement {
-    const command = this.getCommand(this.indexCommand);
-
     return (
       <IndexHelp {...this.options}>
-        {command?.renderHelp() || (
+        {this.getCommand(this.indexCommand)?.renderHelp() || (
           <Help header={msg('cli:labelAbout')} commands={mapCommandMetadata(this.commands)} />
         )}
       </IndexHelp>
@@ -284,6 +318,8 @@ export default class Program extends Contract<ProgramOptions> {
       return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
     } catch {
       const [possibleCmd] = argv.filter(arg => !arg.startsWith('-'));
+
+      this.onCommandNotFound.emit([argv, possibleCmd]);
 
       if (possibleCmd) {
         const closestCmd = levenary(possibleCmd, this.getCommandPaths());
@@ -320,7 +356,9 @@ export default class Program extends Contract<ProgramOptions> {
       this.errBuffer.wrap();
       this.outBuffer.wrap();
 
-      const children = typeof result === 'function' ? await result() : result;
+      const data = typeof result === 'function' ? await result() : result;
+
+      this.onBeforeRender.emit([data]);
 
       await render(
         <Wrapper
@@ -330,7 +368,7 @@ export default class Program extends Contract<ProgramOptions> {
           outBuffer={this.outBuffer}
           program={this.options}
         >
-          {children as React.ReactElement}
+          {data as React.ReactElement}
         </Wrapper>,
         {
           debug: process.env.NODE_ENV === 'test',
@@ -339,6 +377,8 @@ export default class Program extends Contract<ProgramOptions> {
           stdout,
         },
       ).waitUntilExit();
+
+      this.onAfterRender.emit([]);
     } finally {
       this.errBuffer.unwrap();
       this.outBuffer.unwrap();
