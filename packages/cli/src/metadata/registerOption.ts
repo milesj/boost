@@ -1,4 +1,5 @@
 import { OptionConfig } from '@boost/args';
+import { RuntimeError } from '@boost/internal';
 import getConstructor from './getConstructor';
 import Command from '../Command';
 import { RESERVED_OPTIONS } from '../constants';
@@ -18,7 +19,7 @@ export default function registerOption<O extends OptionConfig>(
   }
 
   if (RESERVED_OPTIONS.includes(key)) {
-    throw new Error(`Option "${key}" is a reserved name and cannot be used.`);
+    throw new RuntimeError('cli', 'CLI_OPTION_RESERVED', [key]);
   }
 
   ctor.options[key] = config;

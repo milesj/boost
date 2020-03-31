@@ -6,6 +6,7 @@ import formatType from './formatType';
 import formatValue from './formatValue';
 import getLongestWidth from './getLongestWidth';
 import loadTheme from './loadTheme';
+import mapCommandMetadata from './mapCommandMetadata';
 
 export {
   applyMarkdown,
@@ -16,4 +17,5 @@ export {
   formatValue,
   getLongestWidth,
   loadTheme,
+  mapCommandMetadata,
 };

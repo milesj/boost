@@ -13,7 +13,7 @@ import {
 import { Contract, Predicates } from '@boost/common';
 import { Event } from '@boost/event';
 import { Logger, createLogger } from '@boost/log';
-import { ExitError, env } from '@boost/internal';
+import { ExitError, env, RuntimeError } from '@boost/internal';
 import levenary from 'levenary';
 import LogBuffer from './LogBuffer';
 import Command from './Command';
@@ -173,9 +173,7 @@ export default class Program extends Contract<ProgramOptions> {
    */
   index(command: Commandable): this {
     if (Object.keys(this.commands).length > 0) {
-      throw new Error(
-        'Other commands have been registered. Cannot mix index and non-index commands.',
-      );
+      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_NONINDEX');
     }
 
     this.register(command);
@@ -193,11 +191,9 @@ export default class Program extends Contract<ProgramOptions> {
     const path = command.getPath();
 
     if (this.commands[path]) {
-      throw new Error(`A command has already been registered with the canonical path "${path}".`);
+      throw new RuntimeError('cli', 'CLI_COMMAND_EXISTS', [path]);
     } else if (this.indexCommand) {
-      throw new Error(
-        'An index command has been registered. Cannot mix index and non-index commands.',
-      );
+      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_INDEX');
     }
 
     this.commands[path] = command;
@@ -307,7 +303,7 @@ export default class Program extends Contract<ProgramOptions> {
     argv: Argv,
   ): Arguments<O, P> {
     if (Object.keys(this.commands).length === 0) {
-      throw new Error('No commands have been registered. At least 1 is required.');
+      throw new RuntimeError('cli', 'CLI_COMMAND_NONE_REGISTERED');
     }
 
     if (this.indexCommand) {
@@ -324,10 +320,10 @@ export default class Program extends Contract<ProgramOptions> {
       if (possibleCmd) {
         const closestCmd = levenary(possibleCmd, this.getCommandPaths());
 
-        throw new Error(`Unknown command "${possibleCmd}". Did you mean "${closestCmd}"?`);
+        throw new RuntimeError('cli', 'CLI_COMMAND_UNKNOWN', [possibleCmd, closestCmd]);
       }
 
-      throw new Error('Failed to determine a command to run.');
+      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_RUN');
     }
   }
 

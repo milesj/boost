@@ -9,6 +9,7 @@ import {
   OptionConfigMap,
 } from '@boost/args';
 import { Logger } from '@boost/log';
+import { RuntimeError } from '@boost/internal';
 import { msg, LOCALE_FORMAT } from './constants';
 import { GlobalOptions, Commandable, CommandMetadata, ExitHandler, RunResult } from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
@@ -155,11 +156,11 @@ export default abstract class Command<
     const subPath = command.getPath();
 
     if (!subPath.startsWith(path)) {
-      throw new Error(`Sub-command "${subPath}" must start with "${path}:".`);
+      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_SUBPATH', [subPath, path]);
     }
 
     if (this.subCommands[subPath] && this.subCommands[subPath] !== command) {
-      throw new Error(`A command already exists with the canonical path "${subPath}".`);
+      throw new RuntimeError('cli', 'CLI_COMMAND_EXISTS', [subPath]);
     }
 
     this.subCommands[subPath] = command;

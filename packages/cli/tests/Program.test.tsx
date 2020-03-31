@@ -164,7 +164,7 @@ describe('<Program />', () => {
       expect(() => {
         program.register(command);
         program.register(command);
-      }).toThrow('A command has already been registered with the canonical path "build".');
+      }).toThrow('A command already exists with the canonical path "build".');
     });
 
     it('returns null if command does not exist', () => {
