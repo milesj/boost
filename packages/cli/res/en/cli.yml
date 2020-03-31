@@ -2,7 +2,9 @@ errorInvalidLocale: Locale must be in the format of "en" or "en-US".
 labelAbout: About
 labelCommands: Commands
 labelError: Error
+labelOption: Option "{{name}}"
 labelOptions: Options
+labelParam: Param "{{name}}"
 labelParams: Params
 labelStackTrace: Stack Trace
 labelUsage: Usage

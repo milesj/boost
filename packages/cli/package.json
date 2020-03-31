@@ -1,14 +1,16 @@
 {
   "name": "@boost/cli",
   "version": "0.0.0",
-  "description": "A type-safe and powerful command line interface application builder.",
+  "description": "A type-safe and powerful command line interface, built on React and Ink.",
   "keywords": [
     "boost",
     "args",
     "cli",
     "command",
     "line",
-    "interface"
+    "interface",
+    "react",
+    "ink"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -37,6 +39,6 @@
   },
   "devDependencies": {
     "ink": "^2.7.1",
-    "react": "^16.13.0"
+    "react": "^16.13.1"
   }
 }
