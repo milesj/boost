@@ -11,6 +11,8 @@ import ClientCommand from './__mocks__/ClientCommand';
 import AllClassicCommand from './__mocks__/AllClassicCommand';
 import BuildClassicCommand from './__mocks__/BuildClassicCommand';
 
+jest.mock('term-size');
+
 // waitUntilExit() never resolves, so we need to mock the entire module ;/
 jest.mock('ink', () => {
   const { render, Box: Boxer, Color, Static } = require.requireActual('ink');

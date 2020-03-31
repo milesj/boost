@@ -3,6 +3,8 @@ import { Help } from '../src';
 import { commands, options, params } from './__mocks__/args';
 import { renderToString, renderToStrippedString } from './helpers';
 
+jest.mock('term-size');
+
 describe('<Help />', () => {
   it('renders everything', async () => {
     expect(

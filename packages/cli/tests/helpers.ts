@@ -15,12 +15,11 @@ export class ReadStream {
 }
 
 export class WriteStream {
-  columns: number;
+  columns: number = 80;
 
   output: string;
 
-  constructor({ columns }: { columns?: number } = {}) {
-    this.columns = columns || 100;
+  constructor() {
     this.output = '';
   }
 
@@ -33,11 +32,8 @@ export class WriteStream {
   }
 }
 
-export async function renderToString(
-  element: React.ReactElement,
-  columns?: number,
-): Promise<string> {
-  const stdout = new WriteStream({ columns });
+export async function renderToString(element: React.ReactElement): Promise<string> {
+  const stdout = new WriteStream();
 
   await render(element, {
     debug: true,
@@ -48,9 +44,6 @@ export async function renderToString(
   return stdout.get();
 }
 
-export async function renderToStrippedString(
-  element: React.ReactElement,
-  columns?: number,
-): Promise<string> {
-  return stripAnsi(await renderToString(element, columns));
+export async function renderToStrippedString(element: React.ReactElement): Promise<string> {
+  return stripAnsi(await renderToString(element));
 }

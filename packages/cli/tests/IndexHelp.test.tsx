@@ -3,6 +3,8 @@ import { IndexHelp, Help } from '../src';
 import { renderToString } from './helpers';
 import { commands, options, params } from './__mocks__/args';
 
+jest.mock('term-size');
+
 const banner = ` _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|
 | __ -|  |  |  |  |__   | | |

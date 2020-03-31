@@ -176,25 +176,39 @@ Description
 [30m[47m PARAMS [49m[39m
 
      0 [90mstring[39m    Complex param with many tags. [90m[deprecated, required][39m
-  path [90mstring[39m    This is a string param thats required. (default: \\"value\\") [90m[required][39m
+  path [90mstring[39m    This is a string param thats required. (default: \\"value\\")
+                  [90m[required][39m
     ms [90mnumber[39m    And this a number param with a label. (default: 300)
      3 [90mboolean[39m   And finally a boolean param. (default: true) [90m[deprecated][39m
 
 [30m[47m OPTIONS [49m[39m
 
       --str [90mstring[39m                            Standard string option.
-      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with custom label. [90m[deprecated][39m
+      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option
+                                              with custom label.
       --flag                                  Standard boolean option.
-  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: \\"foo\\", \\"bar\\" (default), \\"baz\\")
-  -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) [90m[deprecated][39m
-  -C, --numberCountable [90mnumber[39m                Number option that increments a count for each occurence. (default: 10) [90m[counter][39m
-      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
-      --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number of values. [90m[multiple(10)][39m
-  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
-  -t, --no-truthyBool                         Flag that is on by default, so name should be negated. (default: true)
+  -s, --stringChoices [90mstring[39m                  Choice list with strings.
+                                              (choices: \\"foo\\", \\"bar\\"
+                                              (default), \\"baz\\")
+  -n, --numberFixedList [90mnumber[39m                A list of numbers to choose
+                                              from. (choices: 1, 2, 3, 4,
+                                              5, 6, 7, 8, 9, 10)
+  -C, --numberCountable [90mnumber[39m                Number option that
+                                              increments a count for each
+                                              occurence. (default: 10)
+      --deprecatedFlag                        A deprecated flag.
+                                              [90m[deprecated][39m
+      --numWithArity [90mnumber[][39m                 A multiple number option
+                                              that requires an exact
+                                              number of values.
+  -S, --strList [90mstring[][39m                      String option list.
+  -t, --no-truthyBool                         Flag that is on by default,
+                                              so name should be negated.
+                                              (default: true)
       --num [90mnumber[39m                            Standard number option.
   -h, --help                                  Display help and usage menu
-      --locale [90mstring[39m                         Display output in the chosen locale (default: \\"en\\")
+      --locale [90mstring[39m                         Display output in the chosen
+                                               locale (default: \\"en\\")
   -v, --version                               Display version number
 "
 `;
@@ -211,25 +225,39 @@ Description
 [30m[47m PARAMS [49m[39m
 
      0 [90mstring[39m    Complex param with many tags. [90m[deprecated, required][39m
-  path [90mstring[39m    This is a string param thats required. (default: \\"value\\") [90m[required][39m
+  path [90mstring[39m    This is a string param thats required. (default: \\"value\\")
+                  [90m[required][39m
     ms [90mnumber[39m    And this a number param with a label. (default: 300)
      3 [90mboolean[39m   And finally a boolean param. (default: true) [90m[deprecated][39m
 
 [30m[47m OPTIONS [49m[39m
 
       --str [90mstring[39m                            Standard string option.
-      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with custom label. [90m[deprecated][39m
+      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option
+                                              with custom label.
       --flag                                  Standard boolean option.
-  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: \\"foo\\", \\"bar\\" (default), \\"baz\\")
-  -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) [90m[deprecated][39m
-  -C, --numberCountable [90mnumber[39m                Number option that increments a count for each occurence. (default: 10) [90m[counter][39m
-      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
-      --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number of values. [90m[multiple(10)][39m
-  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
-  -t, --no-truthyBool                         Flag that is on by default, so name should be negated. (default: true)
+  -s, --stringChoices [90mstring[39m                  Choice list with strings.
+                                              (choices: \\"foo\\", \\"bar\\"
+                                              (default), \\"baz\\")
+  -n, --numberFixedList [90mnumber[39m                A list of numbers to choose
+                                              from. (choices: 1, 2, 3, 4,
+                                              5, 6, 7, 8, 9, 10)
+  -C, --numberCountable [90mnumber[39m                Number option that
+                                              increments a count for each
+                                              occurence. (default: 10)
+      --deprecatedFlag                        A deprecated flag.
+                                              [90m[deprecated][39m
+      --numWithArity [90mnumber[][39m                 A multiple number option
+                                              that requires an exact
+                                              number of values.
+  -S, --strList [90mstring[][39m                      String option list.
+  -t, --no-truthyBool                         Flag that is on by default,
+                                              so name should be negated.
+                                              (default: true)
       --num [90mnumber[39m                            Standard number option.
   -h, --help                                  Display help and usage menu
-      --locale [90mstring[39m                         Display output in the chosen locale (default: \\"en\\")
+      --locale [90mstring[39m                         Display output in the chosen
+                                               locale (default: \\"en\\")
   -v, --version                               Display version number
 "
 `;

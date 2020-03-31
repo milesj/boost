@@ -3,6 +3,7 @@ import { Style } from '../src';
 import loadTheme from '../src/helpers/loadTheme';
 import { renderToString } from './helpers';
 
+jest.mock('term-size');
 jest.mock('../src/helpers/loadTheme');
 
 describe('<Style />', () => {

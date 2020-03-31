@@ -7,6 +7,8 @@ import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
 import { Command, Arg } from '../src';
 
+jest.mock('term-size');
+
 describe('Command', () => {
   describe('declarative', () => {
     it('inherits metadata from @Config and sets static properties', () => {

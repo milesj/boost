@@ -3,6 +3,8 @@ import { ParseError, ValidationError } from '@boost/args';
 import { Failure } from '../src';
 import { renderToString, renderToStrippedString } from './helpers';
 
+jest.mock('term-size');
+
 describe('<Failure />', () => {
   it('renders a common error', async () => {
     expect(
@@ -72,7 +74,7 @@ describe('<Failure />', () => {
   });
 
   it('reduces command line by half when index appears off screen', async () => {
-    const line = `bin --foo value --bar "${'w'.repeat(200)}" --flag=123 -gSA "${'m'.repeat(75)}"`;
+    const line = `bin --foo value --bar "${'w'.repeat(100)}" --flag=123 -gSA "${'m'.repeat(75)}"`;
 
     const error = new ParseError(
       'Flags and short option groups may not use inline values.',
