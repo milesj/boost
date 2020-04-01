@@ -14,8 +14,8 @@ exports[`<Failure /> reduces command line by half when index appears off screen 
 
   Flags and short option groups may not use inline values.
 
-                                               ┌────────┐
-  … wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\\" --flag=123 -gSA \\"mmmmmmmmmmmmmmmm …
+                                                 ┌────────┐
+  … wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\\" --flag=123 -gSA \\"mmmmmmmmmmmmmm …
 "
 `;
 
@@ -41,8 +41,8 @@ exports[`<Failure /> renders a parse error with a command line 1`] = `
 
   Flags and short option groups may not use inline values.
 
-                  ┌────────┐
-  bin --foo value --flag=123 -gSA
+                    ┌────────┐
+  boost --foo value --flag=123 -gSA
 "
 `;
 
@@ -60,8 +60,8 @@ exports[`<Failure /> renders a validation error with a command line 1`] = `
 
   Not enough arity arguments.
 
-      ┌───┐
-  bin --foo value --flag=123 -gSA
+        ┌───┐
+  boost --foo value --flag=123 -gSA
 "
 `;
 

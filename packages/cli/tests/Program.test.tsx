@@ -933,22 +933,38 @@ describe('<Program />', () => {
       }
     }
 
-    it('captures console and logger logs when rendering a component', async () => {
+    it('handles logging when rendering a component', async () => {
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
       program.register(new LogCommand());
 
       const exitCode = await program.run(['log', '--component']);
 
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(errSpy).toHaveBeenCalledTimes(1);
       expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(0);
+
+      logSpy.mockRestore();
+      errSpy.mockRestore();
     });
 
-    it('captures console and logger logs when returning a string', async () => {
+    it('handles logging when returning a string', async () => {
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
       program.register(new LogCommand());
 
       const exitCode = await program.run(['log']);
 
+      expect(logSpy).toHaveBeenCalledTimes(7);
+      expect(errSpy).toHaveBeenCalledTimes(1); // Until ink supports stderr
       expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(0);
+
+      logSpy.mockRestore();
+      errSpy.mockRestore();
     });
   });
 });

@@ -18,7 +18,7 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 
   Unknown option \\"--foo\\" found.
 
-  [31m┌───┐[39m
+  [31m      ┌───┐[39m
   [90mboost [31m--foo[39m[90m[39m
 "
 `;
@@ -286,15 +286,13 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 "
 `;
 
-exports[`<Program /> logging captures console and logger logs when rendering a component 1`] = `
+exports[`<Program /> logging handles logging when rendering a component 1`] = `
 "Log
 [90mdebug[39m Debug
 [33mwarn[39m Warn
 [31merror[39m Error
 [35mtrace[39m Trace
 [36minfo[39m Info
-Console log
-Console error
 Component log
 [31merror[39m Component error
 Console component log
@@ -302,17 +300,7 @@ Console component error
 Returned from component!"
 `;
 
-exports[`<Program /> logging captures console and logger logs when returning a string 1`] = `
-"Log
-[90mdebug[39m Debug
-[33mwarn[39m Warn
-[31merror[39m Error
-[35mtrace[39m Trace
-[36minfo[39m Info
-Console log
-Console error
-Returned from command!"
-`;
+exports[`<Program /> logging handles logging when returning a string 1`] = `"Returned from command!"`;
 
 exports[`<Program /> success can return an element that writes with ink 1`] = `"Hello!"`;
 

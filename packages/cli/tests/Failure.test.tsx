@@ -8,14 +8,18 @@ jest.mock('term-size');
 describe('<Failure />', () => {
   it('renders a common error', async () => {
     expect(
-      await renderToString(<Failure error={new Error('Something is broken!')} />),
+      await renderToString(<Failure error={new Error('Something is broken!')} binName="boost" />),
     ).toMatchSnapshot();
   });
 
   it('doesnt render code frame if a common error', async () => {
     expect(
       await renderToString(
-        <Failure error={new Error('Something is broken!')} commandLine="foo --bar" />,
+        <Failure
+          error={new Error('Something is broken!')}
+          binName="boost"
+          commandLine="foo --bar"
+        />,
       ),
     ).toMatchSnapshot();
   });
@@ -28,7 +32,7 @@ describe('<Failure />', () => {
 
     expect(
       await renderToString(
-        <Failure error={new Error('Something is broken!')} warnings={warnings} />,
+        <Failure error={new Error('Something is broken!')} binName="boost" warnings={warnings} />,
       ),
     ).toMatchSnapshot();
   });
@@ -40,7 +44,7 @@ describe('<Failure />', () => {
       16,
     );
 
-    expect(await renderToString(<Failure error={error} />)).toMatchSnapshot();
+    expect(await renderToString(<Failure binName="boost" error={error} />)).toMatchSnapshot();
   });
 
   it('renders a parse error with a command line', async () => {
@@ -52,7 +56,7 @@ describe('<Failure />', () => {
 
     expect(
       await renderToStrippedString(
-        <Failure error={error} commandLine="bin --foo value --flag=123 -gSA" />,
+        <Failure error={error} binName="boost" commandLine="--foo value --flag=123 -gSA" />,
       ),
     ).toMatchSnapshot();
   });
@@ -60,7 +64,7 @@ describe('<Failure />', () => {
   it('renders a validation error', async () => {
     const error = new ValidationError('Not enough arity arguments.', 'foo');
 
-    expect(await renderToString(<Failure error={error} />)).toMatchSnapshot();
+    expect(await renderToString(<Failure binName="boost" error={error} />)).toMatchSnapshot();
   });
 
   it('renders a validation error with a command line', async () => {
@@ -68,13 +72,13 @@ describe('<Failure />', () => {
 
     expect(
       await renderToStrippedString(
-        <Failure error={error} commandLine="bin --foo value --flag=123 -gSA" />,
+        <Failure error={error} binName="boost" commandLine="--foo value --flag=123 -gSA" />,
       ),
     ).toMatchSnapshot();
   });
 
   it('reduces command line by half when index appears off screen', async () => {
-    const line = `bin --foo value --bar "${'w'.repeat(100)}" --flag=123 -gSA "${'m'.repeat(75)}"`;
+    const line = `--foo value --bar "${'w'.repeat(100)}" --flag=123 -gSA "${'m'.repeat(75)}"`;
 
     const error = new ParseError(
       'Flags and short option groups may not use inline values.',
@@ -83,7 +87,7 @@ describe('<Failure />', () => {
     );
 
     expect(
-      await renderToStrippedString(<Failure error={error} commandLine={line} />),
+      await renderToStrippedString(<Failure binName="boost" error={error} commandLine={line} />),
     ).toMatchSnapshot();
   });
 });

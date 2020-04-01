@@ -11,6 +11,7 @@ import applyStyle from './helpers/applyStyle';
 import { StyleType } from './types';
 
 export interface FailureProps {
+  binName: string;
   commandLine?: string;
   error: Error;
   warnings?: Error[];
@@ -18,7 +19,7 @@ export interface FailureProps {
 
 export default class Failure extends React.Component<FailureProps> {
   renderCodeFrame() {
-    const { commandLine, error } = this.props;
+    const { binName, commandLine, error } = this.props;
 
     if (!commandLine) {
       return null;
@@ -26,20 +27,19 @@ export default class Failure extends React.Component<FailureProps> {
 
     const width = screen.size().columns;
     let type: StyleType = 'failure';
+    let cmd = `${binName} ${commandLine}`;
     let arg = '';
-    let idx = 0;
-    let cmd = commandLine;
 
     if (error instanceof ParseError) {
       arg = error.arg;
-      idx = error.index;
     } else if (error instanceof ValidationError) {
       type = 'warning';
       arg = `--${error.option}`;
-      idx = cmd.indexOf(arg);
     } else {
       return null;
     }
+
+    let idx = cmd.indexOf(arg);
 
     while (idx + arg.length > width) {
       const half = Math.round(width / 2);
@@ -72,7 +72,12 @@ export default class Failure extends React.Component<FailureProps> {
   renderStackTrace() {
     const { error } = this.props;
 
-    if (!error.stack || process.env.NODE_ENV === 'test') {
+    if (
+      !error.stack ||
+      error instanceof ParseError ||
+      error instanceof ValidationError ||
+      process.env.NODE_ENV === 'test'
+    ) {
       return null;
     }
 
@@ -84,7 +89,7 @@ export default class Failure extends React.Component<FailureProps> {
 
         <Box width="100%">
           <Style type="muted">
-            {error.stack.replace(`${error.constructor.name}: ${error.message}\n`, '')}
+            {error.stack!.replace(`${error.constructor.name}: ${error.message}\n`, '')}
           </Style>
         </Box>
       </Box>

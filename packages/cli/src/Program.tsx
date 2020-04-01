@@ -183,6 +183,35 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
+   * Parse the arguments list according to the number of commands that have been registered.
+   */
+  parse<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(argv: Argv): Arguments<O, P> {
+    if (Object.keys(this.commands).length === 0) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_NONE_REGISTERED');
+    }
+
+    if (this.indexCommand) {
+      return parse(argv, this.getCommand<O, P>(this.indexCommand)!.getParserOptions());
+    }
+
+    try {
+      return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
+    } catch {
+      const [possibleCmd] = argv.filter(arg => !arg.startsWith('-'));
+
+      this.onCommandNotFound.emit([argv, possibleCmd]);
+
+      if (possibleCmd) {
+        const closestCmd = levenary(possibleCmd, this.getCommandPaths());
+
+        throw new RuntimeError('cli', 'CLI_COMMAND_UNKNOWN', [possibleCmd, closestCmd]);
+      }
+
+      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_RUN');
+    }
+  }
+
+  /**
    * Register a command and its canonical path. Paths must be unique,
    * otherwise an error is thrown. Furthermore, sub-commands should not be
    * registered here, and instead should be registered in the parent command.
@@ -210,7 +239,7 @@ export default class Program extends Contract<ProgramOptions> {
   async run(argv: Argv): Promise<ExitCode> {
     this.onBeforeRun.emit([argv]);
 
-    this.commandLine = [this.options.bin, ...argv].join(' ');
+    this.commandLine = argv.join(' ');
 
     let exitCode: ExitCode;
 
@@ -253,8 +282,8 @@ export default class Program extends Contract<ProgramOptions> {
     }
 
     // Parse the arguments
-    const { command: cmd, errors, options, params, rest } = this.parseArguments(argv);
-    const path = cmd.join(':') || this.indexCommand;
+    const { command: paths, errors, options, params, rest } = this.parse(argv);
+    const path = paths.join(':') || this.indexCommand;
     const command = this.getCommand(path)!;
 
     this.onCommandFound.emit([argv, path, command]);
@@ -279,7 +308,7 @@ export default class Program extends Contract<ProgramOptions> {
     command.log = this.logger;
     command.bootstrap();
 
-    return this.render(() => command.run(...params), EXIT_PASS);
+    return this.render(await command.run(...params), EXIT_PASS);
   }
 
   /**
@@ -297,45 +326,11 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
-   * Parse the arguments list according to the number of commands that have been registered.
-   */
-  protected parseArguments<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(
-    argv: Argv,
-  ): Arguments<O, P> {
-    if (Object.keys(this.commands).length === 0) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_NONE_REGISTERED');
-    }
-
-    if (this.indexCommand) {
-      return parse(argv, this.getCommand<O, P>(this.indexCommand)!.getParserOptions());
-    }
-
-    try {
-      return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
-    } catch {
-      const [possibleCmd] = argv.filter(arg => !arg.startsWith('-'));
-
-      this.onCommandNotFound.emit([argv, possibleCmd]);
-
-      if (possibleCmd) {
-        const closestCmd = levenary(possibleCmd, this.getCommandPaths());
-
-        throw new RuntimeError('cli', 'CLI_COMMAND_UNKNOWN', [possibleCmd, closestCmd]);
-      }
-
-      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_RUN');
-    }
-  }
-
-  /**
    * Render the result of a command's run to the defined stream.
    * If a string has been returned, write it immediately.
    * If a React component, render with Ink and wait for it to finish.
    */
-  protected async render(
-    result: RunResult | (() => RunResult | Promise<RunResult>),
-    exitCode: ExitCode = EXIT_PASS,
-  ): Promise<ExitCode> {
+  protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
     const { stdin, stdout } = this.streams;
 
     // For simple strings, ignore react and the buffer
@@ -352,9 +347,7 @@ export default class Program extends Contract<ProgramOptions> {
       this.errBuffer.wrap();
       this.outBuffer.wrap();
 
-      const data = typeof result === 'function' ? await result() : result;
-
-      this.onBeforeRender.emit([data]);
+      this.onBeforeRender.emit([result]);
 
       await render(
         <Wrapper
@@ -364,7 +357,7 @@ export default class Program extends Contract<ProgramOptions> {
           outBuffer={this.outBuffer}
           program={this.options}
         >
-          {data as React.ReactElement}
+          {result || null}
         </Wrapper>,
         {
           debug: process.env.NODE_ENV === 'test',
@@ -400,6 +393,7 @@ export default class Program extends Contract<ProgramOptions> {
 
     return this.render(
       <Failure
+        binName={this.options.bin}
         commandLine={this.commandLine}
         error={error}
         warnings={validErrors.filter(verror => verror !== error)}
