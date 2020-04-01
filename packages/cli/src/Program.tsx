@@ -178,9 +178,17 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Run the program by parsing argv into an object of options and parameters,
    * while executing the found command.
    */
-  async run(argv: Argv): Promise<ExitCode> {
+  async run(baseArgv: Argv): Promise<ExitCode> {
+    let argv = [...baseArgv];
+
+    // Format argv before parsing
+    if (argv.length > 0 && argv[0].endsWith('/node')) {
+      argv = argv.slice(2);
+    }
+
     this.onBeforeRun.emit([argv]);
 
+    // Parse args and run the program
     this.commandLine = argv.join(' ');
 
     let exitCode: ExitCode;

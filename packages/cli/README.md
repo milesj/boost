@@ -20,17 +20,17 @@ const program = new Program({
 program.register(new BuildCommand());
 program.register(new CleanCommand());
 
-await program.run(process.argv.slice(2));
+await program.run(process.argv);
 ```
 
 ## Features
 
 - Supports common [argument features][args] like commands, sub-commands, options, flags, parameters,
   and more.
-- Export a single command or multi-command binary.
+- Export a stand-alone or command-based CLI program binary.
 - Write declarative commands with decorators, or imperative commands with static properties.
-- Render beautiful interfaces using [React][react] and [Ink][ink] at 16 FPS, or output simple
-  strings.
+- Renders interface using [React][react] and [Ink][ink] at 16 FPS, or output simple strings.
+- Outputs beautiful help, usage, error, and index menus.
 - Buffers console logs to avoid render tearing.
 - Customize output colors using Boost-based terminal themes.
 

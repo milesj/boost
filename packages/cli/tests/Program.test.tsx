@@ -627,14 +627,17 @@ describe('<Program />', () => {
       expect(stdout.get()).toMatchSnapshot();
     });
 
-    it('will run command using aliased path', async () => {
+    it('can run command using aliased path', async () => {
       const command = new BuildCommand();
+      const spy = jest.fn();
 
+      program.onCommandFound.listen(spy);
       program.register(command);
 
-      await program.run(['compile', '-S', './src', '--', 'foo', 'bar', '--baz', '-f']);
+      const exitCode = await program.run(['compile', '-S', './src']);
 
-      expect(command.rest).toEqual(['foo', 'bar', '--baz', '-f']);
+      expect(exitCode).toBe(0);
+      expect(spy).toHaveBeenCalledWith(['compile', '-S', './src'], 'compile', command);
     });
 
     it('emits `onBeforeRun` and `onAfterRun` events', async () => {
@@ -675,6 +678,24 @@ describe('<Program />', () => {
 
       expect(beforeSpy).toHaveBeenCalledWith(<Box>Hello!</Box>);
       expect(afterSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('argv', () => {
+    it('removes node and binary from `process.argv`', async () => {
+      const command = new BuildCommand();
+
+      program.register(command);
+
+      const exitCode = await program.run([
+        '/nvm/12.16.1/bin/node',
+        '/boost/bin.js',
+        'build',
+        '-S',
+        './src',
+      ]);
+
+      expect(exitCode).toBe(0);
     });
   });
 
