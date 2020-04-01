@@ -53,9 +53,9 @@ export default class Program extends CommandManager<ProgramOptions> {
 
   protected commandLine: string = '';
 
-  protected indexCommand: string = '';
-
   protected logger: Logger;
+
+  protected standAlone: CommandPath = '';
 
   protected streams: ProgramStreams = {
     stderr: process.stderr,
@@ -101,6 +101,21 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
+   * Register a command and its canonical path as the default command.
+   * A default command should be used when stand-alone binary is required.
+   */
+  default(command: Commandable): this {
+    if (Object.keys(this.commands).length > 0) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_NONDEFAULT');
+    }
+
+    this.register(command);
+    this.standAlone = command.getPath();
+
+    return this;
+  }
+
+  /**
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
@@ -111,21 +126,6 @@ export default class Program extends CommandManager<ProgramOptions> {
   };
 
   /**
-   * Register a command and its canonical path as the index or primary command.
-   * An index should be used when only a single command is required.
-   */
-  index(command: Commandable): this {
-    if (Object.keys(this.commands).length > 0) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_NONINDEX');
-    }
-
-    this.register(command);
-    this.indexCommand = command.getPath();
-
-    return this;
-  }
-
-  /**
    * Parse the arguments list according to the number of commands that have been registered.
    */
   parse<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(argv: Argv): Arguments<O, P> {
@@ -133,8 +133,8 @@ export default class Program extends CommandManager<ProgramOptions> {
       throw new RuntimeError('cli', 'CLI_COMMAND_NONE_REGISTERED');
     }
 
-    if (this.indexCommand) {
-      return parse(argv, this.getCommand<O, P>(this.indexCommand)!.getParserOptions());
+    if (this.standAlone) {
+      return parse(argv, this.getCommand<O, P>(this.standAlone)!.getParserOptions());
     }
 
     try {
@@ -158,8 +158,8 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Register a command for the current program.
    */
   register(command: Commandable): this {
-    if (this.indexCommand) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_INDEX');
+    if (this.standAlone) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_DEFAULT');
     }
 
     // Deeply register all commands so that we can easily access it during parse
@@ -218,7 +218,7 @@ export default class Program extends CommandManager<ProgramOptions> {
   protected createIndex(): React.ReactElement {
     return (
       <IndexHelp {...this.options}>
-        {this.getCommand(this.indexCommand)?.renderHelp() || (
+        {this.getCommand(this.standAlone)?.renderHelp() || (
           <Help header={msg('cli:labelAbout')} commands={mapCommandMetadata(this.commands)} />
         )}
       </IndexHelp>
@@ -233,8 +233,8 @@ export default class Program extends CommandManager<ProgramOptions> {
     const showVersion = argv.some(arg => arg === '-v' || arg === '--version');
     const showHelp = argv.some(arg => arg === '-h' || arg === '--help');
 
-    // Display index and or help
-    if ((!this.indexCommand && argv.length === 0) || (argv.length === 1 && showHelp)) {
+    // Display index help
+    if ((!this.standAlone && argv.length === 0) || (argv.length === 1 && showHelp)) {
       this.onHelp.emit([]);
 
       return this.render(this.createIndex());
@@ -247,7 +247,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     // Parse the arguments
     const { command: paths, errors, options, params, rest } = this.parse(argv);
-    const path = paths.join(':') || this.indexCommand;
+    const path = paths.join(':') || this.standAlone;
     const command = this.getCommand(path) as Command;
 
     this.onCommandFound.emit([argv, path, command]);

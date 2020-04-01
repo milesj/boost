@@ -19,6 +19,10 @@ export default abstract class CommandManager<Options extends object = {}> extend
   getCommand<O extends object = {}, P extends PrimitiveType[] = ArgList>(
     path: CommandPath,
   ): Commandable<O, P> | null {
+    if (!path) {
+      return null;
+    }
+
     const alias = this.commandAliases[path];
 
     return (alias && this.commands[alias]) || this.commands[path] || null;

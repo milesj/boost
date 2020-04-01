@@ -211,27 +211,31 @@ describe('<Program />', () => {
       expect(program.getCommand('client:compile')).not.toBeNull();
     });
 
-    it('registers an index command', () => {
+    it('registers a default command', () => {
       const command = new BuildCommand();
 
-      program.index(command);
+      program.default(command);
 
       // @ts-ignore Allow access
-      expect(program.indexCommand).toBe('build');
+      expect(program.standAlone).toBe('build');
     });
 
-    it('errors if adding a command and an index is registered', () => {
+    it('errors if adding a command and a default is registered', () => {
       expect(() => {
-        program.index(new Parent());
+        program.default(new Parent());
         program.register(new Child());
-      }).toThrow('An index command has been registered. Cannot mix index and non-index commands.');
+      }).toThrow(
+        'A default command has been registered. Cannot mix default and non-default commands.',
+      );
     });
 
-    it('errors if adding an index and commands have been registered', () => {
+    it('errors if adding a default and commands have been registered', () => {
       expect(() => {
         program.register(new Child());
-        program.index(new Parent());
-      }).toThrow('Other commands have been registered. Cannot mix index and non-index commands.');
+        program.default(new Parent());
+      }).toThrow(
+        'Other commands have been registered. Cannot mix default and non-default commands.',
+      );
     });
 
     it('returns all command paths', () => {
@@ -262,12 +266,12 @@ describe('<Program />', () => {
       expect(spy).toHaveBeenCalledWith('client', cmd);
     });
 
-    it('emits `onCommandRegistered` event for index command', () => {
+    it('emits `onCommandRegistered` event for default command', () => {
       const spy = jest.fn();
       const cmd = new ClientCommand();
 
       program.onCommandRegistered.listen(spy);
-      program.index(cmd);
+      program.default(cmd);
 
       expect(spy).toHaveBeenCalledWith('client', cmd);
     });
@@ -275,7 +279,7 @@ describe('<Program />', () => {
 
   describe('version', () => {
     it('outputs version when `--version` is passed', async () => {
-      program.index(new BoostCommand());
+      program.default(new BoostCommand());
 
       const exitCode = await program.run(['--version']);
 
@@ -284,7 +288,7 @@ describe('<Program />', () => {
     });
 
     it('outputs version when `-v` is passed', async () => {
-      program.index(new BoostCommand());
+      program.default(new BoostCommand());
 
       const exitCode = await program.run(['-v']);
 
@@ -295,7 +299,7 @@ describe('<Program />', () => {
 
   describe('locale', () => {
     it('errors for invalid `--locale`', async () => {
-      program.index(new BuildCommand());
+      program.default(new BuildCommand());
 
       const exitCode = await program.run(['--locale', 'wtf']);
 
@@ -320,7 +324,7 @@ describe('<Program />', () => {
     }
 
     it('outputs help when `--help` is passed', async () => {
-      program.index(new HelpCommand());
+      program.default(new HelpCommand());
 
       const exitCode = await program.run(['--help']);
 
@@ -329,7 +333,7 @@ describe('<Program />', () => {
     });
 
     it('outputs help when `-h` is passed', async () => {
-      program.index(new HelpCommand());
+      program.default(new HelpCommand());
 
       const exitCode = await program.run(['-h']);
 
@@ -389,11 +393,11 @@ describe('<Program />', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('emits `onHelp` event for index', async () => {
+    it('emits `onHelp` event for default', async () => {
       const spy = jest.fn();
 
       program.onHelp.listen(spy);
-      program.index(new HelpCommand());
+      program.default(new HelpCommand());
 
       await program.run(['--help']);
 
@@ -401,9 +405,9 @@ describe('<Program />', () => {
     });
   });
 
-  describe('index', () => {
-    it('executes index when no args passed', async () => {
-      program.index(new BuildCommand());
+  describe('default command', () => {
+    it('executes default when no args passed', async () => {
+      program.default(new BuildCommand());
 
       const exitCode = await program.run([]);
 
@@ -461,7 +465,7 @@ describe('<Program />', () => {
     });
 
     it('renders when args parsing fails', async () => {
-      program.index(new BoostCommand());
+      program.default(new BoostCommand());
 
       const exitCode = await program.run(['--foo']);
 
@@ -577,7 +581,7 @@ describe('<Program />', () => {
       const command = new AllClassicCommand();
       const spy = jest.spyOn(command, 'run');
 
-      program.index(command);
+      program.default(command);
 
       await program.run(['-F', 'foo', 'true', '123']);
 
@@ -588,7 +592,7 @@ describe('<Program />', () => {
       const command = new AllClassicCommand();
       const spy = jest.spyOn(command, 'bootstrap');
 
-      program.index(command);
+      program.default(command);
 
       await program.run(['foo']);
 
@@ -672,7 +676,7 @@ describe('<Program />', () => {
 
       program.onBeforeRender.listen(beforeSpy);
       program.onAfterRender.listen(afterSpy);
-      program.index(new ComponentCommand());
+      program.default(new ComponentCommand());
 
       await program.run([]);
 

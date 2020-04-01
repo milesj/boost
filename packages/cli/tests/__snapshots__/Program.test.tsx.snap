@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<Program /> default command executes default when no args passed 1`] = `"Build!"`;
+
+exports[`<Program /> default command renders commands when no args passed 1`] = `
+"
+Boost v1.2.3 [90mboost[39m
+
+
+[30m[47m COMMANDS [49m[39m
+
+  build          Build a project
+"
+`;
+
 exports[`<Program /> errors for invalid version format 1`] = `"Invalid Program field \\"version\\". String does not match. (pattern \\"^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\\+([0-9a-zA-Z-]+(?:\\\\.[0-9a-zA-Z-]+)*))?$\\")"`;
 
 exports[`<Program /> errors if bin is not kebab case 1`] = `"Invalid Program field \\"bin\\". String must be in kebab case. (pattern \\"^[a-z][\\\\x2D0-9a-z]+$\\")"`;
@@ -299,19 +312,6 @@ Description
       --locale [90mstring[39m                         Display output in the chosen
                                                locale (default: \\"en\\")
   -v, --version                               Display version number
-"
-`;
-
-exports[`<Program /> index executes index when no args passed 1`] = `"Build!"`;
-
-exports[`<Program /> index renders commands when no args passed 1`] = `
-"
-Boost v1.2.3 [90mboost[39m
-
-
-[30m[47m COMMANDS [49m[39m
-
-  build          Build a project
 "
 `;
 
