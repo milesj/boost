@@ -69,7 +69,7 @@ export default class Help extends React.Component<HelpProps> {
 
           return (
             <Box key={`${path}-${index}`} flexDirection="row">
-              <Box flexGrow={0} width={nameWidth + 2} paddingLeft={2} alignItems="flex-end">
+              <Box flexGrow={0} width={nameWidth + 2} paddingLeft={2}>
                 {names[index]}
               </Box>
 

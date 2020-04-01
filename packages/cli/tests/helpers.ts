@@ -6,12 +6,6 @@ import { stripAnsi } from '@boost/terminal';
 
 export class ReadStream {
   isTTY = false;
-
-  setEncoding() {}
-
-  off() {}
-
-  on() {}
 }
 
 export class WriteStream {

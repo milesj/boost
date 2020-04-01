@@ -152,12 +152,20 @@ describe('<Program />', () => {
   });
 
   describe('commands', () => {
-    it('registers a command with path', () => {
+    it('registers and returns a command with path', () => {
       const command = new BuildCommand();
 
       program.register(command);
 
       expect(program.getCommand('build')).toBe(command);
+    });
+
+    it('returns an aliased command', () => {
+      const command = new BuildCommand();
+
+      program.register(command);
+
+      expect(program.getCommand('compile')).toBe(command);
     });
 
     it('errors if command with same path is registered', () => {
@@ -195,6 +203,14 @@ describe('<Program />', () => {
       expect(program.getCommand('parent:child:grandchild')).toBe(grand);
     });
 
+    it('returns nested alias commands', () => {
+      const command = new ClientCommand();
+
+      program.register(command);
+
+      expect(program.getCommand('client:compile')).not.toBeNull();
+    });
+
     it('registers an index command', () => {
       const command = new BuildCommand();
 
@@ -222,14 +238,18 @@ describe('<Program />', () => {
       program.register(new BuildCommand());
       program.register(new InstallCommand());
 
-      expect(program.getCommandPaths()).toEqual(['build', 'install']);
+      expect(program.getCommandPaths()).toEqual(['build', 'install', 'compile']);
     });
 
     it('returns all command paths, including nested', () => {
       program.register(new ClientCommand());
 
-      expect(program.getCommandPaths()).toEqual(['client']);
-      expect(program.getCommandPaths(true)).toEqual(['client', 'client:build', 'client:install']);
+      expect(program.getCommandPaths()).toEqual([
+        'client',
+        'client:build',
+        'client:install',
+        'client:compile',
+      ]);
     });
 
     it('emits `onCommandRegistered` event', () => {
@@ -342,6 +362,18 @@ describe('<Program />', () => {
       expect(stdout.get()).toMatchSnapshot();
 
       await program.run(['client', '--help']);
+
+      expect(stdout.get()).toMatchSnapshot();
+    });
+
+    it('outputs help for an aliased command', async () => {
+      program.register(new BuildCommand());
+
+      await program.run(['build', '-h']);
+
+      expect(stdout.get()).toMatchSnapshot();
+
+      await program.run(['compile', '--help']);
 
       expect(stdout.get()).toMatchSnapshot();
     });
@@ -593,6 +625,16 @@ describe('<Program />', () => {
       await program.run(['comp']);
 
       expect(stdout.get()).toMatchSnapshot();
+    });
+
+    it('will run command using aliased path', async () => {
+      const command = new BuildCommand();
+
+      program.register(command);
+
+      await program.run(['compile', '-S', './src', '--', 'foo', 'bar', '--baz', '-f']);
+
+      expect(command.rest).toEqual(['foo', 'bar', '--baz', '-f']);
     });
 
     it('emits `onBeforeRun` and `onAfterRun` events', async () => {

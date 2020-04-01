@@ -6,10 +6,14 @@ import InstallClassicCommand from './InstallClassicCommand';
 
 class ClientBuildCommand extends BuildCommand {
   static path = 'client:build';
+
+  static aliases = ['client:compile'];
 }
 
 class ClientInstallCommand extends InstallClassicCommand {
   static path = 'client:install';
+
+  static aliases = ['client:compile'];
 }
 
 @Config('client', 'Client', {

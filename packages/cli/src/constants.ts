@@ -23,6 +23,9 @@ export const RESERVED_OPTIONS = [
   'log',
   'register',
   'run',
+  // Class properties
+  'commands',
+  'commandAliases',
 ];
 
 export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];

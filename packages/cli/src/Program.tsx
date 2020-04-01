@@ -10,13 +10,14 @@ import {
   PrimitiveType,
   ValidationError,
 } from '@boost/args';
-import { Contract, Predicates } from '@boost/common';
+import { Predicates } from '@boost/common';
 import { Event } from '@boost/event';
 import { Logger, createLogger } from '@boost/log';
 import { ExitError, env, RuntimeError } from '@boost/internal';
 import levenary from 'levenary';
-import LogBuffer from './LogBuffer';
 import Command from './Command';
+import CommandManager from './CommandManager';
+import LogBuffer from './LogBuffer';
 import Failure from './Failure';
 import Help from './Help';
 import IndexHelp from './IndexHelp';
@@ -25,7 +26,6 @@ import mapCommandMetadata from './helpers/mapCommandMetadata';
 import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
 import {
   Commandable,
-  CommandMetadata,
   CommandPath,
   ExitCode,
   GlobalOptions,
@@ -34,7 +34,7 @@ import {
   RunResult,
 } from './types';
 
-export default class Program extends Contract<ProgramOptions> {
+export default class Program extends CommandManager<ProgramOptions> {
   readonly onAfterRender = new Event('after-render');
 
   readonly onAfterRun = new Event<[Error?]>('after-run');
@@ -47,13 +47,9 @@ export default class Program extends Contract<ProgramOptions> {
 
   readonly onCommandNotFound = new Event<[Argv, CommandPath]>('command-not-found');
 
-  readonly onCommandRegistered = new Event<[CommandPath, Commandable]>('command-registered');
-
   readonly onExit = new Event<[string, ExitCode]>('exit');
 
   readonly onHelp = new Event<[CommandPath?]>('help');
-
-  protected commands: CommandMetadata['commands'] = {};
 
   protected commandLine: string = '';
 
@@ -102,59 +98,6 @@ export default class Program extends Contract<ProgramOptions> {
         .required()
         .match(VERSION_FORMAT),
     };
-  }
-
-  /**
-   * Return a command or sub-command by name. If a sub-command is provided,
-   * it will attempt to drill down from the parent command.
-   * If no command can be found, `null` will be returned.
-   */
-  getCommand<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(
-    name: string,
-  ): Command<O, P> | null {
-    const names = name.split(':');
-    const baseName = names.shift()!;
-    let command = this.commands[baseName];
-
-    while (command && names.length > 0) {
-      const subName = names.shift()!;
-      const subPath = `${command.getPath()}:${subName}`;
-      const subCommands = command.getMetadata().commands;
-
-      if (subCommands[subPath]) {
-        command = subCommands[subPath];
-      } else {
-        return null;
-      }
-    }
-
-    if (!command) {
-      return null;
-    }
-
-    return command as Command<O, P>;
-  }
-
-  /**
-   * Return a list of all registered command paths.
-   * If deep is true, will return all nested command paths.
-   */
-  getCommandPaths(deep: boolean = false): string[] {
-    const paths = new Set<string>();
-
-    function drill(commands: CommandMetadata['commands']) {
-      Object.entries(commands).forEach(([path, command]) => {
-        paths.add(path);
-
-        if (deep) {
-          drill(command.getMetadata().commands);
-        }
-      });
-    }
-
-    drill(this.commands);
-
-    return Array.from(paths);
   }
 
   /**
@@ -212,22 +155,21 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
-   * Register a command and its canonical path. Paths must be unique,
-   * otherwise an error is thrown. Furthermore, sub-commands should not be
-   * registered here, and instead should be registered in the parent command.
+   * Register a command for the current program.
    */
   register(command: Commandable): this {
-    const path = command.getPath();
-
-    if (this.commands[path]) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_EXISTS', [path]);
-    } else if (this.indexCommand) {
+    if (this.indexCommand) {
       throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_INDEX');
     }
 
-    this.commands[path] = command;
+    // Deeply register all commands so that we can easily access it during parse
+    const deepRegister = (cmd: Commandable) => {
+      super.register(cmd);
 
-    this.onCommandRegistered.emit([path, command]);
+      Object.values(cmd.getMetadata().commands).forEach(deepRegister);
+    };
+
+    deepRegister(command);
 
     return this;
   }
@@ -262,6 +204,20 @@ export default class Program extends Contract<ProgramOptions> {
   }
 
   /**
+   * Render the index screen when no args are passed.
+   * Should include banner, header, footer, and command (if applicable).
+   */
+  protected createIndex(): React.ReactElement {
+    return (
+      <IndexHelp {...this.options}>
+        {this.getCommand(this.indexCommand)?.renderHelp() || (
+          <Help header={msg('cli:labelAbout')} commands={mapCommandMetadata(this.commands)} />
+        )}
+      </IndexHelp>
+    );
+  }
+
+  /**
    * Internal run that does all the heavy lifting and parsing,
    * while the public run exists to catch any unexpected errors.
    */
@@ -284,7 +240,7 @@ export default class Program extends Contract<ProgramOptions> {
     // Parse the arguments
     const { command: paths, errors, options, params, rest } = this.parse(argv);
     const path = paths.join(':') || this.indexCommand;
-    const command = this.getCommand(path)!;
+    const command = this.getCommand(path) as Command;
 
     this.onCommandFound.emit([argv, path, command]);
 
@@ -309,20 +265,6 @@ export default class Program extends Contract<ProgramOptions> {
     command.bootstrap();
 
     return this.render(await command.run(...params), EXIT_PASS);
-  }
-
-  /**
-   * Render the index screen when no args are passed.
-   * Should include banner, header, footer, and command (if applicable).
-   */
-  protected createIndex(): React.ReactElement {
-    return (
-      <IndexHelp {...this.options}>
-        {this.getCommand(this.indexCommand)?.renderHelp() || (
-          <Help header={msg('cli:labelAbout')} commands={mapCommandMetadata(this.commands)} />
-        )}
-      </IndexHelp>
-    );
   }
 
   /**

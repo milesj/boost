@@ -164,6 +164,46 @@ Install package(s) [90m[deprecated][39m
 "
 `;
 
+exports[`<Program /> help outputs help for an aliased command 1`] = `
+"
+[30m[47m BUILD [49m[39m
+
+Build a project
+
+[30m[47m USAGE [49m[39m
+
+  $ build -S ./src -D ./lib
+
+[30m[47m OPTIONS [49m[39m
+
+  -D, --dst [90mstring[39m     Destination path
+  -S, --src [90mstring[39m     Source path
+  -h, --help           Display help and usage menu
+      --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+  -v, --version        Display version number
+"
+`;
+
+exports[`<Program /> help outputs help for an aliased command 2`] = `
+"
+[30m[47m BUILD [49m[39m
+
+Build a project
+
+[30m[47m USAGE [49m[39m
+
+  $ build -S ./src -D ./lib
+
+[30m[47m OPTIONS [49m[39m
+
+  -D, --dst [90mstring[39m     Destination path
+  -S, --src [90mstring[39m     Source path
+  -h, --help           Display help and usage menu
+      --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+  -v, --version        Display version number
+"
+`;
+
 exports[`<Program /> help outputs help when \`--help\` is passed 1`] = `
 "
 Boost v1.2.3 [90mboost[39m

@@ -15,6 +15,7 @@ describe('Command', () => {
       const command = new BuildCommand();
       const meta = command.getMetadata();
 
+      expect(BuildCommand.aliases).toEqual(['compile']);
       expect(BuildCommand.description).toBe('Build a project');
       expect(BuildCommand.path).toBe('build');
       expect(BuildCommand.usage).toBe('$ build -S ./src -D ./lib');
@@ -151,7 +152,7 @@ describe('Command', () => {
       const command = new BuildCommand();
 
       expect(command.getParserOptions()).toEqual({
-        commands: ['build'],
+        commands: ['build', 'compile'],
         options: {
           dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
           src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
@@ -185,27 +186,28 @@ describe('Command', () => {
       const command = new BuildClassicCommand();
       const meta = command.getMetadata();
 
-      expect(BuildCommand.description).toBe('Build a project');
-      expect(BuildCommand.path).toBe('build');
-      expect(BuildCommand.usage).toBe('$ build -S ./src -D ./lib');
+      expect(BuildClassicCommand.aliases).toEqual(['compile']);
+      expect(BuildClassicCommand.description).toBe('Build a project');
+      expect(BuildClassicCommand.path).toBe('build');
+      expect(BuildClassicCommand.usage).toBe('$ build -S ./src -D ./lib');
 
-      expect(BuildCommand.description).toBe(meta.description);
-      expect(BuildCommand.path).toBe(meta.path);
-      expect(BuildCommand.usage).toBe(meta.usage);
+      expect(BuildClassicCommand.description).toBe(meta.description);
+      expect(BuildClassicCommand.path).toBe(meta.path);
+      expect(BuildClassicCommand.usage).toBe(meta.usage);
 
       // Again with different properties
       const command2 = new InstallClassicCommand();
       const meta2 = command2.getMetadata();
 
-      expect(InstallCommand.description).toBe('Install package(s)');
-      expect(InstallCommand.path).toBe('install');
-      expect(InstallCommand.deprecated).toBe(true);
-      expect(InstallCommand.hidden).toBe(true);
+      expect(InstallClassicCommand.description).toBe('Install package(s)');
+      expect(InstallClassicCommand.path).toBe('install');
+      expect(InstallClassicCommand.deprecated).toBe(true);
+      expect(InstallClassicCommand.hidden).toBe(true);
 
-      expect(InstallCommand.description).toBe(meta2.description);
-      expect(InstallCommand.path).toBe(meta2.path);
-      expect(InstallCommand.deprecated).toBe(meta2.deprecated);
-      expect(InstallCommand.hidden).toBe(meta2.hidden);
+      expect(InstallClassicCommand.description).toBe(meta2.description);
+      expect(InstallClassicCommand.path).toBe(meta2.path);
+      expect(InstallClassicCommand.deprecated).toBe(meta2.deprecated);
+      expect(InstallClassicCommand.hidden).toBe(meta2.hidden);
     });
 
     it('inherits global options from parent', () => {
@@ -289,7 +291,7 @@ describe('Command', () => {
       const command = new BuildClassicCommand();
 
       expect(command.getParserOptions()).toEqual({
-        commands: ['build'],
+        commands: ['build', 'compile'],
         options: {
           dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
           src: { default: './src', short: 'S', description: 'Source path', type: 'string' },

@@ -12,6 +12,7 @@ import {
   Param,
   ParamConfig,
   ParamConfigList,
+  ParserOptions,
   PrimitiveType,
 } from '@boost/args';
 import { Logger } from '@boost/log';
@@ -49,10 +50,6 @@ export interface ProgramOptions {
   version: string;
 }
 
-export interface ProgramRunOptions {
-  allowUnknownOptions?: boolean;
-}
-
 export interface ProgramStreams {
   stderr: NodeJS.WriteStream;
   stdin: NodeJS.ReadStream;
@@ -82,6 +79,7 @@ export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
 export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
+  aliases?: string[];
   options?: OptionConfigMap;
   params?: ParamConfigList;
   path?: CommandPath; // Canonical name used on the command line
@@ -104,10 +102,12 @@ export interface CommandMetadataMap {
   [path: string]: CommandMetadata;
 }
 
-export interface Commandable<P extends unknown[] = unknown[]> {
+// Allow any so that all APIs are easier to use
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
   getMetadata(): CommandMetadata;
+  getParserOptions(): ParserOptions<O, P>;
   getPath(): CommandPath;
-  register(command: Commandable): this;
   renderHelp(): string | React.ReactElement;
   run(...params: P): RunResult | Promise<RunResult>;
 }

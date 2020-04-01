@@ -11,6 +11,10 @@ export default function Config(
     ctor.path = path;
     ctor.description = description;
 
+    if (config.aliases !== undefined) {
+      ctor.aliases = config.aliases;
+    }
+
     if (config.usage !== undefined) {
       ctor.usage = config.usage;
     }

@@ -8,6 +8,8 @@ export interface BuildOptions extends GlobalOptions {
 export default class BuildClassicCommand extends Command<BuildOptions> {
   static path = 'build';
 
+  static aliases = ['compile'];
+
   static description = 'Build a project';
 
   static usage = '$ build -S ./src -D ./lib';

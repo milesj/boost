@@ -18,12 +18,16 @@ import getInheritedOptions from './metadata/getInheritedOptions';
 import validateParams from './metadata/validateParams';
 import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
+import CommandManager from './CommandManager';
 import Help from './Help';
 
 export default abstract class Command<
   O extends GlobalOptions = GlobalOptions,
-  P extends PrimitiveType[] = ArgList
-> implements Commandable<P> {
+  P extends PrimitiveType[] = ArgList,
+  Options extends object = {}
+> extends CommandManager<Options> implements Commandable<O, P> {
+  static aliases: string[] = [];
+
   static allowUnknownOptions: boolean = false;
 
   static description: string = '';
@@ -77,12 +81,13 @@ export default abstract class Command<
 
   log!: Logger;
 
-  protected subCommands: CommandMetadata['commands'] = {};
+  constructor(options?: Options) {
+    super(options);
 
-  constructor() {
     const ctor = getConstructor(this);
 
     validateConfig(this.constructor.name, {
+      aliases: ctor.aliases,
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
@@ -91,6 +96,15 @@ export default abstract class Command<
     });
     validateOptions(ctor.options);
     validateParams(ctor.params);
+  }
+
+  /**
+   * Validate options passed to the constructor.
+   */
+  blueprint() {
+    // This is technically invalid, but most commands will not be using options.
+    // This is a side-effect of `CommandManager`, in which options are required for `Program`.
+    return {} as any;
   }
 
   /**
@@ -105,7 +119,8 @@ export default abstract class Command<
     const ctor = getConstructor(this);
 
     return {
-      commands: this.subCommands,
+      aliases: ctor.aliases,
+      commands: this.commands,
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
@@ -120,7 +135,7 @@ export default abstract class Command<
    * Return metadata as options for argument parsing.
    */
   getParserOptions(): ParserOptions<O, P> {
-    const { options, params, path } = this.getMetadata();
+    const { aliases, options, params, path } = this.getMetadata();
     const defaultedOptions: OptionConfigMap = {};
 
     // Since default values for options are represented as class properties,
@@ -134,7 +149,7 @@ export default abstract class Command<
     });
 
     return {
-      commands: [path],
+      commands: [path, ...aliases],
       options: defaultedOptions,
       params,
       unknown: getConstructor(this).allowUnknownOptions,
@@ -149,7 +164,7 @@ export default abstract class Command<
   }
 
   /**
-   * Register a sub-command for the current command.
+   * Register and validate a sub-command for the current command.
    */
   register(command: Commandable): this {
     const path = this.getPath();
@@ -159,13 +174,7 @@ export default abstract class Command<
       throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_SUBPATH', [subPath, path]);
     }
 
-    if (this.subCommands[subPath] && this.subCommands[subPath] !== command) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_EXISTS', [subPath]);
-    }
-
-    this.subCommands[subPath] = command;
-
-    return this;
+    return super.register(command);
   }
 
   /**

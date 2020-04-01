@@ -34,6 +34,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
   'options' | 'params'
 >> = {
   ...commonBlueprint,
+  aliases: array(string()),
   allowUnknownOptions: bool(),
   path: string()
     .notEmpty()
