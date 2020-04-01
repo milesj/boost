@@ -10,8 +10,15 @@ import {
 } from '@boost/args';
 import { Logger } from '@boost/log';
 import { RuntimeError } from '@boost/internal';
-import { msg, LOCALE_FORMAT } from './constants';
-import { GlobalOptions, Commandable, CommandMetadata, ExitHandler, RunResult } from './types';
+import { msg, LOCALE_FORMAT, CACHE_OPTIONS, CACHE_PARAMS } from './constants';
+import {
+  GlobalOptions,
+  Commandable,
+  CommandMetadata,
+  ExitHandler,
+  RunResult,
+  CommandPath,
+} from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import getInheritedOptions from './metadata/getInheritedOptions';
@@ -81,6 +88,12 @@ export default abstract class Command<
 
   log!: Logger;
 
+  // Cache
+
+  [CACHE_OPTIONS] = {};
+
+  [CACHE_PARAMS] = {};
+
   constructor(options?: Options) {
     super(options);
 
@@ -96,6 +109,8 @@ export default abstract class Command<
     });
     validateOptions(ctor.options);
     validateParams(ctor.params);
+
+    this.onBeforeRegister.listen(this.handleBeforeRegister);
   }
 
   /**
@@ -164,20 +179,6 @@ export default abstract class Command<
   }
 
   /**
-   * Register and validate a sub-command for the current command.
-   */
-  register(command: Commandable): this {
-    const path = this.getPath();
-    const subPath = command.getPath();
-
-    if (!subPath.startsWith(path)) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_SUBPATH', [subPath, path]);
-    }
-
-    return super.register(command);
-  }
-
-  /**
    * Render a help menu for the current command.
    */
   renderHelp(): React.ReactElement {
@@ -198,4 +199,15 @@ export default abstract class Command<
    * Executed when the command is being ran.
    */
   abstract run(...params: P): RunResult | Promise<RunResult>;
+
+  /**
+   * Verify sub-command is prefixed with the correct path.
+   */
+  protected handleBeforeRegister = (subPath: CommandPath) => {
+    const path = this.getPath();
+
+    if (!subPath.startsWith(path)) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_SUBPATH', [subPath, path]);
+    }
+  };
 }

@@ -23,7 +23,14 @@ import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
-import { msg, VERSION_FORMAT, EXIT_PASS, EXIT_FAIL } from './constants';
+import {
+  msg,
+  VERSION_FORMAT,
+  EXIT_PASS,
+  EXIT_FAIL,
+  CACHE_OPTIONS,
+  CACHE_PARAMS,
+} from './constants';
 import {
   Commandable,
   CommandPath,
@@ -80,6 +87,9 @@ export default class Program extends CommandManager<ProgramOptions> {
       stderr: this.outBuffer,
       stdout: this.outBuffer,
     });
+
+    this.onAfterRegister.listen(this.handleAfterRegister);
+    this.onBeforeRegister.listen(this.handleBeforeRegister);
   }
 
   blueprint({ string }: Predicates) {
@@ -152,26 +162,6 @@ export default class Program extends CommandManager<ProgramOptions> {
 
       throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_RUN');
     }
-  }
-
-  /**
-   * Register a command for the current program.
-   */
-  register(command: Commandable): this {
-    if (this.standAlone) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_DEFAULT');
-    }
-
-    // Deeply register all commands so that we can easily access it during parse
-    const deepRegister = (cmd: Commandable) => {
-      super.register(cmd);
-
-      Object.values(cmd.getMetadata().commands).forEach(deepRegister);
-    };
-
-    deepRegister(command);
-
-    return this;
   }
 
   /**
@@ -270,6 +260,8 @@ export default class Program extends CommandManager<ProgramOptions> {
     command.rest = rest;
     command.exit = this.exit;
     command.log = this.logger;
+    command[CACHE_OPTIONS] = options;
+    command[CACHE_PARAMS] = params;
     command.bootstrap();
 
     return this.render(await command.run(...params), EXIT_PASS);
@@ -351,4 +343,32 @@ export default class Program extends CommandManager<ProgramOptions> {
       error instanceof ExitError ? error.code : EXIT_FAIL,
     );
   }
+
+  /**
+   * Deeply register all commands so that we can easily access it during parse.
+   */
+  protected handleAfterRegister = (_path: CommandPath, command: Commandable) => {
+    const deepRegister = (cmd: Commandable) => {
+      const { aliases, commands, path } = cmd.getMetadata();
+
+      this.commands[path] = cmd;
+
+      aliases.forEach(alias => {
+        this.commandAliases[alias] = path;
+      });
+
+      Object.values(commands).forEach(deepRegister);
+    };
+
+    deepRegister(command);
+  };
+
+  /**
+   * Check for default and non-default command mixing.
+   */
+  protected handleBeforeRegister = () => {
+    if (this.standAlone) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_DEFAULT');
+    }
+  };
 }

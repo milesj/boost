@@ -1,5 +1,6 @@
 {
   "CLI_COMMAND_EXISTS": "A command already exists with the canonical path \"%s\".",
+  "CLI_COMMAND_INVALID_REGISTER": "Invalid command type being registered.",
   "CLI_COMMAND_INVALID_RUN": "Failed to determine a command to run.",
   "CLI_COMMAND_INVALID_SUBPATH": "Sub-command \"%s\" must start with \"%s:\".",
   "CLI_COMMAND_MIXED_DEFAULT": "A default command has been registered. Cannot mix default and non-default commands.",

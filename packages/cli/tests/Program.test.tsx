@@ -10,6 +10,7 @@ import InstallCommand from './__mocks__/InstallCommand';
 import ClientCommand from './__mocks__/ClientCommand';
 import AllClassicCommand from './__mocks__/AllClassicCommand';
 import BuildClassicCommand from './__mocks__/BuildClassicCommand';
+import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 
 jest.mock('term-size');
 
@@ -177,6 +178,13 @@ describe('<Program />', () => {
       }).toThrow('A command already exists with the canonical path "build".');
     });
 
+    it('errors for invalid type', () => {
+      expect(() => {
+        // @ts-ignore Allow
+        program.register(123);
+      }).toThrow('Invalid command type being registered.');
+    });
+
     it('returns null if command does not exist', () => {
       expect(program.getCommand('unknown')).toBeNull();
     });
@@ -256,24 +264,120 @@ describe('<Program />', () => {
       ]);
     });
 
-    it('emits `onCommandRegistered` event', () => {
-      const spy = jest.fn();
+    it('emits `onBeforeRegister` and `onAfterRegister` events', () => {
       const cmd = new ClientCommand();
+      const beforeSpy = jest.fn();
+      const afterSpy = jest.fn();
 
-      program.onCommandRegistered.listen(spy);
+      program.onBeforeRegister.listen(beforeSpy);
+      program.onAfterRegister.listen(afterSpy);
       program.register(cmd);
 
-      expect(spy).toHaveBeenCalledWith('client', cmd);
+      expect(beforeSpy).toHaveBeenCalledWith('client', cmd);
+      expect(afterSpy).toHaveBeenCalledWith('client', cmd);
     });
 
-    it('emits `onCommandRegistered` event for default command', () => {
-      const spy = jest.fn();
+    it('emits `onBeforeRegister` and `onAfterRegister` events for default command', () => {
       const cmd = new ClientCommand();
+      const beforeSpy = jest.fn();
+      const afterSpy = jest.fn();
 
-      program.onCommandRegistered.listen(spy);
+      program.onBeforeRegister.listen(beforeSpy);
+      program.onAfterRegister.listen(afterSpy);
       program.default(cmd);
 
-      expect(spy).toHaveBeenCalledWith('client', cmd);
+      expect(beforeSpy).toHaveBeenCalledWith('client', cmd);
+      expect(afterSpy).toHaveBeenCalledWith('client', cmd);
+    });
+  });
+
+  describe('proxy commands', () => {
+    beforeEach(() => {
+      program.register<{}, [string, ...string[]]>(
+        'build',
+        {
+          aliases: ['compile'],
+          description: 'Build something',
+          options: BuildClassicCommand.options,
+          params: InstallClassicCommand.params,
+        },
+        function build(this: Command, opts, pms, rest) {
+          console.log(opts, pms, rest);
+
+          // eslint-disable-next-line babel/no-invalid-this
+          this.log('Testing class logger');
+        },
+      );
+    });
+
+    it('registers and returns a command with path', () => {
+      const command = program.getCommand('build')!;
+
+      expect(command).toBeInstanceOf(Command);
+      expect(command.getMetadata()).toEqual({
+        aliases: ['compile'],
+        commands: {},
+        description: 'Build something',
+        deprecated: false,
+        hidden: false,
+        options: {
+          ...BuildCommand.options,
+          ...Command.options,
+        },
+        params: InstallClassicCommand.params,
+        path: 'build',
+        usage: '',
+      });
+    });
+
+    it('outputs help when `--help` is passed', async () => {
+      const exitCode = await program.run(['build', '--help']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(0);
+    });
+
+    it('renders when args parsing fails', async () => {
+      const exitCode = await program.run(['build', '--foo']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(1);
+    });
+
+    it('passes correct args to run method', async () => {
+      const spy = jest.spyOn(console, 'log').mockImplementation();
+
+      await program.run([
+        'build',
+        '--src',
+        './src',
+        '@boost/cli',
+        '@boost/terminal',
+        '--',
+        'foo',
+        'bar',
+      ]);
+
+      expect(spy).toHaveBeenCalledWith(
+        {
+          dst: '',
+          help: false,
+          locale: 'en',
+          src: './src',
+          version: false,
+        },
+        ['@boost/cli', '@boost/terminal'],
+        ['foo', 'bar'],
+      );
+
+      spy.mockRestore();
+    });
+
+    it('supports logger and aliased paths', async () => {
+      const exitCode = await program.run(['compile', 'foo/bar']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(exitCode).toBe(0);
     });
   });
 

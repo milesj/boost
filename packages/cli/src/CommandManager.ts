@@ -1,13 +1,24 @@
+/* eslint-disable no-dupe-class-members */
+
 import { PrimitiveType, ArgList } from '@boost/args';
-import { Contract } from '@boost/common';
+import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
 import { RuntimeError } from '@boost/internal';
-import { CommandMetadata, CommandPath, Commandable } from './types';
+import {
+  CommandMetadata,
+  CommandPath,
+  Commandable,
+  ProxyCommandConfig,
+  ProxyCommandRunner,
+} from './types';
+import createProxyCommand from './helpers/createProxyCommand';
 
 export default abstract class CommandManager<Options extends object = {}> extends Contract<
   Options
 > {
-  readonly onCommandRegistered = new Event<[CommandPath, Commandable]>('command-registered');
+  readonly onAfterRegister = new Event<[CommandPath, Commandable]>('after-register');
+
+  readonly onBeforeRegister = new Event<[CommandPath, Commandable]>('before-register');
 
   protected commands: CommandMetadata['commands'] = {};
 
@@ -39,8 +50,36 @@ export default abstract class CommandManager<Options extends object = {}> extend
    * Register a command and its canonical path (must be unique),
    * otherwise an error is thrown.
    */
-  register(command: Commandable): this {
+  register(command: Commandable): this;
+
+  register<O extends object, P extends PrimitiveType[]>(
+    path: CommandPath,
+    config: ProxyCommandConfig<O, P>,
+    runner: ProxyCommandRunner<O, P>,
+  ): this;
+
+  register(commandOrPath: CommandPath | Commandable, config?: unknown, runner?: unknown): this {
+    let command: Commandable;
+
+    if (
+      typeof commandOrPath === 'string' &&
+      typeof config !== 'undefined' &&
+      typeof runner === 'function'
+    ) {
+      command = createProxyCommand(
+        commandOrPath,
+        config as ProxyCommandConfig<never, ArgList>,
+        runner as ProxyCommandRunner<never, ArgList>,
+      );
+    } else if (isObject(commandOrPath) && typeof commandOrPath.run === 'function') {
+      command = commandOrPath;
+    } else {
+      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_REGISTER');
+    }
+
     const { aliases, path } = command.getMetadata();
+
+    this.onBeforeRegister.emit([path, command]);
 
     this.checkPath(path);
     this.commands[path] = command;
@@ -50,7 +89,7 @@ export default abstract class CommandManager<Options extends object = {}> extend
       this.commandAliases[alias] = path;
     });
 
-    this.onCommandRegistered.emit([path, command]);
+    this.onAfterRegister.emit([path, command]);
 
     return this;
   }

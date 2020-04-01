@@ -11,6 +11,9 @@ export const LOCALE_FORMAT = /^[a-z]{2}(-[A-Z]{2})?$/u;
 export const EXIT_PASS: ExitCode = 0;
 export const EXIT_FAIL: ExitCode = 1;
 
+export const CACHE_OPTIONS = Symbol('options');
+export const CACHE_PARAMS = Symbol('params');
+
 export const RESERVED_OPTIONS = [
   // Existing args
   'help',

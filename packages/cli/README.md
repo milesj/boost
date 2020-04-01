@@ -29,6 +29,7 @@ await program.run(process.argv);
   and more.
 - Export a stand-alone or command-based CLI program binary.
 - Write declarative commands with decorators, or imperative commands with static properties.
+- Write shorthand proxy commands for small one offs.
 - Renders interface using [React][react] and [Ink][ink] at 16 FPS, or output simple strings.
 - Outputs beautiful help, usage, error, and index menus.
 - Buffers console logs to avoid render tearing.
