@@ -119,7 +119,7 @@ describe('Command', () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         class TestCommand extends Command {
           @Arg.Params()
-          unknown() {}
+          unknownArg() {}
 
           run() {
             return Promise.resolve('');

@@ -7,6 +7,7 @@
   "CLI_COMMAND_MIXED_NONDEFAULT": "Other commands have been registered. Cannot mix default and non-default commands.",
   "CLI_COMMAND_UNKNOWN": "Unknown command \"%s\". Did you mean \"%s\"?",
   "CLI_COMMAND_NONE_REGISTERED": "No commands have been registered. At least 1 is required.",
+  "CLI_MIDDLEWARE_INVALID": "Middleware must be a function.",
   "CLI_OPTION_RESERVED": "Option \"%s\" is a reserved name and cannot be used.",
   "CLI_PARAMS_RUN_ONLY": "Parameters must be defined on the `run()` method."
 }

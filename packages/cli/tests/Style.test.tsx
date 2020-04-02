@@ -106,19 +106,17 @@ describe('<Style />', () => {
     ).toMatchSnapshot();
   });
 
-  // GH CI terminal does not support hexcodes
-  if (!process.env.GITHUB_ACTION) {
-    it('supports hexcodes', async () => {
-      (loadTheme as jest.Mock).mockImplementation(() => ({
-        default: '#fff',
-        failure: 'red',
-        inverted: '#000',
-        muted: '#eee',
-        success: 'green',
-        warning: 'yellow',
-      }));
+  // TODO: GH CI terminal does not support hexcodes
+  // it('supports hexcodes', async () => {
+  //   (loadTheme as jest.Mock).mockImplementation(() => ({
+  //     default: '#fff',
+  //     failure: 'red',
+  //     inverted: '#000',
+  //     muted: '#eee',
+  //     success: 'green',
+  //     warning: 'yellow',
+  //   }));
 
-      expect(await renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
-    });
-  }
+  //   expect(await renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
+  // });
 });

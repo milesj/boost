@@ -23,6 +23,7 @@ import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
+import removeProcessBin from './middleware/removeProcessBin';
 import {
   msg,
   VERSION_FORMAT,
@@ -39,6 +40,9 @@ import {
   ProgramOptions,
   ProgramStreams,
   RunResult,
+  Middleware,
+  MiddlewareNext,
+  MiddlewareArguments,
 } from './types';
 
 export default class Program extends CommandManager<ProgramOptions> {
@@ -61,6 +65,8 @@ export default class Program extends CommandManager<ProgramOptions> {
   protected commandLine: string = '';
 
   protected logger: Logger;
+
+  protected middlewares: Middleware[] = [removeProcessBin];
 
   protected standAlone: CommandPath = '';
 
@@ -136,6 +142,19 @@ export default class Program extends CommandManager<ProgramOptions> {
   };
 
   /**
+   * Define a middleware function to apply to the argv list or args object.
+   */
+  middleware(middleware: Middleware): this {
+    if (typeof middleware !== 'function') {
+      throw new RuntimeError('cli', 'CLI_MIDDLEWARE_INVALID');
+    }
+
+    this.middlewares.push(middleware);
+
+    return this;
+  }
+
+  /**
    * Parse the arguments list according to the number of commands that have been registered.
    */
   parse<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(argv: Argv): Arguments<O, P> {
@@ -168,18 +187,8 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Run the program by parsing argv into an object of options and parameters,
    * while executing the found command.
    */
-  async run(baseArgv: Argv): Promise<ExitCode> {
-    let argv = [...baseArgv];
-
-    // Format argv before parsing
-    if (argv.length > 0 && argv[0].endsWith('/node')) {
-      argv = argv.slice(2);
-    }
-
+  async run(argv: Argv): Promise<ExitCode> {
     this.onBeforeRun.emit([argv]);
-
-    // Parse args and run the program
-    this.commandLine = argv.join(' ');
 
     let exitCode: ExitCode;
 
@@ -236,7 +245,14 @@ export default class Program extends CommandManager<ProgramOptions> {
     }
 
     // Parse the arguments
-    const { command: paths, errors, options, params, rest } = this.parse(argv);
+    const {
+      command: paths,
+      errors,
+      options,
+      params,
+      rest,
+      unknown,
+    } = await this.applyMiddlewareAndParseArgs(argv);
     const path = paths.join(':') || this.standAlone;
     const command = this.getCommand(path) as Command;
 
@@ -258,6 +274,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     Object.assign(command, options);
 
     command.rest = rest;
+    command.unknown = unknown;
     command.exit = this.exit;
     command.log = this.logger;
     command[CACHE_OPTIONS] = options;
@@ -265,6 +282,33 @@ export default class Program extends CommandManager<ProgramOptions> {
     command.bootstrap();
 
     return this.render(await command.run(...params), EXIT_PASS);
+  }
+
+  /**
+   * Loop through all middleware to modify the argv list
+   * and resulting args object.
+   */
+  protected applyMiddlewareAndParseArgs(
+    argv: Argv,
+  ): MiddlewareArguments | Promise<MiddlewareArguments> {
+    let index = -1;
+
+    const next: MiddlewareNext = nextArgv => {
+      index += 1;
+      const middleware = this.middlewares[index];
+
+      // Keep calling middleware until we exhaust them all
+      if (middleware) {
+        return middleware(nextArgv, next);
+      }
+
+      // Otherwise all middleware have ran, so parse the final list
+      this.commandLine = nextArgv.join(' ');
+
+      return this.parse(nextArgv);
+    };
+
+    return next(argv);
   }
 
   /**

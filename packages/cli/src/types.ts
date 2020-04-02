@@ -1,3 +1,6 @@
+// Some `any` is used so that its easier for consumers
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from 'react';
 import {
   Argv,
@@ -35,6 +38,16 @@ export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 export type StreamType = 'stderr' | 'stdout';
 
+export interface GlobalOptions {
+  help: boolean;
+  locale: string;
+  version: boolean;
+}
+
+export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOptions>>;
+
+export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
+
 // PROGRAM
 
 export type ExitCode = number;
@@ -66,16 +79,6 @@ export interface ProgramContextType {
 
 export type RunResult = void | undefined | string | React.ReactElement;
 
-export interface GlobalOptions {
-  help: boolean;
-  locale: string;
-  version: boolean;
-}
-
-export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOptions>>;
-
-export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
-
 export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
@@ -102,6 +105,14 @@ export interface CommandMetadataMap {
   [path: string]: CommandMetadata;
 }
 
+export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
+  getMetadata(): CommandMetadata;
+  getParserOptions(): ParserOptions<O, P>;
+  getPath(): CommandPath;
+  renderHelp(): string | React.ReactElement;
+  run(...params: P): RunResult | Promise<RunResult>;
+}
+
 // PROXY COMMANDS
 
 export interface ProxyCommandConfig<O extends object, P extends PrimitiveType[]>
@@ -117,15 +128,16 @@ export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
   rest: string[],
 ) => RunResult | Promise<RunResult>;
 
-// Allow any so that all APIs are easier to use
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
-  getMetadata(): CommandMetadata;
-  getParserOptions(): ParserOptions<O, P>;
-  getPath(): CommandPath;
-  renderHelp(): string | React.ReactElement;
-  run(...params: P): RunResult | Promise<RunResult>;
-}
+// MIDDLEWARE
+
+export type MiddlewareArguments = Arguments<GlobalOptions, ArgList>;
+
+export type MiddlewareNext = (argv: Argv) => MiddlewareArguments | Promise<MiddlewareArguments>;
+
+export type Middleware = (
+  argv: Argv,
+  next: MiddlewareNext,
+) => MiddlewareArguments | Promise<MiddlewareArguments>;
 
 // THEMES
 

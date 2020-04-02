@@ -19,6 +19,7 @@ export const RESERVED_OPTIONS = [
   'help',
   'locale',
   'rest',
+  'unknown',
   'version',
   // Class methods
   'bootstrap',

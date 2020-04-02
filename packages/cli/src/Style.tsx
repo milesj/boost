@@ -16,6 +16,7 @@ export default function Style({ children, inverted = false, type, ...restProps }
   const props: Writeable<ColorProps> = {};
 
   const injectColor = (color: string, bg: boolean) => {
+    // istanbul ignore next
     if (color.startsWith('#')) {
       props[bg ? 'bgHex' : 'hex'] = color;
     } else {

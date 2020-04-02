@@ -7,6 +7,7 @@ import {
   ParserOptions,
   ParamConfigList,
   OptionConfigMap,
+  UnknownOptionMap,
 } from '@boost/args';
 import { Logger } from '@boost/log';
 import { RuntimeError } from '@boost/internal';
@@ -79,6 +80,8 @@ export default abstract class Command<
   locale: string = 'en';
 
   rest: string[] = [];
+
+  unknown: UnknownOptionMap = {};
 
   version: boolean = false;
 

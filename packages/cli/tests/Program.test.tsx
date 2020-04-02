@@ -1,7 +1,15 @@
 import React, { useContext } from 'react';
 import { Box } from 'ink';
 import { ExitError } from '@boost/internal';
-import { Program, Command, Arg, OptionConfigMap, ProgramContext, ProgramContextType } from '../src';
+import {
+  Program,
+  Command,
+  Arg,
+  OptionConfigMap,
+  ProgramContext,
+  ProgramContextType,
+  CACHE_OPTIONS,
+} from '../src';
 import { WriteStream, ReadStream } from './helpers';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
@@ -42,6 +50,8 @@ class BoostCommand extends Command {
   static description = 'Description';
 
   static path = 'boost';
+
+  static allowUnknownOptions = true;
 
   run() {
     return Promise.resolve();
@@ -337,7 +347,7 @@ describe('<Program />', () => {
       expect(exitCode).toBe(0);
     });
 
-    it('renders when args parsing fails', async () => {
+    it('renders failure when args parsing fails', async () => {
       const exitCode = await program.run(['build', '--foo']);
 
       expect(stdout.get()).toMatchSnapshot();
@@ -569,7 +579,7 @@ describe('<Program />', () => {
     });
 
     it('renders when args parsing fails', async () => {
-      program.default(new BoostCommand());
+      program.default(new ComponentCommand());
 
       const exitCode = await program.run(['--foo']);
 
@@ -1136,6 +1146,71 @@ describe('<Program />', () => {
 
       logSpy.mockRestore();
       errSpy.mockRestore();
+    });
+  });
+
+  describe('middleware', () => {
+    /* eslint-disable promise/no-callback-in-promise */
+
+    it('errors if not a function', () => {
+      expect(() => {
+        // @ts-ignore Allow this
+        program.middleware(123);
+      }).toThrow('Middleware must be a function.');
+    });
+
+    it('can modify argv before parsing', async () => {
+      const command = new BoostCommand();
+
+      program.default(command);
+      program.middleware((argv, next) => {
+        argv.push('--', 'foo', 'bar');
+
+        return next(argv);
+      });
+
+      await program.run(['--opt', 'value']);
+
+      expect(command.unknown).toEqual({ opt: 'value' });
+      expect(command.rest).toEqual(['foo', 'bar']);
+    });
+
+    it('can modify argv before parsing using promises', async () => {
+      const command = new BoostCommand();
+
+      program.default(command);
+      program.middleware((argv, next) =>
+        Promise.resolve()
+          .then(() => [...argv, '--opt', 'new value'])
+          .then(next),
+      );
+
+      await program.run(['--opt', 'value']);
+
+      expect(command.unknown).toEqual({ opt: 'new value' });
+    });
+
+    it('can modify args after parsing', async () => {
+      const command = new BoostCommand();
+
+      program.default(command);
+      program.middleware(async (argv, next) => {
+        const args = await next(argv);
+
+        args.options.locale = 'fr';
+        args.unknown.key = 'value';
+
+        return args;
+      });
+
+      await program.run(['--opt', 'value']);
+
+      expect(command.unknown).toEqual({ opt: 'value', key: 'value' });
+      expect(command[CACHE_OPTIONS]).toEqual({
+        help: false,
+        locale: 'fr',
+        version: false,
+      });
     });
   });
 });

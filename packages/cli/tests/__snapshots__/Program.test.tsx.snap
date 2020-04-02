@@ -362,7 +362,7 @@ Build something
 "
 `;
 
-exports[`<Program /> proxy commands renders when args parsing fails 1`] = `
+exports[`<Program /> proxy commands renders failure when args parsing fails 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
