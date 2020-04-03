@@ -206,7 +206,7 @@ export default abstract class Command<
   /**
    * Verify sub-command is prefixed with the correct path.
    */
-  protected handleBeforeRegister = (subPath: CommandPath) => {
+  private handleBeforeRegister = (subPath: CommandPath) => {
     const path = this.getPath();
 
     if (!subPath.startsWith(path)) {

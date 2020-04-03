@@ -302,6 +302,8 @@ describe('<Program />', () => {
   });
 
   describe('proxy commands', () => {
+    let result: object;
+
     beforeEach(() => {
       program.register<{}, [string, ...string[]]>(
         'build',
@@ -312,7 +314,7 @@ describe('<Program />', () => {
           params: InstallClassicCommand.params,
         },
         function build(this: Command, opts, pms, rest) {
-          console.log(opts, pms, rest);
+          result = { opts, pms, rest };
 
           // eslint-disable-next-line babel/no-invalid-this
           this.log('Testing class logger');
@@ -355,8 +357,6 @@ describe('<Program />', () => {
     });
 
     it('passes correct args to run method', async () => {
-      const spy = jest.spyOn(console, 'log').mockImplementation();
-
       await program.run([
         'build',
         '--src',
@@ -368,25 +368,22 @@ describe('<Program />', () => {
         'bar',
       ]);
 
-      expect(spy).toHaveBeenCalledWith(
-        {
+      expect(result).toEqual({
+        opts: {
           dst: '',
           help: false,
           locale: 'en',
           src: './src',
           version: false,
         },
-        ['@boost/cli', '@boost/terminal'],
-        ['foo', 'bar'],
-      );
-
-      spy.mockRestore();
+        pms: ['@boost/cli', '@boost/terminal'],
+        rest: ['foo', 'bar'],
+      });
     });
 
     it('supports logger and aliased paths', async () => {
       const exitCode = await program.run(['compile', 'foo/bar']);
 
-      expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(0);
     });
   });
@@ -1075,9 +1072,6 @@ describe('<Program />', () => {
       ctx.log('Component log');
       ctx.log.error('Component error');
 
-      console.log('Console component log');
-      console.error('Console component error');
-
       return <Box>Returned from component!</Box>;
     }
 
@@ -1103,9 +1097,6 @@ describe('<Program />', () => {
         this.log.trace('Trace');
         this.log.info('Info');
 
-        console.log('Console log');
-        console.error('Console error');
-
         if (this.component) {
           return <Log />;
         }
@@ -1115,15 +1106,15 @@ describe('<Program />', () => {
     }
 
     it('handles logging when rendering a component', async () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const logSpy = jest.spyOn(stdout, 'write');
+      const errSpy = jest.spyOn(stderr, 'write');
 
       program.register(new LogCommand());
 
       const exitCode = await program.run(['log', '--component']);
 
-      expect(logSpy).toHaveBeenCalledTimes(1);
-      expect(errSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalled();
+      expect(errSpy).not.toHaveBeenCalled(); // Until ink supports stderr
       expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(0);
 
@@ -1132,15 +1123,15 @@ describe('<Program />', () => {
     });
 
     it('handles logging when returning a string', async () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const logSpy = jest.spyOn(stdout, 'write');
+      const errSpy = jest.spyOn(stderr, 'write');
 
       program.register(new LogCommand());
 
       const exitCode = await program.run(['log']);
 
-      expect(logSpy).toHaveBeenCalledTimes(7);
-      expect(errSpy).toHaveBeenCalledTimes(1); // Until ink supports stderr
+      expect(logSpy).toHaveBeenCalled();
+      expect(errSpy).not.toHaveBeenCalled(); // Until ink supports stderr
       expect(stdout.get()).toMatchSnapshot();
       expect(exitCode).toBe(0);
 

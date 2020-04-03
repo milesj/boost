@@ -327,16 +327,8 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 `;
 
 exports[`<Program /> logging handles logging when rendering a component 1`] = `
-"Log
-[90mdebug[39m Debug
-[33mwarn[39m Warn
-[31merror[39m Error
-[35mtrace[39m Trace
-[36minfo[39m Info
-Component log
+"Component log
 [31merror[39m Component error
-Console component log
-Console component error
 Returned from component!"
 `;
 
@@ -374,11 +366,6 @@ exports[`<Program /> proxy commands renders failure when args parsing fails 1`] 
 [30m[43m WARNINGS [49m[39m
 
   ● Param \\"pkg\\" is required but value is undefined.
-"
-`;
-
-exports[`<Program /> proxy commands supports logger and aliased paths 1`] = `
-"Testing class logger
 "
 `;
 

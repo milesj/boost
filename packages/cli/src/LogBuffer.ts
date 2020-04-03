@@ -6,7 +6,7 @@ type BufferListener = (buffer: string[]) => void;
 type UnwrapHandler = () => void;
 type ConsoleMethod = keyof typeof console;
 
-const NOTIFY_DELAY = 250;
+const NOTIFY_DELAY = 150;
 const CONSOLE_METHODS: { [K in StreamType]: ConsoleMethod[] } = {
   stderr: [],
   stdout: [
@@ -25,14 +25,19 @@ export default class LogBuffer {
 
   protected listener?: BufferListener;
 
+  protected stream: NodeJS.WriteStream;
+
   protected timer?: NodeJS.Timeout;
 
   protected type: StreamType;
 
   protected unwrappers: UnwrapHandler[] = [];
 
-  constructor(type: StreamType) {
+  protected wrapped: boolean = false;
+
+  constructor(type: StreamType, stream: NodeJS.WriteStream) {
     this.type = type;
+    this.stream = stream;
   }
 
   flush = () => {
@@ -40,13 +45,7 @@ export default class LogBuffer {
       if (this.listener) {
         this.listener(this.logs);
       } else {
-        this.logs.forEach(log => {
-          if (this.type === 'stderr') {
-            console.error(log);
-          } else {
-            console.log(log);
-          }
-        });
+        this.logs.forEach(this.writeToStream);
       }
 
       this.logs = [];
@@ -74,6 +73,8 @@ export default class LogBuffer {
     this.unwrappers.forEach(unwrap => {
       unwrap();
     });
+
+    this.wrapped = false;
   }
 
   wrap() {
@@ -86,16 +87,33 @@ export default class LogBuffer {
         console[method] = original;
       });
     });
+
+    this.wrapped = true;
   }
 
   write = (message: string) => {
+    // `Static` will render each item in the array as a new line,
+    // so trim surrounding new lines here
+    const msg = message.trim();
+
+    // If not wrapping the console, just output immediately
+    if (!this.wrapped) {
+      this.writeToStream(msg);
+
+      return;
+    }
+
     // Static component will render each item in the array as a new line,
     // so trim surrounding new lines here
-    this.logs.push(message.trim());
+    this.logs.push(msg);
 
     // Place in a short timeout so that we can batch
     if (!this.timer) {
       this.timer = setTimeout(this.flush, NOTIFY_DELAY);
     }
+  };
+
+  protected writeToStream = (message: string) => {
+    this.stream.write(`${message}\n`);
   };
 }

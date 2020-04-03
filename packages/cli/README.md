@@ -20,7 +20,7 @@ const program = new Program({
 program.register(new BuildCommand());
 program.register(new CleanCommand());
 
-await program.run(process.argv);
+await program.runAndExit(process.argv);
 ```
 
 ## Features
@@ -45,6 +45,6 @@ yarn add @boost/cli react ink
 
 [https://milesj.gitbook.io/boost/cli](https://milesj.gitbook.io/boost/cli)
 
-[args]: https://github.com/milesj/boost/tree/master/packages/args
+[args]: https://www.npmjs.com/package/@boost/args
 [ink]: https://github.com/vadimdemedes/ink
 [react]: https://reactjs.org/

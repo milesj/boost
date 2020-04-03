@@ -85,8 +85,8 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     Object.assign(this.streams, streams);
 
-    this.errBuffer = new LogBuffer('stderr');
-    this.outBuffer = new LogBuffer('stdout');
+    this.errBuffer = new LogBuffer('stderr', this.streams.stderr);
+    this.outBuffer = new LogBuffer('stdout', this.streams.stdout);
 
     this.logger = createLogger({
       // Use outBuffer until ink supports stderr
@@ -184,8 +184,12 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
-   * Run the program by parsing argv into an object of options and parameters,
-   * while executing the found command.
+   * Run the program in the following steps:
+   *  - Apply middleware to argv list.
+   *  - Parse argv into an args object (of options, params, etc).
+   *  - Determine command to run, or fail.
+   *  - Run command and render output.
+   *  - Return exit code.
    */
   async run(argv: Argv): Promise<ExitCode> {
     this.onBeforeRun.emit([argv]);
@@ -193,7 +197,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     let exitCode: ExitCode;
 
     try {
-      exitCode = await this.doRun(argv);
+      exitCode = await this.runAndRender(argv);
 
       this.onAfterRun.emit([]);
     } catch (error) {
@@ -202,10 +206,17 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.onAfterRun.emit([error]);
     }
 
-    // istanbul ignore next
-    if (process.env.NODE_ENV !== 'test') {
-      process.exitCode = exitCode;
-    }
+    return exitCode;
+  }
+
+  /**
+   * Run the program and also set the process exit code.
+   */
+  // istanbul ignore next
+  async runAndExit(argv: Argv): Promise<ExitCode> {
+    const exitCode = await this.run(argv);
+
+    process.exitCode = exitCode;
 
     return exitCode;
   }
@@ -225,10 +236,112 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
+   * Loop through all middleware to modify the argv list
+   * and resulting args object.
+   */
+  protected applyMiddlewareAndParseArgs(
+    argv: Argv,
+  ): MiddlewareArguments | Promise<MiddlewareArguments> {
+    let index = -1;
+
+    const next: MiddlewareNext = nextArgv => {
+      index += 1;
+      const middleware = this.middlewares[index];
+
+      // Keep calling middleware until we exhaust them all
+      if (middleware) {
+        return middleware(nextArgv, next);
+      }
+
+      // Otherwise all middleware have ran, so parse the final list
+      this.commandLine = nextArgv.join(' ');
+
+      return this.parse(nextArgv);
+    };
+
+    return next(argv);
+  }
+
+  /**
+   * Render the result of a command's run to the defined stream.
+   * If a string has been returned, write it immediately.
+   * If a React component, render with Ink and wait for it to finish.
+   */
+  protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
+    const { stdin, stdout } = this.streams;
+
+    // For simple strings, ignore react and the buffer
+    if (typeof result === 'string') {
+      stdout.write(result);
+
+      return exitCode;
+    }
+
+    try {
+      this.errBuffer.wrap();
+      this.outBuffer.wrap();
+
+      this.onBeforeRender.emit([result]);
+
+      await render(
+        <Wrapper
+          errBuffer={this.errBuffer}
+          exit={this.exit}
+          logger={this.logger}
+          outBuffer={this.outBuffer}
+          program={this.options}
+        >
+          {result || null}
+        </Wrapper>,
+        {
+          debug: process.env.NODE_ENV === 'test',
+          exitOnCtrlC: true,
+          experimental: true,
+          stdin,
+          stdout,
+        },
+      ).waitUntilExit();
+
+      this.onAfterRender.emit([]);
+    } finally {
+      this.errBuffer.unwrap();
+      this.outBuffer.unwrap();
+    }
+
+    return exitCode;
+  }
+
+  /**
+   * Render an error and warnings menu based on the list provided.
+   * If argument parser or validation errors are found, treat them with special logic.
+   */
+  protected renderErrors(errors: Error[]): Promise<ExitCode> {
+    const parseErrors = errors.filter(error => error instanceof ParseError);
+    const validErrors = errors.filter(error => error instanceof ValidationError);
+    const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
+
+    // Mostly for testing, but useful for other things
+    // istanbul ignore next
+    if (env('CLI_FAIL_HARD')) {
+      throw error;
+    }
+
+    return this.render(
+      <Failure
+        binName={this.options.bin}
+        commandLine={this.commandLine}
+        error={error}
+        warnings={validErrors.filter(verror => verror !== error)}
+      />,
+      error instanceof ExitError ? error.code : EXIT_FAIL,
+    );
+  }
+
+  /**
    * Internal run that does all the heavy lifting and parsing,
    * while the public run exists to catch any unexpected errors.
    */
-  protected async doRun(argv: Argv): Promise<ExitCode> {
+  protected async runAndRender(argv: Argv): Promise<ExitCode> {
     const showVersion = argv.some(arg => arg === '-v' || arg === '--version');
     const showHelp = argv.some(arg => arg === '-h' || arg === '--help');
 
@@ -285,113 +398,9 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
-   * Loop through all middleware to modify the argv list
-   * and resulting args object.
-   */
-  protected applyMiddlewareAndParseArgs(
-    argv: Argv,
-  ): MiddlewareArguments | Promise<MiddlewareArguments> {
-    let index = -1;
-
-    const next: MiddlewareNext = nextArgv => {
-      index += 1;
-      const middleware = this.middlewares[index];
-
-      // Keep calling middleware until we exhaust them all
-      if (middleware) {
-        return middleware(nextArgv, next);
-      }
-
-      // Otherwise all middleware have ran, so parse the final list
-      this.commandLine = nextArgv.join(' ');
-
-      return this.parse(nextArgv);
-    };
-
-    return next(argv);
-  }
-
-  /**
-   * Render the result of a command's run to the defined stream.
-   * If a string has been returned, write it immediately.
-   * If a React component, render with Ink and wait for it to finish.
-   */
-  protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
-    const { stdin, stdout } = this.streams;
-
-    // For simple strings, ignore react and the buffer
-    if (typeof result === 'string') {
-      this.errBuffer.flush();
-      this.outBuffer.flush();
-
-      stdout.write(result);
-
-      return exitCode;
-    }
-
-    try {
-      this.errBuffer.wrap();
-      this.outBuffer.wrap();
-
-      this.onBeforeRender.emit([result]);
-
-      await render(
-        <Wrapper
-          errBuffer={this.errBuffer}
-          exit={this.exit}
-          logger={this.logger}
-          outBuffer={this.outBuffer}
-          program={this.options}
-        >
-          {result || null}
-        </Wrapper>,
-        {
-          debug: process.env.NODE_ENV === 'test',
-          experimental: true,
-          stdin,
-          stdout,
-        },
-      ).waitUntilExit();
-
-      this.onAfterRender.emit([]);
-    } finally {
-      this.errBuffer.unwrap();
-      this.outBuffer.unwrap();
-    }
-
-    return exitCode;
-  }
-
-  /**
-   * Render an error and warnings menu based on the list provided.
-   * If argument parser or validation errors are found, treat them with special logic.
-   */
-  protected renderErrors(errors: Error[]): Promise<ExitCode> {
-    const parseErrors = errors.filter(error => error instanceof ParseError);
-    const validErrors = errors.filter(error => error instanceof ValidationError);
-    const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
-
-    // Mostly for testing, but useful for other things
-    // istanbul ignore next
-    if (env('CLI_FAIL_HARD')) {
-      throw error;
-    }
-
-    return this.render(
-      <Failure
-        binName={this.options.bin}
-        commandLine={this.commandLine}
-        error={error}
-        warnings={validErrors.filter(verror => verror !== error)}
-      />,
-      error instanceof ExitError ? error.code : EXIT_FAIL,
-    );
-  }
-
-  /**
    * Deeply register all commands so that we can easily access it during parse.
    */
-  protected handleAfterRegister = (_path: CommandPath, command: Commandable) => {
+  private handleAfterRegister = (_path: CommandPath, command: Commandable) => {
     const deepRegister = (cmd: Commandable) => {
       const { aliases, commands, path } = cmd.getMetadata();
 
@@ -410,7 +419,7 @@ export default class Program extends CommandManager<ProgramOptions> {
   /**
    * Check for default and non-default command mixing.
    */
-  protected handleBeforeRegister = () => {
+  private handleBeforeRegister = () => {
     if (this.standAlone) {
       throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_DEFAULT');
     }
