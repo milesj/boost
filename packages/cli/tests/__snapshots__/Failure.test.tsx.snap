@@ -64,16 +64,3 @@ exports[`<Failure /> renders a validation error with a command line 1`] = `
   boost --foo value --flag=123 -gSA
 "
 `;
-
-exports[`<Failure /> renders an error with warnings 1`] = `
-"
-[30m[41m ERROR [49m[39m
-
-  Something is broken!
-
-[30m[43m WARNINGS [49m[39m
-
-  ● This is invalid.
-  ● This is also invalid. Please fix.
-"
-`;

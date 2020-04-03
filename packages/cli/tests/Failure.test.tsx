@@ -30,11 +30,13 @@ describe('<Failure />', () => {
       new Error('This is also invalid. Please fix.'),
     ];
 
-    expect(
-      await renderToString(
-        <Failure error={new Error('Something is broken!')} binName="boost" warnings={warnings} />,
-      ),
-    ).toMatchSnapshot();
+    const out = await renderToString(
+      <Failure error={new Error('Something is broken!')} binName="boost" warnings={warnings} />,
+    );
+
+    // Do not use snapshots a they differ on windows
+    expect(out).toContain('This is invalid.');
+    expect(out).toContain('This is also invalid. Please fix.');
   });
 
   it('renders a parse error', async () => {

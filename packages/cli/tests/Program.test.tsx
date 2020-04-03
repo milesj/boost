@@ -352,7 +352,7 @@ describe('<Program />', () => {
     it('renders failure when args parsing fails', async () => {
       const exitCode = await program.run(['build', '--foo']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(stdout.get()).toContain('Unknown option "--foo" found.');
       expect(exitCode).toBe(1);
     });
 
