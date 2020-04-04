@@ -16,7 +16,7 @@ export default function formatType(
       type = config.label;
     }
 
-    type = config.required ? `<${type}>` : `[${type}]`;
+    type = config.required ? type : `[${type}]`;
   }
 
   return applyStyle(type, 'muted');

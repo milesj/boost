@@ -8,7 +8,7 @@ Boost v1.2.3 [90mboost[39m
 
 [30m[47m COMMANDS [49m[39m
 
- build          Build a project"
+ build        Build a project"
 `;
 
 exports[`<Program /> errors for invalid version format 1`] = `"Invalid Program field \\"version\\". String does not match. (pattern \\"^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\\+([0-9a-zA-Z-]+(?:\\\\.[0-9a-zA-Z-]+)*))?$\\")"`;
@@ -28,8 +28,8 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 
  Unknown option \\"--foo\\" found.
 
- [31m        ┌───┐[39m
- [90m$ boost [31m--foo[39m[90m[39m"
+ [90m$ boost [31m--foo[39m[90m[39m
+ [31m        └───┘[39m"
 `;
 
 exports[`<Program /> failure renders when invalid command name passed 1`] = `
@@ -118,7 +118,7 @@ exports[`<Program /> help outputs help for a nested sub-command 3`] = `
 
 [30m[47m COMMANDS [49m[39m
 
- client:build          Build a project
+ client:build        Build a project
 
 [30m[47m OPTIONS [49m[39m
 
@@ -299,8 +299,8 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 
  Locale must be in the format of \\"en\\" or \\"en-US\\".
 
- [33m        ┌──────┐[39m
- [90m$ boost [33m--locale[39m[90m wtf[39m"
+ [90m$ boost [33m--locale[39m[90m wtf[39m
+ [33m        └──────┘[39m"
 `;
 
 exports[`<Program /> logging handles logging when rendering a component 1`] = `

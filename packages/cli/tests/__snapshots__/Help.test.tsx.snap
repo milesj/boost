@@ -6,16 +6,16 @@ exports[`<Help /> commands renders commands (stripped) 1`] = `
 "
  COMMANDS 
 
- foo <src> [dst]  This is a normal command with params.
- barbar           This is a deprecated command with no params. [deprecated]"
+ foo src [dst]  This is a normal command with params.
+ barbar         This is a deprecated command with no params. [deprecated]"
 `;
 
 exports[`<Help /> commands renders commands 1`] = `
 "
 [30m[47m COMMANDS [49m[39m
 
- foo [90m<src>[39m [90m[dst][39m  This is a normal command with params.
- barbar           This is a deprecated command with no params. [90m[deprecated][39m"
+ foo [90msrc[39m [90m[dst][39m  This is a normal command with params.
+ barbar         This is a deprecated command with no params. [90m[deprecated][39m"
 `;
 
 exports[`<Help /> config renders description 1`] = `" I am a command that does cool things."`;
@@ -125,8 +125,8 @@ exports[`<Help /> renders everything 1`] = `
 
 [30m[47m COMMANDS [49m[39m
 
- foo [90m<src>[39m [90m[dst][39m  This is a normal command with params.
- barbar           This is a deprecated command with no params. [90m[deprecated][39m
+ foo [90msrc[39m [90m[dst][39m  This is a normal command with params.
+ barbar         This is a deprecated command with no params. [90m[deprecated][39m
 
 [30m[47m OPTIONS [49m[39m
 

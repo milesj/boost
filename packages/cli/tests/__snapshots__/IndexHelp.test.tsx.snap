@@ -46,8 +46,8 @@ Boost v1.2.3 [90mboost[39m
 
 [30m[47m COMMANDS [49m[39m
 
- foo [90m<src>[39m [90m[dst][39m  This is a normal command with params.
- barbar           This is a deprecated command with no params. [90m[deprecated][39m
+ foo [90msrc[39m [90m[dst][39m  This is a normal command with params.
+ barbar         This is a deprecated command with no params. [90m[deprecated][39m
 
 [30m[47m OPTIONS [49m[39m
 
@@ -98,8 +98,8 @@ For more information, see https://github.com/milesj/boost
 
 [30m[47m COMMANDS [49m[39m
 
- foo [90m<src>[39m [90m[dst][39m  This is a normal command with params.
- barbar           This is a deprecated command with no params. [90m[deprecated][39m
+ foo [90msrc[39m [90m[dst][39m  This is a normal command with params.
+ barbar         This is a deprecated command with no params. [90m[deprecated][39m
 
 Powered by Boost CLI v1.2.3"
 `;

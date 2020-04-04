@@ -60,15 +60,15 @@ export default class Failure extends React.Component<FailureProps> {
     return (
       <>
         <Box marginTop={SPACING_ROW}>
-          <Style type={type}>
-            {'┌'.padStart(idx + 1, ' ')}
-            {'─'.repeat(arg.length - 2)}
-            {'┐'}
-          </Style>
+          <Style type="muted">{cmd.replace(arg, applyStyle(arg, type))}</Style>
         </Box>
 
         <Box>
-          <Style type="muted">{cmd.replace(arg, applyStyle(arg, type))}</Style>
+          <Style type={type}>
+            {'└'.padStart(idx + 1, ' ')}
+            {'─'.repeat(arg.length - 2)}
+            {'┘'}
+          </Style>
         </Box>
       </>
     );
