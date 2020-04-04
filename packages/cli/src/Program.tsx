@@ -22,6 +22,7 @@ import Failure from './Failure';
 import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
+import isArgvSize from './helpers/isArgvSize';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import removeProcessBin from './middleware/removeProcessBin';
 import {
@@ -346,7 +347,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     const showHelp = argv.some(arg => arg === '-h' || arg === '--help');
 
     // Display index help
-    if ((!this.standAlone && argv.length === 0) || (argv.length === 1 && showHelp)) {
+    if ((isArgvSize(argv, 0) && !this.standAlone) || (isArgvSize(argv, 1) && showHelp)) {
       this.onHelp.emit([]);
 
       return this.render(this.createIndex());
@@ -354,7 +355,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     // Display version
     if (showVersion) {
-      return this.render(this.options.version);
+      return this.render(`${this.options.version}\n`);
     }
 
     // Parse the arguments
