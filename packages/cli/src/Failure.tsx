@@ -3,10 +3,11 @@
 import React from 'react';
 import { Box } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
-import { figures, screen } from '@boost/terminal';
+import { RuntimeError } from '@boost/internal';
+import { screen } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
-import { msg } from './constants';
+import { msg, SPACING_COL, SPACING_ROW } from './constants';
 import applyStyle from './helpers/applyStyle';
 import { StyleType } from './types';
 
@@ -27,7 +28,7 @@ export default class Failure extends React.Component<FailureProps> {
 
     const width = screen.size().columns;
     let type: StyleType = 'failure';
-    let cmd = `${binName} ${commandLine}`;
+    let cmd = `$ ${binName} ${commandLine}`;
     let arg = '';
 
     if (error instanceof ParseError) {
@@ -40,6 +41,10 @@ export default class Failure extends React.Component<FailureProps> {
     }
 
     let idx = cmd.indexOf(arg);
+
+    if (idx < 0) {
+      return null;
+    }
 
     while (idx + arg.length > width) {
       const half = Math.round(width / 2);
@@ -54,7 +59,7 @@ export default class Failure extends React.Component<FailureProps> {
 
     return (
       <>
-        <Box paddingLeft={2}>
+        <Box marginTop={SPACING_ROW}>
           <Style type={type}>
             {'┌'.padStart(idx + 1, ' ')}
             {'─'.repeat(arg.length - 2)}
@@ -62,7 +67,7 @@ export default class Failure extends React.Component<FailureProps> {
           </Style>
         </Box>
 
-        <Box marginBottom={1} paddingLeft={2}>
+        <Box>
           <Style type="muted">{cmd.replace(arg, applyStyle(arg, type))}</Style>
         </Box>
       </>
@@ -76,6 +81,7 @@ export default class Failure extends React.Component<FailureProps> {
       !error.stack ||
       error instanceof ParseError ||
       error instanceof ValidationError ||
+      error instanceof RuntimeError ||
       process.env.NODE_ENV === 'test'
     ) {
       return null;
@@ -84,7 +90,7 @@ export default class Failure extends React.Component<FailureProps> {
     // Stack traces are not deterministic so we cannot snapshot this
     // istanbul ignore next
     return (
-      <Box flexDirection="column">
+      <>
         <Header label={msg('cli:labelStackTrace')} type="muted" />
 
         <Box width="100%">
@@ -92,7 +98,7 @@ export default class Failure extends React.Component<FailureProps> {
             {error.stack!.replace(`${error.constructor.name}: ${error.message}\n`, '')}
           </Style>
         </Box>
-      </Box>
+      </>
     );
   }
 
@@ -104,16 +110,16 @@ export default class Failure extends React.Component<FailureProps> {
     }
 
     return (
-      <Box marginBottom={1} flexDirection="column">
+      <>
         <Header label={msg('cli:labelWarnings')} type="warning" />
 
         {warnings.map(warn => (
-          <Box key={warn.message} paddingLeft={2} flexDirection="row">
-            <Box width={2}>{figures.bullet}</Box>
+          <Box key={warn.message} paddingLeft={SPACING_COL} flexDirection="row">
+            <Box width={2}>{'–'}</Box>
             <Box flexGrow={1}>{warn.message}</Box>
           </Box>
         ))}
-      </Box>
+      </>
     );
   }
 
@@ -121,14 +127,13 @@ export default class Failure extends React.Component<FailureProps> {
     const { error } = this.props;
 
     return (
-      <Box marginTop={1} flexDirection="column">
+      <Box flexDirection="column">
         <Header label={msg('cli:labelError')} type="failure" />
 
-        <Box marginBottom={1} paddingLeft={2}>
-          {error.message}
+        <Box paddingLeft={SPACING_COL} flexDirection="column">
+          <Box>{error.message}</Box>
+          {this.renderCodeFrame()}
         </Box>
-
-        {this.renderCodeFrame()}
 
         {this.renderWarnings()}
 

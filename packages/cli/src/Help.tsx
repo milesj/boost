@@ -1,12 +1,10 @@
-/* eslint-disable no-magic-numbers */
-
 import React from 'react';
 import { Box } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
 import { screen } from '@boost/terminal';
 import Header from './Header';
-import { msg } from './constants';
+import { msg, SPACING_COL, SPACING_COL_WIDE } from './constants';
 import { CommandConfigMap, CommandConfig } from './types';
 import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
 
@@ -57,7 +55,7 @@ export default class Help extends React.Component<HelpProps> {
     const nameWidth = getLongestWidth(names);
 
     return (
-      <Box marginBottom={1} flexDirection="column">
+      <>
         <Header label={msg('cli:labelCommands')} />
 
         {Object.entries(commands).map(([path, config], index) => {
@@ -68,22 +66,18 @@ export default class Help extends React.Component<HelpProps> {
           const desc = formatDescription(config);
 
           return (
-            <Box key={`${path}-${index}`} flexDirection="row">
-              <Box flexGrow={0} width={nameWidth + 2} paddingLeft={2}>
+            <Box key={`${path}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
+              <Box flexGrow={0} width={nameWidth + SPACING_COL_WIDE}>
                 {names[index]}
               </Box>
 
-              <Box
-                flexGrow={1}
-                paddingLeft={2}
-                textWrap={this.getWrapType(desc.length, nameWidth + 4)}
-              >
+              <Box flexGrow={1} textWrap={this.getWrapType(desc.length, nameWidth)}>
                 {desc}
               </Box>
             </Box>
           );
         })}
-      </Box>
+      </>
     );
   }
 
@@ -117,7 +111,7 @@ export default class Help extends React.Component<HelpProps> {
     const showShortColumn = shortWidth > 0;
 
     return (
-      <Box marginBottom={1} flexDirection="column">
+      <>
         <Header label={msg('cli:labelOptions')} />
 
         {Object.entries(options).map(([name, config], index) => {
@@ -126,49 +120,36 @@ export default class Help extends React.Component<HelpProps> {
           }
 
           const desc = formatDescription(config, this.gatherOptionTags(config));
-          const longIndent = showShortColumn ? 1 : 2;
-          const otherWidths = (showShortColumn ? shortWidth + 2 : 0) + longWidth + longIndent;
+          const otherWidths = (showShortColumn ? shortWidth : 0) + longWidth;
 
           return (
-            <Box key={`${name}-${index}`} flexDirection="row">
+            <Box key={`${name}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
               {showShortColumn && (
-                <Box flexGrow={0} width={shortWidth + 2} paddingLeft={2}>
+                <Box flexGrow={0} width={shortWidth + SPACING_COL}>
                   {shortNames[index]}
                 </Box>
               )}
 
-              <Box flexGrow={0} width={longWidth + longIndent} paddingLeft={longIndent}>
+              <Box flexGrow={0} width={longWidth + SPACING_COL_WIDE}>
                 {longNames[index]}
               </Box>
 
-              <Box
-                flexGrow={1}
-                paddingLeft={2}
-                textWrap={this.getWrapType(desc.length, otherWidths + 2)}
-              >
+              <Box flexGrow={1} textWrap={this.getWrapType(desc.length, otherWidths)}>
                 {desc}
               </Box>
             </Box>
           );
         })}
-      </Box>
+      </>
     );
   }
 
   renderParams(params: ParamConfigList) {
-    // Create columns and append the "rest bucket"
-    const labels = [...params.map((config, index) => String(config.label || index)), '…'];
-    const types = [
-      ...params.map(config => formatType(config)),
-      formatType({ multiple: true, type: 'string' }),
-    ];
-
-    // Calculate column widths
+    const labels = params.map((config, index) => `${config.label || index} ${formatType(config)}`);
     const labelWidth = getLongestWidth(labels);
-    const typeWidth = getLongestWidth(types);
 
     return (
-      <Box marginBottom={1} flexDirection="column">
+      <>
         <Header label={msg('cli:labelParams')} />
 
         {params.map((config, index) => {
@@ -179,40 +160,36 @@ export default class Help extends React.Component<HelpProps> {
           const desc = config ? formatDescription(config, this.gatherParamTags(config)) : '';
 
           return (
-            <Box key={`${labels[index]}-${index}`} flexDirection="row">
-              <Box flexGrow={0} width={labelWidth + 2} paddingLeft={2} justifyContent="flex-end">
+            <Box key={`${labels[index]}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
+              <Box flexGrow={0} width={labelWidth + SPACING_COL_WIDE}>
                 {labels[index]}
               </Box>
 
-              <Box flexGrow={0} width={typeWidth + 1} paddingLeft={1}>
-                {types[index]}
-              </Box>
-
-              <Box
-                flexGrow={1}
-                paddingLeft={2}
-                textWrap={this.getWrapType(desc.length, labelWidth + typeWidth + 5)}
-              >
+              <Box flexGrow={1} textWrap={this.getWrapType(desc.length, labelWidth)}>
                 {desc}
               </Box>
             </Box>
           );
         })}
-      </Box>
+
+        <Box paddingLeft={SPACING_COL}>
+          <Box>{`… ${formatType({ multiple: true, type: 'string' })}`}</Box>
+        </Box>
+      </>
     );
   }
 
   renderUsage(usage: string | string[]) {
     return (
-      <Box marginBottom={1} flexDirection="column">
+      <>
         <Header label={msg('cli:labelUsage')} />
 
         {toArray(usage).map(example => (
-          <Box key={example} paddingLeft={2}>
+          <Box key={example} paddingLeft={SPACING_COL}>
             {example}
           </Box>
         ))}
-      </Box>
+      </>
     );
   }
 
@@ -226,10 +203,10 @@ export default class Help extends React.Component<HelpProps> {
     const hasOptions = Boolean(options && Object.keys(options).length > 0);
 
     return (
-      <Box marginTop={1} flexDirection="column">
+      <Box flexDirection="column">
         {(hasDesc || hasUsage) && header && <Header label={header} />}
 
-        {hasDesc && <Box marginBottom={1}>{formatDescription(config!)}</Box>}
+        {hasDesc && <Box paddingLeft={SPACING_COL}>{formatDescription(config!)}</Box>}
 
         {hasUsage && this.renderUsage(config?.usage!)}
 
