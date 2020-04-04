@@ -24,6 +24,18 @@ describe('<Failure />', () => {
     ).toMatchSnapshot();
   });
 
+  it('doesnt render code frame if arg not found', async () => {
+    const error = new ParseError(
+      'Flags and short option groups may not use inline values.',
+      '--flag=123',
+      16,
+    );
+
+    expect(
+      await renderToString(<Failure error={error} binName="boost" commandLine="foo --bar" />),
+    ).toMatchSnapshot();
+  });
+
   it('renders an error with warnings', async () => {
     const warnings = [
       new Error('This is invalid.'),

@@ -7,6 +7,13 @@ exports[`<Failure /> doesnt render code frame if a common error 1`] = `
  Something is broken!"
 `;
 
+exports[`<Failure /> doesnt render code frame if arg not found 1`] = `
+"
+[30m[41m ERROR [49m[39m
+
+ Flags and short option groups may not use inline values."
+`;
+
 exports[`<Failure /> reduces command line by half when index appears off screen 1`] = `
 "
  ERROR 
