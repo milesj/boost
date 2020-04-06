@@ -17,7 +17,7 @@ export interface HelpProps {
 }
 
 function alphaSort(a: [string, unknown], b: [string, unknown]) {
-  return b[0].localeCompare(a[0]);
+  return a[0].localeCompare(b[0]);
 }
 
 export default class Help extends React.Component<HelpProps> {
@@ -62,7 +62,7 @@ export default class Help extends React.Component<HelpProps> {
       <>
         <Header label={msg('cli:labelCommands')} />
 
-        {Object.entries(commands).map(([path, config], index) => {
+        {entries.map(([path, config], index) => {
           if (config.hidden) {
             return null;
           }
@@ -70,7 +70,7 @@ export default class Help extends React.Component<HelpProps> {
           const desc = formatDescription(config);
 
           return (
-            <Box key={`${path}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
+            <Box key={path} paddingLeft={SPACING_COL} flexDirection="row">
               <Box flexGrow={0} width={nameWidth + SPACING_COL_WIDE}>
                 {names[index]}
               </Box>
@@ -118,7 +118,7 @@ export default class Help extends React.Component<HelpProps> {
       <>
         <Header label={msg('cli:labelOptions')} />
 
-        {Object.entries(options).map(([name, config], index) => {
+        {entries.map(([name, config], index) => {
           if (config.hidden) {
             return null;
           }
@@ -127,7 +127,7 @@ export default class Help extends React.Component<HelpProps> {
           const otherWidths = (showShortColumn ? shortWidth : 0) + longWidth;
 
           return (
-            <Box key={`${name}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
+            <Box key={name} paddingLeft={SPACING_COL} flexDirection="row">
               {showShortColumn && (
                 <Box flexGrow={0} width={shortWidth + SPACING_COL}>
                   {shortNames[index]}
