@@ -54,7 +54,7 @@ boost build --key value --key=value -flag -F -aBDc foo bar baz -- --foo bar -B
 └───────────────────────────────────── 9 ────────────────────────────────────┘
 ```
 
-1. Binary that was executed. Also known as a script or command, and is never passed to `argv`.
+1. Binary that was executed. Also known as a script, and is never passed to `argv`.
 2. [Command](#commands) being executed. Should always be first.
 3. [Option](#options) with a value.
 4. [Option](#options) with a value using an equals sign.
@@ -118,6 +118,8 @@ the following settings:
 
 - `type` (`'boolean' | 'number' | 'string'`) - Expected type of the provided value. When a value is
   captured from the command line, it will be type casted. _(Required)_
+- `category` (`string`) - A unique key to group options within categories. Couples with the
+  `Category` type.
 - `description` (`string`) - A description of what the option does. Primarily used in interface
   output. _(Required)_
 - `default` (`*`) - The default value if option not provided on the command line. The value's type

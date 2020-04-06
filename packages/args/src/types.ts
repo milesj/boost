@@ -135,6 +135,7 @@ export interface Arg<T> extends Config {
 }
 
 export interface Option<T extends ValueType> extends Arg<T> {
+  category?: string;
   default?: T;
   short?: ShortOptionName;
 }
@@ -158,6 +159,11 @@ export interface Flag extends Omit<Option<boolean>, 'validate'> {
 export interface Param<T extends PrimitiveType> extends Arg<T> {
   label?: string;
   required?: boolean;
+}
+
+export interface Category {
+  name: string;
+  weight?: number;
 }
 
 // Abstract type for easier typing
