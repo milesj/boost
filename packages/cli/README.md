@@ -38,7 +38,7 @@ await program.runAndExit(process.argv);
 ## Installation
 
 ```
-yarn add @boost/cli react ink
+yarn add @boost/cli react
 ```
 
 ## Documentation
