@@ -16,6 +16,10 @@ export interface HelpProps {
   params?: ParamConfigList;
 }
 
+function alphaSort(a: [string, unknown], b: [string, unknown]) {
+  return b[0].localeCompare(a[0]);
+}
+
 export default class Help extends React.Component<HelpProps> {
   gatherOptionTags(config: OptionConfig): string[] {
     const tags: string[] = [];
@@ -46,7 +50,7 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderCommands(commands: CommandConfigMap) {
-    const entries = Object.entries(commands);
+    const entries = Object.entries(commands).sort(alphaSort);
 
     // Create column for names
     const names = entries.map(([path, config]) => formatCommandCall(path, config));
@@ -82,7 +86,7 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderOptions(options: OptionConfigMap) {
-    const entries = Object.entries(options);
+    const entries = Object.entries(options).sort(alphaSort);
 
     // Create columns for the names and types
     const shortNames: string[] = [];
