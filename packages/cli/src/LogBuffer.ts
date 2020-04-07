@@ -94,7 +94,10 @@ export default class LogBuffer {
   write = (message: string) => {
     // `Static` will render each item in the array as a new line,
     // so trim surrounding new lines here
-    const msg = String(message).trimEnd();
+    const msg =
+      typeof String.prototype.trimEnd === 'function'
+        ? String(message).trimEnd()
+        : String(message).trim(); // Node 8
 
     // If not wrapping the console, just output immediately
     if (!this.wrapped) {
