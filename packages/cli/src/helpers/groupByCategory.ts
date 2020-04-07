@@ -12,7 +12,7 @@ export default function groupByCategory<
 >(items: T[], categories: Categories): CategoryItemMap<T> {
   const weightedCategories = Object.entries(categories).map(([key, category]) => ({
     key,
-    weight: 10,
+    weight: 50,
     ...(typeof category === 'string' ? { name: category } : category),
   }));
 
@@ -43,7 +43,11 @@ export default function groupByCategory<
   // Map items to their category
   items.forEach(item => {
     if (!item.hidden) {
-      map[item.category || 'uncategorized'].items.push(item);
+      if (item.category && map[item.category]) {
+        map[item.category].items.push(item);
+      } else {
+        map.uncategorized.items.push(item);
+      }
     }
   });
 

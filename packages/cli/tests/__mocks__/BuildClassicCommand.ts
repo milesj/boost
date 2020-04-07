@@ -14,6 +14,8 @@ export default class BuildClassicCommand extends Command<BuildOptions> {
 
   static usage = '$ build -S ./src -D ./lib';
 
+  static category = 'build';
+
   static options: Options<BuildOptions> = {
     // --dst, -D
     dst: {

@@ -15,7 +15,7 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
 
   static hidden = true;
 
-  static category = 'special';
+  static category = 'setup';
 
   static categories: Categories = {
     special: 'Special',

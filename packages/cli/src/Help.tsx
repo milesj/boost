@@ -24,10 +24,6 @@ export interface HelpProps {
   params?: ParamConfigList;
 }
 
-function sortByName(a: [string, unknown], b: [string, unknown]) {
-  return a[0].localeCompare(b[0]);
-}
-
 export default class Help extends React.Component<HelpProps> {
   gatherOptionTags(config: OptionConfig): string[] {
     const tags: string[] = [];
@@ -58,37 +54,58 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderCommands(commands: CommandConfigMap) {
-    const entries = Object.entries(commands).sort(sortByName);
+    let pathWidth = 0;
 
-    // Create column for names
-    const names = entries.map(([path, config]) => formatCommandCall(path, config));
+    const items = Object.entries(commands).map(([path, command]) => {
+      const pathCall = formatCommandCall(path, command);
+      const pathCallStripped = stripAnsi(pathCall);
 
-    // Calculate longest name column width
-    const nameWidth = getLongestWidth(names);
+      if (pathCallStripped.length > pathWidth) {
+        pathWidth = pathCallStripped.length;
+      }
+
+      return {
+        ...command,
+        name: path,
+        path,
+        pathCall,
+      };
+    });
+
+    const categorizedCommands = groupByCategory(items, this.props.categories || {});
+    const categoryCount = Object.keys(categorizedCommands).length;
 
     return (
       <>
         <Header label={msg('cli:labelCommands')} />
 
-        {entries.map(([path, config], index) => {
-          if (config.hidden) {
-            return null;
-          }
-
-          const desc = formatDescription(config);
-
-          return (
-            <Box key={path} paddingLeft={SPACING_COL} flexDirection="row">
-              <Box flexGrow={0} width={nameWidth + SPACING_COL_WIDE}>
-                {names[index]}
+        {Object.entries(categorizedCommands).map(([key, category], index) => (
+          <Box key={key} flexDirection="column">
+            {category.name && categoryCount > 1 && (
+              <Box marginTop={index === 0 ? 0 : SPACING_ROW} paddingLeft={SPACING_COL}>
+                <Style bold type="none">
+                  {category.name}
+                </Style>
               </Box>
+            )}
 
-              <Box flexGrow={1} textWrap={this.getWrapType(desc.length, nameWidth)}>
-                {desc}
-              </Box>
-            </Box>
-          );
-        })}
+            {category.items.map(config => {
+              const desc = formatDescription(config);
+
+              return (
+                <Box key={key + config.path} paddingLeft={SPACING_COL} flexDirection="row">
+                  <Box flexGrow={0} width={pathWidth + SPACING_COL_WIDE}>
+                    {config.pathCall}
+                  </Box>
+
+                  <Box flexGrow={1} textWrap={this.getWrapType(desc.length, pathWidth)}>
+                    {desc}
+                  </Box>
+                </Box>
+              );
+            })}
+          </Box>
+        ))}
       </>
     );
   }

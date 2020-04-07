@@ -8,7 +8,7 @@ export type InstallParams = [string, ...string[]];
 
 @Config('install', 'Install package(s)', {
   categories: { special: 'Special' },
-  category: 'special',
+  category: 'setup',
   deprecated: true,
   hidden: true,
 })
