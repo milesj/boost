@@ -1,6 +1,6 @@
 {
   "name": "@boost/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A type-safe and powerful command line interface, built on React and Ink.",
   "keywords": [
     "boost",
@@ -30,7 +30,6 @@
     "@boost/log": "^1.1.11",
     "@boost/terminal": "^1.0.1",
     "@boost/translate": "^1.3.6",
-    "@types/react": "*",
     "ink": "^2.7.1",
     "levenary": "^1.1.1"
   },
