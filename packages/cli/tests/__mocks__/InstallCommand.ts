@@ -6,10 +6,15 @@ export interface InstallOptions extends GlobalOptions {
 
 export type InstallParams = [string, ...string[]];
 
-@Config('install', 'Install package(s)', { deprecated: true, hidden: true })
+@Config('install', 'Install package(s)', {
+  categories: { special: 'Special' },
+  category: 'special',
+  deprecated: true,
+  hidden: true,
+})
 export default class InstallCommand extends Command<InstallOptions, InstallParams> {
   // --save
-  @Arg.Flag('Save dependency to lock file')
+  @Arg.Flag('Save dependency to lock file', { category: 'special' })
   save: boolean = true;
 
   @Arg.Params<InstallParams>({

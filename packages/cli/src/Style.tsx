@@ -7,12 +7,11 @@ export interface StyleProps
   extends Pick<ColorProps, 'reset' | 'bold' | 'dim' | 'italic' | 'underline' | 'hidden'> {
   children: NonNullable<React.ReactNode>;
   inverted?: boolean;
-  type: StyleType;
+  type: StyleType | 'none';
 }
 
 export default function Style({ children, inverted = false, type, ...restProps }: StyleProps) {
   const theme = loadTheme();
-  const shade = theme[type];
   const props: Writeable<ColorProps> = {};
 
   const injectColor = (color: string, bg: boolean) => {
@@ -32,8 +31,8 @@ export default function Style({ children, inverted = false, type, ...restProps }
       injectColor(theme.default, false);
       injectColor(theme.inverted, true);
     }
-  } else {
-    injectColor(shade, inverted);
+  } else if (type !== 'none') {
+    injectColor(theme[type], inverted);
 
     if (inverted) {
       injectColor('black', false);

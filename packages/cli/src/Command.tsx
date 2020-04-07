@@ -19,9 +19,11 @@ import {
   ExitHandler,
   RunResult,
   CommandPath,
+  Categories,
 } from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
+import getInheritedCategories from './metadata/getInheritedCategories';
 import getInheritedOptions from './metadata/getInheritedOptions';
 import validateParams from './metadata/validateParams';
 import validateOptions from './metadata/validateOptions';
@@ -38,6 +40,15 @@ export default abstract class Command<
 
   static allowUnknownOptions: boolean = false;
 
+  static categories: Categories = {
+    global: {
+      name: msg('cli:categoryGlobal'),
+      weight: 100,
+    },
+  };
+
+  static category: string = '';
+
   static description: string = '';
 
   static deprecated: boolean = false;
@@ -46,11 +57,13 @@ export default abstract class Command<
 
   static options: OptionConfigMap = {
     help: {
+      category: 'global',
       description: msg('cli:optionHelpDescription'),
       short: 'h',
       type: 'boolean',
     },
     locale: {
+      category: 'global',
       default: 'en',
       description: msg('cli:optionLocaleDescription'),
       type: 'string',
@@ -61,6 +74,7 @@ export default abstract class Command<
       },
     },
     version: {
+      category: 'global',
       description: msg('cli:optionVersionDescription'),
       short: 'v',
       type: 'boolean',
@@ -104,6 +118,8 @@ export default abstract class Command<
 
     validateConfig(this.constructor.name, {
       aliases: ctor.aliases,
+      categories: ctor.categories,
+      category: ctor.category,
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
@@ -138,6 +154,8 @@ export default abstract class Command<
 
     return {
       aliases: ctor.aliases,
+      categories: getInheritedCategories(this),
+      category: ctor.category,
       commands: this.commands,
       deprecated: ctor.deprecated,
       description: ctor.description,
@@ -189,6 +207,7 @@ export default abstract class Command<
 
     return (
       <Help
+        categories={metadata.categories}
         config={metadata}
         commands={mapCommandMetadata(metadata.commands)}
         header={metadata.path}

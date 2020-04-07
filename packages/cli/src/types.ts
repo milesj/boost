@@ -6,6 +6,7 @@ import {
   Argv,
   ArgList,
   Arguments,
+  Category,
   Command as BaseCommandConfig,
   MapOptionConfig,
   MapParamConfig,
@@ -24,6 +25,7 @@ export {
   Argv,
   ArgList,
   Arguments,
+  Category,
   Option,
   OptionConfig,
   OptionConfigMap,
@@ -47,6 +49,10 @@ export interface GlobalOptions {
 export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOptions>>;
 
 export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
+
+export interface Categories {
+  [name: string]: string | Category;
+}
 
 // PROGRAM
 
@@ -83,6 +89,8 @@ export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
   aliases?: string[];
+  category?: string; // TEMP
+  categories?: Categories;
   options?: OptionConfigMap;
   params?: ParamConfigList;
   path?: CommandPath; // Canonical name used on the command line

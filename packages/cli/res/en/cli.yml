@@ -1,3 +1,4 @@
+categoryGlobal: Global
 errorInvalidLocale: Locale must be in the format of "en" or "en-US".
 labelAbout: About
 labelCommands: Commands

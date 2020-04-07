@@ -23,6 +23,7 @@ describe('Command', () => {
       expect(BuildCommand.description).toBe(meta.description);
       expect(BuildCommand.path).toBe(meta.path);
       expect(BuildCommand.usage).toBe(meta.usage);
+      expect(BuildCommand.category).toBe(meta.category);
 
       // Again with different properties
       const command2 = new InstallCommand();
@@ -37,6 +38,7 @@ describe('Command', () => {
       expect(InstallCommand.path).toBe(meta2.path);
       expect(InstallCommand.deprecated).toBe(meta2.deprecated);
       expect(InstallCommand.hidden).toBe(meta2.hidden);
+      expect(InstallCommand.category).toBe(meta2.category);
     });
 
     it('inherits global options from parent', () => {
@@ -46,14 +48,38 @@ describe('Command', () => {
       expect(options).toEqual({
         dst: { short: 'D', description: 'Destination path', type: 'string' },
         src: { short: 'S', description: 'Source path', type: 'string' },
-        help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
+        help: {
+          category: 'global',
+          description: 'Display help and usage menu',
+          short: 'h',
+          type: 'boolean',
+        },
         locale: {
+          category: 'global',
           default: 'en',
           description: 'Display output in the chosen locale',
           type: 'string',
           validate: expect.any(Function),
         },
-        version: { description: 'Display version number', short: 'v', type: 'boolean' },
+        version: {
+          category: 'global',
+          description: 'Display version number',
+          short: 'v',
+          type: 'boolean',
+        },
+      });
+    });
+
+    it('inherits global categories from parent', () => {
+      const command = new InstallCommand();
+      const { categories } = command.getMetadata();
+
+      expect(categories).toEqual({
+        global: {
+          name: 'Global',
+          weight: 100,
+        },
+        special: 'Special',
       });
     });
 
@@ -96,14 +122,25 @@ describe('Command', () => {
             multiple: true,
             type: 'string',
           },
-          help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
+          help: {
+            category: 'global',
+            description: 'Display help and usage menu',
+            short: 'h',
+            type: 'boolean',
+          },
           locale: {
+            category: 'global',
             default: 'en',
             description: 'Display output in the chosen locale',
             type: 'string',
             validate: expect.any(Function),
           },
-          version: { description: 'Display version number', short: 'v', type: 'boolean' },
+          version: {
+            category: 'global',
+            description: 'Display version number',
+            short: 'v',
+            type: 'boolean',
+          },
         }),
       );
 
@@ -157,18 +194,21 @@ describe('Command', () => {
           dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
           src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
           help: {
+            category: 'global',
             default: false,
             description: 'Display help and usage menu',
             short: 'h',
             type: 'boolean',
           },
           locale: {
+            category: 'global',
             default: 'en',
             description: 'Display output in the chosen locale',
             type: 'string',
             validate: expect.any(Function),
           },
           version: {
+            category: 'global',
             default: false,
             description: 'Display version number',
             short: 'v',
@@ -194,6 +234,7 @@ describe('Command', () => {
       expect(BuildClassicCommand.description).toBe(meta.description);
       expect(BuildClassicCommand.path).toBe(meta.path);
       expect(BuildClassicCommand.usage).toBe(meta.usage);
+      expect(BuildClassicCommand.category).toBe(meta.category);
 
       // Again with different properties
       const command2 = new InstallClassicCommand();
@@ -208,6 +249,7 @@ describe('Command', () => {
       expect(InstallClassicCommand.path).toBe(meta2.path);
       expect(InstallClassicCommand.deprecated).toBe(meta2.deprecated);
       expect(InstallClassicCommand.hidden).toBe(meta2.hidden);
+      expect(InstallClassicCommand.category).toBe(meta2.category);
     });
 
     it('inherits global options from parent', () => {
@@ -217,14 +259,38 @@ describe('Command', () => {
       expect(options).toEqual({
         dst: { short: 'D', description: 'Destination path', type: 'string' },
         src: { short: 'S', description: 'Source path', type: 'string' },
-        help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
+        help: {
+          category: 'global',
+          description: 'Display help and usage menu',
+          short: 'h',
+          type: 'boolean',
+        },
         locale: {
+          category: 'global',
           default: 'en',
           description: 'Display output in the chosen locale',
           type: 'string',
           validate: expect.any(Function),
         },
-        version: { description: 'Display version number', short: 'v', type: 'boolean' },
+        version: {
+          category: 'global',
+          description: 'Display version number',
+          short: 'v',
+          type: 'boolean',
+        },
+      });
+    });
+
+    it('inherits global categories from parent', () => {
+      const command = new InstallClassicCommand();
+      const { categories } = command.getMetadata();
+
+      expect(categories).toEqual({
+        global: {
+          name: 'Global',
+          weight: 100,
+        },
+        special: 'Special',
       });
     });
 
@@ -264,14 +330,25 @@ describe('Command', () => {
           multiple: true,
           type: 'string',
         },
-        help: { description: 'Display help and usage menu', short: 'h', type: 'boolean' },
+        help: {
+          category: 'global',
+          description: 'Display help and usage menu',
+          short: 'h',
+          type: 'boolean',
+        },
         locale: {
+          category: 'global',
           default: 'en',
           description: 'Display output in the chosen locale',
           type: 'string',
           validate: expect.any(Function),
         },
-        version: { description: 'Display version number', short: 'v', type: 'boolean' },
+        version: {
+          category: 'global',
+          description: 'Display version number',
+          short: 'v',
+          type: 'boolean',
+        },
       });
 
       expect(params).toEqual([
@@ -296,18 +373,21 @@ describe('Command', () => {
           dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
           src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
           help: {
+            category: 'global',
             default: false,
             description: 'Display help and usage menu',
             short: 'h',
             type: 'boolean',
           },
           locale: {
+            category: 'global',
             default: 'en',
             description: 'Display output in the chosen locale',
             type: 'string',
             validate: expect.any(Function),
           },
           version: {
+            category: 'global',
             default: false,
             description: 'Display version number',
             short: 'v',

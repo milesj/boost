@@ -13,11 +13,12 @@ import {
   DEFAULT_NUMBER_VALUE,
   DEFAULT_BOOLEAN_VALUE,
   COMMAND_FORMAT,
+  Category,
 } from '@boost/args';
 import { predicates, Blueprint } from '@boost/common';
 import { CommandStaticConfig } from '../types';
 
-const { array, bool, func, number, string, union } = predicates;
+const { array, bool, func, number, object, shape, string, union } = predicates;
 
 export const commonBlueprint: Blueprint<Required<Config>> = {
   deprecated: bool(),
@@ -36,6 +37,19 @@ export const commandConstructorBlueprint: Blueprint<Omit<
   ...commonBlueprint,
   aliases: array(string()),
   allowUnknownOptions: bool(),
+  categories: object(
+    union<string | Category>(
+      [
+        string().notEmpty(),
+        shape({
+          name: string().notEmpty(),
+          weight: number(),
+        }),
+      ],
+      '',
+    ),
+  ),
+  category: string(),
   path: string()
     .notEmpty()
     .required()
@@ -47,7 +61,6 @@ export const commandConstructorBlueprint: Blueprint<Omit<
 
 export const argBlueprint: Blueprint<Arg<unknown>> = {
   ...commonBlueprint,
-  default: union([bool(), number(), string()], ''),
   type: string<'string'>('string').required(),
   validate: func(),
 };
@@ -56,6 +69,8 @@ export const argBlueprint: Blueprint<Arg<unknown>> = {
 
 export const optionBlueprint: Blueprint<Option<any>> = {
   ...argBlueprint,
+  category: string(),
+  default: union([bool(), number(), string()], ''),
   short: string<ShortOptionName>().match(/^[a-z]$/giu),
 };
 

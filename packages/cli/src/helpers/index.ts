@@ -5,6 +5,7 @@ import formatDescription from './formatDescription';
 import formatType from './formatType';
 import formatValue from './formatValue';
 import getLongestWidth from './getLongestWidth';
+import groupByCategory from './groupByCategory';
 import isArgvSize from './isArgvSize';
 import loadTheme from './loadTheme';
 import mapCommandMetadata from './mapCommandMetadata';
@@ -17,6 +18,7 @@ export {
   formatType,
   formatValue,
   getLongestWidth,
+  groupByCategory,
   isArgvSize,
   loadTheme,
   mapCommandMetadata,

@@ -328,6 +328,13 @@ describe('<Program />', () => {
       expect(command).toBeInstanceOf(Command);
       expect(command.getMetadata()).toEqual({
         aliases: ['compile'],
+        categories: {
+          global: {
+            name: 'Global',
+            weight: 100,
+          },
+        },
+        category: '',
         commands: {},
         description: 'Build something',
         deprecated: false,

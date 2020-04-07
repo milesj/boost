@@ -2,13 +2,21 @@ import React from 'react';
 import { Box } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
-import { screen } from '@boost/terminal';
+import { screen, stripAnsi } from '@boost/terminal';
 import Header from './Header';
-import { msg, SPACING_COL, SPACING_COL_WIDE } from './constants';
-import { CommandConfigMap, CommandConfig } from './types';
-import { formatType, getLongestWidth, formatDescription, formatCommandCall } from './helpers';
+import Style from './Style';
+import { msg, SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from './constants';
+import { CommandConfigMap, CommandConfig, Categories } from './types';
+import {
+  formatType,
+  getLongestWidth,
+  groupByCategory,
+  formatDescription,
+  formatCommandCall,
+} from './helpers';
 
 export interface HelpProps {
+  categories?: Categories;
   config?: CommandConfig;
   commands?: CommandConfigMap;
   header?: string;
@@ -16,7 +24,7 @@ export interface HelpProps {
   params?: ParamConfigList;
 }
 
-function alphaSort(a: [string, unknown], b: [string, unknown]) {
+function sortByName(a: [string, unknown], b: [string, unknown]) {
   return a[0].localeCompare(b[0]);
 }
 
@@ -50,7 +58,7 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderCommands(commands: CommandConfigMap) {
-    const entries = Object.entries(commands).sort(alphaSort);
+    const entries = Object.entries(commands).sort(sortByName);
 
     // Create column for names
     const names = entries.map(([path, config]) => formatCommandCall(path, config));
@@ -86,64 +94,79 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderOptions(options: OptionConfigMap) {
-    const entries = Object.entries(options).sort(alphaSort);
+    let longWidth = 0;
+    let shortWidth = 0;
 
-    // Create columns for the names and types
-    const shortNames: string[] = [];
-    const longNames: string[] = [];
+    const items = Object.entries(options).map(([name, option]) => {
+      const shortLabel = option.short ? `-${option.short},` : '';
+      let longLabel = `--${option.default === true ? 'no-' : ''}${name}`;
 
-    entries.forEach(([name, config]) => {
-      if (config.short) {
-        shortNames.push(`-${config.short},`);
-      } else {
-        shortNames.push('');
+      if (option.type !== 'boolean') {
+        longLabel += ' ';
+        longLabel += formatType(option);
       }
 
-      let long = `--${config.default === true ? 'no-' : ''}${name}`;
+      const longLabelStripped = stripAnsi(longLabel);
+      const shortLabelStripped = stripAnsi(shortLabel);
 
-      if (config.type !== 'boolean') {
-        long += ' ';
-        long += formatType(config);
+      if (longLabelStripped.length > longWidth) {
+        longWidth = longLabelStripped.length;
       }
 
-      longNames.push(long);
+      if (shortLabelStripped.length > shortWidth) {
+        shortWidth = shortLabelStripped.length;
+      }
+
+      return {
+        ...option,
+        longLabel,
+        name,
+        shortLabel,
+      };
     });
 
-    // Calculate column widths
-    const shortWidth = getLongestWidth(shortNames);
-    const longWidth = getLongestWidth(longNames);
+    const categorizedOptions = groupByCategory(items, this.props.categories || {});
+    const categoryCount = Object.keys(categorizedOptions).length;
     const showShortColumn = shortWidth > 0;
 
     return (
       <>
         <Header label={msg('cli:labelOptions')} />
 
-        {entries.map(([name, config], index) => {
-          if (config.hidden) {
-            return null;
-          }
+        {Object.entries(categorizedOptions).map(([key, category], index) => (
+          <Box key={key} flexDirection="column">
+            {category.name && categoryCount > 1 && (
+              <Box marginTop={index === 0 ? 0 : SPACING_ROW} paddingLeft={SPACING_COL}>
+                <Style bold type="none">
+                  {category.name}
+                </Style>
+              </Box>
+            )}
 
-          const desc = formatDescription(config, this.gatherOptionTags(config));
-          const otherWidths = (showShortColumn ? shortWidth : 0) + longWidth;
+            {category.items.map(config => {
+              const desc = formatDescription(config, this.gatherOptionTags(config));
+              const otherWidths = (showShortColumn ? shortWidth : 0) + longWidth;
 
-          return (
-            <Box key={name} paddingLeft={SPACING_COL} flexDirection="row">
-              {showShortColumn && (
-                <Box flexGrow={0} width={shortWidth + SPACING_COL}>
-                  {shortNames[index]}
+              return (
+                <Box key={key + config.name} paddingLeft={SPACING_COL} flexDirection="row">
+                  {showShortColumn && (
+                    <Box flexGrow={0} width={shortWidth + SPACING_COL}>
+                      {config.shortLabel}
+                    </Box>
+                  )}
+
+                  <Box flexGrow={0} width={longWidth + SPACING_COL_WIDE}>
+                    {config.longLabel}
+                  </Box>
+
+                  <Box flexGrow={1} textWrap={this.getWrapType(desc.length, otherWidths)}>
+                    {desc}
+                  </Box>
                 </Box>
-              )}
-
-              <Box flexGrow={0} width={longWidth + SPACING_COL_WIDE}>
-                {longNames[index]}
-              </Box>
-
-              <Box flexGrow={1} textWrap={this.getWrapType(desc.length, otherWidths)}>
-                {desc}
-              </Box>
-            </Box>
-          );
-        })}
+              );
+            })}
+          </Box>
+        ))}
       </>
     );
   }

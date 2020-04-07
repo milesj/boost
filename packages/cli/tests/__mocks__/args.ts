@@ -98,20 +98,17 @@ export const params: ParamConfigList = [
     required: true,
   },
   {
-    default: 'value',
     description: 'This is a string param thats required.',
     label: 'path',
     type: 'string',
     required: true,
   },
   {
-    default: 300,
     description: 'And this a number param with a label.',
     label: 'ms',
     type: 'number',
   },
   {
-    default: true,
     deprecated: true,
     description: 'And finally a boolean param.',
     type: 'boolean',

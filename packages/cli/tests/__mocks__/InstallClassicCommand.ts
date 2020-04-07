@@ -1,4 +1,4 @@
-import { Command, GlobalOptions, Options, Params } from '../../src';
+import { Command, GlobalOptions, Options, Params, Categories } from '../../src';
 
 export interface InstallOptions extends GlobalOptions {
   save: boolean;
@@ -15,9 +15,16 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
 
   static hidden = true;
 
+  static category = 'special';
+
+  static categories: Categories = {
+    special: 'Special',
+  };
+
   static options: Options<InstallOptions> = {
     // --save
     save: {
+      category: 'special',
       default: true,
       description: 'Save dependency to lock file',
       type: 'boolean',

@@ -15,8 +15,16 @@ export default function Config(
       ctor.aliases = config.aliases;
     }
 
-    if (config.usage !== undefined) {
-      ctor.usage = config.usage;
+    if (config.allowUnknownOptions !== undefined) {
+      ctor.allowUnknownOptions = config.allowUnknownOptions;
+    }
+
+    if (config.categories !== undefined) {
+      ctor.categories = config.categories;
+    }
+
+    if (config.category !== undefined) {
+      ctor.category = config.category;
     }
 
     if (config.deprecated !== undefined) {
@@ -27,8 +35,8 @@ export default function Config(
       ctor.hidden = config.hidden;
     }
 
-    if (config.allowUnknownOptions !== undefined) {
-      ctor.allowUnknownOptions = config.allowUnknownOptions;
+    if (config.usage !== undefined) {
+      ctor.usage = config.usage;
     }
   };
 }
