@@ -146,8 +146,8 @@ describe('Command', () => {
 
       expect(params).toEqual([
         { description: 'String', label: 'char', required: true, type: 'string' },
-        { description: 'Boolean', type: 'boolean' },
-        { description: 'Number', label: 'int', type: 'number' },
+        { description: 'Boolean', type: 'boolean', default: true },
+        { description: 'Number', label: 'int', type: 'number', default: 123 },
       ]);
     });
 
@@ -353,8 +353,8 @@ describe('Command', () => {
 
       expect(params).toEqual([
         { description: 'String', label: 'char', required: true, type: 'string' },
-        { description: 'Boolean', type: 'boolean' },
-        { description: 'Number', label: 'int', type: 'number' },
+        { description: 'Boolean', type: 'boolean', default: true },
+        { description: 'Number', label: 'int', type: 'number', default: 123 },
       ]);
     });
 

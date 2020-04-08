@@ -61,6 +61,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
 
 export const argBlueprint: Blueprint<Arg<unknown>> = {
   ...commonBlueprint,
+  default: union([bool(), number(), string()], ''),
   type: string<'string'>('string').required(),
   validate: func(),
 };
@@ -70,7 +71,6 @@ export const argBlueprint: Blueprint<Arg<unknown>> = {
 export const optionBlueprint: Blueprint<Option<any>> = {
   ...argBlueprint,
   category: string(),
-  default: union([bool(), number(), string()], ''),
   short: string<ShortOptionName>().match(/^[a-z]$/giu),
 };
 

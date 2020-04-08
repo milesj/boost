@@ -64,10 +64,12 @@ export default class AllClassicCommand extends Command<AllOptions, AllParams> {
       type: 'string',
     },
     {
+      default: true,
       description: 'Boolean',
       type: 'boolean',
     },
     {
+      default: 123,
       description: 'Number',
       label: 'int',
       type: 'number',

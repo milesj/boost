@@ -89,7 +89,6 @@ export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
   aliases?: string[];
-  category?: string; // TEMP
   categories?: Categories;
   options?: OptionConfigMap;
   params?: ParamConfigList;
@@ -126,7 +125,6 @@ export interface Commandable<O extends object = any, P extends PrimitiveType[] =
 export interface ProxyCommandConfig<O extends object, P extends PrimitiveType[]>
   extends BaseCommandConfig {
   aliases?: string[];
-  category?: string; // TEMP
   options?: MapOptionConfig<O>;
   params?: MapParamConfig<P>;
 }
