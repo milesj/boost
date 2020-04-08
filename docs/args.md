@@ -445,6 +445,26 @@ const argv = format({
 });
 ```
 
+### Command & Option Categories
+
+While purely an informational feature, as it doesn't pertain to the parser, both commands and
+options can be define a category. This category can be used within a consumer to group and organize
+based on the category name.
+
+```ts
+const args = parse<{ color: string }>(argv, {
+  options: {
+    color: {
+      category: 'style',
+      description: 'Your favorite color',
+      type: 'string',
+    },
+  },
+});
+```
+
+> Command categories only pertain to the `Command` interface type.
+
 ## Contextual Parsing
 
 While the above is straight forward (I hope so), it doesn't leave much room for customization. What

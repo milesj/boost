@@ -118,6 +118,7 @@ export interface Config {
 }
 
 export interface Command extends Config {
+  category?: string;
   usage?: string | string[];
 }
 
