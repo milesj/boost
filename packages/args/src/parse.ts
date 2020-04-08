@@ -110,6 +110,9 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
       checker.validateDefaultValue(name, options[name], config);
       checker.validateNumberCount(name, config);
     },
+    onParam(config) {
+      checker.validateRequiredParamNoDefault(config);
+    },
   });
 
   // Process each argument
@@ -208,6 +211,17 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
 
   // Commit final scope
   commitScope();
+
+  // Fill missing params
+  for (let i = params.length; i < paramConfigs.length; i += 1) {
+    const config = paramConfigs[i];
+
+    if (config.required) {
+      break;
+    }
+
+    params.push(getDefaultValue(config) as PrimitiveType);
+  }
 
   // Run final checks
   mapParserOptions(parserOptions, options, params, {

@@ -10,6 +10,7 @@
   "AG_OPTION_UNKNOWN_FORMAT": "Unknown option format.",
   "AG_PARAM_MISORDERED": "Optional param(s) %s found before required param \"%s\". Required must be first.",
   "AG_PARAM_REQUIRED": "Param \"%s\" is required but value is undefined.",
+  "AG_PARAM_REQUIRED_NO_DEFAULT": "Required param \"%s\" has a default value, which is not allowed.",
   "AG_SHORT_DEFINED": "Short option \"%s\" has already been defined for \"%s\".",
   "AG_SHORT_SINGLE_CHAR": "Short option \"%s\" may only be a single letter.",
   "AG_SHORT_UNKNOWN": "Unknown short option \"%s\". No associated long option found.",

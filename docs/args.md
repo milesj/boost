@@ -248,7 +248,7 @@ args.options.color; // true
 ### Params
 
 Parameters (or positional arguments) are standalone arguments that are treated as values, and are
-parsed in a strict order. They're an important mechanism that serve 2 purposes.
+parsed in a strict order. They're an important mechanism that serves 2 purposes.
 
 - They're a catch all bucket for arguments that _are not_ a command, option, or flag, nor do they
   appear after a rest `--` delimiter.
@@ -256,9 +256,10 @@ parsed in a strict order. They're an important mechanism that serve 2 purposes.
   params are the arguments that are passed to the function.
 
 Like [options](#options), params can be configured, but unlike options, the settings are not
-required. When a setting is not defined, a param is treated as a string. Params support all the same
-settings and types as options, with the addition of:
+required. When a setting is not defined, a param is treated as a string. Params support similar
+settings as options, with the addition of:
 
+- `default`, `deprecated`, `description`, `hidden`, `type`, `validate` - Same setting as options.
 - `label` (`string`) - Informational label to display in interface output. _(Required)_
 - `required` (`boolean`) - Whether the param is required or not. If required and not passed, the
   parser will throw an error. Defaults to `false`.

@@ -132,6 +132,12 @@ export default class Checker {
     });
   }
 
+  validateRequiredParamNoDefault(config: ParamConfig) {
+    if (config.required && config.default !== undefined) {
+      this.logInvalidError('AG_PARAM_REQUIRED_NO_DEFAULT', [config.label]);
+    }
+  }
+
   validateUniqueShortName(option: LongOptionName, short: ShortOptionName, map: AliasMap) {
     if (map[short]) {
       this.logInvalidError('AG_SHORT_DEFINED', [short, map[short]], option);

@@ -829,6 +829,35 @@ describe('parse()', () => {
         });
       });
     });
+
+    describe('short groups', () => {
+      it('errors when a string type is used', () => {
+        const result = parse<{ flag: boolean; opt: string }>(['-OF'], {
+          options: {
+            flag: flagConfig,
+            opt: optConfigExpanded,
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [
+            new ParseError(
+              'Only boolean and countable number options may be used in a short option group.',
+              '-OF',
+              0,
+            ),
+          ],
+          options: {
+            flag: false,
+            opt: 'foobar',
+          },
+          params: [],
+          rest: [],
+          unknown: {},
+        });
+      });
+    });
   });
 
   describe('string options', () => {
@@ -1733,6 +1762,26 @@ describe('parse()', () => {
       });
     });
 
+    it('errors if a required param has a default value', () => {
+      const result = parse<{}, [string]>(['foo'], {
+        options: {},
+        params: [
+          { default: 'foo', description: '', label: 'first', required: true, type: 'string' },
+        ],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ValidationError('Required param "first" has a default value, which is not allowed.'),
+        ],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
     it('casts to value if a config exists, otherwise is a string', () => {
       const result = parse<{}, [number]>(['123', 'bar'], {
         options: {},
@@ -1791,6 +1840,28 @@ describe('parse()', () => {
         errors: [new ValidationError('Invalid date.')],
         options: {},
         params: ['2019-01'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('fills in missing params with a default value', () => {
+      const result = parse<{}, [string, string, boolean, string, number]>(['test'], {
+        options: {},
+        params: [
+          { description: '', label: 'first', type: 'string', required: true },
+          { description: '', label: 'second', type: 'string', default: 'a' },
+          { description: '', label: 'third', type: 'boolean', default: true },
+          { description: '', label: 'fourth', type: 'string' },
+          { description: '', label: 'fifth', type: 'number', default: 123 },
+        ],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        params: ['test', 'a', true, '', 123],
         rest: [],
         unknown: {},
       });
