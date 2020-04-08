@@ -98,7 +98,7 @@ exports[`<Program /> help outputs help for a nested sub-command 2`] = `
 [30m[47m PARAMS [49m[39m
 
  pkg [90mstring[39m  Package name [90m[required][39m
- … [90mstring[][39m
+ …pkgs [90mstring[][39m
 
 [30m[47m OPTIONS [49m[39m
 
@@ -167,7 +167,7 @@ exports[`<Program /> help outputs help for a specific command 2`] = `
 [30m[47m PARAMS [49m[39m
 
  pkg [90mstring[39m  Package name [90m[required][39m
- … [90mstring[][39m
+ …pkgs [90mstring[][39m
 
 [30m[47m OPTIONS [49m[39m
 
@@ -236,7 +236,6 @@ Boost v1.2.3 [90mboost[39m
  path [90mstring[39m  This is a string param thats required. [90m[required][39m
  ms [90mnumber[39m    And this a number param with a label.
  3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
- … [90mstring[][39m
 
 [30m[47m OPTIONS [49m[39m
 
@@ -283,7 +282,6 @@ Boost v1.2.3 [90mboost[39m
  path [90mstring[39m  This is a string param thats required. [90m[required][39m
  ms [90mnumber[39m    And this a number param with a label.
  3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
- … [90mstring[][39m
 
 [30m[47m OPTIONS [49m[39m
 
@@ -343,7 +341,6 @@ exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] =
 [30m[47m PARAMS [49m[39m
 
  pkg [90mstring[39m  Package name [90m[required][39m
- … [90mstring[][39m
 
 [30m[47m OPTIONS [49m[39m
 

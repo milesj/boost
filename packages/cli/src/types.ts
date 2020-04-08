@@ -89,6 +89,8 @@ export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
   aliases?: string[];
+  allowRestParams?: boolean | string;
+  allowUnknownOptions?: boolean;
   categories?: Categories;
   options?: OptionConfigMap;
   params?: ParamConfigList;
@@ -100,9 +102,7 @@ export interface CommandConfigMap {
 }
 
 // Constructor
-export interface CommandStaticConfig extends Required<CommandConfig> {
-  allowUnknownOptions?: boolean;
-}
+export type CommandStaticConfig = Required<CommandConfig>;
 
 export interface CommandMetadata extends CommandStaticConfig {
   commands: { [path: string]: Commandable };

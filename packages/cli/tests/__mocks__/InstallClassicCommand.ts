@@ -40,6 +40,8 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
     },
   ];
 
+  static allowRestParams = 'pkgs';
+
   save: boolean = true;
 
   async run(pkgName: string, ...morePkgNames: string[]) {

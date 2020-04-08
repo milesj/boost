@@ -191,6 +191,7 @@ export default class Help extends React.Component<HelpProps> {
   renderParams(params: ParamConfigList) {
     const labels = params.map((config, index) => `${config.label || index} ${formatType(config)}`);
     const labelWidth = getLongestWidth(labels);
+    const allowRest = this.props.config?.allowRestParams;
 
     return (
       <>
@@ -216,9 +217,17 @@ export default class Help extends React.Component<HelpProps> {
           );
         })}
 
-        <Box paddingLeft={SPACING_COL}>
-          <Box>{`… ${formatType({ multiple: true, type: 'string' })}`}</Box>
-        </Box>
+        {allowRest && (
+          <Box paddingLeft={SPACING_COL}>
+            <Box>
+              {`…${typeof allowRest === 'string' ? allowRest : ''}`}{' '}
+              {formatType({
+                multiple: true,
+                type: 'string',
+              })}
+            </Box>
+          </Box>
+        )}
       </>
     );
   }

@@ -15,6 +15,10 @@ export default function Config(
       ctor.aliases = config.aliases;
     }
 
+    if (config.allowRestParams !== undefined) {
+      ctor.allowRestParams = config.allowRestParams;
+    }
+
     if (config.allowUnknownOptions !== undefined) {
       ctor.allowUnknownOptions = config.allowUnknownOptions;
     }

@@ -44,7 +44,6 @@ Boost v1.2.3 [90mboost[39m
  path [90mstring[39m  This is a string param thats required. [90m[required][39m
  ms [90mnumber[39m    And this a number param with a label.
  3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
- … [90mstring[][39m
 
 [30m[47m COMMANDS [49m[39m
 

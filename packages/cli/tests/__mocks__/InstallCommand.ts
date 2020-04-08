@@ -7,6 +7,7 @@ export interface InstallOptions extends GlobalOptions {
 export type InstallParams = [string, ...string[]];
 
 @Config('install', 'Install package(s)', {
+  allowRestParams: 'pkgs',
   categories: { special: 'Special' },
   category: 'setup',
   deprecated: true,

@@ -36,6 +36,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
 >> = {
   ...commonBlueprint,
   aliases: array(string()),
+  allowRestParams: union([bool(), string()], false),
   allowUnknownOptions: bool(),
   categories: object(
     union<string | Category>(

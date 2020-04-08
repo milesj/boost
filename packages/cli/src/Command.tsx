@@ -38,6 +38,8 @@ export default abstract class Command<
 > extends CommandManager<Options> implements Commandable<O, P> {
   static aliases: string[] = [];
 
+  static allowRestParams: boolean | string = false;
+
   static allowUnknownOptions: boolean = false;
 
   static categories: Categories = {
@@ -118,6 +120,8 @@ export default abstract class Command<
 
     validateConfig(this.constructor.name, {
       aliases: ctor.aliases,
+      allowRestParams: ctor.allowRestParams,
+      allowUnknownOptions: ctor.allowUnknownOptions,
       categories: ctor.categories,
       category: ctor.category,
       deprecated: ctor.deprecated,
@@ -154,6 +158,8 @@ export default abstract class Command<
 
     return {
       aliases: ctor.aliases,
+      allowRestParams: ctor.allowRestParams,
+      allowUnknownOptions: ctor.allowUnknownOptions,
       categories: getInheritedCategories(this),
       category: ctor.category,
       commands: this.commands,
