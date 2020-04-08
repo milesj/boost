@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.1.13 - 2020-04-08
+
+#### ⚙️ Types
+
+- Add `Loggable` interface. ([d58b7ec](https://github.com/milesj/boost/commit/d58b7ec))
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 1.1.12 - 2020-03-22
 
 **Note:** Version bump only for package @boost/log

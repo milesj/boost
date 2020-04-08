@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.3.0 - 2020-04-08
+
+#### 🚀 Updates
+
+- Added option categories. ([455e03b](https://github.com/milesj/boost/commit/455e03b))
+- Properly support default values for params. ([e7fca74](https://github.com/milesj/boost/commit/e7fca74))
+
+#### ⚙️ Types
+
+- Add `category` to `Command`. ([214be93](https://github.com/milesj/boost/commit/214be93))
+- Removed `default` from `Param`. ([8c96605](https://github.com/milesj/boost/commit/8c96605))
+
+**Note:** Version bump only for package @boost/args
+
+
+
+
+
 ### 1.2.1 - 2020-03-22
 
 #### ⚙️ Types
