@@ -62,7 +62,7 @@ value.
 const output = await pipeline.run();
 ```
 
-### Custom Input & Output Types
+### Input & Output Types
 
 The input type is inferred from the 2nd constructor argument, while the output type defaults to the
 input type. If you need to customize either the input or output type manually, the pipeline generics
