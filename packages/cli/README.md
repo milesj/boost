@@ -4,7 +4,8 @@
 [![npm version](https://badge.fury.io/js/%40boost%cli.svg)](https://www.npmjs.com/package/@boost/cli)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/cli)](https://www.npmjs.com/package/@boost/cli)
 
-A type-safe command line interface built on [Boost][args], [React][react], and [Ink][ink].
+A type-safe and interactive command line program builder, powered by [Boost][args], [React][react],
+and [Ink][ink].
 
 ```ts
 import { Program } from '@boost/cli';
