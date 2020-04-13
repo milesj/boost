@@ -33,12 +33,12 @@ TODO
 ### Program
 
 The entry point of the command line is commonly referred to as the binary, or script, and is managed
-by the `Program` class. This class handles the registration of commands, applying middleware to argv
-(`process.argv`), parsing argv into [arguments](./args.md#usage) (options, flags, etc), running the
-found command with these argument, outputing to the terminal, and finally cleaning up or handling
-failures.
+by the `Program` class. This class handles the registration of commands, applying
+[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.md#usage)
+(options, flags, etc), running the found command with these argument, outputing to the terminal, and
+finally cleaning up or handling failures.
 
-Begin by importing and instantiating the `Program` class.
+Begin by importing and instantiating the `Program` class, while passing required options.
 
 ```ts
 import { Program } from '@boost/cli';
@@ -71,7 +71,8 @@ It supports the following options:
 
 Now that you have the basics of a program, you can set the
 [bin](https://docs.npmjs.com/files/package.json#bin) field in your `package.json`. This should point
-to the program file you have defined previously, for example, if my program was called `boost`.
+to the program-aware file you have defined previously. For example, if my program will be called
+`boost`.
 
 ```json
 {
@@ -98,8 +99,8 @@ Boost offers 2 implementations for how the binary can be executed, the 1st is kn
 program. This implementation only supports 1 [command](#commands) known as the default command,
 which is immediately ran when the binary is. It does not support sub-commands.
 
-To utilize a stand-alone binary, create and instantiate a command, then pass it to
-`Command#default`. The command's `path` is ignored for this situation.
+To create a stand-alone binary, create and instantiate a command, then pass it to
+`Command#default()`. The command's `path` is ignored for this situation.
 
 ```ts
 import { Program } from '@boost/cli';
@@ -116,7 +117,47 @@ Some good examples of stand-alone binaries are `babel`, `webpack`, and `tsc`.
 
 #### Multi-command
 
+The 2nd implementation is opposite the stand-alone program, and is known as a multi-command program.
+When the binary is ran, and no arguments are passed, a help menu is displayed instead of executing
+the default command. Otherwise, if arguments _are_ passed, a registered command will be ran based on
+matching path name.
+
+To create a multi-command binary, create and instantiate multiple commands, and pass them all to
+`Command#register`. In the example below, the `boost` binary would support the `boost install`,
+`boost uninstall`, and `boost build` commands.
+
+```ts
+import { Program } from '@boost/cli';
+import InstallCommand from './commands/InstallCommand';
+import UninstallCommand from './commands/UninstallCommand';
+import BuildCommand from './commands/BuildCommand';
+
+const program = new Program({
+  // ...
+});
+
+program
+  .register(new InstallCommand())
+  .register(new UninstallCommand())
+  .register(new BuildCommand())
+  .runAndExit(process.argv);
+```
+
+Some good examples of stand-alone binaries are `npm`, `yarn`, and `docker`.
+
 #### Middleware
+
+Boost will parse provided argv (a list of string arguments, typically from `process.argv`) into
+[args][args] (an object of key-value pairs) for easier consumption. This process can be interacted
+with through middleware, which allows both argv and args to be read and mutated.
+
+Middleware is a function, that receives the argv list as the 1st argument, and a next callback as
+the 2nd argument. It _must_ return an args object, which can be accessed by executing the next
+callback. This allows both before and after implementations to be possible, as demonstrated below.
+
+```ts
+import { Middleware } from '@boost/cli';
+```
 
 ### Commands
 
