@@ -139,11 +139,11 @@ export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
 
 export type MiddlewareArguments = Arguments<GlobalOptions, ArgList>;
 
-export type MiddlewareNext = (argv: Argv) => MiddlewareArguments | Promise<MiddlewareArguments>;
+export type MiddlewareCallback = (argv: Argv) => MiddlewareArguments | Promise<MiddlewareArguments>;
 
 export type Middleware = (
   argv: Argv,
-  next: MiddlewareNext,
+  parse: MiddlewareCallback,
 ) => MiddlewareArguments | Promise<MiddlewareArguments>;
 
 // THEMES

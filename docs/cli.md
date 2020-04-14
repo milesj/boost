@@ -1,7 +1,6 @@
 # CLI
 
-A type-safe and interactive command line program builder, powered by [Boost][args], [React][react],
-and [Ink][ink].
+A type-safe and interactive command line program, powered [React][react] and [Ink][ink].
 
 ## Installation
 
@@ -38,22 +37,8 @@ by the `Program` class. This class handles the registration of commands, applyin
 (options, flags, etc), running the found command with these argument, outputing to the terminal, and
 finally cleaning up or handling failures.
 
-Begin by importing and instantiating the `Program` class, while passing required options.
-
-```ts
-import { Program } from '@boost/cli';
-import pkg from './package.json';
-
-const program = new Program({
-  bin: 'boost',
-  name: 'Boost',
-  version: pkg.version,
-});
-
-program.runAndExit(process.argv);
-```
-
-It supports the following options:
+Begin by importing and instantiating the `Program` class, while passing required and optional
+options.
 
 - `banner` (`string`) - A large banner to appear at the top of the index help interface.
   _(optional)_
@@ -66,6 +51,25 @@ It supports the following options:
 - `name` (`string`) - A human readable name for your program.
 - `version` (`string`) - Current version of your CLI program. Typically the version found in your
   `package.json`. This is output when `--version` is passed.
+
+```ts
+import { Program } from '@boost/cli';
+import pkg from './package.json';
+
+const program = new Program({
+  bin: 'boost',
+  name: 'Boost',
+  version: pkg.version,
+});
+```
+
+Once [commands](#commands) and optional [middleware](#middleware) have been registered, you must run
+the program with `Program#run()` or `Program#runAndExit()`, with the latter automatically passing
+the exit code to `process.exitCode`. Both methods require an argv list to run.
+
+```ts
+program.runAndExit(process.argv);
+```
 
 #### Package Integration
 
@@ -113,7 +117,7 @@ const program = new Program({
 program.default(new StandAloneCommand()).runAndExit(process.argv);
 ```
 
-Some good examples of stand-alone binaries are `babel`, `webpack`, and `tsc`.
+> Some good examples of stand-alone binaries are `babel`, `webpack`, and `tsc`.
 
 #### Multi-command
 
@@ -143,31 +147,110 @@ program
   .runAndExit(process.argv);
 ```
 
-Some good examples of stand-alone binaries are `npm`, `yarn`, and `docker`.
+> Some good examples of stand-alone binaries are `npm`, `yarn`, and `docker`.
 
 #### Middleware
 
 Boost will parse provided argv (a list of string arguments, typically from `process.argv`) into
-[args][args] (an object of key-value pairs) for easier consumption. This process can be interacted
-with through middleware, which allows both argv and args to be read and mutated.
+[args][args] (an object of options, flags, params, etc) for easier consumption. This process can be
+intercepted with `Program#middleware()`, which allows both argv and args to be read and mutated.
 
-Middleware is a function, that receives the argv list as the 1st argument, and a next callback as
-the 2nd argument. It _must_ return an args object, which can be accessed by executing the next
-callback. This allows both before and after implementations to be possible, as demonstrated below.
+Middleware is a function, that receives the argv list as the 1st argument, and a parse callback as
+the 2nd argument. It _must_ return an args object, which can be built by executing the parse
+callback. This allows both before, middle, and after implementations to be possible, as demonstrated
+below.
 
 ```ts
 import { Middleware } from '@boost/cli';
+
+const example: Middleware = (argv, parse) => {
+  if (argv.includes('--help')) {
+    argv.push('--all');
+  }
+
+  return parse();
+};
+
+const program = new Program({
+  // ...
+});
+
+program
+  // Function reference
+  .middleware(example)
+  // Inline async function
+  .middleware(async (argv, parse) => {
+    const args = await parse();
+
+    args.options.flag = true;
+
+    return args;
+  })
+  .runAndExit(process.argv);
 ```
 
-#### Categories
+Middleware is async, so the parse callback _must be_ awaited! This also means you can implement your
+own async functionality, like file system access, or network requests.
 
 ### Commands
 
 TODO
 
+Commands may be defined with a declarative approach using TypeScript decorators, or an imperative
+approach with static class properties. Both variants will be demonstrated in the examples below.
+
 #### Config
 
-- markdown
+All commands support the following metadata configuration, with `path` and `description` being
+mandatory.
+
+- `aliases` (`string[]`) - A list of aliased paths. Will not show up in the help menu, but will
+  match on the command line.
+- `allowUnknownOptions` (`boolean`) - Allow [unknown options](./args.md#unknown-options) to be
+  parsed, otherwise an error is thrown.
+- `categories` (`object`) - A mapping of sub-command and option [categories](#categories) for this
+  command only.
+- `category` (`string`) - The category this command belongs to. Will be used to group in the parent
+  command or program.
+- `deprecated` (`boolean`) - Whether the command is deprecated or not. Will display a tag in the
+  help menu.
+- `description` (`string`) - A description of what the command is and does. Supports basic markdown
+  for bold, italics, and underline. _(required)_
+- `hidden` (`boolean`) - Whether the command should be hidden from the help menu or not. Will still
+  match on the command line.
+- `path` (`string`) - A unique name in which to match the command on the command line amongst a list
+  of arguments (argv). _(required)_
+- `showRestParams` (`boolean`) - Denote that rest parameters are supported in the help menu.
+- `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
+
+When using decorators, import the `Config` decorator and apply it to the command class. The path and
+description are required, while all other metadata can be passed as an object.
+
+```ts
+import { Command, Config } from '@boost/cli';
+
+@Config('build', 'Build a project', {
+  aliases: ['make'],
+  deprecated: true,
+})
+class BuildCommand extends Command {}
+```
+
+Otherwise, just define static class properties of the same name!
+
+```ts
+import { Command } from '@boost/cli';
+
+class BuildCommand extends Command {
+  static path: string = 'build';
+
+  static aliases: string[] = ['make'];
+
+  static description: string = 'Build a project';
+
+  static deprecated: boolean = true;
+}
+```
 
 #### Options
 
@@ -175,9 +258,9 @@ TODO
 
 #### Sub-commands
 
-#### Categories
-
 ### Shorthand Commands
+
+### Categories
 
 ### Logging
 

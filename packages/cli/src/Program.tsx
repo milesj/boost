@@ -43,7 +43,7 @@ import {
   ProgramStreams,
   RunResult,
   Middleware,
-  MiddlewareNext,
+  MiddlewareCallback,
   MiddlewareArguments,
   Categories,
 } from './types';
@@ -268,7 +268,7 @@ export default class Program extends CommandManager<ProgramOptions> {
   ): MiddlewareArguments | Promise<MiddlewareArguments> {
     let index = -1;
 
-    const next: MiddlewareNext = nextArgv => {
+    const next: MiddlewareCallback = nextArgv => {
       index += 1;
       const middleware = this.middlewares[index];
 
