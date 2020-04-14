@@ -191,7 +191,7 @@ export default class Help extends React.Component<HelpProps> {
   renderParams(params: ParamConfigList) {
     const labels = params.map((config, index) => `${config.label || index} ${formatType(config)}`);
     const labelWidth = getLongestWidth(labels);
-    const allowRest = this.props.config?.allowRestParams;
+    const allowRest = this.props.config?.showRestParams;
 
     return (
       <>

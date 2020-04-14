@@ -89,7 +89,7 @@ export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
   aliases?: string[];
-  allowRestParams?: boolean | string;
+  showRestParams?: boolean | string;
   allowUnknownOptions?: boolean;
   categories?: Categories;
   options?: OptionConfigMap;

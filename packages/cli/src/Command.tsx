@@ -38,8 +38,6 @@ export default abstract class Command<
 > extends CommandManager<Options> implements Commandable<O, P> {
   static aliases: string[] = [];
 
-  static allowRestParams: boolean | string = false;
-
   static allowUnknownOptions: boolean = false;
 
   static categories: Categories = {};
@@ -82,6 +80,8 @@ export default abstract class Command<
 
   static path: string = '';
 
+  static showRestParams: boolean | string = false;
+
   static usage: string | string[] = '';
 
   // Args
@@ -115,7 +115,6 @@ export default abstract class Command<
 
     validateConfig(this.constructor.name, {
       aliases: ctor.aliases,
-      allowRestParams: ctor.allowRestParams,
       allowUnknownOptions: ctor.allowUnknownOptions,
       categories: ctor.categories,
       category: ctor.category,
@@ -123,6 +122,7 @@ export default abstract class Command<
       description: ctor.description,
       hidden: ctor.hidden,
       path: ctor.path,
+      showRestParams: ctor.showRestParams,
       usage: ctor.usage,
     });
     validateOptions(ctor.options);
@@ -153,7 +153,6 @@ export default abstract class Command<
 
     return {
       aliases: ctor.aliases,
-      allowRestParams: ctor.allowRestParams,
       allowUnknownOptions: ctor.allowUnknownOptions,
       categories: getInheritedCategories(this),
       category: ctor.category,
@@ -164,6 +163,7 @@ export default abstract class Command<
       options: getInheritedOptions(this),
       params: ctor.params,
       path: ctor.path,
+      showRestParams: ctor.showRestParams,
       usage: ctor.usage,
     };
   }

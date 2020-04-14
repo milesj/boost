@@ -159,6 +159,8 @@ callback. This allows both before and after implementations to be possible, as d
 import { Middleware } from '@boost/cli';
 ```
 
+#### Categories
+
 ### Commands
 
 TODO
