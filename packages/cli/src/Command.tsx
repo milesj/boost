@@ -42,12 +42,7 @@ export default abstract class Command<
 
   static allowUnknownOptions: boolean = false;
 
-  static categories: Categories = {
-    global: {
-      name: msg('cli:categoryGlobal'),
-      weight: 100,
-    },
-  };
+  static categories: Categories = {};
 
   static category: string = '';
 

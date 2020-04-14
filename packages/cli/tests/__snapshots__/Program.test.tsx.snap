@@ -1,5 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<Program /> categories applies categories to index help 1`] = `
+"
+Boost v1.2.3 [90mboost[39m
+
+[30m[47m COMMANDS [49m[39m
+
+ qux  Description
+
+ [1mBottom[22m
+ foo  Description
+
+ [1mTop[22m
+ bar  Description
+
+ [1mGlobal[22m
+ baz  Description
+"
+`;
+
 exports[`<Program /> default command executes default when no args passed 1`] = `"Build!"`;
 
 exports[`<Program /> default command renders commands when no args passed 1`] = `

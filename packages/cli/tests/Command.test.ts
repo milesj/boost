@@ -75,10 +75,6 @@ describe('Command', () => {
       const { categories } = command.getMetadata();
 
       expect(categories).toEqual({
-        global: {
-          name: 'Global',
-          weight: 100,
-        },
         special: 'Special',
       });
     });
@@ -286,10 +282,6 @@ describe('Command', () => {
       const { categories } = command.getMetadata();
 
       expect(categories).toEqual({
-        global: {
-          name: 'Global',
-          weight: 100,
-        },
         special: 'Special',
       });
     });

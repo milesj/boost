@@ -331,12 +331,7 @@ describe('<Program />', () => {
         aliases: ['compile'],
         allowRestParams: false,
         allowUnknownOptions: false,
-        categories: {
-          global: {
-            name: 'Global',
-            weight: 100,
-          },
-        },
+        categories: {},
         category: '',
         commands: {},
         description: 'Build something',
@@ -1212,6 +1207,24 @@ describe('<Program />', () => {
         locale: 'fr',
         version: false,
       });
+    });
+  });
+
+  describe('categories', () => {
+    it('applies categories to index help', async () => {
+      program.categories({
+        top: { name: 'Top', weight: 50 },
+        bottom: 'Bottom',
+      });
+
+      program.register('foo', { category: 'bottom', description: 'Description' }, () => {});
+      program.register('bar', { category: 'top', description: 'Description' }, () => {});
+      program.register('baz', { category: 'global', description: 'Description' }, () => {});
+      program.register('qux', { description: 'Description' }, () => {});
+
+      await program.run(['--help']);
+
+      expect(stdout.get()).toMatchSnapshot();
     });
   });
 });

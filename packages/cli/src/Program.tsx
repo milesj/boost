@@ -24,6 +24,7 @@ import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import isArgvSize from './helpers/isArgvSize';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
+import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
 import {
   msg,
@@ -44,6 +45,7 @@ import {
   Middleware,
   MiddlewareNext,
   MiddlewareArguments,
+  Categories,
 } from './types';
 
 export default class Program extends CommandManager<ProgramOptions> {
@@ -68,6 +70,13 @@ export default class Program extends CommandManager<ProgramOptions> {
   protected logger: Logger;
 
   protected middlewares: Middleware[] = [removeProcessBin];
+
+  protected sharedCategories: Categories = {
+    global: {
+      name: msg('cli:categoryGlobal'),
+      weight: 100,
+    },
+  };
 
   protected standAlone: CommandPath = '';
 
@@ -115,6 +124,16 @@ export default class Program extends CommandManager<ProgramOptions> {
         .required()
         .match(VERSION_FORMAT),
     };
+  }
+
+  /**
+   * Define option and command categories to supply to the running command,
+   * or the program itself.
+   */
+  categories(categories: Categories): this {
+    Object.assign(this.sharedCategories, categories);
+
+    return this;
   }
 
   /**
@@ -230,7 +249,11 @@ export default class Program extends CommandManager<ProgramOptions> {
     return (
       <IndexHelp {...this.options}>
         {this.getCommand(this.standAlone)?.renderHelp() || (
-          <Help header={msg('cli:labelAbout')} commands={mapCommandMetadata(this.commands)} />
+          <Help
+            header={msg('cli:labelAbout')}
+            categories={this.sharedCategories}
+            commands={mapCommandMetadata(this.commands)}
+          />
         )}
       </IndexHelp>
     );
@@ -372,6 +395,9 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     this.onCommandFound.emit([argv, path, command]);
 
+    // Apply shared categories to command constructor
+    Object.assign(getConstructor(command).categories, this.sharedCategories);
+
     // Display command help
     if (options.help) {
       this.onHelp.emit([path]);
@@ -387,6 +413,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     // Apply arguments to command properties
     Object.assign(command, options);
 
+    // Apply remaining properties
     command.rest = rest;
     command.unknown = unknown;
     command.exit = this.exit;
