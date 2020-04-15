@@ -220,7 +220,8 @@ mandatory.
   match on the command line.
 - `path` (`string`) - A unique name in which to match the command on the command line amongst a list
   of arguments (argv). _(required)_
-- `showRestParams` (`boolean`) - Denote that rest parameters are supported in the help menu.
+- `showRestParams` (`boolean`) - Denote that rest (variadic) parameters are supported in the help
+  menu.
 - `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
 
 When using decorators, import the `Config` decorator and apply it to the command class. The path and
@@ -253,6 +254,129 @@ class BuildCommand extends Command {
 ```
 
 #### Options
+
+[Options](./args.md#options) are optional arguments that accept a value on the command line. When a
+command is ran, each option is set as a class property based on the matching command line value, or
+the provided default value. Like configuration above, options can be defined declaratively or
+imperatively, with option types being passed to the 1st `Command` generic slot.
+
+There are 5 decorators to choose from when defining options (in the example below), all of which are
+defined on a class property, where the property name becomes the option name. For example, a
+property of `save` would become the `--save` option. Depending on the decorator, they support many
+[option settings](./args.md#options), excluding `type` and `description`, which are inferred, and
+`default` which comes from the property value.
+
+```ts
+import { Command, Arg, GlobalOptions } from '@boost/cli';
+
+interface CustomOptions extends GlobalOptions {
+  flag: boolean;
+  number: number;
+  numbers: number[];
+  string: string;
+  strings: string[];
+}
+
+class CustomCommand extends Command<CustomOptions> {
+  @Arg.Flag('Boolean flag')
+  flag: boolean = false;
+
+  @Arg.Number('Single number', { count: true, short: 'N' })
+  number: number = 0;
+
+  @Arg.Numbers('List of numbers', { deprecated: true })
+  numbers: number[] = [];
+
+  @Arg.String('Single string', { choices: ['a', 'b', 'c'], hidden: true })
+  string: string = '';
+
+  @Arg.Strings('List of strings', { arity: 5, short: 'S' })
+  strings: string[] = [];
+
+  run() {
+    const { flag, strings } = this;
+  }
+}
+```
+
+If you prefer to use static properties, all options are defined through the single static `options`
+property, which requires a mapping of option names to [option settings](./args.md#options). With
+this approach, `type` and `description` are required, with `default` either being configured with a
+setting, or coming from the class property value.
+
+For easier type safety, the `Options` collection type can be used to type the static property.
+
+```ts
+import { Command, GlobalOptions, Options } from '@boost/cli';
+
+interface CustomOptions extends GlobalOptions {
+  flag: boolean;
+  number: number;
+  numbers: number[];
+  string: string;
+  strings: string[];
+}
+
+class CustomCommand extends Command<CustomOptions> {
+  static options: Options<CustomOptions> = {
+    flag: {
+      description: 'Boolean flag',
+      type: 'boolean',
+    },
+    number: {
+      count: true,
+      description: 'Single number',
+      short: 'N',
+      type: 'number',
+    },
+    numbers: {
+      deprecated: true,
+      description: 'List of numbers',
+      multiple: true,
+      type: 'number',
+    },
+    string: {
+      choices: ['a', 'b', 'c'],
+      description: 'Single string',
+      hidden: true,
+      type: 'string',
+    },
+    strings: {
+      arity: 5,
+      description: 'List of strings',
+      multiple: true,
+      short: 'S',
+      type: 'string',
+    },
+  };
+
+  flag: boolean = false;
+
+  number: number = 0;
+
+  numbers: number[] = [];
+
+  string: string = '';
+
+  strings: string[] = [];
+
+  run() {
+    const { flag, strings } = this;
+  }
+}
+```
+
+##### Global Options
+
+Boost provides the follow options that are always available to all commands.
+
+- `--help`, `-h` (`boolean`) - Displays a help menu for the chosen command or the program itself.
+  Available under the `help` class property.
+- `--locale` (`string`) - Display errors, messages, and the interface in the chosen locale (if
+  supported). Locale must be in the format of "en" or "en-US". Available under the `locale` class
+  property.
+- `--version`, `-v` (`boolean`) - Display the current program version and exit. Available under the
+  `version` class property.
 
 #### Params
 
