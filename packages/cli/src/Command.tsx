@@ -8,10 +8,17 @@ import {
   ParamConfigList,
   OptionConfigMap,
   UnknownOptionMap,
+  Argv,
 } from '@boost/args';
 import { Logger } from '@boost/log';
 import { RuntimeError } from '@boost/internal';
-import { msg, LOCALE_FORMAT, CACHE_OPTIONS, CACHE_PARAMS } from './constants';
+import {
+  msg,
+  LOCALE_FORMAT,
+  INTERNAL_OPTIONS,
+  INTERNAL_PARAMS,
+  INTERNAL_PROGRAM,
+} from './constants';
 import {
   GlobalOptions,
   Commandable,
@@ -30,6 +37,7 @@ import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
 import CommandManager from './CommandManager';
 import Help from './Help';
+import Program from './Program';
 
 export default abstract class Command<
   O extends GlobalOptions = GlobalOptions,
@@ -102,11 +110,13 @@ export default abstract class Command<
 
   log!: Logger;
 
-  // Cache
+  // Internals
 
-  [CACHE_OPTIONS] = {};
+  [INTERNAL_OPTIONS]?: O;
 
-  [CACHE_PARAMS] = {};
+  [INTERNAL_PARAMS]?: P;
+
+  [INTERNAL_PROGRAM]?: Program;
 
   constructor(options?: Options) {
     super(options);
@@ -216,6 +226,19 @@ export default abstract class Command<
         params={metadata.params}
       />
     );
+  }
+
+  /**
+   * Run the program within itself, by passing a custom command and argv list.
+   */
+  async runProgram(argv: Argv): Promise<void> {
+    const program = this[INTERNAL_PROGRAM];
+
+    if (!program) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_NO_PROGRAM');
+    }
+
+    await program.run(argv, true);
   }
 
   /**

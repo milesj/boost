@@ -8,7 +8,7 @@ import {
   ProxyCommandRunner,
   RunResult,
 } from '../types';
-import { CACHE_OPTIONS, CACHE_PARAMS } from '../constants';
+import { INTERNAL_OPTIONS, INTERNAL_PARAMS } from '../constants';
 
 export default function createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
   path: CommandPath,
@@ -18,7 +18,7 @@ export default function createProxyCommand<O extends GlobalOptions, P extends Pr
   @Config(path, description, config)
   class ProxyCommand extends Command<O, P> {
     run(): RunResult | Promise<RunResult> {
-      return runner.call(this, this[CACHE_OPTIONS] as O, this[CACHE_PARAMS] as P, this.rest);
+      return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
     }
   }
 

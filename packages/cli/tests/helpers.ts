@@ -9,6 +9,8 @@ export class ReadStream {
 }
 
 export class WriteStream {
+  append: boolean = false;
+
   columns: number = 80;
 
   output: string;
@@ -18,7 +20,11 @@ export class WriteStream {
   }
 
   write(string: string) {
-    this.output = string;
+    if (this.append) {
+      this.output += string;
+    } else {
+      this.output = string;
+    }
   }
 
   get(): string {

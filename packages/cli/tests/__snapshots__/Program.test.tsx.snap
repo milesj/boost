@@ -19,7 +19,10 @@ Boost v1.2.3 [90mboost[39m
 "
 `;
 
-exports[`<Program /> default command executes default when no args passed 1`] = `"Build!"`;
+exports[`<Program /> default command executes default when no args passed 1`] = `
+"Build!
+"
+`;
 
 exports[`<Program /> default command renders commands when no args passed 1`] = `
 "
@@ -349,7 +352,18 @@ exports[`<Program /> logging handles logging when rendering a component 1`] = `
 Returned from component!"
 `;
 
-exports[`<Program /> logging handles logging when returning a string 1`] = `"Returned from command!"`;
+exports[`<Program /> logging handles logging when returning a string 1`] = `
+"Returned from command!
+"
+`;
+
+exports[`<Program /> nested programs can run a program within a command 1`] = `
+"Before run
+Install!
+After run
+Return
+"
+`;
 
 exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] = `
 "

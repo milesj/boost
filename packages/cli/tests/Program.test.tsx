@@ -8,7 +8,7 @@ import {
   OptionConfigMap,
   ProgramContext,
   ProgramContextType,
-  CACHE_OPTIONS,
+  INTERNAL_OPTIONS,
 } from '../src';
 import { WriteStream, ReadStream } from './helpers';
 import { options, params } from './__mocks__/args';
@@ -736,7 +736,7 @@ describe('<Program />', () => {
 
       await program.run(['string']);
 
-      expect(stdout.get()).toBe('Hello!');
+      expect(stdout.get()).toBe('Hello!\n');
     });
 
     it('can return an element that writes with ink', async () => {
@@ -798,24 +798,6 @@ describe('<Program />', () => {
 
       expect(beforeSpy).toHaveBeenCalledWith(<Box>Hello!</Box>);
       expect(afterSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('argv', () => {
-    it('removes node and binary from `process.argv`', async () => {
-      const command = new BuildCommand();
-
-      program.register(command);
-
-      const exitCode = await program.run([
-        '/nvm/12.16.1/bin/node',
-        '/boost/bin.js',
-        'build',
-        '-S',
-        './src',
-      ]);
-
-      expect(exitCode).toBe(0);
     });
   });
 
@@ -1155,6 +1137,22 @@ describe('<Program />', () => {
       }).toThrow('Middleware must be a function.');
     });
 
+    it('removes node and binary from `process.argv`', async () => {
+      const command = new BuildCommand();
+
+      program.register(command);
+
+      const exitCode = await program.run([
+        '/nvm/12.16.1/bin/node',
+        '/boost/bin.js',
+        'build',
+        '-S',
+        './src',
+      ]);
+
+      expect(exitCode).toBe(0);
+    });
+
     it('can modify argv before parsing', async () => {
       const command = new BoostCommand();
 
@@ -1202,7 +1200,7 @@ describe('<Program />', () => {
       await program.run(['--opt', 'value']);
 
       expect(command.unknown).toEqual({ opt: 'value', key: 'value' });
-      expect(command[CACHE_OPTIONS]).toEqual({
+      expect(command[INTERNAL_OPTIONS]).toEqual({
         help: false,
         locale: 'fr',
         version: false,
@@ -1223,6 +1221,36 @@ describe('<Program />', () => {
       program.register('qux', { description: 'Description' }, () => {});
 
       await program.run(['--help']);
+
+      expect(stdout.get()).toMatchSnapshot();
+    });
+  });
+
+  describe('nested programs', () => {
+    class NestedProgramCommand extends Command {
+      static description = 'Description';
+
+      static path = 'prog';
+
+      async run() {
+        this.log('Before run');
+
+        await this.runProgram(['client:install', 'foo', '--save']);
+
+        this.log('After run');
+
+        return 'Return';
+      }
+    }
+
+    beforeEach(() => {
+      stdout.append = true;
+    });
+
+    it('can run a program within a command', async () => {
+      program.register(new NestedProgramCommand()).register(new ClientCommand());
+
+      await program.run(['prog']);
 
       expect(stdout.get()).toMatchSnapshot();
     });

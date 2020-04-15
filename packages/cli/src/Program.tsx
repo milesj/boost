@@ -31,8 +31,9 @@ import {
   VERSION_FORMAT,
   EXIT_PASS,
   EXIT_FAIL,
-  CACHE_OPTIONS,
-  CACHE_PARAMS,
+  INTERNAL_OPTIONS,
+  INTERNAL_PARAMS,
+  INTERNAL_PROGRAM,
 } from './constants';
 import {
   Commandable,
@@ -70,6 +71,8 @@ export default class Program extends CommandManager<ProgramOptions> {
   protected logger: Logger;
 
   protected middlewares: Middleware[] = [removeProcessBin];
+
+  protected rendering: boolean = false;
 
   protected sharedCategories: Categories = {
     global: {
@@ -211,7 +214,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    *  - Run command and render output.
    *  - Return exit code.
    */
-  async run(argv: Argv): Promise<ExitCode> {
+  async run(argv: Argv, rethrow: boolean = false): Promise<ExitCode> {
     this.onBeforeRun.emit([argv]);
 
     let exitCode: ExitCode;
@@ -224,6 +227,10 @@ export default class Program extends CommandManager<ProgramOptions> {
       exitCode = await this.renderErrors([error]);
 
       this.onAfterRun.emit([error]);
+
+      if (rethrow) {
+        throw error;
+      }
     }
 
     return exitCode;
@@ -296,9 +303,15 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     // For simple strings, ignore react and the buffer
     if (typeof result === 'string') {
-      stdout.write(result);
+      stdout.write(`${result}\n`);
 
       return exitCode;
+    }
+
+    // Do not allow this
+    // istanbul ignore next
+    if (this.rendering) {
+      throw new RuntimeError('cli', 'CLI_NO_NESTED_REACT_RENDER');
     }
 
     try {
@@ -306,6 +319,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.outBuffer.wrap();
 
       this.onBeforeRender.emit([result]);
+      this.rendering = true;
 
       await render(
         <Wrapper
@@ -326,6 +340,7 @@ export default class Program extends CommandManager<ProgramOptions> {
         },
       ).waitUntilExit();
 
+      this.rendering = false;
       this.onAfterRender.emit([]);
     } finally {
       this.errBuffer.unwrap();
@@ -378,7 +393,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     // Display version
     if (showVersion) {
-      return this.render(`${this.options.version}\n`);
+      return this.render(this.options.version);
     }
 
     // Parse the arguments
@@ -410,16 +425,19 @@ export default class Program extends CommandManager<ProgramOptions> {
       return this.renderErrors(errors);
     }
 
-    // Apply arguments to command properties
+    // Apply options to command properties
     Object.assign(command, options);
 
-    // Apply remaining properties
+    // Apply remaining arguments and properties
     command.rest = rest;
     command.unknown = unknown;
     command.exit = this.exit;
     command.log = this.logger;
-    command[CACHE_OPTIONS] = options;
-    command[CACHE_PARAMS] = params;
+    command[INTERNAL_OPTIONS] = options;
+    command[INTERNAL_PARAMS] = params;
+    command[INTERNAL_PROGRAM] = this;
+
+    // Bootstrap command before running
     command.bootstrap();
 
     return this.render(await command.run(...params), EXIT_PASS);

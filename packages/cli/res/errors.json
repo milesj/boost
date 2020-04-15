@@ -7,7 +7,9 @@
   "CLI_COMMAND_MIXED_NONDEFAULT": "Other commands have been registered. Cannot mix default and non-default commands.",
   "CLI_COMMAND_UNKNOWN": "Unknown command \"%s\". Did you mean \"%s\"?",
   "CLI_COMMAND_NONE_REGISTERED": "No commands have been registered. At least 1 is required.",
+  "CLI_COMMAND_NO_PROGRAM": "No program found. Must be ran within the context of a parent program.",
   "CLI_MIDDLEWARE_INVALID": "Middleware must be a function.",
+  "CLI_NO_NESTED_REACT_RENDER": "A React render process already exists. Unable to render current command. This usually occurs by triggering nested program calls.",
   "CLI_OPTION_RESERVED": "Option \"%s\" is a reserved name and cannot be used.",
   "CLI_PARAMS_RUN_ONLY": "Parameters must be defined on the `run()` method."
 }
