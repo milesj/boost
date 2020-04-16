@@ -27,4 +27,4 @@ jobs:
         env:
           BOOSTJS_ENV: 'development'
           CI: 'true'
-      - run: yarn run eslint
+      - run: yarn run lint
