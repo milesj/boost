@@ -40,7 +40,7 @@ export default class InstallClassicCommand extends Command<InstallOptions, Insta
     },
   ];
 
-  static showRestParams = 'pkgs';
+  static allowVariadicParams = 'pkgs';
 
   save: boolean = true;
 

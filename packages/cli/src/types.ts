@@ -89,8 +89,8 @@ export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
   aliases?: string[];
-  showRestParams?: boolean | string;
   allowUnknownOptions?: boolean;
+  allowVariadicParams?: boolean | string;
   categories?: Categories;
   options?: OptionConfigMap;
   params?: ParamConfigList;
@@ -123,8 +123,7 @@ export interface Commandable<O extends object = any, P extends PrimitiveType[] =
 // PROXY COMMANDS
 
 export interface ProxyCommandConfig<O extends object, P extends PrimitiveType[]>
-  extends BaseCommandConfig {
-  aliases?: string[];
+  extends Omit<CommandConfig, 'options' | 'params' | 'path'> {
   options?: MapOptionConfig<O>;
   params?: MapParamConfig<P>;
 }

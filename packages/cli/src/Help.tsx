@@ -191,7 +191,7 @@ export default class Help extends React.Component<HelpProps> {
   renderParams(params: ParamConfigList) {
     const labels = params.map((config, index) => `${config.label || index} ${formatType(config)}`);
     const labelWidth = getLongestWidth(labels);
-    const allowRest = this.props.config?.showRestParams;
+    const allowVariadic = this.props.config?.allowVariadicParams;
 
     return (
       <>
@@ -217,10 +217,10 @@ export default class Help extends React.Component<HelpProps> {
           );
         })}
 
-        {allowRest && (
+        {allowVariadic && (
           <Box paddingLeft={SPACING_COL}>
             <Box>
-              {`…${typeof allowRest === 'string' ? allowRest : ''}`}{' '}
+              {`…${typeof allowVariadic === 'string' ? allowVariadic : ''}`}{' '}
               {formatType({
                 multiple: true,
                 type: 'string',

@@ -7,11 +7,11 @@ export interface InstallOptions extends GlobalOptions {
 export type InstallParams = [string, ...string[]];
 
 @Config('install', 'Install package(s)', {
+  allowVariadicParams: 'pkgs',
   categories: { special: 'Special' },
   category: 'setup',
   deprecated: true,
   hidden: true,
-  showRestParams: 'pkgs',
 })
 export default class InstallCommand extends Command<InstallOptions, InstallParams> {
   // --save

@@ -53,6 +53,8 @@ class BoostCommand extends Command {
 
   static allowUnknownOptions = true;
 
+  static allowVariadicParams = true;
+
   run() {
     return Promise.resolve();
   }
@@ -62,6 +64,8 @@ class ErrorCommand extends Command {
   static description = 'Description';
 
   static path = 'boost';
+
+  static allowVariadicParams = true;
 
   run(): Promise<void> {
     throw new Error('Broken!');
@@ -310,6 +314,7 @@ describe('<Program />', () => {
         'build',
         {
           aliases: ['compile'],
+          allowVariadicParams: true,
           description: 'Build something',
           options: BuildClassicCommand.options,
           params: InstallClassicCommand.params,
@@ -329,8 +334,8 @@ describe('<Program />', () => {
       expect(command).toBeInstanceOf(Command);
       expect(command.getMetadata()).toEqual({
         aliases: ['compile'],
-        showRestParams: false,
         allowUnknownOptions: false,
+        allowVariadicParams: true,
         categories: {},
         category: '',
         commands: {},

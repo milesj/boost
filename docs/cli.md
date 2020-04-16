@@ -161,7 +161,7 @@ callback. This allows both before, middle, and after implementations to be possi
 below.
 
 ```ts
-import { Middleware } from '@boost/cli';
+import { Program, Middleware } from '@boost/cli';
 
 const example: Middleware = (argv, parse) => {
   if (argv.includes('--help')) {
@@ -207,25 +207,26 @@ mandatory.
 - `aliases` (`string[]`) - A list of aliased paths. Will not show up in the help menu, but will
   match on the command line.
 - `allowUnknownOptions` (`boolean`) - Allow [unknown options](./args.md#unknown-options) to be
-  parsed, otherwise an error is thrown.
+  parsed, otherwise an error is thrown. Defaults to `false`.
+- `allowVariadicParams` (`boolean`) - Allow [variadic params](./args.md#variadic-params) to be
+  parsed, otherwise an error is thrown. Defaults to `false`.
 - `categories` (`object`) - A mapping of sub-command and option [categories](#categories) for this
-  command only.
+  command only. [Global options](#global-options) are automatically defined under the `global`
+  category.
 - `category` (`string`) - The category this command belongs to. Will be used to group in the parent
-  command or program.
+  command or program. Defaults to no category.
 - `deprecated` (`boolean`) - Whether the command is deprecated or not. Will display a tag in the
-  help menu.
+  help menu. Defaults to `false`.
 - `description` (`string`) - A description of what the command is and does. Supports basic markdown
   for bold, italics, and underline. _(required)_
 - `hidden` (`boolean`) - Whether the command should be hidden from the help menu or not. Will still
-  match on the command line.
+  match on the command line. Defaults to `false`.
 - `path` (`string`) - A unique name in which to match the command on the command line amongst a list
   of arguments (argv). _(required)_
-- `showRestParams` (`boolean`) - Denote that rest (variadic) parameters are supported in the help
-  menu.
 - `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
 
-When using decorators, import the `Config` decorator and apply it to the command class. The path and
-description are required, while all other metadata can be passed as an object.
+When using decorators, import the `Config` decorator and apply it to the `Command` class. The path
+and description are required, while all other metadata can be passed as an object.
 
 ```ts
 import { Command, Config } from '@boost/cli';

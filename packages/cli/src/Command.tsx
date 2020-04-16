@@ -48,6 +48,8 @@ export default abstract class Command<
 
   static allowUnknownOptions: boolean = false;
 
+  static allowVariadicParams: boolean | string = false;
+
   static categories: Categories = {};
 
   static category: string = '';
@@ -88,8 +90,6 @@ export default abstract class Command<
 
   static path: string = '';
 
-  static showRestParams: boolean | string = false;
-
   static usage: string | string[] = '';
 
   // Args
@@ -126,13 +126,13 @@ export default abstract class Command<
     validateConfig(this.constructor.name, {
       aliases: ctor.aliases,
       allowUnknownOptions: ctor.allowUnknownOptions,
+      allowVariadicParams: ctor.allowVariadicParams,
       categories: ctor.categories,
       category: ctor.category,
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
       path: ctor.path,
-      showRestParams: ctor.showRestParams,
       usage: ctor.usage,
     });
     validateOptions(ctor.options);
@@ -164,6 +164,7 @@ export default abstract class Command<
     return {
       aliases: ctor.aliases,
       allowUnknownOptions: ctor.allowUnknownOptions,
+      allowVariadicParams: ctor.allowVariadicParams,
       categories: getInheritedCategories(this),
       category: ctor.category,
       commands: this.commands,
@@ -173,7 +174,6 @@ export default abstract class Command<
       options: getInheritedOptions(this),
       params: ctor.params,
       path: ctor.path,
-      showRestParams: ctor.showRestParams,
       usage: ctor.usage,
     };
   }
@@ -182,7 +182,14 @@ export default abstract class Command<
    * Return metadata as options for argument parsing.
    */
   getParserOptions(): ParserOptions<O, P> {
-    const { aliases, options, params, path } = this.getMetadata();
+    const {
+      aliases,
+      allowUnknownOptions,
+      allowVariadicParams,
+      options,
+      params,
+      path,
+    } = this.getMetadata();
     const defaultedOptions: OptionConfigMap = {};
 
     // Since default values for options are represented as class properties,
@@ -199,7 +206,8 @@ export default abstract class Command<
       commands: [path, ...aliases],
       options: defaultedOptions,
       params,
-      unknown: getConstructor(this).allowUnknownOptions,
+      unknown: allowUnknownOptions,
+      variadic: Boolean(allowVariadicParams),
     } as ParserOptions<O, P>;
   }
 

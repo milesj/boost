@@ -213,6 +213,7 @@ describe('Command', () => {
         },
         params: [],
         unknown: false,
+        variadic: false,
       });
     });
   });
@@ -388,6 +389,7 @@ describe('Command', () => {
         },
         params: [],
         unknown: false,
+        variadic: false,
       });
     });
   });

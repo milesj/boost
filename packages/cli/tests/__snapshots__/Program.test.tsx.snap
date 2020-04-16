@@ -374,6 +374,7 @@ exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] =
 [30m[47m PARAMS [49m[39m
 
  pkg [90mstring[39m  Package name [90m[required][39m
+ … [90mstring[][39m
 
 [30m[47m OPTIONS [49m[39m
 

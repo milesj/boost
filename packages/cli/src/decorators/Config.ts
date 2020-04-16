@@ -19,6 +19,10 @@ export default function Config(
       ctor.allowUnknownOptions = config.allowUnknownOptions;
     }
 
+    if (config.allowVariadicParams !== undefined) {
+      ctor.allowVariadicParams = config.allowVariadicParams;
+    }
+
     if (config.categories !== undefined) {
       ctor.categories = config.categories;
     }
@@ -33,10 +37,6 @@ export default function Config(
 
     if (config.hidden !== undefined) {
       ctor.hidden = config.hidden;
-    }
-
-    if (config.showRestParams !== undefined) {
-      ctor.showRestParams = config.showRestParams;
     }
 
     if (config.usage !== undefined) {

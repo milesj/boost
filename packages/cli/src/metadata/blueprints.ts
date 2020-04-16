@@ -37,6 +37,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
   ...commonBlueprint,
   aliases: array(string()),
   allowUnknownOptions: bool(),
+  allowVariadicParams: union([bool(), string()], false),
   categories: object(
     union<string | Category>(
       [
@@ -54,7 +55,6 @@ export const commandConstructorBlueprint: Blueprint<Omit<
     .notEmpty()
     .required()
     .match(COMMAND_FORMAT),
-  showRestParams: union([bool(), string()], false),
   usage: union([string(), array(string())], []),
 };
 
