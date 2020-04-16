@@ -261,9 +261,9 @@ command is ran, each option is set as a class property based on the matching com
 the provided default value. Like configuration above, options can be defined declaratively or
 imperatively, with option types being passed to the 1st `Command` generic slot.
 
-There are 5 decorators to choose from when defining options (in the example below), all of which are
-defined on a class property, where the property name becomes the option name. For example, a
-property of `save` would become the `--save` option. Depending on the decorator, they support many
+There are 5 `Arg` decorators to choose from when defining options (in the example below), all of
+which are defined on a class property, where the property name becomes the option name. For example,
+a property of `save` would become the `--save` option. Depending on the decorator, they support many
 [option settings](./args.md#options), excluding `type` and `description`, which are inferred, and
 `default` which comes from the property value.
 
@@ -296,6 +296,7 @@ class CustomCommand extends Command<CustomOptions> {
 
   run() {
     const { flag, strings } = this;
+    // ...
   }
 }
 ```
@@ -363,6 +364,7 @@ class CustomCommand extends Command<CustomOptions> {
 
   run() {
     const { flag, strings } = this;
+    // ...
   }
 }
 ```
@@ -379,7 +381,117 @@ Boost provides the follow options that are always available to all commands.
 - `--version`, `-v` (`boolean`) - Display the current program version and exit. Available under the
   `version` class property.
 
+##### Unknown Options
+
+By default, unknown options are not allowed and will throw an error. To allow, set the
+`allowUnknownOptions` [configuration setting](#config) to true. When enabled, all unknown options
+will be set as a string object to the `Command#unknown` class property.
+
+```ts
+import { Command, GlobalOptions, Options } from '@boost/cli';
+
+class CustomCommand extends Command<GlobalOptions> {
+  static allowUnknownOptions = true;
+
+  run() {
+    const { foo, bar } = this.unknown;
+    // ...
+  }
+}
+```
+
 #### Params
+
+[Params](./args.md#params) are command line values that will be passed to `Command#run()` as
+arguments. When defining params, all [param settings](./args.md#params) are supported, and required
+are mandatory. Param types are passed to the 2nd `Command` generic slot.
+
+When using decorators, the `Arg.Params` decorator must be defined on the `Command#run()` method. It
+accepts an argument for each param you want to configure, in the order they should be expected.
+
+```ts
+import { Command, Arg, GlobalOptions } from '@boost/cli';
+
+type CustomParams = [string, number];
+
+class CustomCommand extends Command<GlobalOptions, CustomParams> {
+  @Arg.Params<CustomParams>(
+    {
+      description: 'Users name',
+      label: 'name',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Users age',
+      label: 'age',
+      type: 'number',
+    },
+  )
+  run(name: string, age: number = 18) {
+    // ...
+  }
+}
+```
+
+If you prefer to use static properties, all params are defined through the single static `params`
+property, which requires an array of [param settings](./args.md#params).
+
+For easier type safety, the `Params` collection type can be used to type the static property.
+
+```ts
+import { Command, Params, GlobalOptions } from '@boost/cli';
+
+type CustomParams = [string, number];
+
+class CustomCommand extends Command<GlobalOptions, CustomParams> {
+  static params: Params<CustomParams> = [
+    {
+      description: 'Users name',
+      label: 'name',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Users age',
+      label: 'age',
+      type: 'number',
+    },
+  ];
+
+  run(name: string, age: number = 18) {
+    // ...
+  }
+}
+```
+
+##### Variadic Params
+
+By default, variadic params are not enabled and will throw an error when an unconfigured param is
+found. To allow, set the `allowVariadicParams` [configuration setting](#config) to true. When
+enabled, all extra params will spread onto the end of the `run()` method as strings.
+
+Using the example above, it would look like the following.
+
+```ts
+import { Command, Params, GlobalOptions } from '@boost/cli';
+
+type CustomParams = [string, number];
+
+class CustomCommand extends Command<GlobalOptions, CustomParams> {
+  static allowVariadicParams = true;
+
+  static params: Params<CustomParams> = [
+    // ...
+  ];
+
+  run(name: string, age: number = 18, ...vp: string[]) {
+    // ...
+  }
+}
+```
+
+#### Rest Arguments
 
 #### Sub-commands
 
