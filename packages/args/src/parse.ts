@@ -1,5 +1,6 @@
 /* eslint-disable complexity, no-continue */
 
+import { RuntimeError } from '@boost/internal';
 import {
   Arguments,
   Argv,
@@ -58,6 +59,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
     options: optionConfigs,
     params: paramConfigs = [],
     unknown: allowUnknown = false,
+    variadic: allowVariadic = true,
   } = parserOptions;
   const checker = new Checker();
   const options: OptionMap = {};
@@ -199,8 +201,10 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
         const config = paramConfigs[params.length] as ParamConfig;
 
         params.push(castValue(arg, config.type) as PrimitiveType);
-      } else {
+      } else if (allowVariadic) {
         params.push(arg);
+      } else {
+        throw new RuntimeError('args', 'AG_PARAM_UNKNOWN', [arg]);
       }
     } catch (error) {
       checker.logFailure(error.message);

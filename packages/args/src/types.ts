@@ -107,6 +107,7 @@ export interface ParserOptions<T extends object, P extends PrimitiveType[] = Arg
   options: MapOptionConfig<T>;
   params?: MapParamConfig<P>;
   unknown?: boolean;
+  variadic?: boolean;
 }
 
 // BASE TYPES

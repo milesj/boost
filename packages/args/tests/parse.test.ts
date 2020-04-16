@@ -1868,6 +1868,27 @@ describe('parse()', () => {
     });
   });
 
+  describe('variadic params', () => {
+    it('errors if a non-configured param is passed', () => {
+      const result = parse<{}, [string]>(['foo', 'bar'], {
+        options: {},
+        params: [{ description: '', label: 'first', required: false, type: 'string' }],
+        variadic: false,
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ParseError('Unknown param "bar" found. Variadic params are not supported.', 'bar', 1),
+        ],
+        options: {},
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+  });
+
   describe('validations', () => {
     it('errors if boolean default value is not boolean', () => {
       const result = parse<{ foo: boolean }>([], {

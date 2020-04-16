@@ -67,7 +67,7 @@ boost build --key value --key=value -flag -F -aBDc foo bar baz -- --foo bar -B
 ### Commands
 
 Commands are a feature that allow for branching logic, full isolation, and distinct code paths. That
-being said, the parser does not handle this functionality, as that's the CLIs job. The parser
+being said, the parser does not handle this functionality, as that's a CLI/programs job. The parser
 however, will detect a command, and sub-commands, and validate them accordingly.
 
 A command in Boost should be the first argument passed, before [options](#options), and definitely
@@ -287,6 +287,52 @@ item configuring the corresponding position/index (hence the name positional arg
 
 > When using TypeScript, the expected type of each param is defined as a tuple in the 2nd generic
 > slot of `parse()`. If not provided, it defaults to `string[]`.
+
+#### Variadic Params
+
+By default the parser enables variadic params, which means that any argument that does not match a
+command or option, is considered a param (string only), and is appended to the end of the params
+list. This also applies to non-configured params.
+
+As mentioned in the previous section, params are a "catch all bucket", but this only applies when
+the parser allows variadic params. To disable this functionality, set `variadic` to false, which
+will throw an error on any param that is not explicitly configured. Both of these scenarios are
+demonstrated below.
+
+```ts
+// Variadic, appends all params
+const argv = ['foo', 'bar', 'baz'];
+const args = parse<{}, [string, string, string]>(argv, {
+  params: [
+    {
+      description: 'First parameter',
+      label: 'First',
+      type: 'string',
+      required: true,
+    },
+  ],
+});
+
+args.params; // ['foo', 'bar', 'baz']
+```
+
+```ts
+// Not variadic, will error for non-configured params
+const argv = ['foo', 'bar', 'baz'];
+const args = parse<{}, [string]>(argv, {
+  params: [
+    {
+      description: 'First parameter',
+      label: 'First',
+      type: 'string',
+      required: true,
+    },
+  ],
+  variadic: false,
+});
+
+args.params; // ['foo']
+```
 
 ### Rest
 
