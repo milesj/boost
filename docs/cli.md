@@ -457,12 +457,13 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
     },
     {
       description: 'Users age',
+      default: 18,
       label: 'age',
       type: 'number',
     },
   ];
 
-  run(name: string, age: number = 18) {
+  run(name: string, age: number) {
     // ...
   }
 }
@@ -472,7 +473,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
 By default, variadic params are not enabled and will throw an error when an unconfigured param is
 found. To allow, set the `allowVariadicParams` [configuration setting](#config) to true. When
-enabled, all extra params will spread onto the end of the `run()` method as strings.
+enabled, all extra params will spread onto the end of the `Command#run()` method as strings.
 
 Using the example above, it would look like the following.
 
@@ -488,7 +489,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
     // ...
   ];
 
-  run(name: string, age: number = 18, ...params: string[]) {
+  run(name: string, age: number, ...params: string[]) {
     // ...
   }
 }
