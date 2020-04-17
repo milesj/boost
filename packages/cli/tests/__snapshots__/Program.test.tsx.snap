@@ -49,7 +49,7 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
- Unknown option \\"--foo\\" found.
+ Unknown option \\"--foo\\" found. Did you mean \\"help\\"?
 
  [90m$ boost [31m--foo[39m[90m[39m
  [31m        └───┘[39m"
