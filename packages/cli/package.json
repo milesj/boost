@@ -1,6 +1,6 @@
 {
   "name": "@boost/cli",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A type-safe and interactive command line program, built on React and Ink.",
   "keywords": [
     "boost",
@@ -24,13 +24,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/args": "^1.3.0",
-    "@boost/common": "^1.8.1",
+    "@boost/args": "^1.4.0",
+    "@boost/common": "^1.8.4",
     "@boost/event": "^1.3.0",
-    "@boost/internal": "^1.0.3",
-    "@boost/log": "^1.1.13",
+    "@boost/internal": "^1.1.0",
+    "@boost/log": "^1.1.14",
     "@boost/terminal": "^1.0.3",
-    "@boost/translate": "^1.3.7",
+    "@boost/translate": "^1.3.8",
     "ink": "^2.7.1",
     "levenary": "^1.1.1"
   },
