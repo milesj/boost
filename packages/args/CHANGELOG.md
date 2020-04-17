@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.4.0 - 2020-04-17
+
+#### 🚀 Updates
+
+- Add did you mean levenary to unknown options. ([a102491](https://github.com/milesj/boost/commit/a102491))
+- Add variadic params support. ([43343f0](https://github.com/milesj/boost/commit/43343f0))
+
+**Note:** Version bump only for package @boost/args
+
+
+
+
+
 ## 1.3.0 - 2020-04-08
 
 #### 🚀 Updates

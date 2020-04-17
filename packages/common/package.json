@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "description": "Common utilities for Boost applications.",
   "keywords": [
     "boost",

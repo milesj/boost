@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.8.4 - 2020-04-17
+
+#### 📦 Dependencies
+
+- Update minor and patch versions. ([6f5a039](https://github.com/milesj/boost/commit/6f5a039))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 1.8.3 - 2020-03-22
 
 #### 🐞 Fixes
