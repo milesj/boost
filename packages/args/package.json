@@ -24,6 +24,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^1.1.0"
+    "@boost/internal": "^1.1.0",
+    "levenary": "^1.1.1"
   }
 }

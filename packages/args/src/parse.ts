@@ -61,7 +61,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
     unknown: allowUnknown = false,
     variadic: allowVariadic = true,
   } = parserOptions;
-  const checker = new Checker();
+  const checker = new Checker(optionConfigs);
   const options: OptionMap = {};
   const params: PrimitiveType[] = [];
   const rest: ArgList = [];

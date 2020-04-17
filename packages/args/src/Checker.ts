@@ -1,4 +1,5 @@
 import { RuntimeError } from '@boost/internal';
+import levenary from 'levenary';
 import ParseError from './ParseError';
 import ValidationError from './ValidationError';
 import {
@@ -8,6 +9,7 @@ import {
   ShortOptionName,
   AliasMap,
   ParamConfig,
+  OptionConfigMap,
 } from './types';
 import { COMMAND_FORMAT } from './constants';
 
@@ -16,9 +18,15 @@ export default class Checker {
 
   argIndex: number = 0;
 
+  options: OptionConfigMap;
+
   parseErrors: ParseError[] = [];
 
   validationErrors: ValidationError[] = [];
+
+  constructor(options: OptionConfigMap) {
+    this.options = options;
+  }
 
   checkCommandOrder(anotherCommand: string, providedCommand: string, paramsLength: number) {
     if (providedCommand !== '') {
@@ -35,7 +43,13 @@ export default class Checker {
   }
 
   checkUnknownOption(option: ShortOptionName | LongOptionName) {
-    this.logFailureError('AG_OPTION_UNKNOWN', [option]);
+    const guess = levenary(option, Object.keys(this.options));
+
+    if (guess) {
+      this.logFailureError('AG_OPTION_UNKNOWN_MORE', [option, guess]);
+    } else {
+      this.logFailureError('AG_OPTION_UNKNOWN', [option]);
+    }
   }
 
   validateArityIsMet(option: LongOptionName, config: OptionConfig, value: ValueType) {

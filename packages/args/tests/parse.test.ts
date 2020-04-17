@@ -2055,14 +2055,19 @@ describe('parse()', () => {
 
   describe('unknown options', () => {
     it('errors if an unknown option with value is provided', () => {
-      const result = parse(['foo', '--unknown', 'value'], {
-        options: {},
+      const result = parse<{ known: boolean }>(['foo', '--unknown', 'value'], {
+        options: {
+          known: {
+            description: 'Test for did you mean',
+            type: 'boolean',
+          },
+        },
       });
 
       expect(result).toEqual({
         command: [],
-        errors: [new ParseError('Unknown option "--unknown" found.', '--unknown', 1)],
-        options: {},
+        errors: [new ParseError('Unknown option "--unknown" found. Did you mean "known"?', '--unknown', 1)],
+        options: { known: false },
         params: ['foo', 'value'],
         rest: [],
         unknown: {},

@@ -142,13 +142,13 @@ describe('parseInContext()', () => {
 
     expect(() => {
       parseInContext<BazOptions>(['baz', '--deny'], contextFactory);
-    }).toThrow('Contextual parser options were not provided from the factory function.');
+    }).toThrow('Contextual parser options were not provided.');
   });
 
   it('errors if factory doesnt return parser options', () => {
     expect(() => {
       parseInContext(['qux', '-F', '--opt', 'value'], contextFactory);
-    }).toThrow('Contextual parser options were not provided from the factory function.');
+    }).toThrow('Contextual parser options were not provided.');
   });
 
   it('errors if command is found but doesnt come first', () => {
