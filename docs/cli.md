@@ -196,6 +196,9 @@ own async functionality, like file system access, or network requests.
 
 TODO
 
+- bootstrap
+- running
+
 Commands may be defined with a declarative approach using TypeScript decorators, or an imperative
 approach with static class properties. Both variants will be demonstrated in the examples below.
 
@@ -235,7 +238,7 @@ import { Command, Config } from '@boost/cli';
   aliases: ['make'],
   deprecated: true,
 })
-class BuildCommand extends Command {}
+export default class BuildCommand extends Command {}
 ```
 
 Otherwise, just define static class properties of the same name!
@@ -243,7 +246,7 @@ Otherwise, just define static class properties of the same name!
 ```ts
 import { Command } from '@boost/cli';
 
-class BuildCommand extends Command {
+export default class BuildCommand extends Command {
   static path: string = 'build';
 
   static aliases: string[] = ['make'];
@@ -278,7 +281,7 @@ interface CustomOptions extends GlobalOptions {
   strings: string[];
 }
 
-class CustomCommand extends Command<CustomOptions> {
+export default class CustomCommand extends Command<CustomOptions> {
   @Arg.Flag('Boolean flag')
   flag: boolean = false;
 
@@ -319,7 +322,7 @@ interface CustomOptions extends GlobalOptions {
   strings: string[];
 }
 
-class CustomCommand extends Command<CustomOptions> {
+export default class CustomCommand extends Command<CustomOptions> {
   static options: Options<CustomOptions> = {
     flag: {
       description: 'Boolean flag',
@@ -390,7 +393,7 @@ will be set as a string object to the `Command#unknown` class property.
 ```ts
 import { Command, GlobalOptions, Options } from '@boost/cli';
 
-class CustomCommand extends Command<GlobalOptions> {
+export default class CustomCommand extends Command<GlobalOptions> {
   static allowUnknownOptions = true;
 
   run() {
@@ -414,7 +417,7 @@ import { Command, Arg, GlobalOptions } from '@boost/cli';
 
 type CustomParams = [string, number];
 
-class CustomCommand extends Command<GlobalOptions, CustomParams> {
+export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   @Arg.Params<CustomParams>(
     {
       description: 'Users name',
@@ -444,7 +447,7 @@ import { Command, Params, GlobalOptions } from '@boost/cli';
 
 type CustomParams = [string, number];
 
-class CustomCommand extends Command<GlobalOptions, CustomParams> {
+export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   static params: Params<CustomParams> = [
     {
       description: 'Users name',
@@ -478,14 +481,14 @@ import { Command, Params, GlobalOptions } from '@boost/cli';
 
 type CustomParams = [string, number];
 
-class CustomCommand extends Command<GlobalOptions, CustomParams> {
+export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   static allowVariadicParams = true;
 
   static params: Params<CustomParams> = [
     // ...
   ];
 
-  run(name: string, age: number = 18, ...vp: string[]) {
+  run(name: string, age: number = 18, ...params: string[]) {
     // ...
   }
 }
@@ -493,37 +496,134 @@ class CustomCommand extends Command<GlobalOptions, CustomParams> {
 
 #### Rest Arguments
 
+[Rest arguments](./args.md#rest) are all arguments that come after a standalone `--` delimiter, and
+can be accessed using the `Command#rest` property, which is an array of strings.
+
 #### Sub-commands
+
+TODO
+
+#### Rendering Components
+
+TODO
 
 ### Shorthand Commands
 
+TODO
+
 ### Categories
+
+TODO
 
 ### Logging
 
+TODO
+
 ### Themes
+
+TODO
 
 ## Components
 
-TODO
+Boost provides the following components for use within your programs.
 
 ### Ink
 
-TODO
+Since Boost is built on Ink, we had to implement our own abstraction around it for the CLI to
+operate properly. Because of this, not all Ink components can be used, except for the following.
+
+- [Box](https://github.com/vadimdemedes/ink#box)
+- [Color](https://github.com/vadimdemedes/ink#color)
+- [Text](https://github.com/vadimdemedes/ink#text)
+
+For convenience, these components can be imported from the Boost CLI package. This is preferred so
+that your usage of these components stay in sync with the version we expect.
+
+```tsx
+import { Box } from '@boost/cli';
+
+<Box padding={1}>Loading data...</Box>;
+```
+
+### Style
+
+The `Style` component is special in that it renders and applies colors based on the
+[chosen theme](#themes). It accomplishes this through the `type` prop, which accepts one of the
+theme palette names.
+
+```tsx
+import { Style } from '@boost/cli';
+
+<Style type="success">Downloaded 123 packages</Style>;
+```
+
+Furthermore, it also supports text styling similar to Ink's `Text` component. This uses
+[chalk](https://www.npmjs.com/package/chalk) under the hood.
+
+```tsx
+<Style bold type="failure">
+  Faild to download packages
+</Style>
+```
+
+> It's highly encouraged to use this component for all color based styling, so that consumers can
+> always use their chosen theme!
 
 ### Header
 
-TODO
+The `Header` component is simply that, a header! It renders an inverted background, with bold and
+uppercased text, and appropriate margins. It's what the [help](#help) and [failure](#failure) menus
+use to separate and denote sections.
+
+```tsx
+import { Header } from '@boost/cli';
+
+<Header label="About" />;
+```
+
+Headers can also be [styled](#style) by providing a `type` prop, which will color the background.
 
 ### Help
 
-TODO
+The `Help` component can be used to render elegant command usage and help menus. It's a very complex
+component that supports everything from command metadata to variadic params, all through the
+following props (all optional).
+
+- `categories` (`{ [name: string]: Category }`) - Mapping of [categories](#categories) to use for
+  command and option grouping.
+- `config` (`CommandConfig`) - [Configuration](#config) metadata about the current command.
+- `commands` (`{ [path: string]: CommandConfig }`) - Mapping of [commands](#sub-commands), typically
+  sub-commands.
+- `header` (`string`) - A [header](#header) to display at the top of the output.
+- `options` (`{ [name: string]: OptionConfig }`) - Mapping of [options](#options).
+- `params` (`ParamConfig[]`) - List of [params](#params).
+
+```tsx
+import { Help } from '@boost/cli';
+
+<Help
+  header="Info"
+  config={{ description: 'This is a very cool program', deprecated: true }}
+  params={[
+    {
+      description: 'Name',
+      type: 'string',
+    },
+  ]}
+/>;
+```
 
 ### Failure
 
-TODO
+The `Failure` component can be used to render a beautiful failure menu, for an error and its stack
+trace. The `error` prop must be provided with an `Error` instance. An optional `warnings` prop can
+be provided with a list of `Error`s, for displaying minor issues without a stack trace.
 
-### Style
+```tsx
+import { Failure } from '@boost/cli';
+
+<Failure error={new Error('Something is broken!')} />;
+```
 
 [args]: https://www.npmjs.com/package/@boost/args
 [ink]: https://github.com/vadimdemedes/ink

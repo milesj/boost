@@ -12,7 +12,7 @@ import applyStyle from './helpers/applyStyle';
 import { StyleType } from './types';
 
 export interface FailureProps {
-  binName: string;
+  binName?: string;
   commandLine?: string;
   error: Error;
   warnings?: Error[];
@@ -22,7 +22,7 @@ export default class Failure extends React.Component<FailureProps> {
   renderCodeFrame() {
     const { binName, commandLine, error } = this.props;
 
-    if (!commandLine) {
+    if (!binName || !commandLine) {
       return null;
     }
 
