@@ -709,17 +709,6 @@ describe('<Program />', () => {
       expect(spy).toHaveBeenCalledWith('foo', true, 123);
     });
 
-    it('calls bootstrap method before running', async () => {
-      const command = new AllClassicCommand();
-      const spy = jest.spyOn(command, 'bootstrap');
-
-      program.default(command);
-
-      await program.run(['foo']);
-
-      expect(spy).toHaveBeenCalled();
-    });
-
     it('can return nothing', async () => {
       class NoneCommand extends Command {
         static description = 'Description';

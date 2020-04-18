@@ -151,11 +151,6 @@ export default abstract class Command<
   }
 
   /**
-   * Life cycle that is triggered before the command is run.
-   */
-  bootstrap() {}
-
-  /**
    * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {

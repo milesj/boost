@@ -23,7 +23,6 @@ export const RESERVED_OPTIONS = [
   'unknown',
   'version',
   // Class methods
-  'bootstrap',
   'exit',
   'log',
   'register',

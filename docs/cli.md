@@ -194,13 +194,28 @@ own async functionality, like file system access, or network requests.
 
 ### Commands
 
-TODO
+Commands are self-encapsulated pieces of business logic that are ran when a matching path (a unique
+argument) is found on the command line. To create a command, import and extend the `Command` class,
+and implement a `run()` method. This method can be async and even render
+[React components](#rendering-components)!
 
-- bootstrap
-- running
+```ts
+import { Command } from '@boost/cli';
 
-Commands may be defined with a declarative approach using TypeScript decorators, or an imperative
-approach with static class properties. Both variants will be demonstrated in the examples below.
+export default class BuildCommand extends Command {
+  async run() {
+    this.log('Starting process...');
+
+    await runHeavyAsyncProcess();
+
+    this.log('Process finished!');
+  }
+}
+```
+
+However, that's not all required, as a command and it's features must be configured! Features may be
+defined with a declarative approach using TypeScript decorators, or an imperative approach with
+static class properties. Both variants will be demonstrated in the examples below.
 
 #### Config
 
@@ -502,7 +517,33 @@ can be accessed using the `Command#rest` property, which is an array of strings.
 
 #### Sub-commands
 
-TODO
+Of course commands can register their own commands, known as sub-commands -- it's commands all the
+way down! Sub-commands are configured exactly the same, with the key difference being that their
+path must be prefixed with their parent command's path, separated by a colon.
+
+For example, say we have a scaffolding command, where each sub-command is the specific template to
+generate. The parent path would be `scaffold`, where a child would be `scaffold:model`,
+`scaffond:controller`, so on and so forth. You can see this in action below.
+
+```ts
+import { Command, Config } from '@boost/cli';
+
+@Config('scaffold:controller', 'Scaffold a controller')
+class ScaffoldControllerCommand extends Command {}
+
+@Config('scaffold:model', 'Scaffold a model')
+class ScaffoldModelCommand extends Command {}
+
+@Config('scaffold', 'Scaffold a template')
+class ScaffoldCommand extends Command {
+  constructor() {
+    super();
+
+    this.register(new ScaffoldControllerCommand());
+    this.register(new ScaffoldModelCommand());
+  }
+}
+```
 
 #### Rendering Components
 
@@ -518,11 +559,47 @@ TODO
 
 ### Logging
 
-TODO
+Boost provides a logging layer, powered by its very own [logger](./log.md) that is tied to the
+configured `stdout` and `stderr`. The logger is accessible within a command using the
+`Command#log()` and associated method.
+
+```ts
+import { Command } from '@boost/cli';
+
+class CustomCommand extends Command {
+  run() {
+    this.log('Normal log');
+    this.log.error('Failed log');
+    this.log.debug('Debug log');
+    // ...
+  }
+}
+```
+
+And from within a component by accessing the `ProgramContext`, like so.
+
+```tsx
+import React, { useContext } from 'react';
+import { Box, ProgramContext } from '@boost/cli';
+
+function CustomComponent() {
+  const { log } = useContext(ProgramContext);
+
+  log('Normal log');
+  log.error('Failed log');
+  log.debug('Debug log');
+  // ...
+
+  return <Box>Loading...</Box>;
+}
+```
+
+> It's highly encouraged to use this logging layer instead of the native console, so that logged
+> messages do not interrupt any React rendering process!
 
 ### Themes
 
-TODO
+Themes are a feature that will be enabled in v2. Please come back soon!
 
 ## Components
 

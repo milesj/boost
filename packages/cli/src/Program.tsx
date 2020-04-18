@@ -437,9 +437,6 @@ export default class Program extends CommandManager<ProgramOptions> {
     command[INTERNAL_PARAMS] = params;
     command[INTERNAL_PROGRAM] = this;
 
-    // Bootstrap command before running
-    command.bootstrap();
-
     return this.render(await command.run(...params), EXIT_PASS);
   }
 
