@@ -387,18 +387,6 @@ export default class CustomCommand extends Command<CustomOptions> {
 }
 ```
 
-##### Global Options
-
-Boost provides the follow options that are always available to all commands.
-
-- `--help`, `-h` (`boolean`) - Displays a help menu for the chosen command or the program itself.
-  Available under the `help` class property.
-- `--locale` (`string`) - Display errors, messages, and the interface in the chosen locale (if
-  supported). Locale must be in the format of "en" or "en-US". Available under the `locale` class
-  property.
-- `--version`, `-v` (`boolean`) - Display the current program version and exit. Available under the
-  `version` class property.
-
 ##### Unknown Options
 
 By default, unknown options are not allowed and will throw an error. To allow, set the
@@ -417,6 +405,18 @@ export default class CustomCommand extends Command<GlobalOptions> {
   }
 }
 ```
+
+##### Global Options
+
+Boost provides the follow options that are always available to all commands.
+
+- `--help`, `-h` (`boolean`) - Displays a help menu for the chosen command or the program itself.
+  Available under the `help` class property.
+- `--locale` (`string`) - Display errors, messages, and the interface in the chosen locale (if
+  supported). Locale must be in the format of "en" or "en-US". Available under the `locale` class
+  property.
+- `--version`, `-v` (`boolean`) - Display the current program version and exit. Available under the
+  `version` class property.
 
 #### Params
 
@@ -545,6 +545,9 @@ class ScaffoldCommand extends Command {
 }
 ```
 
+Sub-commands can now be executed on the command line by passing their full path, like so:
+`boost scaffold:model --name User`.
+
 #### Rendering Components
 
 TODO
@@ -555,13 +558,60 @@ TODO
 
 ### Categories
 
-TODO
+Categories are a mechanism for grouping commands and options in the help menu for easier
+readability. They're shared between both commands and options for interoperability purposes, and can
+be defined globally with `Program#categories()`, or per command through
+[`categories` configuration](#config). To make use of categories, define a mapping of keys to
+category names and optional weights, like so.
+
+```ts
+program.categories({
+  // Explicit weight
+  cache: {
+    name: 'Caching',
+    weight: 60,
+  },
+
+  // Automatic weight
+  error: 'Error handling',
+});
+```
+
+```ts
+import { Command, Categories } from '@boost/cli';
+
+class CustomCommand extends Command {
+  static categories: Categories = {
+    cache: {
+      name: 'Caching',
+      weight: 60,
+    },
+    error: 'Error handling',
+  };
+}
+```
+
+Categories are sorted by weight first, then alphabetical second, so define `weight` when you want
+strict control of the category order. Uncategorized items have a weight of `0`, and the built-in
+globals have a weight of `100`.
+
+Now that categories have been defined, be sure to set the category on your commands and options
+using the `category` setting! An example using decorators.
+
+```ts
+import { Command, Config, Arg } from '@boost/cli';
+
+@Config('build', 'Build a project', { category: 'build' })
+export default class BuildCommand extends Command {
+  @Arg.Flag('Write output to cache', { category: 'cache' })
+  cache: boolean = false;
+}
+```
 
 ### Logging
 
-Boost provides a logging layer, powered by its very own [logger](./log.md) that is tied to the
-configured `stdout` and `stderr`. The logger is accessible within a command using the
-`Command#log()` and associated method.
+Boost integrates its very own [logger](./log.md) so that logs can easily be sent to the configured
+`stdout` and `stderr`. The logger is accessible using `Command#log()` and associated methods.
 
 ```ts
 import { Command } from '@boost/cli';
@@ -576,7 +626,7 @@ class CustomCommand extends Command {
 }
 ```
 
-And from within a component by accessing the `ProgramContext`, like so.
+The logger is also accessible within a component by using the `ProgramContext`, like so.
 
 ```tsx
 import React, { useContext } from 'react';
