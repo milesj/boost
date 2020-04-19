@@ -58,10 +58,13 @@ import pkg from './package.json';
 
 const program = new Program({
   bin: 'boost',
-  name: 'Boost',
+  footer: 'Documentation: https://milesj.gitbook.io/boost',
+  name: 'Boost Examples',
   version: pkg.version,
 });
 ```
+
+![Program example](./images/cli/program.png)
 
 Once [commands](#commands) and optional [middleware](#middleware) have been registered, you must run
 the program with `Program#run()` or `Program#runAndExit()`, with the latter automatically passing
@@ -272,6 +275,8 @@ export default class BuildCommand extends Command {
 }
 ```
 
+![Command example](./images/cli/command.png)
+
 #### Options
 
 [Options](./args.md#options) are optional arguments that accept a value on the command line. When a
@@ -387,6 +392,8 @@ export default class CustomCommand extends Command<CustomOptions> {
 }
 ```
 
+![Options example](./images/cli/options.png)
+
 ##### Unknown Options
 
 By default, unknown options are not allowed and will throw an error. To allow, set the
@@ -405,6 +412,8 @@ export default class CustomCommand extends Command<GlobalOptions> {
   }
 }
 ```
+
+![Unknown option example](./images/cli/unknown-option.png)
 
 ##### Global Options
 
@@ -495,6 +504,8 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 }
 ```
 
+![Params example](./images/cli/params.png)
+
 ##### Variadic Params
 
 By default, variadic params are not enabled and will throw an error when an unconfigured param is
@@ -515,11 +526,13 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
     // ...
   ];
 
-  run(name: string, age: number, ...params: string[]) {
+  run(name: string, age: number, active: boolean, ...params: string[]) {
     // ...
   }
 }
 ```
+
+![Variadic params example](./images/cli/variadic-params.png)
 
 #### Rest Arguments
 
@@ -558,6 +571,8 @@ class ScaffoldCommand extends Command {
 
 Sub-commands can now be executed on the command line by passing their full path, like so:
 `boost scaffold:model --name User`.
+
+![Sub-commands example](./images/cli/subcommands.png)
 
 #### Rendering Components
 
