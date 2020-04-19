@@ -253,15 +253,28 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Should include banner, header, footer, and command (if applicable).
    */
   protected createIndex(): React.ReactElement {
+    if (this.standAlone) {
+      return (
+        <IndexHelp {...this.options}>{this.getCommand(this.standAlone)!.renderHelp()}</IndexHelp>
+      );
+    }
+
+    const commands: { [key: string]: Commandable } = {};
+
+    // Remove sub-commands
+    Object.entries(this.commands).forEach(([path, command]) => {
+      if (!path.includes(':')) {
+        commands[path] = command;
+      }
+    });
+
     return (
       <IndexHelp {...this.options}>
-        {this.getCommand(this.standAlone)?.renderHelp() || (
-          <Help
-            header={msg('cli:labelAbout')}
-            categories={this.sharedCategories}
-            commands={mapCommandMetadata(this.commands)}
-          />
-        )}
+        <Help
+          header={msg('cli:labelAbout')}
+          categories={this.sharedCategories}
+          commands={mapCommandMetadata(commands)}
+        />
       </IndexHelp>
     );
   }

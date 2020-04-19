@@ -37,9 +37,11 @@ function Logger() {
 }
 
 module.exports = class LoggerCommand extends Command {
-  static description = 'Test console logs effect on the render loop.';
+  static description = 'Test console logs effect on the render loop';
 
   static path = 'log';
+
+  static category = 'test';
 
   run() {
     this.log.info('Rendering component');

@@ -1,6 +1,6 @@
 # CLI
 
-A type-safe and interactive command line program, powered [React][react] and [Ink][ink].
+A type-safe and interactive command line program, powered by [React][react] and [Ink][ink].
 
 ## Installation
 
@@ -435,18 +435,24 @@ type CustomParams = [string, number];
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   @Arg.Params<CustomParams>(
     {
-      description: 'Users name',
+      description: 'String',
       label: 'name',
       required: true,
       type: 'string',
     },
     {
-      description: 'Users age',
+      default: 18,
+      description: 'Number',
       label: 'age',
       type: 'number',
     },
+    {
+      description: 'Boolean',
+      label: 'active',
+      type: 'boolean',
+    },
   )
-  run(name: string, age: number = 18) {
+  run(name: string, age: number, active: boolean) {
     // ...
   }
 }
@@ -465,20 +471,25 @@ type CustomParams = [string, number];
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   static params: Params<CustomParams> = [
     {
-      description: 'Users name',
+      description: 'String',
       label: 'name',
       required: true,
       type: 'string',
     },
     {
-      description: 'Users age',
       default: 18,
+      description: 'Number',
       label: 'age',
       type: 'number',
     },
+    {
+      description: 'Boolean',
+      label: 'active',
+      type: 'boolean',
+    },
   ];
 
-  run(name: string, age: number) {
+  run(name: string, age: number, active: boolean) {
     // ...
   }
 }
