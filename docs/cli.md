@@ -554,7 +554,41 @@ TODO
 
 ### Shorthand Commands
 
-TODO
+Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
+commands, where only objects and functions are used. To utilize shorthand commands, call either the
+`Program#register()` or `Command#register()` methods, with a unique path, settings object (config,
+options, params, etc)), and run function.
+
+```ts
+interface BuildOptions {
+  minify: boolean;
+}
+
+type BuildParams = [string];
+
+program.register<BuildOptions, BuildParams>(
+  'build',
+  {
+    description: 'Build a project',
+    options: {
+      minify: { description: 'Minify source files', type: 'boolean' },
+    },
+    params: [
+      { description: 'Name of project', label: 'name', type: 'string' }
+    ]
+  },
+  function build(options: BuildOptions, params: BuildParams, rest: string[]) => {
+    // ...
+  },
+);
+```
+
+Besides a different API, the arguments to the run function are also different. Instead of spread
+params like in a class, they are an options object, list of params, and list of rest arguments
+respectively.
+
+> If you want to access the [logger](#logging), be sure to use a function declaration instead of an
+> anonymous function, so that context binding works correctly!
 
 ### Categories
 
@@ -596,7 +630,7 @@ strict control of the category order. Uncategorized items have a weight of `0`, 
 globals have a weight of `100`.
 
 Now that categories have been defined, be sure to set the category on your commands and options
-using the `category` setting! An example using decorators.
+using the `category` setting! Here's an example using decorators.
 
 ```ts
 import { Command, Config, Arg } from '@boost/cli';
