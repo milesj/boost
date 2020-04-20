@@ -1,6 +1,7 @@
 # Summary
 
 - [Args Parsing](./args.md)
+- [CLIs](./cli.md)
 - [Common Utilities](./common.md)
 - [Crash Reporting](./crash.md)
 - [Debugging](./debug.md)
