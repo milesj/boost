@@ -24,7 +24,10 @@ yarn add @boost/cli react
 
 ## Usage
 
-TODO
+The CLI provides a simple object oriented framework for building and managing command line programs,
+with clear separation of commands, middleware, args, a program instance, and more. It further
+streamlines the development process by utilizing [Ink][ink] for terminal rendering, as manually
+handling ANSI escape sequences and terminal widths can be tedious and complicated.
 
 > The CLI makes heavy usage of the [args](./args.md) package, which will be continually referenced
 > throughout this documentation. It's encouraged to read and understand it first.
@@ -198,8 +201,8 @@ own async functionality, like file system access, or network requests.
 ### Commands
 
 Commands are self-encapsulated pieces of business logic that are ran when a matching path (a unique
-argument) is found on the command line. To create a command, import and extend the `Command` class,
-and implement a `run()` method. This method can be async and even render
+argument) is found on the command line. To create a command, import and extend the abstract
+`Command` class, and implement a `run()` method. This method can be async and even render
 [React components](#rendering-components)!
 
 ```ts
