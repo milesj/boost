@@ -579,7 +579,70 @@ Sub-commands can now be executed on the command line by passing their full path,
 
 #### Rendering Components
 
-TODO
+This chapter assumes you have knowledge of [React][react], JSX/TSX, and [Ink][ink]. If you do not,
+it's highly encouraged to study those topics, but React is not necessarily a requirement (can use
+[logging](#logging)). With that being said, return React elements from `Command#run()` to render the
+component output to the CLI.
+
+For a quick demonstration, let's implement a component that writes to a file asynchronously.
+
+```tsx
+import fs from 'fs';
+import React, { useState, useEffect } from 'react';
+import { Box, Style, ProgramContext } from '@boost/cli';
+
+interface WriteConfigProps {
+  data: object;
+  path: string;
+}
+
+export default function WriteConfig({ data, path }: WriteConfigProps) {
+  const { exit } = useContext(ProgramContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fs.promises
+      .writeFile(path, JSON.stringify(data), 'utf8')
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(error => {
+        exit(error.message);
+      });
+  }, [path]);
+
+  if (loading) {
+    return <Box>Writing config file...</Box>;
+  }
+
+  return (
+    <Box>
+      Wrote config to file <Style type="success">{path}</Style>
+    </Box>
+  );
+}
+```
+
+Then we implement the command that returns and renders the component.
+
+```tsx
+import { Command, Config, Arg } from '@boost/cli';
+import WriteConfig from './components/WriteConfig';
+
+@Config('config', 'Manage configuration files')
+export default class ConfigCommand extends Command {
+  @Arg.Params({
+    description: 'Path to file',
+    type: 'string',
+    required: true,
+  })
+  async run(path: string) {
+    const data = await loadConfigFromSomeSource();
+
+    return <WriteConfig data={data} path={path} />;
+  }
+}
+```
 
 ### Shorthand Commands
 
