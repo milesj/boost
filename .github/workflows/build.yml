@@ -26,4 +26,5 @@ jobs:
       - run: yarn run coverage
         env:
           BOOSTJS_ENV: 'development'
-      - run: yarn run eslint
+          CI: 'true'
+      - run: yarn run lint

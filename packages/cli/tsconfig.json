@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "declarationDir": "lib",
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "lib",
+    "tests"
+  ],
+  "extends": "../../tsconfig.options.json",
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "../../types/**/*"
+  ],
+  "references": [
+    {
+      "path": "../args"
+    },
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../event"
+    },
+    {
+      "path": "../internal"
+    },
+    {
+      "path": "../log"
+    },
+    {
+      "path": "../terminal"
+    },
+    {
+      "path": "../translate"
+    }
+  ]
+}

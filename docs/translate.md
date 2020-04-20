@@ -78,7 +78,7 @@ And these options can be passed to the created translator function (`msg` above)
 - `locale` (`Locale`) - Force translation to this locale.
 - `postProcess` (`string | string[]`) - Post-processors to run on the translation.
 
-## Locale Detection
+### Locale Detection
 
 To load resource bundles, we require a locale. A locale is code based representation of a human
 language and is based on [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag).
@@ -93,7 +93,7 @@ by one, until a valid locale is found.
 - Defined a `LANGUAGE` or `LANG` environment variable.
 - Inherited from the operating system.
 
-## Resources
+### Resources
 
 A resource bundle is a per locale collection of [namespaced](#namespaces)
 [translation](#translations) files, located within a resource path passed to `createTranslator`.
@@ -114,7 +114,7 @@ res/
     └── ...
 ```
 
-### Namespaces
+#### Namespaces
 
 A [namespace](https://www.i18next.com/principles/namespaces) is a file that contains
 [translations](#translations), is located within a locale bundle, and can be written in JavaScript,
@@ -146,7 +146,7 @@ the key and separating with a colon.
 msg('common:welcome'); // Hello {{name}}!
 ```
 
-## Translations
+### Translations
 
 A translation is a message string (also known as copy) identified by a unique key (per namespace).
 They can be retrieved using the translator function (`msg` above).
@@ -154,7 +154,7 @@ They can be retrieved using the translator function (`msg` above).
 > Translations inherit all functionality from i18next, so I suggest reading up on the
 > [essentials](https://www.i18next.com/translation-function/essentials).
 
-### Context
+#### Context
 
 [Contextual messages](https://www.i18next.com/translation-function/context) allow for different
 messages based on contextual data, through the combination of multiple keys and the `context`
@@ -172,7 +172,7 @@ msg('user:partner', {}, { context: 'male' }); // Husband
 msg('user:partner', {}, { context: 'female' }); // Wife
 ```
 
-### Plurals
+#### Plurals
 
 [Pluralizing messages](https://www.i18next.com/translation-function/plurals) is easily solved
 through the combination of multiple keys and the `count` option.
@@ -188,7 +188,7 @@ msg('cart:item', {}, { count: 1 }); // 1 item
 msg('cart:item', {}, { count: 10 }); // 10 items
 ```
 
-### Nesting
+#### Nesting
 
 There are 2 forms of nesting. The first is
 [nested keys](https://www.i18next.com/translation-function/essentials#accessing-keys) within a

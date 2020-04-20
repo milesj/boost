@@ -1,0 +1,21 @@
+categoryGlobal: Global
+errorInvalidLocale: Locale must be in the format of "en" or "en-US".
+labelAbout: About
+labelCommands: Commands
+labelError: Error
+labelOption: Option "{{name}}"
+labelOptions: Options
+labelParam: Param "{{name}}"
+labelParams: Params
+labelStackTrace: Stack Trace
+labelUsage: Usage
+labelWarnings: Warnings
+optionHelpDescription: Display help and usage menu
+optionLocaleDescription: Display output in the chosen locale
+optionVersionDescription: Display version number
+tagChoices: choices
+tagCount: counter
+tagDefault: default
+tagDeprecated: deprecated
+tagMultiple: multiple
+tagRequired: required

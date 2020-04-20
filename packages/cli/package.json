@@ -1,0 +1,43 @@
+{
+  "name": "@boost/cli",
+  "version": "0.3.3",
+  "description": "A type-safe and interactive command line program, built on React and Ink.",
+  "keywords": [
+    "boost",
+    "args",
+    "cli",
+    "command",
+    "line",
+    "interface",
+    "program",
+    "react",
+    "ink"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/cli",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@boost/args": "^1.4.0",
+    "@boost/common": "^1.8.4",
+    "@boost/event": "^1.3.0",
+    "@boost/internal": "^1.1.0",
+    "@boost/log": "^1.1.14",
+    "@boost/terminal": "^1.0.3",
+    "@boost/translate": "^1.3.8",
+    "ink": "^2.7.1",
+    "levenary": "^1.1.1"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.13.1"
+  }
+}

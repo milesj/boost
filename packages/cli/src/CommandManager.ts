@@ -1,0 +1,105 @@
+/* eslint-disable no-dupe-class-members */
+
+import { PrimitiveType, ArgList } from '@boost/args';
+import { Contract, isObject } from '@boost/common';
+import { Event } from '@boost/event';
+import { RuntimeError } from '@boost/internal';
+import {
+  CommandMetadata,
+  CommandPath,
+  Commandable,
+  ProxyCommandConfig,
+  ProxyCommandRunner,
+} from './types';
+import createProxyCommand from './helpers/createProxyCommand';
+
+export default abstract class CommandManager<Options extends object = {}> extends Contract<
+  Options
+> {
+  readonly onAfterRegister = new Event<[CommandPath, Commandable]>('after-register');
+
+  readonly onBeforeRegister = new Event<[CommandPath, Commandable]>('before-register');
+
+  protected commands: CommandMetadata['commands'] = {};
+
+  protected commandAliases: { [path: string]: string } = {};
+
+  /**
+   * Return a command by registered path, or `null` if not found.
+   */
+  getCommand<O extends object = {}, P extends PrimitiveType[] = ArgList>(
+    path: CommandPath,
+  ): Commandable<O, P> | null {
+    if (!path) {
+      return null;
+    }
+
+    const alias = this.commandAliases[path];
+
+    return (alias && this.commands[alias]) || this.commands[path] || null;
+  }
+
+  /**
+   * Return a list of all registered command paths (including aliases).
+   */
+  getCommandPaths(): CommandPath[] {
+    return Object.keys(this.commands).concat(Object.keys(this.commandAliases));
+  }
+
+  /**
+   * Register a command and its canonical path (must be unique),
+   * otherwise an error is thrown.
+   */
+  register(command: Commandable): this;
+
+  register<O extends object, P extends PrimitiveType[]>(
+    path: CommandPath,
+    config: ProxyCommandConfig<O, P>,
+    runner: ProxyCommandRunner<O, P>,
+  ): this;
+
+  register(commandOrPath: CommandPath | Commandable, config?: unknown, runner?: unknown): this {
+    let command: Commandable;
+
+    if (
+      typeof commandOrPath === 'string' &&
+      typeof config !== 'undefined' &&
+      typeof runner === 'function'
+    ) {
+      command = createProxyCommand(
+        commandOrPath,
+        config as ProxyCommandConfig<never, ArgList>,
+        runner as ProxyCommandRunner<never, ArgList>,
+      );
+    } else if (isObject(commandOrPath) && typeof commandOrPath.run === 'function') {
+      command = commandOrPath;
+    } else {
+      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_REGISTER');
+    }
+
+    const { aliases, path } = command.getMetadata();
+
+    this.onBeforeRegister.emit([path, command]);
+
+    this.checkPath(path);
+    this.commands[path] = command;
+
+    aliases.forEach(alias => {
+      this.checkPath(alias);
+      this.commandAliases[alias] = path;
+    });
+
+    this.onAfterRegister.emit([path, command]);
+
+    return this;
+  }
+
+  /**
+   * Check that a command path is valid.
+   */
+  protected checkPath(path: CommandPath) {
+    if (this.commands[path]) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_EXISTS', [path]);
+    }
+  }
+}
