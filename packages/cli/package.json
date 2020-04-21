@@ -1,6 +1,6 @@
 {
   "name": "@boost/cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A type-safe and interactive command line program, built on React and Ink.",
   "keywords": [
     "boost",
