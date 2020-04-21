@@ -66,6 +66,12 @@ export default class Program extends CommandManager<ProgramOptions> {
 
   readonly onHelp = new Event<[CommandPath?]>('help');
 
+  readonly streams: ProgramStreams = {
+    stderr: process.stderr,
+    stdin: process.stdin,
+    stdout: process.stdout,
+  };
+
   protected commandLine: string = '';
 
   protected logger: Logger;
@@ -82,12 +88,6 @@ export default class Program extends CommandManager<ProgramOptions> {
   };
 
   protected standAlone: CommandPath = '';
-
-  protected streams: ProgramStreams = {
-    stderr: process.stderr,
-    stdin: process.stdin,
-    stdout: process.stdout,
-  };
 
   private errBuffer: LogBuffer;
 

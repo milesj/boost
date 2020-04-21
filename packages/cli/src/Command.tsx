@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
 import React from 'react';
+import execa, { Options as ExecaOptions } from 'execa';
 import {
   ArgList,
   PrimitiveType,
@@ -151,6 +152,20 @@ export default abstract class Command<
   }
 
   /**
+   * Execute a system native command with the given arguments
+   * and pass the results through a promise. This does *not* execute Boost CLI
+   * commands, use `runProgram()` instead.
+   */
+  executeCommand(command: string, args: string[], options: ExecaOptions = {}) /* infer */ {
+    const { streams } = this.getProgram();
+
+    return execa(command, args, {
+      ...streams,
+      ...options,
+    });
+  }
+
+  /**
    * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {
@@ -235,19 +250,26 @@ export default abstract class Command<
    * Run the program within itself, by passing a custom command and argv list.
    */
   async runProgram(argv: Argv): Promise<void> {
-    const program = this[INTERNAL_PROGRAM];
-
-    if (!program) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_NO_PROGRAM');
-    }
-
-    await program.run(argv, true);
+    await this.getProgram().run(argv, true);
   }
 
   /**
    * Executed when the command is being ran.
    */
   abstract run(...params: P): RunResult | Promise<RunResult>;
+
+  /**
+   * Return the program instance of fail.
+   */
+  private getProgram(): Program {
+    const program = this[INTERNAL_PROGRAM];
+
+    if (!program) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_NO_PROGRAM');
+    }
+
+    return program;
+  }
 
   /**
    * Verify sub-command is prefixed with the correct path.

@@ -1,3 +1,4 @@
+import execa from 'execa';
 import AllCommand from './__mocks__/AllCommand';
 import AllClassicCommand from './__mocks__/AllClassicCommand';
 import BuildCommand from './__mocks__/BuildCommand';
@@ -5,11 +6,48 @@ import BuildClassicCommand from './__mocks__/BuildClassicCommand';
 import InstallCommand from './__mocks__/InstallCommand';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
-import { Command, Arg } from '../src';
+import { Command, Arg, Program, INTERNAL_PROGRAM, ProgramStreams } from '../src';
+import { WriteStream, ReadStream } from './helpers';
 
+jest.mock('execa');
 jest.mock('term-size');
 
 describe('Command', () => {
+  describe('executeCommand()', () => {
+    function mockExeca() {
+      ((execa as unknown) as jest.Mock).mockImplementation((command, args) => ({
+        command: `${command} ${args.join(' ')}`,
+      }));
+    }
+
+    beforeEach(() => {
+      mockExeca();
+    });
+
+    it('runs a local command', async () => {
+      const streams = {
+        stdin: new ReadStream(),
+        stdout: new WriteStream(),
+        stderr: new WriteStream(),
+      };
+      const command = new BuildCommand();
+
+      command[INTERNAL_PROGRAM] = new Program(
+        {
+          bin: 'test',
+          name: 'Test',
+          version: '0.0.0',
+        },
+        (streams as unknown) as ProgramStreams,
+      );
+
+      const result = await command.executeCommand('yarn', ['-v']);
+
+      expect(execa).toHaveBeenCalledWith('yarn', ['-v'], streams);
+      expect(result).toEqual(expect.objectContaining({ command: 'yarn -v' }));
+    });
+  });
+
   describe('declarative', () => {
     it('inherits metadata from @Config and sets static properties', () => {
       const command = new BuildCommand();
