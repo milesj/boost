@@ -652,6 +652,8 @@ commands, where only objects and functions are used. To utilize shorthand comman
 options, params, etc)), and run function.
 
 ```ts
+import { Program, TaskContext } from '@boost/cli';
+
 interface BuildOptions {
   minify: boolean;
 }
@@ -669,7 +671,7 @@ program.register<BuildOptions, BuildParams>(
       { description: 'Name of project', label: 'name', type: 'string' }
     ]
   },
-  function build(options: BuildOptions, params: BuildParams, rest: string[]) => {
+  function build(this: TaskContext, options: BuildOptions, params: BuildParams, rest: string[]) => {
     // ...
   },
 );
@@ -681,6 +683,59 @@ respectively.
 
 > If you want to access the [logger](#logging), be sure to use a function declaration instead of an
 > anonymous function, so that context binding works correctly!
+
+### Tasks
+
+Tasks are reusable functions that can be executed within any command, while gaining contextual and
+limited access to that command's instance. This promotes reusability and composition while avoiding
+inheritance related issues.
+
+To use a task, create a function with any arguments and function body that you'd like. The function
+body has access to the parent command's [options](#options), [logger](#logging), and
+[rest arguments](#rest) through `this`. If using TypeScript, the `this` special argument should be
+typed.
+
+```ts
+import fs from 'fs';
+import { TaskContext } from '@boost/cli';
+
+// Write a JSON blob to a file defined by a --path option
+export default async function writeJson(
+  this: TaskContext<{ path: string }>,
+  data: unknown,
+  pretty: boolean = false,
+) {
+  await fs.promises.writeFile(
+    this.path,
+    pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data),
+    'utf8',
+  );
+
+  this.log('Wrote file to %s', this.path);
+}
+```
+
+Now that are task is created, we can now execute it within a command using `Command#runTask()`. This
+method requires the task as a function reference, and all it's required arguments.
+
+```tsx
+import { Command, Config, Arg } from '@boost/cli';
+import writeJson from './tasks/writeJson';
+
+@Config('init', 'Initialize project')
+export default class InitCommand extends Command {
+  @Arg.String('Path to config file')
+  path: string;
+
+  async run() {
+    const data = await loadConfigFromSomeSource();
+
+    await this.runTask(writeJson, data);
+  }
+}
+```
+
+> Tasks are a command only feature and cannot be executed from within a React component.
 
 ### Categories
 

@@ -1,3 +1,5 @@
+/* eslint-disable babel/no-invalid-this */
+
 import React, { useContext } from 'react';
 import { Box } from 'ink';
 import { ExitError } from '@boost/internal';
@@ -9,6 +11,9 @@ import {
   ProgramContext,
   ProgramContextType,
   INTERNAL_OPTIONS,
+  TaskContext,
+  GlobalOptions,
+  Options,
 } from '../src';
 import { WriteStream, ReadStream } from './helpers';
 import { options, params } from './__mocks__/args';
@@ -319,10 +324,9 @@ describe('<Program />', () => {
           options: BuildClassicCommand.options,
           params: InstallClassicCommand.params,
         },
-        function build(this: Command, opts, pms, rest) {
+        function build(this: TaskContext, opts, pms, rest) {
           result = { opts, pms, rest };
 
-          // eslint-disable-next-line babel/no-invalid-this
           this.log('Testing class logger');
         },
       );
@@ -1247,6 +1251,84 @@ describe('<Program />', () => {
       await program.run(['prog']);
 
       expect(stdout.get()).toMatchSnapshot();
+    });
+  });
+
+  describe('tasks', () => {
+    // Test logging and options
+    function syncTask(this: TaskContext, a: number, b: number) {
+      this.log('Hi');
+      this.log.error('Bye');
+
+      return a + b;
+    }
+
+    // Test misc args
+    interface AsyncOptions extends GlobalOptions {
+      value: string;
+    }
+
+    async function asyncTask(this: TaskContext<AsyncOptions>, a: string, b: string) {
+      this.unknown.foo = 'true';
+
+      const c = await Promise.resolve(this.value);
+
+      this.rest.push('foo');
+
+      return c + a + b.toUpperCase();
+    }
+
+    beforeEach(() => {
+      stdout.append = true;
+    });
+
+    it('runs a sync task correctly', async () => {
+      class SyncTaskCommand extends Command {
+        static description = 'Description';
+
+        static path = 'task';
+
+        run() {
+          return String(this.runTask(syncTask, 10, 5));
+        }
+      }
+
+      program.register(new SyncTaskCommand());
+
+      await program.run(['task']);
+
+      expect(stdout.get()).toMatchSnapshot();
+    });
+
+    it('runs an async task correctly', async () => {
+      class AsyncTaskCommand extends Command<AsyncOptions> {
+        static description = 'Description';
+
+        static path = 'task';
+
+        static options: Options<AsyncOptions> = {
+          value: {
+            description: 'Description',
+            type: 'string',
+          },
+        };
+
+        async run() {
+          const value = await this.runTask(asyncTask, 'foo', 'bar');
+
+          return value;
+        }
+      }
+
+      const command = new AsyncTaskCommand();
+
+      program.register(command);
+
+      await program.run(['task', '--value', 'baz']);
+
+      expect(stdout.get()).toMatchSnapshot();
+      expect(command.unknown.foo).toBe('true');
+      expect(command.rest).toEqual(['foo']);
     });
   });
 });

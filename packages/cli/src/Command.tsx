@@ -21,13 +21,14 @@ import {
   INTERNAL_PROGRAM,
 } from './constants';
 import {
-  GlobalOptions,
+  Categories,
   Commandable,
   CommandMetadata,
-  ExitHandler,
-  RunResult,
   CommandPath,
-  Categories,
+  ExitHandler,
+  GlobalOptions,
+  RunResult,
+  TaskContext,
 } from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
@@ -251,6 +252,24 @@ export default abstract class Command<
    */
   async runProgram(argv: Argv): Promise<void> {
     await this.getProgram().run(argv, true);
+  }
+
+  /**
+   * Run a task (function) with the defined arguments and
+   * the current command instance bound to the task's context.
+   */
+  runTask<A extends unknown[], R>(task: (this: TaskContext<O>, ...args: A) => R, ...args: A): R {
+    // We dont want tasks to have full access to the command
+    // and its methods, so recreate a similar but smaller context.
+    const context: TaskContext<O> = {
+      exit: this.exit,
+      log: this.log,
+      rest: this.rest,
+      unknown: this.unknown,
+      ...this[INTERNAL_OPTIONS]!,
+    };
+
+    return task.apply(context, args);
   }
 
   /**

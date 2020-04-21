@@ -24,6 +24,7 @@ import {
   ScalarType,
   SingleOption,
   ValueType,
+  UnknownOptionMap,
 } from '@boost/args';
 import { Logger } from '@boost/log';
 
@@ -147,6 +148,15 @@ export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
   params: P,
   rest: string[],
 ) => RunResult | Promise<RunResult>;
+
+// TASKS
+
+export type TaskContext<O extends GlobalOptions = GlobalOptions> = O & {
+  exit: ExitHandler;
+  log: Logger;
+  rest: string[];
+  unknown: UnknownOptionMap;
+};
 
 // MIDDLEWARE
 
