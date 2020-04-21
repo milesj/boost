@@ -3,13 +3,16 @@
 
 import React from 'react';
 import {
-  Argv,
   ArgList,
   Arguments,
+  Argv,
   Category,
   Command as BaseCommandConfig,
+  Flag,
+  ListType,
   MapOptionConfig,
   MapParamConfig,
+  MultipleOption,
   Option,
   OptionConfig,
   OptionConfigMap,
@@ -18,20 +21,32 @@ import {
   ParamConfigList,
   ParserOptions,
   PrimitiveType,
+  ScalarType,
+  SingleOption,
+  ValueType,
+  UnknownOptionMap,
 } from '@boost/args';
 import { Logger } from '@boost/log';
 
 export {
-  Argv,
   ArgList,
   Arguments,
+  Argv,
   Category,
+  Flag,
+  ListType,
+  MultipleOption,
   Option,
   OptionConfig,
   OptionConfigMap,
   Param,
   ParamConfig,
   ParamConfigList,
+  ParserOptions,
+  PrimitiveType,
+  ScalarType,
+  SingleOption,
+  ValueType,
 };
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'path' | 'type'>;
@@ -63,6 +78,7 @@ export type ExitHandler = (message: string, code?: ExitCode) => void;
 export interface ProgramOptions {
   banner?: string;
   bin: string;
+  delimiter?: string;
   footer?: string;
   header?: string;
   name: string;
@@ -133,6 +149,15 @@ export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
   params: P,
   rest: string[],
 ) => RunResult | Promise<RunResult>;
+
+// TASKS
+
+export type TaskContext<O extends GlobalOptions = GlobalOptions> = O & {
+  exit: ExitHandler;
+  log: Logger;
+  rest: string[];
+  unknown: UnknownOptionMap;
+};
 
 // MIDDLEWARE
 

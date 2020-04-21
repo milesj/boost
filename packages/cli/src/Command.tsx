@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
 import React from 'react';
+import execa, { Options as ExecaOptions } from 'execa';
 import {
   ArgList,
   PrimitiveType,
@@ -20,13 +21,14 @@ import {
   INTERNAL_PROGRAM,
 } from './constants';
 import {
-  GlobalOptions,
+  Categories,
   Commandable,
   CommandMetadata,
-  ExitHandler,
-  RunResult,
   CommandPath,
-  Categories,
+  ExitHandler,
+  GlobalOptions,
+  RunResult,
+  TaskContext,
 } from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
@@ -151,6 +153,20 @@ export default abstract class Command<
   }
 
   /**
+   * Execute a system native command with the given arguments
+   * and pass the results through a promise. This does *not* execute Boost CLI
+   * commands, use `runProgram()` instead.
+   */
+  executeCommand(command: string, args: string[], options: ExecaOptions = {}) /* infer */ {
+    const { streams } = this.getProgram();
+
+    return execa(command, args, {
+      ...streams,
+      ...options,
+    });
+  }
+
+  /**
    * Validate and return all metadata registered to this command instance.
    */
   getMetadata(): CommandMetadata {
@@ -224,6 +240,7 @@ export default abstract class Command<
         categories={metadata.categories}
         config={metadata}
         commands={mapCommandMetadata(metadata.commands)}
+        delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
         header={metadata.path}
         options={metadata.options}
         params={metadata.params}
@@ -235,19 +252,44 @@ export default abstract class Command<
    * Run the program within itself, by passing a custom command and argv list.
    */
   async runProgram(argv: Argv): Promise<void> {
-    const program = this[INTERNAL_PROGRAM];
+    await this.getProgram().run(argv, true);
+  }
 
-    if (!program) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_NO_PROGRAM');
-    }
+  /**
+   * Run a task (function) with the defined arguments and
+   * the current command instance bound to the task's context.
+   */
+  runTask<A extends unknown[], R>(task: (this: TaskContext<O>, ...args: A) => R, ...args: A): R {
+    // We dont want tasks to have full access to the command
+    // and its methods, so recreate a similar but smaller context.
+    const context: TaskContext<O> = {
+      exit: this.exit,
+      log: this.log,
+      rest: this.rest,
+      unknown: this.unknown,
+      ...this[INTERNAL_OPTIONS]!,
+    };
 
-    await program.run(argv, true);
+    return task.apply(context, args);
   }
 
   /**
    * Executed when the command is being ran.
    */
   abstract run(...params: P): RunResult | Promise<RunResult>;
+
+  /**
+   * Return the program instance of fail.
+   */
+  private getProgram(): Program {
+    const program = this[INTERNAL_PROGRAM];
+
+    if (!program) {
+      throw new RuntimeError('cli', 'CLI_COMMAND_NO_PROGRAM');
+    }
+
+    return program;
+  }
 
   /**
    * Verify sub-command is prefixed with the correct path.

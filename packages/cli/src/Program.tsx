@@ -34,6 +34,7 @@ import {
   INTERNAL_OPTIONS,
   INTERNAL_PARAMS,
   INTERNAL_PROGRAM,
+  DELIMITER,
 } from './constants';
 import {
   Commandable,
@@ -66,6 +67,12 @@ export default class Program extends CommandManager<ProgramOptions> {
 
   readonly onHelp = new Event<[CommandPath?]>('help');
 
+  readonly streams: ProgramStreams = {
+    stderr: process.stderr,
+    stdin: process.stdin,
+    stdout: process.stdout,
+  };
+
   protected commandLine: string = '';
 
   protected logger: Logger;
@@ -82,12 +89,6 @@ export default class Program extends CommandManager<ProgramOptions> {
   };
 
   protected standAlone: CommandPath = '';
-
-  protected streams: ProgramStreams = {
-    stderr: process.stderr,
-    stdin: process.stdin,
-    stdout: process.stdout,
-  };
 
   private errBuffer: LogBuffer;
 
@@ -118,6 +119,7 @@ export default class Program extends CommandManager<ProgramOptions> {
         .notEmpty()
         .required()
         .kebabCase(),
+      delimiter: string(DELIMITER),
       footer: string(),
       header: string(),
       name: string()
@@ -274,6 +276,7 @@ export default class Program extends CommandManager<ProgramOptions> {
           header={msg('cli:labelAbout')}
           categories={this.sharedCategories}
           commands={mapCommandMetadata(commands)}
+          delimiter={this.options.delimiter}
         />
       </IndexHelp>
     );
@@ -382,6 +385,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       <Failure
         binName={this.options.bin}
         commandLine={this.commandLine}
+        delimiter={this.options.delimiter}
         error={error}
         warnings={validErrors.filter(verror => verror !== error)}
       />,

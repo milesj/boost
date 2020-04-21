@@ -357,6 +357,13 @@ exports[`<Program /> logging handles logging when returning a string 1`] = `
 "
 `;
 
+exports[`<Program /> nested programs bubbles up errors 1`] = `
+"
+[30m[41m ERROR [49m[39m
+
+ Bubbles"
+`;
+
 exports[`<Program /> nested programs can run a program within a command 1`] = `
 "Before run
 Install!
@@ -388,6 +395,18 @@ exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] =
 `;
 
 exports[`<Program /> success can return an element that writes with ink 1`] = `"Hello!"`;
+
+exports[`<Program /> tasks runs a sync task correctly 1`] = `
+"Hi
+[31merror[39m Bye
+15
+"
+`;
+
+exports[`<Program /> tasks runs an async task correctly 1`] = `
+"bazfooBAR
+"
+`;
 
 exports[`<Program /> version outputs version when \`--version\` is passed 1`] = `
 "1.2.3

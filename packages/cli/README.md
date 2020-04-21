@@ -45,6 +45,8 @@ yarn add @boost/cli react
 
 [https://milesj.gitbook.io/boost/cli](https://milesj.gitbook.io/boost/cli)
 
+![CLI example](https://raw.githubusercontent.com/milesj/boost/master/docs/images/cli/program.png)
+
 [args]: https://www.npmjs.com/package/@boost/args
 [ink]: https://github.com/vadimdemedes/ink
 [react]: https://reactjs.org/

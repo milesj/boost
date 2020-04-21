@@ -8,7 +8,7 @@ export interface BuildOptions extends GlobalOptions {
 @Config('build', 'Build a project', {
   aliases: ['compile'],
   category: 'setup',
-  usage: '$ build -S ./src -D ./lib',
+  usage: 'build -S ./src -D ./lib',
 })
 class BuildCommand extends Command<BuildOptions> {
   // --dst, -D

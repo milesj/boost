@@ -37,3 +37,5 @@ export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];
 export const SPACING_COL = 1;
 export const SPACING_COL_WIDE = 2;
 export const SPACING_ROW = 1;
+
+export const DELIMITER = '$ ';

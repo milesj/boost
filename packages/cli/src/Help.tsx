@@ -5,7 +5,7 @@ import { toArray } from '@boost/common';
 import { screen, stripAnsi } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
-import { msg, SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from './constants';
+import { msg, SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from './constants';
 import { CommandConfigMap, CommandConfig, Categories } from './types';
 import {
   formatType,
@@ -19,6 +19,7 @@ export interface HelpProps {
   categories?: Categories;
   config?: CommandConfig;
   commands?: CommandConfigMap;
+  delimiter?: string;
   header?: string;
   options?: OptionConfigMap;
   params?: ParamConfigList;
@@ -233,13 +234,15 @@ export default class Help extends React.Component<HelpProps> {
   }
 
   renderUsage(usage: string | string[]) {
+    const { delimiter = DELIMITER } = this.props;
+
     return (
       <>
         <Header label={msg('cli:labelUsage')} />
 
         {toArray(usage).map(example => (
           <Box key={example} paddingLeft={SPACING_COL}>
-            {example}
+            {example.startsWith(delimiter) ? example : delimiter + example}
           </Box>
         ))}
       </>

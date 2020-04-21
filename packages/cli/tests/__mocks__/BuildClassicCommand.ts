@@ -12,7 +12,7 @@ export default class BuildClassicCommand extends Command<BuildOptions> {
 
   static description = 'Build a project';
 
-  static usage = '$ build -S ./src -D ./lib';
+  static usage = 'build -S ./src -D ./lib';
 
   static category = 'build';
 

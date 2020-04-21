@@ -64,7 +64,11 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
         <ProgramContext.Provider value={{ exit, log: logger, program }}>
           <Static>{outLogs}</Static>
 
-          {error ? <Failure binName={program.bin} error={error} /> : <Box>{children}</Box>}
+          {error ? (
+            <Failure binName={program.bin} delimiter={program.delimiter} error={error} />
+          ) : (
+            <Box>{children}</Box>
+          )}
         </ProgramContext.Provider>
       </Box>
     );
