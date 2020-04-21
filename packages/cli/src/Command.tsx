@@ -240,6 +240,7 @@ export default abstract class Command<
         categories={metadata.categories}
         config={metadata}
         commands={mapCommandMetadata(metadata.commands)}
+        delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
         header={metadata.path}
         options={metadata.options}
         params={metadata.params}

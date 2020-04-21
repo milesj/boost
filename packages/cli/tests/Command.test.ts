@@ -56,7 +56,7 @@ describe('Command', () => {
       expect(BuildCommand.aliases).toEqual(['compile']);
       expect(BuildCommand.description).toBe('Build a project');
       expect(BuildCommand.path).toBe('build');
-      expect(BuildCommand.usage).toBe('$ build -S ./src -D ./lib');
+      expect(BuildCommand.usage).toBe('build -S ./src -D ./lib');
 
       expect(BuildCommand.description).toBe(meta.description);
       expect(BuildCommand.path).toBe(meta.path);
@@ -264,7 +264,7 @@ describe('Command', () => {
       expect(BuildClassicCommand.aliases).toEqual(['compile']);
       expect(BuildClassicCommand.description).toBe('Build a project');
       expect(BuildClassicCommand.path).toBe('build');
-      expect(BuildClassicCommand.usage).toBe('$ build -S ./src -D ./lib');
+      expect(BuildClassicCommand.usage).toBe('build -S ./src -D ./lib');
 
       expect(BuildClassicCommand.description).toBe(meta.description);
       expect(BuildClassicCommand.path).toBe(meta.path);

@@ -29,7 +29,7 @@ class ClientInstallCommand extends InstallClassicCommand {
       weight: 10,
     },
   },
-  usage: ['$ client:install @foo/bar', '$ client:build'],
+  usage: ['client:install @foo/bar', 'client:build'],
 })
 class ClientCommand extends Command {
   constructor() {

@@ -78,6 +78,7 @@ export type ExitHandler = (message: string, code?: ExitCode) => void;
 export interface ProgramOptions {
   banner?: string;
   bin: string;
+  delimiter?: string;
   footer?: string;
   header?: string;
   name: string;

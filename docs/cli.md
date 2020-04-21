@@ -47,6 +47,7 @@ options.
   _(optional)_
 - `bin` (`string`) - The name of the binary consumers enter on the command line. Must be in
   kebab-case.
+- `delimiter` (`string`) - The character(s) displayed before command line usage examples.
 - `footer` (`string`) - A string of text to display at the bottom of the index help interface.
   _(optional)_
 - `header` (`string`) - A string of text to display at the top of the index help interface, below

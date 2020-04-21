@@ -7,20 +7,21 @@ import { RuntimeError } from '@boost/internal';
 import { screen } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
-import { msg, SPACING_COL, SPACING_ROW } from './constants';
+import { msg, SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
 import applyStyle from './helpers/applyStyle';
 import { StyleType } from './types';
 
 export interface FailureProps {
   binName?: string;
   commandLine?: string;
+  delimiter?: string;
   error: Error;
   warnings?: Error[];
 }
 
 export default class Failure extends React.Component<FailureProps> {
   renderCodeFrame() {
-    const { binName, commandLine, error } = this.props;
+    const { binName, commandLine, delimiter = DELIMITER, error } = this.props;
 
     if (!binName || !commandLine) {
       return null;
@@ -28,7 +29,7 @@ export default class Failure extends React.Component<FailureProps> {
 
     const width = screen.size().columns;
     let type: StyleType = 'failure';
-    let cmd = `$ ${binName} ${commandLine}`;
+    let cmd = `${delimiter}${binName} ${commandLine}`;
     let arg = '';
 
     if (error instanceof ParseError) {
