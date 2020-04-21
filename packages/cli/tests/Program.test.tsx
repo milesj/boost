@@ -1241,14 +1241,48 @@ describe('<Program />', () => {
       }
     }
 
-    beforeEach(() => {
-      stdout.append = true;
-    });
+    class NestedErrorCommand extends Command {
+      static description = 'Description';
+
+      static path = 'prog-error';
+
+      run() {
+        return this.runProgram(['prog-error-inner']);
+      }
+    }
+
+    class NestedErrorInnerCommand extends Command {
+      static description = 'Description';
+
+      static path = 'prog-error-inner';
+
+      run() {
+        throw new Error('Bubbles');
+      }
+    }
 
     it('can run a program within a command', async () => {
+      stdout.append = true;
+
       program.register(new NestedProgramCommand()).register(new ClientCommand());
 
       await program.run(['prog']);
+
+      expect(stdout.get()).toMatchSnapshot();
+    });
+
+    it('errors if no program instance', async () => {
+      const command = new NestedProgramCommand();
+
+      await expect(command.runProgram(['foo'])).rejects.toThrow(
+        'No program found. Must be ran within the context of a parent program.',
+      );
+    });
+
+    it('bubbles up errors', async () => {
+      program.register(new NestedErrorCommand()).register(new NestedErrorInnerCommand());
+
+      await program.run(['prog-error']);
 
       expect(stdout.get()).toMatchSnapshot();
     });

@@ -458,6 +458,24 @@ describe('Command', () => {
       }).toThrow('A command already exists with the canonical path "parent:child".');
     });
 
+    it('returns null for empty path', () => {
+      const parent = new Parent();
+      const child = new Child();
+
+      parent.register(child);
+
+      expect(parent.getCommand('')).toBeNull();
+    });
+
+    it('returns null for unknown path', () => {
+      const parent = new Parent();
+      const child = new Child();
+
+      parent.register(child);
+
+      expect(parent.getCommand('unknown')).toBeNull();
+    });
+
     it('supports children', () => {
       const parent = new Parent();
       const child = new Child();

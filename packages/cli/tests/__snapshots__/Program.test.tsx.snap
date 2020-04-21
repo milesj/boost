@@ -357,6 +357,13 @@ exports[`<Program /> logging handles logging when returning a string 1`] = `
 "
 `;
 
+exports[`<Program /> nested programs bubbles up errors 1`] = `
+"
+[30m[41m ERROR [49m[39m
+
+ Bubbles"
+`;
+
 exports[`<Program /> nested programs can run a program within a command 1`] = `
 "Before run
 Install!
