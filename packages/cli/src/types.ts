@@ -3,13 +3,16 @@
 
 import React from 'react';
 import {
-  Argv,
   ArgList,
   Arguments,
+  Argv,
   Category,
   Command as BaseCommandConfig,
+  Flag,
+  ListType,
   MapOptionConfig,
   MapParamConfig,
+  MultipleOption,
   Option,
   OptionConfig,
   OptionConfigMap,
@@ -18,20 +21,31 @@ import {
   ParamConfigList,
   ParserOptions,
   PrimitiveType,
+  ScalarType,
+  SingleOption,
+  ValueType,
 } from '@boost/args';
 import { Logger } from '@boost/log';
 
 export {
-  Argv,
   ArgList,
   Arguments,
+  Argv,
   Category,
+  Flag,
+  ListType,
+  MultipleOption,
   Option,
   OptionConfig,
   OptionConfigMap,
   Param,
   ParamConfig,
   ParamConfigList,
+  ParserOptions,
+  PrimitiveType,
+  ScalarType,
+  SingleOption,
+  ValueType,
 };
 
 export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'path' | 'type'>;
