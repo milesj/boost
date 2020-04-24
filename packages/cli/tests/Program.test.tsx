@@ -15,7 +15,7 @@ import {
   GlobalOptions,
   Options,
 } from '../src';
-import { WriteStream, ReadStream } from './helpers';
+import { MockWriteStream, MockReadStream } from '../src/testing';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
 import BuildCommand from './__mocks__/BuildCommand';
@@ -99,14 +99,14 @@ class ComponentCommand extends Command {
 
 describe('<Program />', () => {
   let program: Program;
-  let stderr: WriteStream;
-  let stdout: WriteStream;
-  let stdin: ReadStream;
+  let stderr: MockWriteStream;
+  let stdout: MockWriteStream;
+  let stdin: MockReadStream;
 
   beforeEach(() => {
-    stderr = new WriteStream();
-    stdout = new WriteStream();
-    stdin = new ReadStream();
+    stderr = new MockWriteStream();
+    stdout = new MockWriteStream();
+    stdin = new MockReadStream();
     program = new Program(
       {
         bin: 'boost',

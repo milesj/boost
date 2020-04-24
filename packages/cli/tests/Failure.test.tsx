@@ -1,7 +1,7 @@
 import React from 'react';
 import { ParseError, ValidationError } from '@boost/args';
 import { Failure } from '../src';
-import { renderToString, renderToStrippedString } from './helpers';
+import { renderToString, renderToStrippedString } from '../src/testing';
 
 jest.mock('term-size');
 

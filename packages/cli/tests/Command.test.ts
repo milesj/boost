@@ -6,8 +6,8 @@ import BuildClassicCommand from './__mocks__/BuildClassicCommand';
 import InstallCommand from './__mocks__/InstallCommand';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
-import { Command, Arg, Program, INTERNAL_PROGRAM, ProgramStreams } from '../src';
-import { WriteStream, ReadStream } from './helpers';
+import { Command, Arg, INTERNAL_PROGRAM } from '../src';
+import { mockStreams, mockProgram } from '../src/testing';
 
 jest.mock('execa');
 jest.mock('term-size');
@@ -25,21 +25,10 @@ describe('Command', () => {
     });
 
     it('runs a local command', async () => {
-      const streams = {
-        stdin: new ReadStream(),
-        stdout: new WriteStream(),
-        stderr: new WriteStream(),
-      };
+      const streams = mockStreams();
       const command = new BuildCommand();
 
-      command[INTERNAL_PROGRAM] = new Program(
-        {
-          bin: 'test',
-          name: 'Test',
-          version: '0.0.0',
-        },
-        (streams as unknown) as ProgramStreams,
-      );
+      command[INTERNAL_PROGRAM] = mockProgram({}, streams);
 
       const result = await command.executeCommand('yarn', ['-v']);
 

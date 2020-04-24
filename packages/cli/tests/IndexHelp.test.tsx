@@ -1,6 +1,6 @@
 import React from 'react';
 import { IndexHelp, Help } from '../src';
-import { renderToString } from './helpers';
+import { renderToString } from '../src/testing';
 import { commands, options, params } from './__mocks__/args';
 
 jest.mock('term-size');
