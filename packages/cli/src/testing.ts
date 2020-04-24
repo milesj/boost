@@ -5,7 +5,7 @@ import { render } from 'ink';
 import { stripAnsi } from '@boost/terminal';
 import { mockLogger } from '@boost/log/lib/testing';
 import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program, TaskContext } from '.';
-import { GlobalOptions, PrimitiveType, ProgramStreams, ProgramOptions } from './types';
+import { GlobalOptions, PrimitiveType, ProgramStreams, ProgramOptions, ExitCode } from './types';
 
 export class MockReadStream {
   isTTY = false;
@@ -113,4 +113,25 @@ export function runTask<A extends unknown[], R, T extends TaskContext>(
     } as T,
     args,
   );
+}
+
+export async function runProgram(
+  program: Program,
+  argv: string[],
+): Promise<{ code: ExitCode; output: string }> {
+  if (program.streams.stdout === process.stdout) {
+    // @ts-ignore Allow override
+    program.streams = mockStreams();
+  }
+
+  process.env.BOOSTJS_CLI_TEST_ONLY = 'true';
+
+  const code = await program.run(argv);
+
+  delete process.env.BOOSTJS_CLI_TEST_ONLY;
+
+  return {
+    code,
+    output: ((program.streams.stdout as unknown) as MockWriteStream).get(),
+  };
 }

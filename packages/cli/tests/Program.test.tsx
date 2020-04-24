@@ -15,7 +15,7 @@ import {
   GlobalOptions,
   Options,
 } from '../src';
-import { MockWriteStream, MockReadStream } from '../src/testing';
+import { MockWriteStream, MockReadStream, runProgram } from '../src/testing';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
 import BuildCommand from './__mocks__/BuildCommand';
@@ -657,11 +657,11 @@ describe('<Program />', () => {
 
   describe('success', () => {
     beforeEach(() => {
-      process.env.BOOSTJS_CLI_FAIL_HARD = 'true';
+      process.env.BOOSTJS_CLI_TEST_FAIL_HARD = 'true';
     });
 
     afterEach(() => {
-      delete process.env.BOOSTJS_CLI_FAIL_HARD;
+      delete process.env.BOOSTJS_CLI_TEST_FAIL_HARD;
     });
 
     it('sets rest args to the rest command property', async () => {
@@ -931,11 +931,11 @@ describe('<Program />', () => {
         beforeEach(() => {
           command = factory();
 
-          process.env.BOOSTJS_CLI_FAIL_HARD = 'true';
+          process.env.BOOSTJS_CLI_TEST_FAIL_HARD = 'true';
         });
 
         afterEach(() => {
-          delete process.env.BOOSTJS_CLI_FAIL_HARD;
+          delete process.env.BOOSTJS_CLI_TEST_FAIL_HARD;
         });
 
         it('returns number option if defined', async () => {
@@ -1358,9 +1358,9 @@ describe('<Program />', () => {
 
       program.register(command);
 
-      await program.run(['task', '--value', 'baz']);
+      const { output } = await runProgram(program, ['task', '--value', 'baz']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(output).toMatchSnapshot();
       expect(command.unknown.foo).toBe('true');
       expect(command.rest).toEqual(['foo']);
     });
