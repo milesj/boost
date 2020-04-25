@@ -1,7 +1,7 @@
 import React from 'react';
 import { Style } from '../src';
 import loadTheme from '../src/helpers/loadTheme';
-import { renderToString } from '../src/testing';
+import { renderComponent } from '../src/testing';
 
 jest.mock('term-size');
 jest.mock('../src/helpers/loadTheme');
@@ -19,12 +19,12 @@ describe('<Style />', () => {
   });
 
   it('renders `default`', async () => {
-    expect(await renderToString(<Style type="default">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="default">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `default` inverted', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <Style inverted type="default">
           Test
         </Style>,
@@ -33,20 +33,20 @@ describe('<Style />', () => {
   });
 
   it('renders `inverted`', async () => {
-    expect(await renderToString(<Style type="inverted">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="inverted">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `inverted` inverted', async () => {
-    expect(await renderToString(<Style type="inverted">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="inverted">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `failure`', async () => {
-    expect(await renderToString(<Style type="failure">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="failure">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `failure` inverted', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <Style inverted type="failure">
           Test
         </Style>,
@@ -55,12 +55,12 @@ describe('<Style />', () => {
   });
 
   it('renders `muted`', async () => {
-    expect(await renderToString(<Style type="muted">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="muted">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `muted` inverted', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <Style inverted type="muted">
           Test
         </Style>,
@@ -69,12 +69,12 @@ describe('<Style />', () => {
   });
 
   it('renders `success`', async () => {
-    expect(await renderToString(<Style type="success">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="success">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `success` inverted', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <Style inverted type="success">
           Test
         </Style>,
@@ -83,12 +83,12 @@ describe('<Style />', () => {
   });
 
   it('renders `warning`', async () => {
-    expect(await renderToString(<Style type="warning">Test</Style>)).toMatchSnapshot();
+    expect(await renderComponent(<Style type="warning">Test</Style>)).toMatchSnapshot();
   });
 
   it('renders `warning` inverted', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <Style inverted type="warning">
           Test
         </Style>,
@@ -98,7 +98,7 @@ describe('<Style />', () => {
 
   it('supports bold, italics, etc', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <Style bold italic type="default">
           Test
         </Style>,

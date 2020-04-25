@@ -57,7 +57,10 @@ export function mockProgram(options?: Partial<ProgramOptions>, streams?: Program
   );
 }
 
-export async function renderToString(element: React.ReactElement): Promise<string> {
+export async function renderComponent(
+  element: React.ReactElement,
+  stripped: boolean = false,
+): Promise<string> {
   const stdout = new MockWriteStream();
 
   await render(element, {
@@ -66,11 +69,9 @@ export async function renderToString(element: React.ReactElement): Promise<strin
     stdout: (stdout as unknown) as NodeJS.WriteStream,
   });
 
-  return stdout.get();
-}
+  const output = stdout.get();
 
-export async function renderToStrippedString(element: React.ReactElement): Promise<string> {
-  return stripAnsi(await renderToString(element));
+  return stripped ? stripAnsi(output) : output;
 }
 
 export async function runCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
@@ -93,7 +94,7 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
     return result || '';
   }
 
-  return renderToString(result);
+  return renderComponent(result);
 }
 
 export function runTask<A extends unknown[], R, T extends TaskContext>(
