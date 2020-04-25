@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { render } from 'ink';
+import { env } from '@boost/internal';
 import { stripAnsi } from '@boost/terminal';
 import { mockLogger } from '@boost/log/lib/testing';
 import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program, TaskContext } from '.';
@@ -124,11 +125,14 @@ export async function runProgram(
     program.streams = mockStreams();
   }
 
-  process.env.BOOSTJS_CLI_TEST_ONLY = 'true';
+  // Ink async rendering never resolves while testing,
+  // as it relies on system signals to "exit".
+  // So we set this to flag the renderer to avoid awaiting.
+  env('CLI_TEST_ONLY', 'true');
 
   const code = await program.run(argv);
 
-  delete process.env.BOOSTJS_CLI_TEST_ONLY;
+  env('CLI_TEST_ONLY', null);
 
   return {
     code,

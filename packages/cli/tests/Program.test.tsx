@@ -2,7 +2,7 @@
 
 import React, { useContext } from 'react';
 import { Box } from 'ink';
-import { ExitError } from '@boost/internal';
+import { ExitError, env } from '@boost/internal';
 import {
   Program,
   Command,
@@ -657,11 +657,11 @@ describe('<Program />', () => {
 
   describe('success', () => {
     beforeEach(() => {
-      process.env.BOOSTJS_CLI_TEST_FAIL_HARD = 'true';
+      env('CLI_TEST_FAIL_HARD', 'true');
     });
 
     afterEach(() => {
-      delete process.env.BOOSTJS_CLI_TEST_FAIL_HARD;
+      env('CLI_TEST_FAIL_HARD', null);
     });
 
     it('sets rest args to the rest command property', async () => {
@@ -931,11 +931,11 @@ describe('<Program />', () => {
         beforeEach(() => {
           command = factory();
 
-          process.env.BOOSTJS_CLI_TEST_FAIL_HARD = 'true';
+          env('CLI_TEST_FAIL_HARD', 'true');
         });
 
         afterEach(() => {
-          delete process.env.BOOSTJS_CLI_TEST_FAIL_HARD;
+          env('CLI_TEST_FAIL_HARD', null);
         });
 
         it('returns number option if defined', async () => {
