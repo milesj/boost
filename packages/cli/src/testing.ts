@@ -53,7 +53,7 @@ export function mockProgram(options?: Partial<ProgramOptions>, streams?: Program
       version: '0.0.0',
       ...options,
     },
-    streams,
+    streams || mockStreams(),
   );
 }
 
@@ -100,17 +100,21 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
 export function runTask<A extends unknown[], R, T extends TaskContext>(
   task: (this: T, ...args: A) => R,
   args: A,
-  context?: T,
+  context?: Partial<T>,
 ): R {
+  const baseContext: TaskContext = {
+    exit: jest.fn(),
+    help: false,
+    locale: 'en',
+    log: mockLogger(),
+    rest: [] as string[],
+    unknown: {},
+    version: false,
+  };
+
   return task.apply(
     {
-      exit: jest.fn(),
-      help: false,
-      locale: 'en',
-      log: mockLogger(),
-      rest: [] as string[],
-      unknown: {},
-      version: false,
+      ...baseContext,
       ...context,
     } as T,
     args,
