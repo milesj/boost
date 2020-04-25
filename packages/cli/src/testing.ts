@@ -120,8 +120,8 @@ export function runTask<A extends unknown[], R, T extends TaskContext>(
 export async function runProgram(
   program: Program,
   argv: string[],
-): Promise<{ code: ExitCode; output: string }> {
-  if (program.streams.stdout === process.stdout) {
+): Promise<{ code: ExitCode; output: string; outputStripped: string }> {
+  if (!(program.streams.stdout instanceof MockWriteStream)) {
     // @ts-ignore Allow override
     program.streams = mockStreams();
   }
@@ -135,8 +135,11 @@ export async function runProgram(
 
   env('CLI_TEST_ONLY', null);
 
+  const output = ((program.streams.stdout as unknown) as MockWriteStream).get();
+
   return {
     code,
-    output: ((program.streams.stdout as unknown) as MockWriteStream).get(),
+    output,
+    outputStripped: stripAnsi(output),
   };
 }

@@ -27,30 +27,6 @@ import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 
 jest.mock('term-size');
 
-// waitUntilExit() never resolves, so we need to mock the entire module ;/
-jest.mock('ink', () => {
-  const { render, Box: Boxer, Color, Static } = require.requireActual('ink');
-
-  return {
-    Box: Boxer,
-    Color,
-    Static,
-    render(element: any, opts: any) {
-      return {
-        waitUntilExit() {
-          try {
-            render(element, opts);
-          } catch (error) {
-            return Promise.reject(error);
-          }
-
-          return Promise.resolve();
-        },
-      };
-    },
-  };
-});
-
 class BoostCommand extends Command {
   static description = 'Description';
 
@@ -357,21 +333,21 @@ describe('<Program />', () => {
     });
 
     it('outputs help when `--help` is passed', async () => {
-      const exitCode = await program.run(['build', '--help']);
+      const { code, output } = await runProgram(program, ['build', '--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
 
     it('renders failure when args parsing fails', async () => {
-      const exitCode = await program.run(['build', '--foo']);
+      const { code, output } = await runProgram(program, ['build', '--foo']);
 
-      expect(stdout.get()).toContain('Unknown option "--foo" found.');
-      expect(exitCode).toBe(1);
+      expect(output).toContain('Unknown option "--foo" found.');
+      expect(code).toBe(1);
     });
 
     it('passes correct args to run method', async () => {
-      await program.run([
+      await runProgram(program, [
         'build',
         '--src',
         './src',
@@ -396,9 +372,9 @@ describe('<Program />', () => {
     });
 
     it('supports logger and aliased paths', async () => {
-      const exitCode = await program.run(['compile', 'foo/bar']);
+      const { code } = await runProgram(program, ['compile', 'foo/bar']);
 
-      expect(exitCode).toBe(0);
+      expect(code).toBe(0);
     });
   });
 
@@ -406,19 +382,19 @@ describe('<Program />', () => {
     it('outputs version when `--version` is passed', async () => {
       program.default(new BoostCommand());
 
-      const exitCode = await program.run(['--version']);
+      const { code, output } = await runProgram(program, ['--version']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
 
     it('outputs version when `-v` is passed', async () => {
       program.default(new BoostCommand());
 
-      const exitCode = await program.run(['-v']);
+      const { code, output } = await runProgram(program, ['-v']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
   });
 
@@ -426,10 +402,10 @@ describe('<Program />', () => {
     it('errors for invalid `--locale`', async () => {
       program.default(new BuildCommand());
 
-      const exitCode = await program.run(['--locale', 'wtf']);
+      const { code, output } = await runProgram(program, ['--locale', 'wtf']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
   });
 
@@ -439,9 +415,9 @@ describe('<Program />', () => {
 
       static path = 'boost';
 
-      static options = options;
+      static options = { ...options };
 
-      static params = params;
+      static params = [...params];
 
       run() {
         return Promise.resolve();
@@ -451,60 +427,60 @@ describe('<Program />', () => {
     it('outputs help when `--help` is passed', async () => {
       program.default(new HelpCommand());
 
-      const exitCode = await program.run(['--help']);
+      const { code, output } = await runProgram(program, ['--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
 
     it('outputs help when `-h` is passed', async () => {
       program.default(new HelpCommand());
 
-      const exitCode = await program.run(['-h']);
+      const { code, output } = await runProgram(program, ['-h']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
 
     it('outputs help for a specific command', async () => {
       program.register(new BuildCommand());
       program.register(new InstallCommand());
 
-      await program.run(['build', '-h']);
+      const { output: o1 } = await runProgram(program, ['build', '-h']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o1).toMatchSnapshot();
 
-      await program.run(['install', '--help']);
+      const { output: o2 } = await runProgram(program, ['install', '--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o2).toMatchSnapshot();
     });
 
     it('outputs help for a nested sub-command', async () => {
       program.register(new ClientCommand());
 
-      await program.run(['client:build', '-h']);
+      const { output: o1 } = await runProgram(program, ['client:build', '-h']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o1).toMatchSnapshot();
 
-      await program.run(['client:install', '--help']);
+      const { output: o2 } = await runProgram(program, ['client:install', '--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o2).toMatchSnapshot();
 
-      await program.run(['client', '--help']);
+      const { output: o3 } = await runProgram(program, ['client', '--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o3).toMatchSnapshot();
     });
 
     it('outputs help for an aliased command', async () => {
       program.register(new BuildCommand());
 
-      await program.run(['build', '-h']);
+      const { output: o1 } = await runProgram(program, ['build', '-h']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o1).toMatchSnapshot();
 
-      await program.run(['compile', '--help']);
+      const { output: o2 } = await runProgram(program, ['compile', '--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(o2).toMatchSnapshot();
     });
 
     it('emits `onHelp` event', async () => {
@@ -513,7 +489,7 @@ describe('<Program />', () => {
       program.onHelp.listen(spy);
       program.register(new HelpCommand());
 
-      await program.run(['boost', '--help']);
+      await runProgram(program, ['boost', '--help']);
 
       expect(spy).toHaveBeenCalled();
     });
@@ -524,7 +500,7 @@ describe('<Program />', () => {
       program.onHelp.listen(spy);
       program.default(new HelpCommand());
 
-      await program.run(['--help']);
+      await runProgram(program, ['--help']);
 
       expect(spy).toHaveBeenCalled();
     });
@@ -534,77 +510,77 @@ describe('<Program />', () => {
     it('executes default when no args passed', async () => {
       program.default(new BuildCommand());
 
-      const exitCode = await program.run([]);
+      const { code, output } = await runProgram(program, []);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
 
     it('renders commands when no args passed', async () => {
       program.register(new BuildCommand());
       program.register(new InstallCommand());
 
-      const exitCode = await program.run([]);
+      const { code, output } = await runProgram(program, []);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
   });
 
   describe('failure', () => {
     it('renders when no commands have been registered', async () => {
-      const exitCode = await program.run(['build']);
+      const { code, output } = await runProgram(program, ['build']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
 
     it('renders when invalid command name passed', async () => {
       program.register(new BuildCommand());
       program.register(new InstallCommand());
 
-      const exitCode = await program.run(['prune']);
+      const { code, output } = await runProgram(program, ['prune']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
 
     it('renders when misspelt command name passed', async () => {
       program.register(new BuildCommand());
       program.register(new InstallCommand());
 
-      const exitCode = await program.run(['buld']);
+      const { code, output } = await runProgram(program, ['buld']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
 
     it('renders when no commands could be found', async () => {
       program.register(new BuildCommand());
       program.register(new InstallCommand());
 
-      const exitCode = await program.run(['--locale=en']);
+      const { code, output } = await runProgram(program, ['--locale=en']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
 
     it('renders when args parsing fails', async () => {
       program.default(new ComponentCommand());
 
-      const exitCode = await program.run(['--foo']);
+      const { code, output } = await runProgram(program, ['--foo']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
 
     it('renders if an error is thrown', async () => {
       program.register(new ErrorCommand());
 
-      const exitCode = await program.run(['boost']);
+      const { code, output } = await runProgram(program, ['boost']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(1);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
     });
 
     it('renders with custom exit error', async () => {
@@ -622,10 +598,10 @@ describe('<Program />', () => {
 
       program.register(new ExitCommand());
 
-      const exitCode = await program.run(['boost']);
+      const { code, output } = await runProgram(program, ['boost']);
 
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(123);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(123);
     });
 
     it('emits `onBeforeRun` and `onAfterRun` events', async () => {
@@ -637,7 +613,7 @@ describe('<Program />', () => {
 
       program.register(new ErrorCommand());
 
-      await program.run(['boost']);
+      await runProgram(program, ['boost']);
 
       expect(beforeSpy).toHaveBeenCalledWith(['boost']);
       expect(afterSpy).toHaveBeenCalledWith(new Error('Broken!'));
@@ -649,7 +625,7 @@ describe('<Program />', () => {
       program.onCommandNotFound.listen(spy);
       program.register(new BuildCommand());
 
-      await program.run(['install', 'foo', 'bar']);
+      await runProgram(program, ['install', 'foo', 'bar']);
 
       expect(spy).toHaveBeenCalledWith(['install', 'foo', 'bar'], 'install');
     });
@@ -669,7 +645,7 @@ describe('<Program />', () => {
 
       program.register(command);
 
-      await program.run(['build', '-S', './src', '--', 'foo', 'bar', '--baz', '-f']);
+      await runProgram(program, ['build', '-S', './src', '--', 'foo', 'bar', '--baz', '-f']);
 
       expect(command.rest).toEqual(['foo', 'bar', '--baz', '-f']);
     });
@@ -679,7 +655,7 @@ describe('<Program />', () => {
 
       program.register(command);
 
-      await program.run(['build', '-S', './source', '-D', './library']);
+      await runProgram(program, ['build', '-S', './source', '-D', './library']);
 
       expect(command.dst).toBe('./library');
       expect(command.help).toBe(false);
@@ -693,7 +669,7 @@ describe('<Program />', () => {
 
       program.register(command);
 
-      await program.run(['build', '-S', './source']);
+      await runProgram(program, ['build', '-S', './source']);
 
       expect(command.dst).toBe('');
       expect(command.help).toBe(false);
@@ -708,7 +684,7 @@ describe('<Program />', () => {
 
       program.default(command);
 
-      await program.run(['-F', 'foo', 'true', '123']);
+      await runProgram(program, ['-F', 'foo', 'true', '123']);
 
       expect(spy).toHaveBeenCalledWith('foo', true, 123);
     });
@@ -724,25 +700,25 @@ describe('<Program />', () => {
 
       program.register(new NoneCommand());
 
-      await program.run(['none']);
+      const { output } = await runProgram(program, ['none']);
 
-      expect(stdout.get()).toBe('');
+      expect(output).toBe('');
     });
 
     it('can return a string that writes directly to stream', async () => {
       program.register(new StringCommand());
 
-      await program.run(['string']);
+      const { output } = await runProgram(program, ['string']);
 
-      expect(stdout.get()).toBe('Hello!\n');
+      expect(output).toBe('Hello!\n');
     });
 
     it('can return an element that writes with ink', async () => {
       program.register(new ComponentCommand());
 
-      await program.run(['comp']);
+      const { output } = await runProgram(program, ['comp']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(output).toMatchSnapshot();
     });
 
     it('can run command using aliased path', async () => {
@@ -752,9 +728,9 @@ describe('<Program />', () => {
       program.onCommandFound.listen(spy);
       program.register(command);
 
-      const exitCode = await program.run(['compile', '-S', './src']);
+      const { code } = await runProgram(program, ['compile', '-S', './src']);
 
-      expect(exitCode).toBe(0);
+      expect(code).toBe(0);
       expect(spy).toHaveBeenCalledWith(['compile', '-S', './src'], 'compile', command);
     });
 
@@ -766,7 +742,7 @@ describe('<Program />', () => {
       program.onAfterRun.listen(afterSpy);
       program.register(new BoostCommand());
 
-      await program.run(['boost', 'foo', 'bar']);
+      await runProgram(program, ['boost', 'foo', 'bar']);
 
       expect(beforeSpy).toHaveBeenCalledWith(['boost', 'foo', 'bar']);
       expect(afterSpy).toHaveBeenCalled();
@@ -779,7 +755,7 @@ describe('<Program />', () => {
       program.onCommandFound.listen(spy);
       program.register(cmd);
 
-      await program.run(['boost', 'foo', 'bar']);
+      await runProgram(program, ['boost', 'foo', 'bar']);
 
       expect(spy).toHaveBeenCalledWith(['boost', 'foo', 'bar'], 'boost', cmd);
     });
@@ -792,7 +768,7 @@ describe('<Program />', () => {
       program.onAfterRender.listen(afterSpy);
       program.default(new ComponentCommand());
 
-      await program.run([]);
+      await runProgram(program, []);
 
       expect(beforeSpy).toHaveBeenCalledWith(<Box>Hello!</Box>);
       expect(afterSpy).toHaveBeenCalled();
@@ -941,7 +917,7 @@ describe('<Program />', () => {
         it('returns number option if defined', async () => {
           program.register(command);
 
-          await program.run(['cmd', '--numNoDefault', '456', '--numWithDefault=789']);
+          await runProgram(program, ['cmd', '--numNoDefault', '456', '--numWithDefault=789']);
 
           expect(command.numNoDefault).toBe(456);
           expect(command.numWithDefault).toBe(789);
@@ -950,7 +926,7 @@ describe('<Program />', () => {
         it('returns default number option if not defined', async () => {
           program.register(command);
 
-          await program.run(['cmd']);
+          await runProgram(program, ['cmd']);
 
           expect(command.numNoDefault).toBe(0);
           expect(command.numWithDefault).toBe(123);
@@ -959,7 +935,7 @@ describe('<Program />', () => {
         it('returns boolean option if defined', async () => {
           program.register(command);
 
-          await program.run(['cmd', '--flagFalse', '--no-flagTrue']);
+          await runProgram(program, ['cmd', '--flagFalse', '--no-flagTrue']);
 
           expect(command.flagFalse).toBe(true);
           expect(command.flagTrue).toBe(false);
@@ -968,7 +944,7 @@ describe('<Program />', () => {
         it('returns default boolean option if not defined', async () => {
           program.register(command);
 
-          await program.run(['cmd']);
+          await runProgram(program, ['cmd']);
 
           expect(command.flagFalse).toBe(false);
           expect(command.flagTrue).toBe(true);
@@ -977,7 +953,7 @@ describe('<Program />', () => {
         it('returns string option if defined', async () => {
           program.register(command);
 
-          await program.run(['cmd', '--strNoDefault', 'bar', '--strWithDefault=baz']);
+          await runProgram(program, ['cmd', '--strNoDefault', 'bar', '--strWithDefault=baz']);
 
           expect(command.strNoDefault).toBe('bar');
           expect(command.strWithDefault).toBe('baz');
@@ -986,7 +962,7 @@ describe('<Program />', () => {
         it('returns default string option if not defined', async () => {
           program.register(command);
 
-          await program.run(['cmd']);
+          await runProgram(program, ['cmd']);
 
           expect(command.strNoDefault).toBe('');
           expect(command.strWithDefault).toBe('foo');
@@ -995,7 +971,7 @@ describe('<Program />', () => {
         it('returns numbers option if defined', async () => {
           program.register(command);
 
-          await program.run([
+          await runProgram(program, [
             'cmd',
             '--numsNoDefault',
             '4',
@@ -1014,7 +990,7 @@ describe('<Program />', () => {
         it('returns default numbers option if not defined', async () => {
           program.register(command);
 
-          await program.run(['cmd']);
+          await runProgram(program, ['cmd']);
 
           expect(command.numsNoDefault).toEqual([]);
           expect(command.numsWithDefault).toEqual([1, 2, 3]);
@@ -1023,7 +999,7 @@ describe('<Program />', () => {
         it('returns strings option if defined', async () => {
           program.register(command);
 
-          await program.run([
+          await runProgram(program, [
             'cmd',
             '--strsNoDefault',
             '4',
@@ -1041,7 +1017,7 @@ describe('<Program />', () => {
         it('returns strings numbers option if not defined', async () => {
           program.register(command);
 
-          await program.run(['cmd']);
+          await runProgram(program, ['cmd']);
 
           expect(command.strsNoDefault).toEqual([]);
           expect(command.strsWithDefault).toEqual(['a', 'b', 'c']);
@@ -1096,12 +1072,12 @@ describe('<Program />', () => {
 
       program.register(new LogCommand());
 
-      const exitCode = await program.run(['log', '--component']);
+      const { code, output } = await runProgram(program, ['log', '--component']);
 
       expect(logSpy).toHaveBeenCalled();
       expect(errSpy).not.toHaveBeenCalled(); // Until ink supports stderr
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
 
       logSpy.mockRestore();
       errSpy.mockRestore();
@@ -1113,12 +1089,12 @@ describe('<Program />', () => {
 
       program.register(new LogCommand());
 
-      const exitCode = await program.run(['log']);
+      const { code, output } = await runProgram(program, ['log']);
 
       expect(logSpy).toHaveBeenCalled();
       expect(errSpy).not.toHaveBeenCalled(); // Until ink supports stderr
-      expect(stdout.get()).toMatchSnapshot();
-      expect(exitCode).toBe(0);
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
 
       logSpy.mockRestore();
       errSpy.mockRestore();
@@ -1140,7 +1116,7 @@ describe('<Program />', () => {
 
       program.register(command);
 
-      const exitCode = await program.run([
+      const { code } = await runProgram(program, [
         '/nvm/12.16.1/bin/node',
         '/boost/bin.js',
         'build',
@@ -1148,7 +1124,7 @@ describe('<Program />', () => {
         './src',
       ]);
 
-      expect(exitCode).toBe(0);
+      expect(code).toBe(0);
     });
 
     it('can modify argv before parsing', async () => {
@@ -1161,7 +1137,7 @@ describe('<Program />', () => {
         return next(argv);
       });
 
-      await program.run(['--opt', 'value']);
+      await runProgram(program, ['--opt', 'value']);
 
       expect(command.unknown).toEqual({ opt: 'value' });
       expect(command.rest).toEqual(['foo', 'bar']);
@@ -1177,7 +1153,7 @@ describe('<Program />', () => {
           .then(next),
       );
 
-      await program.run(['--opt', 'value']);
+      await runProgram(program, ['--opt', 'value']);
 
       expect(command.unknown).toEqual({ opt: 'new value' });
     });
@@ -1195,7 +1171,7 @@ describe('<Program />', () => {
         return args;
       });
 
-      await program.run(['--opt', 'value']);
+      await runProgram(program, ['--opt', 'value']);
 
       expect(command.unknown).toEqual({ opt: 'value', key: 'value' });
       expect(command[INTERNAL_OPTIONS]).toEqual({
@@ -1218,9 +1194,9 @@ describe('<Program />', () => {
       program.register('baz', { category: 'global', description: 'Description' }, () => {});
       program.register('qux', { description: 'Description' }, () => {});
 
-      await program.run(['--help']);
+      const { output } = await runProgram(program, ['--help']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(output).toMatchSnapshot();
     });
   });
 
@@ -1246,8 +1222,8 @@ describe('<Program />', () => {
 
       static path = 'prog-error';
 
-      run() {
-        return this.runProgram(['prog-error-inner']);
+      async run() {
+        await this.runProgram(['prog-error-inner']);
       }
     }
 
@@ -1266,15 +1242,15 @@ describe('<Program />', () => {
 
       program.register(new NestedProgramCommand()).register(new ClientCommand());
 
-      await program.run(['prog']);
+      const { output } = await runProgram(program, ['prog']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(output).toMatchSnapshot();
     });
 
-    it('errors if no program instance', async () => {
+    it('errors if no program instance', () => {
       const command = new NestedProgramCommand();
 
-      await expect(command.runProgram(['foo'])).rejects.toThrow(
+      expect(() => command.runProgram(['foo'])).toThrow(
         'No program found. Must be ran within the context of a parent program.',
       );
     });
@@ -1282,9 +1258,9 @@ describe('<Program />', () => {
     it('bubbles up errors', async () => {
       program.register(new NestedErrorCommand()).register(new NestedErrorInnerCommand());
 
-      await program.run(['prog-error']);
+      const { output } = await runProgram(program, ['prog-error']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(output).toMatchSnapshot();
     });
   });
 
@@ -1329,9 +1305,9 @@ describe('<Program />', () => {
 
       program.register(new SyncTaskCommand());
 
-      await program.run(['task']);
+      const { output } = await runProgram(program, ['task']);
 
-      expect(stdout.get()).toMatchSnapshot();
+      expect(output).toMatchSnapshot();
     });
 
     it('runs an async task correctly', async () => {
