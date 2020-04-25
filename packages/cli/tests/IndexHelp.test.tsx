@@ -1,6 +1,6 @@
 import React from 'react';
 import { IndexHelp, Help } from '../src';
-import { renderToString } from './helpers';
+import { renderComponent } from '../src/testing';
 import { commands, options, params } from './__mocks__/args';
 
 jest.mock('term-size');
@@ -18,16 +18,16 @@ describe('<IndexHelp />', () => {
   };
 
   it('renders with base props', async () => {
-    expect(await renderToString(<IndexHelp {...props} />)).toMatchSnapshot();
+    expect(await renderComponent(<IndexHelp {...props} />)).toMatchSnapshot();
   });
 
   it('renders a banner', async () => {
-    expect(await renderToString(<IndexHelp {...props} banner={banner} />)).toMatchSnapshot();
+    expect(await renderComponent(<IndexHelp {...props} banner={banner} />)).toMatchSnapshot();
   });
 
   it('renders a header', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <IndexHelp {...props} header="For more information, see https://github.com/milesj/boost" />,
       ),
     ).toMatchSnapshot();
@@ -35,13 +35,13 @@ describe('<IndexHelp />', () => {
 
   it('renders a footer', async () => {
     expect(
-      await renderToString(<IndexHelp {...props} footer="Powered by Boost CLI v1.2.3" />),
+      await renderComponent(<IndexHelp {...props} footer="Powered by Boost CLI v1.2.3" />),
     ).toMatchSnapshot();
   });
 
   it('renders children', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <IndexHelp {...props}>
           <Help
             header="test"
@@ -60,7 +60,7 @@ describe('<IndexHelp />', () => {
 
   it('renders with everything', async () => {
     expect(
-      await renderToString(
+      await renderComponent(
         <IndexHelp
           {...props}
           banner={banner}

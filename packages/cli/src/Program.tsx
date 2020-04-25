@@ -337,7 +337,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.onBeforeRender.emit([result]);
       this.rendering = true;
 
-      await render(
+      const output = await render(
         <Wrapper
           errBuffer={this.errBuffer}
           exit={this.exit}
@@ -354,7 +354,12 @@ export default class Program extends CommandManager<ProgramOptions> {
           stdin,
           stdout,
         },
-      ).waitUntilExit();
+      );
+
+      // This never resolves while testing
+      if (!env('CLI_TEST_ONLY')) {
+        await output.waitUntilExit();
+      }
 
       this.rendering = false;
       this.onAfterRender.emit([]);
@@ -377,7 +382,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     // Mostly for testing, but useful for other things
     // istanbul ignore next
-    if (env('CLI_FAIL_HARD')) {
+    if (env('CLI_TEST_FAIL_HARD')) {
       throw error;
     }
 

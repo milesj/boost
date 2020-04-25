@@ -29,6 +29,7 @@ import {
   GlobalOptions,
   RunResult,
   TaskContext,
+  ExitCode,
 } from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
@@ -251,8 +252,8 @@ export default abstract class Command<
   /**
    * Run the program within itself, by passing a custom command and argv list.
    */
-  async runProgram(argv: Argv): Promise<void> {
-    await this.getProgram().run(argv, true);
+  runProgram(argv: Argv): Promise<ExitCode> {
+    return this.getProgram().run(argv, true);
   }
 
   /**

@@ -1,27 +1,27 @@
 import React from 'react';
 import { Header } from '../src';
-import { renderToString } from './helpers';
+import { renderComponent } from '../src/testing';
 
 jest.mock('term-size');
 
 describe('<Header />', () => {
   it('renders `default`', async () => {
-    expect(await renderToString(<Header label="Title" type="default" />)).toMatchSnapshot();
+    expect(await renderComponent(<Header label="Title" type="default" />)).toMatchSnapshot();
   });
 
   it('renders `muted`', async () => {
-    expect(await renderToString(<Header label="Title" type="muted" />)).toMatchSnapshot();
+    expect(await renderComponent(<Header label="Title" type="muted" />)).toMatchSnapshot();
   });
 
   it('renders `failure`', async () => {
-    expect(await renderToString(<Header label="Title" type="failure" />)).toMatchSnapshot();
+    expect(await renderComponent(<Header label="Title" type="failure" />)).toMatchSnapshot();
   });
 
   it('renders `success`', async () => {
-    expect(await renderToString(<Header label="Title" type="success" />)).toMatchSnapshot();
+    expect(await renderComponent(<Header label="Title" type="success" />)).toMatchSnapshot();
   });
 
   it('renders `warning`', async () => {
-    expect(await renderToString(<Header label="Title" type="warning" />)).toMatchSnapshot();
+    expect(await renderComponent(<Header label="Title" type="warning" />)).toMatchSnapshot();
   });
 });

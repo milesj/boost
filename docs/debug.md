@@ -95,8 +95,9 @@ The following [Jest](https://github.com/facebook/jest) utilities are available i
 
 ### `mockDebugger`
 
-The `mockDebugger` function returns a Jest spy that matches the return value shape of
-`createDebugger`.
+> mockDebugger(): Debugger
+
+Returns a Jest spy that matches the return value shape of `createDebugger`.
 
 ```ts
 import { mockDebugger } from '@boost/debug/lib/testing';

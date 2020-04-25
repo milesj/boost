@@ -94,3 +94,26 @@ log.debug('Something is broken!');
 ```
 
 > Messages that are logged while silenced are _lost_ and are _not_ buffered.
+
+## Test Utilities
+
+The following [Jest](https://github.com/facebook/jest) utilities are available in the
+`@boost/log/lib/testing` module.
+
+### `mockLogger`
+
+> mockLogger(): Logger
+
+Returns a Jest spy that matches the return value shape of `createLogger`.
+
+```ts
+import { mockLogger } from '@boost/log/lib/testing';
+
+it('calls the logger', () => {
+  const log = mockLogger();
+
+  log('Something has happened');
+
+  expect(log).toHaveBeenCalled();
+});
+```
