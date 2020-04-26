@@ -1,8 +1,11 @@
 import fs from 'fs';
+import path from 'path';
 import execa from 'execa';
+import glob from 'fast-glob';
 import CrashReporter from '../src/CrashReporter';
 
 jest.mock('execa');
+jest.mock('fast-glob');
 
 describe('CrashReporter', () => {
   let reporter: CrashReporter;
@@ -116,12 +119,26 @@ Label:
   });
 
   it('reports package versions', () => {
+    jest
+      .spyOn(glob, 'sync')
+      .mockImplementationOnce(() => [
+        path.join(process.cwd(), 'node_modules/path-exists'),
+        path.join(process.cwd(), 'node_modules/path-is-absolute'),
+      ]);
+
     reporter.reportPackageVersions('path-*');
 
     expect(reporter.contents).toMatchSnapshot();
   });
 
   it('reports package versions (scoped)', () => {
+    jest
+      .spyOn(glob, 'sync')
+      .mockImplementationOnce(() => [
+        path.join(process.cwd(), 'node_modules/@beemo/core'),
+        path.join(process.cwd(), 'node_modules/@beemo/cli'),
+      ]);
+
     reporter.reportPackageVersions('@beemo/*', 'Beemo');
 
     expect(reporter.contents).toMatchSnapshot();
