@@ -1,5 +1,5 @@
 module.exports = {
-  coveragePathIgnorePatterns: ['cli/src/Wrapper.tsx'],
+  coveragePathIgnorePatterns: ['testing.ts', 'cli/src/Wrapper.tsx'],
   coverageThreshold: {
     global: {
       branches: 85,

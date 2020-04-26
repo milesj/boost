@@ -1066,6 +1066,11 @@ describe('<Program />', () => {
       }
     }
 
+    beforeEach(() => {
+      stdout.append = true;
+      stderr.append = true;
+    });
+
     it('handles logging when rendering a component', async () => {
       const logSpy = jest.spyOn(stdout, 'write');
       const errSpy = jest.spyOn(stderr, 'write');
@@ -1075,7 +1080,7 @@ describe('<Program />', () => {
       const { code, output } = await runProgram(program, ['log', '--component']);
 
       expect(logSpy).toHaveBeenCalled();
-      expect(errSpy).not.toHaveBeenCalled(); // Until ink supports stderr
+      expect(errSpy).toHaveBeenCalled();
       expect(output).toMatchSnapshot();
       expect(code).toBe(0);
 
@@ -1092,7 +1097,7 @@ describe('<Program />', () => {
       const { code, output } = await runProgram(program, ['log']);
 
       expect(logSpy).toHaveBeenCalled();
-      expect(errSpy).not.toHaveBeenCalled(); // Until ink supports stderr
+      expect(errSpy).toHaveBeenCalled();
       expect(output).toMatchSnapshot();
       expect(code).toBe(0);
 

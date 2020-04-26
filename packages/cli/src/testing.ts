@@ -125,9 +125,16 @@ export async function runProgram(
   program: Program,
   argv: string[],
 ): Promise<{ code: ExitCode; output: string; outputStripped: string }> {
+  if (!(program.streams.stderr instanceof MockWriteStream)) {
+    program.streams.stderr = (new MockWriteStream() as unknown) as NodeJS.WriteStream;
+  }
+
   if (!(program.streams.stdout instanceof MockWriteStream)) {
-    // @ts-ignore Allow override
-    program.streams = mockStreams();
+    program.streams.stdout = (new MockWriteStream() as unknown) as NodeJS.WriteStream;
+  }
+
+  if (!(program.streams.stdin instanceof MockReadStream)) {
+    program.streams.stdin = (new MockReadStream() as unknown) as NodeJS.ReadStream;
   }
 
   // Ink async rendering never resolves while testing,
@@ -139,7 +146,9 @@ export async function runProgram(
 
   env('CLI_TEST_ONLY', null);
 
-  const output = ((program.streams.stdout as unknown) as MockWriteStream).get();
+  const output =
+    ((program.streams.stdout as unknown) as MockWriteStream).get() +
+    ((program.streams.stderr as unknown) as MockWriteStream).get();
 
   return {
     code,

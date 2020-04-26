@@ -347,13 +347,25 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 `;
 
 exports[`<Program /> logging handles logging when rendering a component 1`] = `
-"Component log
+"Log
+[35mtrace[39m Trace
+[36minfo[39m Info
+Returned from component!Component log
+[90mdebug[39m Debug
+[33mwarn[39m Warn
+[31merror[39m Error
 [31merror[39m Component error
-Returned from component!"
+"
 `;
 
 exports[`<Program /> logging handles logging when returning a string 1`] = `
-"Returned from command!
+"Log
+[35mtrace[39m Trace
+[36minfo[39m Info
+Returned from command!
+[90mdebug[39m Debug
+[33mwarn[39m Warn
+[31merror[39m Error
 "
 `;
 
@@ -398,8 +410,8 @@ exports[`<Program /> success can return an element that writes with ink 1`] = `"
 
 exports[`<Program /> tasks runs a sync task correctly 1`] = `
 "Hi
-[31merror[39m Bye
 15
+[31merror[39m Bye
 "
 `;
 

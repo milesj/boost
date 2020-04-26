@@ -103,13 +103,20 @@ export default class Program extends CommandManager<ProgramOptions> {
     this.outBuffer = new LogBuffer('stdout', this.streams.stdout);
 
     this.logger = createLogger({
-      // Use outBuffer until ink supports stderr
-      stderr: this.outBuffer,
+      stderr: this.errBuffer,
       stdout: this.outBuffer,
     });
 
     this.onAfterRegister.listen(this.handleAfterRegister);
     this.onBeforeRegister.listen(this.handleBeforeRegister);
+
+    // istanbul ignore next
+    // if (process.env.NODE_ENV !== 'test') {
+    //   process.on('SIGINT', () => {
+    //     this.errBuffer.unwrap();
+    //     this.outBuffer.unwrap();
+    //   });
+    // }
   }
 
   blueprint({ string }: Predicates) {
@@ -338,13 +345,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.rendering = true;
 
       const output = await render(
-        <Wrapper
-          errBuffer={this.errBuffer}
-          exit={this.exit}
-          logger={this.logger}
-          outBuffer={this.outBuffer}
-          program={this.options}
-        >
+        <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
           {result || null}
         </Wrapper>,
         {
@@ -357,6 +358,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       );
 
       // This never resolves while testing
+      // istanbul ignore next
       if (!env('CLI_TEST_ONLY')) {
         await output.waitUntilExit();
       }

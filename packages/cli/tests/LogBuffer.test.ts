@@ -1,11 +1,5 @@
 import LogBuffer from '../src/LogBuffer';
 
-function sleep(delay: number = 250) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-}
-
 describe('LogBuffer', () => {
   let buffer: LogBuffer;
 
@@ -29,35 +23,15 @@ describe('LogBuffer', () => {
     expect(console.info).toEqual(original);
   });
 
-  it('calls listener when logs are flushed', async () => {
-    const spy = jest.fn();
-
-    buffer.on(spy);
-    buffer.wrap();
-    buffer.write('foo');
-    buffer.write('bar');
-    buffer.write('baz');
-
-    await sleep();
-
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(['foo', 'bar', 'baz']);
-    expect(buffer.logs).toEqual([]);
-  });
-
-  it('calls native stream when flushed and no listener defined', async () => {
+  it('writes to native stream when flushed', () => {
     const spy = jest.fn();
     const logSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
 
-    buffer.on(spy);
-    buffer.off(); // Test this
     buffer.wrap();
-
     buffer.write('foo');
     buffer.write('bar');
     buffer.write('baz');
-
-    await sleep();
+    buffer.unwrap();
 
     expect(spy).toHaveBeenCalledTimes(0);
     expect(logSpy).toHaveBeenCalledTimes(3);
@@ -69,21 +43,17 @@ describe('LogBuffer', () => {
     logSpy.mockRestore();
   });
 
-  it('calls native stream when flushed and no listener defined (stderr)', async () => {
+  it('writes to native stream when flushed (stderr)', () => {
     buffer = new LogBuffer('stderr', process.stderr);
 
     const spy = jest.fn();
     const logSpy = jest.spyOn(process.stderr, 'write').mockImplementation();
 
-    buffer.on(spy);
-    buffer.off(); // Test this
     buffer.wrap();
-
     buffer.write('foo');
     buffer.write('bar');
     buffer.write('baz');
-
-    await sleep();
+    buffer.unwrap();
 
     expect(spy).toHaveBeenCalledTimes(0);
     expect(logSpy).toHaveBeenCalledTimes(3);
@@ -110,6 +80,18 @@ describe('LogBuffer', () => {
 
     expect(spy).toHaveBeenCalledWith('Yup\n');
 
+    spy.mockRestore();
+  });
+
+  it('logs a message if wrapped', () => {
+    const spy = jest.spyOn(process.stdout, 'write').mockImplementation();
+
+    buffer.wrap();
+    buffer.write('Yup\n');
+
+    expect(buffer.logs).toEqual(['Yup']);
+
+    buffer.unwrap();
     spy.mockRestore();
   });
 });
