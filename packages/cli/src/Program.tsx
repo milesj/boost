@@ -111,12 +111,12 @@ export default class Program extends CommandManager<ProgramOptions> {
     this.onBeforeRegister.listen(this.handleBeforeRegister);
 
     // istanbul ignore next
-    if (process.env.NODE_ENV !== 'test') {
-      process.on('SIGINT', () => {
-        this.errBuffer.unwrap();
-        this.outBuffer.unwrap();
-      });
-    }
+    // if (process.env.NODE_ENV !== 'test') {
+    //   process.on('SIGINT', () => {
+    //     this.errBuffer.unwrap();
+    //     this.outBuffer.unwrap();
+    //   });
+    // }
   }
 
   blueprint({ string }: Predicates) {
