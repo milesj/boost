@@ -100,9 +100,10 @@ The following functions can be used to operate on ANSI-aware strings.
 
 #### `annotate`
 
-The `annotate(text: string, annotation: string)` function can be used to wrap a piece of text with a
-visual annotation _(iTerm only)_. If a terminal does not support annotations, it will pass the text
-through.
+> annotate(text: string, annotation: string): string
+
+Can be used to wrap a piece of text with a visual annotation _(iTerm only)_. If a terminal does not
+support annotations, it will pass the text through.
 
 ```ts
 import { annotate } from '@boost/terminal';
@@ -111,6 +112,8 @@ const text = annotate('fileName.js', fullFilePath);
 ```
 
 #### `calculateWidth`
+
+> calculateWidth(text: string): number
 
 Calculate and return the visual width of a string (number of terminal columns required) using
 `calculateWidth(text: string)`. Based on [string-width](https://www.npmjs.com/package/string-width).
@@ -123,7 +126,9 @@ calculateWidth('古'); // 2
 
 #### `hasAnsi`
 
-The `hasAnsi(text: string)` function returns true if the string contains ANSI escape codes. Based on
+> hasAnsi(text: string): boolean
+
+Returns true if the string contains ANSI escape codes. Based on
 [ansi-regex](https://www.npmjs.com/package/ansi-regex).
 
 ```ts
@@ -134,8 +139,10 @@ hasAnsi('\u001B[4mTest\u001B[0m'); // true
 
 #### `link`
 
-The `link(text: string, url: string)` function can be used to wrap a piece of text in an ANSI escape
-code hyperlink. If a terminal does not support hyperlinks, it will pass the text through.
+> link(text: string, url: string): string;
+
+Can be used to wrap a piece of text in an ANSI escape code hyperlink. If a terminal does not support
+hyperlinks, it will pass the text through.
 
 ```ts
 import { link } from '@boost/terminal';
@@ -145,8 +152,9 @@ const text = link('Read the manual', 'https://milesj.gitbook.io/boost');
 
 #### `sliceAnsi`
 
-Slice a string while preserving ANSI escape codes with
-`sliceAnsi(text: string, start: number, end?: number)`. Based on
+> sliceAnsi(text: string, start: number, end?: number): string
+
+Slice a string while preserving ANSI escape codes. Based on
 [slice-ansi](https://www.npmjs.com/package/slice-ansi).
 
 ```ts
@@ -157,7 +165,9 @@ const text = sliceAnsi(aStringThatMayContainAnsi, 15, 25);
 
 #### `stripAnsi`
 
-Strip all ANSI escape codes from the provided string with `stripAnsi(text: string)`. Based on
+> stripAnsi(text: string): string
+
+Strip all ANSI escape codes from the provided string. Based on
 [strip-ansi](https://www.npmjs.com/package/strip-ansi).
 
 ```ts
@@ -168,9 +178,10 @@ const text = stripAnsi(aStringThatContainsAnsi);
 
 #### `truncate`
 
+> truncate(text: string, width: number, options?: TruncateOptions): string
+
 Truncate a string to a desired terminal width while preserving ANSI escape codes, Unicode surrogate
-pairs, and fullwidth characters, using
-`truncate(text: string, width: number, options?: TruncateOptions)`. Based on
+pairs, and fullwidth characters. Based on
 [cli-truncate](https://www.npmjs.com/package/cli-truncate).
 
 ```ts
@@ -181,8 +192,9 @@ const text = truncate(aStringThatMayContainAnsi, 10, { position: 'middle' });
 
 #### `wrapAnsi`
 
-Wrap a string that contains ANSI escape codes to a desired terminal width using
-`wrapAnsi(text: string, width: number, options?: WrapOptions)`. Based on
+> wrapAnsi(text: string, width: number, options?: WrapOptions): string
+
+Wrap a string that contains ANSI escape codes to a desired terminal width. Based on
 [wrap-ansi](https://www.npmjs.com/package/wrap-ansi).
 
 ```ts

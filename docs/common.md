@@ -18,9 +18,11 @@ yarn add @boost/common
 
 ### `createBlueprint`
 
-The `createBlueprint<T>(factory: BlueprintFactory<T>)` function should be used to generate a
-blueprint object for use within [optimal](https://github.com/milesj/optimal) checks. All supported
-optimal predicates are passed as an object to the factory.
+> createBlueprint\<T>(factory: BlueprintFactory\<T>): Blueprint<T>
+
+Can be used to generate a blueprint object for use within
+[optimal](https://github.com/milesj/optimal) checks. All supported optimal predicates are passed as
+an object to the factory.
 
 ```ts
 import { optimal, createBlueprint } from '@boost/common';
@@ -35,10 +37,11 @@ const data = optimal({}, blueprint);
 
 ### `formatMs`
 
-The `formatMs(time: number, options?: Options)` function can be used to format a UNIX timestamp in
-milliseconds into a shorthand human readable format. Wraps the
-[pretty-ms](https://www.npmjs.com/package/pretty-ms) package to handle infinite numbers, zeros, and
-more.
+> formatMs(time: number, options?: Options): string
+
+Can be used to format a UNIX timestamp in milliseconds into a shorthand human readable format. Wraps
+the [pretty-ms](https://www.npmjs.com/package/pretty-ms) package to handle infinite numbers, zeros,
+and more.
 
 ```ts
 import { formatMs } from '@boost/common';
@@ -48,9 +51,10 @@ formatMs(1337000000); // 15d 11h 23m 20s
 
 ### `instanceOf`
 
-The `instanceOf(object: unknown, declaration: Constructor, loose?: boolean)` function performs a
-loose instance check by comparing class names up the prototype chain if `instanceof` initially
-fails. To disable this loose check, pass `false` as the 3rd argument.
+> instanceOf(object: unknown, declaration: Constructor, loose?: boolean): boolean
+
+Performs a loose instance check by comparing class names up the prototype chain if `instanceof`
+initially fails. To disable this loose check, pass `false` as the 3rd argument.
 
 ```ts
 import { instanceOf } from '@boost/common';
@@ -72,8 +76,10 @@ instanceOf<ParseError>(error, Error);
 
 ### `isEmpty`
 
-The `isEmpty(value: unknown)` function returns `true` if an object has no properties, an array has
-no items, or the value is falsy, otherwise, it returns `false`.
+> isEmpty(value: unknown): boolean
+
+Returns `true` if an object has no properties, an array has no items, or the value is falsy,
+otherwise, it returns `false`.
 
 ```ts
 import { isEmpty } from '@boost/common';
@@ -87,7 +93,9 @@ isEmpty(['Boost']); // false
 
 ### `isObject`
 
-The `isObject(value: unknown)` function returns `true` if the value is a plain object.
+> isObject\<T>(value: unknown): value is T
+
+Returns `true` if the value is a plain object.
 
 ```ts
 import { isObject } from '@boost/common';
@@ -110,9 +118,11 @@ if (isObject<Person>(person)) {
 
 ### `parseFile`
 
-The `parseFile(path: string)` function can be used to *sync*hronously parse and return an object for
-the following file types & extensions: `js`, `jsx`, `json`, `json5`, `yaml`, `yml`. The function
-requires an absolute file path, and any unsupported file type will throw an error.
+> parseFile\<T>(path: string): T
+
+Can be used to *sync*hronously parse and return an object for the following file types & extensions:
+`js`, `jsx`, `json`, `json5`, `yaml`, `yml`. The function requires an absolute file path, and any
+unsupported file type will throw an error.
 
 ```ts
 import { parseFile } from '@boost/common';
@@ -122,9 +132,11 @@ const data: ReturnShape = parseFile('/absolute/file/path');
 
 ### `requireModule`
 
-The `requireModule(path: string)` function works in a similar fashion to the native NodeJS
-`require()`, but also handles files built with Babel or TypeScript, by properly returning the
-`default` export, and also allowing the expected type to be defined.
+> requireModule\<T>(path: string): T
+
+Works in a similar fashion to the native NodeJS `require()`, but also handles files built with Babel
+or TypeScript, by properly returning the `default` export, and also allowing the expected type to be
+defined.
 
 ```ts
 import { requireModule } from '@boost/common';
@@ -134,8 +146,10 @@ const defaultImport: ReturnShape = requireModule('../../some/module');
 
 ### `toArray`
 
-The `toArray(value: unknown)` function does exactly as its name states, it converts a non-array to
-an array.
+> toArray\<T>(value?: T | T[]): T[]
+
+Converts a non-array to an array. If the provided value is falsy, an empty array is returned. If the
+provided value is truthy and a non-array, an array of 1 item is returned.
 
 ```ts
 import { toArray } from '@boost/common';

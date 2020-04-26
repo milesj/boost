@@ -62,6 +62,38 @@ value.
 const output = await pipeline.run();
 ```
 
+### Contexts
+
+A `Context` is merely a plain class that provides contextual information to all work units, and is
+passed as the 1st argument when executing. It's highly encouraged to create custom contexts with
+typed properties, helper methods, and more.
+
+```ts
+import { Context } from '@boost/pipeline';
+
+export default class ProcessContext extends Context {
+  readonly cwd: string;
+
+  readonly root: string;
+
+  constructor(root: string, cwd?: string) {
+    this.cwd = cwd || process.cwd();
+    this.root = root;
+  }
+}
+```
+
+> A good example of context usage can be found in the
+> [Beemo project](https://github.com/beemojs/beemo/tree/master/packages/core/src/contexts).
+
+A unique feature of contexts is the ability to deep clone itself using `Context#clone`. This method
+is extremely useful when a context of the same shape must be passed to another pipeline without
+collisions or mutations occurring.
+
+```ts
+const newContext = context.clone();
+```
+
 ### Input & Output Types
 
 The input type is inferred from the 2nd constructor argument, while the output type defaults to the
@@ -128,38 +160,6 @@ if (condition) {
     .pipe('Then finish', finishAction)
     .run()
 }
-```
-
-## Contexts
-
-A `Context` is merely a plain class that provides contextual information to all work units, and is
-passed as the 1st argument when executing. It's highly encouraged to create custom contexts with
-typed properties, helper methods, and more.
-
-```ts
-import { Context } from '@boost/pipeline';
-
-export default class ProcessContext extends Context {
-  readonly cwd: string;
-
-  readonly root: string;
-
-  constructor(root: string, cwd?: string) {
-    this.cwd = cwd || process.cwd();
-    this.root = root;
-  }
-}
-```
-
-> A good example of context usage can be found in the
-> [Beemo project](https://github.com/beemojs/beemo/tree/master/packages/core/src/contexts).
-
-A unique feature of contexts is the ability to deep clone itself using `Context#clone`. This method
-is extremely useful when a context of the same shape must be passed to another pipeline without
-collisions or mutations occurring.
-
-```ts
-const newContext = context.clone();
 ```
 
 ## Work Types
