@@ -178,6 +178,7 @@ export default class CrashReporter {
       `${Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100} MB`,
     );
 
+    // istanbul ignore next
     if (process.platform !== 'win32') {
       this.add('Group ID', process.getgid());
       this.add('User ID', process.getuid());
@@ -193,12 +194,13 @@ export default class CrashReporter {
   reportPackageVersions(patterns: string | string[], title: string = 'Packages'): this {
     this.addSection(title);
 
+    const map = new Map<string, string>();
+
     glob
       .sync(
-        toArray(patterns).map(pattern => path.join('node_modules', pattern)),
+        toArray(patterns).map(pattern => path.join('./node_modules', pattern)),
         {
           absolute: true,
-          deep: 1,
           onlyDirectories: true,
           onlyFiles: false,
         },
@@ -206,8 +208,12 @@ export default class CrashReporter {
       .forEach(pkgPath => {
         const pkg = requireModule<PackageStructure>(path.join(pkgPath, 'package.json'));
 
-        this.add(pkg.name, pkg.version);
+        map.set(pkg.name, pkg.version);
       });
+
+    map.forEach((version, name) => {
+      this.add(name, version);
+    });
 
     return this;
   }
