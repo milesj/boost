@@ -109,6 +109,14 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     this.onAfterRegister.listen(this.handleAfterRegister);
     this.onBeforeRegister.listen(this.handleBeforeRegister);
+
+    // istanbul ignore next
+    if (process.env.NODE_ENV !== 'test') {
+      process.on('SIGINT', () => {
+        this.errBuffer.unwrap();
+        this.outBuffer.unwrap();
+      });
+    }
   }
 
   blueprint({ string }: Predicates) {
@@ -350,6 +358,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       );
 
       // This never resolves while testing
+      // istanbul ignore next
       if (!env('CLI_TEST_ONLY')) {
         await output.waitUntilExit();
       }

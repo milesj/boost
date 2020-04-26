@@ -84,9 +84,14 @@ describe('LogBuffer', () => {
   });
 
   it('logs a message if wrapped', () => {
+    const spy = jest.spyOn(process.stdout, 'write').mockImplementation();
+
     buffer.wrap();
     buffer.write('Yup\n');
 
     expect(buffer.logs).toEqual(['Yup']);
+
+    buffer.unwrap();
+    spy.mockRestore();
   });
 });
