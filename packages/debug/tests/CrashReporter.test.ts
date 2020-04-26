@@ -114,4 +114,16 @@ Label:
     expect(reporter.contents).toContain('OS');
     expect(reporter.contents).toContain('CPUs');
   });
+
+  it('reports package versions', () => {
+    reporter.reportPackageVersions('path-*');
+
+    expect(reporter.contents).toMatchSnapshot();
+  });
+
+  it('reports package versions (scoped)', () => {
+    reporter.reportPackageVersions('@beemo/*', 'Beemo');
+
+    expect(reporter.contents).toMatchSnapshot();
+  });
 });

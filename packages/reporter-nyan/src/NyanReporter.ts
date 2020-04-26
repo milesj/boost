@@ -65,6 +65,7 @@ export default class NyanReporter extends Reporter {
   };
 
   applyColor(text: string): string {
+    // istanbul ignore next
     if (!this.hasColorSupport()) {
       return text;
     }

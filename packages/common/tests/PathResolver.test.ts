@@ -38,6 +38,13 @@ describe('PathResolver', () => {
     resolver.lookupFilePath('bar.js'); // Doesnt exist at this cwd
     resolver.lookupNodeModule('@boost/common'); // Exists
 
+    expect(resolver.getLookupPaths()).toEqual([
+      new Path(cwd, 'qux.js').path(),
+      '@boost/unknown',
+      new Path(process.cwd(), 'bar.js').path(),
+      '@boost/common',
+    ]);
+
     expect(resolver.resolvePath()).toEqual(new Path(require.resolve('@boost/common')));
   });
 

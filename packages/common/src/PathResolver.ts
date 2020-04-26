@@ -73,10 +73,6 @@ export default class PathResolver {
         } catch (error) {
           return false;
         }
-
-        // This should never happen. How did you get here?
-      } else {
-        return false;
       }
 
       return true;

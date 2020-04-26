@@ -1,3 +1,4 @@
+// TODO: Remove in v2
 export default class SignalError extends Error {
   signal: NodeJS.Signals;
 
