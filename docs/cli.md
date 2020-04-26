@@ -645,6 +645,11 @@ export default class ConfigCommand extends Command {
 }
 ```
 
+While React is rendering, all logs, either through the CLI [logger](#logging) or the native
+`console`, will be buffered until the rendering process is complete. Once complete, all buffered
+logs will be written to the terminal. This is necessary so that logs do not interrupt or tear the
+rendering loop.
+
 ### Shorthand Commands
 
 Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
@@ -826,8 +831,8 @@ function CustomComponent() {
 }
 ```
 
-> It's highly encouraged to use this logging layer instead of the native console, so that logged
-> messages do not interrupt any React rendering process!
+> It's highly encouraged to use the logger instead of the native console, so that logged messages do
+> not interrupt the React rendering process, and write to the configured streams!
 
 ### Themes
 
