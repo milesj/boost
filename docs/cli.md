@@ -844,6 +844,7 @@ operate properly. Because of this, not all Ink components can be used, except fo
 
 - [Box](https://github.com/vadimdemedes/ink#box)
 - [Color](https://github.com/vadimdemedes/ink#color)
+- [Static](https://github.com/vadimdemedes/ink#static)
 - [Text](https://github.com/vadimdemedes/ink#text)
 
 For convenience, these components can be imported from the Boost CLI package. This is preferred so

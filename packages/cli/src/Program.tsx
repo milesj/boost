@@ -103,8 +103,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     this.outBuffer = new LogBuffer('stdout', this.streams.stdout);
 
     this.logger = createLogger({
-      // Use outBuffer until ink supports stderr
-      stderr: this.outBuffer,
+      stderr: this.errBuffer,
       stdout: this.outBuffer,
     });
 
@@ -338,13 +337,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.rendering = true;
 
       const output = await render(
-        <Wrapper
-          errBuffer={this.errBuffer}
-          exit={this.exit}
-          logger={this.logger}
-          outBuffer={this.outBuffer}
-          program={this.options}
-        >
+        <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
           {result || null}
         </Wrapper>,
         {
