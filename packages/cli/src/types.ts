@@ -46,6 +46,7 @@ export {
   PrimitiveType,
   ScalarType,
   SingleOption,
+  UnknownOptionMap,
   ValueType,
 };
 
@@ -157,6 +158,9 @@ export type TaskContext<O extends GlobalOptions = GlobalOptions> = O & {
   log: Logger;
   rest: string[];
   unknown: UnknownOptionMap;
+  // Methods
+  runProgram: (argv: Argv) => Promise<ExitCode>;
+  runTask: <A extends unknown[], R>(task: (this: TaskContext<O>, ...args: A) => R, ...args: A) => R;
 };
 
 // MIDDLEWARE

@@ -408,6 +408,14 @@ exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] =
 
 exports[`<Program /> success can return an element that writes with ink 1`] = `"Hello!"`;
 
+exports[`<Program /> tasks can run a task within a task 1`] = `
+"Test
+Hi
+2
+[31merror[39m Bye
+"
+`;
+
 exports[`<Program /> tasks runs a sync task correctly 1`] = `
 "Hi
 15

@@ -252,15 +252,16 @@ export default abstract class Command<
   /**
    * Run the program within itself, by passing a custom command and argv list.
    */
-  runProgram(argv: Argv): Promise<ExitCode> {
-    return this.getProgram().run(argv, true);
-  }
+  runProgram = (argv: Argv): Promise<ExitCode> => this.getProgram().run(argv, true);
 
   /**
    * Run a task (function) with the defined arguments and
    * the current command instance bound to the task's context.
    */
-  runTask<A extends unknown[], R>(task: (this: TaskContext<O>, ...args: A) => R, ...args: A): R {
+  runTask = <A extends unknown[], R>(
+    task: (this: TaskContext<O>, ...args: A) => R,
+    ...args: A
+  ): R => {
     // We dont want tasks to have full access to the command
     // and its methods, so recreate a similar but smaller context.
     const context: TaskContext<O> = {
@@ -269,10 +270,12 @@ export default abstract class Command<
       rest: this.rest,
       unknown: this.unknown,
       ...this[INTERNAL_OPTIONS]!,
+      runProgram: this.runProgram,
+      runTask: this.runTask,
     };
 
     return task.apply(context, args);
-  }
+  };
 
   /**
    * Executed when the command is being ran.

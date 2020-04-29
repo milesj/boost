@@ -3,6 +3,7 @@
 import React, { useContext } from 'react';
 import { Box } from 'ink';
 import { ExitError, env } from '@boost/internal';
+import { mockLogger } from '@boost/log/lib/testing';
 import {
   Program,
   Command,
@@ -14,8 +15,9 @@ import {
   TaskContext,
   GlobalOptions,
   Options,
+  UnknownOptionMap,
 } from '../src';
-import { MockWriteStream, MockReadStream, runProgram } from '../src/testing';
+import { MockWriteStream, MockReadStream, runProgram, runTask } from '../src/testing';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
 import BuildCommand from './__mocks__/BuildCommand';
@@ -1278,6 +1280,11 @@ describe('<Program />', () => {
       return a + b;
     }
 
+    function nestedSyncTask(this: TaskContext, msg: string) {
+      this.log(msg);
+      this.log(String(this.runTask(syncTask, 1, 1)));
+    }
+
     // Test misc args
     interface AsyncOptions extends GlobalOptions {
       value: string;
@@ -1315,6 +1322,15 @@ describe('<Program />', () => {
       expect(output).toMatchSnapshot();
     });
 
+    it('runs a sync task correctly (using test util)', async () => {
+      const log = mockLogger();
+      const output = await runTask(syncTask, [10, 5], { log });
+
+      expect(output).toBe(15);
+      expect(log).toHaveBeenCalledWith('Hi');
+      expect(log.error).toHaveBeenCalledWith('Bye');
+    });
+
     it('runs an async task correctly', async () => {
       class AsyncTaskCommand extends Command<AsyncOptions> {
         static description = 'Description';
@@ -1344,6 +1360,34 @@ describe('<Program />', () => {
       expect(output).toMatchSnapshot();
       expect(command.unknown.foo).toBe('true');
       expect(command.rest).toEqual(['foo']);
+    });
+
+    it('runs an async task correctly (using test util)', async () => {
+      const unknown: UnknownOptionMap = {};
+      const rest: string[] = [];
+      const output = await runTask(asyncTask, ['foo', 'bar'], { unknown, rest, value: 'baz' });
+
+      expect(output).toBe('bazfooBAR');
+      expect(unknown.foo).toBe('true');
+      expect(rest).toEqual(['foo']);
+    });
+
+    it('can run a task within a task', async () => {
+      class NestedSyncTaskCommand extends Command {
+        static description = 'Description';
+
+        static path = 'task';
+
+        run() {
+          this.runTask(nestedSyncTask, 'Test');
+        }
+      }
+
+      program.register(new NestedSyncTaskCommand());
+
+      const { output } = await runProgram(program, ['task']);
+
+      expect(output).toMatchSnapshot();
     });
   });
 });
