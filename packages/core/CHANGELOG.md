@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.18.6 - 2020-04-29
+
+**Note:** Version bump only for package @boost/core
+
+
+
+
+
 ### 1.18.5 - 2020-04-17
 
 #### 📦 Dependencies

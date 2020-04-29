@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.8.5 - 2020-04-29
+
+#### 🛠 Internals
+
+- Increase code coverage. ([b21824b](https://github.com/milesj/boost/commit/b21824b))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 1.8.4 - 2020-04-17
 
 #### 📦 Dependencies

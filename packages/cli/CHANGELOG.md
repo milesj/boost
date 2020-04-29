@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.0 - 2020-04-29
+
+#### 🚀 Updates
+
+- Add test utilities. (#77) ([f8d66ce](https://github.com/milesj/boost/commit/f8d66ce)), closes [#77](https://github.com/milesj/boost/issues/77)
+- Allow tasks to run other tasks. (#80) ([e08519f](https://github.com/milesj/boost/commit/e08519f)), closes [#80](https://github.com/milesj/boost/issues/80)
+- Buffer logs until rendering is complete. (#78) ([884a09a](https://github.com/milesj/boost/commit/884a09a)), closes [#78](https://github.com/milesj/boost/issues/78)
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 1.1.0 - 2020-04-21
 
 #### 🚀 Updates

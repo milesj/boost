@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.0 - 2020-04-29
+
+#### 🚀 Updates
+
+- Add test utilities. (#77) ([f8d66ce](https://github.com/milesj/boost/commit/f8d66ce)), closes [#77](https://github.com/milesj/boost/issues/77)
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 1.1.14 - 2020-04-17
 
 **Note:** Version bump only for package @boost/log
