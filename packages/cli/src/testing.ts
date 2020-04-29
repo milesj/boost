@@ -102,12 +102,20 @@ export function runTask<A extends unknown[], R, T extends TaskContext>(
   args: A,
   context?: Partial<T>,
 ): R {
+  const notTestable = (name: string) => () => {
+    throw new Error(
+      `\`${name}\` is not testable using the \`runTask\` utility. Test using a full program.`,
+    );
+  };
+
   const baseContext: TaskContext = {
     exit: jest.fn(),
     help: false,
     locale: 'en',
     log: mockLogger(),
     rest: [] as string[],
+    runProgram: notTestable('runProgram'),
+    runTask: notTestable('runTask'),
     unknown: {},
     version: false,
   };
