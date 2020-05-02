@@ -19,7 +19,6 @@
     "@milesj/build-tools": "^1.0.1",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^8.1.0",
-    "@types/js-yaml": "^3.12.3",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.149",
     "@types/pluralize": "^0.0.29",

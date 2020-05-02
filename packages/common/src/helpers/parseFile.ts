@@ -1,9 +1,9 @@
 import fs from 'fs';
-import JSON5 from 'json5';
-import YAML from 'js-yaml';
 import { RuntimeError } from '@boost/internal';
 import Path from '../Path';
 import requireModule from './requireModule';
+import { parse as parseJSON } from '../serializers/json';
+import { parse as parseYAML } from '../serializers/yaml';
 import { PortablePath } from '../types';
 
 export default function parseFile<T>(filePath: PortablePath): T {
@@ -20,11 +20,11 @@ export default function parseFile<T>(filePath: PortablePath): T {
 
     case '.json':
     case '.json5':
-      return JSON5.parse(fs.readFileSync(path.path(), 'utf8'));
+      return parseJSON(fs.readFileSync(path.path(), 'utf8'));
 
     case '.yml':
     case '.yaml':
-      return YAML.safeLoad(fs.readFileSync(path.path(), 'utf8'));
+      return parseYAML(fs.readFileSync(path.path(), 'utf8'));
 
     default:
       throw new RuntimeError('common', 'CM_PARSE_INVALID_EXT', [path.name()]);
