@@ -158,3 +158,29 @@ toArray(123); // [123]
 toArray('abc'); // ['abc']
 toArray(['a', 'b', 'c']); // ['a', 'b', 'c']
 ```
+
+## Serializers
+
+### JSON
+
+Powered by the [JSON5](https://www.npmjs.com/package/json5) package, the `json` serializer can be
+used to parse and stringify JSON data.
+
+```ts
+import { json } from '@boost/common';
+
+json.parse(data);
+json.stringify(data);
+```
+
+### YAML
+
+Powered by the [YAML](https://www.npmjs.com/package/yaml) package, the `yaml` serializer can be used
+to parse and stringify YAML data.
+
+```ts
+import { yaml } from '@boost/common';
+
+yaml.parse(data);
+yaml.stringify(data);
+```

@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "@boost/internal": "^1.2.0",
-    "js-yaml": "^3.13.1",
     "json5": "^2.1.3",
     "optimal": "^4.2.0",
-    "pretty-ms": "^5.1.0"
+    "pretty-ms": "^5.1.0",
+    "yaml": "^1.9.2"
   },
   "devDependencies": {
     "@boost/test-utils": "^1.4.1"
