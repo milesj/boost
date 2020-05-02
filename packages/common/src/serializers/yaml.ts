@@ -1,6 +1,6 @@
 import YAML from 'yaml';
 
-export function parse<T>(content: string, options?: YAML.Options): T {
+export function parse<T = object>(content: string, options?: YAML.Options): T {
   return YAML.parse(content, options);
 }
 

@@ -10,7 +10,7 @@ export interface JSONStringifyOptions {
   replacer?: JSONReplacer;
 }
 
-export function parse<T>(content: string, reviver?: JSONReviver): T {
+export function parse<T = object>(content: string, reviver?: JSONReviver): T {
   return JSON.parse(content, reviver);
 }
 
