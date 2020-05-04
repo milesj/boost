@@ -1,18 +1,15 @@
 /* eslint-disable no-await-in-loop */
+
 import { Contract, Predicates, PortablePath, Path, PackageStructure } from '@boost/common';
 import loadJs from './loaders/js';
 import loadJson from './loaders/json';
 import loadYaml from './loaders/yaml';
-import { FinderOptions, ExtType } from './types';
+import Cache from './Cache';
+import { FinderOptions, ExtType, LoadedConfig } from './types';
 import { CONFIG_FOLDER } from './constants';
 
-interface LoadedConfig<T> {
-  config: Partial<T>;
-  path: Path;
-}
-
 export default class Finder<T extends object> extends Contract<FinderOptions<T>> {
-  protected cache: { [path: string]: Partial<T> } = {};
+  protected cache = new Cache<T>();
 
   protected configDir?: Path;
 
@@ -23,11 +20,10 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   blueprint({ array, bool, func, shape, string }: Predicates) {
     return {
       env: bool(true),
-      exts: array(string<ExtType>(), ['js', 'json', 'json5', 'yaml', 'yml'] as ExtType[]),
+      exts: array(string<ExtType>(), ['js', 'json', 'yaml', 'yml'] as ExtType[]),
       loaders: shape({
         js: func(loadJs).notNullable(),
         json: func(loadJson).notNullable(),
-        json5: func(loadJson).notNullable(),
         yaml: func(loadYaml).notNullable(),
         yml: func(loadYaml).notNullable(),
       }).exact(),
@@ -38,35 +34,46 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   }
 
   /**
-   * Find all configuration and environment specific files for an extension,
+   * Clear all cached directory, file, and loader information.
+   */
+  clearCache(): this {
+    this.cache.clear();
+
+    return this;
+  }
+
+  /**
+   * Find all configuration and environment specific files in a directory
    * by looping through all the defined extension options.
    * Will only search until the first file is found, and will not return multiple extensions.
    */
   async findConfigFilesInDir(dir: Path, isBranch: boolean = false): Promise<Path[]> {
-    const files: Path[] = [];
+    return this.cache.cacheDirConfigFiles(dir, async () => {
+      const files: Path[] = [];
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const ext of this.options.exts) {
-      await Promise.all(
-        [
-          dir.append(this.getConfigFileName(ext, isBranch)),
-          dir.append(this.getConfigFileName(ext, isBranch, true)),
-        ].map(configPath => {
-          if (configPath.exists()) {
-            files.push(configPath);
-          }
+      // eslint-disable-next-line no-restricted-syntax
+      for (const ext of this.options.exts) {
+        await Promise.all(
+          [
+            dir.append(this.getConfigFileName(ext, isBranch)),
+            dir.append(this.getConfigFileName(ext, isBranch, true)),
+          ].map(configPath => {
+            if (configPath.exists()) {
+              files.push(configPath);
+            }
 
-          return configPath;
-        }),
-      );
+            return configPath;
+          }),
+        );
 
-      // Once we find any file, we abort looking for others
-      if (files.length > 0) {
-        break;
+        // Once we find any file, we abort looking for others
+        if (files.length > 0) {
+          break;
+        }
       }
-    }
 
-    return files;
+      return files;
+    });
   }
 
   /**
@@ -75,10 +82,12 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   getConfigFileName(ext: string, isBranch: boolean = false, isEnv: boolean = false): string {
     let { name } = this.options;
 
+    // Add leading period
     if (isBranch) {
       name = `.${name}`;
     }
 
+    // Add environment suffix
     if (isEnv && this.options.env) {
       name += `.${(process.env.NODE_ENV || 'development').toLowerCase()}`;
     }
@@ -94,7 +103,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * within each branch directory, and load them.
    */
   async loadFromBranchToRoot(dir: PortablePath): Promise<LoadedConfig<T>[]> {
-    const configs: LoadedConfig<T>[] = [];
+    const filesToLoad: Path[] = [];
     let currentDir = Path.resolve(dir);
 
     if (!currentDir.isDirectory()) {
@@ -105,15 +114,17 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       let files: Path[] = [];
 
       if (this.isRootDir(currentDir)) {
-        files = await this.findConfigFilesInDir(currentDir.append(CONFIG_FOLDER), true);
+        files = await this.findConfigFilesInDir(this.configDir!);
+
+        if (this.pkgPath) {
+          files.unshift(this.pkgPath);
+        }
       } else {
         files = await this.findConfigFilesInDir(currentDir, true);
       }
 
       if (files.length > 0) {
-        const loadedFiles = await Promise.all(files.map(filePath => this.loadConfig(filePath)));
-
-        configs.unshift(...loadedFiles);
+        filesToLoad.unshift(...files);
       }
 
       if (this.isRootDir(currentDir)) {
@@ -123,73 +134,84 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       }
     }
 
-    return configs;
-  }
-
-  loadFromRoot(dir: PortablePath = process.cwd()): Promise<LoadedConfig<T>[]> {
-    if (!this.isRootDir(Path.create(dir))) {
-      throw new Error('Invalid config root.');
-    }
-
-    return this.findConfigsInRoot();
+    return this.applyLoadersToFiles(filesToLoad);
   }
 
   /**
-   * Load configuration from a file path using one of the defined loaders.
+   * Load config files from a relative `.config` folder, and a config block from a
+   * relative `package.json`. Package configurations take lowest precedence.
+   */
+  async loadFromRoot(dir: PortablePath = process.cwd()): Promise<LoadedConfig<T>[]> {
+    if (!this.isRootDir(Path.create(dir))) {
+      throw new Error(
+        `Invalid configuration root. Requires a \`${CONFIG_FOLDER}\` folder and \`package.json\`.`,
+      );
+    }
+
+    return this.applyLoadersToFiles([
+      this.pkgPath!,
+      ...(await this.findConfigFilesInDir(this.configDir!)),
+    ]);
+  }
+
+  /**
+   * Load file and package contents from a list of file paths.
+   */
+  protected async applyLoadersToFiles(files: Path[]): Promise<LoadedConfig<T>[]> {
+    return Promise.all(
+      files.map(filePath => {
+        if (filePath.path().endsWith('package.json')) {
+          return this.loadConfigFromPackage(filePath);
+        }
+
+        return this.loadConfig(filePath);
+      }),
+    );
+  }
+
+  /**
+   * Load config contents from a file path using one of the defined loaders.
    */
   protected async loadConfig(path: Path): Promise<LoadedConfig<T>> {
-    if (this.cache[path.path()]) {
-      return {
-        config: this.cache[path.path()],
-        path,
-      };
-    }
+    const config = await this.cache.cacheConfigContents(path, async () => {
+      const { loaders } = this.options;
+      const ext = path.ext(true);
 
-    const { loaders } = this.options;
-    const ext = path.ext(true);
-    let config: Partial<T> = {};
+      switch (ext) {
+        case 'js':
+          return loaders.js(path);
+        case 'json':
+          return loaders.json(path);
+        case 'yaml':
+        case 'yml':
+          return loaders.yaml(path);
+        default:
+          throw new Error(`Unsupported loader format "${ext}".`);
+      }
+    });
 
-    switch (ext) {
-      case 'js':
-        config = await loaders.js(path);
-        break;
-      case 'json':
-      case 'json5':
-        config = await loaders.json(path);
-        break;
-      case 'yml':
-      case 'yaml':
-        config = await loaders.yaml(path);
-        break;
-      default:
-        throw new Error(`Unsupported loader format "${ext}".`);
-    }
-
-    if (config) {
-      this.cache[path.path()] = config;
-    }
-
-    return { config, path };
+    return {
+      config,
+      path,
+    };
   }
 
   /**
-   * Load a configuration block from a `package.json` file, located within
+   * Load a config block from a `package.json` file, located within
    * a property that matches the `name` option.
    */
-  protected async loadConfigFromPackage(path: Path): Promise<Partial<T> | null> {
-    if (this.cache[path.path()]) {
-      return this.cache[path.path()];
-    }
+  protected async loadConfigFromPackage(path: Path): Promise<LoadedConfig<T>> {
+    const config = await this.cache.cacheConfigContents(path, async () => {
+      const { name } = this.options;
+      const pkg = await loadJson<PackageStructure & { config: Partial<T> }>(path);
 
-    const { name } = this.options;
-    const pkg = await loadJson<PackageStructure & { config: Partial<T> }>(path);
-    const config = pkg[name as 'config'] || null;
+      return pkg[name as 'config'] || {};
+    });
 
-    if (config) {
-      this.cache[path.path()] = config;
-    }
-
-    return config;
+    return {
+      config,
+      path,
+    };
   }
 
   /**
@@ -214,7 +236,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
 
     if (!pkgPath.exists()) {
       throw new Error(
-        `Config folder "${CONFIG_FOLDER}" found without a relative \`package.json\`. Both must be located in the project root.`,
+        `Config folder \`${CONFIG_FOLDER}\` found without a relative \`package.json\`. Both must be located in the project root.`,
       );
     }
 
