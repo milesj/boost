@@ -21,6 +21,12 @@
       "path": "packages/common/tests"
     },
     {
+      "path": "packages/config"
+    },
+    {
+      "path": "packages/config/tests"
+    },
+    {
       "path": "packages/core"
     },
     {
