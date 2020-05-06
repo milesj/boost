@@ -4,5 +4,7 @@
  */
 
 import Configuration from './Configuration';
+import mergeArray from './mergeArray';
+import mergeObject from './mergeObject';
 
-export { Configuration };
+export { Configuration, mergeArray, mergeObject };

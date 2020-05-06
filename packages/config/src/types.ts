@@ -11,6 +11,8 @@ export interface LoadedConfig<T> {
   path: Path;
 }
 
+export type Handler<T> = (prev: T, next: T) => T;
+
 export interface ProcessedConfig<T> {
   config: Required<T>;
   files: LoadedConfig<T>[];

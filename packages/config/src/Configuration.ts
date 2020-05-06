@@ -1,14 +1,17 @@
 import { Contract, PortablePath } from '@boost/common';
 import Cache from './Cache';
 import Finder from './Finder';
-import { ProcessedConfig } from './types';
+import Processor from './Processor';
+import { FinderOptions, ProcessedConfig, LoadedConfig, Handler } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
-  protected cache: Cache<T>;
+  private cache: Cache<T>;
 
-  protected finder: Finder<T>;
+  private finder: Finder<T>;
 
-  protected name: string;
+  private name: string;
+
+  private processor: Processor<T>;
 
   constructor(name: string) {
     super();
@@ -16,6 +19,7 @@ export default abstract class Configuration<T extends object> extends Contract<T
     this.name = name;
     this.cache = new Cache();
     this.finder = new Finder({ name }, this.cache);
+    this.processor = new Processor();
   }
 
   /**
@@ -54,12 +58,7 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * Once loaded, process all configs into a final config result.
    */
   async loadFromBranchToRoot(dir: PortablePath): Promise<ProcessedConfig<T>> {
-    const files = await this.finder.loadFromBranchToRoot(dir);
-
-    return {
-      config: this.options,
-      files,
-    };
+    return this.processConfigs(await this.finder.loadFromBranchToRoot(dir));
   }
 
   /**
@@ -69,10 +68,44 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * Once loaded, process all configs into a final config result.
    */
   async loadFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
-    const files = await this.finder.loadFromRoot(dir);
+    return this.processConfigs(await this.finder.loadFromRoot(dir));
+  }
+
+  /**
+   * Add a handler to customize the processing of key-value pairs while combining
+   * multiple config objects into a single object.
+   */
+  protected addHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
+    this.processor.addHandler(key, handler);
+
+    return this;
+  }
+
+  /**
+   * Configure finder specific options.
+   */
+  protected configureFinder(options: Omit<FinderOptions<T>, 'name'>): this {
+    this.finder.configure({
+      ...options,
+      name: this.name,
+    });
+
+    return this;
+  }
+
+  /**
+   * Process all loaded configs into a single config result.
+   */
+  private processConfigs(files: LoadedConfig<T>[]): ProcessedConfig<T> {
+    const config = this.configure(baseConfig =>
+      this.processor.process(
+        baseConfig,
+        files.map(file => file.config),
+      ),
+    );
 
     return {
-      config: this.options,
+      config,
       files,
     };
   }

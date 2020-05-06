@@ -131,7 +131,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       }
     }
 
-    return this.applyLoadersToFiles(filesToLoad);
+    return this.applyLoaders(filesToLoad);
   }
 
   /**
@@ -151,13 +151,13 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       files.unshift(this.pkgPath);
     }
 
-    return this.applyLoadersToFiles(files);
+    return this.applyLoaders(files);
   }
 
   /**
    * Load file and package contents from a list of file paths.
    */
-  protected async applyLoadersToFiles(files: Path[]): Promise<LoadedConfig<T>[]> {
+  protected async applyLoaders(files: Path[]): Promise<LoadedConfig<T>[]> {
     return Promise.all(
       files.map(filePath => {
         if (filePath.path().endsWith(PACKAGE_FILE)) {
