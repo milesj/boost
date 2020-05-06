@@ -6,10 +6,10 @@ import loadJson from './loaders/json';
 import loadYaml from './loaders/yaml';
 import Cache from './Cache';
 import { FinderOptions, ExtType, LoadedConfig } from './types';
-import { CONFIG_FOLDER } from './constants';
+import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
 
 export default class Finder<T extends object> extends Contract<FinderOptions<T>> {
-  protected cache = new Cache<T>();
+  protected cache: Cache<T>;
 
   protected configDir?: Path;
 
@@ -17,10 +17,16 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
 
   protected rootDir?: Path;
 
+  constructor(options: FinderOptions<T>, cache: Cache<T>) {
+    super(options);
+
+    this.cache = cache;
+  }
+
   blueprint({ array, bool, func, shape, string }: Predicates) {
     return {
       env: bool(true),
-      exts: array(string<ExtType>(), ['js', 'json', 'yaml', 'yml'] as ExtType[]),
+      exts: array(string<ExtType>(), DEFAULT_EXTS),
       loaders: shape({
         js: func(loadJs).notNullable(),
         json: func(loadJson).notNullable(),
@@ -34,21 +40,12 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   }
 
   /**
-   * Clear all cached directory, file, and loader information.
-   */
-  clearCache(): this {
-    this.cache.clear();
-
-    return this;
-  }
-
-  /**
    * Find all configuration and environment specific files in a directory
    * by looping through all the defined extension options.
    * Will only search until the first file is found, and will not return multiple extensions.
    */
   async findConfigFilesInDir(dir: Path, isBranch: boolean = false): Promise<Path[]> {
-    return this.cache.cacheDirConfigFiles(dir, async () => {
+    return this.cache.cacheFilesInDir(dir, async () => {
       const files: Path[] = [];
 
       // eslint-disable-next-line no-restricted-syntax
@@ -144,14 +141,17 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   async loadFromRoot(dir: PortablePath = process.cwd()): Promise<LoadedConfig<T>[]> {
     if (!this.isRootDir(Path.create(dir))) {
       throw new Error(
-        `Invalid configuration root. Requires a \`${CONFIG_FOLDER}\` folder and \`package.json\`.`,
+        `Invalid configuration root. Requires a \`${CONFIG_FOLDER}\` folder and \`${PACKAGE_FILE}\`.`,
       );
     }
 
-    return this.applyLoadersToFiles([
-      this.pkgPath!,
-      ...(await this.findConfigFilesInDir(this.configDir!)),
-    ]);
+    const files = await this.findConfigFilesInDir(this.configDir!);
+
+    if (this.pkgPath) {
+      files.unshift(this.pkgPath);
+    }
+
+    return this.applyLoadersToFiles(files);
   }
 
   /**
@@ -160,7 +160,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   protected async applyLoadersToFiles(files: Path[]): Promise<LoadedConfig<T>[]> {
     return Promise.all(
       files.map(filePath => {
-        if (filePath.path().endsWith('package.json')) {
+        if (filePath.path().endsWith(PACKAGE_FILE)) {
           return this.loadConfigFromPackage(filePath);
         }
 
@@ -232,11 +232,11 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
     this.configDir = configDir;
     this.rootDir = dir;
 
-    const pkgPath = dir.append('package.json');
+    const pkgPath = dir.append(PACKAGE_FILE);
 
     if (!pkgPath.exists()) {
       throw new Error(
-        `Config folder \`${CONFIG_FOLDER}\` found without a relative \`package.json\`. Both must be located in the project root.`,
+        `Config folder \`${CONFIG_FOLDER}\` found without a relative \`${PACKAGE_FILE}\`. Both must be located in the project root.`,
       );
     }
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Path } from '@boost/common';
 
-interface FileCache<T> {
+export interface FileCache<T> {
   content: Partial<T>;
   mtime: number;
 }
@@ -30,7 +30,7 @@ export default class Cache<T> {
     return content;
   }
 
-  async cacheDirConfigFiles(dir: Path, cb: () => Promise<Path[]>): Promise<Path[]> {
+  async cacheFilesInDir(dir: Path, cb: () => Promise<Path[]>): Promise<Path[]> {
     const key = dir.path();
 
     if (this.dirFilesCache[key]) {
@@ -44,9 +44,12 @@ export default class Cache<T> {
     return files;
   }
 
-  clear() {
-    this.dirFilesCache = {};
+  clearConfigCache() {
     this.fileContentCache = {};
+  }
+
+  clearFinderCache() {
+    this.dirFilesCache = {};
   }
 
   async loadStats(path: Path): Promise<fs.Stats> {

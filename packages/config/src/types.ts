@@ -11,6 +11,11 @@ export interface LoadedConfig<T> {
   path: Path;
 }
 
+export interface ProcessedConfig<T> {
+  config: Required<T>;
+  files: LoadedConfig<T>[];
+}
+
 export interface FinderOptions<T> {
   env?: boolean;
   exts?: ExtType[];
