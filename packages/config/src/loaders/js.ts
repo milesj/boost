@@ -1,5 +1,7 @@
-import { Path, requireModule } from '@boost/common';
+import { Path, PackageStructure } from '@boost/common';
+import loadMjs from './mjs';
+import loadCjs from './cjs';
 
-export default function loadJs<T>(path: Path): Promise<Partial<T>> {
-  return Promise.resolve(requireModule(path));
+export default function loadJs<T>(path: Path, pkg: PackageStructure): Promise<Partial<T>> {
+  return pkg.type === 'module' ? loadMjs(path) : loadCjs(path);
 }

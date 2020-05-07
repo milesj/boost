@@ -2,10 +2,10 @@ import { Contract, PortablePath } from '@boost/common';
 import Cache from './Cache';
 import Finder from './Finder';
 import Processor from './Processor';
-import { FinderOptions, ProcessedConfig, LoadedConfig, Handler, ProcessorOptions } from './types';
+import { FinderOptions, ProcessedConfig, ConfigFile, Handler, ProcessorOptions } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
-  private cache: Cache<T>;
+  private cache: Cache;
 
   private finder: Finder<T>;
 
@@ -105,7 +105,7 @@ export default abstract class Configuration<T extends object> extends Contract<T
   /**
    * Process all loaded configs into a single config result.
    */
-  private processConfigs(files: LoadedConfig<T>[]): ProcessedConfig<T> {
+  private processConfigs(files: ConfigFile<T>[]): ProcessedConfig<T> {
     const config = this.configure(baseConfig =>
       this.processor.process(
         baseConfig,

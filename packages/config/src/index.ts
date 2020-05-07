@@ -4,7 +4,8 @@
  */
 
 import Configuration from './Configuration';
+import getEnv from './getEnv';
 import mergeArray from './mergeArray';
 import mergeObject from './mergeObject';
 
-export { Configuration, mergeArray, mergeObject };
+export { Configuration, getEnv, mergeArray, mergeObject };

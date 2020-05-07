@@ -2,22 +2,22 @@ import fs from 'fs';
 import { Path } from '@boost/common';
 
 export interface FileCache<T> {
-  content: Partial<T>;
+  content: T;
   mtime: number;
 }
 
-export default class Cache<T> {
+export default class Cache {
   protected dirFilesCache: { [dir: string]: Path[] } = {};
 
-  protected fileContentCache: { [path: string]: FileCache<T> } = {};
+  protected fileContentCache: { [path: string]: FileCache<unknown> } = {};
 
-  async cacheConfigContents(path: Path, cb: () => Promise<Partial<T>>): Promise<Partial<T>> {
+  async cacheFileContents<T>(path: Path, cb: () => Promise<T>): Promise<T> {
     const key = path.path();
     const cache = this.fileContentCache[key];
     const stats = await this.loadStats(path);
 
     if (cache && cache.mtime === stats.mtimeMs) {
-      return cache.content;
+      return cache.content as T;
     }
 
     const content = await cb();

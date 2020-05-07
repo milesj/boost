@@ -1,21 +1,21 @@
-import { Path } from '@boost/common';
+import { Path, PackageStructure } from '@boost/common';
 
-export type ExtType = 'js' | 'json' | 'yaml' | 'yml';
+export type ExtType = 'js' | 'cjs' | 'mjs' | 'json' | 'yaml' | 'yml';
 
 export type LoaderType = Exclude<ExtType, 'yml'>;
 
-export type Loader<T> = (path: Path) => Promise<Partial<T>>;
+export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<Partial<T>>;
 
 export type Handler<T> = (prev: T, next: T) => T;
 
-export interface LoadedConfig<T> {
+export interface ConfigFile<T> {
   config: Partial<T>;
   path: Path;
 }
 
 export interface ProcessedConfig<T> {
   config: Required<T>;
-  files: LoadedConfig<T>[];
+  files: ConfigFile<T>[];
 }
 
 export interface FinderOptions<T> {
