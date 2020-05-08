@@ -26,8 +26,8 @@ export interface FinderOptions<T> {
 }
 
 export interface ProcessorOptions {
-  extendsSetting?: string;
-  overridesSetting?: string;
+  extends?: string;
+  overrides?: string;
 }
 
 export type ExtendsSetting = string | string[];

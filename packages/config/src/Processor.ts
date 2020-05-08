@@ -1,6 +1,6 @@
 import { isObject, Contract, Predicates } from '@boost/common';
-import mergeArray from './mergeArray';
-import mergeObject from './mergeObject';
+import mergeArray from './helpers/mergeArray';
+import mergeObject from './helpers/mergeObject';
 import { Handler, ProcessorOptions } from './types';
 
 export default class Processor<T extends object> extends Contract<ProcessorOptions> {
@@ -9,8 +9,8 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
 
   blueprint({ string }: Predicates) {
     return {
-      extendsSetting: string(),
-      overridesSetting: string(),
+      extends: string(),
+      overrides: string(),
     };
   }
 
