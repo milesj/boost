@@ -7,5 +7,6 @@ import Configuration from './Configuration';
 import getEnv from './helpers/getEnv';
 import mergeArray from './helpers/mergeArray';
 import mergeObject from './helpers/mergeObject';
+import mergePlugins from './helpers/mergePlugins';
 
-export { Configuration, getEnv, mergeArray, mergeObject };
+export { Configuration, getEnv, mergeArray, mergeObject, mergePlugins };

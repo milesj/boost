@@ -2,7 +2,7 @@ import { Contract, PortablePath } from '@boost/common';
 import Cache from './Cache';
 import Finder from './Finder';
 import Processor from './Processor';
-import { FinderOptions, ProcessedConfig, ConfigFile, Handler, ProcessorOptions } from './types';
+import { FinderOptions, ProcessedConfig, ConfigFile, Handler } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
   private cache: Cache;
@@ -96,11 +96,11 @@ export default abstract class Configuration<T extends object> extends Contract<T
   /**
    * Configure processor specific options.
    */
-  protected configureProcessor(options: ProcessorOptions): this {
-    this.processor.configure(options);
+  // protected configureProcessor(options: ProcessorOptions): this {
+  //   this.processor.configure(options);
 
-    return this;
-  }
+  //   return this;
+  // }
 
   /**
    * Process all loaded configs into a single config result.

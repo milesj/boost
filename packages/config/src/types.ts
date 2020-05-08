@@ -6,7 +6,7 @@ export type LoaderType = Exclude<ExtType, 'yml'>;
 
 export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<Partial<T>>;
 
-export type Handler<T> = (prev: T, next: T) => T;
+export type Handler<T> = (prev: T, next: T) => T | undefined | Promise<T | undefined>;
 
 export interface ConfigFile<T> {
   config: Partial<T>;
@@ -20,14 +20,15 @@ export interface ProcessedConfig<T> {
 
 export interface FinderOptions<T> {
   env?: boolean;
+  extendsSetting?: string;
   exts?: ExtType[];
   loaders?: { [K in LoaderType]: Loader<T> };
   name: string;
+  overridesSetting?: string;
 }
 
 export interface ProcessorOptions {
-  extends?: string;
-  overrides?: string;
+  name: string;
 }
 
 export type ExtendsSetting = string | string[];

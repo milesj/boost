@@ -1,15 +1,24 @@
 /* eslint-disable no-await-in-loop */
 
-import { Contract, Predicates, PortablePath, Path, PackageStructure } from '@boost/common';
+import { Contract, Predicates, PortablePath, Path, PackageStructure, toArray } from '@boost/common';
 import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
 import loadJson from './loaders/json';
 import loadMjs from './loaders/mjs';
 import loadYaml from './loaders/yaml';
 import Cache from './Cache';
+import createFileName from './helpers/createFileName';
 import getEnv from './helpers/getEnv';
-import { FinderOptions, ExtType, ConfigFile } from './types';
+import { FinderOptions, ExtType, ExtendsSetting, ConfigFile } from './types';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
+
+function isModuleName(path: PortablePath) {
+  return true;
+}
+
+function isFilePath(path: PortablePath) {
+  return true;
+}
 
 export default class Finder<T extends object> extends Contract<FinderOptions<T>> {
   protected cache: Cache;
@@ -29,6 +38,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   blueprint({ array, bool, func, shape, string }: Predicates) {
     return {
       env: bool(true),
+      extendsSetting: string(),
       exts: array(string<ExtType>(), DEFAULT_EXTS),
       loaders: shape({
         cjs: func(loadCjs).notNullable(),
@@ -41,6 +51,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       name: string()
         .required()
         .camelCase(),
+      overridesSetting: string(),
     };
   }
 
@@ -117,21 +128,12 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * Create and return a config file name, with optional branch and environment variants.
    */
   getConfigFileName(ext: string, isBranch: boolean = false, isEnv: boolean = false): string {
-    let { name } = this.options;
+    const { name, env } = this.options;
 
-    // Add leading period
-    if (isBranch) {
-      name = `.${name}`;
-    }
-
-    // Add environment suffix
-    if (isEnv && this.options.env) {
-      name += `.${getEnv(this.options.name)}`;
-    }
-
-    name += `.${ext}`;
-
-    return name;
+    return createFileName(name, ext, {
+      envSuffix: isEnv && env ? getEnv(this.options.name) : '',
+      leadingDot: isBranch,
+    });
   }
 
   /**
@@ -172,7 +174,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       }
     }
 
-    return this.applyLoaders(filesToLoad, await this.determinePackageScope(branchDir));
+    return this.resolveAllConfigs(filesToLoad);
   }
 
   /**
@@ -194,28 +196,48 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       files.unshift(this.pkgPath);
     }
 
-    return this.applyLoaders(files, await this.determinePackageScope(root));
+    return this.resolveAllConfigs(files);
   }
 
   /**
-   * Load file and package contents from a list of file paths.
+   * Extract a list of config files to extend, in order, from the list of previously loaded
+   * config files, which is typically from the root. The list to extract can be located within
+   * a property that matches the `extendsSetting` option.
    */
-  protected async applyLoaders(files: Path[], pkg: PackageStructure): Promise<ConfigFile<T>[]> {
-    return Promise.all(
-      files.map(filePath => {
-        if (filePath.path().endsWith(PACKAGE_FILE)) {
-          return this.loadConfigFromPackage(filePath);
+  protected extractExtendedConfigs(rootConfigs: ConfigFile<T>[]): Promise<ConfigFile<T>[]> {
+    const { name, extendsSetting } = this.options;
+    const extendsPaths: Path[] = [];
+
+    rootConfigs.forEach(({ config }) => {
+      const extendsFrom = config[extendsSetting as keyof T] as ExtendsSetting | undefined;
+
+      if (!extendsFrom) {
+        return;
+      }
+
+      toArray(extendsFrom).forEach(extendsPath => {
+        if (isModuleName(extendsPath)) {
+          extendsPaths.push(
+            new Path(extendsPath, createFileName(name, 'js', { envSuffix: 'preset' })),
+          );
+        } else if (isFilePath(extendsPath)) {
+          extendsPaths.push(new Path(extendsPath));
+        } else {
+          throw new Error(
+            `Cannot extend configuration. Unknown module or file path "${extendsPath}".`,
+          );
         }
+      });
+    });
 
-        return this.loadConfig(filePath, pkg);
-      }),
-    );
+    return Promise.all(extendsPaths.map(path => this.loadConfig(path)));
   }
 
   /**
-   * Load config contents from a file path using one of the defined loaders.
+   * Load config contents from the provided file path using one of the defined loaders.
    */
-  protected async loadConfig(path: Path, pkg: PackageStructure): Promise<ConfigFile<T>> {
+  protected async loadConfig(path: Path): Promise<ConfigFile<T>> {
+    const pkg = await this.determinePackageScope(path);
     const config = await this.cache.cacheFileContents(path, async () => {
       const { loaders } = this.options;
       const ext = path.ext(true);
@@ -267,10 +289,6 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * Return true if the path represents the root of the file system.
    */
   protected isFileSystemRoot(path: Path): boolean {
-    if (path.path() === '') {
-      return true;
-    }
-
     return /^(\/|[A-Z]:)/u.test(path.path());
   }
 
@@ -305,5 +323,31 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
     this.pkgPath = pkgPath;
 
     return true;
+  }
+
+  /**
+   * Load file and package contents from a list of file paths.
+   */
+  protected async resolveAllConfigs(files: Path[]): Promise<ConfigFile<T>[]> {
+    const configs = await Promise.all(
+      files.map(filePath => {
+        if (filePath.path().endsWith(PACKAGE_FILE)) {
+          return this.loadConfigFromPackage(filePath);
+        }
+
+        return this.loadConfig(filePath);
+      }),
+    );
+    const rootConfigs = configs.filter(config => config.path.path().includes(CONFIG_FOLDER));
+
+    // Configs that have been extended from root configs must
+    // appear before everything else, in the order they were defined
+    const extendedConfigs = await this.extractExtendedConfigs(rootConfigs);
+
+    if (extendedConfigs.length > 0) {
+      configs.unshift(...extendedConfigs);
+    }
+
+    return configs;
   }
 }
