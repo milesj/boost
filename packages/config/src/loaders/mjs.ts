@@ -13,7 +13,7 @@ try {
   supportsImport = false;
 }
 
-export default async function loadMjs<T>(path: Path): Promise<Partial<T>> {
+export default async function loadMjs<T>(path: Path): Promise<T> {
   if (!supportsImport) {
     throw new Error(
       `Unable to use \`mjs\` loader. Native ECMAScript modules aren't supported by this platform. Found Node.js v${process.version}, requires v13.3.`,

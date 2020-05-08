@@ -3,13 +3,15 @@ import { Path } from '@boost/common';
 
 export interface FileCache<T> {
   content: T;
+  exists: boolean;
   mtime: number;
 }
 
 export default class Cache {
   protected dirFilesCache: { [dir: string]: Path[] } = {};
 
-  protected fileContentCache: { [path: string]: FileCache<unknown> } = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected fileContentCache: { [path: string]: FileCache<any> } = {};
 
   async cacheFileContents<T>(path: Path, cb: () => Promise<T>): Promise<T> {
     const key = path.path();
@@ -17,13 +19,14 @@ export default class Cache {
     const stats = await this.loadStats(path);
 
     if (cache && cache.mtime === stats.mtimeMs) {
-      return cache.content as T;
+      return cache.content;
     }
 
     const content = await cb();
 
     this.fileContentCache[key] = {
       content,
+      exists: true,
       mtime: stats.mtimeMs,
     };
 
@@ -52,7 +55,11 @@ export default class Cache {
     this.dirFilesCache = {};
   }
 
-  async loadStats(path: Path): Promise<fs.Stats> {
+  getFileCache<T>(path: Path): FileCache<T> | null {
+    return this.fileContentCache[path.path()] || null;
+  }
+
+  loadStats(path: Path): Promise<fs.Stats> {
     return new Promise((resolve, reject) => {
       fs.stat(path.path(), (error, stats) => {
         if (error) {
@@ -62,5 +69,15 @@ export default class Cache {
         }
       });
     });
+  }
+
+  markMissingFile(path: Path): this {
+    this.fileContentCache[path.path()] = {
+      content: null,
+      exists: false,
+      mtime: 0,
+    };
+
+    return this;
   }
 }
