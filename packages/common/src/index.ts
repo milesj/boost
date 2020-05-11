@@ -10,6 +10,7 @@ import PathResolver from './PathResolver';
 import * as json from './serializers/json';
 import * as yaml from './serializers/yaml';
 
+export * from './constants';
 export * from './helpers';
 export * from './types';
 
