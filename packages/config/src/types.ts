@@ -34,7 +34,8 @@ export interface ProcessorOptions {
 export type ExtendsSetting = string | string[];
 
 export interface OverridesSetting<T> {
-  files: string | string[];
+  exclude?: string | string[];
+  include: string | string[];
   settings: Partial<T>;
 }
 

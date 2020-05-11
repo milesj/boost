@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
 import { Contract, Predicates, PortablePath, Path, PackageStructure, toArray } from '@boost/common';
+import minimatch from 'minimatch';
 import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
 import loadJson from './loaders/json';
@@ -9,7 +10,7 @@ import loadYaml from './loaders/yaml';
 import Cache from './Cache';
 import createFileName from './helpers/createFileName';
 import getEnv from './helpers/getEnv';
-import { FinderOptions, ExtType, ExtendsSetting, ConfigFile } from './types';
+import { FinderOptions, ExtType, ExtendsSetting, ConfigFile, OverridesSetting } from './types';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
 
 function isModuleName(path: PortablePath) {
@@ -143,12 +144,8 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    */
   async loadFromBranchToRoot(dir: PortablePath): Promise<ConfigFile<T>[]> {
     const filesToLoad: Path[] = [];
-    const branchDir = Path.resolve(dir);
-    let currentDir = branchDir;
-
-    if (!currentDir.isDirectory()) {
-      throw new Error('Starting path must be a directory.');
-    }
+    const branch = Path.resolve(dir);
+    let currentDir = branch.isDirectory() ? branch : branch.parent();
 
     while (!this.isFileSystemRoot(currentDir)) {
       let files: Path[] = [];
@@ -174,7 +171,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       }
     }
 
-    return this.resolveAllConfigs(filesToLoad);
+    return this.resolveAllConfigs(branch, filesToLoad);
   }
 
   /**
@@ -182,7 +179,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * relative `package.json`. Package configurations take lowest precedence.
    */
   async loadFromRoot(dir: PortablePath = process.cwd()): Promise<ConfigFile<T>[]> {
-    const root = Path.create(dir);
+    const root = Path.resolve(dir);
 
     if (!this.isRootDir(root)) {
       throw new Error(
@@ -196,7 +193,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       files.unshift(this.pkgPath);
     }
 
-    return this.resolveAllConfigs(files);
+    return this.resolveAllConfigs(root, files);
   }
 
   /**
@@ -208,12 +205,8 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
     const { name, extendsSetting } = this.options;
     const extendsPaths: Path[] = [];
 
-    rootConfigs.forEach(({ config }) => {
+    rootConfigs.forEach(({ config, path }) => {
       const extendsFrom = config[extendsSetting as keyof T] as ExtendsSetting | undefined;
-
-      if (!extendsFrom) {
-        return;
-      }
 
       toArray(extendsFrom).forEach(extendsPath => {
         if (isModuleName(extendsPath)) {
@@ -221,7 +214,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
             new Path(extendsPath, createFileName(name, 'js', { envSuffix: 'preset' })),
           );
         } else if (isFilePath(extendsPath)) {
-          extendsPaths.push(new Path(extendsPath));
+          extendsPaths.push(path.parent().append(extendsPath));
         } else {
           throw new Error(
             `Cannot extend configuration. Unknown module or file path "${extendsPath}".`,
@@ -231,6 +224,40 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
     });
 
     return Promise.all(extendsPaths.map(path => this.loadConfig(path)));
+  }
+
+  /**
+   * Extract all root config overrides that match the current path used to load with.
+   * Overrides are located within a property that matches the `overridesSetting` option.
+   */
+  protected extractOverriddenConfigs(
+    basePath: Path,
+    rootConfigs: ConfigFile<T>[],
+  ): ConfigFile<T>[] {
+    const { overridesSetting } = this.options;
+    const overriddenConfigs: ConfigFile<T>[] = [];
+
+    rootConfigs.forEach(({ config, path }) => {
+      const overrides = config[overridesSetting as keyof T] as OverridesSetting<T>[] | undefined;
+
+      toArray(overrides).forEach(({ exclude, include, settings }) => {
+        const excludePatterns = toArray(exclude);
+        const includePatterns = toArray(include);
+        const options = { dot: true, matchBase: true };
+
+        if (
+          includePatterns.some(pattern => minimatch(basePath.path(), pattern, options)) &&
+          !excludePatterns.some(pattern => minimatch(basePath.path(), pattern, options))
+        ) {
+          overriddenConfigs.push({
+            config: settings,
+            path,
+          });
+        }
+      });
+    });
+
+    return overriddenConfigs;
   }
 
   /**
@@ -299,7 +326,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   protected isRootDir(dir: Path, abort: boolean = false): boolean {
     if (dir.path() === this.rootDir?.path()) {
       return true;
-    } else if (abort) {
+    } else if (!dir.isDirectory() || abort) {
       return false;
     }
 
@@ -328,15 +355,13 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   /**
    * Load file and package contents from a list of file paths.
    */
-  protected async resolveAllConfigs(files: Path[]): Promise<ConfigFile<T>[]> {
+  protected async resolveAllConfigs(basePath: Path, files: Path[]): Promise<ConfigFile<T>[]> {
     const configs = await Promise.all(
-      files.map(filePath => {
-        if (filePath.path().endsWith(PACKAGE_FILE)) {
-          return this.loadConfigFromPackage(filePath);
-        }
-
-        return this.loadConfig(filePath);
-      }),
+      files.map(filePath =>
+        filePath.path().endsWith(PACKAGE_FILE)
+          ? this.loadConfigFromPackage(filePath)
+          : this.loadConfig(filePath),
+      ),
     );
     const rootConfigs = configs.filter(config => config.path.path().includes(CONFIG_FOLDER));
 
@@ -346,6 +371,14 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
 
     if (extendedConfigs.length > 0) {
       configs.unshift(...extendedConfigs);
+    }
+
+    // Overrides take the highest precedence and must appear after everything,
+    // including branch level configs
+    const overriddenConfigs = await this.extractOverriddenConfigs(basePath, rootConfigs);
+
+    if (overriddenConfigs.length > 0) {
+      configs.push(...overriddenConfigs);
     }
 
     return configs;
