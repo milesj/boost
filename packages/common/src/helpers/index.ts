@@ -1,7 +1,9 @@
 export { default as createBlueprint } from './createBlueprint';
+export { default as deepFreeze } from './deepFreeze';
 export { default as formatMs } from './formatMs';
 export { default as instanceOf } from './instanceOf';
 export { default as isEmpty } from './isEmpty';
+export { default as isFilePath } from './isFilePath';
 export { default as isObject } from './isObject';
 export { default as parseFile } from './parseFile';
 export { default as requireModule } from './requireModule';
