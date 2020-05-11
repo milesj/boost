@@ -1,9 +1,9 @@
 import path from 'path';
-import { PathResolver, requireModule, ModuleName, isObject } from '@boost/common';
+import { PathResolver, requireModule, ModuleName, isObject, MODULE_NAME_PART } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color, RuntimeError } from '@boost/internal';
 import { Pluggable, Factory } from './types';
-import { MODULE_PART_PATTERN, debug } from './constants';
+import { debug } from './constants';
 import Registry from './Registry';
 
 export default class Loader<Plugin extends Pluggable> {
@@ -24,7 +24,7 @@ export default class Loader<Plugin extends Pluggable> {
     const resolver = new PathResolver();
     const { singularName: typeName, projectName } = this.registry;
     const moduleName = name.toLowerCase();
-    const modulePattern = MODULE_PART_PATTERN.source;
+    const modulePattern = MODULE_NAME_PART.source;
     const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
     this.debug('Resolving possible %s modules', color.pluginType(typeName));
