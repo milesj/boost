@@ -10,6 +10,7 @@ export type Handler<T> = (prev: T, next: T) => T | undefined | Promise<T | undef
 
 export interface File {
   path: Path;
+  root: boolean;
 }
 
 export interface ConfigFile<T> extends File {

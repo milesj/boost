@@ -6,15 +6,15 @@ import Processor from './Processor';
 import { ProcessedConfig, ConfigFile, Handler } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
-  protected cache: Cache;
+  private cache: Cache;
 
-  protected configFinder: ConfigFinder<T>;
+  private configFinder: ConfigFinder<T>;
 
-  protected ignoreFinder: IgnoreFinder;
+  private ignoreFinder: IgnoreFinder;
 
-  protected name: string;
+  private name: string;
 
-  protected processor: Processor<T>;
+  private processor: Processor<T>;
 
   constructor(name: string) {
     super();

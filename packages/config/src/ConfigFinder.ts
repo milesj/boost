@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop */
+/* eslint-disable no-param-reassign, no-await-in-loop */
 
 import { Predicates, PortablePath, Path, PackageStructure, toArray } from '@boost/common';
 import minimatch from 'minimatch';
@@ -152,11 +152,10 @@ export default class ConfigFinder<T extends object> extends Finder<
           : this.loadConfig(filePath),
       ),
     );
-    const rootConfigs = configs.filter(config => config.path.path().includes(CONFIG_FOLDER));
 
     // Configs that have been extended from root configs must
     // appear before everything else, in the order they were defined
-    const extendedConfigs = await this.extractExtendedConfigs(rootConfigs);
+    const extendedConfigs = await this.extractExtendedConfigs(configs);
 
     if (extendedConfigs.length > 0) {
       configs.unshift(...extendedConfigs);
@@ -164,7 +163,7 @@ export default class ConfigFinder<T extends object> extends Finder<
 
     // Overrides take the highest precedence and must appear after everything,
     // including branch level configs
-    const overriddenConfigs = await this.extractOverriddenConfigs(basePath, rootConfigs);
+    const overriddenConfigs = await this.extractOverriddenConfigs(basePath, configs);
 
     if (overriddenConfigs.length > 0) {
       configs.push(...overriddenConfigs);
@@ -178,12 +177,21 @@ export default class ConfigFinder<T extends object> extends Finder<
    * config files, which is typically from the root. The list to extract can be located within
    * a property that matches the `extendsSetting` option.
    */
-  protected extractExtendedConfigs(rootConfigs: ConfigFile<T>[]): Promise<ConfigFile<T>[]> {
+  protected extractExtendedConfigs(configs: ConfigFile<T>[]): Promise<ConfigFile<T>[]> {
     const { name, extendsSetting } = this.options;
     const extendsPaths: Path[] = [];
 
-    rootConfigs.forEach(({ config, path }) => {
-      const extendsFrom = config[extendsSetting as keyof T] as ExtendsSetting | undefined;
+    configs.forEach(({ config, path, root }) => {
+      const key = extendsSetting as keyof T;
+      const extendsFrom = config[key] as ExtendsSetting | undefined;
+
+      if (root) {
+        delete config[key];
+      } else if (extendsFrom) {
+        throw new Error(`Extends setting "${key}" must only be defined in a root config.`);
+      } else {
+        return;
+      }
 
       toArray(extendsFrom).forEach(extendsPath => {
         if (isModuleName(extendsPath)) {
@@ -207,15 +215,21 @@ export default class ConfigFinder<T extends object> extends Finder<
    * Extract all root config overrides that match the current path used to load with.
    * Overrides are located within a property that matches the `overridesSetting` option.
    */
-  protected extractOverriddenConfigs(
-    basePath: Path,
-    rootConfigs: ConfigFile<T>[],
-  ): ConfigFile<T>[] {
+  protected extractOverriddenConfigs(basePath: Path, configs: ConfigFile<T>[]): ConfigFile<T>[] {
     const { overridesSetting } = this.options;
     const overriddenConfigs: ConfigFile<T>[] = [];
 
-    rootConfigs.forEach(({ config, path }) => {
-      const overrides = config[overridesSetting as keyof T] as OverridesSetting<T>[] | undefined;
+    configs.forEach(({ config, path, root }) => {
+      const key = overridesSetting as keyof T;
+      const overrides = config[key] as OverridesSetting<T>[] | undefined;
+
+      if (root) {
+        delete config[key];
+      } else if (overrides) {
+        throw new Error(`Overrides setting "${key}" must only be defined in a root config.`);
+      } else {
+        return;
+      }
 
       toArray(overrides).forEach(({ exclude, include, settings }) => {
         const excludePatterns = toArray(exclude);
@@ -229,6 +243,7 @@ export default class ConfigFinder<T extends object> extends Finder<
           overriddenConfigs.push({
             config: settings,
             path,
+            root: false,
           });
         }
       });
@@ -266,6 +281,7 @@ export default class ConfigFinder<T extends object> extends Finder<
     return {
       config,
       path,
+      root: path.path().includes(CONFIG_FOLDER),
     };
   }
 
@@ -279,6 +295,7 @@ export default class ConfigFinder<T extends object> extends Finder<
     return {
       config: pkg[this.options.name as 'config'] || {},
       path,
+      root: false,
     };
   }
 

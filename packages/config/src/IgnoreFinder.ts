@@ -1,6 +1,7 @@
 import { Path, Predicates } from '@boost/common';
 import Finder from './Finder';
 import readFile from './helpers/readFile';
+import { CONFIG_FOLDER } from './constants';
 import { IgnoreFinderOptions, IgnoreFile } from './types';
 
 export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
@@ -48,6 +49,7 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
         return {
           ignore,
           path: filePath,
+          root: filePath.path().includes(CONFIG_FOLDER),
         };
       }),
     );
