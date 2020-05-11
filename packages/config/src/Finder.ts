@@ -10,7 +10,15 @@ import loadYaml from './loaders/yaml';
 import Cache from './Cache';
 import createFileName from './helpers/createFileName';
 import getEnv from './helpers/getEnv';
-import { FinderOptions, ExtType, ExtendsSetting, ConfigFile, OverridesSetting } from './types';
+import readFile from './helpers/readFile';
+import {
+  FinderOptions,
+  ExtType,
+  ExtendsSetting,
+  ConfigFile,
+  OverridesSetting,
+  IgnoreFile,
+} from './types';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
 
 function isModuleName(path: PortablePath) {
@@ -58,7 +66,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
 
   /**
    * Determine a files package scope by finding the first parent `package.json`
-   * by traversing up the directories. We will leverage the cache as much as
+   * when traversing up directories. We will leverage the cache as much as
    * possible for performance.
    *
    * @see https://nodejs.org/api/esm.html#esm_package_scope_and_file_extensions
@@ -76,7 +84,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
         }
         // Fall-through
       } else if (pkgPath.exists()) {
-        return this.loadPackage(pkgPath);
+        return this.loadPackageContents(pkgPath);
       } else {
         this.cache.markMissingFile(pkgPath);
       }
@@ -142,7 +150,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * or we reach to top of the file system. While traversing, find all config files
    * within each branch directory, and load them.
    */
-  async loadFromBranchToRoot(dir: PortablePath): Promise<ConfigFile<T>[]> {
+  async loadConfigFromBranchToRoot(dir: PortablePath): Promise<ConfigFile<T>[]> {
     const filesToLoad: Path[] = [];
     const branch = Path.resolve(dir);
     let currentDir = branch.isDirectory() ? branch : branch.parent();
@@ -178,15 +186,8 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * Load config files from a relative `.config` folder, and a config block from a
    * relative `package.json`. Package configurations take lowest precedence.
    */
-  async loadFromRoot(dir: PortablePath = process.cwd()): Promise<ConfigFile<T>[]> {
-    const root = Path.resolve(dir);
-
-    if (!this.isRootDir(root)) {
-      throw new Error(
-        `Invalid configuration root. Requires a \`${CONFIG_FOLDER}\` folder and \`${PACKAGE_FILE}\`.`,
-      );
-    }
-
+  async loadConfigFromRoot(dir: PortablePath = process.cwd()): Promise<ConfigFile<T>[]> {
+    const root = this.getRootDir(dir);
     const files = await this.findConfigFilesInDir(this.configDir!);
 
     if (this.pkgPath) {
@@ -194,6 +195,30 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
     }
 
     return this.resolveAllConfigs(root, files);
+  }
+
+  /**
+   * Load a single `.<name>ignore` file from the provided root, typically the current
+   * working directory.
+   */
+  async loadIgnoreFromRoot(dir: PortablePath = process.cwd()): Promise<IgnoreFile> {
+    const root = this.getRootDir(dir);
+    const path = root.append(`.${this.options.name.toLowerCase()}ignore`);
+    let ignore: string[] = [];
+
+    if (path.exists()) {
+      const contents = await this.cache.cacheFileContents(path, () => readFile(path));
+
+      ignore = contents
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line !== '' && !line.startsWith('#'));
+    }
+
+    return {
+      ignore,
+      path,
+    };
   }
 
   /**
@@ -261,6 +286,21 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   }
 
   /**
+   * Return the root dir path or throw an error.
+   */
+  protected getRootDir(dir: PortablePath): Path {
+    const root = Path.resolve(dir);
+
+    if (!this.isRootDir(root)) {
+      throw new Error(
+        `Invalid configuration root. Requires a \`${CONFIG_FOLDER}\` folder and \`${PACKAGE_FILE}\`.`,
+      );
+    }
+
+    return root;
+  }
+
+  /**
    * Load config contents from the provided file path using one of the defined loaders.
    */
   protected async loadConfig(path: Path): Promise<ConfigFile<T>> {
@@ -297,7 +337,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * a property that matches the `name` option.
    */
   protected async loadConfigFromPackage(path: Path): Promise<ConfigFile<T>> {
-    const pkg = await this.loadPackage<PackageStructure & { config: Partial<T> }>(path);
+    const pkg = await this.loadPackageContents<PackageStructure & { config: Partial<T> }>(path);
 
     return {
       config: pkg[this.options.name as 'config'] || {},
@@ -308,7 +348,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
   /**
    * Load and cache a `package.json` file's contents.
    */
-  protected loadPackage<P extends PackageStructure>(path: Path): Promise<P> {
+  protected loadPackageContents<P extends PackageStructure>(path: Path): Promise<P> {
     return this.cache.cacheFileContents(path, () => loadJson<P>(path));
   }
 

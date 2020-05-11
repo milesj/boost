@@ -13,6 +13,11 @@ export interface ConfigFile<T> {
   path: Path;
 }
 
+export interface IgnoreFile {
+  ignore: string[];
+  path: Path;
+}
+
 export interface ProcessedConfig<T> {
   config: Required<T>;
   files: ConfigFile<T>[];
@@ -27,15 +32,13 @@ export interface FinderOptions<T> {
   overridesSetting?: string;
 }
 
-export interface ProcessorOptions {
-  name: string;
-}
+export type FileGlob = string | string[];
 
 export type ExtendsSetting = string | string[];
 
 export interface OverridesSetting<T> {
-  exclude?: string | string[];
-  include: string | string[];
+  exclude?: FileGlob;
+  include: FileGlob;
   settings: Partial<T>;
 }
 

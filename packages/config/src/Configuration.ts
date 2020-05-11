@@ -2,7 +2,7 @@ import { Contract, PortablePath } from '@boost/common';
 import Cache from './Cache';
 import Finder from './Finder';
 import Processor from './Processor';
-import { FinderOptions, ProcessedConfig, ConfigFile, Handler } from './types';
+import { FinderOptions, ProcessedConfig, ConfigFile, IgnoreFile, Handler } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
   private cache: Cache;
@@ -57,8 +57,8 @@ export default abstract class Configuration<T extends object> extends Contract<T
    *
    * Once loaded, process all configs into a final config result.
    */
-  async loadFromBranchToRoot(dir: PortablePath): Promise<ProcessedConfig<T>> {
-    return this.processConfigs(await this.finder.loadFromBranchToRoot(dir));
+  async loadConfigFromBranchToRoot(dir: PortablePath): Promise<ProcessedConfig<T>> {
+    return this.processConfigs(await this.finder.loadConfigFromBranchToRoot(dir));
   }
 
   /**
@@ -67,8 +67,17 @@ export default abstract class Configuration<T extends object> extends Contract<T
    *
    * Once loaded, process all configs into a final config result.
    */
-  async loadFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
-    return this.processConfigs(await this.finder.loadFromRoot(dir));
+  async loadConfigFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
+    return this.processConfigs(await this.finder.loadConfigFromRoot(dir));
+  }
+
+  /**
+   * Load a single `.<name>ignore` file from the provided root, typically the current
+   * working directory. Returns an array of patterns, but does not apply these patterns
+   * to any file paths.
+   */
+  async loadIgnoreFromRoot(dir: PortablePath = process.cwd()): Promise<IgnoreFile> {
+    return this.finder.loadIgnoreFromRoot(dir);
   }
 
   /**
