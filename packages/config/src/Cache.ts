@@ -8,6 +8,12 @@ export interface FileCache<T> {
 }
 
 export default class Cache {
+  configDir?: Path;
+
+  pkgPath?: Path;
+
+  rootDir?: Path;
+
   protected dirFilesCache: { [dir: string]: Path[] } = {};
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,7 +53,7 @@ export default class Cache {
     return files;
   }
 
-  clearConfigCache() {
+  clearFileCache() {
     this.fileContentCache = {};
   }
 

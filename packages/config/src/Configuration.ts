@@ -1,24 +1,28 @@
-import { Contract, PortablePath } from '@boost/common';
+import { Contract } from '@boost/common';
 import Cache from './Cache';
-import Finder from './Finder';
+import ConfigFinder from './ConfigFinder';
+import IgnoreFinder from './IgnoreFinder';
 import Processor from './Processor';
-import { FinderOptions, ProcessedConfig, ConfigFile, IgnoreFile, Handler } from './types';
+import { ProcessedConfig, ConfigFile, Handler } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
-  private cache: Cache;
+  protected cache: Cache;
 
-  private finder: Finder<T>;
+  protected configFinder: ConfigFinder<T>;
 
-  private name: string;
+  protected ignoreFinder: IgnoreFinder;
 
-  private processor: Processor<T>;
+  protected name: string;
+
+  protected processor: Processor<T>;
 
   constructor(name: string) {
     super();
 
     this.name = name;
     this.cache = new Cache();
-    this.finder = new Finder({ name }, this.cache);
+    this.configFinder = new ConfigFinder({ name }, this.cache);
+    this.ignoreFinder = new IgnoreFinder({ name }, this.cache);
     this.processor = new Processor();
   }
 
@@ -26,23 +30,23 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * Clear all cache.
    */
   clearCache(): this {
-    this.clearConfigCache();
+    this.clearFileCache();
     this.clearFinderCache();
 
     return this;
   }
 
   /**
-   * Clear all cached configuration file contents.
+   * Clear all cached file contents.
    */
-  clearConfigCache(): this {
-    this.cache.clearConfigCache();
+  clearFileCache(): this {
+    this.cache.clearFileCache();
 
     return this;
   }
 
   /**
-   * Clear all cached directory and file information.
+   * Clear all cached directory and file path information.
    */
   clearFinderCache(): this {
     this.cache.clearFinderCache();
@@ -51,33 +55,17 @@ export default abstract class Configuration<T extends object> extends Contract<T
   }
 
   /**
-   * Traverse upwards from the branch directory, until the root directory is found,
-   * or we reach to top of the file system. While traversing, find all config files
-   * within each branch directory, and load them.
-   *
-   * Once loaded, process all configs into a final config result.
+   * Return the config file finder instance.
    */
-  async loadConfigFromBranchToRoot(dir: PortablePath): Promise<ProcessedConfig<T>> {
-    return this.processConfigs(await this.finder.loadConfigFromBranchToRoot(dir));
+  getConfigFinder(): ConfigFinder<T> {
+    return this.configFinder;
   }
 
   /**
-   * Load root config files from a relative `.config` folder, and a config block from a
-   * relative `package.json`. Package configurations take lowest precedence.
-   *
-   * Once loaded, process all configs into a final config result.
+   * Return the ignore file finder instance.
    */
-  async loadConfigFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
-    return this.processConfigs(await this.finder.loadConfigFromRoot(dir));
-  }
-
-  /**
-   * Load a single `.<name>ignore` file from the provided root, typically the current
-   * working directory. Returns an array of patterns, but does not apply these patterns
-   * to any file paths.
-   */
-  async loadIgnoreFromRoot(dir: PortablePath = process.cwd()): Promise<IgnoreFile> {
-    return this.finder.loadIgnoreFromRoot(dir);
+  getIgnoreFinder(): IgnoreFinder {
+    return this.ignoreFinder;
   }
 
   /**
@@ -89,27 +77,6 @@ export default abstract class Configuration<T extends object> extends Contract<T
 
     return this;
   }
-
-  /**
-   * Configure finder specific options.
-   */
-  protected configureFinder(options: Omit<FinderOptions<T>, 'name'>): this {
-    this.finder.configure({
-      ...options,
-      name: this.name,
-    });
-
-    return this;
-  }
-
-  /**
-   * Configure processor specific options.
-   */
-  // protected configureProcessor(options: ProcessorOptions): this {
-  //   this.processor.configure(options);
-
-  //   return this;
-  // }
 
   /**
    * Process all loaded configs into a single config result.
