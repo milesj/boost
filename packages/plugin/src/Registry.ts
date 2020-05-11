@@ -1,4 +1,4 @@
-import { Contract, Predicates, isObject, ModuleName } from '@boost/common';
+import { Contract, Predicates, isObject, ModuleName, MODULE_NAME_PATTERN } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { RuntimeError, color } from '@boost/internal';
@@ -14,7 +14,7 @@ import {
   PluginOptions,
   Callback,
 } from './types';
-import { DEFAULT_PRIORITY, MODULE_NAME_PATTERN, debug } from './constants';
+import { DEFAULT_PRIORITY, debug } from './constants';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
   RegistryOptions<Plugin>

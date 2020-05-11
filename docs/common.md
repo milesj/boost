@@ -91,6 +91,38 @@ isEmpty([]); // true
 isEmpty(['Boost']); // false
 ```
 
+### `isFilePath`
+
+> isFilePath(path: PortablePath): boolean
+
+Returns `true` if a string or `Path` instance looks like a file system path, by checking for
+absolute or relative path markers, or the existence of path separating slashes. Will return `false`
+for values that are only the file or folder name.
+
+```ts
+import { isFilePath } from '@boost/common';
+
+isFilePath('./path/to/file.ts'); // true
+isFilePath(new Path('/path/to/folder')); // true
+isFilePath('file.ts'); // false
+```
+
+### `isModuleName`
+
+> isModuleName(name: ModuleName): boolean
+
+Returns `true` if a string is a valid Node module package name, according to the rules defined in
+[validate-npm-package-name](https://github.com/npm/validate-npm-package-name). Will `return` false
+for native builtin modules, like `fs`, and for the old name format.
+
+```ts
+import { isModuleName } from '@boost/common';
+
+isModuleName('boost'); // true
+isModuleName('@boost/common'); // true
+isModuleName('fs'); // false
+```
+
 ### `isObject`
 
 > isObject\<T>(value: unknown): value is T
