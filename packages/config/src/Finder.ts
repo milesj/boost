@@ -37,9 +37,9 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
 
   blueprint({ array, bool, func, shape, string }: Predicates) {
     return {
-      env: bool(true),
       extendsSetting: string(),
-      exts: array(string<ExtType>(), DEFAULT_EXTS),
+      extensions: array(string<ExtType>(), DEFAULT_EXTS),
+      includeEnv: bool(true),
       loaders: shape({
         cjs: func(loadCjs).notNullable(),
         js: func(loadJs).notNullable(),
@@ -100,7 +100,7 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
       const files: Path[] = [];
 
       // eslint-disable-next-line no-restricted-syntax
-      for (const ext of this.options.exts) {
+      for (const ext of this.options.extensions) {
         await Promise.all(
           [
             dir.append(this.getConfigFileName(ext, isBranch)),
@@ -128,10 +128,10 @@ export default class Finder<T extends object> extends Contract<FinderOptions<T>>
    * Create and return a config file name, with optional branch and environment variants.
    */
   getConfigFileName(ext: string, isBranch: boolean = false, isEnv: boolean = false): string {
-    const { name, env } = this.options;
+    const { name, includeEnv } = this.options;
 
     return createFileName(name, ext, {
-      envSuffix: isEnv && env ? getEnv(this.options.name) : '',
+      envSuffix: isEnv && includeEnv ? getEnv(this.options.name) : '',
       leadingDot: isBranch,
     });
   }

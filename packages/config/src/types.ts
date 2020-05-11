@@ -19,9 +19,9 @@ export interface ProcessedConfig<T> {
 }
 
 export interface FinderOptions<T> {
-  env?: boolean;
   extendsSetting?: string;
-  exts?: ExtType[];
+  extensions?: ExtType[];
+  includeEnv?: boolean;
   loaders?: { [K in LoaderType]: Loader<T> };
   name: string;
   overridesSetting?: string;
@@ -32,6 +32,11 @@ export interface ProcessorOptions {
 }
 
 export type ExtendsSetting = string | string[];
+
+export interface OverridesSetting<T> {
+  files: string | string[];
+  settings: Partial<T>;
+}
 
 export interface PluginsSetting {
   [name: string]: boolean | object;
