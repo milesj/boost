@@ -10,14 +10,14 @@ export interface FileCache<T> {
 export default class Cache {
   configDir?: Path;
 
+  dirFilesCache: { [dir: string]: Path[] } = {};
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fileContentCache: { [path: string]: FileCache<any> } = {};
+
   pkgPath?: Path;
 
   rootDir?: Path;
-
-  protected dirFilesCache: { [dir: string]: Path[] } = {};
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected fileContentCache: { [path: string]: FileCache<any> } = {};
 
   async cacheFileContents<T>(path: Path, cb: () => Promise<T>): Promise<T> {
     const key = path.path();

@@ -70,7 +70,7 @@ export default abstract class Finder<T extends File, O extends object> extends C
    * Return true if the path represents the root of the file system.
    */
   protected isFileSystemRoot(path: Path): boolean {
-    return /^(\/|[A-Z]:)/u.test(path.path());
+    return /^(\/|[A-Z]:\\)$/u.test(path.path());
   }
 
   /**
@@ -85,8 +85,9 @@ export default abstract class Finder<T extends File, O extends object> extends C
     }
 
     const configDir = dir.append(CONFIG_FOLDER);
+    const configExists = configDir.exists();
 
-    if (!configDir.exists() || !configDir.isDirectory()) {
+    if (!configExists || (configExists && !configDir.isDirectory())) {
       return false;
     }
 
