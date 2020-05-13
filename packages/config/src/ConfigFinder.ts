@@ -1,6 +1,14 @@
 /* eslint-disable no-param-reassign, no-await-in-loop */
 
-import { Predicates, PortablePath, Path, PackageStructure, toArray } from '@boost/common';
+import {
+  Predicates,
+  Path,
+  PackageStructure,
+  toArray,
+  isModuleName,
+  isFilePath,
+} from '@boost/common';
+import { RuntimeError } from '@boost/internal';
 import minimatch from 'minimatch';
 import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
@@ -18,14 +26,6 @@ import {
   OverridesSetting,
 } from './types';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
-
-function isModuleName(path: PortablePath) {
-  return true;
-}
-
-function isFilePath(path: PortablePath) {
-  return true;
-}
 
 export default class ConfigFinder<T extends object> extends Finder<
   ConfigFile<T>,
@@ -83,7 +83,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       }
     }
 
-    throw new Error('Unable to determine package scope. No parent `package.json` found.');
+    throw new RuntimeError('config', 'CFG_PACKAGE_SCOPE_UNKNOWN');
   }
 
   /**
@@ -188,7 +188,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       if (root) {
         delete config[key];
       } else if (extendsFrom) {
-        throw new Error(`Extends setting "${key}" must only be defined in a root config.`);
+        throw new RuntimeError('config', 'CFG_EXTENDS_ROOT_ONLY', [key]);
       } else {
         return;
       }
@@ -201,9 +201,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         } else if (isFilePath(extendsPath)) {
           extendsPaths.push(path.parent().append(extendsPath));
         } else {
-          throw new Error(
-            `Cannot extend configuration. Unknown module or file path "${extendsPath}".`,
-          );
+          throw new RuntimeError('config', 'CFG_EXTENDS_UNKNOWN_PATH', [extendsPath]);
         }
       });
     });
@@ -226,7 +224,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       if (root) {
         delete config[key];
       } else if (overrides) {
-        throw new Error(`Overrides setting "${key}" must only be defined in a root config.`);
+        throw new RuntimeError('config', 'CFG_OVERRIDES_ROOT_ONLY', [key]);
       } else {
         return;
       }
@@ -274,7 +272,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         case 'yml':
           return loaders.yaml(path, pkg);
         default:
-          throw new Error(`Unsupported loader format "${ext}".`);
+          throw new RuntimeError('config', 'CFG_LOADER_UNSUPPORTED', [ext]);
       }
     });
 

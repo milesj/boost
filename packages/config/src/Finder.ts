@@ -1,4 +1,5 @@
 import { Contract, Path, PortablePath } from '@boost/common';
+import { RuntimeError } from '@boost/internal';
 import Cache from './Cache';
 import { File } from './types';
 import { CONFIG_FOLDER, PACKAGE_FILE } from './constants';
@@ -58,9 +59,7 @@ export default abstract class Finder<T extends File, O extends object> extends C
     const root = Path.resolve(dir);
 
     if (!this.isRootDir(root)) {
-      throw new Error(
-        `Invalid configuration root. Requires a \`${CONFIG_FOLDER}\` folder and \`${PACKAGE_FILE}\`.`,
-      );
+      throw new RuntimeError('config', 'CFG_ROOT_INVALID', [CONFIG_FOLDER, PACKAGE_FILE]);
     }
 
     return root;
@@ -97,9 +96,7 @@ export default abstract class Finder<T extends File, O extends object> extends C
     const pkgPath = dir.append(PACKAGE_FILE);
 
     if (!pkgPath.exists()) {
-      throw new Error(
-        `Config folder \`${CONFIG_FOLDER}\` found without a relative \`${PACKAGE_FILE}\`. Both must be located in the project root.`,
-      );
+      throw new RuntimeError('config', 'CFG_ROOT_MISSING_PACKAGE', [CONFIG_FOLDER, PACKAGE_FILE]);
     }
 
     this.cache.pkgPath = pkgPath;
