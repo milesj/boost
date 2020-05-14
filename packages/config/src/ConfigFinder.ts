@@ -76,11 +76,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         this.cache.markMissingFile(pkgPath);
       }
 
-      if (this.isRootDir(currentDir, true)) {
-        break;
-      } else {
-        currentDir = currentDir.parent();
-      }
+      currentDir = currentDir.parent();
     }
 
     throw new RuntimeError('config', 'CFG_PACKAGE_SCOPE_UNKNOWN');
@@ -264,6 +260,8 @@ export default class ConfigFinder<T extends object> extends Finder<
         case 'json':
           return loaders.json(path, pkg);
         case 'mjs':
+          // Not easily testable yet
+          // istanbul ignore next
           return loaders.mjs(path, pkg);
         case 'yaml':
         case 'yml':

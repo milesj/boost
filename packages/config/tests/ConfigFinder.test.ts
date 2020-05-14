@@ -10,6 +10,7 @@ import {
   rootConfigJSON,
   rootConfigYAML,
   rootConfigYML,
+  rootConfigTOML,
   configFileTreeJS,
   configFileTreeJSON,
   configFileTreeCJS,
@@ -22,6 +23,8 @@ import {
   overridesFromBranch,
   overridesFromBranchWithExcludes,
   invalidBranchNestedOverrides,
+  configFileTreeAllTypes,
+  packageFileTreeMonorepo,
 } from './__fixtures__/config-files-fs';
 import { stubPath } from './helpers';
 
@@ -47,6 +50,86 @@ describe('ConfigFinder', () => {
     }).toThrow(
       'Invalid ConfigFinder field "name". String must be in camel case. (pattern "^[a-z][0-9A-Za-z]+$")',
     );
+  });
+
+  describe('determinePackageScope()', () => {
+    it('returns the parent `package.json`', async () => {
+      vol.fromJSON(packageFileTreeMonorepo, '/test');
+
+      const pkg1 = await finder.determinePackageScope(new Path('/test/packages/core/src/index.ts'));
+
+      expect(pkg1).toEqual({ name: 'core' });
+
+      const pkg2 = await finder.determinePackageScope(new Path('/test/packages/log/lib/index.js'));
+
+      expect(pkg2).toEqual({ name: 'log' });
+    });
+
+    it('returns the first parent `package.json` if there are multiple', async () => {
+      vol.fromJSON(packageFileTreeMonorepo, '/test');
+
+      const pkg = await finder.determinePackageScope(
+        new Path('/test/packages/plugin/nested/example/src/index.ts'),
+      );
+
+      expect(pkg).toEqual({ name: 'plugin-example' });
+    });
+
+    it('returns root `package.json` if outside a monorepo', async () => {
+      vol.fromJSON(packageFileTreeMonorepo, '/test');
+
+      const pkg = await finder.determinePackageScope(new Path('/test/index.ts'));
+
+      expect(pkg).toEqual({ name: 'boost', version: '0.0.0' });
+    });
+
+    it('uses the cache for the same `package.json` parent', async () => {
+      vol.fromJSON(packageFileTreeMonorepo, '/test');
+
+      const pkg1 = await finder.determinePackageScope(new Path('/test/packages/core/src/index.ts'));
+      const pkg2 = await finder.determinePackageScope(
+        new Path('/test/packages/core/src/deep/nested/core.ts'),
+      );
+
+      expect(pkg2).toEqual(pkg1);
+    });
+
+    it('caches each depth, even if a file is missing', async () => {
+      vol.fromJSON(packageFileTreeMonorepo, '/test');
+
+      await finder.determinePackageScope(new Path('/test/packages/core/src/deep/nested/core.ts'));
+
+      expect(cache.fileContentCache).toEqual({
+        '/test/packages/core/package.json': {
+          content: { name: 'core' },
+          exists: true,
+          mtime: expect.any(Number),
+        },
+        '/test/packages/core/src/package.json': {
+          content: null,
+          exists: false,
+          mtime: 0,
+        },
+        '/test/packages/core/src/deep/package.json': {
+          content: null,
+          exists: false,
+          mtime: 0,
+        },
+        '/test/packages/core/src/deep/nested/package.json': {
+          content: null,
+          exists: false,
+          mtime: 0,
+        },
+      });
+    });
+
+    it('errors if no parent `package.json`', async () => {
+      vol.fromJSON({ 'index.js': '' }, '/test');
+
+      await expect(finder.determinePackageScope(new Path('/test/index.js'))).rejects.toThrow(
+        'Unable to determine package scope. No parent `package.json` found.',
+      );
+    });
   });
 
   describe('loadFromBranchToRoot()', () => {
@@ -82,6 +165,40 @@ describe('ConfigFinder', () => {
           },
         ]);
       });
+    });
+
+    it('returns all config files for all types from a branch up to root', async () => {
+      vol.fromJSON(configFileTreeAllTypes, '/test');
+
+      const files = await finder.loadFromBranchToRoot('/test/src/app/profiles/settings');
+
+      expect(files).toEqual([
+        {
+          config: { debug: true },
+          path: stubPath('/test/.config/boost.json'),
+          source: 'root',
+        },
+        {
+          config: { type: 'json' },
+          path: stubPath('/test/src/.boost.json'),
+          source: 'branch',
+        },
+        {
+          config: { type: 'cjs' },
+          path: stubPath('/test/src/app/.boost.cjs'),
+          source: 'branch',
+        },
+        {
+          config: { type: 'js' },
+          path: stubPath('/test/src/app/profiles/.boost.js'),
+          source: 'branch',
+        },
+        {
+          config: { type: 'yaml' },
+          path: stubPath('/test/src/app/profiles/settings/.boost.yaml'),
+          source: 'branch',
+        },
+      ]);
     });
 
     it('doesnt load config files above root', async () => {
@@ -347,6 +464,19 @@ describe('ConfigFinder', () => {
 
       await expect(finder.loadFromRoot('/test')).rejects.toThrow(
         'Config folder `.config` found without a relative `package.json`. Both must be located in the project root.',
+      );
+    });
+
+    it('errors for invalid config file/loader type', async () => {
+      vol.fromJSON(rootConfigTOML, '/test');
+
+      finder.configure(
+        // @ts-ignore Allow invalid type
+        { extensions: ['toml'] },
+      );
+
+      await expect(finder.loadFromRoot('/test')).rejects.toThrow(
+        'Unsupported loader format "toml".',
       );
     });
   });

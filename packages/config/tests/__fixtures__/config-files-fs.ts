@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 import { DirectoryJSON } from 'memfs';
 import { json, yaml } from '@boost/common';
 import { pkg, rootCommon } from './common-fs';
@@ -38,6 +40,20 @@ export const rootConfigYAML: DirectoryJSON = {
 export const rootConfigYML: DirectoryJSON = {
   './.config/boost.yml': yaml.stringify({ debug: true }),
   './package.json': pkg,
+};
+
+// Invalid type for testing
+export const rootConfigTOML: DirectoryJSON = {
+  './.config/boost.toml': '',
+  './package.json': pkg,
+};
+
+export const configFileTreeAllTypes: DirectoryJSON = {
+  ...rootCommon,
+  './src/.boost.json': json.stringify({ type: 'json' }),
+  './src/app/.boost.cjs': moduleExports({ type: 'cjs' }),
+  './src/app/profiles/.boost.js': moduleExports({ type: 'js' }),
+  './src/app/profiles/settings/.boost.yaml': yaml.stringify({ type: 'yaml' }),
 };
 
 export const configFileTreeJS: DirectoryJSON = {
@@ -94,6 +110,20 @@ export const configFileTreeYML: DirectoryJSON = {
   './src/app/profiles/Detail.tsx': '',
   './src/app/profiles/settings/.boost.yml': yaml.stringify({ verbose: true }),
   './src/setup.ts': '',
+};
+
+export const packageFileTreeMonorepo: DirectoryJSON = {
+  ...rootCommon,
+  './index.ts': '',
+  './packages/core/package.json': json.stringify({ name: 'core' }),
+  './packages/core/src/index.ts': '',
+  './packages/core/src/deep/nested/core.ts': '',
+  './packages/log/package.json': json.stringify({ name: 'log' }),
+  './packages/log/lib/index.js': '',
+  './packages/plugin/nested/example/package.json': json.stringify({ name: 'plugin-example' }),
+  './packages/plugin/nested/example/src/index.ts': '',
+  './packages/plugin/package.json': json.stringify({ name: 'plugin' }),
+  './packages/plugin/index.js': '',
 };
 
 export const scenarioConfigsAboveRoot: DirectoryJSON = {
