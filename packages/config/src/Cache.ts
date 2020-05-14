@@ -68,6 +68,8 @@ export default class Cache {
   loadStats(path: Path): Promise<fs.Stats> {
     return new Promise((resolve, reject) => {
       fs.stat(path.path(), (error, stats) => {
+        // Temporary until Node 10
+        // istanbul ignore next
         if (error) {
           reject(error);
         } else {
