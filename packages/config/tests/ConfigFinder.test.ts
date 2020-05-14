@@ -22,9 +22,17 @@ import {
   scenarioBranchWithEnvs,
   overridesFromBranch,
   overridesFromBranchWithExcludes,
+  overridesCustomSettingsName,
   invalidBranchNestedOverrides,
   configFileTreeAllTypes,
   packageFileTreeMonorepo,
+  invalidBranchNestedExtends,
+  extendsFsPaths,
+  extendsModulePresets,
+  extendsFromOverride,
+  extendsCustomSettingName,
+  invalidExtendsPath,
+  missingExtendsPath,
 } from './__fixtures__/config-files-fs';
 import { stubPath } from './helpers';
 
@@ -69,7 +77,7 @@ describe('ConfigFinder', () => {
       vol.fromJSON(packageFileTreeMonorepo, '/test');
 
       const pkg = await finder.determinePackageScope(
-        new Path('/test/packages/plugin/nested/example/src/index.ts'),
+        new Path('/test/packages/plugin/nested/example/src'),
       );
 
       expect(pkg).toEqual({ name: 'plugin-example' });
@@ -364,7 +372,7 @@ describe('ConfigFinder', () => {
           {
             config: { level: 2 },
             path: stubPath('/test/.config/boost.json'),
-            source: 'override',
+            source: 'overridden',
           },
         ]);
       });
@@ -383,7 +391,27 @@ describe('ConfigFinder', () => {
           {
             config: { level: 2 },
             path: stubPath('/test/.config/boost.json'),
-            source: 'override',
+            source: 'overridden',
+          },
+        ]);
+      });
+
+      it('adds overrides using a custom settings name', async () => {
+        vol.fromJSON(overridesCustomSettingsName, '/test');
+        finder.configure({ overridesSetting: 'rules' });
+
+        const files = await finder.loadFromBranchToRoot('/test/src/foo/does-match.ts');
+
+        expect(files).toEqual([
+          {
+            config: { level: 1 },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'root',
+          },
+          {
+            config: { level: 2 },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'overridden',
           },
         ]);
       });
@@ -421,6 +449,129 @@ describe('ConfigFinder', () => {
 
         await expect(finder.loadFromBranchToRoot('/test/src')).rejects.toThrow(
           'Overrides setting `overrides` must only be defined in a root config.',
+        );
+      });
+    });
+
+    describe('extends', () => {
+      it('extends configs using relative and absolute file paths', async () => {
+        vol.fromJSON(extendsFsPaths, '/test');
+
+        const files = await finder.loadFromBranchToRoot('/test');
+
+        expect(files).toEqual([
+          {
+            config: { relative: true },
+            path: stubPath('/test/some/relative/path/config.js'),
+            source: 'extended',
+          },
+          {
+            config: { absolute: true },
+            path: stubPath('/test/some/absolute/path/config.yml'),
+            source: 'extended',
+          },
+          {
+            config: { root: true },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'root',
+          },
+        ]);
+      });
+
+      it('extends config presets from node modules', async () => {
+        vol.fromJSON(extendsModulePresets, '/test');
+
+        const files = await finder.loadFromBranchToRoot('/test');
+
+        expect(files).toEqual([
+          {
+            config: { name: 'foo' },
+            path: stubPath('/test/node_modules/foo/boost.preset.js'),
+            source: 'extended',
+          },
+          {
+            config: { name: '@scope/bar' },
+            path: stubPath('/test/node_modules/@scope/bar/boost.preset.js'),
+            source: 'extended',
+          },
+          {
+            config: { root: true },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'root',
+          },
+        ]);
+      });
+
+      it('extends configs that were defined in an override', async () => {
+        vol.fromJSON(extendsFromOverride, '/test');
+
+        const files = await finder.loadFromBranchToRoot('/test/some/relative/path');
+
+        expect(files).toEqual([
+          {
+            config: { extended: true },
+            path: stubPath('/test/some/relative/path/config.js'),
+            source: 'extended',
+          },
+          {
+            config: { root: true },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'root',
+          },
+          {
+            config: { overridden: true },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'overridden',
+          },
+        ]);
+      });
+
+      it('extends configs using a custom settings name', async () => {
+        vol.fromJSON(extendsCustomSettingName, '/test');
+        finder.configure({ extendsSetting: 'presets' });
+
+        const files = await finder.loadFromBranchToRoot('/test');
+
+        expect(files).toEqual([
+          {
+            config: { type: 'module' },
+            path: stubPath('/test/node_modules/foo/boost.preset.js'),
+            source: 'extended',
+          },
+          {
+            config: { type: 'fs' },
+            path: stubPath('/test/some/relative/path/config.js'),
+            source: 'extended',
+          },
+          {
+            config: { root: true },
+            path: stubPath('/test/.config/boost.json'),
+            source: 'root',
+          },
+        ]);
+      });
+
+      it('errors if extends are found in a branch config', async () => {
+        vol.fromJSON(invalidBranchNestedExtends, '/test');
+
+        await expect(finder.loadFromBranchToRoot('/test/src')).rejects.toThrow(
+          'Extends setting `extends` must only be defined in a root config.',
+        );
+      });
+
+      it('errors for an invalid extends path', async () => {
+        vol.fromJSON(invalidExtendsPath, '/test');
+
+        await expect(finder.loadFromBranchToRoot('/test')).rejects.toThrow(
+          'Cannot extend configuration. Unknown module or file path "123!#?".',
+        );
+      });
+
+      it('errors for a missing extends path', async () => {
+        vol.fromJSON(missingExtendsPath, '/test');
+
+        await expect(finder.loadFromBranchToRoot('/test')).rejects.toThrow(
+          'no such file or directory',
         );
       });
     });

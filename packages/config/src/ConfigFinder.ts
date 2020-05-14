@@ -25,6 +25,7 @@ import {
   ExtendsSetting,
   ExtType,
   OverridesSetting,
+  FileSource,
 } from './types';
 
 export default class ConfigFinder<T extends object> extends Finder<
@@ -178,7 +179,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       const key = extendsSetting as keyof T;
       const extendsFrom = config[key] as ExtendsSetting | undefined;
 
-      if (source === 'root' || source === 'override') {
+      if (source === 'root' || source === 'overridden') {
         delete config[key];
       } else if (extendsFrom) {
         throw new RuntimeError('config', 'CFG_EXTENDS_ROOT_ONLY', [key]);
@@ -189,17 +190,28 @@ export default class ConfigFinder<T extends object> extends Finder<
       toArray(extendsFrom).forEach(extendsPath => {
         if (isModuleName(extendsPath)) {
           extendsPaths.push(
-            new Path(extendsPath, createFileName(name, 'js', { envSuffix: 'preset' })),
+            this.cache.rootDir!.append(
+              'node_modules',
+              extendsPath,
+              createFileName(name, 'js', { envSuffix: 'preset' }),
+            ),
           );
         } else if (isFilePath(extendsPath)) {
-          extendsPaths.push(path.parent().append(extendsPath));
+          const filePath = new Path(extendsPath);
+
+          if (filePath.isAbsolute()) {
+            extendsPaths.push(filePath);
+          } else {
+            // Relative to the config file its defined in
+            extendsPaths.push(path.parent().append(extendsPath));
+          }
         } else {
           throw new RuntimeError('config', 'CFG_EXTENDS_UNKNOWN_PATH', [extendsPath]);
         }
       });
     });
 
-    return Promise.all(extendsPaths.map(path => this.loadConfig(path)));
+    return Promise.all(extendsPaths.map(path => this.loadConfig(path, 'extended')));
   }
 
   /**
@@ -234,7 +246,7 @@ export default class ConfigFinder<T extends object> extends Finder<
           overriddenConfigs.push({
             config: settings,
             path,
-            source: 'override',
+            source: 'overridden',
           });
         }
       });
@@ -246,7 +258,7 @@ export default class ConfigFinder<T extends object> extends Finder<
   /**
    * Load config contents from the provided file path using one of the defined loaders.
    */
-  protected async loadConfig(path: Path): Promise<ConfigFile<T>> {
+  protected async loadConfig(path: Path, source?: FileSource): Promise<ConfigFile<T>> {
     const pkg = await this.determinePackageScope(path);
     const config = await this.cache.cacheFileContents(path, async () => {
       const { loaders } = this.options;
@@ -274,7 +286,7 @@ export default class ConfigFinder<T extends object> extends Finder<
     return {
       config,
       path,
-      source: path.path().includes(CONFIG_FOLDER) ? 'root' : 'branch',
+      source: source ?? (path.path().includes(CONFIG_FOLDER) ? 'root' : 'branch'),
     };
   }
 }

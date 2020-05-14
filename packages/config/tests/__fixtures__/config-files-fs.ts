@@ -174,6 +174,24 @@ export const overridesFromBranch: DirectoryJSON = {
   './src/foo/doesnt-match.js': '',
 };
 
+export const overridesCustomSettingsName: DirectoryJSON = {
+  ...rootCommon,
+  './.config/boost.json': json.stringify({
+    level: 1,
+    rules: [
+      {
+        include: '*.ts',
+        settings: {
+          level: 2,
+        },
+      },
+    ],
+  }),
+  './src/bar/doesnt-match.ts': '',
+  './src/foo/does-match.ts': '',
+  './src/foo/doesnt-match.js': '',
+};
+
 export const overridesFromBranchWithExcludes: DirectoryJSON = {
   ...rootCommon,
   './.config/boost.json': json.stringify({
@@ -202,5 +220,80 @@ export const invalidBranchNestedOverrides: DirectoryJSON = {
   './src/.boost.json': json.stringify({
     level: 2,
     overrides: [],
+  }),
+};
+
+export const extendsFsPaths: DirectoryJSON = {
+  './.config/boost.json': json.stringify({
+    root: true,
+    extends: ['../some/relative/path/config.js', '/test/some/absolute/path/config.yml'],
+  }),
+  './some/absolute/path/config.yml': yaml.stringify({ absolute: true }),
+  './some/relative/path/config.js': moduleExports({ relative: true }),
+  './package.json': pkg,
+};
+
+export const extendsModulePresets: DirectoryJSON = {
+  './.config/boost.json': json.stringify({
+    root: true,
+    extends: ['foo', '@scope/bar'],
+  }),
+  './node_modules/foo/boost.preset.js': moduleExports({ name: 'foo' }),
+  './node_modules/@scope/bar/boost.preset.js': moduleExports({ name: '@scope/bar' }),
+  './package.json': pkg,
+};
+
+export const extendsCustomSettingName: DirectoryJSON = {
+  './.config/boost.json': json.stringify({
+    root: true,
+    presets: ['foo', '../some/relative/path/config.js'],
+  }),
+  './node_modules/foo/boost.preset.js': moduleExports({ type: 'module' }),
+  './some/relative/path/config.js': moduleExports({ type: 'fs' }),
+  './package.json': pkg,
+};
+
+export const extendsFromOverride: DirectoryJSON = {
+  './.config/boost.json': json.stringify({
+    root: true,
+    overrides: [
+      {
+        include: ['*'],
+        settings: {
+          extends: '../some/relative/path/config.js',
+          overridden: true,
+        },
+      },
+    ],
+  }),
+  './some/relative/path/config.js': moduleExports({ extended: true }),
+  './package.json': pkg,
+};
+
+export const invalidExtendsPath: DirectoryJSON = {
+  './.config/boost.json': json.stringify({
+    root: true,
+    extends: '123!#?',
+  }),
+  './package.json': pkg,
+};
+
+export const missingExtendsPath: DirectoryJSON = {
+  './.config/boost.json': json.stringify({
+    root: true,
+    extends: '../some/missing/path/config.js',
+  }),
+  './package.json': pkg,
+};
+
+export const invalidBranchNestedExtends: DirectoryJSON = {
+  ...rootCommon,
+  './.config/boost.json': json.stringify({
+    level: 1,
+    extends: [],
+  }),
+  './src/.boost.json': json.stringify({
+    level: 2,
+    extends: [],
   }),
 };
