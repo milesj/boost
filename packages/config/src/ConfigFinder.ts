@@ -71,7 +71,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         }
         // Fall-through
       } else if (pkgPath.exists()) {
-        return this.loadPackageContents(pkgPath);
+        return this.cache.cacheFileContents(pkgPath, () => loadJson(pkgPath));
       } else {
         this.cache.markMissingFile(pkgPath);
       }
@@ -100,11 +100,14 @@ export default class ConfigFinder<T extends object> extends Finder<
 
       // eslint-disable-next-line no-restricted-syntax
       for (const ext of this.options.extensions) {
+        const files = [baseDir.append(this.getFileName(ext, !isRoot, false))];
+
+        if (this.options.includeEnv) {
+          files.push(baseDir.append(this.getFileName(ext, !isRoot, true)));
+        }
+
         await Promise.all(
-          [
-            baseDir.append(this.getFileName(ext, !isRoot)),
-            baseDir.append(this.getFileName(ext, !isRoot, true)),
-          ].map(configPath => {
+          files.map(configPath => {
             if (configPath.exists()) {
               paths.push(configPath);
             }
@@ -126,11 +129,11 @@ export default class ConfigFinder<T extends object> extends Finder<
   /**
    * Create and return a config file name, with optional branch and environment variants.
    */
-  getFileName(ext: string, isBranch: boolean = false, isEnv: boolean = false): string {
-    const { name, includeEnv } = this.options;
+  getFileName(ext: string, isBranch: boolean, isEnv: boolean): string {
+    const { name } = this.options;
 
     return createFileName(name, ext, {
-      envSuffix: isEnv && includeEnv ? getEnv(this.options.name) : '',
+      envSuffix: isEnv ? getEnv(name) : '',
       leadingDot: isBranch,
     });
   }
@@ -142,20 +145,25 @@ export default class ConfigFinder<T extends object> extends Finder<
   async resolveFiles(basePath: Path, foundFiles: Path[]): Promise<ConfigFile<T>[]> {
     const configs = await Promise.all(foundFiles.map(filePath => this.loadConfig(filePath)));
 
-    // Configs that have been extended from root configs must
-    // appear before everything else, in the order they were defined
-    const extendedConfigs = await this.extractExtendedConfigs(configs);
+    // Overrides take the highest precedence and must appear after everything,
+    // including branch level configs. However, they must extract first so that
+    // extends functionality can be inherited.
+    if (this.options.overridesSetting) {
+      const overriddenConfigs = await this.extractOverriddenConfigs(basePath, configs);
 
-    if (extendedConfigs.length > 0) {
-      configs.unshift(...extendedConfigs);
+      if (overriddenConfigs.length > 0) {
+        configs.push(...overriddenConfigs);
+      }
     }
 
-    // Overrides take the highest precedence and must appear after everything,
-    // including branch level configs
-    const overriddenConfigs = await this.extractOverriddenConfigs(basePath, configs);
+    // Configs that have been extended from root configs must
+    // appear before everything else, in the order they were defined
+    if (this.options.extendsSetting) {
+      const extendedConfigs = await this.extractExtendedConfigs(configs);
 
-    if (overriddenConfigs.length > 0) {
-      configs.push(...overriddenConfigs);
+      if (extendedConfigs.length > 0) {
+        configs.unshift(...extendedConfigs);
+      }
     }
 
     return configs;
@@ -170,11 +178,11 @@ export default class ConfigFinder<T extends object> extends Finder<
     const { name, extendsSetting } = this.options;
     const extendsPaths: Path[] = [];
 
-    configs.forEach(({ config, path, root }) => {
+    configs.forEach(({ config, path, source }) => {
       const key = extendsSetting as keyof T;
       const extendsFrom = config[key] as ExtendsSetting | undefined;
 
-      if (root) {
+      if (source === 'root' || source === 'override') {
         delete config[key];
       } else if (extendsFrom) {
         throw new RuntimeError('config', 'CFG_EXTENDS_ROOT_ONLY', [key]);
@@ -206,11 +214,11 @@ export default class ConfigFinder<T extends object> extends Finder<
     const { overridesSetting } = this.options;
     const overriddenConfigs: ConfigFile<T>[] = [];
 
-    configs.forEach(({ config, path, root }) => {
+    configs.forEach(({ config, path, source }) => {
       const key = overridesSetting as keyof T;
       const overrides = config[key] as OverridesSetting<T>[] | undefined;
 
-      if (root) {
+      if (source === 'root') {
         delete config[key];
       } else if (overrides) {
         throw new RuntimeError('config', 'CFG_OVERRIDES_ROOT_ONLY', [key]);
@@ -230,7 +238,7 @@ export default class ConfigFinder<T extends object> extends Finder<
           overriddenConfigs.push({
             config: settings,
             path,
-            root: false,
+            source: 'override',
           });
         }
       });
@@ -268,14 +276,7 @@ export default class ConfigFinder<T extends object> extends Finder<
     return {
       config,
       path,
-      root: path.path().includes(CONFIG_FOLDER),
+      source: path.path().includes(CONFIG_FOLDER) ? 'root' : 'branch',
     };
-  }
-
-  /**
-   * Load and cache a `package.json` file's contents.
-   */
-  protected loadPackageContents<P extends PackageStructure>(path: Path): Promise<P> {
-    return this.cache.cacheFileContents(path, () => loadJson<P>(path));
   }
 }

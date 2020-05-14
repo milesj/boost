@@ -48,7 +48,7 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
         return {
           ignore,
           path: filePath,
-          root: this.isRootDir(filePath.parent(), true),
+          source: this.isRootDir(filePath.parent(), true) ? ('root' as const) : ('branch' as const),
         };
       }),
     );

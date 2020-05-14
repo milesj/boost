@@ -8,9 +8,11 @@ export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<Partial<T
 
 export type Handler<T> = (prev: T, next: T) => T | undefined | Promise<T | undefined>;
 
+export type FileSource = 'root' | 'branch' | 'override';
+
 export interface File {
   path: Path;
-  root: boolean;
+  source: FileSource;
 }
 
 export interface ConfigFile<T> extends File {

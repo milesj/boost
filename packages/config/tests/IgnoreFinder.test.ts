@@ -65,12 +65,12 @@ describe('IgnoreFinder', () => {
         {
           ignore: ['*.log', '*.lock'],
           path: new Path('/test/.boostignore'),
-          root: true,
+          source: 'root',
         },
         {
           ignore: ['esm/'],
           path: new Path('/test/src/app/components/build/.boostignore'),
-          root: false,
+          source: 'branch',
         },
       ]);
     });
@@ -84,17 +84,17 @@ describe('IgnoreFinder', () => {
         {
           ignore: ['*.log', '*.lock'],
           path: new Path('/test/.boostignore'),
-          root: true,
+          source: 'root',
         },
         {
           ignore: ['lib/'],
           path: new Path('/test/src/app/feature/.boostignore'),
-          root: false,
+          source: 'branch',
         },
         {
           ignore: [],
           path: new Path('/test/src/app/feature/signup/.boostignore'),
-          root: false,
+          source: 'branch',
         },
       ]);
     });
@@ -110,7 +110,7 @@ describe('IgnoreFinder', () => {
         {
           ignore: ['*.log', '*.lock'],
           path: new Path('/test/.boostignore'),
-          root: true,
+          source: 'root',
         },
       ]);
     });
