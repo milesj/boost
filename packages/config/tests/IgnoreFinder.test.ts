@@ -4,17 +4,9 @@ import Cache from '../src/Cache';
 import IgnoreFinder from '../src/IgnoreFinder';
 import { rootWithoutPackageJson } from './__fixtures__/common-fs';
 import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
+import { stubPath } from './helpers';
 
 jest.mock('fs', () => require.requireActual('memfs').vol);
-
-function stubPath(part: string) {
-  const path = new Path(part);
-
-  // @ts-ignore
-  path.stats = expect.any(Object);
-
-  return path;
-}
 
 describe('IgnoreFinder', () => {
   let cache: Cache;

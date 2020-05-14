@@ -18,6 +18,7 @@ import loadYaml from './loaders/yaml';
 import Finder from './Finder';
 import createFileName from './helpers/createFileName';
 import getEnv from './helpers/getEnv';
+import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
 import {
   ConfigFile,
   ConfigFinderOptions,
@@ -25,7 +26,6 @@ import {
   ExtType,
   OverridesSetting,
 } from './types';
-import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
 
 export default class ConfigFinder<T extends object> extends Finder<
   ConfigFile<T>,
@@ -94,7 +94,8 @@ export default class ConfigFinder<T extends object> extends Finder<
   async findFilesInDir(dir: Path): Promise<Path[]> {
     const isRoot = this.isRootDir(dir);
     const baseDir = isRoot ? dir.append(CONFIG_FOLDER) : dir;
-    const files = await this.cache.cacheFilesInDir(baseDir, async () => {
+
+    return this.cache.cacheFilesInDir(baseDir, async () => {
       const paths: Path[] = [];
 
       // eslint-disable-next-line no-restricted-syntax
@@ -120,12 +121,6 @@ export default class ConfigFinder<T extends object> extends Finder<
 
       return paths;
     });
-
-    if (isRoot && this.cache.pkgPath) {
-      files.unshift(this.cache.pkgPath);
-    }
-
-    return files;
   }
 
   /**
@@ -145,13 +140,7 @@ export default class ConfigFinder<T extends object> extends Finder<
    * Extract and apply extended and override configs based on the base path.
    */
   async resolveFiles(basePath: Path, foundFiles: Path[]): Promise<ConfigFile<T>[]> {
-    const configs = await Promise.all(
-      foundFiles.map(filePath =>
-        filePath.path().endsWith(PACKAGE_FILE)
-          ? this.loadConfigFromPackage(filePath)
-          : this.loadConfig(filePath),
-      ),
-    );
+    const configs = await Promise.all(foundFiles.map(filePath => this.loadConfig(filePath)));
 
     // Configs that have been extended from root configs must
     // appear before everything else, in the order they were defined
@@ -280,20 +269,6 @@ export default class ConfigFinder<T extends object> extends Finder<
       config,
       path,
       root: path.path().includes(CONFIG_FOLDER),
-    };
-  }
-
-  /**
-   * Load a config block from a `package.json` file, located within
-   * a property that matches the `name` option.
-   */
-  protected async loadConfigFromPackage(path: Path): Promise<ConfigFile<T>> {
-    const pkg = await this.loadPackageContents<PackageStructure & { config: Partial<T> }>(path);
-
-    return {
-      config: pkg[this.options.name as 'config'] || {},
-      path,
-      root: false,
     };
   }
 

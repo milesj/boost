@@ -1,9 +1,9 @@
 import { DirectoryJSON } from 'memfs';
+import { json } from '@boost/common';
 
-const config = JSON.stringify({ debug: true });
+export const config = json.stringify({ debug: true });
 
-const pkg = JSON.stringify({
-  boost: { verbose: true },
+export const pkg = json.stringify({
   name: 'boost',
   version: '0.0.0',
 });
