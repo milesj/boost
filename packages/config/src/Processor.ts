@@ -1,11 +1,22 @@
-import { isObject } from '@boost/common';
+/* eslint-disable no-await-in-loop, no-restricted-syntax */
+
+import { isObject, Blueprint, optimal, Contract, Predicates } from '@boost/common';
 import mergeArray from './helpers/mergeArray';
 import mergeObject from './helpers/mergeObject';
-import { Handler } from './types';
+import { Handler, ConfigFile, ProcessorOptions } from './types';
 
-export default class Processor<T extends object> {
+export default class Processor<T extends object> extends Contract<ProcessorOptions> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected handlers: { [K in keyof T]?: Handler<any> } = {};
+
+  blueprint({ bool, string }: Predicates) {
+    return {
+      defaultWithUndefined: bool(true),
+      name: string()
+        .required()
+        .camelCase(),
+    };
+  }
 
   addHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
     this.handlers[key] = handler;
@@ -13,44 +24,44 @@ export default class Processor<T extends object> {
     return this;
   }
 
-  process(defaults: Required<T>, configs: Partial<T>[]): Required<T> {
-    return configs.reduce<Required<T>>((config, next) => this.runProcess(config, next), defaults);
-  }
+  async process(
+    defaults: Required<T>,
+    configs: ConfigFile<T>[],
+    blueprint: Blueprint<T>,
+  ): Promise<Required<T>> {
+    const { defaultWithUndefined } = this.options;
+    const config = { ...defaults };
 
-  protected runProcess(prev: Required<T>, next: Partial<T>): Required<T> {
-    // const { extendsSetting, overridesSetting } = this.options;
-    const config = { ...prev };
+    for (const next of configs) {
+      // Validate next config object
+      optimal(config, blueprint, {
+        file: next.path.path(),
+        name: this.options.name,
+      });
 
-    Object.entries(next).forEach(([key, value]) => {
-      const name = key as keyof T;
-      const nextValue = value as T[keyof T];
-      const prevValue = config[name];
-      const handler = this.handlers[name];
+      // Merge properties into previous object
+      for (const [key, value] of Object.entries(next.config)) {
+        const name = key as keyof T;
+        const nextValue = value as T[keyof T];
+        const prevValue = config[name];
+        const handler = this.handlers[name];
 
-      // Handlers only run on the root settings
-      if (handler) {
-        // TODO AWAIT
-        const customValue = handler(prevValue, nextValue);
-
-        if (customValue === undefined) {
-          delete config[name];
+        if (handler) {
+          config[name] = await handler(prevValue, nextValue);
+        } else if (isObject(prevValue) && isObject(nextValue)) {
+          config[name] = mergeObject(prevValue, nextValue);
+        } else if (Array.isArray(prevValue) && Array.isArray(nextValue)) {
+          config[name] = mergeArray(prevValue, nextValue);
         } else {
-          config[name] = customValue;
+          config[name] = nextValue;
         }
 
-        return;
+        // Reset to default value if undefined is present
+        if (config[name] === undefined && defaultWithUndefined) {
+          config[name] = defaults[name];
+        }
       }
-
-      if (isObject(prevValue) && isObject(nextValue)) {
-        config[name] = mergeObject(prevValue, nextValue);
-      } else if (Array.isArray(prevValue) && Array.isArray(nextValue)) {
-        config[name] = mergeArray(prevValue, nextValue);
-      } else if (nextValue === undefined) {
-        delete config[name];
-      } else {
-        config[name] = nextValue;
-      }
-    });
+    }
 
     return config;
   }

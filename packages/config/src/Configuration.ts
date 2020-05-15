@@ -1,9 +1,9 @@
-import { Contract } from '@boost/common';
+import { Contract, predicates, PortablePath } from '@boost/common';
 import Cache from './Cache';
 import ConfigFinder from './ConfigFinder';
 import IgnoreFinder from './IgnoreFinder';
 import Processor from './Processor';
-import { ProcessedConfig, ConfigFile, Handler } from './types';
+import { ProcessedConfig, ConfigFile, Handler, IgnoreFile } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
   private cache: Cache;
@@ -12,18 +12,15 @@ export default abstract class Configuration<T extends object> extends Contract<T
 
   private ignoreFinder: IgnoreFinder;
 
-  private name: string;
-
   private processor: Processor<T>;
 
   constructor(name: string) {
     super();
 
-    this.name = name;
     this.cache = new Cache();
     this.configFinder = new ConfigFinder({ name }, this.cache);
     this.ignoreFinder = new IgnoreFinder({ name }, this.cache);
-    this.processor = new Processor();
+    this.processor = new Processor({ name });
   }
 
   /**
@@ -55,39 +52,67 @@ export default abstract class Configuration<T extends object> extends Contract<T
   }
 
   /**
-   * Return the config file finder instance.
+   * Traverse upwards from the branch directory, until the root directory is found,
+   * or we reach to top of the file system. While traversing, find all config files
+   * within each branch directory, and the root.
    */
-  getConfigFinder(): ConfigFinder<T> {
-    return this.configFinder;
+  async loadConfigFromBranchToRoot(dir: PortablePath): Promise<ProcessedConfig<T>> {
+    return this.processConfigs(await this.getConfigFinder().loadFromBranchToRoot(dir));
   }
 
   /**
-   * Return the ignore file finder instance.
+   * Load config files from the defined root. Root is determined by a relative
+   * `.config` folder and `package.json` file.
    */
-  getIgnoreFinder(): IgnoreFinder {
-    return this.ignoreFinder;
+  async loadConfigFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
+    return this.processConfigs(await this.getConfigFinder().loadFromRoot(dir));
   }
 
   /**
-   * Add a handler to customize the processing of key-value pairs while combining
-   * multiple config objects into a single object.
+   * Traverse upwards from the branch directory, until the root directory is found,
+   * or we reach to top of the file system. While traversing, find all ignore files
+   * within each branch directory, and the root.
    */
-  protected addHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
+  async loadIgnoreFromBranchToRoot(dir: PortablePath): Promise<IgnoreFile[]> {
+    return this.getIgnoreFinder().loadFromBranchToRoot(dir);
+  }
+
+  /**
+   * Load ignore file from the defined root. Root is determined by a relative
+   * `.config` folder and `package.json` file.
+   */
+  async loadIgnoreFromRoot(dir: PortablePath = process.cwd()): Promise<IgnoreFile[]> {
+    return this.getIgnoreFinder().loadFromRoot(dir);
+  }
+
+  /**
+   * Add a process handler to customize the processing of key-value pairs by name.
+   */
+  protected addProcessor<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
     this.processor.addHandler(key, handler);
 
     return this;
   }
 
   /**
-   * Process all loaded configs into a single config result.
+   * Return the config file finder instance.
    */
-  private processConfigs(files: ConfigFile<T>[]): ProcessedConfig<T> {
-    const config = this.configure(baseConfig =>
-      this.processor.process(
-        baseConfig,
-        files.map(file => file.config),
-      ),
-    );
+  protected getConfigFinder(): ConfigFinder<T> {
+    return this.configFinder;
+  }
+
+  /**
+   * Return the ignore file finder instance.
+   */
+  protected getIgnoreFinder(): IgnoreFinder {
+    return this.ignoreFinder;
+  }
+
+  /**
+   * Process all loaded config objects into a single config object, and then validate.
+   */
+  protected async processConfigs(files: ConfigFile<T>[]): Promise<ProcessedConfig<T>> {
+    const config = await this.processor.process(this.options, files, this.blueprint(predicates));
 
     return {
       config,

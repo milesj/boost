@@ -8,5 +8,6 @@ import getEnv from './helpers/getEnv';
 import mergeArray from './helpers/mergeArray';
 import mergeObject from './helpers/mergeObject';
 import mergePlugins from './helpers/mergePlugins';
+import overwrite from './helpers/overwrite';
 
-export { Configuration, getEnv, mergeArray, mergeObject, mergePlugins };
+export { Configuration, getEnv, mergeArray, mergeObject, mergePlugins, overwrite };

@@ -144,7 +144,7 @@ export default class ConfigFinder<T extends object> extends Finder<
 
     // Overrides take the highest precedence and must appear after everything,
     // including branch level configs. However, they must extract first so that
-    // extends functionality can be inherited.
+    // extends functionality can be inherited (below).
     if (this.options.overridesSetting) {
       const overriddenConfigs = await this.extractOverriddenConfigs(basePath, configs);
 

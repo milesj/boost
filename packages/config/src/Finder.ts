@@ -15,8 +15,7 @@ export default abstract class Finder<T extends File, O extends object> extends C
 
   /**
    * Traverse upwards from the branch directory, until the root directory is found,
-   * or we reach to top of the file system. While traversing, find all files
-   * within each branch directory, and load them.
+   * or we reach to top of the file system. While traversing, find all files.
    */
   async loadFromBranchToRoot(dir: PortablePath): Promise<T[]> {
     const filesToLoad: Path[] = [];

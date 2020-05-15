@@ -41,6 +41,11 @@ export interface IgnoreFinderOptions {
   name: string;
 }
 
+export interface ProcessorOptions {
+  defaultWithUndefined?: boolean;
+  name: string;
+}
+
 export type FileGlob = string | string[];
 
 export type ExtendsSetting = string | string[];
@@ -52,5 +57,5 @@ export interface OverridesSetting<T> {
 }
 
 export interface PluginsSetting {
-  [name: string]: boolean | object;
+  [name: string]: undefined | boolean | object;
 }
