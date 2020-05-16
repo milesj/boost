@@ -86,7 +86,8 @@ export default abstract class Configuration<T extends object> extends Contract<T
   }
 
   /**
-   * Add a process handler to customize the processing of key-value pairs by name.
+   * Add a process handler to customize the processing of key-value setting pairs.
+   * May only run a processor on settings found in the root of the configuration object.
    */
   protected addProcessor<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
     this.processor.addHandler(key, handler);
@@ -106,6 +107,13 @@ export default abstract class Configuration<T extends object> extends Contract<T
    */
   protected getIgnoreFinder(): IgnoreFinder {
     return this.ignoreFinder;
+  }
+
+  /**
+   * Return the processor instance.
+   */
+  protected getProcessor(): Processor<T> {
+    return this.processor;
   }
 
   /**

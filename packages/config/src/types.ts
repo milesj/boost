@@ -42,8 +42,9 @@ export interface IgnoreFinderOptions {
 }
 
 export interface ProcessorOptions {
-  defaultWithUndefined?: boolean;
+  defaultWhenUndefined?: boolean;
   name: string;
+  validate?: boolean;
 }
 
 export type FileGlob = string | string[];

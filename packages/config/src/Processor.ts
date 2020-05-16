@@ -11,33 +11,44 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
 
   blueprint({ bool, string }: Predicates) {
     return {
-      defaultWithUndefined: bool(true),
+      defaultWhenUndefined: bool(true),
       name: string()
         .required()
         .camelCase(),
+      validate: bool(true),
     };
   }
 
+  /**
+   * Add a handler to process a key-value setting pair.
+   */
   addHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
     this.handlers[key] = handler;
 
     return this;
   }
 
+  /**
+   * Process a list of loaded config files into a single config object.
+   * Use the defined process handlers, or the default processing rules,
+   * to generate the final config object.
+   */
   async process(
     defaults: Required<T>,
     configs: ConfigFile<T>[],
     blueprint: Blueprint<T>,
   ): Promise<Required<T>> {
-    const { defaultWithUndefined } = this.options;
+    const { defaultWhenUndefined: defaultWithUndefined, validate } = this.options;
     const config = { ...defaults };
 
     for (const next of configs) {
       // Validate next config object
-      optimal(config, blueprint, {
-        file: next.path.path(),
-        name: this.options.name,
-      });
+      if (validate) {
+        optimal(config, blueprint, {
+          file: next.path.path(),
+          name: this.options.name,
+        });
+      }
 
       // Merge properties into previous object
       for (const [key, value] of Object.entries(next.config)) {
