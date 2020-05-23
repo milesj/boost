@@ -108,22 +108,22 @@ describe('ConfigFinder', () => {
       await finder.determinePackageScope(new Path('/test/packages/core/src/deep/nested/core.ts'));
 
       expect(cache.fileContentCache).toEqual({
-        '/test/packages/core/package.json': {
+        [stubPath('/test/packages/core/package.json').path()]: {
           content: { name: 'core' },
           exists: true,
           mtime: expect.any(Number),
         },
-        '/test/packages/core/src/package.json': {
+        [stubPath('/test/packages/core/src/package.json').path()]: {
           content: null,
           exists: false,
           mtime: 0,
         },
-        '/test/packages/core/src/deep/package.json': {
+        [stubPath('/test/packages/core/src/deep/package.json').path()]: {
           content: null,
           exists: false,
           mtime: 0,
         },
-        '/test/packages/core/src/deep/nested/package.json': {
+        [stubPath('/test/packages/core/src/deep/nested/package.json').path()]: {
           content: null,
           exists: false,
           mtime: 0,
@@ -467,7 +467,7 @@ describe('ConfigFinder', () => {
           },
           {
             config: { absolute: true },
-            path: stubPath('/test/some/absolute/path/config.yml'),
+            path: stubPath('/test/some/absolute/path/config.yml', false),
             source: 'extended',
           },
           {

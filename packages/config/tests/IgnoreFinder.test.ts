@@ -36,17 +36,17 @@ describe('IgnoreFinder', () => {
     expect(cache.pkgPath).toEqual(stubPath('/test/package.json'));
     expect(cache.dirFilesCache).toEqual({});
     expect(cache.fileContentCache).toEqual({
-      '/test/.boostignore': {
+      [stubPath('/test/.boostignore').path()]: {
         content: '*.log\n*.lock',
         exists: true,
         mtime: expect.any(Number),
       },
-      '/test/src/app/feature/.boostignore': {
+      [stubPath('/test/src/app/feature/.boostignore').path()]: {
         content: '# Compiled\nlib/',
         exists: true,
         mtime: expect.any(Number),
       },
-      '/test/src/app/feature/signup/.boostignore': {
+      [stubPath('/test/src/app/feature/signup/.boostignore').path()]: {
         content: '# Empty',
         exists: true,
         mtime: expect.any(Number),
