@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { DirectoryJSON } from 'memfs';
 import { json } from '@boost/common';
 

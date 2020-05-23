@@ -3,7 +3,14 @@ import Cache from './Cache';
 import ConfigFinder from './ConfigFinder';
 import IgnoreFinder from './IgnoreFinder';
 import Processor from './Processor';
-import { ProcessedConfig, ConfigFile, Handler, IgnoreFile } from './types';
+import {
+  ProcessedConfig,
+  ConfigFile,
+  Handler,
+  IgnoreFile,
+  ConfigFinderOptions,
+  ProcessorOptions,
+} from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
   private cache: Cache;
@@ -21,6 +28,7 @@ export default abstract class Configuration<T extends object> extends Contract<T
     this.configFinder = new ConfigFinder({ name }, this.cache);
     this.ignoreFinder = new IgnoreFinder({ name }, this.cache);
     this.processor = new Processor({ name });
+    this.bootstrap();
   }
 
   /**
@@ -89,8 +97,31 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * Add a process handler to customize the processing of key-value setting pairs.
    * May only run a processor on settings found in the root of the configuration object.
    */
-  protected addProcessor<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
-    this.processor.addHandler(key, handler);
+  protected addProcessHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
+    this.getProcessor().addHandler(key, handler);
+
+    return this;
+  }
+
+  /**
+   * Called on initialization.
+   */
+  protected bootstrap() {}
+
+  /**
+   * Configure the finder instance.
+   */
+  protected configureFinder(options: Omit<ConfigFinderOptions<T>, 'name'>): this {
+    this.getConfigFinder().configure(options);
+
+    return this;
+  }
+
+  /**
+   * Configure the processor instance.
+   */
+  protected configureProcessor(options: Omit<ProcessorOptions, 'name'>): this {
+    this.getProcessor().configure(options);
 
     return this;
   }
@@ -120,7 +151,11 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * Process all loaded config objects into a single config object, and then validate.
    */
   protected async processConfigs(files: ConfigFile<T>[]): Promise<ProcessedConfig<T>> {
-    const config = await this.processor.process(this.options, files, this.blueprint(predicates));
+    const config = await this.getProcessor().process(
+      this.options,
+      files,
+      this.blueprint(predicates),
+    );
 
     return {
       config,

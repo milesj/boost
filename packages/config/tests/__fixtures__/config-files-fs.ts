@@ -1,5 +1,6 @@
 /* eslint-disable sort-keys */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { DirectoryJSON } from 'memfs';
 import { json, yaml } from '@boost/common';
 import { pkg, rootCommon } from './common-fs';
