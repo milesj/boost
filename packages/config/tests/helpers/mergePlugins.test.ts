@@ -16,6 +16,12 @@ describe('mergePlugins()', () => {
     });
   });
 
+  it('plugin options overwrite booleans', () => {
+    expect(mergePlugins({ foo: true }, { foo: { debug: false } })).toEqual({
+      foo: { debug: false },
+    });
+  });
+
   it('undefined plugin values are skipped', () => {
     expect(mergePlugins({ foo: true }, { foo: undefined })).toEqual({ foo: true });
   });

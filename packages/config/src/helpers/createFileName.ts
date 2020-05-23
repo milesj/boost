@@ -1,7 +1,7 @@
 export default function createFileName(
   name: string,
   ext: string,
-  { envSuffix, leadingDot }: { envSuffix?: string; leadingDot?: boolean } = {},
+  { envSuffix, leadingDot }: { envSuffix?: string; leadingDot?: boolean },
 ): string {
   let fileName = name;
 

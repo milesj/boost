@@ -29,6 +29,13 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
   }
 
   /**
+   * Return a handler, or null, for the setting key.
+   */
+  getHandler<K extends keyof T, V = T[K]>(key: K): Handler<V> | null {
+    return (this.handlers[key] as Handler<V>) || null;
+  }
+
+  /**
    * Process a list of loaded config files into a single config object.
    * Use the defined process handlers, or the default processing rules,
    * to generate the final config object.
@@ -38,15 +45,14 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
     configs: ConfigFile<T>[],
     blueprint: Blueprint<T>,
   ): Promise<Required<T>> {
-    const { defaultWhenUndefined: defaultWithUndefined, validate } = this.options;
+    const { defaultWhenUndefined, validate } = this.options;
     const config = { ...defaults };
 
     for (const next of configs) {
       // Validate next config object
       if (validate) {
-        optimal(config, blueprint, {
+        optimal(next.config, blueprint, {
           file: next.path.path(),
-          name: this.options.name,
         });
       }
 
@@ -55,10 +61,10 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
         const name = key as keyof T;
         const nextValue = value as T[keyof T];
         const prevValue = config[name];
-        const handler = this.handlers[name];
+        const handler = this.getHandler(name);
 
         if (handler) {
-          config[name] = await handler(prevValue, nextValue);
+          config[name] = (await handler(prevValue, nextValue))!;
         } else if (isObject(prevValue) && isObject(nextValue)) {
           config[name] = mergeObject(prevValue, nextValue);
         } else if (Array.isArray(prevValue) && Array.isArray(nextValue)) {
@@ -68,7 +74,7 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
         }
 
         // Reset to default value if undefined is present
-        if (config[name] === undefined && defaultWithUndefined) {
+        if (config[name] === undefined && defaultWhenUndefined) {
           config[name] = defaults[name];
         }
       }

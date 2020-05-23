@@ -6,8 +6,11 @@
 import Configuration from './Configuration';
 import getEnv from './helpers/getEnv';
 import mergeArray from './helpers/mergeArray';
+import mergeExtends from './helpers/mergeExtends';
 import mergeObject from './helpers/mergeObject';
 import mergePlugins from './helpers/mergePlugins';
 import overwrite from './helpers/overwrite';
 
-export { Configuration, getEnv, mergeArray, mergeObject, mergePlugins, overwrite };
+export * from './blueprints';
+
+export { Configuration, getEnv, mergeArray, mergeExtends, mergeObject, mergePlugins, overwrite };

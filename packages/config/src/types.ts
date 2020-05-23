@@ -57,6 +57,8 @@ export interface OverridesSetting<T> {
   settings: Partial<T>;
 }
 
+export type PluginsSettingOption = undefined | boolean | object;
+
 export interface PluginsSetting {
-  [name: string]: undefined | boolean | object;
+  [name: string]: PluginsSettingOption;
 }
