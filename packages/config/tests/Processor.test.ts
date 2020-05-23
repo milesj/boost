@@ -16,7 +16,7 @@ describe('Processor', () => {
     debug: boolean;
     extends: ExtendsSetting;
     plugins: PluginsSetting;
-    overrides: OverridesSetting<ConfigShape>[];
+    overrides: OverridesSetting<Omit<ConfigShape, 'extends' | 'overrides'>>;
     // Types
     boolean: boolean;
     string: string;
@@ -64,17 +64,21 @@ describe('Processor', () => {
   });
 
   describe('processing', () => {
-    const blueprint: Blueprint<ConfigShape> = {
+    const commonBlueprint = {
       debug: predicates.bool(false),
-      extends: createExtendsPredicate(),
       plugins: createPluginsPredicate(),
-      overrides: createOverridesPredicate(() => blueprint),
       boolean: predicates.bool(true),
       string: predicates.string(''),
       stringList: predicates.array(predicates.string(), ['foo']),
       number: predicates.number(123),
       numberList: predicates.array(predicates.number(), []),
       object: predicates.object(),
+    };
+
+    const blueprint: Blueprint<ConfigShape> = {
+      ...commonBlueprint,
+      extends: createExtendsPredicate(),
+      overrides: createOverridesPredicate(commonBlueprint),
     };
 
     const defaults: ConfigShape = {

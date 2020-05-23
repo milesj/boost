@@ -1,28 +1,24 @@
 import { predicates, Blueprint } from '@boost/common';
-import { ExtendsSetting, PluginsSettingItem } from './types';
+import { ExtendsSetting, PluginsSettingItem, OverridesSettingItem, FileGlob } from './types';
 
-const { array, bool, object, string, union } = predicates;
+const { array, bool, object, shape, string, union } = predicates;
 
 export function createExtendsPredicate() {
-  return union<ExtendsSetting>([string().notEmpty(), array(string().notEmpty())], []);
+  return union<ExtendsSetting>([string().notEmpty(), array(string().notEmpty())], []).notNullable();
 }
 
 export function createPluginsPredicate() {
-  return object(union<PluginsSettingItem>([bool(), object().notNullable()], {}));
+  return object(union<PluginsSettingItem>([bool(), object().notNullable()], {})).notNullable();
 }
 
-export function createOverridesPredicate<T extends object>(blueprint: () => Blueprint<T>) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return array<any>();
-
-  // TODO Currently not working!
-  // return array<OverridesSettingItem<T>>(
-  //   shape({
-  //     exclude: union<FileGlob>([string().notEmpty(), array(string().notEmpty())], []),
-  //     include: union<FileGlob>([string().notEmpty(), array(string().notEmpty())], []),
-  //     settings: shape(blueprint()).notNullable(),
-  //   })
-  //     .exact()
-  //     .notNullable(),
-  // ).notNullable();
+export function createOverridesPredicate<T extends object>(blueprint: Blueprint<T>) {
+  return array<OverridesSettingItem<T>>(
+    shape({
+      exclude: union<FileGlob>([string().notEmpty(), array(string().notEmpty())], []),
+      include: union<FileGlob>([string().notEmpty(), array(string().notEmpty())], []),
+      settings: shape(blueprint).notNullable(),
+    })
+      .exact()
+      .notNullable(),
+  ).notNullable();
 }
