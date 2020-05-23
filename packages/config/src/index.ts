@@ -11,6 +11,6 @@ import mergeObject from './helpers/mergeObject';
 import mergePlugins from './helpers/mergePlugins';
 import overwrite from './helpers/overwrite';
 
-export * from './blueprints';
+export * from './predicates';
 
 export { Configuration, getEnv, mergeArray, mergeExtends, mergeObject, mergePlugins, overwrite };

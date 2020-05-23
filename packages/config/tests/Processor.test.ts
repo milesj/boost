@@ -1,16 +1,22 @@
 import { predicates, Blueprint, Path } from '@boost/common';
 import Processor from '../src/Processor';
-import { ConfigFile, PluginsSetting, ExtendsSetting } from '../src/types';
-import { extendsSetting, pluginsSetting } from '../src/blueprints';
+import { ConfigFile, PluginsSetting, ExtendsSetting, OverridesSetting } from '../src/types';
+import {
+  createExtendsPredicate,
+  createPluginsPredicate,
+  createOverridesPredicate,
+} from '../src/predicates';
 import overwrite from '../src/helpers/overwrite';
 import mergeExtends from '../src/helpers/mergeExtends';
+import mergePlugins from '../src/helpers/mergePlugins';
 
 describe('Processor', () => {
   interface ConfigShape {
-    // Standard
+    // Settings
     debug: boolean;
     extends: ExtendsSetting;
     plugins: PluginsSetting;
+    overrides: OverridesSetting<ConfigShape>[];
     // Types
     boolean: boolean;
     string: string;
@@ -60,8 +66,9 @@ describe('Processor', () => {
   describe('processing', () => {
     const blueprint: Blueprint<ConfigShape> = {
       debug: predicates.bool(false),
-      extends: extendsSetting,
-      plugins: pluginsSetting,
+      extends: createExtendsPredicate(),
+      plugins: createPluginsPredicate(),
+      overrides: createOverridesPredicate(() => blueprint),
       boolean: predicates.bool(true),
       string: predicates.string(''),
       stringList: predicates.array(predicates.string(), ['foo']),
@@ -74,6 +81,7 @@ describe('Processor', () => {
       debug: false,
       extends: [],
       plugins: {},
+      overrides: [],
       boolean: true,
       string: '',
       stringList: ['foo'],
@@ -150,7 +158,7 @@ describe('Processor', () => {
       });
     });
 
-    describe('extends settings', () => {
+    describe('extends setting', () => {
       it('supports extends from multiple configs', async () => {
         processor.addHandler('extends', mergeExtends);
 
@@ -170,6 +178,21 @@ describe('Processor', () => {
         });
       });
 
+      it('errors for an invalid value', async () => {
+        await expect(
+          processor.process(
+            defaults,
+            [
+              stubConfigFile({
+                // @ts-ignore Allow
+                extends: 123,
+              }),
+            ],
+            blueprint,
+          ),
+        ).rejects.toThrowErrorMatchingSnapshot();
+      });
+
       it('errors for an empty string', async () => {
         await expect(
           processor.process(defaults, [stubConfigFile({ extends: '' })], blueprint),
@@ -179,6 +202,64 @@ describe('Processor', () => {
       it('errors for an empty string in an array', async () => {
         await expect(
           processor.process(defaults, [stubConfigFile({ extends: ['foo', ''] })], blueprint),
+        ).rejects.toThrowErrorMatchingSnapshot();
+      });
+    });
+
+    describe('plugins setting', () => {
+      it('supports plugins from multiple configs', async () => {
+        processor.addHandler('plugins', mergePlugins);
+
+        expect(
+          await processor.process(
+            defaults,
+            [
+              stubConfigFile({ plugins: { foo: true, qux: { on: true } } }),
+              stubConfigFile({ plugins: { bar: false } }),
+              stubConfigFile({ plugins: { foo: { legacy: true }, baz: true, qux: { on: false } } }),
+            ],
+            blueprint,
+          ),
+        ).toEqual({
+          ...defaults,
+          plugins: {
+            foo: { legacy: true },
+            bar: false,
+            baz: true,
+            qux: { on: false },
+          },
+        });
+      });
+
+      it('errors for an invalid value', async () => {
+        await expect(
+          processor.process(
+            defaults,
+            [
+              stubConfigFile({
+                // @ts-ignore Allow
+                plugins: true,
+              }),
+            ],
+            blueprint,
+          ),
+        ).rejects.toThrowErrorMatchingSnapshot();
+      });
+
+      it('errors for an invalid option value', async () => {
+        await expect(
+          processor.process(
+            defaults,
+            [
+              stubConfigFile({
+                // @ts-ignore Allow
+                plugins: {
+                  foo: 123,
+                },
+              }),
+            ],
+            blueprint,
+          ),
         ).rejects.toThrowErrorMatchingSnapshot();
       });
     });

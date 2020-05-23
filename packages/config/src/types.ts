@@ -51,14 +51,16 @@ export type FileGlob = string | string[];
 
 export type ExtendsSetting = string | string[];
 
-export interface OverridesSetting<T> {
+export interface OverridesSettingItem<T> {
   exclude?: FileGlob;
   include: FileGlob;
   settings: Partial<T>;
 }
 
-export type PluginsSettingOption = undefined | boolean | object;
+export type OverridesSetting<T> = OverridesSettingItem<T>[];
+
+export type PluginsSettingItem = undefined | boolean | object;
 
 export interface PluginsSetting {
-  [name: string]: PluginsSettingOption;
+  [name: string]: PluginsSettingItem;
 }

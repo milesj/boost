@@ -224,7 +224,7 @@ export default class ConfigFinder<T extends object> extends Finder<
 
     configs.forEach(({ config, path, source }) => {
       const key = overridesSetting as keyof T;
-      const overrides = config[key] as OverridesSetting<T>[] | undefined;
+      const overrides = config[key] as OverridesSetting<T> | undefined;
 
       if (source === 'root') {
         delete config[key];
