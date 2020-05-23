@@ -1,4 +1,5 @@
 import { Path, Predicates } from '@boost/common';
+import { color } from '@boost/internal';
 import Finder from './Finder';
 import readFile from './helpers/readFile';
 import { IgnoreFinderOptions, IgnoreFile } from './types';
@@ -23,6 +24,13 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
       files.push(path);
     }
 
+    this.debug.invariant(
+      files.length > 0,
+      `Finding ignore files in ${color.filePath(dir.path())}`,
+      files.map(file => file.name()).join(', '),
+      'No files',
+    );
+
     return Promise.resolve(files);
   }
 
@@ -37,6 +45,8 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
    * Load and parse a list of found files into a list of ignore patterns.
    */
   async resolveFiles(basePath: Path, foundFiles: Path[]): Promise<IgnoreFile[]> {
+    this.debug('Resolving %d ignore files', foundFiles.length);
+
     return Promise.all(
       foundFiles.map(async filePath => {
         const contents = await this.cache.cacheFileContents(filePath, () => readFile(filePath));

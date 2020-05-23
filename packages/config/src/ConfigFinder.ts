@@ -8,7 +8,7 @@ import {
   isModuleName,
   isFilePath,
 } from '@boost/common';
-import { RuntimeError } from '@boost/internal';
+import { RuntimeError, color } from '@boost/internal';
 import minimatch from 'minimatch';
 import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
@@ -62,16 +62,23 @@ export default class ConfigFinder<T extends object> extends Finder<
   async determinePackageScope(dir: Path): Promise<PackageStructure> {
     let currentDir = dir.isDirectory() ? dir : dir.parent();
 
+    this.debug('Determining package scope for %s', color.filePath(dir.path()));
+
     while (!this.isFileSystemRoot(currentDir)) {
       const pkgPath = currentDir.append(PACKAGE_FILE);
       const cache = this.cache.getFileCache<PackageStructure>(pkgPath);
 
       if (cache) {
         if (cache.exists) {
+          this.debug('Scope found at %s', color.filePath(pkgPath.path()));
+
           return cache.content;
         }
+
         // Fall-through
       } else if (pkgPath.exists()) {
+        this.debug('Scope found at %s', color.filePath(pkgPath.path()));
+
         return this.cache.cacheFileContents(pkgPath, () => loadJson(pkgPath));
       } else {
         this.cache.markMissingFile(pkgPath);
@@ -119,6 +126,13 @@ export default class ConfigFinder<T extends object> extends Finder<
         }
       }
 
+      this.debug.invariant(
+        paths.length > 0,
+        `Finding config files in ${color.filePath(baseDir.path())}`,
+        paths.map(path => path.name()).join(', '),
+        'No files',
+      );
+
       return paths;
     });
   }
@@ -140,6 +154,8 @@ export default class ConfigFinder<T extends object> extends Finder<
    * Extract and apply extended and override configs based on the base path.
    */
   async resolveFiles(basePath: Path, foundFiles: Path[]): Promise<ConfigFile<T>[]> {
+    this.debug('Resolving %d config files', foundFiles.length);
+
     const configs = await Promise.all(foundFiles.map(filePath => this.loadConfig(filePath)));
 
     // Overrides take the highest precedence and must appear after everything,
@@ -147,6 +163,8 @@ export default class ConfigFinder<T extends object> extends Finder<
     // extends functionality can be inherited (below).
     if (this.options.overridesSetting) {
       const overriddenConfigs = await this.extractOverriddenConfigs(basePath, configs);
+
+      this.debug('Overriding %d configs', overriddenConfigs.length);
 
       if (overriddenConfigs.length > 0) {
         configs.push(...overriddenConfigs);
@@ -157,6 +175,8 @@ export default class ConfigFinder<T extends object> extends Finder<
     // appear before everything else, in the order they were defined
     if (this.options.extendsSetting) {
       const extendedConfigs = await this.extractExtendedConfigs(configs);
+
+      this.debug('Extending %d configs', extendedConfigs.length);
 
       if (extendedConfigs.length > 0) {
         configs.unshift(...extendedConfigs);
@@ -175,6 +195,8 @@ export default class ConfigFinder<T extends object> extends Finder<
     const { name, extendsSetting } = this.options;
     const extendsPaths: Path[] = [];
 
+    this.debug('Extracting configs to extend from');
+
     configs.forEach(({ config, path, source }) => {
       const key = extendsSetting as keyof T;
       const extendsFrom = config[key] as ExtendsSetting | undefined;
@@ -188,23 +210,31 @@ export default class ConfigFinder<T extends object> extends Finder<
       }
 
       toArray(extendsFrom).forEach(extendsPath => {
+        // Node module
         if (isModuleName(extendsPath)) {
-          extendsPaths.push(
-            this.cache.rootDir!.append(
-              'node_modules',
-              extendsPath,
-              createFileName(name, 'js', { envSuffix: 'preset' }),
-            ),
+          const modulePath = new Path(
+            extendsPath,
+            createFileName(name, 'js', { envSuffix: 'preset' }),
           );
-        } else if (isFilePath(extendsPath)) {
-          const filePath = new Path(extendsPath);
 
-          if (filePath.isAbsolute()) {
-            extendsPaths.push(filePath);
-          } else {
-            // Relative to the config file its defined in
-            extendsPaths.push(path.parent().append(extendsPath));
+          this.debug('Extending config from node module: %s', color.moduleName(modulePath.path()));
+
+          extendsPaths.push(this.cache.rootDir!.append('node_modules', modulePath));
+
+          // File path
+        } else if (isFilePath(extendsPath)) {
+          let filePath = new Path(extendsPath);
+
+          // Relative to the config file its defined in
+          if (!filePath.isAbsolute()) {
+            filePath = path.parent().append(extendsPath);
           }
+
+          this.debug('Extending config from file path: %s', color.filePath(filePath.path()));
+
+          extendsPaths.push(filePath);
+
+          // Unknown
         } else {
           throw new RuntimeError('config', 'CFG_EXTENDS_UNKNOWN_PATH', [extendsPath]);
         }
@@ -222,6 +252,11 @@ export default class ConfigFinder<T extends object> extends Finder<
     const { overridesSetting } = this.options;
     const overriddenConfigs: ConfigFile<T>[] = [];
 
+    this.debug(
+      'Extracting configs to override with (matching against %s)',
+      color.filePath(basePath.path()),
+    );
+
     configs.forEach(({ config, path, source }) => {
       const key = overridesSetting as keyof T;
       const overrides = config[key] as OverridesSetting<T> | undefined;
@@ -235,14 +270,26 @@ export default class ConfigFinder<T extends object> extends Finder<
       }
 
       toArray(overrides).forEach(({ exclude, include, settings }) => {
-        const excludePatterns = toArray(exclude);
-        const includePatterns = toArray(include);
         const options = { dot: true, matchBase: true };
+        const excludePatterns = toArray(exclude);
+        const excluded = excludePatterns.some(pattern =>
+          minimatch(basePath.path(), pattern, options),
+        );
+        const includePatterns = toArray(include);
+        const included = includePatterns.some(pattern =>
+          minimatch(basePath.path(), pattern, options),
+        );
+        const passes = included && !excluded;
 
-        if (
-          includePatterns.some(pattern => minimatch(basePath.path(), pattern, options)) &&
-          !excludePatterns.some(pattern => minimatch(basePath.path(), pattern, options))
-        ) {
+        this.debug.invariant(
+          passes,
+          `Matching with includes "${includePatterns}" and excludes "${excludePatterns}"`,
+          'Matched',
+          // eslint-disable-next-line no-nested-ternary
+          excluded ? 'Excluded' : included ? 'Not matched' : 'Not included',
+        );
+
+        if (passes) {
           overriddenConfigs.push({
             config: settings,
             path,
@@ -263,6 +310,8 @@ export default class ConfigFinder<T extends object> extends Finder<
     const config = await this.cache.cacheFileContents(path, async () => {
       const { loaders } = this.options;
       const ext = path.ext(true);
+
+      this.debug('Loading config %s with type "%s"', color.filePath(path.path()), ext);
 
       switch (ext) {
         case 'cjs':

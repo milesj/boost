@@ -1,16 +1,23 @@
 import { Contract, Path, PortablePath } from '@boost/common';
-import { RuntimeError } from '@boost/internal';
+import { Debugger, createDebugger } from '@boost/debug';
+import { RuntimeError, color } from '@boost/internal';
 import Cache from './Cache';
 import { File } from './types';
 import { CONFIG_FOLDER, PACKAGE_FILE } from './constants';
 
-export default abstract class Finder<T extends File, O extends object> extends Contract<O> {
-  protected cache: Cache;
+export default abstract class Finder<
+  T extends File,
+  Options extends { name: string }
+> extends Contract<Options> {
+  protected readonly debug: Debugger;
 
-  constructor(options: O, cache: Cache) {
+  protected readonly cache: Cache;
+
+  constructor(options: Options, cache: Cache) {
     super(options);
 
     this.cache = cache;
+    this.debug = createDebugger([this.constructor.name.toLowerCase(), this.options.name]);
   }
 
   /**
@@ -21,6 +28,8 @@ export default abstract class Finder<T extends File, O extends object> extends C
     const filesToLoad: Path[] = [];
     const branch = Path.resolve(dir);
     let currentDir = branch.isDirectory() ? branch : branch.parent();
+
+    this.debug('Loading files from branch %s to root', color.filePath(branch.path()));
 
     while (!this.isFileSystemRoot(currentDir)) {
       // eslint-disable-next-line no-await-in-loop
@@ -45,6 +54,8 @@ export default abstract class Finder<T extends File, O extends object> extends C
    * and `package.json` file.
    */
   async loadFromRoot(dir: PortablePath = process.cwd()): Promise<T[]> {
+    this.debug('Loading files from possible root %s', color.filePath(String(dir)));
+
     const root = this.getRootDir(dir);
     const files = await this.findFilesInDir(root);
 
@@ -83,9 +94,9 @@ export default abstract class Finder<T extends File, O extends object> extends C
     }
 
     const configDir = dir.append(CONFIG_FOLDER);
-    const configExists = configDir.exists();
+    const isValid = configDir.exists() && configDir.isDirectory();
 
-    if (!configExists || (configExists && !configDir.isDirectory())) {
+    if (!isValid) {
       return false;
     }
 
@@ -99,6 +110,8 @@ export default abstract class Finder<T extends File, O extends object> extends C
     }
 
     this.cache.pkgPath = pkgPath;
+
+    this.debug('Project root found at %s', color.filePath(dir.path()));
 
     return true;
   }

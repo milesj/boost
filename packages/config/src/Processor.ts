@@ -1,13 +1,22 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
 
 import { isObject, Blueprint, optimal, Contract, Predicates } from '@boost/common';
+import { Debugger, createDebugger } from '@boost/debug';
 import mergeArray from './helpers/mergeArray';
 import mergeObject from './helpers/mergeObject';
 import { Handler, ConfigFile, ProcessorOptions } from './types';
 
 export default class Processor<T extends object> extends Contract<ProcessorOptions> {
+  protected readonly debug: Debugger;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected handlers: { [K in keyof T]?: Handler<any> } = {};
+
+  constructor(options: ProcessorOptions) {
+    super(options);
+
+    this.debug = createDebugger(['processor', this.options.name]);
+  }
 
   blueprint({ bool, string }: Predicates) {
     return {
@@ -23,6 +32,8 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
    * Add a handler to process a key-value setting pair.
    */
   addHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
+    this.debug('Adding process handler for "%s"', key);
+
     this.handlers[key] = handler;
 
     return this;
@@ -47,6 +58,8 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
   ): Promise<Required<T>> {
     const { defaultWhenUndefined, validate } = this.options;
     const config = { ...defaults };
+
+    this.debug('Processing %d configs into a single and final result', configs.length);
 
     for (const next of configs) {
       // Validate next config object

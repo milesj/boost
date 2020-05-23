@@ -1,5 +1,4 @@
 import { vol } from 'memfs';
-import { Path } from '@boost/common';
 import Cache from '../src/Cache';
 import IgnoreFinder from '../src/IgnoreFinder';
 import { rootWithoutPackageJson } from './__fixtures__/common-fs';
@@ -64,12 +63,12 @@ describe('IgnoreFinder', () => {
       expect(files).toEqual([
         {
           ignore: ['*.log', '*.lock'],
-          path: new Path('/test/.boostignore'),
+          path: stubPath('/test/.boostignore'),
           source: 'root',
         },
         {
           ignore: ['esm/'],
-          path: new Path('/test/src/app/components/build/.boostignore'),
+          path: stubPath('/test/src/app/components/build/.boostignore'),
           source: 'branch',
         },
       ]);
@@ -83,17 +82,17 @@ describe('IgnoreFinder', () => {
       expect(files).toEqual([
         {
           ignore: ['*.log', '*.lock'],
-          path: new Path('/test/.boostignore'),
+          path: stubPath('/test/.boostignore'),
           source: 'root',
         },
         {
           ignore: ['lib/'],
-          path: new Path('/test/src/app/feature/.boostignore'),
+          path: stubPath('/test/src/app/feature/.boostignore'),
           source: 'branch',
         },
         {
           ignore: [],
-          path: new Path('/test/src/app/feature/signup/.boostignore'),
+          path: stubPath('/test/src/app/feature/signup/.boostignore'),
           source: 'branch',
         },
       ]);
@@ -109,7 +108,7 @@ describe('IgnoreFinder', () => {
       expect(files).toEqual([
         {
           ignore: ['*.log', '*.lock'],
-          path: new Path('/test/.boostignore'),
+          path: stubPath('/test/.boostignore'),
           source: 'root',
         },
       ]);

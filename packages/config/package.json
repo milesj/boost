@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@boost/common": "^1.8.5",
+    "@boost/debug": "^1.4.6",
     "@boost/internal": "^1.2.0",
     "minimatch": "^3.0.4"
   },
