@@ -28,7 +28,7 @@
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^1.6.0",
     "fs-extra": "^9.0.1",
-    "lerna": "^3.20.2"
+    "lerna": "^3.22.1"
   },
   "publishConfig": {
     "access": "public"
