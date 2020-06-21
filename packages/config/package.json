@@ -25,7 +25,7 @@
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "memfs": "^3.1.2"
+    "memfs": "^3.2.0"
   },
   "funding": {
     "type": "ko-fi",

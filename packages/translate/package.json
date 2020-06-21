@@ -24,7 +24,7 @@
   "dependencies": {
     "@boost/common": "^1.9.0",
     "@boost/internal": "^1.2.0",
-    "i18next": "^19.4.2",
+    "i18next": "^19.5.0",
     "os-locale": "^5.0.0"
   },
   "funding": {
