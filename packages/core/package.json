@@ -35,7 +35,7 @@
     "@types/yargs-parser": "^15.0.0",
     "debug": "^4.1.1",
     "env-ci": "^5.0.2",
-    "execa": "^3.4.0",
+    "execa": "^4.0.2",
     "exit": "^0.1.2",
     "fast-glob": "^3.2.2",
     "fs-extra": "^9.0.1",
