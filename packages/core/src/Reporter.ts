@@ -278,7 +278,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
     const color = this.getColorPalette()[type];
     let out = color.charAt(0) === '#' ? style.hex(color) : style[color as Color];
 
-    modifiers.forEach(modifier => {
+    modifiers.forEach((modifier) => {
       out = out[modifier];
     });
 

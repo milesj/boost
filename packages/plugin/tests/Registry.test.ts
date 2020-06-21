@@ -13,7 +13,7 @@ describe('Registry', () => {
   });
 
   afterEach(() => {
-    fixtures.forEach(fixture => fixture());
+    fixtures.forEach((fixture) => fixture());
   });
 
   it('sets correct properties', () => {

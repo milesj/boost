@@ -22,7 +22,7 @@ export default class Emitter {
    * Syncronously execute listeners for the defined event and arguments.
    */
   emit(eventName: string, args: EventArguments = []): this {
-    Array.from(this.getListeners(eventName)).some(listener => listener(...args) === false);
+    Array.from(this.getListeners(eventName)).some((listener) => listener(...args) === false);
 
     return this;
   }

@@ -18,7 +18,7 @@ export default function formatDescription(
   // Append choices after the description
   if (config.choices) {
     const choices = config.choices.map(
-      choice =>
+      (choice) =>
         formatValue(choice) + (config.default === choice ? ` (${msg('cli:tagDefault')})` : ''),
     );
 

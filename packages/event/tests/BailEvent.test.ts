@@ -10,7 +10,7 @@ describe('BailEvent', () => {
   it('executes listeners in order', () => {
     let output = '';
 
-    event.listen(value => {
+    event.listen((value) => {
       output += value;
       output += 'B';
     });

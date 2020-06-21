@@ -599,7 +599,7 @@ describe('parse()', () => {
             nums: {
               ...numsConfig,
               validate(value) {
-                if (!value.every(val => val >= 5)) {
+                if (!value.every((val) => val >= 5)) {
                   throw new Error('All values must be >= 5.');
                 }
               },
@@ -956,7 +956,7 @@ describe('parse()', () => {
       });
     });
 
-    SPECIAL_CHARS.forEach(char => {
+    SPECIAL_CHARS.forEach((char) => {
       it(`supports "${char}"`, () => {
         const result = parse<{ opt: string }>(['--opt', char], {
           options: {
@@ -1182,7 +1182,7 @@ describe('parse()', () => {
       });
     });
 
-    SPECIAL_NUMBERS.forEach(char => {
+    SPECIAL_NUMBERS.forEach((char) => {
       it(`supports "${char}"`, () => {
         const result = parse<{ num: number }>(['--num', char], {
           options: {
@@ -1233,7 +1233,7 @@ describe('parse()', () => {
         command: [],
         errors: [],
         options: {
-          nums: SPECIAL_NUMBERS.map(no => Number(no)),
+          nums: SPECIAL_NUMBERS.map((no) => Number(no)),
         },
         params: [],
         rest: [],
@@ -1548,7 +1548,7 @@ describe('parse()', () => {
     describe('function', () => {
       it('sets as a command if valid', () => {
         const result = parse<{}>(['cmd', 'foo', 'bar'], {
-          commands: arg => arg === 'cmd',
+          commands: (arg) => arg === 'cmd',
           options: {},
         });
 
@@ -1564,7 +1564,7 @@ describe('parse()', () => {
 
       it('doesnt set as a command if invalid', () => {
         const result = parse<{}>(['cmd', 'foo', 'bar'], {
-          commands: arg => arg === 'command',
+          commands: (arg) => arg === 'command',
           options: {},
         });
 
@@ -1656,7 +1656,7 @@ describe('parse()', () => {
 
       it('errors if same command found multiple times', () => {
         const result = parse<{}>(['cmd', 'foo', 'cmd', 'bar'], {
-          commands: arg => arg === 'cmd' || arg === 'command',
+          commands: (arg) => arg === 'cmd' || arg === 'command',
           options: {},
         });
 
@@ -1678,7 +1678,7 @@ describe('parse()', () => {
 
       it('errors if multiple commands are passed', () => {
         const result = parse<{}>(['cmd', 'foo', 'command', 'bar'], {
-          commands: arg => arg === 'cmd' || arg === 'command',
+          commands: (arg) => arg === 'cmd' || arg === 'command',
           options: {},
         });
 
@@ -1700,7 +1700,7 @@ describe('parse()', () => {
 
       it('errors if command is passed after params', () => {
         const result = parse<{}>(['foo', 'cmd', 'bar'], {
-          commands: arg => arg === 'cmd' || arg === 'command',
+          commands: (arg) => arg === 'cmd' || arg === 'command',
           options: {},
         });
 

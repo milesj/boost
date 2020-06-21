@@ -13,7 +13,7 @@ export default function processShortOptionGroup(
   options: OptionMap,
   map: AliasMap,
 ) {
-  group.split('').forEach(short => {
+  group.split('').forEach((short) => {
     const name = expandShortOption(short as ShortOptionName, map);
     const config = configs[name];
 

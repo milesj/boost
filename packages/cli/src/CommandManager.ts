@@ -84,7 +84,7 @@ export default abstract class CommandManager<Options extends object = {}> extend
     this.checkPath(path);
     this.commands[path] = command;
 
-    aliases.forEach(alias => {
+    aliases.forEach((alias) => {
       this.checkPath(alias);
       this.commandAliases[alias] = path;
     });

@@ -31,7 +31,7 @@ describe('createWorkUnit()', () => {
   });
 
   it('returns a `Task`', () => {
-    const task = new Task('title', value => value);
+    const task = new Task('title', (value) => value);
 
     expect(createWorkUnit(task)).toBe(task);
   });

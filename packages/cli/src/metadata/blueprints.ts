@@ -22,9 +22,7 @@ const { array, bool, func, number, object, shape, string, union } = predicates;
 
 export const commonBlueprint: Blueprint<Required<Config>> = {
   deprecated: bool(),
-  description: string()
-    .notEmpty()
-    .required(),
+  description: string().notEmpty().required(),
   hidden: bool(),
 };
 
@@ -51,10 +49,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
     ),
   ),
   category: string(),
-  path: string()
-    .notEmpty()
-    .required()
-    .match(COMMAND_FORMAT),
+  path: string().notEmpty().required().match(COMMAND_FORMAT),
   usage: union([string(), array(string())], []),
 };
 

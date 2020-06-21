@@ -167,7 +167,7 @@ describe('Task', () => {
     it('passes a context to the action', async () => {
       const context = { count: 1 };
 
-      task.action = ctx => {
+      task.action = (ctx) => {
         ctx.count += 1;
         ctx.foo = 'bar';
       };

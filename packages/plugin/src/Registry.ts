@@ -60,9 +60,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       afterStartup: func<Callback>(),
       beforeShutdown: func<Callback>(),
       beforeStartup: func<Callback>(),
-      validate: func<Callback>()
-        .notNullable()
-        .required(),
+      validate: func<Callback>().notNullable().required(),
     };
   }
 
@@ -83,7 +81,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * an error will be thrown.
    */
   get(name: ModuleName): Plugin {
-    const container = this.plugins.find(c => this.isMatchingName(c, name));
+    const container = this.plugins.find((c) => this.isMatchingName(c, name));
 
     if (container) {
       return container.plugin;
@@ -96,14 +94,14 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Return all registered plugins.
    */
   getAll(): Plugin[] {
-    return this.plugins.map(container => container.plugin);
+    return this.plugins.map((container) => container.plugin);
   }
 
   /**
    * Return multiple registered plugins by module name.
    */
   getMany(names: ModuleName[]): Plugin[] {
-    return names.map(name => this.get(name));
+    return names.map((name) => this.get(name));
   }
 
   /**
@@ -157,7 +155,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Load and register multiple plugins based on a list of settings.
    */
   async loadMany(settings: Setting<Plugin>[], tool?: Tool): Promise<Plugin[]> {
-    return Promise.all(settings.map(setting => this.load(setting, {}, tool)));
+    return Promise.all(settings.map((setting) => this.load(setting, {}, tool)));
   }
 
   /**
@@ -231,7 +229,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     await this.triggerShutdown(plugin, tool);
 
-    this.plugins = this.plugins.filter(container => !this.isMatchingName(container, name));
+    this.plugins = this.plugins.filter((container) => !this.isMatchingName(container, name));
 
     debug('Plugin "%s" unregistered', plugin.name || name);
 

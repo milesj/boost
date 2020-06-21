@@ -52,14 +52,14 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
     cli.start([Array.from(this.routines), initialValue]);
 
     return this.serializeRoutines(initialValue)
-      .then(result => {
+      .then((result) => {
         cli.stop();
 
         process.exitCode = 0;
 
         return result;
       })
-      .catch(error => {
+      .catch((error) => {
         cli.stop(error);
 
         this.reportCrash(error);
@@ -80,10 +80,7 @@ export default class Pipeline<Ctx extends Context, Tool extends CoreTool<any>> e
   reportCrash(error: Error) {
     const { appPath, rootPath, config, options } = this.tool;
     const { appName } = options;
-    const reporter = new CrashReporter()
-      .reportBinaries()
-      .reportProcess()
-      .reportSystem();
+    const reporter = new CrashReporter().reportBinaries().reportProcess().reportSystem();
 
     reporter
       .addSection(appName)

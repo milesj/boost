@@ -33,7 +33,7 @@ export default function groupByCategory<
   // Create a mapping
   const map: CategoryItemMap<T> = {};
 
-  weightedCategories.forEach(category => {
+  weightedCategories.forEach((category) => {
     map[category.key] = {
       items: [],
       name: category.name,
@@ -41,7 +41,7 @@ export default function groupByCategory<
   });
 
   // Map items to their category
-  items.forEach(item => {
+  items.forEach((item) => {
     if (!item.hidden) {
       if (item.category && map[item.category]) {
         map[item.category].items.push(item);

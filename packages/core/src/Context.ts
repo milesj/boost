@@ -9,7 +9,7 @@ export default class Context {
     const context = new this.constructor(...args);
 
     // Copy enumerable properties
-    Object.keys(this).forEach(key => {
+    Object.keys(this).forEach((key) => {
       const prop = key as keyof this;
       let value: any = this[prop];
 

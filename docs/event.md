@@ -158,7 +158,7 @@ event.listen(doBackgroundJob);
 const result = await event.emit([]);
 
 // Promise
-event.emit([]).then(result => {});
+event.emit([]).then((result) => {});
 ```
 
 ### `WaterfallEvent`
@@ -171,8 +171,8 @@ import { WaterfallEvent } from '@boost/event';
 
 const event = new WaterfallEvent<number>('waterfall');
 
-event.listen(num => num * 2);
-event.listen(num => num * 3);
+event.listen((num) => num * 2);
+event.listen((num) => num * 3);
 
 const result = event.emit(10); // 60
 ```

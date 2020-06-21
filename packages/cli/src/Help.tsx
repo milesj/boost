@@ -90,7 +90,7 @@ export default class Help extends React.Component<HelpProps> {
               </Box>
             )}
 
-            {category.items.map(config => {
+            {category.items.map((config) => {
               const desc = formatDescription(config);
 
               return (
@@ -161,7 +161,7 @@ export default class Help extends React.Component<HelpProps> {
               </Box>
             )}
 
-            {category.items.map(config => {
+            {category.items.map((config) => {
               const desc = formatDescription(config, this.gatherOptionTags(config));
               const otherWidths = (showShortColumn ? shortWidth : 0) + longWidth;
 
@@ -240,7 +240,7 @@ export default class Help extends React.Component<HelpProps> {
       <>
         <Header label={msg('cli:labelUsage')} />
 
-        {toArray(usage).map(example => (
+        {toArray(usage).map((example) => (
           <Box key={example} paddingLeft={SPACING_COL}>
             {example.startsWith(delimiter) ? example : delimiter + example}
           </Box>

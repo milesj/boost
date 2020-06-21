@@ -532,7 +532,7 @@ import { parseInContext } from '@boost/args';
 const argv = process.argv.slice(2);
 
 // Parse argv into a consumable object
-const { command, errors, options, params, rest } = parseInContext(argv, arg => {
+const { command, errors, options, params, rest } = parseInContext(argv, (arg) => {
   // Build command found, define build specific options
   if (arg === 'build') {
     return {

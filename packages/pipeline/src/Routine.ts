@@ -42,9 +42,7 @@ export default abstract class Routine<
       throw new RuntimeError('pipeline', 'PL_REQ_ROUTINE_KEY');
     }
 
-    this.key = toArray(key)
-      .map(kebabCase)
-      .join(':');
+    this.key = toArray(key).map(kebabCase).join(':');
     this.debug = createDebugger(['routine', this.key]);
 
     debug('New routine created: %s (%s)', this.key, this.title);

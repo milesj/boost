@@ -38,7 +38,7 @@ export default abstract class ParallelPipeline<
     const errors: Error[] = [];
     const results: Output[] = [];
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       if (instanceOf(response, Error)) {
         errors.push(response);
       } else {
