@@ -27,12 +27,6 @@
       "path": "packages/config/tests"
     },
     {
-      "path": "packages/core"
-    },
-    {
-      "path": "packages/core/tests"
-    },
-    {
       "path": "packages/debug"
     },
     {
@@ -67,12 +61,6 @@
     },
     {
       "path": "packages/plugin/tests"
-    },
-    {
-      "path": "packages/reporter-nyan"
-    },
-    {
-      "path": "packages/reporter-nyan/tests"
     },
     {
       "path": "packages/terminal"

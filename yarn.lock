@@ -1056,6 +1056,34 @@
     "@boost/event" "^1.3.1"
     rimraf "^3.0.2"
 
+"@boost/core@^1.18.6":
+  version "1.18.7"
+  resolved "https://registry.npmjs.org/@boost/core/-/core-1.18.7.tgz#aa61ce7f212db752854df69d80aacce9b674a4c2"
+  integrity sha512-ixlcsu0tIA9Q3hoXQDip2NFHFQdBPjnRrmEMbFXaF2rUJD4ZA51EkKXfQWLFLIErDlJNwrorSWHXaHoJuSfNag==
+  dependencies:
+    "@boost/common" "^1.9.0"
+    "@boost/debug" "^1.4.7"
+    "@boost/event" "^1.3.1"
+    "@boost/internal" "^1.2.0"
+    "@boost/log" "^1.2.1"
+    "@boost/terminal" "^1.0.3"
+    "@boost/translate" "^1.3.10"
+    "@types/debug" "^4.1.5"
+    "@types/yargs" "^15.0.4"
+    "@types/yargs-parser" "^15.0.0"
+    debug "^4.1.1"
+    env-ci "^4.5.1"
+    execa "^3.4.0"
+    exit "^0.1.2"
+    fast-glob "^3.2.2"
+    fs-extra "^8.1.0"
+    json5 "^2.1.3"
+    lodash "^4.17.15"
+    optimal "^4.2.0"
+    pluralize "^8.0.0"
+    split "^1.0.1"
+    yargs-parser "^18.1.2"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
   resolved "https://registry.npmjs.org/@cnakazawa/watch/-/watch-1.0.3.tgz#099139eaec7ebf07a27c1786a3ff64f39464d2ef"
@@ -2449,7 +2477,7 @@
   resolved "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
   integrity sha512-FA/BWv8t8ZWJ+gEOnLLd8ygxH/2UFbAvgEonyfN6yWGLKc7zVjbpl2Y4CTjid9h2RfgPP6SEt6uHwEOply00yw==
 
-"@types/yargs@^15.0.0", "@types/yargs@^15.0.5":
+"@types/yargs@^15.0.0", "@types/yargs@^15.0.4", "@types/yargs@^15.0.5":
   version "15.0.5"
   resolved "https://registry.npmjs.org/@types/yargs/-/yargs-15.0.5.tgz#947e9a6561483bdee9adffc983e91a6902af8b79"
   integrity sha512-Dk/IDOPtOgubt/IaevIUbTgV7doaKkoorvOyYM2CMwuDyP89bekI7H4xLIwunNYiK9jhCkmc6pUrJk3cj2AB9w==
@@ -4041,12 +4069,12 @@ enquirer@^2.3.0:
   dependencies:
     ansi-colors "^3.2.1"
 
-env-ci@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.npmjs.org/env-ci/-/env-ci-5.0.2.tgz#48b6687f8af8cdf5e31b8fcf2987553d085249d9"
-  integrity sha512-Xc41mKvjouTXD3Oy9AqySz1IeyvJvHZ20Twf5ZLYbNpPPIuCnL/qHCmNlD01LoNy0JTunw9HPYVptD19Ac7Mbw==
+env-ci@^4.5.1:
+  version "4.5.2"
+  resolved "https://registry.npmjs.org/env-ci/-/env-ci-4.5.2.tgz#40b08825dcf4ed5b2cddd3d638190571cf96347a"
+  integrity sha512-lS+edpNp2+QXEPkx6raEMIjKxKKWnJ4+VWzovYJ2NLYiJAYenSAXotFfVdgaFxdbVnvAbUI8epQDa1u12ERxfQ==
   dependencies:
-    execa "^4.0.0"
+    execa "^3.2.0"
     java-properties "^1.0.0"
 
 env-paths@^2.2.0:
@@ -4458,7 +4486,7 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^3.4.0:
+execa@^3.2.0, execa@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npmjs.org/execa/-/execa-3.4.0.tgz#c08ed4550ef65d858fac269ffc8572446f37eb89"
   integrity sha512-r9vdGQk4bmCuK1yKQu1KTwcT2zwfWdbdaXfCtAh+5nU/4fSX+JAb7vZGvI5naJrQlvONrEB20jeruESI69530g==
@@ -4589,7 +4617,7 @@ fast-glob@^2.2.6:
     merge2 "^1.2.3"
     micromatch "^3.1.10"
 
-fast-glob@^3.0.4, fast-glob@^3.2.4:
+fast-glob@^3.0.4, fast-glob@^3.2.2, fast-glob@^3.2.4:
   version "3.2.4"
   resolved "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.4.tgz#d20aefbf99579383e7f3cc66529158c9b98554d3"
   integrity sha512-kr/Oo6PX51265qeuCYsyGypiO5uJFgBS0jksyG7FUeCyQzNwYnzrNIMR1NXfkZXsMYXYLRAHgISHBz8gQcxKHQ==
@@ -9780,7 +9808,7 @@ yargs-parser@^15.0.1:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-yargs-parser@^18.1.1, yargs-parser@^18.1.3:
+yargs-parser@^18.1.1, yargs-parser@^18.1.2, yargs-parser@^18.1.3:
   version "18.1.3"
   resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-18.1.3.tgz#be68c4975c6b2abf469236b0c870362fab09a7b0"
   integrity sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==

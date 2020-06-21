@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Emitter getListeners() errors if name contains invalid characters 1`] = `"Invalid event name \\"foo+bar\\". May only contain dashes, periods, and lowercase characters."`;
-
-exports[`Emitter on() errors if listener is not a function 1`] = `"Invalid event listener for \\"foo\\", must be a function."`;

@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Task constructor() errors if action is not a function 1`] = `"Tasks require an executable function."`;
-
-exports[`Task constructor() errors if no title 1`] = `"Tasks require a title."`;
-
-exports[`Task constructor() errors if title is not a string 1`] = `"Tasks require a title."`;

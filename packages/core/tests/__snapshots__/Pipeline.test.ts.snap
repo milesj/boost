@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Pipeline constructor() errors if no tool is passed 1`] = `"A \`Tool\` instance is required to operate the pipeline."`;
