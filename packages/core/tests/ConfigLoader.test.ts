@@ -55,7 +55,6 @@ describe('ConfigLoader', () => {
       expect(
         loader.findConfigInPackageJSON(
           stubPackageJson({
-            // @ts-ignore Allow custom key
             testBoost: {
               foo: 'bar',
             },
@@ -70,7 +69,6 @@ describe('ConfigLoader', () => {
       expect(
         loader.findConfigInPackageJSON(
           stubPackageJson({
-            // @ts-ignore Allow custom key
             testBoost: './foo.json',
           }),
         ),
@@ -355,7 +353,6 @@ describe('ConfigLoader', () => {
       it('errors if not an object', () => {
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: [],
         });
 
@@ -367,7 +364,6 @@ describe('ConfigLoader', () => {
       it('supports an object', () => {
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: { locale: 'en' },
         });
 
@@ -385,7 +381,6 @@ describe('ConfigLoader', () => {
 
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: 'test-boost-preset',
         });
 
@@ -401,7 +396,6 @@ describe('ConfigLoader', () => {
       it('merges with default config', () => {
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: { locale: 'en' },
         });
 
@@ -415,7 +409,6 @@ describe('ConfigLoader', () => {
       it('supports plugins', () => {
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: {
             plugins: [
               'foo',
@@ -443,7 +436,6 @@ describe('ConfigLoader', () => {
       it('supports custom config blueprint', () => {
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: { foo: 'bar' },
         });
 
@@ -459,7 +451,6 @@ describe('ConfigLoader', () => {
       it('supports custom settings blueprint', () => {
         loader.package = stubPackageJson({
           name: 'boost',
-          // @ts-ignore Allow custom key
           testBoost: { settings: { foo: 'bar' } },
         });
 
@@ -513,7 +504,7 @@ describe('ConfigLoader', () => {
       it('merges with default config', () => {
         expect(loader.loadConfig(args)).toEqual(
           stubToolConfig({
-            // @ts-ignore Allow unknown
+            // @ts-expect-error
             foo: 'bar',
           }),
         );
@@ -557,9 +548,9 @@ describe('ConfigLoader', () => {
   describe('parseAndExtend()', () => {
     it('errors if a non-string or non-object is provided', () => {
       expect(() => {
-        // @ts-ignore Allow invalid type
+        // @ts-expect-error
         loader.parseAndExtend(123);
-        // @ts-ignore Allow invalid type
+        // @ts-expect-error
         loader.parseAndExtend([]);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -873,7 +864,7 @@ describe('ConfigLoader', () => {
   describe('resolveExtendPaths()', () => {
     it('errors if `extends` value is not a string', () => {
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         loader.resolveExtendPaths([123]);
       }).toThrowErrorMatchingSnapshot();
     });

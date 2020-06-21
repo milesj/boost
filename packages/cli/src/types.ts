@@ -130,11 +130,11 @@ export interface CommandMetadataMap {
 }
 
 export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
-  getMetadata(): CommandMetadata;
-  getParserOptions(): ParserOptions<O, P>;
-  getPath(): CommandPath;
-  renderHelp(): string | React.ReactElement;
-  run(...params: P): RunResult | Promise<RunResult>;
+  getMetadata: () => CommandMetadata;
+  getParserOptions: () => ParserOptions<O, P>;
+  getPath: () => CommandPath;
+  renderHelp: () => string | React.ReactElement;
+  run: (...params: P) => RunResult | Promise<RunResult>;
 }
 
 // PROXY COMMANDS

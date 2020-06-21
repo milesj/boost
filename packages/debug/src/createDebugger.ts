@@ -28,6 +28,7 @@ export default function createDebugger(namespace: string | string[]): Debugger {
     debug('Debugger %s disabled', mainNamespace);
 
     process.env.DEBUG = (process.env.DEBUG || '')
+      // eslint-disable-next-line security/detect-non-literal-regexp
       .replace(new RegExp(`${logger.namespace}(:\\*)?`, 'u'), '')
       .replace(/(^,)|(,$)/u, '')
       .replace(',,', ',');

@@ -18,7 +18,7 @@ describe('Output', () => {
 
   describe('constructor()', () => {
     it('errors if renderer is not a function', () => {
-      // @ts-ignore Allow invalid type
+      // @ts-expect-error
       expect(() => new Output(cli, 123)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -41,7 +41,7 @@ describe('Output', () => {
     });
 
     it('doesnt render the output into the console if already completed', () => {
-      // @ts-ignore Allow private access
+      // @ts-expect-error
       output.state.completed = true;
       output.enqueue();
 
@@ -122,7 +122,7 @@ describe('Output', () => {
     it('sets previous line height if not final', () => {
       output.render();
 
-      // @ts-ignore Allow protected access
+      // @ts-expect-error
       expect(output.previousHeight).toBe(4);
     });
 
@@ -130,7 +130,7 @@ describe('Output', () => {
       output.enqueue(true);
       output.render();
 
-      // @ts-ignore Allow protected access
+      // @ts-expect-error
       expect(output.previousHeight).toBe(0);
     });
 

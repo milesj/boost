@@ -208,7 +208,7 @@ describe('Emitter', () => {
   describe('on()', () => {
     it('errors if listener is not a function', () => {
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         emitter.on('foo', 123);
       }).toThrowErrorMatchingSnapshot();
     });

@@ -15,7 +15,7 @@ export interface FileBackendOptions {
 }
 
 export default class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
-  fileCache: Map<Path, ResourceKey> = new Map();
+  fileCache = new Map<Path, ResourceKey>();
 
   type: 'backend' = 'backend';
 

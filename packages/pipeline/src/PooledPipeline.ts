@@ -54,7 +54,7 @@ export default class PooledPipeline<
 
       this.resolver = resolve;
 
-      // eslint-disable-next-line promise/catch-or-return
+      // eslint-disable-next-line promise/catch-or-return, @typescript-eslint/no-floating-promises
       Promise.all(
         this.work
           .slice(0, this.options.concurrency)
@@ -81,10 +81,12 @@ export default class PooledPipeline<
       this.results.push(result);
 
       if (this.work.length > 0 && this.running.length < concurrency) {
-        this.runWorkUnit(context, value);
+        return this.runWorkUnit(context, value);
       } else if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
         this.resolver(this.aggregateResult(this.results));
       }
+
+      return Promise.resolve();
     };
 
     return new Promise(resolve => {

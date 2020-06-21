@@ -7,7 +7,7 @@ export default abstract class BaseEvent<
   Args extends unknown[],
   Scope extends string = string
 > {
-  listeners: Map<Scope | WildstarScope, Set<Listener<Args, Return>>> = new Map();
+  listeners = new Map<Scope | WildstarScope, Set<Listener<Args, Return>>>();
 
   name: string;
 

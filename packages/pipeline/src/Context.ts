@@ -1,7 +1,7 @@
 import { isObject } from '@boost/common';
 
 interface Cloneable {
-  clone?(): unknown;
+  clone?: () => unknown;
 }
 
 export default class Context {
@@ -9,7 +9,7 @@ export default class Context {
    * Create a new instance of the current context and shallow clone all properties.
    */
   clone(...args: any[]): this {
-    // @ts-ignore Not sure how to reflect the constructor of sub-classes
+    // @ts-expect-error
     const context = new this.constructor(...args);
 
     // Copy enumerable properties

@@ -133,17 +133,6 @@ export default class Path {
       }
     }
 
-    // @ts-ignore
-    const fsBinding = process.binding('fs');
-
-    if (fsBinding.realpath) {
-      try {
-        return fsBinding.realpath(filePath, 'utf8');
-      } catch {
-        // Skip
-      }
-    }
-
     return fs.realpathSync(filePath);
   }
 

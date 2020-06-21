@@ -36,7 +36,7 @@ export default abstract class SerialPipeline<
 
     this.root.work.push(workUnit);
 
-    // @ts-ignore How to type/call this?
+    // @ts-expect-error
     const next = new this.constructor(this.context, this.value, this.options);
 
     next.depth = this.depth;

@@ -66,7 +66,7 @@ describe('ConcurrentPipeline', () => {
     const pipeline = new ConcurrentPipeline(new Context(), 'foo').add(
       'Scope',
       function scopeAction() {
-        // @ts-ignore Allow this
+        // @ts-expect-error
         expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
 
         return 'bar';
@@ -100,10 +100,7 @@ describe('ConcurrentPipeline', () => {
     const one = new Task('One', (ctx, value: string) => value.repeat(1));
     const two = new Task('Two', (ctx, value: string) => value.repeat(2));
     const three = new Task('Three', (ctx, value: string) => value.repeat(3));
-    const pipeline = new ConcurrentPipeline(new Context(), 'o')
-      .add(one)
-      .add(two)
-      .add(three);
+    const pipeline = new ConcurrentPipeline(new Context(), 'o').add(one).add(two).add(three);
     const spy = jest.fn();
 
     pipeline.onRunWorkUnit.listen(spy);

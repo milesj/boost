@@ -116,7 +116,7 @@ describe('Context', () => {
 
     it('calls the clone method', () => {
       const ctx = new ObjectContext('foo', 'bar', 'baz');
-      // @ts-ignore
+      // @ts-expect-error
       ctx.object.clone = () => ({ foo: 123 });
 
       const clone = ctx.clone();

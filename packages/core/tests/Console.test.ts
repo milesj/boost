@@ -310,7 +310,6 @@ describe('Console', () => {
 
       expect(spy).toHaveBeenCalledWith('foo');
 
-      // @ts-ignore
       process.stdout.write = old;
     });
   });
@@ -503,12 +502,12 @@ describe('Console', () => {
 
   describe('start()', () => {
     it('sets `started` flag', () => {
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.state.started).toBe(false);
 
       cli.start();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.state.started).toBe(true);
     });
 
@@ -545,12 +544,12 @@ describe('Console', () => {
 
   describe('startRenderLoop()', () => {
     it('sets a timer', () => {
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).toBeNull();
 
       cli.startRenderLoop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).not.toBeNull();
     });
 
@@ -558,7 +557,7 @@ describe('Console', () => {
       cli.disable();
       cli.startRenderLoop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).toBeNull();
     });
 
@@ -566,7 +565,7 @@ describe('Console', () => {
       cli.tool.config.silent = true;
       cli.startRenderLoop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).toBeNull();
     });
 
@@ -575,38 +574,38 @@ describe('Console', () => {
 
       cli.startRenderLoop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).not.toBeNull();
 
       jest.advanceTimersByTime(200);
 
       expect(spy).toHaveBeenCalledWith();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).toBeNull();
     });
   });
 
   describe('stop()', () => {
     it('sets `stopped` flag', () => {
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.state.stopped).toBe(false);
 
       cli.stop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.state.stopped).toBe(true);
     });
 
     it('sets `started` flag', () => {
       cli.start();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.state.started).toBe(true);
 
       cli.stop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.state.started).toBe(false);
     });
 
@@ -687,11 +686,11 @@ describe('Console', () => {
 
   describe('stopRenderLoop()', () => {
     it('clears the timer', () => {
-      // @ts-ignore
+      // @ts-expect-error
       cli.renderTimer = 123;
       cli.stopRenderLoop();
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(cli.renderTimer).toBeNull();
     });
   });

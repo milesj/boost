@@ -10,7 +10,7 @@ export default abstract class Plugin<Options extends object = {}> extends Contra
 
   priority: number = DEFAULT_PLUGIN_PRIORITY;
 
-  // @ts-ignore Set after instantiation
+  // @ts-expect-error
   tool: Tool<any>;
 
   /**

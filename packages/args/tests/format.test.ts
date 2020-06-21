@@ -44,7 +44,7 @@ describe('format()', () => {
   it('handles non-string params', () => {
     expect(
       format({
-        // @ts-ignore Allow invalid types
+        // @ts-expect-error
         params: [123, 45.67, true, false],
       }),
     ).toEqual(['123', '45.67', 'true', 'false']);

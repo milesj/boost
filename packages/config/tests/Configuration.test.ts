@@ -6,7 +6,7 @@ import { stubPath } from './helpers';
 import { configFileTreeAllTypes, rootConfigJSON } from './__fixtures__/config-files-fs';
 import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
 
-jest.mock('fs', () => require.requireActual('memfs').vol);
+jest.mock('fs', () => jest.requireActual('memfs').vol);
 
 interface BoostConfig {
   debug: boolean;
@@ -47,9 +47,9 @@ describe('Configuration', () => {
 
   describe('clearCache()', () => {
     it('clears file and finder cache on cache engine', () => {
-      // @ts-ignore Allow
+      // @ts-expect-error
       const spy1 = jest.spyOn(config.cache, 'clearFileCache');
-      // @ts-ignore Allow
+      // @ts-expect-error
       const spy2 = jest.spyOn(config.cache, 'clearFinderCache');
 
       config.clearCache();
@@ -61,7 +61,7 @@ describe('Configuration', () => {
 
   describe('clearFileCache()', () => {
     it('clears file cache on cache engine', () => {
-      // @ts-ignore Allow
+      // @ts-expect-error
       const spy = jest.spyOn(config.cache, 'clearFileCache');
 
       config.clearFileCache();
@@ -72,7 +72,7 @@ describe('Configuration', () => {
 
   describe('clearFinderCache()', () => {
     it('clears finder cache on cache engine', () => {
-      // @ts-ignore Allow
+      // @ts-expect-error
       const spy = jest.spyOn(config.cache, 'clearFinderCache');
 
       config.clearFinderCache();

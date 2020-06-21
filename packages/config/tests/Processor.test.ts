@@ -133,7 +133,7 @@ describe('Processor', () => {
             [
               stubConfigFile({ debug: true }),
               stubConfigFile({
-                // @ts-ignore Allow
+                // @ts-expect-error
                 debug: 123,
               }),
             ],
@@ -151,7 +151,7 @@ describe('Processor', () => {
             [
               stubConfigFile({ debug: true }),
               stubConfigFile({
-                // @ts-ignore Allow
+                // @ts-expect-error
                 debug: 123,
               }),
             ],
@@ -188,7 +188,7 @@ describe('Processor', () => {
             defaults,
             [
               stubConfigFile({
-                // @ts-ignore Allow
+                // @ts-expect-error
                 extends: 123,
               }),
             ],
@@ -241,7 +241,7 @@ describe('Processor', () => {
             defaults,
             [
               stubConfigFile({
-                // @ts-ignore Allow
+                // @ts-expect-error
                 plugins: true,
               }),
             ],
@@ -256,8 +256,8 @@ describe('Processor', () => {
             defaults,
             [
               stubConfigFile({
-                // @ts-ignore Allow
                 plugins: {
+                  // @ts-expect-error
                   foo: 123,
                 },
               }),

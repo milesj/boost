@@ -1,3 +1,5 @@
+/* eslint-disable security/detect-unsafe-regex */
+
 import path from 'path';
 import { createTranslator } from '@boost/translate';
 import { ExitCode, StreamType } from './types';

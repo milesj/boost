@@ -17,7 +17,7 @@ export interface Hierarchical {
 }
 
 export interface Runnable<Input, Output> {
-  run(context: Context, value: Input): Promise<Output>;
+  run: (context: Context, value: Input) => Promise<Output>;
 }
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';

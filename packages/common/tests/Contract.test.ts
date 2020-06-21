@@ -28,8 +28,8 @@ describe('Contract', () => {
     it('errors for invalid option type passed', () => {
       expect(
         () =>
-          // @ts-ignore Allow invalid type
           new OptionalProps({
+            // @ts-expect-error
             foo: 123,
           }),
       ).toThrowErrorMatchingSnapshot();
@@ -39,7 +39,7 @@ describe('Contract', () => {
       expect(
         () =>
           new OptionalProps({
-            // @ts-ignore Allow unknown
+            // @ts-expect-error
             unknown: 'abc',
           }),
       ).toThrowErrorMatchingSnapshot();
@@ -62,7 +62,7 @@ describe('Contract', () => {
     it('requires non-optional options to be passed', () => {
       expect(
         () =>
-          // @ts-ignore Allow missing prop
+          // @ts-expect-error
           new RequiredProps(),
       ).toThrowErrorMatchingSnapshot();
     });
@@ -77,8 +77,8 @@ describe('Contract', () => {
 
     it('errors for invalid option type passed', () => {
       expect(() => {
-        // @ts-ignore Allow invalid type
         opts.configure({
+          // @ts-expect-error
           foo: 123,
         });
       }).toThrowErrorMatchingSnapshot();
@@ -87,7 +87,7 @@ describe('Contract', () => {
     it('errors for unknown option', () => {
       expect(() => {
         opts.configure({
-          // @ts-ignore Allow unknown
+          // @ts-expect-error
           unknown: 'abc',
         });
       }).toThrowErrorMatchingSnapshot();
@@ -138,7 +138,7 @@ describe('Contract', () => {
 
     it('freezes the object', () => {
       expect(() => {
-        // @ts-ignore Allow mutate
+        // @ts-expect-error
         opts.options.foo = 'override';
       }).toThrowErrorMatchingSnapshot();
     });

@@ -1,3 +1,5 @@
+/* eslint-disable security/detect-non-literal-regexp */
+
 import path from 'path';
 import { PathResolver, requireModule, ModuleName, isObject, MODULE_NAME_PART } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';

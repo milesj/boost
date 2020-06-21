@@ -273,7 +273,7 @@ describe('parse()', () => {
         const result = parse<{ opt: string }>([], {
           options: {
             opt: {
-              // @ts-ignore Allow invalid type
+              // @ts-expect-error
               count: true,
               description: '',
               type: 'string',
@@ -1896,7 +1896,7 @@ describe('parse()', () => {
           foo: {
             description: '',
             type: 'boolean',
-            // @ts-ignore
+            // @ts-expect-error
             default: 123,
           },
         },
@@ -1924,7 +1924,7 @@ describe('parse()', () => {
           foo: {
             description: '',
             type: 'string',
-            // @ts-ignore
+            // @ts-expect-error
             default: 123,
           },
         },
@@ -1950,7 +1950,7 @@ describe('parse()', () => {
           foo: {
             description: '',
             type: 'number',
-            // @ts-ignore
+            // @ts-expect-error
             default: 'abc',
           },
         },
@@ -1977,7 +1977,7 @@ describe('parse()', () => {
             description: '',
             multiple: true,
             type: 'number',
-            // @ts-ignore
+            // @ts-expect-error
             default: 'abc',
           },
         },
@@ -2005,7 +2005,7 @@ describe('parse()', () => {
           foo: {
             description: '',
             type: 'string',
-            // @ts-ignore
+            // @ts-expect-error
             short: 'ab',
           },
         },
@@ -2066,7 +2066,9 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         command: [],
-        errors: [new ParseError('Unknown option "--unknown" found. Did you mean "known"?', '--unknown', 1)],
+        errors: [
+          new ParseError('Unknown option "--unknown" found. Did you mean "known"?', '--unknown', 1),
+        ],
         options: { known: false },
         params: ['foo', 'value'],
         rest: [],

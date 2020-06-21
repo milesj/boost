@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import getConstructor from './getConstructor';
 import { Categories } from '../types';
 

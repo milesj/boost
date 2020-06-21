@@ -20,12 +20,12 @@ describe('Task', () => {
     });
 
     it('errors if title is not a string', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => new Task(123, () => {})).toThrowErrorMatchingSnapshot();
     });
 
     it('errors if action is not a function', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => new Task('title', 123)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -295,7 +295,7 @@ describe('Task', () => {
     it('evaluates a condition to determine whether to skip', () => {
       expect(task.status).toBe(STATUS_PENDING);
 
-      // @ts-ignore
+      // @ts-expect-error
       task.skip(1 === 2);
 
       expect(task.status).toBe(STATUS_PENDING);

@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, @typescript-eslint/no-unsafe-assignment */
 
 import { StreamType } from './types';
 

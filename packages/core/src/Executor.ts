@@ -29,7 +29,7 @@ export default abstract class Executor<Ctx extends Context, Options extends obje
     this.debug = createDebugger(kebabCase(this.constructor.name));
     this.tool = tool;
 
-    // @ts-ignore Allow spread
+    // @ts-expect-error
     this.options = { ...options };
 
     this.debug('Instantiating task executor');

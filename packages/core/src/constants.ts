@@ -3,6 +3,7 @@ import { Status } from './types';
 export const APP_NAME_PATTERN = /^[a-z]{1}[-a-z0-9]+[a-z]{1}$/u;
 export const CONFIG_NAME_PATTERN = /^[a-z]{1}[a-zA-Z0-9]+$/u;
 export const EVENT_NAME_PATTERN = /^[-a-z.]+$/u;
+// eslint-disable-next-line security/detect-unsafe-regex
 export const MODULE_NAME_PATTERN = /^(@[-a-z]+\/)?[-a-z]+$/u;
 export const PLUGIN_NAME_PATTERN = /^([a-z]+):[-a-z]+$/u;
 

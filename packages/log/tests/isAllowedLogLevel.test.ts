@@ -4,7 +4,7 @@ describe('isAllowedLogLevel()', () => {
   it('returns false for unknown level', () => {
     expect(
       isAllowedLogLevel(
-        // @ts-ignore Allow unknown type
+        // @ts-expect-error
         'unknown',
         'log',
       ),
@@ -15,7 +15,7 @@ describe('isAllowedLogLevel()', () => {
     expect(
       isAllowedLogLevel(
         'debug',
-        // @ts-ignore Allow unknown type
+        // @ts-expect-error
         'unknown',
       ),
     ).toBe(true);
