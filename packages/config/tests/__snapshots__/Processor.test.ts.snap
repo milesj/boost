@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Processor processing extends setting errors for an empty string 1`] = `
+"Invalid field \\"extends\\" in .boost.js. Type must be one of: string, array<string>. Received string with the following invalidations:
+ - String cannot be empty."
+`;
+
+exports[`Processor processing extends setting errors for an empty string in an array 1`] = `
+"Invalid field \\"extends\\" in .boost.js. Type must be one of: string, array<string>. Received array with the following invalidations:
+ - Invalid field \\"extends[1]\\" in .boost.js. String cannot be empty."
+`;
+
+exports[`Processor processing extends setting errors for an invalid value 1`] = `"Invalid field \\"extends\\" in .boost.js. Type must be one of: string, array<string>."`;
+
+exports[`Processor processing plugins setting errors for an invalid option value 1`] = `"Invalid field \\"plugins.foo\\" in .boost.js. Type must be one of: boolean, object."`;
+
+exports[`Processor processing plugins setting errors for an invalid value 1`] = `"Invalid field \\"plugins\\" in .boost.js. Must be a plain object."`;
+
+exports[`Processor processing validation validates each config 1`] = `"Invalid field \\"debug\\" in .boost.js. Must be a boolean."`;

@@ -1,0 +1,9 @@
+{
+  "CFG_EXTENDS_ROOT_ONLY": "Extends setting `%s` must only be defined in a root config.",
+  "CFG_EXTENDS_UNKNOWN_PATH": "Cannot extend configuration. Unknown module or file path \"%s\".",
+  "CFG_LOADER_UNSUPPORTED": "Unsupported loader format \"%s\".",
+  "CFG_OVERRIDES_ROOT_ONLY": "Overrides setting `%s` must only be defined in a root config.",
+  "CFG_PACKAGE_SCOPE_UNKNOWN": "Unable to determine package scope. No parent `package.json` found.",
+  "CFG_ROOT_INVALID": "Invalid configuration root. Requires a `%s` folder and `%s`.",
+  "CFG_ROOT_MISSING_PACKAGE": "Config folder `%s` found without a relative `%s`. Both must be located in the project root."
+}
