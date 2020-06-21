@@ -15,6 +15,9 @@
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run build && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
+  "engines": {
+    "node": ">=10.10.0"
+  },
   "devDependencies": {
     "@milesj/build-tools": "^2.8.1",
     "@types/exit": "^0.1.31",
