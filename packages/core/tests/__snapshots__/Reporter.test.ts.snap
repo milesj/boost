@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Reporter getColorPalette() errors if theme does not exist 1`] = `"Theme could not be loaded. Attempted @boost/theme-custom and boost-theme-custom."`;
