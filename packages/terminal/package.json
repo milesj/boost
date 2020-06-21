@@ -31,7 +31,7 @@
     "strip-ansi": "^6.0.0",
     "supports-hyperlinks": "^2.1.0",
     "term-size": "^2.2.0",
-    "wrap-ansi": "^6.2.0"
+    "wrap-ansi": "^7.0.0"
   },
   "funding": {
     "type": "ko-fi",
