@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.5.3 - 2020-06-21
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ### 1.5.2 - 2020-04-29
 
 **Note:** Version bump only for package @boost/pipeline

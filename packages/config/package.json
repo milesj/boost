@@ -1,6 +1,6 @@
 {
   "name": "@boost/config",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Powerful configuration file builder and loader, with contexual settings.",
   "keywords": [
     "boost",
@@ -19,8 +19,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^1.8.5",
-    "@boost/debug": "^1.4.6",
+    "@boost/common": "^1.9.0",
+    "@boost/debug": "^1.4.7",
     "@boost/internal": "^1.2.0",
     "minimatch": "^3.0.4"
   },

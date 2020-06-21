@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.0.4 - 2020-06-21
+
+#### 🐞 Fixes
+
+- Update to use common package constants. ([32ccf5a](https://github.com/milesj/boost/commit/32ccf5a))
+
+**Note:** Version bump only for package @boost/plugin
+
+
+
+
+
 ### 1.0.3 - 2020-04-29
 
 **Note:** Version bump only for package @boost/plugin

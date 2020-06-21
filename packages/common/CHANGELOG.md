@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.9.0 - 2020-06-21
+
+#### 🚀 Updates
+
+- Add `isFilePath` helper. ([4e8676c](https://github.com/milesj/boost/commit/4e8676c))
+- Add `isModuleName` helper. ([b28fac3](https://github.com/milesj/boost/commit/b28fac3))
+- Add JSON and YAML serializers. (#82) ([ce5b718](https://github.com/milesj/boost/commit/ce5b718)), closes [#82](https://github.com/milesj/boost/issues/82)
+
+#### 🛠 Internals
+
+- Increase code coverage. ([b4eb8cf](https://github.com/milesj/boost/commit/b4eb8cf))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 1.8.5 - 2020-04-29
 
 #### 🛠 Internals
