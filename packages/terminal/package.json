@@ -13,7 +13,7 @@
   "types": "./lib/index.d.ts",
   "nonce": "1579986563745",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.10.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/terminal",
   "license": "MIT",
@@ -23,15 +23,15 @@
   "dependencies": {
     "ansi-escapes": "^4.3.1",
     "ansi-regex": "^5.0.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.1.0",
     "cli-truncate": "^2.1.0",
     "figures": "^3.2.0",
-    "slice-ansi": "^3.0.0",
+    "slice-ansi": "^4.0.0",
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.0",
     "supports-hyperlinks": "^2.1.0",
     "term-size": "^2.2.0",
-    "wrap-ansi": "^6.2.0"
+    "wrap-ansi": "^7.0.0"
   },
   "funding": {
     "type": "ko-fi",

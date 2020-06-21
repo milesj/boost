@@ -1,4 +1,4 @@
-# 🚀 Boost
+# 🚀 Boost v2
 
 [![Build Status](https://github.com/milesj/boost/workflows/Build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
 [![npm version](https://badge.fury.io/js/%40boost%2Fcore.svg)](https://www.npmjs.com/package/@boost/core)
@@ -19,7 +19,7 @@ tools.
 
 ## Requirements
 
-- Node 8.9+
+- Node 10.10+
 
 ## Documentation
 

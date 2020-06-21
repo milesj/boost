@@ -45,7 +45,7 @@ export default class PooledPipeline<
 
     this.onRun.emit([this.value]);
 
-    const result = await new Promise<AggregatedResult<Output>>(resolve => {
+    const result = await new Promise<AggregatedResult<Output>>((resolve) => {
       if (this.work.length === 0) {
         resolve(this.aggregateResult([]));
 
@@ -54,7 +54,7 @@ export default class PooledPipeline<
 
       this.resolver = resolve;
 
-      // eslint-disable-next-line promise/catch-or-return
+      // eslint-disable-next-line promise/catch-or-return, @typescript-eslint/no-floating-promises
       Promise.all(
         this.work
           .slice(0, this.options.concurrency)
@@ -77,17 +77,19 @@ export default class PooledPipeline<
     this.running.push(unit);
 
     const handleResult = (result: Error | Output) => {
-      this.running = this.running.filter(running => running !== unit);
+      this.running = this.running.filter((running) => running !== unit);
       this.results.push(result);
 
       if (this.work.length > 0 && this.running.length < concurrency) {
-        this.runWorkUnit(context, value);
+        return this.runWorkUnit(context, value);
       } else if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
         this.resolver(this.aggregateResult(this.results));
       }
+
+      return Promise.resolve();
     };
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let timer: NodeJS.Timeout;
 
       if (timeout > 0) {
@@ -100,14 +102,14 @@ export default class PooledPipeline<
 
       unit
         .run(context, value)
-        .then(result => {
+        .then((result) => {
           if (timer) {
             clearTimeout(timer);
           }
 
           return resolve(handleResult(result));
         })
-        .catch(error => {
+        .catch((error) => {
           return resolve(handleResult(error));
         });
     });

@@ -12,7 +12,7 @@
   "types": "./lib/index.d.ts",
   "nonce": "1579986563745",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.10.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/common",
   "license": "MIT",
@@ -23,8 +23,8 @@
     "@boost/internal": "^1.2.0",
     "json5": "^2.1.3",
     "optimal": "^4.2.0",
-    "pretty-ms": "^5.1.0",
-    "yaml": "^1.9.2"
+    "pretty-ms": "^7.0.0",
+    "yaml": "^1.10.0"
   },
   "devDependencies": {
     "@boost/test-utils": "^1.4.1"

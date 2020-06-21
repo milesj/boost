@@ -122,19 +122,12 @@ export default class Program extends CommandManager<ProgramOptions> {
   blueprint({ string }: Predicates) {
     return {
       banner: string(),
-      bin: string()
-        .notEmpty()
-        .required()
-        .kebabCase(),
+      bin: string().notEmpty().required().kebabCase(),
       delimiter: string(DELIMITER),
       footer: string(),
       header: string(),
-      name: string()
-        .notEmpty()
-        .required(),
-      version: string()
-        .required()
-        .match(VERSION_FORMAT),
+      name: string().notEmpty().required(),
+      version: string().required().match(VERSION_FORMAT),
     };
   }
 
@@ -199,9 +192,9 @@ export default class Program extends CommandManager<ProgramOptions> {
     }
 
     try {
-      return parseInContext(argv, arg => this.getCommand<O, P>(arg)?.getParserOptions());
+      return parseInContext(argv, (arg) => this.getCommand<O, P>(arg)?.getParserOptions());
     } catch {
-      const [possibleCmd] = argv.filter(arg => !arg.startsWith('-'));
+      const [possibleCmd] = argv.filter((arg) => !arg.startsWith('-'));
 
       this.onCommandNotFound.emit([argv, possibleCmd]);
 
@@ -298,7 +291,7 @@ export default class Program extends CommandManager<ProgramOptions> {
   ): MiddlewareArguments | Promise<MiddlewareArguments> {
     let index = -1;
 
-    const next: MiddlewareCallback = nextArgv => {
+    const next: MiddlewareCallback = (nextArgv) => {
       index += 1;
       const middleware = this.middlewares[index];
 
@@ -378,8 +371,8 @@ export default class Program extends CommandManager<ProgramOptions> {
    * If argument parser or validation errors are found, treat them with special logic.
    */
   protected renderErrors(errors: Error[]): Promise<ExitCode> {
-    const parseErrors = errors.filter(error => error instanceof ParseError);
-    const validErrors = errors.filter(error => error instanceof ValidationError);
+    const parseErrors = errors.filter((error) => error instanceof ParseError);
+    const validErrors = errors.filter((error) => error instanceof ValidationError);
     const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
 
     // Mostly for testing, but useful for other things
@@ -394,7 +387,7 @@ export default class Program extends CommandManager<ProgramOptions> {
         commandLine={this.commandLine}
         delimiter={this.options.delimiter}
         error={error}
-        warnings={validErrors.filter(verror => verror !== error)}
+        warnings={validErrors.filter((verror) => verror !== error)}
       />,
       error instanceof ExitError ? error.code : EXIT_FAIL,
     );
@@ -405,8 +398,8 @@ export default class Program extends CommandManager<ProgramOptions> {
    * while the public run exists to catch any unexpected errors.
    */
   protected async runAndRender(argv: Argv): Promise<ExitCode> {
-    const showVersion = argv.some(arg => arg === '-v' || arg === '--version');
-    const showHelp = argv.some(arg => arg === '-h' || arg === '--help');
+    const showVersion = argv.some((arg) => arg === '-v' || arg === '--version');
+    const showHelp = argv.some((arg) => arg === '-h' || arg === '--help');
 
     // Display index help
     if ((isArgvSize(argv, 0) && !this.standAlone) || (isArgvSize(argv, 1) && showHelp)) {
@@ -473,7 +466,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
       this.commands[path] = cmd;
 
-      aliases.forEach(alias => {
+      aliases.forEach((alias) => {
         this.commandAliases[alias] = path;
       });
 

@@ -49,7 +49,7 @@ and must return a partial object.
 ```ts
 adapter.configure({ name: 'Boost' });
 
-adapter.configure(prevOptions => ({
+adapter.configure((prevOptions) => ({
   nestedObject: {
     ...prevOptions.nestedObject,
     some: 'value',

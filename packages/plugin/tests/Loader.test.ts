@@ -13,7 +13,7 @@ describe('Loader', () => {
   });
 
   afterEach(() => {
-    fixtures.forEach(fixture => fixture());
+    fixtures.forEach((fixture) => fixture());
   });
 
   describe('createResolver()', () => {

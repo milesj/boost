@@ -210,6 +210,7 @@ export default abstract class Command<
     Object.entries(options).forEach(([option, config]) => {
       defaultedOptions[option] = {
         ...config,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         default: this[option as keyof this] ?? config.default,
       };
     });

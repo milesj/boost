@@ -4,7 +4,7 @@ interface MessageMap {
   [key: string]: string | undefined;
 }
 
-const messageCache: Map<string, MessageMap> = new Map();
+const messageCache = new Map<string, MessageMap>();
 
 export default class RuntimeError extends Error {
   code: string;

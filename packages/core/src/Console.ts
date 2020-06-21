@@ -93,7 +93,6 @@ export default class Console extends Emitter {
         .on('SIGINT', this.handleSignal)
         .on('SIGTERM', this.handleSignal)
         .on('uncaughtException', this.handleFailure)
-        // @ts-ignore
         .on('unhandledRejection', this.handleFailure);
     }
   }
@@ -153,7 +152,7 @@ export default class Console extends Emitter {
    * Flush buffered stream output.
    */
   flushBufferedStreams(): this {
-    this.bufferedStreams.forEach(buffer => {
+    this.bufferedStreams.forEach((buffer) => {
       buffer();
     });
 
@@ -167,7 +166,7 @@ export default class Console extends Emitter {
     const outputs = this.outputQueue.filter((out, i) => i === 0 || out.isConcurrent());
 
     // Erase the previous output
-    outputs.forEach(output => {
+    outputs.forEach((output) => {
       output.erasePrevious();
     });
 
@@ -175,12 +174,12 @@ export default class Console extends Emitter {
     this.flushBufferedStreams();
 
     // Write the next output
-    outputs.forEach(output => {
+    outputs.forEach((output) => {
       output.render();
     });
 
     // Remove completed outputs
-    this.outputQueue = this.outputQueue.filter(out => !out.isComplete());
+    this.outputQueue = this.outputQueue.filter((out) => !out.isComplete());
 
     // Stop the render loop once the queue is empty
     if (this.isEmptyQueue()) {
@@ -251,7 +250,7 @@ export default class Console extends Emitter {
    */
   isSilent(): boolean {
     // Check all objects since these might not have been loaded yet
-    return this.tool && this.tool.config && this.tool.config.silent;
+    return this.tool?.config?.silent;
   }
 
   /**
@@ -330,7 +329,7 @@ export default class Console extends Emitter {
     this.state.final = true;
 
     // Mark all output as final
-    this.outputQueue.forEach(output => {
+    this.outputQueue.forEach((output) => {
       output.enqueue(true);
     });
 
@@ -460,7 +459,7 @@ export default class Console extends Emitter {
       return;
     }
 
-    ['stderr', 'stdout'].forEach(key => {
+    ['stderr', 'stdout'].forEach((key) => {
       const name = key as StreamType;
 
       if (!this.isStreamWrapped(name)) {
@@ -484,7 +483,7 @@ export default class Console extends Emitter {
       return;
     }
 
-    ['stderr', 'stdout'].forEach(key => {
+    ['stderr', 'stdout'].forEach((key) => {
       const name = key as StreamType;
       const stream = process[name];
       let buffer = '';

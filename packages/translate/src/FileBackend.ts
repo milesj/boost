@@ -15,7 +15,7 @@ export interface FileBackendOptions {
 }
 
 export default class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
-  fileCache: Map<Path, ResourceKey> = new Map();
+  fileCache = new Map<Path, ResourceKey>();
 
   type: 'backend' = 'backend';
 
@@ -23,7 +23,7 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     this.configure(options);
 
     // Validate resource paths are directories
-    this.options.paths.forEach(path => {
+    this.options.paths.forEach((path) => {
       if (path.exists() && !path.isDirectory()) {
         throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [path.path()]);
       }
@@ -50,8 +50,8 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     const { format, paths } = this.options;
     const resources: ResourceKey = {};
 
-    paths.forEach(path => {
-      EXTS[format].some(ext => {
+    paths.forEach((path) => {
+      EXTS[format].some((ext) => {
         const resPath = path.append(locale, `${namespace}.${ext}`);
         const isCached = this.fileCache.has(resPath);
 

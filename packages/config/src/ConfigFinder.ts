@@ -45,9 +45,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         yaml: func(loadYaml).notNullable(),
         yml: func(loadYaml).notNullable(),
       }).exact(),
-      name: string()
-        .required()
-        .camelCase(),
+      name: string().required().camelCase(),
       overridesSetting: string(),
     };
   }
@@ -111,7 +109,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         }
 
         await Promise.all(
-          files.map(configPath => {
+          files.map((configPath) => {
             if (configPath.exists()) {
               paths.push(configPath);
             }
@@ -129,7 +127,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       this.debug.invariant(
         paths.length > 0,
         `Finding config files in ${color.filePath(baseDir.path())}`,
-        paths.map(path => path.name()).join(', '),
+        paths.map((path) => path.name()).join(', '),
         'No files',
       );
 
@@ -156,7 +154,7 @@ export default class ConfigFinder<T extends object> extends Finder<
   async resolveFiles(basePath: Path, foundFiles: Path[]): Promise<ConfigFile<T>[]> {
     this.debug('Resolving %d config files', foundFiles.length);
 
-    const configs = await Promise.all(foundFiles.map(filePath => this.loadConfig(filePath)));
+    const configs = await Promise.all(foundFiles.map((filePath) => this.loadConfig(filePath)));
 
     // Overrides take the highest precedence and must appear after everything,
     // including branch level configs. However, they must extract first so that
@@ -209,7 +207,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         return;
       }
 
-      toArray(extendsFrom).forEach(extendsPath => {
+      toArray(extendsFrom).forEach((extendsPath) => {
         // Node module
         if (isModuleName(extendsPath)) {
           const modulePath = new Path(
@@ -241,7 +239,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       });
     });
 
-    return Promise.all(extendsPaths.map(path => this.loadConfig(path, 'extended')));
+    return Promise.all(extendsPaths.map((path) => this.loadConfig(path, 'extended')));
   }
 
   /**
@@ -272,11 +270,11 @@ export default class ConfigFinder<T extends object> extends Finder<
       toArray(overrides).forEach(({ exclude, include, settings }) => {
         const options = { dot: true, matchBase: true };
         const excludePatterns = toArray(exclude);
-        const excluded = excludePatterns.some(pattern =>
+        const excluded = excludePatterns.some((pattern) =>
           minimatch(basePath.path(), pattern, options),
         );
         const includePatterns = toArray(include);
-        const included = includePatterns.some(pattern =>
+        const included = includePatterns.some((pattern) =>
           minimatch(basePath.path(), pattern, options),
         );
         const passes = included && !excluded;

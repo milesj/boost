@@ -9,7 +9,7 @@ export default class PathResolver {
    * Return a list of all lookup paths.
    */
   getLookupPaths(): string[] {
-    return this.lookups.map(lookup => lookup.path.path());
+    return this.lookups.map((lookup) => lookup.path.path());
   }
 
   /**
@@ -54,7 +54,7 @@ export default class PathResolver {
     let resolvedPath: PortablePath = '';
     let resolvedLookup: Lookup | undefined;
 
-    this.lookups.some(lookup => {
+    this.lookups.some((lookup) => {
       // Check that the file exists on the file system.
       if (lookup.type === LookupType.FILE_SYSTEM) {
         if (lookup.path.exists()) {
@@ -80,7 +80,7 @@ export default class PathResolver {
 
     if (!resolvedPath || !resolvedLookup) {
       throw new RuntimeError('common', 'CM_PATH_RESOLVE_LOOKUPS', [
-        this.lookups.map(lookup => `  - ${lookup.path} (${lookup.type})`).join('\n'),
+        this.lookups.map((lookup) => `  - ${lookup.path} (${lookup.type})`).join('\n'),
       ]);
     }
 

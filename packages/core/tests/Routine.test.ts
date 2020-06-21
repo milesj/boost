@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import execa from 'execa';
 import { Predicates } from 'optimal';
 import { mockDebugger } from '@boost/debug/lib/testing';
@@ -107,7 +105,7 @@ describe('Routine', () => {
     });
 
     it('throws an error if key is not a string', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => new TestRoutine(123, 'title')).toThrowErrorMatchingSnapshot();
     });
 
@@ -139,7 +137,7 @@ describe('Routine', () => {
       }
 
       const parent = mockRoutine(tool);
-      // @ts-ignore
+      // @ts-expect-error
       parent.options.foo = 'bar';
 
       routine = new BootstrapRoutine('bootstrap', 'title');
@@ -302,10 +300,7 @@ describe('Routine', () => {
       const bar = mockRoutine(tool, 'bar');
       const baz = mockRoutine(tool, 'baz');
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       routine.action = (ctx, value) => routine.parallelizeRoutines(value, [bar]);
 
@@ -345,9 +340,9 @@ describe('Routine', () => {
 
     it('captures and rethrows errors that occur down the chain', async () => {
       routine = new FailureTaskRoutine('failure', 'title');
-      // @ts-ignore
+      // @ts-expect-error
       routine.task('foo', routine.foo);
-      // @ts-ignore
+      // @ts-expect-error
       routine.task('bar', routine.bar);
 
       try {
@@ -398,7 +393,7 @@ describe('Routine', () => {
 
   describe('pipe()', () => {
     it('throws an error if a non-Routine is passed', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => routine.pipe('foo')).toThrowErrorMatchingSnapshot();
     });
 
@@ -407,10 +402,7 @@ describe('Routine', () => {
       const bar = mockRoutine(tool, 'bar');
       const baz = mockRoutine(tool, 'baz');
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       expect(Array.from(routine.routines)).toEqual([foo, bar, baz]);
     });
@@ -420,10 +412,7 @@ describe('Routine', () => {
       const bar = mockRoutine(tool, 'bar');
       const baz = mockRoutine(tool, 'baz');
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       expect(foo.metadata.index).toBe(0);
       expect(bar.metadata.index).toBe(1);
@@ -435,7 +424,7 @@ describe('Routine', () => {
 
       routine.pipe(foo);
 
-      // @ts-ignore
+      // @ts-expect-error
       expect(foo.console).toBe(routine.console);
     });
   });
@@ -496,10 +485,7 @@ describe('Routine', () => {
       const bar = mockRoutine(tool, 'bar');
       const baz = mockRoutine(tool, 'baz');
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       routine.action = (ctx, value) => routine.poolRoutines(value, {}, [bar]);
 
@@ -668,10 +654,7 @@ describe('Routine', () => {
       const bar = new SerializeSubsRoutine('bar', 'title', { multiplier: 3 });
       const baz = new SerializeSubsRoutine('baz', 'title', { multiplier: 1 });
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       expect(await routine.serializeRoutines({ count: 6, key: '' })).toEqual({
         count: 36,
@@ -709,10 +692,7 @@ describe('Routine', () => {
       const bar = mockRoutine(tool, 'bar');
       const baz = mockRoutine(tool, 'baz');
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       routine.action = (ctx, value) => routine.serializeRoutines(value, [bar]);
 
@@ -754,9 +734,9 @@ describe('Routine', () => {
 
     it('executes all passed tasks in sequential order', async () => {
       routine = new SerializeTasksRoutine('key', 'title');
-      // @ts-ignore
+      // @ts-expect-error
       routine.task('upper', routine.upperCase);
-      // @ts-ignore
+      // @ts-expect-error
       routine.task('dupe', routine.duplicate);
 
       expect(await routine.serializeTasks('foo')).toBe('FOOFOO');
@@ -857,10 +837,7 @@ describe('Routine', () => {
       const bar = mockRoutine(tool, 'bar');
       const baz = mockRoutine(tool, 'baz');
 
-      routine
-        .pipe(foo)
-        .pipe(bar)
-        .pipe(baz);
+      routine.pipe(foo).pipe(bar).pipe(baz);
 
       routine.action = (ctx, value) => routine.synchronizeRoutines(value, [bar]);
 
@@ -958,7 +935,7 @@ describe('Routine', () => {
   describe('task()', () => {
     it('errors if not a function', () => {
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         routine.task('foo', 'bar');
       }).toThrowErrorMatchingSnapshot();
     });
@@ -966,8 +943,8 @@ describe('Routine', () => {
     it('maps `Task` objects', () => {
       expect(routine.tasks).toHaveLength(0);
 
-      routine.task('foo', value => value);
-      routine.task('bar', value => value);
+      routine.task('foo', (value) => value);
+      routine.task('bar', (value) => value);
 
       expect(routine.tasks).toHaveLength(2);
 
@@ -981,7 +958,7 @@ describe('Routine', () => {
       let options;
 
       routine.task('foo', function foo() {
-        // @ts-ignore
+        // @ts-expect-error
         ({ options } = this); // eslint-disable-line babel/no-invalid-this
       });
 
@@ -991,21 +968,21 @@ describe('Routine', () => {
     });
 
     it('returns a `Task` instance', () => {
-      const task = routine.task('foo', value => value);
+      const task = routine.task('foo', (value) => value);
 
       expect(task.constructor.name).toBe('Task');
     });
 
     it('sets routine as parent', () => {
-      const task = routine.task('foo', value => value);
+      const task = routine.task('foo', (value) => value);
 
       expect(task.parent).toBe(routine);
     });
 
     it('updates index metadata of each task', () => {
-      const foo = routine.task('foo', value => value);
-      const bar = routine.task('bar', value => value);
-      const baz = routine.task('baz', value => value);
+      const foo = routine.task('foo', (value) => value);
+      const bar = routine.task('bar', (value) => value);
+      const baz = routine.task('baz', (value) => value);
 
       expect(foo.metadata.index).toBe(0);
       expect(bar.metadata.index).toBe(1);

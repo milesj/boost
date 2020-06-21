@@ -11,7 +11,7 @@
   "types": "./lib/index.d.ts",
   "nonce": "1579986563745",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.10.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/test-utils",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "access": "public"
   },
   "dependencies": {
-    "fs-extra": "^8.1.0"
+    "fs-extra": "^9.0.1"
   },
   "funding": {
     "type": "ko-fi",

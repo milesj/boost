@@ -29,7 +29,7 @@ describe('Work', () => {
       expect(
         () =>
           new Task(
-            // @ts-ignore Allow invalid type
+            // @ts-expect-error
             123,
             () => {},
           ),
@@ -41,7 +41,7 @@ describe('Work', () => {
         () =>
           new Task(
             'title',
-            // @ts-ignore Allow invalid type
+            // @ts-expect-error
             123,
           ),
       ).toThrowErrorMatchingSnapshot();
@@ -117,7 +117,7 @@ describe('Work', () => {
     it('returns false when running', () => {
       expect(passWork.isComplete()).toBe(false);
 
-      // @ts-ignore Allow
+      // @ts-expect-error
       passWork.status = STATUS_RUNNING;
 
       expect(passWork.isComplete()).toBe(false);
@@ -134,7 +134,7 @@ describe('Work', () => {
     it('returns a boolean for STATUS_RUNNING status state', () => {
       expect(passWork.isRunning()).toBe(false);
 
-      // @ts-ignore Allow
+      // @ts-expect-error
       passWork.status = STATUS_RUNNING;
 
       expect(passWork.isRunning()).toBe(true);
@@ -304,7 +304,7 @@ describe('Work', () => {
     it('evaluates a condition to determine whether to skip', () => {
       expect(passWork.isSkipped()).toBe(false);
 
-      // @ts-ignore
+      // @ts-expect-error
       passWork.skip(1 === 2);
 
       expect(passWork.isSkipped()).toBe(false);

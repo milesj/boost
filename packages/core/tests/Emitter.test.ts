@@ -68,10 +68,7 @@ describe('Emitter', () => {
         value = value.toUpperCase();
       });
       emitter.on('foo', () => {
-        value = value
-          .split('')
-          .reverse()
-          .join('');
+        value = value.split('').reverse().join('');
       });
       emitter.on('foo', () => {
         value = `${value}-${value}`;
@@ -85,7 +82,7 @@ describe('Emitter', () => {
     it('executes listeners syncronously with arguments while passing values to each', () => {
       const value: string[] = [];
 
-      emitter.on('foo', a => {
+      emitter.on('foo', (a) => {
         value.push(a.repeat(3));
       });
       emitter.on('foo', (a, b) => {
@@ -208,7 +205,7 @@ describe('Emitter', () => {
   describe('on()', () => {
     it('errors if listener is not a function', () => {
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         emitter.on('foo', 123);
       }).toThrowErrorMatchingSnapshot();
     });

@@ -79,7 +79,7 @@ describe('PooledPipeline', () => {
     const pipeline = new PooledPipeline(new Context(), 'foo').add(
       'Scope',
       function scopeAction() {
-        // @ts-ignore Allow this
+        // @ts-expect-error
         expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
 
         return 'bar';
@@ -113,10 +113,7 @@ describe('PooledPipeline', () => {
     const one = new Task('One', (ctx, value: string) => value.repeat(1));
     const two = new Task('Two', (ctx, value: string) => value.repeat(2));
     const three = new Task('Three', (ctx, value: string) => value.repeat(3));
-    const pipeline = new PooledPipeline(new Context(), 'o')
-      .add(one)
-      .add(two)
-      .add(three);
+    const pipeline = new PooledPipeline(new Context(), 'o').add(one).add(two).add(three);
     const spy = jest.fn();
 
     pipeline.onRunWorkUnit.listen(spy);
@@ -190,7 +187,7 @@ describe('PooledPipeline', () => {
         .add(
           'Two',
           () =>
-            new Promise(resolve => {
+            new Promise((resolve) => {
               setTimeout(() => {
                 resolve('bar');
               }, 1000);

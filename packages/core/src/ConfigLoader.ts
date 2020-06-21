@@ -171,12 +171,13 @@ export default class ConfigLoader {
     // Needs forward slash for globs to work on Windows
     const match = workspacePatterns.some(
       (pattern: string) =>
+        // eslint-disable-next-line security/detect-non-literal-regexp
         !!rootPath.path().match(new RegExp(workspaceRoot!.append(pattern).path(), 'u')),
     );
 
     this.debug.invariant(
       match,
-      `Matching patterns: ${workspacePatterns.map(p => color.filePath(p)).join(', ')}`,
+      `Matching patterns: ${workspacePatterns.map((p) => color.filePath(p)).join(', ')}`,
       'Match found',
       'Invalid workspace package',
     );
@@ -220,14 +221,14 @@ export default class ConfigLoader {
 
     this.debug('Inheriting config from CLI options');
 
-    Object.keys(args).forEach(key => {
+    Object.keys(args).forEach((key) => {
       const value = args[key];
 
       if (key === 'config' || key === 'extends' || key === 'settings') {
         return;
       }
 
-      // @ts-ignore Ignore symbol check
+      // @ts-expect-error
       const pluginType = pluginTypes[key as keyof typeof pluginTypes];
 
       // Plugins
@@ -272,7 +273,7 @@ export default class ConfigLoader {
       throw new Error(this.tool.msg('errors:configNotFound'));
     }
 
-    Object.values(this.tool.getRegisteredPlugins()).forEach(type => {
+    Object.values(this.tool.getRegisteredPlugins()).forEach((type) => {
       const { contract, singularName, pluralName } = type!;
 
       this.debug('Generating %s blueprint', color.pluginType(singularName));
@@ -372,7 +373,7 @@ export default class ConfigLoader {
     const nextConfig = {};
     const resolvedPaths = this.resolveExtendPaths(extendPaths, baseDir);
 
-    resolvedPaths.forEach(extendPath => {
+    resolvedPaths.forEach((extendPath) => {
       if (this.parsedFiles.has(extendPath.path())) {
         return;
       }
@@ -449,7 +450,7 @@ export default class ConfigLoader {
    *  - Strings that start with "<plugin>:" should adhere to the previous rule.
    */
   resolveExtendPaths(extendPaths: string[], baseDir: string = ''): Path[] {
-    return extendPaths.map(extendPath => {
+    return extendPaths.map((extendPath) => {
       if (typeof extendPath !== 'string') {
         throw new TypeError(this.tool.msg('errors:configExtendsInvalid'));
       }

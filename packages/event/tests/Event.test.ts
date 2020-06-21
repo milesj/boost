@@ -14,10 +14,7 @@ describe('Event', () => {
       value = value.toUpperCase();
     });
     event.listen(() => {
-      value = value
-        .split('')
-        .reverse()
-        .join('');
+      value = value.split('').reverse().join('');
     });
     event.listen(() => {
       value = `${value}-${value}`;
@@ -31,7 +28,7 @@ describe('Event', () => {
   it('executes listeners synchronously with arguments', () => {
     const value: string[] = [];
 
-    event.listen(a => {
+    event.listen((a) => {
       value.push(a.repeat(3));
     });
     event.listen((a, b) => {

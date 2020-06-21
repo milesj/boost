@@ -5,7 +5,7 @@ export default function formatCommandCall(name: string, metadata: CommandConfig)
   let output = name;
 
   if (metadata.params) {
-    metadata.params.forEach(param => {
+    metadata.params.forEach((param) => {
       output += ' ';
       output += formatType(param, true);
     });

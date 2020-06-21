@@ -5,11 +5,11 @@ export default class Context {
    * Create a new instance of the current context and shallow clone all properties.
    */
   clone(...args: any[]): this {
-    // @ts-ignore Not sure how to reflect the constructor of sub-classes
+    // @ts-expect-error
     const context = new this.constructor(...args);
 
     // Copy enumerable properties
-    Object.keys(this).forEach(key => {
+    Object.keys(this).forEach((key) => {
       const prop = key as keyof this;
       let value: any = this[prop];
 

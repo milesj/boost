@@ -114,7 +114,7 @@ export default class Failure extends React.Component<FailureProps> {
       <>
         <Header label={msg('cli:labelWarnings')} type="warning" />
 
-        {warnings.map(warn => (
+        {warnings.map((warn) => (
           <Box key={warn.message} paddingLeft={SPACING_COL} flexDirection="row">
             <Box width={2}>{'–'}</Box>
             <Box flexGrow={1}>{warn.message}</Box>

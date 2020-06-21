@@ -236,7 +236,7 @@ describe('NyanReporter', () => {
     it('doesnt render routine and task when final render', () => {
       reporter.activeRoutine = mockRoutine(tool);
       reporter.activeTask = mockTask();
-      // @ts-ignore
+      // @ts-expect-error
       reporter.console.state.final = true;
 
       expect(reporter.renderLines()).toMatchSnapshot();

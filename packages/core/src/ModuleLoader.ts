@@ -71,7 +71,7 @@ export default class ModuleLoader<Tm> {
       modulesToAttempt.push(formatModuleName(appName, typeName, name));
 
       // Additional scopes to load
-      this.scopes.forEach(otherScope => {
+      this.scopes.forEach((otherScope) => {
         modulesToAttempt.push(
           formatModuleName(otherScope, typeName, name, true),
           formatModuleName(otherScope, typeName, name),
@@ -81,7 +81,7 @@ export default class ModuleLoader<Tm> {
       this.debug('Resolving in order: %s', modulesToAttempt.join(', '));
     }
 
-    modulesToAttempt.some(modName => {
+    modulesToAttempt.some((modName) => {
       try {
         importedModule = requireModule(modName);
         moduleName = modName;
@@ -199,6 +199,6 @@ export default class ModuleLoader<Tm> {
    * Load multiple modules.
    */
   loadModules(modules: (string | OptionsObject | Tm)[] = [], args: any[] = []): Tm[] {
-    return modules.map(module => this.loadModule(module, args));
+    return modules.map((module) => this.loadModule(module, args));
   }
 }

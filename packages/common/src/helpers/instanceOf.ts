@@ -37,6 +37,7 @@ export default function instanceOf<T = unknown>(
       return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     current = Object.getPrototypeOf(current);
   }
 

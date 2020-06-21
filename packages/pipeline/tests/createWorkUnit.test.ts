@@ -31,7 +31,7 @@ describe('createWorkUnit()', () => {
   });
 
   it('returns a `Task`', () => {
-    const task = new Task('title', value => value);
+    const task = new Task('title', (value) => value);
 
     expect(createWorkUnit(task)).toBe(task);
   });
@@ -47,7 +47,7 @@ describe('createWorkUnit()', () => {
     const work = createWorkUnit('title', action);
 
     expect(work).toBeInstanceOf(Task);
-    // @ts-ignore Allow access
+    // @ts-expect-error
     expect(work.action).toBe(action);
   });
 
@@ -61,7 +61,7 @@ describe('createWorkUnit()', () => {
     expect(() => {
       createWorkUnit(
         'title',
-        // @ts-ignore Allow invalid type
+        // @ts-expect-error
         123,
       );
     }).toThrow('Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.');

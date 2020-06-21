@@ -24,7 +24,7 @@ export default class ConcurrentPipeline<
     this.onRun.emit([value]);
 
     const result = await Promise.all(
-      work.map(unit => {
+      work.map((unit) => {
         this.onRunWorkUnit.emit([unit, value]);
 
         return unit.run(context, value);

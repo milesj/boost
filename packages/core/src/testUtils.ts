@@ -24,7 +24,7 @@ export interface TestToolConfig extends ToolConfig {
 export type TestTool = Tool<TestToolPlugins, TestToolConfig>;
 
 export function stubArgs<T extends object = {}>(fields?: Partial<T>): Arguments<T> {
-  // @ts-ignore
+  // @ts-expect-error
   return {
     $0: '',
     _: [],
@@ -35,7 +35,7 @@ export function stubArgs<T extends object = {}>(fields?: Partial<T>): Arguments<
 export function stubPackageJson<T extends object = {}>(
   fields?: Partial<PackageConfig & T>,
 ): PackageConfig & T {
-  // @ts-ignore
+  // @ts-expect-error
   return {
     name: 'test-boost',
     version: '0.0.0',
@@ -71,7 +71,7 @@ export function mockTool<
 
   // Register default plugins
   if (injectPlugin) {
-    // @ts-ignore Ignore this for convenience
+    // @ts-expect-error
     tool.registerPlugin('plugin', Plugin);
   }
 
@@ -84,10 +84,10 @@ export function mockTool<
   tool.debug = mockDebugger();
 
   // TODO Remove in 2.0
-  // @ts-ignore
+  // @ts-expect-error
   tool.createDebugger = mockDebugger;
 
-  // @ts-ignore Allow private access to avoid loaders
+  // @ts-expect-error
   tool.initialized = true;
 
   return tool;

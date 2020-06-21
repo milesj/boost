@@ -14,7 +14,7 @@
   "types": "./lib/index.d.ts",
   "nonce": "1579986563745",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.10.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/log",
   "license": "MIT",
@@ -24,8 +24,8 @@
   "dependencies": {
     "@boost/common": "^1.9.0",
     "@boost/internal": "^1.2.0",
-    "i18next": "^19.4.2",
-    "os-locale": "^4.0.0"
+    "i18next": "^19.5.0",
+    "os-locale": "^5.0.0"
   },
   "funding": {
     "type": "ko-fi",

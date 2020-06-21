@@ -28,7 +28,7 @@ export default class LocaleDetector implements LanguageDetectorModule {
 
   detectFromArgv(): Locale | undefined {
     const args = process.argv;
-    const index = args.findIndex(arg => arg === '--locale');
+    const index = args.findIndex((arg) => arg === '--locale');
     const nextIndex = index + 1;
 
     if (index >= 0 && args[nextIndex] && !args[nextIndex].startsWith('-')) {

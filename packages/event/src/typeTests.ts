@@ -46,7 +46,7 @@ const notPromiseReturn: string = baz.emit(['abc']);
 
 // VALID
 qux.listen(() => 'abc');
-qux.listen(str => str.toUpperCase());
+qux.listen((str) => str.toUpperCase());
 qux.emit('qux');
 
 // INVALID

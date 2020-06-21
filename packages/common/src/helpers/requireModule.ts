@@ -5,9 +5,8 @@ export default function requireModule<T>(path: PortablePath): T {
   let value = require(String(path));
 
   // Support Babel compiled files
-  // eslint-disable-next-line no-underscore-dangle
-  if (value && value.__esModule) {
-    value = value.default;
+  if (value?.__esModule) {
+    value = value.default as T;
   }
 
   return value;

@@ -21,9 +21,7 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
   blueprint({ bool, string }: Predicates) {
     return {
       defaultWhenUndefined: bool(true),
-      name: string()
-        .required()
-        .camelCase(),
+      name: string().required().camelCase(),
       validate: bool(true),
     };
   }

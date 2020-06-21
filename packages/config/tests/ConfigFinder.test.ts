@@ -36,7 +36,7 @@ import {
 } from './__fixtures__/config-files-fs';
 import { stubPath } from './helpers';
 
-jest.mock('fs', () => require.requireActual('memfs').vol);
+jest.mock('fs', () => jest.requireActual('memfs').vol);
 
 describe('ConfigFinder', () => {
   let cache: Cache;
@@ -622,7 +622,7 @@ describe('ConfigFinder', () => {
       vol.fromJSON(rootConfigTOML, '/test');
 
       finder.configure(
-        // @ts-ignore Allow invalid type
+        // @ts-expect-error
         { extensions: ['toml'] },
       );
 

@@ -41,7 +41,7 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
 
     // This is technically invalid, but we want to allow optional values.
     // Luckily the input type defaults to `unknown`, so it forces consumers to validate.
-    // @ts-ignore
+    // @ts-expect-error
     this.value = value;
 
     debug('New %S created', name);

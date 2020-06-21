@@ -26,7 +26,7 @@ export interface TaskMetadata {
 export default class Task<Ctx extends Context> extends Emitter {
   action: TaskAction<Ctx>;
 
-  // @ts-ignore Set after instantiation
+  // @ts-expect-error
   context: Ctx;
 
   title: string;

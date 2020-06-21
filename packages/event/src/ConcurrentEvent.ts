@@ -12,6 +12,6 @@ export default class ConcurrentEvent<
   emit(args: Args, scope?: Scope): Promise<unknown[]> {
     debug('Emitting "%s%s" as concurrent', this.name, scope ? `:${scope}` : '');
 
-    return Promise.all(Array.from(this.getListeners(scope)).map(listener => listener(...args)));
+    return Promise.all(Array.from(this.getListeners(scope)).map((listener) => listener(...args)));
   }
 }

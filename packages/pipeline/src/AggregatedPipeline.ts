@@ -25,12 +25,12 @@ export default class AggregatedPipeline<
     this.onRun.emit([value]);
 
     const result = await Promise.all(
-      work.map(unit => {
+      work.map((unit) => {
         this.onRunWorkUnit.emit([unit, value]);
 
-        return unit.run(context, value).catch(error => error);
+        return unit.run(context, value).catch((error) => error);
       }),
-    ).then(responses => this.aggregateResult(responses));
+    ).then((responses) => this.aggregateResult(responses));
 
     this.onFinish.emit([]);
 

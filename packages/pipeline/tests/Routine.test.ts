@@ -38,7 +38,7 @@ describe('Routine', () => {
     expect(
       () =>
         new TestRoutine(
-          // @ts-ignore Allow invalid type
+          // @ts-expect-error
           123,
           'title',
         ),
@@ -180,7 +180,7 @@ describe('Routine', () => {
       const commandDataSpy = jest.fn();
       const task = new Task<string, string>('title', () => '');
 
-      // @ts-ignore Allow
+      // @ts-expect-error
       task.status = STATUS_RUNNING;
 
       routine.onCommand.listen(commandSpy);
@@ -195,7 +195,7 @@ describe('Routine', () => {
     it('sets `statusText` on work unit', async () => {
       const task = new Task('title', () => {});
 
-      // @ts-ignore Allow
+      // @ts-expect-error
       task.status = STATUS_RUNNING;
 
       await routine.executeCommand('yarn', ['--help'], { workUnit: task });
@@ -208,7 +208,7 @@ describe('Routine', () => {
 
       const task = new Task('title', () => {});
 
-      // @ts-ignore Allow
+      // @ts-expect-error
       task.status = STATUS_RUNNING;
       task.statusText = 'Should not be changed';
 

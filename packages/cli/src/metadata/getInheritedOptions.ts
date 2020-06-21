@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { OptionConfigMap } from '@boost/args';
 import getConstructor from './getConstructor';
 

@@ -133,10 +133,10 @@ export default class Checker {
   validateParamOrder(configs: ParamConfig[]) {
     const optionals: ParamConfig[] = [];
 
-    configs.forEach(config => {
+    configs.forEach((config) => {
       if (config.required) {
         if (optionals.length > 0) {
-          const labels = optionals.map(opt => `"${opt.label}"`);
+          const labels = optionals.map((opt) => `"${opt.label}"`);
 
           this.logInvalidError('AG_PARAM_MISORDERED', [labels.join(', '), config.label]);
         }

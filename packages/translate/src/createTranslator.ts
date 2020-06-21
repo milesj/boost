@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+
 import i18next, { InitOptions } from 'i18next';
 import { Path, toArray, PortablePath } from '@boost/common';
 import { RuntimeError } from '@boost/internal';
@@ -97,7 +99,7 @@ export default function createTranslator(
   msg.changeLocale = (lang: Locale) => {
     debug('Locale manually changed to "%s"', lang);
 
-    translator.changeLanguage(lang, error => {
+    translator.changeLanguage(lang, (error) => {
       handleError(error);
 
       msg.dir = translator.dir();
