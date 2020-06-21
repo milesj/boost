@@ -95,7 +95,7 @@ describe('Context', () => {
       constructor(...values: string[]) {
         super();
 
-        values.forEach(value => {
+        values.forEach((value) => {
           this.object[value] = value;
         });
       }
@@ -160,7 +160,7 @@ describe('Context', () => {
       constructor(...values: string[]) {
         super();
 
-        values.forEach(value => {
+        values.forEach((value) => {
           this.map.set(value, value);
         });
       }
@@ -187,7 +187,7 @@ describe('Context', () => {
       constructor(...values: string[]) {
         super();
 
-        values.forEach(value => {
+        values.forEach((value) => {
           this.set.add(value);
         });
       }

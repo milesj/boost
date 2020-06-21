@@ -45,7 +45,7 @@ export default class PooledPipeline<
 
     this.onRun.emit([this.value]);
 
-    const result = await new Promise<AggregatedResult<Output>>(resolve => {
+    const result = await new Promise<AggregatedResult<Output>>((resolve) => {
       if (this.work.length === 0) {
         resolve(this.aggregateResult([]));
 
@@ -77,7 +77,7 @@ export default class PooledPipeline<
     this.running.push(unit);
 
     const handleResult = (result: Error | Output) => {
-      this.running = this.running.filter(running => running !== unit);
+      this.running = this.running.filter((running) => running !== unit);
       this.results.push(result);
 
       if (this.work.length > 0 && this.running.length < concurrency) {
@@ -89,7 +89,7 @@ export default class PooledPipeline<
       return Promise.resolve();
     };
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let timer: NodeJS.Timeout;
 
       if (timeout > 0) {
@@ -102,14 +102,14 @@ export default class PooledPipeline<
 
       unit
         .run(context, value)
-        .then(result => {
+        .then((result) => {
           if (timer) {
             clearTimeout(timer);
           }
 
           return resolve(handleResult(result));
         })
-        .catch(error => {
+        .catch((error) => {
           return resolve(handleResult(error));
         });
     });

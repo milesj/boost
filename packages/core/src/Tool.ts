@@ -127,7 +127,7 @@ export default class Tool<
         appPath: string().required().notEmpty(),
         argOptions: object<object>(),
         configBlueprint: object(),
-        configName: string().custom(value => {
+        configName: string().custom((value) => {
           if (value && !value.match(CONFIG_NAME_PATTERN)) {
             throw new Error('Config file name must be camel case without extension.');
           }
@@ -180,7 +180,7 @@ export default class Tool<
 
     // Define a special type of plugin
     this.registerPlugin('reporter', Reporter, {
-      beforeBootstrap: reporter => {
+      beforeBootstrap: (reporter) => {
         reporter.console = this.console;
       },
       scopes: ['boost'],
@@ -192,7 +192,7 @@ export default class Tool<
       this.addPlugin('reporter', new ErrorReporter());
 
       // Cleanup when an exit occurs
-      process.on('exit', code => {
+      process.on('exit', (code) => {
         this.emit('exit', [code]);
         this.onExit.emit([code]);
       });
@@ -278,7 +278,7 @@ export default class Tool<
    * Return a plugin by name and type.
    */
   getPlugin<K extends keyof PluginRegistry>(typeName: K, name: string): PluginRegistry[K] {
-    const plugin = this.getPlugins(typeName).find(p => instanceOf(p, Plugin) && p.name === name);
+    const plugin = this.getPlugins(typeName).find((p) => instanceOf(p, Plugin) && p.name === name);
 
     if (plugin) {
       return plugin;
@@ -337,13 +337,13 @@ export default class Tool<
           ...options,
           relative: true,
           root,
-        }).map(ws => `${ws}/package.json`),
+        }).map((ws) => `${ws}/package.json`),
         {
           absolute: true,
           cwd: String(root),
         },
       )
-      .map(filePath => ({
+      .map((filePath) => ({
         ...fs.readJsonSync(filePath),
         workspace: this.createWorkspaceMetadata(filePath),
       }));
@@ -400,7 +400,7 @@ export default class Tool<
       return workspacePaths;
     }
 
-    return workspacePaths.map(workspace => rootPath.append(workspace).path());
+    return workspacePaths.map((workspace) => rootPath.append(workspace).path());
   }
 
   /**
@@ -463,7 +463,7 @@ export default class Tool<
       return false;
     }
 
-    return setting.some(value => {
+    return setting.some((value) => {
       if (typeof value === 'string' && value === name) {
         return true;
       }
@@ -601,7 +601,7 @@ export default class Tool<
       throw new Error(this.msg('errors:configNotLoaded', { name: 'plugins' }));
     }
 
-    Object.keys(this.pluginTypes).forEach(type => {
+    Object.keys(this.pluginTypes).forEach((type) => {
       const typeName = type as keyof PluginRegistry;
       const { loader, pluralName } = this.pluginTypes[typeName]!;
       const plugins = loader.loadModules((this.config as any)[pluralName]);
@@ -616,7 +616,7 @@ export default class Tool<
       // Bootstrap each plugin with the tool
       loader.debug('Bootstrapping with tool environment');
 
-      plugins.forEach(plugin => {
+      plugins.forEach((plugin) => {
         this.addPlugin(typeName, plugin);
       });
     });

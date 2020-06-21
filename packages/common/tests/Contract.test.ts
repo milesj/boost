@@ -106,7 +106,7 @@ describe('Contract', () => {
     it('can set an option using a callback function', () => {
       expect(opts.options.foo).toBe('default');
 
-      opts.configure(prev => ({
+      opts.configure((prev) => ({
         foo: `${prev.foo}-new`,
       }));
 

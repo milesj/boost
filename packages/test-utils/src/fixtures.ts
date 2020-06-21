@@ -72,7 +72,7 @@ export function createTempFileInFixture(fixture: string, file: string, data: unk
 
 if (typeof afterAll === 'function') {
   afterAll(() => {
-    Array.from(TEMPORARY_FILES).forEach(tempFile => {
+    Array.from(TEMPORARY_FILES).forEach((tempFile) => {
       removeTempFile(tempFile);
     });
   });

@@ -59,7 +59,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
     this.handler = handler;
     this.debug('Pooling %d tasks', tasks.length);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.queue = [...tasks]; // Break references
       this.resolver = resolve;
 
@@ -98,7 +98,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
     this.running.push(task);
 
     const handleResult = (result: any) => {
-      this.running = this.running.filter(running => running !== task);
+      this.running = this.running.filter((running) => running !== task);
       this.results.push(result);
       this.nextItem(value);
     };

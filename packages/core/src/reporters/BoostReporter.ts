@@ -118,8 +118,8 @@ export default class BoostReporter extends Reporter {
 
     // Active task lines
     this.sortTasksByStartTime(Array.from(routine.tasks))
-      .filter(task => task.isRunning())
-      .forEach(task => {
+      .filter((task) => task.isRunning())
+      .forEach((task) => {
         output += this.truncate(
           this.indent(prefixLength - routine.key.length + 2) +
             this.style(this.getTaskLine(task), 'pending'),
@@ -139,8 +139,8 @@ export default class BoostReporter extends Reporter {
 
     // Active routine lines
     this.sortTasksByStartTime(Array.from(routine.routines))
-      .filter(task => !task.isPending())
-      .forEach(sub => {
+      .filter((task) => !task.isPending())
+      .forEach((sub) => {
         output += this.renderLines(sub);
       });
 

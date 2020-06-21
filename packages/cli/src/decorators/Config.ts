@@ -5,7 +5,7 @@ export default function Config(
   description: string,
   config: Partial<PartialConfig<CommandStaticConfig>> = {},
 ): ClassDecorator {
-  return target => {
+  return (target) => {
     const ctor = (target as unknown) as CommandStaticConfig;
 
     ctor.path = path;

@@ -34,11 +34,7 @@ sections. The following methods are available on `CrashReporter`.
 - `reportSystem()`- Reports information about the system, OS, and platform.
 
 ```ts
-reporter
-  .reportPackageVersions('@boost/*')
-  .reportBinaries()
-  .reportEnvVars()
-  .reportSystem();
+reporter.reportPackageVersions('@boost/*').reportBinaries().reportEnvVars().reportSystem();
 ```
 
 If you'd like to add your own section and label value pairs, use `CrashReporter#addSection`, which

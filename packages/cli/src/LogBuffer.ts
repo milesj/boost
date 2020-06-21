@@ -36,7 +36,7 @@ export default class LogBuffer {
   unwrap() {
     this.flush();
 
-    this.unwrappers.forEach(unwrap => {
+    this.unwrappers.forEach((unwrap) => {
       unwrap();
     });
 
@@ -44,7 +44,7 @@ export default class LogBuffer {
   }
 
   wrap() {
-    CONSOLE_METHODS[this.type].forEach(method => {
+    CONSOLE_METHODS[this.type].forEach((method) => {
       const original = console[method];
 
       console[method] = this.write;

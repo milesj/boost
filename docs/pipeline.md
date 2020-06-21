@@ -291,7 +291,7 @@ class ExampleRoutine extends Routine<string> {
   async execute(context: Context): Promise<string> {
     return this.executeCommand('babel', ['./src', '--out-dir', './lib'], {
       preferLocal: true,
-    }).then(result => result.stdout);
+    }).then((result) => result.stdout);
   }
 }
 ```

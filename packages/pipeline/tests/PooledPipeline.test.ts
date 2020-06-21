@@ -187,7 +187,7 @@ describe('PooledPipeline', () => {
         .add(
           'Two',
           () =>
-            new Promise(resolve => {
+            new Promise((resolve) => {
               setTimeout(() => {
                 resolve('bar');
               }, 1000);

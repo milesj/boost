@@ -48,14 +48,10 @@ export default class ProgressOutput extends Output<ProgressRenderer> {
       state,
       {
         color: bool(),
-        current: number()
-          .required()
-          .gte(0),
+        current: number().required().gte(0),
         style: string('bar').oneOf(Object.keys(STYLES) as ProgressStyle[]),
         template: string('{percent} {bar} {progress}').notEmpty(),
-        total: number()
-          .required()
-          .gt(0),
+        total: number().required().gt(0),
         transparent: bool(),
       },
       {

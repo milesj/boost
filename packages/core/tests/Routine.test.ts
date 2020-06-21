@@ -943,8 +943,8 @@ describe('Routine', () => {
     it('maps `Task` objects', () => {
       expect(routine.tasks).toHaveLength(0);
 
-      routine.task('foo', value => value);
-      routine.task('bar', value => value);
+      routine.task('foo', (value) => value);
+      routine.task('bar', (value) => value);
 
       expect(routine.tasks).toHaveLength(2);
 
@@ -968,21 +968,21 @@ describe('Routine', () => {
     });
 
     it('returns a `Task` instance', () => {
-      const task = routine.task('foo', value => value);
+      const task = routine.task('foo', (value) => value);
 
       expect(task.constructor.name).toBe('Task');
     });
 
     it('sets routine as parent', () => {
-      const task = routine.task('foo', value => value);
+      const task = routine.task('foo', (value) => value);
 
       expect(task.parent).toBe(routine);
     });
 
     it('updates index metadata of each task', () => {
-      const foo = routine.task('foo', value => value);
-      const bar = routine.task('bar', value => value);
-      const baz = routine.task('baz', value => value);
+      const foo = routine.task('foo', (value) => value);
+      const bar = routine.task('bar', (value) => value);
+      const baz = routine.task('baz', (value) => value);
 
       expect(foo.metadata.index).toBe(0);
       expect(bar.metadata.index).toBe(1);

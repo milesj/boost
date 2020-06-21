@@ -30,7 +30,7 @@ describe('ConfigLoader', () => {
   });
 
   afterEach(() => {
-    fixtures.forEach(remove => remove());
+    fixtures.forEach((remove) => remove());
   });
 
   describe('findConfigFromArg()', () => {

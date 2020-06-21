@@ -7,9 +7,7 @@ import { IgnoreFinderOptions, IgnoreFile } from './types';
 export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
   blueprint({ string }: Predicates) {
     return {
-      name: string()
-        .required()
-        .camelCase(),
+      name: string().required().camelCase(),
     };
   }
 
@@ -27,7 +25,7 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
     this.debug.invariant(
       files.length > 0,
       `Finding ignore files in ${color.filePath(dir.path())}`,
-      files.map(file => file.name()).join(', '),
+      files.map((file) => file.name()).join(', '),
       'No files',
     );
 
@@ -48,12 +46,12 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
     this.debug('Resolving %d ignore files', foundFiles.length);
 
     return Promise.all(
-      foundFiles.map(async filePath => {
+      foundFiles.map(async (filePath) => {
         const contents = await this.cache.cacheFileContents(filePath, () => readFile(filePath));
         const ignore = contents
           .split('\n')
-          .map(line => line.trim())
-          .filter(line => line !== '' && !line.startsWith('#'));
+          .map((line) => line.trim())
+          .filter((line) => line !== '' && !line.startsWith('#'));
 
         return {
           ignore,

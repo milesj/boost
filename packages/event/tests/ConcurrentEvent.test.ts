@@ -19,24 +19,24 @@ describe('ConcurrentEvent', () => {
     }
 
     event.listen(
-      value =>
-        new Promise<number>(resolve => {
+      (value) =>
+        new Promise<number>((resolve) => {
           setTimeout(() => {
             resolve(value * 2);
           }, getRandom());
         }),
     );
     event.listen(
-      value =>
-        new Promise<number>(resolve => {
+      (value) =>
+        new Promise<number>((resolve) => {
           setTimeout(() => {
             resolve(value * 3);
           }, getRandom());
         }),
     );
     event.listen(
-      value =>
-        new Promise<number>(resolve => {
+      (value) =>
+        new Promise<number>((resolve) => {
           setTimeout(() => {
             resolve(value * 4);
           }, getRandom());

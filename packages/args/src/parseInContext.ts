@@ -9,7 +9,7 @@ export default function parseInContext<O extends object = {}, P extends Primitiv
   let options: ParserOptions<O, P> | undefined;
 
   // Loop through each arg until we find a context
-  argv.some(arg => {
+  argv.some((arg) => {
     options = context(arg, argv) as ParserOptions<O, P>;
 
     return !!options;

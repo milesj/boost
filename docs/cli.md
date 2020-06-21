@@ -607,7 +607,7 @@ export default function WriteConfig({ data, path }: WriteConfigProps) {
       .then(() => {
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         exit(error.message);
       });
   }, [path]);

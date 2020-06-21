@@ -51,7 +51,7 @@ export default function createLogger({
     }
   }
 
-  LOG_LEVELS.forEach(level => {
+  LOG_LEVELS.forEach((level) => {
     const label = labels[level] || DEFAULT_LABELS[level] || '';
     const stream = level === 'debug' || level === 'error' || level === 'warn' ? stderr : stdout;
 

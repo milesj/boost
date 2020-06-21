@@ -22,13 +22,13 @@ export default function mapParserOptions<O extends object, P extends PrimitiveTy
   },
 ) {
   if (onCommand && Array.isArray(configs.commands)) {
-    configs.commands.forEach(command => {
+    configs.commands.forEach((command) => {
       onCommand(command);
     });
   }
 
   if (onOption) {
-    Object.keys(configs.options).forEach(name => {
+    Object.keys(configs.options).forEach((name) => {
       onOption(configs.options[name as keyof O], options[name], name);
     });
   }

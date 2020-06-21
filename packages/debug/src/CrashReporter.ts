@@ -59,7 +59,7 @@ export default class CrashReporter {
       yarn: 'Yarn',
     };
 
-    Object.keys(bins).forEach(bin => {
+    Object.keys(bins).forEach((bin) => {
       try {
         this.add(
           bins[bin as keyof typeof bins],
@@ -82,7 +82,7 @@ export default class CrashReporter {
 
     const keys = Object.keys(process.env).sort();
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       this.add(key, process.env[key]!);
     });
 
@@ -114,7 +114,7 @@ export default class CrashReporter {
       delete languages.javac;
     }
 
-    Object.keys(languages).forEach(bin => {
+    Object.keys(languages).forEach((bin) => {
       let version;
 
       try {
@@ -148,7 +148,7 @@ export default class CrashReporter {
     this.add('Title', process.title);
     this.add('Timestamp', new Date().toISOString());
     this.add('CWD', process.cwd());
-    this.add('ARGV', process.argv.map(v => `- ${v}`).join('\n  '));
+    this.add('ARGV', process.argv.map((v) => `- ${v}`).join('\n  '));
 
     return this;
   }
@@ -198,14 +198,14 @@ export default class CrashReporter {
 
     glob
       .sync(
-        toArray(patterns).map(pattern => path.join('./node_modules', pattern)),
+        toArray(patterns).map((pattern) => path.join('./node_modules', pattern)),
         {
           absolute: true,
           onlyDirectories: true,
           onlyFiles: false,
         },
       )
-      .forEach(pkgPath => {
+      .forEach((pkgPath) => {
         const pkg = requireModule<PackageStructure>(path.join(pkgPath, 'package.json'));
 
         map.set(pkg.name, pkg.version);

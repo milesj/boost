@@ -228,7 +228,7 @@ Using our renderer examples, we would have the following factories. One sync and
 // Object based plugin
 // boost-renderer-example/src/index.ts
 
-export default function(options: RendererOptions): Renderable {
+export default function (options: RendererOptions): Renderable {
   return {
     name: 'boost-renderer-example',
     render() {
@@ -252,7 +252,7 @@ class Renderer extends Plugin implements Renderable {
   // ....
 }
 
-export default async function(options: RendererOptions): Renderable {
+export default async function (options: RendererOptions): Renderable {
   await someProcessThatNeedsToBeAwaited();
 
   return new Renderer(options);

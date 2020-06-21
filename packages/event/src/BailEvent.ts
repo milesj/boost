@@ -13,6 +13,6 @@ export default class BailEvent<
   emit(args: Args, scope?: Scope): boolean {
     debug('Emitting "%s%s" as bail', this.name, scope ? `:${scope}` : '');
 
-    return Array.from(this.getListeners(scope)).some(listener => listener(...args) === false);
+    return Array.from(this.getListeners(scope)).some((listener) => listener(...args) === false);
   }
 }

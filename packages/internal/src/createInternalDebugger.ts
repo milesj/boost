@@ -2,7 +2,7 @@ import debug, { Debugger } from 'debug';
 
 export function sentenceCase(value: unknown): string {
   return String(value)
-    .replace(/[A-Z]/gu, match => ` ${match.toLocaleLowerCase()}`)
+    .replace(/[A-Z]/gu, (match) => ` ${match.toLocaleLowerCase()}`)
     .trim();
 }
 

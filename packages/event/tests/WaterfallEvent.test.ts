@@ -4,9 +4,9 @@ describe('WaterfallEvent', () => {
   it('executes listeners in order with the value being passed to each function', () => {
     const event = new WaterfallEvent<string>('waterfall.test');
 
-    event.listen(value => `${value}B`);
-    event.listen(value => `${value}C`);
-    event.listen(value => `${value}D`);
+    event.listen((value) => `${value}B`);
+    event.listen((value) => `${value}C`);
+    event.listen((value) => `${value}D`);
 
     const output = event.emit('A');
 
@@ -16,9 +16,9 @@ describe('WaterfallEvent', () => {
   it('supports arrays', () => {
     const event = new WaterfallEvent<string[]>('waterfall.array.test');
 
-    event.listen(value => [...value, 'B']);
-    event.listen(value => [...value, 'C']);
-    event.listen(value => [...value, 'D']);
+    event.listen((value) => [...value, 'B']);
+    event.listen((value) => [...value, 'C']);
+    event.listen((value) => [...value, 'D']);
 
     const output = event.emit(['A']);
 
@@ -28,9 +28,9 @@ describe('WaterfallEvent', () => {
   it('supports objects', () => {
     const event = new WaterfallEvent<{ [key: string]: string }>('waterfall.array.test');
 
-    event.listen(value => ({ ...value, B: 'B' }));
-    event.listen(value => ({ ...value, C: 'C' }));
-    event.listen(value => ({ ...value, D: 'D' }));
+    event.listen((value) => ({ ...value, B: 'B' }));
+    event.listen((value) => ({ ...value, C: 'C' }));
+    event.listen((value) => ({ ...value, D: 'D' }));
 
     const output = event.emit({ A: 'A' });
 

@@ -11,7 +11,7 @@ export default function castValue(
   }
 
   if (Array.isArray(value)) {
-    return value.map(val => castValue(val, type)) as string[];
+    return value.map((val) => castValue(val, type)) as string[];
   }
 
   switch (type) {
