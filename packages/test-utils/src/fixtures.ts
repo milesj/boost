@@ -62,7 +62,8 @@ export function copyFixtureToMock(fixture: string, mockName: string): () => void
   return () => jest.dontMock(mockName);
 }
 
-export function createTempFileInFixture(fixture: string, file: string, data: unknown): () => void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createTempFileInFixture(fixture: string, file: string, data: any): () => void {
   const filePath = getFixturePath(fixture, file);
 
   fs.writeFileSync(filePath, data);
