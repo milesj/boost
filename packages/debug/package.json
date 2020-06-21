@@ -15,7 +15,7 @@
   "types": "./lib/index.d.ts",
   "nonce": "1579986563745",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=10.10.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/debug",
   "license": "MIT",
