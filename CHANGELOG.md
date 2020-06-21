@@ -1,6 +1,7 @@
 # Changelog
 
 - [@boost/common](./packages/common/CHANGELOG.md)
+- [@boost/config](./packages/config/CHANGELOG.md)
 - [@boost/core](./packages/core/CHANGELOG.md)
 - [@boost/debug](./packages/debug/CHANGELOG.md)
 - [@boost/event](./packages/event/CHANGELOG.md)
