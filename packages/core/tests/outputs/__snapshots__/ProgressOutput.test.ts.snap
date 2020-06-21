@@ -6,13 +6,13 @@ exports[`ProgressOutput toString() renders classic style with elapsed time 1`] =
 
 exports[`ProgressOutput toString() renders gren when above 90 and color enabled 1`] = `"[32m■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  [39m"`;
 
-exports[`ProgressOutput toString() renders hash style with elapsed time 1`] = `"64ms estimated / ######################-----------"`;
+exports[`ProgressOutput toString() renders hash style with elapsed time 1`] = `"63ms estimated / ######################-----------"`;
 
 exports[`ProgressOutput toString() renders pipe style with rate 1`] = `"178.86 bps / ||||||||-----------------------------"`;
 
 exports[`ProgressOutput toString() renders red when below 45 and color enabled 1`] = `"[31m■■■■■■■■                                          [39m"`;
 
-exports[`ProgressOutput toString() renders square style with everything 1`] = `"■■■■                 22% 22/100 123ms 437ms 178.86"`;
+exports[`ProgressOutput toString() renders square style with everything 1`] = `"■■■■                 22% 22/100 123ms 436ms 178.86"`;
 
 exports[`ProgressOutput toString() renders with default params 1`] = `"25% ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 25/100"`;
 
