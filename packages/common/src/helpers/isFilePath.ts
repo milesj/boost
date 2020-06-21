@@ -11,6 +11,7 @@ export default function isFilePath(path: PortablePath): boolean {
     return false;
   }
 
+  // istanbul ignore next
   if (process.platform === 'win32') {
     return WIN_START.test(filePath) || filePath.includes('/') || filePath.includes('\\');
   }
