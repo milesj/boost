@@ -45,7 +45,7 @@ export default abstract class Routine<
   // TODO Change to Set in 2.0
   tasks: Task<Ctx>[] = [];
 
-  // @ts-ignore Set after instantiation
+  // @ts-expect-error
   tool: Tool;
 
   constructor(key: string, title: string, options?: Options) {
@@ -143,7 +143,6 @@ export default abstract class Routine<
 
     // Backwards compat with v1
     const compatHandler = (result: any) => {
-      // @ts-ignore
       result.cmd = result.command; // eslint-disable-line no-param-reassign
 
       if (result instanceof Error) {
@@ -153,9 +152,7 @@ export default abstract class Routine<
       return result;
     };
 
-    return wrapWithPromise(stream)
-      .then(compatHandler)
-      .catch(compatHandler);
+    return wrapWithPromise(stream).then(compatHandler).catch(compatHandler);
   }
 
   /**

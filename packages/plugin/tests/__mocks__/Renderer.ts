@@ -2,7 +2,7 @@ import { Predicates } from '@boost/common';
 import { Registry, Pluggable, Plugin, DEFAULT_PRIORITY, RegistryOptions } from '../../src';
 
 export interface Renderable extends Pluggable {
-  render(): string;
+  render: () => string;
 }
 
 export class Renderer extends Plugin<unknown, { value: string }> implements Renderable {

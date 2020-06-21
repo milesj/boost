@@ -177,7 +177,7 @@ describe('<Program />', () => {
 
     it('errors for invalid type', () => {
       expect(() => {
-        // @ts-ignore Allow
+        // @ts-expect-error
         program.register(123);
       }).toThrow('Invalid command type being registered.');
     });
@@ -221,7 +221,7 @@ describe('<Program />', () => {
 
       program.default(command);
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(program.standAlone).toBe('build');
     });
 
@@ -1113,7 +1113,7 @@ describe('<Program />', () => {
 
     it('errors if not a function', () => {
       expect(() => {
-        // @ts-ignore Allow this
+        // @ts-expect-error
         program.middleware(123);
       }).toThrow('Middleware must be a function.');
     });

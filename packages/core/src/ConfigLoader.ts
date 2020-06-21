@@ -171,6 +171,7 @@ export default class ConfigLoader {
     // Needs forward slash for globs to work on Windows
     const match = workspacePatterns.some(
       (pattern: string) =>
+        // eslint-disable-next-line security/detect-non-literal-regexp
         !!rootPath.path().match(new RegExp(workspaceRoot!.append(pattern).path(), 'u')),
     );
 
@@ -227,7 +228,7 @@ export default class ConfigLoader {
         return;
       }
 
-      // @ts-ignore Ignore symbol check
+      // @ts-expect-error
       const pluginType = pluginTypes[key as keyof typeof pluginTypes];
 
       // Plugins

@@ -54,7 +54,6 @@ describe('Executor', () => {
     });
 
     it('updates status if a failure', async () => {
-      // @ts-ignore
       routine.action = () => {
         throw new Error('Oops');
       };

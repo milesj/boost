@@ -121,7 +121,7 @@ export default abstract class WorkUnit<Options extends object, Input = unknown, 
 
       // Allow input as output. This is problematic for skipping
       // since the expected output is no longer in sync. Revisit.
-      // @ts-ignore
+      // @ts-expect-error
       return Promise.resolve(value);
     }
 

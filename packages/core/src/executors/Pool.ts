@@ -63,7 +63,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
       this.queue = [...tasks]; // Break references
       this.resolver = resolve;
 
-      // eslint-disable-next-line promise/catch-or-return
+      // eslint-disable-next-line promise/catch-or-return, @typescript-eslint/no-floating-promises
       Promise.all(this.queue.slice(0, concurrency).map(() => this.runItem(value)));
 
       if (timeout) {
@@ -103,9 +103,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
       this.nextItem(value);
     };
 
-    return this.handler(task, value)
-      .then(handleResult)
-      .catch(handleResult);
+    return this.handler(task, value).then(handleResult).catch(handleResult);
   }
 
   /**
@@ -114,6 +112,7 @@ export default class PoolExecutor<Ctx extends Context> extends Executor<Ctx, Poo
    */
   nextItem<T>(value?: T) {
     if (this.queue.length > 0 && this.running.length < this.options.concurrency!) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.runItem(value);
     } else if (this.queue.length === 0 && this.running.length === 0) {
       this.resolve();

@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers, no-param-reassign, max-classes-per-file */
+/* eslint-disable no-param-reassign */
 
 import React from 'react';
 import { render } from 'ink';
@@ -84,7 +84,8 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
     command[INTERNAL_OPTIONS] = options;
   }
 
-  command.exit = jest.fn();
+  jest.spyOn(command, 'exit').mockImplementation();
+
   command.log = mockLogger();
   command[INTERNAL_PARAMS] = params;
 

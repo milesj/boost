@@ -18,7 +18,7 @@ export default abstract class Contract<T extends object = {}> implements Optiona
 
     // We don't want the options property to be modified directly,
     // so it's read only, but we still want to modify it with this function.
-    // @ts-ignore
+    // @ts-expect-error
     this.options = Object.freeze(
       optimal({ ...this.options, ...nextOptions }, this.blueprint(predicates), {
         name: this.constructor.name,

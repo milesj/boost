@@ -12,7 +12,7 @@ export default function deepFreeze<T extends object = object>(obj: object): T {
     if (isObject(value) && value.constructor === Object) {
       nextObj[key] = deepFreeze(value);
     } else {
-      nextObj[key] = value;
+      nextObj[key] = value as unknown;
     }
   });
 

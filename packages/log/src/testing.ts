@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable jest/prefer-spy-on */
 
 import { Logger } from './types';
 

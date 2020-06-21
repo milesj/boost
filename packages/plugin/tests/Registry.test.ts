@@ -176,7 +176,7 @@ describe('Registry', () => {
         tool,
       );
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([
         {
           name: 'boost-test-renderer-foo',
@@ -225,7 +225,7 @@ describe('Registry', () => {
         tool,
       );
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([
         {
           name: '@test/boost-test-renderer-baz',
@@ -259,16 +259,16 @@ describe('Registry', () => {
           // Basic
           { name: 'boost-test-renderer-foo', render },
           // With options
-          // @ts-ignore
+          // @ts-expect-error
           { name: '@boost-test/renderer-bar', options: { value: 'bar' }, render },
           // With options and priority
-          // @ts-ignore
+          // @ts-expect-error
           { name: '@test/boost-test-renderer-baz', options: { value: 'baz' }, priority: 1, render },
         ],
         {},
       );
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([
         {
           name: '@test/boost-test-renderer-baz',
@@ -305,7 +305,7 @@ describe('Registry', () => {
 
       await registry.loadMany([foo, bar, baz], tool);
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([
         {
           name: '@test/boost-test-renderer-baz',
@@ -349,7 +349,7 @@ describe('Registry', () => {
       const qux = new Renderer({ value: 'qux' });
       qux.name = 'boost-test-renderer-qux';
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([
         {
           name: '@test/boost-test-renderer-baz',
@@ -380,7 +380,7 @@ describe('Registry', () => {
       await expect(
         registry.loadMany(
           [
-            // @ts-ignore Allow invalid type
+            // @ts-expect-error
             123,
           ],
           {},
@@ -392,7 +392,7 @@ describe('Registry', () => {
       await expect(
         registry.loadMany(
           [
-            // @ts-ignore Allow invalid type
+            // @ts-expect-error
             {},
           ],
           {},
@@ -401,15 +401,9 @@ describe('Registry', () => {
     });
 
     it('errors if class instance is passed without a name', async () => {
-      await expect(
-        registry.loadMany(
-          [
-            // @ts-ignore Allow invalid type
-            new Renderer(),
-          ],
-          tool,
-        ),
-      ).rejects.toThrow('Plugin object or class instance found without a `name` property.');
+      await expect(registry.loadMany([new Renderer()], tool)).rejects.toThrow(
+        'Plugin object or class instance found without a `name` property.',
+      );
     });
   });
 
@@ -436,7 +430,7 @@ describe('Registry', () => {
       await expect(
         registry.register(
           'foo',
-          // @ts-ignore Allow invalid type
+          // @ts-expect-error
           123,
         ),
       ).rejects.toThrow('Renderers expect an object or class instance, found number.');
@@ -446,7 +440,7 @@ describe('Registry', () => {
       await expect(
         registry.register(
           'foo',
-          // @ts-ignore Allow invalid type
+          // @ts-expect-error
           {},
         ),
       ).rejects.toThrow('Renderer requires a `render()` method.');
@@ -481,7 +475,7 @@ describe('Registry', () => {
 
       await registry.register('foo', result.plugin, tool, { priority: 1 });
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([result]);
     });
 
@@ -535,7 +529,7 @@ describe('Registry', () => {
     it('removes a plugin by name', async () => {
       await registry.unregister('foo');
 
-      // @ts-ignore Allow access
+      // @ts-expect-error
       expect(registry.plugins).toEqual([]);
     });
 

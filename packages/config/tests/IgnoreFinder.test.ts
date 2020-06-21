@@ -5,7 +5,7 @@ import { rootWithoutPackageJson } from './__fixtures__/common-fs';
 import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
 import { stubPath } from './helpers';
 
-jest.mock('fs', () => require.requireActual('memfs').vol);
+jest.mock('fs', () => jest.requireActual('memfs').vol);
 
 describe('IgnoreFinder', () => {
   let cache: Cache;

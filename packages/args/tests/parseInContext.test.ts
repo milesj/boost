@@ -51,7 +51,7 @@ describe('parseInContext()', () => {
     options: {
       choice: {
         ...optConfig,
-        // @ts-ignore
+        // @ts-expect-error
         choices: ['a', 'b', 'c'],
         default: 'a',
       },

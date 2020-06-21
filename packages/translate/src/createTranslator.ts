@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+
 import i18next, { InitOptions } from 'i18next';
 import { Path, toArray, PortablePath } from '@boost/common';
 import { RuntimeError } from '@boost/internal';

@@ -82,7 +82,7 @@ export default class Tool<
 
   argv: string[] = [];
 
-  // @ts-ignore Set after instantiation
+  // @ts-expect-error
   config: Config = {};
 
   console: Console;
@@ -123,13 +123,8 @@ export default class Tool<
     this.options = optimal(
       options,
       {
-        appName: string()
-          .required()
-          .notEmpty()
-          .match(APP_NAME_PATTERN),
-        appPath: string()
-          .required()
-          .notEmpty(),
+        appName: string().required().notEmpty().match(APP_NAME_PATTERN),
+        appPath: string().required().notEmpty(),
         argOptions: object<object>(),
         configBlueprint: object(),
         configName: string().custom(value => {
@@ -204,9 +199,9 @@ export default class Tool<
     }
 
     // TODO Backwards compat, remove in 2.0
-    // @ts-ignore
+    // @ts-expect-error
     this.createDebugger = createDebugger;
-    // @ts-ignore
+    // @ts-expect-error
     this.createTranslator = createTranslator;
   }
 

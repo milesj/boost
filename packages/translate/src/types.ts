@@ -28,8 +28,8 @@ export interface MessageOptions {
 export interface Translator {
   dir: Direction;
   locale: Locale;
+  changeLocale: (locale: Locale) => void;
   (key: string | string[], params?: InterpolationParams, options?: MessageOptions): string;
-  changeLocale(locale: Locale): void;
   // Testing only
   // eslint-disable-next-line @typescript-eslint/member-ordering
   i18n: i18n;

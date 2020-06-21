@@ -66,7 +66,7 @@ describe('WaterfallPipeline', () => {
     const pipeline = new WaterfallPipeline(new Context(), 123).pipe(
       'Scope',
       function scopeAction(ctx, value) {
-        // @ts-ignore Allow this
+        // @ts-expect-error
         expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
 
         return value * 2;
@@ -100,10 +100,7 @@ describe('WaterfallPipeline', () => {
     const one = new Task('One', (ctx, value: number) => value);
     const two = new Task('Two', (ctx, value: number) => value * 2);
     const three = new Task('Three', (ctx, value: number) => value * 3);
-    const pipeline = new WaterfallPipeline(new Context(), 123)
-      .pipe(one)
-      .pipe(two)
-      .pipe(three);
+    const pipeline = new WaterfallPipeline(new Context(), 123).pipe(one).pipe(two).pipe(three);
     const spy = jest.fn();
 
     pipeline.onRunWorkUnit.listen(spy);

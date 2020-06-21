@@ -80,7 +80,7 @@ describe('Event', () => {
   describe('listen()', () => {
     it('errors if listener is not a function', () => {
       expect(() => {
-        // @ts-ignore Check invalid type
+        // @ts-expect-error
         event.listen(123);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -135,7 +135,7 @@ describe('Event', () => {
   describe('once()', () => {
     it('errors if listener is not a function', () => {
       expect(() => {
-        // @ts-ignore Check invalid type
+        // @ts-expect-error
         event.once(123);
       }).toThrowErrorMatchingSnapshot();
     });

@@ -22,7 +22,7 @@ export default abstract class Reporter<Options extends object = {}> extends Plug
 
   static OUTPUT_VERBOSE = 3;
 
-  // @ts-ignore Set after instantiation
+  // @ts-expect-error
   console: Console;
 
   startTime: number = 0;

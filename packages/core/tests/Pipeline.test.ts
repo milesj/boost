@@ -15,7 +15,7 @@ describe('Pipeline', () => {
 
   describe('constructor()', () => {
     it('errors if no tool is passed', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => new Pipeline()).toThrowErrorMatchingSnapshot();
     });
 

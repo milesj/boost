@@ -93,7 +93,7 @@ export default class Console extends Emitter {
         .on('SIGINT', this.handleSignal)
         .on('SIGTERM', this.handleSignal)
         .on('uncaughtException', this.handleFailure)
-        // @ts-ignore
+        // @ts-expect-error
         .on('unhandledRejection', this.handleFailure);
     }
   }
@@ -251,7 +251,7 @@ export default class Console extends Emitter {
    */
   isSilent(): boolean {
     // Check all objects since these might not have been loaded yet
-    return this.tool && this.tool.config && this.tool.config.silent;
+    return this.tool?.config?.silent;
   }
 
   /**
