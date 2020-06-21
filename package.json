@@ -18,7 +18,7 @@
   "devDependencies": {
     "@milesj/build-tools": "^1.0.1",
     "@types/exit": "^0.1.31",
-    "@types/fs-extra": "^8.1.0",
+    "@types/fs-extra": "^9.0.1",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.149",
     "@types/minimatch": "^3.0.3",
@@ -27,7 +27,7 @@
     "@types/split": "^1.0.0",
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^1.6.0",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.1",
     "lerna": "^3.20.2"
   },
   "publishConfig": {
