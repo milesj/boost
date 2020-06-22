@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@boost/internal": "^1.2.0",
+    "fast-glob": "^3.2.4",
     "json5": "^2.1.3",
     "optimal": "^4.2.0",
     "pretty-ms": "^7.0.0",

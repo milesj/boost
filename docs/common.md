@@ -13,6 +13,7 @@ yarn add @boost/common
 - [Contract](./common/contract.md)
 - [Path](./common/path.md)
 - [PathResolver](./common/path-resolver.md)
+- [Project](./common/project.md)
 
 ## Helpers
 
