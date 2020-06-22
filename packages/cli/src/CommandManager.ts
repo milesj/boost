@@ -99,7 +99,7 @@ export default abstract class CommandManager<Options extends object = {}> extend
    */
   protected checkPath(path: CommandPath) {
     if (this.commands[path]) {
-      throw new CLIError('COMMAND_EXISTS', [path]);
+      throw new CLIError('COMMAND_DEFINED', [path]);
     }
   }
 }

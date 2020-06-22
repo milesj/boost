@@ -1,8 +1,8 @@
 import { createScopedError } from '@boost/internal';
 
 const errors = {
-  INVALID_LISTENER: 'Invalid event listener for "%s", must be a function.',
-  INVALID_NAME:
+  LISTENER_INVALID: 'Invalid event listener for "%s", must be a function.',
+  NAME_INVALID:
     'Invalid event %s "%s". May only contain dashes, periods, and lowercase characters.',
 };
 

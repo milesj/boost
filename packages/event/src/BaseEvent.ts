@@ -92,7 +92,7 @@ export default abstract class BaseEvent<
    */
   protected validateListener<L>(listener: L): L {
     if (typeof listener !== 'function') {
-      throw new EventError('INVALID_LISTENER', [this.name]);
+      throw new EventError('LISTENER_INVALID', [this.name]);
     }
 
     return listener;
@@ -107,7 +107,7 @@ export default abstract class BaseEvent<
     }
 
     if (!name.match(EVENT_NAME_PATTERN)) {
-      throw new EventError('INVALID_NAME', [type, name]);
+      throw new EventError('NAME_INVALID', [type, name]);
     }
 
     return name;

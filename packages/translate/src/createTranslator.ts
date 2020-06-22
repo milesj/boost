@@ -46,11 +46,11 @@ export default function createTranslator(
   const resourcePaths = toArray(resourcePath).map(Path.create);
 
   if (namespaces.length === 0) {
-    throw new TranslateError('REQ_NAMESPACE');
+    throw new TranslateError('NAMESPACE_REQUIRED');
   } else if (resourcePaths.length === 0) {
-    throw new TranslateError('REQ_RES_PATHS');
+    throw new TranslateError('RESOURCES_REQUIRED');
   } else if (!autoDetect && !locale) {
-    throw new TranslateError('REQ_MANUAL_LOCALE');
+    throw new TranslateError('LOCALE_REQUIRED');
   }
 
   debug('New translator created: %s namespace(s)', namespaces.join(', '));

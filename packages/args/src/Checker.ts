@@ -58,7 +58,7 @@ export default class Checker {
     }
 
     if (value.length > 0 && value.length !== config.arity) {
-      this.logInvalidError('VALUE_ARITY_UNMET', [config.arity, value.length], option);
+      this.logInvalidError('VALUE_INVALID_ARITY', [config.arity, value.length], option);
     }
   }
 
@@ -102,7 +102,7 @@ export default class Checker {
 
   validateNumberCount(option: LongOptionName, config: OptionConfig) {
     if (config.count && config.type !== 'number') {
-      this.logInvalidError('OPTION_NUMBER_COUNT', [], option);
+      this.logInvalidError('OPTION_INVALID_COUNT_TYPE', [], option);
     }
   }
 
@@ -138,7 +138,7 @@ export default class Checker {
         if (optionals.length > 0) {
           const labels = optionals.map((opt) => `"${opt.label}"`);
 
-          this.logInvalidError('PARAM_MISORDERED', [labels.join(', '), config.label]);
+          this.logInvalidError('PARAM_INVALID_ORDER', [labels.join(', '), config.label]);
         }
       } else {
         optionals.push(config);
@@ -158,7 +158,7 @@ export default class Checker {
     }
 
     if (short.length !== 1) {
-      this.logInvalidError('SHORT_SINGLE_CHAR', [short], option);
+      this.logInvalidError('SHORT_INVALID_CHAR', [short], option);
     }
   }
 

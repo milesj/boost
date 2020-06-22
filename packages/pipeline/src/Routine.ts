@@ -39,7 +39,7 @@ export default abstract class Routine<
     super(title, (context, value) => this.execute(context, value), options);
 
     if (!key || key.length === 0 || (typeof key !== 'string' && !Array.isArray(key))) {
-      throw new PipelineError('INVALID_ROUTINE_KEY');
+      throw new PipelineError('ROUTINE_INVALID_KEY');
     }
 
     this.key = toArray(key).map(kebabCase).join(':');

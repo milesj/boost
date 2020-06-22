@@ -17,7 +17,7 @@ export default function parseInContext<O extends object = {}, P extends Primitiv
 
   // Fail if context not found
   if (!options) {
-    throw new ArgsError('CONTEXT_NOT_PROVIDED');
+    throw new ArgsError('CONTEXT_REQUIRED');
   }
 
   return parse(argv, options);

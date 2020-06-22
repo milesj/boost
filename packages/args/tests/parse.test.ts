@@ -288,7 +288,7 @@ describe('parse()', () => {
           command: [],
           errors: [
             new ValidationError(
-              'Only numeric options may use the `count` setting. [ARG:OPTION_NUMBER_COUNT]',
+              'Only numeric options may use the `count` setting. [ARG:OPTION_INVALID_COUNT_TYPE]',
               'opt',
             ),
           ],
@@ -313,7 +313,7 @@ describe('parse()', () => {
           command: [],
           errors: [
             new ParseError(
-              'Numeric options must have `count` enabled when passed in a short option group. [ARG:GROUP_MISSING_COUNT]',
+              'Numeric options must have `count` enabled when passed in a short option group. [ARG:GROUP_REQUIRED_COUNT]',
               '-Fn',
               0,
             ),
@@ -702,7 +702,7 @@ describe('parse()', () => {
           command: [],
           errors: [
             new ValidationError(
-              'Not enough arity arguments. Require 2, found 1. [ARG:VALUE_ARITY_UNMET]',
+              'Not enough arity arguments. Require 2, found 1. [ARG:VALUE_INVALID_ARITY]',
               'opts',
             ),
           ],
@@ -1749,7 +1749,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Optional param(s) "first" found before required param "second". Required must be first. [ARG:PARAM_MISORDERED]',
+            'Optional param(s) "first" found before required param "second". Required must be first. [ARG:PARAM_INVALID_ORDER]',
           ),
         ],
         options: {},
@@ -2042,7 +2042,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Short option "ab" may only be a single letter. [ARG:SHORT_SINGLE_CHAR]',
+            'Short option "ab" may only be a single letter. [ARG:SHORT_INVALID_CHAR]',
           ),
         ],
         options: {
