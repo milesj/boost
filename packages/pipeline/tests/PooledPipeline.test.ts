@@ -3,6 +3,7 @@ import Routine from '../src/Routine';
 import Task from '../src/Task';
 import PooledPipeline from '../src/PooledPipeline';
 import { AggregatedResult } from '../src/types';
+import PipelineError from '../lib/PipelineError';
 
 describe('PooledPipeline', () => {
   function sortAggregated(result: AggregatedResult<unknown>) {
@@ -196,7 +197,7 @@ describe('PooledPipeline', () => {
         .add('Three', () => 'baz');
 
       expect(sortAggregated(await pipeline.run())).toEqual({
-        errors: [new Error('Work unit has timed out.')],
+        errors: [new PipelineError('WORK_TIME_OUT')],
         results: ['baz', 'foo'],
       });
     });

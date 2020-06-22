@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { RuntimeError } from '@boost/internal';
+import CommonError from '../CommonError';
 import Path from '../Path';
 import requireModule from './requireModule';
 import { parse as parseJSON } from '../serializers/json';
@@ -10,7 +10,7 @@ export default function parseFile<T>(filePath: PortablePath): T {
   const path = Path.create(filePath);
 
   if (!path.isAbsolute()) {
-    throw new RuntimeError('common', 'CM_REQ_ABS_PATH');
+    throw new CommonError('REQ_ABS_PATH');
   }
 
   switch (path.ext()) {
@@ -27,6 +27,6 @@ export default function parseFile<T>(filePath: PortablePath): T {
       return parseYAML(fs.readFileSync(path.path(), 'utf8'));
 
     default:
-      throw new RuntimeError('common', 'CM_PARSE_INVALID_EXT', [path.name()]);
+      throw new CommonError('PARSE_INVALID_EXT', [path.name()]);
   }
 }

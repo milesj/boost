@@ -12,7 +12,6 @@ import {
   Argv,
 } from '@boost/args';
 import { Logger } from '@boost/log';
-import { RuntimeError } from '@boost/internal';
 import {
   msg,
   LOCALE_FORMAT,
@@ -38,6 +37,7 @@ import getInheritedOptions from './metadata/getInheritedOptions';
 import validateParams from './metadata/validateParams';
 import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
+import CLIError from './CLIError';
 import CommandManager from './CommandManager';
 import Help from './Help';
 import Program from './Program';
@@ -290,7 +290,7 @@ export default abstract class Command<
     const program = this[INTERNAL_PROGRAM];
 
     if (!program) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_NO_PROGRAM');
+      throw new CLIError('COMMAND_NO_PROGRAM');
     }
 
     return program;
@@ -303,7 +303,7 @@ export default abstract class Command<
     const path = this.getPath();
 
     if (!subPath.startsWith(path)) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_SUBPATH', [subPath, path]);
+      throw new CLIError('COMMAND_INVALID_SUBPATH', [subPath, path]);
     }
   };
 }

@@ -156,7 +156,7 @@ describe('parseInContext()', () => {
 
     expect(result.errors).toEqual([
       new ParseError(
-        'Command must be passed as the first non-option, non-param argument.',
+        'Command must be passed as the first non-option, non-param argument. [ARG:COMMAND_NOT_FIRST]',
         'foo',
         1,
       ),

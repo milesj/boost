@@ -1,7 +1,0 @@
-{
-  "PL_INVALID_WORK_UNIT": "Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.",
-  "PL_REQ_ACTION": "Work units require an executable function.",
-  "PL_REQ_ROUTINE_KEY": "Routine key must be a valid unique string.",
-  "PL_REQ_TITLE": "Work units require a title.",
-  "PL_WORK_TIME_OUT": "Work unit has timed out."
-}

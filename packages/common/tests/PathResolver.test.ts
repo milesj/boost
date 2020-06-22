@@ -23,7 +23,8 @@ describe('PathResolver', () => {
   - foo-bar (NODE_MODULE)
   - ${normalizePath(process.cwd(), 'foo/bar')} (FILE_SYSTEM)
   - ${normalizePath(process.cwd(), 'bar/baz')} (FILE_SYSTEM)
-  - bar-baz (NODE_MODULE)`;
+  - bar-baz (NODE_MODULE)
+ [CMN:PATH_RESOLVE_LOOKUPS]`;
 
     expect(() => {
       resolver.resolvePath();

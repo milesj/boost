@@ -1,5 +1,5 @@
 import { ParamConfig } from '@boost/args';
-import { RuntimeError } from '@boost/internal';
+import CLIError from '../CLIError';
 import getConstructor from './getConstructor';
 
 export default function registerParams(
@@ -8,7 +8,7 @@ export default function registerParams(
   config: ParamConfig[],
 ) {
   if (method !== 'run') {
-    throw new RuntimeError('cli', 'CLI_PARAMS_RUN_ONLY');
+    throw new CLIError('PARAMS_RUN_ONLY');
   }
 
   getConstructor(target).params = config;

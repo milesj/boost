@@ -1048,10 +1048,10 @@
     "@boost/event" "^1.3.1"
     "@types/prettier" "*"
 
-"@beemo/driver-typescript@^1.3.4":
-  version "1.3.4"
-  resolved "https://registry.npmjs.org/@beemo/driver-typescript/-/driver-typescript-1.3.4.tgz#8ed2b1d53c53ad2b93cf79c6705f3dcd218f3c91"
-  integrity sha512-enxfaT8J33oZVU0S0MteJPYQg4ImPstM7yGTMv8bQnmorxeJatK1V9qAHkY9Ro06H9mq9lqU+pgfRuzylkXZaQ==
+"@beemo/driver-typescript@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/@beemo/driver-typescript/-/driver-typescript-1.4.0.tgz#cd922e9048a0138d5e5a907eed5621ab0ad219df"
+  integrity sha512-832lYhwJ8HLZgSWVvS/GFkKMMJmX6PncM0FIdxgW5menA7gQWFOVp7DA6YBYdHgM9//2ANk0NVJ5FZt7XCJfzA==
   dependencies:
     "@boost/event" "^1.3.1"
     rimraf "^3.0.2"
@@ -2116,10 +2116,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@milesj/build-tool-config@^2.8.1":
-  version "2.8.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-2.8.1.tgz#a3a634515e018576fd18a779000037d97da43356"
-  integrity sha512-6Gj15kddkExgBhqpSrjJpTR+Hrzp5bNEoFpO/+Li/jzICZ357qwND61fzr41SZceLkU8AhS4rhWL/7v6+kQqZA==
+"@milesj/build-tool-config@^2.9.0":
+  version "2.9.0"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-config/-/build-tool-config-2.9.0.tgz#371ad9647ec6f95a9f9da97983c1a6035cf5b6bc"
+  integrity sha512-74W1DVdEwmhy5wmpwYG1Vajmq6kvY/2e0NelrbN7MRBslFGZhtPeOMVw9r+Oj2A75khtkPWX6qR1Ou3RAKXy9A==
   dependencies:
     "@babel/cli" "^7.10.3"
     "@babel/core" "^7.10.3"
@@ -2158,10 +2158,10 @@
     prettier "^2.0.5"
     typescript "^3.9.5"
 
-"@milesj/build-tool-runtime@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-2.6.0.tgz#f6f16f9487e9e41a8a5de7ea0b5bcbe584cb695d"
-  integrity sha512-yQMqnARRCorKxramNocPyMcsCLiBkfzPgdSLWGuCukGys59aS4ZYUCV+JSeNJn/rM4aPOpvOY636j552fL226w==
+"@milesj/build-tool-runtime@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.npmjs.org/@milesj/build-tool-runtime/-/build-tool-runtime-2.7.0.tgz#f121bbe4f2fa5cc8b21901fd7569a77b32885dc0"
+  integrity sha512-2d/tzBWTFlRQphCltBA/VHqF0JF9In1P7EjOJOjm6oxV9ZDnW4sdYMOgQcQ9QqybW9JPim3bw2whhVh3vNo7+w==
   dependencies:
     "@babel/core" "^7.10.3"
     "@beemo/cli" "^1.0.11"
@@ -2170,19 +2170,19 @@
     "@beemo/driver-eslint" "^1.2.3"
     "@beemo/driver-jest" "^1.2.3"
     "@beemo/driver-prettier" "^1.3.2"
-    "@beemo/driver-typescript" "^1.3.4"
+    "@beemo/driver-typescript" "^1.4.0"
     eslint "7.2.0"
     jest "^26.0.1"
     prettier "^2.0.5"
     typescript "^3.9.5"
 
-"@milesj/build-tools@^2.8.1":
-  version "2.8.1"
-  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-2.8.1.tgz#6a1b9a90779d827e3c0296ebd7732c2b6ff00614"
-  integrity sha512-GElQGIUPEqiwIO1Le8zRmxhiMCu6KQh0FcvqWdSO9rFChKY71BVEZsitul0vCJjXIvtAJ62EY6ErPL6lPRyYQQ==
+"@milesj/build-tools@^2.9.0":
+  version "2.9.0"
+  resolved "https://registry.npmjs.org/@milesj/build-tools/-/build-tools-2.9.0.tgz#6310c2b7a613394fdf50e84b3654392aefc87974"
+  integrity sha512-h1N1eVi4iF67NdDnxEztb58Ph2N3bXDEwYTEbx4NkPHt12IgQn1aeth4ZVmi2SvN9j2C5PW7Ue4HaTtV1EFsUQ==
   dependencies:
-    "@milesj/build-tool-config" "^2.8.1"
-    "@milesj/build-tool-runtime" "^2.6.0"
+    "@milesj/build-tool-config" "^2.9.0"
+    "@milesj/build-tool-runtime" "^2.7.0"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -2466,10 +2466,10 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.30.tgz#44cb52f32a809734ca562e685c6473b5754a7818"
   integrity sha512-sqm9g7mHlPY/43fcSNrCYfOeX9zkTTK+euO5E6+CVijSMm5tTjkVdwdqRkY3ljjIAf8679vps5jKUoJBCLsMDA==
 
-"@types/lodash@^4.14.155":
-  version "4.14.155"
-  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.155.tgz#e2b4514f46a261fd11542e47519c20ebce7bc23a"
-  integrity sha512-vEcX7S7aPhsBCivxMwAANQburHBtfN9RdyXFk84IJmu2Z4Hkg1tOFgaslRiEqqvoLtbCBi6ika1EMspE+NZ9Lg==
+"@types/lodash@^4.14.156":
+  version "4.14.156"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.156.tgz#cbe30909c89a1feeb7c60803e785344ea0ec82d1"
+  integrity sha512-l2AgHXcKUwx2DsvP19wtRPqZ4NkONjmorOdq4sMcxIjqdIuuV/ULo2ftuv4NUpevwfW7Ju/UKLqo0ZXuEt/8lQ==
 
 "@types/micromatch@^4.0.1":
   version "4.0.1"

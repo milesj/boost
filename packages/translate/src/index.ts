@@ -4,7 +4,8 @@
  */
 
 import createTranslator, { TranslatorOptions } from './createTranslator';
+import TranslateError from './TranslateError';
 
 export * from './types';
 
-export { createTranslator, TranslatorOptions };
+export { createTranslator, TranslatorOptions, TranslateError };

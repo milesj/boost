@@ -1,5 +1,5 @@
 import glob from 'fast-glob';
-import { RuntimeError } from '@boost/internal';
+import CommonError from './CommonError';
 import parseFile from './helpers/parseFile';
 import Path from './Path';
 import {
@@ -46,7 +46,7 @@ export default class Project {
     const pkgPath = this.root.append('package.json');
 
     if (!pkgPath.exists()) {
-      throw new RuntimeError('common', 'CM_PROJECT_NO_PACKAGE');
+      throw new CommonError('PROJECT_NO_PACKAGE');
     }
 
     return parseFile<T>(pkgPath);

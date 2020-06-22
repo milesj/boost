@@ -1,6 +1,7 @@
 import { Contract, Path, PortablePath } from '@boost/common';
 import { Debugger, createDebugger } from '@boost/debug';
-import { RuntimeError, color } from '@boost/internal';
+import { color } from '@boost/internal';
+import ConfigError from './ConfigError';
 import Cache from './Cache';
 import { File } from './types';
 import { CONFIG_FOLDER, PACKAGE_FILE } from './constants';
@@ -69,7 +70,7 @@ export default abstract class Finder<
     const root = Path.resolve(dir);
 
     if (!this.isRootDir(root)) {
-      throw new RuntimeError('config', 'CFG_ROOT_INVALID', [CONFIG_FOLDER, PACKAGE_FILE]);
+      throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, PACKAGE_FILE]);
     }
 
     return root;
@@ -106,7 +107,7 @@ export default abstract class Finder<
     const pkgPath = dir.append(PACKAGE_FILE);
 
     if (!pkgPath.exists()) {
-      throw new RuntimeError('config', 'CFG_ROOT_MISSING_PACKAGE', [CONFIG_FOLDER, PACKAGE_FILE]);
+      throw new ConfigError('ROOT_MISSING_PACKAGE', [CONFIG_FOLDER, PACKAGE_FILE]);
     }
 
     this.cache.pkgPath = pkgPath;
