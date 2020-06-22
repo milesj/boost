@@ -12,13 +12,7 @@ import {
   Argv,
 } from '@boost/args';
 import { Logger } from '@boost/log';
-import {
-  msg,
-  LOCALE_FORMAT,
-  INTERNAL_OPTIONS,
-  INTERNAL_PARAMS,
-  INTERNAL_PROGRAM,
-} from './constants';
+import { LOCALE_FORMAT, INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
 import {
   Categories,
   Commandable,
@@ -41,6 +35,7 @@ import CLIError from './CLIError';
 import CommandManager from './CommandManager';
 import Help from './Help';
 import Program from './Program';
+import msg from './translate';
 
 export default abstract class Command<
   O extends GlobalOptions = GlobalOptions,

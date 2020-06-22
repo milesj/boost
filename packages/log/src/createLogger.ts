@@ -3,7 +3,8 @@ import chalk from 'chalk';
 import { env } from '@boost/internal';
 import isAllowedLogLevel from './isAllowedLogLevel';
 import debug from './debug';
-import { msg, LOG_LEVELS } from './constants';
+import msg from './translate';
+import { LOG_LEVELS } from './constants';
 import { Logger, LogLevel, LogLevelLabels, Loggable } from './types';
 
 export const DEFAULT_LABELS: LogLevelLabels = {

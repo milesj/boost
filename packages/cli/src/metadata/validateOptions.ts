@@ -1,6 +1,6 @@
 import { optimal, Blueprint } from '@boost/common';
 import { OptionConfig, OptionConfigMap } from '@boost/args';
-import { msg } from '../constants';
+import msg from '../translate';
 import {
   flagBlueprint,
   numbersOptionBlueprint,

@@ -27,8 +27,8 @@ import isArgvSize from './helpers/isArgvSize';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
+import msg from './translate';
 import {
-  msg,
   VERSION_FORMAT,
   EXIT_PASS,
   EXIT_FAIL,
