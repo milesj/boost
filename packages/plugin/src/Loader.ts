@@ -29,7 +29,7 @@ export default class Loader<Plugin extends Pluggable> {
     const modulePattern = MODULE_NAME_PART.source;
     const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
-    this.debug('Resolving possible %s modules', color.pluginType(typeName));
+    this.debug('Resolving possible %s modules', color.symbol(typeName));
 
     // Absolute or relative file path
     if (path.isAbsolute(name) || name.charAt(0) === '.') {
