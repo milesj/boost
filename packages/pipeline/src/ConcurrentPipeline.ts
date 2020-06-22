@@ -1,6 +1,6 @@
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
-import { debug } from './constants';
+import debug from './debug';
 
 export default class ConcurrentPipeline<
   Ctx extends Context,

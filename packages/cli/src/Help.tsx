@@ -5,7 +5,8 @@ import { toArray } from '@boost/common';
 import { screen, stripAnsi } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
-import { msg, SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from './constants';
+import msg from './translate';
+import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from './constants';
 import { CommandConfigMap, CommandConfig, Categories } from './types';
 import {
   formatType,

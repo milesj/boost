@@ -12,7 +12,7 @@ import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
 import { Hierarchical } from './types';
-import { debug } from './constants';
+import debug from './debug';
 
 export interface ExecuteCommandOptions {
   // Unknown does not work here as it conflicts with event tuples.

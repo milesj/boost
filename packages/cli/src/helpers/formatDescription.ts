@@ -2,7 +2,7 @@ import { PrimitiveType } from '@boost/args';
 import applyMarkdown from './applyMarkdown';
 import applyStyle from './applyStyle';
 import formatValue from './formatValue';
-import { msg } from '../constants';
+import msg from '../translate';
 
 export default function formatDescription(
   config: {

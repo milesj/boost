@@ -7,8 +7,9 @@ import { screen } from '@boost/terminal';
 import CLIError from './CLIError';
 import Header from './Header';
 import Style from './Style';
-import { msg, SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
+import { SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
 import applyStyle from './helpers/applyStyle';
+import msg from './translate';
 import { StyleType } from './types';
 
 export interface FailureProps {

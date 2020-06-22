@@ -4,7 +4,7 @@ import PipelineError from './PipelineError';
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
-import { debug } from './constants';
+import debug from './debug';
 import { AggregatedResult } from './types';
 
 export interface PooledOptions {
