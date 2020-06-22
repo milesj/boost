@@ -125,3 +125,18 @@ export interface PackageStructure {
         nohoist?: string[];
       };
 }
+
+// WORKSPACES
+
+export interface WorkspaceMetadata {
+  jsonPath: string;
+  packagePath: string;
+  packageName: string;
+  workspacePath: string;
+  workspaceName: string;
+}
+
+export interface WorkspacePackage<T extends PackageStructure> {
+  metadata: WorkspaceMetadata;
+  package: T;
+}

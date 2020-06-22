@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Console render() throws an error when render loop is disabled 1`] = `"Output cannot be enqueued as the render loop has been disabled. This is usually caused by conflicting reporters."`;
