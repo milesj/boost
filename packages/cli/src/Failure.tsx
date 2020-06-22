@@ -3,12 +3,13 @@
 import React from 'react';
 import { Box } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
-import { RuntimeError } from '@boost/internal';
 import { screen } from '@boost/terminal';
+import CLIError from './CLIError';
 import Header from './Header';
 import Style from './Style';
-import { msg, SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
+import { SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
 import applyStyle from './helpers/applyStyle';
+import msg from './translate';
 import { StyleType } from './types';
 
 export interface FailureProps {
@@ -82,7 +83,7 @@ export default class Failure extends React.Component<FailureProps> {
       !error.stack ||
       error instanceof ParseError ||
       error instanceof ValidationError ||
-      error instanceof RuntimeError ||
+      error instanceof CLIError ||
       process.env.NODE_ENV === 'test'
     ) {
       return null;

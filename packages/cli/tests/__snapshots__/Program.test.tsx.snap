@@ -49,7 +49,7 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
- Unknown option \\"--foo\\" found. Did you mean \\"help\\"?
+ Unknown option \\"--foo\\" found. Did you mean \\"help\\"? [ARG:OPTION_UNKNOWN_MORE]
 
  [90m$ boost [31m--foo[39m[90m[39m
  [31m        └───┘[39m"
@@ -59,28 +59,28 @@ exports[`<Program /> failure renders when invalid command name passed 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
- Unknown command \\"prune\\". Did you mean \\"build\\"?"
+ Unknown command \\"prune\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]"
 `;
 
 exports[`<Program /> failure renders when misspelt command name passed 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
- Unknown command \\"buld\\". Did you mean \\"build\\"?"
+ Unknown command \\"buld\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]"
 `;
 
 exports[`<Program /> failure renders when no commands could be found 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
- Failed to determine a command to run."
+ Failed to determine a command to run. [CLI:COMMAND_INVALID_RUN]"
 `;
 
 exports[`<Program /> failure renders when no commands have been registered 1`] = `
 "
 [30m[41m ERROR [49m[39m
 
- No commands have been registered. At least 1 is required."
+ No commands have been registered. At least 1 is required. [CLI:COMMAND_NONE_REGISTERED]"
 `;
 
 exports[`<Program /> failure renders with custom exit error 1`] = `

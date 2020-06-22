@@ -1,10 +1,6 @@
 /* eslint-disable security/detect-unsafe-regex */
 
-import path from 'path';
-import { createTranslator } from '@boost/translate';
 import { ExitCode, StreamType } from './types';
-
-export const msg = createTranslator('cli', path.join(__dirname, '../res'));
 
 // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 export const VERSION_FORMAT = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/u;

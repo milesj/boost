@@ -2,10 +2,10 @@
 
 import i18next, { InitOptions } from 'i18next';
 import { Path, toArray, PortablePath } from '@boost/common';
-import { RuntimeError } from '@boost/internal';
+import TranslateError from './TranslateError';
 import LocaleDetector from './LocaleDetector';
 import FileBackend from './FileBackend';
-import { debug } from './constants';
+import debug from './debug';
 import { Locale, Translator, InterpolationParams, Format, MessageOptions } from './types';
 
 // istanbul ignore next
@@ -46,11 +46,11 @@ export default function createTranslator(
   const resourcePaths = toArray(resourcePath).map(Path.create);
 
   if (namespaces.length === 0) {
-    throw new RuntimeError('translate', 'TL_REQ_NAMESPACE');
+    throw new TranslateError('NAMESPACE_REQUIRED');
   } else if (resourcePaths.length === 0) {
-    throw new RuntimeError('translate', 'TL_REQ_RES_PATHS');
+    throw new TranslateError('RESOURCES_REQUIRED');
   } else if (!autoDetect && !locale) {
-    throw new RuntimeError('translate', 'TL_REQ_MANUAL_LOCALE');
+    throw new TranslateError('LOCALE_REQUIRED');
   }
 
   debug('New translator created: %s namespace(s)', namespaces.join(', '));

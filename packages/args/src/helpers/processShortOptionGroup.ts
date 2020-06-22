@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import { RuntimeError } from '@boost/internal';
-import { AliasMap, ShortOptionName, OptionConfigMap, OptionMap } from '../types';
+import ArgsError from '../ArgsError';
 import expandShortOption from './expandShortOption';
+import { AliasMap, ShortOptionName, OptionConfigMap, OptionMap } from '../types';
 
 /**
  * Expand a group of short option names to a list of long option names.
@@ -18,7 +18,7 @@ export default function processShortOptionGroup(
     const config = configs[name];
 
     if (!config || config.type === 'string') {
-      throw new RuntimeError('args', 'AG_GROUP_UNSUPPORTED_TYPE');
+      throw new ArgsError('GROUP_UNSUPPORTED_TYPE');
 
       // Flag
     } else if (config.type === 'boolean') {
@@ -29,7 +29,7 @@ export default function processShortOptionGroup(
       if (config.count) {
         options[name] = Number(options[name]) + 1;
       } else {
-        throw new RuntimeError('args', 'AG_GROUP_MISSING_COUNT');
+        throw new ArgsError('GROUP_REQUIRED_COUNT');
       }
     }
   });

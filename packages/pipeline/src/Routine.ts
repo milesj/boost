@@ -4,7 +4,7 @@ import split from 'split';
 import { toArray } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
-import { RuntimeError } from '@boost/internal';
+import PipelineError from './PipelineError';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
 import ConcurrentPipeline from './ConcurrentPipeline';
@@ -12,7 +12,7 @@ import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
 import { Hierarchical } from './types';
-import { debug } from './constants';
+import debug from './debug';
 
 export interface ExecuteCommandOptions {
   // Unknown does not work here as it conflicts with event tuples.
@@ -39,7 +39,7 @@ export default abstract class Routine<
     super(title, (context, value) => this.execute(context, value), options);
 
     if (!key || key.length === 0 || (typeof key !== 'string' && !Array.isArray(key))) {
-      throw new RuntimeError('pipeline', 'PL_REQ_ROUTINE_KEY');
+      throw new PipelineError('ROUTINE_INVALID_KEY');
     }
 
     this.key = toArray(key).map(kebabCase).join(':');

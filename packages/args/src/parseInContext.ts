@@ -1,4 +1,4 @@
-import { RuntimeError } from '@boost/internal';
+import ArgsError from './ArgsError';
 import parse from './parse';
 import { Argv, ArgList, Arguments, ContextFactory, PrimitiveType, ParserOptions } from './types';
 
@@ -17,7 +17,7 @@ export default function parseInContext<O extends object = {}, P extends Primitiv
 
   // Fail if context not found
   if (!options) {
-    throw new RuntimeError('args', 'AG_CONTEXT_NOT_PROVIDED');
+    throw new ArgsError('CONTEXT_REQUIRED');
   }
 
   return parse(argv, options);

@@ -4,7 +4,7 @@ import { Debugger, createDebugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
-import { debug } from './constants';
+import debug from './debug';
 import { Hierarchical } from './types';
 
 export default abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>

@@ -3,7 +3,7 @@
 import { PrimitiveType, ArgList } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
-import { RuntimeError } from '@boost/internal';
+import CLIError from './CLIError';
 import {
   CommandMetadata,
   CommandPath,
@@ -74,7 +74,7 @@ export default abstract class CommandManager<Options extends object = {}> extend
     } else if (isObject(commandOrPath) && typeof commandOrPath.run === 'function') {
       command = commandOrPath;
     } else {
-      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_REGISTER');
+      throw new CLIError('COMMAND_INVALID_REGISTER');
     }
 
     const { aliases, path } = command.getMetadata();
@@ -99,7 +99,7 @@ export default abstract class CommandManager<Options extends object = {}> extend
    */
   protected checkPath(path: CommandPath) {
     if (this.commands[path]) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_EXISTS', [path]);
+      throw new CLIError('COMMAND_DEFINED', [path]);
     }
   }
 }

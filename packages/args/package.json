@@ -1,6 +1,7 @@
 {
   "name": "@boost/args",
-  "version": "1.4.1",
+  "version": "2.0.0-alpha.0",
+  "release": "1592788092197",
   "description": "A type-safe and convention based argument parsing library, with strict validation checks.",
   "keywords": [
     "boost",
@@ -14,7 +15,6 @@
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "nonce": "1579986563745",
   "engines": {
     "node": ">=10.10.0"
   },
@@ -24,7 +24,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^1.2.0",
+    "@boost/internal": "^2.0.0-alpha.0",
     "levenary": "^1.1.1"
   }
 }

@@ -10,6 +10,6 @@ export default {
   // Types
   filePath: chalk.cyan,
   moduleName: chalk.yellow,
-  pluginType: chalk.magenta,
   projectName: chalk.blue,
+  symbol: chalk.magenta,
 };

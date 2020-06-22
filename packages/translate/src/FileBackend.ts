@@ -1,6 +1,6 @@
 import { BackendModule, Resource, ResourceKey } from 'i18next';
 import { parseFile, Contract, Path, Predicates } from '@boost/common';
-import { RuntimeError } from '@boost/internal';
+import TranslateError from './TranslateError';
 import { Locale, Format } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
@@ -25,7 +25,7 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     // Validate resource paths are directories
     this.options.paths.forEach((path) => {
       if (path.exists() && !path.isDirectory()) {
-        throw new RuntimeError('translate', 'TL_INVALID_RES_PATH', [path.path()]);
+        throw new TranslateError('RESOURCE_PATH_INVALID', [path.path()]);
       }
     });
   }

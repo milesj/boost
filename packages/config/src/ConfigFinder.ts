@@ -8,8 +8,9 @@ import {
   isModuleName,
   isFilePath,
 } from '@boost/common';
-import { RuntimeError, color } from '@boost/internal';
+import { color } from '@boost/internal';
 import minimatch from 'minimatch';
+import ConfigError from './ConfigError';
 import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
 import loadJson from './loaders/json';
@@ -85,7 +86,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       currentDir = currentDir.parent();
     }
 
-    throw new RuntimeError('config', 'CFG_PACKAGE_SCOPE_UNKNOWN');
+    throw new ConfigError('PACKAGE_UNKNOWN_SCOPE');
   }
 
   /**
@@ -202,7 +203,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       if (source === 'root' || source === 'overridden') {
         delete config[key];
       } else if (extendsFrom) {
-        throw new RuntimeError('config', 'CFG_EXTENDS_ROOT_ONLY', [key]);
+        throw new ConfigError('EXTENDS_ONLY_ROOT', [key]);
       } else {
         return;
       }
@@ -234,7 +235,7 @@ export default class ConfigFinder<T extends object> extends Finder<
 
           // Unknown
         } else {
-          throw new RuntimeError('config', 'CFG_EXTENDS_UNKNOWN_PATH', [extendsPath]);
+          throw new ConfigError('EXTENDS_UNKNOWN_PATH', [extendsPath]);
         }
       });
     });
@@ -262,7 +263,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       if (source === 'root') {
         delete config[key];
       } else if (overrides) {
-        throw new RuntimeError('config', 'CFG_OVERRIDES_ROOT_ONLY', [key]);
+        throw new ConfigError('ROOT_ONLY_OVERRIDES', [key]);
       } else {
         return;
       }
@@ -326,7 +327,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         case 'yml':
           return loaders.yaml(path, pkg);
         default:
-          throw new RuntimeError('config', 'CFG_LOADER_UNSUPPORTED', [ext]);
+          throw new ConfigError('LOADER_UNSUPPORTED', [ext]);
       }
     });
 

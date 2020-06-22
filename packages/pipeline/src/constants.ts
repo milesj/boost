@@ -1,7 +1,4 @@
-import { createInternalDebugger } from '@boost/internal';
 import { Status } from './types';
-
-export const debug = createInternalDebugger('pipeline');
 
 export const STATUS_PENDING: Status = 'pending';
 export const STATUS_RUNNING: Status = 'running';

@@ -2,7 +2,7 @@
 
 import Context from './Context';
 import SerialPipeline from './SerialPipeline';
-import { debug } from './constants';
+import debug from './debug';
 
 export default class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
   {},

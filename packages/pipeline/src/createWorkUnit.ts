@@ -1,4 +1,4 @@
-import { RuntimeError } from '@boost/internal';
+import PipelineError from './PipelineError';
 import Task from './Task';
 import WorkUnit from './WorkUnit';
 import { Action } from './types';
@@ -25,5 +25,5 @@ export default function createWorkUnit<Input = unknown, Output = Input>(
     return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
   }
 
-  throw new RuntimeError('pipeline', 'PL_INVALID_WORK_UNIT');
+  throw new PipelineError('WORK_UNKNOWN');
 }

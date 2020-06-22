@@ -3,9 +3,10 @@
 import path from 'path';
 import { PathResolver, requireModule, ModuleName, isObject, MODULE_NAME_PART } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
-import { color, RuntimeError } from '@boost/internal';
+import { color } from '@boost/internal';
 import { Pluggable, Factory } from './types';
-import { debug } from './constants';
+import debug from './debug';
+import PluginError from './PluginError';
 import Registry from './Registry';
 
 export default class Loader<Plugin extends Pluggable> {
@@ -29,7 +30,7 @@ export default class Loader<Plugin extends Pluggable> {
     const modulePattern = MODULE_NAME_PART.source;
     const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
-    this.debug('Resolving possible %s modules', color.pluginType(typeName));
+    this.debug('Resolving possible %s modules', color.symbol(typeName));
 
     // Absolute or relative file path
     if (path.isAbsolute(name) || name.charAt(0) === '.') {
@@ -87,7 +88,7 @@ export default class Loader<Plugin extends Pluggable> {
 
       // Unknown plugin module pattern
     } else {
-      throw new RuntimeError('plugin', 'PG_UNKNOWN_MODULE_FORMAT', [moduleName]);
+      throw new PluginError('MODULE_UNKNOWN_FORMAT', [moduleName]);
     }
 
     debug('Loading plugins from: %s', resolver.getLookupPaths().join(', '));
@@ -106,7 +107,7 @@ export default class Loader<Plugin extends Pluggable> {
     const factory: Factory<Plugin> = requireModule(resolvedPath);
 
     if (typeof factory !== 'function') {
-      throw new RuntimeError('plugin', 'PG_INVALID_FACTORY', [typeof factory]);
+      throw new PluginError('FACTORY_REQUIRED', [typeof factory]);
     }
 
     const plugin = await factory(options);

@@ -22,6 +22,7 @@ import IndexHelp from './IndexHelp';
 import Program from './Program';
 import ProgramContext from './ProgramContext';
 import Style from './Style';
+import CLIError, { CLIErrorCode } from './CLIError';
 
 export * from './constants';
 export * from './decorators';
@@ -32,4 +33,15 @@ export * from './types';
 export { Box, Color, Text, Static, useInput, useStdin, useStdout, StdinProps, StdoutProps };
 
 // Boost
-export { Command, Failure, Header, Help, IndexHelp, Program, ProgramContext, Style };
+export {
+  Command,
+  Failure,
+  Header,
+  Help,
+  IndexHelp,
+  Program,
+  ProgramContext,
+  Style,
+  CLIError,
+  CLIErrorCode,
+};

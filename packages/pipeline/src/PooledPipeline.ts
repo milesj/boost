@@ -1,10 +1,10 @@
 import os from 'os';
 import { Predicates } from '@boost/common';
-import { RuntimeError } from '@boost/internal';
+import PipelineError from './PipelineError';
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
 import WorkUnit from './WorkUnit';
-import { debug } from './constants';
+import debug from './debug';
 import { AggregatedResult } from './types';
 
 export interface PooledOptions {
@@ -94,7 +94,7 @@ export default class PooledPipeline<
 
       if (timeout > 0) {
         timer = setTimeout(() => {
-          resolve(handleResult(new RuntimeError('pipeline', 'PL_WORK_TIME_OUT')));
+          resolve(handleResult(new PipelineError('WORK_TIME_OUT')));
         }, timeout);
       }
 

@@ -1,11 +1,13 @@
 import { Contract, Predicates, isObject, ModuleName, MODULE_NAME_PATTERN } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
-import { RuntimeError, color } from '@boost/internal';
+import { color } from '@boost/internal';
 import pluralize from 'pluralize';
 import kebabCase from 'lodash/kebabCase';
 import upperFirst from 'lodash/upperFirst';
 import Loader from './Loader';
+import PluginError from './PluginError';
+import debug from './debug';
 import {
   RegistryOptions,
   Pluggable,
@@ -14,7 +16,7 @@ import {
   PluginOptions,
   Callback,
 } from './types';
-import { DEFAULT_PRIORITY, debug } from './constants';
+import { DEFAULT_PRIORITY } from './constants';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
   RegistryOptions<Plugin>
@@ -49,7 +51,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     this.debug = createDebugger([this.singularName, 'registry']);
     this.loader = new Loader(this);
 
-    this.debug('Creating new plugin type: %s', color.pluginType(this.singularName));
+    this.debug('Creating new plugin type: %s', color.symbol(this.singularName));
 
     debug('New plugin type created: %s', this.singularName);
   }
@@ -87,7 +89,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       return container.plugin;
     }
 
-    throw new RuntimeError('plugin', 'PG_MISSING_PLUGIN', [this.singularName, name]);
+    throw new PluginError('PLUGIN_REQUIRED', [this.singularName, name]);
   }
 
   /**
@@ -138,12 +140,12 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
           opts.priority = setting.priority;
         }
       } else {
-        throw new RuntimeError('plugin', 'PG_MISSING_PLUGIN_NAME');
+        throw new PluginError('PLUGIN_REQUIRED_NAME');
       }
 
       // Unknown setting
     } else {
-      throw new RuntimeError('plugin', 'PG_UNKNOWN_SETTING', [setting]);
+      throw new PluginError('SETTING_UNKNOWN', [setting]);
     }
 
     this.onLoad.emit([setting, options]);
@@ -181,14 +183,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     options?: PluginOptions,
   ): Promise<Plugin> {
     if (!name.match(MODULE_NAME_PATTERN)) {
-      throw new RuntimeError('plugin', 'PG_INVALID_MODULE_NAME', [this.pluralName]);
+      throw new PluginError('MODULE_NAME_INVALID', [this.pluralName]);
     }
 
     if (!isObject(plugin)) {
-      throw new RuntimeError('plugin', 'PG_INVALID_REGISTER', [
-        upperFirst(this.pluralName),
-        typeof plugin,
-      ]);
+      throw new PluginError('REGISTER_REQUIRED', [upperFirst(this.pluralName), typeof plugin]);
     }
 
     this.debug('Validating plugin "%s"', name);

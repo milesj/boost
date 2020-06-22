@@ -1,4 +1,4 @@
-import { RuntimeError } from '@boost/internal';
+import CommonError from './CommonError';
 import { PortablePath, Lookup, LookupType } from './types';
 import Path from './Path';
 
@@ -79,7 +79,7 @@ export default class PathResolver {
     });
 
     if (!resolvedPath || !resolvedLookup) {
-      throw new RuntimeError('common', 'CM_PATH_RESOLVE_LOOKUPS', [
+      throw new CommonError('PATH_RESOLVE_LOOKUPS', [
         this.lookups.map((lookup) => `  - ${lookup.path} (${lookup.type})`).join('\n'),
       ]);
     }

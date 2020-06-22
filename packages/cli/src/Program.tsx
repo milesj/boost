@@ -13,8 +13,9 @@ import {
 import { Predicates } from '@boost/common';
 import { Event } from '@boost/event';
 import { Logger, createLogger } from '@boost/log';
-import { ExitError, env, RuntimeError } from '@boost/internal';
+import { ExitError, env } from '@boost/internal';
 import levenary from 'levenary';
+import CLIError from './CLIError';
 import Command from './Command';
 import CommandManager from './CommandManager';
 import LogBuffer from './LogBuffer';
@@ -26,8 +27,8 @@ import isArgvSize from './helpers/isArgvSize';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
+import msg from './translate';
 import {
-  msg,
   VERSION_FORMAT,
   EXIT_PASS,
   EXIT_FAIL,
@@ -147,7 +148,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    */
   default(command: Commandable): this {
     if (Object.keys(this.commands).length > 0) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_NONDEFAULT');
+      throw new CLIError('COMMAND_MIXED_NONDEFAULT');
     }
 
     this.register(command);
@@ -171,7 +172,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    */
   middleware(middleware: Middleware): this {
     if (typeof middleware !== 'function') {
-      throw new RuntimeError('cli', 'CLI_MIDDLEWARE_INVALID');
+      throw new CLIError('MIDDLEWARE_INVALID');
     }
 
     this.middlewares.push(middleware);
@@ -184,7 +185,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    */
   parse<O extends GlobalOptions, P extends PrimitiveType[] = ArgList>(argv: Argv): Arguments<O, P> {
     if (Object.keys(this.commands).length === 0) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_NONE_REGISTERED');
+      throw new CLIError('COMMAND_NONE_REGISTERED');
     }
 
     if (this.standAlone) {
@@ -201,10 +202,10 @@ export default class Program extends CommandManager<ProgramOptions> {
       if (possibleCmd) {
         const closestCmd = levenary(possibleCmd, this.getCommandPaths());
 
-        throw new RuntimeError('cli', 'CLI_COMMAND_UNKNOWN', [possibleCmd, closestCmd]);
+        throw new CLIError('COMMAND_UNKNOWN', [possibleCmd, closestCmd]);
       }
 
-      throw new RuntimeError('cli', 'CLI_COMMAND_INVALID_RUN');
+      throw new CLIError('COMMAND_INVALID_RUN');
     }
   }
 
@@ -327,7 +328,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     // Do not allow this
     // istanbul ignore next
     if (this.rendering) {
-      throw new RuntimeError('cli', 'CLI_NO_NESTED_REACT_RENDER');
+      throw new CLIError('REACT_RENDER_NO_NESTED');
     }
 
     try {
@@ -481,7 +482,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    */
   private handleBeforeRegister = () => {
     if (this.standAlone) {
-      throw new RuntimeError('cli', 'CLI_COMMAND_MIXED_DEFAULT');
+      throw new CLIError('COMMAND_MIXED_DEFAULT');
     }
   };
 }

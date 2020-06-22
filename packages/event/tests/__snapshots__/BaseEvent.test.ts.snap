@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Event constructor() errors if name contains invalid characters 1`] = `"Invalid event name \\"foo+bar\\". May only contain dashes, periods, and lowercase characters."`;
+exports[`Event constructor() errors if name contains invalid characters 1`] = `"Invalid event name \\"foo+bar\\". May only contain dashes, periods, and lowercase characters. [EVT:NAME_INVALID]"`;
 
-exports[`Event getListeners() errors if scope contains invalid characters 1`] = `"Invalid event scope \\"foo+bar\\". May only contain dashes, periods, and lowercase characters."`;
+exports[`Event getListeners() errors if scope contains invalid characters 1`] = `"Invalid event scope \\"foo+bar\\". May only contain dashes, periods, and lowercase characters. [EVT:NAME_INVALID]"`;
 
-exports[`Event listen() errors if listener is not a function 1`] = `"Invalid event listener for \\"event.test\\", must be a function."`;
+exports[`Event listen() errors if listener is not a function 1`] = `"Invalid event listener for \\"event.test\\", must be a function. [EVT:LISTENER_INVALID]"`;
 
-exports[`Event once() errors if listener is not a function 1`] = `"Invalid event listener for \\"event.test\\", must be a function."`;
+exports[`Event once() errors if listener is not a function 1`] = `"Invalid event listener for \\"event.test\\", must be a function. [EVT:LISTENER_INVALID]"`;

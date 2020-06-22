@@ -1,7 +1,7 @@
 import coreDebug from 'debug';
 import { toArray } from '@boost/common';
 import { color, env } from '@boost/internal';
-import { debug } from './constants';
+import debug from './debug';
 import { Debugger } from './types';
 
 export default function createDebugger(namespace: string | string[]): Debugger {
