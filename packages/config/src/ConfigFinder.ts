@@ -86,7 +86,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       currentDir = currentDir.parent();
     }
 
-    throw new ConfigError('PACKAGE_SCOPE_UNKNOWN');
+    throw new ConfigError('PACKAGE_UNKNOWN_SCOPE');
   }
 
   /**
@@ -203,7 +203,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       if (source === 'root' || source === 'overridden') {
         delete config[key];
       } else if (extendsFrom) {
-        throw new ConfigError('EXTENDS_ROOT_ONLY', [key]);
+        throw new ConfigError('EXTENDS_ONLY_ROOT', [key]);
       } else {
         return;
       }
@@ -263,7 +263,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       if (source === 'root') {
         delete config[key];
       } else if (overrides) {
-        throw new ConfigError('OVERRIDES_ROOT_ONLY', [key]);
+        throw new ConfigError('ROOT_ONLY_OVERRIDES', [key]);
       } else {
         return;
       }

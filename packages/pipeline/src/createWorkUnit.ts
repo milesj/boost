@@ -25,5 +25,5 @@ export default function createWorkUnit<Input = unknown, Output = Input>(
     return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
   }
 
-  throw new PipelineError('INVALID_WORK_UNIT');
+  throw new PipelineError('WORK_UNKNOWN');
 }

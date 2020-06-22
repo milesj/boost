@@ -328,7 +328,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     // Do not allow this
     // istanbul ignore next
     if (this.rendering) {
-      throw new CLIError('NO_NESTED_REACT_RENDER');
+      throw new CLIError('REACT_RENDER_NO_NESTED');
     }
 
     try {

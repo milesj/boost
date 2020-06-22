@@ -385,7 +385,7 @@ describe('Registry', () => {
           ],
           {},
         ),
-      ).rejects.toThrow('Unknown plugin setting: 123');
+      ).rejects.toThrow('Unknown plugin setting "123". [PLG:SETTING_UNKNOWN]');
     });
 
     it('errors if object is passed without a name', async () => {

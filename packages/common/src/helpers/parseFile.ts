@@ -10,7 +10,7 @@ export default function parseFile<T>(filePath: PortablePath): T {
   const path = Path.create(filePath);
 
   if (!path.isAbsolute()) {
-    throw new CommonError('REQ_ABS_PATH');
+    throw new CommonError('PATH_REQUIRE_ABSOLUTE');
   }
 
   switch (path.ext()) {

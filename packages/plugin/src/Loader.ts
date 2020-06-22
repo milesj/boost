@@ -88,7 +88,7 @@ export default class Loader<Plugin extends Pluggable> {
 
       // Unknown plugin module pattern
     } else {
-      throw new PluginError('UNKNOWN_MODULE_FORMAT', [moduleName]);
+      throw new PluginError('MODULE_UNKNOWN_FORMAT', [moduleName]);
     }
 
     debug('Loading plugins from: %s', resolver.getLookupPaths().join(', '));
@@ -107,7 +107,7 @@ export default class Loader<Plugin extends Pluggable> {
     const factory: Factory<Plugin> = requireModule(resolvedPath);
 
     if (typeof factory !== 'function') {
-      throw new PluginError('INVALID_FACTORY', [typeof factory]);
+      throw new PluginError('FACTORY_REQUIRED', [typeof factory]);
     }
 
     const plugin = await factory(options);

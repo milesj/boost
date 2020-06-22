@@ -29,7 +29,7 @@ export default function processShortOptionGroup(
       if (config.count) {
         options[name] = Number(options[name]) + 1;
       } else {
-        throw new ArgsError('GROUP_MISSING_COUNT');
+        throw new ArgsError('GROUP_REQUIRED_COUNT');
       }
     }
   });

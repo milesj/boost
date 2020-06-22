@@ -70,7 +70,7 @@ export default abstract class Finder<
     const root = Path.resolve(dir);
 
     if (!this.isRootDir(root)) {
-      throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, PACKAGE_FILE]);
+      throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER]);
     }
 
     return root;
@@ -107,7 +107,7 @@ export default abstract class Finder<
     const pkgPath = dir.append(PACKAGE_FILE);
 
     if (!pkgPath.exists()) {
-      throw new ConfigError('ROOT_MISSING_PACKAGE', [CONFIG_FOLDER, PACKAGE_FILE]);
+      throw new ConfigError('ROOT_NO_PACKAGE', [CONFIG_FOLDER]);
     }
 
     this.cache.pkgPath = pkgPath;

@@ -89,7 +89,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       return container.plugin;
     }
 
-    throw new PluginError('MISSING_PLUGIN', [this.singularName, name]);
+    throw new PluginError('PLUGIN_REQUIRED', [this.singularName, name]);
   }
 
   /**
@@ -140,12 +140,12 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
           opts.priority = setting.priority;
         }
       } else {
-        throw new PluginError('MISSING_PLUGIN_NAME');
+        throw new PluginError('PLUGIN_REQUIRED_NAME');
       }
 
       // Unknown setting
     } else {
-      throw new PluginError('UNKNOWN_SETTING', [setting]);
+      throw new PluginError('SETTING_UNKNOWN', [setting]);
     }
 
     this.onLoad.emit([setting, options]);
@@ -183,11 +183,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     options?: PluginOptions,
   ): Promise<Plugin> {
     if (!name.match(MODULE_NAME_PATTERN)) {
-      throw new PluginError('INVALID_MODULE_NAME', [this.pluralName]);
+      throw new PluginError('MODULE_NAME_INVALID', [this.pluralName]);
     }
 
     if (!isObject(plugin)) {
-      throw new PluginError('INVALID_REGISTER', [upperFirst(this.pluralName), typeof plugin]);
+      throw new PluginError('REGISTER_REQUIRED', [upperFirst(this.pluralName), typeof plugin]);
     }
 
     this.debug('Validating plugin "%s"', name);

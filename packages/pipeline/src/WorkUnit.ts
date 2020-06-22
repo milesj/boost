@@ -47,11 +47,11 @@ export default abstract class WorkUnit<Options extends object, Input = unknown, 
     super(options);
 
     if (!title || typeof title !== 'string') {
-      throw new PipelineError('INVALID_TITLE');
+      throw new PipelineError('WORK_REQUIRED_TITLE');
     }
 
     if (action !== null && typeof action !== 'function') {
-      throw new PipelineError('INVALID_ACTION');
+      throw new PipelineError('ACTION_REQUIRED');
     }
 
     this.action = action;
