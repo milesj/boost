@@ -49,7 +49,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     this.debug = createDebugger([this.singularName, 'registry']);
     this.loader = new Loader(this);
 
-    this.debug('Creating new plugin type: %s', color.pluginType(this.singularName));
+    this.debug('Creating new plugin type: %s', color.symbol(this.singularName));
 
     debug('New plugin type created: %s', this.singularName);
   }
