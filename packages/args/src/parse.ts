@@ -1,6 +1,5 @@
 /* eslint-disable complexity, no-continue */
 
-import { RuntimeError } from '@boost/internal';
 import {
   Arguments,
   Argv,
@@ -25,9 +24,11 @@ import mapParserOptions from './helpers/mapParserOptions';
 import isCommand from './helpers/isCommand';
 import castValue from './helpers/castValue';
 import processShortOptionGroup from './helpers/processShortOptionGroup';
+import ArgsError from './ArgsError';
 import Checker from './Checker';
 import Scope from './Scope';
-import { DEFAULT_STRING_VALUE, debug } from './constants';
+import debug from './debug';
+import { DEFAULT_STRING_VALUE } from './constants';
 
 // TERMINOLOGY
 // command line - The entire line that encompasses the following parts.
@@ -204,7 +205,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
       } else if (allowVariadic) {
         params.push(arg);
       } else {
-        throw new RuntimeError('args', 'AG_PARAM_UNKNOWN', [arg]);
+        throw new ArgsError('PARAM_UNKNOWN', [arg]);
       }
     } catch (error) {
       checker.logFailure(error.message);

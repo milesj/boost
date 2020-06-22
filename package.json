@@ -19,11 +19,11 @@
     "node": ">=10.10.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.8.1",
+    "@milesj/build-tools": "^2.9.0",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.1",
     "@types/json5": "^0.0.30",
-    "@types/lodash": "^4.14.155",
+    "@types/lodash": "^4.14.156",
     "@types/minimatch": "^3.0.3",
     "@types/pluralize": "^0.0.29",
     "@types/react": "^16.9.38",
@@ -67,7 +67,7 @@
     },
     "typescript": {
       "compilerOptions": {
-        "useDefineForClassFields": false
+        "keyofStringsOnly": true
       },
       "exclude": [
         "tests/typings.ts"

@@ -256,7 +256,10 @@ describe('parse()', () => {
         expect(result).toEqual({
           command: [],
           errors: [
-            new ValidationError('Invalid value, must be one of foo, bar, baz, found qux.', 'opt'),
+            new ValidationError(
+              'Invalid value, must be one of foo, bar, baz, found qux. [ARG:VALUE_INVALID_CHOICE]',
+              'opt',
+            ),
           ],
           options: {
             opt: 'qux',
@@ -283,7 +286,12 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           command: [],
-          errors: [new ValidationError('Only numeric options may use the `count` setting.', 'opt')],
+          errors: [
+            new ValidationError(
+              'Only numeric options may use the `count` setting. [ARG:OPTION_NUMBER_COUNT]',
+              'opt',
+            ),
+          ],
           options: {
             opt: '',
           },
@@ -305,7 +313,7 @@ describe('parse()', () => {
           command: [],
           errors: [
             new ParseError(
-              'Numeric options must have `count` enabled when passed in a short option group.',
+              'Numeric options must have `count` enabled when passed in a short option group. [ARG:GROUP_MISSING_COUNT]',
               '-Fn',
               0,
             ),
@@ -692,7 +700,12 @@ describe('parse()', () => {
 
         expect(result).toEqual({
           command: [],
-          errors: [new ValidationError('Not enough arity arguments. Require 2, found 1.', 'opts')],
+          errors: [
+            new ValidationError(
+              'Not enough arity arguments. Require 2, found 1. [ARG:VALUE_ARITY_UNMET]',
+              'opts',
+            ),
+          ],
           options: {
             opts: ['foo'],
           },
@@ -843,7 +856,7 @@ describe('parse()', () => {
           command: [],
           errors: [
             new ParseError(
-              'Only boolean and countable number options may be used in a short option group.',
+              'Only boolean and countable number options may be used in a short option group. [ARG:GROUP_UNSUPPORTED_TYPE]',
               '-OF',
               0,
             ),
@@ -1337,7 +1350,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ParseError(
-            'Flags and short option groups may not use inline values.',
+            'Flags and short option groups may not use inline values. [ARG:VALUE_NO_INLINE]',
             '--flag=123',
             0,
           ),
@@ -1468,7 +1481,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command has already been provided as "cmd", received another "cmd".',
+              'Command has already been provided as "cmd", received another "cmd". [ARG:COMMAND_PROVIDED]',
               'cmd',
               2,
             ),
@@ -1490,7 +1503,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command has already been provided as "cmd", received another "command".',
+              'Command has already been provided as "cmd", received another "command". [ARG:COMMAND_PROVIDED]',
               'command',
               2,
             ),
@@ -1512,7 +1525,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command must be passed as the first non-option, non-param argument.',
+              'Command must be passed as the first non-option, non-param argument. [ARG:COMMAND_NOT_FIRST]',
               'cmd',
               1,
             ),
@@ -1534,7 +1547,7 @@ describe('parse()', () => {
           command: [],
           errors: [
             new ValidationError(
-              'Invalid "comm_and" command format. Must be letters, numbers, and dashes.',
+              'Invalid "comm_and" command format. Must be letters, numbers, and dashes. [ARG:COMMAND_INVALID_FORMAT]',
             ),
           ],
           options: {},
@@ -1664,7 +1677,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command has already been provided as "cmd", received another "cmd".',
+              'Command has already been provided as "cmd", received another "cmd". [ARG:COMMAND_PROVIDED]',
               'cmd',
               2,
             ),
@@ -1686,7 +1699,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command has already been provided as "cmd", received another "command".',
+              'Command has already been provided as "cmd", received another "command". [ARG:COMMAND_PROVIDED]',
               'command',
               2,
             ),
@@ -1708,7 +1721,7 @@ describe('parse()', () => {
           command: ['cmd'],
           errors: [
             new ParseError(
-              'Command must be passed as the first non-option, non-param argument.',
+              'Command must be passed as the first non-option, non-param argument. [ARG:COMMAND_NOT_FIRST]',
               'cmd',
               1,
             ),
@@ -1736,7 +1749,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Optional param(s) "first" found before required param "second". Required must be first.',
+            'Optional param(s) "first" found before required param "second". Required must be first. [ARG:PARAM_MISORDERED]',
           ),
         ],
         options: {},
@@ -1754,7 +1767,11 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         command: [],
-        errors: [new ValidationError('Param "first" is required but value is undefined.')],
+        errors: [
+          new ValidationError(
+            'Param "first" is required but value is undefined. [ARG:PARAM_REQUIRED]',
+          ),
+        ],
         options: {},
         params: [],
         rest: [],
@@ -1773,7 +1790,9 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ValidationError('Required param "first" has a default value, which is not allowed.'),
+          new ValidationError(
+            'Required param "first" has a default value, which is not allowed. [ARG:PARAM_REQUIRED_NO_DEFAULT]',
+          ),
         ],
         options: {},
         params: ['foo'],
@@ -1879,7 +1898,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ParseError('Unknown param "bar" found. Variadic params are not supported.', 'bar', 1),
+          new ParseError(
+            'Unknown param "bar" found. Variadic params are not supported. [ARG:PARAM_UNKNOWN]',
+            'bar',
+            1,
+          ),
         ],
         options: {},
         params: ['foo'],
@@ -1906,7 +1929,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Option "foo" is set to boolean, but non-boolean default value found.',
+            'Option "foo" is set to boolean, but non-boolean default value found. [ARG:VALUE_NON_BOOL]',
           ),
         ],
         options: {
@@ -1933,7 +1956,9 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ValidationError('Option "foo" is set to string, but non-string default value found.'),
+          new ValidationError(
+            'Option "foo" is set to string, but non-string default value found. [ARG:VALUE_NON_STRING]',
+          ),
         ],
         options: {
           foo: '123',
@@ -1959,7 +1984,9 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ValidationError('Option "foo" is set to number, but non-number default value found.'),
+          new ValidationError(
+            'Option "foo" is set to number, but non-number default value found. [ARG:VALUE_NON_NUMBER]',
+          ),
         ],
         options: {
           foo: 0,
@@ -1987,7 +2014,7 @@ describe('parse()', () => {
         command: [],
         errors: [
           new ValidationError(
-            'Option "foo" is enabled for multiple values, but non-array default value found.',
+            'Option "foo" is enabled for multiple values, but non-array default value found. [ARG:VALUE_NON_ARRAY]',
           ),
         ],
         options: {
@@ -2013,7 +2040,11 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         command: [],
-        errors: [new ValidationError('Short option "ab" may only be a single letter.')],
+        errors: [
+          new ValidationError(
+            'Short option "ab" may only be a single letter. [ARG:SHORT_SINGLE_CHAR]',
+          ),
+        ],
         options: {
           foo: '',
         },
@@ -2041,7 +2072,11 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         command: [],
-        errors: [new ValidationError('Short option "a" has already been defined for "foo".')],
+        errors: [
+          new ValidationError(
+            'Short option "a" has already been defined for "foo". [ARG:SHORT_DEFINED]',
+          ),
+        ],
         options: {
           bar: '',
           foo: '',
@@ -2067,7 +2102,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ParseError('Unknown option "--unknown" found. Did you mean "known"?', '--unknown', 1),
+          new ParseError(
+            'Unknown option "--unknown" found. Did you mean "known"? [ARG:OPTION_UNKNOWN_MORE]',
+            '--unknown',
+            1,
+          ),
         ],
         options: { known: false },
         params: ['foo', 'value'],
@@ -2083,7 +2122,13 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         command: [],
-        errors: [new ParseError('Unknown option "--unknown=value" found.', '--unknown=value', 1)],
+        errors: [
+          new ParseError(
+            'Unknown option "--unknown=value" found. [ARG:OPTION_UNKNOWN]',
+            '--unknown=value',
+            1,
+          ),
+        ],
         options: {},
         params: ['foo'],
         rest: [],
@@ -2098,7 +2143,9 @@ describe('parse()', () => {
 
       expect(result).toEqual({
         command: [],
-        errors: [new ParseError('Unknown option "--unknown" found.', '--unknown', 1)],
+        errors: [
+          new ParseError('Unknown option "--unknown" found. [ARG:OPTION_UNKNOWN]', '--unknown', 1),
+        ],
         options: {},
         params: ['foo'],
         rest: [],
@@ -2114,7 +2161,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ParseError('Unknown short option "U". No associated long option found.', '-U', 1),
+          new ParseError(
+            'Unknown short option "U". No associated long option found. [ARG:SHORT_UNKNOWN]',
+            '-U',
+            1,
+          ),
         ],
         options: {},
         params: ['foo', 'value'],
@@ -2131,7 +2182,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ParseError('Unknown short option "U". No associated long option found.', '-U', 1),
+          new ParseError(
+            'Unknown short option "U". No associated long option found. [ARG:SHORT_UNKNOWN]',
+            '-U',
+            1,
+          ),
         ],
         options: {},
         params: ['foo'],
@@ -2148,7 +2203,11 @@ describe('parse()', () => {
       expect(result).toEqual({
         command: [],
         errors: [
-          new ParseError('Unknown short option "U". No associated long option found.', '-U', 1),
+          new ParseError(
+            'Unknown short option "U". No associated long option found. [ARG:SHORT_UNKNOWN]',
+            '-U',
+            1,
+          ),
         ],
         options: {},
         params: ['foo'],

@@ -1,5 +1,5 @@
 import BaseEvent from './BaseEvent';
-import { debug } from './constants';
+import debug from './debug';
 
 export default class BailEvent<
   Args extends unknown[],

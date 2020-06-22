@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Work constructor() errors if action is not a function 1`] = `"Work units require an executable function."`;
+exports[`Work constructor() errors if action is not a function 1`] = `"Work units require an executable function. [PLN:INVALID_ACTION]"`;
 
-exports[`Work constructor() errors if no title 1`] = `"Work units require a title."`;
+exports[`Work constructor() errors if no title 1`] = `"Work units require a title. [PLN:INVALID_TITLE]"`;
 
-exports[`Work constructor() errors if title is not a string 1`] = `"Work units require a title."`;
+exports[`Work constructor() errors if title is not a string 1`] = `"Work units require a title. [PLN:INVALID_TITLE]"`;

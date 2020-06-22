@@ -1,7 +1,3 @@
-import { createInternalDebugger } from '@boost/internal';
-
-export const debug = createInternalDebugger('args');
-
 // Default values for option types.
 export const DEFAULT_BOOLEAN_VALUE = false;
 export const DEFAULT_NUMBER_VALUE = 0;

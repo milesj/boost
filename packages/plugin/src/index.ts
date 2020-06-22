@@ -5,8 +5,9 @@
 
 import Registry from './Registry';
 import Plugin from './Plugin';
+import PluginError from './PluginError';
 
 export * from './constants';
 export * from './types';
 
-export { Registry, Plugin };
+export { Registry, Plugin, PluginError };

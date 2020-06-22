@@ -6,7 +6,7 @@ import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
 import { PortablePath, FilePath, requireModule, toArray, PackageStructure } from '@boost/common';
-import { debug } from './constants';
+import debug from './debug';
 
 function run(command: string, args: string[]): string {
   return String(execa.sync(command, args, { preferLocal: true }).stdout);

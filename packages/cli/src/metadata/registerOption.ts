@@ -1,6 +1,6 @@
 import { OptionConfig } from '@boost/args';
-import { RuntimeError } from '@boost/internal';
 import getConstructor from './getConstructor';
+import CLIError from '../CLIError';
 import Command from '../Command';
 import { RESERVED_OPTIONS } from '../constants';
 
@@ -19,7 +19,7 @@ export default function registerOption<O extends OptionConfig>(
   }
 
   if (RESERVED_OPTIONS.includes(key)) {
-    throw new RuntimeError('cli', 'CLI_OPTION_RESERVED', [key]);
+    throw new CLIError('OPTION_RESERVED', [key]);
   }
 
   ctor.options[key] = config;

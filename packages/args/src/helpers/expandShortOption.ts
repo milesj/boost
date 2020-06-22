@@ -1,4 +1,4 @@
-import { RuntimeError } from '@boost/internal';
+import ArgsError from '../ArgsError';
 import { AliasMap, ShortOptionName, LongOptionName } from '../types';
 
 /**
@@ -6,7 +6,7 @@ import { AliasMap, ShortOptionName, LongOptionName } from '../types';
  */
 export default function expandShortOption(short: ShortOptionName, map: AliasMap): LongOptionName {
   if (!map[short]) {
-    throw new RuntimeError('args', 'AG_SHORT_UNKNOWN', [short]);
+    throw new ArgsError('SHORT_UNKNOWN', [short]);
   }
 
   return map[short];

@@ -4,6 +4,7 @@
  */
 
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
+import CommonError, { CommonErrorCode } from './CommonError';
 import Contract from './Contract';
 import Path from './Path';
 import PathResolver from './PathResolver';
@@ -16,6 +17,8 @@ export * from './helpers';
 export * from './types';
 
 export {
+  CommonError,
+  CommonErrorCode,
   Contract,
   Blueprint,
   Path,

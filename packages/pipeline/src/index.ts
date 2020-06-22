@@ -13,6 +13,7 @@ import SerialPipeline from './SerialPipeline';
 import Task from './Task';
 import WaterfallPipeline from './WaterfallPipeline';
 import WorkUnit from './WorkUnit';
+import PipelineError, { PipelineErrorCode } from './PipelineError';
 
 export * from './constants';
 export * from './types';
@@ -30,4 +31,6 @@ export {
   Task,
   WaterfallPipeline,
   WorkUnit,
+  PipelineError,
+  PipelineErrorCode,
 };
