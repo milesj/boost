@@ -4,7 +4,7 @@
   "scripts": {
     "build": "yarn run clean && tsc --build",
     "clean": "rm -rf packages/*/{lib,*.tsbuildinfo}",
-    "coverage": "yarn run jest --coverage --detectOpenHandles --forceExit",
+    "coverage": "yarn run jest --coverage",
     "lint": "beemo eslint",
     "jest": "beemo jest",
     "prettier": "beemo prettier",
@@ -68,10 +68,7 @@
     "typescript": {
       "compilerOptions": {
         "keyofStringsOnly": true
-      },
-      "exclude": [
-        "tests/typings.ts"
-      ]
+      }
     }
   }
 }
