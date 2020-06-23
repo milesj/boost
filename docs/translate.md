@@ -8,7 +8,7 @@ Package and application level translations made easy.
 yarn add @boost/translate
 ```
 
-## Environment Variables
+## Environment variables
 
 - `LANGUAGE`, `LANG` - The locale to explicitly use for translation loading.
 
@@ -64,7 +64,7 @@ creation.
 - `resourceFormat` (`'js' | 'json' | 'yaml'`) - File format resource bundles are written in.
   Defaults to `yaml`.
 
-#### Message Options
+#### Message options
 
 And these options can be passed to the created translator function (`msg` above).
 
@@ -78,7 +78,7 @@ And these options can be passed to the created translator function (`msg` above)
 - `locale` (`Locale`) - Force translation to this locale.
 - `postProcess` (`string | string[]`) - Post-processors to run on the translation.
 
-### Locale Detection
+### Locale detection
 
 To load resource bundles, we require a locale. A locale is code based representation of a human
 language and is based on [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag).

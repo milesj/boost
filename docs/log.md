@@ -8,7 +8,7 @@ Lightweight level based logging system.
 yarn add @boost/log
 ```
 
-## Environment Variables
+## Environment variables
 
 - `BOOSTJS_LOG_DEFAULT_LEVEL` (`LogLevel`) - The default log level to use when calling the logger
   function stand alone (the usage examples below). Defaults to the lowest level, `log`.
@@ -63,7 +63,7 @@ const log = createLogger({
 });
 ```
 
-### Log Levels
+### Log levels
 
 There are 5 distinct logging levels outside the standard level, each represented as a unique
 function on the logger instance. The levels in order of **priority** are `trace`, `debug`, `info`,
@@ -80,7 +80,7 @@ log.error('Systems are down! %s', error.message);
 
 > Log, trace, and info functions write to `stdout`, while debug, warn, and error write to `stderr`.
 
-### Silencing Output
+### Silencing output
 
 By default, all logged messages are immediately written to the configured streams. To silence output
 and disable stream writes, call the `logger.disable()` function, and to re-enable, call
@@ -95,7 +95,7 @@ log.debug('Something is broken!');
 
 > Messages that are logged while silenced are _lost_ and are _not_ buffered.
 
-## Test Utilities
+## Test utilities
 
 The following [Jest](https://github.com/facebook/jest) utilities are available in the
 `@boost/log/lib/testing` module.

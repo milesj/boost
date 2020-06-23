@@ -166,7 +166,7 @@ rendererRegistry.load(['boost-renderer-example', {}, { priority: 50 });
 
 The default priority for all plugins is `100`.
 
-#### Life Cycles
+#### Life cycles
 
 A life cycle is an optional method on a plugin that is executed at specific points in the life of a
 plugin. Currently, plugins support 2 life cycles, `startup` and `shutdown`. Startup is executed
@@ -259,7 +259,7 @@ export default async function (options: RendererOptions): Renderable {
 }
 ```
 
-#### Naming Requirements
+#### Naming requirements
 
 You may have noticed in the examples above that we've been referencing both scoped and non-scoped
 package names. All plugin packages follow the format of `<project>-<type>-<name>` for public
@@ -315,7 +315,7 @@ await registry.load('foo', {}, tool);
 await registry.loadMany(['foo', 'bar'], tool);
 ```
 
-### Loading Plugins
+### Loading plugins
 
 Plugins are either asynchronously loaded from an NPM package, a relative file system path, or
 explicitly passed using the `Registry` class. The `load()` method can be used to load a single
@@ -373,7 +373,7 @@ of which check based on the plugin's `name` property.
 const renderer = rendererRegistry.get('boost-renderer-foo');
 ```
 
-#### Configuration Files
+#### Configuration files
 
 The loader methods were built to support plugins defined in configuration files, as this is a common
 use case. Take the following examples that showcase JSON and JS based configurations.
@@ -420,7 +420,7 @@ export default {
 };
 ```
 
-## Third-party Ecosystem
+## Third-party ecosystem
 
 Below are a list of projects and their current plugin implementations. These were used as a basis
 and reference for Boost's plugin system.

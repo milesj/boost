@@ -94,7 +94,7 @@ collisions or mutations occurring.
 const newContext = context.clone();
 ```
 
-### Input & Output Types
+### Input & output types
 
 The input type is inferred from the 2nd constructor argument, while the output type defaults to the
 input type. If you need to customize either the input or output type manually, the pipeline generics
@@ -104,7 +104,7 @@ can be customized upon instantiation.
 const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
 ```
 
-### Serial Pipeline Caveats
+### Serial pipeline caveats
 
 [Serial pipelines](#serial) are designed using a linked list, with each call to
 `SerialPipeline#pipe` returning a new instance. It was designed this way so that input and output
@@ -162,7 +162,7 @@ if (condition) {
 }
 ```
 
-## Work Types
+## Work types
 
 There are 2 types of work units that can be registered in a pipeline.
 
@@ -253,7 +253,7 @@ used for streaming to a console. An options object can be passed as the 3rd argu
 new ExampleRoutine('key', 'Custom title here', { limit: 5 });
 ```
 
-#### Creating Hierarchical Pipelines
+#### Creating hierarchical pipelines
 
 The most prominent feature of `Routine` is the ability to create hierarchical pipelines that can be
 nested or executed in any fashion. This can be achieved with the `Routine#createAggregatedPipeline`,
@@ -280,7 +280,7 @@ class ExampleRoutine extends Routine<Item[]> {
 The `Routine#depth` property denotes the current depth within the hierarchy tree, while
 `Routine#index` is the current index amongst all work at the same depth.
 
-#### Executing Local Binaries
+#### Executing local binaries
 
 The `Routine#executeCommand` method can be used to execute binaries and commands on the host machine
 (it uses [execa](https://github.com/sindresorhus/execa) under the hood). This is extremely useful
@@ -296,7 +296,7 @@ class ExampleRoutine extends Routine<string> {
 }
 ```
 
-## Pipeline Types
+## Pipeline types
 
 There are 4 types of pipelines, grouped into parallel and serial based patterns.
 
