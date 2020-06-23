@@ -73,14 +73,14 @@ export default class Path {
    * Return true if the current path is a folder.
    */
   isDirectory(): boolean {
-    return this.stat().isDirectory();
+    return fs.statSync(this.internalPath).isDirectory();
   }
 
   /**
    * Return true if the current path is a file.
    */
   isFile(): boolean {
-    return this.stat().isFile();
+    return fs.statSync(this.internalPath).isFile();
   }
 
   /**
@@ -123,17 +123,7 @@ export default class Path {
    */
   // istanbul ignore next
   realPath(): FilePath {
-    const filePath = this.path();
-
-    if (typeof fs.realpathSync.native === 'function') {
-      try {
-        return fs.realpathSync.native(filePath);
-      } catch {
-        // Skip
-      }
-    }
-
-    return fs.realpathSync(filePath);
+    return fs.realpathSync.native(this.path());
   }
 
   /**
@@ -158,13 +148,5 @@ export default class Path {
 
   toString(): FilePath {
     return this.path();
-  }
-
-  private stat(): fs.Stats {
-    if (!this.stats) {
-      this.stats = fs.statSync(this.internalPath);
-    }
-
-    return this.stats;
   }
 }

@@ -6,4 +6,4 @@ tools.
 ## Requirements
 
 - Linux, OSX, Windows
-- Node 10.10+
+- Node 10.17+

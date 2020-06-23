@@ -22,7 +22,7 @@ export default class Cache {
   async cacheFileContents<T>(path: Path, cb: () => Promise<T>): Promise<T> {
     const key = path.path();
     const cache = this.fileContentCache[key];
-    const stats = await this.loadStats(path);
+    const stats = await fs.promises.stat(path.path());
 
     if (cache && cache.mtime === stats.mtimeMs) {
       return cache.content;
@@ -63,20 +63,6 @@ export default class Cache {
 
   getFileCache<T>(path: Path): FileCache<T> | null {
     return this.fileContentCache[path.path()] || null;
-  }
-
-  loadStats(path: Path): Promise<fs.Stats> {
-    return new Promise((resolve, reject) => {
-      fs.stat(path.path(), (error, stats) => {
-        // Temporary until Node 10
-        // istanbul ignore next
-        if (error) {
-          reject(error);
-        } else {
-          resolve(stats);
-        }
-      });
-    });
   }
 
   markMissingFile(path: Path): this {

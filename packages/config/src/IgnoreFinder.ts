@@ -1,7 +1,7 @@
+import fs from 'fs';
 import { Path, Predicates } from '@boost/common';
 import { color } from '@boost/internal';
 import Finder from './Finder';
-import readFile from './helpers/readFile';
 import { IgnoreFinderOptions, IgnoreFile } from './types';
 
 export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
@@ -47,7 +47,9 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
 
     return Promise.all(
       foundFiles.map(async (filePath) => {
-        const contents = await this.cache.cacheFileContents(filePath, () => readFile(filePath));
+        const contents = await this.cache.cacheFileContents(filePath, () =>
+          fs.promises.readFile(filePath.path(), 'utf8'),
+        );
         const ignore = contents
           .split('\n')
           .map((line) => line.trim())

@@ -19,7 +19,7 @@ tools.
 
 ## Requirements
 
-- Node 10.10+
+- Node 10.17+
 
 ## Documentation
 
