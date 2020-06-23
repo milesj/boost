@@ -10,11 +10,11 @@ yarn add @boost/plugin
 
 ## Events
 
-| Event                   | Arguments                  | Description                                                 |
-| ----------------------- | -------------------------- | ----------------------------------------------------------- |
-| `Registry#onLoad`       | `Setting<Plugin>, object?` | Called after a plugin is loaded but before it's registered. |
-| `Registry#onRegister`   | `Plugin`                   | Called after a plugin is is registered.                     |
-| `Registry#onUnregister` | `Plugin`                   | Called before a plugin is unregistered.                     |
+| Event                   | Arguments        | Description                                                 |
+| ----------------------- | ---------------- | ----------------------------------------------------------- |
+| `Registry#onLoad`       | `string, object` | Called after a plugin is loaded but before it's registered. |
+| `Registry#onRegister`   | `Plugin`         | Called after a plugin is registered.                        |
+| `Registry#onUnregister` | `Plugin`         | Called before a plugin is unregistered.                     |
 
 ## Usage
 
@@ -161,10 +161,10 @@ const renderer = {
 While [consumers can override](#loading-plugins) the priority using the `priority` option.
 
 ```ts
-rendererRegistry.load(['boost-renderer-example', {}, { priority: 50 });
+rendererRegistry.load('boost-renderer-example', {}, { priority: 50 });
 ```
 
-The default priority for all plugins is `100`.
+> The default priority for all plugins is `100`.
 
 #### Life cycles
 
@@ -303,16 +303,16 @@ const registry = new Registry<Renderable, Tool>(/* ... */);
 const renderer = new Renderer<Tool>();
 ```
 
-If you have a tool instance, pass the tool as the 3rd argument to `Registry#load()` and the 2nd
-argument to `Registry#loadMany()`.
+If you have a tool instance, pass the tool as an option to `Registry#load()` and
+`Registry#loadMany()`.
 
 ```ts
 import Tool from './Tool';
 
 const tool = new Tool();
 
-await registry.load('foo', {}, tool);
-await registry.loadMany(['foo', 'bar'], tool);
+await registry.load('foo', {}, { tool });
+await registry.loadMany(['foo', 'bar'], { tool });
 ```
 
 ### Loading plugins
@@ -328,31 +328,36 @@ short form, the loader will attempt to find both the scoped (`@boost/renderer-ex
 non-scoped packages (`boost-renderer-example`), with scoped taking precedence.
 
 ```ts
-// Load by short name
+// Load by short module name
 const renderer = await rendererRegistry.load('foo');
 
-// Load by long name with options
+// Load by long module name with options
 const renderer = await rendererRegistry.load('boost-renderer-foo', { async: true });
 
 // Load by file path
 const renderer = await rendererRegistry.load('./renderers/qux.js');
 ```
 
-Passing an array (tuple) allows for options to also be defined. This will precede the 2nd argument
-and is mainly used to load based on a configuration file. An optional 3rd argument can be defined to
-set [priority](#priority).
+You may also load many plugins in parallel, by passing an array of module names or plugin instances,
+or by passing an object of module names that map to booleans or options.
 
 ```ts
-// Load many by different name forms
+// Load many with default options
 const renderers = await rendererRegistry.loadMany([
-  ['foo', { async: true }],
-  ['@boost/renderer-bar', {}, { priority: 1 }],
+  'foo',
+  '@boost/renderer-bar',
   '@scope/boost-renderer-baz',
 ]);
+
+// Load many with custom options
+const renderers = await rendererRegistry.loadMany({
+  foo: { async: true },
+  '@boost/renderer-bar': true, // Enabled
+  '@scope/boost-renderer-baz': false, // Disabled
+});
 ```
 
-And lastly, passing a plugin object directly is also supported. This is primarily a configuration
-file feature.
+And lastly, passing a plugin object directly is also supported.
 
 ```ts
 const renderer = await rendererRegistry.load({
@@ -375,26 +380,27 @@ const renderer = rendererRegistry.get('boost-renderer-foo');
 
 #### Configuration files
 
-The loader methods were built to support plugins defined in configuration files, as this is a common
-use case. Take the following examples that showcase JSON and JS based configurations.
+The loader methods were built to support plugins defined in [configuration files](./config.md), as
+this is a common use case. Take the following examples that showcase JSON and JS based
+configurations.
 
 ```json
 {
-  "renderers": [
-    ["foo", { "async": true }],
-    ["@boost/renderer-bar", {}, { "priority": 1 }],
-    "@scope/boost-renderer-baz"
-  ]
+  "renderers": {
+    "foo": { "async": true },
+    "@boost/renderer-bar": {},
+    "@scope/boost-renderer-baz": true
+  }
 }
 ```
 
 ```js
 module.exports = {
-  renderers: [
-    ['foo', { async: true }],
-    ['@boost/renderer-bar', {}, { priority: 1 }],
-    '@scope/boost-renderer-baz',
-  ],
+  renderers: {
+    foo: { async: true },
+    '@boost/renderer-bar': {},
+    '@scope/boost-renderer-baz': true,
+  },
 };
 ```
 
