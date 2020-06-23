@@ -10,11 +10,13 @@ yarn add @boost/plugin
 
 ## Events
 
-| Event                   | Arguments        | Description                                                 |
-| ----------------------- | ---------------- | ----------------------------------------------------------- |
-| `Registry#onLoad`       | `string, object` | Called after a plugin is loaded but before it's registered. |
-| `Registry#onRegister`   | `Plugin`         | Called after a plugin is registered.                        |
-| `Registry#onUnregister` | `Plugin`         | Called before a plugin is unregistered.                     |
+| Event                         | Arguments        | Description                                                           |
+| ----------------------------- | ---------------- | --------------------------------------------------------------------- |
+| `Registry#onAfterRegister`    | `Plugin`         | Called after a plugin is registered.                                  |
+| `Registry#onAfterUnregister`  | `Plugin`         | Called after a plugin is unregistered.                                |
+| `Registry#onBeforeRegister`   | `Plugin`         | Called before a plugin is registered and the `startup` life-cycle.    |
+| `Registry#onBeforeUnregister` | `Plugin`         | Called before a plugin is unregistered and the `shutdown` life-cycle. |
+| `Registry#onLoad`             | `string, object` | Called after a plugin is loaded but before it's registered.           |
 
 ## Usage
 

@@ -23,14 +23,20 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 > {
   readonly debug: Debugger;
 
-  // Emits after a plugin is loaded but before its registered
-  readonly onLoad = new Event<[string, object]>('load');
-
   // Emits after a plugin is registered
-  readonly onRegister = new Event<[Plugin]>('register');
+  readonly onAfterRegister = new Event<[Plugin]>('after-register');
+
+  // Emits after a plugin is unregistered
+  readonly onAfterUnregister = new Event<[Plugin]>('after-unregister');
+
+  // Emits before a plugin is registered
+  readonly onBeforeRegister = new Event<[Plugin]>('before-register');
 
   // Emits before a plugin is unregistered
-  readonly onUnregister = new Event<[Plugin]>('unregister');
+  readonly onBeforeUnregister = new Event<[Plugin]>('before-unregister');
+
+  // Emits after a plugin is loaded but before its registered
+  readonly onLoad = new Event<[string, object]>('load');
 
   readonly pluralName: string;
 
@@ -197,6 +203,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.debug('Registering plugin "%s" with defined tool and triggering startup', name);
 
+    this.onBeforeRegister.emit([plugin]);
+
     await this.triggerStartup(plugin, tool);
 
     this.plugins.push({
@@ -209,7 +217,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.plugins.sort((a, b) => a.priority! - b.priority!);
 
-    this.onRegister.emit([plugin]);
+    this.onAfterRegister.emit([plugin]);
 
     debug('Plugin "%s" registered', plugin.name || name);
 
@@ -222,13 +230,15 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   async unregister(name: ModuleName, tool?: Tool): Promise<Plugin> {
     const plugin = this.get(name);
 
-    this.onUnregister.emit([plugin]);
+    this.onBeforeUnregister.emit([plugin]);
 
     this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
 
     await this.triggerShutdown(plugin, tool);
 
     this.plugins = this.plugins.filter((container) => !this.isMatchingName(container, name));
+
+    this.onAfterUnregister.emit([plugin]);
 
     debug('Plugin "%s" unregistered', plugin.name || name);
 
