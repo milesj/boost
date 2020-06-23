@@ -23,7 +23,7 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
 
     debug('Running %d as a waterfall', work.length);
 
-    this.onRun.emit([value]);
+    this.onBeforeRun.emit([value]);
 
     for (const unit of work) {
       this.onRunWorkUnit.emit([unit, value]);
@@ -31,7 +31,7 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
       value = await unit.run(this.context, value);
     }
 
-    this.onFinish.emit([]);
+    this.onAfterRun.emit([]);
 
     return value;
   }

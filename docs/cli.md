@@ -21,6 +21,7 @@ yarn add @boost/cli react
 | `Program#onCommandFound`                               | `argv: Argv, path: CommandPath, command: Commadable` | Called when a command has been found after parsing argv.                   |
 | `Program#onCommandNotFound`                            | `argv: Argv, path: CommandPath`                      | Called when a command wasn't found after parsing argv.                     |
 | `Program#onExit`                                       | `message: string, code: number`                      | Called when the `exit()` handler is executed but before the process exits. |
+| `Program#onHelp`                                       | `CommandPath?`                                       | Called when the help menu is rendered.                                     |
 
 ## Usage
 

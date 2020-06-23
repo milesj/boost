@@ -21,7 +21,7 @@ export default class ConcurrentPipeline<
 
     debug('Running %d in parallel', work.length);
 
-    this.onRun.emit([value]);
+    this.onBeforeRun.emit([value]);
 
     const result = await Promise.all(
       work.map((unit) => {
@@ -31,7 +31,7 @@ export default class ConcurrentPipeline<
       }),
     );
 
-    this.onFinish.emit([]);
+    this.onAfterRun.emit([]);
 
     return result;
   }
