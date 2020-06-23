@@ -22,7 +22,7 @@ export default class AggregatedPipeline<
 
     debug('Running %d as an aggregate', work.length);
 
-    this.onRun.emit([value]);
+    this.onBeforeRun.emit([value]);
 
     const result = await Promise.all(
       work.map((unit) => {
@@ -32,7 +32,7 @@ export default class AggregatedPipeline<
       }),
     ).then((responses) => this.aggregateResult(responses));
 
-    this.onFinish.emit([]);
+    this.onAfterRun.emit([]);
 
     return result;
   }
