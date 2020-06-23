@@ -2,7 +2,7 @@
   "name": "@boost/pipeline",
   "version": "2.0.0-alpha.0",
   "release": "1592788092197",
-  "description": "Pipe an input through a series of type-safe routines and tasks to produce an output, or simply, run logic in a series of stages.",
+  "description": "Pipe an input through a series of routines and tasks to produce an output, or simply, run logic in a series of stages.",
   "keywords": [
     "boost",
     "pipeline",

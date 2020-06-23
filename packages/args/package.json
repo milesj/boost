@@ -2,7 +2,7 @@
   "name": "@boost/args",
   "version": "2.0.0-alpha.0",
   "release": "1592788092197",
-  "description": "A type-safe and convention based argument parsing library, with strict validation checks.",
+  "description": "A convention based argument parsing and formatting library, with strict validation checks.",
   "keywords": [
     "boost",
     "argv",
