@@ -99,8 +99,8 @@ describe('AggregatedPipeline', () => {
     const runSpy = jest.fn();
     const finSpy = jest.fn();
 
-    pipeline.onRun.listen(runSpy);
-    pipeline.onFinish.listen(finSpy);
+    pipeline.onBeforeRun.listen(runSpy);
+    pipeline.onAfterRun.listen(finSpy);
 
     await pipeline.run();
 
