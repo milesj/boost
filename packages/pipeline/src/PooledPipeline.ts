@@ -43,7 +43,7 @@ export default class PooledPipeline<
   async run(): Promise<AggregatedResult<Output>> {
     debug('Running %d as a pool', this.work.length);
 
-    this.onRun.emit([this.value]);
+    this.onBeforeRun.emit([this.value]);
 
     const result = await new Promise<AggregatedResult<Output>>((resolve) => {
       if (this.work.length === 0) {
@@ -62,7 +62,7 @@ export default class PooledPipeline<
       );
     });
 
-    this.onFinish.emit([]);
+    this.onAfterRun.emit([]);
 
     return result;
   }
