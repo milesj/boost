@@ -13,7 +13,7 @@ import {
   Pluggable,
   Registration,
   Setting,
-  PluginOptions,
+  RegisterOptions,
   Callback,
 } from './types';
 import { DEFAULT_PRIORITY } from './constants';
@@ -24,7 +24,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   readonly debug: Debugger;
 
   // Emits after a plugin is loaded but before its registered
-  readonly onLoad = new Event<[Setting<Plugin>, object?]>('load');
+  readonly onLoad = new Event<[string, object]>('load');
 
   // Emits after a plugin is registered
   readonly onRegister = new Event<[Plugin]>('register');
@@ -107,57 +107,58 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   }
 
   /**
-   * Load and register a single plugin based on a setting. The possible setting variants are:
-   *
-   * - If a string, will load based on module name or file path.
-   * - If an array, the 1st item will be considered the module name or file path,
-   *    and the 2nd item an options object that will be passed to the factory function.
-   *    A 3rd object can be provided to customize priority.
-   * - If an object or class instance, will assume to be the plugin itself.
+   * Load and register a single plugin by name, or with an explicit instance.
    */
-  async load(setting: Setting<Plugin>, options?: object, tool?: Tool): Promise<Plugin> {
-    const opts: PluginOptions = {};
+  async load(
+    name: ModuleName | Plugin,
+    params: object = {},
+    options: RegisterOptions<Tool> = {},
+  ): Promise<Plugin> {
     let plugin: Plugin;
 
-    // Module name
-    if (typeof setting === 'string') {
-      plugin = await this.loader.load(setting, options);
+    // Plugin instance
+    if (isObject(name)) {
+      plugin = name;
 
-      // Module name with options
-    } else if (Array.isArray(setting)) {
-      plugin = await this.loader.load(setting[0], setting[1] || options);
-
-      if (isObject(setting[2])) {
-        Object.assign(opts, setting[2]);
+      if (plugin.priority) {
+        // eslint-disable-next-line no-param-reassign
+        options.priority = plugin.priority;
       }
 
-      // Plugin directly
-    } else if (isObject<Plugin>(setting)) {
-      if (setting.name) {
-        plugin = setting;
+      // Options object
+    } else if (typeof name === 'string') {
+      plugin = await this.loader.load(name, params);
 
-        if (setting.priority) {
-          opts.priority = setting.priority;
-        }
-      } else {
-        throw new PluginError('PLUGIN_REQUIRED_NAME');
-      }
+      this.onLoad.emit([name, params]);
 
       // Unknown setting
     } else {
-      throw new PluginError('SETTING_UNKNOWN', [setting]);
+      throw new PluginError('SETTING_UNKNOWN', [name]);
     }
 
-    this.onLoad.emit([setting, options]);
+    if (!plugin.name) {
+      throw new PluginError('PLUGIN_REQUIRED_NAME');
+    }
 
-    return this.register(plugin.name, plugin, tool, opts);
+    return this.register(plugin.name, plugin, options.tool, options);
   }
 
   /**
    * Load and register multiple plugins based on a list of settings.
    */
-  async loadMany(settings: Setting<Plugin>[], tool?: Tool): Promise<Plugin[]> {
-    return Promise.all(settings.map((setting) => this.load(setting, {}, tool)));
+  async loadMany(
+    settings: (ModuleName | Plugin)[] | Setting,
+    options: RegisterOptions<Tool> = {},
+  ): Promise<Plugin[]> {
+    if (Array.isArray(settings)) {
+      return Promise.all(settings.map((setting) => this.load(setting, {}, options)));
+    }
+
+    return Promise.all(
+      Object.entries(settings)
+        .filter(([name, setting]) => setting !== false && setting !== undefined)
+        .map(([name, setting]) => this.load(name, isObject(setting) ? setting : {}, options)),
+    );
   }
 
   /**
@@ -179,8 +180,8 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
   async register(
     name: ModuleName,
     plugin: Plugin,
-    tool?: Tool,
-    options?: PluginOptions,
+    tool: Tool | undefined = undefined,
+    { priority }: RegisterOptions<Tool> = {},
   ): Promise<Plugin> {
     if (!name.match(MODULE_NAME_PATTERN)) {
       throw new PluginError('MODULE_NAME_INVALID', [this.pluralName]);
@@ -199,10 +200,9 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     await this.triggerStartup(plugin, tool);
 
     this.plugins.push({
-      priority: DEFAULT_PRIORITY,
-      ...options,
       name,
       plugin,
+      priority: priority ?? DEFAULT_PRIORITY,
     });
 
     this.debug('Sorting plugins by priority');

@@ -1,7 +1,14 @@
 /* eslint-disable security/detect-non-literal-regexp */
 
 import path from 'path';
-import { PathResolver, requireModule, ModuleName, isObject, MODULE_NAME_PART } from '@boost/common';
+import {
+  PathResolver,
+  requireModule,
+  ModuleName,
+  isObject,
+  isFilePath,
+  MODULE_NAME_PART,
+} from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { Pluggable, Factory } from './types';
@@ -23,6 +30,7 @@ export default class Loader<Plugin extends Pluggable> {
    * Create a path resolver that will attempt to find a plugin at a defined Node module,
    * based on a list of acceptable plugin module name patterns.
    */
+  // eslint-disable-next-line complexity
   createResolver(name: ModuleName): PathResolver {
     const resolver = new PathResolver();
     const { singularName: typeName, projectName } = this.registry;
@@ -33,7 +41,7 @@ export default class Loader<Plugin extends Pluggable> {
     this.debug('Resolving possible %s modules', color.symbol(typeName));
 
     // Absolute or relative file path
-    if (path.isAbsolute(name) || name.charAt(0) === '.') {
+    if (isFilePath(name) && (path.isAbsolute(name) || name.charAt(0) === '.')) {
       this.debug('Found a file path: %s', color.filePath(name));
 
       resolver.lookupFilePath(name);
