@@ -1,8 +1,8 @@
-# 🚀 Boost v2
+# 🚀 Boost
 
 [![Build Status](https://github.com/milesj/boost/workflows/Build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
-[![npm version](https://badge.fury.io/js/%40boost%2Fcore.svg)](https://www.npmjs.com/package/@boost/core)
-[![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/core)](https://www.npmjs.com/package/@boost/core)
+[![npm version](https://badge.fury.io/js/%40boost%2Fcommon.svg)](https://www.npmjs.com/package/@boost/common)
+[![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/common)](https://www.npmjs.com/package/@boost/common)
 
 A cross-platform framework for building robust Node.js command line applications and developer
 tools.
@@ -19,7 +19,7 @@ tools.
 
 ## Requirements
 
-- Node 10.10+
+- Node 10.17+
 
 ## Documentation
 
