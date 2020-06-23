@@ -10,8 +10,6 @@ export default function loadTheme(): ThemePalette {
   const theme = env('CLI_THEME') ?? '';
   let palette = loadedThemes.get(theme);
 
-  console.log({ theme, palette });
-
   if (style.level >= 2 && !palette && !!theme) {
     try {
       palette = requireModule(`@boost/theme-${theme}`);

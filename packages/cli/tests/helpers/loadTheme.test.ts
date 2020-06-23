@@ -1,32 +1,6 @@
 import { env } from '@boost/internal';
 import loadTheme from '../../src/helpers/loadTheme';
 
-jest.mock(
-  '@boost/theme-foo',
-  () => ({
-    default: 'white',
-    failure: 'white',
-    inverted: 'white',
-    muted: 'white',
-    success: 'white',
-    warning: 'white',
-  }),
-  { virtual: true },
-);
-
-jest.mock(
-  '@boost/theme-bar',
-  () => ({
-    default: 'black',
-    failure: 'black',
-    inverted: 'black',
-    muted: 'black',
-    success: 'black',
-    warning: 'black',
-  }),
-  { virtual: true },
-);
-
 describe('loadTheme()', () => {
   beforeEach(() => {
     delete process.env.BOOSTJS_CLI_THEME;
@@ -44,28 +18,28 @@ describe('loadTheme()', () => {
   });
 
   it('loads from `@boost` scope', () => {
-    env('CLI_THEME', 'foo');
+    env('CLI_THEME', 'test-private');
 
     expect(loadTheme()).toEqual({
-      default: 'white',
-      failure: 'white',
-      inverted: 'white',
-      muted: 'white',
-      success: 'white',
-      warning: 'white',
+      default: 'private',
+      failure: 'private',
+      inverted: 'private',
+      muted: 'private',
+      success: 'private',
+      warning: 'private',
     });
   });
 
   it('loads from `boost` scope', () => {
-    env('CLI_THEME', 'bar');
+    env('CLI_THEME', 'test-public');
 
     expect(loadTheme()).toEqual({
-      default: 'black',
-      failure: 'black',
-      inverted: 'black',
-      muted: 'black',
-      success: 'black',
-      warning: 'black',
+      default: 'public',
+      failure: 'public',
+      inverted: 'public',
+      muted: 'public',
+      success: 'public',
+      warning: 'public',
     });
   });
 
