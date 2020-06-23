@@ -9,7 +9,7 @@ provide additional functionality.
 yarn add @boost/debug
 ```
 
-## Environment Variables
+## Environment variables
 
 - `BOOSTJS_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix for all debugger namespaces when created
   with `createDebugger()`. Is commonly set by a command line application or Boost `Tool` instance.
@@ -45,7 +45,7 @@ debug('Name: %s %s', user.first_name, user.last_name);
 debug('Object: %O', data);
 ```
 
-### Invariant Messages
+### Invariant messages
 
 Invariant debugging logs either a success or a failure message, depending on the truthy evaluation
 of a condition. This can be achieved with
@@ -56,7 +56,7 @@ requires the condition to evaluate, a message to always display, and a success a
 debug.invariant(fs.existsSync(filePath), 'Does file exist?', 'Yes!', 'No');
 ```
 
-### Verbose Output
+### Verbose output
 
 Debug messages are already hidden behind the `DEBUG` environment variable, but Boost takes it a step
 further to support verbose debugging. Messages logged with
@@ -73,7 +73,7 @@ process.env.BOOSTJS_DEBUG_VERBOSE = 'true';
 debug.verbose('We need extra information (again)');
 ```
 
-### Silencing Output
+### Silencing output
 
 By default, all logged messages are immediately written when `DEBUG` contains the debugger
 namespace. To silence output for a specific debugger, call the `debugger.disable()` function, and to
@@ -88,7 +88,7 @@ debug('Something is broken!');
 
 > Messages that are logged while silenced are _lost_ and are _not_ buffered.
 
-## Test Utilities
+## Test utilities
 
 The following [Jest](https://github.com/facebook/jest) utilities are available in the
 `@boost/debug/lib/testing` module.

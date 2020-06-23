@@ -1,4 +1,4 @@
-# Common Utilities
+# Common utilities
 
 A collection of common utilities and helpers for general purpose or Boost powered applications.
 

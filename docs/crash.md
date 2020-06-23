@@ -1,4 +1,4 @@
-# Crash Reporting
+# Crash reporting
 
 Report important environmental information when an error occurs or a process crashes.
 

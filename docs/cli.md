@@ -78,7 +78,7 @@ the exit code to `process.exitCode`. Both methods require an argv list to run.
 program.runAndExit(process.argv);
 ```
 
-#### Package Integration
+#### Package integration
 
 Now that you have the basics of a program, you can set the
 [bin](https://docs.npmjs.com/files/package.json#bin) field in your `package.json`. This should point
@@ -398,7 +398,7 @@ export default class CustomCommand extends Command<CustomOptions> {
 
 ![Options example](./images/cli/options.png)
 
-##### Unknown Options
+##### Unknown options
 
 By default, unknown options are not allowed and will throw an error. To allow, set the
 `allowUnknownOptions` [configuration setting](#config) to true. When enabled, all unknown options
@@ -419,7 +419,7 @@ export default class CustomCommand extends Command<GlobalOptions> {
 
 ![Unknown option example](./images/cli/unknown-option.png)
 
-##### Global Options
+##### Global options
 
 Boost provides the follow options that are always available to all commands.
 
@@ -510,7 +510,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
 ![Params example](./images/cli/params.png)
 
-##### Variadic Params
+##### Variadic params
 
 By default, variadic params are not enabled and will throw an error when an unconfigured param is
 found. To allow, set the `allowVariadicParams` [configuration setting](#config) to true. When
@@ -538,7 +538,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
 ![Variadic params example](./images/cli/variadic-params.png)
 
-#### Rest Arguments
+#### Rest arguments
 
 [Rest arguments](./args.md#rest) are all arguments that come after a standalone `--` delimiter, and
 can be accessed using the `Command#rest` property, which is an array of strings.
@@ -578,7 +578,7 @@ Sub-commands can now be executed on the command line by passing their full path,
 
 ![Sub-commands example](./images/cli/subcommands.png)
 
-#### Rendering Components
+#### Rendering components
 
 This chapter assumes you have knowledge of [React][react], JSX/TSX, and [Ink][ink]. If you do not,
 it's highly encouraged to study those topics, but React is not necessarily a requirement (can use
@@ -650,7 +650,7 @@ While React is rendering, all logs, either through the CLI [logger](#logging) or
 logs will be written to the terminal. This is necessary so that logs do not interrupt or tear the
 rendering loop.
 
-### Shorthand Commands
+### Shorthand commands
 
 Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
 commands, where only objects and functions are used. To utilize shorthand commands, call either the
@@ -861,7 +861,7 @@ import { Box } from '@boost/cli';
 <Box padding={1}>Loading data...</Box>;
 ```
 
-### Style
+### `Style`
 
 The `Style` component is special in that it renders and applies colors based on the
 [chosen theme](#themes). It accomplishes this through the `type` prop, which accepts one of the
@@ -885,7 +885,7 @@ Furthermore, it also supports text styling similar to Ink's `Text` component. Th
 > It's highly encouraged to use this component for all color based styling, so that consumers can
 > always use their chosen theme!
 
-### Header
+### `Header`
 
 The `Header` component is simply that, a header! It renders an inverted background, with bold and
 uppercased text, and appropriate margins. It's what the [help](#help) and [failure](#failure) menus
@@ -899,7 +899,7 @@ import { Header } from '@boost/cli';
 
 Headers can also be [styled](#style) by providing a `type` prop, which will color the background.
 
-### Help
+### `Help`
 
 The `Help` component can be used to render elegant command usage and help menus. It's a very complex
 component that supports everything from command metadata to variadic params, all through the
@@ -929,7 +929,7 @@ import { Help } from '@boost/cli';
 />;
 ```
 
-### Failure
+### `Failure`
 
 The `Failure` component can be used to render a beautiful failure menu, for an error and its stack
 trace. The `error` prop must be provided with an `Error` instance. An optional `warnings` prop can
@@ -941,7 +941,7 @@ import { Failure } from '@boost/cli';
 <Failure error={new Error('Something is broken!')} />;
 ```
 
-## Test Utilities
+## Test utilities
 
 The following [Jest](https://github.com/facebook/jest) utilities are available in the
 `@boost/cli/lib/testing` module.

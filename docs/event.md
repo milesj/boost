@@ -41,7 +41,7 @@ new Event<[object, boolean, string?]>('baz');
 new Event<unknown[]>('foo');
 ```
 
-### Registering Listeners
+### Registering listeners
 
 Listeners are simply functions that can be registered to an event using `Event#listen`. The same
 listener function reference will only be registered once.
@@ -57,7 +57,7 @@ times the event has been emitted.
 event.once(listener);
 ```
 
-### Unregistering Listeners
+### Unregistering listeners
 
 A listener can be unregistered from an event using `Event#unlisten`. The same listener reference
 used to register must also be used for unregistering.
@@ -66,7 +66,7 @@ used to register must also be used for unregistering.
 event.unlisten(listener);
 ```
 
-### Emitting Events
+### Emitting events
 
 Emitting is the concept of executing all registered listeners with a set of arguments. This can be
 achieved through the `Event#emit` method, which requires an array of values to pass to each listener
@@ -102,7 +102,7 @@ strings are allowed.
 new Event<[number], 'foo' | 'bar' | 'baz'>('event');
 ```
 
-## Event Types
+## Event types
 
 There are 4 types of events that can be instantiated and emitted.
 

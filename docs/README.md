@@ -1,7 +1,7 @@
 # Boost
 
-A cross-platform framework for building robust Node.js command line applications and developer
-tools.
+A collection of type-safe cross-platform packages for building robust Node.js based applications,
+packages, and tools.
 
 ## Requirements
 
