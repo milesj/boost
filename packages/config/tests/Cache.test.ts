@@ -14,7 +14,7 @@ describe('Cache', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(cache, 'loadStats')
+        .spyOn(fs.promises, 'stat')
         .mockImplementation(() =>
           Promise.resolve(({ mtimeMs: statMtime || 100 } as unknown) as fs.Stats),
         );
