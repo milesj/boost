@@ -8,6 +8,11 @@ A type-safe and interactive command line program, powered by [React][react] and 
 yarn add @boost/cli react ink
 ```
 
+## Environment Variables
+
+- `BOOSTJS_CLI_THEME` (`string`) - Name of the theme module (without `@boost` or `boost` prefixes)
+  to load for terminal style/color changes.
+
 ## Events
 
 | Event                                                  | Arguments                                            | Description                                                                |
@@ -840,7 +845,16 @@ function CustomComponent() {
 
 ### Themes
 
-Themes are a feature that will be enabled in v2. Please come back soon!
+Themes allow consumers to alter the color of text and backgrounds for elements rendered with the
+`Style` component. Themes are simply NPM modules that return an object of hexcodes, and can be
+enabled by defining the `BOOSTJS_CLI_THEME` environment variable.
+
+```bash
+BOOSTJS_CLI_THEME=nyan <program>
+```
+
+When defining a theme, we'll attempt to load from `@boost/theme-<name>` or `boost-theme-<name>`,
+otherwise we throw an error. Third-party modules are currently not supported.
 
 ## Components
 

@@ -1,34 +1,30 @@
-// import { requireModule } from '@boost/common';
-// import { env } from '@boost/internal';
-// import { style } from '@boost/terminal';
+import { requireModule } from '@boost/common';
+import { env } from '@boost/internal';
+import { style } from '@boost/terminal';
 import { ThemePalette } from '../types';
+import CLIError from '../CLIError';
 
-// const THEME = env('THEME') ?? '';
-// const loadedThemes = new Map<string, ThemePalette>();
+const loadedThemes = new Map<string, ThemePalette>();
 
-// TODO enable in v2
 export default function loadTheme(): ThemePalette {
-  // const palette = loadedThemes.get(THEME);
+  const theme = env('CLI_THEME') ?? '';
+  let palette = loadedThemes.get(theme);
 
-  // if (palette) {
-  //   return palette;
-  // }
+  if (style.level >= 2 && !palette && !!theme) {
+    try {
+      palette = requireModule(`@boost/theme-${theme}`);
+    } catch {
+      try {
+        palette = requireModule(`boost-theme-${theme}`);
+      } catch {
+        throw new CLIError('THEME_UNKNOWN', [theme, theme]);
+      }
+    }
 
-  // if (style.level >= 2 && !!THEME) {
-  //   try {
-  //     palette = requireModule(`@boost/theme-${THEME}`);
-  //   } catch {
-  //     try {
-  //       palette = requireModule(`boost-theme-${THEME}`);
-  //     } catch {
-  //       throw new Error(
-  //         `Theme could not be loaded. Attempted \`@boost/theme-${THEME}\` and \`boost-theme-${THEME}\`.`,
-  //       );
-  //     }
-  //   }
-
-  //   loadedThemes.set(THEME, palette!);
-  // }
+    if (palette) {
+      loadedThemes.set(theme, palette);
+    }
+  }
 
   return {
     default: 'white',
@@ -37,5 +33,6 @@ export default function loadTheme(): ThemePalette {
     muted: 'gray',
     success: 'green',
     warning: 'yellow',
+    ...palette,
   };
 }

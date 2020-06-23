@@ -17,6 +17,7 @@ const errors = {
   PARAMS_RUN_ONLY: 'Parameters must be defined on the `run()` method.',
   REACT_RENDER_NO_NESTED:
     'A React render process already exists. Unable to render current command. This usually occurs by triggering nested program calls.',
+  THEME_UNKNOWN: 'Theme could not be loaded. Attempted `@boost/theme-%s` and `boost-theme-%s`.',
 };
 
 export type CLIErrorCode = keyof typeof errors;

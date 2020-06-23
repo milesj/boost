@@ -4,6 +4,7 @@ import { PrimitiveType, ArgList } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
 import CLIError from './CLIError';
+import createProxyCommand from './helpers/createProxyCommand';
 import {
   CommandMetadata,
   CommandPath,
@@ -11,7 +12,6 @@ import {
   ProxyCommandConfig,
   ProxyCommandRunner,
 } from './types';
-import createProxyCommand from './helpers/createProxyCommand';
 
 export default abstract class CommandManager<Options extends object = {}> extends Contract<
   Options
