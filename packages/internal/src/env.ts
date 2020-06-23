@@ -16,6 +16,5 @@ export default function env<T extends string = string>(
     return value;
   }
 
-  // TODO: Remove fallback in v2
-  return (process.env[name] || process.env[`BOOST_${key}`]) as T;
+  return process.env[name] as T;
 }
