@@ -427,11 +427,23 @@ describe('Registry', () => {
       expect(registry.plugins).toEqual([result]);
     });
 
-    it('emits `onRegister` event', async () => {
+    it('emits `onBeforeRegister` event', async () => {
       const plugin = new Renderer();
       const spy = jest.fn();
 
-      registry.onRegister.listen(spy);
+      registry.onBeforeRegister.listen(spy);
+
+      await registry.register('foo', plugin, tool);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(plugin);
+    });
+
+    it('emits `onAfterRegister` event', async () => {
+      const plugin = new Renderer();
+      const spy = jest.fn();
+
+      registry.onAfterRegister.listen(spy);
 
       await registry.register('foo', plugin, tool);
 
@@ -481,10 +493,21 @@ describe('Registry', () => {
       expect(registry.plugins).toEqual([]);
     });
 
-    it('emits `onUnregister` event', async () => {
+    it('emits `onAfterUnregister` event', async () => {
       const spy = jest.fn();
 
-      registry.onUnregister.listen(spy);
+      registry.onAfterUnregister.listen(spy);
+
+      await registry.unregister('foo');
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(new Renderer());
+    });
+
+    it('emits `onBeforeUnregister` event', async () => {
+      const spy = jest.fn();
+
+      registry.onBeforeUnregister.listen(spy);
 
       await registry.unregister('foo');
 
