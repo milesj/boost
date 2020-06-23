@@ -1,10 +1,6 @@
-import { ModuleName, FilePath } from '@boost/common';
+import { ModuleName } from '@boost/common';
 
 export type Callback<T = unknown> = (value: T) => void | Promise<void>;
-
-export interface PluginOptions {
-  priority?: number;
-}
 
 export interface Pluggable<T = unknown> {
   name: ModuleName;
@@ -13,17 +9,20 @@ export interface Pluggable<T = unknown> {
   startup?: Callback<T>;
 }
 
-export type Setting<T extends Pluggable> =
-  | ModuleName
-  | FilePath
-  | [ModuleName | FilePath, object, PluginOptions?]
-  | T;
+export interface Setting {
+  [name: string]: boolean | object;
+}
 
 export type Factory<T extends Pluggable, O extends object = object> = (
   options: Partial<O>,
 ) => T | Promise<T>;
 
-export interface Registration<T extends Pluggable> extends PluginOptions {
+export interface RegisterOptions<T = unknown> {
+  priority?: number;
+  tool?: T;
+}
+
+export interface Registration<T extends Pluggable> extends RegisterOptions {
   name: ModuleName;
   plugin: T;
 }
