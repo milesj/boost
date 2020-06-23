@@ -35,7 +35,7 @@ The following methods are available on the class instance. The `PortablePath` ty
   "from" path to the defined "to" path.
 - `toString(): FilePath` - Return the current path as a normalized string.
 
-## Resolved Paths
+## Resolved paths
 
 By default, the `Path` class operates on the defined path parts as-is. If you would prefer to
 operate against real or resolved paths, use the `Path#realPath()` and `Path#resolve()` methods
@@ -48,7 +48,7 @@ path.path(); // Possibly inaccurate
 path.resolve().path(); // Resolved accurately
 ```
 
-## Static Factories
+## Static factories
 
 The static `Path.create()` and `Path.resolve()` methods can be used to factory a `Path` instance
 from a string or an existing instance. Especially useful when used in combination with the

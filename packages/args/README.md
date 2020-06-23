@@ -1,10 +1,10 @@
-# Boost Args
+# Args - Boost
 
 [![Build Status](https://travis-ci.org/milesj/boost.svg?branch=master)](https://travis-ci.org/milesj/boost)
 [![npm version](https://badge.fury.io/js/%40boost%args.svg)](https://www.npmjs.com/package/@boost/args)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/args)](https://www.npmjs.com/package/@boost/args)
 
-A type-safe and convention based argument parsing library, with strict validation checks. It _is
+A convention based argument parsing and formatting library, with strict validation checks. It _is
 not_ a command line interface.
 
 ```ts

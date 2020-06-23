@@ -57,7 +57,7 @@ adapter.configure((prevOptions) => ({
 }));
 ```
 
-## Required Options
+## Required options
 
 By default, the options argument in the constructor is optional, and if your interface has a
 required property, it will not be bubbled up in TypeScript. To support this, the constructor will

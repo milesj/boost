@@ -1,13 +1,13 @@
 # Summary
 
-- [Args Parsing](./args.md)
+- [Args parsing](./args.md)
 - [CLIs](./cli.md)
-- [Common Utilities](./common.md)
-- [Crash Reporting](./crash.md)
+- [Common utilities](./common.md)
+- [Crash reporting](./crash.md)
 - [Debugging](./debug.md)
 - [Events](./event.md)
 - [Logging](./log.md)
 - [Pipelines](./pipeline.md)
 - [Plugins](./plugin.md)
-- [Terminal Utilities](./terminal.md)
+- [Terminal utilities](./terminal.md)
 - [Translations](./translate.md)

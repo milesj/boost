@@ -2,7 +2,7 @@
   "name": "@boost/plugin",
   "version": "2.0.0-alpha.0",
   "release": "1592788092197",
-  "description": "Plugin based architecture that supports module loading, custom types, scopes, and more.",
+  "description": "Plugin based architecture that supports module loading, custom types, registries, scopes, and more.",
   "keywords": [
     "boost",
     "plugin",

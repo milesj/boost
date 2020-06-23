@@ -1,4 +1,4 @@
-# Args Parsing
+# Args parsing
 
 A type-safe and convention based argument parsing library, with strict validation checks.
 
@@ -161,7 +161,7 @@ supported on the command line.
 > slot of `parse()`. If not provided, it defaults to `object`. It's highly encouraged to type
 > options correctly.
 
-#### Single Value
+#### Single value
 
 A value can be passed as either an additional argument separated by a space, like `--option value`
 (preferred), or with an equals sign and no space (also known as an inline value), like
@@ -170,7 +170,7 @@ A value can be passed as either an additional argument separated by a space, lik
 If you are passing a string that contains spaces or special characters, you must wrap the value in
 double quotes. For example, `--option "long value"` or `--option="long value"`.
 
-#### Multiple Values
+#### Multiple values
 
 To pass multiple values for an option, the `multiple` setting must be enabled (numbers and strings
 only), and if using TypeScript, the option type must be a typed array.
@@ -195,7 +195,7 @@ Otherwise, each value can be passed as a standalone argument, like `--option foo
 using this approach, all values will be captured until another option is passed, or the end of the
 list is met.
 
-#### Unknown Options
+#### Unknown options
 
 If an option is passed to `parse()` that is not configured in the `options` settings object, it will
 be [logged as a parse error](#validation-checks) unless the `unknown` setting is set to true. When
@@ -288,7 +288,7 @@ item configuring the corresponding position/index (hence the name positional arg
 > When using TypeScript, the expected type of each param is defined as a tuple in the 2nd generic
 > slot of `parse()`. If not provided, it defaults to `string[]`.
 
-#### Variadic Params
+#### Variadic params
 
 By default the parser enables variadic params, which means that any argument that does not match a
 command or option, is considered a param (string only), and is appended to the end of the params
@@ -347,9 +347,9 @@ args.params; // ['foo', 'bar']
 args.rest; // ['baz']
 ```
 
-## Advanced Features
+## Advanced features
 
-### Short Option Groups
+### Short option groups
 
 Short options support a shortcut known as a short option group, where multiple short option names
 can be placed under a single leading `-`. For example, instead of passing `-a -b -c`, you can pass
@@ -359,7 +359,7 @@ can be placed under a single leading `-`. For example, instead of passing `-a -b
 When passing flags within a group, it will mark the value as `true`. Flag negation is not supported
 within a group.
 
-### Counter Options
+### Counter options
 
 Counters are a `number` option only feature, where each occurence of the option in a short option
 group will increment the option's value (starting from the `default` value). For example, passing
@@ -385,7 +385,7 @@ const args = parse<{ verbose: number }>(argv, {
 args.options.verbose; // 3
 ```
 
-### Choice Options
+### Choice options
 
 For scenarios where you want to only accept an option value from a pre-defined list of choices, the
 `choices` setting can be used (single number/string values only). If an unsupported value is
@@ -410,7 +410,7 @@ args.options.modules; // 'umd'
 > TypeScript doesn't handle the mapping of unions very well, so we need to `as` the `choices`
 > setting. This isn't necessary when using a non-union.
 
-### Arity Requirements
+### Arity requirements
 
 Another scenario may require an exact number of [option values](#multiple-values), otherwise an
 error is thrown. This feature is known as arity (like function argument arity), and can be enabled
@@ -434,7 +434,7 @@ args.options.colors; // ['red', 'blue', 'green']
 
 > Arity will not error when 0 values are passed. To control this logic, use the `validate` setting.
 
-### Type Casting
+### Type casting
 
 While option and param values are configured as `boolean`, `number`, or `string` types, arguments
 passed on the command line are always strings. Because of this, the parser will type cast all
@@ -450,7 +450,7 @@ input provided.
 - Strings are used as-is. Values with spaces or special characters should be wrapped in double
   quotes.
 
-### Validation Checks
+### Validation checks
 
 For improved interoperability and usability, the parser is strict, logging the following parse and
 validation errors.
@@ -473,7 +473,7 @@ An error has occurred:
 
 ```
 
-### Formatting Args
+### Formatting args
 
 If for some reason you need to format the args result from `parse()` back into an array of string
 arguments, the `format()` function can be used. This function will use the values as is and does not
@@ -492,7 +492,7 @@ const argv = format({
 });
 ```
 
-### Command & Option Categories
+### Command & option categories
 
 While purely an informational feature, as it doesn't pertain to the parser, both commands and
 options can be define a category. This category can be used within a consumer to group and organize
@@ -512,7 +512,7 @@ const args = parse<{ color: string }>(argv, {
 
 > Command categories only pertain to the `Command` interface type.
 
-## Contextual Parsing
+## Contextual parsing
 
 While the above is straight forward (I hope so), it doesn't leave much room for customization. What
 if we want different options based on the command passed? Or different params? Or how to handle

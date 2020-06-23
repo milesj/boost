@@ -1,4 +1,4 @@
-# Terminal Utilities
+# Terminal utilities
 
 A collection of utilities for managing and interacting with a terminal.
 
