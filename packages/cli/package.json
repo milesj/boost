@@ -2,7 +2,7 @@
   "name": "@boost/cli",
   "version": "2.0.0-alpha.0",
   "release": "1592788092197",
-  "description": "A type-safe and interactive command line program, built on React and Ink.",
+  "description": "An interactive command line program builder, powered by React and Ink.",
   "keywords": [
     "boost",
     "args",

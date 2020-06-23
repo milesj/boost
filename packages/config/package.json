@@ -2,7 +2,7 @@
   "name": "@boost/config",
   "version": "2.0.0-alpha.0",
   "release": "1592788092197",
-  "description": "Powerful configuration file builder and loader, with contexual settings.",
+  "description": "Powerful config file and ignore file manager, finder, and loader.",
   "keywords": [
     "boost",
     "config",

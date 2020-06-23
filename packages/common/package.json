@@ -2,7 +2,7 @@
   "name": "@boost/common",
   "version": "2.0.0-alpha.0",
   "release": "1592788092197",
-  "description": "Common utilities for Boost applications.",
+  "description": "Common utilities.",
   "keywords": [
     "boost",
     "common",
