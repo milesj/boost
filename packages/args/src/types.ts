@@ -133,6 +133,7 @@ export type InferArgType<T> = T extends boolean
 
 export interface Arg<T> extends Config {
   default?: T;
+  format?: ((value: T) => T) | null;
   type: InferArgType<T>;
   validate?: ((value: T) => void) | null;
 }
@@ -154,7 +155,7 @@ export interface MultipleOption<T extends ListType> extends Option<T> {
   multiple: true;
 }
 
-export interface Flag extends Omit<Option<boolean>, 'validate'> {
+export interface Flag extends Omit<Option<boolean>, 'format' | 'validate'> {
   default?: boolean;
 }
 

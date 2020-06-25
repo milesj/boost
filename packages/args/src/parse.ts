@@ -29,6 +29,7 @@ import Checker from './Checker';
 import Scope from './Scope';
 import debug from './debug';
 import { DEFAULT_STRING_VALUE } from './constants';
+import formatValue from './helpers/formatValue';
 
 // TERMINOLOGY
 // command line - The entire line that encompasses the following parts.
@@ -201,13 +202,14 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
       } else if (paramConfigs[params.length]) {
         const config = paramConfigs[params.length] as ParamConfig;
 
-        params.push(castValue(arg, config.type) as PrimitiveType);
+        params.push(formatValue(castValue(arg, config.type), config.format) as PrimitiveType);
       } else if (allowVariadic) {
         params.push(arg);
       } else {
         throw new ArgsError('PARAM_UNKNOWN', [arg]);
       }
     } catch (error) {
+      currentScope = null;
       checker.logFailure(error.message);
 
       continue;

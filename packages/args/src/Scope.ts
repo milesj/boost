@@ -1,5 +1,6 @@
 import castValue from './helpers/castValue';
 import { LongOptionName, OptionConfig, ValueType } from './types';
+import formatValue from './helpers/formatValue';
 
 export default class Scope {
   config: OptionConfig;
@@ -28,7 +29,7 @@ export default class Scope {
   }
 
   get finalValue(): ValueType {
-    return castValue(this.value, this.config.type);
+    return formatValue(castValue(this.value, this.config.type), this.config.format);
   }
 
   captureValue(value: string, commit: () => void) {

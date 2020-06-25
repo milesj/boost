@@ -23,6 +23,7 @@ const errors = {
   SHORT_UNKNOWN: 'Unknown short option "%s". No associated long option found.',
   VALUE_INVALID_ARITY: 'Not enough arity arguments. Require %d, found %d.',
   VALUE_INVALID_CHOICE: 'Invalid value, must be one of %s, found %s.',
+  VALUE_INVALID_FORMAT: 'Value was formatted to an invalid type. Expected %s, found %s.',
   VALUE_NO_INLINE: 'Flags and short option groups may not use inline values.',
   VALUE_NON_ARRAY: 'Option "%s" is enabled for multiple values, but non-array default value found.',
   VALUE_NON_BOOL: 'Option "%s" is set to boolean, but non-boolean default value found.',
