@@ -58,6 +58,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
 export const argBlueprint: Blueprint<Arg<unknown>> = {
   ...commonBlueprint,
   default: union([bool(), number(), string()], ''),
+  format: func(),
   type: string<'string'>('string').required(),
   validate: func(),
 };

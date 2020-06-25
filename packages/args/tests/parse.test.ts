@@ -2270,4 +2270,198 @@ describe('parse()', () => {
       });
     });
   });
+
+  describe('formatting', () => {
+    it('errors if types change because of formatting', () => {
+      const result = parse<{ foo: string }>(['--foo', 'bar'], {
+        options: {
+          foo: {
+            description: '',
+            // @ts-expect-error
+            format: () => 123,
+            type: 'string',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [
+          new ParseError(
+            'Value was formatted to an invalid type. Expected string, found number. [ARG:VALUE_INVALID_FORMAT]',
+            'bar',
+            1,
+          ),
+        ],
+        options: {
+          foo: '',
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('can change string option value', () => {
+      const result = parse<{ amount: string }>(['--amount', '123456'], {
+        options: {
+          amount: {
+            description: '',
+            format: (value) => `$${Number(value).toLocaleString()}`,
+            type: 'string',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          amount: '$123,456',
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('can change string list option value', () => {
+      const result = parse<{ value: string[] }>(['--value', 'a', 'b', 'c'], {
+        options: {
+          value: {
+            description: '',
+            format: (value) => value.map((v) => v.toUpperCase()),
+            multiple: true,
+            type: 'string',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          value: ['A', 'B', 'C'],
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('can change string param value', () => {
+      const result = parse<{}, [string]>(['123456'], {
+        options: {},
+        params: [
+          {
+            description: '',
+            format: (value) => `$${Number(value).toLocaleString()}`,
+            type: 'string',
+          },
+        ],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        params: ['$123,456'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('can change number option value', () => {
+      const result = parse<{ amount: number }>(['--amount', '123'], {
+        options: {
+          amount: {
+            description: '',
+            format: (value) => value * 2,
+            type: 'number',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          amount: 246,
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('can change number list option value', () => {
+      const result = parse<{ value: number[] }>(['--value', '1', '2', '3'], {
+        options: {
+          value: {
+            description: '',
+            format: (value) => value.map((v) => v * 2),
+            multiple: true,
+            type: 'number',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          value: [2, 4, 6],
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('can change number param value', () => {
+      const result = parse<{}, [number]>(['123'], {
+        options: {},
+        params: [
+          {
+            description: '',
+            format: (value) => value * 2,
+            type: 'number',
+          },
+        ],
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {},
+        params: [246],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('cannot change boolean option value', () => {
+      const result = parse<{ flag: boolean }>(['--flag'], {
+        options: {
+          flag: {
+            description: '',
+            // @ts-expect-error
+            format: () => 123,
+            type: 'boolean',
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          flag: true,
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+  });
 });
