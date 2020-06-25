@@ -11,8 +11,8 @@ yarn add @boost/debug
 
 ## Environment variables
 
-- `BOOSTJS_DEBUG_GLOBAL_NAMESPACE` (`string`) - A prefix for all debugger namespaces when created
-  with `createDebugger()`. Is commonly set by a command line application or Boost `Tool` instance.
+- `BOOSTJS_DEBUG_NAMESPACE` (`string`) - A prefix for all debugger namespaces when created with
+  `createDebugger()`.
 - `BOOSTJS_DEBUG_VERBOSE` (`boolean`) - Print verbose messages logged from `debugger.verbose()`,
   otherwise they are hidden.
 
