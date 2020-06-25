@@ -128,6 +128,8 @@ the following settings:
   - A zero (`0`) when type is `number`.
   - An empty string (`''`) when type is `string`.
   - And `false` when type is `boolean`.
+- `format` (`(value: T) => T`) - An optional function to format the value after parsing. Must return
+  the same type.
 - `hidden` (`boolean`) - Hide the option from interface output. Defaults to `false`.
 - `short` (`string`) - Single character used as a the short option alias.
 - `usage` (`string`) - Example instructions on how to use the option.
