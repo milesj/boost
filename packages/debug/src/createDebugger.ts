@@ -5,7 +5,7 @@ import debug from './debug';
 import { Debugger } from './types';
 
 export default function createDebugger(namespace: string | string[]): Debugger {
-  const globalNamespace = env('DEBUG_GLOBAL_NAMESPACE');
+  const globalNamespace = env('DEBUG_NAMESPACE');
   const namespaces = toArray(namespace);
 
   if (globalNamespace) {
