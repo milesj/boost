@@ -6,6 +6,7 @@ import Context from './Context';
 import WorkUnit from './WorkUnit';
 import debug from './debug';
 import { Hierarchical } from './types';
+import Monitor from './Monitor';
 
 export default abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>
   extends Contract<Options>
@@ -28,6 +29,8 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
 
   // Emits before a single work unit is ran
   readonly onRunWorkUnit = new Event<[WorkUnit<{}, Input, Output>, Input]>('run-work-unit');
+
+  protected monitorInstance: Monitor | null = null;
 
   protected work: WorkUnit<{}, Input, Output>[] = [];
 
@@ -52,5 +55,22 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
    */
   getWorkUnits(): WorkUnit<{}, Input, Output>[] {
     return this.work;
+  }
+
+  /**
+   * Return a unique hierarchical ID.
+   */
+  get id() {
+    return `pipeline[${this.depth}:${this.index}]`;
+  }
+
+  /**
+   * Monitor all hierarchical pipelines, routines, and tasks being executed,
+   * by listening to all applicable events.
+   */
+  monitor(monitor: Monitor): this {
+    this.monitorInstance = monitor.monitor(this);
+
+    return this;
   }
 }

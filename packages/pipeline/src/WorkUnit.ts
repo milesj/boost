@@ -77,7 +77,7 @@ export default abstract class WorkUnit<Options extends object, Input = unknown, 
    * Return a unique hierarchical ID.
    */
   get id() {
-    return `${this.depth}:${this.index}`;
+    return `work[${this.depth}:${this.index}]`;
   }
 
   /**

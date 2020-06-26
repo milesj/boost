@@ -77,7 +77,7 @@ describe('Work', () => {
       passWork.depth = 8;
       passWork.index = 3;
 
-      expect(passWork.id).toBe('8:3');
+      expect(passWork.id).toBe('work[8:3]');
     });
   });
 
