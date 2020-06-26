@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box } from 'ink';
+import { Box, Text } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
-import { screen, stripAnsi } from '@boost/terminal';
+import { stripAnsi } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
 import msg from './translate';
@@ -51,10 +51,6 @@ export default class Help extends React.Component<HelpProps> {
     return tags;
   }
 
-  getWrapType(columnWidth: number, otherWidths: number): 'wrap' | undefined {
-    return columnWidth + otherWidths > screen.size().columns ? 'wrap' : undefined;
-  }
-
   renderCommands(commands: CommandConfigMap) {
     let pathWidth = 0;
 
@@ -83,7 +79,7 @@ export default class Help extends React.Component<HelpProps> {
 
         {Object.entries(categorizedCommands).map(([key, category], index) => (
           <Box key={key} flexDirection="column">
-            {category.name && categoryCount > 1 && (
+            {!!category.name && categoryCount > 1 && (
               <Box marginTop={index === 0 ? 0 : SPACING_ROW} paddingLeft={SPACING_COL}>
                 <Style bold type="none">
                   {category.name}
@@ -97,11 +93,11 @@ export default class Help extends React.Component<HelpProps> {
               return (
                 <Box key={key + config.path} paddingLeft={SPACING_COL} flexDirection="row">
                   <Box flexGrow={0} width={pathWidth + SPACING_COL_WIDE}>
-                    {config.pathCall}
+                    <Text>{config.pathCall}</Text>
                   </Box>
 
-                  <Box flexGrow={1} textWrap={this.getWrapType(desc.length, pathWidth)}>
-                    {desc}
+                  <Box flexGrow={1}>
+                    <Text wrap="wrap">{desc}</Text>
                   </Box>
                 </Box>
               );
@@ -154,7 +150,7 @@ export default class Help extends React.Component<HelpProps> {
 
         {Object.entries(categorizedOptions).map(([key, category], index) => (
           <Box key={key} flexDirection="column">
-            {category.name && categoryCount > 1 && (
+            {!!category.name && categoryCount > 1 && (
               <Box marginTop={index === 0 ? 0 : SPACING_ROW} paddingLeft={SPACING_COL}>
                 <Style bold type="none">
                   {category.name}
@@ -162,28 +158,25 @@ export default class Help extends React.Component<HelpProps> {
               </Box>
             )}
 
-            {category.items.map((config) => {
-              const desc = formatDescription(config, this.gatherOptionTags(config));
-              const otherWidths = (showShortColumn ? shortWidth : 0) + longWidth;
-
-              return (
-                <Box key={key + config.name} paddingLeft={SPACING_COL} flexDirection="row">
-                  {showShortColumn && (
-                    <Box flexGrow={0} width={shortWidth + SPACING_COL}>
-                      {config.shortLabel}
-                    </Box>
-                  )}
-
-                  <Box flexGrow={0} width={longWidth + SPACING_COL_WIDE}>
-                    {config.longLabel}
+            {category.items.map((config) => (
+              <Box key={key + config.name} paddingLeft={SPACING_COL} flexDirection="row">
+                {showShortColumn && (
+                  <Box flexGrow={0} width={shortWidth + SPACING_COL}>
+                    <Text>{config.shortLabel}</Text>
                   </Box>
+                )}
 
-                  <Box flexGrow={1} textWrap={this.getWrapType(desc.length, otherWidths)}>
-                    {desc}
-                  </Box>
+                <Box flexGrow={0} width={longWidth + SPACING_COL_WIDE}>
+                  <Text>{config.longLabel}</Text>
                 </Box>
-              );
-            })}
+
+                <Box flexGrow={1}>
+                  <Text wrap="wrap">
+                    {formatDescription(config, this.gatherOptionTags(config))}
+                  </Text>
+                </Box>
+              </Box>
+            ))}
           </Box>
         ))}
       </>
@@ -209,11 +202,11 @@ export default class Help extends React.Component<HelpProps> {
           return (
             <Box key={`${labels[index]}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
               <Box flexGrow={0} width={labelWidth + SPACING_COL_WIDE}>
-                {labels[index]}
+                <Text>{labels[index]}</Text>
               </Box>
 
-              <Box flexGrow={1} textWrap={this.getWrapType(desc.length, labelWidth)}>
-                {desc}
+              <Box flexGrow={1}>
+                <Text wrap="wrap">{desc}</Text>
               </Box>
             </Box>
           );
@@ -221,13 +214,13 @@ export default class Help extends React.Component<HelpProps> {
 
         {allowVariadic && (
           <Box paddingLeft={SPACING_COL}>
-            <Box>
+            <Text>
               {`…${typeof allowVariadic === 'string' ? allowVariadic : ''}`}{' '}
               {formatType({
                 multiple: true,
                 type: 'string',
               })}
-            </Box>
+            </Text>
           </Box>
         )}
       </>
@@ -243,7 +236,7 @@ export default class Help extends React.Component<HelpProps> {
 
         {toArray(usage).map((example) => (
           <Box key={example} paddingLeft={SPACING_COL}>
-            {example.startsWith(delimiter) ? example : delimiter + example}
+            <Text>{example.startsWith(delimiter) ? example : delimiter + example}</Text>
           </Box>
         ))}
       </>
@@ -263,7 +256,11 @@ export default class Help extends React.Component<HelpProps> {
       <Box flexDirection="column">
         {(hasDesc || hasUsage) && header && <Header label={header} />}
 
-        {hasDesc && <Box paddingLeft={SPACING_COL}>{formatDescription(config!)}</Box>}
+        {hasDesc && (
+          <Box paddingLeft={SPACING_COL}>
+            <Text>{formatDescription(config!)}</Text>
+          </Box>
+        )}
 
         {hasUsage && this.renderUsage(config?.usage!)}
 

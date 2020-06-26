@@ -316,7 +316,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    * If a React component, render with Ink and wait for it to finish.
    */
   protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
-    const { stdin, stdout } = this.streams;
+    const { stdin, stdout, stderr } = this.streams;
 
     // For simple strings, ignore react and the buffer
     if (typeof result === 'string') {
@@ -346,6 +346,7 @@ export default class Program extends CommandManager<ProgramOptions> {
           debug: process.env.NODE_ENV === 'test',
           exitOnCtrlC: true,
           experimental: true,
+          stderr,
           stdin,
           stdout,
         },

@@ -6,7 +6,7 @@ const ScaffoldCommand = require('./commands/ScaffoldCommand');
 const OptionsCommand = require('./commands/OptionsCommand');
 const ParamsCommand = require('./commands/ParamsCommand');
 
-const banner = `  __                      __
+const banner = ` __                      __
 |  |--.-----.-----.-----|  |_
 |  _  |  _  |  _  |__ --|   _|
 |_____|_____|_____|_____|____|`;
