@@ -35,6 +35,8 @@ export class MockWriteStream {
   get(): string {
     return this.output;
   }
+
+  on() {}
 }
 
 export function mockStreams(): ProgramStreams {

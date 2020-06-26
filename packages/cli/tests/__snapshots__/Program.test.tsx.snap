@@ -4,7 +4,7 @@ exports[`<Program /> categories applies categories to index help 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 
-[30m[47m COMMANDS [49m[39m
+[47m[30m COMMANDS [39m[49m
 
  qux  Description
 
@@ -28,7 +28,7 @@ exports[`<Program /> default command renders commands when no args passed 1`] = 
 "
 Boost v1.2.3 [90mboost[39m
 
-[30m[47m COMMANDS [49m[39m
+[47m[30m COMMANDS [39m[49m
 
  build        Build a project
 "
@@ -40,14 +40,14 @@ exports[`<Program /> errors if bin is not kebab case 1`] = `"Invalid Program fie
 
 exports[`<Program /> failure renders if an error is thrown 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Broken!"
 `;
 
 exports[`<Program /> failure renders when args parsing fails 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Unknown option \\"--foo\\" found. Did you mean \\"help\\"? [ARG:OPTION_UNKNOWN_MORE]
 
@@ -57,50 +57,51 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 
 exports[`<Program /> failure renders when invalid command name passed 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Unknown command \\"prune\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]"
 `;
 
 exports[`<Program /> failure renders when misspelt command name passed 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Unknown command \\"buld\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]"
 `;
 
 exports[`<Program /> failure renders when no commands could be found 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Failed to determine a command to run. [CLI:COMMAND_INVALID_RUN]"
 `;
 
 exports[`<Program /> failure renders when no commands have been registered 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
- No commands have been registered. At least 1 is required. [CLI:COMMAND_NONE_REGISTERED]"
+ No commands have been registered. At least 1 is required.
+ [CLI:COMMAND_NONE_REGISTERED]"
 `;
 
 exports[`<Program /> failure renders with custom exit error 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Oops"
 `;
 
 exports[`<Program /> help outputs help for a nested sub-command 1`] = `
 "
-[30m[47m CLIENT:BUILD [49m[39m
+[47m[30m CLIENT:BUILD [39m[49m
 
  Build a project
 
-[30m[47m USAGE [49m[39m
+[47m[30m USAGE [39m[49m
 
  $ build -S ./src -D ./lib
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  -D, --dst [90mstring[39m     Destination path
  -S, --src [90mstring[39m     Source path
@@ -113,16 +114,16 @@ exports[`<Program /> help outputs help for a nested sub-command 1`] = `
 
 exports[`<Program /> help outputs help for a nested sub-command 2`] = `
 "
-[30m[47m CLIENT:INSTALL [49m[39m
+[47m[30m CLIENT:INSTALL [39m[49m
 
  Install package(s) [90m[deprecated][39m
 
-[30m[47m PARAMS [49m[39m
+[47m[30m PARAMS [39m[49m
 
  pkg [90mstring[39m  Package name [90m[required][39m
  …pkgs [90mstring[][39m
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  [1mSpecial[22m
      --no-save        Save dependency to lock file (default: true)
@@ -135,16 +136,16 @@ exports[`<Program /> help outputs help for a nested sub-command 2`] = `
 
 exports[`<Program /> help outputs help for a nested sub-command 3`] = `
 "
-[30m[47m CLIENT [49m[39m
+[47m[30m CLIENT [39m[49m
 
  Client
 
-[30m[47m USAGE [49m[39m
+[47m[30m USAGE [39m[49m
 
  $ client:install @foo/bar
  $ client:build
 
-[30m[47m COMMANDS [49m[39m
+[47m[30m COMMANDS [39m[49m
 
  [1mSetup[22m
  client:uninstall    Uninstall a package
@@ -152,7 +153,7 @@ exports[`<Program /> help outputs help for a nested sub-command 3`] = `
  [1mBuild[22m
  client:build        Build a project
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  -h, --help           Display help and usage menu
      --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
@@ -161,15 +162,15 @@ exports[`<Program /> help outputs help for a nested sub-command 3`] = `
 
 exports[`<Program /> help outputs help for a specific command 1`] = `
 "
-[30m[47m BUILD [49m[39m
+[47m[30m BUILD [39m[49m
 
  Build a project
 
-[30m[47m USAGE [49m[39m
+[47m[30m USAGE [39m[49m
 
  $ build -S ./src -D ./lib
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  -D, --dst [90mstring[39m     Destination path
  -S, --src [90mstring[39m     Source path
@@ -182,16 +183,16 @@ exports[`<Program /> help outputs help for a specific command 1`] = `
 
 exports[`<Program /> help outputs help for a specific command 2`] = `
 "
-[30m[47m INSTALL [49m[39m
+[47m[30m INSTALL [39m[49m
 
  Install package(s) [90m[deprecated][39m
 
-[30m[47m PARAMS [49m[39m
+[47m[30m PARAMS [39m[49m
 
  pkg [90mstring[39m  Package name [90m[required][39m
  …pkgs [90mstring[][39m
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  [1mSpecial[22m
      --save           Save dependency to lock file
@@ -204,15 +205,15 @@ exports[`<Program /> help outputs help for a specific command 2`] = `
 
 exports[`<Program /> help outputs help for an aliased command 1`] = `
 "
-[30m[47m BUILD [49m[39m
+[47m[30m BUILD [39m[49m
 
  Build a project
 
-[30m[47m USAGE [49m[39m
+[47m[30m USAGE [39m[49m
 
  $ build -S ./src -D ./lib
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  -D, --dst [90mstring[39m     Destination path
  -S, --src [90mstring[39m     Source path
@@ -225,15 +226,15 @@ exports[`<Program /> help outputs help for an aliased command 1`] = `
 
 exports[`<Program /> help outputs help for an aliased command 2`] = `
 "
-[30m[47m BUILD [49m[39m
+[47m[30m BUILD [39m[49m
 
  Build a project
 
-[30m[47m USAGE [49m[39m
+[47m[30m USAGE [39m[49m
 
  $ build -S ./src -D ./lib
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  -D, --dst [90mstring[39m     Destination path
  -S, --src [90mstring[39m     Source path
@@ -248,18 +249,18 @@ exports[`<Program /> help outputs help when \`--help\` is passed 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 
-[30m[47m BOOST [49m[39m
+[47m[30m BOOST [39m[49m
 
  Description
 
-[30m[47m PARAMS [49m[39m
+[47m[30m PARAMS [39m[49m
 
  0 [90mstring[39m     Complex param with many tags. [90m[deprecated, required][39m
  path [90mstring[39m  This is a string param thats required. [90m[required][39m
  ms [90mnumber[39m    And this a number param with a label.
  3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with
@@ -294,18 +295,18 @@ exports[`<Program /> help outputs help when \`-h\` is passed 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 
-[30m[47m BOOST [49m[39m
+[47m[30m BOOST [39m[49m
 
  Description
 
-[30m[47m PARAMS [49m[39m
+[47m[30m PARAMS [39m[49m
 
  0 [90mstring[39m     Complex param with many tags. [90m[deprecated, required][39m
  path [90mstring[39m  This is a string param thats required. [90m[required][39m
  ms [90mnumber[39m    And this a number param with a label.
  3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with
@@ -338,7 +339,7 @@ Boost v1.2.3 [90mboost[39m
 
 exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Locale must be in the format of \\"en\\" or \\"en-US\\".
 
@@ -371,7 +372,7 @@ Returned from command!
 
 exports[`<Program /> nested programs bubbles up errors 1`] = `
 "
-[30m[41m ERROR [49m[39m
+[41m[30m ERROR [39m[49m
 
  Bubbles"
 `;
@@ -386,16 +387,16 @@ Return
 
 exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] = `
 "
-[30m[47m BUILD [49m[39m
+[47m[30m BUILD [39m[49m
 
  Build something
 
-[30m[47m PARAMS [49m[39m
+[47m[30m PARAMS [39m[49m
 
  pkg [90mstring[39m  Package name [90m[required][39m
  … [90mstring[][39m
 
-[30m[47m OPTIONS [49m[39m
+[47m[30m OPTIONS [39m[49m
 
  -D, --dst [90mstring[39m     Destination path
  -S, --src [90mstring[39m     Source path

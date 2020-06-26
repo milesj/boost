@@ -1,5 +1,5 @@
 const React = require('react');
-const { Box } = require('ink');
+const { Box, Text } = require('ink');
 const { Command, ProgramContext } = require('../../lib');
 const random = require('../random');
 
@@ -17,7 +17,7 @@ function Logger() {
         return;
       }
 
-      setCount(prev => prev + 1);
+      setCount((prev) => prev + 1);
 
       const delay = random(5000, 1000);
 
@@ -33,7 +33,7 @@ function Logger() {
     increment();
   }, [ctx]);
 
-  return React.createElement(Box, {}, `Rendered ${count} times`);
+  return React.createElement(Box, {}, React.createElement(Text, {}, `Rendered ${count} times`));
 }
 
 module.exports = class LoggerCommand extends Command {

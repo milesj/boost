@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 
 import React from 'react';
-import { Box } from 'ink';
+import { Box, Text } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
 import { screen } from '@boost/terminal';
 import CLIError from './CLIError';
@@ -117,8 +117,12 @@ export default class Failure extends React.Component<FailureProps> {
 
         {warnings.map((warn) => (
           <Box key={warn.message} paddingLeft={SPACING_COL} flexDirection="row">
-            <Box width={2}>{'–'}</Box>
-            <Box flexGrow={1}>{warn.message}</Box>
+            <Box width={2}>
+              <Text>{'–'}</Text>
+            </Box>
+            <Box flexGrow={1}>
+              <Text>{warn.message}</Text>
+            </Box>
           </Box>
         ))}
       </>
@@ -133,7 +137,10 @@ export default class Failure extends React.Component<FailureProps> {
         <Header label={msg('cli:labelError')} type="failure" />
 
         <Box paddingLeft={SPACING_COL} flexDirection="column">
-          <Box>{error.message}</Box>
+          <Box>
+            <Text>{error.message}</Text>
+          </Box>
+
           {this.renderCodeFrame()}
         </Box>
 

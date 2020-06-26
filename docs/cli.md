@@ -591,7 +591,7 @@ For a quick demonstration, let's implement a component that writes to a file asy
 ```tsx
 import fs from 'fs';
 import React, { useState, useEffect } from 'react';
-import { Box } from 'ink';
+import { Box, Text } from 'ink';
 import { Style, ProgramContext } from '@boost/cli';
 
 interface WriteConfigProps {
@@ -615,12 +615,18 @@ export default function WriteConfig({ data, path }: WriteConfigProps) {
   }, [path]);
 
   if (loading) {
-    return <Box>Writing config file...</Box>;
+    return (
+      <Box>
+        <Text>Writing config file...</Text>
+      </Box>
+    );
   }
 
   return (
     <Box>
-      Wrote config to file <Style type="success">{path}</Style>
+      <Text>
+        Wrote config to file <Style type="success">{path}</Style>
+      </Text>
     </Box>
   );
 }
