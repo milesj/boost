@@ -26,6 +26,7 @@ module.exports = class OptionsCommand extends Command {
     },
     string: {
       choices: ['a', 'b', 'c'],
+      default: 'a',
       description: 'Single string',
       hidden: true,
       type: 'string',

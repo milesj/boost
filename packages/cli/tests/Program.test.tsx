@@ -1,7 +1,7 @@
 /* eslint-disable babel/no-invalid-this */
 
 import React, { useContext } from 'react';
-import { Box } from 'ink';
+import { Box, Text } from 'ink';
 import { ExitError, env } from '@boost/internal';
 import { mockLogger } from '@boost/log/lib/testing';
 import {
@@ -71,7 +71,11 @@ class ComponentCommand extends Command {
   static path = 'comp';
 
   run() {
-    return <Box>Hello!</Box>;
+    return (
+      <Box>
+        <Text>Hello!</Text>
+      </Box>
+    );
   }
 }
 
@@ -772,7 +776,7 @@ describe('<Program />', () => {
 
       await runProgram(program, []);
 
-      expect(beforeSpy).toHaveBeenCalledWith(<Box>Hello!</Box>);
+      expect(beforeSpy).toHaveBeenCalledWith(<Box><Text>Hello!</Text></Box>);
       expect(afterSpy).toHaveBeenCalled();
     });
   });
@@ -1035,7 +1039,11 @@ describe('<Program />', () => {
       ctx.log('Component log');
       ctx.log.error('Component error');
 
-      return <Box>Returned from component!</Box>;
+      return (
+        <Box>
+          <Text>Returned from component!</Text>
+        </Box>
+      );
     }
 
     class LogCommand extends Command {

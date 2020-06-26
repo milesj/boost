@@ -1,10 +1,9 @@
 import React from 'react';
-import { Color, ColorProps } from 'ink';
+import { Text, TextProps } from 'ink';
 import { StyleType, Writeable } from './types';
 import loadTheme from './helpers/loadTheme';
 
-export interface StyleProps
-  extends Pick<ColorProps, 'reset' | 'bold' | 'dim' | 'italic' | 'underline' | 'hidden'> {
+export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underline' | 'wrap'> {
   children: NonNullable<React.ReactNode>;
   inverted?: boolean;
   type: StyleType | 'none';
@@ -12,15 +11,10 @@ export interface StyleProps
 
 export default function Style({ children, inverted = false, type, ...restProps }: StyleProps) {
   const theme = loadTheme();
-  const props: Writeable<ColorProps> = {};
+  const props: Writeable<TextProps> = {};
 
   const injectColor = (color: string, bg: boolean) => {
-    // istanbul ignore next
-    if (color.startsWith('#')) {
-      props[bg ? 'bgHex' : 'hex'] = color;
-    } else {
-      props[(bg ? `bg${color.charAt(0).toUpperCase() + color.slice(1)}` : color) as 'black'] = true;
-    }
+    props[bg ? 'backgroundColor' : 'color'] = color;
   };
 
   if (type === 'default') {
@@ -40,8 +34,8 @@ export default function Style({ children, inverted = false, type, ...restProps }
   }
 
   return (
-    <Color {...restProps} {...props}>
+    <Text {...restProps} {...props}>
       {children}
-    </Color>
+    </Text>
   );
 }

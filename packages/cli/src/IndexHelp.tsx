@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from 'ink';
+import { Box, Text } from 'ink';
 import Style from './Style';
 import { ProgramOptions } from './types';
 import { SPACING_ROW } from './constants';
@@ -19,17 +19,31 @@ export default function IndexHelp({
 }: IndexHelpProps) {
   return (
     <Box marginBottom={1} flexDirection="column">
-      {banner && <Box>{banner}</Box>}
+      {!!banner && (
+        <Box>
+          <Text>{banner}</Text>
+        </Box>
+      )}
 
       <Box marginTop={SPACING_ROW}>
-        {`${name} v${version}`} <Style type="muted">{bin}</Style>
+        <Text>
+          {`${name} v${version}`} <Style type="muted">{bin}</Style>
+        </Text>
       </Box>
 
-      {header && <Box marginTop={SPACING_ROW}>{header}</Box>}
+      {!!header && (
+        <Box marginTop={SPACING_ROW}>
+          <Text>{header}</Text>
+        </Box>
+      )}
 
       {children}
 
-      {footer && <Box marginTop={SPACING_ROW}>{footer}</Box>}
+      {!!footer && (
+        <Box marginTop={SPACING_ROW}>
+          <Text>{footer}</Text>
+        </Box>
+      )}
     </Box>
   );
 }
