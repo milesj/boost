@@ -7,6 +7,7 @@ import AggregatedPipeline from './AggregatedPipeline';
 import ParallelPipeline from './ParallelPipeline';
 import ConcurrentPipeline from './ConcurrentPipeline';
 import Context from './Context';
+import Monitor from './Monitor';
 import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import Routine, { ExecuteCommandOptions } from './Routine';
 import SerialPipeline from './SerialPipeline';
@@ -24,6 +25,7 @@ export {
   ConcurrentPipeline,
   Context,
   ExecuteCommandOptions,
+  Monitor,
   PooledPipeline,
   PooledOptions,
   Routine,
