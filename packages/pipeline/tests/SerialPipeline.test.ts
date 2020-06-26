@@ -6,6 +6,7 @@ import Routine from '../src/Routine';
 import WaterfallPipeline from '../src/WaterfallPipeline';
 import WorkUnit from '../src/WorkUnit';
 import { Runnable } from '../src/types';
+import { createMonitor, getMonitoredEvents } from './helpers';
 
 describe('SerialPipeline', () => {
   function log(depth: number, index: number) {
@@ -95,7 +96,45 @@ describe('SerialPipeline', () => {
 
     expect(pipeline.depth).toBe(0);
 
-    await pipeline.run();
+    await pipeline.monitor(createMonitor()).run();
+
+    expect(getMonitoredEvents().sort()).toEqual(
+      [
+        ['onBeforeRun', ['pipeline[0:0]', '']],
+        ['onRunWorkUnit', ['pipeline[0:0]', 'work[0:0]', '']],
+        ['onRun', ['work[0:0]', '']],
+        ['onBeforeRun', ['pipeline[1:0]', '']],
+        ['onRunWorkUnit', ['pipeline[1:0]', 'work[1:0]', '']],
+        ['onRun', ['work[1:0]', '']],
+        ['onPass', ['work[1:0]', '']],
+        ['onRunWorkUnit', ['pipeline[1:0]', 'work[1:1]', '']],
+        ['onRun', ['work[1:1]', '']],
+        ['onPass', ['work[1:1]', '']],
+        ['onRunWorkUnit', ['pipeline[1:0]', 'work[1:2]', '']],
+        ['onRun', ['work[1:2]', '']],
+        ['onBeforeRun', ['pipeline[2:0]', '']],
+        ['onRunWorkUnit', ['pipeline[2:0]', 'work[2:0]', '']],
+        ['onRun', ['work[2:0]', '']],
+        ['onPass', ['work[2:0]', '']],
+        ['onRunWorkUnit', ['pipeline[2:0]', 'work[2:1]', '']],
+        ['onRun', ['work[2:1]', '']],
+        ['onPass', ['work[2:1]', '']],
+        ['onRunWorkUnit', ['pipeline[2:0]', 'work[2:2]', '']],
+        ['onRun', ['work[2:2]', '']],
+        ['onPass', ['work[2:2]', '']],
+        ['onAfterRun', ['pipeline[2:0]']],
+        ['onPass', ['work[1:2]', '']],
+        ['onRunWorkUnit', ['pipeline[1:0]', 'work[1:3]', '']],
+        ['onRun', ['work[1:3]', '']],
+        ['onPass', ['work[1:3]', '']],
+        ['onAfterRun', ['pipeline[1:0]']],
+        ['onPass', ['work[0:0]', '']],
+        ['onRunWorkUnit', ['pipeline[0:0]', 'work[0:1]', '']],
+        ['onRun', ['work[0:1]', '']],
+        ['onPass', ['work[0:1]', '']],
+        ['onAfterRun', ['pipeline[0:0]']],
+      ].sort(),
+    );
   });
 
   it('passes context, value, and options to next pipeline', () => {

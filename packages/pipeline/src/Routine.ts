@@ -11,13 +11,13 @@ import ConcurrentPipeline from './ConcurrentPipeline';
 import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
 import WaterfallPipeline from './WaterfallPipeline';
-import { Hierarchical } from './types';
+import { Hierarchical, AnyWorkUnit } from './types';
 import debug from './debug';
+import Monitor from './Monitor';
+import Pipeline from './Pipeline';
 
 export interface ExecuteCommandOptions {
-  // Unknown does not work here as it conflicts with event tuples.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  workUnit?: WorkUnit<{}, any, any>;
+  workUnit?: AnyWorkUnit;
 }
 
 export default abstract class Routine<
@@ -34,6 +34,8 @@ export default abstract class Routine<
 
   // Emits on each line chunk of the running command
   readonly onCommandData = new Event<[string, string]>('command-data');
+
+  protected monitorInstance: Monitor | null = null;
 
   constructor(key: string | string[], title: string, options?: Options) {
     super(title, (context, value) => this.execute(context, value), options);
@@ -120,11 +122,24 @@ export default abstract class Routine<
   }
 
   /**
+   * Set the monitor to pass to nested pipelines.
+   */
+  setMonitor(monitor: Monitor): this {
+    this.monitorInstance = monitor;
+
+    return this;
+  }
+
+  /**
    * Update the hierarchical depth when creating a nested pipeline.
    */
   protected updateHierarchy<P extends Hierarchical>(pipeline: P): P {
     // eslint-disable-next-line no-param-reassign
     pipeline.depth = this.depth + 1;
+
+    if (this.monitorInstance && pipeline instanceof Pipeline) {
+      pipeline.monitor(this.monitorInstance);
+    }
 
     return pipeline;
   }

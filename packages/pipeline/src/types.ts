@@ -1,4 +1,6 @@
 import Context from './Context';
+import Pipeline from './Pipeline';
+import WorkUnit from './WorkUnit';
 
 export type Action<Ctx extends Context, Input = unknown, Output = Input> = (
   context: Ctx,
@@ -13,6 +15,7 @@ export interface AggregatedResult<T> {
 
 export interface Hierarchical {
   depth: number;
+  id: string;
   index: number;
 }
 
@@ -21,3 +24,11 @@ export interface Runnable<Input, Output> {
 }
 
 export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
+
+// Any is required for monitoring events
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyPipeline = Pipeline<{}, Context, any, any>;
+
+// Any is required for event tuples
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyWorkUnit = WorkUnit<{}, any, any>;

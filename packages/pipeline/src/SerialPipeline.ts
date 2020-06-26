@@ -42,6 +42,10 @@ export default abstract class SerialPipeline<
     next.depth = this.depth;
     next.root = this.root;
 
+    if (this.monitorInstance) {
+      next.monitor(this.monitorInstance);
+    }
+
     return next;
   }
 
