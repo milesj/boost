@@ -5,7 +5,7 @@ A type-safe and interactive command line program, powered by [React][react] and 
 ## Installation
 
 ```
-yarn add @boost/cli react
+yarn add @boost/cli react ink
 ```
 
 ## Events
@@ -591,7 +591,8 @@ For a quick demonstration, let's implement a component that writes to a file asy
 ```tsx
 import fs from 'fs';
 import React, { useState, useEffect } from 'react';
-import { Box, Style, ProgramContext } from '@boost/cli';
+import { Box } from 'ink';
+import { Style, ProgramContext } from '@boost/cli';
 
 interface WriteConfigProps {
   data: object;
@@ -818,7 +819,8 @@ The logger is also accessible within a component by using the `ProgramContext`, 
 
 ```tsx
 import React, { useContext } from 'react';
-import { Box, ProgramContext } from '@boost/cli';
+import { Box } from 'ink';
+import { ProgramContext } from '@boost/cli';
 
 function CustomComponent() {
   const { log } = useContext(ProgramContext);
@@ -842,25 +844,6 @@ Themes are a feature that will be enabled in v2. Please come back soon!
 ## Components
 
 Boost provides the following components for use within your programs.
-
-### Ink
-
-Since Boost is built on Ink, we had to implement our own abstraction around it for the CLI to
-operate properly. Because of this, not all Ink components can be used, except for the following.
-
-- [Box](https://github.com/vadimdemedes/ink#box)
-- [Color](https://github.com/vadimdemedes/ink#color)
-- [Static](https://github.com/vadimdemedes/ink#static)
-- [Text](https://github.com/vadimdemedes/ink#text)
-
-For convenience, these components can be imported from the Boost CLI package. This is preferred so
-that your usage of these components stay in sync with the version we expect.
-
-```tsx
-import { Box } from '@boost/cli';
-
-<Box padding={1}>Loading data...</Box>;
-```
 
 ### `Style`
 
