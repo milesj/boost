@@ -33,8 +33,13 @@ sections. The following methods are available on `CrashReporter`.
 - `reportStackTrace(error: Error)` - Reports the stack trace for the provided `Error`.
 - `reportSystem()`- Reports information about the system, OS, and platform.
 
+<!-- prettier-ignore -->
 ```ts
-reporter.reportPackageVersions('@boost/*').reportBinaries().reportEnvVars().reportSystem();
+reporter
+  .reportPackageVersions('@boost/*')
+  .reportBinaries()
+  .reportEnvVars()
+  .reportSystem();
 ```
 
 If you'd like to add your own section and label value pairs, use `CrashReporter#addSection`, which
