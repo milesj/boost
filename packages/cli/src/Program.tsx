@@ -339,7 +339,13 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.rendering = true;
 
       const output = await render(
-        <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
+        <Wrapper
+          errBuffer={this.errBuffer}
+          exit={this.exit}
+          logger={this.logger}
+          outBuffer={this.outBuffer}
+          program={this.options}
+        >
           {result || null}
         </Wrapper>,
         {

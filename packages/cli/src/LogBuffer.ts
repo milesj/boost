@@ -2,9 +2,11 @@
 
 import { StreamType } from './types';
 
+type BufferListener = (buffer: string[]) => void;
 type UnwrapHandler = () => void;
 type ConsoleMethod = keyof typeof console;
 
+const NOTIFY_DELAY = 100;
 const CONSOLE_METHODS: { [K in StreamType]: ConsoleMethod[] } = {
   stderr: ['error', 'trace', 'warn'],
   stdout: ['debug', 'log', 'info'],
@@ -13,7 +15,11 @@ const CONSOLE_METHODS: { [K in StreamType]: ConsoleMethod[] } = {
 export default class LogBuffer {
   logs: string[] = [];
 
+  protected listener?: BufferListener;
+
   protected stream: NodeJS.WriteStream;
+
+  protected timer?: NodeJS.Timeout;
 
   protected type: StreamType;
 
@@ -28,10 +34,30 @@ export default class LogBuffer {
 
   flush = () => {
     if (this.logs.length > 0) {
-      this.logs.forEach(this.writeToStream);
+      if (this.listener) {
+        this.listener(this.logs);
+      } else {
+        this.logs.forEach(this.writeToStream);
+      }
+
       this.logs = [];
     }
+
+    if (this.timer) {
+      clearTimeout(this.timer);
+      delete this.timer;
+    }
   };
+
+  off() {
+    this.flush();
+
+    delete this.listener;
+  }
+
+  on(listener: BufferListener) {
+    this.listener = listener;
+  }
 
   unwrap() {
     this.flush();
@@ -57,20 +83,22 @@ export default class LogBuffer {
     this.wrapped = true;
   }
 
-  write = (message: string) => {
-    const msg =
-      typeof String.prototype.trimEnd === 'function'
-        ? String(message).trimEnd()
-        : String(message).trim(); // Node 8
+  write = (message: unknown) => {
+    const msg = `${String(message).trimEnd()}\n`;
 
     if (this.wrapped) {
       this.logs.push(msg);
+
+      // Place in a short timeout so that we can batch
+      if (!this.timer) {
+        this.timer = setTimeout(this.flush, NOTIFY_DELAY);
+      }
     } else {
       this.writeToStream(msg);
     }
   };
 
   protected writeToStream = (message: string) => {
-    this.stream.write(`${message}\n`);
+    this.stream.write(message);
   };
 }
