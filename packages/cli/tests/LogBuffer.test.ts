@@ -23,6 +23,38 @@ describe('LogBuffer', () => {
     expect(console.info).toEqual(original);
   });
 
+  it('can set and unset a listener', () => {
+    const spy = jest.fn();
+
+    buffer.on(spy);
+
+    // @ts-expect-error
+    expect(buffer.listener).toBe(spy);
+
+    buffer.off();
+
+    // @ts-expect-error
+    expect(buffer.listener).not.toBe(spy);
+  });
+
+  it('calls listener when logs are flushed', () => {
+    const spy = jest.fn();
+    const logSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
+
+    buffer.on(spy);
+    buffer.wrap();
+    buffer.write('foo');
+    buffer.write('bar');
+    buffer.write('baz');
+    buffer.unwrap();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(['foo\n', 'bar\n', 'baz\n']);
+    expect(buffer.logs).toEqual([]);
+
+    logSpy.mockRestore();
+  });
+
   it('writes to native stream when flushed', () => {
     const spy = jest.fn();
     const logSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
@@ -89,7 +121,7 @@ describe('LogBuffer', () => {
     buffer.wrap();
     buffer.write('Yup\n');
 
-    expect(buffer.logs).toEqual(['Yup']);
+    expect(buffer.logs).toEqual(['Yup\n']);
 
     buffer.unwrap();
     spy.mockRestore();
