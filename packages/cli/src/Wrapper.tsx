@@ -2,10 +2,11 @@ import React from 'react';
 import { Box } from 'ink';
 import { Logger } from '@boost/log';
 import Failure from './Failure';
+import LogWriter, { LogWriterProps } from './LogWriter';
 import ProgramContext from './ProgramContext';
 import { ProgramOptions, ExitHandler } from './types';
 
-export interface WrapperProps {
+export interface WrapperProps extends LogWriterProps {
   exit: ExitHandler;
   logger: Logger;
   program: ProgramOptions;
@@ -26,7 +27,7 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
 
   render() {
     const { error } = this.state;
-    const { children, exit, logger, program } = this.props;
+    const { children, exit, logger, program, errBuffer, outBuffer } = this.props;
 
     return (
       <Box>
@@ -36,6 +37,8 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
           ) : (
             children
           )}
+
+          <LogWriter errBuffer={errBuffer} outBuffer={outBuffer} />
         </ProgramContext.Provider>
       </Box>
     );
