@@ -1,8 +1,12 @@
 # Summary
 
-- [Args parsing](./args.md)
+- [Arguments](./args.md)
 - [CLIs](./cli.md)
 - [Common utilities](./common.md)
+  - [`Contract`](./common/contract.md)
+  - [`Path`](./common/path.md)
+  - [`PathResolver`](./common/path-resolver.md)
+  - [`Project`](./common/project.md)
 - [Crash reporting](./crash.md)
 - [Debugging](./debug.md)
 - [Events](./event.md)
