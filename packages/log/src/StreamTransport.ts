@@ -1,9 +1,9 @@
 import { Predicates } from '@boost/common';
 import Transport from './Transport';
-import { TransportOptions, Loggable } from './types';
+import { TransportOptions, Writable } from './types';
 
 export interface StreamTransportOptions extends TransportOptions {
-  stream: Loggable;
+  stream: Writable;
 }
 
 export default class StreamTransport extends Transport<StreamTransportOptions> {

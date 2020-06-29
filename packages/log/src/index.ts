@@ -4,6 +4,7 @@
  */
 
 import createLogger from './createLogger';
+import Logger from './Logger';
 import isAllowedLogLevel from './helpers/isAllowedLogLevel';
 import Transport from './Transport';
 import ConsoleTransport from './ConsoleTransport';
@@ -12,4 +13,4 @@ import StreamTransport from './StreamTransport';
 export * from './constants';
 export * from './types';
 
-export { createLogger, isAllowedLogLevel, Transport, ConsoleTransport, StreamTransport };
+export { createLogger, isAllowedLogLevel, Logger, Transport, ConsoleTransport, StreamTransport };
