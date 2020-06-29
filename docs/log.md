@@ -91,7 +91,7 @@ log.warn('Something is definitely going on…');
 log.error('Systems are down! %s', error.message);
 ```
 
-### Formatting messages
+### Formats
 
 All logs are represented as an object, known as a log item. These items contain the following
 metadata about the environment, the logger, and the current log message.
@@ -100,6 +100,7 @@ metadata about the environment, the logger, and the current log message.
 - `label` (`string`) - The log level as a localized or customized label.
 - `level` (`LogLevel`) - The log level as a string.
 - `message` (`string`) - The log message with interpolated arguments applied.
+- `metadata` (`object`) - [Additional data](#metadata) to include with a log item.
 - `name` (`string`) - Name of the logger.
 - `pid` (`number`) - Current process ID.
 - `time` (`string`) - Timestamp of the log, native to the host machine.
@@ -126,6 +127,31 @@ Feel free to use the following built-in formats, or customize your own!
   This is the default format for most transports.
 - `formats.json` - Formats the entire item into JSON.
 - `formats.message` - Formats the item using only the message.
+
+### Metadata
+
+Sometimes additional metadata may be required that is not found within the pre-defined log item
+fields. Metadata can be defined on the logger using an object, which is then passed to all log
+items.
+
+```ts
+const log = createLogger({
+  name: 'boost',
+  metadata: {
+    locale: 'en',
+    region: 'eu',
+  },
+});
+```
+
+It can also be defined per log by passing an object as the 1st argument. Metadata defined at this
+level will override the logger metadata.
+
+```ts
+log({ locale: 'de' }, "What's going on?");
+```
+
+> Fields `name`, `host`, and `pid` are reserved names and cannot be used.
 
 ### Silencing output
 

@@ -3,24 +3,24 @@ import createLogger from '../src/createLogger';
 import { DEFAULT_LABELS } from '../src/constants';
 import * as formats from '../src/formats';
 import StreamTransport from '../src/StreamTransport';
-import { LoggerFunction, LoggerOptions } from '../src/types';
+import { LoggerFunction, LoggerOptions, Formatter } from '../src/types';
 
 describe('createLogger()', () => {
   let logger: LoggerFunction;
   let outStream: { write: jest.Mock };
   let errStream: { write: jest.Mock };
 
-  function mockLogger(options?: Partial<LoggerOptions>) {
+  function mockLogger(options?: Partial<LoggerOptions>, format: Formatter = formats.console) {
     return createLogger({
       name: 'test',
       transports: [
         new StreamTransport({
-          format: formats.console,
+          format,
           levels: ['debug', 'warn', 'error'],
           stream: errStream,
         }),
         new StreamTransport({
-          format: formats.console,
+          format,
           levels: ['log', 'trace', 'info'],
           stream: outStream,
         }),
@@ -185,5 +185,26 @@ describe('createLogger()', () => {
 
     expect(errStream.write).toHaveBeenCalledTimes(6);
     expect(outStream.write).toHaveBeenCalledTimes(6);
+  });
+
+  it('can provide additional metadata', () => {
+    logger = mockLogger(
+      {
+        metadata: {
+          foo: 123,
+        },
+      },
+      formats.debug,
+    );
+
+    logger('Without metadata');
+    logger.info({ foo: 'bar' }, 'With metadata');
+
+    expect(outStream.write).toHaveBeenCalledWith(
+      expect.stringContaining('LOG Without metadata (foo=123'),
+    );
+    expect(outStream.write).toHaveBeenCalledWith(
+      expect.stringContaining('INFO With metadata (foo=bar'),
+    );
   });
 });

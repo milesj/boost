@@ -2,36 +2,44 @@ export type LogLevel = 'debug' | 'error' | 'log' | 'info' | 'trace' | 'warn';
 
 export type LogLevelLabels = { [L in LogLevel]?: string };
 
+export interface LogMetadata {
+  [field: string]: unknown;
+}
+
 export interface LogItem {
   host: string;
   label: string;
   level: LogLevel;
   message: string;
+  metadata: LogMetadata;
   name: string;
   pid: number;
   time: Date;
 }
 
-export type LogWriter = (message: string, ...args: unknown[]) => void;
-
-export interface Loggable {
-  debug: LogWriter;
-  disable: () => void;
-  enable: () => void;
-  error: LogWriter;
-  log: LogWriter;
-  info: LogWriter;
-  trace: LogWriter;
-  warn: LogWriter;
-}
-
-export interface LoggerFunction extends Loggable {
+export interface LoggableWriter {
+  (metadata: LogMetadata, message: string, ...args: unknown[]): void;
   (message: string, ...args: unknown[]): void;
 }
+
+export interface Loggable {
+  debug: LoggableWriter;
+  disable: () => void;
+  enable: () => void;
+  error: LoggableWriter;
+  log: LoggableWriter;
+  info: LoggableWriter;
+  trace: LoggableWriter;
+  warn: LoggableWriter;
+}
+
+export interface LoggerFunction extends Loggable, LoggableWriter {}
 
 export interface LoggerOptions {
   /** Custom labels to use for each log type. */
   labels?: LogLevelLabels;
+  /** Metadata to include within each log item. */
+  metadata?: LogMetadata;
   /** Unique name for this logger. */
   name: string;
   /** Transports to write messages to. */
@@ -39,7 +47,7 @@ export interface LoggerOptions {
 }
 
 export interface Writable {
-  write: LogWriter;
+  write: (message: string) => void;
 }
 
 export type Formatter = (item: LogItem) => string;
