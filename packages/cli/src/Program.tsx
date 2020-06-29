@@ -12,7 +12,7 @@ import {
 } from '@boost/args';
 import { Predicates, Blueprint } from '@boost/common';
 import { Event } from '@boost/event';
-import { Logger, createLogger, StreamTransport } from '@boost/log';
+import { LoggerFunction, createLogger, StreamTransport } from '@boost/log';
 import { ExitError, env } from '@boost/internal';
 import levenary from 'levenary';
 import CLIError from './CLIError';
@@ -76,7 +76,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
   protected commandLine: string = '';
 
-  protected logger: Logger;
+  protected logger: LoggerFunction;
 
   protected middlewares: Middleware[] = [removeProcessBin];
 

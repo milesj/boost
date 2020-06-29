@@ -39,14 +39,28 @@ log('Name: %s %s', user.first_name, user.last_name);
 log('Object: %O', data);
 ```
 
+If you would prefer to interact with a class instance, you may use the `Logger` class. The major
+difference between the class and the function, is that the class only has 1 logging method, `log()`.
+
+```ts
+import { Logger } from '@boost/log';
+
+const logger = new Logger({ name: 'boost' });
+
+logger.log({
+  level: 'info',
+  message: 'Something else has happened…',
+});
+```
+
 ### Options
 
 The following options can be defined when creating a logger. They _cannot_ be customized after the
 fact.
 
-- `labels` (`object`) - A mapping of log level names to strings to use as the message prefix. Can be
+- `labels` (`object`) - A mapping of log level names to strings to use as the level label. Can be
   used with [chalk](https://www.npmjs.com/package/chalk).
-- `name` (`string`) - Unique name of this logger instance.
+- `name` (`string`) - Unique name of this logger instance, for debugging purposes.
 - `transports` (`Transportable`) - List of transports in which to write formatted log messages to.
 
 ```ts
@@ -99,7 +113,7 @@ There are 2 types of transports that can be used within a logger.
 ### `ConsoleTransport`
 
 Logs messages to the native `console` according to the corresponding level. This is the default
-transport that is used when no transports are defined.
+transport when no transports are defined.
 
 ```ts
 import { ConsoleTransport } from '@boost/log';
@@ -109,7 +123,7 @@ const transport = new ConsoleTransport();
 
 ### `StreamTransport`
 
-Logs messages to any writeable stream that defines a `write(message: string)` method.
+Logs messages to any writeable stream or an object that defines a `write(message: string)` method.
 
 ```ts
 import { StreamTransport } from '@boost/log';

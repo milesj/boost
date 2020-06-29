@@ -12,15 +12,20 @@ export interface LogItem {
   time: string;
 }
 
-export interface Logger {
-  debug: (message: string, ...args: unknown[]) => void;
+export type LogWriter = (message: string, ...args: unknown[]) => void;
+
+export interface Loggable {
+  debug: LogWriter;
   disable: () => void;
   enable: () => void;
-  error: (message: string, ...args: unknown[]) => void;
-  log: (message: string, ...args: unknown[]) => void;
-  info: (message: string, ...args: unknown[]) => void;
-  trace: (message: string, ...args: unknown[]) => void;
-  warn: (message: string, ...args: unknown[]) => void;
+  error: LogWriter;
+  log: LogWriter;
+  info: LogWriter;
+  trace: LogWriter;
+  warn: LogWriter;
+}
+
+export interface LoggerFunction extends Loggable {
   (message: string, ...args: unknown[]): void;
 }
 
@@ -33,8 +38,8 @@ export interface LoggerOptions {
   transports?: Transportable[];
 }
 
-export interface Loggable {
-  write: (message: string) => void;
+export interface Writable {
+  write: LogWriter;
 }
 
 export type Formatter = (item: LogItem) => string;

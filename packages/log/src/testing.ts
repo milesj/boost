@@ -1,8 +1,8 @@
 /* eslint-disable jest/prefer-spy-on */
 
-import { Logger } from './types';
+import { LoggerFunction } from './types';
 
-export function mockLogger(): Logger {
+export function mockLogger(): LoggerFunction {
   const log = jest.fn() as any;
 
   log.disable = jest.fn();

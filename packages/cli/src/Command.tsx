@@ -11,7 +11,7 @@ import {
   UnknownOptionMap,
   Argv,
 } from '@boost/args';
-import { Logger } from '@boost/log';
+import { LoggerFunction } from '@boost/log';
 import { LOCALE_FORMAT, INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
 import {
   Categories,
@@ -106,7 +106,7 @@ export default abstract class Command<
 
   exit!: ExitHandler;
 
-  log!: Logger;
+  log!: LoggerFunction;
 
   // Internals
 

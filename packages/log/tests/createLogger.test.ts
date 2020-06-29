@@ -1,10 +1,11 @@
 import { env } from '@boost/internal';
-import createLogger, { DEFAULT_LABELS } from '../src/createLogger';
+import createLogger from '../src/createLogger';
+import { DEFAULT_LABELS } from '../src/constants';
 import StreamTransport from '../src/StreamTransport';
-import { Logger, LoggerOptions } from '../src/types';
+import { LoggerFunction, LoggerOptions } from '../src/types';
 
 describe('createLogger()', () => {
-  let logger: Logger;
+  let logger: LoggerFunction;
   let outStream: { write: jest.Mock };
   let errStream: { write: jest.Mock };
 

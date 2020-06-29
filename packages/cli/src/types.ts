@@ -26,7 +26,7 @@ import {
   ValueType,
   UnknownOptionMap,
 } from '@boost/args';
-import { Logger } from '@boost/log';
+import { LoggerFunction } from '@boost/log';
 
 export {
   ArgList,
@@ -94,7 +94,7 @@ export interface ProgramStreams {
 
 export interface ProgramContextType {
   exit: ExitHandler;
-  log: Logger;
+  log: LoggerFunction;
   program: ProgramOptions;
 }
 
@@ -155,7 +155,7 @@ export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
 
 export type TaskContext<O extends GlobalOptions = GlobalOptions> = O & {
   exit: ExitHandler;
-  log: Logger;
+  log: LoggerFunction;
   rest: string[];
   unknown: UnknownOptionMap;
   // Methods
