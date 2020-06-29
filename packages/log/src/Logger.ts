@@ -3,9 +3,8 @@ import util from 'util';
 import { Contract, Predicates } from '@boost/common';
 import { env } from '@boost/internal';
 import debug from './debug';
-import isAllowedLogLevel from './helpers/isAllowedLogLevel';
 import ConsoleTransport from './ConsoleTransport';
-import { DEFAULT_LABELS } from './constants';
+import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { LoggerOptions, LogLevel, Formatter, Transportable } from './types';
 
 export default class Logger extends Contract<LoggerOptions> {
@@ -40,10 +39,39 @@ export default class Logger extends Contract<LoggerOptions> {
     };
   }
 
+  disable() {
+    debug('Logger %s disabled', this.options.name);
+    this.silenced = true;
+  }
+
+  enable() {
+    debug('Logger %s enabled', this.options.name);
+    this.silenced = false;
+  }
+
+  isAllowed(level: LogLevel, maxLevel?: LogLevel): boolean {
+    if (!maxLevel) {
+      return true;
+    }
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const currentLevel of LOG_LEVELS) {
+      if (currentLevel === level) {
+        return true;
+      }
+
+      if (currentLevel === maxLevel) {
+        break;
+      }
+    }
+
+    return false;
+  }
+
   log({ level: baseLevel, message }: { level?: LogLevel; message: string }, ...args: unknown[]) {
     const level = baseLevel || env('LOG_DEFAULT_LEVEL') || 'log';
 
-    if (this.silenced || !isAllowedLogLevel(level, env('LOG_MAX_LEVEL'))) {
+    if (this.silenced || !this.isAllowed(level, env('LOG_MAX_LEVEL'))) {
       return;
     }
 
@@ -62,15 +90,5 @@ export default class Logger extends Contract<LoggerOptions> {
         void transport.write(transport.format(item), item);
       }
     });
-  }
-
-  disable() {
-    debug('Logger %s disabled', this.options.name);
-    this.silenced = true;
-  }
-
-  enable() {
-    debug('Logger %s enabled', this.options.name);
-    this.silenced = false;
   }
 }
