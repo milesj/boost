@@ -9,8 +9,17 @@ import isAllowedLogLevel from './helpers/isAllowedLogLevel';
 import Transport from './Transport';
 import ConsoleTransport from './ConsoleTransport';
 import StreamTransport from './StreamTransport';
+import * as formats from './formats';
 
 export * from './constants';
 export * from './types';
 
-export { createLogger, isAllowedLogLevel, Logger, Transport, ConsoleTransport, StreamTransport };
+export {
+  createLogger,
+  formats,
+  isAllowedLogLevel,
+  Logger,
+  Transport,
+  ConsoleTransport,
+  StreamTransport,
+};

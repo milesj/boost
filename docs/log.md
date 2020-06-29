@@ -17,10 +17,10 @@ yarn add @boost/log
 
 ## Usage
 
-Logging is based around the concept of a "logger", which provides a set of functions of variable
-levels to log with. Logs are written to a provided transport, or `console` if not defined. To begin,
-instantiate a logger with `createLogger`, which returns a function that can be used for standard
-level logging.
+Logging is based around the concept of a "logger", which provides a set of functions of severity
+levels to log with. Logs are written to one or many provided transports -- or `console` if not
+defined. To begin, instantiate a logger with `createLogger`, which returns a function that can be
+used for standard level logging.
 
 ```ts
 import { createLogger } from '@boost/log';
@@ -30,7 +30,7 @@ const log = createLogger({ name: 'boost' });
 log('Something has happened…');
 ```
 
-Each function that logs requires a message string as the 1st argument, and an optional rest of
+Each logging function requires a message string as the 1st argument, and an optional rest of
 arguments to interpolate into the message using
 [util.format()](https://nodejs.org/api/util.html#util_util_format_format_args).
 
@@ -58,8 +58,8 @@ logger.log({
 The following options can be defined when creating a logger. They _cannot_ be customized after the
 fact.
 
-- `labels` (`object`) - A mapping of log level names to strings to use as the level label. Can be
-  used with [chalk](https://www.npmjs.com/package/chalk).
+- `labels` (`object`) - A mapping of localized log level names. Can be used with
+  [chalk](https://www.npmjs.com/package/chalk).
 - `name` (`string`) - Unique name of this logger instance, for debugging purposes.
 - `transports` (`Transportable`) - List of transports in which to write formatted log messages to.
 
@@ -90,6 +90,42 @@ log.info('Systems are stable');
 log.warn('Something is definitely going on…');
 log.error('Systems are down! %s', error.message);
 ```
+
+### Formatting messages
+
+All logs are represented as an object, known as a log item. These items contain the following
+metadata about the environment, the logger, and the current log message.
+
+- `host` (`string`) - The host name of the machine.
+- `label` (`string`) - The log level as a localized or customized label.
+- `level` (`LogLevel`) - The log level as a string.
+- `message` (`string`) - The log message with interpolated arguments applied.
+- `name` (`string`) - Name of the logger.
+- `pid` (`number`) - Current process ID.
+- `time` (`string`) - Timestamp of the log, native to the host machine.
+
+Before an item is written to a transport, it must be formatted from an object into a string. This
+can be done on a per transport basis using the `format` option, like so.
+
+```ts
+import { ConsoleTransport, formats } from '@boost/log';
+
+const transport = new ConsoleTransport({
+  format: (item) => `${item.level} ${item.message}`,
+  // Or a pre-built format
+  format: formats.json,
+});
+```
+
+Boost provides formats by default, all of which are pre-configured into each built-in transport.
+Feel free to use the following built-in formats, or customize your own!
+
+- `formats.console` - Formats the item as if it's being logged to `console`. Only inclues the label
+  and message.
+- `formats.debug` - Formats the item into a human-readable message with all item fields included.
+  This is the default format for most transports.
+- `formats.json` - Formats the entire item into JSON.
+- `formats.message` - Formats the item using only the message.
 
 ### Silencing output
 

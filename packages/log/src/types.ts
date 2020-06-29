@@ -9,7 +9,7 @@ export interface LogItem {
   message: string;
   name: string;
   pid: number;
-  time: string;
+  time: Date;
 }
 
 export type LogWriter = (message: string, ...args: unknown[]) => void;

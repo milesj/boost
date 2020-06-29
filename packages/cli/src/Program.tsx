@@ -12,7 +12,7 @@ import {
 } from '@boost/args';
 import { Predicates, Blueprint } from '@boost/common';
 import { Event } from '@boost/event';
-import { LoggerFunction, createLogger, StreamTransport } from '@boost/log';
+import { LoggerFunction, createLogger, formats, StreamTransport } from '@boost/log';
 import { ExitError, env } from '@boost/internal';
 import levenary from 'levenary';
 import CLIError from './CLIError';
@@ -106,8 +106,16 @@ export default class Program extends CommandManager<ProgramOptions> {
     this.logger = createLogger({
       name: 'cli',
       transports: [
-        new StreamTransport({ levels: ['debug', 'error', 'warn'], stream: this.errBuffer }),
-        new StreamTransport({ levels: ['log', 'trace', 'info'], stream: this.outBuffer }),
+        new StreamTransport({
+          format: formats.console,
+          levels: ['debug', 'error', 'warn'],
+          stream: this.errBuffer,
+        }),
+        new StreamTransport({
+          format: formats.console,
+          levels: ['log', 'trace', 'info'],
+          stream: this.outBuffer,
+        }),
       ],
     });
 
