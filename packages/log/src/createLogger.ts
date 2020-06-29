@@ -1,34 +1,28 @@
+import os from 'os';
 import util from 'util';
 import chalk from 'chalk';
 import { env } from '@boost/internal';
-import isAllowedLogLevel from './isAllowedLogLevel';
+import isAllowedLogLevel from './helpers/isAllowedLogLevel';
+import ConsoleTransport from './ConsoleTransport';
 import debug from './debug';
 import msg from './translate';
 import { LOG_LEVELS } from './constants';
-import { Logger, LogLevel, LogLevelLabels, Loggable } from './types';
+import { Logger, LogLevel, LogLevelLabels, LoggerOptions, LogItem } from './types';
 
 export const DEFAULT_LABELS: LogLevelLabels = {
   debug: chalk.gray(msg('log:levelDebug')),
   error: chalk.red(msg('log:levelError')),
   info: chalk.cyan(msg('log:levelInfo')),
+  log: chalk.yellow(msg('log:levelLog')),
   trace: chalk.magenta(msg('log:levelTrace')),
   warn: chalk.yellow(msg('log:levelWarn')),
 };
 
-export interface LoggerOptions {
-  /** Custom labels to use for each log type. */
-  labels?: LogLevelLabels;
-  /** Writable stream to send `stderr` messages to. */
-  stderr?: Loggable;
-  /** Writable stream to send `stdout` messages to. */
-  stdout?: Loggable;
-}
-
 export default function createLogger({
   labels = {},
-  stderr = process.stderr,
-  stdout = process.stdout,
-}: LoggerOptions = {}): Logger {
+  name,
+  transports = [new ConsoleTransport()],
+}: LoggerOptions): Logger {
   let silent = false;
 
   {
@@ -36,13 +30,14 @@ export default function createLogger({
     const maxLevel = env('LOG_MAX_LEVEL');
 
     debug(
-      'New logger created: %s %s',
+      'New logger "%s" created: %s %s',
+      name,
       defaultLevel ? `${defaultLevel} level` : 'all levels',
       maxLevel ? `(max ${maxLevel})` : '',
     );
   }
 
-  function logger(message: string, ...args: any[]) {
+  function logger(message: string, ...args: unknown[]) {
     const self = logger as Logger;
     const defaultLevel: LogLevel | undefined = env('LOG_DEFAULT_LEVEL');
 
@@ -53,30 +48,41 @@ export default function createLogger({
     }
   }
 
+  function writeToTransports(item: LogItem) {
+    transports.forEach((transport) => {
+      if (transport.levels.includes(item.level)) {
+        void transport.write(transport.format(item), item);
+      }
+    });
+  }
+
   LOG_LEVELS.forEach((level) => {
     const label = labels[level] || DEFAULT_LABELS[level] || '';
-    const stream = level === 'debug' || level === 'error' || level === 'warn' ? stderr : stdout;
 
     Object.defineProperty(logger, level, {
       value: function log(message: string, ...args: unknown[]) {
-        const maxLevel: LogLevel | undefined = env('LOG_MAX_LEVEL');
-
-        if (!silent && isAllowedLogLevel(level, maxLevel)) {
-          const output = util.format(message, ...args);
-
-          stream.write(level === 'log' ? `${output}\n` : `${label} ${output}\n`);
+        if (!silent && isAllowedLogLevel(level, env('LOG_MAX_LEVEL'))) {
+          writeToTransports({
+            host: os.hostname(),
+            label,
+            level,
+            message: util.format(message, ...args),
+            name,
+            pid: process.pid,
+            time: new Date().toUTCString(),
+          });
         }
       },
     });
   });
 
   logger.enable = () => {
-    debug('Logger enabled');
+    debug('Logger %s enabled', name);
     silent = false;
   };
 
   logger.disable = () => {
-    debug('Logger disabled');
+    debug('Logger %s disabled', name);
     silent = true;
   };
 
