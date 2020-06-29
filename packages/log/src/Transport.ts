@@ -1,7 +1,7 @@
 import os from 'os';
 import { Contract, Predicates, Blueprint } from '@boost/common';
 import { Transportable, TransportOptions, LogItem, LogLevel, Formatter } from './types';
-import defaultFormatter from './helpers/defaultFormatter';
+import * as formats from './formats';
 import { LOG_LEVELS } from './constants';
 
 export default abstract class Transport<Options extends TransportOptions> extends Contract<Options>
@@ -19,9 +19,7 @@ export default abstract class Transport<Options extends TransportOptions> extend
    */
   format(item: LogItem): string {
     let output =
-      typeof this.options.format === 'function'
-        ? this.options.format(item)
-        : defaultFormatter(item);
+      typeof this.options.format === 'function' ? this.options.format(item) : formats.debug(item);
 
     if (!output.endsWith(os.EOL)) {
       output += os.EOL;

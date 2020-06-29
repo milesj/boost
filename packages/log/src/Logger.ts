@@ -54,7 +54,7 @@ export default class Logger extends Contract<LoggerOptions> {
       message: util.format(message, ...args),
       name: this.options.name,
       pid: process.pid,
-      time: new Date().toUTCString(),
+      time: new Date(),
     };
 
     this.options.transports.forEach((transport) => {
