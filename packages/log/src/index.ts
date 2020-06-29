@@ -3,10 +3,13 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import createLogger, { LoggerOptions } from './createLogger';
-import isAllowedLogLevel from './isAllowedLogLevel';
+import createLogger from './createLogger';
+import isAllowedLogLevel from './helpers/isAllowedLogLevel';
+import Transport from './Transport';
+import ConsoleTransport from './ConsoleTransport';
+import StreamTransport from './StreamTransport';
 
 export * from './constants';
 export * from './types';
 
-export { createLogger, isAllowedLogLevel, LoggerOptions };
+export { createLogger, isAllowedLogLevel, Transport, ConsoleTransport, StreamTransport };

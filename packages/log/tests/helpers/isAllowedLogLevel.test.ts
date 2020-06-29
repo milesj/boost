@@ -1,4 +1,4 @@
-import isAllowedLogLevel from '../src/isAllowedLogLevel';
+import isAllowedLogLevel from '../../src/helpers/isAllowedLogLevel';
 
 describe('isAllowedLogLevel()', () => {
   it('returns false for unknown level', () => {

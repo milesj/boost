@@ -1,5 +1,5 @@
-import { LogLevel } from './types';
-import { LOG_LEVELS } from './constants';
+import { LogLevel } from '../types';
+import { LOG_LEVELS } from '../constants';
 
 export default function isAllowedLogLevel(level: LogLevel, maxLevel?: LogLevel): boolean {
   if (!maxLevel) {

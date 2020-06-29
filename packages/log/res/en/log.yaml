@@ -1,5 +1,6 @@
 levelDebug: debug
 levelError: error
 levelInfo: info
+levelLog: log
 levelTrace: trace
 levelWarn: warn
