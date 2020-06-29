@@ -7,6 +7,7 @@ describe('formats', () => {
     label: 'Error',
     level: 'error',
     message: 'Hello there!',
+    metadata: {},
     name: 'test',
     pid: 1,
     time: new Date(),
@@ -30,7 +31,22 @@ describe('formats', () => {
   describe('debug()', () => {
     it('includes all item fields', () => {
       expect(formats.debug(item)).toBe(
-        `[${item.time.toISOString()}] ERROR Hello there! (name=test, host=machine.local, pid=1)`,
+        `[${item.time.toISOString()}] ERROR Hello there! (host=machine.local, name=test, pid=1)`,
+      );
+    });
+
+    it('supports more metadata', () => {
+      expect(
+        formats.debug({
+          ...item,
+          metadata: {
+            foo: 'abc',
+            bar: 123,
+            baz: true,
+          },
+        }),
+      ).toBe(
+        `[${item.time.toISOString()}] ERROR Hello there! (bar=123, baz=true, foo=abc, host=machine.local, name=test, pid=1)`,
       );
     });
   });

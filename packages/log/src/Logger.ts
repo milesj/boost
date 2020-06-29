@@ -5,10 +5,10 @@ import { env } from '@boost/internal';
 import debug from './debug';
 import ConsoleTransport from './ConsoleTransport';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
-import { LoggerOptions, LogLevel, Formatter, Transportable } from './types';
+import { LoggerOptions, LogLevel, Formatter, Transportable, LogMetadata } from './types';
 
 export default class Logger extends Contract<LoggerOptions> {
-  protected silenced: boolean = false;
+  protected silent: boolean = false;
 
   constructor(options: LoggerOptions) {
     super(options);
@@ -27,6 +27,7 @@ export default class Logger extends Contract<LoggerOptions> {
   blueprint({ array, func, object, shape, string }: Predicates) {
     return {
       labels: object(string()),
+      metadata: object(),
       name: string().required().notEmpty(),
       transports: array(
         shape({
@@ -41,12 +42,12 @@ export default class Logger extends Contract<LoggerOptions> {
 
   disable() {
     debug('Logger %s disabled', this.options.name);
-    this.silenced = true;
+    this.silent = true;
   }
 
   enable() {
     debug('Logger %s enabled', this.options.name);
-    this.silenced = false;
+    this.silent = false;
   }
 
   isAllowed(level: LogLevel, maxLevel?: LogLevel): boolean {
@@ -68,18 +69,32 @@ export default class Logger extends Contract<LoggerOptions> {
     return false;
   }
 
-  log({ level: baseLevel, message }: { level?: LogLevel; message: string }, ...args: unknown[]) {
-    const level = baseLevel || env('LOG_DEFAULT_LEVEL') || 'log';
+  log({
+    args = [],
+    level,
+    message,
+    metadata = {},
+  }: {
+    args?: unknown[];
+    level?: LogLevel;
+    message: string;
+    metadata?: LogMetadata;
+  }) {
+    const logLevel = level || env('LOG_DEFAULT_LEVEL') || 'log';
 
-    if (this.silenced || !this.isAllowed(level, env('LOG_MAX_LEVEL'))) {
+    if (this.silent || !this.isAllowed(logLevel, env('LOG_MAX_LEVEL'))) {
       return;
     }
 
     const item = {
       host: os.hostname(),
-      label: this.options.labels[level] || DEFAULT_LABELS[level] || '',
-      level,
+      label: this.options.labels[logLevel] || DEFAULT_LABELS[logLevel] || '',
+      level: logLevel,
       message: util.format(message, ...args),
+      metadata: {
+        ...this.options.metadata,
+        ...metadata,
+      },
       name: this.options.name,
       pid: process.pid,
       time: new Date(),
