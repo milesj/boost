@@ -1,16 +1,20 @@
 import { env } from '@boost/internal';
-import createLogger, { LoggerOptions, DEFAULT_LABELS } from '../src/createLogger';
-import { Logger } from '../src/types';
+import createLogger, { DEFAULT_LABELS } from '../src/createLogger';
+import StreamTransport from '../src/StreamTransport';
+import { Logger, LoggerOptions } from '../src/types';
 
 describe('createLogger()', () => {
   let logger: Logger;
   let outStream: { write: jest.Mock };
   let errStream: { write: jest.Mock };
 
-  function mockLogger(options?: LoggerOptions) {
+  function mockLogger(options?: Partial<LoggerOptions>) {
     return createLogger({
-      stderr: errStream,
-      stdout: outStream,
+      name: 'test',
+      transports: [
+        new StreamTransport({ levels: ['debug', 'warn', 'error'], stream: errStream }),
+        new StreamTransport({ levels: ['log', 'trace', 'info'], stream: outStream }),
+      ],
       ...options,
     });
   }
@@ -27,17 +31,17 @@ describe('createLogger()', () => {
     env('LOG_MAX_LEVEL', null);
   });
 
-  it('hooks up to process by default', () => {
-    logger = createLogger();
+  it('hooks up to console by default', () => {
+    logger = createLogger({ name: 'test' });
 
-    const outSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-    const errSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    const outSpy = jest.spyOn(console, 'log').mockImplementation(() => true);
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => true);
 
     logger('Hello');
     logger.error('Oops');
 
-    expect(outSpy).toHaveBeenCalledWith('Hello\n');
-    expect(errSpy).toHaveBeenCalledWith(`${DEFAULT_LABELS.error} Oops\n`);
+    expect(outSpy).toHaveBeenCalledWith('Hello');
+    expect(errSpy).toHaveBeenCalledWith(`${DEFAULT_LABELS.error} Oops`);
 
     outSpy.mockRestore();
     errSpy.mockRestore();

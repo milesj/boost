@@ -18,14 +18,14 @@ yarn add @boost/log
 ## Usage
 
 Logging is based around the concept of a "logger", which provides a set of functions of variable
-levels to log with. Logs are written to a defined writable stream, or `process.stdout` and
-`process.stderr` if not defined. To begin, instantiate a logger with `createLogger`, which returns a
-function that can be used for standard level logging.
+levels to log with. Logs are written to a provided transport, or `console` if not defined. To begin,
+instantiate a logger with `createLogger`, which returns a function that can be used for standard
+level logging.
 
 ```ts
 import { createLogger } from '@boost/log';
 
-const log = createLogger();
+const log = createLogger({ name: 'boost' });
 
 log('Something has happened…');
 ```
@@ -46,20 +46,19 @@ fact.
 
 - `labels` (`object`) - A mapping of log level names to strings to use as the message prefix. Can be
   used with [chalk](https://www.npmjs.com/package/chalk).
-- `stderr` (`WriteStream`) - The writable stream to log error-like output. Defaults to
-  `process.stderr`.
-- `stdout` (`WriteStream`) - The writable stream to log standard output. Defaults to
-  `process.stdout`.
+- `name` (`string`) - Unique name of this logger instance.
+- `transports` (`Transportable`) - List of transports in which to write formatted log messages to.
 
 ```ts
 import chalk from 'chalk';
-import { createLogger } from '@boost/log';
+import { createLogger, StreamTransport } from '@boost/log';
 
 const log = createLogger({
+  name: 'boost',
   labels: {
     error: chalk.bgRed.black.bold(' FAIL '),
   },
-  stderr: customStream,
+  transports: [new StreamTransport({ levels: ['error'], stream: process.stderr })],
 });
 ```
 
@@ -78,12 +77,10 @@ log.warn('Something is definitely going on…');
 log.error('Systems are down! %s', error.message);
 ```
 
-> Log, trace, and info functions write to `stdout`, while debug, warn, and error write to `stderr`.
-
 ### Silencing output
 
-By default, all logged messages are immediately written to the configured streams. To silence output
-and disable stream writes, call the `logger.disable()` function, and to re-enable, call
+By default, all logged messages are immediately written to the configured transports. To silence
+output and disable writes, call the `logger.disable()` function, and to re-enable, call
 `logger.enable()`.
 
 ```ts
@@ -94,6 +91,34 @@ log.debug('Something is broken!');
 ```
 
 > Messages that are logged while silenced are _lost_ and are _not_ buffered.
+
+## Transport types
+
+There are 2 types of transports that can be used within a logger.
+
+### `ConsoleTransport`
+
+Logs messages to the native `console` according to the corresponding level. This is the default
+transport that is used when no transports are defined.
+
+```ts
+import { ConsoleTransport } from '@boost/log';
+
+const transport = new ConsoleTransport();
+```
+
+### `StreamTransport`
+
+Logs messages to any writeable stream that defines a `write(message: string)` method.
+
+```ts
+import { StreamTransport } from '@boost/log';
+
+const transport = new StreamTransport({
+  levels: ['error', 'warn'],
+  stream: process.stderr,
+});
+```
 
 ## Test utilities
 
