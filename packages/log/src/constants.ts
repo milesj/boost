@@ -13,3 +13,5 @@ export const DEFAULT_LABELS: LogLevelLabels = {
   trace: chalk.magenta(msg('log:levelTrace')),
   warn: chalk.yellow(msg('log:levelWarn')),
 };
+
+export const MAX_LOG_SIZE = 10485760;
