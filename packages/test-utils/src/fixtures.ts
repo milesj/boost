@@ -1,3 +1,4 @@
+import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
 
@@ -69,6 +70,21 @@ export function createTempFileInFixture(fixture: string, file: string, data: any
   fs.writeFileSync(filePath, data);
 
   return () => removeTempFile(filePath);
+}
+
+let folderCount = 0;
+
+export function createTempFixtureFolder(): string {
+  const tmp = os.tmpdir();
+  // eslint-disable-next-line no-magic-numbers
+  const dir = normalizePath(tmp, `boost-${Date.now().toString(16)}${folderCount}`);
+
+  fs.ensureDirSync(dir);
+  folderCount += 1;
+
+  TEMPORARY_FILES.add(dir);
+
+  return dir;
 }
 
 if (typeof afterAll === 'function') {
