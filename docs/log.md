@@ -174,8 +174,8 @@ There are 2 types of transports that can be used within a logger.
 
 ### `ConsoleTransport`
 
-Logs messages to the native `console` according to the corresponding level. This is the default
-transport when no transports are defined.
+Logs messages to the native `console` and its corresponding level. This is the default transport
+when no transports are defined.
 
 ```ts
 import { ConsoleTransport } from '@boost/log';
@@ -195,6 +195,26 @@ const transport = new StreamTransport({
   stream: process.stderr,
 });
 ```
+
+### `FileTransport`
+
+Appends and logs messages to a file at the defined path. Will automatically rotate files when a max
+file size is met.
+
+```ts
+import { FileTransport } from '@boost/log';
+
+const transport = new FileTransport({
+  levels: ['error'],
+  path: '/var/log/error.log',
+});
+```
+
+Besides `path`, the following options are also supported.
+
+- `gzip` (`boolean`) - Apply gzip compression to the write stream.
+- `maxSize` (`number`) - Maximum file size before rotating file. Will create a backup and truncate
+  the current file. Defaults to 10mb.
 
 ## Test utilities
 
