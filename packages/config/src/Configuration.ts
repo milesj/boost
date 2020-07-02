@@ -1,4 +1,4 @@
-import { Contract, predicates, PortablePath } from '@boost/common';
+import { Contract, predicates, PortablePath, Blueprint } from '@boost/common';
 import Cache from './Cache';
 import ConfigFinder from './ConfigFinder';
 import IgnoreFinder from './IgnoreFinder';
@@ -154,7 +154,7 @@ export default abstract class Configuration<T extends object> extends Contract<T
     const config = await this.getProcessor().process(
       this.options,
       files,
-      this.blueprint(predicates),
+      this.blueprint(predicates) as Blueprint<T>,
     );
 
     return {

@@ -1,5 +1,5 @@
 import { BackendModule, Resource, ResourceKey } from 'i18next';
-import { parseFile, Contract, Path, Predicates } from '@boost/common';
+import { parseFile, Contract, Path, Predicates, Blueprint } from '@boost/common';
 import TranslateError from './TranslateError';
 import { Locale, Format } from './types';
 
@@ -30,9 +30,9 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
     });
   }
 
-  blueprint({ array, instance, string }: Predicates) /* infer */ {
+  blueprint({ array, instance, string }: Predicates): Blueprint<FileBackendOptions> {
     return {
-      format: string('yaml').oneOf(['js', 'json', 'yaml']),
+      format: string('yaml').oneOf<Format>(['js', 'json', 'yaml']),
       paths: array(instance(Path, true).notNullable()),
     };
   }

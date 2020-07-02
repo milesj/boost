@@ -37,7 +37,7 @@ export type BlueprintFactory<T extends object> = (predicates: Predicates) => Blu
 export interface Optionable<T extends object = {}> {
   readonly options: Required<T>;
 
-  blueprint: BlueprintFactory<T>;
+  blueprint: BlueprintFactory<object>;
 }
 
 export interface Toolable {

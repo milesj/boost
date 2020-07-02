@@ -1,5 +1,5 @@
 import { vol } from 'memfs';
-import { Predicates } from '@boost/common';
+import { Blueprint, Predicates } from '@boost/common';
 import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
 import { ExtType, ExtendsSetting } from '../src/types';
 import { stubPath } from './helpers';
@@ -15,7 +15,7 @@ interface BoostConfig {
 }
 
 class BoostConfiguration extends Configuration<BoostConfig> {
-  blueprint({ bool, string }: Predicates) {
+  blueprint({ bool, string }: Predicates): Blueprint<BoostConfig> {
     return {
       debug: bool(),
       extends: createExtendsPredicate(),

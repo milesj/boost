@@ -1,5 +1,5 @@
 import os from 'os';
-import { Predicates } from '@boost/common';
+import { Predicates, Blueprint } from '@boost/common';
 import PipelineError from './PipelineError';
 import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
@@ -27,7 +27,7 @@ export default class PooledPipeline<
 
   protected running: WorkUnit<{}, Input, Output>[] = [];
 
-  blueprint({ bool, number }: Predicates) {
+  blueprint({ bool, number }: Predicates): Blueprint<PooledOptions> {
     return {
       concurrency: number(os.cpus().length).gte(1),
       filo: bool(),

@@ -109,7 +109,7 @@ to inherit options through its constructor. This automatically happens when load
 configuration file.
 
 ```ts
-import { Predicates } from '@boost/common';
+import { Blueprint, Predicates } from '@boost/common';
 import { Plugin } from '@boost/plugin';
 
 interface RendererOptions {
@@ -119,7 +119,7 @@ interface RendererOptions {
 class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
   // ...
 
-  blueprint({ bool }: Predicates) {
+  blueprint({ bool }: Predicates): Blueprint<RendererOptions> {
     return {
       async: bool(),
     };

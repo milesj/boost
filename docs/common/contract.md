@@ -12,7 +12,7 @@ an [optimal blueprint](https://milesj.gitbook.io/optimal/usage#blueprint) that m
 interface.
 
 ```ts
-import { Contract, Predicates } from '@boost/common';
+import { Contract, Blueprint, Predicates } from '@boost/common';
 
 export interface AdapterOptions {
   name?: string;
@@ -20,7 +20,7 @@ export interface AdapterOptions {
 }
 
 export default class Adapter extends Contract<AdapterOptions> {
-  blueprint({ number, string }: Predicates) {
+  blueprint({ number, string }: Predicates): Blueprint<AdapterOptions> {
     return {
       name: string().notEmpty(),
       priority: number().gte(0),

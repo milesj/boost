@@ -1,4 +1,11 @@
-import { Contract, Predicates, isObject, ModuleName, MODULE_NAME_PATTERN } from '@boost/common';
+import {
+  Contract,
+  Predicates,
+  isObject,
+  ModuleName,
+  MODULE_NAME_PATTERN,
+  Blueprint,
+} from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { color } from '@boost/internal';
@@ -8,6 +15,7 @@ import upperFirst from 'lodash/upperFirst';
 import Loader from './Loader';
 import PluginError from './PluginError';
 import debug from './debug';
+import { DEFAULT_PRIORITY } from './constants';
 import {
   RegistryOptions,
   Pluggable,
@@ -16,7 +24,6 @@ import {
   RegisterOptions,
   Callback,
 } from './types';
-import { DEFAULT_PRIORITY } from './constants';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
   RegistryOptions<Plugin>
@@ -62,7 +69,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
     debug('New plugin type created: %s', this.singularName);
   }
 
-  blueprint({ func }: Predicates) {
+  blueprint({ func }: Predicates): Blueprint<RegistryOptions<Plugin>> {
     return {
       afterShutdown: func<Callback>(),
       afterStartup: func<Callback>(),
