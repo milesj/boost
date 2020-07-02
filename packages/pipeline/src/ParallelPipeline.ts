@@ -1,4 +1,4 @@
-import { instanceOf } from '@boost/common';
+import { instanceOf, Blueprint, Predicates } from '@boost/common';
 import Context from './Context';
 import Pipeline from './Pipeline';
 import WorkUnit from './WorkUnit';
@@ -11,6 +11,10 @@ export default abstract class ParallelPipeline<
   Input = unknown,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
+  blueprint(preds: Predicates): Blueprint<object> {
+    return {};
+  }
+
   /**
    * Add a work unit to the list of items to process.
    */

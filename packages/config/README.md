@@ -7,7 +7,7 @@
 Powerful config file and ignore file manager, finder, and loader.
 
 ```ts
-import { Predicates } from '@boost/common';
+import { Blueprint, Predicates } from '@boost/common';
 import { Configuration } from '@boost/config';
 
 interface ConfigFile {
@@ -16,7 +16,7 @@ interface ConfigFile {
 }
 
 class ConfigManager extends Configuration<ConfigFile> {
-  blueprint({ bool }: Predicates) {
+  blueprint({ bool }: Predicates): Blueprint<ConfigFile> {
     return {
       debug: bool(),
       sourceMaps: bool(),

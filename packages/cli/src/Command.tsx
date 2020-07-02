@@ -145,7 +145,7 @@ export default abstract class Command<
   blueprint() {
     // This is technically invalid, but most commands will not be using options.
     // This is a side-effect of `CommandManager`, in which options are required for `Program`.
-    return {} as any;
+    return {};
   }
 
   /**

@@ -8,10 +8,6 @@ export default class AggregatedPipeline<
   Input = unknown,
   Output = Input
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
-  blueprint() {
-    return {};
-  }
-
   /**
    * Execute all work units in parallel with a value being passed to each work unit.
    * Work units will synchronize regardless of race conditions and errors.

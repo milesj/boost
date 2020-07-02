@@ -7,6 +7,7 @@ import {
   toArray,
   isModuleName,
   isFilePath,
+  Blueprint,
 } from '@boost/common';
 import { color } from '@boost/internal';
 import minimatch from 'minimatch';
@@ -33,7 +34,7 @@ export default class ConfigFinder<T extends object> extends Finder<
   ConfigFile<T>,
   ConfigFinderOptions<T>
 > {
-  blueprint({ array, bool, func, shape, string }: Predicates) {
+  blueprint({ array, bool, func, shape, string }: Predicates): Blueprint<ConfigFinderOptions<T>> {
     return {
       extendsSetting: string(),
       extensions: array(string<ExtType>(), DEFAULT_EXTS),

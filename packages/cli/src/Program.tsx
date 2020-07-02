@@ -10,7 +10,7 @@ import {
   PrimitiveType,
   ValidationError,
 } from '@boost/args';
-import { Predicates } from '@boost/common';
+import { Predicates, Blueprint } from '@boost/common';
 import { Event } from '@boost/event';
 import { Logger, createLogger } from '@boost/log';
 import { ExitError, env } from '@boost/internal';
@@ -120,7 +120,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     // }
   }
 
-  blueprint({ string }: Predicates) {
+  blueprint({ string }: Predicates): Blueprint<ProgramOptions> {
     return {
       banner: string(),
       bin: string().notEmpty().required().kebabCase(),

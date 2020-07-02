@@ -7,10 +7,6 @@ export default class ConcurrentPipeline<
   Input = unknown,
   Output = Input
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
-  blueprint() {
-    return {};
-  }
-
   /**
    * Execute all work units in parallel with a value being passed to each work unit.
    * If an error occurs, the pipeline will abort early, otherwise return a list of all results.

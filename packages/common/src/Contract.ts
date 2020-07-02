@@ -20,7 +20,7 @@ export default abstract class Contract<T extends object = {}> implements Optiona
     // so it's read only, but we still want to modify it with this function.
     // @ts-expect-error
     this.options = Object.freeze(
-      optimal({ ...this.options, ...nextOptions }, this.blueprint(predicates), {
+      optimal({ ...this.options, ...nextOptions }, this.blueprint(predicates) as Blueprint<T>, {
         name: this.constructor.name,
       }),
     );
@@ -32,5 +32,5 @@ export default abstract class Contract<T extends object = {}> implements Optiona
    * Define an optimal blueprint in which to validate and build the
    * options object passed to the constructor, or when manual setting.
    */
-  abstract blueprint(predicates: Predicates): Blueprint<T>;
+  abstract blueprint(predicates: Predicates): Blueprint<object>;
 }
