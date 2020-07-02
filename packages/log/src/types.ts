@@ -59,6 +59,9 @@ export interface Transportable {
 }
 
 export interface TransportOptions {
+  eol?: string;
   format?: Formatter | null;
   levels: LogLevel[];
 }
+
+export type Rotation = 'hourly' | 'daily' | 'weekly' | 'monthly';

@@ -170,7 +170,14 @@ log.debug('Something is broken!');
 
 ## Transport types
 
-There are 2 types of transports that can be used within a logger.
+There are multiple types of transports that can be used within a logger, all of which support the
+following shared options.
+
+- `eol` (`string`) - End of line character to append to a message. Defaults to `os.EOL`.
+  _(optional)_
+- `format` (`Formatter`) - Function to format a log item into a message string. Default is transport
+  dependent. _(optional)_
+- `levels` (`LogLevel[]`) - List of log levels to only write messages for.
 
 ### `ConsoleTransport`
 
@@ -210,11 +217,27 @@ const transport = new FileTransport({
 });
 ```
 
-Besides `path`, the following options are also supported.
-
-- `gzip` (`boolean`) - Apply gzip compression to the write stream.
+- `gzip` (`boolean`) - Apply gzip compression to the write stream. _(optional)_
 - `maxSize` (`number`) - Maximum file size before rotating file. Will create a backup and truncate
-  the current file. Defaults to 10mb.
+  the current file. Defaults to 10mb. _(optional)_
+- `path` (`string | Path`) - Absolute file system path for the intended log file.
+
+### `RotatingFileTransport`
+
+Like `FileTransport`, but also rotates files based on timestamps and a chosen periodic interval.
+
+```ts
+import { RotatingFileTransport } from '@boost/log';
+
+const transport = new RotatingFileTransport({
+  levels: ['error'],
+  path: '/var/log/error.log',
+  rotation: 'daily',
+});
+```
+
+- `rotation` (`hourly | daily | weekly | monthly`) - Period in which to rotate files. Will append a
+  timestamp to the rotated log file.
 
 ## Test utilities
 
