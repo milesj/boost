@@ -1,9 +1,9 @@
 import fs from 'fs';
 import zlib from 'zlib';
-import { Predicates, PortablePath, Path } from '@boost/common';
-import Transport from './Transport';
-import { MAX_LOG_SIZE } from './constants';
-import { TransportOptions } from './types';
+import { PortablePath, Path, Blueprint, Predicates } from '@boost/common';
+import Transport from '../Transport';
+import { TransportOptions } from '../types';
+import { MAX_LOG_SIZE } from '../constants';
 
 export interface FileTransportOptions extends TransportOptions {
   gzip?: boolean;
@@ -11,7 +11,9 @@ export interface FileTransportOptions extends TransportOptions {
   path: PortablePath;
 }
 
-export default class FileTransport extends Transport<FileTransportOptions> {
+export default class FileTransport<
+  Options extends FileTransportOptions = FileTransportOptions
+> extends Transport<Options> {
   readonly path: Path;
 
   stream?: NodeJS.WritableStream;
@@ -24,7 +26,7 @@ export default class FileTransport extends Transport<FileTransportOptions> {
 
   protected rotating: boolean = false;
 
-  constructor(options: FileTransportOptions) {
+  constructor(options: Options) {
     super(options);
 
     this.path = Path.resolve(this.options.path);
@@ -32,11 +34,11 @@ export default class FileTransport extends Transport<FileTransportOptions> {
     this.checkFolderRequirements();
   }
 
-  blueprint(preds: Predicates) {
+  blueprint(preds: Predicates): Blueprint<FileTransportOptions> {
     const { bool, instance, union, number, string } = preds;
 
     return {
-      ...this.sharedBlueprint(preds),
+      ...super.blueprint(preds),
       gzip: bool(),
       maxSize: number(MAX_LOG_SIZE).positive(),
       path: union([string(), instance(Path)], '').required(),
@@ -56,7 +58,7 @@ export default class FileTransport extends Transport<FileTransportOptions> {
     };
 
     if (this.stream) {
-      this.stream.on('finish', onClose).end();
+      this.stream.once('finish', onClose).end();
     } else {
       onClose();
     }
@@ -138,8 +140,6 @@ export default class FileTransport extends Transport<FileTransportOptions> {
       flags: 'a',
     });
 
-    this.lastSize = stream.bytesWritten;
-
     // Apply gzip compression to the stream
     if (this.options.gzip) {
       const gzip = zlib.createGzip();
@@ -164,10 +164,12 @@ export default class FileTransport extends Transport<FileTransportOptions> {
    */
   protected getNextIncrementCount(name: string): number {
     const files = fs.readdirSync(this.path.parent().path());
+    // eslint-disable-next-line security/detect-non-literal-regexp
+    const pattern = new RegExp(`^${name}.\\d+$`, 'u');
     let count = 0;
 
     files.forEach((file) => {
-      if (file.startsWith(name)) {
+      if (file.match(pattern)) {
         count += 1;
       }
     });
@@ -176,27 +178,35 @@ export default class FileTransport extends Transport<FileTransportOptions> {
   }
 
   /**
-   * Rotate the current file into a new file with an incremented name.
+   * Close the open stream and attempt to rotate the file.
    */
   protected closeStreamAndRotateFile() {
+    // istanbul ignore next
     if (this.draining || this.rotating) {
       return;
     }
 
     this.rotating = true;
     this.close(() => {
-      let fileName = this.getRotatedFileName();
-
-      fileName += `.${this.getNextIncrementCount(fileName)}`;
-
-      if (this.options.gzip) {
-        fileName += '.gz';
-      }
-
-      fs.renameSync(this.path.path(), this.path.parent().append(fileName).path());
-
-      this.lastSize = 0;
+      this.rotateFile();
       this.rotating = false;
     });
+  }
+
+  /**
+   * Rotate the current file into a new file with an incremented name.
+   */
+  protected rotateFile() {
+    let fileName = this.getRotatedFileName();
+
+    if (this.options.gzip) {
+      fileName += '.gz';
+    }
+
+    fileName += `.${this.getNextIncrementCount(fileName)}`;
+
+    fs.renameSync(this.path.path(), this.path.parent().append(fileName).path());
+
+    this.lastSize = 0;
   }
 }

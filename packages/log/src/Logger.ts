@@ -1,9 +1,9 @@
 import os from 'os';
 import util from 'util';
-import { Contract, Predicates } from '@boost/common';
+import { Contract, Predicates, Blueprint } from '@boost/common';
 import { env } from '@boost/internal';
+import ConsoleTransport from './transports/ConsoleTransport';
 import debug from './debug';
-import ConsoleTransport from './ConsoleTransport';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { LoggerOptions, LogLevel, Formatter, Transportable, LogMetadata } from './types';
 
@@ -24,7 +24,7 @@ export default class Logger extends Contract<LoggerOptions> {
     );
   }
 
-  blueprint({ array, func, object, shape, string }: Predicates) {
+  blueprint({ array, func, object, shape, string }: Predicates): Blueprint<LoggerOptions> {
     return {
       labels: object(string()),
       metadata: object(),

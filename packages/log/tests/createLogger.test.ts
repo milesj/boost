@@ -2,7 +2,7 @@ import { env } from '@boost/internal';
 import createLogger from '../src/createLogger';
 import { DEFAULT_LABELS } from '../src/constants';
 import * as formats from '../src/formats';
-import StreamTransport from '../src/StreamTransport';
+import StreamTransport from '../src/transports/StreamTransport';
 import { LoggerFunction, LoggerOptions, Formatter } from '../src/types';
 
 describe('createLogger()', () => {
@@ -15,11 +15,13 @@ describe('createLogger()', () => {
       name: 'test',
       transports: [
         new StreamTransport({
+          eol: '\n',
           format,
           levels: ['debug', 'warn', 'error'],
           stream: errStream,
         }),
         new StreamTransport({
+          eol: '\n',
           format,
           levels: ['log', 'trace', 'info'],
           stream: outStream,
