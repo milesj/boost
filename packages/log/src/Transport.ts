@@ -14,28 +14,27 @@ export default abstract class Transport<Options extends TransportOptions> extend
     this.levels = this.options.levels;
   }
 
+  blueprint({ array, func, string }: Predicates): Blueprint<TransportOptions> {
+    return {
+      eol: string(os.EOL),
+      format: func<Formatter>().nullable(),
+      levels: array(string().oneOf(LOG_LEVELS)),
+    };
+  }
+
   /**
    * Format the log item into a message string, and append a trailing newline if missing.
    */
   format(item: LogItem): string {
-    let output =
-      typeof this.options.format === 'function' ? this.options.format(item) : formats.debug(item);
+    const { eol, format } = this.options;
 
-    if (!output.endsWith(os.EOL)) {
-      output += os.EOL;
+    let output = typeof format === 'function' ? format(item) : formats.debug(item);
+
+    if (!output.endsWith(eol!)) {
+      output += eol;
     }
 
     return output;
-  }
-
-  /**
-   * Defines a shared blueprint for all sub-classes to utilize.
-   */
-  protected sharedBlueprint({ array, func, string }: Predicates): Blueprint<TransportOptions> {
-    return {
-      format: func<Formatter>().nullable(),
-      levels: array(string().oneOf(LOG_LEVELS)),
-    };
   }
 
   /**
