@@ -45,7 +45,7 @@ describe('createTranslator()', () => {
   });
 
   it('sets `dir` and `locale`', () => {
-    expect(translator.dir).toBe('ltr');
+    expect(translator.direction).toBe('ltr');
     expect(translator.locale).toBe('en');
   });
 
@@ -62,19 +62,40 @@ describe('createTranslator()', () => {
     });
   });
 
-  describe('changeLocale()', () => {
-    it('calls `changeLanguage` on i18next', () => {
-      const spy = jest.spyOn(translator.i18n, 'changeLanguage');
-
-      translator.changeLocale('ja');
-
-      expect(spy).toHaveBeenCalledWith('ja', expect.anything());
+  describe('msg()', () => {
+    beforeEach(() => {
+      translator = createTranslator('common', [
+        getFixturePath('i18n-resources'),
+        getFixturePath('i18n-resources-more'),
+      ]);
     });
 
-    it('updates `dir` and `locale`', () => {
-      translator.changeLocale('ja');
+    it('merges objects from multiple resource paths', () => {
+      expect(translator('common:lang')).toBe('en');
+      expect(translator('common:region')).toBe('region'); // MISSING
+    });
 
-      expect(translator.dir).toBe('ltr');
+    it('supports locale with region', async () => {
+      await translator.changeLocale('en-US');
+
+      expect(translator('common:lang')).toBe('en');
+      expect(translator('common:region')).toBe('us');
+    });
+  });
+
+  describe('changeLocale()', () => {
+    it('calls `changeLanguage` on i18next', async () => {
+      const spy = jest.spyOn(translator.i18n, 'changeLanguage');
+
+      await translator.changeLocale('ja');
+
+      expect(spy).toHaveBeenCalledWith('ja');
+    });
+
+    it('updates `dir` and `locale`', async () => {
+      await translator.changeLocale('ja');
+
+      expect(translator.direction).toBe('ltr');
       expect(translator.locale).toBe('ja');
     });
   });

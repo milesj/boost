@@ -38,7 +38,7 @@ export default function createTranslator(
     debug: debugOpt = false,
     fallbackLocale = 'en',
     locale,
-    lookupType,
+    lookupType = 'all',
     resourceFormat = 'yaml',
   }: TranslatorOptions = {},
 ): Translator {
@@ -67,15 +67,17 @@ export default function createTranslator(
         format: resourceFormat,
         paths: resourcePaths,
       },
+      cleanCode: true,
       debug: debugOpt,
       defaultNS: namespaces[0],
       fallbackLng: fallbackLocale,
       initImmediate: false,
       lng: locale,
       load: lookupType,
-      lowerCaseLng: true,
+      lowerCaseLng: false,
       ns: namespaces,
-      returnNull: false,
+      returnEmptyString: true,
+      returnNull: true,
     },
     handleError,
   );
@@ -93,18 +95,16 @@ export default function createTranslator(
     });
   }
 
-  msg.dir = translator.dir();
+  msg.direction = translator.dir();
   msg.locale = translator.language;
 
-  msg.changeLocale = (lang: Locale) => {
+  msg.changeLocale = async (lang: Locale) => {
     debug('Locale manually changed to "%s"', lang);
 
-    translator.changeLanguage(lang, (error) => {
-      handleError(error);
+    await translator.changeLanguage(lang);
 
-      msg.dir = translator.dir();
-      msg.locale = translator.language;
-    });
+    msg.direction = translator.dir();
+    msg.locale = translator.language;
   };
 
   if (process.env.NODE_ENV === 'test') {
