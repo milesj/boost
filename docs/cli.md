@@ -846,8 +846,8 @@ function CustomComponent() {
 ### Themes
 
 Themes allow consumers to alter the color of text and backgrounds for elements rendered with the
-`Style` component. Themes are simply NPM modules that return an object of hexcodes, and can be
-enabled by defining the `BOOSTJS_CLI_THEME` environment variable.
+`Style` component. Themes are simply NPM modules that return an object of hexcodes or ANSI colors,
+and can be enabled by defining the `BOOSTJS_CLI_THEME` environment variable.
 
 ```bash
 BOOSTJS_CLI_THEME=nyan <program>
