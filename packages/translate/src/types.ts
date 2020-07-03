@@ -26,9 +26,9 @@ export interface MessageOptions {
 }
 
 export interface Translator {
-  dir: Direction;
+  direction: Direction;
   locale: Locale;
-  changeLocale: (locale: Locale) => void;
+  changeLocale: (locale: Locale) => Promise<void>;
   (key: string | string[], params?: InterpolationParams, options?: MessageOptions): string;
   // Testing only
   // eslint-disable-next-line @typescript-eslint/member-ordering
