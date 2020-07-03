@@ -6,7 +6,8 @@
 module.exports = {
   default: '#dde1f6',
   failure: '#E06C75',
-  pending: '#ABB2BF',
+  inverted: '#313440',
+  muted: '#ABB2BF',
   success: '#98C379',
   warning: '#D19A66',
 };

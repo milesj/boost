@@ -1,10 +1,8 @@
-# Boost FSOTM Theme
+# FSOTM Theme - Boost
 
-[Far Side Of The Moon](https://atom.io/themes/far-side-of-the-moon-syntax) command line theme for
-Boost powered applications. Ideal for light terminals.
+[Far Side of the Moon](https://github.com/thierryc/far-side-of-the-moon-syntax) command line theme
+for Boost powered CLIs. Ideal for light terminals.
 
-```
+```bash
 yarn install @boost/theme-moon-light --dev
 ```
-
-Enable with `--theme=moon-light`.

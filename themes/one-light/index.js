@@ -4,9 +4,10 @@
  */
 
 module.exports = {
-  default: '#383b42',
+  default: '#373a42',
   failure: '#E45649',
-  pending: '#ABB2BF',
+  inverted: '#fafafa',
+  muted: '#ABB2BF',
   success: '#50A14F',
   warning: '#986801',
 };

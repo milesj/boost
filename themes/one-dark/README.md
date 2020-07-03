@@ -1,10 +1,8 @@
-# Boost One Dark Theme
+# One Dark Theme - Boost
 
-[One Dark](https://github.com/atom/one-dark-ui) command line theme for Boost powered applications.
-Ideal for dark terminals.
+[One Dark](https://github.com/atom/atom/tree/master/packages/one-dark-ui) command line theme for
+Boost powered CLIs. Ideal for dark terminals.
 
-```
+```bash
 yarn install @boost/theme-one-dark --dev
 ```
-
-Enable with `--theme=one-dark`.

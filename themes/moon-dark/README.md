@@ -1,10 +1,8 @@
-# Boost DSOTM Theme
+# DSOTM Theme - Boost
 
-[Dark Side Of The Moon](https://atom.io/themes/dark-side-of-the-moon-syntax) command line theme for
-Boost powered applications. Ideal for dark terminals.
+[Dark Side of the Moon](https://github.com/thierryc/dark-side-of-the-moon-syntax) command line theme
+for Boost powered CLIs. Ideal for dark terminals.
 
-```
+```bash
 yarn install @boost/theme-moon-dark --dev
 ```
-
-Enable with `--theme=moon-dark`.
