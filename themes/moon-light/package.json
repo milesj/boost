@@ -1,7 +1,7 @@
 {
   "name": "@boost/theme-moon-light",
   "version": "1.0.1",
-  "description": "Far Side Of The Moon command line theme for Boost powered applications.",
+  "description": "Far Side of the Moon command line theme for Boost powered CLIs.",
   "keywords": [
     "boost",
     "theme",

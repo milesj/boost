@@ -1,7 +1,7 @@
 {
   "name": "@boost/theme-one-dark",
   "version": "1.0.1",
-  "description": "One Dark command line theme for Boost powered applications.",
+  "description": "One Dark command line theme for Boost powered CLIs.",
   "keywords": [
     "boost",
     "theme",
