@@ -60,8 +60,8 @@ fact.
 
 - `labels` (`object`) - A mapping of localized log level names. Can be used with
   [chalk](https://www.npmjs.com/package/chalk).
-- `name` (`string`) - Unique name of this logger instance, for debugging purposes.
-- `transports` (`Transportable`) - List of transports in which to write formatted log messages to.
+- `name` (`string`) - Unique name of this logger instance, for debugging purposes. _(Required)_
+- `transports` (`Transportable[]`) - List of transports in which to write formatted log messages to.
 
 ```ts
 import chalk from 'chalk';
@@ -174,10 +174,9 @@ There are multiple types of transports that can be used within a logger, all of 
 following shared options.
 
 - `eol` (`string`) - End of line character to append to a message. Defaults to `os.EOL`.
-  _(optional)_
 - `format` (`Formatter`) - Function to format a log item into a message string. Default is transport
-  dependent. _(optional)_
-- `levels` (`LogLevel[]`) - List of log levels to only write messages for.
+  dependent.
+- `levels` (`LogLevel[]`) - List of log levels to only write messages for. _(Required)_
 
 ### `ConsoleTransport`
 
@@ -217,10 +216,10 @@ const transport = new FileTransport({
 });
 ```
 
-- `gzip` (`boolean`) - Apply gzip compression to the write stream. _(optional)_
+- `gzip` (`boolean`) - Apply gzip compression to the write stream.
 - `maxSize` (`number`) - Maximum file size before rotating file. Will create a backup and truncate
-  the current file. Defaults to 10mb. _(optional)_
-- `path` (`string | Path`) - Absolute file system path for the intended log file.
+  the current file. Defaults to 10mb.
+- `path` (`string | Path`) - Absolute file system path for the intended log file. _(Required)_
 
 ### `RotatingFileTransport`
 

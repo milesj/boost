@@ -50,17 +50,15 @@ Begin by importing and instantiating the `Program` class, while passing required
 options.
 
 - `banner` (`string`) - A large banner to appear at the top of the index help interface.
-  _(optional)_
 - `bin` (`string`) - The name of the binary consumers enter on the command line. Must be in
-  kebab-case.
+  kebab-case. _(Required)_
 - `delimiter` (`string`) - The character(s) displayed before command line usage examples.
 - `footer` (`string`) - A string of text to display at the bottom of the index help interface.
-  _(optional)_
 - `header` (`string`) - A string of text to display at the top of the index help interface, below
-  the banner (if present). _(optional)_
-- `name` (`string`) - A human readable name for your program.
+  the banner (if present).
+- `name` (`string`) - A human readable name for your program. _(Required)_
 - `version` (`string`) - Current version of your CLI program. Typically the version found in your
-  `package.json`. This is output when `--version` is passed.
+  `package.json`. This is output when `--version` is passed. _(Required)_
 
 ```ts
 import { Program } from '@boost/cli';
@@ -249,11 +247,11 @@ mandatory.
 - `deprecated` (`boolean`) - Whether the command is deprecated or not. Will display a tag in the
   help menu. Defaults to `false`.
 - `description` (`string`) - A description of what the command is and does. Supports basic markdown
-  for bold, italics, and underline. _(required)_
+  for bold, italics, and underline. _(Required)_
 - `hidden` (`boolean`) - Whether the command should be hidden from the help menu or not. Will still
   match on the command line. Defaults to `false`.
 - `path` (`string`) - A unique name in which to match the command on the command line amongst a list
-  of arguments (argv). _(required)_
+  of arguments (argv). _(Required)_
 - `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
 
 When using decorators, import the `Config` decorator and apply it to the `Command` class. The path
