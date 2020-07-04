@@ -1,6 +1,6 @@
 {
   "name": "@boost/config",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "release": "1592788092197",
   "description": "Powerful config file and ignore file manager, finder, and loader.",
   "keywords": [
