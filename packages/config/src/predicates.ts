@@ -1,17 +1,36 @@
-import { predicates, Blueprint } from '@boost/common';
-import { ExtendsSetting, PluginsSettingItem, OverridesSettingItem, FileGlob } from './types';
+import { predicates, Blueprint, Predicates } from '@boost/common';
+import {
+  ExtendsSetting,
+  PluginsSetting,
+  PluginsSettingMapItem,
+  OverridesSettingItem,
+  FileGlob,
+} from './types';
 
-const { array, bool, object, shape, string, union } = predicates;
+export function createExtendsPredicate(preds: Predicates = predicates) {
+  const { array, string, union } = preds;
 
-export function createExtendsPredicate() {
   return union<ExtendsSetting>([string().notEmpty(), array(string().notEmpty())], []).notNullable();
 }
 
-export function createPluginsPredicate() {
-  return object(union<PluginsSettingItem>([bool(), object().notNullable()], {})).notNullable();
+export function createPluginsPredicate(preds: Predicates = predicates) {
+  const { array, bool, object, string, union } = preds;
+
+  return union<PluginsSetting>(
+    [
+      array(string().notEmpty()),
+      object(union<PluginsSettingMapItem>([bool(), object().notNullable()], {})).notNullable(),
+    ],
+    {},
+  );
 }
 
-export function createOverridesPredicate<T extends object>(blueprint: Blueprint<T>) {
+export function createOverridesPredicate<T extends object>(
+  blueprint: Blueprint<T>,
+  preds: Predicates = predicates,
+) {
+  const { array, shape, string, union } = preds;
+
   return array<OverridesSettingItem<T>>(
     shape({
       exclude: union<FileGlob>([string().notEmpty(), array(string().notEmpty())], []),

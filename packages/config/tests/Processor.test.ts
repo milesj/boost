@@ -256,8 +256,8 @@ describe('Processor', () => {
             defaults,
             [
               stubConfigFile({
+                // @ts-expect-error
                 plugins: {
-                  // @ts-expect-error
                   foo: 123,
                 },
               }),

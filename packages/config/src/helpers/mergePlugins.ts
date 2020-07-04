@@ -1,11 +1,24 @@
 import { isObject } from '@boost/common';
 import mergeObject from './mergeObject';
-import { PluginsSetting } from '../types';
+import { PluginsSetting, PluginsSettingMap, PluginsSettingList } from '../types';
 
-export default function mergePlugins(prev: PluginsSetting, next: PluginsSetting): PluginsSetting {
-  const plugins = { ...prev };
+function convertListToMap(list: PluginsSettingList): PluginsSettingMap {
+  return list.reduce(
+    (map, name) => ({
+      ...map,
+      [name]: true,
+    }),
+    {},
+  );
+}
 
-  Object.entries(next).forEach(([name, options]) => {
+export default function mergePlugins(
+  prev: PluginsSetting,
+  next: PluginsSetting,
+): PluginsSettingMap {
+  const plugins = Array.isArray(prev) ? convertListToMap(prev) : { ...prev };
+
+  Object.entries(Array.isArray(next) ? convertListToMap(next) : next).forEach(([name, options]) => {
     if (isObject(options)) {
       plugins[name] = isObject(plugins[name])
         ? mergeObject(plugins[name] as object, options)

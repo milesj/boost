@@ -13,6 +13,7 @@ import mergePlugins from './helpers/mergePlugins';
 import overwrite from './helpers/overwrite';
 
 export * from './predicates';
+export * from './types';
 
 export {
   ConfigError,

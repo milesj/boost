@@ -25,4 +25,12 @@ describe('mergePlugins()', () => {
   it('undefined plugin values are skipped', () => {
     expect(mergePlugins({ foo: true }, { foo: undefined })).toEqual({ foo: true });
   });
+
+  it('supports a list on the left', () => {
+    expect(mergePlugins(['foo'], { bar: {} })).toEqual({ foo: true, bar: {} });
+  });
+
+  it('supports a list on the right', () => {
+    expect(mergePlugins({ foo: true, bar: false }, ['bar'])).toEqual({ foo: true, bar: true });
+  });
 });

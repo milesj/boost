@@ -59,8 +59,12 @@ export interface OverridesSettingItem<T> {
 
 export type OverridesSetting<T> = OverridesSettingItem<T>[];
 
-export type PluginsSettingItem = undefined | boolean | object;
+export type PluginsSettingMapItem = undefined | boolean | object;
 
-export interface PluginsSetting {
-  [name: string]: PluginsSettingItem;
+export interface PluginsSettingMap {
+  [name: string]: PluginsSettingMapItem;
 }
+
+export type PluginsSettingList = string[];
+
+export type PluginsSetting = PluginsSettingList | PluginsSettingMap;
