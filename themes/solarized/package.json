@@ -1,6 +1,6 @@
 {
   "name": "@boost/theme-solarized",
-  "version": "1.0.1",
+  "version": "2.0.0-alpha.0",
   "description": "Solarized command line theme for Boost powered CLIs.",
   "keywords": [
     "boost",

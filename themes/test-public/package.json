@@ -1,6 +1,6 @@
 {
   "name": "boost-theme-test-public",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "main": "./index.js",
   "private": true
 }

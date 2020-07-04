@@ -1,6 +1,6 @@
 {
   "name": "@boost/event",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "release": "1592788092197",
   "description": "A strict event system with multiple emitter patterns.",
   "keywords": [
@@ -20,7 +20,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^2.0.0-alpha.0"
+    "@boost/internal": "^2.0.0-alpha.1"
   },
   "tsconfig": {
     "exclude": [
