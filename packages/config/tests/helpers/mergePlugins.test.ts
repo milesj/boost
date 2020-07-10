@@ -23,7 +23,15 @@ describe('mergePlugins()', () => {
   });
 
   it('undefined plugin values are skipped', () => {
-    expect(mergePlugins({ foo: true }, { foo: undefined })).toEqual({ foo: true });
+    expect(
+      mergePlugins(
+        { foo: true },
+        {
+          // @ts-expect-error
+          foo: undefined,
+        },
+      ),
+    ).toEqual({ foo: true });
   });
 
   it('supports a list on the left', () => {
