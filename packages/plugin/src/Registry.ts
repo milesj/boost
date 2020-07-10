@@ -95,11 +95,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Return a single registered plugin by module name. If the plugin cannot be found,
    * an error will be thrown.
    */
-  get(name: ModuleName): Plugin {
+  get<T extends Plugin = Plugin>(name: ModuleName): T {
     const container = this.plugins.find((c) => this.isMatchingName(c, name));
 
     if (container) {
-      return container.plugin;
+      return container.plugin as T;
     }
 
     throw new PluginError('PLUGIN_REQUIRED', [this.singularName, name]);
