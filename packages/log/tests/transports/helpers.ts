@@ -11,6 +11,7 @@ export function readFile(path: PortablePath): string {
     return fs.readFileSync(String(path), 'utf8');
   }
 
+  // istanbul ignore next
   return '';
 }
 

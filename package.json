@@ -26,7 +26,7 @@
     "@types/lodash": "^4.14.156",
     "@types/minimatch": "^3.0.3",
     "@types/pluralize": "^0.0.29",
-    "@types/react": "^16.9.38",
+    "@types/react": "^16.9.42",
     "@types/split": "^1.0.0",
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^1.6.0",

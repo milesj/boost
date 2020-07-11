@@ -32,15 +32,15 @@
     "@boost/log": "^2.0.0-alpha.1",
     "@boost/terminal": "^2.0.0-alpha.1",
     "@boost/translate": "^2.0.0-alpha.1",
-    "execa": "^4.0.2",
+    "execa": "^4.0.3",
     "levenary": "^1.1.1"
   },
   "peerDependencies": {
-    "ink": "^3.0.0-4",
+    "ink": "^3.0.0-6",
     "react": "^16.8.0"
   },
   "devDependencies": {
-    "ink": "^3.0.0-4",
+    "ink": "^3.0.0-6",
     "react": "^16.13.1"
   }
 }
