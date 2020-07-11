@@ -2,7 +2,9 @@ import { ModuleName } from '@boost/common';
 
 export type Callback<T = unknown> = (value: T) => void | Promise<void>;
 
-export interface Pluggable<T = unknown> {
+// Easier for consumers to type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface Pluggable<T = any> {
   name: ModuleName;
   priority?: number;
   shutdown?: Callback<T>;
