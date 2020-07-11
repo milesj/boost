@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, jest/prefer-spy-on */
 
 import React from 'react';
 import { render } from 'ink';
@@ -79,15 +79,21 @@ export async function renderComponent(
 export async function runCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
   command: Command<O, P>,
   params: P,
-  options?: O,
+  options?: Partial<O>,
 ): Promise<string> {
   if (options) {
     Object.assign(command, options);
-    command[INTERNAL_OPTIONS] = options;
+
+    // @ts-expect-error
+    command[INTERNAL_OPTIONS] = {
+      help: false,
+      locale: 'en',
+      version: false,
+      ...options,
+    };
   }
 
-  jest.spyOn(command, 'exit').mockImplementation();
-
+  command.exit = jest.fn();
   command.log = mockLogger();
   command[INTERNAL_PARAMS] = params;
 

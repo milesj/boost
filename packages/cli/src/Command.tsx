@@ -10,6 +10,8 @@ import {
   OptionConfigMap,
   UnknownOptionMap,
   Argv,
+  Arguments,
+  MapParamType,
 } from '@boost/args';
 import { LoggerFunction } from '@boost/log';
 import { LOCALE_FORMAT, INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
@@ -160,6 +162,21 @@ export default abstract class Command<
       ...streams,
       ...options,
     });
+  }
+
+  /**
+   * Return the current command class as an arguments object.
+   * Options and params must be parsed first to operate correctly.
+   */
+  getArguments(): Arguments<O, P> {
+    return {
+      command: this.getPath().split(':'),
+      errors: [],
+      options: (this[INTERNAL_OPTIONS] || {}) as O,
+      params: ((this[INTERNAL_PARAMS] || []) as unknown) as MapParamType<P>,
+      rest: this.rest,
+      unknown: this.unknown,
+    };
   }
 
   /**

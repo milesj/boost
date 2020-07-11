@@ -7,7 +7,7 @@ import InstallCommand from './__mocks__/InstallCommand';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
 import { Command, Arg, INTERNAL_PROGRAM } from '../src';
-import { mockStreams, mockProgram } from '../src/testing';
+import { mockStreams, mockProgram, runCommand } from '../src/testing';
 
 jest.mock('execa');
 jest.mock('term-size');
@@ -34,6 +34,28 @@ describe('Command', () => {
 
       expect(execa).toHaveBeenCalledWith('yarn', ['-v'], streams);
       expect(result).toEqual(expect.objectContaining({ command: 'yarn -v' }));
+    });
+  });
+
+  describe('getArguments()', () => {
+    it('returns an args object', async () => {
+      const command = new BuildCommand();
+
+      await runCommand(command, ['foo'], { dst: './lib' });
+
+      expect(command.getArguments()).toEqual({
+        command: ['build'],
+        errors: [],
+        options: {
+          dst: './lib',
+          help: false,
+          locale: 'en',
+          version: false,
+        },
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
     });
   });
 
