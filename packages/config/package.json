@@ -1,6 +1,6 @@
 {
   "name": "@boost/config",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "release": "1592788092197",
   "description": "Powerful config file and ignore file manager, finder, and loader.",
   "keywords": [
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@boost/common": "^2.0.0-alpha.1",
-    "@boost/debug": "^2.0.0-alpha.1",
+    "@boost/debug": "^2.0.0-alpha.2",
     "@boost/internal": "^2.0.0-alpha.1",
     "minimatch": "^3.0.4"
   },

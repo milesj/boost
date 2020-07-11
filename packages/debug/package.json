@@ -1,6 +1,6 @@
 {
   "name": "@boost/debug",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "release": "1592788092197",
   "description": "Lightweight debugging and crash reporting.",
   "keywords": [
