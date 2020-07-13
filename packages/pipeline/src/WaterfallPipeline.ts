@@ -9,10 +9,6 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
   Ctx,
   Input
 > {
-  blueprint() {
-    return {};
-  }
-
   /**
    * Execute the pipeline in sequential order with the output of each
    * work unit being passed to the next work unit in the chain.

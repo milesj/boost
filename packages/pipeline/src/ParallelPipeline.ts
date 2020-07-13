@@ -11,6 +11,7 @@ export default abstract class ParallelPipeline<
   Input = unknown,
   Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
+  // Empty blueprint so that sub-classes may type correctly
   blueprint(preds: Predicates): Blueprint<object> {
     return {};
   }

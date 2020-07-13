@@ -1,3 +1,4 @@
+import { Blueprint, Predicates } from '@boost/common';
 import Context from './Context';
 import Pipeline from './Pipeline';
 import WorkUnit from './WorkUnit';
@@ -14,6 +15,11 @@ export default abstract class SerialPipeline<
   // node in the linked list chain.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   root: SerialPipeline<Options, Ctx, any> = this;
+
+  // Empty blueprint so that sub-classes may type correctly
+  blueprint(preds: Predicates): Blueprint<object> {
+    return {};
+  }
 
   /**
    * Pipe a work unit to be ran with the return value of the previous work unit.

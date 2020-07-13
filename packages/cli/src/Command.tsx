@@ -13,6 +13,7 @@ import {
   Arguments,
   MapParamType,
 } from '@boost/args';
+import { Blueprint, Predicates } from '@boost/common';
 import { LoggerFunction } from '@boost/log';
 import { LOCALE_FORMAT, INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
 import {
@@ -144,9 +145,8 @@ export default abstract class Command<
   /**
    * Validate options passed to the constructor.
    */
-  blueprint() {
-    // This is technically invalid, but most commands will not be using options.
-    // This is a side-effect of `CommandManager`, in which options are required for `Program`.
+  // Empty blueprint so that sub-classes may type correctly
+  blueprint(preds: Predicates): Blueprint<object> {
     return {};
   }
 
