@@ -5,7 +5,7 @@ import WorkUnit from './WorkUnit';
 export type Action<Ctx extends Context, Input = unknown, Output = Input> = (
   context: Ctx,
   value: Input,
-  runner: Runnable<Input, Output> & Hierarchical,
+  workUnit: AnyWorkUnit,
 ) => Output | Promise<Output>;
 
 export interface AggregatedResult<T> {
