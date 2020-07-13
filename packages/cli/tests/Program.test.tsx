@@ -2,7 +2,8 @@
 
 import React, { useContext } from 'react';
 import { Box, Text } from 'ink';
-import { ExitError, env } from '@boost/internal';
+import { ExitError } from '@boost/common';
+import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/lib/testing';
 import {
   Program,
@@ -776,7 +777,11 @@ describe('<Program />', () => {
 
       await runProgram(program, []);
 
-      expect(beforeSpy).toHaveBeenCalledWith(<Box><Text>Hello!</Text></Box>);
+      expect(beforeSpy).toHaveBeenCalledWith(
+        <Box>
+          <Text>Hello!</Text>
+        </Box>,
+      );
       expect(afterSpy).toHaveBeenCalled();
     });
   });

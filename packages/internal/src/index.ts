@@ -7,6 +7,5 @@ import color from './color';
 import createInternalDebugger from './createInternalDebugger';
 import createScopedError from './createScopedError';
 import env from './env';
-import ExitError from './ExitError';
 
-export { color, createInternalDebugger, createScopedError, env, ExitError };
+export { color, createInternalDebugger, createScopedError, env };

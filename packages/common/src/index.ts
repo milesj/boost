@@ -6,6 +6,7 @@
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
 import CommonError, { CommonErrorCode } from './CommonError';
 import Contract from './Contract';
+import ExitError from './ExitError';
 import Path from './Path';
 import PathResolver from './PathResolver';
 import Project from './Project';
@@ -21,6 +22,7 @@ export {
   CommonErrorCode,
   Contract,
   Blueprint,
+  ExitError,
   Path,
   PathResolver,
   Predicates,

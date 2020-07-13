@@ -10,10 +10,10 @@ import {
   PrimitiveType,
   ValidationError,
 } from '@boost/args';
-import { Predicates, Blueprint } from '@boost/common';
+import { ExitError, Predicates, Blueprint } from '@boost/common';
 import { Event } from '@boost/event';
 import { LoggerFunction, createLogger, formats, StreamTransport } from '@boost/log';
-import { ExitError, env } from '@boost/internal';
+import { env } from '@boost/internal';
 import levenary from 'levenary';
 import CLIError from './CLIError';
 import Command from './Command';
