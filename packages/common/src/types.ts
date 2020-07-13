@@ -136,7 +136,7 @@ export interface WorkspaceMetadata {
   workspaceName: string;
 }
 
-export interface WorkspacePackage<T extends PackageStructure> {
+export interface WorkspacePackage<T extends PackageStructure = PackageStructure> {
   metadata: WorkspaceMetadata;
   package: T;
 }
