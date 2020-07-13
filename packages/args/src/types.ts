@@ -93,7 +93,7 @@ export type CommandChecker = (arg: string) => boolean;
 
 export type ContextFactory = (arg: string, argv: Argv) => ParserOptions<{}> | undefined;
 
-export interface Arguments<O extends object, P extends PrimitiveType[]> {
+export interface Arguments<O extends object, P extends PrimitiveType[] = ArgList> {
   command: string[];
   errors: Error[];
   options: O;
@@ -102,9 +102,9 @@ export interface Arguments<O extends object, P extends PrimitiveType[]> {
   unknown: UnknownOptionMap;
 }
 
-export interface ParserOptions<T extends object, P extends PrimitiveType[] = ArgList> {
+export interface ParserOptions<O extends object, P extends PrimitiveType[] = ArgList> {
   commands?: string[] | CommandChecker;
-  options: MapOptionConfig<T>;
+  options: MapOptionConfig<O>;
   params?: MapParamConfig<P>;
   unknown?: boolean;
   variadic?: boolean;
