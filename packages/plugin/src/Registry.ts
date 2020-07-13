@@ -5,6 +5,7 @@ import {
   ModuleName,
   MODULE_NAME_PATTERN,
   Blueprint,
+  FilePath,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
@@ -123,7 +124,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Load and register a single plugin by name, or with an explicit instance.
    */
   async load(
-    name: ModuleName | Plugin,
+    name: FilePath | ModuleName | Plugin,
     params: object = {},
     options: RegisterOptions<Tool> = {},
   ): Promise<Plugin> {
@@ -160,7 +161,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Load and register multiple plugins based on a list of settings.
    */
   async loadMany(
-    settings: (ModuleName | Plugin)[] | Setting,
+    settings: (FilePath | ModuleName | Plugin)[] | Setting,
     options: RegisterOptions<Tool> = {},
   ): Promise<Plugin[]> {
     if (Array.isArray(settings)) {

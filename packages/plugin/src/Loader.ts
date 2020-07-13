@@ -8,6 +8,7 @@ import {
   isObject,
   isFilePath,
   MODULE_NAME_PART,
+  FilePath,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
@@ -31,7 +32,7 @@ export default class Loader<Plugin extends Pluggable> {
    * based on a list of acceptable plugin module name patterns.
    */
   // eslint-disable-next-line complexity
-  createResolver(name: ModuleName): PathResolver {
+  createResolver(name: FilePath | ModuleName): PathResolver {
     const resolver = new PathResolver();
     const { singularName: typeName, projectName } = this.registry;
     const moduleName = name.toLowerCase();
@@ -107,7 +108,7 @@ export default class Loader<Plugin extends Pluggable> {
   /**
    * Load a plugin by short name or fully qualified module name, with an optional options object.
    */
-  async load(name: ModuleName, options: object = {}): Promise<Plugin> {
+  async load(name: FilePath | ModuleName, options: object = {}): Promise<Plugin> {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
     this.debug('Loading "%s" from %s', color.moduleName(name), color.filePath(resolvedPath));
