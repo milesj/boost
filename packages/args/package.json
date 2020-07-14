@@ -1,6 +1,6 @@
 {
   "name": "@boost/args",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "release": "1594765247526",
   "description": "A convention based argument parsing and formatting library, with strict validation checks.",
   "keywords": [

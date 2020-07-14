@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0 - 2020-07-14
+
+#### 💥 Breaking
+
+- Migrate to `fs.promises` API. ([944119a](https://github.com/milesj/boost/commit/944119a))
+- Updated Node.js minimum requirement to v10.10. ([3719cdc](https://github.com/milesj/boost/commit/3719cdc))
+
+#### 🚀 Updates
+
+- Create a fixture within the temp folder. ([090e44b](https://github.com/milesj/boost/commit/090e44b))
+
+#### 🎨 Styles
+
+- Run Prettier. ([5cd5fc1](https://github.com/milesj/boost/commit/5cd5fc1))
+
+#### 📘 Docs
+
+- Update copyright years. ([1942675](https://github.com/milesj/boost/commit/1942675))
+- Update license copyright year. ([e532427](https://github.com/milesj/boost/commit/e532427))
+
+#### 📦 Dependencies
+
+- Update final peer dependencies. ([405b8ff](https://github.com/milesj/boost/commit/405b8ff))
+- **[lerna]** Update to v3.22. ([a19f27f](https://github.com/milesj/boost/commit/a19f27f))
+- Update TypeScript, Jest, ESLint, and other developer packages. ([c7347a2](https://github.com/milesj/boost/commit/c7347a2))
+- **[fs-extra]** Update to v9. ([0d974f8](https://github.com/milesj/boost/commit/0d974f8))
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ### 1.4.1 - 2020-01-25
 
 #### 🐞 Fixes

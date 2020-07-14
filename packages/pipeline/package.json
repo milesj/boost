@@ -1,6 +1,6 @@
 {
   "name": "@boost/pipeline",
-  "version": "1.5.3",
+  "version": "2.0.0",
   "release": "1594765247526",
   "description": "Pipe an input through a series of routines and tasks to produce an output, or simply, run logic in a series of stages.",
   "keywords": [

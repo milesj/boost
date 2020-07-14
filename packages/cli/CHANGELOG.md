@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0 - 2020-07-14
+
+#### 💥 Breaking
+
+- Migrate to `fs.promises` API. ([944119a](https://github.com/milesj/boost/commit/944119a))
+- Migrate to `ink` v3. Rework `Style` component. ([9bba2ce](https://github.com/milesj/boost/commit/9bba2ce))
+- Move `ExitError` to common package. ([6584dc5](https://github.com/milesj/boost/commit/6584dc5))
+- Move `ink` to a peer dependency. Remove index exports. ([cc515a6](https://github.com/milesj/boost/commit/cc515a6))
+- Reword error codes. ([33b9d96](https://github.com/milesj/boost/commit/33b9d96))
+- Updated Node.js minimum requirement to v10.10. ([3719cdc](https://github.com/milesj/boost/commit/3719cdc))
+
+#### 🚀 Updates
+
+- Add `Command#getArguments()` method. ([bf5b345](https://github.com/milesj/boost/commit/bf5b345))
+- Add `format` setting for options and params. (#95) ([e81518a](https://github.com/milesj/boost/commit/e81518a)), closes [#95](https://github.com/milesj/boost/issues/95)
+- Add formats to logger. ([9d5e1f2](https://github.com/milesj/boost/commit/9d5e1f2))
+- Enable terminal themes. (#90) ([aa4d462](https://github.com/milesj/boost/commit/aa4d462)), closes [#90](https://github.com/milesj/boost/issues/90)
+- Migrate to new logger. ([ae3e955](https://github.com/milesj/boost/commit/ae3e955))
+- Refactor blueprint generics for easier inheritance usage. ([0dd8171](https://github.com/milesj/boost/commit/0dd8171))
+- Rework log buffering to support new Ink features. ([2670f9b](https://github.com/milesj/boost/commit/2670f9b))
+- Rewrite to use new `Logger` class. ([5e08afb](https://github.com/milesj/boost/commit/5e08afb))
+
+#### ⚙️ Types
+
+- Improve `blueprint()` inheritance. ([da176e8](https://github.com/milesj/boost/commit/da176e8))
+
+#### 🎨 Styles
+
+- Run Prettier. ([5cd5fc1](https://github.com/milesj/boost/commit/5cd5fc1))
+
+#### 📘 Docs
+
+- Update copyright years. ([1942675](https://github.com/milesj/boost/commit/1942675))
+- Update license copyright year. ([e532427](https://github.com/milesj/boost/commit/e532427))
+- Update readmes. ([84ca011](https://github.com/milesj/boost/commit/84ca011))
+
+#### 📦 Dependencies
+
+- Migrate packages to v2 alpha. ([64731d9](https://github.com/milesj/boost/commit/64731d9))
+- Update final peer dependencies. ([405b8ff](https://github.com/milesj/boost/commit/405b8ff))
+- Update to latest. ([39c68e8](https://github.com/milesj/boost/commit/39c68e8))
+- Update TypeScript, Jest, ESLint, and other developer packages. ([c7347a2](https://github.com/milesj/boost/commit/c7347a2))
+- **[execa]** Update to v4. ([e4a47d5](https://github.com/milesj/boost/commit/e4a47d5))
+
+#### 🛠 Internals
+
+- Move debugger and translators outside of constants. ([a0af1b4](https://github.com/milesj/boost/commit/a0af1b4))
+- Replace `RuntimeError` with new packaged scoped errors. ([c13d3f1](https://github.com/milesj/boost/commit/c13d3f1))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 1.2.1 - 2020-06-21
 
 **Note:** Version bump only for package @boost/cli

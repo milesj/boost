@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0 - 2020-07-14
+
+#### 💥 Breaking
+
+- Migrate to `fs.promises` API. ([944119a](https://github.com/milesj/boost/commit/944119a))
+- Refactor config setting structure. (#92) ([b5029a2](https://github.com/milesj/boost/commit/b5029a2)), closes [#92](https://github.com/milesj/boost/issues/92)
+- Rename `color.pluginType` to `color.symbol`. ([c4aa1a4](https://github.com/milesj/boost/commit/c4aa1a4))
+- Rename `onRegister` and `onUnregister` events. Add new events. ([41993ae](https://github.com/milesj/boost/commit/41993ae))
+- Reword error codes. ([33b9d96](https://github.com/milesj/boost/commit/33b9d96))
+- Updated Node.js minimum requirement to v10.10. ([3719cdc](https://github.com/milesj/boost/commit/3719cdc))
+
+#### 🚀 Updates
+
+- Refactor blueprint generics for easier inheritance usage. ([0dd8171](https://github.com/milesj/boost/commit/0dd8171))
+
+#### ⚙️ Types
+
+- Add `FilePath` to all load methods. ([939a3c4](https://github.com/milesj/boost/commit/939a3c4))
+- Update `Registry#get` with a generic. ([e7f23f0](https://github.com/milesj/boost/commit/e7f23f0))
+- Use any for `Pluggable` so its easier for consumers. ([895aac9](https://github.com/milesj/boost/commit/895aac9))
+
+#### 🎨 Styles
+
+- Run Prettier. ([5cd5fc1](https://github.com/milesj/boost/commit/5cd5fc1))
+
+#### 📘 Docs
+
+- Update copyright years. ([1942675](https://github.com/milesj/boost/commit/1942675))
+- Update license copyright year. ([e532427](https://github.com/milesj/boost/commit/e532427))
+- Update readmes. ([84ca011](https://github.com/milesj/boost/commit/84ca011))
+
+#### 📦 Dependencies
+
+- Migrate packages to v2 alpha. ([64731d9](https://github.com/milesj/boost/commit/64731d9))
+- Update final peer dependencies. ([405b8ff](https://github.com/milesj/boost/commit/405b8ff))
+- Update to latest. ([39c68e8](https://github.com/milesj/boost/commit/39c68e8))
+- Update TypeScript, Jest, ESLint, and other developer packages. ([c7347a2](https://github.com/milesj/boost/commit/c7347a2))
+
+#### 🛠 Internals
+
+- Replace `RuntimeError` with new packaged scoped errors. ([c13d3f1](https://github.com/milesj/boost/commit/c13d3f1))
+
+**Note:** Version bump only for package @boost/plugin
+
+
+
+
+
 ### 1.0.4 - 2020-06-21
 
 #### 🐞 Fixes

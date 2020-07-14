@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0 - 2020-07-14
+
+#### 💥 Breaking
+
+- Delete `RuntimeError` class. ([0c0f528](https://github.com/milesj/boost/commit/0c0f528))
+- Delete unused `SignalError` class. ([cacc155](https://github.com/milesj/boost/commit/cacc155))
+- Drop support for `BOOST_` prefixed env vars. ([85f5f41](https://github.com/milesj/boost/commit/85f5f41))
+- Migrate to `fs.promises` API. ([944119a](https://github.com/milesj/boost/commit/944119a))
+- Move `ExitError` to common package. ([6584dc5](https://github.com/milesj/boost/commit/6584dc5))
+- Rename `color.pluginType` to `color.symbol`. ([c4aa1a4](https://github.com/milesj/boost/commit/c4aa1a4))
+- Updated Node.js minimum requirement to v10.10. ([3719cdc](https://github.com/milesj/boost/commit/3719cdc))
+
+#### 🎨 Styles
+
+- Run Prettier. ([5cd5fc1](https://github.com/milesj/boost/commit/5cd5fc1))
+
+#### 📘 Docs
+
+- Update copyright years. ([1942675](https://github.com/milesj/boost/commit/1942675))
+- Update license copyright year. ([e532427](https://github.com/milesj/boost/commit/e532427))
+
+#### 📦 Dependencies
+
+- Migrate packages to v2 alpha. ([64731d9](https://github.com/milesj/boost/commit/64731d9))
+- Update final peer dependencies. ([405b8ff](https://github.com/milesj/boost/commit/405b8ff))
+- Update TypeScript, Jest, ESLint, and other developer packages. ([c7347a2](https://github.com/milesj/boost/commit/c7347a2))
+- **[chalk]** Update to v4.1. ([7086621](https://github.com/milesj/boost/commit/7086621))
+
+#### 🛠 Internals
+
+- Replace `RuntimeError` with new packaged scoped errors. ([c13d3f1](https://github.com/milesj/boost/commit/c13d3f1))
+
+**Note:** Version bump only for package @boost/internal
+
+
+
+
+
 ## 1.2.0 - 2020-04-29
 
 #### 🚀 Updates

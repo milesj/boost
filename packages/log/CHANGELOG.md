@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0 - 2020-07-14
+
+#### 💥 Breaking
+
+- Add new `Transport` system. ([0137f09](https://github.com/milesj/boost/commit/0137f09))
+- Migrate to `fs.promises` API. ([944119a](https://github.com/milesj/boost/commit/944119a))
+- Updated Node.js minimum requirement to v10.10. ([3719cdc](https://github.com/milesj/boost/commit/3719cdc))
+
+#### 🚀 Updates
+
+- Add `FileTransport`. ([54b0486](https://github.com/milesj/boost/commit/54b0486))
+- Add `RotatingFileTransport`. ([5278c13](https://github.com/milesj/boost/commit/5278c13))
+- Add custom metadata support. ([0e8e712](https://github.com/milesj/boost/commit/0e8e712))
+- Add formats to logger. ([9d5e1f2](https://github.com/milesj/boost/commit/9d5e1f2))
+- Rewrite to use new `Logger` class. ([5e08afb](https://github.com/milesj/boost/commit/5e08afb))
+
+#### 🎨 Styles
+
+- Run Prettier. ([5cd5fc1](https://github.com/milesj/boost/commit/5cd5fc1))
+
+#### 📘 Docs
+
+- Update copyright years. ([1942675](https://github.com/milesj/boost/commit/1942675))
+- Update license copyright year. ([e532427](https://github.com/milesj/boost/commit/e532427))
+- Update readmes. ([84ca011](https://github.com/milesj/boost/commit/84ca011))
+
+#### 📦 Dependencies
+
+- Migrate packages to v2 alpha. ([64731d9](https://github.com/milesj/boost/commit/64731d9))
+- Update final peer dependencies. ([405b8ff](https://github.com/milesj/boost/commit/405b8ff))
+- Update to latest. ([39c68e8](https://github.com/milesj/boost/commit/39c68e8))
+- Update TypeScript, Jest, ESLint, and other developer packages. ([c7347a2](https://github.com/milesj/boost/commit/c7347a2))
+- **[chalk]** Update to v4.1. ([7086621](https://github.com/milesj/boost/commit/7086621))
+
+#### 🛠 Internals
+
+- Move debugger and translators outside of constants. ([a0af1b4](https://github.com/milesj/boost/commit/a0af1b4))
+- Move log level checks into `Logger`. ([64d381d](https://github.com/milesj/boost/commit/64d381d))
+- Replace `RuntimeError` with new packaged scoped errors. ([c13d3f1](https://github.com/milesj/boost/commit/c13d3f1))
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 1.2.1 - 2020-06-21
 
 **Note:** Version bump only for package @boost/log
