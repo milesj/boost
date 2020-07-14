@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "release": "1592788092197",
   "description": "Common utilities.",
   "keywords": [
@@ -20,7 +20,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^2.0.0-alpha.1",
+    "@boost/internal": "^2.0.0-alpha.2",
     "fast-glob": "^3.2.4",
     "json5": "^2.1.3",
     "optimal": "^4.2.0",
