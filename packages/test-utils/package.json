@@ -1,6 +1,7 @@
 {
   "name": "@boost/test-utils",
-  "version": "2.0.0-alpha.0",
+  "version": "1.4.1",
+  "release": "1594765247526",
   "description": "Utility classes and functions for testing Boost applications in Jest.",
   "keywords": [
     "boost",
@@ -9,7 +10,6 @@
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "nonce": "1579986563745",
   "engines": {
     "node": ">=10.17.0"
   },

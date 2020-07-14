@@ -1,4 +1,4 @@
-# Boost Testing Utils
+# Testing utilities - Boost
 
 [![Build Status](https://github.com/milesj/boost/workflows/Build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
 [![npm version](https://badge.fury.io/js/%40boost%2Ftest-utils.svg)](https://www.npmjs.com/package/@boost/test-utils)
