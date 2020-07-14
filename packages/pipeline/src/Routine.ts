@@ -1,4 +1,4 @@
-import execa, { Options as ExecaOptions } from 'execa';
+import execa, { ExecaChildProcess, Options as ExecaOptions } from 'execa';
 import kebabCase from 'lodash/kebabCase';
 import split from 'split';
 import { toArray } from '@boost/common';
@@ -17,6 +17,7 @@ import Monitor from './Monitor';
 import Pipeline from './Pipeline';
 
 export interface ExecuteCommandOptions {
+  wrap?: (process: ExecaChildProcess) => void;
   workUnit?: AnyWorkUnit;
 }
 
@@ -58,7 +59,7 @@ export default abstract class Routine<
     args: string[],
     options: ExecaOptions & ExecuteCommandOptions = {},
   ) /* infer */ {
-    const { workUnit, ...opts } = options;
+    const { wrap, workUnit, ...opts } = options;
     const stream = execa(command, args, opts);
 
     this.onCommand.emit([command, args]);
@@ -78,6 +79,11 @@ export default abstract class Routine<
 
     stream.stderr!.pipe(split()).on('data', handler);
     stream.stdout!.pipe(split()).on('data', handler);
+
+    // Allow consumer to wrap functionality
+    if (typeof wrap === 'function') {
+      wrap(stream);
+    }
 
     return stream;
   }

@@ -175,6 +175,14 @@ describe('Routine', () => {
       expect(result).toEqual(expect.objectContaining({ command: 'echo boost' }));
     });
 
+    it('calls callback with stream', async () => {
+      const spy = jest.fn();
+
+      await routine.executeCommand('yarn', ['-v'], { wrap: spy });
+
+      expect(spy).toHaveBeenCalled();
+    });
+
     it('pipes stdout/stderr to handler', async () => {
       const commandSpy = jest.fn();
       const commandDataSpy = jest.fn();
