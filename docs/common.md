@@ -15,6 +15,35 @@ yarn add @boost/common
 - [PathResolver](./common/path-resolver.md)
 - [Project](./common/project.md)
 
+## Decorators
+
+### `@Bind`
+
+Automatically binds a class method's `this` context to its current instance, even when the method is
+dereferenced, which is the primary use-case for this decorator. This is an alternative to manually
+`bind()`ing within the constructor, or using class properties with anonymous functions.
+
+```ts
+import { Bind } from '@boost/common';
+
+class Example {
+  @Bind
+  static test() {
+    return this; // Class constructor
+  }
+
+  @Bind
+  test() {
+    return this; // Class instance
+  }
+}
+
+const example = new Example();
+const { test } = example;
+
+example.test() = test(); // true
+```
+
 ## Helpers
 
 ### `createBlueprint`

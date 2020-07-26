@@ -9,8 +9,6 @@ export default class Path {
 
   private internalPath: string = '';
 
-  private stats: fs.Stats | null = null;
-
   constructor(...parts: PortablePath[]) {
     // Always use forward slashes for better interop
     this.internalPath = path.normalize(path.join(...parts.map(String))).replace(/\\/gu, Path.SEP);

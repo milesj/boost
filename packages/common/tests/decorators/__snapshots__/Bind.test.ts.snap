@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@Bind errors if applied to a class 1`] = `"Only class methods can be decorated with \`@Bind\`. \\"undefined\\" is not a method."`;
+
+exports[`@Bind errors if applied to a property 1`] = `"Only class methods can be decorated with \`@Bind\`. \\"value\\" is not a method."`;
