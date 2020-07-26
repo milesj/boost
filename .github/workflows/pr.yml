@@ -8,5 +8,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
       - uses: beemojs/conventional-pr-action@v2
+        with:
+          require-multiple-commits: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
