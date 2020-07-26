@@ -83,11 +83,15 @@ describe('Configuration', () => {
 
   describe('loadConfigFromBranchToRoot()', () => {
     it('loads and processes all configs', async () => {
+      const loadSpy = jest.fn((c) => c);
+      const processSpy = jest.fn();
+
       vol.fromJSON(configFileTreeAllTypes, '/test');
+      config.onLoadedConfig.listen(loadSpy);
+      config.onProcessedConfig.listen(processSpy);
 
       const result = await config.loadConfigFromBranchToRoot('/test/src/app/profiles/settings');
-
-      expect(result).toEqual({
+      const expected = {
         config: {
           debug: true,
           extends: [],
@@ -120,17 +124,26 @@ describe('Configuration', () => {
             source: 'branch',
           },
         ],
-      });
+      };
+
+      expect(result).toEqual(expected);
+      expect(loadSpy).toHaveBeenCalledWith(expected.files);
+      expect(loadSpy).toHaveReturnedWith(expected.files);
+      expect(processSpy).toHaveBeenCalledWith(expected.config);
     });
   });
 
   describe('loadConfigFromRoot()', () => {
     it('loads and processes root config', async () => {
+      const loadSpy = jest.fn((c) => c);
+      const processSpy = jest.fn();
+
       vol.fromJSON(rootConfigJSON, '/test');
+      config.onLoadedConfig.listen(loadSpy);
+      config.onProcessedConfig.listen(processSpy);
 
       const result = await config.loadConfigFromRoot('/test');
-
-      expect(result).toEqual({
+      const expected = {
         config: {
           debug: true,
           extends: [],
@@ -143,17 +156,24 @@ describe('Configuration', () => {
             source: 'root',
           },
         ],
-      });
+      };
+
+      expect(result).toEqual(expected);
+      expect(loadSpy).toHaveBeenCalledWith(expected.files);
+      expect(loadSpy).toHaveReturnedWith(expected.files);
+      expect(processSpy).toHaveBeenCalledWith(expected.config);
     });
   });
 
   describe('loadIgnoreFromBranchToRoot()', () => {
     it('loads all ignores', async () => {
+      const spy = jest.fn((c) => c);
+
       vol.fromJSON(ignoreFileTree, '/test');
+      config.onLoadedIgnore.listen(spy);
 
       const result = await config.loadIgnoreFromBranchToRoot('/test/src/app/feature/signup/flow');
-
-      expect(result).toEqual([
+      const expected = [
         {
           ignore: ['*.log', '*.lock'],
           path: stubPath('/test/.boostignore'),
@@ -169,23 +189,33 @@ describe('Configuration', () => {
           path: stubPath('/test/src/app/feature/signup/.boostignore'),
           source: 'branch',
         },
-      ]);
+      ];
+
+      expect(result).toEqual(expected);
+      expect(spy).toHaveBeenCalledWith(expected);
+      expect(spy).toHaveReturnedWith(expected);
     });
   });
 
   describe('loadIgnoreFromRoot()', () => {
     it('loads root ignore', async () => {
+      const spy = jest.fn((c) => c);
+
       vol.fromJSON(ignoreFileTree, '/test');
+      config.onLoadedIgnore.listen(spy);
 
       const result = await config.loadIgnoreFromRoot('/test');
-
-      expect(result).toEqual([
+      const expected = [
         {
           ignore: ['*.log', '*.lock'],
           path: stubPath('/test/.boostignore'),
           source: 'root',
         },
-      ]);
+      ];
+
+      expect(result).toEqual(expected);
+      expect(spy).toHaveBeenCalledWith(expected);
+      expect(spy).toHaveReturnedWith(expected);
     });
   });
 });
