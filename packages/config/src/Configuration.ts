@@ -1,4 +1,5 @@
 import { Contract, predicates, PortablePath, Blueprint } from '@boost/common';
+import { Event, WaterfallEvent } from '@boost/event';
 import Cache from './Cache';
 import ConfigFinder from './ConfigFinder';
 import IgnoreFinder from './IgnoreFinder';
@@ -13,6 +14,12 @@ import {
 } from './types';
 
 export default abstract class Configuration<T extends object> extends Contract<T> {
+  readonly onLoadedConfig = new WaterfallEvent<ConfigFile<T>[]>('loaded-config');
+
+  readonly onLoadedIgnore = new WaterfallEvent<IgnoreFile[]>('loaded-ignore');
+
+  readonly onProcessedConfig = new Event<[Required<T>]>('processed-config');
+
   private cache: Cache;
 
   private configFinder: ConfigFinder<T>;
@@ -65,7 +72,9 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * within each branch directory, and the root.
    */
   async loadConfigFromBranchToRoot(dir: PortablePath): Promise<ProcessedConfig<T>> {
-    return this.processConfigs(await this.getConfigFinder().loadFromBranchToRoot(dir));
+    const configs = await this.getConfigFinder().loadFromBranchToRoot(dir);
+
+    return this.processConfigs(this.onLoadedConfig.emit(configs));
   }
 
   /**
@@ -73,7 +82,9 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * `.config` folder and `package.json` file.
    */
   async loadConfigFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
-    return this.processConfigs(await this.getConfigFinder().loadFromRoot(dir));
+    const configs = await this.getConfigFinder().loadFromRoot(dir);
+
+    return this.processConfigs(this.onLoadedConfig.emit(configs));
   }
 
   /**
@@ -82,7 +93,9 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * within each branch directory, and the root.
    */
   async loadIgnoreFromBranchToRoot(dir: PortablePath): Promise<IgnoreFile[]> {
-    return this.getIgnoreFinder().loadFromBranchToRoot(dir);
+    const ignores = await this.getIgnoreFinder().loadFromBranchToRoot(dir);
+
+    return this.onLoadedIgnore.emit(ignores);
   }
 
   /**
@@ -90,7 +103,9 @@ export default abstract class Configuration<T extends object> extends Contract<T
    * `.config` folder and `package.json` file.
    */
   async loadIgnoreFromRoot(dir: PortablePath = process.cwd()): Promise<IgnoreFile[]> {
-    return this.getIgnoreFinder().loadFromRoot(dir);
+    const ignores = await this.getIgnoreFinder().loadFromRoot(dir);
+
+    return this.onLoadedIgnore.emit(ignores);
   }
 
   /**
@@ -156,6 +171,8 @@ export default abstract class Configuration<T extends object> extends Contract<T
       files,
       this.blueprint(predicates) as Blueprint<T>,
     );
+
+    this.onProcessedConfig.emit([config]);
 
     return {
       config,

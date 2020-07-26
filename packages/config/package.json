@@ -22,6 +22,7 @@
   "dependencies": {
     "@boost/common": "^2.0.0",
     "@boost/debug": "^2.0.0",
+    "@boost/event": "^2.0.0",
     "@boost/internal": "^2.0.0",
     "minimatch": "^3.0.4"
   },
