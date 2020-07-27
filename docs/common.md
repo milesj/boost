@@ -86,6 +86,33 @@ class Example {
 }
 ```
 
+### `@Throttle`
+
+Throttles the execution of a class method to only fire once within every delay timeframe (in
+milliseconds). Will always fire on the first invocation.
+
+```ts
+import { Throttle } from '@boost/common';
+
+class Example {
+  @Throttle(100)
+  log() {
+    console.log('Fired!');
+  }
+}
+
+const example = new Example();
+
+example.log(); // Will log
+example.log(); // Will not log
+example.log(); // Will not log
+
+// 100ms pass
+example.log(); // Will log
+```
+
+> Throttling only works on methods with no return.
+
 ## Helpers
 
 ### `createBlueprint`
