@@ -32,8 +32,8 @@ export default function Deprecate(message?: string) {
         message || `Property \`${className + accessSymbol + property}\` has been deprecated.`,
       );
 
-      // Param
-    } else if (isParam(target, property, descriptor)) {
+      // Param (Babel/Jest doesnt support them)
+    } /* istanbul ignore next */ else if (isParam(target, property, descriptor)) {
       console.debug(
         message ||
           `Parameter ${descriptor} for \`${

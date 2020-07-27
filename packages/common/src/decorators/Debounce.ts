@@ -10,16 +10,27 @@ export default function Debounce(delay: number): InternalMethodDecorator<Debounc
     }
 
     const func = descriptor.value;
-    let timer: NodeJS.Timeout;
+
+    // We must use a map as all class instances would share the
+    // same timer value otherwise.
+    const timers = new WeakMap<Function, NodeJS.Timeout>();
 
     return {
       ...descriptor,
-      value(...args: unknown[]) {
-        clearTimeout(timer);
+      value(this: InternalMethodDecorator<DebouncedFunction>, ...args: unknown[]) {
+        const timer = timers.get(this);
 
-        timer = setTimeout(() => {
-          func(...args);
-        }, delay);
+        if (timer) {
+          clearTimeout(timer);
+          timers.delete(this);
+        }
+
+        timers.set(
+          this,
+          setTimeout(() => {
+            func(...args);
+          }, delay),
+        );
       },
     };
   };
