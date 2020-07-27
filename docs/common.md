@@ -27,12 +27,12 @@ dereferenced, which is the primary use-case for this decorator. This is an alter
 import { Bind } from '@boost/common';
 
 class Example {
-  @Bind
+  @Bind()
   static test() {
     return this; // Class constructor
   }
 
-  @Bind
+  @Bind()
   test() {
     return this; // Class instance
   }
@@ -43,6 +43,30 @@ const { test } = example;
 
 example.test() = test(); // true
 ```
+
+### `@Debounce`
+
+Delays the execution of the class method by the provided time in milliseconds. If another method
+call occurs within this timeframe, the execution delay will be reset.
+
+```ts
+import { Debounce } from '@boost/common';
+
+class Example {
+  @Debounce(250)
+  log() {
+    console.log('Fired!');
+  }
+}
+
+const example = new Example();
+
+example.log(); // Will not log
+example.log(); // Will not log
+example.log(); // Will log after 250ms
+```
+
+> Debouncing only works on methods with no return.
 
 ### `@Deprecate`
 

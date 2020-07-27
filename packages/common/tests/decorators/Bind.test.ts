@@ -1,6 +1,6 @@
 import { Bind } from '../../src';
 
-describe('@Bind', () => {
+describe('@Bind()', () => {
   class Test {
     value: string;
 
@@ -8,19 +8,19 @@ describe('@Bind', () => {
       this.value = value;
     }
 
-    @Bind
+    @Bind()
     getValue(): string {
       return this.value;
     }
 
-    @Bind
+    @Bind()
     async getAsyncValue(): Promise<string> {
       const value = await Promise.resolve(this.value);
 
       return value;
     }
 
-    @Bind
+    @Bind()
     setValue(value: string) {
       this.value = value;
 
@@ -31,10 +31,10 @@ describe('@Bind', () => {
   it('errors if applied to a class', () => {
     expect(() => {
       // @ts-expect-error
-      @Bind
-      class TestProp {}
+      @Bind()
+      class TestClass {}
 
-      return TestProp;
+      return TestClass;
     }).toThrowErrorMatchingSnapshot();
   });
 
@@ -43,7 +43,7 @@ describe('@Bind', () => {
       () =>
         class TestProp {
           // @ts-expect-error
-          @Bind
+          @Bind()
           value = 123;
         },
     ).toThrowErrorMatchingSnapshot();
@@ -94,7 +94,7 @@ describe('@Bind', () => {
 
   it('allows sub-classes to overwrite and bind', () => {
     class TestSub extends Test {
-      @Bind
+      @Bind()
       getValue() {
         return 'xyz';
       }
@@ -122,7 +122,7 @@ describe('@Bind', () => {
 
   it('allows sub-class overwritten setters to work correctly', () => {
     class TestSub extends Test {
-      @Bind
+      @Bind()
       setValue(value: string) {
         this.value = `inherited ${value}`;
 
@@ -146,7 +146,7 @@ describe('@Bind', () => {
 
   it('doesnt break parent super calls', () => {
     class TestSub extends Test {
-      @Bind
+      @Bind()
       getValue() {
         return `${super.getValue()} child`;
       }
@@ -165,7 +165,7 @@ describe('@Bind', () => {
     expect.assertions(1);
 
     class StaticTest {
-      @Bind
+      @Bind()
       static test() {
         expect(this).toBe(StaticTest);
       }

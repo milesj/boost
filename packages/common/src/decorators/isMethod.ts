@@ -2,7 +2,7 @@ import isObject from '../helpers/isObject';
 
 export default function isMethod(
   target: Function | Object,
-  property?: string,
+  property?: string | symbol,
   descriptor?: unknown,
 ) {
   return (
