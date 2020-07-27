@@ -5,16 +5,12 @@ import isMethod from './isMethod';
 import isProperty from './isProperty';
 import isParam from './isParam';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface CustomDescriptor extends TypedPropertyDescriptor<any> {
-  initializer?: Function;
-}
-
 export default function Deprecate(message?: string) {
   return (
     target: Object | Function,
     property?: string,
-    descriptor?: CustomDescriptor | number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    descriptor?: TypedPropertyDescriptor<any> | number,
   ): void => {
     const isProtoOrStatic = typeof target === 'function';
     const className = isProtoOrStatic ? (target as Function).name : target.constructor.name;
