@@ -44,6 +44,24 @@ const { test } = example;
 example.test() = test(); // true
 ```
 
+### `@Deprecate`
+
+Marks a class declaration, class method, class property, or method parameter as deprecated by
+logging a deprecation message to the console. Works for both static and instance members.
+
+```ts
+import { Deprecate } from '@boost/common';
+
+@Deprecate()
+class Example {
+  @Deprecate()
+  static property = 123;
+
+  @Deprecate('Can provide a custom message')
+  method() {}
+}
+```
+
 ## Helpers
 
 ### `createBlueprint`

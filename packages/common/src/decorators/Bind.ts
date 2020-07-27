@@ -1,17 +1,17 @@
+import isMethod from './isMethod';
+
 function getName(func: Object): string {
   return func.constructor.name;
 }
 
 // MethodDecorator
 export default function Bind<T extends Function>(
-  prototype: Object,
-  property: string | symbol,
+  target: Object,
+  property: string,
   descriptor: TypedPropertyDescriptor<T>,
 ): TypedPropertyDescriptor<T> {
-  if (!descriptor || typeof descriptor.value !== 'function') {
-    throw new TypeError(
-      `Only class methods can be decorated with \`@Bind\`. "${String(property)}" is not a method.`,
-    );
+  if (!isMethod(target, property, descriptor) || typeof descriptor.value !== 'function') {
+    throw new TypeError(`\`@Bind\` may only be applied to class methods.`);
   }
 
   return {
@@ -21,7 +21,7 @@ export default function Bind<T extends Function>(
 
       // Only cache the bound function when in the deepest sub-class,
       // otherwise any `super` calls will overwrite each other.
-      if (getName(prototype) === getName(this)) {
+      if (getName(target) === getName(this)) {
         Object.defineProperty(this, property, {
           configurable: true,
           value: bound,
