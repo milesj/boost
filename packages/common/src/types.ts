@@ -140,3 +140,11 @@ export interface WorkspacePackage<T extends PackageStructure = PackageStructure>
   metadata: WorkspaceMetadata;
   package: T;
 }
+
+// MISC
+
+declare global {
+  interface TypedPropertyDescriptor<T> {
+    initializer?: Function;
+  }
+}
