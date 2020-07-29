@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+
 import glob from 'fast-glob';
 import CommonError from './CommonError';
 import parseFile from './helpers/parseFile';
@@ -9,6 +11,7 @@ import {
   WorkspacePackage,
   PortablePath,
 } from './types';
+import { Memoize } from './decorators';
 
 export interface ProjectSearchOptions {
   relative?: boolean;
@@ -56,9 +59,12 @@ export default class Project {
    * Return a list of all workspace globs as they are configured
    * in `package.json` or `lerna.json`.
    */
+  @Memoize()
+  // eslint-disable-next-line complexity
   getWorkspaceGlobs(options: ProjectSearchOptions = {}): FilePath[] {
     const pkgPath = this.root.append('package.json');
     const lernaPath = this.root.append('lerna.json');
+    const pnpmPath = this.root.append('pnpm-workspace.yaml');
     const workspacePaths = [];
 
     // Yarn
@@ -83,6 +89,15 @@ export default class Project {
       }
     }
 
+    // PNPM
+    if (workspacePaths.length === 0 && pnpmPath.exists()) {
+      const pnpm = parseFile<{ packages: string[] }>(pnpmPath);
+
+      if (Array.isArray(pnpm.packages)) {
+        workspacePaths.push(...pnpm.packages);
+      }
+    }
+
     if (options.relative) {
       return workspacePaths;
     }
@@ -94,26 +109,28 @@ export default class Project {
    * Return all `package.json`s across all workspaces and their packages.
    * Once loaded, append workspace path metadata.
    */
+  @Memoize()
   getWorkspacePackages<T extends PackageStructure>(): WorkspacePackage<T>[] {
     return glob
-      .sync(
-        this.getWorkspaceGlobs({
-          relative: true,
-        }).map((ws) => `${ws}/package.json`),
-        {
-          absolute: true,
-          cwd: this.root.path(),
-        },
-      )
-      .map((filePath) => ({
-        metadata: this.createWorkspaceMetadata(filePath),
-        package: parseFile<T>(filePath),
-      }));
+      .sync(this.getWorkspaceGlobs({ relative: true }), {
+        absolute: true,
+        cwd: this.root.path(),
+        onlyDirectories: true,
+      })
+      .map((pkgPath) => {
+        const filePath = new Path(pkgPath, 'package.json');
+
+        return {
+          metadata: this.createWorkspaceMetadata(filePath),
+          package: parseFile<T>(filePath),
+        };
+      });
   }
 
   /**
    * Return a list of all workspace package paths, resolved against the file system.
    */
+  @Memoize()
   getWorkspacePackagePaths(options: ProjectSearchOptions = {}): FilePath[] {
     return glob.sync(this.getWorkspaceGlobs({ relative: true }), {
       absolute: !options.relative,
