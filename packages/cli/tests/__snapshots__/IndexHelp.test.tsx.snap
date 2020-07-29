@@ -6,13 +6,13 @@ exports[`<IndexHelp /> renders a banner 1`] = `
 | __ -|  |  |  |  |__   | | |
 |_____|_____|_____|_____| |_|
 
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 "
 `;
 
 exports[`<IndexHelp /> renders a footer 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 Powered by Boost CLI v1.2.3
 "
@@ -20,7 +20,7 @@ Powered by Boost CLI v1.2.3
 
 exports[`<IndexHelp /> renders a header 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 For more information, see https://github.com/milesj/boost
 "
@@ -28,29 +28,29 @@ For more information, see https://github.com/milesj/boost
 
 exports[`<IndexHelp /> renders children 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
-[47m[30m TEST [39m[49m
+[1m[47m[30m TEST [39m[49m[22m
 
  I am a command that does cool things.
 
-[47m[30m USAGE [39m[49m
+[1m[47m[30m USAGE [39m[49m[22m
 
  $ ink foo bar
 
-[47m[30m PARAMS [39m[49m
+[1m[47m[30m PARAMS [39m[49m[22m
 
  0 [90mstring[39m     Complex param with many tags. [90m[deprecated, required][39m
  path [90mstring[39m  This is a string param thats required. [90m[required][39m
  ms [90mnumber[39m    And this a number param with a label.
  3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
 
-[47m[30m COMMANDS [39m[49m
+[1m[47m[30m COMMANDS [39m[49m[22m
 
  barbar         This is a deprecated command with no params. [90m[deprecated][39m
  foo [90msrc[39m [90m[dst][39m  This is a normal command with params.
 
-[47m[30m OPTIONS [39m[49m
+[1m[47m[30m OPTIONS [39m[49m[22m
 
      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
      --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with
@@ -77,7 +77,7 @@ Boost v1.2.3 [90mboost[39m
 
 exports[`<IndexHelp /> renders with base props 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 "
 `;
 
@@ -87,19 +87,19 @@ exports[`<IndexHelp /> renders with everything 1`] = `
 | __ -|  |  |  |  |__   | | |
 |_____|_____|_____|_____| |_|
 
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 For more information, see https://github.com/milesj/boost
 
-[47m[30m TEST [39m[49m
+[1m[47m[30m TEST [39m[49m[22m
 
  I am a command that does cool things.
 
-[47m[30m USAGE [39m[49m
+[1m[47m[30m USAGE [39m[49m[22m
 
  $ ink foo bar
 
-[47m[30m COMMANDS [39m[49m
+[1m[47m[30m COMMANDS [39m[49m[22m
 
  barbar         This is a deprecated command with no params. [90m[deprecated][39m
  foo [90msrc[39m [90m[dst][39m  This is a normal command with params.

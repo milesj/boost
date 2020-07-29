@@ -27,10 +27,7 @@ export default function Style({ children, inverted = false, type, ...restProps }
     }
   } else if (type !== 'none') {
     injectColor(theme[type], inverted);
-
-    if (inverted) {
-      injectColor('black', false);
-    }
+    injectColor(theme.inverted, !inverted);
   }
 
   return (
