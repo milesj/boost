@@ -1,37 +1,36 @@
 import isMethod from './isMethod';
-import { InternalMethodDecorator } from './types';
 
-export type DebouncedFunction = (...args: unknown[]) => void;
-
-export default function Debounce(delay: number): InternalMethodDecorator<DebouncedFunction> {
+export default function Debounce(delay: number): MethodDecorator {
   return (target, property, descriptor) => {
-    if (!isMethod(target, property, descriptor) || typeof descriptor.value !== 'function') {
+    if (
+      !isMethod(target, property, descriptor) ||
+      !('value' in descriptor && typeof descriptor.value === 'function')
+    ) {
       throw new TypeError(`\`@Debounce\` may only be applied to class methods.`);
     }
-
-    const func = descriptor.value;
 
     // We must use a map as all class instances would share the
     // same timer value otherwise.
     const timers = new WeakMap<Function, NodeJS.Timeout>();
 
-    return {
-      ...descriptor,
-      value(this: InternalMethodDecorator<DebouncedFunction>, ...args: unknown[]) {
-        const timer = timers.get(this);
+    // Overwrite the value function with a new debounced function
+    const func = descriptor.value;
 
-        if (timer) {
-          clearTimeout(timer);
-          timers.delete(this);
-        }
+    // @ts-expect-error
+    descriptor.value = function debounce(this: Function, ...args: unknown[]) {
+      const timer = timers.get(this);
 
-        timers.set(
-          this,
-          setTimeout(() => {
-            func(...args);
-          }, delay),
-        );
-      },
+      if (timer) {
+        clearTimeout(timer);
+        timers.delete(this);
+      }
+
+      timers.set(
+        this,
+        setTimeout(() => {
+          func.apply(this, args);
+        }, delay),
+      );
     };
   };
 }
