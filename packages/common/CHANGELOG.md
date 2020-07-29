@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.1.0 - 2020-07-29
+
+#### 🚀 Updates
+
+- **[Project]** Add PNPM workspaces support. ([a8df8c9](https://github.com/milesj/boost/commit/a8df8c9))
+- Add `@Bind` decorator. ([052e9c4](https://github.com/milesj/boost/commit/052e9c4))
+- Add `@Debounce` decorator. ([3a6596f](https://github.com/milesj/boost/commit/3a6596f))
+- Add `@Deprecate` decorator. ([ab2b26b](https://github.com/milesj/boost/commit/ab2b26b))
+- Add `@Memoize` decorator. ([5bdeb55](https://github.com/milesj/boost/commit/5bdeb55))
+- Add `@Throttle` decorator. ([a15c125](https://github.com/milesj/boost/commit/a15c125))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 # 2.0.0 - 2020-07-14
 
 #### 💥 Breaking

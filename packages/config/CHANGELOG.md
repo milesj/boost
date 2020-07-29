@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.1.0 - 2020-07-29
+
+#### 🚀 Updates
+
+- Add events to `Configuration` class. (#101) ([aef720d](https://github.com/milesj/boost/commit/aef720d)), closes [#101](https://github.com/milesj/boost/issues/101)
+
+#### 🛠 Internals
+
+- Fix failing tests after recent `Path` changes. ([ba03708](https://github.com/milesj/boost/commit/ba03708))
+
+**Note:** Version bump only for package @boost/config
+
+
+
+
+
 # 2.0.0 - 2020-07-14
 
 #### 💥 Breaking
