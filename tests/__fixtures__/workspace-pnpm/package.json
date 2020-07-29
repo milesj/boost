@@ -1,0 +1,7 @@
+{
+  "name": "test-boost-workspace-pnpm",
+  "version": "0.0.0",
+  "testBoost": {
+    "pnpm": true
+  }
+}

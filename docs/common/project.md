@@ -19,9 +19,9 @@ const pkg = project.getPackage();
 
 The primary feature of this class is to extract metadata about a project's workspaces. Workspaces
 are used to support multi-package architectures known as monorepos, typically through
-[Yarn](https://yarnpkg.com/features/workspaces) or
-[Lerna](https://github.com/lerna/lerna#lernajson). In Boost, our implementation of workspaces aligns
-with:
+[Yarn](https://yarnpkg.com/features/workspaces), [PNPM](https://pnpm.js.org/en/pnpm-workspace_yaml),
+or [Lerna](https://github.com/lerna/lerna#lernajson). In Boost, our implementation of workspaces
+aligns with:
 
 - **Project** - Typically a repository with a root `package.json`. Can either be a collection of
   packages, or a package itself.
