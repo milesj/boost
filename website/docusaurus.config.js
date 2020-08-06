@@ -1,5 +1,20 @@
 /* eslint-disable sort-keys */
 
+const pkgs = [
+  'args',
+  'cli',
+  'common',
+  'config',
+  'debug',
+  'event',
+  'log',
+  'pipeline',
+  'plugin',
+  'terminal',
+  'translate',
+  // eslint-disable-next-line
+].map((name) => require(`@boost/${name}/package.json`));
+
 module.exports = {
   title: 'Boost',
   tagline:
@@ -18,20 +33,18 @@ module.exports = {
         src: 'img/logo.svg',
       },
       items: [
-        // {
-        //   href: 'https://www.npmjs.com/package/@boost/core',
-        //   label: `v${pkg.version}`,
-        //   position: 'left',
-        // },
+        {
+          label: 'v2',
+          position: 'left',
+          items: pkgs.map((pkg) => ({
+            label: `v${pkg.version} · ${pkg.name.split('/')[1]}`,
+            href: `https://www.npmjs.com/package/${pkg.name}`,
+          })),
+        },
         {
           to: 'docs',
           activeBasePath: 'docs',
           label: 'Docs',
-          position: 'left',
-        },
-        {
-          to: 'browser',
-          label: 'Browser',
           position: 'left',
         },
         {

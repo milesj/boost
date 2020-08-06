@@ -33,3 +33,7 @@ html[data-theme='dark'] {
   margin-left: auto;
   margin-right: auto;
 }
+
+.text--muted {
+  color: var(--ifm-color-secondary-darkest);
+}
