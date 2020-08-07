@@ -1,14 +1,39 @@
-# CLI
+---
+title: CLIs
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 A type-safe and interactive command line program, powered by [React][react] and [Ink][ink].
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/cli react ink
 ```
 
-## Environment Variables
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/cli react ink
+```
+
+  </TabItem>
+</Tabs>
+
+## Environment variables
 
 - `BOOSTJS_CLI_THEME` (`string`) - Name of the theme module (without `@boost` or `boost` prefixes)
   to load for terminal style/color changes.
@@ -35,14 +60,14 @@ with clear separation of commands, middleware, args, a program instance, and mor
 streamlines the development process by utilizing [Ink][ink] for terminal rendering, as manually
 handling ANSI escape sequences and terminal widths can be tedious and complicated.
 
-> The CLI makes heavy usage of the [args](./args.md) package, which will be continually referenced
+> The CLI makes heavy usage of the [args](./args.mdx) package, which will be continually referenced
 > throughout this documentation. It's encouraged to read and understand it first.
 
 ### Program
 
 The entry point of the command line is commonly referred to as the binary, or script, and is managed
 by the `Program` class. This class handles the registration of commands, applying
-[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.md#usage)
+[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.mdx#usage)
 (options, flags, etc), running the found command with these argument, outputing to the terminal, and
 finally cleaning up or handling failures.
 
@@ -72,7 +97,7 @@ const program = new Program({
 });
 ```
 
-![Program example](./images/cli/program.png)
+![Program example](/img/cli/program.png)
 
 Once [commands](#commands) and optional [middleware](#middleware) have been registered, you must run
 the program with `Program#run()` or `Program#runAndExit()`, with the latter automatically passing
@@ -138,7 +163,7 @@ the default command. Otherwise, if arguments _are_ passed, a registered command 
 matching path name.
 
 To create a multi-command binary, create and instantiate multiple commands, and pass them all to
-`Command#register`. In the example below, the `boost` binary would support the `boost install`,
+`Command#register()`. In the example below, the `boost` binary would support the `boost install`,
 `boost uninstall`, and `boost build` commands.
 
 ```ts
@@ -235,9 +260,9 @@ mandatory.
 
 - `aliases` (`string[]`) - A list of aliased paths. Will not show up in the help menu, but will
   match on the command line.
-- `allowUnknownOptions` (`boolean`) - Allow [unknown options](./args.md#unknown-options) to be
+- `allowUnknownOptions` (`boolean`) - Allow [unknown options](./args.mdx#unknown-options) to be
   parsed, otherwise an error is thrown. Defaults to `false`.
-- `allowVariadicParams` (`boolean`) - Allow [variadic params](./args.md#variadic-params) to be
+- `allowVariadicParams` (`boolean`) - Allow [variadic params](./args.mdx#variadic-params) to be
   parsed, otherwise an error is thrown. Defaults to `false`.
 - `categories` (`object`) - A mapping of sub-command and option [categories](#categories) for this
   command only. [Global options](#global-options) are automatically defined under the `global`
@@ -283,11 +308,11 @@ export default class BuildCommand extends Command {
 }
 ```
 
-![Command example](./images/cli/command.png)
+![Command example](/img/cli/command.png)
 
 #### Options
 
-[Options](./args.md#options) are optional arguments that accept a value on the command line. When a
+[Options](./args.mdx#options) are optional arguments that accept a value on the command line. When a
 command is ran, each option is set as a class property based on the matching command line value, or
 the provided default value. Like configuration above, options can be defined declaratively or
 imperatively, with option types being passed to the 1st `Command` generic slot.
@@ -295,7 +320,7 @@ imperatively, with option types being passed to the 1st `Command` generic slot.
 There are 5 `Arg` decorators to choose from when defining options (in the example below), all of
 which are defined on a class property, where the property name becomes the option name. For example,
 a property of `save` would become the `--save` option. Depending on the decorator, they support many
-[option settings](./args.md#options), excluding `type` and `description`, which are inferred, and
+[option settings](./args.mdx#options), excluding `type` and `description`, which are inferred, and
 `default` which comes from the property value.
 
 ```ts
@@ -333,7 +358,7 @@ export default class CustomCommand extends Command<CustomOptions> {
 ```
 
 If you prefer to use static properties, all options are defined through the single static `options`
-property, which requires a mapping of option names to [option settings](./args.md#options). With
+property, which requires a mapping of option names to [option settings](./args.mdx#options). With
 this approach, `type` and `description` are required, with `default` either being configured with a
 setting, or coming from the class property value.
 
@@ -400,7 +425,7 @@ export default class CustomCommand extends Command<CustomOptions> {
 }
 ```
 
-![Options example](./images/cli/options.png)
+![Options example](/img/cli/options.png)
 
 ##### Unknown options
 
@@ -421,7 +446,7 @@ export default class CustomCommand extends Command<GlobalOptions> {
 }
 ```
 
-![Unknown option example](./images/cli/unknown-option.png)
+![Unknown option example](/img/cli/unknown-option.png)
 
 ##### Global options
 
@@ -437,8 +462,8 @@ Boost provides the follow options that are always available to all commands.
 
 #### Params
 
-[Params](./args.md#params) are command line values that will be passed to `Command#run()` as
-arguments. When defining params, all [param settings](./args.md#params) are supported, and required
+[Params](./args.mdx#params) are command line values that will be passed to `Command#run()` as
+arguments. When defining params, all [param settings](./args.mdx#params) are supported, and required
 are mandatory. Param types are passed to the 2nd `Command` generic slot.
 
 When using decorators, the `Arg.Params` decorator must be defined on the `Command#run()` method. It
@@ -476,7 +501,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 ```
 
 If you prefer to use static properties, all params are defined through the single static `params`
-property, which requires an array of [param settings](./args.md#params).
+property, which requires an array of [param settings](./args.mdx#params).
 
 For easier type safety, the `Params` collection type can be used to type the static property.
 
@@ -512,7 +537,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 }
 ```
 
-![Params example](./images/cli/params.png)
+![Params example](/img/cli/params.png)
 
 ##### Variadic params
 
@@ -540,11 +565,11 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 }
 ```
 
-![Variadic params example](./images/cli/variadic-params.png)
+![Variadic params example](/img/cli/variadic-params.png)
 
 #### Rest arguments
 
-[Rest arguments](./args.md#rest) are all arguments that come after a standalone `--` delimiter, and
+[Rest arguments](./args.mdx#rest) are all arguments that come after a standalone `--` delimiter, and
 can be accessed using the `Command#rest` property, which is an array of strings.
 
 #### Sub-commands
@@ -580,7 +605,7 @@ class ScaffoldCommand extends Command {
 Sub-commands can now be executed on the command line by passing their full path, like so:
 `boost scaffold:model --name User`.
 
-![Sub-commands example](./images/cli/subcommands.png)
+![Sub-commands example](/img/cli/subcommands.png)
 
 #### Rendering components
 
@@ -803,7 +828,7 @@ export default class BuildCommand extends Command {
 
 ### Logging
 
-Boost integrates its very own [logger](./log.md) so that logs can easily be sent to the configured
+Boost integrates its very own [logger](./log.mdx) so that logs can easily be sent to the configured
 `stdout` and `stderr`. The logger is accessible using `Command#log()` and associated methods.
 
 ```ts
@@ -971,7 +996,7 @@ const program = mockProgram({ name: 'Example' });
 
 ### `renderComponent`
 
-> async renderComponent(element: React.ReactElement, stripped?: boolean): Promise\<string>
+> async renderComponent(element: React.ReactElement, stripped?: boolean): Promise<string\>
 
 Can be used to render a React component with Ink and return the rendered result as a terminal
 compatible string. If `stripped` is true, it will strip ANSI escape escape sequences.
@@ -987,7 +1012,7 @@ it('renders a component', async () => {
 
 ### `runCommand`
 
-> async runCommand\<O, P>(command: Command, params: P, options?: O): Promise\<string>
+> async runCommand<O, P\>(command: Command, params: P, options?: O): Promise<string\>
 
 Runs a `Command` outside the context of a `Program`, but mimics similar functionality, including
 React component rendering. Params are required as they're passed to the run method, while options
@@ -1011,7 +1036,7 @@ it('runs a command', async () => {
 
 ### `runTask`
 
-> runTask\<A, R, T extends TaskContext>(task: (this: T, ...args: A) => R, args: A, context?: T): R
+> runTask<A, R, T extends TaskContext\>(task: (this: T, ...args: A) => R, args: A, context?: T): R
 
 Runs a task function outside the context of a `Command`, in complete isolation. A mock command
 context is provided with standard defaults, and can be customized through the 3rd argument.
@@ -1033,7 +1058,7 @@ it('runs a task', async () => {
 ### `runProgram`
 
 > async runProgram(program: Program, argv: string[]): Promise<{ code: ExitCode; output: string;
-> outputStripped: string }>
+> outputStripped: string }\>
 
 Runs a `Program` as if it were ran on the command line, including middleware, commands, success and
 failuer states, and more. Utilizes mocked streams to capture and return standard output and ANSI

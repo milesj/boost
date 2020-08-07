@@ -1,12 +1,37 @@
-# Crash reporting
+---
+title: Crash reporting
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Report important environmental information when an error occurs or a process crashes.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/debug
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/debug
+```
+
+  </TabItem>
+</Tabs>
 
 ## Usage
 
@@ -42,8 +67,8 @@ reporter
   .reportSystem();
 ```
 
-If you'd like to add your own section and label value pairs, use `CrashReporter#addSection`, which
-requires a title, and `CrashReporter#add`, which accepts a label and one or many values.
+If you'd like to add your own section and label value pairs, use `CrashReporter#addSection()`, which
+requires a title, and `CrashReporter#add()`, which accepts a label and one or many values.
 
 ```ts
 reporter
@@ -54,7 +79,7 @@ reporter
 ```
 
 Once all the information has been buffered, we can write the content to a log file by using
-`CrashReporter#write`, which requires an absolute file path.
+`CrashReporter#write()`, which requires an absolute file path.
 
 ```ts
 reporter.write(path.join(process.cwd(), 'error.log'));

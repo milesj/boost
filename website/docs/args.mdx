@@ -1,12 +1,37 @@
-# Args parsing
+---
+title: Arguments
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 A type-safe and convention based argument parsing library, with strict validation checks.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/args
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/args
+```
+
+  </TabItem>
+</Tabs>
 
 ## Usage
 
@@ -475,25 +500,6 @@ An error has occurred:
 
 ```
 
-### Formatting args
-
-If for some reason you need to format the args result from `parse()` back into an array of string
-arguments, the `format()` function can be used. This function will use the values as is and does not
-reference the settings object, so all formatted arguments will be in their long form, and will not
-use inline values.
-
-```ts
-import { format } from '@boost/args';
-
-// cmd --string abc --numbers 123 456 --bool foo bar baz -- qux --version
-const argv = format({
-  command: ['cmd'],
-  options: { string: 'abc', numbers: [123, 456], bool: true },
-  params: ['foo', 'bar', 'baz'],
-  rest: ['qux', '--version'],
-});
-```
-
 ### Command & option categories
 
 While purely an informational feature, as it doesn't pertain to the parser, both commands and
@@ -563,6 +569,25 @@ const { command, errors, options, params, rest } = parseInContext(argv, (arg) =>
   }
 
   return undefined;
+});
+```
+
+## Formatting args
+
+If for some reason you need to format the args result from `parse()` back into an array of string
+arguments, the `format()` function can be used. This function will use the values as is and does not
+reference the settings object, so all formatted arguments will be in their long form, and will not
+use inline values.
+
+```ts
+import { format } from '@boost/args';
+
+// cmd --string abc --numbers 123 456 --bool foo bar baz -- qux --version
+const argv = format({
+  command: ['cmd'],
+  options: { string: 'abc', numbers: [123, 456], bool: true },
+  params: ['foo', 'bar', 'baz'],
+  rest: ['qux', '--version'],
 });
 ```
 

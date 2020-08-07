@@ -1,4 +1,6 @@
-# `Contract`
+---
+title: Contract
+---
 
 A `Contract` is an abstract class that implements the `Optionable` interface, which provides an
 options object layer, and is meant to be inherited from as a super class. All classes that extend

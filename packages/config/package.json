@@ -2,7 +2,7 @@
   "name": "@boost/config",
   "version": "2.1.0",
   "release": "1594765247526",
-  "description": "Powerful config file and ignore file manager, finder, and loader.",
+  "description": "Powerful finder, loader, and manager of both project configuration and ignore files.",
   "keywords": [
     "boost",
     "config",

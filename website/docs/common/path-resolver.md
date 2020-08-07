@@ -1,4 +1,6 @@
-# `PathResolver`
+---
+title: PathResolver
+---
 
 A `PathResolver` can be used to find a real path amongst a list of possible lookups. A lookup is
 either a file system path or a Node.js module. If a path is found, an absolute resolved

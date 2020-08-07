@@ -2,6 +2,36 @@
 
 module.exports = {
   docs: [
+    'index',
+    {
+      type: 'category',
+      label: 'Packages',
+      collapsed: false,
+      items: [
+        'args',
+        'cli',
+        {
+          type: 'category',
+          label: 'Common utilities',
+          items: [
+            'common',
+            'common/decorators',
+            'common/contract',
+            'common/path',
+            'common/path-resolver',
+            'common/project',
+          ],
+        },
+        'crash',
+        'debug',
+        'event',
+        'log',
+        'pipeline',
+        'plugin',
+        'terminal',
+        'translate',
+      ],
+    },
     {
       type: 'link',
       label: 'Changelog',

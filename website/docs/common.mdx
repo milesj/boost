@@ -1,174 +1,44 @@
-# Common utilities
+---
+title: Common utilities
+sidebar_label: Overview
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 A collection of common utilities and helpers for general purpose or Boost powered applications.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/common
 ```
 
-## Classes
+  </TabItem>
+  <TabItem value="npm">
 
-- [Contract](./common/contract.md)
-- [Path](./common/path.md)
-- [PathResolver](./common/path-resolver.md)
-- [Project](./common/project.md)
-
-## Decorators
-
-### `@Bind`
-
-> Bind(): MethodDecorator
-
-Automatically binds a class method's `this` context to its current instance, even when the method is
-dereferenced, which is the primary use-case for this decorator. This is an alternative to manually
-`bind()`ing within the constructor, or using class properties with anonymous functions.
-
-```ts
-import { Bind } from '@boost/common';
-
-class Example {
-  @Bind()
-  static test() {
-    return this; // Class constructor
-  }
-
-  @Bind()
-  test() {
-    return this; // Class instance
-  }
-}
-
-const example = new Example();
-const { test } = example;
-
-example.test() = test(); // true
+```bash
+npm install @boost/common
 ```
 
-### `@Debounce`
-
-> Debounce(delay: number): MethodDecorator
-
-Delays the execution of the class method by the provided time in milliseconds. If another method
-call occurs within this timeframe, the execution delay will be reset.
-
-```ts
-import { Debounce } from '@boost/common';
-
-class Example {
-  @Debounce(250)
-  log() {
-    console.log('Fired!');
-  }
-}
-
-const example = new Example();
-
-example.log(); // Will not log
-example.log(); // Will not log
-example.log(); // Will log after 250ms
-```
-
-> Debouncing only works on methods with no return.
-
-### `@Deprecate`
-
-> Deprecate(message?: string): Decorator
-
-Marks a class declaration, class method, class property, or method parameter as deprecated by
-logging a deprecation message to the console. Works for both static and instance members.
-
-```ts
-import { Deprecate } from '@boost/common';
-
-@Deprecate()
-class Example {
-  @Deprecate()
-  static property = 123;
-
-  @Deprecate('Can provide a custom message')
-  method() {}
-}
-```
-
-### `@Memoize`
-
-> Memoize(options?: MemoizeHasher | MemoizeOptions): MethodDecorator
-
-Caches the return value of a class method or getter to consistently and efficiently return the same
-value. By default, hashes the method's arguments to determine a cache key, but can be customized
-with a unique hashing function.
-
-Memoization also works on async/promise based methods by caching the promise itself. However, if the
-promise is rejected, the cache will be deleted so that subsequent calls can refresh itself.
-
-```ts
-import { Memoize } from '@boost/common';
-
-class Example {
-  @Memoize()
-  someExpensiveOperation() {
-    // Return some value
-  }
-
-  @Memoize({ expires: 3600 })
-  async fetchInBackground() {
-    // Return some async value with an expiration time
-  }
-}
-
-const example = new Example();
-
-example.someExpensiveOperation(); // Will run and cache result
-example.someExpensiveOperation(); // Will return cached result
-example.someExpensiveOperation(); // Will return cached result
-```
-
-The memoize decorator supports the following options:
-
-- `cache` (`MemoizeCache<T>`) - A custom `Map` instance to store cached values. Can also be used to
-  pre-cache expected values.
-- `expires` (`number`) - Time in milliseconds in which to keep the cache alive (TTL). Pass `0` to
-  cache indefinitely. Defaults to `0`.
-- `hasher` (`MemoizeHasher`) - A hashing function to determine the cache key. Is passed the method's
-  arguments and must return a string. If not provided, arguments are hashed using
-  `JSON.stringify()`.
-
-### `@Throttle`
-
-> Throttle(delay: number): MethodDecorator
-
-Throttles the execution of a class method to only fire once within every delay timeframe (in
-milliseconds). Will always fire on the first invocation.
-
-```ts
-import { Throttle } from '@boost/common';
-
-class Example {
-  @Throttle(100)
-  log() {
-    console.log('Fired!');
-  }
-}
-
-const example = new Example();
-
-example.log(); // Will log
-example.log(); // Will not log
-example.log(); // Will not log
-
-// 100ms pass
-example.log(); // Will log
-```
-
-> Throttling only works on methods with no return.
+  </TabItem>
+</Tabs>
 
 ## Helpers
 
 ### `createBlueprint`
 
-> createBlueprint\<T>(factory: BlueprintFactory\<T>): Blueprint<T>
+> createBlueprint<T\>(factory: BlueprintFactory<T\>): Blueprint<T\>
 
 Can be used to generate a blueprint object for use within
 [optimal](https://github.com/milesj/optimal) checks. All supported optimal predicates are passed as
@@ -275,7 +145,7 @@ isModuleName('fs'); // false
 
 ### `isObject`
 
-> isObject\<T>(value: unknown): value is T
+> isObject<T\>(value: unknown): value is T
 
 Returns `true` if the value is a plain object.
 
@@ -300,7 +170,7 @@ if (isObject<Person>(person)) {
 
 ### `parseFile`
 
-> parseFile\<T>(path: string): T
+> parseFile<T\>(path: string): T
 
 Can be used to *sync*hronously parse and return an object for the following file types & extensions:
 `js`, `jsx`, `json`, `json5`, `yaml`, `yml`. The function requires an absolute file path, and any
@@ -314,7 +184,7 @@ const data: ReturnShape = parseFile('/absolute/file/path');
 
 ### `requireModule`
 
-> requireModule\<T>(path: string): T
+> requireModule<T\>(path: string): T
 
 Works in a similar fashion to the native NodeJS `require()`, but also handles files built with Babel
 or TypeScript, by properly returning the `default` export, and also allowing the expected type to be
@@ -328,7 +198,7 @@ const defaultImport: ReturnShape = requireModule('../../some/module');
 
 ### `toArray`
 
-> toArray\<T>(value?: T | T[]): T[]
+> toArray<T\>(value?: T | T[]): T[]
 
 Converts a non-array to an array. If the provided value is falsy, an empty array is returned. If the
 provided value is truthy and a non-array, an array of 1 item is returned.

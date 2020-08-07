@@ -1,12 +1,37 @@
-# Plugins
+---
+title: Plugins
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Plugin based architecture that supports module loading, custom types, scopes, and more.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/plugin
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/plugin
+```
+
+  </TabItem>
+</Tabs>
 
 ## Events
 
@@ -382,7 +407,7 @@ const renderer = rendererRegistry.get('boost-renderer-foo');
 
 #### Configuration files
 
-The loader methods were built to support plugins defined in [configuration files](./config.md), as
+The loader methods were built to support plugins defined in [configuration files](./config.mdx), as
 this is a common use case. Take the following examples that showcase JSON and JS based
 configurations.
 
@@ -428,17 +453,17 @@ export default {
 };
 ```
 
-## Third-party ecosystem
+## Ecosystem
 
-Below are a list of projects and their current plugin implementations. These were used as a basis
-and reference for Boost's plugin system.
+Below are a list of third-party projects and their current plugin implementations. These were used
+as a basis and reference for Boost's plugin system.
 
 | Project                        | Plugin pattern                                 | Options pattern                        | Package names                                                         | Lifecycle events |
 | ------------------------------ | ---------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------- | ---------------- |
 | [Babel][babel]                 | Function that returns an object                | Function argument                      | babel-plugin-foo, @babel/plugin-foo                                   | pre(), post()    |
 | [ESLint][eslint]               | Object                                         |                                        | eslint-plugin-foo                                                     |                  |
 | [Gulp][gulp]                   | Function that returns a stream                 | Function argument                      | N/A                                                                   |                  |
-| [Parcel asset][parcel-asset]   | Class that extends `Asset`                     | Constructor                            | parcel-asset-foo, @parcel/asset-foo                                   |                  |
+| [Parcel asset][parcel-asset]   | Class that extends `Asset`                     | Constructor                            | parcel-asset-foo,<br/>@parcel/asset-foo                               |                  |
 | [Parcel plugin][parcel-plugin] | Function that binds events                     |                                        | parcel-plugin-foo, @parcel/plugin-foo                                 |                  |
 | [Prettier][prettier]           | Named exports                                  |                                        | prettier-plugin-foo, @prettier/plugin-foo, @scope/prettier-plugin-foo |                  |
 | [Rollup][rollup]               | Function that returns an object                | Function argument                      | rollup-plugin-foo                                                     | Many             |
