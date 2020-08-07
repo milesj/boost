@@ -12,22 +12,50 @@ interface FeatureProps {
   imageUrl?: string;
 }
 
-const features: FeatureProps[] = [
-  {
-    title: 'TODO',
-    // imageUrl: 'img/undraw_docusaurus_mountain.svg',
-    description: <>TODO</>,
-  },
-  {
-    title: 'TODO',
-    // imageUrl: 'img/undraw_docusaurus_tree.svg',
-    description: <>TODO</>,
-  },
-  {
-    title: 'TODO',
-    // imageUrl: 'img/undraw_docusaurus_react.svg',
-    description: <>TODO</>,
-  },
+const features: FeatureProps[][] = [
+  [
+    {
+      title: '🚀 Environment agnostic',
+      description: (
+        <>
+          Utilize Boost in any Node.js backed environment -- web applications, command line
+          programs, developer tooling, or simply packages.
+        </>
+      ),
+    },
+    {
+      title: '💻 Cross-platform',
+      description: (
+        <>
+          Whether on MacOS, Windows, or Linux, take confidence in your code running on any and all
+          platforms.
+        </>
+      ),
+    },
+    {
+      title: '⚙️ Type-safe',
+      description: (
+        <>
+          With the power of{' '}
+          <a href="https://www.typescriptlang.org/" target="_blank">
+            TypeScript
+          </a>
+          , we provide a strict, type-safe, and ergonomic API for a better developer experience.
+        </>
+      ),
+    },
+  ],
+  [
+    {
+      title: '📦 Low dependency',
+      description: (
+        <>
+          In an effort to reduce lock file churn, large dependency graphs, and unexpected
+          vulnerabilities, we only include a dependency when absolutely necessary.
+        </>
+      ),
+    },
+  ],
 ];
 
 function Feature({ imageUrl, title, description }: FeatureProps) {
@@ -76,15 +104,17 @@ export default function Home() {
       </header>
 
       <main>
-        <section className={styles.features}>
-          <div className="container">
-            <div className="row">
-              {features.map((props, idx) => (
-                <Feature key={idx} {...props} />
-              ))}
+        {features.map((items) => (
+          <section className={styles.features}>
+            <div className="container">
+              <div className="row">
+                {items.map((props, idx) => (
+                  <Feature key={idx} {...props} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ))}
       </main>
     </Layout>
   );

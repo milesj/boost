@@ -2,7 +2,40 @@
 title: Decorators
 ---
 
-## `@Bind`
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+TypeScript based decorators for everyday use.
+
+## Installation
+
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
+yarn add @boost/common
+```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/common
+```
+
+  </TabItem>
+</Tabs>
+
+## Usage
+
+### `@Bind`
 
 > Bind(): MethodDecorator
 
@@ -31,7 +64,7 @@ const { test } = example;
 example.test() = test(); // true
 ```
 
-## `@Debounce`
+### `@Debounce`
 
 > Debounce(delay: number): MethodDecorator
 
@@ -57,7 +90,7 @@ example.log(); // Will log after 250ms
 
 > Debouncing only works on methods with no return.
 
-## `@Deprecate`
+### `@Deprecate`
 
 > Deprecate(message?: string): Decorator
 
@@ -77,7 +110,7 @@ class Example {
 }
 ```
 
-## `@Memoize`
+### `@Memoize`
 
 > Memoize(options?: MemoizeHasher | MemoizeOptions): MethodDecorator
 
@@ -120,7 +153,7 @@ The memoize decorator supports the following options:
   arguments and must return a string. If not provided, arguments are hashed using
   `JSON.stringify()`.
 
-## `@Throttle`
+### `@Throttle`
 
 > Throttle(delay: number): MethodDecorator
 

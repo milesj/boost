@@ -15,7 +15,6 @@ module.exports = {
           label: 'Common utilities',
           items: [
             'common',
-            'common/decorators',
             'common/contract',
             'common/path',
             'common/path-resolver',
@@ -24,6 +23,7 @@ module.exports = {
         },
         'crash',
         'debug',
+        'decorators',
         'event',
         'log',
         'pipeline',

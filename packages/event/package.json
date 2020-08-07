@@ -2,7 +2,7 @@
   "name": "@boost/event",
   "version": "2.0.1",
   "release": "1594765247526",
-  "description": "A strict event system with multiple emitter patterns.",
+  "description": "An event system with multiple emitter patterns.",
   "keywords": [
     "boost",
     "event",
