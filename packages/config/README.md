@@ -52,4 +52,4 @@ yarn add @boost/config
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/config](https://milesj.gitbook.io/boost/config)
+[https://boostlib.dev/docs/config](https://boostlib.dev/docs/config)

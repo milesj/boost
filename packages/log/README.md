@@ -30,4 +30,4 @@ yarn add @boost/log
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/log](https://milesj.gitbook.io/boost/log)
+[https://boostlib.dev/docs/log](https://boostlib.dev/docs/log)

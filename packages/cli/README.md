@@ -43,7 +43,7 @@ yarn add @boost/cli react
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/cli](https://milesj.gitbook.io/boost/cli)
+[https://boostlib.dev/docs/cli](https://boostlib.dev/docs/cli)
 
 ![CLI example](https://raw.githubusercontent.com/milesj/boost/master/website/static/img/cli/program.png)
 

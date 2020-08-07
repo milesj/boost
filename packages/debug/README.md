@@ -31,4 +31,4 @@ yarn add @boost/debug
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/debug](https://milesj.gitbook.io/boost/debug)
+[https://boostlib.dev/docs/debug](https://boostlib.dev/docs/debug)

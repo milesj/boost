@@ -34,4 +34,4 @@ yarn add @boost/pipeline
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/pipeline](https://milesj.gitbook.io/boost/pipeline)
+[https://boostlib.dev/docs/pipeline](https://boostlib.dev/docs/pipeline)

@@ -66,4 +66,4 @@ yarn add @boost/args
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/args](https://milesj.gitbook.io/boost/args)
+[https://boostlib.dev/docs/args](https://boostlib.dev/docs/args)

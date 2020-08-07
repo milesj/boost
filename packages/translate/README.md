@@ -33,4 +33,4 @@ yarn add @boost/translate
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/translate](https://milesj.gitbook.io/boost/translate)
+[https://boostlib.dev/docs/translate](https://boostlib.dev/docs/translate)
