@@ -16,6 +16,7 @@
     "@boost/common": "file:../packages/common",
     "@boost/config": "file:../packages/config",
     "@boost/debug": "file:../packages/debug",
+    "@boost/decorators": "file:../packages/decorators",
     "@boost/event": "file:../packages/event",
     "@boost/internal": "file:../packages/internal",
     "@boost/log": "file:../packages/log",

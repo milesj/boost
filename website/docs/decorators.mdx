@@ -5,7 +5,7 @@ title: Decorators
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-TypeScript based decorators for common patterns.
+Experimental decorators for common patterns.
 
 ## Installation
 
@@ -20,18 +20,20 @@ TypeScript based decorators for common patterns.
   <TabItem value="yarn">
 
 ```bash
-yarn add @boost/common
+yarn add @boost/decorators
 ```
 
   </TabItem>
   <TabItem value="npm">
 
 ```bash
-npm install @boost/common
+npm install @boost/decorators
 ```
 
   </TabItem>
 </Tabs>
+
+> Decorators may also be imported from `@boost/common`.
 
 ## Usage
 
@@ -44,7 +46,7 @@ dereferenced, which is the primary use-case for this decorator. This is an alter
 `bind()`ing within the constructor, or using class properties with anonymous functions.
 
 ```ts
-import { Bind } from '@boost/common';
+import { Bind } from '@boost/decorators';
 
 class Example {
   @Bind()
@@ -72,7 +74,7 @@ Delays the execution of the class method by the provided time in milliseconds. I
 call occurs within this timeframe, the execution delay will be reset.
 
 ```ts
-import { Debounce } from '@boost/common';
+import { Debounce } from '@boost/decorators';
 
 class Example {
   @Debounce(250)
@@ -98,7 +100,7 @@ Marks a class declaration, class method, class property, or method parameter as 
 logging a deprecation message to the console. Works for both static and instance members.
 
 ```ts
-import { Deprecate } from '@boost/common';
+import { Deprecate } from '@boost/decorators';
 
 @Deprecate()
 class Example {
@@ -122,7 +124,7 @@ Memoization also works on async/promise based methods by caching the promise its
 promise is rejected, the cache will be deleted so that subsequent calls can refresh itself.
 
 ```ts
-import { Memoize } from '@boost/common';
+import { Memoize } from '@boost/decorators';
 
 class Example {
   @Memoize()
@@ -161,7 +163,7 @@ Throttles the execution of a class method to only fire once within every delay t
 milliseconds). Will always fire on the first invocation.
 
 ```ts
-import { Throttle } from '@boost/common';
+import { Throttle } from '@boost/decorators';
 
 class Example {
   @Throttle(100)

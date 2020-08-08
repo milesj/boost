@@ -1,0 +1,23 @@
+{
+  "name": "@boost/decorators",
+  "version": "1.0.0",
+  "description": "Experimental decorators for common patterns.",
+  "keywords": [
+    "boost",
+    "decorators"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "engines": {
+    "node": ">=10.17.0"
+  },
+  "repository": "https://github.com/milesj/boost/tree/master/packages/decorators",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/milesjohnson"
+  }
+}

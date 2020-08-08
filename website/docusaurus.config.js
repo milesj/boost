@@ -6,6 +6,7 @@ const pkgs = [
   'common',
   'config',
   'debug',
+  'decorators',
   'event',
   'log',
   'pipeline',

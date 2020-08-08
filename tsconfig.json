@@ -33,6 +33,12 @@
       "path": "packages/debug/tests"
     },
     {
+      "path": "packages/decorators"
+    },
+    {
+      "path": "packages/decorators/tests"
+    },
+    {
       "path": "packages/event"
     },
     {
