@@ -12,6 +12,7 @@ packages, and tools.
 - [common](./common.mdx) - Common utilities for all packages.
 - [config](./config.mdx) - Configuration and ignore file loading.
 - [debug](./debug.mdx) - Debugging and crash reporting.
+- [decorators](./decorators.mdx) - Experimental decorators for common patterns.
 - [event](./event.mdx) - Sync or async based event emitters.
 - [log](./log.mdx) - Low-level system logging.
 - [pipeline](./pipeline.mdx) - Serial or parallel based data pipelines.
