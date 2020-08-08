@@ -15,15 +15,6 @@ interface FeatureProps {
 const features: FeatureProps[][] = [
   [
     {
-      title: '🚀 Environment agnostic',
-      description: (
-        <>
-          Utilize Boost in any Node.js backed environment -- web applications, command line
-          programs, developer tooling, or packages.
-        </>
-      ),
-    },
-    {
       title: '💻 Cross-platform',
       description: (
         <>
@@ -41,6 +32,15 @@ const features: FeatureProps[][] = [
             TypeScript
           </a>
           , we provide a strict, type-safe, and ergonomic API for a better developer experience.
+        </>
+      ),
+    },
+    {
+      title: '🔀 Async-first',
+      description: (
+        <>
+          Engineered all APIs and abstractions to be async-first for maximum performance,
+          efficiency, and portability.
         </>
       ),
     },
@@ -65,11 +65,11 @@ const features: FeatureProps[][] = [
       ),
     },
     {
-      title: '🦉 Lightweight',
+      title: '🚀 Environment agnostic',
       description: (
         <>
-          Engineered to provide lightweight but powerful APIs and abstractions. We aim to deliver
-          small memory footprints and time costs.
+          Utilize Boost in both server-side and client-side environments -- web applications,
+          command line programs, developer tooling, packages, and more.
         </>
       ),
     },
@@ -98,7 +98,7 @@ export default function Home() {
   const { siteConfig = {} } = context;
 
   return (
-    <Layout title="Cross-platform Node.js tooling" description={siteConfig.tagline}>
+    <Layout title="Cross-platform tooling" description={siteConfig.tagline}>
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
         <div className="container">
           <h1 className="hero__title">{siteConfig.title}</h1>
