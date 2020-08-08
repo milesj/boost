@@ -81,6 +81,53 @@ describe('@Memoize()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('errors if `cache` is not a map', () => {
+    expect(() => {
+      class TestClass {
+        // @ts-expect-error
+        @Memoize({ cache: {} })
+        test() {}
+      }
+
+      return TestClass;
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('errors if `expires` is not a number', () => {
+    expect(() => {
+      class TestClass {
+        // @ts-expect-error
+        @Memoize({ expires: 'abc' })
+        test() {}
+      }
+
+      return TestClass;
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('errors if `expires` is negative', () => {
+    expect(() => {
+      class TestClass {
+        @Memoize({ expires: -123 })
+        test() {}
+      }
+
+      return TestClass;
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('errors if `hasher` is not a function', () => {
+    expect(() => {
+      class TestClass {
+        // @ts-expect-error
+        @Memoize({ hasher: 123 })
+        test() {}
+      }
+
+      return TestClass;
+    }).toThrowErrorMatchingSnapshot();
+  });
+
   it('doesnt leak to separate instances', () => {
     const spy1 = jest.fn();
     const spy2 = jest.fn();

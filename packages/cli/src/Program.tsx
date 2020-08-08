@@ -206,7 +206,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     try {
       return parseInContext(argv, (arg) => this.getCommand<O, P>(arg)?.getParserOptions());
     } catch {
-      const [possibleCmd] = argv.filter((arg) => !arg.startsWith('-'));
+      const possibleCmd = argv.find((arg) => !arg.startsWith('-')) || '';
 
       this.onCommandNotFound.emit([argv, possibleCmd]);
 
@@ -390,6 +390,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    * If argument parser or validation errors are found, treat them with special logic.
    */
   protected renderErrors(errors: Error[]): Promise<ExitCode> {
+    // eslint-disable-next-line unicorn/prefer-array-find
     const parseErrors = errors.filter((error) => error instanceof ParseError);
     const validErrors = errors.filter((error) => error instanceof ValidationError);
     const error = parseErrors[0] ?? validErrors[0] ?? errors[0];

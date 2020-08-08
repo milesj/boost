@@ -32,6 +32,7 @@ export default class Logger extends Contract<LoggerOptions> {
       transports: array(
         shape({
           format: func<Formatter>().notNullable(),
+          // eslint-disable-next-line react/forbid-prop-types
           levels: array(string<LogLevel>()),
           write: func<Transportable['write']>().notNullable(),
         }),

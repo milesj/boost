@@ -1,6 +1,6 @@
 import isObject from './isObject';
 
-export default function deepFreeze<T extends object = object>(obj: object): T {
+export default function deepFreeze<T extends object = object>(obj: T): T {
   if (Object.isFrozen(obj)) {
     return obj as T;
   }
