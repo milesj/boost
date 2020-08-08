@@ -1595,6 +1595,7 @@ describe('parse()', () => {
         function commands(arg: string): boolean {
           const [main, sub] = arg.split(':');
 
+          // eslint-disable-next-line jest/no-if
           if (main !== 'cmd') {
             return false;
           }

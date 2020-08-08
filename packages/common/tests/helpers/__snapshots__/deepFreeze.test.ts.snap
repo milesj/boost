@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`deepFreeze() returns a frozen object 1`] = `"Cannot assign to read only property 'bar' of object '#<Object>'"`;
