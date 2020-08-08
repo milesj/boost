@@ -2,7 +2,7 @@
   "name": "@boost/common",
   "version": "2.1.0",
   "release": "1594765247526",
-  "description": "Common utilities.",
+  "description": "A collection of common utilities, classes, and helpers.",
   "keywords": [
     "boost",
     "common",
@@ -20,6 +20,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@boost/decorators": "^1.0.0",
     "@boost/internal": "^2.0.0",
     "fast-glob": "^3.2.4",
     "json5": "^2.1.3",

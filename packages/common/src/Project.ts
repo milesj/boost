@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 
 import glob from 'fast-glob';
+import { Memoize } from '@boost/decorators';
 import CommonError from './CommonError';
 import parseFile from './helpers/parseFile';
 import Path from './Path';
@@ -11,7 +12,6 @@ import {
   WorkspacePackage,
   PortablePath,
 } from './types';
-import { Memoize } from './decorators';
 
 export interface ProjectSearchOptions {
   relative?: boolean;

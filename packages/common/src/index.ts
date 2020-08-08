@@ -13,8 +13,8 @@ import Project from './Project';
 import * as json from './serializers/json';
 import * as yaml from './serializers/yaml';
 
+export * from '@boost/decorators';
 export * from './constants';
-export * from './decorators';
 export * from './helpers';
 export * from './types';
 
