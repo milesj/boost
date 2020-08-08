@@ -19,7 +19,7 @@ log('Something has happened…');
 - Isolated logger instances.
 - Supports 6 logging levels, in order of priority: log, trace, debug, info, warn, error.
 - Handles default and max logging levels.
-- Customizable colors, labels, and writable streams.
+- Customizable transports with writable streams.
 - Toggleable logging at runtime.
 
 ## Installation

@@ -19,7 +19,7 @@ const features: FeatureProps[][] = [
       description: (
         <>
           Utilize Boost in any Node.js backed environment -- web applications, command line
-          programs, developer tooling, or simply packages.
+          programs, developer tooling, or packages.
         </>
       ),
     },
@@ -33,7 +33,7 @@ const features: FeatureProps[][] = [
       ),
     },
     {
-      title: '⚙️ Type-safe',
+      title: '🔬 Type-safe',
       description: (
         <>
           With the power of{' '}
@@ -52,6 +52,24 @@ const features: FeatureProps[][] = [
         <>
           In an effort to reduce lock file churn, large dependency graphs, and unexpected
           vulnerabilities, we only include a dependency when absolutely necessary.
+        </>
+      ),
+    },
+    {
+      title: '⚙️ Convention & configuration',
+      description: (
+        <>
+          Designed to offer the perfect blend of convention (we provide consistency) and
+          configuration (you customize for each integration) based patterns.
+        </>
+      ),
+    },
+    {
+      title: '🦉 Lightweight',
+      description: (
+        <>
+          Engineered to provide lightweight but powerful APIs and abstractions. We aim to deliver
+          small memory footprints and time costs.
         </>
       ),
     },
