@@ -19,7 +19,7 @@ const pkgs = [
 module.exports = {
   title: 'Boost',
   tagline:
-    'A collection of type-safe cross-platform packages for building robust Node.js based applications, packages, and tools.',
+    'A collection of type-safe cross-platform packages for building robust server-side and client-side applications, packages, and tooling.',
   url: 'https://boostlib.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
