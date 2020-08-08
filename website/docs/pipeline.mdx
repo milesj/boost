@@ -1,13 +1,38 @@
-# Pipelines
+---
+title: Pipelines
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Pipe an input through a series of type-safe routines and tasks to produce an output, or simply, run
 logic in a series of stages.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/pipeline
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/pipeline
+```
+
+  </TabItem>
+</Tabs>
 
 ## Events
 
@@ -42,8 +67,9 @@ const pipeline = new ConcurrentPipeline(new Context(), input);
 ```
 
 Once instantiated, we must register work units (either a [task](#task) or [routine](#routine)) that
-will process the input value, either with `ParallelPipeline#add` or `SerialPipeline#pipe`. All work
-units require a descriptive title, and are passed the context and current value when being executed.
+will process the input value, either with `ParallelPipeline#add()` or `SerialPipeline#pipe()`. All
+work units require a descriptive title, and are passed the context and current value when being
+executed.
 
 ```ts
 // Tasks
@@ -86,9 +112,9 @@ export default class ProcessContext extends Context {
 > A good example of context usage can be found in the
 > [Beemo project](https://github.com/beemojs/beemo/tree/master/packages/core/src/contexts).
 
-A unique feature of contexts is the ability to deep clone itself using `Context#clone`. This method
-is extremely useful when a context of the same shape must be passed to another pipeline without
-collisions or mutations occurring.
+A unique feature of contexts is the ability to deep clone itself using `Context#clone()`. This
+method is extremely useful when a context of the same shape must be passed to another pipeline
+without collisions or mutations occurring.
 
 ```ts
 const newContext = context.clone();
@@ -107,7 +133,7 @@ const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context()
 ### Serial pipeline caveats
 
 [Serial pipelines](#serial) are designed using a linked list, with each call to
-`SerialPipeline#pipe` returning a new instance. It was designed this way so that input and output
+`SerialPipeline#pipe()` returning a new instance. It was designed this way so that input and output
 types would cascade correctly down the chain. However, this pattern causes issues where pipes are
 called within conditionals, resulting in new pipes to be lost. For example, this is _invalid_.
 
@@ -197,14 +223,14 @@ A `Routine` is a specialized work unit implemented with a class. It provides hel
 ability to create nested hierarchical pipelines, and an implicit encapsulation of similar logic and
 tasks.
 
-To begin, import the `Routine` class and implement the `Routine#blueprint` and `Routine#execute`
+To begin, import the `Routine` class and implement the `Routine#blueprint()` and `Routine#execute()`
 methods. The class requires 3 generics to be defined, starting with an output type (defaults to
 `unknown`), an input type (defaults to `unknown`), and an options interface (defaults to an empty
 object).
 
-The `Routine#blueprint` method is inherited from [`Contract`](./common.md#contract), and should
-return an object that matches the structure of the generic options interface. The `Routine#execute`
-method should accept the input type and return the expected output type.
+The `Routine#blueprint()` method is inherited from [`Contract`](./common.mdx#contract), and should
+return an object that matches the structure of the generic options interface. The
+`Routine#execute()` method should accept the input type and return the expected output type.
 
 ```ts
 import { Blueprint, Predicates } from '@boost/common';
@@ -256,9 +282,10 @@ new ExampleRoutine('key', 'Custom title here', { limit: 5 });
 #### Creating hierarchical pipelines
 
 The most prominent feature of `Routine` is the ability to create hierarchical pipelines that can be
-nested or executed in any fashion. This can be achieved with the `Routine#createAggregatedPipeline`,
-`createConcurrentPipeline`, `createPooledPipeline`, and `createWaterfallPipeline` methods, all of
-which require a [context](#contexts) and an initial value.
+nested or executed in any fashion. This can be achieved with the
+`Routine#createAggregatedPipeline()`, `createConcurrentPipeline()`, `createPooledPipeline()`, and
+`createWaterfallPipeline()` methods, all of which require a [context](#contexts) and an initial
+value.
 
 ```ts
 class ExampleRoutine extends Routine<Item[]> {
@@ -282,9 +309,9 @@ The `Routine#depth` property denotes the current depth within the hierarchy tree
 
 #### Executing local binaries
 
-The `Routine#executeCommand` method can be used to execute binaries and commands on the host machine
-(it uses [execa](https://github.com/sindresorhus/execa) under the hood). This is extremely useful
-for executing locally installed NPM/Yarn binaries.
+The `Routine#executeCommand()` method can be used to execute binaries and commands on the host
+machine (it uses [execa](https://github.com/sindresorhus/execa) under the hood). This is extremely
+useful for executing locally installed NPM/Yarn binaries.
 
 ```ts
 class ExampleRoutine extends Routine<string> {
@@ -302,10 +329,10 @@ There are 4 types of pipelines, grouped into parallel and serial based patterns.
 
 ### Parallel
 
-Parallel pipelines register work units with `ParallelPipeline#add`, and process the work units in
-parallel when executing `ParallelPipeline#run`.
+Parallel pipelines register work units with `ParallelPipeline#add()`, and process the work units in
+parallel when executing `ParallelPipeline#run()`.
 
-#### `ConcurrentPipeline`
+### `ConcurrentPipeline`
 
 Executes all work units in parallel, and returns a list of values once all resolve. If an error
 occurs, the pipeline will be interrupted.
@@ -324,7 +351,7 @@ const values = await pipeline.run();
 > This pipeline will run _all_ work units at once. If there are far too many work units, it may
 > degrade performance. In that case, use [PooledPipeline](#pooledpipeline) instead.
 
-#### `AggregatedPipeline`
+### `AggregatedPipeline`
 
 Executes all work units in parallel _without_ interruption, and returns an object with a list of
 `errors` and `results` once all resolve.
@@ -343,7 +370,7 @@ const { errors, results } = await pipeline.run();
 > Like `ConcurrentPipeline`, all work units are ran at once. For performance improvements, use
 > [PooledPipeline](#pooledpipeline) when dealing with a large number of work units.
 
-#### `PooledPipeline`
+### `PooledPipeline`
 
 Executes a distinct set of work units in parallel _without_ interruption, based on a max concurrency
 limit, until all work units have ran. Returns an object with a list of `errors` and `results` once
@@ -360,7 +387,7 @@ const pipeline = new PooledPipeline(new Context(), initialValue)
 const { errors, results } = await pipeline.run();
 ```
 
-##### Options
+#### Options
 
 The following options can be passed as a 3rd argument to `PooledPipeline`.
 
@@ -373,10 +400,10 @@ The following options can be passed as a 3rd argument to `PooledPipeline`.
 
 ### Serial
 
-Serial pipelines register work units in a sequence with `SerialPipeline#pipe`, and process the work
-units one by one when executing `SerialPipeline#run`.
+Serial pipelines register work units in a sequence with `SerialPipeline#pipe()`, and process the
+work units one by one when executing `SerialPipeline#run()`.
 
-#### `WaterfallPipeline`
+### `WaterfallPipeline`
 
 Executes each work unit one by one, with the return value of the previous work unit being passed as
 a value argument to the next work unit. Returns the final value once all resolve.

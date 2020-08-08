@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/%40boost%config.svg)](https://www.npmjs.com/package/@boost/config)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/config)](https://www.npmjs.com/package/@boost/config)
 
-Powerful config file and ignore file manager, finder, and loader.
+Powerful convention based finder, loader, and manager of both configuration and ignore files.
 
 ```ts
 import { Blueprint, Predicates } from '@boost/common';
@@ -52,4 +52,4 @@ yarn add @boost/config
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/config](https://milesj.gitbook.io/boost/config)
+[https://boostlib.dev/docs/config](https://boostlib.dev/docs/config)

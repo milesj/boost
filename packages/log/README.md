@@ -19,7 +19,7 @@ log('Something has happened…');
 - Isolated logger instances.
 - Supports 6 logging levels, in order of priority: log, trace, debug, info, warn, error.
 - Handles default and max logging levels.
-- Customizable colors, labels, and writable streams.
+- Customizable transports with writable streams.
 - Toggleable logging at runtime.
 
 ## Installation
@@ -30,4 +30,4 @@ yarn add @boost/log
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/log](https://milesj.gitbook.io/boost/log)
+[https://boostlib.dev/docs/log](https://boostlib.dev/docs/log)

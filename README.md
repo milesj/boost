@@ -31,4 +31,4 @@ packages, and tools.
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost](https://milesj.gitbook.io/boost)
+[https://boostlib.dev](https://boostlib.dev)

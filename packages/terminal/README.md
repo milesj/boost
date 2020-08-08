@@ -14,4 +14,4 @@ yarn add @boost/terminal
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/terminal](https://milesj.gitbook.io/boost/terminal)
+[https://boostlib.dev/docs/terminal](https://boostlib.dev/docs/terminal)

@@ -14,7 +14,7 @@ const banner = ` __                      __
 new Program({
   banner,
   bin: 'boost',
-  footer: 'Documentation: https://milesj.gitbook.io/boost',
+  footer: 'Documentation: https://boostlib.dev',
   name: 'Boost Examples',
   version: '1.2.3',
 })

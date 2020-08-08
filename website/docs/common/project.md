@@ -1,4 +1,6 @@
-# `Project`
+---
+title: Project
+---
 
 A `Project` class provides workspace and package metadata for a project. A project is denoted by a
 root `package.json` file and abides the NPM and Node.js module pattern. To begin, import and

@@ -1,13 +1,38 @@
-# Debugging
+---
+title: Debugging
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Lightweight debugging. Wraps the amazing [debug](https://www.npmjs.com/package/debug) library to
 provide additional functionality.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/debug
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/debug
+```
+
+  </TabItem>
+</Tabs>
 
 ## Environment variables
 
@@ -18,7 +43,7 @@ yarn add @boost/debug
 
 ## Usage
 
-Like [logging](./log.md), a "debugger" is a collection of functions that write to `process.stderr`.
+Like [logging](./log.mdx), a "debugger" is a collection of functions that write to `process.stderr`.
 The key difference is that debug messages are only displayed if the `DEBUG` environment variable is
 set and contains the debugger's namespace (logic provided by the
 [debug](https://www.npmjs.com/package/debug) package). The namespace can be defined when

@@ -1,4 +1,6 @@
-# `Path`
+---
+title: Path
+---
 
 A `Path` class is an immutable abstraction around file/module paths and the Node.js `fs` and `path`
 modules. It aims to solve cross platform and operating system related issues in a straight forward

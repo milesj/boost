@@ -1,12 +1,37 @@
-# Terminal utilities
+---
+title: Terminal utilities
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 A collection of utilities for managing and interacting with a terminal.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/terminal
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/terminal
+```
+
+  </TabItem>
+</Tabs>
 
 ## Usage
 
@@ -147,7 +172,7 @@ hyperlinks, it will pass the text through.
 ```ts
 import { link } from '@boost/terminal';
 
-const text = link('Read the manual', 'https://milesj.gitbook.io/boost');
+const text = link('Read the manual', 'https://boostlib.dev');
 ```
 
 #### `sliceAnsi`

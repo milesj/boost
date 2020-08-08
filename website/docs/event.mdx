@@ -1,12 +1,37 @@
-# Events
+---
+title: Events
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 A type-safe event system with multiple emitter patterns.
 
 ## Installation
 
-```
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'NPM', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
 yarn add @boost/event
 ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/event
+```
+
+  </TabItem>
+</Tabs>
 
 ## Usage
 
@@ -43,14 +68,14 @@ new Event<unknown[]>('foo');
 
 ### Registering listeners
 
-Listeners are simply functions that can be registered to an event using `Event#listen`. The same
+Listeners are simply functions that can be registered to an event using `Event#listen()`. The same
 listener function reference will only be registered once.
 
 ```ts
 event.listen(listener);
 ```
 
-A listener can also be registered to execute only once, using `Event#once`, regardless of how many
+A listener can also be registered to execute only once, using `Event#once()`, regardless of how many
 times the event has been emitted.
 
 ```ts
@@ -59,7 +84,7 @@ event.once(listener);
 
 ### Unregistering listeners
 
-A listener can be unregistered from an event using `Event#unlisten`. The same listener reference
+A listener can be unregistered from an event using `Event#unlisten()`. The same listener reference
 used to register must also be used for unregistering.
 
 ```ts
@@ -69,8 +94,8 @@ event.unlisten(listener);
 ### Emitting events
 
 Emitting is the concept of executing all registered listeners with a set of arguments. This can be
-achieved through the `Event#emit` method, which requires an array of values to pass to each listener
-as arguments.
+achieved through the `Event#emit()` method, which requires an array of values to pass to each
+listener as arguments.
 
 ```ts
 event.emit(['abc']);
@@ -81,7 +106,7 @@ event.emit(['abc']);
 ### Scopes
 
 Scopes are a mechanism for restricting listeners to a unique subset. Scopes are defined as the 2nd
-argument to `Event#listen`, `unlisten`, `once`, and `emit`.
+argument to `Event#listen()`, `unlisten()`, `once()`, and `emit()`.
 
 ```ts
 event.listen(listener);

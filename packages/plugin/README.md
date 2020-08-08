@@ -41,4 +41,4 @@ yarn add @boost/plugin
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/plugin](https://milesj.gitbook.io/boost/plugin)
+[https://boostlib.dev/docs/plugin](https://boostlib.dev/docs/plugin)

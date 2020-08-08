@@ -14,4 +14,4 @@ yarn add @boost/common
 
 ## Documentation
 
-[https://milesj.gitbook.io/boost/common](https://milesj.gitbook.io/boost/common)
+[https://boostlib.dev/docs/common](https://boostlib.dev/docs/common)
