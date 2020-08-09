@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 <EnvBadges backend tooling />
 
-Powerful finder, loader, and manager of both project configuration and ignore files.
+Powerful convention based finder, loader, and manager of both configuration and ignore files.
 
 ## Installation
 
@@ -36,6 +36,130 @@ npm install @boost/config
   </TabItem>
 </Tabs>
 
-## Usage
+## Events
 
-Coming soon...
+| Event                             | Arguments         | Description                                                                                        |
+| --------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------- |
+| `Configuration#onLoadedConfig`    | `ConfigFile<T>[]` | Waterfall: Called after config files are loaded but before processed. Can modify config file list. |
+| `Configuration#onLoadedIgnore`    | `IgnoreFile[]`    | Waterfall: Called after ignore files are loaded. Can modify ignore file list.                      |
+| `Configuration#onProcessedConfig` | `T`               | Called after config files are loaded and processed.                                                |
+
+## Configuration
+
+Configuration in the context of this package encompasses 2 concepts: config files and ignore files.
+Config files are a collection of settings (key-value pairs), while ignore files are a list of file
+path patterns and globs.
+
+To utilize this functionality, we must extend the `Configuration` class, and define a blueprint for
+the structure of our config file (using [optimal](./common/contract.md)). This class will fulfill
+multiple roles: managing, finding, loading, and processing of files.
+
+```ts
+import { Blueprint, Predicates } from '@boost/common';
+import { Configuration } from '@boost/config';
+
+interface ConfigFile {
+  ast?: boolean;
+  cwd?: string;
+  debug?: boolean;
+  exclude?: string[];
+  include?: string[];
+}
+
+class Manager extends Configuration<ConfigFile> {
+  blueprint({ array, bool, string }: Predicates): Blueprint<ConfigFile> {
+    return {
+      ast: bool(),
+      cwd: string(process.cwd()),
+      debug: bool(),
+      exclude: array(string()),
+      include: array(string()),
+    };
+  }
+}
+```
+
+This class layer is designed to be "internal only", and should not be utilized by consumers
+directly. Instead, consumers should interact with an instance of the class, like so.
+
+```ts
+export default new Manager('boost');
+```
+
+> The string value passed to the constructor is the name of the config and ignore files, in camel
+> case format. For example, `boost.js` and `.boostignore`.
+
+### Finder options
+
+To customize the config file finding and loading layer, call `Configuration#configureFinder()`
+within bootstrap.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureFinder({
+      extendsSetting: 'extends',
+      includeEnv: false,
+    });
+  }
+}
+```
+
+- `extendsSetting` (`string`) - Name of the setting in which [config extending](#extending-configs)
+  is enabled.
+- `extensions` (`ExtType[]`) - List of extensions, in order, to find config files. Defaults to js,
+  json, cjs, mjs, yaml, yml.
+- `includeEnv` (`boolean`) - Find and load environment based config files (using `NODE_ENV`).
+  Defaults to `true`.
+- `loaders` (`{ [K in LoaderType]: Loader<T> }`) - Mapping of loader functions by type. Defaults to
+  normal file type loaders.
+- `overridesSetting` (`string`) - Name of the setting in which
+  [config overriding](#configs-overrides) is enabled.
+
+### Processor options
+
+To customize the config processing layer, call `Configuration#configureProcessor()` while within
+bootstrap.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureProcessor({
+      defaultWhenUndefined: false,
+    });
+  }
+}
+```
+
+- `defaultWhenUndefined` (`boolean`) - When a setting has a value of `undefined`, fallback to the
+  default/initial value for that setting. Defaults to `true`.
+- `validate` (`boolean`) - Validate all settings within a config file before processing. Defaults to
+  `true`.
+
+### Processing settings
+
+## Config files
+
+### File patterns
+
+### Loader types
+
+### Loading config files
+
+#### By environment
+
+### Extending configs
+
+#### Presets
+
+### Config overrides
+
+## Ignore files
+
+### File patterns
+
+### Loading ignore files
