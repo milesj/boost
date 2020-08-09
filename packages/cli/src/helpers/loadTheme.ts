@@ -26,10 +26,14 @@ export default function loadTheme(): ThemePalette {
     }
   }
 
+  // ANSI escapes + hexcodes dont work too well with snapshots
+  const isTest = process.env.NODE_ENV === 'test';
+
   return {
     default: 'white',
     failure: 'red',
-    inverted: 'black',
+    // Use a hexcode since it sometimes renders as gray
+    inverted: isTest ? 'black' : '#000',
     muted: 'gray',
     success: 'green',
     warning: 'yellow',

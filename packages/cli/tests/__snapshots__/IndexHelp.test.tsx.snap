@@ -6,13 +6,13 @@ exports[`<IndexHelp /> renders a banner 1`] = `
 | __ -|  |  |  |  |__   | | |
 |_____|_____|_____|_____| |_|
 
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 "
 `;
 
 exports[`<IndexHelp /> renders a footer 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 Powered by Boost CLI v1.2.3
 "
@@ -20,7 +20,7 @@ Powered by Boost CLI v1.2.3
 
 exports[`<IndexHelp /> renders a header 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 For more information, see https://github.com/milesj/boost
 "
@@ -28,7 +28,7 @@ For more information, see https://github.com/milesj/boost
 
 exports[`<IndexHelp /> renders children 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 [47m[30m TEST [39m[49m
 
@@ -77,7 +77,7 @@ Boost v1.2.3 [90mboost[39m
 
 exports[`<IndexHelp /> renders with base props 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 "
 `;
 
@@ -87,7 +87,7 @@ exports[`<IndexHelp /> renders with everything 1`] = `
 | __ -|  |  |  |  |__   | | |
 |_____|_____|_____|_____| |_|
 
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 For more information, see https://github.com/milesj/boost
 
