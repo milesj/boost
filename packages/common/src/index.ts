@@ -4,7 +4,8 @@
  */
 
 import optimal, { predicates, Blueprint, Predicates } from 'optimal';
-import CommonError, { CommonErrorCode } from './CommonError';
+import CommonError from './CommonError';
+import type { CommonErrorCode } from './CommonError';
 import Contract from './Contract';
 import ExitError from './ExitError';
 import Path from './Path';
@@ -20,7 +21,6 @@ export * from './types';
 
 export {
   CommonError,
-  CommonErrorCode,
   Contract,
   Blueprint,
   ExitError,
@@ -33,3 +33,4 @@ export {
   json,
   yaml,
 };
+export type { CommonErrorCode };

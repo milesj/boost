@@ -8,13 +8,16 @@ import ParallelPipeline from './ParallelPipeline';
 import ConcurrentPipeline from './ConcurrentPipeline';
 import Context from './Context';
 import Monitor from './Monitor';
-import PooledPipeline, { PooledOptions } from './PooledPipeline';
-import Routine, { ExecuteCommandOptions } from './Routine';
+import PooledPipeline from './PooledPipeline';
+import type { PooledOptions } from './PooledPipeline';
+import Routine from './Routine';
+import type { ExecuteCommandOptions } from './Routine';
 import SerialPipeline from './SerialPipeline';
 import Task from './Task';
 import WaterfallPipeline from './WaterfallPipeline';
 import WorkUnit from './WorkUnit';
-import PipelineError, { PipelineErrorCode } from './PipelineError';
+import PipelineError from './PipelineError';
+import type { PipelineErrorCode } from './PipelineError';
 
 export * from './constants';
 export * from './types';
@@ -24,15 +27,13 @@ export {
   ParallelPipeline,
   ConcurrentPipeline,
   Context,
-  ExecuteCommandOptions,
   Monitor,
   PooledPipeline,
-  PooledOptions,
   Routine,
   SerialPipeline,
   Task,
   WaterfallPipeline,
   WorkUnit,
   PipelineError,
-  PipelineErrorCode,
 };
+export type { ExecuteCommandOptions, PooledOptions, PipelineErrorCode };

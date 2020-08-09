@@ -8,6 +8,7 @@
     "internal"
   ],
   "main": "./lib/index.js",
+  "module": "./esm/index.js",
   "types": "./lib/index.d.ts",
   "engines": {
     "node": ">=10.17.0"

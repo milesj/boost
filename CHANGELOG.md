@@ -7,6 +7,7 @@ View all changes for the [official releases](https://github.com/milesj/boost/rel
 - [@boost/common](./packages/common/CHANGELOG.md)
 - [@boost/config](./packages/config/CHANGELOG.md)
 - [@boost/debug](./packages/debug/CHANGELOG.md)
+- [@boost/decorators](./packages/decorators/CHANGELOG.md)
 - [@boost/event](./packages/event/CHANGELOG.md)
 - [@boost/internal](./packages/internal/CHANGELOG.md)
 - [@boost/log](./packages/log/CHANGELOG.md)

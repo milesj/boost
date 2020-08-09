@@ -2,8 +2,8 @@ import Context from '../src/Context';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
 import PooledPipeline from '../src/PooledPipeline';
+import PipelineError from '../src/PipelineError';
 import { AggregatedResult } from '../src/types';
-import PipelineError from '../lib/PipelineError';
 
 describe('PooledPipeline', () => {
   function sortAggregated(result: AggregatedResult<unknown>) {

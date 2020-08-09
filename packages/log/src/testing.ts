@@ -1,6 +1,6 @@
-/* eslint-disable jest/prefer-spy-on */
+/* eslint-disable unicorn/import-index, jest/prefer-spy-on */
 
-import { LoggerFunction } from './types';
+import type { LoggerFunction } from './index';
 
 export function mockLogger(): LoggerFunction {
   const log = jest.fn() as any;
