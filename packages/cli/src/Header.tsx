@@ -12,7 +12,7 @@ export interface HeaderProps {
 export default function Header({ label, type = 'default' }: HeaderProps) {
   return (
     <Box marginTop={SPACING_ROW} marginBottom={SPACING_ROW}>
-      <Style inverted type={type}>
+      <Style bold inverted type={type}>
         {` ${label.toLocaleUpperCase()} `}
       </Style>
     </Box>
