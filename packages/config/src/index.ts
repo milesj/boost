@@ -3,7 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import ConfigError, { ConfigErrorCode } from './ConfigError';
+import ConfigError from './ConfigError';
+import type { ConfigErrorCode } from './ConfigError';
 import Configuration from './Configuration';
 import getEnv from './helpers/getEnv';
 import mergeArray from './helpers/mergeArray';
@@ -17,7 +18,6 @@ export * from './types';
 
 export {
   ConfigError,
-  ConfigErrorCode,
   Configuration,
   getEnv,
   mergeArray,
@@ -26,3 +26,4 @@ export {
   mergePlugins,
   overwrite,
 };
+export type { ConfigErrorCode };

@@ -1,5 +1,5 @@
 import * as formats from '../src/formats';
-import { LogItem } from '../lib/types';
+import { LogItem } from '../src/types';
 
 describe('formats', () => {
   const item: LogItem = {

@@ -1,12 +1,19 @@
-/* eslint-disable no-param-reassign, jest/prefer-spy-on */
+/* eslint-disable unicorn/import-index, no-param-reassign, jest/prefer-spy-on */
 
 import React from 'react';
 import { render } from 'ink';
 import { env } from '@boost/internal';
 import { stripAnsi } from '@boost/terminal';
 import { mockLogger } from '@boost/log/lib/testing';
-import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program, TaskContext } from '.';
-import { GlobalOptions, PrimitiveType, ProgramStreams, ProgramOptions, ExitCode } from './types';
+import { Command, Program, INTERNAL_OPTIONS, INTERNAL_PARAMS } from './index';
+import type {
+  ExitCode,
+  GlobalOptions,
+  PrimitiveType,
+  ProgramOptions,
+  ProgramStreams,
+  TaskContext,
+} from './index';
 
 export class MockReadStream {
   isTTY = false;

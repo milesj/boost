@@ -11,22 +11,13 @@ import IndexHelp from './IndexHelp';
 import Program from './Program';
 import ProgramContext from './ProgramContext';
 import Style from './Style';
-import CLIError, { CLIErrorCode } from './CLIError';
+import CLIError from './CLIError';
+import type { CLIErrorCode } from './CLIError';
 
 export * from './constants';
 export * from './decorators';
 export * from './helpers';
 export * from './types';
 
-export {
-  Command,
-  Failure,
-  Header,
-  Help,
-  IndexHelp,
-  Program,
-  ProgramContext,
-  Style,
-  CLIError,
-  CLIErrorCode,
-};
+export { Command, Failure, Header, Help, IndexHelp, Program, ProgramContext, Style, CLIError };
+export type { CLIErrorCode };
