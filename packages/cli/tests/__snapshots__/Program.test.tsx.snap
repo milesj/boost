@@ -2,7 +2,7 @@
 
 exports[`<Program /> categories applies categories to index help 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 [47m[30m COMMANDS [39m[49m
 
@@ -26,7 +26,7 @@ exports[`<Program /> default command executes default when no args passed 1`] = 
 
 exports[`<Program /> default command renders commands when no args passed 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 [47m[30m COMMANDS [39m[49m
 
@@ -51,8 +51,8 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 
  Unknown option \\"--foo\\" found. Did you mean \\"help\\"? [ARG:OPTION_UNKNOWN_MORE]
 
- [90m$ boost [31m--foo[39m[90m[39m
- [31m        └───┘[39m"
+ [40m[90m$ boost [31m--foo[39m[90m[39m[49m
+ [40m[31m        └───┘[39m[49m"
 `;
 
 exports[`<Program /> failure renders when invalid command name passed 1`] = `
@@ -247,7 +247,7 @@ exports[`<Program /> help outputs help for an aliased command 2`] = `
 
 exports[`<Program /> help outputs help when \`--help\` is passed 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 [47m[30m BOOST [39m[49m
 
@@ -293,7 +293,7 @@ Boost v1.2.3 [90mboost[39m
 
 exports[`<Program /> help outputs help when \`-h\` is passed 1`] = `
 "
-Boost v1.2.3 [90mboost[39m
+Boost v1.2.3 [40m[90mboost[39m[49m
 
 [47m[30m BOOST [39m[49m
 
@@ -343,8 +343,8 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 
  Locale must be in the format of \\"en\\" or \\"en-US\\".
 
- [90m$ boost [33m--locale[39m[90m wtf[39m
- [33m        └──────┘[39m"
+ [40m[90m$ boost [33m--locale[39m[90m wtf[39m[49m
+ [40m[33m        └──────┘[39m[49m"
 `;
 
 exports[`<Program /> logging handles logging when rendering a component 1`] = `

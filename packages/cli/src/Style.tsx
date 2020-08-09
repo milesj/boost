@@ -18,19 +18,11 @@ export default function Style({ children, inverted = false, type, ...restProps }
   };
 
   if (type === 'default') {
-    if (inverted) {
-      injectColor(theme.default, true);
-      injectColor(theme.inverted, false);
-    } else {
-      injectColor(theme.default, false);
-      injectColor(theme.inverted, true);
-    }
+    injectColor(theme.default, inverted);
+    injectColor(theme.inverted, !inverted);
   } else if (type !== 'none') {
     injectColor(theme[type], inverted);
-
-    if (inverted) {
-      injectColor('black', false);
-    }
+    injectColor(theme.inverted, !inverted);
   }
 
   return (
