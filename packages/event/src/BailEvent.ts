@@ -11,7 +11,9 @@ export default class BailEvent<
    * and the emitter will return `true` (for bailed).
    */
   emit(args: Args, scope?: Scope): boolean {
-    debug('Emitting "%s%s" as bail', this.name, scope ? `:${scope}` : '');
+    if (__DEV__) {
+      debug('Emitting "%s%s" as bail', this.name, scope ? `:${scope}` : '');
+    }
 
     return Array.from(this.getListeners(scope)).some((listener) => listener(...args) === false);
   }
