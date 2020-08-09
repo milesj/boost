@@ -2,11 +2,13 @@ import isMethod from './helpers/isMethod';
 
 export default function Bind(): MethodDecorator {
   return (target, property, descriptor) => {
-    if (
-      !isMethod(target, property, descriptor) ||
-      !('value' in descriptor && typeof descriptor.value === 'function')
-    ) {
-      throw new TypeError(`\`@Bind\` may only be applied to class methods.`);
+    if (__DEV__) {
+      if (
+        !isMethod(target, property, descriptor) ||
+        !('value' in descriptor && typeof descriptor.value === 'function')
+      ) {
+        throw new TypeError(`\`@Bind\` may only be applied to class methods.`);
+      }
     }
 
     const func = descriptor.value;
@@ -14,7 +16,7 @@ export default function Bind(): MethodDecorator {
     return {
       configurable: true,
       get(this: Function) {
-        const bound = func.bind(this);
+        const bound = ((func as unknown) as Function).bind(this);
 
         // Only cache the bound function when in the deepest sub-class,
         // otherwise any `super` calls will overwrite each other.

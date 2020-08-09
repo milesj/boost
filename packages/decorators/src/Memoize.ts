@@ -70,12 +70,14 @@ export default function Memoize<T>(
 ): MethodDecorator {
   // eslint-disable-next-line complexity
   return (target, property, descriptor) => {
-    if (
-      !isMethod(target, property, descriptor) ||
-      (!('value' in descriptor && typeof descriptor.value === 'function') &&
-        !('get' in descriptor && typeof descriptor.get === 'function'))
-    ) {
-      throw new TypeError(`\`@Memoize\` may only be applied to class methods or getters.`);
+    if (__DEV__) {
+      if (
+        !isMethod(target, property, descriptor) ||
+        (!('value' in descriptor && typeof descriptor.value === 'function') &&
+          !('get' in descriptor && typeof descriptor.get === 'function'))
+      ) {
+        throw new TypeError(`\`@Memoize\` may only be applied to class methods or getters.`);
+      }
     }
 
     const config = {
@@ -85,16 +87,18 @@ export default function Memoize<T>(
       ...(typeof options === 'function' ? { hasher: options } : options),
     };
 
-    if (config.cache && !(config.cache instanceof Map)) {
-      throw new Error('`cache` must be an instance of `Map`.');
-    }
+    if (__DEV__) {
+      if (config.cache && !(config.cache instanceof Map)) {
+        throw new Error('`cache` must be an instance of `Map`.');
+      }
 
-    if (typeof config.expires !== 'number' || config.expires < 0) {
-      throw new Error('`expires` must be a number greater than or equal to 0.');
-    }
+      if (typeof config.expires !== 'number' || config.expires < 0) {
+        throw new Error('`expires` must be a number greater than or equal to 0.');
+      }
 
-    if (typeof config.hasher !== 'function') {
-      throw new TypeError('`hasher` must be a function.');
+      if (typeof config.hasher !== 'function') {
+        throw new TypeError('`hasher` must be a function.');
+      }
     }
 
     // We must use a map as all class instances would share the

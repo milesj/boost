@@ -29,8 +29,10 @@ export default function createScopedError<Code extends string = string>(
     )} [${scope}:${code}]`;
   }
 
-  if (scope.length !== 3 || scope !== scope.toUpperCase()) {
-    throw new Error(msg('INVALID_SCOPE_NAME', internalErrors));
+  if (__DEV__) {
+    if (scope.length !== 3 || scope !== scope.toUpperCase()) {
+      throw new Error(msg('INVALID_SCOPE_NAME', internalErrors));
+    }
   }
 
   return class InternalError extends Error implements ScopedError<Code> {

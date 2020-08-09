@@ -15,7 +15,9 @@ export default abstract class BaseEvent<
   constructor(name: string) {
     this.name = this.validateName(name, 'name');
 
-    debug('New %S created: %s', this.constructor.name, name);
+    if (__DEV__) {
+      debug('New %S created: %s', this.constructor.name, name);
+    }
   }
 
   /**
@@ -55,7 +57,9 @@ export default abstract class BaseEvent<
    * Register a listener to the event.
    */
   listen(listener: Listener<Args, Return>, scope?: Scope): this {
-    debug('Registering "%s" listener', this.name);
+    if (__DEV__) {
+      debug('Registering "%s" listener', this.name);
+    }
 
     this.getListeners(scope).add(this.validateListener(listener));
 
@@ -80,7 +84,9 @@ export default abstract class BaseEvent<
    * Remove a listener from the event.
    */
   unlisten(listener: Listener<Args, Return>, scope?: Scope): this {
-    debug('Unregistering "%s" listener', this.name);
+    if (__DEV__) {
+      debug('Unregistering "%s" listener', this.name);
+    }
 
     this.getListeners(scope).delete(listener);
 
@@ -91,8 +97,10 @@ export default abstract class BaseEvent<
    * Validate the listener is a function.
    */
   protected validateListener<L>(listener: L): L {
-    if (typeof listener !== 'function') {
-      throw new EventError('LISTENER_INVALID', [this.name]);
+    if (__DEV__) {
+      if (typeof listener !== 'function') {
+        throw new EventError('LISTENER_INVALID', [this.name]);
+      }
     }
 
     return listener;
@@ -106,8 +114,10 @@ export default abstract class BaseEvent<
       return name;
     }
 
-    if (!name.match(EVENT_NAME_PATTERN)) {
-      throw new EventError('NAME_INVALID', [type, name]);
+    if (__DEV__) {
+      if (!name.match(EVENT_NAME_PATTERN)) {
+        throw new EventError('NAME_INVALID', [type, name]);
+      }
     }
 
     return name;
