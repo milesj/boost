@@ -254,10 +254,8 @@ function provides the following benefits:
 
 Using our renderer examples, we would have the following factories. One sync and the other async.
 
-```ts
+```ts title="boost-renderer-example/src/index.ts"
 // Object based plugin
-// boost-renderer-example/src/index.ts
-
 export default function (options: RendererOptions): Renderable {
   return {
     name: 'boost-renderer-example',
@@ -272,10 +270,8 @@ export default function (options: RendererOptions): Renderable {
 }
 ```
 
-```ts
+```ts title="@boost/renderer-example/src/index.ts"
 // Class based plugin
-// @boost/renderer-example/src/index.ts
-
 import { Plugin } from '@boost/plugin';
 
 class Renderer extends Plugin implements Renderable {
