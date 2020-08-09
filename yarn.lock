@@ -2444,11 +2444,6 @@
   resolved "https://registry.npmjs.org/@types/braces/-/braces-3.0.0.tgz#7da1c0d44ff1c7eb660a36ec078ea61ba7eb42cb"
   integrity sha512-TbH79tcyi9FHwbyboOKeRachRq63mSuWYXOflsNO9ZyE5ClQ/JaozNKl+aWUq87qPNsXasXxi2AbgfwIJ+8GQw==
 
-"@types/ci-info@*":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@types/ci-info/-/ci-info-2.0.0.tgz#51848cc0f5c30c064f4b25f7f688bf35825b3971"
-  integrity sha512-5R2/MHILQLDCzTuhs1j4Qqq8AaKUf7Ma4KSSkCtc12+fMs47zfa34qhto9goxpyX00tQK1zxB885VCiawZ5Qhg==
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.npmjs.org/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -2498,13 +2493,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/is-ci@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@types/is-ci/-/is-ci-2.0.0.tgz#e2b81d0f9275861649d501dbc39a480fbf311459"
-  integrity sha512-J8ytIdkALbTrqcJ6OZiEv0B9skfyok/zCDj1q06GGCDa1rlHnPobUBT0BYR1vku2oZVwVEgCurtXqCASAfjCiQ==
-  dependencies:
-    "@types/ci-info" "*"
-
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.1"
   resolved "https://registry.npmjs.org/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
@@ -2548,14 +2536,7 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.30.tgz#44cb52f32a809734ca562e685c6473b5754a7818"
   integrity sha512-sqm9g7mHlPY/43fcSNrCYfOeX9zkTTK+euO5E6+CVijSMm5tTjkVdwdqRkY3ljjIAf8679vps5jKUoJBCLsMDA==
 
-"@types/lodash.throttle@^4.1.6":
-  version "4.1.6"
-  resolved "https://registry.npmjs.org/@types/lodash.throttle/-/lodash.throttle-4.1.6.tgz#f5ba2c22244ee42ff6c2c49e614401a870c1009c"
-  integrity sha512-/UIH96i/sIRYGC60NoY72jGkCJtFN5KVPhEMMMTjol65effe1gPn0tycJqV5tlSwMTzX8FqzB5yAj0rfGHTPNg==
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash@*", "@types/lodash@^4.14.159":
+"@types/lodash@^4.14.159":
   version "4.14.159"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.159.tgz#61089719dc6fdd9c5cb46efc827f2571d1517065"
   integrity sha512-gF7A72f7WQN33DpqOWw9geApQPh4M3PxluMtaHxWHXEGSN12/WbcEk/eNSqWNQcQhF66VSZ06vCF94CrHwXJDg==
@@ -2582,11 +2563,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.22.tgz#23ea4d88189cec7d58f9e6b66f786b215eb61bdc"
   integrity sha512-emeGcJvdiZ4Z3ohbmw93E/64jRzUHAItSHt8nF7M4TGgQTiWqFVGB8KNpLGFmUHmHLvjvBgFwVlqNcq+VuGv9g==
 
-"@types/node@^13.9.1":
-  version "13.13.12"
-  resolved "https://registry.npmjs.org/@types/node/-/node-13.13.12.tgz#9c72e865380a7dc99999ea0ef20fc9635b503d20"
-  integrity sha512-zWz/8NEPxoXNT9YyF2osqyA9WjssZukYpgI4UYZpOjcyqwIUqWGkcCionaEb9Ki+FULyPyvNFpg/329Kd2/pbw==
-
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -2607,14 +2583,7 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
-"@types/react-reconciler@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.npmjs.org/@types/react-reconciler/-/react-reconciler-0.18.0.tgz#fce2b444103f44904e73eba349ac6552e2771f64"
-  integrity sha512-hLVaxzL7cGgk/2C/sc8yyyvi+aeeimv7SKOFgyuPFYqNb2rnnQApHabcxo5Xp+GloUAfMe3tyQm2nkrmbLXq4w==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react@*", "@types/react@^16.9.19", "@types/react@^16.9.45":
+"@types/react@^16.9.45":
   version "16.9.45"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.45.tgz#b43ccf3d8a3d2020e6a48c8c8492e5a4bc10f097"
   integrity sha512-vv950slTF5UZ5eDOf13b8qC1SD4rTvkqg3HfaUKzr17U97oeJZAa+dUaIHn0QoOJflNTIt6Pem9MmapULs9dkA==
@@ -2628,26 +2597,6 @@
   integrity sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==
   dependencies:
     "@types/node" "*"
-
-"@types/scheduler@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.1.tgz#18845205e86ff0038517aab7a18a62a6b9f71275"
-  integrity sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA==
-
-"@types/signal-exit@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/@types/signal-exit/-/signal-exit-3.0.0.tgz#75e3b17660cf1f6c6cb8557675b4e680e43bbf36"
-  integrity sha512-MaJ+16SOXz0Z27EMf3d88+B6UDglq1sn140a+5X/ROLkIcEfRq0CPg+1B2efF1GXQn4n+aKH4ti2hHG4Ya+Dzg==
-
-"@types/sinon@^7.5.2":
-  version "7.5.2"
-  resolved "https://registry.npmjs.org/@types/sinon/-/sinon-7.5.2.tgz#5e2f1d120f07b9cda07e5dedd4f3bf8888fccdb9"
-  integrity sha512-T+m89VdXj/eidZyejvmoP9jivXgBDdkOSBVQjU9kF349NEx10QdPNGxHeZUaj1IlJ32/ewdyXJjnJxyxJroYwg==
-
-"@types/slice-ansi@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@types/slice-ansi/-/slice-ansi-2.0.0.tgz#70d937a232e96c74c8d09195de6d8f9b3c1b2efa"
-  integrity sha512-mSfWH46KDfX1MVdL6taIvjkB9vRoJU8RpVSjD5Xlyts/w7ShrSJnogWJHWjk+Qgub9ATovp/YlNlIY7U5Rx/ow==
 
 "@types/split@^1.0.0":
   version "1.0.0"
@@ -5663,22 +5612,11 @@ init-package-json@^1.10.3:
     validate-npm-package-license "^3.0.1"
     validate-npm-package-name "^3.0.0"
 
-ink@^3.0.0-6:
-  version "3.0.0-6"
-  resolved "https://registry.yarnpkg.com/ink/-/ink-3.0.0-6.tgz#881fa3331bb6b7b9a39b97cc737614ae24925fa9"
-  integrity sha512-DhLTErRxGlsV1dVmooFu5DGHSA2b52QwssrWB76CPGm7jV3PGTNzxDhMW/NatkE70JQJ38kRhKW8PePenPqsig==
+ink@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/ink/-/ink-3.0.3.tgz#8540a6c7874bcadaebe8017164c35c5a2150bbe2"
+  integrity sha512-lddjjoxYMU6Ldy5fhwKwPJDuhm62F0TwvNnI3DDQ6czZxgW94kyTb4AUX3qSFU7cnoid4yg/uIktr00fI2VRvw==
   dependencies:
-    "@types/is-ci" "^2.0.0"
-    "@types/lodash.throttle" "^4.1.6"
-    "@types/node" "^13.9.1"
-    "@types/react" "^16.9.19"
-    "@types/react-reconciler" "^0.18.0"
-    "@types/scheduler" "^0.16.1"
-    "@types/signal-exit" "^3.0.0"
-    "@types/sinon" "^7.5.2"
-    "@types/slice-ansi" "^2.0.0"
-    "@types/stack-utils" "^1.0.1"
-    "@types/wrap-ansi" "^3.0.0"
     ansi-escapes "^4.2.1"
     auto-bind "4.0.0"
     chalk "^4.1.0"
