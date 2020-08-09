@@ -148,22 +148,19 @@ A [namespace](https://www.i18next.com/principles/namespaces) is a file that cont
 [translations](#translations), is located within a locale bundle, and can be written in JavaScript,
 JSON, or YAML (default and preferred).
 
-```js
-// res/en/common.js
+```js title="res/en/common.js"
 module.exports = {
   welcome: 'Hello {{name}}!',
 };
 ```
 
-```json
-// res/en/common.json
+```json title="res/en/common.json"
 {
   "welcome": "Hello {{name}}!"
 }
 ```
 
-```yaml
-# res/en/common.yaml
+```yaml title="res/en/common.yaml"
 welcome: Hello {{name}}!
 ```
 
@@ -188,8 +185,7 @@ They can be retrieved using the translator function (`msg` above).
 messages based on contextual data, through the combination of multiple keys and the `context`
 option.
 
-```yaml
-# res/en/user.yaml
+```yaml title="res/en/user.yaml"
 partner: Significant other
 partner_male: Husband
 partner_female: Wife
@@ -205,8 +201,7 @@ msg('user:partner', {}, { context: 'female' }); // Wife
 [Pluralizing messages](https://www.i18next.com/translation-function/plurals) is easily solved
 through the combination of multiple keys and the `count` option.
 
-```yaml
-# res/en/cart.yaml
+```yaml title="res/en/cart.yaml"
 item: {{count}} item
 item_plural: {{count}} items
 ```
@@ -222,8 +217,7 @@ There are 2 forms of nesting. The first is
 [nested keys](https://www.i18next.com/translation-function/essentials#accessing-keys) within a
 namespace file, and they can be accessed using dot notation.
 
-```yaml
-# res/en/prompts.yaml
+```yaml title="res/en/prompts.yaml"
 dialog:
   confirm: Are you sure?
   back: Go back!
@@ -236,8 +230,7 @@ msg('prompts:dialog.back'); // Go back!
 The second form is [nested messages](https://www.i18next.com/translation-function/nesting) through a
 special `$t()` syntax.
 
-```yaml
-# res/en/prompts.yaml
+```yaml title="res/en/prompts.yaml"
 confirm: Are you sure? $t(warning)
 warning: This cannot be undone!
 ```
