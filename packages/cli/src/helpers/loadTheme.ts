@@ -17,7 +17,7 @@ export default function loadTheme(): ThemePalette {
       try {
         palette = requireModule(`boost-theme-${theme}`);
       } catch {
-        throw new CLIError('THEME_UNKNOWN', [theme, theme]);
+        throw new CLIError('THEME_UNKNOWN', [theme]);
       }
     }
 
