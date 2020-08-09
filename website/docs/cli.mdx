@@ -56,7 +56,7 @@ npm install @boost/cli react ink
 | `Program#onExit`                                       | `message: string, code: number`                      | Called when the `exit()` handler is executed but before the process exits. |
 | `Program#onHelp`                                       | `CommandPath?`                                       | Called when the help menu is rendered.                                     |
 
-## Preface
+## CLI
 
 The CLI provides a simple object oriented framework for building and managing command line programs,
 with clear separation of commands, middleware, args, a program instance, and more. It further
@@ -684,7 +684,7 @@ export default class ConfigCommand extends Command {
 }
 ```
 
-## Shorthand commands
+### Shorthand registration
 
 Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
 commands, where only objects and functions are used. To utilize shorthand commands, call either the
