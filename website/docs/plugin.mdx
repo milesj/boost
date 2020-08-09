@@ -80,6 +80,8 @@ const rendererRegistry = new Registry<Renderable>('boost', 'renderer', {
     }
   },
 });
+
+export default rendererRegistry;
 ```
 
 You may have noticed the `validate` option above. This option is required as it forces you to verify
@@ -106,30 +108,48 @@ plugin? In the context of this system, a plugin is either a plain object, or cla
 extends `Plugin`, with both abiding a defined contract (the `validate` option). A plugin must also
 have a unique `name` property, which is typically the NPM package name.
 
-Using our renderer example above, our plain object would look like the following.
+<Tabs
+  groupId="plugin-format"
+  defaultValue="class"
+  values={[
+    { label: 'Class', value: 'class' },
+    { label: 'Object', value: 'object' },
+  ]}
+>
+  <TabItem value="class">
+
+```ts
+import { Plugin } from '@boost/plugin';
+import { Renderable } from './registry';
+
+export default class Renderer extends Plugin implements Renderable {
+  // Using private scope
+  name = '@boost/renderer-example';
+
+  render() {
+    return 'Something rendered here?';
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="object">
 
 ```ts
 const renderer = {
+  // Using public scope
   name: 'boost-renderer-example',
+
   render() {
     return 'Something rendered here?';
   },
 };
+
+export default renderer;
 ```
 
-Simple, right? Now let's look at our class example, which is a bit more involved.
-
-```ts
-import { Plugin } from '@boost/plugin';
-
-class Renderer extends Plugin implements Renderable {
-  name = '@boost/renderer-example';
-
-  render() {
-    return 'Something also rendered here!';
-  }
-}
-```
+  </TabItem>
+</Tabs>
 
 Now why would we use a class instead of an object, as an object seems much simpler? For 2 reasons,
 the 1st being that `Plugin` extends from [`Contract`](./common/contract.md), which allows the plugin
@@ -139,12 +159,13 @@ configuration file.
 ```ts
 import { Blueprint, Predicates } from '@boost/common';
 import { Plugin } from '@boost/plugin';
+import { Renderable } from './registry';
 
-interface RendererOptions {
+export interface RendererOptions {
   async?: boolean;
 }
 
-class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
+export default class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
   // ...
 
   blueprint({ bool }: Predicates): Blueprint<RendererOptions> {
@@ -154,6 +175,7 @@ class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
   }
 }
 
+// Example
 const renderer = new Renderer({ async: true });
 ```
 
@@ -163,9 +185,10 @@ can be found in later chapters.
 
 ```ts
 import { Plugin } from '@boost/plugin';
+import { Renderable } from './registry';
 import Tool from './Tool';
 
-class Renderer extends Plugin<Tool> implements Renderable<Tool> {
+export default class Renderer extends Plugin<Tool> implements Renderable<Tool> {
   // ...
 }
 ```
@@ -178,15 +201,50 @@ plugin authors and consumers to "mark" as high or low priority.
 
 Plugin authors can set a priority using the `priority` property.
 
+<Tabs
+  groupId="plugin-format"
+  defaultValue="class"
+  values={[
+    { label: 'Class', value: 'class' },
+    { label: 'Object', value: 'object' },
+  ]}
+>
+  <TabItem value="class">
+
+```ts
+import { Plugin } from '@boost/plugin';
+import { Renderable } from './registry';
+
+export default class Renderer extends Plugin implements Renderable {
+  name = '@boost/renderer-example';
+
+  priority = 50;
+
+  render() {
+    return 'Something rendered here?';
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="object">
+
 ```ts
 const renderer = {
   name: 'boost-renderer-example',
+
   priority: 50,
+
   render() {
     return 'Something rendered here?';
   },
 };
+
+export default renderer;
 ```
+
+  </TabItem>
+</Tabs>
 
 While [consumers can override](#loading-plugins) the priority using the `priority` option.
 
@@ -205,6 +263,37 @@ otherhand is executed before a plugin is unregistered from the registry.
 
 All life cycles are asynchronouse and receive a [tool](#tool-instances) as its only argument.
 
+<Tabs
+  groupId="plugin-format"
+  defaultValue="class"
+  values={[
+    { label: 'Class', value: 'class' },
+    { label: 'Object', value: 'object' },
+  ]}
+>
+  <TabItem value="class">
+
+```ts
+import { Plugin } from '@boost/plugin';
+import { Renderable } from './registry';
+import Tool from './Tool';
+
+export default class Renderer extends Plugin<Tool> implements Renderable<Tool> {
+  // ...
+
+  async startup(tool: Tool) {
+    // Do something
+  }
+
+  async shutdown(tool: Tool) {
+    // Do something
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="object">
+
 ```ts
 import Tool from './Tool';
 
@@ -219,24 +308,12 @@ const renderer = {
     // Do something
   },
 };
+
+export default renderer;
 ```
 
-```ts
-import { Plugin } from '@boost/plugin';
-import Tool from './Tool';
-
-class Renderer extends Plugin<Tool> implements Renderable<Tool> {
-  // ...
-
-  async startup(tool: Tool) {
-    // Do something
-  }
-
-  async shutdown(tool: Tool) {
-    // Do something
-  }
-}
-```
+  </TabItem>
+</Tabs>
 
 ## Modules
 
@@ -254,11 +331,37 @@ function provides the following benefits:
 
 Using our renderer examples, we would have the following factories. One sync and the other async.
 
+<Tabs
+  groupId="plugin-format"
+  defaultValue="class"
+  values={[
+    { label: 'Class (async)', value: 'class' },
+    { label: 'Object (sync)', value: 'object' },
+  ]}
+>
+  <TabItem value="class">
+
+```ts title="@boost/renderer-example/src/index.ts"
+import { Renderable } from './registry';
+import Renderer, { RendererOptions } from './Renderer';
+
+export default async function (options: RendererOptions): Renderable {
+  await someProcessThatNeedsToBeAwaited();
+
+  return new Renderer(options);
+}
+```
+
+  </TabItem>
+  <TabItem value="object">
+
 ```ts title="boost-renderer-example/src/index.ts"
-// Object based plugin
+import { RendererOptions, Renderable } from './registry';
+
 export default function (options: RendererOptions): Renderable {
   return {
     name: 'boost-renderer-example',
+
     render() {
       if (options.async) {
         return Promise.resolve('Ooo, this is a fancy render.');
@@ -270,20 +373,8 @@ export default function (options: RendererOptions): Renderable {
 }
 ```
 
-```ts title="@boost/renderer-example/src/index.ts"
-// Class based plugin
-import { Plugin } from '@boost/plugin';
-
-class Renderer extends Plugin implements Renderable {
-  // ....
-}
-
-export default async function (options: RendererOptions): Renderable {
-  await someProcessThatNeedsToBeAwaited();
-
-  return new Renderer(options);
-}
-```
+  </TabItem>
+</Tabs>
 
 ### Naming guidelines
 

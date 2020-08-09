@@ -178,7 +178,7 @@ return an object that matches the structure of the generic options interface. Th
 `Routine#execute()` method should accept the input type and return the expected output type.
 
 ```ts
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Predicates, Bind } from '@boost/common';
 import { Routine } from '@boost/pipeline';
 
 interface ExampleOptions {
@@ -203,17 +203,20 @@ export default class ExampleRoutine extends Routine<Output, Input, ExampleOption
       .run();
   }
 
-  roundToCents = (context: Context, value: number): number => {
+  @Bind
+  roundToCents(context: Context, value: number): number {
     return Number(value.toFixed(2));
-  };
+  }
 
-  makeReadable = (context: Context, value: number): string => {
+  @Bind
+  makeReadable(context: Context, value: number): string {
     return value.toLocaleString();
-  };
+  }
 
-  addCurrency = (context: Context, value: string): string => {
+  @Bind
+  addCurrency(context: Context, value: string): string {
     return `$${value}`;
-  };
+  }
 }
 ```
 
