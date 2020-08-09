@@ -43,7 +43,7 @@ npm install @boost/log
 - `BOOSTJS_LOG_MAX_LEVEL` (`LogLevel`) - The maximum level, based on priority, to write to a stream.
   All levels higher than the maximum will be ignored. Defaults to allowing all levels.
 
-## Usage
+## Logging
 
 Logging is based around the concept of a "logger", which provides a set of functions of severity
 levels to log with. Logs are written to one or many provided transports -- or `console` if not
@@ -119,7 +119,22 @@ log.warn('Something is definitely going on…');
 log.error('Systems are down! %s', error.message);
 ```
 
-### Formats
+### Silencing output
+
+By default, all logged messages are immediately written to the configured transports. To silence
+output and disable writes, call the `logger.disable()` function, and to re-enable, call
+`logger.enable()`.
+
+```ts
+log.disable();
+
+// Will not write!
+log.debug('Something is broken!');
+```
+
+> Messages that are logged while silenced are _lost_ and are _not_ buffered.
+
+## Formats
 
 All logs are represented as an object, known as a log item. These items contain the following
 metadata about the environment, the logger, and the current log message.
@@ -156,7 +171,7 @@ Feel free to use the following built-in formats, or customize your own!
 - `formats.json` - Formats the entire item into JSON.
 - `formats.message` - Formats the item using only the message.
 
-### Metadata
+## Metadata
 
 Sometimes additional metadata may be required that is not found within the pre-defined log item
 fields. Metadata can be defined on the logger using an object, which is then passed to all log
@@ -180,21 +195,6 @@ log({ locale: 'de' }, "What's going on?");
 ```
 
 > Fields `name`, `host`, and `pid` are reserved names and cannot be used.
-
-### Silencing output
-
-By default, all logged messages are immediately written to the configured transports. To silence
-output and disable writes, call the `logger.disable()` function, and to re-enable, call
-`logger.enable()`.
-
-```ts
-log.disable();
-
-// Will not write!
-log.debug('Something is broken!');
-```
-
-> Messages that are logged while silenced are _lost_ and are _not_ buffered.
 
 ## Transport types
 

@@ -51,7 +51,7 @@ npm install @boost/pipeline
 | `WorkUnit#onRun`         | `input: Input`                    | Called before a work unit is executed. Can return `true` to skip the work unit. |
 | `WorkUnit#onSkip`        | `input: Input`                    | Called when an execution is skipped.                                            |
 
-## Usage
+## Pipelines
 
 A pipeline can be used to process an input, either in parallel or serial, through a series of
 actions known as work units, to produce an output. If you don't need an input, but merely need to
@@ -91,7 +91,17 @@ value.
 const output = await pipeline.run();
 ```
 
-### Contexts
+### Input & output types
+
+The input type is inferred from the 2nd constructor argument, while the output type defaults to the
+input type. If you need to customize either the input or output type manually, the pipeline generics
+can be customized upon instantiation.
+
+```ts
+const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
+```
+
+## Contexts
 
 A `Context` is merely a plain class that provides contextual information to all work units, and is
 passed as the 1st argument when executing. It's highly encouraged to create custom contexts with
@@ -121,74 +131,6 @@ without collisions or mutations occurring.
 
 ```ts
 const newContext = context.clone();
-```
-
-### Input & output types
-
-The input type is inferred from the 2nd constructor argument, while the output type defaults to the
-input type. If you need to customize either the input or output type manually, the pipeline generics
-can be customized upon instantiation.
-
-```ts
-const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
-```
-
-### Serial pipeline caveats
-
-[Serial pipelines](#serial) are designed using a linked list, with each call to
-`SerialPipeline#pipe()` returning a new instance. It was designed this way so that input and output
-types would cascade correctly down the chain. However, this pattern causes issues where pipes are
-called within conditionals, resulting in new pipes to be lost. For example, this is _invalid_.
-
-<!-- prettier-ignore -->
-```ts
-const pipeline = new WaterfallPipeline(new Context());
-
-if (condition) {
-  pipeline.pipe('Do this', thisAction);
-} else {
-  pipeline.pipe('Do that', thatAction);
-}
-
-await pipeline
-  .pipe('Then finish', finishAction)
-  .run();
-```
-
-While this is technically valid (note the `let` and `pipeline` assignment), but will break down if
-types conflict.
-
-<!-- prettier-ignore -->
-```ts
-let pipeline = new WaterfallPipeline(new Context());
-
-if (condition) {
-  pipeline = pipeline.pipe('Do this', thisAction);
-} else {
-  pipeline = pipeline.pipe('Do that', thatAction);
-}
-
-await pipeline
-  .pipe('Then finish', finishAction)
-  .run();
-```
-
-Instead, it's suggested to use separate pipelines within each conditional block. This approach
-requires a bit of duplication, but avoids all other issues.
-
-<!-- prettier-ignore -->
-```ts
-if (condition) {
-  await new WaterfallPipeline(new Context())
-    .pipe('Do this', thisAction)
-    .pipe('Then finish', finishAction)
-    .run()
-} else {
-  await new WaterfallPipeline(new Context())
-    .pipe('Do that', thatAction)
-    .pipe('Then finish', finishAction)
-    .run()
-}
 ```
 
 ## Work types
@@ -420,4 +362,64 @@ const pipeline = new WaterfallPipeline(new Context(), 1000)
   .pipe('Convert to an array for reasons unknown', (ctx, value) => [value]);
 
 const finalValue = await pipeline.run(); // ['3,000']
+```
+
+## Caveats
+
+### Serial pipelines
+
+[Serial pipelines](#serial) are designed using a linked list, with each call to
+`SerialPipeline#pipe()` returning a new instance. It was designed this way so that input and output
+types would cascade correctly down the chain. However, this pattern causes issues where pipes are
+called within conditionals, resulting in new pipes to be lost. For example, this is _invalid_.
+
+<!-- prettier-ignore -->
+```ts
+const pipeline = new WaterfallPipeline(new Context());
+
+if (condition) {
+  pipeline.pipe('Do this', thisAction);
+} else {
+  pipeline.pipe('Do that', thatAction);
+}
+
+await pipeline
+  .pipe('Then finish', finishAction)
+  .run();
+```
+
+While this is technically valid (note the `let` and `pipeline` assignment), but will break down if
+types conflict.
+
+<!-- prettier-ignore -->
+```ts
+let pipeline = new WaterfallPipeline(new Context());
+
+if (condition) {
+  pipeline = pipeline.pipe('Do this', thisAction);
+} else {
+  pipeline = pipeline.pipe('Do that', thatAction);
+}
+
+await pipeline
+  .pipe('Then finish', finishAction)
+  .run();
+```
+
+Instead, it's suggested to use separate pipelines within each conditional block. This approach
+requires a bit of duplication, but avoids all other issues.
+
+<!-- prettier-ignore -->
+```ts
+if (condition) {
+  await new WaterfallPipeline(new Context())
+    .pipe('Do this', thisAction)
+    .pipe('Then finish', finishAction)
+    .run()
+} else {
+  await new WaterfallPipeline(new Context())
+    .pipe('Do that', thatAction)
+    .pipe('Then finish', finishAction)
+    .run()
+}
 ```

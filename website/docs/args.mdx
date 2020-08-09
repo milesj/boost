@@ -36,7 +36,7 @@ npm install @boost/args
   </TabItem>
 </Tabs>
 
-## Usage
+## Parsing
 
 This library is strict parser for command line arguments, primarily `process.argv` in Node.js, that
 supports [commands](#commands), [options](#options), [flags](#flags), [params](#params), and
@@ -89,10 +89,62 @@ boost build --key value --key=value -flag -F -aBDc foo bar baz -- --foo bar -B
 5. [Flag](#flags) in both long and short form.
 6. A group of [short options](#short-option-groups), most commonly used by flags.
 7. [Parameters](#params) passed to a command.
-8. [Rest](#rest) arguments that are not parsed. Always appear after a `--`.
+8. [Rest](#rest-args) arguments that are not parsed. Always appear after a `--`.
 9. The command line.
 
-### Commands
+### Contextual parsing
+
+While the above is straight forward (I hope so), it doesn't leave much room for customization. What
+if we want different options based on the command passed? Or different params? Or how to handle
+global options? So on and so forth.
+
+To provide this functionality, the `parseInContext()` function can be used. Like `parse()`, this
+function requires a list of strings (`argv`), but unlike, it requires a factory function that
+returns contextual parser options.
+
+The parser will loop through each argument, executing the factory function with the argument and
+argv list, until a match is found and options were returned.
+
+```ts
+import { parseInContext } from '@boost/args';
+
+// Remove node binary and script
+const argv = process.argv.slice(2);
+
+// Parse argv into a consumable object
+const { command, errors, options, params, rest } = parseInContext(argv, (arg) => {
+  // Build command found, define build specific options
+  if (arg === 'build') {
+    return {
+      command: ['build'],
+      options: {
+        dest: {
+          description: 'Destination path',
+          type: 'string',
+        },
+      },
+    };
+  }
+
+  // Install command found, require params
+  if (arg === 'install') {
+    return {
+      command: ['install'],
+      params: [
+        {
+          description: 'Package name(s)',
+          type: 'string',
+          required: true,
+        },
+      ],
+    };
+  }
+
+  return undefined;
+});
+```
+
+## Commands
 
 Commands are a feature that allow for branching logic, full isolation, and distinct code paths. That
 being said, the parser does not handle this functionality, as that's a CLI/programs job. The parser
@@ -130,7 +182,7 @@ args.options; // { out: 'lib/' }
 args.params; // ['build:umd', 'src/']
 ```
 
-### Options
+## Options
 
 An option is an optional argument that accepts a single value or multiple values. It has 2 forms,
 the first being the default form, also known as a long option, which starts with `--` and is
@@ -191,7 +243,7 @@ supported on the command line.
 > slot of `parse()`. If not provided, it defaults to `object`. It's highly encouraged to type
 > options correctly.
 
-#### Single value
+### Single value
 
 A value can be passed as either an additional argument separated by a space, like `--option value`
 (preferred), or with an equals sign and no space (also known as an inline value), like
@@ -200,7 +252,7 @@ A value can be passed as either an additional argument separated by a space, lik
 If you are passing a string that contains spaces or special characters, you must wrap the value in
 double quotes. For example, `--option "long value"` or `--option="long value"`.
 
-#### Multiple values
+### Multiple values
 
 To pass multiple values for an option, the `multiple` setting must be enabled (numbers and strings
 only), and if using TypeScript, the option type must be a typed array.
@@ -225,7 +277,7 @@ Otherwise, each value can be passed as a standalone argument, like `--option foo
 using this approach, all values will be captured until another option is passed, or the end of the
 list is met.
 
-#### Unknown options
+### Unknown options
 
 If an option is passed to `parse()` that is not configured in the `options` settings object, it will
 be [logged as a parse error](#validation-checks) unless the `unknown` setting is set to true. When
@@ -251,7 +303,7 @@ args.unknown; // { unknown: 'bar' }
 > Unknown short options will still throw an error, as they require a parent long option to
 > reference.
 
-### Flags
+## Flags
 
 A flag is a special type of [option](#options) that accepts no value, is always boolean, and
 represents a binary on-off switch. When the flag is passed on the command line (without a value),
@@ -275,7 +327,7 @@ const args = parse<{ color: boolean }>(argv, {
 args.options.color; // true
 ```
 
-### Params
+## Params
 
 Parameters (or positional arguments) are standalone arguments that are treated as values, and are
 parsed in a strict order. They're an important mechanism that serves 2 purposes.
@@ -318,7 +370,7 @@ item configuring the corresponding position/index (hence the name positional arg
 > When using TypeScript, the expected type of each param is defined as a tuple in the 2nd generic
 > slot of `parse()`. If not provided, it defaults to `string[]`.
 
-#### Variadic params
+### Variadic params
 
 By default the parser enables variadic params, which means that any argument that does not match a
 command or option, is considered a param (string only), and is appended to the end of the params
@@ -364,7 +416,7 @@ const args = parse<{}, [string]>(argv, {
 args.params; // ['foo']
 ```
 
-### Rest
+## Rest args
 
 Rest arguments are rather simple, as they're everything after a standalone `--` argument (also known
 as [end of options delimiter][dash-dash]). They are _not_ parsed and are usually passed to
@@ -377,7 +429,7 @@ args.params; // ['foo', 'bar']
 args.rest; // ['baz']
 ```
 
-## Advanced features
+## Advanced
 
 ### Short option groups
 
@@ -464,45 +516,6 @@ args.options.colors; // ['red', 'blue', 'green']
 
 > Arity will not error when 0 values are passed. To control this logic, use the `validate` setting.
 
-### Type casting
-
-While option and param values are configured as `boolean`, `number`, or `string` types, arguments
-passed on the command line are always strings. Because of this, the parser will type cast all
-captured values before returning the final result, as a means for easier interoperability.
-
-This type casting follows specific semantics (below) and may have side-effects depending on the
-input provided.
-
-- When a `boolean`, the following strings will be cast to `true`: true, on, yes, 1. The inverse will
-  be cast to `false`: false, off, no, 0. Other unsupported strings will also be cast to `false`.
-- When a `number`, the string will be cast using `Number()`. If a NaN occurs, the number will return
-  a `0` (use the `validate` setting for more control).
-- Strings are used as-is. Values with spaces or special characters should be wrapped in double
-  quotes.
-
-### Validation checks
-
-For improved interoperability and usability, the parser is strict, logging the following parse and
-validation errors.
-
-- `ParseError`s are logged for invalid syntax, unknown options, and formatting. The failed argument
-  and its index are stored as `arg` and `index` properties on the error instance, respectively.
-- `ValidationError`s are logged for invalid values, types, settings, and more. The invalid option
-  (when applicable), is stored as the `option` property.
-
-Furthermore, errors are not thrown and instead are returned as an array in the `parse()` result,
-under the `errors` property. It's designed this way so that command line interfaces and or
-applications have full control, and can theoretically provide output like the following.
-
-```
-An error has occurred:
-
-  foo_bar --progressive --interactive -Y
-  └──┬──┘
-     └─ Invalid "foo_bar" command format. Must be letters, numbers, and dashes.
-
-```
-
 ### Command & option categories
 
 While purely an informational feature, as it doesn't pertain to the parser, both commands and
@@ -523,56 +536,43 @@ const args = parse<{ color: string }>(argv, {
 
 > Command categories only pertain to the `Command` interface type.
 
-## Contextual parsing
+## Type casting
 
-While the above is straight forward (I hope so), it doesn't leave much room for customization. What
-if we want different options based on the command passed? Or different params? Or how to handle
-global options? So on and so forth.
+While option and param values are configured as `boolean`, `number`, or `string` types, arguments
+passed on the command line are always strings. Because of this, the parser will type cast all
+captured values before returning the final result, as a means for easier interoperability.
 
-To provide this functionality, the `parseInContext()` function can be used. Like `parse()`, this
-function requires a list of strings (`argv`), but unlike, it requires a factory function that
-returns contextual parser options.
+This type casting follows specific semantics (below) and may have side-effects depending on the
+input provided.
 
-The parser will loop through each argument, executing the factory function with the argument and
-argv list, until a match is found and options were returned.
+- When a `boolean`, the following strings will be cast to `true`: true, on, yes, 1. The inverse will
+  be cast to `false`: false, off, no, 0. Other unsupported strings will also be cast to `false`.
+- When a `number`, the string will be cast using `Number()`. If a NaN occurs, the number will return
+  a `0` (use the `validate` setting for more control).
+- Strings are used as-is. Values with spaces or special characters should be wrapped in double
+  quotes.
 
-```ts
-import { parseInContext } from '@boost/args';
+## Validation checks
 
-// Remove node binary and script
-const argv = process.argv.slice(2);
+For improved interoperability and usability, the parser is strict, logging the following parse and
+validation errors.
 
-// Parse argv into a consumable object
-const { command, errors, options, params, rest } = parseInContext(argv, (arg) => {
-  // Build command found, define build specific options
-  if (arg === 'build') {
-    return {
-      command: ['build'],
-      options: {
-        dest: {
-          description: 'Destination path',
-          type: 'string',
-        },
-      },
-    };
-  }
+- `ParseError`s are logged for invalid syntax, unknown options, and formatting. The failed argument
+  and its index are stored as `arg` and `index` properties on the error instance, respectively.
+- `ValidationError`s are logged for invalid values, types, settings, and more. The invalid option
+  (when applicable), is stored as the `option` property.
 
-  // Install command found, require params
-  if (arg === 'install') {
-    return {
-      command: ['install'],
-      params: [
-        {
-          description: 'Package name(s)',
-          type: 'string',
-          required: true,
-        },
-      ],
-    };
-  }
+Furthermore, errors are not thrown and instead are returned as an array in the `parse()` result,
+under the `errors` property. It's designed this way so that command line interfaces and or
+applications have full control, and can theoretically provide output like the following.
 
-  return undefined;
-});
+```
+An error has occurred:
+
+  foo_bar --progressive --interactive -Y
+  └──┬──┘
+     └─ Invalid "foo_bar" command format. Must be letters, numbers, and dashes.
+
 ```
 
 ## Formatting args

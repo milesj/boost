@@ -36,12 +36,10 @@ npm install @boost/terminal
   </TabItem>
 </Tabs>
 
-## Usage
-
 There are many terminal based libraries and utilities available in the NPM ecosystem, many of which
 Boost consolidates into a single package. The currently supported are as follows.
 
-### Cursor
+## Cursor
 
 The `cursor` object provides a set of
 [ANSI escapes codes](https://www.npmjs.com/package/ansi-escapes) for use in manipulating the
@@ -71,7 +69,7 @@ The following properties are available.
   starting from the top left.
 - `up` (`(count: number) => string`) - Number of rows to move up. Defaults to `1`.
 
-### Figures
+## Figures
 
 The `figures` object provides a set of cross-platform symbols.
 [View the official NPM package for a full list](https://www.npmjs.com/package/figures).
@@ -82,7 +80,7 @@ import { figures } from '@boost/terminal';
 process.stdout.write(figures.tick);
 ```
 
-### Screen
+## Screen
 
 The `screen` object provides a set of
 [ANSI escapes codes](https://www.npmjs.com/package/ansi-escapes) for use in manipulating the
@@ -111,7 +109,7 @@ The following properties are available.
 - `scrollUp` (`string`) - Scroll up the screen by 1 line.
 - `size` (`() => Size`) - Reliably and accurately get the screen size (in `columns` and `rows`).
 
-### Styles
+## Styles
 
 The `style` export is an instance of [chalk](https://www.npmjs.com/package/chalk), for use in simple
 color and text styling.
@@ -122,11 +120,11 @@ import { style } from '@boost/terminal';
 const pass = style.bgGreen.black.bold(' PASS ');
 ```
 
-### Text
+## Text
 
 The following functions can be used to operate on ANSI-aware strings.
 
-#### `annotate`
+### `annotate`
 
 > annotate(text: string, annotation: string): string
 
@@ -139,7 +137,7 @@ import { annotate } from '@boost/terminal';
 const text = annotate('fileName.js', fullFilePath);
 ```
 
-#### `calculateWidth`
+### `calculateWidth`
 
 > calculateWidth(text: string): number
 
@@ -152,7 +150,7 @@ import { calculateWidth } from '@boost/terminal';
 calculateWidth('古'); // 2
 ```
 
-#### `hasAnsi`
+### `hasAnsi`
 
 > hasAnsi(text: string): boolean
 
@@ -165,7 +163,7 @@ import { hasAnsi } from '@boost/terminal';
 hasAnsi('\u001B[4mTest\u001B[0m'); // true
 ```
 
-#### `link`
+### `link`
 
 > link(text: string, url: string): string;
 
@@ -178,7 +176,7 @@ import { link } from '@boost/terminal';
 const text = link('Read the manual', 'https://boostlib.dev');
 ```
 
-#### `sliceAnsi`
+### `sliceAnsi`
 
 > sliceAnsi(text: string, start: number, end?: number): string
 
@@ -191,7 +189,7 @@ import { sliceAnsi } from '@boost/terminal';
 const text = sliceAnsi(aStringThatMayContainAnsi, 15, 25);
 ```
 
-#### `stripAnsi`
+### `stripAnsi`
 
 > stripAnsi(text: string): string
 
@@ -204,7 +202,7 @@ import { stripAnsi } from '@boost/terminal';
 const text = stripAnsi(aStringThatContainsAnsi);
 ```
 
-#### `truncate`
+### `truncate`
 
 > truncate(text: string, width: number, options?: TruncateOptions): string
 
@@ -218,7 +216,7 @@ import { truncate } from '@boost/terminal';
 const text = truncate(aStringThatMayContainAnsi, 10, { position: 'middle' });
 ```
 
-#### `wrapAnsi`
+### `wrapAnsi`
 
 > wrapAnsi(text: string, width: number, options?: WrapOptions): string
 

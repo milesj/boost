@@ -56,7 +56,7 @@ npm install @boost/cli react ink
 | `Program#onExit`                                       | `message: string, code: number`                      | Called when the `exit()` handler is executed but before the process exits. |
 | `Program#onHelp`                                       | `CommandPath?`                                       | Called when the help menu is rendered.                                     |
 
-## Usage
+## Preface
 
 The CLI provides a simple object oriented framework for building and managing command line programs,
 with clear separation of commands, middleware, args, a program instance, and more. It further
@@ -66,11 +66,11 @@ handling ANSI escape sequences and terminal widths can be tedious and complicate
 > The CLI makes heavy usage of the [args](./args.mdx) package, which will be continually referenced
 > throughout this documentation. It's encouraged to read and understand it first.
 
-### Program
+## Program
 
 The entry point of the command line is commonly referred to as the binary, or script, and is managed
 by the `Program` class. This class handles the registration of commands, applying
-[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.mdx#usage)
+[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.mdx)
 (options, flags, etc), running the found command with these argument, outputing to the terminal, and
 finally cleaning up or handling failures.
 
@@ -110,7 +110,7 @@ the exit code to `process.exitCode`. Both methods require an argv list to run.
 program.runAndExit(process.argv);
 ```
 
-#### Package integration
+### Package integration
 
 Now that you have the basics of a program, you can set the
 [bin](https://docs.npmjs.com/files/package.json#bin) field in your `package.json`. This should point
@@ -136,7 +136,7 @@ binary file to where the compiled program would be found.
 require('../lib/program.js');
 ```
 
-#### Stand-alone
+### Stand-alone
 
 Boost offers 2 implementations for how the binary can be executed, the 1st is known as a stand-alone
 program. This implementation only supports 1 [command](#commands) known as the default command,
@@ -158,7 +158,7 @@ program.default(new StandAloneCommand()).runAndExit(process.argv);
 
 > Some good examples of stand-alone binaries are `babel`, `webpack`, and `tsc`.
 
-#### Multi-command
+### Multi-command
 
 The 2nd implementation is opposite the stand-alone program, and is known as a multi-command program.
 When the binary is ran, and no arguments are passed, a help menu is displayed instead of executing
@@ -188,7 +188,7 @@ program
 
 > Some good examples of stand-alone binaries are `npm`, `yarn`, and `docker`.
 
-#### Middleware
+### Middleware
 
 Boost will parse provided argv (a list of string arguments, typically from `process.argv`) into
 [args][args] (an object of options, flags, params, etc) for easier consumption. This process can be
@@ -231,7 +231,7 @@ program
 Middleware is async, so the parse callback _must be_ awaited! This also means you can implement your
 own async functionality, like file system access, or network requests.
 
-### Commands
+## Commands
 
 Commands are self-encapsulated pieces of business logic that are ran when a matching path (a unique
 argument) is found on the command line. To create a command, import and extend the abstract
@@ -256,7 +256,7 @@ However, that's not all required, as a command and it's features must be configu
 defined with a declarative approach using TypeScript decorators, or an imperative approach with
 static class properties. Both variants will be demonstrated in the examples below.
 
-#### Config
+### Config
 
 All commands support the following metadata configuration, with `path` and `description` being
 mandatory.
@@ -313,7 +313,7 @@ export default class BuildCommand extends Command {
 
 ![Command example](/img/cli/command.png)
 
-#### Options
+### Options
 
 [Options](./args.mdx#options) are optional arguments that accept a value on the command line. When a
 command is ran, each option is set as a class property based on the matching command line value, or
@@ -430,7 +430,7 @@ export default class CustomCommand extends Command<CustomOptions> {
 
 ![Options example](/img/cli/options.png)
 
-##### Unknown options
+#### Unknown options
 
 By default, unknown options are not allowed and will throw an error. To allow, set the
 `allowUnknownOptions` [configuration setting](#config) to true. When enabled, all unknown options
@@ -451,7 +451,7 @@ export default class CustomCommand extends Command<GlobalOptions> {
 
 ![Unknown option example](/img/cli/unknown-option.png)
 
-##### Global options
+#### Global options
 
 Boost provides the follow options that are always available to all commands.
 
@@ -463,7 +463,7 @@ Boost provides the follow options that are always available to all commands.
 - `--version`, `-v` (`boolean`) - Display the current program version and exit. Available under the
   `version` class property.
 
-#### Params
+### Params
 
 [Params](./args.mdx#params) are command line values that will be passed to `Command#run()` as
 arguments. When defining params, all [param settings](./args.mdx#params) are supported, and required
@@ -542,7 +542,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
 ![Params example](/img/cli/params.png)
 
-##### Variadic params
+#### Variadic params
 
 By default, variadic params are not enabled and will throw an error when an unconfigured param is
 found. To allow, set the `allowVariadicParams` [configuration setting](#config) to true. When
@@ -570,12 +570,12 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
 ![Variadic params example](/img/cli/variadic-params.png)
 
-#### Rest arguments
+### Rest args
 
-[Rest arguments](./args.mdx#rest) are all arguments that come after a standalone `--` delimiter, and
-can be accessed using the `Command#rest` property, which is an array of strings.
+[Rest arguments](./args.mdx#rest-args) are all arguments that come after a standalone `--`
+delimiter, and can be accessed using the `Command#rest` property, which is an array of strings.
 
-#### Sub-commands
+### Sub-commands
 
 Of course commands can register their own commands, known as sub-commands -- it's commands all the
 way down! Sub-commands are configured exactly the same, with the key difference being that their
@@ -610,7 +610,7 @@ Sub-commands can now be executed on the command line by passing their full path,
 
 ![Sub-commands example](/img/cli/subcommands.png)
 
-#### Rendering components
+### Rendering components
 
 This chapter assumes you have knowledge of [React][react], JSX/TSX, and [Ink][ink]. If you do not,
 it's highly encouraged to study those topics, but React is not necessarily a requirement (can use
@@ -684,7 +684,7 @@ export default class ConfigCommand extends Command {
 }
 ```
 
-### Shorthand commands
+## Shorthand commands
 
 Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
 commands, where only objects and functions are used. To utilize shorthand commands, call either the
@@ -724,7 +724,7 @@ respectively.
 > If you want to access the [logger](#logging), be sure to use a function declaration instead of an
 > anonymous function, so that context binding works correctly!
 
-### Tasks
+## Tasks
 
 Tasks are reusable functions that can be executed within any command, while gaining contextual and
 limited access to that command's instance. This promotes reusability and composition while avoiding
@@ -732,8 +732,8 @@ inheritance related issues.
 
 To use a task, create a function with any arguments and function body that you'd like. The function
 body has access to the parent command's [options](#options), [logger](#logging), and
-[rest arguments](#rest) through `this`. If using TypeScript, the `this` special argument should be
-typed.
+[rest arguments](#rest-args) through `this`. If using TypeScript, the `this` special argument should
+be typed.
 
 ```ts
 import fs from 'fs';
@@ -777,7 +777,7 @@ export default class InitCommand extends Command {
 
 > Tasks are a command only feature and cannot be executed from within a React component.
 
-### Categories
+## Categories
 
 Categories are a mechanism for grouping commands and options in the help menu for easier
 readability. They're shared between both commands and options for interoperability purposes, and can
@@ -829,7 +829,7 @@ export default class BuildCommand extends Command {
 }
 ```
 
-### Logging
+## Logging
 
 Boost integrates its very own [logger](./log.mdx) so that logs can easily be sent to the configured
 `stdout` and `stderr`. The logger is accessible using `Command#log()` and associated methods.
@@ -869,7 +869,7 @@ function CustomComponent() {
 > It's highly encouraged to use the logger instead of the native console, so that logged messages do
 > not interrupt the React rendering process, and write to the configured streams!
 
-### Themes
+## Themes
 
 Themes allow consumers to alter the color of text and backgrounds for elements rendered with the
 `Style` component. Themes are simply NPM modules that return an object of hexcodes or ANSI colors,
