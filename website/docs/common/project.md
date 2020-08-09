@@ -10,9 +10,6 @@ instantiate the `Project` class with a path to the project's root.
 import { Project } from '@boost/common';
 
 const project = new Project();
-
-// Access package.json contents
-const pkg = project.getPackage();
 ```
 
 > Root defaults to `process.cwd()` if not provided.
@@ -31,11 +28,45 @@ aligns with:
   and test files specific to the package.
 - **Workspace** - A folder that houses one or many packages.
 
-Information about workspaces and packages can be accessed with following methods:
+## API
 
-- `getWorkspaceGlobs(): string[]` - Returns a list of all workspaces globs as they are defined in
-  `package.json` (under `workspaces`) or `lerna.json` (under `packages`).
-- `getWorkspacePackages(): WorkspacePackage[]` - Returns a list of all workspace packages, their
-  `package.json` content, and associated metadata.
-- `getWorkspacePackagePaths(): string[]` - Returns a list of file system paths for all workspaces
-  packages.
+### `getPackage`
+
+> Project#getPackage<T extends PackageStructure\>(): T
+
+Return the contents of the `package.json` found in the defined root path.
+
+```ts
+const pkg = project.getPackage();
+```
+
+### `getWorkspaceGlobs`
+
+> Project#getWorkspaceGlobs(options?: ProjectSearchOptions): FilePath[]
+
+Returns a list of all workspaces globs as they are defined in `package.json` (under `workspaces`),
+`lerna.json` (under `packages`), or `pnpm-workspace.yaml` (under `packages`).
+
+```ts
+const globs = project.getWorkspaceGlobs(); // => ['packages/*']
+```
+
+### `getWorkspacePackages`
+
+> Project#getWorkspacePackages<T extends PackageStructure\>(): WorkspacePackage<T\>[]
+
+Return all `package.json`s from all workspace packages. Once loaded, append workspace path metadata.
+
+```ts
+const pkgs = project.getWorkspacePackages();
+```
+
+### `getWorkspacePackagePaths`
+
+> Project#getWorkspacePackagePaths(options?: ProjectSearchOptions): FilePath[]
+
+Returns a list of file system paths for all workspaces packages.
+
+```ts
+const paths = project.getWorkspacePackagePaths(); // => ['packages/foo', 'packages/bar']
+```

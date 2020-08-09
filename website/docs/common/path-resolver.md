@@ -58,3 +58,60 @@ be used instead.
 ```ts
 const resolvedPath = resolver.resolvePath();
 ```
+
+## API
+
+### `getLookupPaths`
+
+> PathResolver#getLookupPaths(): string[]
+
+Return a list of all lookup paths that have been registered.
+
+```ts
+resolver.lookupFilePath('file.js').lookupNodeModule('module-name');
+
+const paths = resolver.getLookupPaths(); // => ['file.js', 'module-name']
+```
+
+### `lookupFilePath`
+
+> PathResolver#lookupFilePath(filePath: PortablePath, cwd?: PortablePath): this
+
+Add a file system path to look for, resolved against the defined current working directory (or
+`process.cwd()` otherwise).
+
+```ts
+resolver.lookupFilePath('./some/path/to/file.js');
+```
+
+### `lookupNodeModule`
+
+> PathResolver#lookupNodeModule(modulePath: PortablePath): this
+
+Add a Node.js module, either by name or relative path, to look for.
+
+```ts
+resolver.lookupNodeModule('module-name');
+```
+
+### `resolve`
+
+> PathResolver#resolve(): { originalPath: Path; resolvedPath: Path; type: LookupType; }
+
+Given a list of lookups, attempt to find the first real/existing path and return a resolved absolute
+path. If a file system path, will check using `fs.exists`. If a node module path, will check using
+`require.resolve`.
+
+```ts
+const { originalPath, resolvedPath, type } = resolver.resolve();
+```
+
+### `resolvePath`
+
+> PathResolver#resolvePath(): Path
+
+Like `resolve()` but only returns the resolved path.
+
+```ts
+const resolvedPath = resolver.resolvePath();
+```
