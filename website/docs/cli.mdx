@@ -282,7 +282,18 @@ mandatory.
 - `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
 
 When using decorators, import the `Config` decorator and apply it to the `Command` class. The path
-and description are required, while all other metadata can be passed as an object.
+and description are required, while all other metadata can be passed as an object. Otherwise, just
+define static class properties of the same name!
+
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
 
 ```ts
 import { Command, Config } from '@boost/cli';
@@ -294,7 +305,8 @@ import { Command, Config } from '@boost/cli';
 export default class BuildCommand extends Command {}
 ```
 
-Otherwise, just define static class properties of the same name!
+  </TabItem>
+  <TabItem value="imp">
 
 ```ts
 import { Command } from '@boost/cli';
@@ -310,6 +322,9 @@ export default class BuildCommand extends Command {
 }
 ```
 
+  </TabItem>
+</Tabs>
+
 ![Command example](/img/cli/command.png)
 
 ### Options
@@ -319,11 +334,27 @@ command is ran, each option is set as a class property based on the matching com
 the provided default value. Like configuration above, options can be defined declaratively or
 imperatively, with option types being passed to the 1st `Command` generic slot.
 
-There are 5 `Arg` decorators to choose from when defining options (in the example below), all of
-which are defined on a class property, where the property name becomes the option name. For example,
-a property of `save` would become the `--save` option. Depending on the decorator, they support many
+_Declarative_: There are 5 `Arg` decorators to choose from when defining options, all of which are
+defined on a class property, where the property name becomes the option name. For example, a
+property of `save` would become the `--save` option. Depending on the decorator, they support many
 [option settings](./args.mdx#options), excluding `type` and `description`, which are inferred, and
 `default` which comes from the property value.
+
+_Imperative_: If you prefer to use static properties, all options are defined through the single
+static `options` property, which requires a mapping of option names to
+[option settings](./args.mdx#options). With this approach, `type` and `description` are required,
+with `default` either being configured with a setting, or coming from the class property value. For
+easier type safety, the `Options` collection type can be used to type the static property.
+
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
 
 ```ts
 import { Command, Arg, GlobalOptions } from '@boost/cli';
@@ -354,17 +385,14 @@ export default class CustomCommand extends Command<CustomOptions> {
 
   run() {
     const { flag, strings } = this;
+
     // ...
   }
 }
 ```
 
-If you prefer to use static properties, all options are defined through the single static `options`
-property, which requires a mapping of option names to [option settings](./args.mdx#options). With
-this approach, `type` and `description` are required, with `default` either being configured with a
-setting, or coming from the class property value.
-
-For easier type safety, the `Options` collection type can be used to type the static property.
+  </TabItem>
+  <TabItem value="imp">
 
 ```ts
 import { Command, GlobalOptions, Options } from '@boost/cli';
@@ -422,10 +450,14 @@ export default class CustomCommand extends Command<CustomOptions> {
 
   run() {
     const { flag, strings } = this;
+
     // ...
   }
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 ![Options example](/img/cli/options.png)
 
@@ -435,11 +467,40 @@ By default, unknown options are not allowed and will throw an error. To allow, s
 `allowUnknownOptions` [configuration setting](#config) to true. When enabled, all unknown options
 will be set as a string object to the `Command#unknown` class property.
 
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
+
 ```ts
-import { Command, GlobalOptions, Options } from '@boost/cli';
+import { Command, GlobalOptions, Config } from '@boost/cli';
+
+@Config('custom', 'Example', { allowUnknownOptions: true })
+export default class CustomCommand extends Command<GlobalOptions> {
+  run() {
+    const { foo, bar } = this.unknown;
+    // ...
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="imp">
+
+```ts
+import { Command, GlobalOptions } from '@boost/cli';
 
 export default class CustomCommand extends Command<GlobalOptions> {
-  static allowUnknownOptions = true;
+  static path: string = 'custom';
+
+  static description: string = 'Example';
+
+  static allowUnknownOptions: boolean = true;
 
   run() {
     const { foo, bar } = this.unknown;
@@ -447,6 +508,9 @@ export default class CustomCommand extends Command<GlobalOptions> {
   }
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 ![Unknown option example](/img/cli/unknown-option.png)
 
@@ -468,13 +532,28 @@ Boost provides the follow options that are always available to all commands.
 arguments. When defining params, all [param settings](./args.mdx#params) are supported, and required
 are mandatory. Param types are passed to the 2nd `Command` generic slot.
 
-When using decorators, the `Arg.Params` decorator must be defined on the `Command#run()` method. It
-accepts an argument for each param you want to configure, in the order they should be expected.
+_Declarative_: When using decorators, the `Arg.Params` decorator must be defined on the
+`Command#run()` method. It accepts an argument for each param you want to configure, in the order
+they should be expected.
+
+_Imperative_: If you prefer to use static properties, all params are defined through the single
+static `params` property, which requires an array of [param settings](./args.mdx#params). For easier
+type safety, the `Params` collection type can be used to type the static property.
+
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
 
 ```ts
 import { Command, Arg, GlobalOptions } from '@boost/cli';
 
-type CustomParams = [string, number];
+type CustomParams = [string, number, boolean];
 
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   @Arg.Params<CustomParams>(
@@ -502,15 +581,13 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 }
 ```
 
-If you prefer to use static properties, all params are defined through the single static `params`
-property, which requires an array of [param settings](./args.mdx#params).
-
-For easier type safety, the `Params` collection type can be used to type the static property.
+  </TabItem>
+  <TabItem value="imp">
 
 ```ts
 import { Command, Params, GlobalOptions } from '@boost/cli';
 
-type CustomParams = [string, number];
+type CustomParams = [string, number, boolean];
 
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
   static params: Params<CustomParams> = [
@@ -539,6 +616,9 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 }
 ```
 
+  </TabItem>
+</Tabs>
+
 ![Params example](/img/cli/params.png)
 
 #### Variadic params
@@ -549,23 +629,59 @@ enabled, all extra params will spread onto the end of the `Command#run()` method
 
 Using the example above, it would look like the following.
 
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
+
+```ts
+import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
+
+type CustomParams = [string, number];
+
+@Config('custom', 'Example', { allowVariadicParams: true })
+export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
+  @Arg.Params<CustomParams>([
+    // ...
+  ])
+  run(name: string, age: number, ...params: string[]) {
+    // ...
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="imp">
+
 ```ts
 import { Command, Params, GlobalOptions } from '@boost/cli';
 
 type CustomParams = [string, number];
 
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
-  static allowVariadicParams = true;
+  static path: string = 'custom';
+
+  static description: string = 'Example';
+
+  static allowVariadicParams: boolean = true;
 
   static params: Params<CustomParams> = [
     // ...
   ];
 
-  run(name: string, age: number, active: boolean, ...params: string[]) {
+  run(name: string, age: number, ...params: string[]) {
     // ...
   }
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 ![Variadic params example](/img/cli/variadic-params.png)
 
@@ -757,7 +873,7 @@ export default async function writeJson(
 Now that are task is created, we can now execute it within a command using `Command#runTask()`. This
 method requires the task as a function reference, and all it's required arguments.
 
-```tsx
+```ts
 import { Command, Config, Arg } from '@boost/cli';
 import writeJson from './tasks/writeJson';
 
@@ -797,10 +913,44 @@ program.categories({
 });
 ```
 
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
+
+```ts
+import { Command, Config } from '@boost/cli';
+
+@Config('custom', 'Example', {
+  categories: {
+    cache: {
+      name: 'Caching',
+      weight: 60,
+    },
+    error: 'Error handling',
+  },
+})
+export default class CustomCommand extends Command {
+  // ...
+}
+```
+
+  </TabItem>
+  <TabItem value="imp">
+
 ```ts
 import { Command, Categories } from '@boost/cli';
 
-class CustomCommand extends Command {
+export default class CustomCommand extends Command {
+  static path: string = 'custom';
+
+  static description: string = 'Example';
+
   static categories: Categories = {
     cache: {
       name: 'Caching',
@@ -808,8 +958,13 @@ class CustomCommand extends Command {
     },
     error: 'Error handling',
   };
+
+  // ...
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 Categories are sorted by weight first, then alphabetical second, so define `weight` when you want
 strict control of the category order. Uncategorized items have a weight of `0`, and the built-in
@@ -818,15 +973,65 @@ globals have a weight of `100`.
 Now that categories have been defined, be sure to set the category on your commands and options
 using the `category` setting! Here's an example using decorators.
 
+<Tabs
+  groupId="command-format"
+  defaultValue="decl"
+  values={[
+    { label: 'Declarative', value: 'decl' },
+    { label: 'Imperative', value: 'imp' },
+  ]}
+>
+  <TabItem value="decl">
+
 ```ts
-import { Command, Config, Arg } from '@boost/cli';
+import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
+
+interface BuildOptions extends GlobalOptions {
+  cache: boolean;
+}
 
 @Config('build', 'Build a project', { category: 'build' })
-export default class BuildCommand extends Command {
+export default class BuildCommand extends Command<BuildOptions> {
   @Arg.Flag('Write output to cache', { category: 'cache' })
   cache: boolean = false;
+
+  // ...
 }
 ```
+
+  </TabItem>
+  <TabItem value="imp">
+
+```ts
+import { Command, Options, GlobalOptions } from '@boost/cli';
+
+interface BuildOptions extends GlobalOptions {
+  cache: boolean;
+}
+
+export default class BuildCommand extends Command<BuildOptions> {
+  static path: string = 'build';
+
+  static description: string = 'Build a project';
+
+  static category: string = 'build';
+
+  static options: Options<BuildOptions> = {
+    cache: {
+      category: 'cache',
+      description: 'Write output to cache',
+      type: 'boolean',
+    },
+  };
+
+  cache: boolean = false;
+
+  // ...
+}
+```
+
+  </TabItem>
+</Tabs>
 
 ## Logging
 
