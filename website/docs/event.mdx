@@ -36,7 +36,7 @@ npm install @boost/event
   </TabItem>
 </Tabs>
 
-## Usage
+## Events
 
 The event system is built around individual `Event` classes that can be instantiated in isolation,
 register and unregister their own listeners, and emit values by executing each listener with
@@ -104,9 +104,9 @@ listener as arguments.
 event.emit(['abc']);
 ```
 
-> The array values and its types should match the [generics defined](#usage) on the constructor.
+> The array values and its types should match the [generics defined](#events) on the constructor.
 
-### Scopes
+## Scopes
 
 Scopes are a mechanism for restricting listeners to a unique subset. Scopes are defined as the 2nd
 argument to `Event#listen()`, `unlisten()`, `once()`, and `emit()`.

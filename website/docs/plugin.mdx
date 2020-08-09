@@ -46,7 +46,7 @@ npm install @boost/plugin
 | `Registry#onBeforeUnregister` | `Plugin`         | Called before a plugin is unregistered and the `shutdown` life-cycle. |
 | `Registry#onLoad`             | `string, object` | Called after a plugin is loaded but before it's registered.           |
 
-## Usage
+## Preface
 
 The plugin system is comprised of 2 parts -- one for projects or libraries that want plugins, and
 the other for plugin authors. [Project owners](#registries) can integrate into the system using a
@@ -57,7 +57,7 @@ project.
 Our system is generic and robust enough to be integrated into any and all projects, with the ability
 to handle multiple plugins in parallel through configuration and setting based approaches.
 
-### Registries
+## Registries
 
 For project authors, we begin by defining a unique plugin type, like "renderer", "engine", "asset",
 or simply "plugin" if you're not looking to be creative. We can accomplish this with the `Registry`
@@ -99,7 +99,7 @@ information on life cycles, continue to the next [plugins](#plugins) chapter.
 - `afterShutdown` (`async (plugin: T) => void`) - Callback fired after a plugin's `shutdown` life
   cycle is executed.
 
-### Plugins
+## Plugins
 
 For both project owners and plugin authors, we keep talking about plugins, but what exactly is a
 plugin? In the context of this system, a plugin is either a plain object, or class instance that
@@ -170,7 +170,7 @@ class Renderer extends Plugin<Tool> implements Renderable<Tool> {
 }
 ```
 
-#### Priority
+### Priority
 
 After a plugin is loaded, the current plugins list is sorted based on priority. Priority is simply a
 number, in ascending order, that determines the order and precedence of plugins. Priority enables
@@ -196,7 +196,7 @@ rendererRegistry.load('boost-renderer-example', {}, { priority: 50 });
 
 > The default priority for all plugins is `100`.
 
-#### Life cycles
+### Life cycles
 
 A life cycle is an optional method on a plugin that is executed at specific points in the life of a
 plugin. Currently, plugins support 2 life cycles, `startup` and `shutdown`. Startup is executed
@@ -238,7 +238,7 @@ class Renderer extends Plugin<Tool> implements Renderable<Tool> {
 }
 ```
 
-### Modules
+## Modules
 
 Typically plugins are represented as an NPM package or file module for easy consumption. This
 pattern is first class in Boost, but there are specific requirements to be followed. The 1st is that
@@ -289,7 +289,7 @@ export default async function (options: RendererOptions): Renderable {
 }
 ```
 
-#### Naming requirements
+### Naming guidelines
 
 You may have noticed in the examples above that we've been referencing both scoped and non-scoped
 package names. All plugin packages follow the format of `<project>-<type>-<name>` for public
@@ -309,43 +309,7 @@ the following package names are valid. _No other formats are supported._
 All name parts should be in kebab-case and abide the official
 [NPM package naming guidelines](https://github.com/npm/validate-npm-package-name).
 
-### Tools
-
-Most projects have a central object or class instance that powers their entire process, for
-instance, Webpack has the `Compiler` and `Compilation` instances. In Boost this is called a tool (as
-in developer or build tool).
-
-Tools are optional, but when defined, they're passed to plugin life cycles, so that plugins may
-interact and integrate with them. For proper type-safety, the Tool type should be passed as a
-generic to `Registry`, `Plugin`, and `Pluggable`.
-
-```ts
-import { Registry, Pluggable, Plugin } from '@boost/plugin';
-import Tool from './Tool';
-
-export interface Renderable<T> extends Pluggable<T> {
-  render(): string | Promise<string>;
-}
-
-class Renderer<T> extends Plugin<T> implements Renderable<T> {}
-
-const registry = new Registry<Renderable, Tool>(/* ... */);
-const renderer = new Renderer<Tool>();
-```
-
-If you have a tool instance, pass the tool as an option to `Registry#load()` and
-`Registry#loadMany()`.
-
-```ts
-import Tool from './Tool';
-
-const tool = new Tool();
-
-await registry.load('foo', {}, { tool });
-await registry.loadMany(['foo', 'bar'], { tool });
-```
-
-### Loading plugins
+## Loading plugins
 
 Plugins are either asynchronously loaded from an NPM package, a relative file system path, or
 explicitly passed using the `Registry` class. The `load()` method can be used to load a single
@@ -408,7 +372,43 @@ of which check based on the plugin's `name` property.
 const renderer = rendererRegistry.get('boost-renderer-foo');
 ```
 
-#### Configuration files
+### Tool instances
+
+Most projects have a central object or class instance that powers their entire process, for
+instance, Webpack has the `Compiler` and `Compilation` instances. In Boost this is called a tool (as
+in developer or build tool).
+
+Tools are optional, but when defined, they're passed to plugin life cycles, so that plugins may
+interact and integrate with them. For proper type-safety, the Tool type should be passed as a
+generic to `Registry`, `Plugin`, and `Pluggable`.
+
+```ts
+import { Registry, Pluggable, Plugin } from '@boost/plugin';
+import Tool from './Tool';
+
+export interface Renderable<T> extends Pluggable<T> {
+  render(): string | Promise<string>;
+}
+
+class Renderer<T> extends Plugin<T> implements Renderable<T> {}
+
+const registry = new Registry<Renderable, Tool>(/* ... */);
+const renderer = new Renderer<Tool>();
+```
+
+If you have a tool instance, pass the tool as an option to `Registry#load()` and
+`Registry#loadMany()`.
+
+```ts
+import Tool from './Tool';
+
+const tool = new Tool();
+
+await registry.load('foo', {}, { tool });
+await registry.loadMany(['foo', 'bar'], { tool });
+```
+
+### Configuration files
 
 The loader methods were built to support plugins defined in [configuration files](./config.mdx), as
 this is a common use case. Take the following examples that showcase JSON and JS based
