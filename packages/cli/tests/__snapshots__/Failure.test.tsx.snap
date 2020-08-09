@@ -2,14 +2,14 @@
 
 exports[`<Failure /> doesnt render code frame if a common error 1`] = `
 "
-[41m[30m ERROR [39m[49m
+[1m[41m[30m ERROR [39m[49m[22m
 
  Something is broken!"
 `;
 
 exports[`<Failure /> doesnt render code frame if arg not found 1`] = `
 "
-[41m[30m ERROR [39m[49m
+[1m[41m[30m ERROR [39m[49m[22m
 
  Flags and short option groups may not use inline values."
 `;
@@ -27,14 +27,14 @@ exports[`<Failure /> reduces command line by half when index appears off screen 
 
 exports[`<Failure /> renders a common error 1`] = `
 "
-[41m[30m ERROR [39m[49m
+[1m[41m[30m ERROR [39m[49m[22m
 
  Something is broken!"
 `;
 
 exports[`<Failure /> renders a parse error 1`] = `
 "
-[41m[30m ERROR [39m[49m
+[1m[41m[30m ERROR [39m[49m[22m
 
  Flags and short option groups may not use inline values."
 `;
@@ -51,7 +51,7 @@ exports[`<Failure /> renders a parse error with a command line 1`] = `
 
 exports[`<Failure /> renders a validation error 1`] = `
 "
-[41m[30m ERROR [39m[49m
+[1m[41m[30m ERROR [39m[49m[22m
 
  Not enough arity arguments."
 `;
