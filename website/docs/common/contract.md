@@ -41,23 +41,7 @@ const adapter = new Adapter({
   name: 'Boost',
 });
 
-// Boost
-const { name } = adapter.options;
-```
-
-To modify the options object after instantiation, the `Contract#configure()` method should be used.
-This method accepts a partial object, or a function that receives the current full options object
-and must return a partial object.
-
-```ts
-adapter.configure({ name: 'Boost' });
-
-adapter.configure((prevOptions) => ({
-  nestedObject: {
-    ...prevOptions.nestedObject,
-    some: 'value',
-  },
-}));
+const { name } = adapter.options; // => Boost
 ```
 
 ## Required options
@@ -79,4 +63,33 @@ export default class Adapter extends Contract<AdapterOptions> {
 
   // ...
 }
+```
+
+## API
+
+### `blueprint`
+
+> Contract#blueprint(predicates: Predicates): Blueprint<T\>
+
+Shape of the options object passed to the constructor or to `Contract#configure()`. Utilizes
+[optimal](https://github.com/milesj/optimal) for strict and thorough validation checks.
+
+### `configure`
+
+> Contract#configure(options?: Partial<T\> | ((options: Required<T\>) => Partial<T\>)):
+> Readonly<Required<T\>\>
+
+Use this method to modify the options object after instantiation. This method accepts a partial
+object, or a function that receives the current full options object and must return a partial
+object.
+
+```ts
+adapter.configure({ name: 'Boost' });
+
+adapter.configure((prevOptions) => ({
+  nestedObject: {
+    ...prevOptions.nestedObject,
+    some: 'value',
+  },
+}));
 ```
