@@ -61,7 +61,7 @@ to handle multiple plugins in parallel through configuration and setting based a
 
 For project authors, we begin by defining a unique plugin type, like "renderer", "engine", "asset",
 or simply "plugin" if you're not looking to be creative. We can accomplish this with the `Registry`
-class, which requires a project name (used as a [package prefix and scope](#naming-requirements)),
+class, which requires a project name (used as a [package prefix and scope](#naming-guidelines)),
 plugin type name, and customizable options.
 
 In our examples moving forward, we will use "renderer" as our plugin type.
@@ -157,7 +157,7 @@ class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
 const renderer = new Renderer({ async: true });
 ```
 
-The 2nd reason is for TypeScript, as we can type our [tool](#tools) that is passed to
+The 2nd reason is for TypeScript, as we can type our [tool](#tool-instances) that is passed to
 [life cycles](#life-cycles) -- more specifically, the `Pluggable` type. More information on the tool
 can be found in later chapters.
 
@@ -203,7 +203,7 @@ plugin. Currently, plugins support 2 life cycles, `startup` and `shutdown`. Star
 after a plugin is loaded and validated, but before it's registered in the registry. Shutdown on the
 otherhand is executed before a plugin is unregistered from the registry.
 
-All life cycles are asynchronouse and receive a [tool](#tools) as its only argument.
+All life cycles are asynchronouse and receive a [tool](#tool-instances) as its only argument.
 
 ```ts
 import Tool from './Tool';

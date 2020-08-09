@@ -91,16 +91,6 @@ value.
 const output = await pipeline.run();
 ```
 
-### Input & output types
-
-The input type is inferred from the 2nd constructor argument, while the output type defaults to the
-input type. If you need to customize either the input or output type manually, the pipeline generics
-can be customized upon instantiation.
-
-```ts
-const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
-```
-
 ## Contexts
 
 A `Context` is merely a plain class that provides contextual information to all work units, and is
@@ -131,6 +121,16 @@ without collisions or mutations occurring.
 
 ```ts
 const newContext = context.clone();
+```
+
+### Input & output types
+
+The input type is inferred from the 2nd constructor argument, while the output type defaults to the
+input type. If you need to customize either the input or output type manually, the pipeline generics
+can be customized upon instantiation.
+
+```ts
+const pipeline = new ConcurrentPipeline<Context, number, string[]>(new Context(), 123);
 ```
 
 ## Work types
