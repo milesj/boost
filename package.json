@@ -13,8 +13,7 @@
     "posttest": "yarn run lint",
     "type": "beemo typescript --reference-workspaces --build --decorators",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run build && yarn test",
-    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git",
-    "setup": "tsc --build"
+    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "engines": {
     "node": ">=10.17.0"
