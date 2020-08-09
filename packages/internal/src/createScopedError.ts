@@ -1,9 +1,9 @@
-import util from 'util';
-
 const internalErrors = {
   INVALID_SCOPE_NAME: 'Error scope must be 3 characters and all uppercase.',
   UNKNOWN_ERROR: 'An unknown error has occurred.',
 };
+
+const TOKEN_PATTERN = /\{(\d+)\}/gu;
 
 export interface Errors {
   [code: string]: string;
@@ -24,7 +24,9 @@ export default function createScopedError<Code extends string = string>(
       return '';
     }
 
-    return `${util.format(messages[code], ...params)} [${scope}:${code}]`;
+    return `${messages[code].replace(TOKEN_PATTERN, (match, index) =>
+      String(params[index]),
+    )} [${scope}:${code}]`;
   }
 
   if (scope.length !== 3 || scope !== scope.toUpperCase()) {

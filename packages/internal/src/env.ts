@@ -1,3 +1,12 @@
+let envVars: { [key: string]: unknown } = {};
+
+if (typeof global.process !== 'undefined') {
+  envVars = process.env;
+} else if (typeof global.window !== 'undefined') {
+  // @ts-expect-error
+  envVars = window;
+}
+
 export default function env<T extends string = string>(
   key: string,
   value?: T | null,
@@ -5,16 +14,16 @@ export default function env<T extends string = string>(
   const name = `BOOSTJS_${key}`;
 
   if (value === null) {
-    delete process.env[name];
+    delete envVars[name];
 
     return undefined;
   }
 
   if (typeof value === 'string') {
-    process.env[name] = value;
+    envVars[name] = value;
 
     return value;
   }
 
-  return process.env[name] as T;
+  return envVars[name] as T;
 }

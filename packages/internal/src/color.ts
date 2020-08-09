@@ -1,15 +1,22 @@
-/* eslint-disable sort-keys */
+/* eslint-disable no-magic-numbers, sort-keys */
 
-import chalk from 'chalk';
+export interface ColorFormatter {
+  (message: string | { toString: () => string }): string;
+}
+
+// https://github.com/chalk/ansi-styles/blob/master/index.js#L75
+function createColor(open: number): ColorFormatter {
+  return (message) => `\u001B[${open}m${String(message)}\u001B[39m`;
+}
 
 export default {
   // States
-  fail: chalk.red,
-  mute: chalk.gray,
-  pass: chalk.green,
+  fail: createColor(31),
+  mute: createColor(90),
+  pass: createColor(32),
   // Types
-  filePath: chalk.cyan,
-  moduleName: chalk.yellow,
-  projectName: chalk.blue,
-  symbol: chalk.magenta,
+  filePath: createColor(36),
+  moduleName: createColor(33),
+  projectName: createColor(34),
+  symbol: createColor(35),
 };
