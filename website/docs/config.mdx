@@ -58,22 +58,25 @@ multiple roles: managing, finding, loading, and processing of files.
 import { Blueprint, Predicates } from '@boost/common';
 import { Configuration } from '@boost/config';
 
+// Example structure
 interface ConfigFile {
   ast?: boolean;
   cwd?: string;
   debug?: boolean;
   exclude?: string[];
   include?: string[];
+  options?: object;
 }
 
 class Manager extends Configuration<ConfigFile> {
-  blueprint({ array, bool, string }: Predicates): Blueprint<ConfigFile> {
+  blueprint({ array, bool, string, object }: Predicates): Blueprint<ConfigFile> {
     return {
       ast: bool(),
       cwd: string(process.cwd()),
       debug: bool(),
       exclude: array(string()),
       include: array(string()),
+      options: object(),
     };
   }
 }
@@ -110,7 +113,7 @@ class Manager extends Configuration<ConfigFile> {
 - `extendsSetting` (`string`) - Name of the setting in which [config extending](#extending-configs)
   is enabled.
 - `extensions` (`ExtType[]`) - List of extensions, in order, to find config files. Defaults to js,
-  json, cjs, mjs, yaml, yml.
+  json, cjs, mjs, ts, yaml, yml.
 - `includeEnv` (`boolean`) - Find and load environment based config files (using `NODE_ENV`).
   Defaults to `true`.
 - `loaders` (`{ [K in LoaderType]: Loader<T> }`) - Mapping of loader functions by type. Defaults to
@@ -141,6 +144,61 @@ class Manager extends Configuration<ConfigFile> {
   `true`.
 
 ### Processing settings
+
+When multiple config files are merged into a single config file, this is known as processing.
+Processing happens automatically for each setting as we need to determine what the next setting
+value would be. By default, the following rules apply when the next and previous setting values are:
+
+- _Arrays_: will be merged and deduped into a new array.
+- _Objects_: will be shallow merged (using spread) into a new object.
+- _Primitives_: next value will overwrite the previous value.
+- _Undefined_: will reset to initial value if `defaultWhenUndefined` is true.
+
+If you would like to customize this process, you can define custom process handlers per setting with
+`Configuration#addProcessHandler()`. This method requires a setting name and handler function (which
+is passed the previous and next values).
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    // Always use forward slashes
+    this.addProcessHandler('cwd', (prev, next) => next.replace(/\\/g, '/'));
+
+    // Deep merge options since they're dynamic
+    this.addProcessHandler('options', (prev, next) => deepMerge(prev, next));
+  }
+}
+```
+
+> Handlers may only be defined on root-level settings.
+
+To make this process even easier, we provide a handful of pre-defined handlers (below) that can be
+used for common scenarios (these handlers power the default rules mentioned above).
+
+- `mergeArray` - Merges previous and next arrays into a new array while removing duplicates (using
+  `Set`).
+- `mergeExtends` - Merges previous and next file paths (either a string or array of strings) into a
+  new list of file paths. This is useful if utilizing [config extending](#extending-configs).
+- `mergeObject` - Shallow merges previous and next objects into a new object using object spread.
+- `mergePlugins` - Merges previous and next plugin configurations into an object. Plugin configs can
+  either be a list of module names, or a map of module names to flags/options. This is useful if
+  utilizing the [plugin package](./plugin.mdx#configuration-files).
+- `overwrite` - Overwrite the previous value with the next value.
+
+```ts
+import { mergePlugins } from '@boost/config';
+
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    // Using example from plugins documentation
+    this.addProcessHandler('renderers', mergePlugins);
+  }
+}
+```
 
 ## Config files
 
