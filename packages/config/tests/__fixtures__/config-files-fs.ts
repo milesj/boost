@@ -33,6 +33,12 @@ export const rootConfigMJS: DirectoryJSON = {
   './package.json': json.stringify({ name: 'test', type: 'module' }),
 };
 
+export const rootConfigTS: DirectoryJSON = {
+  './.config/boost.ts':
+    'const config: { debug: boolean } = { debug: true }; export default config;',
+  './package.json': json.stringify({ name: 'test', type: 'typescript' }),
+};
+
 export const rootConfigYAML: DirectoryJSON = {
   './.config/boost.yaml': yaml.stringify({ debug: true }),
   './package.json': pkg,
@@ -92,6 +98,17 @@ export const configFileTreeMJS: DirectoryJSON = {
   './src/app/index.js': '',
   './src/app/profiles/Detail.ts': '',
   './src/app/profiles/settings/.boost.mjs': exportsDefault({ verbose: true }),
+  './src/setup.ts': '',
+};
+
+export const configFileTreeTS: DirectoryJSON = {
+  ...rootCommon,
+  './src/app/.boost.ts':
+    'const config: { debug: boolean } = { debug: false }; export default config;',
+  './src/app/index.js': '',
+  './src/app/profiles/Detail.vue': '',
+  './src/app/profiles/settings/.boost.ts':
+    'const config: { verbose: boolean } = { verbose: true }; export default config;',
   './src/setup.ts': '',
 };
 

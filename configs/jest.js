@@ -6,7 +6,7 @@ module.exports = {
     'cli/src/Wrapper.tsx',
     // Not supported by Jest/Babel
     'config/src/loaders/mjs.ts',
-    'config/src/loaders/supports/import.ts',
+    'config/src/loaders/supports',
     'decorators/src/helpers/isParam.ts',
   ],
   coverageThreshold: {

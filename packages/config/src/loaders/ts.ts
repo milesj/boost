@@ -3,6 +3,7 @@
 import fs from 'fs';
 import vm from 'vm';
 import { Path } from '@boost/common';
+import { env } from '@boost/internal';
 import supportsBabel from './supports/babel';
 import supportsTypeScript from './supports/typescript';
 import supportsDynamicImport from './supports/import';
@@ -15,7 +16,7 @@ async function transformWithBabel(code: string, path: Path): Promise<string> {
     comments: false,
     filename: path.path(),
     presets: [
-      ['@babel/preset-env', { modules: false, targets: { node: 'current' } }],
+      ['@babel/preset-env', { modules: 'commonjs', targets: { node: 'current' } }],
       '@babel/preset-typescript',
     ],
     rootMode: 'upward-optional',
@@ -29,9 +30,11 @@ function transformWithTypeScript(code: string, path: Path): string {
 
   const result = ts.transpileModule(code, {
     compilerOptions: {
+      allowJs: true,
       allowSyntheticDefaultImports: true,
       esModuleInterop: true,
       module: ts.ModuleKind.CommonJS,
+      noEmit: true,
       resolveJsonModule: true,
       target: ts.ScriptTarget.ES2015,
     },
@@ -42,6 +45,7 @@ function transformWithTypeScript(code: string, path: Path): string {
 }
 
 export default async function loadTs<T>(path: Path): Promise<T> {
+  // istanbul ignore next
   if (!supportsBabel && !supportsTypeScript) {
     throw new Error(
       'Unable to use `ts` loader. Requires either `@babel/core` or `typescript`, but neither dependency found.',
@@ -51,19 +55,19 @@ export default async function loadTs<T>(path: Path): Promise<T> {
   const data = await fs.promises.readFile(path.path(), 'utf8');
   let code = '';
 
-  if (supportsBabel) {
-    code = await transformWithBabel(data, path);
-  } else if (supportsTypeScript) {
+  if (supportsTypeScript && !env('CONFIG_TEST_IGNORE_TYPESCRIPT')) {
     code = await transformWithTypeScript(data, path);
+  } else if (supportsBabel && !env('CONFIG_TEST_IGNORE_BABEL')) {
+    code = await transformWithBabel(data, path);
   }
 
   if (!code) {
     throw new Error(`Failed to transform source code for "${path}".`);
   }
 
-  const context = { module: { exports: {} } };
+  const context = { exports: { default: {} } };
 
   vm.runInNewContext(code, context, path.path());
 
-  return (context.module.exports as unknown) as T;
+  return (context.exports.default as unknown) as T;
 }

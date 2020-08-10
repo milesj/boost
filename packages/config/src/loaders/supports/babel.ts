@@ -1,9 +1,9 @@
-// eslint-disable-next-line import/no-mutable-exports
 let supportsBabel: boolean;
 
 try {
-  // eslint-disable-next-line
   require('@babel/core');
+  require('@babel/preset-env');
+  require('@babel/preset-typescript');
 
   supportsBabel = true;
 } catch {

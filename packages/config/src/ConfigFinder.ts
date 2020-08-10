@@ -326,6 +326,8 @@ export default class ConfigFinder<T extends object> extends Finder<
           // Not easily testable yet
           // istanbul ignore next
           return loaders.mjs(path, pkg);
+        case 'ts':
+          return loaders.ts(path, pkg);
         case 'yaml':
         case 'yml':
           return loaders.yaml(path, pkg);
