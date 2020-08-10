@@ -16,6 +16,7 @@ import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
 import loadJson from './loaders/json';
 import loadMjs from './loaders/mjs';
+import loadTs from './loaders/ts';
 import loadYaml from './loaders/yaml';
 import Finder from './Finder';
 import createFileName from './helpers/createFileName';
@@ -44,6 +45,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         js: func(loadJs).notNullable(),
         json: func(loadJson).notNullable(),
         mjs: func(loadMjs).notNullable(),
+        ts: func(loadTs).notNullable(),
         yaml: func(loadYaml).notNullable(),
         yml: func(loadYaml).notNullable(),
       }).exact(),
