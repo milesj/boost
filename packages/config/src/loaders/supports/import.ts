@@ -1,7 +1,12 @@
-// We keep this in a separate file so that in older node versions, where
-// import() isn't supported, we can try/catch around the require() call
-// when loading this file. Thanks to Babel for the implementation!
+// Node < 13.3 doesn't support import() syntax
+let supportsImport: boolean;
 
-export default function testImport(filepath: string) {
-  return import(filepath);
+try {
+  require('./importTest');
+
+  supportsImport = true;
+} catch {
+  supportsImport = false;
 }
+
+export default supportsImport;

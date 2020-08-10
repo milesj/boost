@@ -6,3 +6,4 @@ types/
 *.tsbuildinfo
 tsconfig.json
 .DS_Store
+.eslintrc

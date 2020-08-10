@@ -1,17 +1,6 @@
 import { pathToFileURL } from 'url';
 import { Path } from '@boost/common';
-
-// Node < 13.3 doesn't support import() syntax
-let supportsImport: boolean;
-
-try {
-  // eslint-disable-next-line
-  require('./supports/import');
-
-  supportsImport = true;
-} catch {
-  supportsImport = false;
-}
+import supportsImport from './supports/import';
 
 export default async function loadMjs<T>(path: Path): Promise<T> {
   if (!supportsImport) {
