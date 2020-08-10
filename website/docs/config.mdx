@@ -160,6 +160,85 @@ class Manager extends Configuration<ConfigFile> {
 
 ## Ignore files
 
+An ignore file is a standard text file that denotes files and folders to ignore
+(filter/exclude/etc), within the current directory, using matching globs and patterns.
+
 ### File patterns
 
+Both root and branch level ignore files use the same file naming scheme. The file is prefixed with a
+leading dot (`.`), followed by the name passed to your `Configuration` instance (in camel case), and
+suffixed with `ignore`.
+
+| Root            | Branch          |
+| --------------- | --------------- |
+| `.<name>ignore` | `.<name>ignore` |
+
+> The root ignore file is not located within the `.config` folder as ignore paths/patterns/globs
+> must be relative to the current directory.
+
 ### Loading ignore files
+
+Ignore files can be found and loaded with either the `Configuration#loadIgnoreFromRoot()` or
+`Configuration#loadIgnoreFromBranchToRoot()` methods -- both of which return a list of ignore
+metadata. To demonstrate this, let's assume the following file system.
+
+```
+root/
+├── modules/
+│   ├── features/
+│   │   ├── index.ts
+│   │   └── .boostignore
+│   ├── foo.ts
+│   ├── bar.ts
+│   └── baz.ts
+└── .boostignore
+```
+
+```bash title="root/modules/features/.boostignore"
+build/
+```
+
+```bash title="root/.boostignore"
+*.log
+*.lock
+```
+
+The `Configuration#loadIgnoreFromRoot()` will load the ignore file found in the root folder
+(typically 1 file). If no root path is provided, it defaults to `process.cwd()`.
+
+```ts
+const list = manager.loadIgnoreFromRoot('/root');
+
+/*
+[
+  {
+    ignore: ['*.log', '*.lock'],
+    path: new Path('/root'),
+    source: 'root',
+  },
+]
+*/
+```
+
+The `loadIgnoreFromBranchToRoot()` method will load an ignore file from each folder while traversing
+upwards from the branch folder to the root folder. The found list is returned in reverse order so
+that the deepest branch can be used to overwrite the previous branch (or root).
+
+```ts
+const list = manager.loadIgnoreFromBranchToRoot('/root/modules/features');
+
+/*
+[
+  {
+    ignore: ['*.log', '*.lock'],
+    path: new Path('/root'),
+    source: 'root',
+  },
+  {
+    ignore: ['build/'],
+    path: new Path('/root/modules/features'),
+    source: 'branch',
+  },
+]
+*/
+```
