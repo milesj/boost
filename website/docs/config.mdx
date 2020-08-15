@@ -279,6 +279,8 @@ export default {
   <TabItem value="ts">
 
 ```ts
+import type { ConfigFile } from './types';
+
 const config: ConfigFile = {
   ast: false,
   debug: true,
@@ -348,19 +350,11 @@ TODO
 
 ### Extending configs
 
-TODO
-
-#### Presets
-
-TODO
-
-### Overrides
-
-Config overrides enable consumers of your project to define granular settings based on file path
-matching; settings defined in this fashion would override their base settings. With that being said,
-overrides are _not_ enabled by default and must be configured for use. To enable config overrides,
-define the [`overridesSetting`](#finder-options) option with the name of a setting in which
-overrides would be configured.
+Config extending enables consumers of your project to extend and merge with external config files
+using file system paths or [Node.js modules](#presets), with the current config file taking
+precedence. With that being said, extending is _not_ enabled by default and must be configured for
+use. To enable, define the [`extendsSetting`](#finder-options) option with the name of a setting in
+which extending would be configured.
 
 ```ts
 class Manager extends Configuration<ConfigFile> {
@@ -368,7 +362,54 @@ class Manager extends Configuration<ConfigFile> {
 
   bootstrap() {
     this.configureFinder({
-      overridesSetting: 'overrides',
+      extendsSetting: 'extend',
+    });
+  }
+}
+```
+
+Consumers may now extend external config files by defining a string or an array of strings for
+`extend` (name derived from the example above).
+
+```ts
+export default {
+  extend: ['./some/relative/path.js', 'npm-module'],
+  debug: false,
+};
+```
+
+> File paths are relative to the file it's configured in.
+
+#### Presets
+
+To extend from a Node.js module, we must use a preset. A preset is a
+[JavaScript config file](#file-formats) located in the module root, named in the format of
+`<name>.preset.js`.
+
+```ts title="npm-module/boost.preset.js"
+module.exports = {
+  exclude: ['**/node_modules'],
+};
+```
+
+> Since the preset is JavaScript, it can be written in either CommonJS or ECMAScript format,
+> assuming the `type` field has been set in `package.json`.
+
+### Overrides
+
+Config overrides enables consumers of your project to define granular settings based on file path
+matching; settings defined in this fashion would override their base settings. With that being said,
+overrides are _not_ enabled by default and must be configured for use. To enable, define the
+[`overridesSetting`](#finder-options) option with the name of a setting in which overrides would be
+configured.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureFinder({
+      overridesSetting: 'override',
     });
   }
 }
@@ -377,9 +418,8 @@ class Manager extends Configuration<ConfigFile> {
 > Overrides are extracted _before_ configurations are processed, so a process handler is not
 > required.
 
-Consumers may now define overrides in their config file by passing a list of items to the
-`overrides` setting (name derived from the example above). Each item must abide the following
-structure:
+Consumers may now define overrides in their config file by passing a list of items to the `override`
+setting (name derived from the example above). Each item must abide the following structure:
 
 - `settings` (`Partial<T>`) - Settings configured for this specific override. _(Required)_
 - `include` (`string | string[]`) - File path patterns/globs to match against. _(Required)_
@@ -388,7 +428,7 @@ structure:
 ```ts
 export default {
   debug: false,
-  overrides: [
+  override: [
     {
       include: '*.test.ts',
       settings: {
