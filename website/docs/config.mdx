@@ -111,7 +111,7 @@ class Manager extends Configuration<ConfigFile> {
 }
 ```
 
-- `extendsSetting` (`string`) - Name of the setting in which [config extending](#extending-configs)
+- `extendsSetting` (`string`) - Name of the setting in which [config extending](#enable-extending)
   is enabled.
 - `extensions` (`ExtType[]`) - List of extensions, in order, to find config files within each
   folder. Defaults to [file format list](#file-formats).
@@ -119,8 +119,8 @@ class Manager extends Configuration<ConfigFile> {
   Defaults to `true`.
 - `loaders` (`{ [K in LoaderType]: Loader<T> }`) - Mapping of loader functions by type. Defaults to
   normal file type loaders.
-- `overridesSetting` (`string`) - Name of the setting in which [config overriding](#overrides) is
-  enabled.
+- `overridesSetting` (`string`) - Name of the setting in which
+  [config overriding](#enable-overrides) is enabled.
 
 ### Processor options
 
@@ -181,7 +181,7 @@ used for common scenarios (these handlers power the default rules mentioned abov
 - `mergeArray` - Merges previous and next arrays into a new array while removing duplicates (using
   `Set`).
 - `mergeExtends` - Merges previous and next file paths (either a string or array of strings) into a
-  new list of file paths. This is useful if utilizing [config extending](#extending-configs).
+  new list of file paths. This is useful if utilizing [config extending](#enable-extending).
 - `mergeObject` - Shallow merges previous and next objects into a new object using object spread.
 - `mergePlugins` - Merges previous and next plugin configurations into an object. Plugin configs can
   either be a list of module names, or a map of module names to flags/options. This is useful if
@@ -332,23 +332,136 @@ object that abides this structure.
 - `config` (`Required<T>`) - All found and loaded config file contents merged and processed into a
   single config object.
 - `files` - List of config files found and loaded.
-  - `config` (`Partial<T>`) - Config content of the flle.
+  - `config` (`Partial<T>`) - Config content of the file.
   - `path` (`Path`) - Absolute path of the file.
   - `source` (`root | branch | overridden | extended`) - The type of file.
 
 #### Lookup resolution
 
-TODO
+When the finder traverses through the file system and attempts to resolve config files within
+each/target folder, it does so using the lookup algorithm demonstrated below. Let's assume the
+following:
+
+- The config file name is `boost`.
+- All file formats are supported, in their default lookup order (js, json, cjs, mjs, ts, yaml, yml).
+- The current environment is `development` (the value of `NODE_ENV`).
+
+```
+boost.js
+boost.development.js
+boost.json
+boost.development.json
+boost.cjs
+boost.development.cjs
+boost.mjs
+boost.development.mjs
+boost.ts
+boost.development.ts
+boost.yaml
+boost.development.yaml
+boost.yml
+boost.development.yml
+```
+
+For each file format, we attempt to find the base config file, and an environment config file (if
+[`includeEnv`](#finder-options) is true). This allows for higher precendence config per environment.
+Once a file is found, the lookup process is aborted, and the confg is returned.
+
+> Only 1 file format will be used per folder. Multiple file formats is not supported.
 
 #### From root
 
-TODO
+The `Configuration#loadConfigFromRoot()` will load the config file found in the root `.config`
+folder (typically 1 file). If no root path is provided, it defaults to process.cwd().
+
+```json title="root/.config/boost.json"
+{
+  "debug": true
+}
+```
+
+```ts
+const { config } = await manager.loadConfigFromRoot('/root');
+
+/*
+{
+  config: { debug: true },
+  files: [
+    {
+      config: { debug: true },
+      path: new Path('/root/.config/boost.json'),
+      source: 'root',
+    },
+  ],
+}
+*/
+```
+
+> Why are root config files located within a `.config` folder? In an effort to reduce the root
+> config and dotfile churn that many projects suffer from, we're trying to push forward an idiomatic
+> standard that we hope many others will follow.
 
 #### From branch
 
-TODO
+The `Configuration#loadConfigFromBranchToRoot()` method will load a config file from each folder
+while traversing upwards from the branch folder to the root folder. The found list is returned in
+reverse order so that the deepest branch can be used to overwrite the previous branch (or root).
 
-### Extending configs
+```js title="root/modules/features/.boost.mjs"
+export default {
+  ast: true,
+};
+```
+
+```yaml title="root/modules/.boost.yaml"
+options:
+  experimental: true
+```
+
+```json title="root/.config/boost.json"
+{
+  "debug": true
+}
+```
+
+```ts
+const { config } = await manager.loadConfigFromBranchToRoot('/root/modules/features');
+
+/*
+{
+  config: {
+    ast: true,
+    debug: true,
+    options: {
+      experimental: true,
+    },
+  },
+  files: [
+    {
+      config: { debug: true },
+      path: new Path('/root/.config/boost.json'),
+      source: 'root',
+    },
+    {
+      config: {
+        options: {
+          experimental: true,
+        },
+      },
+      path: new Path('/root/modules/.boost.yaml'),
+      source: 'branch',
+    },
+    {
+      config: { ast: true },
+      path: new Path('/root/modules/features/.boost.mjs'),
+      source: 'branch',
+    },
+  ],
+}
+*/
+```
+
+### Enable extending
 
 Config extending enables consumers of your project to extend and merge with external config files
 using file system paths or [Node.js modules](#presets), with the current config file taking
@@ -395,7 +508,7 @@ module.exports = {
 > Since the preset is JavaScript, it can be written in either CommonJS or ECMAScript format,
 > assuming the `type` field has been set in `package.json`.
 
-### Overrides
+### Enable overrides
 
 Config overrides enables consumers of your project to define granular settings based on file path
 matching; settings defined in this fashion would override their base settings. With that being said,
@@ -502,7 +615,7 @@ const list = await manager.loadIgnoreFromRoot('/root');
 [
   {
     ignore: ['*.log', '*.lock'],
-    path: new Path('/root'),
+    path: new Path('/root/.boostignore'),
     source: 'root',
   },
 ]
@@ -511,9 +624,9 @@ const list = await manager.loadIgnoreFromRoot('/root');
 
 #### From branch
 
-The `loadIgnoreFromBranchToRoot()` method will load an ignore file from each folder while traversing
-upwards from the branch folder to the root folder. The found list is returned in reverse order so
-that the deepest branch can be used to overwrite the previous branch (or root).
+The `Configuration#loadIgnoreFromBranchToRoot()` method will load an ignore file from each folder
+while traversing upwards from the branch folder to the root folder. The found list is returned in
+reverse order so that the deepest branch can be used to overwrite the previous branch (or root).
 
 ```ts
 const list = await manager.loadIgnoreFromBranchToRoot('/root/modules/features');
@@ -527,7 +640,7 @@ const list = await manager.loadIgnoreFromBranchToRoot('/root/modules/features');
   },
   {
     ignore: ['build/'],
-    path: new Path('/root/modules/features'),
+    path: new Path('/root/modules/features/.boostignore'),
     source: 'branch',
   },
 ]
