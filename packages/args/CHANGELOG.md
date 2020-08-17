@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.1.0 - 2020-08-17
+
+#### 🚀 Updates
+
+- Build packages with Rollup to support web and node targets. ([38cdad9](https://github.com/milesj/boost/commit/38cdad9))
+- **[web]** Rework errors to not rely on Node.js utils. ([7752e7f](https://github.com/milesj/boost/commit/7752e7f))
+
+#### 📘 Docs
+
+- Migrate to Docusaurus. (#105) ([24196b8](https://github.com/milesj/boost/commit/24196b8)), closes [#105](https://github.com/milesj/boost/issues/105)
+
+#### 📦 Dependencies
+
+- Update root dependencies. ([9c3203a](https://github.com/milesj/boost/commit/9c3203a))
+
+**Note:** Version bump only for package @boost/args
+
+
+
+
+
 # 2.0.0 - 2020-07-14
 
 #### 💥 Breaking

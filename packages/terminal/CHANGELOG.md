@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.1.0 - 2020-08-17
+
+#### 🚀 Updates
+
+- Build packages with Rollup to support web and node targets. ([38cdad9](https://github.com/milesj/boost/commit/38cdad9))
+
+#### 📘 Docs
+
+- Migrate to Docusaurus. (#105) ([24196b8](https://github.com/milesj/boost/commit/24196b8)), closes [#105](https://github.com/milesj/boost/issues/105)
+
+**Note:** Version bump only for package @boost/terminal
+
+
+
+
+
 # 2.0.0 - 2020-07-14
 
 #### 💥 Breaking
