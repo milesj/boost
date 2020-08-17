@@ -343,7 +343,8 @@ each/target folder, it does so using the lookup algorithm demonstrated below. Le
 following:
 
 - The config file name is `boost`.
-- All file formats are supported, in their default lookup order (js, json, cjs, mjs, ts, yaml, yml).
+- All file formats are supported, in their default lookup order (js, json, cjs, mjs, ts, json5,
+  yaml, yml).
 - The current environment is `development` (the value of `NODE_ENV`).
 
 ```
@@ -357,6 +358,8 @@ boost.mjs
 boost.development.mjs
 boost.ts
 boost.development.ts
+boost.json5
+boost.development.json5
 boost.yaml
 boost.development.yaml
 boost.yml

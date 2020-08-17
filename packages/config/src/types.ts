@@ -1,6 +1,6 @@
 import { Path, PackageStructure, ModuleName } from '@boost/common';
 
-export type ExtType = 'js' | 'cjs' | 'mjs' | 'json' | 'ts' | 'yaml' | 'yml';
+export type ExtType = 'js' | 'cjs' | 'mjs' | 'json' | 'json5' | 'ts' | 'yaml' | 'yml';
 
 export type LoaderType = Exclude<ExtType, 'yml'>;
 
