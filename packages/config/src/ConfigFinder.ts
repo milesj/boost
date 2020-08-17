@@ -135,6 +135,9 @@ export default class ConfigFinder<T extends object> extends Finder<
         'No files',
       );
 
+      // Make sure env takes higher precedence
+      paths.sort((a, b) => a.path().length - b.path().length);
+
       return paths;
     });
   }

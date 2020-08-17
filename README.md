@@ -29,7 +29,8 @@ applications, packages, and tooling.
 ## Requirements
 
 - Linux, OSX, Windows
-- Node 10.17+
+- Node 10.17+ (for backend and tooling)
+- IE 11+ (for frontend)
 
 ## Documentation
 

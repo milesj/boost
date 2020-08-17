@@ -21,6 +21,7 @@ module.exports = {
             'common/project',
           ],
         },
+        'config',
         'crash',
         'debug',
         'decorators',

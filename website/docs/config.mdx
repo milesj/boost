@@ -8,7 +8,8 @@ import TabItem from '@theme/TabItem';
 
 <EnvBadges backend tooling />
 
-Powerful finder, loader, and manager of both project configuration and ignore files.
+Powerful convention based finder, loader, and manager of both configuration and ignore files. Will
+find config files of multiple supported formats while traversing up the tree.
 
 ## Installation
 
@@ -36,6 +37,614 @@ npm install @boost/config
   </TabItem>
 </Tabs>
 
-## Usage
+## Events
 
-Coming soon...
+| Event                             | Arguments         | Description                                                                                        |
+| --------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------- |
+| `Configuration#onLoadedConfig`    | `ConfigFile<T>[]` | Waterfall: Called after config files are loaded but before processed. Can modify config file list. |
+| `Configuration#onLoadedIgnore`    | `IgnoreFile[]`    | Waterfall: Called after ignore files are loaded. Can modify ignore file list.                      |
+| `Configuration#onProcessedConfig` | `T`               | Called after config files are loaded and processed.                                                |
+
+## Setup
+
+Configuration in the context of this package encompasses 2 concepts: config files and ignore files.
+Config files are a collection of settings (key-value pairs), while ignore files are a list of file
+path patterns and globs.
+
+To utilize this functionality, we must extend the `Configuration` class, and define a blueprint for
+the structure of our config file (using [optimal](./common/contract.md)). This class will fulfill
+multiple roles: managing, finding, loading, and processing of files.
+
+```ts
+import { Blueprint, Predicates } from '@boost/common';
+import { Configuration } from '@boost/config';
+
+// Example structure
+interface ConfigFile {
+  ast?: boolean;
+  cwd?: string;
+  debug?: boolean;
+  exclude?: string[];
+  include?: string[];
+  options?: object;
+}
+
+class Manager extends Configuration<ConfigFile> {
+  blueprint({ array, bool, string, object }: Predicates): Blueprint<ConfigFile> {
+    return {
+      ast: bool(),
+      cwd: string(process.cwd()),
+      debug: bool(),
+      exclude: array(string()),
+      include: array(string()),
+      options: object(),
+    };
+  }
+}
+```
+
+This class layer is designed to be "internal only", and should not be utilized by consumers
+directly. Instead, consumers should interact with an instance of the class, like so.
+
+```ts
+export default new Manager('boost');
+```
+
+> The string value passed to the constructor is the name of the config and ignore files, in camel
+> case format. For example, `boost.js` and `.boostignore`.
+
+### Finder options
+
+To customize the config file finding and loading layer, call `Configuration#configureFinder()`
+within `bootstrap()`.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureFinder({
+      extendsSetting: 'extends',
+      includeEnv: false,
+    });
+  }
+}
+```
+
+- `extendsSetting` (`string`) - Name of the setting in which [config extending](#enable-extending)
+  is enabled.
+- `extensions` (`ExtType[]`) - List of extensions, in order, to find config files within each
+  folder. Defaults to [file format list](#file-formats).
+- `includeEnv` (`boolean`) - Find and load environment based config files (using `NODE_ENV`).
+  Defaults to `true`.
+- `loaders` (`{ [K in LoaderType]: Loader<T> }`) - Mapping of loader functions by type. Defaults to
+  normal file type loaders.
+- `overridesSetting` (`string`) - Name of the setting in which
+  [config overriding](#enable-overrides) is enabled.
+
+### Processor options
+
+To customize the config processing layer, call `Configuration#configureProcessor()` while within
+`bootstrap()`.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureProcessor({
+      defaultWhenUndefined: false,
+    });
+  }
+}
+```
+
+- `defaultWhenUndefined` (`boolean`) - When a setting has a value of `undefined`, fallback to the
+  default/initial value for that setting. Defaults to `true`.
+- `validate` (`boolean`) - Validate all settings within a config file before processing. Defaults to
+  `true`.
+
+### Processing settings
+
+When multiple config files are merged into a single config file, this is known as processing.
+Processing happens automatically for each setting as we need to determine what the next setting
+value would be. By default, the following rules apply when the next and previous setting values are:
+
+- _Arrays_: will be merged and deduped into a new array.
+- _Objects_: will be shallow merged (using spread) into a new object.
+- _Primitives_: next value will overwrite the previous value.
+- _Undefined_: will reset to initial value if `defaultWhenUndefined` is true.
+
+If you would like to customize this process, you can define custom process handlers per setting with
+`Configuration#addProcessHandler()`. This method requires a setting name and handler function (which
+is passed the previous and next values).
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    // Always use forward slashes
+    this.addProcessHandler('cwd', (prev, next) => next.replace(/\\/g, '/'));
+
+    // Deep merge options since they're dynamic
+    this.addProcessHandler('options', (prev, next) => deepMerge(prev, next));
+  }
+}
+```
+
+> Handlers may only be defined on root-level settings.
+
+To make this process even easier, we provide a handful of pre-defined handlers (below) that can be
+used for common scenarios (these handlers power the default rules mentioned above).
+
+- `mergeArray` - Merges previous and next arrays into a new array while removing duplicates (using
+  `Set`).
+- `mergeExtends` - Merges previous and next file paths (either a string or array of strings) into a
+  new list of file paths. This is useful if utilizing [config extending](#enable-extending).
+- `mergeObject` - Shallow merges previous and next objects into a new object using object spread.
+- `mergePlugins` - Merges previous and next plugin configurations into an object. Plugin configs can
+  either be a list of module names, or a map of module names to flags/options. This is useful if
+  utilizing the [plugin package](./plugin.mdx#configuration-files).
+- `overwrite` - Overwrite the previous value with the next value.
+
+```ts
+import { mergePlugins } from '@boost/config';
+
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    // Using example from @boost/plugin documentation
+    this.addProcessHandler('renderers', mergePlugins);
+  }
+}
+```
+
+## Config files
+
+A config file is a file that explicitly defines settings (key-value pairs) according to a defined
+structure.
+
+### File patterns
+
+Config files are grouped into either the root or branch category. Root config files are located in a
+`.config` folder in the root of a project (denoted by the current working directory). Branch config
+files are located within folders (at any depth) below the root, and are prefixed with a leading dot
+(`.`).
+
+| Root                         | Branch                |
+| ---------------------------- | --------------------- |
+| `.config/<name>.<ext>`       | `.<name>.<ext>`       |
+| `.config/<name>.<env>.<ext>` | `.<name>.<env>.<ext>` |
+
+- `<name>` - Name passed to your `Configuration` instance (in camel case).
+- `<env>` - Current environment derived from `NODE_ENV`.
+- `<ext>` - File extension supported by the defined [loaders and extensions](#finder-options).
+
+### File formats
+
+Config files can be written in the formats below, and are listed in the order in which they're
+resolved (can customize with the [`extensions`](#finder-options) option).
+
+- `.js` - JavaScript. Will load with [CommonJS or ECMAScript modules][esm] depending on the
+  `package.json` `type` field. Defaults to CommonJS if not defined.
+- `.json`, `.json5` - JSON. Supports [JSON5](https://json5.org/) for both extensions.
+- `.cjs` - JavaScript using [CommonJS][esm] (`require()`). _Supported by all Node.js versions._
+- `.mjs` - JavaScript using [ECMAScript modules][esm] (`import`/`export`). _Requires Node.js
+  v13.3+._
+- `.ts` - TypeScript. Will evaluate with either the `typescript` or `@babel/core` modules.
+- `.yaml`, `.yml` - YAML. _Does not support multi-document._
+
+Based on the file structure in the [Setup](#setup) section above, the config files can be
+demonstrated as followed (excluding standard JavaScript since it's either CJS or ESM).
+
+<Tabs
+  groupId="file-format"
+  defaultValue="cjs"
+  values={[
+    { label: 'JavaScript (CJS)', value: 'cjs' },
+    { label: 'JavaScript (ESM)', value: 'mjs' },
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'JSON', value: 'json' },
+    { label: 'YAML', value: 'yaml' },
+  ]}
+>
+  <TabItem value="cjs">
+
+```js
+module.exports = {
+  ast: false,
+  debug: true,
+  exclude: ['**/node_modules/**'],
+  include: ['src/**', 'tests/**'],
+  options: { experimental: true },
+};
+```
+
+  </TabItem>
+  <TabItem value="mjs">
+
+```js
+export default {
+  ast: false,
+  debug: true,
+  exclude: ['**/node_modules/**'],
+  include: ['src/**', 'tests/**'],
+  options: { experimental: true },
+};
+```
+
+  </TabItem>
+  <TabItem value="ts">
+
+```ts
+import type { ConfigFile } from './types';
+
+const config: ConfigFile = {
+  ast: false,
+  debug: true,
+  exclude: ['**/node_modules/**'],
+  include: ['src/**', 'tests/**'],
+  options: { experimental: true },
+};
+
+export default config;
+```
+
+  </TabItem>
+  <TabItem value="json">
+
+```json
+{
+  "ast": false,
+  "debug": true,
+  "exclude": ["**/node_modules/**"],
+  "include": ["src/**", "tests/**"],
+  "options": { "experimental": true }
+}
+```
+
+  </TabItem>
+  <TabItem value="yaml">
+
+```yaml
+ast: false
+debug: true
+exclude:
+  - '**/node_modules/**'
+include:
+  - 'src/**'
+  - 'tests/**'
+options:
+  experimental: true
+```
+
+  </TabItem>
+</Tabs>
+
+### Loading config files
+
+Config files can be found and loaded with either the `Configuration#loadConfigFromRoot()` or
+`Configuration#loadConfigFromBranchToRoot()` methods -- both of which return a processed config
+object that abides this structure.
+
+- `config` (`Required<T>`) - All found and loaded config file contents merged and processed into a
+  single config object.
+- `files` - List of config files found and loaded.
+  - `config` (`Partial<T>`) - Config content of the file.
+  - `path` (`Path`) - Absolute path of the file.
+  - `source` (`root | branch | overridden | extended`) - The type of file.
+
+#### Lookup resolution
+
+When the finder traverses through the file system and attempts to resolve config files within
+each/target folder, it does so using the lookup algorithm demonstrated below. Let's assume the
+following:
+
+- The config file name is `boost`.
+- All file formats are supported, in their default lookup order (js, json, cjs, mjs, ts, yaml, yml).
+- The current environment is `development` (the value of `NODE_ENV`).
+
+```
+boost.js
+boost.development.js
+boost.json
+boost.development.json
+boost.cjs
+boost.development.cjs
+boost.mjs
+boost.development.mjs
+boost.ts
+boost.development.ts
+boost.yaml
+boost.development.yaml
+boost.yml
+boost.development.yml
+```
+
+For each file format, we attempt to find the base config file, and an environment config file (if
+[`includeEnv`](#finder-options) is true). This allows for higher precendence config per environment.
+Once a file is found, the lookup process is aborted, and the confg is returned.
+
+> Only 1 file format will be used per folder. Multiple file formats is not supported.
+
+#### From root
+
+The `Configuration#loadConfigFromRoot()` will load the config file found in the root `.config`
+folder (typically 1 file). If no root path is provided, it defaults to process.cwd().
+
+```json title="root/.config/boost.json"
+{
+  "debug": true
+}
+```
+
+```ts
+const { config } = await manager.loadConfigFromRoot('/root');
+
+/*
+{
+  config: { debug: true },
+  files: [
+    {
+      config: { debug: true },
+      path: new Path('/root/.config/boost.json'),
+      source: 'root',
+    },
+  ],
+}
+*/
+```
+
+> Why are root config files located within a `.config` folder? In an effort to reduce the root
+> config and dotfile churn that many projects suffer from, we're trying to push forward an idiomatic
+> standard that we hope many others will follow.
+
+#### From branch
+
+The `Configuration#loadConfigFromBranchToRoot()` method will load a config file from each folder
+while traversing upwards from the branch folder to the root folder. The found list is returned in
+reverse order so that the deepest branch can be used to overwrite the previous branch (or root).
+
+```js title="root/modules/features/.boost.mjs"
+export default {
+  ast: true,
+};
+```
+
+```yaml title="root/modules/.boost.yaml"
+options:
+  experimental: true
+```
+
+```json title="root/.config/boost.json"
+{
+  "debug": true
+}
+```
+
+```ts
+const { config } = await manager.loadConfigFromBranchToRoot('/root/modules/features');
+
+/*
+{
+  config: {
+    ast: true,
+    debug: true,
+    options: {
+      experimental: true,
+    },
+  },
+  files: [
+    {
+      config: { debug: true },
+      path: new Path('/root/.config/boost.json'),
+      source: 'root',
+    },
+    {
+      config: {
+        options: {
+          experimental: true,
+        },
+      },
+      path: new Path('/root/modules/.boost.yaml'),
+      source: 'branch',
+    },
+    {
+      config: { ast: true },
+      path: new Path('/root/modules/features/.boost.mjs'),
+      source: 'branch',
+    },
+  ],
+}
+*/
+```
+
+### Enable extending
+
+Config extending enables consumers of your project to extend and merge with external config files
+using file system paths or [Node.js modules](#presets), with the current config file taking
+precedence. With that being said, extending is _not_ enabled by default and must be configured for
+use. To enable, define the [`extendsSetting`](#finder-options) option with the name of a setting in
+which extending would be configured.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureFinder({
+      extendsSetting: 'extend',
+    });
+  }
+}
+```
+
+Consumers may now extend external config files by defining a string or an array of strings for
+`extend` (name derived from the example above).
+
+```ts
+export default {
+  extend: ['./some/relative/path.js', 'npm-module'],
+  debug: false,
+};
+```
+
+> File paths are relative to the file it's configured in.
+
+#### Presets
+
+To extend from a Node.js module, we must use a preset. A preset is a
+[JavaScript config file](#file-formats) located in the module root, named in the format of
+`<name>.preset.js`.
+
+```ts title="npm-module/boost.preset.js"
+module.exports = {
+  exclude: ['**/node_modules'],
+};
+```
+
+> Since the preset is JavaScript, it can be written in either CommonJS or ECMAScript format,
+> assuming the `type` field has been set in `package.json`.
+
+### Enable overrides
+
+Config overrides enables consumers of your project to define granular settings based on file path
+matching; settings defined in this fashion would override their base settings. With that being said,
+overrides are _not_ enabled by default and must be configured for use. To enable, define the
+[`overridesSetting`](#finder-options) option with the name of a setting in which overrides would be
+configured.
+
+```ts
+class Manager extends Configuration<ConfigFile> {
+  // ...
+
+  bootstrap() {
+    this.configureFinder({
+      overridesSetting: 'override',
+    });
+  }
+}
+```
+
+> Overrides are extracted _before_ configurations are processed, so a process handler is not
+> required.
+
+Consumers may now define overrides in their config file by passing a list of items to the `override`
+setting (name derived from the example above). Each item must abide the following structure:
+
+- `settings` (`Partial<T>`) - Settings configured for this specific override. _(Required)_
+- `include` (`string | string[]`) - File path patterns/globs to match against. _(Required)_
+- `exclude` (`string | string[]`) - File path patterns/globs to ignore.
+
+```ts
+export default {
+  debug: false,
+  override: [
+    {
+      include: '*.test.ts',
+      settings: {
+        debug: true,
+      },
+    },
+  ],
+};
+```
+
+## Ignore files
+
+An ignore file is a standard text file that denotes files and folders to ignore
+(filter/exclude/etc), within the current directory, using matching globs and patterns.
+
+### File patterns
+
+Both root and branch level ignore files use the same file naming scheme. The file is prefixed with a
+leading dot (`.`), followed by the name passed to your `Configuration` instance (in camel case), and
+suffixed with `ignore`.
+
+| Root            | Branch          |
+| --------------- | --------------- |
+| `.<name>ignore` | `.<name>ignore` |
+
+> The root ignore file is not located within the `.config` folder as ignore paths/patterns/globs
+> must be relative to the current directory.
+
+### Loading ignore files
+
+Ignore files can be found and loaded with either the `Configuration#loadIgnoreFromRoot()` or
+`Configuration#loadIgnoreFromBranchToRoot()` methods -- both of which return a list of ignore
+metadata that abides this structure.
+
+- `ignore` (`string[]`) - List of all ignore patterns within the file (split on `\n`).
+- `path` (`Path`) - Absolute path of the file.
+- `source` (`root | branch`) - Whether the file is a root or branch file.
+
+To demonstrate this, let's assume the following file system.
+
+```
+root/
+├── modules/
+│   ├── features/
+│   │   ├── index.ts
+│   │   └── .boostignore
+│   ├── foo.ts
+│   ├── bar.ts
+│   └── baz.ts
+└── .boostignore
+```
+
+```bash title="root/modules/features/.boostignore"
+build/
+```
+
+```bash title="root/.boostignore"
+*.log
+*.lock
+```
+
+#### From root
+
+The `Configuration#loadIgnoreFromRoot()` will load the ignore file found in the root folder
+(typically 1 file). If no root path is provided, it defaults to `process.cwd()`.
+
+```ts
+const list = await manager.loadIgnoreFromRoot('/root');
+
+/*
+[
+  {
+    ignore: ['*.log', '*.lock'],
+    path: new Path('/root/.boostignore'),
+    source: 'root',
+  },
+]
+*/
+```
+
+#### From branch
+
+The `Configuration#loadIgnoreFromBranchToRoot()` method will load an ignore file from each folder
+while traversing upwards from the branch folder to the root folder. The found list is returned in
+reverse order so that the deepest branch can be used to overwrite the previous branch (or root).
+
+```ts
+const list = await manager.loadIgnoreFromBranchToRoot('/root/modules/features');
+
+/*
+[
+  {
+    ignore: ['*.log', '*.lock'],
+    path: new Path('/root'),
+    source: 'root',
+  },
+  {
+    ignore: ['build/'],
+    path: new Path('/root/modules/features/.boostignore'),
+    source: 'branch',
+  },
+]
+*/
+```
+
+[esm]: https://nodejs.org/api/esm.html#esm_enabling
