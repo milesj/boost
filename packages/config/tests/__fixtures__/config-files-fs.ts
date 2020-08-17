@@ -23,6 +23,11 @@ export const rootConfigJSON: DirectoryJSON = {
   './package.json': pkg,
 };
 
+export const rootConfigJSON5: DirectoryJSON = {
+  './.config/boost.json5': json.stringify({ debug: true }),
+  './package.json': pkg,
+};
+
 export const rootConfigCJS: DirectoryJSON = {
   './.config/boost.cjs': moduleExports({ debug: true }),
   './package.json': json.stringify({ name: 'test', type: 'commonjs' }),
@@ -78,6 +83,15 @@ export const configFileTreeJSON: DirectoryJSON = {
   './src/app/index.js': '',
   './src/app/profiles/Detail.tsx': '',
   './src/app/profiles/settings/.boost.json': json.stringify({ verbose: true }),
+  './src/setup.ts': '',
+};
+
+export const configFileTreeJSON5: DirectoryJSON = {
+  ...rootCommon,
+  './src/app/.boost.json5': json.stringify({ debug: false }),
+  './src/app/index.js': '',
+  './src/app/profiles/Detail.tsx': '',
+  './src/app/profiles/settings/.boost.json5': json.stringify({ verbose: true }),
   './src/setup.ts': '',
 };
 

@@ -44,6 +44,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         cjs: func(loadCjs).notNullable(),
         js: func(loadJs).notNullable(),
         json: func(loadJson).notNullable(),
+        json5: func(loadJson).notNullable(),
         mjs: func(loadMjs).notNullable(),
         ts: func(loadTs).notNullable(),
         yaml: func(loadYaml).notNullable(),
@@ -324,6 +325,7 @@ export default class ConfigFinder<T extends object> extends Finder<
         case 'js':
           return loaders.js(path, pkg);
         case 'json':
+        case 'json5':
           return loaders.json(path, pkg);
         case 'mjs':
           // Not easily testable yet
