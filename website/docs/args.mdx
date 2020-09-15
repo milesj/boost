@@ -22,6 +22,7 @@ A type-safe and convention based argument parsing library, with strict validatio
 >
   <TabItem value="yarn">
 
+
 ```bash
 yarn add @boost/args
 ```
@@ -29,12 +30,14 @@ yarn add @boost/args
   </TabItem>
   <TabItem value="npm">
 
+
 ```bash
 npm install @boost/args
 ```
 
   </TabItem>
 </Tabs>
+
 
 ## Parsing
 
@@ -535,6 +538,35 @@ const args = parse<{ color: string }>(argv, {
 ```
 
 > Command categories only pertain to the `Command` interface type.
+
+### Loose mode
+
+When loose mode is enabled, the following changes to the parser are made:
+
+- Unknown options will be typed as strings and set into the `options` return object. This supersedes
+  the `unknown` setting as it works differently.
+- Short options without a configured parent will no longer throw an error, and will be set into the
+  `options` return object.
+  - When no value is provided, they will be typed as `boolean`, otherwise as `string`.
+  - When found in a short option group, they will be typed as `boolean`.
+
+```ts
+const argv = ['-F', 'k=value', '--legit', 'foo', '--unknown', 'bar'];
+const args = parse<{ legit: string }>(argv, {
+  loose: true,
+  options: {
+    legit: {
+      description: 'A legitimate option',
+      type: 'string',
+    },
+  },
+});
+
+args.options; // { F: true, k: 'value', legit: 'foo', unknown: 'bar' }
+args.unknown; // {}
+```
+
+> This mode should only be used for interoperability with other argument parsers.
 
 ## Type casting
 

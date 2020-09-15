@@ -2527,7 +2527,7 @@ describe('parse()', () => {
     });
 
     it('supports unknown short option and flags', () => {
-      const result = parse(['-F', '-k', 'value', '--no-G'], {
+      const result = parse(['-F', '-k', 'value', '--no-G', '--k2=value'], {
         loose: true,
         options: {},
       });
@@ -2538,6 +2538,7 @@ describe('parse()', () => {
         options: {
           F: true,
           G: false,
+          k2: 'value',
           k: 'value',
         },
         params: [],
