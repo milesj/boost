@@ -2175,6 +2175,24 @@ describe('parse()', () => {
       });
     });
 
+    it('doesnt error for an unknown short option with value is provided in loose mode', () => {
+      const result = parse(['foo', '-U', 'value'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          U: 'value',
+        },
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
     it('errors if an unknown short option with inline value is provided', () => {
       const result = parse(['foo', '-U=value'], {
         options: {},
@@ -2458,6 +2476,143 @@ describe('parse()', () => {
         errors: [],
         options: {
           flag: true,
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+  });
+
+  describe('loose mode', () => {
+    it('supports unknown options', () => {
+      const result = parse(['--key', 'value', '--inline=value'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          inline: 'value',
+          key: 'value',
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown options alongside configured options', () => {
+      const result = parse<{ opt: string }>(['--key', 'value', '--inline=value', '--opt', '123'], {
+        loose: true,
+        options: {
+          opt: optConfig,
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          inline: 'value',
+          key: 'value',
+          opt: '123',
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short option and flags', () => {
+      const result = parse(['-F', '-k', 'value', '--no-G', '--k2=value'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          F: true,
+          G: false,
+          k2: 'value',
+          k: 'value',
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short option and flags alongside configured options', () => {
+      const result = parse<{ opt: string }>(
+        ['foo', '--opt', 'val', '-F', '-k', 'value', '--no-G'],
+        {
+          loose: true,
+          options: {
+            opt: optConfig,
+          },
+        },
+      );
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          F: true,
+          G: false,
+          k: 'value',
+          opt: 'val',
+        },
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short options in groups', () => {
+      const result = parse(['-FkG'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          F: true,
+          G: true,
+          k: true,
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short options in groups alongside configured options', () => {
+      const result = parse<{ flag: boolean; num: number }>(['-FnnG'], {
+        loose: true,
+        options: {
+          flag: flagConfig,
+          num: {
+            ...numConfigExpanded,
+            default: 0,
+            count: true,
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          G: true,
+          flag: true,
+          num: 2,
         },
         params: [],
         rest: [],

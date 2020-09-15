@@ -102,12 +102,17 @@ export interface Arguments<O extends object, P extends PrimitiveType[] = ArgList
   unknown: UnknownOptionMap;
 }
 
-export interface ParserOptions<O extends object, P extends PrimitiveType[] = ArgList> {
+export interface ParserSettings {
+  loose?: boolean;
+  unknown?: boolean;
+  variadic?: boolean;
+}
+
+export interface ParserOptions<O extends object, P extends PrimitiveType[] = ArgList>
+  extends ParserSettings {
   commands?: string[] | CommandChecker;
   options: MapOptionConfig<O>;
   params?: MapParamConfig<P>;
-  unknown?: boolean;
-  variadic?: boolean;
 }
 
 // BASE TYPES
