@@ -1,6 +1,6 @@
 {
   "name": "@boost/config",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "release": "1594765247526",
   "description": "Powerful convention based finder, loader, and manager of both configuration and ignore files.",
   "keywords": [
@@ -20,8 +20,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^2.2.0",
-    "@boost/debug": "^2.1.0",
+    "@boost/common": "^2.2.1",
+    "@boost/debug": "^2.1.1",
     "@boost/event": "^2.1.0",
     "@boost/internal": "^2.1.0",
     "minimatch": "^3.0.4"

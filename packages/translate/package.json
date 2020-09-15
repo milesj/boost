@@ -1,6 +1,6 @@
 {
   "name": "@boost/translate",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "release": "1594765247526",
   "description": "Package and application level translations made easy.",
   "keywords": [
@@ -22,7 +22,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^2.2.0",
+    "@boost/common": "^2.2.1",
     "@boost/internal": "^2.1.0",
     "i18next": "^19.7.0",
     "os-locale": "^5.0.0"

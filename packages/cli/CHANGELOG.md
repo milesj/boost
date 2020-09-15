@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.1 - 2020-09-15
+
+#### 📦 Dependencies
+
+- **[ink]** Update to latest. ([2b1a991](https://github.com/milesj/boost/commit/2b1a991))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.1.0 - 2020-08-17
 
 #### 🚀 Updates
