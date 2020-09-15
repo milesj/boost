@@ -58,6 +58,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
 ): Arguments<O, P> {
   const {
     commands: commandConfigs = [],
+    loose: looseMode = false,
     options: optionConfigs,
     params: paramConfigs = [],
     unknown: allowUnknown = false,
@@ -80,7 +81,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
     }
 
     // Set an unknown value
-    if (currentScope.unknown) {
+    if (currentScope.unknown && !looseMode) {
       if (allowUnknown) {
         unknown[currentScope.name] =
           currentScope.value === undefined ? DEFAULT_STRING_VALUE : String(currentScope.finalValue);
@@ -156,7 +157,11 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
 
           // Short option "-f"
         } else if (isShortOption(optionName)) {
-          optionName = expandShortOption(optionName.slice(1) as ShortOptionName, mapping);
+          optionName = expandShortOption(
+            optionName.slice(1) as ShortOptionName,
+            mapping,
+            looseMode,
+          );
 
           // Long option "--foo"
         } else if (isLongOption(optionName)) {
@@ -167,7 +172,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
         const scope = createScope(optionName, optionConfigs, options);
 
         // Unknown option found, handle accordingly
-        if (scope.unknown && !allowUnknown) {
+        if (scope.unknown && !allowUnknown && !looseMode) {
           checker.checkUnknownOption(arg);
 
           // Flag found, so set value immediately and discard scope

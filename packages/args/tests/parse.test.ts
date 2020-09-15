@@ -2175,6 +2175,24 @@ describe('parse()', () => {
       });
     });
 
+    it('doesnt error for an unknown short option with value is provided in loose mode', () => {
+      const result = parse(['foo', '-U', 'value'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          U: 'value',
+        },
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
     it('errors if an unknown short option with inline value is provided', () => {
       const result = parse(['foo', '-U=value'], {
         options: {},
