@@ -122,12 +122,12 @@ export default function Home() {
       </header>
 
       <main>
-        {features.map((items) => (
-          <section className={styles.features}>
+        {features.map((items, i) => (
+          <section key={i} className={styles.features}>
             <div className="container">
               <div className="row">
-                {items.map((props, idx) => (
-                  <Feature key={idx} {...props} />
+                {items.map((props, x) => (
+                  <Feature key={x} {...props} />
                 ))}
               </div>
             </div>
