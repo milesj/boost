@@ -12,19 +12,25 @@ export default function processShortOptionGroup(
   configs: OptionConfigMap,
   options: OptionMap,
   map: AliasMap,
+  loose: boolean,
 ) {
   group.split('').forEach((short) => {
-    const name = expandShortOption(short as ShortOptionName, map);
+    const name = expandShortOption(short as ShortOptionName, map, loose);
     const config = configs[name];
 
-    if (!config || config.type === 'string') {
+    // Loose mode, always be a flag
+    if (loose && !config) {
+      options[name] = true;
+
+      // Unknown option
+    } else if (!config || config.type === 'string') {
       throw new ArgsError('GROUP_UNSUPPORTED_TYPE');
 
-      // Flag
+      // Boolean option, flag
     } else if (config.type === 'boolean') {
       options[name] = true;
 
-      // Number counter
+      // Number option, counter
     } else if (config.type === 'number') {
       if (config.count) {
         options[name] = Number(options[name]) + 1;

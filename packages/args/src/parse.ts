@@ -80,16 +80,25 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
       return;
     }
 
-    // Set an unknown value
-    if (currentScope.unknown && !looseMode) {
+    const { name, value, finalValue } = currentScope;
+
+    // Support loose mode
+    if (looseMode) {
+      if (value === undefined) {
+        options[name] = !currentScope.negated;
+      } else {
+        options[name] = finalValue;
+      }
+
+      // Set an unknown value
+    } else if (currentScope.unknown) {
       if (allowUnknown) {
-        unknown[currentScope.name] =
-          currentScope.value === undefined ? DEFAULT_STRING_VALUE : String(currentScope.finalValue);
+        unknown[name] = value === undefined ? DEFAULT_STRING_VALUE : String(finalValue);
       }
 
       // Set and cast value if defined
-    } else if (currentScope.value !== undefined) {
-      options[currentScope.name] = currentScope.finalValue;
+    } else if (value !== undefined) {
+      options[name] = finalValue;
     }
 
     currentScope = null;
@@ -151,7 +160,7 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
         if (isShortOptionGroup(optionName)) {
           checker.checkNoInlineValue(inlineValue);
 
-          processShortOptionGroup(optionName.slice(1), optionConfigs, options, mapping);
+          processShortOptionGroup(optionName.slice(1), optionConfigs, options, mapping, looseMode);
 
           continue;
 

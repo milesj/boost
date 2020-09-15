@@ -2483,4 +2483,96 @@ describe('parse()', () => {
       });
     });
   });
+
+  describe('loose mode', () => {
+    it('supports unknown short option and flags', () => {
+      const result = parse(['-F', '-k', 'value', '--no-G'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          F: true,
+          G: false,
+          k: 'value',
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short option and flags alongside configured options', () => {
+      const result = parse(['foo', '--opt', 'val', '-F', '-k', 'value', '--no-G'], {
+        loose: true,
+        options: {
+          opt: optConfig,
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          F: true,
+          G: false,
+          k: 'value',
+          opt: 'val',
+        },
+        params: ['foo'],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short options in groups', () => {
+      const result = parse(['-FkG'], {
+        loose: true,
+        options: {},
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          F: true,
+          G: true,
+          k: true,
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+
+    it('supports unknown short options in groups alongside configured options', () => {
+      const result = parse<{ flag: boolean; num: number }>(['-FnnG'], {
+        loose: true,
+        options: {
+          flag: flagConfig,
+          num: {
+            ...numConfigExpanded,
+            default: 0,
+            count: true,
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        command: [],
+        errors: [],
+        options: {
+          G: true,
+          flag: true,
+          num: 2,
+        },
+        params: [],
+        rest: [],
+        unknown: {},
+      });
+    });
+  });
 });
