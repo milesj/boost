@@ -95,7 +95,7 @@ export default class CrashReporter {
   reportLanguages(): this {
     this.addSection('Languages');
 
-    const languages = {
+    const languages: Record<string, string> = {
       bash: 'Bash',
       go: 'Go',
       javac: 'Java',

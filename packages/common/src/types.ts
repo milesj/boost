@@ -144,6 +144,7 @@ export interface WorkspacePackage<T extends PackageStructure = PackageStructure>
 // MISC
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TypedPropertyDescriptor<T> {
     initializer?: Function;
   }
