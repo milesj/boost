@@ -6,12 +6,19 @@ import { SPACING_ROW } from './constants';
 
 export interface HeaderProps {
   label: string;
+  marginTop?: number;
+  marginBottom?: number;
   type?: StyleType;
 }
 
-export default function Header({ label, type = 'default' }: HeaderProps) {
+export default function Header({
+  label,
+  marginTop = SPACING_ROW,
+  marginBottom = SPACING_ROW,
+  type = 'default',
+}: HeaderProps) {
   return (
-    <Box marginTop={SPACING_ROW} marginBottom={SPACING_ROW}>
+    <Box marginTop={marginTop} marginBottom={marginBottom}>
       <Style bold inverted type={type}>
         {` ${label.toLocaleUpperCase()} `}
       </Style>
