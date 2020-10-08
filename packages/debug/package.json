@@ -26,7 +26,7 @@
     "@boost/common": "^2.2.1",
     "@boost/internal": "^2.1.0",
     "@types/debug": "^4.1.5",
-    "debug": "^4.1.1",
+    "debug": "^4.2.0",
     "execa": "^4.0.3",
     "fast-glob": "^3.2.4"
   },
