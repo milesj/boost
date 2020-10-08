@@ -107,7 +107,7 @@ const testingExternals = {
 };
 
 [...webPackages, ...nodePackages].forEach((pkg) => {
-  const input = `packages/${pkg}/src/testing.ts`;
+  const input = `packages/${pkg}/src/test.ts`;
 
   if (!fs.existsSync(path.join(__dirname, input))) {
     return;
@@ -118,7 +118,7 @@ const testingExternals = {
     input,
     output: [
       {
-        file: `packages/${pkg}/lib/testing.js`,
+        file: `packages/${pkg}/lib/test.js`,
         format: 'cjs',
       },
     ],

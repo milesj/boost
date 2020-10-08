@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { Box, Text } from 'ink';
 import { ExitError } from '@boost/common';
 import { env } from '@boost/internal';
-import { mockLogger } from '@boost/log/lib/testing';
+import { mockLogger } from '@boost/log/test';
 import {
   Program,
   Command,
@@ -18,7 +18,7 @@ import {
   Options,
   UnknownOptionMap,
 } from '../src';
-import { MockWriteStream, MockReadStream, runProgram, runTask } from '../src/testing';
+import { MockWriteStream, MockReadStream, runProgram, runTask } from '../src/test';
 import { options, params } from './__mocks__/args';
 import { Parent, Child, GrandChild } from './__mocks__/commands';
 import BuildCommand from './__mocks__/BuildCommand';

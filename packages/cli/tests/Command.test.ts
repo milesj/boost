@@ -7,7 +7,7 @@ import InstallCommand from './__mocks__/InstallCommand';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
 import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
 import { Command, Arg, INTERNAL_PROGRAM } from '../src';
-import { mockStreams, mockProgram, runCommand } from '../src/testing';
+import { mockStreams, mockProgram, runCommand } from '../src/test';
 
 jest.mock('execa');
 jest.mock('term-size');
