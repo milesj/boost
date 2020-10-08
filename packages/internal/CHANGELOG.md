@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.1 - 2020-10-08
+
+#### 📦 Dependencies
+
+- Update all to latest. ([bb04025](https://github.com/milesj/boost/commit/bb04025))
+
+**Note:** Version bump only for package @boost/internal
+
+
+
+
+
 ## 2.1.0 - 2020-08-17
 
 #### 🚀 Updates
