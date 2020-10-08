@@ -22,6 +22,7 @@ Lightweight level based logging system.
 >
   <TabItem value="yarn">
 
+
 ```bash
 yarn add @boost/log
 ```
@@ -29,12 +30,14 @@ yarn add @boost/log
   </TabItem>
   <TabItem value="npm">
 
+
 ```bash
 npm install @boost/log
 ```
 
   </TabItem>
 </Tabs>
+
 
 ## Environment variables
 
@@ -269,7 +272,7 @@ const transport = new RotatingFileTransport({
 ## Test utilities
 
 The following [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/log/lib/testing` module.
+`@boost/log/test` module.
 
 ### `mockLogger`
 
@@ -278,7 +281,7 @@ The following [Jest](https://github.com/facebook/jest) utilities are available i
 Returns a Jest spy that matches the return value shape of `createLogger`.
 
 ```ts
-import { mockLogger } from '@boost/log/lib/testing';
+import { mockLogger } from '@boost/log/test';
 
 it('calls the logger', () => {
   const log = mockLogger();

@@ -22,6 +22,7 @@ A type-safe and interactive command line program, powered by [React][react] and 
 >
   <TabItem value="yarn">
 
+
 ```bash
 yarn add @boost/cli react ink
 ```
@@ -29,12 +30,14 @@ yarn add @boost/cli react ink
   </TabItem>
   <TabItem value="npm">
 
+
 ```bash
 npm install @boost/cli react ink
 ```
 
   </TabItem>
 </Tabs>
+
 
 ## Environment variables
 
@@ -295,6 +298,7 @@ define static class properties of the same name!
 >
   <TabItem value="decl">
 
+
 ```ts
 import { Command, Config } from '@boost/cli';
 
@@ -307,6 +311,7 @@ export default class BuildCommand extends Command {}
 
   </TabItem>
   <TabItem value="imp">
+
 
 ```ts
 import { Command } from '@boost/cli';
@@ -324,6 +329,7 @@ export default class BuildCommand extends Command {
 
   </TabItem>
 </Tabs>
+
 
 ![Command example](/img/cli/command.png)
 
@@ -355,6 +361,7 @@ easier type safety, the `Options` collection type can be used to type the static
   ]}
 >
   <TabItem value="decl">
+
 
 ```ts
 import { Command, Arg, GlobalOptions } from '@boost/cli';
@@ -393,6 +400,7 @@ export default class CustomCommand extends Command<CustomOptions> {
 
   </TabItem>
   <TabItem value="imp">
+
 
 ```ts
 import { Command, GlobalOptions, Options } from '@boost/cli';
@@ -459,6 +467,7 @@ export default class CustomCommand extends Command<CustomOptions> {
   </TabItem>
 </Tabs>
 
+
 ![Options example](/img/cli/options.png)
 
 #### Unknown options
@@ -477,6 +486,7 @@ will be set as a string object to the `Command#unknown` class property.
 >
   <TabItem value="decl">
 
+
 ```ts
 import { Command, GlobalOptions, Config } from '@boost/cli';
 
@@ -491,6 +501,7 @@ export default class CustomCommand extends Command<GlobalOptions> {
 
   </TabItem>
   <TabItem value="imp">
+
 
 ```ts
 import { Command, GlobalOptions } from '@boost/cli';
@@ -511,6 +522,7 @@ export default class CustomCommand extends Command<GlobalOptions> {
 
   </TabItem>
 </Tabs>
+
 
 ![Unknown option example](/img/cli/unknown-option.png)
 
@@ -550,6 +562,7 @@ type safety, the `Params` collection type can be used to type the static propert
 >
   <TabItem value="decl">
 
+
 ```ts
 import { Command, Arg, GlobalOptions } from '@boost/cli';
 
@@ -584,6 +597,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
   </TabItem>
   <TabItem value="imp">
 
+
 ```ts
 import { Command, Params, GlobalOptions } from '@boost/cli';
 
@@ -619,6 +633,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
   </TabItem>
 </Tabs>
 
+
 ![Params example](/img/cli/params.png)
 
 #### Variadic params
@@ -639,6 +654,7 @@ Using the example above, it would look like the following.
 >
   <TabItem value="decl">
 
+
 ```ts
 import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
 
@@ -657,6 +673,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
   </TabItem>
   <TabItem value="imp">
+
 
 ```ts
 import { Command, Params, GlobalOptions } from '@boost/cli';
@@ -682,6 +699,7 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
   </TabItem>
 </Tabs>
+
 
 ![Variadic params example](/img/cli/variadic-params.png)
 
@@ -923,6 +941,7 @@ program.categories({
 >
   <TabItem value="decl">
 
+
 ```ts
 import { Command, Config } from '@boost/cli';
 
@@ -942,6 +961,7 @@ export default class CustomCommand extends Command {
 
   </TabItem>
   <TabItem value="imp">
+
 
 ```ts
 import { Command, Categories } from '@boost/cli';
@@ -966,6 +986,7 @@ export default class CustomCommand extends Command {
   </TabItem>
 </Tabs>
 
+
 Categories are sorted by weight first, then alphabetical second, so define `weight` when you want
 strict control of the category order. Uncategorized items have a weight of `0`, and the built-in
 globals have a weight of `100`.
@@ -982,6 +1003,7 @@ using the `category` setting! Here's an example using decorators.
   ]}
 >
   <TabItem value="decl">
+
 
 ```ts
 import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
@@ -1001,6 +1023,7 @@ export default class BuildCommand extends Command<BuildOptions> {
 
   </TabItem>
   <TabItem value="imp">
+
 
 ```ts
 import { Command, Options, GlobalOptions } from '@boost/cli';
@@ -1032,6 +1055,7 @@ export default class BuildCommand extends Command<BuildOptions> {
 
   </TabItem>
 </Tabs>
+
 
 ## Logging
 
@@ -1173,7 +1197,7 @@ import { Failure } from '@boost/cli';
 ## Test utilities
 
 The following [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/cli/lib/testing` module.
+`@boost/cli/test` module.
 
 ### `mockStreams`
 
@@ -1183,7 +1207,7 @@ Returns mocked `stderr`, `stdout`, and `stdin` streams that can be passed to a `
 not mock all stream functionality, only those required by Boost and Ink.
 
 ```ts
-import { mockStreams } from '@boost/cli/lib/testing';
+import { mockStreams } from '@boost/cli/test';
 
 const streams = mockStreams();
 ```
@@ -1196,7 +1220,7 @@ Returns a `Program` instance with required options pre-filled and streams mocked
 provided).
 
 ```ts
-import { mockProgram } from '@boost/cli/lib/testing';
+import { mockProgram } from '@boost/cli/test';
 
 const program = mockProgram({ name: 'Example' });
 ```
@@ -1209,7 +1233,7 @@ Can be used to render a React component with Ink and return the rendered result 
 compatible string. If `stripped` is true, it will strip ANSI escape escape sequences.
 
 ```tsx
-import { renderComponent } from '@boost/cli/lib/testing';
+import { renderComponent } from '@boost/cli/test';
 import TestComponent from '../src/components/TestComponent';
 
 it('renders a component', async () => {
@@ -1227,7 +1251,7 @@ are optional and assume class properties have been defined. Also, the `exit` and
 been mocked with Jest spies so that they can be asserted.
 
 ```ts
-import { runCommand } from '@boost/cli/lib/testing';
+import { runCommand } from '@boost/cli/test';
 import TestCommand from '../src/commands/TestCommand';
 
 it('runs a command', async () => {
@@ -1249,7 +1273,7 @@ Runs a task function outside the context of a `Command`, in complete isolation. 
 context is provided with standard defaults, and can be customized through the 3rd argument.
 
 ```ts
-import { runTask } from '@boost/cli/lib/testing';
+import { runTask } from '@boost/cli/test';
 import testTask from '../src/tasks/testTask';
 
 it('runs a task', async () => {
@@ -1272,7 +1296,7 @@ failuer states, and more. Utilizes mocked streams to capture and return standard
 stripped output. Failed runs will not throw and instead will render a failure output.
 
 ```ts
-import { runProgram } from '@boost/cli/lib/testing';
+import { runProgram } from '@boost/cli/test';
 import Program from '../src/program';
 
 it('runs a program', async () => {

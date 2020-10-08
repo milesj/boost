@@ -4,7 +4,7 @@ import React from 'react';
 import { render } from 'ink';
 import { env } from '@boost/internal';
 import { stripAnsi } from '@boost/terminal';
-import { mockLogger } from '@boost/log/lib/testing';
+import { mockLogger } from '@boost/log/test';
 import { Command, Program, INTERNAL_OPTIONS, INTERNAL_PARAMS } from './index';
 import type {
   ExitCode,

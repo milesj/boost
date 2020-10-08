@@ -1,6 +1,6 @@
 module.exports = {
   coveragePathIgnorePatterns: [
-    'testing.ts',
+    'test.ts',
     // Impossible to test
     'cli/src/LogWriter.tsx',
     'cli/src/Wrapper.tsx',
