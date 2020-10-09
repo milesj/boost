@@ -104,6 +104,30 @@ describe('Event', () => {
 
       expect(event.getListeners('foo').has(listener)).toBe(true);
     });
+
+    it('removes a listener from the default scope', () => {
+      const listener = () => {};
+
+      const unlisten = event.listen(listener);
+
+      expect(event.getListeners().has(listener)).toBe(true);
+
+      unlisten();
+
+      expect(event.getListeners().has(listener)).toBe(false);
+    });
+
+    it('removes a listener from a specific scope', () => {
+      const listener = () => {};
+
+      const unlisten = event.listen(listener, 'foo');
+
+      expect(event.getListeners('foo').has(listener)).toBe(true);
+
+      unlisten();
+
+      expect(event.getListeners('foo').has(listener)).toBe(false);
+    });
   });
 
   describe('unlisten()', () => {

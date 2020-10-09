@@ -22,6 +22,7 @@ A type-safe event system with multiple emitter patterns.
 >
   <TabItem value="yarn">
 
+
 ```bash
 yarn add @boost/event
 ```
@@ -29,12 +30,14 @@ yarn add @boost/event
   </TabItem>
   <TabItem value="npm">
 
+
 ```bash
 npm install @boost/event
 ```
 
   </TabItem>
 </Tabs>
+
 
 ## Events
 
@@ -92,6 +95,13 @@ used to register must also be used for unregistering.
 
 ```ts
 event.unlisten(listener);
+```
+
+To make this flow easier, a pre-configured unlistener is returned from `Event#listen()`.
+
+```ts
+const unlisten = event.listen(listener);
+unlisten();
 ```
 
 ### Emitting events

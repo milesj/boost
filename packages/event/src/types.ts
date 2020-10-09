@@ -18,4 +18,6 @@ export type Listener<A extends unknown[], R> = A extends [
   ? (...args: A) => R
   : never;
 
+export type Unlistener = () => void;
+
 export type WildstarScope = '*';

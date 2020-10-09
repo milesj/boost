@@ -1,7 +1,7 @@
 import EventError from './EventError';
 import debug from './debug';
 import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
-import { Listener, WildstarScope } from './types';
+import { Listener, Unlistener, WildstarScope } from './types';
 
 export default abstract class BaseEvent<
   Return,
@@ -56,20 +56,22 @@ export default abstract class BaseEvent<
   /**
    * Register a listener to the event.
    */
-  listen(listener: Listener<Args, Return>, scope?: Scope): this {
+  listen(listener: Listener<Args, Return>, scope?: Scope): Unlistener {
     if (__DEV__) {
       debug('Registering "%s" listener', this.name);
     }
 
     this.getListeners(scope).add(this.validateListener(listener));
 
-    return this;
+    return () => {
+      this.unlisten(listener, scope);
+    };
   }
 
   /**
    * Register a listener to the event that only triggers once.
    */
-  once(listener: Listener<Args, Return>, scope?: Scope): this {
+  once(listener: Listener<Args, Return>, scope?: Scope): Unlistener {
     const func = this.validateListener(listener);
     const handler = ((...args: unknown[]) => {
       this.unlisten(handler);
