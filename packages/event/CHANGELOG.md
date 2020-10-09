@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.2.0 - 2020-10-09
+
+#### 🚀 Updates
+
+- Return an unlistener from Event#listen. ([0f2a1f8](https://github.com/milesj/boost/commit/0f2a1f8))
+
+**Note:** Version bump only for package @boost/event
+
+
+
+
+
 ### 2.1.1 - 2020-10-08
 
 **Note:** Version bump only for package @boost/event

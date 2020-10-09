@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.3 - 2020-10-09
+
+**Note:** Version bump only for package @boost/plugin
+
+
+
+
+
 ### 2.1.2 - 2020-10-08
 
 **Note:** Version bump only for package @boost/plugin

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.2.0 - 2020-10-09
+
+#### 🚀 Updates
+
+- **[Header]** Add margin props. ([bcf8d8e](https://github.com/milesj/boost/commit/bcf8d8e))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.1.2 - 2020-10-08
 
 #### 📦 Dependencies

@@ -1,6 +1,6 @@
 {
   "name": "@boost/cli",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "release": "1594765247526",
   "description": "An interactive command line program builder, powered by React and Ink.",
   "keywords": [
@@ -27,7 +27,7 @@
   "dependencies": {
     "@boost/args": "^2.2.1",
     "@boost/common": "^2.2.2",
-    "@boost/event": "^2.1.1",
+    "@boost/event": "^2.2.0",
     "@boost/internal": "^2.1.1",
     "@boost/log": "^2.1.2",
     "@boost/terminal": "^2.1.0",
