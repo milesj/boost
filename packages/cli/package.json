@@ -41,6 +41,6 @@
   },
   "devDependencies": {
     "ink": "^3.0.7",
-    "react": "^16.13.1"
+    "react": "^16.14.0"
   }
 }
