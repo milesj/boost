@@ -1,5 +1,6 @@
 export { default as createBlueprint } from './createBlueprint';
 export { default as deepFreeze } from './deepFreeze';
+export { default as deepMerge } from './deepMerge';
 export { default as formatMs } from './formatMs';
 export { default as instanceOf } from './instanceOf';
 export { default as isEmpty } from './isEmpty';

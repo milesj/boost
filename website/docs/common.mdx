@@ -23,6 +23,7 @@ A collection of common utilities, classes, and helpers.
 >
   <TabItem value="yarn">
 
+
 ```bash
 yarn add @boost/common
 ```
@@ -30,12 +31,14 @@ yarn add @boost/common
   </TabItem>
   <TabItem value="npm">
 
+
 ```bash
 npm install @boost/common
 ```
 
   </TabItem>
 </Tabs>
+
 
 ## Helpers
 
@@ -56,6 +59,37 @@ const blueprint = createBlueprint(({ string, number }) => ({
 }));
 
 const data = optimal({}, blueprint);
+```
+
+### `deepFreeze`
+
+> deepFreeze<T extends object\>(obj: T): T
+
+Can be used to recursively freeze plain objects with `Object.freeze`.
+
+```ts
+import { deepFreeze } from '@boost/common';
+
+const obj = deepFreeze({ foo: 123 });
+
+// Errors!
+obj.foo = 456;
+```
+
+### `deepMerge`
+
+> deepMerge<T extends object | unknown[]\>(base: T, other?: T): T
+
+Can be used to recursively merge objects and arrays, where values on the right-hand side will
+overwrite values on the left-hand based on the key or index respectively. Furthermore, if the 2nd
+argument is not provided, it will simply clone the base value.
+
+```ts
+import { deepMerge } from '@boost/common';
+
+const obj = deepMerge({ foo: 123, bar: 'abc' }, { foo: 456, baz: true });
+
+// -> { foo: 456, bar: 'abc', baz: true }
 ```
 
 ### `formatMs`
