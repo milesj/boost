@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.3.0 - 2020-10-15
+
+#### 🚀 Updates
+
+- Add node requirement and package outdated middleware. ([891bfb3](https://github.com/milesj/boost/commit/891bfb3))
+
+#### 🐞 Fixes
+
+- Pipe wrapped console methods through the CLI logger. ([deb854f](https://github.com/milesj/boost/commit/deb854f))
+- **[Style]** Dont apply background color unless inverted. ([ad1e429](https://github.com/milesj/boost/commit/ad1e429))
+
+#### 📦 Dependencies
+
+- Update to latest. ([2a9e503](https://github.com/milesj/boost/commit/2a9e503))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.2.0 - 2020-10-09
 
 #### 🚀 Updates
