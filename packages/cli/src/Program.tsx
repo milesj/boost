@@ -343,8 +343,8 @@ export default class Program extends CommandManager<ProgramOptions> {
     }
 
     try {
-      this.errBuffer.wrap();
-      this.outBuffer.wrap();
+      this.errBuffer.wrap(this.logger);
+      this.outBuffer.wrap(this.logger);
 
       this.onBeforeRender.emit([result]);
       this.rendering = true;
@@ -363,6 +363,7 @@ export default class Program extends CommandManager<ProgramOptions> {
           debug: process.env.NODE_ENV === 'test',
           exitOnCtrlC: true,
           experimental: true,
+          patchConsole: false, // We do this ourselves
           stderr,
           stdin,
           stdout,

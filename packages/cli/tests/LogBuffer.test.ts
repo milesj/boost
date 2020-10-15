@@ -1,3 +1,4 @@
+import { mockLogger } from '@boost/log/test';
 import LogBuffer from '../src/LogBuffer';
 
 describe('LogBuffer', () => {
@@ -14,7 +15,7 @@ describe('LogBuffer', () => {
   it('can wrap and unwrap console methods', () => {
     const original = console.info;
 
-    buffer.wrap();
+    buffer.wrap(mockLogger());
 
     expect(console.info).not.toEqual(original);
 
@@ -42,7 +43,7 @@ describe('LogBuffer', () => {
     const logSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
 
     buffer.on(spy);
-    buffer.wrap();
+    buffer.wrap(mockLogger());
     buffer.write('foo');
     buffer.write('bar');
     buffer.write('baz');
@@ -59,7 +60,7 @@ describe('LogBuffer', () => {
     const spy = jest.fn();
     const logSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
 
-    buffer.wrap();
+    buffer.wrap(mockLogger());
     buffer.write('foo');
     buffer.write('bar');
     buffer.write('baz');
@@ -81,7 +82,7 @@ describe('LogBuffer', () => {
     const spy = jest.fn();
     const logSpy = jest.spyOn(process.stderr, 'write').mockImplementation();
 
-    buffer.wrap();
+    buffer.wrap(mockLogger());
     buffer.write('foo');
     buffer.write('bar');
     buffer.write('baz');
@@ -118,7 +119,7 @@ describe('LogBuffer', () => {
   it('logs a message if wrapped', () => {
     const spy = jest.spyOn(process.stdout, 'write').mockImplementation();
 
-    buffer.wrap();
+    buffer.wrap(mockLogger());
     buffer.write('Yup\n');
 
     expect(buffer.logs).toEqual(['Yup\n']);

@@ -10,7 +10,7 @@ function Logger() {
   const ctx = React.useContext(ProgramContext);
 
   React.useEffect(() => {
-    console.error('Initial render');
+    console.warn('Initial render');
 
     function increment() {
       if (timer) {
@@ -21,7 +21,7 @@ function Logger() {
 
       const delay = random(3000, 250);
 
-      console.log(`Sleeping for ${delay}ms`);
+      console.info(`Sleeping for ${delay}ms`);
       ctx.log.error('Logging from context');
 
       timer = setTimeout(() => {

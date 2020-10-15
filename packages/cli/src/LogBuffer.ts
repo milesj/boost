@@ -1,13 +1,13 @@
-/* eslint-disable no-console, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable no-console */
 
+import { Loggable, LogLevel } from '@boost/log';
 import { StreamType } from './types';
 
 type BufferListener = (buffer: string[]) => void;
 type UnwrapHandler = () => void;
-type ConsoleMethod = keyof typeof console;
 
 const NOTIFY_DELAY = 100;
-const CONSOLE_METHODS: { [K in StreamType]: ConsoleMethod[] } = {
+const CONSOLE_METHODS: { [K in StreamType]: LogLevel[] } = {
   stderr: ['error', 'trace', 'warn'],
   stdout: ['debug', 'log', 'info'],
 };
@@ -69,11 +69,11 @@ export default class LogBuffer {
     this.wrapped = false;
   }
 
-  wrap() {
+  wrap(logger: Loggable) {
     CONSOLE_METHODS[this.type].forEach((method) => {
       const original = console[method];
 
-      console[method] = this.write;
+      console[method] = logger[method];
 
       this.unwrappers.push(() => {
         console[method] = original;
