@@ -13,16 +13,13 @@ export default function Style({ children, inverted = false, type, ...restProps }
   const theme = loadTheme();
   const props: Writeable<TextProps> = {};
 
-  const injectColor = (color: string, bg: boolean) => {
-    props[bg ? 'backgroundColor' : 'color'] = color;
-  };
-
-  if (type === 'default') {
-    injectColor(theme.default, inverted);
-    injectColor(theme.inverted, !inverted);
-  } else if (type !== 'none') {
-    injectColor(theme[type], inverted);
-    injectColor(theme.inverted, !inverted);
+  if (type !== 'none') {
+    if (inverted) {
+      props.backgroundColor = theme[type];
+      props.color = theme.inverted;
+    } else {
+      props.color = theme[type];
+    }
   }
 
   return (

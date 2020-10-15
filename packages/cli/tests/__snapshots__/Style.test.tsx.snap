@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Style /> renders \`default\` 1`] = `"[40m[37mTest[39m[49m"`;
+exports[`<Style /> renders \`default\` 1`] = `"[37mTest[39m"`;
 
 exports[`<Style /> renders \`default\` inverted 1`] = `"[47m[30mTest[39m[49m"`;
 
-exports[`<Style /> renders \`failure\` 1`] = `"[40m[31mTest[39m[49m"`;
+exports[`<Style /> renders \`failure\` 1`] = `"[31mTest[39m"`;
 
 exports[`<Style /> renders \`failure\` inverted 1`] = `"[41m[30mTest[39m[49m"`;
 
-exports[`<Style /> renders \`inverted\` 1`] = `"[40m[30mTest[39m[49m"`;
+exports[`<Style /> renders \`inverted\` 1`] = `"[30mTest[39m"`;
 
-exports[`<Style /> renders \`inverted\` inverted 1`] = `"[40m[30mTest[39m[49m"`;
+exports[`<Style /> renders \`inverted\` inverted 1`] = `"[30mTest[39m"`;
 
-exports[`<Style /> renders \`muted\` 1`] = `"[40m[90mTest[39m[49m"`;
+exports[`<Style /> renders \`muted\` 1`] = `"[90mTest[39m"`;
 
 exports[`<Style /> renders \`muted\` inverted 1`] = `"[100m[30mTest[39m[49m"`;
 
-exports[`<Style /> renders \`success\` 1`] = `"[40m[32mTest[39m[49m"`;
+exports[`<Style /> renders \`success\` 1`] = `"[32mTest[39m"`;
 
 exports[`<Style /> renders \`success\` inverted 1`] = `"[42m[30mTest[39m[49m"`;
 
-exports[`<Style /> renders \`warning\` 1`] = `"[40m[33mTest[39m[49m"`;
+exports[`<Style /> renders \`warning\` 1`] = `"[33mTest[39m"`;
 
 exports[`<Style /> renders \`warning\` inverted 1`] = `"[43m[30mTest[39m[49m"`;
 
-exports[`<Style /> supports bold, italics, etc 1`] = `"[3m[1m[40m[37mTest[39m[49m[22m[23m"`;
+exports[`<Style /> supports bold, italics, etc 1`] = `"[3m[1m[37mTest[39m[22m[23m"`;
