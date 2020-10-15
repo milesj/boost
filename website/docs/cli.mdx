@@ -233,6 +233,28 @@ program
 Middleware is async, so the parse callback _must be_ awaited! This also means you can implement your
 own async functionality, like file system access, or network requests.
 
+#### Built-in
+
+Boost provides the following built-in middleware for common scenarios.
+
+- `checkNodeRequirement` - Verify that the currently running Node.js `process.version` satisfies the
+  given semver range. If not, a console error will be logged, or an error will be thrown.
+- `checkPackageOutdated` - Verify that a package and its provided version is using the latest
+  distribution version by checking against the NPM registry. If not, a console message will be
+  logged.
+
+```ts
+import { checkNodeRequirement, checkPackageOutdated } from '@boost/cli';
+
+program
+  // Log a message
+  .middleware(checkPackageOutdated('@boost/cli', require('@boost/cli/package.json').version))
+  // Log an error
+  .middleware(checkNodeRequirement('>=12.10.0'))
+  // Throw an error
+  .middleware(checkNodeRequirement('>=12.10.0', true));
+```
+
 ## Commands
 
 Commands are self-encapsulated pieces of business logic that are ran when a matching path (a unique

@@ -17,6 +17,7 @@ import type { CLIErrorCode } from './CLIError';
 export * from './constants';
 export * from './decorators';
 export * from './helpers';
+export * from './middleware';
 export * from './types';
 
 export { Command, Failure, Header, Help, IndexHelp, Program, ProgramContext, Style, CLIError };

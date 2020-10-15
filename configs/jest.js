@@ -2,6 +2,7 @@ module.exports = {
   coveragePathIgnorePatterns: [
     'test.ts',
     // Impossible to test
+    'cli/src/middleware/checkNodeRequirement.ts',
     'cli/src/LogWriter.tsx',
     'cli/src/Wrapper.tsx',
     // Not supported by Jest/Babel

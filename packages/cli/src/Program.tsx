@@ -78,7 +78,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
   protected logger: LoggerFunction;
 
-  protected middlewares: Middleware[] = [removeProcessBin];
+  protected middlewares: Middleware[] = [removeProcessBin()];
 
   protected rendering: boolean = false;
 
