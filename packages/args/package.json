@@ -26,5 +26,8 @@
   "dependencies": {
     "@boost/internal": "^2.1.2",
     "levenary": "^1.1.1"
+  },
+  "packemon": {
+    "platform": "node"
   }
 }

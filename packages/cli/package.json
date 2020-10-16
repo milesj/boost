@@ -45,5 +45,12 @@
     "ink": "^3.0.8",
     "ink-testing-library": "^2.1.0",
     "react": "^16.14.0"
+  },
+  "packemon": {
+    "inputs": {
+      "index": "src/index.ts",
+      "test": "src/test.ts"
+    },
+    "platform": "node"
   }
 }

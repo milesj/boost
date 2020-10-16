@@ -2,8 +2,8 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "rollup --config",
-    "clean": "rm -rf packages/*/{lib,esm,*.tsbuildinfo}",
+    "build": "yarn run clean && npx packemon build --checkLicenses",
+    "clean": "rm -rf packages/*/{lib,esm}",
     "coverage": "yarn run jest --coverage",
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",

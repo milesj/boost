@@ -31,5 +31,8 @@
   "devDependencies": {
     "@boost/test-utils": "^2.1.1",
     "@types/pluralize": "^0.0.29"
+  },
+  "packemon": {
+    "platform": "node"
   }
 }
