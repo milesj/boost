@@ -2,7 +2,7 @@ import semver from 'semver';
 import { Middleware } from '../types';
 
 export default function checkNodeRequirement(range: string, throws: boolean = false): Middleware {
-  return (argv, parse) => {
+  return (argv, parse, logger) => {
     const { version } = process;
 
     if (!semver.satisfies(version, range)) {
@@ -11,8 +11,7 @@ export default function checkNodeRequirement(range: string, throws: boolean = fa
       if (throws) {
         throw new Error(message);
       } else {
-        // eslint-disable-next-line no-console
-        console.error(message);
+        logger.error(message);
       }
     }
 

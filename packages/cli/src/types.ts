@@ -26,7 +26,7 @@ import {
   ValueType,
   UnknownOptionMap,
 } from '@boost/args';
-import { LoggerFunction } from '@boost/log';
+import { Loggable, LoggerFunction } from '@boost/log';
 
 export {
   ArgList,
@@ -172,6 +172,7 @@ export type MiddlewareCallback = (argv: Argv) => MiddlewareArguments | Promise<M
 export type Middleware = (
   argv: Argv,
   parse: MiddlewareCallback,
+  logger: Loggable,
 ) => MiddlewareArguments | Promise<MiddlewareArguments>;
 
 // THEMES

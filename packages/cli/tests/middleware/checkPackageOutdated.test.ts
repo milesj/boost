@@ -1,9 +1,11 @@
+import { Loggable } from '@boost/log';
+import { mockLogger } from '@boost/log/test';
 import https from 'https';
 import checkPackageOutdated from '../../src/middleware/checkPackageOutdated';
 
 describe('checkPackageOutdated()', () => {
   let httpsSpy: jest.SpyInstance;
-  let infoSpy: jest.SpyInstance;
+  let logSpy: Loggable;
 
   const parse = () =>
     Promise.resolve({
@@ -30,20 +32,19 @@ describe('checkPackageOutdated()', () => {
       return {} as any;
     });
 
-    infoSpy = jest.spyOn(console, 'info').mockImplementation();
+    logSpy = mockLogger();
   });
 
   afterEach(() => {
     httpsSpy.mockRestore();
-    infoSpy.mockRestore();
   });
 
   it('doesnt log when version is latest', async () => {
     const mw = checkPackageOutdated('packemon', '1.2.3');
 
-    await mw([], parse);
+    await mw([], parse, logSpy);
 
-    expect(infoSpy).not.toHaveBeenCalled();
+    expect(logSpy.info).not.toHaveBeenCalled();
   });
 
   it('doesnt log when version request fails', async () => {
@@ -61,17 +62,17 @@ describe('checkPackageOutdated()', () => {
 
     const mw = checkPackageOutdated('packemon', '1.2.3');
 
-    await mw([], parse);
+    await mw([], parse, logSpy);
 
-    expect(infoSpy).not.toHaveBeenCalled();
+    expect(logSpy.info).not.toHaveBeenCalled();
   });
 
   it('logs when version is out of date', async () => {
     const mw = checkPackageOutdated('packemon', '1.0.0');
 
-    await mw([], parse);
+    await mw([], parse, logSpy);
 
-    expect(infoSpy).toHaveBeenCalledWith(
+    expect(logSpy.info).toHaveBeenCalledWith(
       'Your version of packemon is out of date.',
       "Latest version is 1.2.3, while you're using 1.0.0.",
     );

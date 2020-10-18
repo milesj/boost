@@ -309,7 +309,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 
       // Keep calling middleware until we exhaust them all
       if (middleware) {
-        return middleware(nextArgv, next);
+        return middleware(nextArgv, next, this.logger);
       }
 
       // Otherwise all middleware have ran, so parse the final list

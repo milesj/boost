@@ -27,12 +27,11 @@ function fetchPackageLatestVersion(name: string): Promise<string | undefined> {
 }
 
 export default function checkPackageOutdated(name: string, version: string): Middleware {
-  return async (argv, parse) => {
+  return async (argv, parse, logger) => {
     const latestVersion = await fetchPackageLatestVersion(name);
 
     if (latestVersion && !semver.satisfies(version, `>=${latestVersion}`)) {
-      // eslint-disable-next-line no-console
-      console.info(
+      logger.info(
         `Your version of ${name} is out of date.`,
         `Latest version is ${latestVersion}, while you're using ${version}.`,
       );
