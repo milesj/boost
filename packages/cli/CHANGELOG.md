@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.4.0 - 2020-10-18
+
+#### 🚀 Updates
+
+- Pass the logger to all middleware. ([0a28bb2](https://github.com/milesj/boost/commit/0a28bb2))
+
+#### 🐞 Fixes
+
+- Dont swallow non-primitive values when console logging. ([f91f432](https://github.com/milesj/boost/commit/f91f432))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.3.0 - 2020-10-15
 
 #### 🚀 Updates
