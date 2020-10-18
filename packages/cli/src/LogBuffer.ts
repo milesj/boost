@@ -73,7 +73,25 @@ export default class LogBuffer {
     CONSOLE_METHODS[this.type].forEach((method) => {
       const original = console[method];
 
-      console[method] = logger[method];
+      // The Node.js console API does not match our logger API,
+      // so if a consumer is trying to debug actual objects,
+      // arrays, or complex values, they will be swallowed
+      // unless we use the util interpolation syntax.
+      console[method] = (...args: unknown[]) => {
+        const msgs: string[] = [];
+
+        args.forEach((arg) => {
+          if (typeof arg === 'object') {
+            msgs.push('%O');
+          } else if (typeof arg === 'number') {
+            msgs.push('%d');
+          } else {
+            msgs.push('%s');
+          }
+        });
+
+        logger[method](msgs.join('\n'), args);
+      };
 
       this.unwrappers.push(() => {
         console[method] = original;
