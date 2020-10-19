@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.4.1 - 2020-10-19
+
+#### 🐞 Fixes
+
+- Fix console wrapped arguments not being passed correctly. ([3a66527](https://github.com/milesj/boost/commit/3a66527))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.4.0 - 2020-10-18
 
 #### 🚀 Updates
