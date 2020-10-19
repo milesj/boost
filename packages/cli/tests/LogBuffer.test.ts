@@ -134,7 +134,7 @@ describe('LogBuffer', () => {
     buffer.wrap(logger);
     console.info('Yup');
 
-    expect(logger.info).toHaveBeenCalledWith('%s', ['Yup']);
+    expect(logger.info).toHaveBeenCalledWith('%s', 'Yup');
 
     buffer.unwrap();
   });
@@ -145,13 +145,14 @@ describe('LogBuffer', () => {
     buffer.wrap(logger);
     console.log({ foo: 'bar' }, [123], true, 456, 'wtf');
 
-    expect(logger.log).toHaveBeenCalledWith('%O\n%O\n%s\n%d\n%s', [
+    expect(logger.log).toHaveBeenCalledWith(
+      '%O\n%O\n%s\n%d\n%s',
       { foo: 'bar' },
       [123],
       true,
       456,
       'wtf',
-    ]);
+    );
 
     buffer.unwrap();
   });

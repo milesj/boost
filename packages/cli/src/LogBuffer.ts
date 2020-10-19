@@ -90,7 +90,7 @@ export default class LogBuffer {
           }
         });
 
-        logger[method](msgs.join('\n'), args);
+        logger[method](msgs.join('\n'), ...args);
       };
 
       this.unwrappers.push(() => {
