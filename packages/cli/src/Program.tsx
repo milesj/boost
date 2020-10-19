@@ -1,5 +1,11 @@
+/* eslint-disable no-console, node/no-callback-literal */
+
 import React from 'react';
+import { PassThrough } from 'stream';
+import util from 'util';
 import { render } from 'ink';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import debug from 'debug';
 import {
   ArgList,
   Arguments,
@@ -100,20 +106,22 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     Object.assign(this.streams, streams);
 
-    this.errBuffer = new LogBuffer('stderr', this.streams.stderr);
-    this.outBuffer = new LogBuffer('stdout', this.streams.stdout);
+    // Buffers logs during the Ink rendering process
+    this.errBuffer = new LogBuffer(this.streams.stderr);
+    this.outBuffer = new LogBuffer(this.streams.stdout);
 
+    // Both logger and global console will write to the buffers
     this.logger = createLogger({
       name: 'cli',
       transports: [
         new StreamTransport({
           format: formats.console,
-          levels: ['debug', 'error', 'warn'],
+          levels: ['error', 'trace', 'warn'],
           stream: this.errBuffer,
         }),
         new StreamTransport({
           format: formats.console,
-          levels: ['log', 'trace', 'info'],
+          levels: ['debug', 'info', 'log'],
           stream: this.outBuffer,
         }),
       ],
@@ -121,14 +129,6 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     this.onAfterRegister.listen(this.handleAfterRegister);
     this.onBeforeRegister.listen(this.handleBeforeRegister);
-
-    // istanbul ignore next
-    // if (process.env.NODE_ENV !== 'test') {
-    //   process.on('SIGINT', () => {
-    //     this.errBuffer.unwrap();
-    //     this.outBuffer.unwrap();
-    //   });
-    // }
   }
 
   blueprint({ string }: Predicates): Blueprint<ProgramOptions> {
@@ -322,6 +322,91 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
+   * Wrap the global `console` to write to our logger and inherit formatting
+   * functionality. We also bind the callback provided from Ink to our buffer's
+   * so that their output is immediately written.
+   *
+   * This is kind of crazy, I know.
+   */
+  protected patchConsole(
+    callback: (stream: 'stdout' | 'stderr', message: string) => void,
+  ): () => void {
+    const unwrappers: (() => void)[] = [];
+
+    // Utility method for wrapping and patching an API temporarily
+    function wrap<T, K extends keyof T>(api: T, method: K, callback: T[K]) {
+      const original = api[method];
+
+      if (typeof original !== 'function') {
+        return;
+      }
+
+      Object.defineProperty(api, method, { value: callback });
+
+      unwrappers.push(() => {
+        Object.defineProperty(api, method, { value: original });
+      });
+    }
+
+    // Update buffers to write to the Ink process
+    this.errBuffer.on((message) => callback('stderr', message));
+    this.outBuffer.on((message) => callback('stdout', message));
+
+    // Wrap the native `console` and pipe to our logger
+    let lastMethod = '';
+
+    const patchedConsole = new console.Console(
+      new PassThrough({
+        write: (message) => {
+          if (lastMethod === 'debug') {
+            this.logger.debug(message);
+          } else if (lastMethod === 'info') {
+            this.logger.info(message);
+          } else {
+            this.logger.log(message);
+          }
+        },
+      }),
+      new PassThrough({
+        write: (message) => {
+          if (lastMethod === 'trace') {
+            this.logger.trace(message);
+          } else if (lastMethod === 'warn') {
+            this.logger.warn(message);
+          } else {
+            this.logger.error(message);
+          }
+        },
+      }),
+    );
+
+    (Object.keys(console) as (keyof typeof console)[]).forEach((method) => {
+      wrap(console, method, (...args: unknown[]) => {
+        lastMethod = method;
+        patchedConsole[method](...args);
+      });
+    });
+
+    // Wrap the `debug` stream since it writes to `process.stderr` directly
+    // https://www.npmjs.com/package/debug#output-streams
+    if (process.env.DEBUG) {
+      wrap(debug, 'log', (message: string, ...args: unknown[]) => {
+        // Do not pass to our logger since we want to avoid formatting it
+        callback('stderr', util.format(message, ...args));
+      });
+    }
+
+    return () => {
+      unwrappers.forEach((unwrap) => {
+        unwrap();
+      });
+
+      this.errBuffer.off();
+      this.outBuffer.off();
+    };
+  }
+
+  /**
    * Render the result of a command's run to the defined stream.
    * If a string has been returned, write it immediately.
    * If a React component, render with Ink and wait for it to finish.
@@ -342,46 +427,33 @@ export default class Program extends CommandManager<ProgramOptions> {
       throw new CLIError('REACT_RENDER_NO_NESTED');
     }
 
-    try {
-      this.errBuffer.wrap(this.logger);
-      this.outBuffer.wrap(this.logger);
+    this.onBeforeRender.emit([result]);
+    this.rendering = true;
 
-      this.onBeforeRender.emit([result]);
-      this.rendering = true;
+    const output = await render(
+      <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
+        {result || null}
+      </Wrapper>,
+      {
+        debug: process.env.NODE_ENV === 'test',
+        exitOnCtrlC: true,
+        experimental: true,
+        // @ts-expect-error
+        patchConsole: this.patchConsole,
+        stderr,
+        stdin,
+        stdout,
+      },
+    );
 
-      const output = await render(
-        <Wrapper
-          errBuffer={this.errBuffer}
-          exit={this.exit}
-          logger={this.logger}
-          outBuffer={this.outBuffer}
-          program={this.options}
-        >
-          {result || null}
-        </Wrapper>,
-        {
-          debug: process.env.NODE_ENV === 'test',
-          exitOnCtrlC: true,
-          experimental: true,
-          patchConsole: false, // We do this ourselves
-          stderr,
-          stdin,
-          stdout,
-        },
-      );
-
-      // This never resolves while testing
-      // istanbul ignore next
-      if (!env('CLI_TEST_ONLY')) {
-        await output.waitUntilExit();
-      }
-
-      this.rendering = false;
-      this.onAfterRender.emit([]);
-    } finally {
-      this.errBuffer.unwrap();
-      this.outBuffer.unwrap();
+    // This never resolves while testing
+    // istanbul ignore next
+    if (!env('CLI_TEST_ONLY')) {
+      await output.waitUntilExit();
     }
+
+    this.rendering = false;
+    this.onAfterRender.emit([]);
 
     return exitCode;
   }
