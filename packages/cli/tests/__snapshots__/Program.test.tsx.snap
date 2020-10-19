@@ -349,24 +349,24 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 
 exports[`<Program /> logging handles logging when rendering a component 1`] = `
 "Log
-[35mtrace[39m Trace
-[36minfo[39m Info
-Returned from component!Component log
 [90mdebug[39m Debug
-[33mwarn[39m Warn
+[36minfo[39m Info
+Component log
+Returned from component![33mwarn[39m Warn
 [31merror[39m Error
+[35mtrace[39m Trace
 [31merror[39m Component error
 "
 `;
 
 exports[`<Program /> logging handles logging when returning a string 1`] = `
 "Log
-[35mtrace[39m Trace
+[90mdebug[39m Debug
 [36minfo[39m Info
 Returned from command!
-[90mdebug[39m Debug
 [33mwarn[39m Warn
 [31merror[39m Error
+[35mtrace[39m Trace
 "
 `;
 
