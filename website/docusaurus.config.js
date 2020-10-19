@@ -23,6 +23,7 @@ module.exports = {
   url: 'https://boostlib.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
+  onDuplicateRoutes: 'throw',
   favicon: 'img/favicon.svg',
   organizationName: 'milesj',
   projectName: 'boost',
