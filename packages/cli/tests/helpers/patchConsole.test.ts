@@ -57,7 +57,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.info('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.cyan('info')} Hello${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.cyan('info')} Hello`));
   });
 
   it('wraps `console.debug`', () => {
@@ -66,7 +66,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.debug('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.gray('debug')} Hello${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.gray('debug')} Hello`));
   });
 
   it('wraps `console.error`', () => {
@@ -75,7 +75,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.error('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.red('error')} Hello${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.red('error')} Hello`));
   });
 
   it('wraps `console.trace`', () => {
@@ -85,7 +85,7 @@ describe('patchConsole()', () => {
     console.trace('Hello');
 
     expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining(`${chalk.magenta('trace')} Trace: Hello${os.EOL}`),
+      expect.stringContaining(`${chalk.magenta('trace')} Trace: Hello`),
     );
   });
 
@@ -95,7 +95,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.warn('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.yellow('warn')} Hello${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.yellow('warn')} Hello`));
   });
 
   it('wraps `console.assert`', () => {
@@ -106,7 +106,7 @@ describe('patchConsole()', () => {
     console.assert(false, 'does something');
 
     expect(spy).toHaveBeenCalledWith(
-      `${chalk.red('error')} Assertion failed: does something${os.EOL}`,
+      expect.stringContaining(`${chalk.red('error')} Assertion failed: does something`),
     );
   });
 
@@ -116,7 +116,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.count('foo');
 
-    expect(spy).toHaveBeenCalledWith(`foo: 1${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`foo: 1`));
   });
 
   it('wraps `console.dir`', () => {
@@ -125,7 +125,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.dir({ foo: 'bar' });
 
-    expect(spy).toHaveBeenCalledWith(`{ foo: 'bar' }${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`{ foo: 'bar' }`));
   });
 
   it('wraps `console.dirxml`', () => {
@@ -134,7 +134,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.dirxml({ foo: 'bar' });
 
-    expect(spy).toHaveBeenCalledWith(`{ foo: 'bar' }${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`{ foo: 'bar' }`));
   });
 
   it('wraps `console.time` and `console.timeLog`', () => {
