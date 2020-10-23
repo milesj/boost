@@ -1,4 +1,3 @@
-import os from 'os';
 import chalk from 'chalk';
 import debug from 'debug';
 import { createLogger, Loggable, StreamTransport, formats } from '@boost/log';
@@ -48,7 +47,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.log('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`Hello${os.EOL}`);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`Hello`));
   });
 
   it('wraps `console.info`', () => {
