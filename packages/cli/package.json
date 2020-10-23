@@ -41,6 +41,7 @@
     "react": "^16.8.0"
   },
   "devDependencies": {
+    "debug": "^4.2.0",
     "ink": "^3.0.7",
     "react": "^16.14.0"
   }

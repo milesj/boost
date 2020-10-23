@@ -2,7 +2,6 @@
 
 import { PassThrough } from 'stream';
 import util from 'util';
-import debug from 'debug';
 import { Loggable } from '@boost/log';
 import LogBuffer from '../LogBuffer';
 
@@ -86,6 +85,9 @@ export default function patchConsole(logger: Loggable, errBuffer: LogBuffer): ()
   // Wrap the `debug` stream since it writes to `process.stderr` directly
   // https://www.npmjs.com/package/debug#output-streams
   if (process.env.DEBUG) {
+    // eslint-disable-next-line
+    const debug = require('debug');
+
     unwrappers.push(
       wrap(debug, 'log', (message: string, ...args: unknown[]) => {
         // Do not pass to our logger since it's pre-formatted
