@@ -2603,10 +2603,10 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
-"@types/react@^16.9.52":
-  version "16.9.52"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.52.tgz#c46c72d1a1d8d9d666f4dd2066c0e22600ccfde1"
-  integrity sha512-EHRjmnxiNivwhGdMh9sz1Yw9AUxTSZFxKqdBWAAzyZx3sufWwx6ogqHYh/WB1m/I4ZpjkoZLExF5QTy2ekVi/Q==
+"@types/react@^16.9.53":
+  version "16.9.53"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.53.tgz#40cd4f8b8d6b9528aedd1fff8fcffe7a112a3d23"
+  integrity sha512-4nW60Sd4L7+WMXH1D6jCdVftuW7j4Za6zdp6tJ33Rqv0nk1ZAmQKML9ZLD4H0dehA3FZxXR/GM8gXplf82oNGw==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -5700,10 +5700,10 @@ init-package-json@^1.10.3:
     validate-npm-package-license "^3.0.1"
     validate-npm-package-name "^3.0.0"
 
-ink@^3.0.7:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/ink/-/ink-3.0.7.tgz#acf8f3da628f3fff6d0e48642a57d82a6720bb5d"
-  integrity sha512-DF/Ena9E8af4+dYu4rrk60WwWB54CPL4s4OspDnBk0uZqntmNZLfc4PftreHeW3sUeQJK+2MdQvPLORro7mDQQ==
+ink@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/ink/-/ink-3.0.8.tgz#c527957c8fa4efcc139b67a4cbba7bb8a62b18b0"
+  integrity sha512-ubMFylXYaG4IkXQVhPautbhV/p6Lo0GlvAMI/jh8cGJQ39yeznJbaTTJP2CqZXezA4GOHzalpwCWqux/NEY38w==
   dependencies:
     ansi-escapes "^4.2.1"
     auto-bind "4.0.0"
