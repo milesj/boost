@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.4.2 - 2020-10-23
+
+#### 🐞 Fixes
+
+- Patch console to fix CLI output tearing. (#116) ([d8ed493](https://github.com/milesj/boost/commit/d8ed493)), closes [#116](https://github.com/milesj/boost/issues/116)
+
+#### 📦 Dependencies
+
+- **[ink]** Update to latest. ([e8044db](https://github.com/milesj/boost/commit/e8044db))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.4.1 - 2020-10-19
 
 #### 🐞 Fixes

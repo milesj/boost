@@ -1,6 +1,6 @@
 {
   "name": "@boost/cli",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "release": "1594765247526",
   "description": "An interactive command line program builder, powered by React and Ink.",
   "keywords": [
