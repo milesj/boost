@@ -323,14 +323,9 @@ export default class Program extends CommandManager<ProgramOptions> {
 
   /**
    * Wrap the global `console` to write to our logger and inherit formatting
-   * functionality. We also bind the callback provided from Ink to our buffer's
-   * so that their output is immediately written.
-   *
-   * This is kind of crazy, I know.
+   * functionality. This is kind of crazy, I know.
    */
-  protected patchConsole(
-    callback: (stream: 'stdout' | 'stderr', message: string) => void,
-  ): () => void {
+  protected patchConsole(): () => void {
     const unwrappers: (() => void)[] = [];
 
     // Utility method for wrapping and patching an API temporarily
@@ -347,10 +342,6 @@ export default class Program extends CommandManager<ProgramOptions> {
         Object.defineProperty(api, method, { value: original });
       });
     }
-
-    // Update buffers to write to the Ink process
-    this.errBuffer.on((message) => callback('stderr', message));
-    this.outBuffer.on((message) => callback('stdout', message));
 
     // Wrap the native `console` and pipe to our logger
     let lastMethod = '';
@@ -392,7 +383,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     if (process.env.DEBUG) {
       wrap(debug, 'log', (message: string, ...args: unknown[]) => {
         // Do not pass to our logger since we want to avoid formatting it
-        callback('stderr', util.format(message, ...args));
+        this.errBuffer.write(util.format(message, ...args));
       });
     }
 
@@ -400,9 +391,6 @@ export default class Program extends CommandManager<ProgramOptions> {
       unwrappers.forEach((unwrap) => {
         unwrap();
       });
-
-      this.errBuffer.off();
-      this.outBuffer.off();
     };
   }
 
@@ -427,29 +415,40 @@ export default class Program extends CommandManager<ProgramOptions> {
       throw new CLIError('REACT_RENDER_NO_NESTED');
     }
 
-    this.onBeforeRender.emit([result]);
-    this.rendering = true;
+    const unpatch = this.patchConsole();
 
-    const output = await render(
-      <Wrapper exit={this.exit} logger={this.logger} program={this.options}>
-        {result || null}
-      </Wrapper>,
-      {
-        debug: process.env.NODE_ENV === 'test',
-        exitOnCtrlC: true,
-        experimental: true,
-        // @ts-expect-error
-        patchConsole: this.patchConsole,
-        stderr,
-        stdin,
-        stdout,
-      },
-    );
+    try {
+      this.onBeforeRender.emit([result]);
+      this.rendering = true;
 
-    // This never resolves while testing
-    // istanbul ignore next
-    if (!env('CLI_TEST_ONLY')) {
-      await output.waitUntilExit();
+      const output = await render(
+        <Wrapper
+          errBuffer={this.errBuffer}
+          exit={this.exit}
+          logger={this.logger}
+          outBuffer={this.outBuffer}
+          program={this.options}
+        >
+          {result || null}
+        </Wrapper>,
+        {
+          debug: process.env.NODE_ENV === 'test',
+          exitOnCtrlC: true,
+          experimental: true,
+          patchConsole: false,
+          stderr,
+          stdin,
+          stdout,
+        },
+      );
+
+      // This never resolves while testing
+      // istanbul ignore next
+      if (!env('CLI_TEST_ONLY')) {
+        await output.waitUntilExit();
+      }
+    } finally {
+      unpatch();
     }
 
     this.rendering = false;

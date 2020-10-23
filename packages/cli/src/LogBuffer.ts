@@ -9,12 +9,12 @@ export default class LogBuffer {
     this.stream = stream;
   }
 
-  off() {
-    delete this.listener;
-  }
-
   on(listener: BufferListener) {
     this.listener = listener;
+
+    return () => {
+      delete this.listener;
+    };
   }
 
   write = (message: string) => {
