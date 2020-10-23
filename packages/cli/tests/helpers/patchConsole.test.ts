@@ -1,3 +1,4 @@
+import os from 'os';
 import chalk from 'chalk';
 import debug from 'debug';
 import { createLogger, Loggable, StreamTransport, formats } from '@boost/log';
@@ -47,7 +48,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.log('Hello');
 
-    expect(spy).toHaveBeenCalledWith('Hello\n');
+    expect(spy).toHaveBeenCalledWith(`Hello${os.EOL}`);
   });
 
   it('wraps `console.info`', () => {
@@ -56,7 +57,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.info('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.cyan('info')} Hello\n`);
+    expect(spy).toHaveBeenCalledWith(`${chalk.cyan('info')} Hello${os.EOL}`);
   });
 
   it('wraps `console.debug`', () => {
@@ -65,7 +66,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.debug('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.gray('debug')} Hello\n`);
+    expect(spy).toHaveBeenCalledWith(`${chalk.gray('debug')} Hello${os.EOL}`);
   });
 
   it('wraps `console.error`', () => {
@@ -74,7 +75,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.error('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.red('error')} Hello\n`);
+    expect(spy).toHaveBeenCalledWith(`${chalk.red('error')} Hello${os.EOL}`);
   });
 
   it('wraps `console.trace`', () => {
@@ -84,7 +85,7 @@ describe('patchConsole()', () => {
     console.trace('Hello');
 
     expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining(`${chalk.magenta('trace')} Trace: Hello\n`),
+      expect.stringContaining(`${chalk.magenta('trace')} Trace: Hello${os.EOL}`),
     );
   });
 
@@ -94,7 +95,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.warn('Hello');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.yellow('warn')} Hello\n`);
+    expect(spy).toHaveBeenCalledWith(`${chalk.yellow('warn')} Hello${os.EOL}`);
   });
 
   it('wraps `console.assert`', () => {
@@ -104,7 +105,9 @@ describe('patchConsole()', () => {
     console.assert(true, 'does nothing');
     console.assert(false, 'does something');
 
-    expect(spy).toHaveBeenCalledWith(`${chalk.red('error')} Assertion failed: does something\n`);
+    expect(spy).toHaveBeenCalledWith(
+      `${chalk.red('error')} Assertion failed: does something${os.EOL}`,
+    );
   });
 
   it('wraps `console.count`', () => {
@@ -113,7 +116,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.count('foo');
 
-    expect(spy).toHaveBeenCalledWith('foo: 1\n');
+    expect(spy).toHaveBeenCalledWith(`foo: 1${os.EOL}`);
   });
 
   it('wraps `console.dir`', () => {
@@ -122,7 +125,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.dir({ foo: 'bar' });
 
-    expect(spy).toHaveBeenCalledWith(`{ foo: 'bar' }\n`);
+    expect(spy).toHaveBeenCalledWith(`{ foo: 'bar' }${os.EOL}`);
   });
 
   it('wraps `console.dirxml`', () => {
@@ -131,7 +134,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.dirxml({ foo: 'bar' });
 
-    expect(spy).toHaveBeenCalledWith(`{ foo: 'bar' }\n`);
+    expect(spy).toHaveBeenCalledWith(`{ foo: 'bar' }${os.EOL}`);
   });
 
   it('wraps `console.time` and `console.timeLog`', () => {
