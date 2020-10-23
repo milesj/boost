@@ -24,6 +24,7 @@ import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import isArgvSize from './helpers/isArgvSize';
+import patchConsole from './helpers/patchConsole';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
@@ -100,20 +101,22 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     Object.assign(this.streams, streams);
 
-    this.errBuffer = new LogBuffer('stderr', this.streams.stderr);
-    this.outBuffer = new LogBuffer('stdout', this.streams.stdout);
+    // Buffers logs during the Ink rendering process
+    this.errBuffer = new LogBuffer(this.streams.stderr);
+    this.outBuffer = new LogBuffer(this.streams.stdout);
 
+    // Both logger and global console will write to the buffers
     this.logger = createLogger({
       name: 'cli',
       transports: [
         new StreamTransport({
           format: formats.console,
-          levels: ['debug', 'error', 'warn'],
+          levels: ['error', 'trace', 'warn'],
           stream: this.errBuffer,
         }),
         new StreamTransport({
           format: formats.console,
-          levels: ['log', 'trace', 'info'],
+          levels: ['debug', 'info', 'log'],
           stream: this.outBuffer,
         }),
       ],
@@ -121,14 +124,6 @@ export default class Program extends CommandManager<ProgramOptions> {
 
     this.onAfterRegister.listen(this.handleAfterRegister);
     this.onBeforeRegister.listen(this.handleBeforeRegister);
-
-    // istanbul ignore next
-    // if (process.env.NODE_ENV !== 'test') {
-    //   process.on('SIGINT', () => {
-    //     this.errBuffer.unwrap();
-    //     this.outBuffer.unwrap();
-    //   });
-    // }
   }
 
   blueprint({ string }: Predicates): Blueprint<ProgramOptions> {
@@ -342,10 +337,9 @@ export default class Program extends CommandManager<ProgramOptions> {
       throw new CLIError('REACT_RENDER_NO_NESTED');
     }
 
-    try {
-      this.errBuffer.wrap(this.logger);
-      this.outBuffer.wrap(this.logger);
+    const unpatch = patchConsole(this.logger, this.errBuffer);
 
+    try {
       this.onBeforeRender.emit([result]);
       this.rendering = true;
 
@@ -363,7 +357,7 @@ export default class Program extends CommandManager<ProgramOptions> {
           debug: process.env.NODE_ENV === 'test',
           exitOnCtrlC: true,
           experimental: true,
-          patchConsole: false, // We do this ourselves
+          patchConsole: false,
           stderr,
           stdin,
           stdout,
@@ -379,8 +373,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.rendering = false;
       this.onAfterRender.emit([]);
     } finally {
-      this.errBuffer.unwrap();
-      this.outBuffer.unwrap();
+      unpatch();
     }
 
     return exitCode;

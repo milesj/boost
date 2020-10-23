@@ -1,6 +1,6 @@
 /* eslint-disable security/detect-unsafe-regex */
 
-import { ExitCode, StreamType } from './types';
+import { ExitCode } from './types';
 
 // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 export const VERSION_FORMAT = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/u;
@@ -29,8 +29,6 @@ export const RESERVED_OPTIONS = [
   'commands',
   'commandAliases',
 ];
-
-export const STREAM_TYPES: StreamType[] = ['stderr', 'stdout'];
 
 export const SPACING_COL = 1;
 export const SPACING_COL_WIDE = 2;

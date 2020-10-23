@@ -12,23 +12,11 @@ export default function LogWriter({ errBuffer, outBuffer }: LogWriterProps) {
   const { write: writeOut } = useStdout();
 
   useEffect(() => {
-    errBuffer.on((logs) => {
-      logs.forEach(writeErr);
-    });
-
-    return () => {
-      errBuffer.off();
-    };
+    return errBuffer.on(writeErr);
   }, [errBuffer, writeErr]);
 
   useEffect(() => {
-    outBuffer.on((logs) => {
-      logs.forEach(writeOut);
-    });
-
-    return () => {
-      outBuffer.off();
-    };
+    return outBuffer.on(writeOut);
   }, [outBuffer, writeOut]);
 
   return null;

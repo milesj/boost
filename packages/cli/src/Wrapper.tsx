@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from 'ink';
 import { LoggerFunction } from '@boost/log';
-import Failure from './Failure';
 import LogWriter, { LogWriterProps } from './LogWriter';
+import Failure from './Failure';
 import ProgramContext from './ProgramContext';
 import { ProgramOptions, ExitHandler } from './types';
 

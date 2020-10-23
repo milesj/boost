@@ -54,8 +54,6 @@ export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-export type StreamType = 'stderr' | 'stdout';
-
 export interface GlobalOptions {
   help: boolean;
   locale: string;
