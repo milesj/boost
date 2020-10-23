@@ -1,11 +1,5 @@
-/* eslint-disable no-console, node/no-callback-literal */
-
 import React from 'react';
-import { PassThrough } from 'stream';
-import util from 'util';
 import { render } from 'ink';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import debug from 'debug';
 import {
   ArgList,
   Arguments,
@@ -30,6 +24,7 @@ import Help from './Help';
 import IndexHelp from './IndexHelp';
 import Wrapper from './Wrapper';
 import isArgvSize from './helpers/isArgvSize';
+import patchConsole from './helpers/patchConsole';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
@@ -322,79 +317,6 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
-   * Wrap the global `console` to write to our logger and inherit formatting
-   * functionality. This is kind of crazy, I know.
-   */
-  protected patchConsole(): () => void {
-    const unwrappers: (() => void)[] = [];
-
-    // Utility method for wrapping and patching an API temporarily
-    function wrap<T, K extends keyof T>(api: T, method: K, callback: T[K]) {
-      const original = api[method];
-
-      if (typeof original !== 'function') {
-        return;
-      }
-
-      Object.defineProperty(api, method, { value: callback });
-
-      unwrappers.push(() => {
-        Object.defineProperty(api, method, { value: original });
-      });
-    }
-
-    // Wrap the native `console` and pipe to our logger
-    let lastMethod = '';
-
-    const patchedConsole = new console.Console(
-      new PassThrough({
-        write: (message) => {
-          if (lastMethod === 'debug') {
-            this.logger.debug(message);
-          } else if (lastMethod === 'info') {
-            this.logger.info(message);
-          } else {
-            this.logger.log(message);
-          }
-        },
-      }),
-      new PassThrough({
-        write: (message) => {
-          if (lastMethod === 'trace') {
-            this.logger.trace(message);
-          } else if (lastMethod === 'warn') {
-            this.logger.warn(message);
-          } else {
-            this.logger.error(message);
-          }
-        },
-      }),
-    );
-
-    (Object.keys(console) as (keyof typeof console)[]).forEach((method) => {
-      wrap(console, method, (...args: unknown[]) => {
-        lastMethod = method;
-        patchedConsole[method](...args);
-      });
-    });
-
-    // Wrap the `debug` stream since it writes to `process.stderr` directly
-    // https://www.npmjs.com/package/debug#output-streams
-    if (process.env.DEBUG) {
-      wrap(debug, 'log', (message: string, ...args: unknown[]) => {
-        // Do not pass to our logger since we want to avoid formatting it
-        this.errBuffer.write(util.format(message, ...args));
-      });
-    }
-
-    return () => {
-      unwrappers.forEach((unwrap) => {
-        unwrap();
-      });
-    };
-  }
-
-  /**
    * Render the result of a command's run to the defined stream.
    * If a string has been returned, write it immediately.
    * If a React component, render with Ink and wait for it to finish.
@@ -415,7 +337,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       throw new CLIError('REACT_RENDER_NO_NESTED');
     }
 
-    const unpatch = this.patchConsole();
+    const unpatch = patchConsole(this.logger, this.errBuffer);
 
     try {
       this.onBeforeRender.emit([result]);
@@ -447,12 +369,12 @@ export default class Program extends CommandManager<ProgramOptions> {
       if (!env('CLI_TEST_ONLY')) {
         await output.waitUntilExit();
       }
+
+      this.rendering = false;
+      this.onAfterRender.emit([]);
     } finally {
       unpatch();
     }
-
-    this.rendering = false;
-    this.onAfterRender.emit([]);
 
     return exitCode;
   }
