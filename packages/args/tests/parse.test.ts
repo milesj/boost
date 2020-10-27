@@ -269,6 +269,30 @@ describe('parse()', () => {
           unknown: {},
         });
       });
+
+      it('doesnt error when an empty value is passed for choices', () => {
+        const result = parse<{ opt: string }>([], {
+          options: {
+            opt: {
+              choices: ['foo', 'bar', 'baz'],
+              default: '',
+              description: '',
+              type: 'string',
+            },
+          },
+        });
+
+        expect(result).toEqual({
+          command: [],
+          errors: [],
+          options: {
+            opt: '',
+          },
+          params: [],
+          rest: [],
+          unknown: {},
+        });
+      });
     });
 
     describe('single - count', () => {
