@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.4.3 - 2020-10-27
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.4.2 - 2020-10-23
 
 #### 🐞 Fixes
