@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.4.4 - 2020-11-04
+
+#### 🐞 Fixes
+
+- Fix Node binary checks on Windows. ([f0b748f](https://github.com/milesj/boost/commit/f0b748f))
+
+#### 📦 Dependencies
+
+- **[execa]** Update to v4.1. ([9b749ce](https://github.com/milesj/boost/commit/9b749ce))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.4.3 - 2020-10-27
 
 **Note:** Version bump only for package @boost/cli
