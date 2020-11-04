@@ -1,10 +1,11 @@
 import { Argv } from '../types';
+import isNodeBinary from './isNodeBinary';
 
 export default function isArgvSize(argv: Argv, size: number): boolean {
   let list = [...argv];
 
   // Node process binaries are included
-  if (list.length > 0 && list[0].endsWith('node')) {
+  if (list.length > 0 && isNodeBinary(list[0])) {
     list = list.slice(2);
   }
 
