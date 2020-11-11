@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.5.0 - 2020-11-11
+
+#### 🚀 Updates
+
+- **[Failure]** Add hideStackTrace prop. ([65240f7](https://github.com/milesj/boost/commit/65240f7))
+
+#### 🐞 Fixes
+
+- Dont display stack trace for manual exits. ([7327cee](https://github.com/milesj/boost/commit/7327cee))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.4.4 - 2020-11-04
 
 #### 🐞 Fixes

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.4.0 - 2020-11-11
+
+#### 🚀 Updates
+
+- Add `PackageGraph` class. (#117) ([6f2d344](https://github.com/milesj/boost/commit/6f2d344)), closes [#117](https://github.com/milesj/boost/issues/117)
+- Update package.json related types. ([e2b286a](https://github.com/milesj/boost/commit/e2b286a))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 2.3.0 - 2020-10-15
 
 #### 🚀 Updates
