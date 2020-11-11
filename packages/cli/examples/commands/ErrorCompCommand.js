@@ -1,26 +1,14 @@
 const React = require('react');
-const { Box, Text, Static } = require('ink');
-const { Command, useProgram } = require('../../lib');
+const { Text } = require('ink');
+const { Command } = require('../../lib');
 const sleep = require('../sleep');
 
-const items = [{ key: 'foo' }, { key: 'bar' }, { key: 'baz' }];
-
 function ThrowError() {
-  const { exit } = useProgram();
-
   React.useEffect(() => {
-    exit(new Error('Exit was triggered!'));
-  }, [exit]);
+    throw new Error('Exit was triggered!');
+  }, []);
 
-  return React.createElement(
-    Box,
-    { flexDirection: 'column' },
-    React.createElement(Static, { items }, ({ key }) => React.createElement(Text, { key }, key)),
-    // ...items.map(({ key }) =>
-    //   React.createElement(Box, { key }, React.createElement(Text, {}, key)),
-    // ),
-    React.createElement(Text, {}, 'Content'),
-  );
+  return React.createElement(Text, {}, 'Content');
 }
 
 module.exports = class ErrorCompCommand extends Command {
@@ -31,7 +19,7 @@ module.exports = class ErrorCompCommand extends Command {
   static category = 'test';
 
   async run() {
-    console.log('Will render a component that throws in 1 second...');
+    console.log('Will render a component that throws an error in 1 second...');
 
     await sleep(1000);
 

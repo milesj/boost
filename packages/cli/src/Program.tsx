@@ -167,8 +167,9 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
-  exit = (error: string | Error, code: ExitCode = EXIT_FAIL) => {
-    const message = error instanceof Error ? error.message : error;
+  exit = (error?: string | Error, errorCode?: ExitCode) => {
+    const message = error instanceof Error ? error.message : error || '';
+    const code = message ? errorCode || EXIT_FAIL : EXIT_PASS;
 
     this.onExit.emit([message, code]);
 
@@ -393,10 +394,16 @@ export default class Program extends CommandManager<ProgramOptions> {
    * If argument parser or validation errors are found, treat them with special logic.
    */
   protected renderErrors(errors: Error[]): Promise<ExitCode> {
+    const exitError = errors[0];
+
+    if (exitError instanceof ExitError && exitError.code === 0) {
+      return Promise.resolve(exitError.code);
+    }
+
     // eslint-disable-next-line unicorn/prefer-array-find
     const parseErrors = errors.filter((error) => error instanceof ParseError);
     const validErrors = errors.filter((error) => error instanceof ValidationError);
-    const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
+    const error = parseErrors[0] ?? validErrors[0] ?? exitError;
 
     // Mostly for testing, but useful for other things
     // istanbul ignore next

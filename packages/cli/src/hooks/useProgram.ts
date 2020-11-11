@@ -11,9 +11,9 @@ export default function useProgram(): ProgramContextType {
 
   return {
     ...program,
-    exit(error, code = EXIT_FAIL) {
+    exit(error, code) {
       if (error) {
-        exit(new ExitError(error instanceof Error ? error.message : error, code));
+        exit(new ExitError(error instanceof Error ? error.message : error, code || EXIT_FAIL));
       } else {
         exit();
       }

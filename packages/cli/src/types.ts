@@ -72,7 +72,7 @@ export interface Categories {
 
 export type ExitCode = number;
 
-export type ExitHandler = (message: string | Error, code?: ExitCode) => void;
+export type ExitHandler = (error?: string | Error, code?: ExitCode) => void;
 
 export interface ProgramOptions {
   banner?: string;
@@ -91,7 +91,7 @@ export interface ProgramStreams {
 }
 
 export interface ProgramContextType {
-  exit: ExitHandler | (() => void);
+  exit: ExitHandler;
   log: LoggerFunction;
   program: ProgramOptions;
 }
