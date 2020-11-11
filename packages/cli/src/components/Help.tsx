@@ -5,16 +5,16 @@ import { toArray } from '@boost/common';
 import { stripAnsi } from '@boost/terminal';
 import Header from './Header';
 import Style from './Style';
-import msg from './translate';
-import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from './constants';
-import { CommandConfigMap, CommandConfig, Categories } from './types';
+import msg from '../translate';
+import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from '../constants';
+import { CommandConfigMap, CommandConfig, Categories } from '../types';
 import {
   formatType,
   getLongestWidth,
   groupByCategory,
   formatDescription,
   formatCommandCall,
-} from './helpers';
+} from '../helpers';
 
 export interface HelpProps {
   categories?: Categories;

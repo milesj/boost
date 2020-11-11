@@ -5,13 +5,13 @@ import { Box, Text } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
 import { ExitError } from '@boost/common';
 import { screen } from '@boost/terminal';
-import CLIError from './CLIError';
+import CLIError from '../CLIError';
 import Header from './Header';
 import Style from './Style';
-import { SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
-import applyStyle from './helpers/applyStyle';
-import msg from './translate';
-import { StyleType } from './types';
+import { SPACING_COL, SPACING_ROW, DELIMITER } from '../constants';
+import applyStyle from '../helpers/applyStyle';
+import msg from '../translate';
+import { StyleType } from '../types';
 
 export interface FailureProps {
   binName?: string;

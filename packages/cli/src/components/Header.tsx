@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from 'ink';
 import Style from './Style';
-import { StyleType } from './types';
-import { SPACING_ROW } from './constants';
+import { StyleType } from '../types';
+import { SPACING_ROW } from '../constants';
 
 export interface HeaderProps {
   label: string;

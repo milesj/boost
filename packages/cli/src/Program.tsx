@@ -19,10 +19,10 @@ import CLIError from './CLIError';
 import Command from './Command';
 import CommandManager from './CommandManager';
 import LogBuffer from './LogBuffer';
-import Failure from './Failure';
-import Help from './Help';
-import IndexHelp from './IndexHelp';
-import Wrapper from './Wrapper';
+import Failure from './components/Failure';
+import Help from './components/Help';
+import IndexHelp from './components/IndexHelp';
+import Wrapper from './components/Wrapper';
 import isArgvSize from './helpers/isArgvSize';
 import patchConsole from './helpers/patchConsole';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
@@ -350,7 +350,7 @@ export default class Program extends CommandManager<ProgramOptions> {
         <Wrapper
           errBuffer={this.errBuffer}
           exit={this.exit}
-          logger={this.logger}
+          log={this.logger}
           outBuffer={this.outBuffer}
           program={this.options}
         >

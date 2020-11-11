@@ -91,7 +91,7 @@ export interface ProgramStreams {
 }
 
 export interface ProgramContextType {
-  exit: ExitHandler;
+  exit: ExitHandler | (() => void);
   log: LoggerFunction;
   program: ProgramOptions;
 }

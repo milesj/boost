@@ -12,7 +12,11 @@ export default function useProgram(): ProgramContextType {
   return {
     ...program,
     exit(error, code = EXIT_FAIL) {
-      exit(new ExitError(error instanceof Error ? error.message : error, code));
+      if (error) {
+        exit(new ExitError(error instanceof Error ? error.message : error, code));
+      } else {
+        exit();
+      }
     },
   };
 }

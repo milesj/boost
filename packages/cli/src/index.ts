@@ -4,13 +4,13 @@
  */
 
 import Command from './Command';
-import Failure from './Failure';
-import Header from './Header';
-import Help from './Help';
-import IndexHelp from './IndexHelp';
 import Program from './Program';
 import ProgramContext from './ProgramContext';
-import Style from './Style';
+import Failure from './components/Failure';
+import Header from './components/Header';
+import Help from './components/Help';
+import IndexHelp from './components/IndexHelp';
+import Style from './components/Style';
 import CLIError from './CLIError';
 import type { CLIErrorCode } from './CLIError';
 
