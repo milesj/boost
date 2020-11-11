@@ -17,6 +17,7 @@ export interface FailureProps {
   commandLine?: string;
   delimiter?: string;
   error: Error;
+  hideStackTrace?: boolean;
   warnings?: Error[];
 }
 
@@ -77,9 +78,10 @@ export default class Failure extends React.Component<FailureProps> {
   }
 
   renderStackTrace() {
-    const { error } = this.props;
+    const { error, hideStackTrace } = this.props;
 
     if (
+      hideStackTrace ||
       !error.stack ||
       error instanceof ParseError ||
       error instanceof ValidationError ||
