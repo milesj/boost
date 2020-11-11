@@ -1,6 +1,7 @@
 const { Program } = require('../lib');
 const BuildCommand = require('./commands/BuildCommand');
 const ErrorCommand = require('./commands/ErrorCommand');
+const ErrorCompCommand = require('./commands/ErrorCompCommand');
 const LoggerCommand = require('./commands/LoggerCommand');
 const ScaffoldCommand = require('./commands/ScaffoldCommand');
 const OptionsCommand = require('./commands/OptionsCommand');
@@ -24,6 +25,7 @@ new Program({
   })
   .register(new BuildCommand())
   .register(new ErrorCommand())
+  .register(new ErrorCompCommand())
   .register(new LoggerCommand())
   .register(new ScaffoldCommand())
   .register(new OptionsCommand())

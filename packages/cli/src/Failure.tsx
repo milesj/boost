@@ -23,6 +23,20 @@ export interface FailureProps {
 }
 
 export default class Failure extends React.Component<FailureProps> {
+  shouldHideStackTrace() {
+    const { error, hideStackTrace } = this.props;
+
+    return (
+      hideStackTrace ||
+      !error.stack ||
+      error instanceof ExitError ||
+      error instanceof ParseError ||
+      error instanceof ValidationError ||
+      error instanceof CLIError ||
+      process.env.NODE_ENV === 'test'
+    );
+  }
+
   renderCodeFrame() {
     const { binName, commandLine, delimiter = DELIMITER, error } = this.props;
 
@@ -79,18 +93,11 @@ export default class Failure extends React.Component<FailureProps> {
   }
 
   renderStackTrace() {
-    const { error, hideStackTrace } = this.props;
+    const { error } = this.props;
 
-    if (
-      hideStackTrace ||
-      !error.stack ||
-      error instanceof ExitError ||
-      error instanceof ParseError ||
-      error instanceof ValidationError ||
-      error instanceof CLIError ||
-      process.env.NODE_ENV === 'test'
-    ) {
-      return null;
+    // Provide some bottom spacing
+    if (this.shouldHideStackTrace()) {
+      return <Box marginBottom={1} />;
     }
 
     // Stack traces are not deterministic so we cannot snapshot this
@@ -99,7 +106,7 @@ export default class Failure extends React.Component<FailureProps> {
       <>
         <Header label={msg('cli:labelStackTrace')} type="muted" />
 
-        <Box width="100%">
+        <Box width="100%" marginBottom={1}>
           <Style type="muted">
             {error.stack!.replace(`${error.constructor.name}: ${error.message}\n`, '')}
           </Style>

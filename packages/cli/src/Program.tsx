@@ -335,13 +335,14 @@ export default class Program extends CommandManager<ProgramOptions> {
     // istanbul ignore next
     if (this.rendering) {
       throw new CLIError('REACT_RENDER_NO_NESTED');
+    } else {
+      this.rendering = true;
     }
 
     const unpatch = patchConsole(this.logger, this.errBuffer);
 
     try {
       this.onBeforeRender.emit([result]);
-      this.rendering = true;
 
       const output = await render(
         <Wrapper
@@ -370,9 +371,11 @@ export default class Program extends CommandManager<ProgramOptions> {
         await output.waitUntilExit();
       }
 
-      this.rendering = false;
       this.onAfterRender.emit([]);
+    } catch (error) {
+      this.exit(error.message, EXIT_FAIL);
     } finally {
+      this.rendering = false;
       unpatch();
     }
 
