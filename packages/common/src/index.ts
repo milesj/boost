@@ -8,6 +8,7 @@ import CommonError from './CommonError';
 import type { CommonErrorCode } from './CommonError';
 import Contract from './Contract';
 import ExitError from './ExitError';
+import PackageGraph from './PackageGraph';
 import Path from './Path';
 import PathResolver from './PathResolver';
 import Project from './Project';
@@ -24,6 +25,7 @@ export {
   Contract,
   Blueprint,
   ExitError,
+  PackageGraph,
   Path,
   PathResolver,
   Predicates,

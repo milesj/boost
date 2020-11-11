@@ -16,6 +16,7 @@ module.exports = {
           items: [
             'common',
             'common/contract',
+            'common/package-graph',
             'common/path',
             'common/path-resolver',
             'common/project',

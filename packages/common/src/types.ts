@@ -124,6 +124,16 @@ export interface PackageStructure {
       };
 }
 
+export interface PackageGraphTreeNode<T extends PackageStructure> {
+  nodes?: PackageGraphTreeNode<T>[];
+  package: T;
+}
+
+export interface PackageGraphTree<T extends PackageStructure> {
+  nodes: PackageGraphTreeNode<T>[];
+  root: boolean;
+}
+
 // WORKSPACES
 
 export interface WorkspaceMetadata {
