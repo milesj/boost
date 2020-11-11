@@ -3,6 +3,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
+import { ExitError } from '@boost/common';
 import { screen } from '@boost/terminal';
 import CLIError from './CLIError';
 import Header from './Header';
@@ -83,6 +84,7 @@ export default class Failure extends React.Component<FailureProps> {
     if (
       hideStackTrace ||
       !error.stack ||
+      error instanceof ExitError ||
       error instanceof ParseError ||
       error instanceof ValidationError ||
       error instanceof CLIError ||
