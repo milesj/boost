@@ -14,8 +14,11 @@ function ThrowError() {
 
   return React.createElement(
     Box,
-    {},
-    React.createElement(Static, { items }, ({ key }) => React.createElement(Text, { key }, key)),
+    { flexDirection: 'column' },
+    // React.createElement(Static, { items }, ({ key }) => React.createElement(Text, { key }, key)),
+    ...items.map(({ key }) =>
+      React.createElement(Box, { key }, React.createElement(Text, {}, key)),
+    ),
     React.createElement(Text, {}, 'Content'),
   );
 }
