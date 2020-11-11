@@ -46,10 +46,14 @@ export interface Toolable {
 
 // PACKAGES
 
+export type SettingMap<T extends string = string> = Record<T, string>;
+
 export interface BugSetting {
   url?: string;
   email?: string;
 }
+
+export type DependencyMap = SettingMap;
 
 export interface TypeSetting {
   type: string;
@@ -62,12 +66,8 @@ export interface PeopleSetting {
   url?: string;
 }
 
-export interface SettingMap {
-  [key: string]: string;
-}
-
-export interface DependencyMap {
-  [module: string]: string;
+export interface RepositorySetting extends TypeSetting {
+  directory?: string;
 }
 
 export interface PackageStructure {
@@ -83,11 +83,13 @@ export interface PackageStructure {
   dependencies?: DependencyMap;
   description?: string;
   devDependencies?: DependencyMap;
-  directories?: SettingMap;
+  directories?: SettingMap<'bin' | 'doc' | 'example' | 'lib' | 'man' | 'test'>;
   engines?: SettingMap;
-  exports?: { [path: string]: string | string[] | SettingMap };
+  exports?: string | Record<string, string | string[] | SettingMap>;
   files?: string[];
+  funding?: string | TypeSetting | (string | TypeSetting)[];
   homepage?: string;
+  imports?: Record<string, SettingMap>;
   keywords?: string[];
   license?: string | TypeSetting | TypeSetting[];
   main?: string;
@@ -102,17 +104,13 @@ export interface PackageStructure {
     registry?: string;
     tag?: string;
   };
-  repository?: string | TypeSetting;
+  repository?: string | RepositorySetting;
   scripts?: SettingMap;
   type?: 'commonjs' | 'module';
   version: string;
   // TypeScript
   types?: string;
-  typesVersions?: {
-    [version: string]: {
-      [glob: string]: string[];
-    };
-  };
+  typesVersions?: Record<string, Record<string, string[]>>;
   typings?: string;
   // Webpack
   module?: string;
