@@ -778,7 +778,7 @@ For a quick demonstration, let's implement a component that writes to a file asy
 import fs from 'fs';
 import React, { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { Style, ProgramContext } from '@boost/cli';
+import { Style, useProgram } from '@boost/cli';
 
 interface WriteConfigProps {
   data: object;
@@ -786,7 +786,7 @@ interface WriteConfigProps {
 }
 
 export default function WriteConfig({ data, path }: WriteConfigProps) {
-  const { exit } = useContext(ProgramContext);
+  const { exit } = useProgram();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -796,7 +796,7 @@ export default function WriteConfig({ data, path }: WriteConfigProps) {
         setLoading(false);
       })
       .catch((error) => {
-        exit(error.message);
+        exit(error);
       });
   }, [path]);
 

@@ -30,4 +30,4 @@ new Program({
   .register(new ScaffoldCommand())
   .register(new OptionsCommand())
   .register(new ParamsCommand())
-  .run(process.argv.slice(2));
+  .runAndExit(process.argv.slice(2));

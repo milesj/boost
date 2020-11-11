@@ -1,12 +1,12 @@
 const React = require('react');
-const { Box, Text, Static, useApp } = require('ink');
-const { Command } = require('../../lib');
+const { Box, Text, Static } = require('ink');
+const { Command, useProgram } = require('../../lib');
 const sleep = require('../sleep');
 
 const items = [{ key: 'foo' }, { key: 'bar' }, { key: 'baz' }];
 
 function ThrowError() {
-  const { exit } = useApp();
+  const { exit } = useProgram();
 
   React.useEffect(() => {
     exit(new Error('Exit was triggered!'));
@@ -15,7 +15,7 @@ function ThrowError() {
   return React.createElement(
     Box,
     {},
-    // React.createElement(Static, { items }, ({ key }) => React.createElement(Text, { key }, key)),
+    React.createElement(Static, { items }, ({ key }) => React.createElement(Text, { key }, key)),
     React.createElement(Text, {}, 'Content'),
   );
 }

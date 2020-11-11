@@ -42,7 +42,8 @@ exports[`<Program /> failure renders if an error is thrown 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Broken!"
+ Broken!
+"
 `;
 
 exports[`<Program /> failure renders when args parsing fails 1`] = `
@@ -52,28 +53,32 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
  Unknown option \\"--foo\\" found. Did you mean \\"help\\"? [ARG:OPTION_UNKNOWN_MORE]
 
  [90m$ boost [31m--foo[39m[90m[39m
- [31m        └───┘[39m"
+ [31m        └───┘[39m
+"
 `;
 
 exports[`<Program /> failure renders when invalid command name passed 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Unknown command \\"prune\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]"
+ Unknown command \\"prune\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]
+"
 `;
 
 exports[`<Program /> failure renders when misspelt command name passed 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Unknown command \\"buld\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]"
+ Unknown command \\"buld\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]
+"
 `;
 
 exports[`<Program /> failure renders when no commands could be found 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Failed to determine a command to run. [CLI:COMMAND_INVALID_RUN]"
+ Failed to determine a command to run. [CLI:COMMAND_INVALID_RUN]
+"
 `;
 
 exports[`<Program /> failure renders when no commands have been registered 1`] = `
@@ -81,14 +86,16 @@ exports[`<Program /> failure renders when no commands have been registered 1`] =
 [1m[41m[30m ERROR [39m[49m[22m
 
  No commands have been registered. At least 1 is required.
- [CLI:COMMAND_NONE_REGISTERED]"
+ [CLI:COMMAND_NONE_REGISTERED]
+"
 `;
 
 exports[`<Program /> failure renders with custom exit error 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Oops"
+ Oops
+"
 `;
 
 exports[`<Program /> help outputs help for a nested sub-command 1`] = `
@@ -344,7 +351,8 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
  Locale must be in the format of \\"en\\" or \\"en-US\\".
 
  [90m$ boost [33m--locale[39m[90m wtf[39m
- [33m        └──────┘[39m"
+ [33m        └──────┘[39m
+"
 `;
 
 exports[`<Program /> logging handles logging when rendering a component 1`] = `
@@ -374,7 +382,8 @@ exports[`<Program /> nested programs bubbles up errors 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Bubbles"
+ Bubbles
+"
 `;
 
 exports[`<Program /> nested programs can run a program within a command 1`] = `

@@ -95,9 +95,8 @@ export default class Failure extends React.Component<FailureProps> {
   renderStackTrace() {
     const { error } = this.props;
 
-    // Provide some bottom spacing
     if (this.shouldHideStackTrace()) {
-      return <Box marginBottom={1} />;
+      return null;
     }
 
     // Stack traces are not deterministic so we cannot snapshot this
@@ -106,7 +105,7 @@ export default class Failure extends React.Component<FailureProps> {
       <>
         <Header label={msg('cli:labelStackTrace')} type="muted" />
 
-        <Box width="100%" marginBottom={1}>
+        <Box width="100%">
           <Style type="muted">
             {error.stack!.replace(`${error.constructor.name}: ${error.message}\n`, '')}
           </Style>
@@ -144,7 +143,7 @@ export default class Failure extends React.Component<FailureProps> {
     const { error } = this.props;
 
     return (
-      <Box flexDirection="column">
+      <Box flexDirection="column" marginBottom={1}>
         <Header label={msg('cli:labelError')} type="failure" />
 
         <Box paddingLeft={SPACING_COL} flexDirection="column">

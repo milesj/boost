@@ -167,7 +167,9 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
-  exit = (message: string, code: ExitCode = 1) => {
+  exit = (error: string | Error, code: ExitCode = EXIT_FAIL) => {
+    const message = error instanceof Error ? error.message : error;
+
     this.onExit.emit([message, code]);
 
     throw new ExitError(message, code);
@@ -373,7 +375,11 @@ export default class Program extends CommandManager<ProgramOptions> {
 
       this.onAfterRender.emit([]);
     } catch (error) {
-      this.exit(error.message, EXIT_FAIL);
+      if (error instanceof ExitError) {
+        throw error;
+      } else {
+        this.exit(error);
+      }
     } finally {
       this.rendering = false;
       unpatch();
