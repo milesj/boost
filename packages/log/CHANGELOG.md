@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.5 - 2020-11-12
+
+#### 🛠 Internals
+
+- Enable Node v15. (#119) ([c016b8c](https://github.com/milesj/boost/commit/c016b8c)), closes [#119](https://github.com/milesj/boost/issues/119)
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 2.1.4 - 2020-11-11
 
 **Note:** Version bump only for package @boost/log

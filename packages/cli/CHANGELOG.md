@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.6.0 - 2020-11-12
+
+#### 🚀 Updates
+
+- Add `useProgram` hook. Improve error and exit handling. (#118) ([dbf95b1](https://github.com/milesj/boost/commit/dbf95b1)), closes [#118](https://github.com/milesj/boost/issues/118)
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.5.0 - 2020-11-11
 
 #### 🚀 Updates
