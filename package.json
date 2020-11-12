@@ -10,6 +10,7 @@
     "prettier": "beemo prettier",
     "pretest": "yarn run type",
     "test": "yarn run jest",
+    "test:cli": "node ./packages/cli/examples/bin.js",
     "posttest": "yarn run lint",
     "type": "beemo typescript --reference-workspaces --build --decorators",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run build && yarn test",

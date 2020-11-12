@@ -19,10 +19,10 @@ import CLIError from './CLIError';
 import Command from './Command';
 import CommandManager from './CommandManager';
 import LogBuffer from './LogBuffer';
-import Failure from './Failure';
-import Help from './Help';
-import IndexHelp from './IndexHelp';
-import Wrapper from './Wrapper';
+import Failure from './components/Failure';
+import Help from './components/Help';
+import IndexHelp from './components/IndexHelp';
+import Wrapper from './components/Wrapper';
 import isArgvSize from './helpers/isArgvSize';
 import patchConsole from './helpers/patchConsole';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
@@ -167,7 +167,22 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
-  exit = (message: string, code: ExitCode = 1) => {
+  exit = (error?: string | Error, errorCode?: ExitCode) => {
+    let message = '';
+    let code = errorCode;
+
+    if (error instanceof ExitError) {
+      ({ message, code } = error);
+    } else if (error instanceof Error) {
+      ({ message } = error);
+    } else if (error) {
+      message = error;
+    }
+
+    if (!code) {
+      code = message ? EXIT_FAIL : EXIT_PASS;
+    }
+
     this.onExit.emit([message, code]);
 
     throw new ExitError(message, code);
@@ -335,19 +350,20 @@ export default class Program extends CommandManager<ProgramOptions> {
     // istanbul ignore next
     if (this.rendering) {
       throw new CLIError('REACT_RENDER_NO_NESTED');
+    } else {
+      this.rendering = true;
     }
 
     const unpatch = patchConsole(this.logger, this.errBuffer);
 
     try {
       this.onBeforeRender.emit([result]);
-      this.rendering = true;
 
       const output = await render(
         <Wrapper
           errBuffer={this.errBuffer}
           exit={this.exit}
-          logger={this.logger}
+          log={this.logger}
           outBuffer={this.outBuffer}
           program={this.options}
         >
@@ -370,9 +386,13 @@ export default class Program extends CommandManager<ProgramOptions> {
         await output.waitUntilExit();
       }
 
-      this.rendering = false;
       this.onAfterRender.emit([]);
+    } catch (error) {
+      // Never runs while testing
+      // istanbul ignore next
+      this.exit(error);
     } finally {
+      this.rendering = false;
       unpatch();
     }
 
@@ -384,10 +404,16 @@ export default class Program extends CommandManager<ProgramOptions> {
    * If argument parser or validation errors are found, treat them with special logic.
    */
   protected renderErrors(errors: Error[]): Promise<ExitCode> {
+    const exitError = errors[0];
+
+    if (exitError instanceof ExitError && exitError.code === 0) {
+      return Promise.resolve(exitError.code);
+    }
+
     // eslint-disable-next-line unicorn/prefer-array-find
     const parseErrors = errors.filter((error) => error instanceof ParseError);
     const validErrors = errors.filter((error) => error instanceof ValidationError);
-    const error = parseErrors[0] ?? validErrors[0] ?? errors[0];
+    const error = parseErrors[0] ?? validErrors[0] ?? exitError;
 
     // Mostly for testing, but useful for other things
     // istanbul ignore next

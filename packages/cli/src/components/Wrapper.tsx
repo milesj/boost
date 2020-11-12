@@ -1,15 +1,12 @@
 import React from 'react';
 import { Box } from 'ink';
-import { LoggerFunction } from '@boost/log';
 import LogWriter, { LogWriterProps } from './LogWriter';
 import Failure from './Failure';
-import ProgramContext from './ProgramContext';
-import { ProgramOptions, ExitHandler } from './types';
+import ProgramContext from '../ProgramContext';
+import { ProgramContextType } from '../types';
 
-export interface WrapperProps extends LogWriterProps {
-  exit: ExitHandler;
-  logger: LoggerFunction;
-  program: ProgramOptions;
+export interface WrapperProps extends LogWriterProps, ProgramContextType {
+  children: React.ReactNode;
 }
 
 export interface WrapperState {
@@ -25,13 +22,17 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
     return { error };
   }
 
+  componentDidCatch(error: Error) {
+    this.setState({ error });
+  }
+
   render() {
     const { error } = this.state;
-    const { children, exit, logger, program, errBuffer, outBuffer } = this.props;
+    const { children, exit, log, program, errBuffer, outBuffer } = this.props;
 
     return (
-      <Box>
-        <ProgramContext.Provider value={{ exit, log: logger, program }}>
+      <ProgramContext.Provider value={{ exit, log, program }}>
+        <Box>
           {error ? (
             <Failure binName={program.bin} delimiter={program.delimiter} error={error} />
           ) : (
@@ -39,8 +40,8 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
           )}
 
           <LogWriter errBuffer={errBuffer} outBuffer={outBuffer} />
-        </ProgramContext.Provider>
-      </Box>
+        </Box>
+      </ProgramContext.Provider>
     );
   }
 }

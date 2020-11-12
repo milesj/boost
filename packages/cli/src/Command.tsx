@@ -36,15 +36,17 @@ import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
 import CLIError from './CLIError';
 import CommandManager from './CommandManager';
-import Help from './Help';
+import Help from './components/Help';
 import Program from './Program';
 import msg from './translate';
 
 export default abstract class Command<
-  O extends GlobalOptions = GlobalOptions,
-  P extends PrimitiveType[] = ArgList,
-  Options extends object = {}
-> extends CommandManager<Options> implements Commandable<O, P> {
+    O extends GlobalOptions = GlobalOptions,
+    P extends PrimitiveType[] = ArgList,
+    Options extends object = {}
+  >
+  extends CommandManager<Options>
+  implements Commandable<O, P> {
   static aliases: string[] = [];
 
   static allowUnknownOptions: boolean = false;

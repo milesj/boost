@@ -1,6 +1,9 @@
 const { Program } = require('../lib');
 const BuildCommand = require('./commands/BuildCommand');
 const ErrorCommand = require('./commands/ErrorCommand');
+const ErrorCompCommand = require('./commands/ErrorCompCommand');
+const ExitCommand = require('./commands/ExitCommand');
+const ExitCompCommand = require('./commands/ExitCompCommand');
 const LoggerCommand = require('./commands/LoggerCommand');
 const ScaffoldCommand = require('./commands/ScaffoldCommand');
 const OptionsCommand = require('./commands/OptionsCommand');
@@ -24,8 +27,11 @@ new Program({
   })
   .register(new BuildCommand())
   .register(new ErrorCommand())
+  .register(new ErrorCompCommand())
+  .register(new ExitCommand())
+  .register(new ExitCompCommand())
   .register(new LoggerCommand())
   .register(new ScaffoldCommand())
   .register(new OptionsCommand())
   .register(new ParamsCommand())
-  .run(process.argv.slice(2));
+  .runAndExit(process.argv.slice(2));

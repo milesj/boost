@@ -44,6 +44,8 @@ export class MockWriteStream {
   }
 
   on() {}
+
+  off() {}
 }
 
 export function mockStreams(): ProgramStreams {

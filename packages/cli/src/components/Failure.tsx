@@ -5,13 +5,13 @@ import { Box, Text } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
 import { ExitError } from '@boost/common';
 import { screen } from '@boost/terminal';
-import CLIError from './CLIError';
+import CLIError from '../CLIError';
 import Header from './Header';
 import Style from './Style';
-import { SPACING_COL, SPACING_ROW, DELIMITER } from './constants';
-import applyStyle from './helpers/applyStyle';
-import msg from './translate';
-import { StyleType } from './types';
+import { SPACING_COL, SPACING_ROW, DELIMITER } from '../constants';
+import applyStyle from '../helpers/applyStyle';
+import msg from '../translate';
+import { StyleType } from '../types';
 
 export interface FailureProps {
   binName?: string;
@@ -23,6 +23,20 @@ export interface FailureProps {
 }
 
 export default class Failure extends React.Component<FailureProps> {
+  shouldHideStackTrace() {
+    const { error, hideStackTrace } = this.props;
+
+    return (
+      hideStackTrace ||
+      !error.stack ||
+      error instanceof ExitError ||
+      error instanceof ParseError ||
+      error instanceof ValidationError ||
+      error instanceof CLIError ||
+      process.env.NODE_ENV === 'test'
+    );
+  }
+
   renderCodeFrame() {
     const { binName, commandLine, delimiter = DELIMITER, error } = this.props;
 
@@ -79,17 +93,9 @@ export default class Failure extends React.Component<FailureProps> {
   }
 
   renderStackTrace() {
-    const { error, hideStackTrace } = this.props;
+    const { error } = this.props;
 
-    if (
-      hideStackTrace ||
-      !error.stack ||
-      error instanceof ExitError ||
-      error instanceof ParseError ||
-      error instanceof ValidationError ||
-      error instanceof CLIError ||
-      process.env.NODE_ENV === 'test'
-    ) {
+    if (this.shouldHideStackTrace()) {
       return null;
     }
 
@@ -137,7 +143,7 @@ export default class Failure extends React.Component<FailureProps> {
     const { error } = this.props;
 
     return (
-      <Box flexDirection="column">
+      <Box flexDirection="column" marginBottom={1}>
         <Header label={msg('cli:labelError')} type="failure" />
 
         <Box paddingLeft={SPACING_COL} flexDirection="column">

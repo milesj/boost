@@ -1,6 +1,6 @@
 /* eslint-disable babel/no-invalid-this */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { ExitError } from '@boost/common';
 import { env } from '@boost/internal';
@@ -17,6 +17,7 @@ import {
   GlobalOptions,
   Options,
   UnknownOptionMap,
+  useProgram,
 } from '../src';
 import { MockWriteStream, MockReadStream, runProgram, runTask } from '../src/test';
 import { options, params } from './__mocks__/args';
@@ -129,8 +130,26 @@ describe('<Program />', () => {
   describe('exit', () => {
     it('can exit', () => {
       expect(() => {
+        program.exit();
+      }).toThrow(new ExitError('', 0));
+    });
+
+    it('can exit with a string', () => {
+      expect(() => {
         program.exit('Oops');
       }).toThrow(new ExitError('Oops', 1));
+    });
+
+    it('can exit with an error', () => {
+      expect(() => {
+        program.exit(new Error('Oops'));
+      }).toThrow(new ExitError('Oops', 1));
+    });
+
+    it('can exit with an exit error', () => {
+      expect(() => {
+        program.exit(new ExitError('Oops', 123));
+      }).toThrow(new ExitError('Oops', 123));
     });
 
     it('can exit with a custom code', () => {
@@ -151,6 +170,153 @@ describe('<Program />', () => {
       }
 
       expect(spy).toHaveBeenCalledWith('Oops', 10);
+    });
+
+    function ExitComponent({ error }: { error: boolean }) {
+      const { exit } = useProgram();
+
+      useEffect(() => {
+        if (error) {
+          exit('Fail!');
+        } else {
+          exit();
+        }
+      }, [error, exit]);
+
+      return (
+        <Box>
+          <Text>Content</Text>
+        </Box>
+      );
+    }
+
+    class ExitCommand extends Command {
+      static description = 'Description';
+
+      static path = 'boost';
+
+      static options = {
+        component: {
+          description: 'Render component',
+          type: 'boolean',
+        },
+        error: {
+          description: 'Error',
+          type: 'boolean',
+        },
+      } as const;
+
+      component = false;
+
+      error = false;
+
+      run() {
+        this.log('Before');
+
+        if (this.component) {
+          return <ExitComponent error={this.error} />;
+        }
+
+        if (this.error) {
+          this.exit('Fail!');
+        } else {
+          this.exit();
+        }
+
+        return 'After';
+      }
+    }
+
+    it('renders a zero exit', async () => {
+      program.default(new ExitCommand());
+
+      const { code, output } = await runProgram(program, []);
+
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
+    });
+
+    it('renders a zero exit with a component', async () => {
+      program.default(new ExitCommand());
+
+      const { code, output } = await runProgram(program, ['--component']);
+
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
+    });
+
+    it('renders a non-zero exit', async () => {
+      program.default(new ExitCommand());
+
+      const { code, output } = await runProgram(program, ['--error']);
+
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
+    });
+
+    it('renders a non-zero exit with component', async () => {
+      program.default(new ExitCommand());
+
+      const { code, output } = await runProgram(program, ['--error', '--component']);
+
+      expect(output).toMatchSnapshot();
+
+      // This should be 1 but waitUntilExit() doesnt get called in tests
+      // which is what would set the code via an ExitError.
+      expect(code).toBe(0);
+    });
+  });
+
+  describe('error', () => {
+    function ErrorComponent() {
+      throw new Error('Fail from component');
+    }
+
+    class ErrorCommand extends Command {
+      static description = 'Description';
+
+      static path = 'boost';
+
+      static options = {
+        component: {
+          description: 'Render component',
+          type: 'boolean',
+        },
+      } as const;
+
+      component = false;
+
+      run() {
+        this.log('Before');
+
+        if (this.component) {
+          // @ts-expect-error
+          return <ErrorComponent />;
+        }
+
+        throw new Error('Fail');
+      }
+    }
+
+    it('renders a thrown error', async () => {
+      program.default(new ErrorCommand());
+
+      const { code, output } = await runProgram(program, []);
+
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
+    });
+
+    it('renders a thrown error from a component', async () => {
+      program.default(new ErrorCommand());
+
+      const { code, output } = await runProgram(program, ['--component']);
+
+      expect(output.trim()).toMatchSnapshot();
+
+      // This should be 1 but waitUntilExit() doesnt get called in tests
+      // which is what would set the code via an ExitError.
+      expect(code).toBe(0);
     });
   });
 
@@ -323,7 +489,7 @@ describe('<Program />', () => {
         aliases: ['compile'],
         allowUnknownOptions: false,
         allowVariadicParams: true,
-        categories: {},
+        categories: expect.any(Object),
         category: '',
         commands: {},
         description: 'Build something',
