@@ -4,7 +4,8 @@ import { Transportable, TransportOptions, LogItem, LogLevel, Formatter } from '.
 import * as formats from './formats';
 import { LOG_LEVELS } from './constants';
 
-export default abstract class Transport<Options extends TransportOptions> extends Contract<Options>
+export default abstract class Transport<Options extends TransportOptions>
+  extends Contract<Options>
   implements Transportable {
   readonly levels: LogLevel[] = [];
 
