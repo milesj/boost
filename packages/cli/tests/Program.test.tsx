@@ -267,6 +267,59 @@ describe('<Program />', () => {
     });
   });
 
+  describe('error', () => {
+    function ErrorComponent() {
+      throw new Error('Fail from component');
+    }
+
+    class ErrorCommand extends Command {
+      static description = 'Description';
+
+      static path = 'boost';
+
+      static options = {
+        component: {
+          description: 'Render component',
+          type: 'boolean',
+        },
+      } as const;
+
+      component = false;
+
+      run() {
+        this.log('Before');
+
+        if (this.component) {
+          // @ts-expect-error
+          return <ErrorComponent />;
+        }
+
+        throw new Error('Fail');
+      }
+    }
+
+    it('renders a thrown error', async () => {
+      program.default(new ErrorCommand());
+
+      const { code, output } = await runProgram(program, []);
+
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(1);
+    });
+
+    it('renders a thrown error from a component', async () => {
+      program.default(new ErrorCommand());
+
+      const { code, output } = await runProgram(program, ['--component']);
+
+      expect(output).toMatchSnapshot();
+
+      // This should be 1 but waitUntilExit() doesnt get called in tests
+      // which is what would set the code via an ExitError.
+      expect(code).toBe(0);
+    });
+  });
+
   describe('commands', () => {
     it('registers and returns a command with path', () => {
       const command = new BuildCommand();
