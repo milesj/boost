@@ -312,7 +312,7 @@ describe('<Program />', () => {
 
       const { code, output } = await runProgram(program, ['--component']);
 
-      expect(output).toMatchSnapshot();
+      expect(output.trim()).toMatchSnapshot();
 
       // This should be 1 but waitUntilExit() doesnt get called in tests
       // which is what would set the code via an ExitError.
