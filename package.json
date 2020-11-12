@@ -7,7 +7,7 @@
     "coverage": "yarn run jest --coverage",
     "lint": "beemo eslint",
     "jest": "beemo jest",
-    "prettier": "beemo prettier",
+    "format": "beemo prettier",
     "pretest": "yarn run type",
     "test": "yarn run jest",
     "test:cli": "node ./packages/cli/examples/bin.js",
