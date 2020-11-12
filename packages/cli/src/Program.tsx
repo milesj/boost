@@ -168,8 +168,20 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Should be called within a command or component.
    */
   exit = (error?: string | Error, errorCode?: ExitCode) => {
-    const message = error instanceof Error ? error.message : error || '';
-    const code = message ? errorCode || EXIT_FAIL : EXIT_PASS;
+    let message = '';
+    let code = errorCode;
+
+    if (error instanceof ExitError) {
+      ({ message, code } = error);
+    } else if (error instanceof Error) {
+      ({ message } = error);
+    } else if (error) {
+      message = error;
+    }
+
+    if (!code) {
+      code = message ? EXIT_FAIL : EXIT_PASS;
+    }
 
     this.onExit.emit([message, code]);
 
@@ -376,11 +388,9 @@ export default class Program extends CommandManager<ProgramOptions> {
 
       this.onAfterRender.emit([]);
     } catch (error) {
-      if (error instanceof ExitError) {
-        throw error;
-      } else {
-        this.exit(error);
-      }
+      // Never runs while testing
+      // istanbul ignore next
+      this.exit(error);
     } finally {
       this.rendering = false;
       unpatch();

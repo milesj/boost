@@ -38,6 +38,23 @@ exports[`<Program /> errors for invalid version format 1`] = `"Invalid Program f
 
 exports[`<Program /> errors if bin is not kebab case 1`] = `"Invalid Program field \\"bin\\". String must be in kebab case. (pattern \\"^[a-z][\\\\x2D0-9a-z]+$\\")"`;
 
+exports[`<Program /> exit renders a non-zero exit 1`] = `
+"
+[1m[41m[30m ERROR [39m[49m[22m
+
+ Fail!
+"
+`;
+
+exports[`<Program /> exit renders a non-zero exit with component 1`] = `"Content"`;
+
+exports[`<Program /> exit renders a zero exit 1`] = `
+"Before
+"
+`;
+
+exports[`<Program /> exit renders a zero exit with a component 1`] = `"Content"`;
+
 exports[`<Program /> failure renders if an error is thrown 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
