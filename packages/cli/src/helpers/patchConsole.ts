@@ -91,7 +91,7 @@ export default function patchConsole(logger: Loggable, errBuffer: LogBuffer): ()
     unwrappers.push(
       wrap(debug, 'log', (message: string, ...args: unknown[]) => {
         // Do not pass to our logger since it's pre-formatted
-        errBuffer.write(util.format(message, ...args));
+        errBuffer.write(`${util.format(message, ...args)}\n`);
       }),
     );
   }
