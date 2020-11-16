@@ -6,10 +6,15 @@ import loadTheme from '../helpers/loadTheme';
 export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underline' | 'wrap'> {
   children: NonNullable<React.ReactNode>;
   inverted?: boolean;
-  type: StyleType | 'none';
+  type?: StyleType | 'none';
 }
 
-export default function Style({ children, inverted = false, type, ...restProps }: StyleProps) {
+export default function Style({
+  children,
+  inverted = false,
+  type = 'none',
+  ...restProps
+}: StyleProps) {
   const theme = loadTheme();
   const props: Writeable<TextProps> = {};
 

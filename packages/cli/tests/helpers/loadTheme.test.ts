@@ -10,8 +10,10 @@ describe('loadTheme()', () => {
     expect(loadTheme()).toEqual({
       default: 'white',
       failure: 'red',
+      info: 'cyan',
       inverted: 'black',
       muted: 'gray',
+      notice: 'magenta',
       success: 'green',
       warning: 'yellow',
     });
@@ -23,8 +25,10 @@ describe('loadTheme()', () => {
     expect(loadTheme()).toEqual({
       default: 'private',
       failure: 'private',
+      info: 'private',
       inverted: 'private',
       muted: 'private',
+      notice: 'private',
       success: 'private',
       warning: 'private',
     });
@@ -36,8 +40,10 @@ describe('loadTheme()', () => {
     expect(loadTheme()).toEqual({
       default: 'public',
       failure: 'public',
+      info: 'public',
       inverted: 'public',
       muted: 'public',
+      notice: 'public',
       success: 'public',
       warning: 'public',
     });

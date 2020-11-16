@@ -8,7 +8,7 @@ export interface HeaderProps {
   label: string;
   marginTop?: number;
   marginBottom?: number;
-  type?: StyleType;
+  type?: StyleType | 'none';
 }
 
 export default function Header({

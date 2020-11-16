@@ -11,8 +11,10 @@ describe('<Style />', () => {
     (loadTheme as jest.Mock).mockImplementation(() => ({
       default: 'white',
       failure: 'red',
+      info: 'cyan',
       inverted: 'black',
       muted: 'gray',
+      notice: 'magenta',
       success: 'green',
       warning: 'yellow',
     }));
@@ -26,6 +28,20 @@ describe('<Style />', () => {
     expect(
       await renderComponent(
         <Style inverted type="default">
+          Test
+        </Style>,
+      ),
+    ).toMatchSnapshot();
+  });
+
+  it('renders `info`', async () => {
+    expect(await renderComponent(<Style type="info">Test</Style>)).toMatchSnapshot();
+  });
+
+  it('renders `info` inverted', async () => {
+    expect(
+      await renderComponent(
+        <Style inverted type="info">
           Test
         </Style>,
       ),
@@ -62,6 +78,20 @@ describe('<Style />', () => {
     expect(
       await renderComponent(
         <Style inverted type="muted">
+          Test
+        </Style>,
+      ),
+    ).toMatchSnapshot();
+  });
+
+  it('renders `notice`', async () => {
+    expect(await renderComponent(<Style type="notice">Test</Style>)).toMatchSnapshot();
+  });
+
+  it('renders `notice` inverted', async () => {
+    expect(
+      await renderComponent(
+        <Style inverted type="notice">
           Test
         </Style>,
       ),
