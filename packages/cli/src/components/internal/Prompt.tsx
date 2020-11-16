@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Box, useInput } from 'ink';
+import { Box, useInput, Key } from 'ink';
 import { figures } from '@boost/terminal';
 import { Label } from './Label';
 import Style from '../Style';
+
+export type KeyInput = Key;
 
 export interface PromptProps<T> {
   afterLabel?: React.ReactNode;
@@ -10,25 +12,25 @@ export interface PromptProps<T> {
   children?: React.ReactNode;
   focused?: boolean;
   label: NonNullable<React.ReactNode>;
-  onBackspace?: () => void;
-  onDelete?: () => void;
-  onEscape?: () => void;
-  onInput?: (value: string) => void;
-  onKeyDown?: () => void;
-  onKeyLeft?: () => void;
-  onKeyRight?: () => void;
-  onKeyUp?: () => void;
-  onPageDown?: () => void;
-  onPageUp?: () => void;
-  onReturn?: () => void;
-  onTab?: () => void;
+  onBackspace?: (key: Key) => void;
+  onDelete?: (key: Key) => void;
+  onEscape?: (key: Key) => void;
+  onInput?: (value: string, key: Key) => void;
+  onKeyDown?: (key: Key) => void;
+  onKeyLeft?: (key: Key) => void;
+  onKeyRight?: (key: Key) => void;
+  onKeyUp?: (key: Key) => void;
+  onPageDown?: (key: Key) => void;
+  onPageUp?: (key: Key) => void;
+  onReturn?: (key: Key) => void;
+  onTab?: (key: Key) => void;
   prefix?: string;
   validate?: (value: T) => void;
   value: T;
 }
 
 export interface CommonPromptProps<T>
-  extends Pick<PromptProps<T>, 'focused' | 'label' | 'validate'> {
+  extends Pick<PromptProps<T>, 'focused' | 'label' | 'prefix' | 'validate'> {
   defaultValue?: T;
 }
 
@@ -61,30 +63,34 @@ export function Prompt<T>({
     // eslint-disable-next-line complexity
     (input, key) => {
       if (key.escape || (key.ctrl && input === 'c')) {
-        onEscape?.();
+        onEscape?.(key);
 
         return;
       }
 
       if (key.upArrow) {
-        onKeyUp?.();
+        onKeyUp?.(key);
       } else if (key.downArrow) {
-        onKeyDown?.();
+        onKeyDown?.(key);
       } else if (key.leftArrow) {
-        onKeyLeft?.();
+        onKeyLeft?.(key);
       } else if (key.rightArrow) {
-        onKeyRight?.();
+        onKeyRight?.(key);
       } else if (key.pageUp) {
-        onPageUp?.();
+        onPageUp?.(key);
       } else if (key.pageDown) {
-        onPageDown?.();
-      } else if (key.return && !key.shift) {
+        onPageDown?.(key);
+      } else if (key.return) {
+        if (!key.shift) {
+          return;
+        }
+
         try {
           if (validate) {
             validate(value);
           }
 
-          onReturn?.();
+          onReturn?.(key);
           setError(null);
           setSubmitted(true);
         } catch (error: unknown) {
@@ -94,13 +100,13 @@ export function Prompt<T>({
           }
         }
       } else if (key.tab) {
-        onTab?.();
+        onTab?.(key);
       } else if (key.backspace) {
-        onBackspace?.();
+        onBackspace?.(key);
       } else if (key.delete) {
-        onDelete?.();
+        onDelete?.(key);
       } else {
-        onInput?.(input);
+        onInput?.(input, key);
         setSubmitted(false);
       }
     },

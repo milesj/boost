@@ -2,7 +2,7 @@ const React = require('react');
 const { Command, Input } = require('../../lib');
 
 module.exports = class InputCommand extends Command {
-  static description = 'Test Input component';
+  static description = 'Test `Input` component';
 
   static path = 'input';
 
