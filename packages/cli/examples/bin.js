@@ -4,6 +4,7 @@ const ErrorCommand = require('./commands/ErrorCommand');
 const ErrorCompCommand = require('./commands/ErrorCompCommand');
 const ExitCommand = require('./commands/ExitCommand');
 const ExitCompCommand = require('./commands/ExitCompCommand');
+const InputCommand = require('./commands/InputCommand');
 const LoggerCommand = require('./commands/LoggerCommand');
 const ScaffoldCommand = require('./commands/ScaffoldCommand');
 const OptionsCommand = require('./commands/OptionsCommand');
@@ -24,6 +25,7 @@ new Program({
   .categories({
     feature: 'Features',
     test: 'Test cases',
+    prompt: 'Prompts',
   })
   .register(new BuildCommand())
   .register(new ErrorCommand())
@@ -34,4 +36,6 @@ new Program({
   .register(new ScaffoldCommand())
   .register(new OptionsCommand())
   .register(new ParamsCommand())
+  // Prompts
+  .register(new InputCommand())
   .runAndExit(process.argv.slice(2));
