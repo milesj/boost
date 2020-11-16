@@ -12,18 +12,18 @@ export interface PromptProps<T> {
   children?: React.ReactNode;
   focused?: boolean;
   label: NonNullable<React.ReactNode>;
-  onBackspace?: (key: Key) => void;
-  onDelete?: (key: Key) => void;
-  onEscape?: (key: Key) => void;
-  onInput?: (value: string, key: Key) => void;
-  onKeyDown?: (key: Key) => void;
-  onKeyLeft?: (key: Key) => void;
-  onKeyRight?: (key: Key) => void;
-  onKeyUp?: (key: Key) => void;
-  onPageDown?: (key: Key) => void;
-  onPageUp?: (key: Key) => void;
-  onReturn?: (key: Key) => void;
-  onTab?: (key: Key) => void;
+  onBackspace?: (key: KeyInput) => void;
+  onDelete?: (key: KeyInput) => void;
+  onEscape?: (key: KeyInput) => void;
+  onInput?: (value: string, key: KeyInput) => void;
+  onKeyDown?: (key: KeyInput) => void;
+  onKeyLeft?: (key: KeyInput) => void;
+  onKeyRight?: (key: KeyInput) => void;
+  onKeyUp?: (key: KeyInput) => void;
+  onPageDown?: (key: KeyInput) => void;
+  onPageUp?: (key: KeyInput) => void;
+  onReturn?: (key: KeyInput) => void;
+  onTab?: (key: KeyInput) => void;
   prefix?: string;
   validate?: (value: T) => void;
   value: T;
@@ -81,15 +81,12 @@ export function Prompt<T>({
       } else if (key.pageDown) {
         onPageDown?.(key);
       } else if (key.return) {
-        if (!key.shift) {
+        if (key.shift) {
           return;
         }
 
         try {
-          if (validate) {
-            validate(value);
-          }
-
+          validate?.(value);
           onReturn?.(key);
           setError(null);
           setSubmitted(true);
