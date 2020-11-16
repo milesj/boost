@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Text } from 'ink';
+import { Cursor } from './internal/Cursor';
 import { CommonPromptProps, Prompt } from './internal/Prompt';
 import Style from './Style';
 
 export interface InputProps extends CommonPromptProps<string> {
+  hideCursor?: boolean;
   onChange?: (value: string) => void;
   onSubmit?: (value: string) => void;
   placeholder?: string;
@@ -11,6 +13,8 @@ export interface InputProps extends CommonPromptProps<string> {
 
 export function Input({
   defaultValue = '',
+  focused,
+  hideCursor,
   onChange,
   onSubmit,
   placeholder,
@@ -51,9 +55,13 @@ export function Input({
         value === '' && placeholder ? (
           <Style type="muted">{placeholder}</Style>
         ) : (
-          <Text>{value}</Text>
+          <Text>
+            {value}
+            {!hideCursor && focused && <Cursor />}
+          </Text>
         )
       }
+      focused={focused}
       value={value}
       onBackspace={handleBackspace}
       onDelete={handleBackspace}

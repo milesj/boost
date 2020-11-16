@@ -78,19 +78,20 @@ export function Prompt<T>({
         onPageUp?.();
       } else if (key.pageDown) {
         onPageDown?.();
-      } else if (key.return) {
-        if (validate) {
-          try {
+      } else if (key.return && !key.shift) {
+        try {
+          if (validate) {
             validate(value);
-            setError(null);
-          } catch (error) {
-            setError(error.message);
           }
-        }
 
-        if (!error) {
           onReturn?.();
+          setError(null);
           setSubmitted(true);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            setError(error);
+            setSubmitted(false);
+          }
         }
       } else if (key.tab) {
         onTab?.();
@@ -126,7 +127,7 @@ export function Prompt<T>({
 
       {error && (
         <Box marginLeft={2}>
-          <Style type="failure">{error}</Style>
+          <Style type="failure">{error.message}</Style>
         </Box>
       )}
 

@@ -12,6 +12,7 @@ module.exports = class InputCommand extends Command {
 
   async run() {
     return React.createElement(Input, {
+      focused: true,
       label: 'What is your name?',
       placeholder: '<name>',
       onChange: (value) => {
