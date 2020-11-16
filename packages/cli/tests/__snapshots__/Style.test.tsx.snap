@@ -8,6 +8,10 @@ exports[`<Style /> renders \`failure\` 1`] = `"[31mTest[39m"`;
 
 exports[`<Style /> renders \`failure\` inverted 1`] = `"[41m[30mTest[39m[49m"`;
 
+exports[`<Style /> renders \`info\` 1`] = `"[36mTest[39m"`;
+
+exports[`<Style /> renders \`info\` inverted 1`] = `"[46m[30mTest[39m[49m"`;
+
 exports[`<Style /> renders \`inverted\` 1`] = `"[30mTest[39m"`;
 
 exports[`<Style /> renders \`inverted\` inverted 1`] = `"[30mTest[39m"`;
@@ -15,6 +19,10 @@ exports[`<Style /> renders \`inverted\` inverted 1`] = `"[30mTest[39m"`;
 exports[`<Style /> renders \`muted\` 1`] = `"[90mTest[39m"`;
 
 exports[`<Style /> renders \`muted\` inverted 1`] = `"[100m[30mTest[39m[49m"`;
+
+exports[`<Style /> renders \`notice\` 1`] = `"[35mTest[39m"`;
+
+exports[`<Style /> renders \`notice\` inverted 1`] = `"[45m[30mTest[39m[49m"`;
 
 exports[`<Style /> renders \`success\` 1`] = `"[32mTest[39m"`;
 

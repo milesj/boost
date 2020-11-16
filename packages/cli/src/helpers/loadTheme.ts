@@ -32,9 +32,11 @@ export default function loadTheme(): ThemePalette {
   return {
     default: 'white',
     failure: 'red',
+    info: 'cyan',
     // Use a hexcode since it sometimes renders as gray
     inverted: isTest ? 'black' : '#000',
     muted: 'gray',
+    notice: 'magenta',
     success: 'green',
     warning: 'yellow',
     ...palette,
