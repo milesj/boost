@@ -16,7 +16,6 @@ import type { CLIErrorCode } from './CLIError';
 
 export * from './constants';
 export * from './components/Input';
-export * from './components/Label';
 export * from './decorators';
 export * from './helpers';
 export * from './hooks';
