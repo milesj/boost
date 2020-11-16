@@ -175,6 +175,14 @@ export type Middleware = (
 
 // THEMES
 
-export type StyleType = 'default' | 'inverted' | 'failure' | 'muted' | 'success' | 'warning';
+export type StyleType =
+  | 'default'
+  | 'failure'
+  | 'info'
+  | 'inverted'
+  | 'muted'
+  | 'notice'
+  | 'success'
+  | 'warning';
 
 export type ThemePalette = { [T in StyleType]: string };
