@@ -10,6 +10,8 @@ export interface PromptProps<T> {
   defaultValue?: T;
   label: string | React.ReactElement;
   prefix?: string;
+  onChange?: (value: T) => void;
+  onSubmit?: (value: T) => void;
   validate?: (value: T) => void;
 }
 
@@ -89,8 +91,10 @@ export function Prompt<T>({
         onTab?.(key);
       } else if (key.backspace) {
         onBackspace?.(key);
+        setSubmitted(false);
       } else if (key.delete) {
         onDelete?.(key);
+        setSubmitted(false);
       } else if (key.escape) {
         onEscape?.(key);
       } else {

@@ -5,8 +5,6 @@ import { Prompt, PromptProps } from './internal/Prompt';
 import Style from './Style';
 
 export interface InputProps extends PromptProps<string> {
-  onChange?: (value: string) => void;
-  onSubmit?: (value: string) => void;
   placeholder?: string;
 }
 
