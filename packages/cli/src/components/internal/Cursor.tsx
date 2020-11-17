@@ -9,10 +9,6 @@ export interface CursorProps {
 }
 
 export function Cursor({ focused, position, value }: CursorProps) {
-  if (value === '') {
-    return null;
-  }
-
   if (!focused) {
     return <Text>{value}</Text>;
   }

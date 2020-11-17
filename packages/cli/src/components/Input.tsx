@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Cursor } from './internal/Cursor';
 import { Prompt, PromptProps } from './internal/Prompt';
 import Style from './Style';
@@ -19,15 +19,6 @@ export function Input({
 }: InputProps) {
   const [value, setValue] = useState(defaultValue);
   const [cursorPosition, setCursorPosition] = useState(0);
-  const mounted = useRef(false);
-
-  useEffect(() => {
-    if (mounted.current) {
-      onChange?.(value);
-    } else {
-      mounted.current = true;
-    }
-  }, [onChange, value]);
 
   // Remove characters
   const handleBackspace = () => {
@@ -35,22 +26,26 @@ export function Input({
       return;
     }
 
-    setCursorPosition(cursorPosition - 1);
-    setValue(
+    const nextValue =
       cursorPosition >= value.length
         ? value.slice(0, -1)
-        : value.slice(0, cursorPosition - 1) + value.slice(cursorPosition),
-    );
+        : value.slice(0, cursorPosition - 1) + value.slice(cursorPosition);
+
+    setCursorPosition(cursorPosition - 1);
+    setValue(nextValue);
+    onChange?.(nextValue);
   };
 
   // Add characters
   const handleInput = (input: string) => {
-    setCursorPosition(cursorPosition + input.length);
-    setValue(
+    const nextValue =
       cursorPosition >= value.length
         ? value + input
-        : value.slice(0, cursorPosition) + input + value.slice(cursorPosition),
-    );
+        : value.slice(0, cursorPosition) + input + value.slice(cursorPosition);
+
+    setCursorPosition(cursorPosition + input.length);
+    setValue(nextValue);
+    onChange?.(nextValue);
   };
 
   return (

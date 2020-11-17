@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Prompt renders content before and after label 1`] = `"[36m?[39mBefore [1mLabel[22m After"`;
+
+exports[`Prompt renders content below label 1`] = `
+"[36m?[39m [1mLabel[22m
+  Foo
+  Bar
+  Baz"
+`;
+
+exports[`Prompt renders default state 1`] = `"[36m?[39m [1mLabel[22m"`;
+
+exports[`Prompt renders error below label and above content 1`] = `
+"[31m✖[39m [1mLabel[22m
+  [31mFailed validation[39m
+  Foo"
+`;
+
+exports[`Prompt renders success after submission 1`] = `
+"[32m✔[39m [1mLabel[22m
+  Foo"
+`;

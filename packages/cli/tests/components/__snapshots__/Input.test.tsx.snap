@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input renders cursor instead of placeholder if focused 1`] = `"[36m?[39m [1mName?[22m [46m[30m [39m[49m"`;
+
+exports[`Input renders default value 1`] = `"[36m?[39m [1mName?[22m boost"`;
+
+exports[`Input renders label by default 1`] = `"[36m?[39m [1mName?[22m"`;
+
+exports[`Input renders placeholder if no default value 1`] = `"[36m?[39m [1mName?[22m [90m<name>[39m"`;
+
+exports[`Input renders value and calls \`onChange\` 1`] = `"[36m?[39m [1mName?[22m custom"`;

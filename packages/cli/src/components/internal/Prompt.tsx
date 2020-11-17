@@ -15,8 +15,8 @@ export interface PromptProps<T> {
 }
 
 export interface InternalPromptProps<T> extends PromptProps<T> {
-  afterLabel?: React.ReactNode;
-  beforeLabel?: React.ReactNode;
+  afterLabel?: React.ReactElement;
+  beforeLabel?: React.ReactElement;
   children?: React.ReactNode;
   onBackspace?: (key: KeyInput) => void;
   onDelete?: (key: KeyInput) => void;
@@ -61,12 +61,6 @@ export function Prompt<T>({
   useInput(
     // eslint-disable-next-line complexity
     (input, key) => {
-      if (key.escape || (key.ctrl && input === 'c')) {
-        onEscape?.(key);
-
-        return;
-      }
-
       if (key.upArrow) {
         onKeyUp?.(key);
       } else if (key.downArrow) {
@@ -80,10 +74,6 @@ export function Prompt<T>({
       } else if (key.pageDown) {
         onPageDown?.(key);
       } else if (key.return) {
-        if (key.shift) {
-          return;
-        }
-
         try {
           validate?.(value);
           onReturn?.(key);
@@ -101,6 +91,8 @@ export function Prompt<T>({
         onBackspace?.(key);
       } else if (key.delete) {
         onDelete?.(key);
+      } else if (key.escape) {
+        onEscape?.(key);
       } else {
         onInput?.(input, key);
         setSubmitted(false);
@@ -112,7 +104,7 @@ export function Prompt<T>({
   return (
     <Box flexDirection="column">
       <Box flexDirection="row">
-        <Box marginRight={1}>
+        <Box>
           {submitted && !error && <Style type="success">{figures.tick}</Style>}
           {!submitted && error && <Style type="failure">{figures.cross}</Style>}
           {!submitted && !error && <Style type="info">{prefix}</Style>}
@@ -120,7 +112,7 @@ export function Prompt<T>({
 
         {beforeLabel}
 
-        <Box marginRight={1}>
+        <Box marginLeft={1} marginRight={1}>
           <Label>{label}</Label>
         </Box>
 
