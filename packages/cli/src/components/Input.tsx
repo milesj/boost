@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Cursor } from './internal/Cursor';
-import { CommonPromptProps, Prompt } from './internal/Prompt';
+import { Prompt, PromptProps } from './internal/Prompt';
 import Style from './Style';
 
-export interface InputProps extends CommonPromptProps<string> {
+export interface InputProps extends PromptProps<string> {
   onChange?: (value: string) => void;
   onSubmit?: (value: string) => void;
   placeholder?: string;
@@ -53,13 +53,8 @@ export function Input({
     );
   };
 
-  // Submit text
-  const handleReturn = () => {
-    onSubmit?.(value);
-  };
-
   return (
-    <Prompt
+    <Prompt<string>
       {...props}
       afterLabel={
         value === '' && !focused && placeholder ? (
@@ -85,7 +80,9 @@ export function Input({
       onKeyRight={() => {
         setCursorPosition((prev) => Math.min(prev + 1, value.length));
       }}
-      onReturn={handleReturn}
+      onReturn={() => {
+        onSubmit?.(value);
+      }}
     />
   );
 }

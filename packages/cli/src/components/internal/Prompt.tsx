@@ -7,11 +7,17 @@ import Style from '../Style';
 export type KeyInput = Key;
 
 export interface PromptProps<T> {
+  defaultValue?: T;
+  label: NonNullable<React.ReactNode>;
+  focused?: boolean;
+  prefix?: string;
+  validate?: (value: T) => void;
+}
+
+export interface InternalPromptProps<T> extends PromptProps<T> {
   afterLabel?: React.ReactNode;
   beforeLabel?: React.ReactNode;
   children?: React.ReactNode;
-  focused?: boolean;
-  label: NonNullable<React.ReactNode>;
   onBackspace?: (key: KeyInput) => void;
   onDelete?: (key: KeyInput) => void;
   onEscape?: (key: KeyInput) => void;
@@ -24,14 +30,7 @@ export interface PromptProps<T> {
   onPageUp?: (key: KeyInput) => void;
   onReturn?: (key: KeyInput) => void;
   onTab?: (key: KeyInput) => void;
-  prefix?: string;
-  validate?: (value: T) => void;
   value: T;
-}
-
-export interface CommonPromptProps<T>
-  extends Pick<PromptProps<T>, 'focused' | 'label' | 'prefix' | 'validate'> {
-  defaultValue?: T;
 }
 
 export function Prompt<T>({
@@ -55,7 +54,7 @@ export function Prompt<T>({
   prefix = '?',
   validate,
   value,
-}: PromptProps<T>) {
+}: InternalPromptProps<T>) {
   const [error, setError] = useState<Error | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
