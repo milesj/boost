@@ -1,5 +1,6 @@
 ---
 title: CLIs
+sidebar_label: Overview
 ---
 
 import EnvBadges from '@theme/EnvBadges';
@@ -9,6 +10,14 @@ import TabItem from '@theme/TabItem';
 <EnvBadges tooling />
 
 A type-safe and interactive command line program, powered by [React][react] and [Ink][ink].
+
+The CLI provides a simple object oriented framework for building and managing command line programs,
+with clear separation of commands, middleware, args, a program instance, and more. It further
+streamlines the development process by utilizing [Ink][ink] for terminal rendering, as manually
+handling ANSI escape sequences and terminal widths can be tedious and complicated.
+
+> The CLI makes heavy usage of the [args](./args.mdx) package, which will be continually referenced
+> throughout this documentation. It's encouraged to read and understand it first.
 
 ## Installation
 
@@ -58,16 +67,6 @@ npm install @boost/cli react ink
 | `Program#onCommandNotFound`                            | `argv: Argv, path: CommandPath`                      | Called when a command wasn't found after parsing argv.                     |
 | `Program#onExit`                                       | `message: string, code: number`                      | Called when the `exit()` handler is executed but before the process exits. |
 | `Program#onHelp`                                       | `CommandPath?`                                       | Called when the help menu is rendered.                                     |
-
-## CLI
-
-The CLI provides a simple object oriented framework for building and managing command line programs,
-with clear separation of commands, middleware, args, a program instance, and more. It further
-streamlines the development process by utilizing [Ink][ink] for terminal rendering, as manually
-handling ANSI escape sequences and terminal widths can be tedious and complicated.
-
-> The CLI makes heavy usage of the [args](./args.mdx) package, which will be continually referenced
-> throughout this documentation. It's encouraged to read and understand it first.
 
 ## Program
 
@@ -1131,205 +1130,6 @@ BOOSTJS_CLI_THEME=nyan <program>
 
 When defining a theme, we'll attempt to load from `@boost/theme-<name>` or `boost-theme-<name>`,
 otherwise we throw an error. Third-party modules are currently not supported.
-
-## Components
-
-Boost provides the following components for use within your programs.
-
-### `Style`
-
-The `Style` component is special in that it renders and applies colors based on the
-[chosen theme](#themes). It accomplishes this through the `type` prop, which accepts one of the
-theme palette names.
-
-```tsx
-import { Style } from '@boost/cli';
-
-<Style type="success">Downloaded 123 packages</Style>;
-```
-
-Furthermore, it also supports text styling similar to Ink's `Text` component. This uses
-[chalk](https://www.npmjs.com/package/chalk) under the hood.
-
-```tsx
-<Style bold type="failure">
-  Faild to download packages
-</Style>
-```
-
-> It's highly encouraged to use this component for all color based styling, so that consumers can
-> always use their chosen theme!
-
-### `Header`
-
-The `Header` component is simply that, a header! It renders an inverted background, with bold and
-uppercased text, and appropriate margins. It's what the [help](#help) and [failure](#failure) menus
-use to separate and denote sections.
-
-```tsx
-import { Header } from '@boost/cli';
-
-<Header label="About" />;
-```
-
-Headers can also be [styled](#style) by providing a `type` prop, which will color the background.
-
-### `Help`
-
-The `Help` component can be used to render elegant command usage and help menus. It's a very complex
-component that supports everything from command metadata to variadic params, all through the
-following props (all optional).
-
-- `categories` (`{ [name: string]: Category }`) - Mapping of [categories](#categories) to use for
-  command and option grouping.
-- `config` (`CommandConfig`) - [Configuration](#config) metadata about the current command.
-- `commands` (`{ [path: string]: CommandConfig }`) - Mapping of [commands](#sub-commands), typically
-  sub-commands.
-- `header` (`string`) - A [header](#header) to display at the top of the output.
-- `options` (`{ [name: string]: OptionConfig }`) - Mapping of [options](#options).
-- `params` (`ParamConfig[]`) - List of [params](#params).
-
-```tsx
-import { Help } from '@boost/cli';
-
-<Help
-  header="Info"
-  config={{ description: 'This is a very cool program', deprecated: true }}
-  params={[
-    {
-      description: 'Name',
-      type: 'string',
-    },
-  ]}
-/>;
-```
-
-### `Failure`
-
-The `Failure` component can be used to render a beautiful failure menu, for an error and its stack
-trace. The `error` prop must be provided with an `Error` instance. An optional `warnings` prop can
-be provided with a list of `Error`s, for displaying minor issues without a stack trace.
-
-```tsx
-import { Failure } from '@boost/cli';
-
-<Failure error={new Error('Something is broken!')} />;
-```
-
-## Test utilities
-
-The following [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/cli/test` module.
-
-### `mockStreams`
-
-> mockStreams(): ProgramStreams
-
-Returns mocked `stderr`, `stdout`, and `stdin` streams that can be passed to a `Program`. This does
-not mock all stream functionality, only those required by Boost and Ink.
-
-```ts
-import { mockStreams } from '@boost/cli/test';
-
-const streams = mockStreams();
-```
-
-### `mockProgram`
-
-> mockProgram(options?: ProgramOptions, streams?: ProgramStreams): Program
-
-Returns a `Program` instance with required options pre-filled and streams mocked (unless manually
-provided).
-
-```ts
-import { mockProgram } from '@boost/cli/test';
-
-const program = mockProgram({ name: 'Example' });
-```
-
-### `renderComponent`
-
-> async renderComponent(element: React.ReactElement, stripped?: boolean): Promise<string\>
-
-Can be used to render a React component with Ink and return the rendered result as a terminal
-compatible string. If `stripped` is true, it will strip ANSI escape escape sequences.
-
-```tsx
-import { renderComponent } from '@boost/cli/test';
-import TestComponent from '../src/components/TestComponent';
-
-it('renders a component', async () => {
-  expect(await renderComponent(<TestComponent />)).toMatchSnapshot();
-});
-```
-
-### `runCommand`
-
-> async runCommand<O, P\>(command: Command, params: P, options?: O): Promise<string\>
-
-Runs a `Command` outside the context of a `Program`, but mimics similar functionality, including
-React component rendering. Params are required as they're passed to the run method, while options
-are optional and assume class properties have been defined. Also, the `exit` and `log` methods have
-been mocked with Jest spies so that they can be asserted.
-
-```ts
-import { runCommand } from '@boost/cli/test';
-import TestCommand from '../src/commands/TestCommand';
-
-it('runs a command', async () => {
-  const command = new TestCommand();
-
-  expect(await runCommand(command, ['foo', 'bar', 'baz'])).toMatchSnapshot();
-  expect(command.log).toHaveBeenCalled();
-});
-```
-
-> Since there is no `Program` context, any functionality that requires a program will fail. If
-> needed, use `runProgram()` instead.
-
-### `runTask`
-
-> runTask<A, R, T extends TaskContext\>(task: (this: T, ...args: A) => R, args: A, context?: T): R
-
-Runs a task function outside the context of a `Command`, in complete isolation. A mock command
-context is provided with standard defaults, and can be customized through the 3rd argument.
-
-```ts
-import { runTask } from '@boost/cli/test';
-import testTask from '../src/tasks/testTask';
-
-it('runs a task', async () => {
-  const context = {
-    log: jest.fn(),
-  };
-
-  expect(await runTask(testTask, ['foo', 'bar', 'baz'], context)).toMatchSnapshot();
-  expect(context.log).toHaveBeenCalled();
-});
-```
-
-### `runProgram`
-
-> async runProgram(program: Program, argv: string[]): Promise<{ code: ExitCode; output: string;
-> outputStripped: string }\>
-
-Runs a `Program` as if it were ran on the command line, including middleware, commands, success and
-failuer states, and more. Utilizes mocked streams to capture and return standard output and ANSI
-stripped output. Failed runs will not throw and instead will render a failure output.
-
-```ts
-import { runProgram } from '@boost/cli/test';
-import Program from '../src/program';
-
-it('runs a program', async () => {
-  const program = new Program();
-
-  const { code, output } = await runProgram(program, ['cmd', '--foo', '123', 'bar']);
-
-  expect(output).toMatchSnapshot();
-  expect(code).toBe(0);
-});
-```
 
 [args]: https://www.npmjs.com/package/@boost/args
 [ink]: https://github.com/vadimdemedes/ink

@@ -5,6 +5,7 @@
     "build": "yarn run clean && rollup --config",
     "clean": "rm -rf packages/*/{lib,esm,*.tsbuildinfo}",
     "coverage": "yarn run jest --coverage",
+    "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
     "jest": "beemo jest",
     "format": "beemo prettier",
