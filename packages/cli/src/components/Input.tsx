@@ -1,3 +1,4 @@
+import { useFocus } from 'ink';
 import React, { useState } from 'react';
 import { Cursor } from './internal/Cursor';
 import { Prompt, PromptProps } from './internal/Prompt';
@@ -11,7 +12,6 @@ export interface InputProps extends PromptProps<string> {
 
 export function Input({
   defaultValue = '',
-  focused,
   onChange,
   onSubmit,
   placeholder,
@@ -19,6 +19,7 @@ export function Input({
 }: InputProps) {
   const [value, setValue] = useState(defaultValue);
   const [cursorPosition, setCursorPosition] = useState(0);
+  const { isFocused } = useFocus({ autoFocus: true });
 
   // Remove characters
   const handleBackspace = () => {
@@ -52,13 +53,13 @@ export function Input({
     <Prompt<string>
       {...props}
       afterLabel={
-        value === '' && !focused && placeholder ? (
+        value === '' && placeholder ? (
           <Style type="muted">{placeholder}</Style>
         ) : (
-          <Cursor focused={focused} position={cursorPosition} value={value} />
+          <Cursor focused={isFocused} position={cursorPosition} value={value} />
         )
       }
-      focused={focused}
+      focused={isFocused}
       value={value}
       onBackspace={handleBackspace}
       onDelete={handleBackspace}

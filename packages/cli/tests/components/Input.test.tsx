@@ -15,12 +15,6 @@ describe('Input', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
-  it('renders cursor instead of placeholder if focused', () => {
-    const { lastFrame } = render(<Input focused label="Name?" placeholder="<name>" />);
-
-    expect(lastFrame()).toMatchSnapshot();
-  });
-
   it('renders default value', () => {
     const { lastFrame } = render(<Input label="Name?" defaultValue="boost" />);
 
@@ -143,7 +137,6 @@ describe('Input', () => {
       const { lastFrame, stdin } = render(<Input label="Name?" />);
 
       await delay();
-      stdin.write('\u0008');
       stdin.write('\u0008');
       await delay();
 

@@ -8,8 +8,7 @@ export type KeyInput = Key;
 
 export interface PromptProps<T> {
   defaultValue?: T;
-  label: NonNullable<React.ReactNode>;
-  focused?: boolean;
+  label: string | React.ReactElement;
   prefix?: string;
   validate?: (value: T) => void;
 }
@@ -18,6 +17,7 @@ export interface InternalPromptProps<T> extends PromptProps<T> {
   afterLabel?: React.ReactElement;
   beforeLabel?: React.ReactElement;
   children?: React.ReactNode;
+  focused?: boolean;
   onBackspace?: (key: KeyInput) => void;
   onDelete?: (key: KeyInput) => void;
   onEscape?: (key: KeyInput) => void;
