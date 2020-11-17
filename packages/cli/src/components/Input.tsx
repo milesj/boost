@@ -19,6 +19,7 @@ export function Input({
 }: InputProps) {
   const [value, setValue] = useState(defaultValue);
   const [cursorPosition, setCursorPosition] = useState(0);
+  const [isDirty, setDirty] = useState(false);
   const { isFocused } = useFocus({ autoFocus: true });
 
   // Remove characters
@@ -46,6 +47,7 @@ export function Input({
 
     setCursorPosition(cursorPosition + input.length);
     setValue(nextValue);
+    setDirty(true);
     onChange?.(nextValue);
   };
 
@@ -53,7 +55,7 @@ export function Input({
     <Prompt<string>
       {...props}
       afterLabel={
-        value === '' && placeholder ? (
+        value === '' && !isDirty && placeholder ? (
           <Style type="muted">{placeholder}</Style>
         ) : (
           <Cursor focused={isFocused} position={cursorPosition} value={value} />
@@ -77,7 +79,7 @@ export function Input({
         setCursorPosition((prev) => Math.min(prev + 1, value.length));
       }}
       onReturn={() => {
-        onSubmit?.(value);
+        onSubmit?.(value.trim());
       }}
     />
   );

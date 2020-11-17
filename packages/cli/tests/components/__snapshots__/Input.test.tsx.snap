@@ -28,6 +28,8 @@ exports[`Input removing characters does nothing if no value 1`] = `"[36m?[39m 
 
 exports[`Input removing characters renders value and calls \`onChange\` 1`] = `"[36m?[39m [1mName?[22m cust[46m[30m [39m[49m"`;
 
+exports[`Input renders cursor instead of placeholder if value is dirty 1`] = `"[36m?[39m [1mName?[22m [46m[30m [39m[49m"`;
+
 exports[`Input renders default value 1`] = `"[36m?[39m [1mName?[22m boost"`;
 
 exports[`Input renders label by default 1`] = `"[36m?[39m [1mName?[22m"`;

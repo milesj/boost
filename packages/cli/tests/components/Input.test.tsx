@@ -15,6 +15,18 @@ describe('Input', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
+  it('renders cursor instead of placeholder if value is dirty', async () => {
+    const { lastFrame, stdin } = render(<Input label="Name?" placeholder="<name>" />);
+
+    await delay();
+    stdin.write('a');
+    await delay(10);
+    stdin.write('\u0008'); // remove so value is empty
+    await delay();
+
+    expect(lastFrame()).toMatchSnapshot();
+  });
+
   it('renders default value', () => {
     const { lastFrame } = render(<Input label="Name?" defaultValue="boost" />);
 
@@ -27,6 +39,19 @@ describe('Input', () => {
 
     await delay();
     stdin.write('test');
+    await delay();
+    stdin.write('\r');
+    await delay();
+
+    expect(spy).toHaveBeenCalledWith('test');
+  });
+
+  it('trims the submitted value', async () => {
+    const spy = jest.fn();
+    const { stdin } = render(<Input label="Name?" onSubmit={spy} />);
+
+    await delay();
+    stdin.write('  test    ');
     await delay();
     stdin.write('\r');
     await delay();
