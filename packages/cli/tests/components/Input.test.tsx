@@ -27,16 +27,17 @@ describe('Input', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
-  it('renders value and calls `onChange`', async () => {
+  it('calls `onSubmit` when pressing return', async () => {
     const spy = jest.fn();
-    const { lastFrame, stdin } = render(<Input label="Name?" onChange={spy} />);
+    const { stdin } = render(<Input label="Name?" onSubmit={spy} />);
 
     await delay();
-    stdin.write('custom');
+    stdin.write('test');
+    await delay();
+    stdin.write('\r');
     await delay();
 
-    expect(spy).toHaveBeenCalledWith('custom');
-    expect(lastFrame()).toMatchSnapshot();
+    expect(spy).toHaveBeenCalledWith('test');
   });
 
   it('doesnt call `onChange` on mount', () => {
@@ -45,5 +46,158 @@ describe('Input', () => {
     render(<Input label="Name?" onChange={spy} />);
 
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  describe('adding characters', () => {
+    it('can add subsequent characters', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('a');
+      await delay(10);
+      stdin.write('b');
+      await delay(10);
+      stdin.write('c');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can add to the beginning', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('foo');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write('\u001B[A'); // key up
+      await delay();
+
+      stdin.write('bar');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can add to the beginning and end', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('foo');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write('\u001B[A'); // key up
+      await delay(10);
+      stdin.write('bar');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write('\u001B[B'); // key down
+      await delay(10);
+      stdin.write('qux');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can add to the middle', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('foobar');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write('\u001B[D'); // key left
+      stdin.write('\u001B[D');
+      stdin.write('\u001B[D');
+      await delay();
+
+      stdin.write('qux');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('renders value and calls `onChange`', async () => {
+      const spy = jest.fn();
+      const { lastFrame, stdin } = render(<Input label="Name?" onChange={spy} />);
+
+      await delay();
+      stdin.write('custom');
+      await delay();
+
+      expect(spy).toHaveBeenCalledWith('custom');
+      expect(lastFrame()).toMatchSnapshot();
+    });
+  });
+
+  describe('removing characters', () => {
+    it('does nothing if no value', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('\u0008');
+      stdin.write('\u0008');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can remove characters from the end', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('foo');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write('\u0008');
+      stdin.write('\u0008');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can remove characters from the middle', async () => {
+      const { lastFrame, stdin } = render(<Input label="Name?" />);
+
+      await delay();
+      stdin.write('foobar');
+      await delay(10);
+      stdin.write('\u001B[A'); // key up
+      stdin.write('\u001B[C'); // key right
+      stdin.write('\u001B[C');
+      stdin.write('\u001B[C');
+      await delay(10);
+      stdin.write('\u0008');
+      stdin.write('\u007F');
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('renders value and calls `onChange`', async () => {
+      const spy = jest.fn();
+      const { lastFrame, stdin } = render(<Input label="Name?" onChange={spy} />);
+
+      await delay();
+      stdin.write('custom');
+      await delay(10);
+      stdin.write('\u0008');
+      await delay(10);
+      stdin.write('\u0008');
+      await delay();
+
+      expect(spy).toHaveBeenCalledWith('cust');
+      expect(lastFrame()).toMatchSnapshot();
+    });
   });
 });

@@ -2,7 +2,7 @@ import { Text } from 'ink';
 import React from 'react';
 
 export interface LabelProps {
-  children: NonNullable<React.ReactNode>;
+  children: string | React.ReactElement;
 }
 
 export function Label({ children }: LabelProps) {
@@ -10,6 +10,5 @@ export function Label({ children }: LabelProps) {
     return <Text bold>{children}</Text>;
   }
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{children}</>;
+  return children;
 }
