@@ -9,7 +9,11 @@ module.exports = {
       collapsed: false,
       items: [
         'args',
-        'cli',
+        {
+          type: 'category',
+          label: 'CLI',
+          items: ['cli', 'cli/components', 'cli/prompts', 'cli/testing'],
+        },
         {
           type: 'category',
           label: 'Common utilities',

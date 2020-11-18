@@ -43,6 +43,7 @@
   "devDependencies": {
     "debug": "^4.2.0",
     "ink": "^3.0.8",
+    "ink-testing-library": "^2.1.0",
     "react": "^16.14.0"
   }
 }
