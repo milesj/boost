@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Box, useInput, Key } from 'ink';
 import { figures } from '@boost/terminal';
 import { Label } from './Label';
@@ -9,11 +9,11 @@ export type KeyInput = Key;
 export interface PromptProps<T> {
   label: string | React.ReactElement;
   prefix?: string;
-  onSubmit?: (value: T) => void;
+  onSubmit: (value: T) => void;
   validate?: (value: T) => void;
 }
 
-export interface InternalPromptProps<T> extends PromptProps<T> {
+export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'> {
   afterLabel?: React.ReactElement;
   beforeLabel?: React.ReactElement;
   children?: React.ReactNode;
@@ -21,17 +21,15 @@ export interface InternalPromptProps<T> extends PromptProps<T> {
   onBackspace?: (key: KeyInput) => void;
   onDelete?: (key: KeyInput) => void;
   onEscape?: (key: KeyInput) => void;
-  onInput?: (value: string, key: KeyInput) => void;
+  onInput?: (value: string, key: KeyInput) => boolean | void;
   onKeyDown?: (key: KeyInput) => void;
   onKeyLeft?: (key: KeyInput) => void;
   onKeyRight?: (key: KeyInput) => void;
   onKeyUp?: (key: KeyInput) => void;
   onPageDown?: (key: KeyInput) => void;
   onPageUp?: (key: KeyInput) => void;
-  onReturn?: () => void;
+  onReturn?: () => boolean | void;
   onTab?: (key: KeyInput) => void;
-  submitAfterInput?: boolean;
-  submitAfterReturn?: boolean;
   validateInput?: (value: string) => void;
   value: T | null;
 }
@@ -55,8 +53,6 @@ export function Prompt<T>({
   onReturn,
   onTab,
   prefix = '?',
-  submitAfterInput,
-  submitAfterReturn,
   validate,
   validateInput,
   value,
@@ -64,32 +60,18 @@ export function Prompt<T>({
   const [error, setError] = useState<Error | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = useCallback(
-    (value: T) => {
-      try {
-        validate?.(value);
-        onReturn?.();
-        setError(null);
-        setSubmitted(true);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error);
-          setSubmitted(false);
-        }
+  const attemptSubmit = useCallback((cb: () => boolean | void) => {
+    try {
+      setSubmitted(!!cb());
+      setError(null);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setSubmitted(false);
+        setError(error);
       }
-    },
-    [validate, onReturn],
-  );
-
-  // When the input value changes from the parent,
-  // trigger a submission and handle the result
-  useEffect(() => {
-    if (submitAfterInput && !error && value !== null) {
-      handleSubmit(value);
     }
-  }, [value, error, submitAfterInput, handleSubmit]);
+  }, []);
 
-  // Provide event handler based props for all scenarios
   useInput(
     // eslint-disable-next-line complexity
     (input, key) => {
@@ -106,10 +88,14 @@ export function Prompt<T>({
       } else if (key.pageDown) {
         onPageDown?.(key);
       } else if (key.return) {
-        if (submitAfterReturn) {
-          handleSubmit(value as T);
-        } else {
-          onReturn?.();
+        // Only run if we want validation or to submit,
+        // otherwise we trigger an unwanted submitted state
+        if (onReturn || validate) {
+          attemptSubmit(() => {
+            validate?.(value as T);
+
+            return onReturn?.();
+          });
         }
       } else if (key.tab) {
         onTab?.(key);
@@ -121,18 +107,12 @@ export function Prompt<T>({
         setSubmitted(false);
       } else if (key.escape) {
         onEscape?.(key);
-      } else {
-        try {
+      } else if (onInput) {
+        attemptSubmit(() => {
           validateInput?.(input);
-          onInput?.(input, key);
-          setError(null);
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            setError(error);
-          }
-        } finally {
-          setSubmitted(false);
-        }
+
+          return onInput(input, key);
+        });
       }
     },
     { isActive: focused },

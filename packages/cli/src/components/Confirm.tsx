@@ -23,8 +23,8 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
   }, [no, yes, exit]);
 
   const validate = useCallback(
-    (input: string | null) => {
-      if (input === null || (input !== no && input !== yes)) {
+    (input: string) => {
+      if (input !== no && input !== yes) {
         setValue(null);
 
         throw new Error(`Please select "${yes}" or "${no}"`);
@@ -37,25 +37,22 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
     (input: string) => {
       if (input === no) {
         setValue(false);
+        onSubmit(false);
       } else if (input === yes) {
         setValue(true);
+        onSubmit(true);
+      } else {
+        return false;
       }
-    },
-    [no, yes],
-  );
 
-  const handleReturn = useCallback(() => {
-    if (value === null) {
-      validate(null);
-    } else {
-      onSubmit?.(value);
-    }
-  }, [validate, value, onSubmit]);
+      return true;
+    },
+    [no, onSubmit, yes],
+  );
 
   return (
     <Prompt<boolean>
       {...props}
-      submitAfterInput
       afterLabel={
         <>
           <Style type="muted">{`(${yes}/${no})`}</Style>
@@ -67,7 +64,6 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
       validateInput={validate}
       value={value}
       onInput={handleInput}
-      onReturn={handleReturn}
     />
   );
 }

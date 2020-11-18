@@ -54,7 +54,6 @@ export function Input({
   return (
     <Prompt<string>
       {...props}
-      submitAfterReturn
       afterLabel={
         value === '' && !isDirty && placeholder ? (
           <Style type="muted">{placeholder}</Style>
@@ -80,7 +79,9 @@ export function Input({
         setCursorPosition((prev) => Math.min(prev + 1, value.length));
       }}
       onReturn={() => {
-        onSubmit?.(value.trim());
+        onSubmit(value.trim());
+
+        return true;
       }}
     />
   );
