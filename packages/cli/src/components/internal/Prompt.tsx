@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, useInput, Key } from 'ink';
 import { figures } from '@boost/terminal';
 import { Label } from './Label';
-import Style from '../Style';
+import { Style } from '../Style';
 
 export type KeyInput = Key;
 

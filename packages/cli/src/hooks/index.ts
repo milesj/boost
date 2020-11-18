@@ -1,3 +1,1 @@
-import useProgram from './useProgram';
-
-export { useProgram };
+export * from './useProgram';

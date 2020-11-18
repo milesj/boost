@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'ink';
-import Style from '../Style';
+import { Style } from '../Style';
 
 export interface CursorProps {
   focused?: boolean;

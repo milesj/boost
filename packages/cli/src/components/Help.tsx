@@ -3,8 +3,8 @@ import { Box, Text } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
 import { stripAnsi } from '@boost/terminal';
-import Header from './Header';
-import Style from './Style';
+import { Header } from './Header';
+import { Style } from './Style';
 import msg from '../translate';
 import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from '../constants';
 import { CommandConfigMap, CommandConfig, Categories } from '../types';
@@ -26,7 +26,7 @@ export interface HelpProps {
   params?: ParamConfigList;
 }
 
-export default class Help extends React.Component<HelpProps> {
+export class Help extends React.Component<HelpProps> {
   gatherOptionTags(config: OptionConfig): string[] {
     const tags: string[] = [];
 

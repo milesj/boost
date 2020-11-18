@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from 'ink';
-import Style from './Style';
+import { Style } from './Style';
 import { StyleType } from '../types';
 import { SPACING_ROW } from '../constants';
 
@@ -11,7 +11,7 @@ export interface HeaderProps {
   type?: StyleType | 'none';
 }
 
-export default function Header({
+export function Header({
   label,
   marginTop = SPACING_ROW,
   marginBottom = SPACING_ROW,

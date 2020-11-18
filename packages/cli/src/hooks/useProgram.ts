@@ -5,7 +5,7 @@ import ProgramContext from '../ProgramContext';
 import { ProgramContextType } from '../types';
 import { EXIT_FAIL, EXIT_PASS } from '../constants';
 
-export default function useProgram(): ProgramContextType {
+export function useProgram(): ProgramContextType {
   const { exit } = useApp();
   const program = useContext(ProgramContext);
 

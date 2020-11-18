@@ -36,7 +36,7 @@ import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
 import CLIError from './CLIError';
 import CommandManager from './CommandManager';
-import Help from './components/Help';
+import { Help } from './components/Help';
 import Program from './Program';
 import msg from './translate';
 

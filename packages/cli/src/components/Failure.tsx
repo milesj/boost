@@ -6,8 +6,8 @@ import { ParseError, ValidationError } from '@boost/args';
 import { ExitError } from '@boost/common';
 import { screen } from '@boost/terminal';
 import CLIError from '../CLIError';
-import Header from './Header';
-import Style from './Style';
+import { Header } from './Header';
+import { Style } from './Style';
 import { SPACING_COL, SPACING_ROW, DELIMITER } from '../constants';
 import applyStyle from '../helpers/applyStyle';
 import msg from '../translate';
@@ -22,7 +22,7 @@ export interface FailureProps {
   warnings?: Error[];
 }
 
-export default class Failure extends React.Component<FailureProps> {
+export class Failure extends React.Component<FailureProps> {
   shouldHideStackTrace() {
     const { error, hideStackTrace } = this.props;
 

@@ -9,12 +9,7 @@ export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underli
   type?: StyleType | 'none';
 }
 
-export default function Style({
-  children,
-  inverted = false,
-  type = 'none',
-  ...restProps
-}: StyleProps) {
+export function Style({ children, inverted = false, type = 'none', ...restProps }: StyleProps) {
   const theme = loadTheme();
   const props: Writeable<TextProps> = {};
 

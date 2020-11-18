@@ -2,7 +2,7 @@ import { useFocus } from 'ink';
 import React, { useState } from 'react';
 import { Cursor } from './internal/Cursor';
 import { Prompt, PromptProps } from './internal/Prompt';
-import Style from './Style';
+import { Style } from './Style';
 
 export interface InputProps extends PromptProps<string> {
   placeholder?: string;
