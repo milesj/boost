@@ -1,5 +1,6 @@
 const { Program } = require('../lib');
 const BuildCommand = require('./commands/BuildCommand');
+const ConfirmCommand = require('./commands/ConfirmCommand');
 const ErrorCommand = require('./commands/ErrorCommand');
 const ErrorCompCommand = require('./commands/ErrorCompCommand');
 const ExitCommand = require('./commands/ExitCommand');
@@ -37,5 +38,6 @@ new Program({
   .register(new OptionsCommand())
   .register(new ParamsCommand())
   // Prompts
+  .register(new ConfirmCommand())
   .register(new InputCommand())
   .runAndExit(process.argv.slice(2));

@@ -6,11 +6,9 @@ Prompts are specialized [React components](./components.md) for handling stdin i
 
 All prompt components share the following props.
 
-- `defaultValue` (`T`) - A default value. If none provided, will use an empty state.
 - `label` (`string | React.ReactElement`) - Label to display before or above the prompt itself.
   _(Required)_
 - `prefix` (`string`) - Single character symbol to display before the label. Defaults to `?`.
-- `onChange` (`(value: T) => void`) - Callback triggered when the value changes.
 - `onSubmit` (`(value: T) => void`) - Callback triggered when the value is submitted.
 - `validate` (`(value: T) => void`) - Function to validate the value on submit. To trigger a failed
   state, thrown an `Error`.
@@ -20,7 +18,9 @@ All prompt components share the following props.
 The `Input` component is a simple prompt that takes user input and returns a string. Supports
 standard typing, backspacing. On submission, the final string will be trimmed of whitespace.
 
+- `defaultValue` (`string`) - A default value. If none provided, will use an empty state.
 - `placeholder` (`string`) - Custom string to display when the value is empty and non-dirty.
+- `onChange` (`(value: string) => void`) - Callback triggered when the value changes.
 
 ```tsx
 import { Input } from '@boost/cli';

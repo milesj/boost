@@ -5,6 +5,8 @@ import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
 
 export interface InputProps extends PromptProps<string> {
+  defaultValue?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
 }
 
@@ -52,6 +54,7 @@ export function Input({
   return (
     <Prompt<string>
       {...props}
+      submitAfterReturn
       afterLabel={
         value === '' && !isDirty && placeholder ? (
           <Style type="muted">{placeholder}</Style>

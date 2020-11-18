@@ -1,3 +1,4 @@
+export * from './Confirm';
 export * from './Failure';
 export * from './Header';
 export * from './Help';
