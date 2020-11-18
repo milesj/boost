@@ -14,6 +14,8 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
   const [value, setValue] = useState<boolean | null>(null);
   const { isFocused } = useFocus({ autoFocus: true });
 
+  // Cant mock or spy in tests
+  // istanbul ignore next
   useEffect(() => {
     if (no.length !== 1) {
       exit(new Error(`Prop "no" must be a single character.`));
@@ -41,10 +43,9 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
       } else if (input === yes) {
         setValue(true);
         onSubmit(true);
-      } else {
-        return false;
       }
 
+      // Trigger submit
       return true;
     },
     [no, onSubmit, yes],
