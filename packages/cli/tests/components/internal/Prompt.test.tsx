@@ -3,12 +3,6 @@ import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
 import { Prompt } from '../../../src/components/internal/Prompt';
 
-// Differs between osx/windows
-jest.mock('figures', () => ({
-  tick: '^',
-  cross: 'x',
-}));
-
 // http://ascii-table.com/ansi-escape-sequences-vt-100.php
 describe('Prompt', () => {
   it('renders default state', () => {
@@ -70,9 +64,9 @@ describe('Prompt', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
-  it('renders success after submission', async () => {
+  it('renders success after return submission', async () => {
     const { lastFrame, stdin } = render(
-      <Prompt label="Label" value="">
+      <Prompt label="Label" value="" onReturn={() => true}>
         <Box>
           <Text>Foo</Text>
         </Box>
@@ -81,6 +75,22 @@ describe('Prompt', () => {
 
     await delay();
     stdin.write('\r');
+    await delay();
+
+    expect(lastFrame()).toMatchSnapshot();
+  });
+
+  it('renders success after input submission', async () => {
+    const { lastFrame, stdin } = render(
+      <Prompt label="Label" value="" onInput={() => true}>
+        <Box>
+          <Text>Foo</Text>
+        </Box>
+      </Prompt>,
+    );
+
+    await delay();
+    stdin.write('a');
     await delay();
 
     expect(lastFrame()).toMatchSnapshot();

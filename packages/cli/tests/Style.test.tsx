@@ -20,6 +20,14 @@ describe('<Style />', () => {
     }));
   });
 
+  it('renders `none`', async () => {
+    expect(await renderComponent(<Style>Test</Style>)).toMatchSnapshot();
+  });
+
+  it('renders `none` inverted', async () => {
+    expect(await renderComponent(<Style inverted>Test</Style>)).toMatchSnapshot();
+  });
+
   it('renders `default`', async () => {
     expect(await renderComponent(<Style type="default">Test</Style>)).toMatchSnapshot();
   });

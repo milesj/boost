@@ -1,10 +1,12 @@
 import { useFocus } from 'ink';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Cursor } from './internal/Cursor';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
 
 export interface InputProps extends PromptProps<string> {
+  defaultValue?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
 }
 
@@ -19,6 +21,13 @@ export function Input({
   const [cursorPosition, setCursorPosition] = useState(0);
   const [isDirty, setDirty] = useState(false);
   const { isFocused } = useFocus({ autoFocus: true });
+
+  const handleReturn = useCallback(() => {
+    onSubmit(value.trim());
+
+    // Trigger submit
+    return true;
+  }, [onSubmit, value]);
 
   // Remove characters
   const handleBackspace = () => {
@@ -49,6 +58,23 @@ export function Input({
     onChange?.(nextValue);
   };
 
+  // Navigation
+  const handleKeyUp = useCallback(() => {
+    setCursorPosition(0);
+  }, []);
+
+  const handleKeyDown = useCallback(() => {
+    setCursorPosition(value.length);
+  }, [value]);
+
+  const handleKeyLeft = useCallback(() => {
+    setCursorPosition((prev) => Math.max(prev - 1, 0));
+  }, []);
+
+  const handleKeyRight = useCallback(() => {
+    setCursorPosition((prev) => Math.min(prev + 1, value.length));
+  }, [value]);
+
   return (
     <Prompt<string>
       {...props}
@@ -64,21 +90,11 @@ export function Input({
       onBackspace={handleBackspace}
       onDelete={handleBackspace}
       onInput={handleInput}
-      onKeyUp={() => {
-        setCursorPosition(0);
-      }}
-      onKeyDown={() => {
-        setCursorPosition(value.length);
-      }}
-      onKeyLeft={() => {
-        setCursorPosition((prev) => Math.max(prev - 1, 0));
-      }}
-      onKeyRight={() => {
-        setCursorPosition((prev) => Math.min(prev + 1, value.length));
-      }}
-      onReturn={() => {
-        onSubmit?.(value.trim());
-      }}
+      onKeyUp={handleKeyUp}
+      onKeyDown={handleKeyDown}
+      onKeyLeft={handleKeyLeft}
+      onKeyRight={handleKeyRight}
+      onReturn={handleReturn}
     />
   );
 }

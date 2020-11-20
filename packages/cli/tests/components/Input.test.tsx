@@ -1,22 +1,27 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
-import { Input } from '../../src/components/Input';
+import { Input, InputProps } from '../../src/components/Input';
 
 describe('Input', () => {
+  const props: InputProps = {
+    label: 'Name?',
+    onSubmit() {},
+  };
+
   it('renders label by default', () => {
-    const { lastFrame } = render(<Input label="Name?" />);
+    const { lastFrame } = render(<Input {...props} />);
 
     expect(lastFrame()).toMatchSnapshot();
   });
 
   it('renders placeholder if no default value', () => {
-    const { lastFrame } = render(<Input label="Name?" placeholder="<name>" />);
+    const { lastFrame } = render(<Input {...props} placeholder="<name>" />);
 
     expect(lastFrame()).toMatchSnapshot();
   });
 
   it('renders cursor instead of placeholder if value is dirty', async () => {
-    const { lastFrame, stdin } = render(<Input label="Name?" placeholder="<name>" />);
+    const { lastFrame, stdin } = render(<Input {...props} placeholder="<name>" />);
 
     await delay();
     stdin.write('a');
@@ -28,14 +33,14 @@ describe('Input', () => {
   });
 
   it('renders default value', () => {
-    const { lastFrame } = render(<Input label="Name?" defaultValue="boost" />);
+    const { lastFrame } = render(<Input {...props} defaultValue="boost" />);
 
     expect(lastFrame()).toMatchSnapshot();
   });
 
   it('calls `onSubmit` when pressing return', async () => {
     const spy = jest.fn();
-    const { stdin } = render(<Input label="Name?" onSubmit={spy} />);
+    const { stdin } = render(<Input {...props} onSubmit={spy} />);
 
     await delay();
     stdin.write('test');
@@ -48,7 +53,7 @@ describe('Input', () => {
 
   it('trims the submitted value', async () => {
     const spy = jest.fn();
-    const { stdin } = render(<Input label="Name?" onSubmit={spy} />);
+    const { stdin } = render(<Input {...props} onSubmit={spy} />);
 
     await delay();
     stdin.write('  test    ');
@@ -62,14 +67,14 @@ describe('Input', () => {
   it('doesnt call `onChange` on mount', () => {
     const spy = jest.fn();
 
-    render(<Input label="Name?" onChange={spy} />);
+    render(<Input {...props} onChange={spy} />);
 
     expect(spy).not.toHaveBeenCalled();
   });
 
   describe('adding characters', () => {
     it('can add subsequent characters', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('a');
@@ -83,7 +88,7 @@ describe('Input', () => {
     });
 
     it('can add to the beginning', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('foo');
@@ -101,7 +106,7 @@ describe('Input', () => {
     });
 
     it('can add to the beginning and end', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('foo');
@@ -125,7 +130,7 @@ describe('Input', () => {
     });
 
     it('can add to the middle', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('foobar');
@@ -146,7 +151,7 @@ describe('Input', () => {
 
     it('renders value and calls `onChange`', async () => {
       const spy = jest.fn();
-      const { lastFrame, stdin } = render(<Input label="Name?" onChange={spy} />);
+      const { lastFrame, stdin } = render(<Input {...props} onChange={spy} />);
 
       await delay();
       stdin.write('custom');
@@ -159,7 +164,7 @@ describe('Input', () => {
 
   describe('removing characters', () => {
     it('does nothing if no value', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('\u0008');
@@ -169,7 +174,7 @@ describe('Input', () => {
     });
 
     it('can remove characters from the end', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('foo');
@@ -185,7 +190,7 @@ describe('Input', () => {
     });
 
     it('can remove characters from the middle', async () => {
-      const { lastFrame, stdin } = render(<Input label="Name?" />);
+      const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
       stdin.write('foobar');
@@ -204,7 +209,7 @@ describe('Input', () => {
 
     it('renders value and calls `onChange`', async () => {
       const spy = jest.fn();
-      const { lastFrame, stdin } = render(<Input label="Name?" onChange={spy} />);
+      const { lastFrame, stdin } = render(<Input {...props} onChange={spy} />);
 
       await delay();
       stdin.write('custom');
