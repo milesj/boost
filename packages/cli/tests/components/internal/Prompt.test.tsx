@@ -3,12 +3,6 @@ import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
 import { Prompt } from '../../../src/components/internal/Prompt';
 
-// Differs between osx/windows
-jest.mock('figures', () => ({
-  tick: '^',
-  cross: 'x',
-}));
-
 // http://ascii-table.com/ansi-escape-sequences-vt-100.php
 describe('Prompt', () => {
   it('renders default state', () => {
