@@ -3,13 +3,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useProgram } from '../hooks';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
+import msg from '../translate';
 
-export interface ConfirmProps extends PromptProps<boolean> {
+export interface ConfirmProps extends Omit<PromptProps<boolean>, 'validate'> {
+  invalidError?: string;
   no?: string;
   yes?: string;
 }
 
-export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProps) {
+export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProps) {
   const { exit } = useProgram();
   const [value, setValue] = useState<boolean | null>(null);
   const { isFocused } = useFocus({ autoFocus: true });
@@ -24,17 +26,6 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
     }
   }, [no, yes, exit]);
 
-  const validate = useCallback(
-    (input: string) => {
-      if (input !== no && input !== yes) {
-        setValue(null);
-
-        throw new Error(`Please select "${yes}" or "${no}"`);
-      }
-    },
-    [no, yes],
-  );
-
   const handleInput = useCallback(
     (input: string) => {
       if (input === no) {
@@ -43,12 +34,16 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
       } else if (input === yes) {
         setValue(true);
         onSubmit(true);
+      } else {
+        setValue(null);
+
+        throw new Error(invalidError || msg('prompt:confirmInvalidValue', { no, yes }));
       }
 
       // Trigger submit
       return true;
     },
-    [no, onSubmit, yes],
+    [invalidError, no, onSubmit, yes],
   );
 
   return (
@@ -62,7 +57,6 @@ export function Confirm({ onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProp
         </>
       }
       focused={isFocused}
-      validateInput={validate}
       value={value}
       onInput={handleInput}
     />

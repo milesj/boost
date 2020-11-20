@@ -30,6 +30,16 @@ describe('Confirm', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
+  it('errors with custom message', async () => {
+    const { lastFrame, stdin } = render(<Confirm {...props} invalidError="Wrong value yo" />);
+
+    await delay();
+    stdin.write('g');
+    await delay();
+
+    expect(lastFrame()).toMatchSnapshot();
+  });
+
   it('errors for incorrectly cased input value', async () => {
     const { lastFrame, stdin } = render(<Confirm {...props} />);
 

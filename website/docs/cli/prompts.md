@@ -2,9 +2,9 @@
 title: Prompts
 ---
 
-Prompts are specialized [React components](./components.md) for handling stdin input.
+Prompts are specialized [React components](./components.md) for handling `process.stdin` input.
 
-All prompt components share the following props.
+All prompt components share most of the following props.
 
 - `label` (`string | React.ReactElement`) - Label to display before or above the prompt itself.
   _(Required)_
@@ -13,10 +13,28 @@ All prompt components share the following props.
 - `validate` (`(value: T) => void`) - Function to validate the value on submit. To trigger a failed
   state, thrown an `Error`.
 
+## `Confirm`
+
+The `Confirm` component provides a binary choice through the input of a single character. On
+submission, either a `true` or `false` value will be passed.
+
+- `invalidError` (`string`) - Error message to display when an invalid character is pressed.
+  Defaults to a custom message.
+- `no` (`string`) - Character that triggers a falsy state when pressed. Defaults to `N`.
+- `yes` (`string`) - Character that triggers a truthy state when pressed. Defaults to `y`.
+
+```tsx
+import { Confirm } from '@boost/cli';
+
+<Confirm label="Do you like Boost?" onSubmit={handleSubmit} />;
+```
+
+> Does not support the `validate` prop.
+
 ## `Input`
 
-The `Input` component is a simple prompt that takes user input and returns a string. Supports
-standard typing, backspacing. On submission, the final string will be trimmed of whitespace.
+The `Input` component is a simple text prompt that takes user input and returns a string. Supports
+standard typing, backspacing. On submission, the final `string` will be trimmed of whitespace.
 
 - `defaultValue` (`string`) - A default value. If none provided, will use an empty state.
 - `placeholder` (`string`) - Custom string to display when the value is empty and non-dirty.

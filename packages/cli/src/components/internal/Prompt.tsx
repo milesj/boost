@@ -54,7 +54,6 @@ export function Prompt<T>({
   onTab,
   prefix = '?',
   validate,
-  validateInput,
   value,
 }: InternalPromptProps<T>) {
   const [error, setError] = useState<Error | null>(null);
@@ -108,11 +107,7 @@ export function Prompt<T>({
       } else if (key.escape) {
         onEscape?.(key);
       } else if (onInput) {
-        attemptSubmit(() => {
-          validateInput?.(input);
-
-          return onInput(input, key);
-        });
+        attemptSubmit(() => onInput?.(input, key));
       }
     },
     { isActive: focused },

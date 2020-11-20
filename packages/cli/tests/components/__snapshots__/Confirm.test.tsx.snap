@@ -12,6 +12,11 @@ exports[`Confirm errors for invalid input value 1`] = `
   [31mPlease select \\"y\\" or \\"N\\"[39m"
 `;
 
+exports[`Confirm errors with custom message 1`] = `
+"[31m✖[39m [1mConfirm?[22m [90m(y/N)[39m
+  [31mWrong value yo[39m"
+`;
+
 exports[`Confirm falsy renders success state 1`] = `"[32m✔[39m [1mConfirm?[22m [90m(y/N)[39m  [35mfalse[39m"`;
 
 exports[`Confirm renders label with yes/no by default 1`] = `"[36m?[39m [1mConfirm?[22m [90m(y/N)[39m"`;

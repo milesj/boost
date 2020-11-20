@@ -20,6 +20,10 @@ exports[`<Style /> renders \`muted\` 1`] = `"[90mTest[39m"`;
 
 exports[`<Style /> renders \`muted\` inverted 1`] = `"[100m[30mTest[39m[49m"`;
 
+exports[`<Style /> renders \`none\` 1`] = `"Test"`;
+
+exports[`<Style /> renders \`none\` inverted 1`] = `"Test"`;
+
 exports[`<Style /> renders \`notice\` 1`] = `"[35mTest[39m"`;
 
 exports[`<Style /> renders \`notice\` inverted 1`] = `"[45m[30mTest[39m[49m"`;
