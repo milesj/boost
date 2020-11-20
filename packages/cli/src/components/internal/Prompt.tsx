@@ -30,7 +30,6 @@ export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'>
   onPageUp?: (key: KeyInput) => void;
   onReturn?: () => boolean | void;
   onTab?: (key: KeyInput) => void;
-  validateInput?: (value: string) => void;
   value: T | null;
 }
 
@@ -106,7 +105,7 @@ export function Prompt<T>({
         setSubmitted(false);
       } else if (key.escape) {
         onEscape?.(key);
-      } else if (onInput) {
+      } else {
         attemptSubmit(() => onInput?.(input, key));
       }
     },

@@ -13,9 +13,6 @@ module.exports = class ConfirmCommand extends Command {
   async run() {
     return React.createElement(Confirm, {
       label: 'Do you like food?',
-      // onChange: (value) => {
-      //   this.log('CHANGE', value);
-      // },
       onSubmit: (value) => {
         this.log('SUBMIT', value);
       },
