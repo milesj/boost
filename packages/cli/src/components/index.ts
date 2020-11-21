@@ -4,4 +4,5 @@ export * from './Header';
 export * from './Help';
 export * from './IndexHelp';
 export * from './Input';
+export * from './Select';
 export * from './Style';

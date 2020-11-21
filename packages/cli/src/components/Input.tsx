@@ -1,5 +1,5 @@
-import { useFocus } from 'ink';
 import React, { useCallback, useState } from 'react';
+import { useFocus } from 'ink';
 import { Cursor } from './internal/Cursor';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';

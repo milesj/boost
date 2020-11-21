@@ -14,7 +14,7 @@ export interface PromptProps<T> {
 }
 
 export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'> {
-  afterLabel?: React.ReactElement;
+  afterLabel?: React.ReactNode;
   beforeLabel?: React.ReactElement;
   children?: React.ReactNode;
   focused?: boolean;
