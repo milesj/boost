@@ -4,8 +4,8 @@ import { isObject, toArray } from '@boost/common';
 import { figures } from '@boost/terminal';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
-import truncateList from '../helpers/truncateList';
 import { applyStyle } from '../helpers';
+import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 
 export interface SelectOption<T> {
   divider: boolean;
@@ -14,9 +14,8 @@ export interface SelectOption<T> {
   value: T;
 }
 
-export interface SelectProps<T> extends PromptProps<T> {
+export interface SelectProps<T> extends PromptProps<T>, ScrollableListProps {
   defaultSelected?: T;
-  limit?: number;
   options: (T | Pick<SelectOption<T>, 'label' | 'value'> | { divider: true })[];
 }
 
@@ -52,8 +51,9 @@ function normalizeOptions<T>(options: SelectProps<T>['options']): SelectOption<T
 export function Select<T = string>({
   defaultSelected,
   limit,
-  options: baseOptions,
   onSubmit,
+  options: baseOptions,
+  scrollType = 'cycle',
   ...props
 }: SelectProps<T>) {
   const options = useMemo(() => normalizeOptions(baseOptions), [baseOptions]);
@@ -87,9 +87,6 @@ export function Select<T = string>({
     setHighlightedIndex(optionsLength - 1);
   }, [optionsLength]);
 
-  // Limiting
-  const { leading, list, trailing } = truncateList(options, highlightedIndex, limit);
-
   return (
     <Prompt<T>
       {...props}
@@ -105,44 +102,34 @@ export function Select<T = string>({
       onKeyLeft={handleKeyLeft}
       onKeyRight={handleKeyRight}
     >
-      {leading > 0 && (
-        <Box marginLeft={2}>
-          <Style type="muted">{leading} above</Style>
-        </Box>
-      )}
+      <ScrollableList currentIndex={highlightedIndex} limit={limit} scrollType={scrollType}>
+        {options.map((option) => {
+          if (option.divider) {
+            return (
+              <Box>
+                <Style type="muted">────</Style>
+              </Box>
+            );
+          }
 
-      {list.map((option) => {
-        if (option.divider) {
+          const highlighted = highlightedIndex === option.index;
+          const { label, value } = option;
+
           return (
-            <Box>
-              <Style type="muted">────</Style>
+            <Box key={String(value)} flexDirection="row">
+              <Box flexGrow={0} marginRight={1}>
+                <Style type={highlighted ? 'info' : 'muted'}>
+                  {highlighted ? figures.pointer : figures.pointerSmall}
+                </Style>
+              </Box>
+
+              <Box>
+                <Text>{label}</Text>
+              </Box>
             </Box>
           );
-        }
-
-        const highlighted = highlightedIndex === option.index;
-        const { label, value } = option;
-
-        return (
-          <Box key={String(value)} flexDirection="row">
-            <Box flexGrow={0} marginRight={1}>
-              <Style type={highlighted ? 'info' : 'muted'}>
-                {highlighted ? figures.pointer : figures.pointerSmall}
-              </Style>
-            </Box>
-
-            <Box>
-              <Text>{label}</Text>
-            </Box>
-          </Box>
-        );
-      })}
-
-      {trailing > 0 && (
-        <Box marginLeft={2}>
-          <Style type="muted">{trailing} below</Style>
-        </Box>
-      )}
+        })}
+      </ScrollableList>
     </Prompt>
   );
 }
