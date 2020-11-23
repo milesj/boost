@@ -1,5 +1,7 @@
+/* eslint-disable no-nested-ternary */
+
 import React, { useCallback, useMemo, useState } from 'react';
-import { Box, Text, useFocus } from 'ink';
+import { Box, useFocus } from 'ink';
 import { isObject, toArray } from '@boost/common';
 import { figures } from '@boost/terminal';
 import { Prompt, PromptProps } from './internal/Prompt';
@@ -14,8 +16,8 @@ export interface SelectOption<T> {
   value: T;
 }
 
-export interface SelectProps<T> extends PromptProps<T>, ScrollableListProps {
-  defaultSelected?: T;
+export interface SelectProps<T> extends PromptProps<T[]>, ScrollableListProps {
+  defaultSelected?: T | T[];
   options: (T | Pick<SelectOption<T>, 'label' | 'value'> | { divider: true })[];
 }
 
@@ -58,9 +60,30 @@ export function Select<T = string>({
 }: SelectProps<T>) {
   const options = useMemo(() => normalizeOptions(baseOptions), [baseOptions]);
   const optionsLength = useMemo(() => options.length, [options]);
-  const [selected, setSelected] = useState(new Set(toArray(defaultSelected)));
+  const [selectedValues, setSelectedValues] = useState(new Set(toArray(defaultSelected)));
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const { isFocused } = useFocus({ autoFocus: true });
+
+  // Selection
+  const addSelected = useCallback(
+    (value: T) => {
+      const next = new Set(selectedValues);
+      next.add(value);
+
+      setSelectedValues(next);
+
+      return next;
+    },
+    [selectedValues],
+  );
+
+  const handleReturn = useCallback(() => {
+    const result = addSelected(options[highlightedIndex].value);
+
+    onSubmit?.(Array.from(result));
+
+    return true;
+  }, [addSelected, highlightedIndex, onSubmit, options]);
 
   // Navigation
   const handleKeyDown = useCallback(() => {
@@ -88,19 +111,20 @@ export function Select<T = string>({
   }, [optionsLength]);
 
   return (
-    <Prompt<T>
+    <Prompt<T[]>
       {...props}
       afterLabel={
-        selected.size > 0 && (
-          <Style type="notice">{Array.from(selected).join(applyStyle(', ', 'default'))}</Style>
+        selectedValues.size > 0 && (
+          <Style type="notice">{Array.from(selectedValues).join(applyStyle(', ', 'muted'))}</Style>
         )
       }
       focused={isFocused}
-      value={null}
+      value={Array.from(selectedValues)}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       onKeyLeft={handleKeyLeft}
       onKeyRight={handleKeyRight}
+      onReturn={handleReturn}
     >
       <ScrollableList currentIndex={highlightedIndex} limit={limit} scrollType={scrollType}>
         {options.map((option) => {
@@ -112,19 +136,20 @@ export function Select<T = string>({
             );
           }
 
+          const selected = selectedValues.has(option.value);
           const highlighted = highlightedIndex === option.index;
           const { label, value } = option;
 
           return (
             <Box key={String(value)} flexDirection="row">
               <Box flexGrow={0} marginRight={1}>
-                <Style type={highlighted ? 'info' : 'muted'}>
-                  {highlighted ? figures.pointer : figures.pointerSmall}
+                <Style type={selected ? 'notice' : highlighted ? 'info' : 'muted'}>
+                  {highlighted || selected ? figures.pointer : figures.pointerSmall}
                 </Style>
               </Box>
 
               <Box>
-                <Text>{label}</Text>
+                <Style type={selected ? 'notice' : highlighted ? 'info' : 'none'}>{label}</Style>
               </Box>
             </Box>
           );

@@ -45,6 +45,11 @@ module.exports = class SelectCommand extends Command {
       label: 'What is your favorite fruit?',
       limit: this.limit,
       options,
+      // validate: (value) => {
+      //   if (value.length === 0) {
+      //     throw new Error('Please select an option');
+      //   }
+      // },
       onSubmit: (value) => {
         this.log('SUBMIT', value);
       },

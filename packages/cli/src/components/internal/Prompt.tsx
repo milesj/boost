@@ -136,7 +136,7 @@ export function Prompt<T>({
         </Box>
       )}
 
-      {children && (
+      {children && !submitted && (
         <Box flexDirection="column" marginLeft={2}>
           {children}
         </Box>
