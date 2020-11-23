@@ -5,9 +5,9 @@ import { Box, useFocus } from 'ink';
 import { isObject, toArray } from '@boost/common';
 import { figures } from '@boost/terminal';
 import { Prompt, PromptProps } from './internal/Prompt';
+import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Style } from './Style';
 import { applyStyle } from '../helpers';
-import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 
 export interface SelectOption<T> {
   divider: boolean;
@@ -19,7 +19,7 @@ export interface SelectOption<T> {
 export interface SelectProps<T> extends PromptProps<T[]>, ScrollableListProps {
   defaultSelected?: T | T[];
   multiple?: boolean;
-  options: (T | Pick<SelectOption<T>, 'label' | 'value'> | { divider: true })[];
+  options: (T | { label: string; value: T } | { divider: true; label?: string })[];
 }
 
 function normalizeOptions<T>(options: SelectProps<T>['options']): SelectOption<T>[] {
@@ -29,7 +29,7 @@ function normalizeOptions<T>(options: SelectProps<T>['options']): SelectOption<T
         return {
           divider: false,
           index: 0,
-          label: '────',
+          label: '',
           value: (null as unknown) as T,
           ...option,
         };
@@ -42,7 +42,6 @@ function normalizeOptions<T>(options: SelectProps<T>['options']): SelectOption<T
         value: option,
       };
     })
-    .filter((option) => option.value !== null)
     .map((option, index) => {
       // eslint-disable-next-line no-param-reassign
       option.index = index;
@@ -95,29 +94,40 @@ export function Select<T = string>({
   };
 
   // Navigation
-  const handleKeyDown = useCallback(() => {
-    setHighlightedIndex((index) => {
-      const nextIndex = index + 1;
+  const getNextIndex = useCallback(
+    (index: number, step: number) => {
+      let nextIndex = index;
 
-      return nextIndex === optionsLength ? 0 : nextIndex;
-    });
-  }, [optionsLength]);
+      if (nextIndex >= optionsLength) {
+        nextIndex = 0;
+      } else if (nextIndex < 0) {
+        nextIndex = optionsLength - 1;
+      }
+
+      if (options[nextIndex].divider) {
+        nextIndex = getNextIndex(nextIndex + step, step);
+      }
+
+      return nextIndex;
+    },
+    [options, optionsLength],
+  );
+
+  const handleKeyDown = useCallback(() => {
+    setHighlightedIndex((index) => getNextIndex(index + 1, 1));
+  }, [getNextIndex]);
 
   const handleKeyUp = useCallback(() => {
-    setHighlightedIndex((index) => {
-      const nextIndex = index - 1;
-
-      return nextIndex < 0 ? optionsLength - 1 : nextIndex;
-    });
-  }, [optionsLength]);
+    setHighlightedIndex((index) => getNextIndex(index - 1, -1));
+  }, [getNextIndex]);
 
   const handleKeyLeft = useCallback(() => {
-    setHighlightedIndex(0);
-  }, []);
+    setHighlightedIndex(getNextIndex(0, 1));
+  }, [getNextIndex]);
 
   const handleKeyRight = useCallback(() => {
-    setHighlightedIndex(optionsLength - 1);
-  }, [optionsLength]);
+    setHighlightedIndex(getNextIndex(optionsLength - 1, -1));
+  }, [getNextIndex, optionsLength]);
 
   return (
     <Prompt<T[]>
@@ -140,18 +150,17 @@ export function Select<T = string>({
         {options.map((option) => {
           if (option.divider) {
             return (
-              <Box>
-                <Style type="muted">────</Style>
+              <Box key={option.index} marginLeft={2}>
+                <Style type="muted">{option.label || '────'}</Style>
               </Box>
             );
           }
 
           const selected = selectedValues.has(option.value);
           const highlighted = highlightedIndex === option.index;
-          const { label, value } = option;
 
           return (
-            <Box key={String(value)} flexDirection="row">
+            <Box key={option.index} flexDirection="row">
               <Box flexGrow={0} marginRight={1}>
                 <Style type={highlighted ? 'info' : selected ? 'notice' : 'muted'}>
                   {highlighted || selected ? figures.pointer : figures.pointerSmall}
@@ -159,7 +168,9 @@ export function Select<T = string>({
               </Box>
 
               <Box>
-                <Style type={highlighted ? 'info' : selected ? 'notice' : 'none'}>{label}</Style>
+                <Style type={highlighted ? 'info' : selected ? 'notice' : 'none'}>
+                  {option.label}
+                </Style>
               </Box>
             </Box>
           );

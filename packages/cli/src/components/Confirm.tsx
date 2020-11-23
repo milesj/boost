@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, useFocus } from 'ink';
+import { useFocus } from 'ink';
 import { useProgram } from '../hooks';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';

@@ -9,6 +9,10 @@ module.exports = class SelectCommand extends Command {
   static category = 'prompt';
 
   static options = {
+    divider: {
+      type: 'boolean',
+      description: 'Insert a divider between options',
+    },
     labels: {
       type: 'boolean',
       description: 'Display options with customized labels',
@@ -43,6 +47,15 @@ module.exports = class SelectCommand extends Command {
 
     if (!this.labels) {
       options = options.map((option) => option.value);
+    }
+
+    if (this.divider) {
+      let i = 0;
+
+      while (i < options.length) {
+        i += 4;
+        options.splice(i - 1, 0, { divider: true });
+      }
     }
 
     return React.createElement(Select, {
