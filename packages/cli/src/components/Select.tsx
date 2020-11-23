@@ -53,7 +53,7 @@ export function Select<T = string>({
   limit,
   onSubmit,
   options: baseOptions,
-  scrollType = 'cycle',
+  scrollType,
   ...props
 }: SelectProps<T>) {
   const options = useMemo(() => normalizeOptions(baseOptions), [baseOptions]);

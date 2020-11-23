@@ -2,12 +2,15 @@ import React, { useCallback, useState } from 'react';
 import { Box, DOMElement, measureElement } from 'ink';
 import { useDimensions } from '../../hooks';
 import { Style } from '../Style';
+import msg from '../../translate';
 
 interface ScrollList<T> {
   list: T[];
   leading?: number;
   trailing?: number;
 }
+
+type OverflowLabel = string | ((count: number) => string);
 
 function cycleList<T>(items: T[], currentIndex: number, limit: number): ScrollList<T> {
   const lastIndex = currentIndex + limit;
@@ -47,8 +50,22 @@ function overflowList<T>(items: T[], currentIndex: number, limit: number): Scrol
   return { leading, list, trailing };
 }
 
+function renderOverflowLabel(value: OverflowLabel | undefined, count: number): string | undefined {
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (typeof value === 'function') {
+    return value(count);
+  }
+
+  return undefined;
+}
+
 export interface ScrollableListProps {
   limit?: number;
+  overflowAfterLabel?: OverflowLabel;
+  overflowBeforeLabel?: OverflowLabel;
   scrollType?: 'cycle' | 'overflow';
 }
 
@@ -62,6 +79,8 @@ export function ScrollableList({
   children,
   currentIndex,
   limit,
+  overflowAfterLabel,
+  overflowBeforeLabel,
   rowHeight = 1,
   scrollType = 'overflow',
 }: InternalScrollableListProps) {
@@ -89,7 +108,10 @@ export function ScrollableList({
     <Box flexDirection="column" ref={measureContainer}>
       {leading > 0 && (
         <Box marginLeft={2}>
-          <Style type="muted">{leading} above</Style>
+          <Style type="muted">
+            {renderOverflowLabel(overflowBeforeLabel, leading) ||
+              msg('prompt:scrollOverflowBefore', { count: leading })}
+          </Style>
         </Box>
       )}
 
@@ -97,7 +119,10 @@ export function ScrollableList({
 
       {trailing > 0 && (
         <Box marginLeft={2}>
-          <Style type="muted">{trailing} below</Style>
+          <Style type="muted">
+            {renderOverflowLabel(overflowAfterLabel, trailing) ||
+              msg('prompt:scrollOverflowAfter', { count: trailing })}
+          </Style>
         </Box>
       )}
     </Box>
