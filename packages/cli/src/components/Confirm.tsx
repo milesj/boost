@@ -50,11 +50,11 @@ export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props 
     <Prompt<boolean>
       {...props}
       afterLabel={
-        <>
+        value === null ? (
           <Style type="muted">{`(${yes}/${no})`}</Style>
-          <Box width={2} />
-          {value !== null && <Style type="notice">{String(value)}</Style>}
-        </>
+        ) : (
+          <Style type="notice">{String(value)}</Style>
+        )
       }
       focused={isFocused}
       value={value}
