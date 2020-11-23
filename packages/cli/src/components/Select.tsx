@@ -18,6 +18,7 @@ export interface SelectOption<T> {
 
 export interface SelectProps<T> extends PromptProps<T[]>, ScrollableListProps {
   defaultSelected?: T | T[];
+  multiple?: boolean;
   options: (T | Pick<SelectOption<T>, 'label' | 'value'> | { divider: true })[];
 }
 
@@ -53,6 +54,7 @@ function normalizeOptions<T>(options: SelectProps<T>['options']): SelectOption<T
 export function Select<T = string>({
   defaultSelected,
   limit,
+  multiple,
   onSubmit,
   options: baseOptions,
   scrollType,
@@ -65,25 +67,32 @@ export function Select<T = string>({
   const { isFocused } = useFocus({ autoFocus: true });
 
   // Selection
-  const addSelected = useCallback(
-    (value: T) => {
-      const next = new Set(selectedValues);
-      next.add(value);
+  const handleInput = (input: string) => {
+    if (multiple && input === ' ') {
+      const { value } = options[highlightedIndex];
 
-      setSelectedValues(next);
+      if (selectedValues.has(value)) {
+        selectedValues.delete(value);
+      } else {
+        selectedValues.add(value);
+      }
 
-      return next;
-    },
-    [selectedValues],
-  );
+      setSelectedValues(new Set(selectedValues));
+    }
+  };
 
-  const handleReturn = useCallback(() => {
-    const result = addSelected(options[highlightedIndex].value);
+  const handleReturn = () => {
+    let result: Set<T> = selectedValues;
+
+    if (!multiple) {
+      result = selectedValues.add(options[highlightedIndex].value);
+      setSelectedValues(new Set(selectedValues));
+    }
 
     onSubmit?.(Array.from(result));
 
     return true;
-  }, [addSelected, highlightedIndex, onSubmit, options]);
+  };
 
   // Navigation
   const handleKeyDown = useCallback(() => {
@@ -120,6 +129,7 @@ export function Select<T = string>({
       }
       focused={isFocused}
       value={Array.from(selectedValues)}
+      onInput={handleInput}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       onKeyLeft={handleKeyLeft}
@@ -143,13 +153,13 @@ export function Select<T = string>({
           return (
             <Box key={String(value)} flexDirection="row">
               <Box flexGrow={0} marginRight={1}>
-                <Style type={selected ? 'notice' : highlighted ? 'info' : 'muted'}>
+                <Style type={highlighted ? 'info' : selected ? 'notice' : 'muted'}>
                   {highlighted || selected ? figures.pointer : figures.pointerSmall}
                 </Style>
               </Box>
 
               <Box>
-                <Style type={selected ? 'notice' : highlighted ? 'info' : 'none'}>{label}</Style>
+                <Style type={highlighted ? 'info' : selected ? 'notice' : 'none'}>{label}</Style>
               </Box>
             </Box>
           );
