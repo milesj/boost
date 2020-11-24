@@ -4,6 +4,7 @@ import { useProgram } from '../hooks';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
 import msg from '../translate';
+import { Selected } from './internal/Selected';
 
 export interface ConfirmProps extends Omit<PromptProps<boolean>, 'validate'> {
   invalidError?: string;
@@ -50,11 +51,7 @@ export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props 
     <Prompt<boolean>
       {...props}
       afterLabel={
-        value === null ? (
-          <Style type="muted">{`(${yes}/${no})`}</Style>
-        ) : (
-          <Style type="notice">{String(value)}</Style>
-        )
+        value === null ? <Style type="muted">{`(${yes}/${no})`}</Style> : <Selected value={value} />
       }
       focused={isFocused}
       value={value}

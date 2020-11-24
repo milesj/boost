@@ -7,7 +7,7 @@ import { figures } from '@boost/terminal';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Style } from './Style';
-import { applyStyle } from '../helpers';
+import { Selected } from './internal/Selected';
 
 export interface SelectOption<T> {
   divider: boolean;
@@ -132,11 +132,7 @@ export function Select<T = string>({
   return (
     <Prompt<T[]>
       {...props}
-      afterLabel={
-        selectedValues.size > 0 && (
-          <Style type="notice">{Array.from(selectedValues).join(applyStyle(', ', 'muted'))}</Style>
-        )
-      }
+      afterLabel={selectedValues.size > 0 && <Selected value={Array.from(selectedValues)} />}
       focused={isFocused}
       value={Array.from(selectedValues)}
       onInput={handleInput}
