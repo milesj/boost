@@ -9,20 +9,26 @@ import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Style } from './Style';
 import { Selected } from './internal/Selected';
 
-export interface SelectOption<T> {
+export type InferSelectValue<T> = T extends (infer V)[] ? V : T;
+export type SelectOption<T> = { label: string; value: T } | { divider: true; label?: string };
+
+export interface SelectProps<T, V = InferSelectValue<T>>
+  extends PromptProps<T>,
+    ScrollableListProps {
+  defaultSelected?: T;
+  /** @ignore */
+  multiple?: boolean;
+  options: (V | SelectOption<V>)[];
+}
+
+function normalizeOptions<T>(
+  options: SelectProps<T>['options'],
+): {
   divider: boolean;
   index: number;
   label: string;
   value: T;
-}
-
-export interface SelectProps<T> extends PromptProps<T[]>, ScrollableListProps {
-  defaultSelected?: T | T[];
-  multiple?: boolean;
-  options: (T | { label: string; value: T } | { divider: true; label?: string })[];
-}
-
-function normalizeOptions<T>(options: SelectProps<T>['options']): SelectOption<T>[] {
+}[] {
   return options
     .map((option) => {
       if (isObject(option)) {
@@ -61,8 +67,27 @@ export function Select<T = string>({
 }: SelectProps<T>) {
   const options = useMemo(() => normalizeOptions(baseOptions), [baseOptions]);
   const optionsLength = useMemo(() => options.length, [options]);
+  const getNextIndex = useCallback(
+    (index: number, step: number) => {
+      let nextIndex = index;
+
+      if (nextIndex >= optionsLength) {
+        nextIndex = 0;
+      } else if (nextIndex < 0) {
+        nextIndex = optionsLength - 1;
+      }
+
+      if (options[nextIndex]?.divider) {
+        nextIndex = getNextIndex(nextIndex + step, step);
+      }
+
+      return nextIndex;
+    },
+    [options, optionsLength],
+  );
+
   const [selectedValues, setSelectedValues] = useState(new Set(toArray(defaultSelected)));
-  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [highlightedIndex, setHighlightedIndex] = useState(() => getNextIndex(0, 1));
   const { isFocused } = useFocus({ autoFocus: true });
 
   // Selection
@@ -81,38 +106,19 @@ export function Select<T = string>({
   };
 
   const handleReturn = () => {
-    let result: Set<T> = selectedValues;
+    if (multiple) {
+      onSubmit?.((Array.from(selectedValues) as unknown) as T);
+    } else {
+      const { value } = options[highlightedIndex];
 
-    if (!multiple) {
-      result = selectedValues.add(options[highlightedIndex].value);
-      setSelectedValues(new Set(selectedValues));
+      setSelectedValues(new Set(selectedValues.add(value)));
+      onSubmit?.(value);
     }
-
-    onSubmit?.(Array.from(result));
 
     return true;
   };
 
   // Navigation
-  const getNextIndex = useCallback(
-    (index: number, step: number) => {
-      let nextIndex = index;
-
-      if (nextIndex >= optionsLength) {
-        nextIndex = 0;
-      } else if (nextIndex < 0) {
-        nextIndex = optionsLength - 1;
-      }
-
-      if (options[nextIndex].divider) {
-        nextIndex = getNextIndex(nextIndex + step, step);
-      }
-
-      return nextIndex;
-    },
-    [options, optionsLength],
-  );
-
   const handleKeyDown = useCallback(() => {
     setHighlightedIndex((index) => getNextIndex(index + 1, 1));
   }, [getNextIndex]);
@@ -129,12 +135,15 @@ export function Select<T = string>({
     setHighlightedIndex(getNextIndex(optionsLength - 1, -1));
   }, [getNextIndex, optionsLength]);
 
+  const selectedList = Array.from(selectedValues);
+  const value = multiple ? selectedList : selectedList[0];
+
   return (
-    <Prompt<T[]>
+    <Prompt<T>
       {...props}
-      afterLabel={selectedValues.size > 0 && <Selected value={Array.from(selectedValues)} />}
+      afterLabel={selectedList.length > 0 && <Selected value={selectedList} />}
       focused={isFocused}
-      value={Array.from(selectedValues)}
+      value={(value as unknown) as T}
       onInput={handleInput}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}

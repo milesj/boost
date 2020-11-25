@@ -42,8 +42,9 @@ function overflowList<T>(items: T[], currentIndex: number, limit: number): Scrol
     trailing = Math.max(0, length - (currentIndex + halfLimit));
 
     // Handle odd limits correctly
-    if (list.length > limit) {
+    if (limit % 2 !== 0) {
       list.shift();
+      leading += 1;
     }
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
 import { Input, InputProps } from '../../src/components/Input';
+import { KEYS } from '../helpers';
 
 describe('Input', () => {
   const props: InputProps = {
@@ -58,7 +59,7 @@ describe('Input', () => {
     await delay();
     stdin.write('  test    ');
     await delay();
-    stdin.write('\r');
+    stdin.write(KEYS.return);
     await delay();
 
     expect(spy).toHaveBeenCalledWith('test');
@@ -96,7 +97,7 @@ describe('Input', () => {
 
       expect(lastFrame()).toMatchSnapshot();
 
-      stdin.write('\u001B[A'); // key up
+      stdin.write(KEYS.up);
       await delay();
 
       stdin.write('bar');
@@ -114,14 +115,14 @@ describe('Input', () => {
 
       expect(lastFrame()).toMatchSnapshot();
 
-      stdin.write('\u001B[A'); // key up
+      stdin.write(KEYS.up);
       await delay(10);
       stdin.write('bar');
       await delay();
 
       expect(lastFrame()).toMatchSnapshot();
 
-      stdin.write('\u001B[B'); // key down
+      stdin.write(KEYS.down);
       await delay(10);
       stdin.write('qux');
       await delay();
@@ -138,9 +139,9 @@ describe('Input', () => {
 
       expect(lastFrame()).toMatchSnapshot();
 
-      stdin.write('\u001B[D'); // key left
-      stdin.write('\u001B[D');
-      stdin.write('\u001B[D');
+      stdin.write(KEYS.left);
+      stdin.write(KEYS.left);
+      stdin.write(KEYS.left);
       await delay();
 
       stdin.write('qux');
@@ -167,7 +168,7 @@ describe('Input', () => {
       const { lastFrame, stdin } = render(<Input {...props} />);
 
       await delay();
-      stdin.write('\u0008');
+      stdin.write(KEYS.backspace);
       await delay();
 
       expect(lastFrame()).toMatchSnapshot();
@@ -182,8 +183,8 @@ describe('Input', () => {
 
       expect(lastFrame()).toMatchSnapshot();
 
-      stdin.write('\u0008');
-      stdin.write('\u0008');
+      stdin.write(KEYS.backspace);
+      stdin.write(KEYS.backspace);
       await delay();
 
       expect(lastFrame()).toMatchSnapshot();
@@ -195,13 +196,13 @@ describe('Input', () => {
       await delay();
       stdin.write('foobar');
       await delay(10);
-      stdin.write('\u001B[A'); // key up
-      stdin.write('\u001B[C'); // key right
-      stdin.write('\u001B[C');
-      stdin.write('\u001B[C');
+      stdin.write(KEYS.up);
+      stdin.write(KEYS.right);
+      stdin.write(KEYS.right);
+      stdin.write(KEYS.right);
       await delay(10);
-      stdin.write('\u0008');
-      stdin.write('\u007F');
+      stdin.write(KEYS.backspace);
+      stdin.write(KEYS.delete);
       await delay();
 
       expect(lastFrame()).toMatchSnapshot();
@@ -214,9 +215,9 @@ describe('Input', () => {
       await delay();
       stdin.write('custom');
       await delay(10);
-      stdin.write('\u0008');
+      stdin.write(KEYS.delete);
       await delay(10);
-      stdin.write('\u0008');
+      stdin.write(KEYS.delete);
       await delay();
 
       expect(spy).toHaveBeenCalledWith('cust');

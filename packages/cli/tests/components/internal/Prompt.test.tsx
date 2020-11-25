@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
 import { Prompt } from '../../../src/components/internal/Prompt';
+import { KEYS } from '../../helpers';
 
 // http://ascii-table.com/ansi-escape-sequences-vt-100.php
 describe('Prompt', () => {
@@ -58,7 +59,7 @@ describe('Prompt', () => {
     );
 
     await delay();
-    stdin.write('\r');
+    stdin.write(KEYS.return);
     await delay();
 
     expect(lastFrame()).toMatchSnapshot();
@@ -74,7 +75,7 @@ describe('Prompt', () => {
     );
 
     await delay();
-    stdin.write('\r');
+    stdin.write(KEYS.return);
     await delay();
 
     expect(lastFrame()).toMatchSnapshot();
@@ -101,7 +102,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onKeyUp={spy} />);
 
     await delay();
-    stdin.write('\u001B[A');
+    stdin.write(KEYS.up);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -112,7 +113,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onKeyDown={spy} />);
 
     await delay();
-    stdin.write('\u001B[B');
+    stdin.write(KEYS.down);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -123,7 +124,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onKeyRight={spy} />);
 
     await delay();
-    stdin.write('\u001B[C');
+    stdin.write(KEYS.right);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -134,7 +135,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onKeyLeft={spy} />);
 
     await delay();
-    stdin.write('\u001B[D');
+    stdin.write(KEYS.left);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -145,7 +146,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onPageUp={spy} />);
 
     await delay();
-    stdin.write('\u001B[5~');
+    stdin.write(KEYS.pageUp);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -156,7 +157,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onPageDown={spy} />);
 
     await delay();
-    stdin.write('\u001B[6~');
+    stdin.write(KEYS.pageDown);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -167,7 +168,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onTab={spy} />);
 
     await delay();
-    stdin.write('\t');
+    stdin.write(KEYS.tab);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -178,7 +179,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onBackspace={spy} />);
 
     await delay();
-    stdin.write('\u0008');
+    stdin.write(KEYS.backspace);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -189,7 +190,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onDelete={spy} />);
 
     await delay();
-    stdin.write('\u007F');
+    stdin.write(KEYS.delete);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -200,7 +201,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onReturn={spy} />);
 
     await delay();
-    stdin.write('\r');
+    stdin.write(KEYS.return);
     await delay();
 
     expect(spy).toHaveBeenCalled();
@@ -211,7 +212,7 @@ describe('Prompt', () => {
     const { stdin } = render(<Prompt label="Label" value="" onEscape={spy} />);
 
     await delay();
-    stdin.write('\u001B');
+    stdin.write(KEYS.escape);
     await delay();
 
     expect(spy).toHaveBeenCalled();
