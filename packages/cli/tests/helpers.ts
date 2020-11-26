@@ -1,3 +1,7 @@
+/* eslint-disable sort-keys */
+
+import { SelectOption } from '../src';
+
 export const KEYS = {
   backspace: '\u0008',
   delete: '\u007F',
@@ -11,3 +15,30 @@ export const KEYS = {
   tab: '\t',
   up: '\u001B[A',
 };
+
+export const options: SelectOption<string>[] = [
+  { label: 'B', divider: true },
+  { label: 'Black', value: 'black' },
+  { label: 'Blue', value: 'blue' },
+  { label: 'Brown', value: 'brown' },
+  { label: 'C', divider: true },
+  { label: 'Cyan', value: 'cyan' },
+  { label: 'G', divider: true },
+  { label: 'Gray', value: 'gray' },
+  { label: 'Green', value: 'green' },
+  { label: 'O', divider: true },
+  { label: 'Orange', value: 'orange' },
+  { label: 'P', divider: true },
+  { label: 'Purple', value: 'purple' },
+  { label: 'R', divider: true },
+  { label: 'Red', value: 'red' },
+  { label: 'W', divider: true },
+  { label: 'White', value: 'white' },
+  { label: 'Y', divider: true },
+  { label: 'Yellow', value: 'yellow' },
+];
+
+export const optionsWithoutDivider = options.filter((o) => !('divider' in o)) as {
+  label: string;
+  value: string;
+}[];

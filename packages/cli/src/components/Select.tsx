@@ -10,7 +10,7 @@ import { DividerRow } from './internal/DividerRow';
 import { OptionRow } from './internal/OptionRow';
 import { useListNavigation } from '../hooks';
 
-export type SelectOption<T> = { label: string; value: T } | { divider: true; label?: string };
+export type SelectOption<T> = { label: string; value: T } | { divider: boolean; label?: string };
 
 export interface SelectProps<T, V = T> extends PromptProps<T>, ScrollableListProps {
   defaultSelected?: T;
@@ -82,7 +82,7 @@ export function Select<T = string>({
       <ScrollableList currentIndex={highlightedIndex} limit={limit} scrollType={scrollType}>
         {options.map((option) => {
           if (option.divider) {
-            return <DividerRow label={option.label} />;
+            return <DividerRow key={option.index} label={option.label} />;
           }
 
           return (

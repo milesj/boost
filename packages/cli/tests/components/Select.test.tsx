@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
-import { Select, SelectOption, SelectProps } from '../../src/components/Select';
-import { KEYS } from '../helpers';
+import { Select, SelectProps } from '../../src/components/Select';
+import { KEYS, options, optionsWithoutDivider } from '../helpers';
 
 describe('Select', () => {
   const props: SelectProps<string> = {
@@ -9,33 +9,6 @@ describe('Select', () => {
     options: [],
     onSubmit() {},
   };
-
-  const options: SelectOption<string>[] = [
-    { label: 'B', divider: true },
-    { label: 'Black', value: 'black' },
-    { label: 'Blue', value: 'blue' },
-    { label: 'Brown', value: 'brown' },
-    { label: 'C', divider: true },
-    { label: 'Cyan', value: 'cyan' },
-    { label: 'G', divider: true },
-    { label: 'Gray', value: 'gray' },
-    { label: 'Green', value: 'green' },
-    { label: 'O', divider: true },
-    { label: 'Orange', value: 'orange' },
-    { label: 'P', divider: true },
-    { label: 'Purple', value: 'purple' },
-    { label: 'R', divider: true },
-    { label: 'Red', value: 'red' },
-    { label: 'W', divider: true },
-    { label: 'White', value: 'white' },
-    { label: 'Y', divider: true },
-    { label: 'Yellow', value: 'yellow' },
-  ];
-
-  const optionsWithoutDivider = options.filter((o) => !('divider' in o)) as {
-    label: string;
-    value: string;
-  }[];
 
   it('renders label by default', () => {
     const { lastFrame } = render(<Select {...props} />);
@@ -173,55 +146,177 @@ describe('Select', () => {
 
   describe('dividers', () => {
     describe('displays at the beginning', () => {
-      it('renders correctly', () => {});
+      const beginningDividerOptions = [{ divider: true }, 'one', 'two', 'three'];
 
-      it('can cycle backwards past divider', () => {});
+      it('renders divider first and highlights first non-divider option', () => {
+        const { lastFrame } = render(<Select {...props} options={beginningDividerOptions} />);
 
-      it('will jump to first non-divider', () => {});
+        expect(lastFrame()).toMatchSnapshot();
+      });
+
+      it('can cycle backwards past divider', async () => {
+        const { lastFrame, stdin } = render(
+          <Select {...props} options={beginningDividerOptions} />,
+        );
+
+        await delay();
+        stdin.write(KEYS.up);
+        await delay();
+
+        expect(lastFrame()).toMatchSnapshot();
+      });
     });
 
     describe('displays at the end', () => {
-      it('renders correctly', () => {});
+      const endDividerOptions = ['one', 'two', 'three', { divider: true }];
 
-      it('can cycle forwards past divider', () => {});
+      it('renders divider last and highlights first non-divider option', () => {
+        const { lastFrame } = render(<Select {...props} options={endDividerOptions} />);
 
-      it('will jump to last non-divider', () => {});
+        expect(lastFrame()).toMatchSnapshot();
+      });
+
+      it('can cycle forwards past divider', async () => {
+        const { lastFrame, stdin } = render(<Select {...props} options={endDividerOptions} />);
+
+        await delay();
+        stdin.write(KEYS.down); // 2
+        stdin.write(KEYS.down); // 3
+        stdin.write(KEYS.down); // 1
+        stdin.write(KEYS.down); // 2
+        await delay();
+
+        expect(lastFrame()).toMatchSnapshot();
+      });
     });
 
-    it('skips dividers while cycling until a value is found', () => {});
+    it('skips dividers while cycling until a value is found', async () => {
+      const { lastFrame, stdin } = render(
+        <Select
+          {...props}
+          options={[
+            'one',
+            { divider: true },
+            { divider: true },
+            { divider: true },
+            { divider: true },
+            'two',
+          ]}
+        />,
+      );
+
+      await delay();
+      stdin.write(KEYS.down);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
   });
 
   describe('navigation', () => {
-    it('displays info color when highlighted', () => {});
+    const navOptions = ['one', 'two', 'three'];
 
-    it('displays notice color when selected', () => {});
+    it('displays info color when highlighted', () => {
+      const { lastFrame } = render(<Select {...props} options={navOptions} />);
 
-    it('can cycle forwards', () => {});
+      expect(lastFrame()).toMatchSnapshot();
+    });
 
-    it('can cycle backwards', () => {});
+    it('displays notice color when selected', async () => {
+      const { lastFrame, stdin } = render(<Select {...props} options={navOptions} />);
 
-    it('can jump to first', () => {});
+      await delay();
+      stdin.write(KEYS.return);
+      await delay();
 
-    it('can jump to last', () => {});
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can cycle forwards', async () => {
+      const { lastFrame, stdin } = render(<Select {...props} options={navOptions} />);
+
+      await delay();
+      stdin.write(KEYS.down);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can cycle backwards', async () => {
+      const { lastFrame, stdin } = render(<Select {...props} options={navOptions} />);
+
+      await delay();
+      stdin.write(KEYS.up);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can jump between last and first', async () => {
+      const { lastFrame, stdin } = render(<Select {...props} options={navOptions} />);
+
+      await delay();
+      stdin.write(KEYS.right);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write(KEYS.left);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
   });
 
   describe('selection', () => {
-    describe('single value', () => {
-      it('does nothing when hitting space bar', () => {});
+    it('does nothing when hitting space bar', async () => {
+      const spy = jest.fn();
+      const { lastFrame, stdin } = render(
+        <Select {...props} limit={5} options={options} onSubmit={spy} />,
+      );
 
-      it('calls `onSubmit` with selected value when hitting enter', () => {});
+      await delay();
+      stdin.write(' ');
+      await delay();
 
-      it('doesnt call `onSubmit` if validation fails', () => {});
+      expect(lastFrame()).toMatchSnapshot();
+      expect(spy).not.toHaveBeenCalled();
     });
 
-    describe('multiple values', () => {
-      it('selects and displays a value when hitting space bar', () => {});
+    it('calls `onSubmit` with selected value when hitting enter', async () => {
+      const spy = jest.fn();
+      const { lastFrame, stdin } = render(
+        <Select {...props} limit={5} options={options} onSubmit={spy} />,
+      );
 
-      it('can unselect a value when hitting space bar again', () => {});
+      await delay();
+      stdin.write(KEYS.return);
+      await delay();
 
-      it('calls `onSubmit` with selected values when hitting enter', () => {});
+      expect(lastFrame()).toMatchSnapshot();
+      expect(spy).toHaveBeenCalledWith('black');
+    });
 
-      it('doesnt call `onSubmit` if validation fails', () => {});
+    it('doesnt call `onSubmit` if validation fails', async () => {
+      const spy = jest.fn();
+      const { lastFrame, stdin } = render(
+        <Select
+          {...props}
+          limit={5}
+          options={options}
+          onSubmit={spy}
+          validate={() => {
+            throw new Error('Failed validation');
+          }}
+        />,
+      );
+
+      await delay();
+      stdin.write(KEYS.return);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

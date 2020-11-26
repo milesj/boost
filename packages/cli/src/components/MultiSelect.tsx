@@ -65,7 +65,7 @@ export function MultiSelect<T>({
       <ScrollableList currentIndex={highlightedIndex} limit={limit} scrollType={scrollType}>
         {options.map((option) => {
           if (option.divider) {
-            return <DividerRow label={option.label} />;
+            return <DividerRow key={option.index} label={option.label} />;
           }
 
           return (

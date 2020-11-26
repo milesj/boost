@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Select dividers displays at the beginning can cycle backwards past divider 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m────[39m
+  [90m>[39m one
+  [90m>[39m two
+  [36m>>[39m [36mthree[39m"
+`;
+
+exports[`Select dividers displays at the beginning renders divider first and highlights first non-divider option 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m────[39m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three"
+`;
+
+exports[`Select dividers displays at the end can cycle forwards past divider 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [36m>>[39m [36mtwo[39m
+  [90m>[39m three
+    [90m────[39m"
+`;
+
+exports[`Select dividers displays at the end renders divider last and highlights first non-divider option 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three
+    [90m────[39m"
+`;
+
+exports[`Select dividers skips dividers while cycling until a value is found 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+    [90m────[39m
+    [90m────[39m
+    [90m────[39m
+    [90m────[39m
+  [36m>>[39m [36mtwo[39m"
+`;
+
 exports[`Select limit cycle scroll loops around when hitting an edge (even) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mOrange[39m
@@ -82,6 +124,43 @@ exports[`Select limit overflow scroll truncates list (odd) 1`] = `
     [90m14 more[39m"
 `;
 
+exports[`Select navigation can cycle backwards 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [90m>[39m two
+  [36m>>[39m [36mthree[39m"
+`;
+
+exports[`Select navigation can cycle forwards 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [36m>>[39m [36mtwo[39m
+  [90m>[39m three"
+`;
+
+exports[`Select navigation can jump between last and first 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [90m>[39m two
+  [36m>>[39m [36mthree[39m"
+`;
+
+exports[`Select navigation can jump between last and first 2`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three"
+`;
+
+exports[`Select navigation displays info color when highlighted 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three"
+`;
+
+exports[`Select navigation displays notice color when selected 1`] = `"[32m^[39m [1mFavorite color?[22m [35mone[39m"`;
+
 exports[`Select renders label by default 1`] = `"[36m?[39m [1mFavorite color?[22m"`;
 
 exports[`Select renders options and dividers using options 1`] = `
@@ -158,4 +237,27 @@ exports[`Select renders options using strings 1`] = `
   [90m>[39m red
   [90m>[39m white
   [90m>[39m yellow"
+`;
+
+exports[`Select selection calls \`onSubmit\` with selected value when hitting enter 1`] = `"[32m^[39m [1mFavorite color?[22m [35mblack[39m"`;
+
+exports[`Select selection does nothing when hitting space bar 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+    [90mC[39m
+    [90m14 more[39m"
+`;
+
+exports[`Select selection doesnt call \`onSubmit\` if validation fails 1`] = `
+"[31mx[39m [1mFavorite color?[22m
+  [31mFailed validation[39m
+    [90mB[39m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+    [90mC[39m
+    [90m14 more[39m"
 `;
