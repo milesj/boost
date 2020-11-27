@@ -7,6 +7,7 @@ export function useDimensions(): { height: number; width: number } {
   const { stdout } = useStdout();
 
   useEffect(() => {
+    // istanbul ignore next
     const handler = () => {
       setDims(screen.size());
     };

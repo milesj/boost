@@ -9,11 +9,14 @@ import { DividerRow } from './internal/DividerRow';
 import { OptionRow } from './internal/OptionRow';
 import { SelectProps, normalizeOptions } from './Select';
 
-export type MultiSelectProps<T> = SelectProps<T[], T>;
+export interface MultiSelectProps<T> extends SelectProps<T[], T> {
+  onChange?: (values: T[]) => void;
+}
 
 export function MultiSelect<T>({
   defaultSelected,
   limit,
+  onChange,
   onSubmit,
   options: baseOptions,
   scrollType,
@@ -29,6 +32,7 @@ export function MultiSelect<T>({
       if (input === ' ') {
         const { value } = options[highlightedIndex];
 
+        // istanbul ignore next
         if (value === null) {
           return;
         } else if (selectedValues.has(value)) {
@@ -38,9 +42,10 @@ export function MultiSelect<T>({
         }
 
         setSelectedValues(new Set(selectedValues));
+        onChange?.(Array.from(selectedValues));
       }
     },
-    [highlightedIndex, options, selectedValues],
+    [highlightedIndex, onChange, options, selectedValues],
   );
 
   const handleReturn = useCallback(() => {
