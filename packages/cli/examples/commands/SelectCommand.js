@@ -13,6 +13,10 @@ module.exports = class SelectCommand extends Command {
       type: 'boolean',
       description: 'Insert a divider between options',
     },
+    flood: {
+      type: 'boolean',
+      description: 'Generate a giant list of options to test terminal dimensions',
+    },
     labels: {
       type: 'boolean',
       description: 'Display options with customized labels',
@@ -20,13 +24,13 @@ module.exports = class SelectCommand extends Command {
     limit: {
       type: 'number',
       default: 0,
-      description: 'Limit the number of results displayed',
+      description: 'Limit the number of options displayed',
     },
     scroll: {
       choices: ['cycle', 'overflow'],
       type: 'string',
-      default: 'oveflow',
-      description: 'Control how items are scrolled',
+      default: 'overflow',
+      description: 'Control how options are scrolled',
     },
   };
 
@@ -60,19 +64,34 @@ module.exports = class SelectCommand extends Command {
       }
     }
 
-    return React.createElement(Select, {
-      label: 'What is your favorite fruit?',
+    if (this.flood) {
+      options = [];
+
+      for (let i = 1; i <= 100; i += 1) {
+        options.push(i);
+      }
+    }
+
+    return React.createElement(this.getComponent(), {
+      label: this.flood ? 'Select a value' : 'What is your favorite fruit?',
       limit: this.limit,
       scrollType: this.scroll,
       options,
-      // validate: (value) => {
-      //   if (value.length === 0) {
-      //     throw new Error('Please select an option');
-      //   }
-      // },
+      validate: (value) => {
+        if (value.length === 0) {
+          throw new Error('Please select an option');
+        }
+      },
+      onChange: (value) => {
+        this.log('CHANGE', value);
+      },
       onSubmit: (value) => {
         this.log('SUBMIT', value);
       },
     });
+  }
+
+  getComponent() {
+    return Select;
   }
 };

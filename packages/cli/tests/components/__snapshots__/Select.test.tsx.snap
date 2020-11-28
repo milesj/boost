@@ -250,14 +250,3 @@ exports[`Select selection does nothing when hitting space bar 1`] = `
     [90mC[39m
     [90m8 more[39m"
 `;
-
-exports[`Select selection doesnt call \`onSubmit\` if validation fails 1`] = `
-"[31mx[39m [1mFavorite color?[22m
-  [31mFailed validation[39m
-    [90mB[39m
-  [36m>>[39m [36mBlack[39m
-  [90m>[39m Blue
-  [90m>[39m Brown
-    [90mC[39m
-    [90m8 more[39m"
-`;

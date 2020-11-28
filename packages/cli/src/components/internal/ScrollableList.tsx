@@ -149,12 +149,15 @@ export function ScrollableList<T extends ScrollableItem>({
       setCurrentHeight(measureElement(ref).height);
     }
   }, []);
+  const isOverflow = scrollType === 'overflow';
 
   // We dont want the list to overflow past the terminal size,
   // so cap it to max number of rows that will fit in the viewport
-  const isOverflow = scrollType === 'overflow';
-  const padding = isOverflow ? 3 : 1;
-  const maxLimit = Math.min(limit || currentHeight, viewportHeight - padding) / rowHeight;
+  // eslint-disable-next-line no-magic-numbers
+  const padding = isOverflow ? 4 : 2;
+  const maxLimit = Math.floor(
+    Math.min(limit || currentHeight, viewportHeight - padding) / rowHeight,
+  );
 
   // Slice the list according to the chosen scroll type
   const { startIndex, endIndex } = calculateIndexes(

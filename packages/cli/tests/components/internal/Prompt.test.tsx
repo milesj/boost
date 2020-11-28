@@ -228,4 +228,30 @@ describe('Prompt', () => {
 
     expect(spy).toHaveBeenCalledWith('a', expect.any(Object));
   });
+
+  it('calls `onSpace` (if provided) for space character', async () => {
+    const spaceSpy = jest.fn();
+    const inputSpy = jest.fn();
+    const { stdin } = render(
+      <Prompt label="Label" value="" onSpace={spaceSpy} onInput={inputSpy} />,
+    );
+
+    await delay();
+    stdin.write(' ');
+    await delay();
+
+    expect(spaceSpy).toHaveBeenCalledWith(expect.any(Object));
+    expect(inputSpy).not.toHaveBeenCalled();
+  });
+
+  it('calls `onInput` for space character if `onSpace` is not provided', async () => {
+    const inputSpy = jest.fn();
+    const { stdin } = render(<Prompt label="Label" value="" onInput={inputSpy} />);
+
+    await delay();
+    stdin.write(' ');
+    await delay();
+
+    expect(inputSpy).toHaveBeenCalledWith(' ', expect.any(Object));
+  });
 });

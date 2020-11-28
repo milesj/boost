@@ -29,6 +29,29 @@ describe('ScrollableList', () => {
     ),
   };
 
+  it('supports rows that are more than 1 height', () => {
+    const { lastFrame } = render(
+      <ScrollableList
+        {...props}
+        currentIndex={0}
+        limit={5}
+        rowHeight={2}
+        renderItem={({ value }) => (
+          <>
+            <Box key={`${value}a`}>
+              <Text>{value}</Text>
+            </Box>
+            <Box key={`${value}b`}>
+              <Text>{value}</Text>
+            </Box>
+          </>
+        )}
+      />,
+    );
+
+    expect(lastFrame()).toMatchSnapshot();
+  });
+
   describe('cycle', () => {
     it('renders current index at the beginning', () => {
       const { lastFrame } = render(

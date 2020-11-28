@@ -7,7 +7,7 @@ export interface SelectedProps<T> {
 }
 
 export function Selected<T>({ value }: SelectedProps<T>) {
-  const selected = Array.isArray(value) ? value.join(applyStyle(',', 'muted')) : String(value);
+  const selected = Array.isArray(value) ? value.join(applyStyle(', ', 'muted')) : String(value);
 
   return <Style type="notice">{selected}</Style>;
 }

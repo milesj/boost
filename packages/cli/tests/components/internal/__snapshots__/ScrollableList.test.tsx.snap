@@ -69,3 +69,11 @@ c
 d
   [90m1 more[39m"
 `;
+
+exports[`ScrollableList supports rows that are more than 1 height 1`] = `
+"a
+a
+b
+b
+  [90m3 more[39m"
+`;

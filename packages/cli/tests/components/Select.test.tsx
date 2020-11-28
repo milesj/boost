@@ -296,27 +296,5 @@ describe('Select', () => {
       expect(lastFrame()).toMatchSnapshot();
       expect(spy).toHaveBeenCalledWith('black');
     });
-
-    it('doesnt call `onSubmit` if validation fails', async () => {
-      const spy = jest.fn();
-      const { lastFrame, stdin } = render(
-        <Select
-          {...props}
-          limit={5}
-          options={options}
-          onSubmit={spy}
-          validate={() => {
-            throw new Error('Failed validation');
-          }}
-        />,
-      );
-
-      await delay();
-      stdin.write(KEYS.return);
-      await delay();
-
-      expect(lastFrame()).toMatchSnapshot();
-      expect(spy).not.toHaveBeenCalled();
-    });
   });
 });

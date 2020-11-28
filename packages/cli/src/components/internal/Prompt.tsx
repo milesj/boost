@@ -15,7 +15,7 @@ export interface PromptProps<T> {
 
 export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'> {
   afterLabel?: React.ReactNode;
-  beforeLabel?: React.ReactElement;
+  beforeLabel?: React.ReactNode;
   children?: React.ReactNode;
   focused?: boolean;
   onBackspace?: (key: KeyInput) => void;
@@ -92,7 +92,9 @@ export function Prompt<T>({
         // otherwise we trigger an unwanted submitted state
         if (onReturn || validate) {
           attemptSubmit(() => {
-            validate?.(value as T);
+            if (value !== null) {
+              validate?.(value);
+            }
 
             return onReturn?.();
           });
