@@ -20,7 +20,7 @@ function fetchPackageLatestVersion(name: string): Promise<string | undefined> {
 
       resp.on('error', () => {
         // Instead of failing the process, return a fake response
-        resolve();
+        resolve(undefined);
       });
     });
   });

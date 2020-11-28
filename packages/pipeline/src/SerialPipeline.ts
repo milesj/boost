@@ -65,5 +65,5 @@ export default abstract class SerialPipeline<
   /**
    * Run and process the work units synchronously.
    */
-  abstract async run(): Promise<Output>;
+  abstract run(): Promise<Output>;
 }

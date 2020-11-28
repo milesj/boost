@@ -7,6 +7,6 @@ module.exports = {
 
     // Currently broken
     'no-use-before-define': 'off',
-    'no-shadow': 'off'
+    'no-shadow': 'off',
   },
 };

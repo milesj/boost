@@ -57,5 +57,5 @@ export default abstract class ParallelPipeline<
   /**
    * Run and process the work unit's asynchronously.
    */
-  abstract async run(): Promise<unknown>;
+  abstract run(): Promise<unknown>;
 }

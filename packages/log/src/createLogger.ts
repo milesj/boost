@@ -34,11 +34,15 @@ export default function createLogger(options: LoggerOptions): LoggerFunction {
   });
 
   Object.defineProperty(log, 'disable', {
-    value: () => logger.disable(),
+    value: () => {
+      logger.disable();
+    },
   });
 
   Object.defineProperty(log, 'enable', {
-    value: () => logger.enable(),
+    value: () => {
+      logger.enable();
+    },
   });
 
   return log as LoggerFunction;

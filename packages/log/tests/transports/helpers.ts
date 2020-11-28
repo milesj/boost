@@ -36,9 +36,11 @@ export async function closeStream(transport: FileTransport<any>) {
   return new Promise((resolve, reject) => {
     if (transport.stream) {
       transport.stream.on('error', reject);
-      transport.close(resolve);
+      transport.close(() => {
+        resolve(undefined);
+      });
     } else {
-      resolve();
+      resolve(undefined);
     }
   });
 }

@@ -110,7 +110,9 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
       root: true,
     };
 
-    this.sortByDependedOn(this.getRootNodes()).forEach((node) => resolve(node, trunk));
+    this.sortByDependedOn(this.getRootNodes()).forEach((node) => {
+      resolve(node, trunk);
+    });
 
     // Some nodes are missing, so they must be a cycle
     if (seen.size !== this.nodes.size) {
@@ -178,10 +180,14 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
 
       cycle.add(node);
 
-      node.dependents.forEach((child) => dig(child, new Set(cycle)));
+      node.dependents.forEach((child) => {
+        dig(child, new Set(cycle));
+      });
     };
 
-    this.nodes.forEach((node) => dig(node, new Set()));
+    this.nodes.forEach((node) => {
+      dig(node, new Set());
+    });
   }
 
   /**

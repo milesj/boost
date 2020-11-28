@@ -117,9 +117,9 @@ export default abstract class Finder<
     return true;
   }
 
-  abstract async findFilesInDir(dir: Path): Promise<Path[]>;
+  abstract findFilesInDir(dir: Path): Promise<Path[]>;
 
   abstract getFileName(...args: unknown[]): string;
 
-  abstract async resolveFiles(basePath: Path, foundFiles: Path[]): Promise<T[]>;
+  abstract resolveFiles(basePath: Path, foundFiles: Path[]): Promise<T[]>;
 }

@@ -153,5 +153,5 @@ export default abstract class Routine<
   /**
    * Execute the current routine and return a new value.
    */
-  abstract async execute(context: Context, value: Input): Promise<Output>;
+  abstract execute(context: Context, value: Input): Promise<Output>;
 }

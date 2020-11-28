@@ -79,6 +79,7 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
         } else if (isObject(prevValue) && isObject(nextValue)) {
           config[name] = mergeObject(prevValue, nextValue);
         } else if (Array.isArray(prevValue) && Array.isArray(nextValue)) {
+          // @ts-expect-error This type becomes rather complex
           config[name] = mergeArray(prevValue, nextValue);
         } else {
           config[name] = nextValue;

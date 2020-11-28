@@ -413,7 +413,7 @@ describe('@Memoize()', () => {
       }
 
       @Memoize()
-      async rejectedPromise() {
+      async rejectedPromise(): Promise<unknown> {
         this.spy();
 
         await Promise.resolve(Date.now());

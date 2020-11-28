@@ -107,10 +107,12 @@ export default class PooledPipeline<
             clearTimeout(timer);
           }
 
-          return resolve(handleResult(result));
+          resolve(handleResult(result));
+
+          return result;
         })
         .catch((error) => {
-          return resolve(handleResult(error));
+          resolve(handleResult(error));
         });
     });
   }

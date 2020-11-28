@@ -52,7 +52,9 @@ export function copyFixtureToNodeModule(
     });
   }
 
-  return () => removeTempFile(modulePath);
+  return () => {
+    removeTempFile(modulePath);
+  };
 }
 
 export function copyFixtureToMock(fixture: string, mockName: string): () => void {
@@ -69,7 +71,9 @@ export function createTempFileInFixture(fixture: string, file: string, data: any
 
   fs.writeFileSync(filePath, data);
 
-  return () => removeTempFile(filePath);
+  return () => {
+    removeTempFile(filePath);
+  };
 }
 
 let folderCount = 0;
