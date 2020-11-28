@@ -51,6 +51,76 @@ import { Input } from '@boost/cli';
 />;
 ```
 
+## `MultiSelect`
+
+The `MultiSelect` component works in a similar fashion to [Select](#select), but allows for multiple
+values to be selected before submission. To select or unselect a value, press the space bar.
+
+- `defaultSelected` (`T[]`) - List of option values selected by default.
+- `onChange` (`(values: T[]) => void`) - Callback triggered when a value is selected or unselected.
+- Inherits all the same options as [Select](#select).
+
+```tsx
+import { MultiSelect } from '@boost/cli';
+
+<MultiSelect
+  label="What's your favorite fruits?"
+  defaultSelected={['apple']}
+  options={['apple', 'banana', 'orange', 'pear', 'strawberry', 'watermelon']}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+/>;
+```
+
+## `Select`
+
+The `Select` component allows a value to be selected from a pre-defined list of options. Supports
+standard keyboard navigation. On submission, the currently highlighted option will be chosen.
+
+- `limit` (`number`) - Number of options to display before scrolling. Defaults to console height.
+- `options` (`(T | SelectOption<T>)[]`) - List of options to choose from. Can either be a string,
+  number, or object with a `label` and `value`. _(Required)_
+- `overflowAfterLabel` (`string | (count: number) => string`) - Label to display above scrollable
+  options with the number of overflowing options.
+- `overflowBeforeLabel` (`string | (count: number) => string`) - Label to display below scrollable
+  options with the number of overflowing options.
+- `scrollType` (`cycle | overflow`) - The pattern in which to limit options when scrolling. Defaults
+  to `overflow`.
+  - `cycle` - Will continously cycle through options, even when navigating to and past edges.
+  - `overflow` - Will display options bound to an edge, with the number of options hidden above and
+    below.
+
+```tsx
+import { Select } from '@boost/cli';
+
+<Select
+  label="What's your favorite fruit?"
+  options={['apple', 'banana', 'orange', 'pear', 'strawberry', 'watermelon']}
+  onSubmit={handleSubmit}
+/>;
+```
+
+Options can also be customized with objects, allowing a more unique `label` to be provided. Options
+can also be grouped by inserting `divider` only options.
+
+```tsx
+import { Select } from '@boost/cli';
+
+<Select
+  label="What's your favorite fruit?"
+  options={[
+    { label: '🍎 Apple', value: 'apple' },
+    { label: '🍌 Banana', value: 'banana' },
+    { label: '🍊 Orange', value: 'orange' },
+    { divider: true },
+    { label: '🍐 Pear', value: 'pear' },
+    { label: '🍓 Strawberry', value: 'strawberry' },
+    { label: '🍉 Watermelon', value: 'watermelon' },
+  ]}
+  onSubmit={handleSubmit}
+/>;
+```
+
 ## Non-React
 
 If you would like to use prompts outside of React components and within the command space, sadly,

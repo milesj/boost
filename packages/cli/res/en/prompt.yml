@@ -1,1 +1,3 @@
 confirmInvalidValue: Please select "{{yes}}" or "{{no}}"
+scrollOverflowBefore: '{{count}} more'
+scrollOverflowAfter: '{{count}} more'

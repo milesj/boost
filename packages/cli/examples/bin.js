@@ -7,7 +7,9 @@ const ExitCommand = require('./commands/ExitCommand');
 const ExitCompCommand = require('./commands/ExitCompCommand');
 const InputCommand = require('./commands/InputCommand');
 const LoggerCommand = require('./commands/LoggerCommand');
+const MultiSelectCommand = require('./commands/MultiSelectCommand');
 const ScaffoldCommand = require('./commands/ScaffoldCommand');
+const SelectCommand = require('./commands/SelectCommand');
 const OptionsCommand = require('./commands/OptionsCommand');
 const ParamsCommand = require('./commands/ParamsCommand');
 
@@ -40,4 +42,6 @@ new Program({
   // Prompts
   .register(new ConfirmCommand())
   .register(new InputCommand())
+  .register(new MultiSelectCommand())
+  .register(new SelectCommand())
   .runAndExit(process.argv.slice(2));

@@ -17,12 +17,6 @@ exports[`Prompt renders error below label and above content 1`] = `
   Foo"
 `;
 
-exports[`Prompt renders success after input submission 1`] = `
-"[32m^[39m [1mLabel[22m
-  Foo"
-`;
+exports[`Prompt renders success after input submission 1`] = `"[32m^[39m [1mLabel[22m"`;
 
-exports[`Prompt renders success after return submission 1`] = `
-"[32m^[39m [1mLabel[22m
-  Foo"
-`;
+exports[`Prompt renders success after return submission 1`] = `"[32m^[39m [1mLabel[22m"`;

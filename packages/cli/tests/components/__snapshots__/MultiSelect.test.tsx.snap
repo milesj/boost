@@ -1,0 +1,186 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MultiSelect dividers displays at the beginning can cycle backwards past divider 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m────[39m
+  [90m>[39m one
+  [90m>[39m two
+  [36m>>[39m [36mthree[39m"
+`;
+
+exports[`MultiSelect dividers displays at the beginning renders divider first and highlights first non-divider option 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m────[39m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three"
+`;
+
+exports[`MultiSelect dividers displays at the end can cycle forwards past divider 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [36m>>[39m [36mtwo[39m
+  [90m>[39m three
+    [90m────[39m"
+`;
+
+exports[`MultiSelect dividers displays at the end renders divider last and highlights first non-divider option 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three
+    [90m────[39m"
+`;
+
+exports[`MultiSelect dividers skips dividers while cycling until a value is found 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+    [90m────[39m
+    [90m────[39m
+    [90m────[39m
+    [90m────[39m
+  [36m>>[39m [36mtwo[39m"
+`;
+
+exports[`MultiSelect navigation can cycle backwards 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [90m>[39m two
+  [36m>>[39m [36mthree[39m"
+`;
+
+exports[`MultiSelect navigation can cycle forwards 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [36m>>[39m [36mtwo[39m
+  [90m>[39m three"
+`;
+
+exports[`MultiSelect navigation can jump between last and first 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m>[39m one
+  [90m>[39m two
+  [36m>>[39m [36mthree[39m"
+`;
+
+exports[`MultiSelect navigation can jump between last and first 2`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three"
+`;
+
+exports[`MultiSelect navigation displays info color when highlighted 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mone[39m
+  [90m>[39m two
+  [90m>[39m three"
+`;
+
+exports[`MultiSelect navigation displays notice color when selected 1`] = `
+"[36m?[39m [1mFavorite color?[22m [35mone[39m
+  [35m>>[39m [35mone[39m
+  [36m>>[39m [36mtwo[39m
+  [90m>[39m three"
+`;
+
+exports[`MultiSelect renders label by default 1`] = `"[36m?[39m [1mFavorite color?[22m"`;
+
+exports[`MultiSelect renders options and dividers using options 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+    [90mC[39m
+  [90m>[39m Cyan
+    [90mG[39m
+  [90m>[39m Gray
+  [90m>[39m Green
+    [90mO[39m
+  [90m>[39m Orange
+    [90mP[39m
+  [90m>[39m Purple
+    [90mR[39m
+  [90m>[39m Red
+    [90mW[39m
+  [90m>[39m White
+    [90mY[39m
+  [90m>[39m Yellow"
+`;
+
+exports[`MultiSelect renders options and dividers using strings 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m>>[39m [36mblack[39m
+  [90m>[39m blue
+  [90m>[39m brown
+    [90mC[39m
+  [90m>[39m cyan
+    [90mG[39m
+  [90m>[39m gray
+  [90m>[39m green
+    [90mO[39m
+  [90m>[39m orange
+    [90mP[39m
+  [90m>[39m purple
+    [90mR[39m
+  [90m>[39m red
+    [90mW[39m
+  [90m>[39m white
+    [90mY[39m
+  [90m>[39m yellow"
+`;
+
+exports[`MultiSelect renders options using options 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+  [90m>[39m Cyan
+  [90m>[39m Gray
+  [90m>[39m Green
+  [90m>[39m Orange
+  [90m>[39m Purple
+  [90m>[39m Red
+  [90m>[39m White
+  [90m>[39m Yellow"
+`;
+
+exports[`MultiSelect renders options using strings 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m>>[39m [36mblack[39m
+  [90m>[39m blue
+  [90m>[39m brown
+  [90m>[39m cyan
+  [90m>[39m gray
+  [90m>[39m green
+  [90m>[39m orange
+  [90m>[39m purple
+  [90m>[39m red
+  [90m>[39m white
+  [90m>[39m yellow"
+`;
+
+exports[`MultiSelect selection calls \`onSubmit\` with selected values when hitting enter 1`] = `"[32m^[39m [1mFavorite color?[22m [35mblack[39m"`;
+
+exports[`MultiSelect selection doesnt call \`onSubmit\` if validation fails 1`] = `
+"[31mx[39m [1mFavorite color?[22m
+  [31mFailed validation[39m
+    [90mB[39m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
+
+exports[`MultiSelect selection selects and displays a value when hitting space bar 1`] = `
+"[36m?[39m [1mFavorite color?[22m [35mblack[39m
+    [90mB[39m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;

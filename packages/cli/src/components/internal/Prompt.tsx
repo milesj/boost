@@ -14,8 +14,8 @@ export interface PromptProps<T> {
 }
 
 export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'> {
-  afterLabel?: React.ReactElement;
-  beforeLabel?: React.ReactElement;
+  afterLabel?: React.ReactNode;
+  beforeLabel?: React.ReactNode;
   children?: React.ReactNode;
   focused?: boolean;
   onBackspace?: (key: KeyInput) => void;
@@ -29,6 +29,7 @@ export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'>
   onPageDown?: (key: KeyInput) => void;
   onPageUp?: (key: KeyInput) => void;
   onReturn?: () => boolean | void;
+  onSpace?: (key: KeyInput) => void;
   onTab?: (key: KeyInput) => void;
   value: T | null;
 }
@@ -50,6 +51,7 @@ export function Prompt<T>({
   onPageDown,
   onPageUp,
   onReturn,
+  onSpace,
   onTab,
   prefix = '?',
   validate,
@@ -90,7 +92,9 @@ export function Prompt<T>({
         // otherwise we trigger an unwanted submitted state
         if (onReturn || validate) {
           attemptSubmit(() => {
-            validate?.(value as T);
+            if (value !== null) {
+              validate?.(value);
+            }
 
             return onReturn?.();
           });
@@ -105,6 +109,8 @@ export function Prompt<T>({
         setSubmitted(false);
       } else if (key.escape) {
         onEscape?.(key);
+      } else if (input === ' ' && onSpace) {
+        onSpace(key);
       } else {
         attemptSubmit(() => onInput?.(input, key));
       }
@@ -136,7 +142,7 @@ export function Prompt<T>({
         </Box>
       )}
 
-      {children && (
+      {children && !submitted && (
         <Box flexDirection="column" marginLeft={2}>
           {children}
         </Box>

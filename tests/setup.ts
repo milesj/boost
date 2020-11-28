@@ -9,4 +9,6 @@ jest.mock('figures', () => ({
   ...jest.requireActual('figures'),
   tick: '^',
   cross: 'x',
+  pointer: '>>',
+  pointerSmall: '>',
 }));
