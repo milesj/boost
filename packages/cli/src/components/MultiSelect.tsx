@@ -10,6 +10,7 @@ import { OptionRow } from './internal/OptionRow';
 import { SelectProps, normalizeOptions } from './Select';
 
 export interface MultiSelectProps<T> extends SelectProps<T[], T> {
+  defaultSelected?: T[];
   onChange?: (values: T[]) => void;
 }
 
@@ -18,6 +19,8 @@ export function MultiSelect<T>({
   limit,
   onChange,
   onSubmit,
+  overflowAfterLabel,
+  overflowBeforeLabel,
   options: baseOptions,
   scrollType,
   ...props
@@ -66,6 +69,8 @@ export function MultiSelect<T>({
         currentIndex={highlightedIndex}
         items={options}
         limit={limit}
+        overflowAfterLabel={overflowAfterLabel}
+        overflowBeforeLabel={overflowBeforeLabel}
         scrollType={scrollType}
         renderItem={(option) => {
           if (option.divider) {

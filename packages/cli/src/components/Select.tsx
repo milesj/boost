@@ -11,7 +11,6 @@ import { useListNavigation } from '../hooks';
 export type SelectOption<T> = { label: string; value: T } | { divider: boolean; label?: string };
 
 export interface SelectProps<T, V = T> extends PromptProps<T>, ScrollableListProps {
-  defaultSelected?: T;
   options: (V | SelectOption<V>)[];
 }
 
@@ -44,15 +43,16 @@ export function normalizeOptions<T>(
 }
 
 export function Select<T = string>({
-  defaultSelected,
   limit,
   onSubmit,
   options: baseOptions,
+  overflowAfterLabel,
+  overflowBeforeLabel,
   scrollType,
   ...props
 }: SelectProps<T>) {
   const options = useMemo(() => normalizeOptions<T>(baseOptions), [baseOptions]);
-  const [selectedValue, setSelectedValue] = useState<T | null>(defaultSelected ?? null);
+  const [selectedValue, setSelectedValue] = useState<T | null>(null);
   const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
   const { isFocused } = useFocus({ autoFocus: true });
 
@@ -81,6 +81,8 @@ export function Select<T = string>({
         currentIndex={highlightedIndex}
         items={options}
         limit={limit}
+        overflowAfterLabel={overflowAfterLabel}
+        overflowBeforeLabel={overflowBeforeLabel}
         scrollType={scrollType}
         renderItem={(option) => {
           if (option.divider) {
