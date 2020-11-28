@@ -29,6 +29,7 @@ export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'>
   onPageDown?: (key: KeyInput) => void;
   onPageUp?: (key: KeyInput) => void;
   onReturn?: () => boolean | void;
+  onSpace?: (key: KeyInput) => void;
   onTab?: (key: KeyInput) => void;
   value: T | null;
 }
@@ -50,6 +51,7 @@ export function Prompt<T>({
   onPageDown,
   onPageUp,
   onReturn,
+  onSpace,
   onTab,
   prefix = '?',
   validate,
@@ -105,6 +107,8 @@ export function Prompt<T>({
         setSubmitted(false);
       } else if (key.escape) {
         onEscape?.(key);
+      } else if (input === ' ' && onSpace) {
+        onSpace(key);
       } else {
         attemptSubmit(() => onInput?.(input, key));
       }

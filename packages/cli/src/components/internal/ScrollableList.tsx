@@ -108,7 +108,7 @@ export function truncateList<T>(
   };
 }
 
-function countNonDisabledItems(items: ScrollableItem[]): number {
+function countEnabledItems(items: ScrollableItem[]): number {
   return items.filter((i) => {
     if ('disabled' in i) {
       return !i.disabled;
@@ -164,8 +164,8 @@ export function ScrollableList<T extends ScrollableItem>({
     scrollType,
   );
   const { leading, list, trailing } = truncateList(items, startIndex, endIndex);
-  const leadingCount = countNonDisabledItems(leading);
-  const trailingCount = countNonDisabledItems(trailing);
+  const leadingCount = countEnabledItems(leading);
+  const trailingCount = countEnabledItems(trailing);
 
   return (
     <Box flexDirection="column" ref={measureContainer}>

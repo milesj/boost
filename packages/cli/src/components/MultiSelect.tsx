@@ -27,26 +27,21 @@ export function MultiSelect<T>({
   const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
   const { isFocused } = useFocus({ autoFocus: true });
 
-  const handleInput = useCallback(
-    (input: string) => {
-      if (input === ' ') {
-        const { value } = options[highlightedIndex];
+  const handleSpace = useCallback(() => {
+    const { value } = options[highlightedIndex];
 
-        // istanbul ignore next
-        if (value === null) {
-          return;
-        } else if (selectedValues.has(value)) {
-          selectedValues.delete(value);
-        } else {
-          selectedValues.add(value);
-        }
+    // istanbul ignore next
+    if (value === null) {
+      return;
+    } else if (selectedValues.has(value)) {
+      selectedValues.delete(value);
+    } else {
+      selectedValues.add(value);
+    }
 
-        setSelectedValues(new Set(selectedValues));
-        onChange?.(Array.from(selectedValues));
-      }
-    },
-    [highlightedIndex, onChange, options, selectedValues],
-  );
+    setSelectedValues(new Set(selectedValues));
+    onChange?.(Array.from(selectedValues));
+  }, [highlightedIndex, onChange, options, selectedValues]);
 
   const handleReturn = useCallback(() => {
     onSubmit?.(Array.from(selectedValues));
@@ -64,8 +59,8 @@ export function MultiSelect<T>({
       afterLabel={selectedList.length > 0 && <Selected value={selectedList} />}
       focused={isFocused}
       value={selectedList}
-      onInput={handleInput}
       onReturn={handleReturn}
+      onSpace={handleSpace}
     >
       <ScrollableList
         currentIndex={highlightedIndex}

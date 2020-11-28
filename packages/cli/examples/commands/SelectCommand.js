@@ -22,6 +22,12 @@ module.exports = class SelectCommand extends Command {
       default: 0,
       description: 'Limit the number of results displayed',
     },
+    scroll: {
+      choices: ['cycle', 'overflow'],
+      type: 'string',
+      default: 'oveflow',
+      description: 'Control how items are scrolled',
+    },
   };
 
   async run() {
@@ -57,7 +63,7 @@ module.exports = class SelectCommand extends Command {
     return React.createElement(Select, {
       label: 'What is your favorite fruit?',
       limit: this.limit,
-      // scrollType: 'cycle',
+      scrollType: this.scroll,
       options,
       // validate: (value) => {
       //   if (value.length === 0) {

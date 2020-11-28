@@ -1,7 +1,152 @@
-import { calculateIndexes, truncateList } from '../../../src/components/internal/ScrollableList';
+/* eslint-disable react/prop-types */
+
+import React from 'react';
+import { Box, Text } from 'ink';
+import { render } from 'ink-testing-library';
+import {
+  ScrollableList,
+  InternalScrollableListProps,
+  calculateIndexes,
+  truncateList,
+} from '../../../src/components/internal/ScrollableList';
 
 const items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const maxIndex = items.length - 1;
+
+describe('ScrollableList', () => {
+  const props: InternalScrollableListProps<{
+    disabled?: boolean;
+    divider?: boolean;
+    value: string;
+  }> = {
+    currentIndex: 2,
+    limit: 3,
+    items: [{ value: 'a' }, { value: 'b' }, { value: 'c' }, { value: 'd' }, { value: 'e' }],
+    renderItem: ({ value }) => (
+      <Box key={value}>
+        <Text>{value}</Text>
+      </Box>
+    ),
+  };
+
+  describe('cycle', () => {
+    it('renders current index at the beginning', () => {
+      const { lastFrame } = render(
+        <ScrollableList {...props} currentIndex={0} scrollType="cycle" />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('renders current index in the middle', () => {
+      const { lastFrame } = render(
+        <ScrollableList {...props} currentIndex={2} scrollType="cycle" />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('renders current index at the end', () => {
+      const { lastFrame } = render(
+        <ScrollableList {...props} currentIndex={4} scrollType="cycle" />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+  });
+
+  describe('overflow', () => {
+    it('renders current index at the beginning', () => {
+      const { lastFrame } = render(
+        <ScrollableList {...props} currentIndex={0} scrollType="overflow" />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('renders current index in the middle', () => {
+      const { lastFrame } = render(
+        <ScrollableList {...props} currentIndex={2} scrollType="overflow" />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('renders current index at the end', () => {
+      const { lastFrame } = render(
+        <ScrollableList {...props} currentIndex={4} scrollType="overflow" />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can customize overflow labels', () => {
+      const { lastFrame } = render(
+        <ScrollableList
+          {...props}
+          scrollType="overflow"
+          overflowAfterLabel="Below"
+          overflowBeforeLabel="Above"
+        />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('can customize labels with a function', () => {
+      const { lastFrame } = render(
+        <ScrollableList
+          {...props}
+          scrollType="overflow"
+          overflowAfterLabel={(count) => `${count} below`}
+          overflowBeforeLabel={(count) => `${count} above`}
+        />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('filters out leading disabled and dividers', () => {
+      const { lastFrame } = render(
+        <ScrollableList
+          {...props}
+          currentIndex={4}
+          items={[
+            { divider: true, value: '---' },
+            { disabled: true, value: 'a' },
+            { value: 'b' },
+            { value: 'c' },
+            { value: 'd' },
+            { value: 'e' },
+          ]}
+          scrollType="overflow"
+        />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('filters out trailing disabled and dividers', () => {
+      const { lastFrame } = render(
+        <ScrollableList
+          {...props}
+          currentIndex={0}
+          items={[
+            { value: 'a' },
+            { value: 'b' },
+            { value: 'c' },
+            { divider: true, value: '---' },
+            { disabled: true, value: 'd' },
+            { value: 'e' },
+          ]}
+          scrollType="overflow"
+        />,
+      );
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+  });
+});
 
 describe('calculateIndexes()', () => {
   describe('cycle', () => {
