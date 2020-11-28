@@ -1,5 +1,3 @@
-/* eslint-disable no-nested-ternary */
-
 import React, { useCallback, useMemo, useState } from 'react';
 import { useFocus } from 'ink';
 import { isObject } from '@boost/common';
@@ -79,8 +77,12 @@ export function Select<T = string>({
       value={selectedValue}
       onReturn={handleReturn}
     >
-      <ScrollableList currentIndex={highlightedIndex} limit={limit} scrollType={scrollType}>
-        {options.map((option) => {
+      <ScrollableList
+        currentIndex={highlightedIndex}
+        items={options}
+        limit={limit}
+        scrollType={scrollType}
+        renderItem={(option) => {
           if (option.divider) {
             return <DividerRow key={option.index} label={option.label} />;
           }
@@ -93,8 +95,8 @@ export function Select<T = string>({
               selected={selectedValue === option.value}
             />
           );
-        })}
-      </ScrollableList>
+        }}
+      />
     </Prompt>
   );
 }

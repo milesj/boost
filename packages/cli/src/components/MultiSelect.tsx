@@ -67,8 +67,12 @@ export function MultiSelect<T>({
       onInput={handleInput}
       onReturn={handleReturn}
     >
-      <ScrollableList currentIndex={highlightedIndex} limit={limit} scrollType={scrollType}>
-        {options.map((option) => {
+      <ScrollableList
+        currentIndex={highlightedIndex}
+        items={options}
+        limit={limit}
+        scrollType={scrollType}
+        renderItem={(option) => {
           if (option.divider) {
             return <DividerRow key={option.index} label={option.label} />;
           }
@@ -81,8 +85,8 @@ export function MultiSelect<T>({
               selected={selectedValues.has(option.value!)}
             />
           );
-        })}
-      </ScrollableList>
+        }}
+      />
     </Prompt>
   );
 }

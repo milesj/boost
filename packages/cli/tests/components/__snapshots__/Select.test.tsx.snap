@@ -82,25 +82,25 @@ exports[`Select limit cycle scroll truncates list (odd) 1`] = `
 
 exports[`Select limit overflow scroll displays correct before/after more numbers (even) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
-    [90m5 more[39m
+    [90m3 more[39m
   [90m>[39m Cyan
     [90mG[39m
   [90m>[39m Gray
   [36m>>[39m [36mGreen[39m
     [90mO[39m
   [90m>[39m Orange
-    [90m8 more[39m"
+    [90m4 more[39m"
 `;
 
 exports[`Select limit overflow scroll displays correct before/after more numbers (odd) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
-    [90m6 more[39m
+    [90m4 more[39m
     [90mG[39m
   [90m>[39m Gray
   [36m>>[39m [36mGreen[39m
     [90mO[39m
   [90m>[39m Orange
-    [90m8 more[39m"
+    [90m4 more[39m"
 `;
 
 exports[`Select limit overflow scroll truncates list (even) 1`] = `
@@ -111,7 +111,7 @@ exports[`Select limit overflow scroll truncates list (even) 1`] = `
   [90m>[39m Brown
     [90mC[39m
   [90m>[39m Cyan
-    [90m13 more[39m"
+    [90m7 more[39m"
 `;
 
 exports[`Select limit overflow scroll truncates list (odd) 1`] = `
@@ -121,7 +121,7 @@ exports[`Select limit overflow scroll truncates list (odd) 1`] = `
   [90m>[39m Blue
   [90m>[39m Brown
     [90mC[39m
-    [90m14 more[39m"
+    [90m8 more[39m"
 `;
 
 exports[`Select navigation can cycle backwards 1`] = `
@@ -248,7 +248,7 @@ exports[`Select selection does nothing when hitting space bar 1`] = `
   [90m>[39m Blue
   [90m>[39m Brown
     [90mC[39m
-    [90m14 more[39m"
+    [90m8 more[39m"
 `;
 
 exports[`Select selection doesnt call \`onSubmit\` if validation fails 1`] = `
@@ -259,5 +259,5 @@ exports[`Select selection doesnt call \`onSubmit\` if validation fails 1`] = `
   [90m>[39m Blue
   [90m>[39m Brown
     [90mC[39m
-    [90m14 more[39m"
+    [90m8 more[39m"
 `;

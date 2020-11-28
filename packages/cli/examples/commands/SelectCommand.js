@@ -22,10 +22,6 @@ module.exports = class SelectCommand extends Command {
       default: 0,
       description: 'Limit the number of results displayed',
     },
-    multiple: {
-      type: 'boolean',
-      description: 'Allow multiple options to be selected',
-    },
   };
 
   async run() {
@@ -61,15 +57,13 @@ module.exports = class SelectCommand extends Command {
     return React.createElement(Select, {
       label: 'What is your favorite fruit?',
       limit: this.limit,
-      multiple: this.multiple,
+      // scrollType: 'cycle',
       options,
-      validate: this.multiple
-        ? (value) => {
-            if (value.length === 0) {
-              throw new Error('Please select an option');
-            }
-          }
-        : undefined,
+      // validate: (value) => {
+      //   if (value.length === 0) {
+      //     throw new Error('Please select an option');
+      //   }
+      // },
       onSubmit: (value) => {
         this.log('SUBMIT', value);
       },

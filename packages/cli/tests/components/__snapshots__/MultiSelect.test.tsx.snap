@@ -172,7 +172,7 @@ exports[`MultiSelect selection doesnt call \`onSubmit\` if validation fails 1`] 
   [90m>[39m Blue
   [90m>[39m Brown
     [90mC[39m
-    [90m14 more[39m"
+    [90m8 more[39m"
 `;
 
 exports[`MultiSelect selection selects and displays a value when hitting space bar 1`] = `
@@ -182,5 +182,5 @@ exports[`MultiSelect selection selects and displays a value when hitting space b
   [90m>[39m Blue
   [90m>[39m Brown
     [90mC[39m
-    [90m14 more[39m"
+    [90m8 more[39m"
 `;

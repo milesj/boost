@@ -4,51 +4,120 @@ import { useDimensions } from '../../hooks';
 import { Style } from '../Style';
 import msg from '../../translate';
 
-interface ScrollList<T> {
-  list: T[];
-  leading?: number;
-  trailing?: number;
+export type OverflowLabel = string | ((count: number) => string);
+
+export interface ScrollableItem {
+  disabled?: boolean;
+  divider?: boolean;
 }
 
-type OverflowLabel = string | ((count: number) => string);
-
-function cycleList<T>(items: T[], currentIndex: number, limit: number): ScrollList<T> {
-  const lastIndex = currentIndex + limit;
-  const list = items.slice(currentIndex, currentIndex + limit);
-
-  if (lastIndex >= items.length) {
-    list.push(...items.slice(0, lastIndex - items.length));
-  }
-
-  return { list };
+export interface ScrollableListProps {
+  limit?: number;
+  overflowAfterLabel?: OverflowLabel;
+  overflowBeforeLabel?: OverflowLabel;
+  scrollType?: 'cycle' | 'overflow';
 }
 
-function overflowList<T>(items: T[], currentIndex: number, limit: number): ScrollList<T> {
-  const { length } = items;
-  const halfLimit = Math.round(limit / 2);
-  let leading = 0;
-  let trailing = 0;
-  let list: T[];
+export interface InternalScrollableListProps<T extends ScrollableItem> extends ScrollableListProps {
+  currentIndex: number;
+  items: T[];
+  renderItem: (item: T) => React.ReactElement;
+  rowHeight?: number;
+}
 
-  if (currentIndex < halfLimit) {
-    list = items.slice(0, limit);
-    trailing = length - limit;
-  } else if (currentIndex >= length - halfLimit) {
-    list = items.slice(-limit);
-    leading = length - limit;
-  } else {
-    list = items.slice(currentIndex - halfLimit, currentIndex + halfLimit);
-    leading = Math.max(0, currentIndex - halfLimit);
-    trailing = Math.max(0, length - (currentIndex + halfLimit));
+export function calculateIndexes(
+  maxIndex: number,
+  currentIndex: number,
+  limit: number,
+  scrollType: string,
+) {
+  let startIndex = 0;
+  let endIndex = 0;
 
-    // Handle odd limits correctly
-    if (limit % 2 !== 0) {
-      list.shift();
-      leading += 1;
+  switch (scrollType) {
+    // Current index is placed at the top, while navigation
+    // always displays up to the maximum limit, and wraps around edges.
+    case 'cycle': {
+      startIndex = Math.min(Math.max(currentIndex, 0), maxIndex);
+      endIndex = startIndex + limit - 1;
+
+      if (endIndex > maxIndex) {
+        endIndex = (endIndex - maxIndex - 1) * -1;
+      }
+      break;
+    }
+
+    // Current index is placed within the middle of the limit,
+    // while navigation caps at either edge.
+    case 'overflow':
+    default: {
+      const beforeLimit = Math.floor(limit / 2);
+      const afterLimit = Math.floor(limit / 2) - (limit % 2 === 0 ? 1 : 0);
+
+      if (currentIndex <= beforeLimit) {
+        startIndex = 0;
+        endIndex = limit - 1;
+      } else if (currentIndex > maxIndex - afterLimit) {
+        startIndex = maxIndex - limit + 1;
+        endIndex = maxIndex;
+      } else {
+        startIndex = currentIndex - beforeLimit;
+        endIndex = currentIndex + afterLimit;
+      }
+      break;
     }
   }
 
-  return { leading, list, trailing };
+  return { endIndex, startIndex };
+}
+
+export function truncateList<T>(
+  items: T[],
+  startIndex: number,
+  endIndex: number,
+): {
+  list: T[];
+  leading: T[];
+  trailing: T[];
+} {
+  let list: T[];
+  let leading: T[] = [];
+  let trailing: T[] = [];
+
+  // Wraps past the end
+  if (endIndex <= 0) {
+    list = [...items.slice(startIndex), ...items.slice(0, Math.abs(endIndex) + 1)];
+    trailing = items.slice(Math.abs(endIndex) + 1, startIndex);
+
+    // Wraps past the beginning
+  } else if (startIndex < 0) {
+    list = [...items.slice(Math.abs(startIndex)), ...items.slice(0, endIndex + 1)];
+    trailing = items.slice(endIndex + 1, Math.abs(startIndex));
+
+    // In the middle
+  } else {
+    list = items.slice(startIndex, endIndex + 1);
+    leading = items.slice(0, startIndex);
+    trailing = items.slice(endIndex + 1);
+  }
+
+  return {
+    leading,
+    list,
+    trailing,
+  };
+}
+
+function countNonDisabledItems(items: ScrollableItem[]): number {
+  return items.filter((i) => {
+    if ('disabled' in i) {
+      return !i.disabled;
+    } else if ('divider' in i) {
+      return !i.divider;
+    }
+
+    return true;
+  }).length;
 }
 
 function renderOverflowLabel(value: OverflowLabel | undefined, count: number): string | undefined {
@@ -63,28 +132,16 @@ function renderOverflowLabel(value: OverflowLabel | undefined, count: number): s
   return undefined;
 }
 
-export interface ScrollableListProps {
-  limit?: number;
-  overflowAfterLabel?: OverflowLabel;
-  overflowBeforeLabel?: OverflowLabel;
-  scrollType?: 'cycle' | 'overflow';
-}
-
-export interface InternalScrollableListProps extends ScrollableListProps {
-  children: NonNullable<React.ReactNode>;
-  currentIndex: number;
-  rowHeight?: number;
-}
-
-export function ScrollableList({
-  children,
+export function ScrollableList<T extends ScrollableItem>({
   currentIndex,
+  items,
   limit,
   overflowAfterLabel,
   overflowBeforeLabel,
+  renderItem,
   rowHeight = 1,
   scrollType = 'overflow',
-}: InternalScrollableListProps) {
+}: InternalScrollableListProps<T>) {
   const { height: viewportHeight } = useDimensions();
   const [currentHeight, setCurrentHeight] = useState(viewportHeight);
   const measureContainer = useCallback((ref: DOMElement | null) => {
@@ -95,34 +152,39 @@ export function ScrollableList({
 
   // We dont want the list to overflow past the terminal size,
   // so cap it to max number of rows that will fit in the viewport
-  const padding = scrollType === 'overflow' ? 3 : 1;
+  const isOverflow = scrollType === 'overflow';
+  const padding = isOverflow ? 3 : 1;
   const maxLimit = Math.min(limit || currentHeight, viewportHeight - padding) / rowHeight;
 
   // Slice the list according to the chosen scroll type
-  const items = React.Children.toArray(children);
-  const { leading = 0, list, trailing = 0 } =
-    scrollType === 'overflow'
-      ? overflowList(items, currentIndex, maxLimit)
-      : cycleList(items, currentIndex, maxLimit);
+  const { startIndex, endIndex } = calculateIndexes(
+    items.length - 1,
+    currentIndex,
+    maxLimit,
+    scrollType,
+  );
+  const { leading, list, trailing } = truncateList(items, startIndex, endIndex);
+  const leadingCount = countNonDisabledItems(leading);
+  const trailingCount = countNonDisabledItems(trailing);
 
   return (
     <Box flexDirection="column" ref={measureContainer}>
-      {leading > 0 && (
+      {leadingCount > 0 && isOverflow && (
         <Box marginLeft={2}>
           <Style type="muted">
-            {renderOverflowLabel(overflowBeforeLabel, leading) ||
-              msg('prompt:scrollOverflowBefore', { count: leading })}
+            {renderOverflowLabel(overflowBeforeLabel, leadingCount) ||
+              msg('prompt:scrollOverflowBefore', { count: leadingCount })}
           </Style>
         </Box>
       )}
 
-      {list}
+      {list.map((item) => renderItem(item))}
 
-      {trailing > 0 && (
+      {trailingCount > 0 && isOverflow && (
         <Box marginLeft={2}>
           <Style type="muted">
-            {renderOverflowLabel(overflowAfterLabel, trailing) ||
-              msg('prompt:scrollOverflowAfter', { count: trailing })}
+            {renderOverflowLabel(overflowAfterLabel, trailingCount) ||
+              msg('prompt:scrollOverflowAfter', { count: trailingCount })}
           </Style>
         </Box>
       )}
