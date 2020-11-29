@@ -39,7 +39,8 @@
     "fs-extra": "^9.0.1",
     "lerna": "^3.22.1",
     "rollup": "^2.33.3",
-    "rollup-plugin-node-externals": "^2.2.0"
+    "rollup-plugin-node-externals": "^2.2.0",
+    "yoga-layout-prebuilt": "^1.10.0"
   },
   "publishConfig": {
     "access": "public"
