@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.2.7 - 2020-11-29
+
+#### 📦 Dependencies
+
+- Update dev dependencies. Migrate to TypeScript v4.1. ([578d5e3](https://github.com/milesj/boost/commit/578d5e3))
+
+**Note:** Version bump only for package @boost/config
+
+
+
+
+
 ### 2.2.6 - 2020-11-11
 
 **Note:** Version bump only for package @boost/config

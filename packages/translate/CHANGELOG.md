@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.5 - 2020-11-29
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 2.1.4 - 2020-11-11
 
 **Note:** Version bump only for package @boost/translate

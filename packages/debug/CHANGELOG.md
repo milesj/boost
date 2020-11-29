@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.6 - 2020-11-29
+
+#### 📦 Dependencies
+
+- **[debug]** Update to v4.3. ([e1304ee](https://github.com/milesj/boost/commit/e1304ee))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 2.1.5 - 2020-11-11
 
 **Note:** Version bump only for package @boost/debug

@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.7.0 - 2020-11-29
+
+#### 🚀 Updates
+
+- Add `Confirm` prompt component. (#122) ([e5ec1af](https://github.com/milesj/boost/commit/e5ec1af)), closes [#122](https://github.com/milesj/boost/issues/122)
+- Add `HiddenInput` and `PasswordInput` prompt components. (#124) ([9f38dca](https://github.com/milesj/boost/commit/9f38dca)), closes [#124](https://github.com/milesj/boost/issues/124)
+- Add `info` and `notice` theme color styles. (#120) ([5bc42d8](https://github.com/milesj/boost/commit/5bc42d8)), closes [#120](https://github.com/milesj/boost/issues/120)
+- Add `Input` prompt component. (#121) ([3ddda8a](https://github.com/milesj/boost/commit/3ddda8a)), closes [#121](https://github.com/milesj/boost/issues/121)
+- Add `Select` and `MultiSelect` prompt components. (#123) ([50540f6](https://github.com/milesj/boost/commit/50540f6)), closes [#123](https://github.com/milesj/boost/issues/123)
+
+#### 🐞 Fixes
+
+- Fix missing newline for debug logs. ([ea6a0d0](https://github.com/milesj/boost/commit/ea6a0d0))
+
+#### 📦 Dependencies
+
+- **[debug]** Update to v4.3. ([e1304ee](https://github.com/milesj/boost/commit/e1304ee))
+- Update dev dependencies. Migrate to TypeScript v4.1. ([578d5e3](https://github.com/milesj/boost/commit/578d5e3))
+
+#### 🛠 Internals
+
+- Reorganize components. ([29f9bb4](https://github.com/milesj/boost/commit/29f9bb4))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.6.0 - 2020-11-12
 
 #### 🚀 Updates

@@ -1,6 +1,6 @@
 {
   "name": "@boost/test-utils",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "release": "1594765247526",
   "description": "Utility classes and functions for testing Boost applications in Jest.",
   "keywords": [
