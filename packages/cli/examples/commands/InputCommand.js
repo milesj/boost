@@ -28,7 +28,7 @@ module.exports = class InputCommand extends Command {
       placeholder = '<pass>';
     } else if (this.type === 'hidden') {
       component = HiddenInput;
-      label = 'How old are you?';
+      label = 'What is the secret key?';
       placeholder = '';
     }
 

@@ -9,6 +9,12 @@ describe('Cursor', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
+  it('renders no cursor if `hideCursor` is passed', () => {
+    const { lastFrame } = render(<Cursor hideCursor value="Some string of text" position={0} />);
+
+    expect(lastFrame()).toMatchSnapshot();
+  });
+
   it('renders cursor at the start', () => {
     const { lastFrame } = render(<Cursor focused value="Some string of text" position={0} />);
 
