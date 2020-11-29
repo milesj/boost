@@ -36,19 +36,19 @@ module.exports = class SelectCommand extends Command {
 
   async run() {
     let options = [
-      { label: '🍎  Apple', value: 'apple' }, // 0
-      { label: '🍌  Banana', value: 'banana' }, // 1
-      { label: '🥥  Coconut', value: 'coconut' }, // 2
-      { label: '🍇  Grapes', value: 'grapes' }, // 3
-      { label: '🥝  Kiwi', value: 'kiwi' }, // 4
-      { label: '🍋  Lemon', value: 'lemon' }, // 5
-      { label: '🍈  Melon', value: 'melon' }, // 6
-      { label: '🍊  Orange', value: 'orange' }, // 7
-      { label: '🍑  Peach', value: 'peach' }, // 8
-      { label: '🍐  Pear', value: 'pear' }, // 9
-      { label: '🍍  Pineapple', value: 'pineapple' }, // 10
-      { label: '🍓  Strawberry', value: 'strawberry' }, // 11
-      { label: '🍉  Watermelon', value: 'watermelon' }, // 12
+      { label: '🍎 Apple', value: 'apple' }, // 0
+      { label: '🍌 Banana', value: 'banana' }, // 1
+      { label: '🥥 Coconut', value: 'coconut' }, // 2
+      { label: '🍇 Grapes', value: 'grapes' }, // 3
+      { label: '🥝 Kiwi', value: 'kiwi' }, // 4
+      { label: '🍋 Lemon', value: 'lemon' }, // 5
+      { label: '🍈 Melon', value: 'melon' }, // 6
+      { label: '🍊 Orange', value: 'orange' }, // 7
+      { label: '🍑 Peach', value: 'peach' }, // 8
+      { label: '🍐 Pear', value: 'pear' }, // 9
+      { label: '🍍 Pineapple', value: 'pineapple' }, // 10
+      { label: '🍓 Strawberry', value: 'strawberry' }, // 11
+      { label: '🍉 Watermelon', value: 'watermelon' }, // 12
     ];
 
     if (!this.labels) {
@@ -82,9 +82,9 @@ module.exports = class SelectCommand extends Command {
           throw new Error('Please select an option');
         }
       },
-      onChange: (value) => {
-        this.log('CHANGE', value);
-      },
+      // onChange: (value) => {
+      //   this.log('CHANGE', value);
+      // },
       onSubmit: (value) => {
         this.log('SUBMIT', value);
       },

@@ -26,10 +26,12 @@ submission, either a `true` or `false` value will be passed.
 ```tsx
 import { Confirm } from '@boost/cli';
 
-<Confirm label="Do you like Boost?" onSubmit={handleSubmit} />;
+<Confirm label="Do you want to continue?" onSubmit={handleSubmit} />;
 ```
 
 > Does not support the `validate` prop.
+
+![Confirm example](/img/cli/prompts/confirm.gif)
 
 ## `HiddenInput`
 
@@ -43,6 +45,8 @@ import { HiddenInput } from '@boost/cli';
 
 <HiddenInput label="What is your secret key?" placeholder="<key>" onSubmit={handleSubmit} />;
 ```
+
+![Hidden input example](/img/cli/prompts/hidden-input.gif)
 
 ## `Input`
 
@@ -66,6 +70,8 @@ import { Input } from '@boost/cli';
 />;
 ```
 
+![Input example](/img/cli/prompts/input.gif)
+
 ## `MultiSelect`
 
 The `MultiSelect` component works in a similar fashion to [Select](#select), but allows for multiple
@@ -79,13 +85,29 @@ values to be selected before submission. To select or unselect a value, press th
 import { MultiSelect } from '@boost/cli';
 
 <MultiSelect
-  label="What's your favorite fruits?"
-  defaultSelected={['apple']}
-  options={['apple', 'banana', 'orange', 'pear', 'strawberry', 'watermelon']}
+  label="What is your favorite fruits?"
+  defaultSelected={['banana']}
   onChange={handleChange}
   onSubmit={handleSubmit}
+  options={[
+    { label: '🍎 Apple', value: 'apple' },
+    { label: '🍌 Banana', value: 'banana' },
+    { label: '🥥 Coconut', value: 'coconut' },
+    { label: '🍇 Grapes', value: 'grapes' },
+    { label: '🥝 Kiwi', value: 'kiwi' },
+    { label: '🍋 Lemon', value: 'lemon' },
+    { label: '🍈 Melon', value: 'melon' },
+    { label: '🍊 Orange', value: 'orange' },
+    { label: '🍑 Peach', value: 'peach' },
+    { label: '🍐 Pear', value: 'pear' },
+    { label: '🍍 Pineapple', value: 'pineapple' },
+    { label: '🍓 Strawberry', value: 'strawberry' },
+    { label: '🍉 Watermelon', value: 'watermelon' },
+  ]}
 />;
 ```
+
+![Multiple select example](/img/cli/prompts/multiselect.gif)
 
 ## `PasswordInput`
 
@@ -99,6 +121,8 @@ import { PasswordInput } from '@boost/cli';
 
 <PasswordInput label="What is your password?" placeholder="<pass>" onSubmit={handleSubmit} />;
 ```
+
+![Password input example](/img/cli/prompts/password-input.gif)
 
 ## `Select`
 
@@ -122,11 +146,27 @@ standard keyboard navigation. On submission, the currently highlighted option wi
 import { Select } from '@boost/cli';
 
 <Select
-  label="What's your favorite fruit?"
-  options={['apple', 'banana', 'orange', 'pear', 'strawberry', 'watermelon']}
+  label="What is your favorite fruit?"
   onSubmit={handleSubmit}
+  options={[
+    'apple',
+    'banana',
+    'coconut',
+    'grapes',
+    'kiwi',
+    'lemon',
+    'melon',
+    'orange',
+    'peach',
+    'pear',
+    'pineapple',
+    'strawberry',
+    'watermelon',
+  ]}
 />;
 ```
+
+![Select example](/img/cli/prompts/select.gif)
 
 Options can also be customized with objects, allowing a more unique `label` to be provided. Options
 can also be grouped by inserting `divider` only options.
@@ -135,19 +175,27 @@ can also be grouped by inserting `divider` only options.
 import { Select } from '@boost/cli';
 
 <Select
-  label="What's your favorite fruit?"
+  label="What is your favorite fruit?"
+  onSubmit={handleSubmit}
   options={[
     { label: '🍎 Apple', value: 'apple' },
     { label: '🍌 Banana', value: 'banana' },
+    { label: '🥥 Coconut', value: 'coconut' },
+    { label: '🍇 Grapes', value: 'grapes' },
+    { label: '🥝 Kiwi', value: 'kiwi' },
+    { label: '🍋 Lemon', value: 'lemon' },
+    { label: '🍈 Melon', value: 'melon' },
     { label: '🍊 Orange', value: 'orange' },
-    { divider: true },
+    { label: '🍑 Peach', value: 'peach' },
     { label: '🍐 Pear', value: 'pear' },
+    { label: '🍍 Pineapple', value: 'pineapple' },
     { label: '🍓 Strawberry', value: 'strawberry' },
     { label: '🍉 Watermelon', value: 'watermelon' },
   ]}
-  onSubmit={handleSubmit}
 />;
 ```
+
+![Select with labels example](/img/cli/prompts/select-labels.gif)
 
 ## Non-React
 

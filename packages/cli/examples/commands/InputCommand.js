@@ -28,16 +28,16 @@ module.exports = class InputCommand extends Command {
       placeholder = '<pass>';
     } else if (this.type === 'hidden') {
       component = HiddenInput;
-      label = 'What is the secret key?';
-      placeholder = '';
+      label = 'What is your secret key?';
+      placeholder = '<key>';
     }
 
     return React.createElement(component, {
       label,
       placeholder,
-      onChange: (value) => {
-        this.log('CHANGE', value);
-      },
+      // onChange: (value) => {
+      //   this.log('CHANGE', value);
+      // },
       onSubmit: (value) => {
         this.log('SUBMIT', value);
       },
