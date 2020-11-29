@@ -31,12 +31,27 @@ import { Confirm } from '@boost/cli';
 
 > Does not support the `validate` prop.
 
+## `HiddenInput`
+
+The `HiddenInput` component is a specialized [Input](#input) that accepts user input, hides it from
+the console, and returns the entered string on a submission.
+
+- Inherits all the same props as [Input](#input) except for `hideCursor`.
+
+```tsx
+import { HiddenInput } from '@boost/cli';
+
+<HiddenInput label="What is your secret key?" placeholder="<key>" onSubmit={handleSubmit} />;
+```
+
 ## `Input`
 
 The `Input` component is a simple text prompt that takes user input and returns a string. Supports
 standard typing, backspacing. On submission, the final `string` will be trimmed of whitespace.
 
 - `defaultValue` (`string`) - A default value. If none provided, will use an empty state.
+- `hideCursor` (`boolean`) - Hide the cursor in the console. Will remove the background color, but
+  still functions.
 - `placeholder` (`string`) - Custom string to display when the value is empty and non-dirty.
 - `onChange` (`(value: string) => void`) - Callback triggered when the value changes.
 
@@ -58,7 +73,7 @@ values to be selected before submission. To select or unselect a value, press th
 
 - `defaultSelected` (`T[]`) - List of option values selected by default.
 - `onChange` (`(values: T[]) => void`) - Callback triggered when a value is selected or unselected.
-- Inherits all the same options as [Select](#select).
+- Inherits all the same props as [Select](#select).
 
 ```tsx
 import { MultiSelect } from '@boost/cli';
@@ -70,6 +85,19 @@ import { MultiSelect } from '@boost/cli';
   onChange={handleChange}
   onSubmit={handleSubmit}
 />;
+```
+
+## `PasswordInput`
+
+The `PasswordInput` component is a specialized [Input](#input) that masks user input and replaces
+each character with a star (`*`).
+
+- Inherits all the same props as [Input](#input).
+
+```tsx
+import { PasswordInput } from '@boost/cli';
+
+<PasswordInput label="What is your password?" placeholder="<pass>" onSubmit={handleSubmit} />;
 ```
 
 ## `Select`

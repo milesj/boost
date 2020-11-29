@@ -6,12 +6,16 @@ import { Style } from './Style';
 
 export interface InputProps extends PromptProps<string> {
   defaultValue?: string;
+  hideCursor?: boolean;
+  mask?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
 }
 
 export function Input({
   defaultValue = '',
+  hideCursor,
+  mask,
   onChange,
   onSubmit,
   placeholder,
@@ -82,7 +86,12 @@ export function Input({
         value === '' && !isDirty && placeholder ? (
           <Style type="muted">{placeholder}</Style>
         ) : (
-          <Cursor focused={isFocused} position={cursorPosition} value={value} />
+          <Cursor
+            focused={isFocused}
+            hideCursor={hideCursor}
+            position={cursorPosition}
+            value={mask === undefined ? value : mask.repeat(value.length)}
+          />
         )
       }
       focused={isFocused}
