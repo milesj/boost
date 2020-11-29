@@ -1,6 +1,9 @@
 import { useCallback, useState } from 'react';
 
-export function useListNavigation(list: { divider?: boolean }[], defaultIndex?: number) {
+export function useListNavigation(
+  list: { disabled?: boolean; divider?: boolean }[],
+  defaultIndex?: number,
+) {
   const getNextIndex = useCallback(
     (index: number, step: number) => {
       let nextIndex = index;
@@ -11,7 +14,7 @@ export function useListNavigation(list: { divider?: boolean }[], defaultIndex?: 
         nextIndex = list.length - 1;
       }
 
-      if (list[nextIndex]?.divider) {
+      if (list[nextIndex]?.disabled || list[nextIndex]?.divider) {
         nextIndex = getNextIndex(nextIndex + step, step);
       }
 
