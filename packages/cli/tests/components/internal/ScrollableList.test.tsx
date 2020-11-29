@@ -37,14 +37,14 @@ describe('ScrollableList', () => {
         limit={5}
         rowHeight={2}
         renderItem={({ value }) => (
-          <>
-            <Box key={`${value}a`}>
+          <React.Fragment key={value}>
+            <Box>
               <Text>{value}</Text>
             </Box>
-            <Box key={`${value}b`}>
+            <Box>
               <Text>{value}</Text>
             </Box>
-          </>
+          </React.Fragment>
         )}
       />,
     );
