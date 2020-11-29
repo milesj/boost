@@ -1,6 +1,6 @@
 /* eslint-disable sort-keys */
 
-import { SelectOption } from '../src';
+import { SelectOptionLike } from '../src';
 
 export const KEYS = {
   backspace: '\u0008',
@@ -16,7 +16,7 @@ export const KEYS = {
   up: '\u001B[A',
 };
 
-export const options: SelectOption<string>[] = [
+export const options: SelectOptionLike<string>[] = [
   { label: 'B', divider: true },
   { label: 'Black', value: 'black' },
   { label: 'Blue', value: 'blue' },

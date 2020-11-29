@@ -4,11 +4,12 @@ import { Style } from '../Style';
 
 export interface CursorProps {
   focused?: boolean;
+  hideCursor?: boolean;
   position: number;
   value: string;
 }
 
-export function Cursor({ focused, position, value }: CursorProps) {
+export function Cursor({ focused, hideCursor, position, value }: CursorProps) {
   if (!focused) {
     return <Text>{value}</Text>;
   }
@@ -16,9 +17,13 @@ export function Cursor({ focused, position, value }: CursorProps) {
   return (
     <Text>
       {value.slice(0, position)}
-      <Style inverted type="info">
-        {value[position] || ' '}
-      </Style>
+      {hideCursor ? (
+        value[position]
+      ) : (
+        <Style inverted type="info">
+          {value[position] || ' '}
+        </Style>
+      )}
       {value.slice(position + 1)}
     </Text>
   );

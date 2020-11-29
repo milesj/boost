@@ -8,20 +8,22 @@ import { DividerRow } from './internal/DividerRow';
 import { OptionRow } from './internal/OptionRow';
 import { useListNavigation } from '../hooks';
 
-export type SelectOption<T> = { label: string; value: T } | { divider: boolean; label?: string };
+export type SelectOptionLike<T> =
+  | { label: string; value: T }
+  | { divider: boolean; label?: string };
 
-export interface SelectProps<T, V = T> extends PromptProps<T>, ScrollableListProps {
-  options: (V | SelectOption<V>)[];
-}
-
-export function normalizeOptions<T>(
-  options: SelectProps<unknown>['options'],
-): {
+export interface SelectOption<T> {
   divider: boolean;
   index: number;
   label: string;
   value: T | null;
-}[] {
+}
+
+export interface SelectProps<T, V = T> extends PromptProps<T>, ScrollableListProps {
+  options: (V | SelectOptionLike<V>)[];
+}
+
+export function normalizeOptions<T>(options: SelectProps<unknown>['options']): SelectOption<T>[] {
   return options.map((option, index) => {
     if (isObject(option)) {
       return {
