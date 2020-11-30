@@ -142,7 +142,7 @@ export function Prompt<T>({
         </Box>
       )}
 
-      {children && !submitted && (
+      {children && !submitted && focused && (
         <Box flexDirection="column" marginLeft={2}>
           {children}
         </Box>
