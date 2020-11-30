@@ -25,7 +25,25 @@ describe('Prompt', () => {
     expect(lastFrame()).toMatchSnapshot();
   });
 
-  it('renders content below label', () => {
+  it('renders content below label when focused', () => {
+    const { lastFrame } = render(
+      <Prompt focused label="Label" value="">
+        <Box>
+          <Text>Foo</Text>
+        </Box>
+        <Box>
+          <Text>Bar</Text>
+        </Box>
+        <Box>
+          <Text>Baz</Text>
+        </Box>
+      </Prompt>,
+    );
+
+    expect(lastFrame()).toMatchSnapshot();
+  });
+
+  it('doesnt render content below label when not focused', () => {
     const { lastFrame } = render(
       <Prompt label="Label" value="">
         <Box>
@@ -46,6 +64,7 @@ describe('Prompt', () => {
   it('renders error below label and above content', async () => {
     const { lastFrame, stdin } = render(
       <Prompt
+        focused
         label="Label"
         value=""
         validate={() => {

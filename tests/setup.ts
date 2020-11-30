@@ -12,3 +12,9 @@ jest.mock('figures', () => ({
   pointer: '>>',
   pointerSmall: '>',
 }));
+
+// Focus is required for snapshots
+jest.mock('ink', () => ({
+  ...jest.requireActual('ink'),
+  useFocus: () => ({ isFocused: true }),
+}));
