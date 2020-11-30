@@ -162,7 +162,15 @@ exports[`MultiSelect renders options using strings 1`] = `
   [90m>[39m yellow"
 `;
 
-exports[`MultiSelect selection calls \`onSubmit\` with selected values when hitting enter 1`] = `"[32m^[39m [1mFavorite color?[22m [35mblack[39m"`;
+exports[`MultiSelect selection calls \`onSubmit\` with selected values when hitting enter 1`] = `
+"[32m^[39m [1mFavorite color?[22m [35mblack[39m
+    [90mB[39m
+  [36m>>[39m [36mBlack[39m
+  [90m>[39m Blue
+  [90m>[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
 
 exports[`MultiSelect selection doesnt call \`onSubmit\` if validation fails 1`] = `
 "[31mx[39m [1mFavorite color?[22m
