@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Box, useInput, Key } from 'ink';
+import { Box, useInput, Key, useFocusManager } from 'ink';
 import { figures } from '@boost/terminal';
 import { Label } from './Label';
 import { Style } from '../Style';
@@ -57,20 +57,30 @@ export function Prompt<T>({
   validate,
   value,
 }: InternalPromptProps<T>) {
+  const { focusNext } = useFocusManager();
   const [error, setError] = useState<Error | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const attemptSubmit = useCallback((cb: () => boolean | void) => {
-    try {
-      setSubmitted(!!cb());
-      setError(null);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setSubmitted(false);
-        setError(error);
+  const attemptSubmit = useCallback(
+    (cb: () => boolean | void) => {
+      try {
+        const doSubmit = !!cb();
+
+        setSubmitted(doSubmit);
+        setError(null);
+
+        if (doSubmit) {
+          focusNext();
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setSubmitted(false);
+          setError(error);
+        }
       }
-    }
-  }, []);
+    },
+    [focusNext],
+  );
 
   useInput(
     // eslint-disable-next-line complexity

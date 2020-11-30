@@ -17,4 +17,5 @@ jest.mock('figures', () => ({
 jest.mock('ink', () => ({
   ...jest.requireActual('ink'),
   useFocus: () => ({ isFocused: true }),
+  useFocusManager: () => ({ focusNext() {} }),
 }));
