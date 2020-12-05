@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useFocus } from 'ink';
 import { isObject } from '@boost/common';
+import { figures } from '@boost/terminal';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
@@ -96,6 +97,8 @@ export function Select<T = string>({
             <OptionRow
               key={option.index}
               highlighted={highlightedIndex === option.index}
+              icon={figures.pointerSmall}
+              iconActive={figures.pointer}
               label={option.label}
               selected={selectedValue === option.value}
             />

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useFocus } from 'ink';
 import { toArray } from '@boost/common';
+import { figures } from '@boost/terminal';
 import { useListNavigation } from '../hooks';
 import { Prompt } from './internal/Prompt';
 import { ScrollableList } from './internal/ScrollableList';
@@ -82,6 +83,8 @@ export function MultiSelect<T>({
             <OptionRow
               key={option.index}
               highlighted={highlightedIndex === option.index}
+              icon={figures.circleDotted}
+              iconActive={figures.bullet}
               label={option.label}
               selected={selectedValues.has(option.value!)}
             />
