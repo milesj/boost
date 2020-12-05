@@ -2,21 +2,22 @@
 
 import React from 'react';
 import { Box } from 'ink';
-import { figures } from '@boost/terminal';
 import { Style } from '../Style';
 
 export interface OptionRowProps {
   highlighted?: boolean;
+  icon: string;
+  iconActive: string;
   label: string;
   selected?: boolean;
 }
 
-export function OptionRow({ highlighted, label, selected }: OptionRowProps) {
+export function OptionRow({ highlighted, icon, iconActive, label, selected }: OptionRowProps) {
   return (
     <Box flexDirection="row">
       <Box flexGrow={0} marginRight={1}>
         <Style type={highlighted ? 'info' : selected ? 'notice' : 'muted'}>
-          {highlighted || selected ? figures.pointer : figures.pointerSmall}
+          {highlighted || selected ? iconActive : icon}
         </Style>
       </Box>
 

@@ -11,6 +11,8 @@ jest.mock('figures', () => ({
   cross: 'x',
   pointer: '>>',
   pointerSmall: '>',
+  circleDotted: 'o',
+  bullet: '●',
 }));
 
 // Focus is required for snapshots
