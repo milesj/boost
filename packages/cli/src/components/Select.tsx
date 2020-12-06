@@ -59,18 +59,32 @@ export function Select<T = string>({
   const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
   const { isFocused } = useFocus({ autoFocus: true });
 
-  const handleReturn = useCallback(() => {
+  const handleSpace = useCallback(() => {
     const { value } = options[highlightedIndex];
 
     if (value !== null) {
-      setSelectedValue(value);
-      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-      onSubmit?.(value);
+      if (value === selectedValue) {
+        setSelectedValue(null);
+      } else {
+        setSelectedValue(value);
+      }
     }
+  }, [highlightedIndex, options, selectedValue]);
+
+  const handleReturn = useCallback(() => {
+    let value = selectedValue;
+
+    if (value === null) {
+      ({ value } = options[highlightedIndex]);
+      setSelectedValue(value);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+    onSubmit?.(value!);
 
     // Trigger submit
     return true;
-  }, [highlightedIndex, options, onSubmit]);
+  }, [selectedValue, onSubmit, options, highlightedIndex]);
 
   return (
     <Prompt<T>
@@ -80,6 +94,7 @@ export function Select<T = string>({
       focused={isFocused}
       value={selectedValue}
       onReturn={handleReturn}
+      onSpace={handleSpace}
     >
       <ScrollableList
         currentIndex={highlightedIndex}

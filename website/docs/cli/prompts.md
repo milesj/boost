@@ -75,7 +75,7 @@ import { Input } from '@boost/cli';
 ## `MultiSelect`
 
 The `MultiSelect` component works in a similar fashion to [Select](#select), but allows for multiple
-values to be selected before submission. To select or unselect a value, press the space bar.
+values to be selected before submission. To select or unselect multiple values, press the space bar.
 
 - `defaultSelected` (`T[]`) - List of option values selected by default.
 - `onChange` (`(values: T[]) => void`) - Callback triggered when a value is selected or unselected.
@@ -127,7 +127,8 @@ import { PasswordInput } from '@boost/cli';
 ## `Select`
 
 The `Select` component allows a value to be selected from a pre-defined list of options. Supports
-standard keyboard navigation. On submission, the currently highlighted option will be chosen.
+standard keyboard navigation. To select or unselect a value, press the space bar, or on submission,
+the currently highlighted option will be chosen.
 
 - `limit` (`number`) - Number of options to display before scrolling. Defaults to console height.
 - `options` (`(T | SelectOption<T>)[]`) - List of options to choose from. Can either be a string,

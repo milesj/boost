@@ -269,7 +269,7 @@ describe('Select', () => {
   });
 
   describe('selection', () => {
-    it('does nothing when hitting space bar', async () => {
+    it('selects and displays a value when hitting space bar', async () => {
       const spy = jest.fn();
       const { lastFrame, stdin } = render(
         <Select {...props} limit={5} options={options} onSubmit={spy} />,
@@ -277,10 +277,43 @@ describe('Select', () => {
 
       await delay();
       stdin.write(' ');
+      stdin.write(KEYS.down);
       await delay();
 
       expect(lastFrame()).toMatchSnapshot();
       expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('can unselect a value when hitting space bar again', async () => {
+      const { lastFrame, stdin } = render(<Select {...props} limit={5} options={options} />);
+
+      await delay();
+      stdin.write(' ');
+      stdin.write(KEYS.down);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+
+      stdin.write(KEYS.up);
+      stdin.write(' ');
+      stdin.write(KEYS.down);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+    });
+
+    it('calls `onSubmit` with highlighted (but not selected) value when hitting enter', async () => {
+      const spy = jest.fn();
+      const { lastFrame, stdin } = render(
+        <Select {...props} limit={5} options={options} onSubmit={spy} />,
+      );
+
+      await delay();
+      stdin.write(KEYS.return);
+      await delay();
+
+      expect(lastFrame()).toMatchSnapshot();
+      expect(spy).toHaveBeenCalledWith('black');
     });
 
     it('calls `onSubmit` with selected value when hitting enter', async () => {
@@ -290,6 +323,12 @@ describe('Select', () => {
       );
 
       await delay();
+      stdin.write(KEYS.down);
+      stdin.write(' ');
+      await delay();
+
+      stdin.write(KEYS.down);
+      stdin.write(KEYS.down);
       stdin.write(KEYS.return);
       await delay();
 
