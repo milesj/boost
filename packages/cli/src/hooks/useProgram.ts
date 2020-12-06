@@ -12,7 +12,7 @@ export function useProgram(): ProgramContextType {
   return {
     ...program,
     // Ink has its own mechanism for triggering an exit that differs from our Program.
-    // So we need to override our exit with their exit, and utilize `ExitErro` so
+    // So we need to override our exit with their exit, and utilize `ExitError` so
     // that our error codes are persisted upstream when thrown.
     exit(error, code) {
       if (error) {

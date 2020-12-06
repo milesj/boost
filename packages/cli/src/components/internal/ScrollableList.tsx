@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Box, DOMElement, measureElement } from 'ink';
+import React from 'react';
+import { Box } from 'ink';
 import { useDimensions } from '../../hooks';
 import { Style } from '../Style';
 import msg from '../../translate';
@@ -143,12 +143,6 @@ export function ScrollableList<T extends ScrollableItem>({
   scrollType = 'overflow',
 }: InternalScrollableListProps<T>) {
   const { height: viewportHeight } = useDimensions();
-  const [currentHeight, setCurrentHeight] = useState(viewportHeight);
-  const measureContainer = useCallback((ref: DOMElement | null) => {
-    if (ref) {
-      setCurrentHeight(measureElement(ref).height);
-    }
-  }, []);
   const isOverflow = scrollType === 'overflow';
 
   // We dont want the list to overflow past the terminal size,
@@ -156,7 +150,7 @@ export function ScrollableList<T extends ScrollableItem>({
   // eslint-disable-next-line no-magic-numbers
   const padding = isOverflow ? 4 : 2;
   const maxLimit = Math.floor(
-    Math.min(limit || currentHeight, viewportHeight - padding) / rowHeight,
+    Math.min(limit || viewportHeight, viewportHeight - padding) / rowHeight,
   );
 
   // Slice the list according to the chosen scroll type
@@ -171,7 +165,7 @@ export function ScrollableList<T extends ScrollableItem>({
   const trailingCount = countEnabledItems(trailing);
 
   return (
-    <Box flexDirection="column" ref={measureContainer}>
+    <Box flexDirection="column">
       {leadingCount > 0 && isOverflow && (
         <Box marginLeft={2}>
           <Style type="muted">
