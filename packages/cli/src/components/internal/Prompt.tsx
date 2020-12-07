@@ -3,6 +3,7 @@ import { Box, useInput, Key, useFocusManager } from 'ink';
 import { figures } from '@boost/terminal';
 import { Label } from './Label';
 import { Style } from '../Style';
+import { useIsMounted } from '../../hooks/useIsMounted';
 
 export type KeyInput = Key;
 
@@ -60,9 +61,14 @@ export function Prompt<T>({
   const { focusNext } = useFocusManager();
   const [error, setError] = useState<Error | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const mounted = useIsMounted();
 
   const attemptSubmit = useCallback(
     (cb: () => boolean | void) => {
+      if (!mounted.current) {
+        return;
+      }
+
       try {
         const doSubmit = !!cb();
 
@@ -79,12 +85,16 @@ export function Prompt<T>({
         }
       }
     },
-    [focusNext],
+    [focusNext, mounted],
   );
 
   useInput(
     // eslint-disable-next-line complexity
     (input, key) => {
+      if (!mounted.current) {
+        return;
+      }
+
       if (key.upArrow) {
         onKeyUp?.(key);
       } else if (key.downArrow) {
@@ -121,6 +131,7 @@ export function Prompt<T>({
         onEscape?.(key);
       } else if (input === ' ' && onSpace) {
         onSpace(key);
+        setSubmitted(false);
       } else {
         attemptSubmit(() => onInput?.(input, key));
       }
