@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.7 - 2020-12-07
+
+#### 📦 Dependencies
+
+- **[execa]** Update to v5. ([85b2913](https://github.com/milesj/boost/commit/85b2913))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 2.1.6 - 2020-11-29
 
 #### 📦 Dependencies

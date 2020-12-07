@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.8.0 - 2020-12-07
+
+#### 🚀 Updates
+
+- Add `useIsMounted` hook. ([a548841](https://github.com/milesj/boost/commit/a548841))
+- Add `useRenderLoop` hook. ([e7d767c](https://github.com/milesj/boost/commit/e7d767c))
+
+#### 🐞 Fixes
+
+- Handle default selected value. ([44edd86](https://github.com/milesj/boost/commit/44edd86))
+- **[Confirm]** Log errors to the console instead of exiting. ([0fe989e](https://github.com/milesj/boost/commit/0fe989e))
+- Allow React nodes for most label props. ([2bdb485](https://github.com/milesj/boost/commit/2bdb485))
+- Remove list measurement as it doesnt work correctly. ([1e8f328](https://github.com/milesj/boost/commit/1e8f328))
+- **[Select]** Add space bar selection handling. ([b443ee0](https://github.com/milesj/boost/commit/b443ee0))
+- Differentiate Select and MultiSelect icons. ([8ebd9cd](https://github.com/milesj/boost/commit/8ebd9cd))
+- Only render children when component is focused. ([2d47732](https://github.com/milesj/boost/commit/2d47732))
+- Remove submitted check from prompt children. ([6079d18](https://github.com/milesj/boost/commit/6079d18))
+- Update focus after a succesful submit. ([c465535](https://github.com/milesj/boost/commit/c465535))
+
+#### 📘 Docs
+
+- Add image examples. ([42808b8](https://github.com/milesj/boost/commit/42808b8))
+
+#### 📦 Dependencies
+
+- **[execa]** Update to v5. ([85b2913](https://github.com/milesj/boost/commit/85b2913))
+- **[semver]** Update to latest. ([83c4ccc](https://github.com/milesj/boost/commit/83c4ccc))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.7.0 - 2020-11-29
 
 #### 🚀 Updates
