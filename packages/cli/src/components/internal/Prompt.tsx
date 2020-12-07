@@ -65,24 +65,28 @@ export function Prompt<T>({
 
   const attemptSubmit = useCallback(
     (cb: () => boolean | void) => {
+      let doSubmit = false;
+
+      try {
+        setError(null);
+
+        doSubmit = !!cb();
+      } catch (error: unknown) {
+        doSubmit = false;
+
+        if (error instanceof Error) {
+          setError(error);
+        }
+      }
+
       if (!mounted.current) {
         return;
       }
 
-      try {
-        const doSubmit = !!cb();
+      setSubmitted(doSubmit);
 
-        setSubmitted(doSubmit);
-        setError(null);
-
-        if (doSubmit) {
-          focusNext();
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setSubmitted(false);
-          setError(error);
-        }
+      if (doSubmit) {
+        focusNext();
       }
     },
     [focusNext, mounted],
