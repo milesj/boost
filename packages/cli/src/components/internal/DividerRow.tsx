@@ -3,7 +3,7 @@ import { Box } from 'ink';
 import { Style } from '../Style';
 
 export interface DividerRowProps {
-  label: string;
+  label: NonNullable<React.ReactNode>;
 }
 
 export function DividerRow({ label }: DividerRowProps) {

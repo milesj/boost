@@ -6,9 +6,9 @@ import { Style } from '../Style';
 
 export interface OptionRowProps {
   highlighted?: boolean;
-  icon: string;
-  iconActive: string;
-  label: string;
+  icon: NonNullable<React.ReactNode>;
+  iconActive: NonNullable<React.ReactNode>;
+  label: NonNullable<React.ReactNode>;
   selected?: boolean;
 }
 
