@@ -143,7 +143,7 @@ describe('patchConsole()', () => {
     console.time('foo');
     console.timeLog('foo');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining('foo: 0.'));
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/foo: \d+/u));
   });
 
   it('wraps `console.time` and `console.timeEnd`', () => {
@@ -153,7 +153,7 @@ describe('patchConsole()', () => {
     console.time('foo');
     console.timeEnd('foo');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining('foo: 0.'));
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/foo: \d+/u));
   });
 
   it('wraps `debug`', () => {

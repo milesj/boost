@@ -10,13 +10,13 @@ import { OptionRow } from './internal/OptionRow';
 import { useListNavigation } from '../hooks';
 
 export type SelectOptionLike<T> =
-  | { label: string; value: T }
-  | { divider: boolean; label?: string };
+  | { label: NonNullable<React.ReactNode>; value: T }
+  | { divider: boolean; label?: NonNullable<React.ReactNode> };
 
 export interface SelectOption<T> {
   divider: boolean;
   index: number;
-  label: string;
+  label: NonNullable<React.ReactNode>;
   value: T | null;
 }
 

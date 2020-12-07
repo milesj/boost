@@ -7,7 +7,7 @@ import { Style } from '../Style';
 export type KeyInput = Key;
 
 export interface PromptProps<T> {
-  label: string | React.ReactElement;
+  label: NonNullable<React.ReactNode>;
   prefix?: string;
   onSubmit: (value: T) => void;
   validate?: (value: T) => void;
