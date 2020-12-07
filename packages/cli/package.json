@@ -34,7 +34,7 @@
     "@boost/translate": "^2.1.5",
     "execa": "^5.0.0",
     "levenary": "^1.1.1",
-    "semver": "^7.3.2"
+    "semver": "^7.3.4"
   },
   "peerDependencies": {
     "ink": "^3.0.0",
