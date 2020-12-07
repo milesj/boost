@@ -218,6 +218,7 @@ import { Select } from '@boost/cli';
 
 ### Props
 
+- `defaultSelected` (`T`) - Option value selected by default.
 - `limit` (`number`) - Number of options to display before scrolling. Defaults to console height.
 - `options` (`(T | SelectOption<T>)[]`) - List of options to choose from. Can either be a string,
   number, or object with a `label` and `value`. _(Required)_
