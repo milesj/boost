@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocus } from 'ink';
-import { useProgram } from '../hooks';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
 import msg from '../translate';
@@ -13,19 +14,16 @@ export interface ConfirmProps extends Omit<PromptProps<boolean>, 'validate'> {
 }
 
 export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProps) {
-  const { exit } = useProgram();
   const [value, setValue] = useState<boolean | null>(null);
   const { isFocused } = useFocus({ autoFocus: true });
 
-  // Cant mock or spy in tests
-  // istanbul ignore next
   useEffect(() => {
     if (no.length !== 1) {
-      exit(new Error(`Prop "no" must be a single character.`));
+      console.error(`Prop "no" must be a single character.`);
     } else if (yes.length !== 1) {
-      exit(new Error(`Prop "yes" must be a single character.`));
+      console.error(`Prop "yes" must be a single character.`);
     }
-  }, [no, yes, exit]);
+  }, [no, yes]);
 
   const handleInput = useCallback(
     (input: string) => {
