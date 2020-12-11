@@ -9,6 +9,14 @@ logs/
 .vscode
 .yarnclean
 
+# Yarn
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
 # Directories
 _book/
 coverage/

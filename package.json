@@ -6,22 +6,21 @@
     "clean": "rm -rf packages/*/{lib,esm,*.tsbuildinfo}",
     "coverage": "yarn run jest --coverage",
     "docs": "cd website && yarn run start",
-    "lint": "beemo eslint",
-    "jest": "beemo jest",
-    "format": "beemo prettier",
-    "pretest": "yarn run type",
-    "test": "yarn run jest",
+    "lint": "yarn beemo eslint",
+    "jest": "yarn beemo jest",
+    "format": "yarn beemo prettier",
+    "test": "yarn run type && yarn run jest && yarn run lint",
     "test:cli": "node ./packages/cli/examples/bin.js",
-    "posttest": "yarn run lint",
-    "type": "beemo typescript --reference-workspaces --build --decorators",
+    "type": "yarn beemo typescript --reference-workspaces --build --decorators",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run build && yarn test",
-    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
+    "release": "yarn run prerelease && lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "engines": {
     "node": ">=10.17.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.14.0",
+    "@babel/core": "^7.12.10",
+    "@milesj/build-tools": "^2.14.1",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@types/babel__core": "^7.1.12",
@@ -35,6 +34,7 @@
     "@types/semver": "^7.3.4",
     "@types/split": "^1.0.0",
     "@types/wrap-ansi": "^3.0.0",
+    "builtin-modules": "^3.1.0",
     "conventional-changelog-beemo": "^2.0.0",
     "fs-extra": "^9.0.1",
     "lerna": "^3.22.1",
