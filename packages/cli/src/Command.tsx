@@ -15,7 +15,7 @@ import {
 } from '@boost/args';
 import { Blueprint, Predicates } from '@boost/common';
 import { LoggerFunction } from '@boost/log';
-import { LOCALE_FORMAT, INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
+import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
 import {
   Categories,
   Commandable,
@@ -31,6 +31,7 @@ import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import getInheritedCategories from './metadata/getInheritedCategories';
 import getInheritedOptions from './metadata/getInheritedOptions';
+import globalOptions from './metadata/globalOptions';
 import validateParams from './metadata/validateParams';
 import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
@@ -38,7 +39,6 @@ import CLIError from './CLIError';
 import CommandManager from './CommandManager';
 import { Help } from './components/Help';
 import Program from './Program';
-import msg from './translate';
 
 export default abstract class Command<
     O extends GlobalOptions = GlobalOptions,
@@ -63,31 +63,7 @@ export default abstract class Command<
 
   static hidden: boolean = false;
 
-  static options: OptionConfigMap = {
-    help: {
-      category: 'global',
-      description: msg('cli:optionHelpDescription'),
-      short: 'h',
-      type: 'boolean',
-    },
-    locale: {
-      category: 'global',
-      default: 'en',
-      description: msg('cli:optionLocaleDescription'),
-      type: 'string',
-      validate(value: string) {
-        if (value && !value.match(LOCALE_FORMAT)) {
-          throw new Error(msg('cli:errorInvalidLocale'));
-        }
-      },
-    },
-    version: {
-      category: 'global',
-      description: msg('cli:optionVersionDescription'),
-      short: 'v',
-      type: 'boolean',
-    },
-  };
+  static options: OptionConfigMap = globalOptions;
 
   static params: ParamConfigList = [];
 
