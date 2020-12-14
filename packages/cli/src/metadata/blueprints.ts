@@ -28,10 +28,9 @@ export const commonBlueprint: Blueprint<Required<Config>> = {
 
 // COMMANDS
 
-export const commandConstructorBlueprint: Blueprint<Omit<
-  CommandStaticConfig,
-  'options' | 'params'
->> = {
+export const commandConstructorBlueprint: Blueprint<
+  Omit<CommandStaticConfig, 'options' | 'params'>
+> = {
   ...commonBlueprint,
   aliases: array(string()),
   allowUnknownOptions: bool(),
@@ -49,6 +48,7 @@ export const commandConstructorBlueprint: Blueprint<Omit<
     ),
   ),
   category: string(),
+  hasRegisteredOptions: bool(),
   path: string().notEmpty().required().match(COMMAND_FORMAT),
   usage: union([string(), array(string())], []),
 };
