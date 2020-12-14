@@ -2,7 +2,7 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "yarn run clean && rollup --config",
+    "build": "rollup --config",
     "clean": "rm -rf packages/*/{lib,esm}",
     "coverage": "yarn run jest --coverage",
     "docs": "cd website && yarn run start",
@@ -14,7 +14,7 @@
     "test:cli": "node ./packages/cli/examples/bin.js",
     "posttest": "yarn run lint",
     "type": "beemo typescript --reference-workspaces --build --decorators",
-    "prerelease": "node scripts/checkReleaseRequirements.js && yarn run build && yarn test",
+    "prerelease": "node scripts/checkReleaseRequirements.js && yarn run clean && yarn run build && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "engines": {
