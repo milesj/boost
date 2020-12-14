@@ -95,10 +95,11 @@ describe('Command', () => {
       const { options } = command.getMetadata();
 
       expect(options).toEqual({
-        dst: { short: 'D', description: 'Destination path', type: 'string' },
-        src: { short: 'S', description: 'Source path', type: 'string' },
+        dst: { short: 'D', default: '', description: 'Destination path', type: 'string' },
+        src: { short: 'S', default: './src', description: 'Source path', type: 'string' },
         help: {
           category: 'global',
+          default: false,
           description: 'Display help and usage menu',
           short: 'h',
           type: 'boolean',
@@ -112,6 +113,7 @@ describe('Command', () => {
         },
         version: {
           category: 'global',
+          default: false,
           description: 'Display version number',
           short: 'v',
           type: 'boolean',
@@ -143,32 +145,10 @@ describe('Command', () => {
 
       expect(options).toEqual(
         expect.objectContaining({
-          flag: { short: 'F', description: 'Boolean flag', type: 'boolean' },
-          num: { count: true, short: 'N', description: 'Single number', type: 'number' },
-          nums: {
-            deprecated: true,
-            default: [],
-            description: 'List of numbers',
-            multiple: true,
-            type: 'number',
-          },
-          str: {
-            choices: ['a', 'b', 'c'],
-            hidden: true,
-            description: 'Single string',
-            type: 'string',
-          },
-          strs: {
-            arity: 5,
-            short: 'S',
-            validate: expect.any(Function),
-            default: [],
-            description: 'List of strings',
-            multiple: true,
-            type: 'string',
-          },
+          flag: { default: true, description: 'Boolean flag', short: 'F', type: 'boolean' },
           help: {
             category: 'global',
+            default: false,
             description: 'Display help and usage menu',
             short: 'h',
             type: 'boolean',
@@ -180,8 +160,39 @@ describe('Command', () => {
             type: 'string',
             validate: expect.any(Function),
           },
+          num: {
+            count: true,
+            default: 0,
+            description: 'Single number',
+            short: 'N',
+            type: 'number',
+          },
+          nums: {
+            default: [],
+            deprecated: true,
+            description: 'List of numbers',
+            multiple: true,
+            type: 'number',
+          },
+          str: {
+            choices: ['a', 'b', 'c'],
+            default: 'a',
+            description: 'Single string',
+            hidden: true,
+            type: 'string',
+          },
+          strs: {
+            arity: 5,
+            default: [],
+            description: 'List of strings',
+            multiple: true,
+            short: 'S',
+            type: 'string',
+            validate: expect.any(Function),
+          },
           version: {
             category: 'global',
+            default: false,
             description: 'Display version number',
             short: 'v',
             type: 'boolean',
@@ -303,10 +314,11 @@ describe('Command', () => {
       const { options } = command.getMetadata();
 
       expect(options).toEqual({
-        dst: { short: 'D', description: 'Destination path', type: 'string' },
-        src: { short: 'S', description: 'Source path', type: 'string' },
+        dst: { short: 'D', default: '', description: 'Destination path', type: 'string' },
+        src: { short: 'S', default: './src', description: 'Source path', type: 'string' },
         help: {
           category: 'global',
+          default: false,
           description: 'Display help and usage menu',
           short: 'h',
           type: 'boolean',
@@ -320,6 +332,7 @@ describe('Command', () => {
         },
         version: {
           category: 'global',
+          default: false,
           description: 'Display version number',
           short: 'v',
           type: 'boolean',
@@ -350,9 +363,10 @@ describe('Command', () => {
       const { options, params } = command.getMetadata();
 
       expect(options).toEqual({
-        flag: { short: 'F', description: 'Boolean flag', type: 'boolean' },
-        num: { count: true, short: 'N', description: 'Single number', type: 'number' },
+        flag: { short: 'F', default: false, description: 'Boolean flag', type: 'boolean' },
+        num: { count: true, default: 0, short: 'N', description: 'Single number', type: 'number' },
         nums: {
+          default: [],
           deprecated: true,
           description: 'List of numbers',
           multiple: true,
@@ -360,12 +374,14 @@ describe('Command', () => {
         },
         str: {
           choices: ['a', 'b', 'c'],
+          default: 'a',
           hidden: true,
           description: 'Single string',
           type: 'string',
         },
         strs: {
           arity: 5,
+          default: [],
           short: 'S',
           validate: expect.any(Function),
           description: 'List of strings',
@@ -374,6 +390,7 @@ describe('Command', () => {
         },
         help: {
           category: 'global',
+          default: false,
           description: 'Display help and usage menu',
           short: 'h',
           type: 'boolean',
@@ -387,6 +404,7 @@ describe('Command', () => {
         },
         version: {
           category: 'global',
+          default: false,
           description: 'Display version number',
           short: 'v',
           type: 'boolean',

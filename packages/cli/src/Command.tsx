@@ -186,6 +186,18 @@ export default abstract class Command<
    */
   getMetadata(): CommandMetadata {
     const ctor = getConstructor(this);
+    const options: OptionConfigMap = {};
+
+    // Since default values for options are represented as class properties,
+    // we need to inject the defaults into the argument parsing layer.
+    // We can easily do this here and avoid a lot of headache.
+    Object.entries(getInheritedOptions(this)).forEach(([option, config]) => {
+      options[option] = {
+        ...config,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        default: this[option as keyof this] ?? config.default,
+      };
+    });
 
     return {
       aliases: ctor.aliases,
@@ -197,7 +209,7 @@ export default abstract class Command<
       deprecated: ctor.deprecated,
       description: ctor.description,
       hidden: ctor.hidden,
-      options: getInheritedOptions(this),
+      options,
       params: ctor.params,
       path: ctor.path,
       usage: ctor.usage,
@@ -216,22 +228,10 @@ export default abstract class Command<
       params,
       path,
     } = this.getMetadata();
-    const defaultedOptions: OptionConfigMap = {};
-
-    // Since default values for options are represented as class properties,
-    // we need to inject the defaults into the argument parsing layer.
-    // We can easily do this here and avoid a lot of headache.
-    Object.entries(options).forEach(([option, config]) => {
-      defaultedOptions[option] = {
-        ...config,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        default: this[option as keyof this] ?? config.default,
-      };
-    });
 
     return {
       commands: [path, ...aliases],
-      options: defaultedOptions,
+      options,
       params,
       unknown: allowUnknownOptions,
       variadic: Boolean(allowVariadicParams),

@@ -150,7 +150,7 @@ exports[`<Program /> help outputs help for a nested sub-command 1`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path
+ -S, --src [90mstring[39m     Source path (default: \\"./src\\")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
@@ -219,7 +219,7 @@ exports[`<Program /> help outputs help for a specific command 1`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path
+ -S, --src [90mstring[39m     Source path (default: \\"./src\\")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
@@ -241,7 +241,7 @@ exports[`<Program /> help outputs help for a specific command 2`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  [1mSpecial[22m
-     --save           Save dependency to lock file
+     --no-save        Save dependency to lock file (default: true)
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
@@ -262,7 +262,7 @@ exports[`<Program /> help outputs help for an aliased command 1`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path
+ -S, --src [90mstring[39m     Source path (default: \\"./src\\")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
@@ -283,7 +283,7 @@ exports[`<Program /> help outputs help for an aliased command 2`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path
+ -S, --src [90mstring[39m     Source path (default: \\"./src\\")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
