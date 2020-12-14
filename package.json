@@ -3,7 +3,7 @@
   "name": "boost-root",
   "scripts": {
     "build": "yarn run clean && rollup --config",
-    "clean": "rm -rf packages/*/{lib,esm,*.tsbuildinfo}",
+    "clean": "rm -rf packages/*/{lib,esm}",
     "coverage": "yarn run jest --coverage",
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
