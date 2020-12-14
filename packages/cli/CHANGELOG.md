@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.8.1 - 2020-12-14
+
+#### 🐞 Fixes
+
+- Display default value alongside choices. ([c05edbe](https://github.com/milesj/boost/commit/c05edbe))
+- Dont include default label in choices list. ([909e3a3](https://github.com/milesj/boost/commit/909e3a3))
+- Fix command option prototype pollution when using decorators. ([d20a94b](https://github.com/milesj/boost/commit/d20a94b))
+- Fix missing default values for help menu. ([5043306](https://github.com/milesj/boost/commit/5043306))
+- Move global options to a separate file for reference checks. ([cec8ed9](https://github.com/milesj/boost/commit/cec8ed9))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ## 2.8.0 - 2020-12-07
 
 #### 🚀 Updates
