@@ -325,6 +325,7 @@ Boost v1.2.3 [90mboost[39m
      --str [90mstring[39m                            Standard string option.
  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
                                               \\"foo\\", \\"bar\\" (default), \\"baz\\")
+                                             (default: \\"bar\\")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)
@@ -371,6 +372,7 @@ Boost v1.2.3 [90mboost[39m
      --str [90mstring[39m                            Standard string option.
  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
                                               \\"foo\\", \\"bar\\" (default), \\"baz\\")
+                                             (default: \\"bar\\")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)

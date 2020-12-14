@@ -51,6 +51,7 @@ exports[`<Help /> options renders options (stripped) 1`] = `
      --str string                            Standard string option.
  -s, --stringChoices string                  Choice list with strings. (choices:
                                               \\"foo\\", \\"bar\\" (default), \\"baz\\")
+                                             (default: \\"bar\\")
  -S, --strList string[]                      String option list. [multiple]
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)"
@@ -77,6 +78,7 @@ exports[`<Help /> options renders options 1`] = `
      --str [90mstring[39m                            Standard string option.
  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
                                               \\"foo\\", \\"bar\\" (default), \\"baz\\")
+                                             (default: \\"bar\\")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)"
@@ -142,6 +144,7 @@ exports[`<Help /> renders everything 1`] = `
      --str [90mstring[39m                            Standard string option.
  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
                                               \\"foo\\", \\"bar\\" (default), \\"baz\\")
+                                             (default: \\"bar\\")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)"
