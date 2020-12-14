@@ -1,7 +1,7 @@
 import { OptionConfig } from '@boost/args';
-import getConstructor from './getConstructor';
 import CLIError from '../CLIError';
-import Command from '../Command';
+import getConstructor from './getConstructor';
+import globalOptions from './globalOptions';
 import { RESERVED_OPTIONS } from '../constants';
 
 export default function registerOption<O extends OptionConfig>(
@@ -14,7 +14,7 @@ export default function registerOption<O extends OptionConfig>(
 
   // Without this check we would mutate the base `Command`,
   // resulting in *all* sub-classes inheriting them.
-  if (ctor.options === Command.options) {
+  if (ctor.options === globalOptions) {
     ctor.options = {};
   }
 
