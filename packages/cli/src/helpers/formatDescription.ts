@@ -23,9 +23,10 @@ export default function formatDescription(
     );
 
     output += ` (${msg('cli:tagChoices')}: ${choices.join(', ')})`;
+  }
 
-    // Append default after description if no choices
-  } else if (config.default) {
+  // Append default last
+  if (config.default) {
     output += ` (${msg('cli:tagDefault')}: ${formatValue(config.default)})`;
   }
 
