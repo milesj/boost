@@ -1,7 +1,6 @@
 import { OptionConfig } from '@boost/args';
 import CLIError from '../CLIError';
 import getConstructor from './getConstructor';
-import globalOptions from './globalOptions';
 import { RESERVED_OPTIONS } from '../constants';
 
 export default function registerOption<O extends OptionConfig>(
@@ -12,10 +11,11 @@ export default function registerOption<O extends OptionConfig>(
   const ctor = getConstructor(target);
   const key = String(property);
 
-  // Without this check we would mutate the base `Command`,
-  // resulting in *all* sub-classes inheriting them.
-  if (ctor.options === globalOptions) {
+  // Without this check we would mutate the prototype chain,
+  // resulting in *all* sub-classes inheriting the same options.
+  if (!ctor.hasRegisteredOptions) {
     ctor.options = {};
+    ctor.hasRegisteredOptions = true;
   }
 
   if (RESERVED_OPTIONS.includes(key)) {

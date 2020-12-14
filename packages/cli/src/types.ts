@@ -117,7 +117,9 @@ export interface CommandConfigMap {
 }
 
 // Constructor
-export type CommandStaticConfig = Required<CommandConfig>;
+export interface CommandStaticConfig extends Required<CommandConfig> {
+  hasRegisteredOptions?: boolean;
+}
 
 export interface CommandMetadata extends CommandStaticConfig {
   commands: { [path: string]: Commandable };
