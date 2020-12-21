@@ -3,9 +3,10 @@ import util from 'util';
 import { Contract, Predicates, Blueprint } from '@boost/common';
 import { env } from '@boost/internal';
 import ConsoleTransport from './transports/ConsoleTransport';
+import Transport from './Transport';
 import debug from './debug';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
-import { LoggerOptions, LogLevel, Formatter, Transportable, LogMetadata } from './types';
+import { LoggerOptions, LogLevel, LogMetadata } from './types';
 
 export default class Logger extends Contract<LoggerOptions> {
   protected silent: boolean = false;
@@ -24,20 +25,19 @@ export default class Logger extends Contract<LoggerOptions> {
     );
   }
 
-  blueprint({ array, func, object, shape, string }: Predicates): Blueprint<LoggerOptions> {
+  blueprint({
+    array,
+    func,
+    instance,
+    object,
+    shape,
+    string,
+  }: Predicates): Blueprint<LoggerOptions> {
     return {
       labels: object(string()),
       metadata: object(),
       name: string().required().notEmpty(),
-      transports: array(
-        shape({
-          format: func<Formatter>().notNullable(),
-          // eslint-disable-next-line react/forbid-prop-types
-          levels: array(string<LogLevel>()),
-          write: func<Transportable['write']>().notNullable(),
-        }),
-        [new ConsoleTransport()],
-      ),
+      transports: array(instance(Transport).notNullable(), [new ConsoleTransport()]),
     };
   }
 

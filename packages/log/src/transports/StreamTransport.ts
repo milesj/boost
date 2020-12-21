@@ -7,6 +7,14 @@ export interface StreamTransportOptions extends TransportOptions {
 }
 
 export default class StreamTransport extends Transport<StreamTransportOptions> {
+  protected stream: Writable;
+
+  constructor(options: StreamTransportOptions) {
+    super(options);
+
+    this.stream = options.stream;
+  }
+
   blueprint(preds: Predicates): Blueprint<StreamTransportOptions> {
     const { func, shape } = preds;
 
@@ -19,6 +27,6 @@ export default class StreamTransport extends Transport<StreamTransportOptions> {
   }
 
   write(message: string) {
-    this.options.stream.write(message);
+    this.stream.write(message);
   }
 }
