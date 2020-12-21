@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.8 - 2020-12-21
+
+#### 🐞 Fixes
+
+- Fix validation breaking transport instances. (#133) ([51f5486](https://github.com/milesj/boost/commit/51f5486)), closes [#133](https://github.com/milesj/boost/issues/133)
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 2.1.7 - 2020-12-07
 
 **Note:** Version bump only for package @boost/log
