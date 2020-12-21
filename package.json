@@ -21,12 +21,12 @@
     "node": ">=10.17.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.14.0",
+    "@milesj/build-tools": "^2.14.1",
     "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
     "@types/babel__core": "^7.1.12",
     "@types/exit": "^0.1.31",
-    "@types/fs-extra": "^9.0.4",
+    "@types/fs-extra": "^9.0.5",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.165",
     "@types/minimatch": "^3.0.3",
@@ -38,7 +38,7 @@
     "conventional-changelog-beemo": "^2.0.0",
     "fs-extra": "^9.0.1",
     "lerna": "^3.22.1",
-    "rollup": "^2.34.2",
+    "rollup": "^2.35.1",
     "rollup-plugin-node-externals": "^2.2.0"
   },
   "publishConfig": {

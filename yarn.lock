@@ -2213,10 +2213,10 @@
     prettier "^2.2.0"
     typescript "^4.1.2"
 
-"@milesj/build-tools@^2.14.0":
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/@milesj/build-tools/-/build-tools-2.14.0.tgz#94c1f17c8e7bf2a68d6e7a1186eb42b6f3d06aaa"
-  integrity sha512-ARoV46ZYeV/rF9PWZhJvyWoNY1HvtqEZaMw2yn/X54LvCcM+x4FT7ZAcByXn+4SkLusG3ZZ/JQ4LfuUrcO8VGg==
+"@milesj/build-tools@^2.14.1":
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/@milesj/build-tools/-/build-tools-2.14.1.tgz#e7fcd6d1869de98c42159c6eb1688cfb7a7bb7cf"
+  integrity sha512-f7fATeMDVUkKYT3r8mz7oK3R5fQ/KZZtUVX665wGWaSeGSPRy3hJ8Ync6SCCe1Om+RY6GBmqyafwFGd+E8yBJA==
   dependencies:
     "@milesj/build-tool-config" "^2.14.0"
     "@milesj/build-tool-runtime" "^2.12.0"
@@ -2389,10 +2389,10 @@
     "@babel/helper-module-imports" "^7.10.4"
     "@rollup/pluginutils" "^3.1.0"
 
-"@rollup/plugin-node-resolve@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-11.0.0.tgz#770458fb26691a686c5f29f37dded94832ffce59"
-  integrity sha512-8Hrmwjn1pLYjUxcv7U7IPP0qfnzEJWHyHE6CaZ8jbLM+8axaarJRB1jB6JgKTDp5gNga+TpsgX6F8iuvgOerKQ==
+"@rollup/plugin-node-resolve@^11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-11.0.1.tgz#d3765eec4bccf960801439a999382aed2dca959b"
+  integrity sha512-ltlsj/4Bhwwhb+Nb5xCz/6vieuEj2/BAkkqVIKmZwC7pIdl8srmgmglE4S0jFlZa32K4qvdQ6NHdmpRKD/LwoQ==
   dependencies:
     "@rollup/pluginutils" "^3.1.0"
     "@types/resolve" "1.17.1"
@@ -2484,10 +2484,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/fs-extra@^9.0.4":
-  version "9.0.4"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.4.tgz#12553138cf0438db9a31cdc8b0a3aa9332eb67aa"
-  integrity sha512-50GO5ez44lxK5MDH90DYHFFfqxH7+fTqEEnvguQRzJ/tY9qFrMSHLiYHite+F3SNmf7+LHC1eMXojuD+E3Qcyg==
+"@types/fs-extra@^9.0.5":
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.5.tgz#2afb76a43a4bef80a363b94b314d0ca1694fc4f8"
+  integrity sha512-wr3t7wIW1c0A2BIJtdVp4EflriVaVVAsCAIHVzzh8B+GiFv9X1xeJjCs4upRXtzp7kQ6lP5xvskjoD4awJ1ZeA==
   dependencies:
     "@types/node" "*"
 
@@ -8688,10 +8688,10 @@ rollup-plugin-node-externals@^2.2.0:
   dependencies:
     find-up "^4.1.0"
 
-rollup@^2.34.2:
-  version "2.34.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.34.2.tgz#fa73e05c64df587e9ed4dc80d7d4e7d4a43f8908"
-  integrity sha512-mvtQLqu3cNeoctS+kZ09iOPxrc1P1/Bt1z15enuQ5feyKOdM3MJAVFjjsygurDpSWn530xB4AlA83TWIzRstXA==
+rollup@^2.35.1:
+  version "2.35.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.35.1.tgz#e6bc8d10893556a638066f89e8c97f422d03968c"
+  integrity sha512-q5KxEyWpprAIcainhVy6HfRttD9kutQpHbeqDTWnqAFNJotiojetK6uqmcydNMymBEtC4I8bCYR+J3mTMqeaUA==
   optionalDependencies:
     fsevents "~2.1.2"
 
