@@ -2,8 +2,9 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "yarn run clean && npx packemon build --checkLicenses",
-    "clean": "rm -rf packages/*/{lib,esm}",
+    "build": "packemon build --addEngines",
+    "pack": "NODE_ENV=production packemon pack --addEngines --generateDeclaration=standard",
+    "clean": "packemon clean",
     "coverage": "yarn run jest --coverage",
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
@@ -14,7 +15,7 @@
     "test:cli": "node ./packages/cli/examples/bin.js",
     "posttest": "yarn run lint",
     "type": "beemo typescript --reference-workspaces --build --decorators",
-    "prerelease": "node scripts/checkReleaseRequirements.js && yarn run clean && yarn run build && yarn test",
+    "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "engines": {
@@ -35,7 +36,8 @@
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^2.0.0",
     "fs-extra": "^9.0.1",
-    "lerna": "^3.22.1"
+    "lerna": "^3.22.1",
+    "packemon": "^0.7.0"
   },
   "publishConfig": {
     "access": "public"
@@ -47,7 +49,10 @@
   "beemo": {
     "module": "@milesj/build-tools",
     "drivers": [
-      "babel",
+      {
+        "driver": "babel",
+        "strategy": "none"
+      },
       "eslint",
       {
         "driver": "jest",
