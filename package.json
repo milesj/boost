@@ -22,10 +22,10 @@
     "node": ">=10.17.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.14.1",
+    "@milesj/build-tools": "^2.15.0",
     "@types/babel__core": "^7.1.12",
     "@types/exit": "^0.1.31",
-    "@types/fs-extra": "^9.0.5",
+    "@types/fs-extra": "^9.0.6",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.165",
     "@types/minimatch": "^3.0.3",
