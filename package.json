@@ -2,6 +2,7 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
+    "setup": "yarn run type",
     "build": "packemon build --addEngines",
     "pack": "NODE_ENV=production packemon pack --addEngines --generateDeclaration=standard",
     "clean": "packemon clean",
@@ -64,6 +65,7 @@
       "prettier",
       {
         "driver": "typescript",
+        "buildFolder": "dts",
         "declarationOnly": true
       }
     ],
