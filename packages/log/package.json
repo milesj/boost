@@ -16,7 +16,12 @@
     "node": ">=10.3.0",
     "npm": ">=6.1.0"
   },
-  "repository": "https://github.com/milesj/boost/tree/master/packages/log",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/log"
+  },
+  "author": "Miles Johnson",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

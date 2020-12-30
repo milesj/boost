@@ -15,7 +15,12 @@
   "engines": {
     "node": ">=10.3.0"
   },
-  "repository": "https://github.com/milesj/boost/tree/master/packages/event",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/event"
+  },
+  "author": "Miles Johnson",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

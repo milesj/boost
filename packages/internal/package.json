@@ -13,7 +13,12 @@
   "engines": {
     "node": ">=10.3.0"
   },
-  "repository": "https://github.com/milesj/boost/tree/master/packages/internal",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/internal"
+  },
+  "author": "Miles Johnson",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
