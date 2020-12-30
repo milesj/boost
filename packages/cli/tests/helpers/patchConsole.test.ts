@@ -141,6 +141,7 @@ describe('patchConsole()', () => {
 
     outBuffer.on(spy);
     console.time('foo');
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
     console.timeLog('foo');
 
     expect(spy).toHaveBeenCalledWith(expect.stringMatching(/foo: \d+/u));

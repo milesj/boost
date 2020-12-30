@@ -11,13 +11,9 @@ export function LogWriter({ errBuffer, outBuffer }: LogWriterProps) {
   const { write: writeErr } = useStderr();
   const { write: writeOut } = useStdout();
 
-  useEffect(() => {
-    return errBuffer.on(writeErr);
-  }, [errBuffer, writeErr]);
+  useEffect(() => errBuffer.on(writeErr), [errBuffer, writeErr]);
 
-  useEffect(() => {
-    return outBuffer.on(writeOut);
-  }, [outBuffer, writeOut]);
+  useEffect(() => outBuffer.on(writeOut), [outBuffer, writeOut]);
 
   return null;
 }

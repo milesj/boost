@@ -50,7 +50,7 @@ export default abstract class BaseEvent<
    * Return a list of all scopes with listeners.
    */
   getScopes(): (Scope | WildstarScope)[] {
-    return Array.from(this.listeners.keys()) as (Scope | WildstarScope)[];
+    return Array.from(this.listeners.keys())!;
   }
 
   /**

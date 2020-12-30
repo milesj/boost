@@ -128,11 +128,7 @@ export default class CrashReporter {
       }
 
       if (version) {
-        this.add(
-          languages[bin as keyof typeof languages],
-          version,
-          resolveHome(run('which', [bin])),
-        );
+        this.add(languages[bin!], version, resolveHome(run('which', [bin])));
       }
     });
 

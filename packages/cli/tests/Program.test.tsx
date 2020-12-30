@@ -11,7 +11,6 @@ import {
   Arg,
   OptionConfigMap,
   ProgramContext,
-  ProgramContextType,
   INTERNAL_OPTIONS,
   TaskContext,
   GlobalOptions,
@@ -1236,7 +1235,7 @@ describe('<Program />', () => {
 
   describe('logging', () => {
     function Log() {
-      const ctx = useContext(ProgramContext) as ProgramContextType;
+      const ctx = useContext(ProgramContext);
 
       ctx.log('Component log');
       ctx.log.error('Component error');
