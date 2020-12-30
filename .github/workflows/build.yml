@@ -20,7 +20,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --ignore-engines --frozen-lockfile
       - run: yarn global add packemon --force
-      - run: yarn run setup
       - run: yarn run build
       - run: yarn run type
       - run: yarn run coverage
@@ -33,5 +32,4 @@ jobs:
       - uses: actions/setup-node@v2-beta
       - run: yarn install --ignore-engines --frozen-lockfile
       - run: yarn global add packemon --force
-      - run: yarn run setup
       - run: yarn run pack
