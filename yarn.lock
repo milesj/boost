@@ -2140,10 +2140,10 @@
   dependencies:
     extend "3.0.2"
 
-"@milesj/build-tool-config@^2.16.0":
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/@milesj/build-tool-config/-/build-tool-config-2.16.0.tgz#9ed8cd4324deead70692fdd97c769ff312b72bf9"
-  integrity sha512-7yNyUIyeXaoUhtFqhoAXFEoHsbcGzd1VNNDzC/YM80qIRIXv3pjnTgvhnFmQ5sANH6+mErvqCXB8Axf4+im1MQ==
+"@milesj/build-tool-config@^2.16.1":
+  version "2.16.1"
+  resolved "https://registry.yarnpkg.com/@milesj/build-tool-config/-/build-tool-config-2.16.1.tgz#7b6add2bd17523239ebc624308f46e6e4cf8f386"
+  integrity sha512-eozfu5Obn5pC8vuh5DPKK8QoxcCc1RRF8bc4DByzXOwCXl0GI8r3p9VW7vPXbu23soNa0010E0yIObDtbMCZdw==
   dependencies:
     "@babel/cli" "^7.12.10"
     "@babel/core" "^7.12.10"
@@ -2198,12 +2198,12 @@
     prettier "^2.2.1"
     typescript "^4.1.3"
 
-"@milesj/build-tools@^2.16.0":
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/@milesj/build-tools/-/build-tools-2.16.0.tgz#07325a58e70cae9fed1c6cb09cb81a12e37aff0f"
-  integrity sha512-XJbGGliiYnukQw3ZgqFsRDCJVhGc3B63gegPTxKknzwzpC/WSNqTvRa+GyNkS+084sETNOw60/sR5JVDHRAzJQ==
+"@milesj/build-tools@^2.16.1":
+  version "2.16.1"
+  resolved "https://registry.yarnpkg.com/@milesj/build-tools/-/build-tools-2.16.1.tgz#a3d9db6bfe8ceda256050c07f27eb7de6e336dee"
+  integrity sha512-KDmSqynlJi+d93u5EDiECNZ7gvRI+lfBjGT8856pFroWKdOMdlQDitjYbq092bnq/7Vg9v65ErI8cfkug2JVag==
   dependencies:
-    "@milesj/build-tool-config" "^2.16.0"
+    "@milesj/build-tool-config" "^2.16.1"
     "@milesj/build-tool-runtime" "^2.13.0"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
