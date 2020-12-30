@@ -8,9 +8,9 @@
   ],
   "main": "./lib/index.js",
   "module": "./esm/index.js",
-  "types": "./lib/index.d.ts",
+  "types": "./dts/index.d.ts",
   "engines": {
-    "node": ">=10.17.0"
+    "node": ">=10.3.0"
   },
   "repository": "https://github.com/milesj/boost/tree/master/packages/decorators",
   "license": "MIT",
@@ -22,6 +22,9 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
-    "platform": ["node", "browser"]
+    "platform": [
+      "browser",
+      "node"
+    ]
   }
 }

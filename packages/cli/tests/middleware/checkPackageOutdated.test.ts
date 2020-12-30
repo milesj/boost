@@ -40,7 +40,7 @@ describe('checkPackageOutdated()', () => {
   });
 
   it('doesnt log when version is latest', async () => {
-    const mw = checkPackageOutdated('packemon', '1.2.3');
+    const mw = checkPackageOutdated('pkg', '1.2.3');
 
     await mw([], parse, logSpy);
 
@@ -60,7 +60,7 @@ describe('checkPackageOutdated()', () => {
       return {} as any;
     });
 
-    const mw = checkPackageOutdated('packemon', '1.2.3');
+    const mw = checkPackageOutdated('pkg', '1.2.3');
 
     await mw([], parse, logSpy);
 
@@ -68,12 +68,12 @@ describe('checkPackageOutdated()', () => {
   });
 
   it('logs when version is out of date', async () => {
-    const mw = checkPackageOutdated('packemon', '1.0.0');
+    const mw = checkPackageOutdated('pkg', '1.0.0');
 
     await mw([], parse, logSpy);
 
     expect(logSpy.info).toHaveBeenCalledWith(
-      'Your version of packemon is out of date.',
+      'Your version of pkg is out of date.',
       "Latest version is 1.2.3, while you're using 1.0.0.",
     );
   });

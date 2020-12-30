@@ -20,7 +20,7 @@
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "engines": {
-    "node": ">=10.17.0"
+    "node": ">=10.3.0"
   },
   "devDependencies": {
     "@milesj/build-tools": "^2.15.0",
@@ -37,8 +37,7 @@
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^2.0.0",
     "fs-extra": "^9.0.1",
-    "lerna": "^3.22.1",
-    "packemon": "^0.7.0"
+    "lerna": "^3.22.1"
   },
   "publishConfig": {
     "access": "public"
