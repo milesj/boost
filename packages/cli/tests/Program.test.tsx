@@ -6,27 +6,27 @@ import { ExitError } from '@boost/common';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
 import {
-  Program,
-  Command,
   Arg,
-  OptionConfigMap,
-  ProgramContext,
-  INTERNAL_OPTIONS,
-  TaskContext,
+  Command,
   GlobalOptions,
+  INTERNAL_OPTIONS,
+  OptionConfigMap,
   Options,
+  Program,
+  ProgramContext,
+  TaskContext,
   UnknownOptionMap,
   useProgram,
 } from '../src';
-import { MockWriteStream, MockReadStream, runProgram, runTask } from '../src/test';
-import { options, params } from './__mocks__/args';
-import { Parent, Child, GrandChild } from './__mocks__/commands';
-import BuildCommand from './__mocks__/BuildCommand';
-import InstallCommand from './__mocks__/InstallCommand';
-import ClientCommand from './__mocks__/ClientCommand';
+import { MockReadStream, MockWriteStream, runProgram, runTask } from '../src/test';
 import AllClassicCommand from './__mocks__/AllClassicCommand';
+import { options, params } from './__mocks__/args';
 import BuildClassicCommand from './__mocks__/BuildClassicCommand';
+import BuildCommand from './__mocks__/BuildCommand';
+import ClientCommand from './__mocks__/ClientCommand';
+import { Child, GrandChild, Parent } from './__mocks__/commands';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
+import InstallCommand from './__mocks__/InstallCommand';
 
 jest.mock('term-size');
 

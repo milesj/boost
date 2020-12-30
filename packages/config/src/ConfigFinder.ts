@@ -1,34 +1,34 @@
 /* eslint-disable no-param-reassign, no-await-in-loop */
 
+import minimatch from 'minimatch';
 import {
-  Predicates,
-  Path,
-  PackageStructure,
-  toArray,
-  isModuleName,
-  isFilePath,
   Blueprint,
+  isFilePath,
+  isModuleName,
+  PackageStructure,
+  Path,
+  Predicates,
+  toArray,
 } from '@boost/common';
 import { color } from '@boost/internal';
-import minimatch from 'minimatch';
 import ConfigError from './ConfigError';
+import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
+import Finder from './Finder';
+import createFileName from './helpers/createFileName';
+import getEnv from './helpers/getEnv';
 import loadCjs from './loaders/cjs';
 import loadJs from './loaders/js';
 import loadJson from './loaders/json';
 import loadMjs from './loaders/mjs';
 import loadTs from './loaders/ts';
 import loadYaml from './loaders/yaml';
-import Finder from './Finder';
-import createFileName from './helpers/createFileName';
-import getEnv from './helpers/getEnv';
-import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
 import {
   ConfigFile,
   ConfigFinderOptions,
   ExtendsSetting,
   ExtType,
-  OverridesSetting,
   FileSource,
+  OverridesSetting,
 } from './types';
 
 export default class ConfigFinder<T extends object> extends Finder<

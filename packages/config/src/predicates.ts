@@ -1,10 +1,10 @@
-import { predicates, Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Predicates, predicates } from '@boost/common';
 import {
   ExtendsSetting,
+  FileGlob,
+  OverridesSettingItem,
   PluginsSetting,
   PluginsSettingMapItem,
-  OverridesSettingItem,
-  FileGlob,
 } from './types';
 
 export function createExtendsPredicate(preds: Predicates = predicates) {

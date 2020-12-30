@@ -1,7 +1,7 @@
-import { optimal } from '@boost/common';
 import { ParamConfigList } from '@boost/args';
-import { paramBlueprint } from './blueprints';
+import { optimal } from '@boost/common';
 import msg from '../translate';
+import { paramBlueprint } from './blueprints';
 
 export default function validateParams(params: ParamConfigList) {
   params.forEach((config, index) =>

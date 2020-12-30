@@ -1,9 +1,9 @@
 import fs from 'fs';
 import zlib from 'zlib';
-import { PortablePath, Path, Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Path, PortablePath, Predicates } from '@boost/common';
+import { MAX_LOG_SIZE } from '../constants';
 import Transport from '../Transport';
 import { TransportOptions } from '../types';
-import { MAX_LOG_SIZE } from '../constants';
 
 export interface FileTransportOptions extends TransportOptions {
   gzip?: boolean;

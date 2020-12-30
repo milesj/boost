@@ -4,9 +4,9 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
 import {
-  ScrollableList,
-  InternalScrollableListProps,
   calculateIndexes,
+  InternalScrollableListProps,
+  ScrollableList,
   truncateList,
 } from '../../../src/components/internal/ScrollableList';
 

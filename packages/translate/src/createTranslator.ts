@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
 import i18next, { InitOptions } from 'i18next';
-import { Path, toArray, PortablePath } from '@boost/common';
-import TranslateError from './TranslateError';
-import LocaleDetector from './LocaleDetector';
-import FileBackend from './FileBackend';
+import { Path, PortablePath, toArray } from '@boost/common';
 import debug from './debug';
-import { Locale, Translator, InterpolationParams, Format, MessageOptions } from './types';
+import FileBackend from './FileBackend';
+import LocaleDetector from './LocaleDetector';
+import TranslateError from './TranslateError';
+import { Format, InterpolationParams, Locale, MessageOptions, Translator } from './types';
 
 // istanbul ignore next
 function handleError(error: Error | null) {

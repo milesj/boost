@@ -2,10 +2,10 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocus } from 'ink';
-import { Prompt, PromptProps } from './internal/Prompt';
-import { Style } from './Style';
 import msg from '../translate';
+import { Prompt, PromptProps } from './internal/Prompt';
 import { Selected } from './internal/Selected';
+import { Style } from './Style';
 
 export interface ConfirmProps extends Omit<PromptProps<boolean>, 'validate'> {
   invalidError?: string;

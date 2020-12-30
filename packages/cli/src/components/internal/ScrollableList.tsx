@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from 'ink';
 import { useDimensions } from '../../hooks';
-import { Style } from '../Style';
 import msg from '../../translate';
+import { Style } from '../Style';
 
 export type OverflowLabel = string | ((count: number) => string);
 

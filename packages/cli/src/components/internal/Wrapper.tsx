@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box } from 'ink';
-import { LogWriter, LogWriterProps } from './LogWriter';
-import { Failure } from '../Failure';
 import ProgramContext from '../../ProgramContext';
 import { ProgramContextType } from '../../types';
+import { Failure } from '../Failure';
+import { LogWriter, LogWriterProps } from './LogWriter';
 
 export interface WrapperProps extends LogWriterProps, ProgramContextType {
   children: React.ReactNode;

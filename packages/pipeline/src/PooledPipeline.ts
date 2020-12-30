@@ -1,11 +1,11 @@
 import os from 'os';
-import { Predicates, Blueprint } from '@boost/common';
-import PipelineError from './PipelineError';
-import ParallelPipeline from './ParallelPipeline';
+import { Blueprint, Predicates } from '@boost/common';
 import Context from './Context';
-import WorkUnit from './WorkUnit';
 import debug from './debug';
+import ParallelPipeline from './ParallelPipeline';
+import PipelineError from './PipelineError';
 import { AggregatedResult } from './types';
+import WorkUnit from './WorkUnit';
 
 export interface PooledOptions {
   /** How many work units to process in parallel. */

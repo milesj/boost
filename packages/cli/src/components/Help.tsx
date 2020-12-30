@@ -3,18 +3,18 @@ import { Box, Text } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
 import { toArray } from '@boost/common';
 import { stripAnsi } from '@boost/terminal';
-import { Header } from './Header';
-import { Style } from './Style';
-import msg from '../translate';
-import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW, DELIMITER } from '../constants';
-import { CommandConfigMap, CommandConfig, Categories } from '../types';
+import { DELIMITER, SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from '../constants';
 import {
+  formatCommandCall,
+  formatDescription,
   formatType,
   getLongestWidth,
   groupByCategory,
-  formatDescription,
-  formatCommandCall,
 } from '../helpers';
+import msg from '../translate';
+import { Categories, CommandConfig, CommandConfigMap } from '../types';
+import { Header } from './Header';
+import { Style } from './Style';
 
 export interface HelpProps {
   categories?: Categories;

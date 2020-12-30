@@ -1,5 +1,5 @@
-import { ValueType, Option } from '../types';
 import ArgsError from '../ArgsError';
+import { Option, ValueType } from '../types';
 
 export default function formatValue(
   value: ValueType,

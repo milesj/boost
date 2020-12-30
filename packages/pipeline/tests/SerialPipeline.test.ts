@@ -3,9 +3,9 @@
 import { Predicates } from '@boost/common';
 import Context from '../src/Context';
 import Routine from '../src/Routine';
+import { Runnable } from '../src/types';
 import WaterfallPipeline from '../src/WaterfallPipeline';
 import WorkUnit from '../src/WorkUnit';
-import { Runnable } from '../src/types';
 import { createMonitor, getMonitoredEvents } from './helpers';
 
 describe('SerialPipeline', () => {

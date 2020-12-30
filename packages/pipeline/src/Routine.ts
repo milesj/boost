@@ -4,17 +4,17 @@ import split from 'split';
 import { toArray } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
-import PipelineError from './PipelineError';
-import Context from './Context';
-import WorkUnit from './WorkUnit';
-import ConcurrentPipeline from './ConcurrentPipeline';
-import PooledPipeline, { PooledOptions } from './PooledPipeline';
 import AggregatedPipeline from './AggregatedPipeline';
-import WaterfallPipeline from './WaterfallPipeline';
-import { Hierarchical, AnyWorkUnit } from './types';
+import ConcurrentPipeline from './ConcurrentPipeline';
+import Context from './Context';
 import debug from './debug';
 import Monitor from './Monitor';
 import Pipeline from './Pipeline';
+import PipelineError from './PipelineError';
+import PooledPipeline, { PooledOptions } from './PooledPipeline';
+import { AnyWorkUnit, Hierarchical } from './types';
+import WaterfallPipeline from './WaterfallPipeline';
+import WorkUnit from './WorkUnit';
 
 export interface ExecuteCommandOptions {
   wrap?: (process: ExecaChildProcess) => void;

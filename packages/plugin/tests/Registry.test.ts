@@ -1,6 +1,6 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
-import { Renderable, Renderer, createRendererRegistry } from './__mocks__/Renderer';
-import { Registry, DEFAULT_PRIORITY } from '../src';
+import { DEFAULT_PRIORITY, Registry } from '../src';
+import { createRendererRegistry, Renderable, Renderer } from './__mocks__/Renderer';
 
 describe('Registry', () => {
   const tool = { name: 'Tool', tool: true };

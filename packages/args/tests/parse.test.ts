@@ -1,14 +1,14 @@
-import { parse, ParseError, ValidationError, Flag } from '../src';
+import { Flag, parse, ParseError, ValidationError } from '../src';
 import {
-  optConfig,
-  optConfigExpanded,
-  optsConfig,
-  optsConfigExpanded,
-  optsConfigArity,
   flagConfig,
   numConfig,
   numConfigExpanded,
   numsConfig,
+  optConfig,
+  optConfigExpanded,
+  optsConfig,
+  optsConfigArity,
+  optsConfigExpanded,
   SPECIAL_CHARS,
   SPECIAL_NUMBERS,
 } from './__mocks__/options';

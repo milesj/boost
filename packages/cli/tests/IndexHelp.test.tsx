@@ -1,5 +1,5 @@
 import React from 'react';
-import { IndexHelp, Help } from '../src';
+import { Help, IndexHelp } from '../src';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__mocks__/args';
 

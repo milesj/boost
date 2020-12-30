@@ -23,8 +23,8 @@ import {
   PrimitiveType,
   ScalarType,
   SingleOption,
-  ValueType,
   UnknownOptionMap,
+  ValueType,
 } from '@boost/args';
 import { Loggable, LoggerFunction } from '@boost/log';
 

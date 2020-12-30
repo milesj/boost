@@ -3,19 +3,19 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+import type { CLIErrorCode } from './CLIError';
+import CLIError from './CLIError';
 import Command from './Command';
 import Program from './Program';
 import ProgramContext from './ProgramContext';
-import CLIError from './CLIError';
-import type { CLIErrorCode } from './CLIError';
 
-export * from './constants';
 export * from './components';
+export * from './constants';
 export * from './decorators';
 export * from './helpers';
 export * from './hooks';
 export * from './middleware';
 export * from './types';
 
-export { Command, Program, ProgramContext, CLIError };
+export { CLIError, Command, Program, ProgramContext };
 export type { CLIErrorCode };

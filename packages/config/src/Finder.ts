@@ -1,10 +1,10 @@
 import { Contract, Path, PortablePath } from '@boost/common';
-import { Debugger, createDebugger } from '@boost/debug';
+import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import ConfigError from './ConfigError';
 import Cache from './Cache';
-import { File } from './types';
+import ConfigError from './ConfigError';
 import { CONFIG_FOLDER, PACKAGE_FILE } from './constants';
+import { File } from './types';
 
 export default abstract class Finder<
   T extends File,

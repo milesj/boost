@@ -1,5 +1,5 @@
-import msg from '../translate';
 import { LOCALE_FORMAT } from '../constants';
+import msg from '../translate';
 import { OptionConfigMap } from '../types';
 
 const globalOptions: OptionConfigMap = {

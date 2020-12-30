@@ -1,5 +1,5 @@
-import { Predicates, Blueprint } from '@boost/common';
-import { Registry, Pluggable, Plugin, DEFAULT_PRIORITY, RegistryOptions } from '../../src';
+import { Blueprint, Predicates } from '@boost/common';
+import { DEFAULT_PRIORITY, Pluggable, Plugin, Registry, RegistryOptions } from '../../src';
 
 export interface Renderable extends Pluggable {
   render: () => string;

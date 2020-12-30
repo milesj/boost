@@ -3,9 +3,8 @@
 import React from 'react';
 import { render } from 'ink';
 import { env } from '@boost/internal';
-import { stripAnsi } from '@boost/terminal';
 import { mockLogger } from '@boost/log/test';
-import { Command, Program, INTERNAL_OPTIONS, INTERNAL_PARAMS } from './index';
+import { stripAnsi } from '@boost/terminal';
 import type {
   ExitCode,
   GlobalOptions,
@@ -14,6 +13,7 @@ import type {
   ProgramStreams,
   TaskContext,
 } from './index';
+import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from './index';
 
 export class MockReadStream {
   isTTY = false;

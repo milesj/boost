@@ -3,8 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import ConfigError from './ConfigError';
 import type { ConfigErrorCode } from './ConfigError';
+import ConfigError from './ConfigError';
 import Configuration from './Configuration';
 import getEnv from './helpers/getEnv';
 import mergeArray from './helpers/mergeArray';

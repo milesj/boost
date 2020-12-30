@@ -1,10 +1,10 @@
 import fs from 'fs';
 import CommonError from '../CommonError';
 import Path from '../Path';
-import requireModule from './requireModule';
 import { parse as parseJSON } from '../serializers/json';
 import { parse as parseYAML } from '../serializers/yaml';
 import { PortablePath } from '../types';
+import requireModule from './requireModule';
 
 export default function parseFile<T>(filePath: PortablePath): T {
   const path = Path.create(filePath);

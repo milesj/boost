@@ -6,12 +6,12 @@ import { ParseError, ValidationError } from '@boost/args';
 import { ExitError } from '@boost/common';
 import { screen } from '@boost/terminal';
 import CLIError from '../CLIError';
-import { Header } from './Header';
-import { Style } from './Style';
-import { SPACING_COL, SPACING_ROW, DELIMITER } from '../constants';
+import { DELIMITER, SPACING_COL, SPACING_ROW } from '../constants';
 import applyStyle from '../helpers/applyStyle';
 import msg from '../translate';
 import { StyleType } from '../types';
+import { Header } from './Header';
+import { Style } from './Style';
 
 export interface FailureProps {
   binName?: string;

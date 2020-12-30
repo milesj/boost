@@ -1,6 +1,6 @@
-import WorkUnit from '../src/WorkUnit';
-import Pipeline from '../src/Pipeline';
 import Monitor from '../src/Monitor';
+import Pipeline from '../src/Pipeline';
+import WorkUnit from '../src/WorkUnit';
 
 let events: unknown[][] = [];
 

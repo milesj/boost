@@ -2,20 +2,20 @@
 
 import path from 'path';
 import {
+  FilePath,
+  isFilePath,
+  isObject,
+  MODULE_NAME_PART,
+  ModuleName,
   PathResolver,
   requireModule,
-  ModuleName,
-  isObject,
-  isFilePath,
-  MODULE_NAME_PART,
-  FilePath,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import { Pluggable, Factory } from './types';
 import debug from './debug';
 import PluginError from './PluginError';
 import Registry from './Registry';
+import { Factory, Pluggable } from './types';
 
 export default class Loader<Plugin extends Pluggable> {
   readonly debug: Debugger;

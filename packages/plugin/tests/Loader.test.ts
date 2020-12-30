@@ -1,7 +1,7 @@
 import { Path } from '@boost/common';
 import { copyFixtureToNodeModule } from '@boost/test-utils';
-import { Renderable, createRendererRegistry } from './__mocks__/Renderer';
 import Loader from '../src/Loader';
+import { createRendererRegistry, Renderable } from './__mocks__/Renderer';
 
 describe('Loader', () => {
   let fixtures: Function[];

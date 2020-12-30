@@ -1,4 +1,4 @@
-import { SingleOption, MultipleOption, Flag } from '../../src';
+import { Flag, MultipleOption, SingleOption } from '../../src';
 
 export const optConfig: SingleOption<string> = {
   description: '',

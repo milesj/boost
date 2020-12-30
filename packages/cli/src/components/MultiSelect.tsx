@@ -3,12 +3,12 @@ import { useFocus } from 'ink';
 import { toArray } from '@boost/common';
 import { figures } from '@boost/terminal';
 import { useListNavigation } from '../hooks';
+import { DividerRow } from './internal/DividerRow';
+import { OptionRow } from './internal/OptionRow';
 import { Prompt } from './internal/Prompt';
 import { ScrollableList } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
-import { DividerRow } from './internal/DividerRow';
-import { OptionRow } from './internal/OptionRow';
-import { SelectProps, normalizeOptions } from './Select';
+import { normalizeOptions, SelectProps } from './Select';
 
 export interface MultiSelectProps<T> extends SelectProps<T[], T> {
   defaultSelected?: T[];

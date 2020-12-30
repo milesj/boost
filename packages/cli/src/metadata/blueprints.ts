@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
-  Config,
   Arg,
-  Option,
-  SingleOption,
-  MultipleOption,
-  Flag,
-  ShortOptionName,
-  ParamConfig,
-  DEFAULT_STRING_VALUE,
-  DEFAULT_NUMBER_VALUE,
-  DEFAULT_BOOLEAN_VALUE,
-  COMMAND_FORMAT,
   Category,
+  COMMAND_FORMAT,
+  Config,
+  DEFAULT_BOOLEAN_VALUE,
+  DEFAULT_NUMBER_VALUE,
+  DEFAULT_STRING_VALUE,
+  Flag,
+  MultipleOption,
+  Option,
+  ParamConfig,
+  ShortOptionName,
+  SingleOption,
 } from '@boost/args';
-import { predicates, Blueprint } from '@boost/common';
+import { Blueprint, predicates } from '@boost/common';
 import { CommandStaticConfig } from '../types';
 
 const { array, bool, func, number, object, shape, string, union } = predicates;

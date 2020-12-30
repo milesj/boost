@@ -1,10 +1,10 @@
 import {
-  normalizePath,
-  getFixturePath,
   copyFixtureToNodeModule,
+  getFixturePath,
   getNodeModulePath,
+  normalizePath,
 } from '@boost/test-utils';
-import { PathResolver, Path, LookupType } from '../src';
+import { LookupType, Path, PathResolver } from '../src';
 
 describe('PathResolver', () => {
   let resolver: PathResolver;

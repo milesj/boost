@@ -1,6 +1,6 @@
-import EventError from './EventError';
-import debug from './debug';
 import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
+import debug from './debug';
+import EventError from './EventError';
 import { Listener, Unlistener, WildstarScope } from './types';
 
 export default abstract class BaseEvent<

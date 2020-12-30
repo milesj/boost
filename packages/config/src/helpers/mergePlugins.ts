@@ -1,6 +1,6 @@
 import { isObject } from '@boost/common';
+import { PluginsSetting, PluginsSettingList, PluginsSettingMap } from '../types';
 import mergeObject from './mergeObject';
-import { PluginsSetting, PluginsSettingMap, PluginsSettingList } from '../types';
 
 function convertListToMap(list: PluginsSettingList): PluginsSettingMap {
   return list.reduce(

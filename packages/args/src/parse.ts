@@ -1,35 +1,35 @@
 /* eslint-disable complexity, no-continue */
 
-import {
-  Arguments,
-  Argv,
-  ArgList,
-  AliasMap,
-  OptionMap,
-  ShortOptionName,
-  ParserOptions,
-  PrimitiveType,
-  MapParamType,
-  ParamConfig,
-  UnknownOptionMap,
-} from './types';
-import getDefaultValue from './helpers/getDefaultValue';
-import isShortOption from './helpers/isShortOption';
-import isShortOptionGroup from './helpers/isShortOptionGroup';
-import isLongOption from './helpers/isLongOption';
-import expandShortOption from './helpers/expandShortOption';
-import createScope from './helpers/createScope';
-import isOptionLike from './helpers/isOptionLike';
-import mapParserOptions from './helpers/mapParserOptions';
-import isCommand from './helpers/isCommand';
-import castValue from './helpers/castValue';
-import processShortOptionGroup from './helpers/processShortOptionGroup';
 import ArgsError from './ArgsError';
 import Checker from './Checker';
-import Scope from './Scope';
-import debug from './debug';
 import { DEFAULT_STRING_VALUE } from './constants';
+import debug from './debug';
+import castValue from './helpers/castValue';
+import createScope from './helpers/createScope';
+import expandShortOption from './helpers/expandShortOption';
 import formatValue from './helpers/formatValue';
+import getDefaultValue from './helpers/getDefaultValue';
+import isCommand from './helpers/isCommand';
+import isLongOption from './helpers/isLongOption';
+import isOptionLike from './helpers/isOptionLike';
+import isShortOption from './helpers/isShortOption';
+import isShortOptionGroup from './helpers/isShortOptionGroup';
+import mapParserOptions from './helpers/mapParserOptions';
+import processShortOptionGroup from './helpers/processShortOptionGroup';
+import Scope from './Scope';
+import {
+  AliasMap,
+  ArgList,
+  Arguments,
+  Argv,
+  MapParamType,
+  OptionMap,
+  ParamConfig,
+  ParserOptions,
+  PrimitiveType,
+  ShortOptionName,
+  UnknownOptionMap,
+} from './types';
 
 // TERMINOLOGY
 // command line - The entire line that encompasses the following parts.

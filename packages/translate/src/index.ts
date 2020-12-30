@@ -3,12 +3,12 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import createTranslator from './createTranslator';
 import type { TranslatorOptions } from './createTranslator';
-import TranslateError from './TranslateError';
+import createTranslator from './createTranslator';
 import type { TranslateErrorCode } from './TranslateError';
+import TranslateError from './TranslateError';
 
 export * from './types';
 
 export { createTranslator, TranslateError };
-export type { TranslatorOptions, TranslateErrorCode };
+export type { TranslateErrorCode, TranslatorOptions };

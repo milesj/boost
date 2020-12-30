@@ -1,10 +1,10 @@
-import { parseInContext, ParserOptions, ContextFactory, ParseError } from '../src';
+import { ContextFactory, ParseError, parseInContext, ParserOptions } from '../src';
 import {
   flagConfig,
-  optsConfigArity,
-  optConfig,
   numConfigExpanded,
   numsConfig,
+  optConfig,
+  optsConfigArity,
 } from './__mocks__/options';
 
 describe('parseInContext()', () => {

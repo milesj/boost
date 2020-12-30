@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TextProps } from 'ink';
-import { StyleType, Writeable } from '../types';
 import loadTheme from '../helpers/loadTheme';
+import { StyleType, Writeable } from '../types';
 
 export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underline' | 'wrap'> {
   children: NonNullable<React.ReactNode>;

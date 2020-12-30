@@ -1,9 +1,9 @@
-import { instanceOf, Blueprint, Predicates } from '@boost/common';
+import { Blueprint, instanceOf, Predicates } from '@boost/common';
 import Context from './Context';
-import Pipeline from './Pipeline';
-import WorkUnit from './WorkUnit';
 import createWorkUnit from './createWorkUnit';
+import Pipeline from './Pipeline';
 import { Action, AggregatedResult } from './types';
+import WorkUnit from './WorkUnit';
 
 export default abstract class ParallelPipeline<
   Options extends object,

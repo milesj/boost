@@ -1,4 +1,4 @@
-import { predicates, Blueprint } from 'optimal';
+import { Blueprint, predicates } from 'optimal';
 import { BlueprintFactory } from '../types';
 
 export default function createBlueprint<T extends object>(

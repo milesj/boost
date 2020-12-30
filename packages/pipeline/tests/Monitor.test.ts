@@ -1,5 +1,5 @@
-import Monitor from '../src/Monitor';
 import Context from '../src/Context';
+import Monitor from '../src/Monitor';
 import Task from '../src/Task';
 import WaterfallPipeline from '../src/WaterfallPipeline';
 import { createMonitor, getMonitoredEvents } from './helpers';

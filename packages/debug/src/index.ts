@@ -3,9 +3,9 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import createDebugger from './createDebugger';
 import CrashReporter from './CrashReporter';
+import createDebugger from './createDebugger';
 
 export * from './types';
 
-export { createDebugger, CrashReporter };
+export { CrashReporter, createDebugger };

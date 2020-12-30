@@ -1,7 +1,7 @@
-import ParallelPipeline from './ParallelPipeline';
 import Context from './Context';
-import { AggregatedResult } from './types';
 import debug from './debug';
+import ParallelPipeline from './ParallelPipeline';
+import { AggregatedResult } from './types';
 
 export default class AggregatedPipeline<
   Ctx extends Context,

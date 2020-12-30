@@ -1,8 +1,8 @@
 import Context from '../src/Context';
+import PipelineError from '../src/PipelineError';
+import PooledPipeline from '../src/PooledPipeline';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
-import PooledPipeline from '../src/PooledPipeline';
-import PipelineError from '../src/PipelineError';
 import { AggregatedResult } from '../src/types';
 
 describe('PooledPipeline', () => {

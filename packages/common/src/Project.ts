@@ -8,9 +8,9 @@ import Path from './Path';
 import {
   FilePath,
   PackageStructure,
+  PortablePath,
   WorkspaceMetadata,
   WorkspacePackage,
-  PortablePath,
 } from './types';
 
 export interface ProjectSearchOptions {

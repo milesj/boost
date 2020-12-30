@@ -1,15 +1,15 @@
 import { Contract } from '@boost/common';
-import { Event, BailEvent } from '@boost/event';
-import PipelineError from './PipelineError';
-import Context from './Context';
+import { BailEvent, Event } from '@boost/event';
 import {
+  STATUS_FAILED,
+  STATUS_PASSED,
   STATUS_PENDING,
   STATUS_RUNNING,
   STATUS_SKIPPED,
-  STATUS_PASSED,
-  STATUS_FAILED,
 } from './constants';
-import { Action, Status, Hierarchical, Runnable } from './types';
+import Context from './Context';
+import PipelineError from './PipelineError';
+import { Action, Hierarchical, Runnable, Status } from './types';
 
 export default abstract class WorkUnit<Options extends object, Input = unknown, Output = Input>
   extends Contract<Options>

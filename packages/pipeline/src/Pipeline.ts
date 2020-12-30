@@ -1,12 +1,12 @@
 import kebabCase from 'lodash/kebabCase';
 import { Contract } from '@boost/common';
-import { Debugger, createDebugger } from '@boost/debug';
+import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import Context from './Context';
-import WorkUnit from './WorkUnit';
 import debug from './debug';
-import { Hierarchical } from './types';
 import Monitor from './Monitor';
+import { Hierarchical } from './types';
+import WorkUnit from './WorkUnit';
 
 export default abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>
   extends Contract<Options>

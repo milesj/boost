@@ -1,9 +1,9 @@
 import { env } from '@boost/internal';
-import createLogger from '../src/createLogger';
 import { DEFAULT_LABELS } from '../src/constants';
+import createLogger from '../src/createLogger';
 import * as formats from '../src/formats';
 import StreamTransport from '../src/transports/StreamTransport';
-import { LoggerFunction, LoggerOptions, Formatter } from '../src/types';
+import { Formatter, LoggerFunction, LoggerOptions } from '../src/types';
 
 describe('createLogger()', () => {
   let logger: LoggerFunction;
