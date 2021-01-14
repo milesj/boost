@@ -19,6 +19,11 @@ Boost v1.2.3 [90mboost[39m
 "
 `;
 
+exports[`<Program /> components renders and outputs multiple component renders 1`] = `
+"[31merror[39m After
+"
+`;
+
 exports[`<Program /> default command executes default when no args passed 1`] = `
 "Build!
 "
