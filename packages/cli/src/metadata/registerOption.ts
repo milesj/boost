@@ -9,13 +9,15 @@ export default function registerOption<O extends OptionConfig>(
   config: O,
 ) {
   const ctor = getConstructor(target);
+  const { name } = (ctor as unknown) as Function;
   const key = String(property);
 
   // Without this check we would mutate the prototype chain,
   // resulting in *all* sub-classes inheriting the same options.
-  if (!ctor.hasRegisteredOptions) {
+  // We use the constructor name so that deep inheritance still works.
+  if (ctor.hasRegisteredOptions !== name) {
     ctor.options = {};
-    ctor.hasRegisteredOptions = true;
+    ctor.hasRegisteredOptions = name;
   }
 
   if (RESERVED_OPTIONS.includes(key)) {

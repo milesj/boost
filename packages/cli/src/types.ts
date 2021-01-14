@@ -118,7 +118,7 @@ export interface CommandConfigMap {
 
 // Constructor
 export interface CommandStaticConfig extends Required<CommandConfig> {
-  hasRegisteredOptions?: boolean;
+  hasRegisteredOptions?: string;
 }
 
 export interface CommandMetadata extends CommandStaticConfig {

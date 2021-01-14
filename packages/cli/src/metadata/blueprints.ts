@@ -48,7 +48,7 @@ export const commandConstructorBlueprint: Blueprint<
     ),
   ),
   category: string(),
-  hasRegisteredOptions: bool(),
+  hasRegisteredOptions: string(),
   path: string().notEmpty().required().match(COMMAND_FORMAT),
   usage: union([string(), array(string())], []),
 };
