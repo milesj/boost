@@ -132,13 +132,12 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
     const batches: T[][] = [];
     const seen: Set<Node> = new Set();
     const addBatch = () => {
-      const nextBatch = Array.from(this.nodes.values()).filter((node) => {
-        return (
+      const nextBatch = Array.from(this.nodes.values()).filter(
+        (node) =>
           !seen.has(node) &&
           (node.requirements.size === 0 ||
-            Array.from(node.requirements.values()).filter((dep) => !seen.has(dep)).length === 0)
-        );
-      });
+            Array.from(node.requirements.values()).filter((dep) => !seen.has(dep)).length === 0),
+      );
 
       // Some nodes are missing, so they must be a cycle
       if (nextBatch.length === 0) {

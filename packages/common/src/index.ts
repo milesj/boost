@@ -3,9 +3,9 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import optimal, { predicates, Blueprint, Predicates } from 'optimal';
-import CommonError from './CommonError';
+import optimal, { Blueprint, Predicates, predicates } from 'optimal';
 import type { CommonErrorCode } from './CommonError';
+import CommonError from './CommonError';
 import Contract from './Contract';
 import ExitError from './ExitError';
 import PackageGraph from './PackageGraph';
@@ -15,24 +15,24 @@ import Project from './Project';
 import * as json from './serializers/json';
 import * as yaml from './serializers/yaml';
 
-export * from '@boost/decorators';
 export * from './constants';
 export * from './helpers';
 export * from './types';
+export * from '@boost/decorators';
 
 export {
+  Blueprint,
   CommonError,
   Contract,
-  Blueprint,
   ExitError,
+  json,
+  optimal,
   PackageGraph,
   Path,
   PathResolver,
   Predicates,
-  Project,
-  optimal,
   predicates,
-  json,
+  Project,
   yaml,
 };
 export type { CommonErrorCode };

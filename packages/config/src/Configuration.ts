@@ -1,15 +1,15 @@
-import { Contract, predicates, PortablePath, Blueprint } from '@boost/common';
+import { Blueprint, Contract, PortablePath, predicates } from '@boost/common';
 import { Event, WaterfallEvent } from '@boost/event';
 import Cache from './Cache';
 import ConfigFinder from './ConfigFinder';
 import IgnoreFinder from './IgnoreFinder';
 import Processor from './Processor';
 import {
-  ProcessedConfig,
   ConfigFile,
+  ConfigFinderOptions,
   Handler,
   IgnoreFile,
-  ConfigFinderOptions,
+  ProcessedConfig,
   ProcessorOptions,
 } from './types';
 

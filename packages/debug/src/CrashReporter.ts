@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
-import { PortablePath, FilePath, requireModule, toArray, PackageStructure } from '@boost/common';
+import { FilePath, PackageStructure, PortablePath, requireModule, toArray } from '@boost/common';
 import debug from './debug';
 
 function run(command: string, args: string[]): string {
@@ -128,11 +128,7 @@ export default class CrashReporter {
       }
 
       if (version) {
-        this.add(
-          languages[bin as keyof typeof languages],
-          version,
-          resolveHome(run('which', [bin])),
-        );
+        this.add(languages[bin!], version, resolveHome(run('which', [bin])));
       }
     });
 

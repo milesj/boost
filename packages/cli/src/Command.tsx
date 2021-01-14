@@ -4,41 +4,41 @@ import React from 'react';
 import execa, { Options as ExecaOptions } from 'execa';
 import {
   ArgList,
-  PrimitiveType,
-  ParserOptions,
-  ParamConfigList,
-  OptionConfigMap,
-  UnknownOptionMap,
-  Argv,
   Arguments,
+  Argv,
   MapParamType,
+  OptionConfigMap,
+  ParamConfigList,
+  ParserOptions,
+  PrimitiveType,
+  UnknownOptionMap,
 } from '@boost/args';
 import { Blueprint, Predicates } from '@boost/common';
 import { LoggerFunction } from '@boost/log';
+import CLIError from './CLIError';
+import CommandManager from './CommandManager';
+import { Help } from './components/Help';
 import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
-import {
-  Categories,
-  Commandable,
-  CommandMetadata,
-  CommandPath,
-  ExitHandler,
-  GlobalOptions,
-  RunResult,
-  TaskContext,
-  ExitCode,
-} from './types';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import getInheritedCategories from './metadata/getInheritedCategories';
 import getInheritedOptions from './metadata/getInheritedOptions';
 import globalOptions from './metadata/globalOptions';
-import validateParams from './metadata/validateParams';
-import validateOptions from './metadata/validateOptions';
 import validateConfig from './metadata/validateConfig';
-import CLIError from './CLIError';
-import CommandManager from './CommandManager';
-import { Help } from './components/Help';
+import validateOptions from './metadata/validateOptions';
+import validateParams from './metadata/validateParams';
 import Program from './Program';
+import {
+  Categories,
+  Commandable,
+  CommandMetadata,
+  CommandPath,
+  ExitCode,
+  ExitHandler,
+  GlobalOptions,
+  RunResult,
+  TaskContext,
+} from './types';
 
 export default abstract class Command<
     O extends GlobalOptions = GlobalOptions,

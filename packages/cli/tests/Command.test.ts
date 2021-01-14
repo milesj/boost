@@ -1,13 +1,13 @@
 import execa from 'execa';
-import AllCommand from './__mocks__/AllCommand';
+import { Arg, Command, INTERNAL_PROGRAM } from '../src';
+import { mockProgram, mockStreams, runCommand } from '../src/test';
 import AllClassicCommand from './__mocks__/AllClassicCommand';
-import BuildCommand from './__mocks__/BuildCommand';
+import AllCommand from './__mocks__/AllCommand';
 import BuildClassicCommand from './__mocks__/BuildClassicCommand';
-import InstallCommand from './__mocks__/InstallCommand';
+import BuildCommand from './__mocks__/BuildCommand';
+import { Child, GrandChild, Parent, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
 import InstallClassicCommand from './__mocks__/InstallClassicCommand';
-import { Parent, Child, GrandChild, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
-import { Command, Arg, INTERNAL_PROGRAM } from '../src';
-import { mockStreams, mockProgram, runCommand } from '../src/test';
+import InstallCommand from './__mocks__/InstallCommand';
 
 jest.mock('execa');
 jest.mock('term-size');

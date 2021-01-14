@@ -1,4 +1,4 @@
-import { Arg, Config, Command, GlobalOptions } from '../../src';
+import { Arg, Command, Config, GlobalOptions } from '../../src';
 
 export interface AllOptions extends GlobalOptions {
   flag: boolean;

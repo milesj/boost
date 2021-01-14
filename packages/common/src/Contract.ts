@@ -1,4 +1,4 @@
-import optimal, { predicates, Blueprint, Predicates } from 'optimal';
+import optimal, { Blueprint, Predicates, predicates } from 'optimal';
 import { Optionable } from './types';
 
 export default abstract class Contract<T extends object = {}> implements Optionable<T> {

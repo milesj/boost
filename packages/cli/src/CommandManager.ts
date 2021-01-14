@@ -1,21 +1,21 @@
 /* eslint-disable no-dupe-class-members */
 
-import { PrimitiveType, ArgList } from '@boost/args';
+import { ArgList, PrimitiveType } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
 import CLIError from './CLIError';
 import createProxyCommand from './helpers/createProxyCommand';
 import {
+  Commandable,
   CommandMetadata,
   CommandPath,
-  Commandable,
   ProxyCommandConfig,
   ProxyCommandRunner,
 } from './types';
 
-export default abstract class CommandManager<Options extends object = {}> extends Contract<
-  Options
-> {
+export default abstract class CommandManager<
+  Options extends object = {}
+> extends Contract<Options> {
   readonly onAfterRegister = new Event<[CommandPath, Commandable]>('after-register');
 
   readonly onBeforeRegister = new Event<[CommandPath, Commandable]>('before-register');

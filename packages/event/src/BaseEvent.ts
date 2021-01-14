@@ -1,6 +1,6 @@
-import EventError from './EventError';
-import debug from './debug';
 import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
+import debug from './debug';
+import EventError from './EventError';
 import { Listener, Unlistener, WildstarScope } from './types';
 
 export default abstract class BaseEvent<
@@ -50,7 +50,7 @@ export default abstract class BaseEvent<
    * Return a list of all scopes with listeners.
    */
   getScopes(): (Scope | WildstarScope)[] {
-    return Array.from(this.listeners.keys()) as (Scope | WildstarScope)[];
+    return Array.from(this.listeners.keys())!;
   }
 
   /**

@@ -5,8 +5,8 @@ import vm from 'vm';
 import { Path } from '@boost/common';
 import { env } from '@boost/internal';
 import supportsBabel from './supports/babel';
-import supportsTypeScript from './supports/typescript';
 import supportsDynamicImport from './supports/import';
+import supportsTypeScript from './supports/typescript';
 
 async function transformWithBabel(code: string, path: Path): Promise<string> {
   const babel = require('@babel/core') as typeof import('@babel/core');

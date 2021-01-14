@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
 
-import { isObject, Blueprint, optimal, Contract, Predicates } from '@boost/common';
-import { Debugger, createDebugger } from '@boost/debug';
+import { Blueprint, Contract, isObject, optimal, Predicates } from '@boost/common';
+import { createDebugger, Debugger } from '@boost/debug';
 import mergeArray from './helpers/mergeArray';
 import mergeObject from './helpers/mergeObject';
-import { Handler, ConfigFile, ProcessorOptions } from './types';
+import { ConfigFile, Handler, ProcessorOptions } from './types';
 
 export default class Processor<T extends object> extends Contract<ProcessorOptions> {
   protected readonly debug: Debugger;
@@ -79,7 +79,6 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
         } else if (isObject(prevValue) && isObject(nextValue)) {
           config[name] = mergeObject(prevValue, nextValue);
         } else if (Array.isArray(prevValue) && Array.isArray(nextValue)) {
-          // @ts-expect-error This type becomes rather complex
           config[name] = mergeArray(prevValue, nextValue);
         } else {
           config[name] = nextValue;

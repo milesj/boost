@@ -1,10 +1,10 @@
 import { vol } from 'memfs';
 import { Blueprint, Predicates } from '@boost/common';
 import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
-import { ExtType, ExtendsSetting } from '../src/types';
-import { stubPath } from './helpers';
+import { ExtendsSetting, ExtType } from '../src/types';
 import { configFileTreeAllTypes, rootConfigJSON } from './__fixtures__/config-files-fs';
 import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
+import { stubPath } from './helpers';
 
 jest.mock('fs', () => jest.requireActual('memfs').vol);
 

@@ -1,14 +1,14 @@
-import { predicates, Blueprint, Path } from '@boost/common';
-import Processor from '../src/Processor';
-import { ConfigFile, PluginsSetting, ExtendsSetting, OverridesSetting } from '../src/types';
-import {
-  createExtendsPredicate,
-  createPluginsPredicate,
-  createOverridesPredicate,
-} from '../src/predicates';
-import overwrite from '../src/helpers/overwrite';
+import { Blueprint, Path, predicates } from '@boost/common';
 import mergeExtends from '../src/helpers/mergeExtends';
 import mergePlugins from '../src/helpers/mergePlugins';
+import overwrite from '../src/helpers/overwrite';
+import {
+  createExtendsPredicate,
+  createOverridesPredicate,
+  createPluginsPredicate,
+} from '../src/predicates';
+import Processor from '../src/Processor';
+import { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
 
 describe('Processor', () => {
   interface ConfigShape {

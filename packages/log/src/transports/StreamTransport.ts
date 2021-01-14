@@ -1,4 +1,4 @@
-import { Predicates, Blueprint } from '@boost/common';
+import { Blueprint, Predicates } from '@boost/common';
 import Transport from '../Transport';
 import { TransportOptions, Writable } from '../types';
 

@@ -1,11 +1,11 @@
 import ansiEscapes from 'ansi-escapes';
 import ansiRegex from 'ansi-regex';
-import slice from 'slice-ansi';
-import strip from 'strip-ansi';
-import wrap from 'wrap-ansi';
-import stringWidth from 'string-width';
 import cliTruncate from 'cli-truncate';
+import slice from 'slice-ansi';
+import stringWidth from 'string-width';
+import strip from 'strip-ansi';
 import supportsHyperlinks from 'supports-hyperlinks';
+import wrap from 'wrap-ansi';
 
 export const ANSI_REGEX = ansiRegex();
 

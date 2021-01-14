@@ -1,7 +1,7 @@
+import { STATUS_RUNNING } from '../src/constants';
 import Context from '../src/Context';
 import Task from '../src/Task';
 import WorkUnit from '../src/WorkUnit';
-import { STATUS_RUNNING } from '../src/constants';
 
 describe('Work', () => {
   let context: Context;

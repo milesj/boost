@@ -15,11 +15,17 @@
     "ink"
   ],
   "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "types": "./dts/index.d.ts",
   "engines": {
-    "node": ">=10.17.0"
+    "node": ">=10.3.0",
+    "npm": ">=6.1.0"
   },
-  "repository": "https://github.com/milesj/boost/tree/master/packages/cli",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/cli"
+  },
+  "author": "Miles Johnson",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -45,5 +51,12 @@
     "ink": "^3.0.8",
     "ink-testing-library": "^2.1.0",
     "react": "^16.14.0"
+  },
+  "packemon": {
+    "inputs": {
+      "index": "src/index.ts",
+      "test": "src/test.ts"
+    },
+    "platform": "node"
   }
 }

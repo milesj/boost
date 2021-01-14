@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useFocus } from 'ink';
 import { isObject } from '@boost/common';
 import { figures } from '@boost/terminal';
+import { useListNavigation } from '../hooks';
+import { DividerRow } from './internal/DividerRow';
+import { OptionRow } from './internal/OptionRow';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
-import { DividerRow } from './internal/DividerRow';
-import { OptionRow } from './internal/OptionRow';
-import { useListNavigation } from '../hooks';
 
 export type SelectOptionLike<T> =
   | { label: NonNullable<React.ReactNode>; value: T }

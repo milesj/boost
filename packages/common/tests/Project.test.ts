@@ -1,5 +1,5 @@
 import { getFixturePath } from '@boost/test-utils';
-import { Project, Path } from '../src';
+import { Path, Project } from '../src';
 
 describe('Project', () => {
   describe('getProject()', () => {

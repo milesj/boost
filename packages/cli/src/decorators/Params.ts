@@ -1,4 +1,4 @@
-import { MapParamConfig, PrimitiveType, ParamConfig } from '@boost/args';
+import { MapParamConfig, ParamConfig, PrimitiveType } from '@boost/args';
 import registerParams from '../metadata/registerParams';
 
 export default function Params<T extends PrimitiveType[] = string[]>(

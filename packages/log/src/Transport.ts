@@ -1,8 +1,8 @@
 import os from 'os';
-import { Contract, Predicates, Blueprint } from '@boost/common';
-import { Transportable, TransportOptions, LogItem, LogLevel, Formatter } from './types';
-import * as formats from './formats';
+import { Blueprint, Contract, Predicates } from '@boost/common';
 import { LOG_LEVELS } from './constants';
+import * as formats from './formats';
+import { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from './types';
 
 export default abstract class Transport<Options extends TransportOptions>
   extends Contract<Options>

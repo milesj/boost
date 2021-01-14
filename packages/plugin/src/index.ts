@@ -3,13 +3,13 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import Registry from './Registry';
 import Plugin from './Plugin';
-import PluginError from './PluginError';
 import type { PluginErrorCode } from './PluginError';
+import PluginError from './PluginError';
+import Registry from './Registry';
 
 export * from './constants';
 export * from './types';
 
-export { Registry, Plugin, PluginError };
+export { Plugin, PluginError, Registry };
 export type { PluginErrorCode };

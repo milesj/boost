@@ -1,7 +1,7 @@
 import { BackendModule, Resource, ResourceKey } from 'i18next';
-import { parseFile, Contract, Path, Predicates, Blueprint } from '@boost/common';
+import { Blueprint, Contract, parseFile, Path, Predicates } from '@boost/common';
 import TranslateError from './TranslateError';
-import { Locale, Format } from './types';
+import { Format, Locale } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
   js: ['js'],

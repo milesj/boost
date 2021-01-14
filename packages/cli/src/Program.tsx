@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink';
+import levenary from 'levenary';
 import {
   ArgList,
   Arguments,
@@ -10,46 +11,45 @@ import {
   PrimitiveType,
   ValidationError,
 } from '@boost/args';
-import { ExitError, Predicates, Blueprint } from '@boost/common';
+import { Blueprint, ExitError, Predicates } from '@boost/common';
 import { Event } from '@boost/event';
-import { LoggerFunction, createLogger, formats, StreamTransport } from '@boost/log';
 import { env } from '@boost/internal';
-import levenary from 'levenary';
+import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
 import CLIError from './CLIError';
 import Command from './Command';
 import CommandManager from './CommandManager';
-import LogBuffer from './LogBuffer';
 import { Failure } from './components/Failure';
 import { Help } from './components/Help';
 import { IndexHelp } from './components/IndexHelp';
 import { Wrapper } from './components/internal/Wrapper';
+import {
+  DELIMITER,
+  EXIT_FAIL,
+  EXIT_PASS,
+  INTERNAL_OPTIONS,
+  INTERNAL_PARAMS,
+  INTERNAL_PROGRAM,
+  VERSION_FORMAT,
+} from './constants';
 import isArgvSize from './helpers/isArgvSize';
-import patchConsole from './helpers/patchConsole';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
+import patchConsole from './helpers/patchConsole';
+import LogBuffer from './LogBuffer';
 import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
 import msg from './translate';
 import {
-  VERSION_FORMAT,
-  EXIT_PASS,
-  EXIT_FAIL,
-  INTERNAL_OPTIONS,
-  INTERNAL_PARAMS,
-  INTERNAL_PROGRAM,
-  DELIMITER,
-} from './constants';
-import {
+  Categories,
   Commandable,
   CommandPath,
   ExitCode,
   GlobalOptions,
+  Middleware,
+  MiddlewareArguments,
+  MiddlewareCallback,
   ProgramOptions,
   ProgramStreams,
   RunResult,
-  Middleware,
-  MiddlewareCallback,
-  MiddlewareArguments,
-  Categories,
 } from './types';
 
 export default class Program extends CommandManager<ProgramOptions> {

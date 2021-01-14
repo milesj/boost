@@ -1,6 +1,6 @@
-import { Predicates, Blueprint } from '@boost/common';
-import FileTransport, { FileTransportOptions } from './FileTransport';
+import { Blueprint, Predicates } from '@boost/common';
 import { Rotation } from '../types';
+import FileTransport, { FileTransportOptions } from './FileTransport';
 
 const DAYS_IN_WEEK = 7;
 

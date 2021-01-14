@@ -1,4 +1,4 @@
-import { Path, PackageStructure, ModuleName } from '@boost/common';
+import { ModuleName, PackageStructure, Path } from '@boost/common';
 
 export type ExtType = 'js' | 'cjs' | 'mjs' | 'json' | 'json5' | 'ts' | 'yaml' | 'yml';
 

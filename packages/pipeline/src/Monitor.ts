@@ -1,4 +1,4 @@
-import { Event, BailEvent } from '@boost/event';
+import { BailEvent, Event } from '@boost/event';
 import Routine from './Routine';
 import { AnyPipeline, AnyWorkUnit } from './types';
 

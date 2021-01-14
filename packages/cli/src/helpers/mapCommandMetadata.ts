@@ -1,4 +1,4 @@
-import { CommandMetadataMap, Commandable } from '../types';
+import { Commandable, CommandMetadataMap } from '../types';
 
 export default function mapCommandMetadata(commands: { [path: string]: Commandable }) {
   const map: CommandMetadataMap = {};

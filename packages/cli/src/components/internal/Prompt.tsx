@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Box, useInput, Key, useFocusManager } from 'ink';
+import { Box, Key, useFocusManager, useInput } from 'ink';
 import { figures } from '@boost/terminal';
-import { Label } from './Label';
-import { Style } from '../Style';
 import { useIsMounted } from '../../hooks/useIsMounted';
+import { Style } from '../Style';
+import { Label } from './Label';
 
 export type KeyInput = Key;
 

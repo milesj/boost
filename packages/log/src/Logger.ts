@@ -1,11 +1,11 @@
 import os from 'os';
 import util from 'util';
-import { Contract, Predicates, Blueprint } from '@boost/common';
+import { Blueprint, Contract, Predicates } from '@boost/common';
 import { env } from '@boost/internal';
-import ConsoleTransport from './transports/ConsoleTransport';
-import Transport from './Transport';
-import debug from './debug';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
+import debug from './debug';
+import Transport from './Transport';
+import ConsoleTransport from './transports/ConsoleTransport';
 import { LoggerOptions, LogLevel, LogMetadata } from './types';
 
 export default class Logger extends Contract<LoggerOptions> {

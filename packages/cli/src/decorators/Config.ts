@@ -1,4 +1,4 @@
-import { PartialConfig, CommandStaticConfig } from '../types';
+import { CommandStaticConfig, PartialConfig } from '../types';
 
 export default function Config(
   path: string,

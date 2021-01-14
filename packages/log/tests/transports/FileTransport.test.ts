@@ -3,11 +3,11 @@ import { createTempFixtureFolder } from '@boost/test-utils';
 import FileTransport from '../../src/transports/FileTransport';
 import {
   closeStream,
-  readFile,
   existsFile,
+  readFile,
   sizeFile,
-  writeFile,
   wait as waitForWrite,
+  writeFile,
 } from './helpers';
 
 describe('FileTransport', () => {

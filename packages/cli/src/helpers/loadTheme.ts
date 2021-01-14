@@ -1,8 +1,8 @@
 import { requireModule } from '@boost/common';
 import { env } from '@boost/internal';
 import { style } from '@boost/terminal';
-import { ThemePalette } from '../types';
 import CLIError from '../CLIError';
+import { ThemePalette } from '../types';
 
 const loadedThemes = new Map<string, ThemePalette>();
 

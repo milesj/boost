@@ -1,10 +1,10 @@
 import {
-  OptionMap,
   OptionConfig,
-  ValueType,
-  ParserOptions,
+  OptionMap,
   ParamConfig,
+  ParserOptions,
   PrimitiveType,
+  ValueType,
 } from '../types';
 
 export default function mapParserOptions<O extends object, P extends PrimitiveType[]>(

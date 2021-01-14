@@ -1,7 +1,7 @@
 import { OptionConfig } from '@boost/args';
 import CLIError from '../CLIError';
-import getConstructor from './getConstructor';
 import { RESERVED_OPTIONS } from '../constants';
+import getConstructor from './getConstructor';
 
 export default function registerOption<O extends OptionConfig>(
   target: Object,

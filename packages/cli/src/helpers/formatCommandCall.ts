@@ -1,5 +1,5 @@
-import formatType from './formatType';
 import { CommandConfig } from '../types';
+import formatType from './formatType';
 
 export default function formatCommandCall(name: string, metadata: CommandConfig): string {
   let output = name;

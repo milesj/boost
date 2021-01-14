@@ -1,7 +1,7 @@
 import PipelineError from './PipelineError';
 import Task from './Task';
-import WorkUnit from './WorkUnit';
 import { Action } from './types';
+import WorkUnit from './WorkUnit';
 
 /**
  * Create or return an executable work unit. Supports the following patterns:

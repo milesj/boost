@@ -1,7 +1,7 @@
+import AggregatedPipeline from '../src/AggregatedPipeline';
 import Context from '../src/Context';
 import Routine from '../src/Routine';
 import Task from '../src/Task';
-import AggregatedPipeline from '../src/AggregatedPipeline';
 import { AggregatedResult } from '../src/types';
 
 describe('AggregatedPipeline', () => {

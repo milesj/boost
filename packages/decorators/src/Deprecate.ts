@@ -2,8 +2,8 @@
 
 import isClass from './helpers/isClass';
 import isMethod from './helpers/isMethod';
-import isProperty from './helpers/isProperty';
 import isParam from './helpers/isParam';
+import isProperty from './helpers/isProperty';
 
 export default function Deprecate(message?: string) {
   return (target: Function | Object, property?: string | symbol, descriptor?: unknown): void => {

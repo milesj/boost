@@ -11,11 +11,17 @@
     "architecture"
   ],
   "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "types": "./dts/index.d.ts",
   "engines": {
-    "node": ">=10.17.0"
+    "node": ">=10.3.0",
+    "npm": ">=6.1.0"
   },
-  "repository": "https://github.com/milesj/boost/tree/master/packages/plugin",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/plugin"
+  },
+  "author": "Miles Johnson",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -31,5 +37,8 @@
   "devDependencies": {
     "@boost/test-utils": "^2.1.1",
     "@types/pluralize": "^0.0.29"
+  },
+  "packemon": {
+    "platform": "node"
   }
 }

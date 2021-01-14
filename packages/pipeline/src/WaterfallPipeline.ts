@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
 
 import Context from './Context';
-import SerialPipeline from './SerialPipeline';
 import debug from './debug';
+import SerialPipeline from './SerialPipeline';
 
 export default class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
   {},

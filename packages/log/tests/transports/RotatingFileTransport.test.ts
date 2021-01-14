@@ -1,7 +1,7 @@
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import RotatingFileTransport from '../../src/transports/RotatingFileTransport';
-import { closeStream, readFile, existsFile, wait as waitForWrite } from './helpers';
+import { closeStream, existsFile, readFile, wait as waitForWrite } from './helpers';
 
 describe('RotatingFileTransport', () => {
   let fixtureDir: string;

@@ -1,29 +1,29 @@
+import kebabCase from 'lodash/kebabCase';
+import upperFirst from 'lodash/upperFirst';
+import pluralize from 'pluralize';
 import {
-  Contract,
-  Predicates,
-  isObject,
-  ModuleName,
-  MODULE_NAME_PATTERN,
   Blueprint,
+  Contract,
   FilePath,
+  isObject,
+  MODULE_NAME_PATTERN,
+  ModuleName,
+  Predicates,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { color } from '@boost/internal';
-import pluralize from 'pluralize';
-import kebabCase from 'lodash/kebabCase';
-import upperFirst from 'lodash/upperFirst';
+import { DEFAULT_PRIORITY } from './constants';
+import debug from './debug';
 import Loader from './Loader';
 import PluginError from './PluginError';
-import debug from './debug';
-import { DEFAULT_PRIORITY } from './constants';
 import {
-  RegistryOptions,
-  Pluggable,
-  Registration,
-  Setting,
-  RegisterOptions,
   Callback,
+  Pluggable,
+  RegisterOptions,
+  Registration,
+  RegistryOptions,
+  Setting,
 } from './types';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<

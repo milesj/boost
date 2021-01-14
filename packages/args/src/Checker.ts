@@ -1,17 +1,17 @@
 import levenary from 'levenary';
 import ArgsError, { ArgsErrorCode } from './ArgsError';
-import ParseError from './ParseError';
-import ValidationError from './ValidationError';
-import {
-  OptionConfig,
-  ValueType,
-  LongOptionName,
-  ShortOptionName,
-  AliasMap,
-  ParamConfig,
-  OptionConfigMap,
-} from './types';
 import { COMMAND_FORMAT } from './constants';
+import ParseError from './ParseError';
+import {
+  AliasMap,
+  LongOptionName,
+  OptionConfig,
+  OptionConfigMap,
+  ParamConfig,
+  ShortOptionName,
+  ValueType,
+} from './types';
+import ValidationError from './ValidationError';
 
 export default class Checker {
   arg: string = '';

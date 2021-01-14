@@ -1,4 +1,4 @@
-import { Predicates, Blueprint } from '@boost/common';
+import { Blueprint, Predicates } from '@boost/common';
 import WorkUnit from './WorkUnit';
 
 export default class Task<Input = unknown, Output = Input> extends WorkUnit<{}, Input, Output> {

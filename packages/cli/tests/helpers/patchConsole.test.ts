@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import debug from 'debug';
-import { createLogger, Loggable, StreamTransport, formats } from '@boost/log';
-import LogBuffer from '../../src/LogBuffer';
+import { createLogger, formats, Loggable, StreamTransport } from '@boost/log';
 import patchConsole from '../../src/helpers/patchConsole';
+import LogBuffer from '../../src/LogBuffer';
 import { mockStreams } from '../../src/test';
 
 describe('patchConsole()', () => {
@@ -141,6 +141,7 @@ describe('patchConsole()', () => {
 
     outBuffer.on(spy);
     console.time('foo');
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
     console.timeLog('foo');
 
     expect(spy).toHaveBeenCalledWith(expect.stringMatching(/foo: \d+/u));

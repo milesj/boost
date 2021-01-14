@@ -2,8 +2,9 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "rollup --config",
-    "clean": "rm -rf packages/*/{lib,esm,*.tsbuildinfo}",
+    "build": "packemon build --addEngines",
+    "pack": "NODE_ENV=production packemon pack --addEngines --declaration=standard",
+    "clean": "packemon clean",
     "coverage": "yarn run jest --coverage",
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
@@ -14,19 +15,17 @@
     "test:cli": "node ./packages/cli/examples/bin.js",
     "posttest": "yarn run lint",
     "type": "beemo typescript --reference-workspaces --build --decorators",
-    "prerelease": "node scripts/checkReleaseRequirements.js && yarn run clean && yarn run build && yarn test",
+    "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
   "engines": {
-    "node": ">=10.17.0"
+    "node": ">=10.3.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.14.1",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-node-resolve": "^11.0.1",
+    "@milesj/build-tools": "^2.16.1",
     "@types/babel__core": "^7.1.12",
     "@types/exit": "^0.1.31",
-    "@types/fs-extra": "^9.0.5",
+    "@types/fs-extra": "^9.0.6",
     "@types/json5": "^0.0.30",
     "@types/lodash": "^4.14.165",
     "@types/minimatch": "^3.0.3",
@@ -37,9 +36,7 @@
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^2.0.0",
     "fs-extra": "^9.0.1",
-    "lerna": "^3.22.1",
-    "rollup": "^2.35.1",
-    "rollup-plugin-node-externals": "^2.2.0"
+    "lerna": "^3.22.1"
   },
   "publishConfig": {
     "access": "public"
@@ -63,6 +60,7 @@
       "prettier",
       {
         "driver": "typescript",
+        "buildFolder": "dts",
         "declarationOnly": true
       }
     ],

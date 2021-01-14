@@ -1,13 +1,13 @@
 import execa from 'execa';
 import { Predicates } from '@boost/common';
-import Routine from '../src/Routine';
-import Context from '../src/Context';
 import AggregatedPipeline from '../src/AggregatedPipeline';
 import ConcurrentPipeline from '../src/ConcurrentPipeline';
-import PooledPipeline from '../src/PooledPipeline';
-import WaterfallPipeline from '../src/WaterfallPipeline';
-import Task from '../src/Task';
 import { STATUS_RUNNING } from '../src/constants';
+import Context from '../src/Context';
+import PooledPipeline from '../src/PooledPipeline';
+import Routine from '../src/Routine';
+import Task from '../src/Task';
+import WaterfallPipeline from '../src/WaterfallPipeline';
 
 jest.mock('execa');
 

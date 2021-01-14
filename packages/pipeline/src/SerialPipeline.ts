@@ -1,9 +1,9 @@
 import { Blueprint, Predicates } from '@boost/common';
 import Context from './Context';
-import Pipeline from './Pipeline';
-import WorkUnit from './WorkUnit';
 import createWorkUnit from './createWorkUnit';
+import Pipeline from './Pipeline';
 import { Action } from './types';
+import WorkUnit from './WorkUnit';
 
 export default abstract class SerialPipeline<
   Options extends object,

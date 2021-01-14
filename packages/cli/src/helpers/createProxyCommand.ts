@@ -1,5 +1,6 @@
 import { PrimitiveType } from '@boost/args';
 import Command from '../Command';
+import { INTERNAL_OPTIONS, INTERNAL_PARAMS } from '../constants';
 import Config from '../decorators/Config';
 import {
   CommandPath,
@@ -8,7 +9,6 @@ import {
   ProxyCommandRunner,
   RunResult,
 } from '../types';
-import { INTERNAL_OPTIONS, INTERNAL_PARAMS } from '../constants';
 
 export default function createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
   path: CommandPath,

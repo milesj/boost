@@ -1,5 +1,5 @@
 import Scope from '../Scope';
-import { OptionConfig, OptionMap, LongOptionName } from '../types';
+import { LongOptionName, OptionConfig, OptionMap } from '../types';
 
 function camelCase(value: string): string {
   return value.replace(/-([a-z0-9])/giu, (match, char) => char.toUpperCase());
