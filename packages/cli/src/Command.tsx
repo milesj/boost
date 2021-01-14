@@ -129,6 +129,25 @@ export default abstract class Command<
   }
 
   /**
+   * Create a React element based on the Help component.
+   */
+  createHelp(): React.ReactElement {
+    const metadata = this.getMetadata();
+
+    return (
+      <Help
+        categories={metadata.categories}
+        config={metadata}
+        commands={mapCommandMetadata(metadata.commands)}
+        delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
+        header={metadata.path}
+        options={metadata.options}
+        params={metadata.params}
+      />
+    );
+  }
+
+  /**
    * Execute a system native command with the given arguments
    * and pass the results through a promise. This does *not* execute Boost CLI
    * commands, use `runProgram()` instead.
@@ -222,22 +241,10 @@ export default abstract class Command<
   }
 
   /**
-   * Render a help menu for the current command.
+   * Render a React element with Ink and output to the configured streams.
    */
-  renderHelp(): React.ReactElement {
-    const metadata = this.getMetadata();
-
-    return (
-      <Help
-        categories={metadata.categories}
-        config={metadata}
-        commands={mapCommandMetadata(metadata.commands)}
-        delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
-        header={metadata.path}
-        options={metadata.options}
-        params={metadata.params}
-      />
-    );
+  async render(element: React.ReactElement) {
+    return this.getProgram().renderElement(element);
   }
 
   /**
@@ -274,7 +281,7 @@ export default abstract class Command<
   abstract run(...params: P): RunResult | Promise<RunResult>;
 
   /**
-   * Return the program instance of fail.
+   * Return the program instance or fail.
    */
   private getProgram(): Program {
     const program = this[INTERNAL_PROGRAM];

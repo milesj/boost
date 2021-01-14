@@ -130,10 +130,11 @@ export interface CommandMetadataMap {
 }
 
 export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
+  createHelp: () => string | React.ReactElement;
   getMetadata: () => CommandMetadata;
   getParserOptions: () => ParserOptions<O, P>;
   getPath: () => CommandPath;
-  renderHelp: () => string | React.ReactElement;
+  render: (element: React.ReactElement) => Promise<void>;
   run: (...params: P) => RunResult | Promise<RunResult>;
 }
 
