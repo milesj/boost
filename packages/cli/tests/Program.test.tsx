@@ -86,9 +86,9 @@ describe('<Program />', () => {
   let stdout: MockWriteStream;
   let stdin: MockReadStream;
 
-  beforeEach(() => {
-    stderr = new MockWriteStream();
-    stdout = new MockWriteStream();
+  function createProgram(append?: boolean) {
+    stderr = new MockWriteStream(append);
+    stdout = new MockWriteStream(append);
     stdin = new MockReadStream();
     program = new Program(
       {
@@ -102,6 +102,10 @@ describe('<Program />', () => {
         stdin: (stdin as unknown) as NodeJS.ReadStream,
       },
     );
+  }
+
+  beforeEach(() => {
+    createProgram();
   });
 
   it('errors if bin is not kebab case', () => {
@@ -1597,6 +1601,53 @@ describe('<Program />', () => {
       const { output } = await runProgram(program, ['task']);
 
       expect(output).toMatchSnapshot();
+    });
+  });
+
+  describe('components', () => {
+    function Comp({ children }: { children: string }) {
+      return (
+        <Box>
+          <Text>{children}</Text>
+        </Box>
+      );
+    }
+
+    class CompCommand extends Command {
+      static description = 'Description';
+
+      static path = 'comp';
+
+      static options = {};
+
+      static params = [];
+
+      async run() {
+        this.log('Before');
+
+        await this.render(<Comp>Foo</Comp>);
+
+        this.log.info('Middle');
+
+        await this.render(<Comp>Bar</Comp>);
+
+        this.log.error('After');
+
+        return <Comp>Baz</Comp>;
+      }
+    }
+
+    beforeEach(() => {
+      createProgram(true);
+    });
+
+    it('renders and outputs multiple component renders', async () => {
+      program.default(new CompCommand());
+
+      const { code, output } = await runProgram(program, ['comp']);
+
+      expect(output).toMatchSnapshot();
+      expect(code).toBe(0);
     });
   });
 });

@@ -31,7 +31,6 @@ handling ANSI escape sequences and terminal widths can be tedious and complicate
 >
   <TabItem value="yarn">
 
-
 ```bash
 yarn add @boost/cli react ink
 ```
@@ -39,14 +38,12 @@ yarn add @boost/cli react ink
   </TabItem>
   <TabItem value="npm">
 
-
 ```bash
 npm install @boost/cli react ink
 ```
 
   </TabItem>
 </Tabs>
-
 
 ## Environment variables
 
@@ -319,7 +316,6 @@ define static class properties of the same name!
 >
   <TabItem value="decl">
 
-
 ```ts
 import { Command, Config } from '@boost/cli';
 
@@ -332,7 +328,6 @@ export default class BuildCommand extends Command {}
 
   </TabItem>
   <TabItem value="imp">
-
 
 ```ts
 import { Command } from '@boost/cli';
@@ -350,7 +345,6 @@ export default class BuildCommand extends Command {
 
   </TabItem>
 </Tabs>
-
 
 ![Command example](/img/cli/command.png)
 
@@ -382,7 +376,6 @@ easier type safety, the `Options` collection type can be used to type the static
   ]}
 >
   <TabItem value="decl">
-
 
 ```ts
 import { Command, Arg, GlobalOptions } from '@boost/cli';
@@ -421,7 +414,6 @@ export default class CustomCommand extends Command<CustomOptions> {
 
   </TabItem>
   <TabItem value="imp">
-
 
 ```ts
 import { Command, GlobalOptions, Options } from '@boost/cli';
@@ -488,7 +480,6 @@ export default class CustomCommand extends Command<CustomOptions> {
   </TabItem>
 </Tabs>
 
-
 ![Options example](/img/cli/options.png)
 
 #### Unknown options
@@ -507,7 +498,6 @@ will be set as a string object to the `Command#unknown` class property.
 >
   <TabItem value="decl">
 
-
 ```ts
 import { Command, GlobalOptions, Config } from '@boost/cli';
 
@@ -522,7 +512,6 @@ export default class CustomCommand extends Command<GlobalOptions> {
 
   </TabItem>
   <TabItem value="imp">
-
 
 ```ts
 import { Command, GlobalOptions } from '@boost/cli';
@@ -543,7 +532,6 @@ export default class CustomCommand extends Command<GlobalOptions> {
 
   </TabItem>
 </Tabs>
-
 
 ![Unknown option example](/img/cli/unknown-option.png)
 
@@ -583,7 +571,6 @@ type safety, the `Params` collection type can be used to type the static propert
 >
   <TabItem value="decl">
 
-
 ```ts
 import { Command, Arg, GlobalOptions } from '@boost/cli';
 
@@ -618,7 +605,6 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
   </TabItem>
   <TabItem value="imp">
 
-
 ```ts
 import { Command, Params, GlobalOptions } from '@boost/cli';
 
@@ -654,7 +640,6 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
   </TabItem>
 </Tabs>
 
-
 ![Params example](/img/cli/params.png)
 
 #### Variadic params
@@ -675,7 +660,6 @@ Using the example above, it would look like the following.
 >
   <TabItem value="decl">
 
-
 ```ts
 import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
 
@@ -694,7 +678,6 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
   </TabItem>
   <TabItem value="imp">
-
 
 ```ts
 import { Command, Params, GlobalOptions } from '@boost/cli';
@@ -720,7 +703,6 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
   </TabItem>
 </Tabs>
-
 
 ![Variadic params example](/img/cli/variadic-params.png)
 
@@ -767,11 +749,12 @@ Sub-commands can now be executed on the command line by passing their full path,
 ### Rendering components
 
 This chapter assumes you have knowledge of [React][react], JSX/TSX, and [Ink][ink]. If you do not,
-it's highly encouraged to study those topics, but React is not necessarily a requirement (can use
-[logging](#logging)). With that being said, return React elements from `Command#run()` to render the
-component output to the CLI.
+it's highly encouraged to study those topics, but building CLIs with React is not necessarily a
+requirement as you can use [logging](#logging) instead.
 
-For a quick demonstration, let's implement a component that writes to a file asynchronously.
+With that being said, components can be rendered from a command by returning a React element from
+`Command#run()`, or by calling the `Command#render()` method. For a quick demonstration, let's
+implement a component that writes to a file asynchronously.
 
 ```tsx
 import fs from 'fs';
@@ -833,10 +816,16 @@ export default class ConfigCommand extends Command {
   async run(path: string) {
     const data = await loadConfigFromSomeSource();
 
+    await this.render(<WriteConfig data={data} path={path} />);
+
+    // Or...
     return <WriteConfig data={data} path={path} />;
   }
 }
 ```
+
+Using the `render()` method allows for multiple and or different components to be rendered within
+the same run cycle. Returning a component will only use 1. However, both can be used together!
 
 ### Shorthand registration
 
@@ -962,7 +951,6 @@ program.categories({
 >
   <TabItem value="decl">
 
-
 ```ts
 import { Command, Config } from '@boost/cli';
 
@@ -982,7 +970,6 @@ export default class CustomCommand extends Command {
 
   </TabItem>
   <TabItem value="imp">
-
 
 ```ts
 import { Command, Categories } from '@boost/cli';
@@ -1007,7 +994,6 @@ export default class CustomCommand extends Command {
   </TabItem>
 </Tabs>
 
-
 Categories are sorted by weight first, then alphabetical second, so define `weight` when you want
 strict control of the category order. Uncategorized items have a weight of `0`, and the built-in
 globals have a weight of `100`.
@@ -1024,7 +1010,6 @@ using the `category` setting! Here's an example using decorators.
   ]}
 >
   <TabItem value="decl">
-
 
 ```ts
 import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
@@ -1044,7 +1029,6 @@ export default class BuildCommand extends Command<BuildOptions> {
 
   </TabItem>
   <TabItem value="imp">
-
 
 ```ts
 import { Command, Options, GlobalOptions } from '@boost/cli';
@@ -1076,7 +1060,6 @@ export default class BuildCommand extends Command<BuildOptions> {
 
   </TabItem>
 </Tabs>
-
 
 ## Logging
 

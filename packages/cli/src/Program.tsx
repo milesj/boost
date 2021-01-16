@@ -231,6 +231,62 @@ export default class Program extends CommandManager<ProgramOptions> {
   }
 
   /**
+   * Render a React element with Ink and output to the configured streams.
+   */
+  async renderElement(element: React.ReactElement) {
+    // Do not allow nested renders
+    // istanbul ignore next
+    if (this.rendering) {
+      throw new CLIError('REACT_RENDER_NO_NESTED');
+    } else {
+      this.rendering = true;
+    }
+
+    const { stdin, stdout, stderr } = this.streams;
+    const unpatch = patchConsole(this.logger, this.errBuffer);
+
+    try {
+      this.onBeforeRender.emit([element]);
+
+      const output = await render(
+        <Wrapper
+          errBuffer={this.errBuffer}
+          exit={this.exit}
+          log={this.logger}
+          outBuffer={this.outBuffer}
+          program={this.options}
+        >
+          {element}
+        </Wrapper>,
+        {
+          debug: process.env.NODE_ENV === 'test',
+          exitOnCtrlC: true,
+          experimental: true,
+          patchConsole: false,
+          stderr,
+          stdin,
+          stdout,
+        },
+      );
+
+      // This never resolves while testing
+      // istanbul ignore next
+      if (!env('CLI_TEST_ONLY')) {
+        await output.waitUntilExit();
+      }
+
+      this.onAfterRender.emit([]);
+    } catch (error) {
+      // Never runs while testing
+      // istanbul ignore next
+      this.exit(error);
+    } finally {
+      this.rendering = false;
+      unpatch();
+    }
+  }
+
+  /**
    * Run the program in the following steps:
    *  - Apply middleware to argv list.
    *  - Parse argv into an args object (of options, params, etc).
@@ -279,7 +335,7 @@ export default class Program extends CommandManager<ProgramOptions> {
   protected createIndex(): React.ReactElement {
     if (this.standAlone) {
       return (
-        <IndexHelp {...this.options}>{this.getCommand(this.standAlone)!.renderHelp()}</IndexHelp>
+        <IndexHelp {...this.options}>{this.getCommand(this.standAlone)!.createHelp()}</IndexHelp>
       );
     }
 
@@ -337,63 +393,15 @@ export default class Program extends CommandManager<ProgramOptions> {
    * If a React component, render with Ink and wait for it to finish.
    */
   protected async render(result: RunResult, exitCode: ExitCode = EXIT_PASS): Promise<ExitCode> {
-    const { stdin, stdout, stderr } = this.streams;
-
     // For simple strings, ignore react and the buffer
     if (typeof result === 'string') {
-      stdout.write(`${result}\n`);
+      this.streams.stdout.write(`${result}\n`);
 
       return exitCode;
     }
 
-    // Do not allow this
-    // istanbul ignore next
-    if (this.rendering) {
-      throw new CLIError('REACT_RENDER_NO_NESTED');
-    } else {
-      this.rendering = true;
-    }
-
-    const unpatch = patchConsole(this.logger, this.errBuffer);
-
-    try {
-      this.onBeforeRender.emit([result]);
-
-      const output = await render(
-        <Wrapper
-          errBuffer={this.errBuffer}
-          exit={this.exit}
-          log={this.logger}
-          outBuffer={this.outBuffer}
-          program={this.options}
-        >
-          {result || null}
-        </Wrapper>,
-        {
-          debug: process.env.NODE_ENV === 'test',
-          exitOnCtrlC: true,
-          experimental: true,
-          patchConsole: false,
-          stderr,
-          stdin,
-          stdout,
-        },
-      );
-
-      // This never resolves while testing
-      // istanbul ignore next
-      if (!env('CLI_TEST_ONLY')) {
-        await output.waitUntilExit();
-      }
-
-      this.onAfterRender.emit([]);
-    } catch (error) {
-      // Never runs while testing
-      // istanbul ignore next
-      this.exit(error);
-    } finally {
-      this.rendering = false;
-      unpatch();
+    if (result) {
+      await this.renderElement(result);
     }
 
     return exitCode;
@@ -474,7 +482,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     if (options.help) {
       this.onHelp.emit([path]);
 
-      return this.render(command.renderHelp());
+      return this.render(command.createHelp());
     }
 
     // Display errors

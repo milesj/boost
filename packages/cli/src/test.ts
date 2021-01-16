@@ -48,11 +48,11 @@ export class MockWriteStream {
   off() {}
 }
 
-export function mockStreams(): ProgramStreams {
+export function mockStreams(append?: boolean): ProgramStreams {
   return ({
-    stderr: new MockWriteStream(),
+    stderr: new MockWriteStream(append),
     stdin: new MockReadStream(),
-    stdout: new MockWriteStream(),
+    stdout: new MockWriteStream(append),
   } as unknown) as ProgramStreams;
 }
 
@@ -150,13 +150,14 @@ export function runTask<A extends unknown[], R, T extends TaskContext>(
 export async function runProgram(
   program: Program,
   argv: string[],
+  { append }: { append?: boolean } = {},
 ): Promise<{ code: ExitCode; output: string; outputStripped: string }> {
   if (!(program.streams.stderr instanceof MockWriteStream)) {
-    program.streams.stderr = (new MockWriteStream() as unknown) as NodeJS.WriteStream;
+    program.streams.stderr = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
   }
 
   if (!(program.streams.stdout instanceof MockWriteStream)) {
-    program.streams.stdout = (new MockWriteStream() as unknown) as NodeJS.WriteStream;
+    program.streams.stdout = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
   }
 
   if (!(program.streams.stdin instanceof MockReadStream)) {
