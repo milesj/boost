@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.1.0 - 2021-01-16
+
+#### 🚀 Updates
+
+- Migrate to Packemon for package building. (#135) ([1a0e9d8](https://github.com/milesj/boost/commit/1a0e9d8)), closes [#135](https://github.com/milesj/boost/issues/135)
+
+#### 📦 Dependencies
+
+- Update dev dependencies. Migrate to TypeScript v4.1. ([578d5e3](https://github.com/milesj/boost/commit/578d5e3))
+
+**Note:** Version bump only for package @boost/decorators
+
+
+
+
+
 # 2.0.0 - 2020-08-17
 
 #### 🎉 Release

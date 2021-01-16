@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.2.0 - 2021-01-16
+
+#### 🚀 Updates
+
+- Migrate to Packemon for package building. (#135) ([1a0e9d8](https://github.com/milesj/boost/commit/1a0e9d8)), closes [#135](https://github.com/milesj/boost/issues/135)
+
+**Note:** Version bump only for package @boost/internal
+
+
+
+
+
 ### 2.1.2 - 2020-11-29
 
 #### 📦 Dependencies

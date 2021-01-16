@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.9.0 - 2021-01-16
+
+#### 🚀 Updates
+
+- Add `Command#render` to render components continuously. (#136) ([999f20d](https://github.com/milesj/boost/commit/999f20d)), closes [#136](https://github.com/milesj/boost/issues/136)
+- Migrate to Packemon for package building. (#135) ([1a0e9d8](https://github.com/milesj/boost/commit/1a0e9d8)), closes [#135](https://github.com/milesj/boost/issues/135)
+
+#### 🐞 Fixes
+
+- Improve deep inheritance static pollution. ([e87bbba](https://github.com/milesj/boost/commit/e87bbba))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.8.2 - 2020-12-21
 
 **Note:** Version bump only for package @boost/cli

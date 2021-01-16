@@ -1,6 +1,6 @@
 {
   "name": "@boost/terminal",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "release": "1594765247526",
   "description": "A collection of utilities for managing and interacting with a terminal.",
   "keywords": [
