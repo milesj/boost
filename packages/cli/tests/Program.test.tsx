@@ -85,11 +85,10 @@ describe('<Program />', () => {
   let stderr: MockWriteStream;
   let stdout: MockWriteStream;
   let stdin: MockReadStream;
-  let appendOutput = false;
 
-  beforeEach(() => {
-    stderr = new MockWriteStream(appendOutput);
-    stdout = new MockWriteStream(appendOutput);
+  function createProgram(append?: boolean) {
+    stderr = new MockWriteStream(append);
+    stdout = new MockWriteStream(append);
     stdin = new MockReadStream();
     program = new Program(
       {
@@ -103,10 +102,10 @@ describe('<Program />', () => {
         stdin: (stdin as unknown) as NodeJS.ReadStream,
       },
     );
-  });
+  }
 
-  afterEach(() => {
-    appendOutput = false;
+  beforeEach(() => {
+    createProgram();
   });
 
   it('errors if bin is not kebab case', () => {
@@ -1632,16 +1631,14 @@ describe('<Program />', () => {
 
         await this.render(<Comp>Bar</Comp>);
 
-        this.log.warn('Middle');
+        this.log.error('After');
 
         await this.render(<Comp>Baz</Comp>);
-
-        this.log.error('After');
       }
     }
 
     beforeEach(() => {
-      appendOutput = true;
+      createProgram(true);
     });
 
     it('renders and outputs multiple component renders', async () => {

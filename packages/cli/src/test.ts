@@ -48,11 +48,11 @@ export class MockWriteStream {
   off() {}
 }
 
-export function mockStreams(): ProgramStreams {
+export function mockStreams(append?: boolean): ProgramStreams {
   return ({
-    stderr: new MockWriteStream(),
+    stderr: new MockWriteStream(append),
     stdin: new MockReadStream(),
-    stdout: new MockWriteStream(),
+    stdout: new MockWriteStream(append),
   } as unknown) as ProgramStreams;
 }
 

@@ -7,7 +7,7 @@ The following [Jest](https://github.com/facebook/jest) utilities are available i
 
 ## `mockStreams`
 
-> mockStreams(): ProgramStreams
+> mockStreams(append?: boolean): ProgramStreams
 
 Returns mocked `stderr`, `stdout`, and `stdin` streams that can be passed to a `Program`. This does
 not mock all stream functionality, only those required by Boost and Ink.
