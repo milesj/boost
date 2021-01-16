@@ -1633,7 +1633,7 @@ describe('<Program />', () => {
 
         this.log.error('After');
 
-        await this.render(<Comp>Baz</Comp>);
+        return <Comp>Baz</Comp>;
       }
     }
 
