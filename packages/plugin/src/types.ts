@@ -1,6 +1,6 @@
 import { ModuleName } from '@boost/common';
 
-export type Callback<T = unknown> = (value: T) => void | Promise<void>;
+export type Callback<T = unknown> = (value: T) => Promise<void> | void;
 
 // Easier for consumers to type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,7 +17,7 @@ export interface Setting {
 
 export type Factory<T extends Pluggable, O extends object = object> = (
   options: Partial<O>,
-) => T | Promise<T>;
+) => Promise<T> | T;
 
 export interface RegisterOptions<T = unknown> {
   priority?: number;

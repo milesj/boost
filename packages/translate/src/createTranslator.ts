@@ -31,7 +31,7 @@ export interface TranslatorOptions {
 }
 
 export default function createTranslator(
-  namespace: string | string[],
+  namespace: string[] | string,
   resourcePath: PortablePath | PortablePath[],
   {
     autoDetect = true,
@@ -83,7 +83,7 @@ export default function createTranslator(
   );
 
   function msg(
-    key: string | string[],
+    key: string[] | string,
     params?: InterpolationParams,
     { interpolation, locale: lng, ...options }: MessageOptions = {},
   ): string {

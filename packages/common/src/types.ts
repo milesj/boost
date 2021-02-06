@@ -71,29 +71,29 @@ export interface RepositorySetting extends TypeSetting {
 }
 
 export interface PackageStructure {
-  author?: string | PeopleSetting;
-  bin?: string | SettingMap;
+  author?: PeopleSetting | string;
+  bin?: SettingMap | string;
   browser?: string;
   browserslist?: string[];
-  bugs?: string | BugSetting;
+  bugs?: BugSetting | string;
   bundledDependencies?: string[];
   config?: SettingMap;
-  contributors?: string[] | PeopleSetting[];
+  contributors?: PeopleSetting[] | string[];
   cpu?: string[];
   dependencies?: DependencyMap;
   description?: string;
   devDependencies?: DependencyMap;
   directories?: SettingMap<'bin' | 'doc' | 'example' | 'lib' | 'man' | 'test'>;
   engines?: SettingMap;
-  exports?: string | Record<string, string | string[] | SettingMap>;
+  exports?: Record<string, SettingMap | string[] | string> | string;
   files?: string[];
-  funding?: string | TypeSetting | (string | TypeSetting)[];
+  funding?: (TypeSetting | string)[] | TypeSetting | string;
   homepage?: string;
   imports?: Record<string, SettingMap>;
   keywords?: string[];
-  license?: string | TypeSetting | TypeSetting[];
+  license?: TypeSetting | TypeSetting[] | string;
   main?: string;
-  man?: string | string[];
+  man?: string[] | string;
   name: string;
   optionalDependencies?: DependencyMap;
   os?: string[];
@@ -104,7 +104,7 @@ export interface PackageStructure {
     registry?: string;
     tag?: string;
   };
-  repository?: string | RepositorySetting;
+  repository?: RepositorySetting | string;
   scripts?: SettingMap;
   type?: 'commonjs' | 'module';
   version: string;
@@ -114,7 +114,7 @@ export interface PackageStructure {
   typings?: string;
   // Webpack
   module?: string;
-  sideEffects?: boolean | string[];
+  sideEffects?: string[] | boolean;
   // Yarn
   workspaces?:
     | string[]

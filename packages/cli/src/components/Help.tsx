@@ -227,7 +227,7 @@ export class Help extends React.Component<HelpProps> {
     );
   }
 
-  renderUsage(usage: string | string[]) {
+  renderUsage(usage: string[] | string) {
     const { delimiter = DELIMITER } = this.props;
 
     return (

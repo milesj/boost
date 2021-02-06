@@ -28,7 +28,7 @@ export default class CrashReporter {
   /**
    * Add a label with a value, or multiple values, to the last added section.
    */
-  add(label: string, ...messages: (string | number | PortablePath)[]): this {
+  add(label: string, ...messages: (PortablePath | number | string)[]): this {
     this.contents += `${label}:\n`;
     this.contents += `  ${messages.map(String).join(' - ')}\n`;
 
@@ -187,7 +187,7 @@ export default class CrashReporter {
    * Report NPM package versions for all that match the defined pattern.
    * Only searches in the root node modules folder.
    */
-  reportPackageVersions(patterns: string | string[], title: string = 'Packages'): this {
+  reportPackageVersions(patterns: string[] | string, title: string = 'Packages'): this {
     this.addSection(title);
 
     const map = new Map<string, string>();

@@ -10,8 +10,8 @@ import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
 
 export type SelectOptionLike<T> =
-  | { label: NonNullable<React.ReactNode>; value: T }
-  | { divider: boolean; label?: NonNullable<React.ReactNode> };
+  | { divider: boolean; label?: NonNullable<React.ReactNode> }
+  | { label: NonNullable<React.ReactNode>; value: T };
 
 export interface SelectOption<T> {
   divider: boolean;
@@ -22,7 +22,7 @@ export interface SelectOption<T> {
 
 export interface SelectProps<T, V = T> extends PromptProps<T>, ScrollableListProps {
   defaultSelected?: T;
-  options: (V | SelectOptionLike<V>)[];
+  options: (SelectOptionLike<V> | V)[];
 }
 
 export function normalizeOptions<T>(options: SelectProps<unknown>['options']): SelectOption<T>[] {

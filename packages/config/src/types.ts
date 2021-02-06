@@ -1,14 +1,14 @@
 import { ModuleName, PackageStructure, Path } from '@boost/common';
 
-export type ExtType = 'js' | 'cjs' | 'mjs' | 'json' | 'json5' | 'ts' | 'yaml' | 'yml';
+export type ExtType = 'cjs' | 'js' | 'json' | 'json5' | 'mjs' | 'ts' | 'yaml' | 'yml';
 
 export type LoaderType = Exclude<ExtType, 'yml'>;
 
 export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<Partial<T>>;
 
-export type Handler<T> = (prev: T, next: T) => T | undefined | Promise<T | undefined>;
+export type Handler<T> = (prev: T, next: T) => Promise<T | undefined> | T | undefined;
 
-export type FileSource = 'root' | 'branch' | 'overridden' | 'extended';
+export type FileSource = 'branch' | 'extended' | 'overridden' | 'root';
 
 export interface File {
   path: Path;
@@ -47,9 +47,9 @@ export interface ProcessorOptions {
   validate?: boolean;
 }
 
-export type FileGlob = string | string[];
+export type FileGlob = string[] | string;
 
-export type ExtendsSetting = string | string[];
+export type ExtendsSetting = string[] | string;
 
 export interface OverridesSettingItem<T> {
   exclude?: FileGlob;

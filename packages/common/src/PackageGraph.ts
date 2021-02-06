@@ -263,7 +263,7 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
   /**
    * Sort a set of nodes by most depended on, fall back to alpha sort as tie breaker
    */
-  protected sortByDependedOn(nodes: Set<Node> | Node[]): Node[] {
+  protected sortByDependedOn(nodes: Node[] | Set<Node>): Node[] {
     return Array.from(nodes).sort((a, b) => {
       const diff = b.dependents.size - a.dependents.size;
 

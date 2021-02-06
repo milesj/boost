@@ -23,7 +23,7 @@ export interface Runnable<Input, Output> {
   run: (context: Context, value: Input) => Promise<Output>;
 }
 
-export type Status = 'pending' | 'running' | 'skipped' | 'passed' | 'failed';
+export type Status = 'failed' | 'passed' | 'pending' | 'running' | 'skipped';
 
 // Any is required for monitoring events
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

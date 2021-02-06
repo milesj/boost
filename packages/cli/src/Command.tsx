@@ -69,7 +69,7 @@ export default abstract class Command<
 
   static path: string = '';
 
-  static usage: string | string[] = '';
+  static usage: string[] | string = '';
 
   // Args
 
@@ -278,7 +278,7 @@ export default abstract class Command<
   /**
    * Executed when the command is being ran.
    */
-  abstract run(...params: P): RunResult | Promise<RunResult>;
+  abstract run(...params: P): Promise<RunResult> | RunResult;
 
   /**
    * Return the program instance or fail.

@@ -17,7 +17,7 @@ export default function createProxyCommand<O extends GlobalOptions, P extends Pr
 ): Command<O, P> {
   @Config(path, description, config)
   class ProxyCommand extends Command<O, P> {
-    run(): RunResult | Promise<RunResult> {
+    run(): Promise<RunResult> | RunResult {
       return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
     }
   }

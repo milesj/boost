@@ -41,5 +41,5 @@ export default abstract class Transport<Options extends TransportOptions>
   /**
    * Write the formatted message according to the transport.
    */
-  abstract write(message: string, item: LogItem): void | Promise<void>;
+  abstract write(message: string, item: LogItem): Promise<void> | void;
 }
