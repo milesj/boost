@@ -42,7 +42,7 @@ export default class Checker {
     }
   }
 
-  checkUnknownOption(option: ShortOptionName | LongOptionName) {
+  checkUnknownOption(option: LongOptionName | ShortOptionName) {
     const guess = levenary(option, Object.keys(this.options));
 
     if (guess) {

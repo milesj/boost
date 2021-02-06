@@ -31,7 +31,7 @@ export default abstract class SerialPipeline<
   ): SerialPipeline<Options, Ctx, Output>;
   pipe<Output>(workUnit: WorkUnit<{}, Input, Output>): SerialPipeline<Options, Ctx, Output>;
   pipe<Output>(
-    titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
+    titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): SerialPipeline<Options, Ctx, Output> {

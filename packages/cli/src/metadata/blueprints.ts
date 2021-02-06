@@ -36,7 +36,7 @@ export const commandConstructorBlueprint: Blueprint<
   allowUnknownOptions: bool(),
   allowVariadicParams: union([bool(), string()], false),
   categories: object(
-    union<string | Category>(
+    union<Category | string>(
       [
         string().notEmpty(),
         shape({

@@ -58,7 +58,7 @@ export default abstract class CommandManager<
     runner: ProxyCommandRunner<O, P>,
   ): this;
 
-  register(commandOrPath: CommandPath | Commandable, config?: unknown, runner?: unknown): this {
+  register(commandOrPath: Commandable | CommandPath, config?: unknown, runner?: unknown): this {
     let command: Commandable;
 
     if (

@@ -65,14 +65,14 @@ export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOpti
 export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
 
 export interface Categories {
-  [name: string]: string | Category;
+  [name: string]: Category | string;
 }
 
 // PROGRAM
 
 export type ExitCode = number;
 
-export type ExitHandler = (error?: string | Error, code?: ExitCode) => void;
+export type ExitHandler = (error?: Error | string, code?: ExitCode) => void;
 
 export interface ProgramOptions {
   banner?: string;
@@ -98,7 +98,7 @@ export interface ProgramContextType {
 
 // COMMANDS
 
-export type RunResult = void | undefined | string | React.ReactElement;
+export type RunResult = React.ReactElement | string | undefined | void;
 
 export type CommandPath = string;
 
@@ -130,12 +130,12 @@ export interface CommandMetadataMap {
 }
 
 export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
-  createHelp: () => string | React.ReactElement;
+  createHelp: () => React.ReactElement | string;
   getMetadata: () => CommandMetadata;
   getParserOptions: () => ParserOptions<O, P>;
   getPath: () => CommandPath;
   render: (element: React.ReactElement) => Promise<void>;
-  run: (...params: P) => RunResult | Promise<RunResult>;
+  run: (...params: P) => Promise<RunResult> | RunResult;
 }
 
 // PROXY COMMANDS
@@ -150,7 +150,7 @@ export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
   options: O,
   params: P,
   rest: string[],
-) => RunResult | Promise<RunResult>;
+) => Promise<RunResult> | RunResult;
 
 // TASKS
 

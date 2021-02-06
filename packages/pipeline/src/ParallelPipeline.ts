@@ -22,7 +22,7 @@ export default abstract class ParallelPipeline<
   add(title: string, action: Action<Ctx, Input, Output>, scope?: unknown): this;
   add(workUnit: WorkUnit<{}, Input, Output>): this;
   add(
-    titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
+    titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
     action?: Action<Ctx, Input, Output>,
     scope?: unknown,
   ): this {

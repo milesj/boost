@@ -1,6 +1,6 @@
 import JSON from 'json5';
 
-export type JSONReplacer = (key: string, value: unknown) => unknown | (number | string)[] | null;
+export type JSONReplacer = (key: string, value: unknown) => (number | string)[] | unknown | null;
 
 export type JSONReviver = (key: string, value: unknown) => unknown;
 

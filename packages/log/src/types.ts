@@ -1,4 +1,4 @@
-export type LogLevel = 'debug' | 'error' | 'log' | 'info' | 'trace' | 'warn';
+export type LogLevel = 'debug' | 'error' | 'info' | 'log' | 'trace' | 'warn';
 
 export type LogLevelLabels = { [L in LogLevel]?: string };
 
@@ -55,7 +55,7 @@ export type Formatter = (item: LogItem) => string;
 export interface Transportable {
   levels: LogLevel[];
   format: Formatter;
-  write: (message: string, item: LogItem) => void | Promise<void>;
+  write: (message: string, item: LogItem) => Promise<void> | void;
 }
 
 export interface TransportOptions {
@@ -64,4 +64,4 @@ export interface TransportOptions {
   levels: LogLevel[];
 }
 
-export type Rotation = 'hourly' | 'daily' | 'weekly' | 'monthly';
+export type Rotation = 'daily' | 'hourly' | 'monthly' | 'weekly';

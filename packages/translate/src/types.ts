@@ -22,14 +22,14 @@ export interface MessageOptions {
   /** Force translation to this locale. */
   locale?: Locale;
   /** Post-processors to run on the translation. */
-  postProcess?: string | string[];
+  postProcess?: string[] | string;
 }
 
 export interface Translator {
   direction: Direction;
   locale: Locale;
   changeLocale: (locale: Locale) => Promise<void>;
-  (key: string | string[], params?: InterpolationParams, options?: MessageOptions): string;
+  (key: string[] | string, params?: InterpolationParams, options?: MessageOptions): string;
   // Testing only
   // eslint-disable-next-line @typescript-eslint/member-ordering
   i18n: i18n;

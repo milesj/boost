@@ -38,7 +38,7 @@ export default abstract class Routine<
 
   protected monitorInstance: Monitor | null = null;
 
-  constructor(key: string | string[], title: string, options?: Options) {
+  constructor(key: string[] | string, title: string, options?: Options) {
     super(title, (context, value) => this.execute(context, value), options);
 
     if (!key || key.length === 0 || (typeof key !== 'string' && !Array.isArray(key))) {

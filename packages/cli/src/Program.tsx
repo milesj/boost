@@ -167,7 +167,7 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Exit the program with an error code.
    * Should be called within a command or component.
    */
-  exit = (error?: string | Error, errorCode?: ExitCode) => {
+  exit = (error?: Error | string, errorCode?: ExitCode) => {
     let message = '';
     let code = errorCode;
 

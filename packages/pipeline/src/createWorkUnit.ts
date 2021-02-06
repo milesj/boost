@@ -12,7 +12,7 @@ import WorkUnit from './WorkUnit';
  * - A title and function that returns a `Task` instance.
  */
 export default function createWorkUnit<Input = unknown, Output = Input>(
-  titleOrWorkUnit: string | WorkUnit<{}, Input, Output>,
+  titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action?: Action<any, Input, Output>,
   scope?: unknown,

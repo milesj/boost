@@ -11,7 +11,7 @@ export default class Scope {
 
   unknown: boolean = false;
 
-  value?: string | string[];
+  value?: string[] | string;
 
   constructor(name: LongOptionName, config?: OptionConfig) {
     this.name = name;

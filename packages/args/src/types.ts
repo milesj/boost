@@ -8,9 +8,9 @@ export type ListType = number[] | string[];
 
 export type ScalarType = number | string;
 
-export type PrimitiveType = boolean | ScalarType;
+export type PrimitiveType = ScalarType | boolean;
 
-export type ValueType = PrimitiveType | ListType;
+export type ValueType = ListType | PrimitiveType;
 
 export interface OptionMap {
   [option: string]: ValueType;
@@ -110,7 +110,7 @@ export interface ParserSettings {
 
 export interface ParserOptions<O extends object, P extends PrimitiveType[] = ArgList>
   extends ParserSettings {
-  commands?: string[] | CommandChecker;
+  commands?: CommandChecker | string[];
   options: MapOptionConfig<O>;
   params?: MapParamConfig<P>;
 }
@@ -125,14 +125,14 @@ export interface Config {
 
 export interface Command extends Config {
   category?: string;
-  usage?: string | string[];
+  usage?: string[] | string;
 }
 
 // ARGUMENT TYPES
 
 export type InferArgType<T> = T extends boolean
   ? 'boolean'
-  : T extends number | number[]
+  : T extends number[] | number
   ? 'number'
   : 'string';
 
@@ -197,55 +197,55 @@ export type LongOptionName = string;
 
 // Without leading "-"
 export type ShortOptionName =
-  | 'a'
-  | 'b'
-  | 'c'
-  | 'd'
-  | 'e'
-  | 'f'
-  | 'g'
-  | 'h'
-  | 'i'
-  | 'j'
-  | 'k'
-  | 'l'
-  | 'm'
-  | 'n'
-  | 'o'
-  | 'p'
-  | 'q'
-  | 'r'
-  | 's'
-  | 't'
-  | 'u'
-  | 'v'
-  | 'w'
-  | 'x'
-  | 'y'
-  | 'z'
   | 'A'
+  | 'a'
   | 'B'
+  | 'b'
   | 'C'
+  | 'c'
   | 'D'
+  | 'd'
   | 'E'
+  | 'e'
   | 'F'
+  | 'f'
   | 'G'
+  | 'g'
   | 'H'
+  | 'h'
   | 'I'
+  | 'i'
   | 'J'
+  | 'j'
   | 'K'
+  | 'k'
   | 'L'
+  | 'l'
   | 'M'
+  | 'm'
   | 'N'
+  | 'n'
   | 'O'
+  | 'o'
   | 'P'
+  | 'p'
   | 'Q'
+  | 'q'
   | 'R'
+  | 'r'
   | 'S'
+  | 's'
   | 'T'
+  | 't'
   | 'U'
+  | 'u'
   | 'V'
+  | 'v'
   | 'W'
+  | 'w'
   | 'X'
+  | 'x'
   | 'Y'
-  | 'Z';
+  | 'y'
+  | 'Z'
+  | 'z';
