@@ -9,11 +9,12 @@
     "emitter",
     "type-safe"
   ],
-  "main": "./lib/index.js",
+  "main": "./lib/node/index.js",
   "module": "./esm/index.js",
   "types": "./dts/index.d.ts",
   "engines": {
-    "node": ">=10.3.0"
+    "node": ">=10.3.0",
+    "npm": ">=6.1.0"
   },
   "repository": {
     "type": "git",
