@@ -1,6 +1,6 @@
 {
   "name": "@boost/event",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "release": "1594765247526",
   "description": "An event system with multiple emitter patterns.",
   "keywords": [
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^2.2.0"
+    "@boost/internal": "^2.2.1"
   },
   "funding": {
     "type": "ko-fi",

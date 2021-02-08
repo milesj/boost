@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.5.1 - 2021-02-08
+
+#### 📦 Dependencies
+
+- **[json5]** Updated to v2.2. ([e029b73](https://github.com/milesj/boost/commit/e029b73))
+
+#### 🛠 Internals
+
+- Sort type hints and aliases. ([1c49e33](https://github.com/milesj/boost/commit/1c49e33))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 2.5.0 - 2021-01-16
 
 #### 🚀 Updates
