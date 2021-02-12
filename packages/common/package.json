@@ -30,7 +30,7 @@
     "@boost/internal": "^2.2.1",
     "fast-glob": "^3.2.4",
     "json5": "^2.2.0",
-    "optimal": "^4.2.0",
+    "optimal": "^4.2.1",
     "pretty-ms": "^7.0.1",
     "yaml": "^1.10.0"
   },
