@@ -96,6 +96,8 @@ export interface ProgramContextType {
   program: ProgramOptions;
 }
 
+export type ProgramBootstrap = () => Promise<void> | void;
+
 // COMMANDS
 
 export type RunResult = React.ReactElement | string | undefined | void;

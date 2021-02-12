@@ -250,7 +250,7 @@ export default abstract class Command<
   /**
    * Run the program within itself, by passing a custom command and argv list.
    */
-  runProgram = (argv: Argv): Promise<ExitCode> => this.getProgram().run(argv, true);
+  runProgram = (argv: Argv): Promise<ExitCode> => this.getProgram().run(argv, undefined, true);
 
   /**
    * Run a task (function) with the defined arguments and

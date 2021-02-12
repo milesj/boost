@@ -47,6 +47,7 @@ import {
   Middleware,
   MiddlewareArguments,
   MiddlewareCallback,
+  ProgramBootstrap,
   ProgramOptions,
   ProgramStreams,
   RunResult,
@@ -294,12 +295,16 @@ export default class Program extends CommandManager<ProgramOptions> {
    *  - Run command and render output.
    *  - Return exit code.
    */
-  async run(argv: Argv, rethrow: boolean = false): Promise<ExitCode> {
+  async run(argv: Argv, bootstrap?: ProgramBootstrap, rethrow: boolean = false): Promise<ExitCode> {
     this.onBeforeRun.emit([argv]);
 
     let exitCode: ExitCode;
 
     try {
+      if (bootstrap) {
+        await bootstrap();
+      }
+
       exitCode = await this.runAndRender(argv);
 
       this.onAfterRun.emit([]);
@@ -320,8 +325,8 @@ export default class Program extends CommandManager<ProgramOptions> {
    * Run the program and also set the process exit code.
    */
   // istanbul ignore next
-  async runAndExit(argv: Argv): Promise<ExitCode> {
-    const exitCode = await this.run(argv);
+  async runAndExit(argv: Argv, bootstrap?: ProgramBootstrap): Promise<ExitCode> {
+    const exitCode = await this.run(argv, bootstrap);
 
     process.exitCode = exitCode;
 

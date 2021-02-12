@@ -109,6 +109,17 @@ the exit code to `process.exitCode`. Both methods require an argv list to run.
 program.runAndExit(process.argv);
 ```
 
+If you have any logic that should be bootstrapped before the program runs, and you would like to
+inherit the error handling of the CLI, you may pass an async-aware function as a 2nd argument when
+running.
+
+```ts
+program.runAndExit(process.argv, async () => {
+  // CLI code to bootstrap before running
+  await bootstrapCli();
+});
+```
+
 ### Package integration
 
 Now that you have the basics of a program, you can set the

@@ -130,6 +130,35 @@ describe('<Program />', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  describe('bootstrap', () => {
+    it('can pass a boostrap function when running', async () => {
+      const order: string[] = [];
+
+      class BootstrapCommand extends Command {
+        static description = 'Description';
+
+        static path = 'boot';
+
+        run() {
+          order.push('second');
+        }
+      }
+
+      program.register(new BootstrapCommand());
+
+      await program.run(['boot'], async () => {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            order.push('first');
+            resolve(undefined);
+          }, 150);
+        });
+      });
+
+      expect(order).toEqual(['first', 'second']);
+    });
+  });
+
   describe('exit', () => {
     it('can exit', () => {
       expect(() => {
