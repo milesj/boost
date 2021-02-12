@@ -1,8 +1,21 @@
 import isObject from '../../src/helpers/isObject';
 
 describe('isObject()', () => {
-  it('returns true if a plain object', () => {
+  it('returns true if an object', () => {
     expect(isObject({})).toBe(true);
+    expect(isObject(Object.create({}))).toBe(true);
+    expect(isObject(Object.create(null))).toBe(true);
+  });
+
+  it('returns true for classes', () => {
+    class Foo {}
+
+    expect(isObject(new Foo())).toBe(true);
+  });
+
+  it('returns true for built-ins', () => {
+    expect(isObject(/abc/u)).toBe(true);
+    expect(isObject(Promise.resolve())).toBe(true);
   });
 
   it('returns false if an array', () => {

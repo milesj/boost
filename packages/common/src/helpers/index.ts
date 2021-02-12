@@ -7,6 +7,7 @@ export { default as isEmpty } from './isEmpty';
 export { default as isFilePath } from './isFilePath';
 export { default as isModuleName } from './isModuleName';
 export { default as isObject } from './isObject';
+export { default as isPlainObject } from './isPlainObject';
 export { default as parseFile } from './parseFile';
 export { default as requireModule } from './requireModule';
 export { default as toArray } from './toArray';

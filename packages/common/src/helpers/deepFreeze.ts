@@ -1,4 +1,4 @@
-import isObject from './isObject';
+import isPlainObject from './isPlainObject';
 
 export default function deepFreeze<T extends object = object>(obj: T): T {
   if (Object.isFrozen(obj)) {
@@ -9,7 +9,7 @@ export default function deepFreeze<T extends object = object>(obj: T): T {
 
   Object.entries(obj).forEach(([key, value]) => {
     // Only freeze plain objects
-    if (isObject(value) && value.constructor === Object) {
+    if (isPlainObject(value, true)) {
       nextObj[key] = deepFreeze(value);
     } else {
       nextObj[key] = value;
