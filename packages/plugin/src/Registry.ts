@@ -205,11 +205,11 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       throw new PluginError('REGISTER_REQUIRED', [upperFirst(this.pluralName), typeof plugin]);
     }
 
-    this.debug('Validating plugin "%s"', name);
+    this.debug('Validating plugin %s', color.moduleName(name));
 
     await this.options.validate(plugin);
 
-    this.debug('Registering plugin "%s" with defined tool and triggering startup', name);
+    this.debug('Registering plugin %s and triggering startup', color.moduleName(name));
 
     this.onBeforeRegister.emit([plugin]);
 
@@ -220,8 +220,6 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       plugin,
       priority: priority ?? DEFAULT_PRIORITY,
     });
-
-    this.debug('Sorting plugins by priority');
 
     this.plugins.sort((a, b) => a.priority! - b.priority!);
 
@@ -240,7 +238,7 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
 
     this.onBeforeUnregister.emit([plugin]);
 
-    this.debug('Unregistering plugin "%s" with defined tool and triggering shutdown', name);
+    this.debug('Unregistering plugin %s and triggering shutdown', color.moduleName(name));
 
     await this.triggerShutdown(plugin, tool);
 

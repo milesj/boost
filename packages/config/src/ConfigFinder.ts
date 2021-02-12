@@ -317,7 +317,7 @@ export default class ConfigFinder<T extends object> extends Finder<
       const { loaders } = this.options;
       const ext = path.ext(true);
 
-      this.debug('Loading config %s with type "%s"', color.filePath(path.path()), ext);
+      this.debug('Loading config %s with type %s', color.filePath(path.path()), color.symbol(ext));
 
       switch (ext) {
         case 'cjs':

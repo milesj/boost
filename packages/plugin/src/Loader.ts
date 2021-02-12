@@ -39,7 +39,7 @@ export default class Loader<Plugin extends Pluggable> {
     const modulePattern = MODULE_NAME_PART.source;
     const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
 
-    this.debug('Resolving possible %s modules', color.symbol(typeName));
+    this.debug('Resolving possible %s module using lookup: %s', color.symbol(typeName), name);
 
     // Absolute or relative file path
     if (isFilePath(name) && (path.isAbsolute(name) || name.charAt(0) === '.')) {
@@ -86,7 +86,7 @@ export default class Loader<Plugin extends Pluggable> {
       // The previous 2 patterns if only name provided
     } else if (moduleName.match(new RegExp(`^${modulePattern}$`, 'u')) && isNotProjectOrType) {
       this.debug(
-        'Resolving modules with internal "%s" scope and public "%s" prefix',
+        'Resolving module with internal %s scope or public %s prefix',
         color.projectName(`@${projectName}`),
         color.projectName(projectName),
       );
@@ -111,7 +111,7 @@ export default class Loader<Plugin extends Pluggable> {
   async load(name: FilePath | ModuleName, options: object = {}): Promise<Plugin> {
     const { originalPath, resolvedPath } = this.createResolver(name).resolve();
 
-    this.debug('Loading "%s" from %s', color.moduleName(name), color.filePath(resolvedPath));
+    this.debug('Loading %s from %s', color.moduleName(name), color.filePath(resolvedPath));
 
     const factory: Factory<Plugin> = requireModule(resolvedPath);
 

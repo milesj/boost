@@ -2,6 +2,7 @@
 
 import { Blueprint, Contract, isObject, optimal, Predicates } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
+import { color } from '@boost/internal';
 import mergeArray from './helpers/mergeArray';
 import mergeObject from './helpers/mergeObject';
 import { ConfigFile, Handler, ProcessorOptions } from './types';
@@ -30,7 +31,7 @@ export default class Processor<T extends object> extends Contract<ProcessorOptio
    * Add a handler to process a key-value setting pair.
    */
   addHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
-    this.debug('Adding process handler for "%s"', key);
+    this.debug('Adding process handler for %s', color.symbol(key));
 
     this.handlers[key] = handler;
 
