@@ -1,4 +1,4 @@
-import { isObject } from '@boost/common';
+import { isObject, isPlainObject } from '@boost/common';
 
 interface Cloneable {
   clone?: () => unknown;
@@ -29,7 +29,7 @@ export default class Context {
         if (typeof value.clone === 'function') {
           value = value.clone();
           // Dont dereference instances, only plain objects
-        } else if (value.constructor === Object) {
+        } else if (isPlainObject(value)) {
           value = { ...value };
         }
       }
