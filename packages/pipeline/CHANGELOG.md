@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.2.2 - 2021-02-12
+
+#### 🐞 Fixes
+
+- Update to check for plain objects. ([7858ac4](https://github.com/milesj/boost/commit/7858ac4))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ### 2.2.1 - 2021-02-08
 
 #### 🛠 Internals

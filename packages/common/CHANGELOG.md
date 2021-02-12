@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.6.0 - 2021-02-12
+
+#### 🚀 Updates
+
+- Add isPlainObject helper. ([eec761c](https://github.com/milesj/boost/commit/eec761c))
+
+#### 📦 Dependencies
+
+- **[optimal]** Update to v4.2.1. ([b77bade](https://github.com/milesj/boost/commit/b77bade))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 2.5.1 - 2021-02-08
 
 #### 📦 Dependencies
