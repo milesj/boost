@@ -32,7 +32,10 @@ export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 
 // INTERFACES
 
-export type BlueprintFactory<T extends object> = (predicates: Predicates) => Blueprint<T>;
+export type BlueprintFactory<T extends object> = (
+  predicates: Predicates,
+  onConstruction?: boolean,
+) => Blueprint<T>;
 
 export interface Optionable<T extends object = {}> {
   readonly options: Required<T>;

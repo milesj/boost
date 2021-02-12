@@ -69,10 +69,13 @@ export default class Adapter extends Contract<AdapterOptions> {
 
 ### `blueprint`
 
-> Contract#blueprint(predicates: Predicates): Blueprint<T\>
+> Contract#blueprint(predicates: Predicates, onConstruction: boolean): Blueprint<T\>
 
 Shape of the options object passed to the constructor or to `Contract#configure()`. Utilizes
 [optimal](https://github.com/milesj/optimal) for strict and thorough validation checks.
+
+A boolean is passed as the 2nd argument to determine whether this is validating on class
+instantiation (first time), or by calling `configure()` (all other times).
 
 ### `configure`
 

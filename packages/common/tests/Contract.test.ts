@@ -143,4 +143,28 @@ describe('Contract', () => {
       }).toThrowErrorMatchingSnapshot();
     });
   });
+
+  describe('blueprint()', () => {
+    const spy = jest.fn();
+
+    class BlueprintTest extends Contract<{}> {
+      blueprint(preds: unknown, onConstruct: boolean) {
+        spy(onConstruct);
+
+        return {};
+      }
+    }
+
+    it('passes true for 2nd arg only on construction', () => {
+      const test = new BlueprintTest();
+
+      expect(spy).toHaveBeenCalledWith(true);
+
+      spy.mockClear();
+
+      test.configure({});
+
+      expect(spy).toHaveBeenCalledWith(false);
+    });
+  });
 });
