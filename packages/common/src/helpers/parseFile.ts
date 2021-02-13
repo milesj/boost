@@ -5,6 +5,7 @@ import { parse as parseJSON } from '../serializers/json';
 import { parse as parseYAML } from '../serializers/yaml';
 import { PortablePath } from '../types';
 import requireModule from './requireModule';
+import requireTypedModule from './requireTypedModule';
 
 export default function parseFile<T>(filePath: PortablePath): T {
   const path = Path.create(filePath);
@@ -17,6 +18,10 @@ export default function parseFile<T>(filePath: PortablePath): T {
     case '.js':
     case '.jsx':
       return requireModule(path);
+
+    case '.ts':
+    case '.tsx':
+      return requireTypedModule(path);
 
     case '.json':
     case '.json5':

@@ -1,14 +1,13 @@
+import interopRequireModule from '../internal/interopRequireModule';
 import { PortablePath } from '../types';
+import requireTypedModule from './requireTypedModule';
 
 export default function requireModule<T>(path: PortablePath): T {
-  // eslint-disable-next-line
-  let value = require(String(path));
+  const filePath = String(path);
 
-  // Support Babel compiled files
-  // eslint-disable-next-line no-underscore-dangle
-  if (value?.__esModule) {
-    value = value.default as T;
+  if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
+    return requireTypedModule(filePath);
   }
 
-  return value;
+  return interopRequireModule(filePath) as T;
 }

@@ -10,4 +10,5 @@ export { default as isObject } from './isObject';
 export { default as isPlainObject } from './isPlainObject';
 export { default as parseFile } from './parseFile';
 export { default as requireModule } from './requireModule';
+export { default as requireTypedModule } from './requireTypedModule';
 export { default as toArray } from './toArray';

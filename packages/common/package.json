@@ -37,6 +37,9 @@
   "devDependencies": {
     "@boost/test-utils": "^2.2.0"
   },
+  "optionalDependencies": {
+    "typescript": "^4.0.0"
+  },
   "funding": {
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"

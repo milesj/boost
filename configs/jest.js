@@ -4,6 +4,7 @@ module.exports = {
     // Annoying to test
     'cli/src/hooks',
     // Impossible to test
+    'common/src/helpers/requireTypedModule.ts',
     'cli/src/middleware/checkNodeRequirement.ts',
     'cli/src/LogWriter.tsx',
     'cli/src/Wrapper.tsx',
