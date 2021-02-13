@@ -123,12 +123,12 @@ export default class CrashReporter {
         if (!version) {
           version = extractVersion(run(bin, ['version']));
         }
+
+        if (version) {
+          this.add(languages[bin!], version, resolveHome(run('which', [bin])));
+        }
       } catch {
         // Ignore
-      }
-
-      if (version) {
-        this.add(languages[bin!], version, resolveHome(run('which', [bin])));
       }
     });
 
