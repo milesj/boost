@@ -20,4 +20,8 @@ module.exports = {
       statements: 99,
     },
   },
+  transformIgnorePatterns: [
+    // For testing `requireTypedModule`
+    'common/tests/helpers/__fixtures__',
+  ],
 };
