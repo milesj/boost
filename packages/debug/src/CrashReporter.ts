@@ -9,7 +9,13 @@ import { FilePath, PackageStructure, PortablePath, requireModule, toArray } from
 import debug from './debug';
 
 function run(command: string, args: string[]): string {
-  return String(execa.sync(command, args, { preferLocal: true }).stdout);
+  let cmd = command;
+
+  if (command === 'where' && os.platform() === 'win32') {
+    cmd += '.exe';
+  }
+
+  return String(execa.sync(cmd, args, { preferLocal: true }).stdout);
 }
 
 function resolveHome(filePath: FilePath): string {
@@ -64,7 +70,7 @@ export default class CrashReporter {
         this.add(
           bins[bin as keyof typeof bins],
           extractVersion(run(bin, ['--version'])),
-          resolveHome(run('which', [bin])),
+          resolveHome(run('where', [bin])),
         );
       } catch {
         // Ignore
@@ -123,12 +129,12 @@ export default class CrashReporter {
         if (!version) {
           version = extractVersion(run(bin, ['version']));
         }
+
+        if (version) {
+          this.add(languages[bin!], version, resolveHome(run('where', [bin])));
+        }
       } catch {
         // Ignore
-      }
-
-      if (version) {
-        this.add(languages[bin!], version, resolveHome(run('which', [bin])));
       }
     });
 
