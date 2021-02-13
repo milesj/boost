@@ -23,7 +23,7 @@ describe('CrashReporter', () => {
 
       return {
         stderr: '',
-        stdout: command === 'which' ? `/${args.join(' ')}` : '0.0.0',
+        stdout: command === 'where' ? `/${args.join(' ')}` : '0.0.0',
       };
     });
 
