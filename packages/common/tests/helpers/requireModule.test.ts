@@ -7,9 +7,15 @@ jest.mock('example-es-default-named', () => ({ __esModule: true, default: 456, n
 });
 jest.mock('example-es-named', () => ({ __esModule: true, a: 1, b: 2, c: 3 }), { virtual: true });
 
+jest.mock('../../src/helpers/requireTypedModule', () => () => 'ts');
+
 describe('requireModule()', () => {
   it('returns default exported', () => {
     expect(requireModule('example')).toBe(123);
+  });
+
+  it('calls `requireTypedModule` when a .ts file or .tsx file', () => {
+    expect(requireModule('some-fake-ts-file.ts')).toBe('ts');
   });
 
   describe('es modules', () => {

@@ -1,3 +1,1 @@
-export default {
-  exportType: 'default',
-};
+export default 'default';

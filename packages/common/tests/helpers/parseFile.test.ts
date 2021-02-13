@@ -27,6 +27,14 @@ describe('parseFile()', () => {
     expect(parseFile(getFixturePath('file-types', 'jsx.jsx'))).toEqual({ jsx: true, type: 'js' });
   });
 
+  it('supports .ts extension', () => {
+    expect(parseFile(getFixturePath('file-types', 'ts.ts'))).toEqual({ type: 'ts' });
+  });
+
+  it('supports .tsx extension', () => {
+    expect(parseFile(getFixturePath('file-types', 'tsx.tsx'))).toEqual({ type: 'tsx' });
+  });
+
   it('supports .json extension', () => {
     expect(parseFile(getFixturePath('file-types', 'json.json'))).toEqual({ type: 'json' });
   });

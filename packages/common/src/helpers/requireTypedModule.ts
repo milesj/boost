@@ -1,8 +1,7 @@
-/* eslint-disable node/no-deprecated-api */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle, node/no-deprecated-api */
 
 import fs from 'fs';
-import Module from 'module';
+import type Module from 'module';
 import interopRequireModule from '../internal/interopRequireModule';
 import { PortablePath } from '../types';
 
