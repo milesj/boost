@@ -3,8 +3,9 @@
 export default function interopRequireModule(path: string): unknown {
   // eslint-disable-next-line
   const result = require(path) as {
-    __esModule: boolean;
+    [named: string]: unknown;
     default?: unknown;
+    __esModule?: boolean;
   };
 
   // Not a Babel/TypeScript transpiled module
@@ -12,11 +13,13 @@ export default function interopRequireModule(path: string): unknown {
     return result;
   }
 
-  const hasDefault = 'default' in result;
-  const namedExportCount = Object.keys(result).length - (hasDefault ? 1 : 0);
+  const hasDefaultExport = 'default' in result;
+  const namedExports = Object.keys(result).filter(
+    (key) => key !== '__esModule' && key !== 'default',
+  );
 
   // Default export only
-  if (hasDefault && namedExportCount === 0) {
+  if (hasDefaultExport && namedExports.length === 0) {
     return result.default;
   }
 

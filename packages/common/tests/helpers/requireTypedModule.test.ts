@@ -1,9 +1,11 @@
 import requireTypedModule from '../../src/helpers/requireTypedModule';
 
 describe('requireTypedModule()', () => {
-  it('handles default export', () => {
-    console.log(__dirname, __filename);
-    console.log(require('./__fixtures__/test.js'));
-    console.log(requireTypedModule('./__fixtures__/default-export.ts'));
+  it('errors if not a .ts file or .tsx file', () => {
+    expect(() => {
+      requireTypedModule('some-fake-module');
+    }).toThrow(
+      'Unable to import non-TypeScript file "some-fake-module", use `requireModule` instead.',
+    );
   });
 });

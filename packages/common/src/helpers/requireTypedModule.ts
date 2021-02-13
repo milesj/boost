@@ -46,8 +46,6 @@ function transform(contents: string, fileName: string): string {
 }
 
 function transformHandler(mod: Module, filePath: string) {
-  console.log('transformHandler', filePath, mod);
-
   let code = transformCache.get(filePath);
 
   if (!code) {
@@ -69,8 +67,6 @@ function unregisterExtensions() {
   delete require.extensions['.ts'];
   delete require.extensions['.tsx'];
 }
-
-registerExtensions();
 
 export default function requireTypedModule<T>(path: PortablePath): T {
   const filePath = String(path);

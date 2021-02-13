@@ -224,8 +224,8 @@ isPlainObject([]); // false
 > parseFile<T\>(path: string): T
 
 Can be used to *sync*hronously parse and return an object for the following file types & extensions:
-`js`, `jsx`, `json`, `json5`, `yaml`, `yml`. The function requires an absolute file path, and any
-unsupported file type will throw an error.
+`js`, `ts`, `tsx`, `json`, `json5`, `yaml`, `yml`. The function requires an absolute file path, and
+any unsupported file type will throw an error.
 
 ```ts
 import { parseFile } from '@boost/common';
@@ -233,19 +233,49 @@ import { parseFile } from '@boost/common';
 const data: ReturnShape = parseFile('/absolute/file/path');
 ```
 
+> TypeScript files require the `typescript` package to be installed.
+
 ### `requireModule`
 
 > requireModule<T\>(path: string): T
 
 Works in a similar fashion to the native NodeJS `require()`, but also handles files built with Babel
-or TypeScript, by properly returning the `default` export, and also allowing the expected type to be
-defined.
+or TypeScript by properly returning the `default` export if an "ES module", and also allowing the
+expected type to be defined.
 
 ```ts
 import { requireModule } from '@boost/common';
 
-const defaultImport: ReturnShape = requireModule('../../some/module');
+const result: ReturnShape = requireModule('../../some/module');
 ```
+
+There are some caveats to be aware of in regards to default and named exports in the file being
+required, they are:
+
+- When only a default export, the exported value is returned directly instead of on an object with a
+  `default` property.
+- When only named exports, the returned value is an object with all the named exports as properties
+  on the object.
+- When a default export and named exports together, the returned value is an object with a `default`
+  property, and an additional property for every named export. It's best to stay away from this
+  pattern.
+
+### `requireTypedModule`
+
+> requireTypedModule<T\>(path: string): T
+
+Like `requireModule` but for importing TypeScript files ending in `ts` or `tsx`. When imported, will
+transform the file using the `typescript` package (must be installed), evaluate the code in the
+current module context, and apply the same process to all child imports.
+
+```ts
+import { requireTypedModule } from '@boost/common';
+
+const result: ReturnShape = requireTypedModule('../../some/module.ts');
+```
+
+> This helper rarely needs to be used directly as `parseFile` and `requireModule` will call it under
+> the hood based on the file extension.
 
 ### `toArray`
 
