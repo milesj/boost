@@ -1,12 +1,10 @@
-import { vol } from 'memfs';
 import { Blueprint, Predicates } from '@boost/common';
+import { createTempFolderStructureFromJSON } from '@boost/test-utils';
 import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
 import { configFileTreeAllTypes, rootConfigJSON } from './__fixtures__/config-files-fs';
 import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
 import { stubPath } from './helpers';
-
-jest.mock('fs', () => jest.requireActual('memfs').vol);
 
 interface BoostConfig {
   debug: boolean;
@@ -41,8 +39,6 @@ describe('Configuration', () => {
 
   beforeEach(() => {
     config = new BoostConfiguration('boost');
-
-    vol.reset();
   });
 
   describe('clearCache()', () => {
@@ -85,12 +81,14 @@ describe('Configuration', () => {
     it('loads and processes all configs', async () => {
       const loadSpy = jest.fn((c) => c);
       const processSpy = jest.fn();
+      const tempRoot = createTempFolderStructureFromJSON(configFileTreeAllTypes);
 
-      vol.fromJSON(configFileTreeAllTypes, '/test');
       config.onLoadedConfig.listen(loadSpy);
       config.onProcessedConfig.listen(processSpy);
 
-      const result = await config.loadConfigFromBranchToRoot('/test/src/app/profiles/settings');
+      const result = await config.loadConfigFromBranchToRoot(
+        `${tempRoot}/src/app/profiles/settings`,
+      );
       const expected = {
         config: {
           debug: true,
@@ -100,27 +98,27 @@ describe('Configuration', () => {
         files: [
           {
             config: { debug: true },
-            path: stubPath('/test/.config/boost.json'),
+            path: stubPath(`${tempRoot}/.config/boost.json`),
             source: 'root',
           },
           {
             config: { type: 'json' },
-            path: stubPath('/test/src/.boost.json'),
+            path: stubPath(`${tempRoot}/src/.boost.json`),
             source: 'branch',
           },
           {
             config: { type: 'cjs' },
-            path: stubPath('/test/src/app/.boost.cjs'),
+            path: stubPath(`${tempRoot}/src/app/.boost.cjs`),
             source: 'branch',
           },
           {
             config: { type: 'js' },
-            path: stubPath('/test/src/app/profiles/.boost.js'),
+            path: stubPath(`${tempRoot}/src/app/profiles/.boost.js`),
             source: 'branch',
           },
           {
             config: { type: 'yaml' },
-            path: stubPath('/test/src/app/profiles/settings/.boost.yaml'),
+            path: stubPath(`${tempRoot}/src/app/profiles/settings/.boost.yaml`),
             source: 'branch',
           },
         ],
@@ -137,12 +135,12 @@ describe('Configuration', () => {
     it('loads and processes root config', async () => {
       const loadSpy = jest.fn((c) => c);
       const processSpy = jest.fn();
+      const tempRoot = createTempFolderStructureFromJSON(rootConfigJSON);
 
-      vol.fromJSON(rootConfigJSON, '/test');
       config.onLoadedConfig.listen(loadSpy);
       config.onProcessedConfig.listen(processSpy);
 
-      const result = await config.loadConfigFromRoot('/test');
+      const result = await config.loadConfigFromRoot(tempRoot);
       const expected = {
         config: {
           debug: true,
@@ -152,7 +150,7 @@ describe('Configuration', () => {
         files: [
           {
             config: { debug: true },
-            path: stubPath('/test/.config/boost.json'),
+            path: stubPath(`${tempRoot}/.config/boost.json`),
             source: 'root',
           },
         ],
@@ -168,25 +166,27 @@ describe('Configuration', () => {
   describe('loadIgnoreFromBranchToRoot()', () => {
     it('loads all ignores', async () => {
       const spy = jest.fn((c) => c);
+      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
 
-      vol.fromJSON(ignoreFileTree, '/test');
       config.onLoadedIgnore.listen(spy);
 
-      const result = await config.loadIgnoreFromBranchToRoot('/test/src/app/feature/signup/flow');
+      const result = await config.loadIgnoreFromBranchToRoot(
+        `${tempRoot}/src/app/feature/signup/flow`,
+      );
       const expected = [
         {
           ignore: ['*.log', '*.lock'],
-          path: stubPath('/test/.boostignore'),
+          path: stubPath(`${tempRoot}/.boostignore`),
           source: 'root',
         },
         {
           ignore: ['lib/'],
-          path: stubPath('/test/src/app/feature/.boostignore'),
+          path: stubPath(`${tempRoot}/src/app/feature/.boostignore`),
           source: 'branch',
         },
         {
           ignore: [],
-          path: stubPath('/test/src/app/feature/signup/.boostignore'),
+          path: stubPath(`${tempRoot}/src/app/feature/signup/.boostignore`),
           source: 'branch',
         },
       ];
@@ -200,15 +200,15 @@ describe('Configuration', () => {
   describe('loadIgnoreFromRoot()', () => {
     it('loads root ignore', async () => {
       const spy = jest.fn((c) => c);
+      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
 
-      vol.fromJSON(ignoreFileTree, '/test');
       config.onLoadedIgnore.listen(spy);
 
-      const result = await config.loadIgnoreFromRoot('/test');
+      const result = await config.loadIgnoreFromRoot(tempRoot);
       const expected = [
         {
           ignore: ['*.log', '*.lock'],
-          path: stubPath('/test/.boostignore'),
+          path: stubPath(`${tempRoot}/.boostignore`),
           source: 'root',
         },
       ];
