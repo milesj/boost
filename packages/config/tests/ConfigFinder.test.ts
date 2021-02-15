@@ -35,7 +35,7 @@ describe('ConfigFinder', () => {
       expect(pkg1).toEqual({ name: 'core' });
 
       const pkg2 = await finder.determinePackageScope(
-        new Path(`${tempRoot}/packages/log/lib/index.js`),
+        new Path(`${tempRoot}/packages/log/src/index.js`),
       );
 
       expect(pkg2).toEqual({ name: 'log' });
@@ -56,7 +56,7 @@ describe('ConfigFinder', () => {
 
       const pkg = await finder.determinePackageScope(new Path(`${tempRoot}/index.ts`));
 
-      expect(pkg).toEqual({ name: 'boost-config-example', version: '0.0.0' });
+      expect(pkg).toEqual({ name: 'boost-config-package-file-tree-monorepo', version: '0.0.0' });
     });
 
     it('uses the cache for the same `package.json` parent', async () => {
@@ -446,14 +446,14 @@ describe('ConfigFinder', () => {
           },
           {
             config: { root: true },
-            path: stubPath(`${tempRoot}/.config/boost.json`),
+            path: stubPath(`${tempRoot}/.config/boost.js`),
             source: 'root',
           },
         ]);
       });
 
       it('extends config presets from node modules', async () => {
-        const tempRoot = getFixturePath('config-extends-module-presets');
+        const tempRoot = copyFixtureToTempFolder('config-extends-module-presets');
 
         const files = await finder.loadFromBranchToRoot(tempRoot);
 
@@ -501,7 +501,7 @@ describe('ConfigFinder', () => {
       });
 
       it('extends configs using a custom settings name', async () => {
-        const tempRoot = getFixturePath('config-extends-custom-setting-name');
+        const tempRoot = copyFixtureToTempFolder('config-extends-custom-setting-name');
 
         finder.configure({ extendsSetting: 'presets' });
 

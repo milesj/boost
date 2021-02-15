@@ -1,1 +1,0 @@
-{"root":true,"extends":["../some/relative/path/config.js","/Users/milesj/Projects/boost/tests/__fixtures__/config-extends-fs-paths/some/absolute/path/config.yml"]}

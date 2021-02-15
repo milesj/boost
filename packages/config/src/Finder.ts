@@ -80,7 +80,7 @@ export default abstract class Finder<
    * Return true if the path represents the root of the file system.
    */
   protected isFileSystemRoot(path: Path): boolean {
-    return /^(\/|[A-Z]:\\)$/u.test(path.path());
+    return /^(\/|[A-Z]:(?:\\|\/))$/u.test(path.path());
   }
 
   /**
