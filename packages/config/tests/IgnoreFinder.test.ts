@@ -1,3 +1,4 @@
+import { EOL } from 'os';
 import { getFixturePath } from '@boost/test-utils';
 import Cache from '../src/Cache';
 import IgnoreFinder from '../src/IgnoreFinder';
@@ -31,12 +32,12 @@ describe('IgnoreFinder', () => {
     expect(cache.dirFilesCache).toEqual({});
     expect(cache.fileContentCache).toEqual({
       [stubPath(`${tempRoot}/.boostignore`).path()]: {
-        content: '*.log\n*.lock',
+        content: `*.log${EOL}*.lock`,
         exists: true,
         mtime: expect.any(Number),
       },
       [stubPath(`${tempRoot}/src/app/feature/.boostignore`).path()]: {
-        content: '# Compiled\nlib/',
+        content: `# Compiled${EOL}lib/`,
         exists: true,
         mtime: expect.any(Number),
       },
