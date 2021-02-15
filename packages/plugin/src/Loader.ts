@@ -122,6 +122,7 @@ export default class Loader<Plugin extends Pluggable> {
     const plugin = await factory(options);
 
     if (isObject(plugin) && !plugin.name) {
+      // @ts-expect-error Allow this
       plugin.name = originalPath.path();
     }
 

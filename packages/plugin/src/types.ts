@@ -5,7 +5,7 @@ export type Callback<T = unknown> = (value: T) => Promise<void> | void;
 // Easier for consumers to type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface Pluggable<T = any> {
-  name: ModuleName;
+  readonly name: ModuleName;
   priority?: number;
   shutdown?: Callback<T>;
   startup?: Callback<T>;
