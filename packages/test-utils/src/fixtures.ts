@@ -1,6 +1,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
+import { DirectoryJSON } from './types';
 
 const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
 
@@ -89,6 +90,23 @@ export function createTempFixtureFolder(): string {
   TEMPORARY_FILES.add(dir);
 
   return dir;
+}
+
+export function createTempFolderStructureFromJSON(structure: DirectoryJSON): string {
+  const root = createTempFixtureFolder();
+
+  Object.entries(structure).forEach(([file, contents]) => {
+    if (contents === null) {
+      return;
+    }
+
+    const absFile = path.join(root, file);
+
+    fs.ensureDirSync(path.dirname(absFile));
+    fs.writeFileSync(absFile, contents, 'utf8');
+  });
+
+  return root;
 }
 
 if (typeof afterAll === 'function') {
