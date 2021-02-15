@@ -1,9 +1,7 @@
 import { Blueprint, Predicates } from '@boost/common';
-import { createTempFolderStructureFromJSON } from '@boost/test-utils';
+import { getFixturePath } from '@boost/test-utils';
 import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
-import { configFileTreeAllTypes, rootConfigJSON } from './__fixtures__/config-files-fs';
-import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
 import { stubPath } from './helpers';
 
 interface BoostConfig {
@@ -81,7 +79,7 @@ describe('Configuration', () => {
     it('loads and processes all configs', async () => {
       const loadSpy = jest.fn((c) => c);
       const processSpy = jest.fn();
-      const tempRoot = createTempFolderStructureFromJSON(configFileTreeAllTypes);
+      const tempRoot = getFixturePath('config-file-tree-all-types');
 
       config.onLoadedConfig.listen(loadSpy);
       config.onProcessedConfig.listen(processSpy);
@@ -135,7 +133,7 @@ describe('Configuration', () => {
     it('loads and processes root config', async () => {
       const loadSpy = jest.fn((c) => c);
       const processSpy = jest.fn();
-      const tempRoot = createTempFolderStructureFromJSON(rootConfigJSON);
+      const tempRoot = getFixturePath('config-root-config-json');
 
       config.onLoadedConfig.listen(loadSpy);
       config.onProcessedConfig.listen(processSpy);
@@ -166,7 +164,7 @@ describe('Configuration', () => {
   describe('loadIgnoreFromBranchToRoot()', () => {
     it('loads all ignores', async () => {
       const spy = jest.fn((c) => c);
-      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+      const tempRoot = getFixturePath('config-ignore-file-tree');
 
       config.onLoadedIgnore.listen(spy);
 
@@ -200,7 +198,7 @@ describe('Configuration', () => {
   describe('loadIgnoreFromRoot()', () => {
     it('loads root ignore', async () => {
       const spy = jest.fn((c) => c);
-      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+      const tempRoot = getFixturePath('config-ignore-file-tree');
 
       config.onLoadedIgnore.listen(spy);
 

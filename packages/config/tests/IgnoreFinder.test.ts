@@ -1,8 +1,6 @@
-import { createTempFolderStructureFromJSON } from '@boost/test-utils';
+import { getFixturePath } from '@boost/test-utils';
 import Cache from '../src/Cache';
 import IgnoreFinder from '../src/IgnoreFinder';
-import { rootWithoutPackageJson } from './__fixtures__/common-fs';
-import { ignoreFileTree } from './__fixtures__/ignore-files-fs';
 import { stubPath } from './helpers';
 
 describe('IgnoreFinder', () => {
@@ -23,7 +21,7 @@ describe('IgnoreFinder', () => {
   });
 
   it('caches root, file, and directory information', async () => {
-    const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+    const tempRoot = getFixturePath('config-ignore-file-tree');
 
     await finder.loadFromBranchToRoot(`${tempRoot}/src/app/feature/signup/flow`);
 
@@ -52,7 +50,7 @@ describe('IgnoreFinder', () => {
 
   describe('loadFromBranchToRoot()', () => {
     it('returns all ignore files from a target file', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+      const tempRoot = getFixturePath('config-ignore-file-tree');
 
       const files = await finder.loadFromBranchToRoot(
         `${tempRoot}/src/app/components/build/Button.tsx`,
@@ -73,7 +71,7 @@ describe('IgnoreFinder', () => {
     });
 
     it('returns all ignore files from a target folder', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+      const tempRoot = getFixturePath('config-ignore-file-tree');
 
       const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app/feature/signup/flow/`);
 
@@ -99,7 +97,7 @@ describe('IgnoreFinder', () => {
 
   describe('loadFromRoot()', () => {
     it('returns ignore file from root folder', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+      const tempRoot = getFixturePath('config-ignore-file-tree');
 
       const files = await finder.loadFromRoot(tempRoot);
 
@@ -113,7 +111,7 @@ describe('IgnoreFinder', () => {
     });
 
     it('errors if not root folder', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(ignoreFileTree);
+      const tempRoot = getFixturePath('config-ignore-file-tree');
 
       await expect(finder.loadFromRoot(`${tempRoot}/src`)).rejects.toThrow(
         'Invalid configuration root. Requires a `.config` folder and `package.json`.',
@@ -121,7 +119,7 @@ describe('IgnoreFinder', () => {
     });
 
     it('errors if root folder is missing a `package.json`', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(rootWithoutPackageJson);
+      const tempRoot = getFixturePath('config-root-without-package-json');
 
       await expect(finder.loadFromRoot(tempRoot)).rejects.toThrow(
         'Config folder `.config` found without a relative `package.json`. Both must be located in the project root.',

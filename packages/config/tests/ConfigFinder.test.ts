@@ -1,43 +1,7 @@
 import { Path } from '@boost/common';
-import { createTempFolderStructureFromJSON } from '@boost/test-utils';
+import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';
 import Cache from '../src/Cache';
 import ConfigFinder from '../src/ConfigFinder';
-import { rootWithoutPackageJson } from './__fixtures__/common-fs';
-import {
-  configFileTreeAllTypes,
-  configFileTreeCJS,
-  configFileTreeJS,
-  configFileTreeJSON,
-  configFileTreeJSON5,
-  // configFileTreeTS,
-  configFileTreeYAML,
-  configFileTreeYML,
-  extendsCustomSettingName,
-  extendsFromOverride,
-  extendsFsPaths,
-  extendsModulePresets,
-  invalidBranchNestedExtends,
-  invalidBranchNestedOverrides,
-  invalidExtendsPath,
-  missingExtendsPath,
-  overridesCustomSettingsName,
-  overridesFromBranch,
-  overridesFromBranchWithExcludes,
-  packageFileTreeMonorepo,
-  rootConfigCJS,
-  rootConfigJS,
-  // rootConfigMjs,
-  rootConfigJSON,
-  rootConfigJSON5,
-  rootConfigTOML,
-  // rootConfigTS,
-  rootConfigYAML,
-  rootConfigYML,
-  scenarioBranchInvalidFileName,
-  scenarioBranchMultipleTypes,
-  scenarioBranchWithEnvs,
-  scenarioConfigsAboveRoot,
-} from './__fixtures__/config-files-fs';
 import { stubPath } from './helpers';
 
 describe('ConfigFinder', () => {
@@ -62,7 +26,7 @@ describe('ConfigFinder', () => {
 
   describe('determinePackageScope()', () => {
     it('returns the parent `package.json`', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(packageFileTreeMonorepo);
+      const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
       const pkg1 = await finder.determinePackageScope(
         new Path(`${tempRoot}/packages/core/src/index.ts`),
@@ -78,7 +42,7 @@ describe('ConfigFinder', () => {
     });
 
     it('returns the first parent `package.json` if there are multiple', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(packageFileTreeMonorepo);
+      const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
       const pkg = await finder.determinePackageScope(
         new Path(`${tempRoot}/packages/plugin/nested/example/src`),
@@ -88,7 +52,7 @@ describe('ConfigFinder', () => {
     });
 
     it('returns root `package.json` if outside a monorepo', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(packageFileTreeMonorepo);
+      const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
       const pkg = await finder.determinePackageScope(new Path(`${tempRoot}/index.ts`));
 
@@ -96,7 +60,7 @@ describe('ConfigFinder', () => {
     });
 
     it('uses the cache for the same `package.json` parent', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(packageFileTreeMonorepo);
+      const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
       const pkg1 = await finder.determinePackageScope(
         new Path(`${tempRoot}/packages/core/src/index.ts`),
@@ -109,7 +73,7 @@ describe('ConfigFinder', () => {
     });
 
     it('caches each depth, even if a file is missing', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(packageFileTreeMonorepo);
+      const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
       await finder.determinePackageScope(
         new Path(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
@@ -140,29 +104,27 @@ describe('ConfigFinder', () => {
     });
 
     it('errors if no parent `package.json`', async () => {
-      const tempRoot = createTempFolderStructureFromJSON({ 'index.js': '' });
+      const tempRoot = copyFixtureToTempFolder('config-root-without-package-json');
 
-      await expect(finder.determinePackageScope(new Path(`${tempRoot}/index.js`))).rejects.toThrow(
-        'Unable to determine package scope. No parent `package.json` found.',
-      );
+      await expect(
+        finder.determinePackageScope(new Path(`${tempRoot}/nested/index.js`)),
+      ).rejects.toThrow('Unable to determine package scope. No parent `package.json` found.');
     });
   });
 
   describe('loadFromBranchToRoot()', () => {
     const fixtures = [
-      { ext: 'js', tree: configFileTreeJS },
-      { ext: 'json', tree: configFileTreeJSON },
-      { ext: 'json5', tree: configFileTreeJSON5 },
-      { ext: 'cjs', tree: configFileTreeCJS },
-      // { ext: 'ts', tree: configFileTreeTS },
-      { ext: 'yaml', tree: configFileTreeYAML },
-      { ext: 'yml', tree: configFileTreeYML },
+      { ext: 'js', root: getFixturePath('config-file-tree-js') },
+      { ext: 'json', root: getFixturePath('config-file-tree-json') },
+      { ext: 'json5', root: getFixturePath('config-file-tree-json5') },
+      { ext: 'cjs', root: getFixturePath('config-file-tree-cjs') },
+      // { ext: 'ts', root: getFixturePath('config-file-tree-ts')  },
+      { ext: 'yaml', root: getFixturePath('config-file-tree-yaml') },
+      { ext: 'yml', root: getFixturePath('config-file-tree-yml') },
     ];
 
-    fixtures.forEach(({ ext, tree }) => {
+    fixtures.forEach(({ ext, root: tempRoot }) => {
       it(`returns all \`.${ext}\` config files from a branch up to root`, async () => {
-        const tempRoot = createTempFolderStructureFromJSON(tree);
-
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app/profiles/settings`);
 
         expect(files).toEqual([
@@ -186,7 +148,7 @@ describe('ConfigFinder', () => {
     });
 
     it('returns all config files for all types from a branch up to root', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(configFileTreeAllTypes);
+      const tempRoot = getFixturePath('config-file-tree-all-types');
 
       const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app/profiles/settings`);
 
@@ -220,7 +182,7 @@ describe('ConfigFinder', () => {
     });
 
     it('doesnt load config files above root', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(scenarioConfigsAboveRoot);
+      const tempRoot = getFixturePath('config-scenario-configs-above-root');
 
       const files = await finder.loadFromBranchToRoot(`${tempRoot}/nested/deep`);
 
@@ -239,7 +201,7 @@ describe('ConfigFinder', () => {
     });
 
     it('doesnt load branch config files that do not start with a period', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(scenarioBranchInvalidFileName);
+      const tempRoot = getFixturePath('config-scenario-branch-invalid-file-name');
 
       const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
 
@@ -253,7 +215,7 @@ describe('ConfigFinder', () => {
     });
 
     it('doesnt load branch config files that have an unknown extension', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(scenarioBranchInvalidFileName);
+      const tempRoot = getFixturePath('config-scenario-branch-invalid-file-name');
 
       const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
 
@@ -267,7 +229,7 @@ describe('ConfigFinder', () => {
     });
 
     it('doesnt load multiple branch config file types, only the first  found', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(scenarioBranchMultipleTypes);
+      const tempRoot = getFixturePath('config-scenario-branch-multiple-types');
 
       const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
 
@@ -289,7 +251,7 @@ describe('ConfigFinder', () => {
       it('loads branch config files (using BOOST_ENV)', async () => {
         process.env.BOOST_ENV = 'test';
 
-        const tempRoot = createTempFolderStructureFromJSON(scenarioBranchWithEnvs);
+        const tempRoot = getFixturePath('config-scenario-branch-with-envs');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
 
@@ -317,7 +279,7 @@ describe('ConfigFinder', () => {
       it('loads branch config files (using NODE_ENV)', async () => {
         process.env.NODE_ENV = 'staging';
 
-        const tempRoot = createTempFolderStructureFromJSON(scenarioBranchWithEnvs);
+        const tempRoot = getFixturePath('config-scenario-branch-with-envs');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
 
@@ -345,7 +307,7 @@ describe('ConfigFinder', () => {
       it('doesnt load branch config files if `includeEnv` is false (using BOOST_ENV)', async () => {
         process.env.BOOST_ENV = 'test';
 
-        const tempRoot = createTempFolderStructureFromJSON(scenarioBranchWithEnvs);
+        const tempRoot = getFixturePath('config-scenario-branch-with-envs');
 
         finder.configure({ includeEnv: false });
 
@@ -370,7 +332,7 @@ describe('ConfigFinder', () => {
 
     describe('overrides', () => {
       it('adds overrides that match the `include` glob', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(overridesFromBranch);
+        const tempRoot = getFixturePath('config-overrides-from-branch');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/foo/does-match.ts`);
 
@@ -389,7 +351,7 @@ describe('ConfigFinder', () => {
       });
 
       it('adds overrides that match the `include` glob and dont match the `exclude` glob', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(overridesFromBranchWithExcludes);
+        const tempRoot = getFixturePath('config-overrides-from-branch-with-excludes');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/bar.ts`);
 
@@ -408,7 +370,7 @@ describe('ConfigFinder', () => {
       });
 
       it('adds overrides using a custom settings name', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(overridesCustomSettingsName);
+        const tempRoot = getFixturePath('config-overrides-custom-settings-name');
 
         finder.configure({ overridesSetting: 'rules' });
 
@@ -429,7 +391,7 @@ describe('ConfigFinder', () => {
       });
 
       it('doesnt add overrides that dont match the `include` glob', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(overridesFromBranch);
+        const tempRoot = getFixturePath('config-overrides-from-branch');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/foo/doesnt-match.js`);
 
@@ -443,7 +405,7 @@ describe('ConfigFinder', () => {
       });
 
       it('doesnt add overrides that match the `include` glob AND the `exclude` glob', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(overridesFromBranchWithExcludes);
+        const tempRoot = getFixturePath('config-overrides-from-branch-with-excludes');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/baz.ts`);
 
@@ -457,7 +419,7 @@ describe('ConfigFinder', () => {
       });
 
       it('errors if overrides are found in a branch config', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(invalidBranchNestedOverrides);
+        const tempRoot = getFixturePath('config-invalid-branch-nested-overrides');
 
         await expect(finder.loadFromBranchToRoot(`${tempRoot}/src`)).rejects.toThrow(
           'Overrides setting `overrides` must only be defined in a root config.',
@@ -467,7 +429,7 @@ describe('ConfigFinder', () => {
 
     describe('extends', () => {
       it('extends configs using relative and absolute file paths', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(extendsFsPaths);
+        const tempRoot = getFixturePath('config-extends-fs-paths');
 
         const files = await finder.loadFromBranchToRoot(tempRoot);
 
@@ -491,7 +453,7 @@ describe('ConfigFinder', () => {
       });
 
       it('extends config presets from node modules', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(extendsModulePresets);
+        const tempRoot = getFixturePath('config-extends-module-presets');
 
         const files = await finder.loadFromBranchToRoot(tempRoot);
 
@@ -515,7 +477,7 @@ describe('ConfigFinder', () => {
       });
 
       it('extends configs that were defined in an override', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(extendsFromOverride);
+        const tempRoot = getFixturePath('config-extends-from-override');
 
         const files = await finder.loadFromBranchToRoot(`${tempRoot}/some/relative/path`);
 
@@ -539,7 +501,7 @@ describe('ConfigFinder', () => {
       });
 
       it('extends configs using a custom settings name', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(extendsCustomSettingName);
+        const tempRoot = getFixturePath('config-extends-custom-setting-name');
 
         finder.configure({ extendsSetting: 'presets' });
 
@@ -565,7 +527,7 @@ describe('ConfigFinder', () => {
       });
 
       it('errors if extends are found in a branch config', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(invalidBranchNestedExtends);
+        const tempRoot = getFixturePath('config-invalid-branch-nested-extends');
 
         await expect(finder.loadFromBranchToRoot(`${tempRoot}/src`)).rejects.toThrow(
           'Extends setting `extends` must only be defined in a root config.',
@@ -573,7 +535,7 @@ describe('ConfigFinder', () => {
       });
 
       it('errors for an invalid extends path', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(invalidExtendsPath);
+        const tempRoot = getFixturePath('config-invalid-extends-path');
 
         await expect(finder.loadFromBranchToRoot(tempRoot)).rejects.toThrow(
           'Cannot extend configuration. Unknown module or file path "123!#?".',
@@ -581,7 +543,7 @@ describe('ConfigFinder', () => {
       });
 
       it('errors for a missing extends path', async () => {
-        const tempRoot = createTempFolderStructureFromJSON(missingExtendsPath);
+        const tempRoot = getFixturePath('config-missing-extends-path');
 
         await expect(finder.loadFromBranchToRoot(tempRoot)).rejects.toThrow(
           'no such file or directory',
@@ -592,19 +554,17 @@ describe('ConfigFinder', () => {
 
   describe('loadFromRoot()', () => {
     const fixtures = [
-      { ext: 'js', tree: rootConfigJS },
-      { ext: 'json', tree: rootConfigJSON },
-      { ext: 'json5', tree: rootConfigJSON5 },
-      { ext: 'cjs', tree: rootConfigCJS },
-      // { ext: 'ts', tree: rootConfigTS },
-      { ext: 'yaml', tree: rootConfigYAML },
-      { ext: 'yml', tree: rootConfigYML },
+      { ext: 'js', root: getFixturePath('config-root-config-js') },
+      { ext: 'json', root: getFixturePath('config-root-config-json') },
+      { ext: 'json5', root: getFixturePath('config-root-config-json5') },
+      { ext: 'cjs', root: getFixturePath('config-root-config-cjs') },
+      // { ext: 'ts', root: getFixturePath('config-root-config-ts') },
+      { ext: 'yaml', root: getFixturePath('config-root-config-yaml') },
+      { ext: 'yml', root: getFixturePath('config-root-config-yml') },
     ];
 
-    fixtures.forEach(({ ext, tree }) => {
+    fixtures.forEach(({ ext, root: tempRoot }) => {
       it(`returns \`.${ext}\` config file from root`, async () => {
-        const tempRoot = createTempFolderStructureFromJSON(tree);
-
         const files = await finder.loadFromRoot(tempRoot);
 
         expect(files).toEqual([
@@ -618,15 +578,15 @@ describe('ConfigFinder', () => {
     });
 
     it('errors if not root folder', async () => {
-      const tempRoot = createTempFolderStructureFromJSON({ './src': '' });
+      const tempRoot = getFixturePath('config-scenario-not-root');
 
-      await expect(finder.loadFromRoot(`${tempRoot}/src`)).rejects.toThrow(
+      await expect(finder.loadFromRoot(tempRoot)).rejects.toThrow(
         'Invalid configuration root. Requires a `.config` folder and `package.json`.',
       );
     });
 
     it('errors if root folder is missing a `package.json`', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(rootWithoutPackageJson);
+      const tempRoot = getFixturePath('config-root-without-package-json');
 
       await expect(finder.loadFromRoot(tempRoot)).rejects.toThrow(
         'Config folder `.config` found without a relative `package.json`. Both must be located in the project root.',
@@ -634,7 +594,7 @@ describe('ConfigFinder', () => {
     });
 
     it('errors for invalid config file/loader type', async () => {
-      const tempRoot = createTempFolderStructureFromJSON(rootConfigTOML);
+      const tempRoot = getFixturePath('config-root-config-toml');
 
       finder.configure(
         // @ts-expect-error
