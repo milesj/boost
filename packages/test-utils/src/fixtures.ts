@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
@@ -64,6 +66,14 @@ export function copyFixtureToMock(fixture: string, mockName: string): () => void
   jest.doMock(mockName, () => module, { virtual: true });
 
   return () => jest.dontMock(mockName);
+}
+
+export function copyFixtureToTempFolder(fixture: string): string {
+  const tempRoot = createTempFixtureFolder();
+
+  fs.copySync(getFixturePath(fixture), tempRoot, { overwrite: true });
+
+  return tempRoot;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
