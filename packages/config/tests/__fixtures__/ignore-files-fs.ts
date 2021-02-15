@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { DirectoryJSON } from 'memfs';
+import { DirectoryJSON } from '@boost/test-utils';
 import { rootCommon } from './common-fs';
 
 export const ignoreFileTree: DirectoryJSON = {

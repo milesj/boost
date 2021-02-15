@@ -1,6 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { DirectoryJSON } from 'memfs';
 import { json } from '@boost/common';
+import { DirectoryJSON } from '@boost/test-utils';
 
 export const config = json.stringify({ debug: true });
 

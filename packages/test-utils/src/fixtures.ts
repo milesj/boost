@@ -1,7 +1,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
-import { DirectoryJSON } from './types';
+import { DirectoryStructure } from './types';
 
 const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
 
@@ -92,10 +92,11 @@ export function createTempFixtureFolder(): string {
   return dir;
 }
 
-export function createTempFolderStructureFromJSON(structure: DirectoryJSON): string {
+export function createTempFolderStructureFromJSON(structure: DirectoryStructure): string {
   const root = createTempFixtureFolder();
+  const files = typeof structure === 'function' ? structure(root) : structure;
 
-  Object.entries(structure).forEach(([file, contents]) => {
+  Object.entries(files).forEach(([file, contents]) => {
     if (contents === null) {
       return;
     }

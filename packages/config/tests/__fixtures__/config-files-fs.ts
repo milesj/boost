@@ -1,8 +1,7 @@
 /* eslint-disable sort-keys */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { DirectoryJSON } from 'memfs';
 import { json, yaml } from '@boost/common';
+import { DirectoryJSON, DirectoryStructure } from '@boost/test-utils';
 import { pkg, rootCommon } from './common-fs';
 
 function moduleExports(data: object): string {
@@ -255,15 +254,15 @@ export const invalidBranchNestedOverrides: DirectoryJSON = {
   }),
 };
 
-export const extendsFsPaths: DirectoryJSON = {
+export const extendsFsPaths: DirectoryStructure = (root) => ({
   './.config/boost.json': json.stringify({
     root: true,
-    extends: ['../some/relative/path/config.js', '/test/some/absolute/path/config.yml'],
+    extends: ['../some/relative/path/config.js', `${root}/some/absolute/path/config.yml`],
   }),
   './some/absolute/path/config.yml': yaml.stringify({ absolute: true }),
   './some/relative/path/config.js': moduleExports({ relative: true }),
   './package.json': pkg,
-};
+});
 
 export const extendsModulePresets: DirectoryJSON = {
   './.config/boost.json': json.stringify({
