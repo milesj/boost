@@ -92,7 +92,7 @@ describe('ConfigFinder', () => {
 
       const pkg = await finder.determinePackageScope(new Path(`${tempRoot}/index.ts`));
 
-      expect(pkg).toEqual({ name: 'boost', version: '0.0.0' });
+      expect(pkg).toEqual({ name: 'boost-config-example', version: '0.0.0' });
     });
 
     it('uses the cache for the same `package.json` parent', async () => {

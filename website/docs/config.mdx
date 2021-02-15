@@ -233,18 +233,18 @@ resolved (can customize with the [`extensions`](#finder-options) option).
 - `.cjs` - JavaScript using [CommonJS][esm] (`require()`). _Supported by all Node.js versions._
 - `.mjs` - JavaScript using [ECMAScript modules][esm] (`import`/`export`). _Requires Node.js
   v13.3+._
-- `.ts` - TypeScript. _Required the `typescript` package._
+- `.ts` - TypeScript. _Requires the `typescript` package._
 - `.yaml`, `.yml` - YAML. _Does not support multi-document._
 
 Based on the file structure in the [Setup](#setup) section above, the config files can be
-demonstrated as followed (excluding standard JavaScript since it's either CJS or ESM).
+demonstrated as followed (excluding standard JavaScript since it's either CJS or MJS).
 
 <Tabs
   groupId="file-format"
   defaultValue="cjs"
   values={[
     { label: 'JavaScript (CJS)', value: 'cjs' },
-    { label: 'JavaScript (ESM)', value: 'mjs' },
+    { label: 'JavaScript (MJS)', value: 'mjs' },
     { label: 'TypeScript', value: 'ts' },
     { label: 'JSON', value: 'json' },
     { label: 'YAML', value: 'yaml' },

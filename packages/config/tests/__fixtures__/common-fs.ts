@@ -1,10 +1,9 @@
-import { json } from '@boost/common';
 import { DirectoryJSON } from '@boost/test-utils';
 
-export const config = json.stringify({ debug: true });
+export const config = JSON.stringify({ debug: true });
 
-export const pkg = json.stringify({
-  name: 'boost',
+export const pkg = JSON.stringify({
+  name: 'boost-config-example',
   version: '0.0.0',
 });
 

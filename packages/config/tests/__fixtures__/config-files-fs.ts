@@ -1,15 +1,15 @@
 /* eslint-disable sort-keys */
 
-import { json, yaml } from '@boost/common';
+import { yaml } from '@boost/common';
 import { DirectoryJSON, DirectoryStructure } from '@boost/test-utils';
 import { pkg, rootCommon } from './common-fs';
 
 function moduleExports(data: object): string {
-  return `module.exports = ${json.stringify(data)};`;
+  return `module.exports = ${JSON.stringify(data)};`;
 }
 
 function exportsDefault(data: object): string {
-  return `exports default ${json.stringify(data)};`;
+  return `exports default ${JSON.stringify(data)};`;
 }
 
 export const rootConfigJS: DirectoryJSON = {
@@ -18,29 +18,29 @@ export const rootConfigJS: DirectoryJSON = {
 };
 
 export const rootConfigJSON: DirectoryJSON = {
-  './.config/boost.json': json.stringify({ debug: true }),
+  './.config/boost.json': JSON.stringify({ debug: true }),
   './package.json': pkg,
 };
 
 export const rootConfigJSON5: DirectoryJSON = {
-  './.config/boost.json5': json.stringify({ debug: true }),
+  './.config/boost.json5': JSON.stringify({ debug: true }),
   './package.json': pkg,
 };
 
 export const rootConfigCJS: DirectoryJSON = {
   './.config/boost.cjs': moduleExports({ debug: true }),
-  './package.json': json.stringify({ name: 'test', type: 'commonjs' }),
+  './package.json': JSON.stringify({ name: 'test', type: 'commonjs' }),
 };
 
 export const rootConfigMJS: DirectoryJSON = {
   './.config/boost.mjs': exportsDefault({ debug: true }),
-  './package.json': json.stringify({ name: 'test', type: 'module' }),
+  './package.json': JSON.stringify({ name: 'test', type: 'module' }),
 };
 
 export const rootConfigTS: DirectoryJSON = {
   './.config/boost.ts':
     'const config: { debug: boolean } = { debug: true }; export default config;',
-  './package.json': json.stringify({ name: 'test', type: 'typescript' }),
+  './package.json': JSON.stringify({ name: 'test', type: 'typescript' }),
 };
 
 export const rootConfigYAML: DirectoryJSON = {
@@ -61,7 +61,7 @@ export const rootConfigTOML: DirectoryJSON = {
 
 export const configFileTreeAllTypes: DirectoryJSON = {
   ...rootCommon,
-  './src/.boost.json': json.stringify({ type: 'json' }),
+  './src/.boost.json': JSON.stringify({ type: 'json' }),
   './src/app/.boost.cjs': moduleExports({ type: 'cjs' }),
   './src/app/profiles/.boost.js': moduleExports({ type: 'js' }),
   './src/app/profiles/settings/.boost.yaml': yaml.stringify({ type: 'yaml' }),
@@ -78,25 +78,25 @@ export const configFileTreeJS: DirectoryJSON = {
 
 export const configFileTreeJSON: DirectoryJSON = {
   ...rootCommon,
-  './src/app/.boost.json': json.stringify({ debug: false }),
+  './src/app/.boost.json': JSON.stringify({ debug: false }),
   './src/app/index.js': '',
   './src/app/profiles/Detail.tsx': '',
-  './src/app/profiles/settings/.boost.json': json.stringify({ verbose: true }),
+  './src/app/profiles/settings/.boost.json': JSON.stringify({ verbose: true }),
   './src/setup.ts': '',
 };
 
 export const configFileTreeJSON5: DirectoryJSON = {
   ...rootCommon,
-  './src/app/.boost.json5': json.stringify({ debug: false }),
+  './src/app/.boost.json5': JSON.stringify({ debug: false }),
   './src/app/index.js': '',
   './src/app/profiles/Detail.tsx': '',
-  './src/app/profiles/settings/.boost.json5': json.stringify({ verbose: true }),
+  './src/app/profiles/settings/.boost.json5': JSON.stringify({ verbose: true }),
   './src/setup.ts': '',
 };
 
 export const configFileTreeCJS: DirectoryJSON = {
   ...rootCommon,
-  './package.json': json.stringify({ name: 'boost', type: 'commonjs' }),
+  './package.json': JSON.stringify({ name: 'boost', type: 'commonjs' }),
   './src/app/.boost.cjs': moduleExports({ debug: false }),
   './src/app/index.js': '',
   './src/app/profiles/Detail.ts': '',
@@ -106,7 +106,7 @@ export const configFileTreeCJS: DirectoryJSON = {
 
 export const configFileTreeMJS: DirectoryJSON = {
   ...rootCommon,
-  './package.json': json.stringify({ name: 'boost', type: 'module' }),
+  './package.json': JSON.stringify({ name: 'boost', type: 'module' }),
   './src/app/.boost.mjs': exportsDefault({ debug: false }),
   './src/app/index.js': '',
   './src/app/profiles/Detail.ts': '',
@@ -146,25 +146,25 @@ export const configFileTreeYML: DirectoryJSON = {
 export const packageFileTreeMonorepo: DirectoryJSON = {
   ...rootCommon,
   './index.ts': '',
-  './packages/core/package.json': json.stringify({ name: 'core' }),
+  './packages/core/package.json': JSON.stringify({ name: 'core' }),
   './packages/core/src/index.ts': '',
   './packages/core/src/deep/nested/core.ts': '',
-  './packages/log/package.json': json.stringify({ name: 'log' }),
+  './packages/log/package.json': JSON.stringify({ name: 'log' }),
   './packages/log/lib/index.js': '',
-  './packages/plugin/nested/example/package.json': json.stringify({ name: 'plugin-example' }),
+  './packages/plugin/nested/example/package.json': JSON.stringify({ name: 'plugin-example' }),
   './packages/plugin/nested/example/src/index.ts': '',
-  './packages/plugin/package.json': json.stringify({ name: 'plugin' }),
+  './packages/plugin/package.json': JSON.stringify({ name: 'plugin' }),
   './packages/plugin/index.js': '',
 };
 
 export const scenarioConfigsAboveRoot: DirectoryJSON = {
   // Invalid
-  './.boost.json': json.stringify({ belowRoot: true }),
-  './.config/boost.json': json.stringify({ belowRoot: true }),
+  './.boost.json': JSON.stringify({ belowRoot: true }),
+  './.config/boost.json': JSON.stringify({ belowRoot: true }),
   // Valid
-  './nested/.config/boost.json': json.stringify({ root: true }),
-  './nested/deep/.boost.json': json.stringify({ aboveRoot: true }),
-  './nested/package.json': json.stringify({ name: 'boost', type: 'commonjs' }),
+  './nested/.config/boost.json': JSON.stringify({ root: true }),
+  './nested/deep/.boost.json': JSON.stringify({ aboveRoot: true }),
+  './nested/package.json': JSON.stringify({ name: 'boost', type: 'commonjs' }),
 };
 
 export const scenarioBranchInvalidFileName: DirectoryJSON = {
@@ -175,21 +175,21 @@ export const scenarioBranchInvalidFileName: DirectoryJSON = {
 
 export const scenarioBranchMultipleTypes: DirectoryJSON = {
   ...rootCommon,
-  './src/app/.boost.json': json.stringify({ type: 'json' }),
+  './src/app/.boost.json': JSON.stringify({ type: 'json' }),
   './src/app/.boost.yaml': yaml.stringify({ type: 'yaml' }),
 };
 
 export const scenarioBranchWithEnvs: DirectoryJSON = {
   ...rootCommon,
-  './src/app/.boost.json': json.stringify({ env: 'all' }),
-  './src/app/.boost.production.json': json.stringify({ env: 'production' }),
-  './src/app/.boost.staging.json': json.stringify({ env: 'staging' }),
-  './src/app/.boost.test.json': json.stringify({ env: 'test' }),
+  './src/app/.boost.json': JSON.stringify({ env: 'all' }),
+  './src/app/.boost.production.json': JSON.stringify({ env: 'production' }),
+  './src/app/.boost.staging.json': JSON.stringify({ env: 'staging' }),
+  './src/app/.boost.test.json': JSON.stringify({ env: 'test' }),
 };
 
 export const overridesFromBranch: DirectoryJSON = {
   ...rootCommon,
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     level: 1,
     overrides: [
       {
@@ -207,7 +207,7 @@ export const overridesFromBranch: DirectoryJSON = {
 
 export const overridesCustomSettingsName: DirectoryJSON = {
   ...rootCommon,
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     level: 1,
     rules: [
       {
@@ -225,7 +225,7 @@ export const overridesCustomSettingsName: DirectoryJSON = {
 
 export const overridesFromBranchWithExcludes: DirectoryJSON = {
   ...rootCommon,
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     level: 1,
     overrides: [
       {
@@ -244,18 +244,18 @@ export const overridesFromBranchWithExcludes: DirectoryJSON = {
 
 export const invalidBranchNestedOverrides: DirectoryJSON = {
   ...rootCommon,
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     level: 1,
     overrides: [],
   }),
-  './src/.boost.json': json.stringify({
+  './src/.boost.json': JSON.stringify({
     level: 2,
     overrides: [],
   }),
 };
 
 export const extendsFsPaths: DirectoryStructure = (root) => ({
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     root: true,
     extends: ['../some/relative/path/config.js', `${root}/some/absolute/path/config.yml`],
   }),
@@ -265,7 +265,7 @@ export const extendsFsPaths: DirectoryStructure = (root) => ({
 });
 
 export const extendsModulePresets: DirectoryJSON = {
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     root: true,
     extends: ['foo', '@scope/bar'],
   }),
@@ -275,7 +275,7 @@ export const extendsModulePresets: DirectoryJSON = {
 };
 
 export const extendsCustomSettingName: DirectoryJSON = {
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     root: true,
     presets: ['foo', '../some/relative/path/config.js'],
   }),
@@ -285,7 +285,7 @@ export const extendsCustomSettingName: DirectoryJSON = {
 };
 
 export const extendsFromOverride: DirectoryJSON = {
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     root: true,
     overrides: [
       {
@@ -302,7 +302,7 @@ export const extendsFromOverride: DirectoryJSON = {
 };
 
 export const invalidExtendsPath: DirectoryJSON = {
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     root: true,
     extends: '123!#?',
   }),
@@ -310,7 +310,7 @@ export const invalidExtendsPath: DirectoryJSON = {
 };
 
 export const missingExtendsPath: DirectoryJSON = {
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     root: true,
     extends: '../some/missing/path/config.js',
   }),
@@ -319,11 +319,11 @@ export const missingExtendsPath: DirectoryJSON = {
 
 export const invalidBranchNestedExtends: DirectoryJSON = {
   ...rootCommon,
-  './.config/boost.json': json.stringify({
+  './.config/boost.json': JSON.stringify({
     level: 1,
     extends: [],
   }),
-  './src/.boost.json': json.stringify({
+  './src/.boost.json': JSON.stringify({
     level: 2,
     extends: [],
   }),
