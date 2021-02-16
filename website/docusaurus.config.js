@@ -14,7 +14,7 @@ const pkgs = [
   'terminal',
   'translate',
   // eslint-disable-next-line
-].map((name) => require(`@boost/${name}/package.json`));
+].map((name) => require(`../packages/${name}/package.json`));
 
 module.exports = {
   title: 'Boost',
