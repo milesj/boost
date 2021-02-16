@@ -33,3 +33,13 @@ jobs:
       - run: yarn install --ignore-engines --frozen-lockfile
       - run: yarn global add packemon@0.11.1 --force
       - run: yarn run pack
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: |
+          cd website
+          yarn install --ignore-engines --frozen-lockfile
+          yarn run build
