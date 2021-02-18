@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "release": "1594765247526",
   "description": "A collection of common utilities, classes, and helpers.",
   "keywords": [
@@ -35,7 +35,7 @@
     "yaml": "^1.10.0"
   },
   "devDependencies": {
-    "@boost/test-utils": "^2.2.0"
+    "@boost/test-utils": "^2.3.0"
   },
   "optionalDependencies": {
     "typescript": "^4.0.0"

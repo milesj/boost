@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.2.3 - 2021-02-18
+
+#### 🐞 Fixes
+
+- Use `where` instead of `which`. Improve Windows support. (#139) ([a0238c3](https://github.com/milesj/boost/commit/a0238c3)), closes [#139](https://github.com/milesj/boost/issues/139)
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 2.2.2 - 2021-02-12
 
 **Note:** Version bump only for package @boost/debug

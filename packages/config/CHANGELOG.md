@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.3.3 - 2021-02-18
+
+#### 🐞 Fixes
+
+- Migrate JS/CJS loader to use native require. ([84acc48](https://github.com/milesj/boost/commit/84acc48))
+- Migrate TS loader to our new typed module loader. ([4cd80f4](https://github.com/milesj/boost/commit/4cd80f4))
+
+#### 🛠 Internals
+
+- Fix broken tests. Move some to isolation. ([5ea4ef2](https://github.com/milesj/boost/commit/5ea4ef2))
+- Move to internal fixtures from `memfs`. ([4d46991](https://github.com/milesj/boost/commit/4d46991))
+- Switch to local fixtures instead of dynamically created temporary fixtures. ([908936f](https://github.com/milesj/boost/commit/908936f))
+
+**Note:** Version bump only for package @boost/config
+
+
+
+
+
 ### 2.3.2 - 2021-02-12
 
 #### 🐞 Fixes

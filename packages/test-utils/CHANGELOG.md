@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.3.0 - 2021-02-18
+
+#### 🚀 Updates
+
+- Add `copyFixtureToTempFolder` for copying a fixture for isolation. ([445c61b](https://github.com/milesj/boost/commit/445c61b))
+- Add `createTempFolderStructureFromJSON` for scaffolding fixtures in a temp folder. ([1ebd744](https://github.com/milesj/boost/commit/1ebd744))
+
+#### 🛠 Internals
+
+- Move to internal fixtures from `memfs`. ([4d46991](https://github.com/milesj/boost/commit/4d46991))
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ## 2.2.0 - 2021-01-16
 
 #### 🚀 Updates

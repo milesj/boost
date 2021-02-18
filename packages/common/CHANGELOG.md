@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.7.0 - 2021-02-18
+
+#### 🚀 Updates
+
+- Add `requireTypedModule` helper for importing TypeScript files. (#140) ([b3b14aa](https://github.com/milesj/boost/commit/b3b14aa)), closes [#140](https://github.com/milesj/boost/issues/140)
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 2.6.0 - 2021-02-12
 
 #### 🚀 Updates
