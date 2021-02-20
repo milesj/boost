@@ -10,10 +10,10 @@ export interface FileCache<T> {
 export default class Cache {
   configDir?: Path;
 
-  dirFilesCache: { [dir: string]: Path[] } = {};
+  dirFilesCache: Record<string, Path[]> = {};
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fileContentCache: { [path: string]: FileCache<any> } = {};
+  fileContentCache: Record<string, FileCache<any>> = {};
 
   pkgPath?: Path;
 

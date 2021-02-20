@@ -4,7 +4,6 @@ import pluralize from 'pluralize';
 import {
   Blueprint,
   Contract,
-  FilePath,
   isObject,
   MODULE_NAME_PATTERN,
   ModuleName,
@@ -24,6 +23,8 @@ import {
   Registration,
   RegistryOptions,
   Setting,
+  Source,
+  SourceWithOptions,
 } from './types';
 
 export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
@@ -124,15 +125,15 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Load and register a single plugin by name, or with an explicit instance.
    */
   async load(
-    name: FilePath | ModuleName | Plugin,
+    source: Plugin | Source,
     params: object = {},
     options: RegisterOptions<Tool> = {},
   ): Promise<Plugin> {
     let plugin: Plugin;
 
     // Plugin instance
-    if (isObject(name)) {
-      plugin = name;
+    if (isObject(source)) {
+      plugin = source;
 
       if (plugin.priority) {
         // eslint-disable-next-line no-param-reassign
@@ -140,14 +141,14 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
       }
 
       // Options object
-    } else if (typeof name === 'string') {
-      plugin = await this.loader.load(name, params);
+    } else if (typeof source === 'string') {
+      plugin = await this.loader.load(source, params);
 
-      this.onLoad.emit([name, params]);
+      this.onLoad.emit([source, params]);
 
       // Unknown setting
     } else {
-      throw new PluginError('SETTING_UNKNOWN', [name]);
+      throw new PluginError('SETTING_UNKNOWN', [source]);
     }
 
     if (!plugin.name) {
@@ -161,18 +162,32 @@ export default class Registry<Plugin extends Pluggable, Tool = unknown> extends 
    * Load and register multiple plugins based on a list of settings.
    */
   async loadMany(
-    settings: (FilePath | ModuleName | Plugin)[] | Setting,
+    settings: (Plugin | Source | SourceWithOptions)[] | Setting,
     options: RegisterOptions<Tool> = {},
   ): Promise<Plugin[]> {
+    const loaded: Promise<Plugin>[] = [];
+    const toLoad: SourceWithOptions[] = [];
+
     if (Array.isArray(settings)) {
-      return Promise.all(settings.map((setting) => this.load(setting, {}, options)));
+      settings.forEach((setting) => {
+        if (typeof setting === 'string') {
+          toLoad.push([setting, {}]);
+        } else if (Array.isArray(setting)) {
+          toLoad.push(setting);
+        } else {
+          loaded.push(this.load(setting, {}, options));
+        }
+      });
+    } else if (isObject(settings)) {
+      toLoad.push(...Object.entries(settings));
     }
 
-    return Promise.all(
-      Object.entries(settings)
-        .filter(([name, setting]) => setting !== false && setting !== undefined)
-        .map(([name, setting]) => this.load(name, isObject(setting) ? setting : {}, options)),
-    );
+    return Promise.all([
+      ...loaded,
+      ...toLoad
+        .filter(([, params]) => params !== false && params !== undefined)
+        .map(([name, params]) => this.load(name, isObject(params) ? params : {}, options)),
+    ]);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { ModuleName, PackageStructure, Path } from '@boost/common';
+import { PackageStructure, Path } from '@boost/common';
 
 export type ExtType = 'cjs' | 'js' | 'json' | 'json5' | 'mjs' | 'ts' | 'yaml' | 'yml';
 
@@ -59,12 +59,14 @@ export interface OverridesSettingItem<T> {
 
 export type OverridesSetting<T> = OverridesSettingItem<T>[];
 
-export type PluginsSettingMapItem = boolean | object;
+// PLUGINS
 
-export interface PluginsSettingMap {
-  [name: string]: PluginsSettingMapItem;
-}
+export type PluginOptions = boolean | object;
 
-export type PluginsSettingList = ModuleName[];
+export type PluginEntry = string | [string, PluginOptions];
+
+export type PluginsSettingMap = Record<string, PluginOptions>;
+
+export type PluginsSettingList = PluginEntry[];
 
 export type PluginsSetting = PluginsSettingList | PluginsSettingMap;

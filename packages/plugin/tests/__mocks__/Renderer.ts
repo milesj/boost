@@ -6,7 +6,7 @@ export interface Renderable extends Pluggable {
 }
 
 export class Renderer extends Plugin<unknown, { value: string }> implements Renderable {
-  name = '';
+  readonly name = '';
 
   priority = DEFAULT_PRIORITY;
 

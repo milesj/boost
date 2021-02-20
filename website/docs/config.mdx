@@ -184,8 +184,9 @@ used for common scenarios (these handlers power the default rules mentioned abov
   new list of file paths. This is useful if utilizing [config extending](#enable-extending).
 - `mergeObject` - Shallow merges previous and next objects into a new object using object spread.
 - `mergePlugins` - Merges previous and next plugin configurations into an object. Plugin configs can
-  either be a list of module names, or a map of module names to flags/options. This is useful if
-  utilizing the [plugin package](./plugin.mdx#configuration-files).
+  either be a list of sources, or list of sources with flags/options (tuples), or a map of sources
+  to flags/options. This is useful if utilizing the
+  [plugin package](./plugin.mdx#configuration-files).
 - `overwrite` - Overwrite the previous value with the next value.
 
 ```ts
@@ -205,6 +206,9 @@ class Manager extends Configuration<ConfigFile> {
 
 A config file is a file that explicitly defines settings (key-value pairs) according to a defined
 structure.
+
+> Configuration files are designed to be serializable, so please use primitive, object, and array
+> values only. Try to avoid non-serializable values like class instances.
 
 ### File patterns
 

@@ -498,50 +498,134 @@ await registry.loadMany(['foo', 'bar'], { tool });
 ### Configuration files
 
 The loader methods were built to support plugins defined in [configuration files](./config.mdx), as
-this is a common use case. Take the following examples that showcase JSON and JS based
-configurations.
+this is a common use case. Settings to configure plugins are designed with 3 different formats in
+mind, all of which can be used together, and will merge into a valid final result.
 
-```json
+The first is a simple array of plugin sources (module name or relative file path). When using a
+module, both long and short forms are supported.
+
+<Tabs
+  groupId="package-manager"
+  defaultValue="json"
+  values={[
+    { label: 'JSON', value: 'json' },
+    { label: 'JS', value: 'js' },
+  ]}
+>
+  <TabItem value="json">
+
+```js
+{
+  "renderers": [
+    "foo", // @boost/renderer-foo, boost-renderer-foo
+    "@boost/renderer-bar",
+    "@scope/boost-renderer-baz",
+    "../custom/renderer.js"
+  ]
+}
+```
+
+  </TabItem>
+  <TabItem value="js">
+
+```js
+module.exports = {
+  renderers: [
+    'foo', // @boost/renderer-foo, boost-renderer-foo
+    '@boost/renderer-bar',
+    '@scope/boost-renderer-baz',
+    '../custom/renderer.js',
+  ],
+};
+```
+
+  </TabItem>
+</Tabs>
+
+To expand upon the previous example, an individual plugin can be configured with options by passing
+a tuple alongside the source. Plugins can also be disabled by passing a `false` value.
+
+<Tabs
+  groupId="package-manager"
+  defaultValue="json"
+  values={[
+    { label: 'JSON', value: 'json' },
+    { label: 'JS', value: 'js' },
+  ]}
+>
+  <TabItem value="json">
+
+```js
+{
+  "renderers": [
+    ["foo", { "async": true }],
+    "@boost/renderer-bar",
+    ["@scope/boost-renderer-baz", false], // Disabled
+    "../custom/renderer.js"
+  ]
+}
+```
+
+  </TabItem>
+  <TabItem value="js">
+
+```js
+module.exports = {
+  renderers: [
+    ['foo', { async: true }],
+    '@boost/renderer-bar',
+    ['@scope/boost-renderer-baz', false], // Disabled
+    '../custom/renderer.js',
+  ],
+};
+```
+
+  </TabItem>
+</Tabs>
+
+The final format, which is quite advanced, is using an object that maps plugin sources to
+configurable options or flags (enable or disable the plugin).
+
+<Tabs
+  groupId="package-manager"
+  defaultValue="json"
+  values={[
+    { label: 'JSON', value: 'json' },
+    { label: 'JS', value: 'js' },
+  ]}
+>
+  <TabItem value="json">
+
+```js
 {
   "renderers": {
-    "foo": { "async": true },
-    "@boost/renderer-bar": {},
-    "@scope/boost-renderer-baz": true
+    "foo": { "async": true }, // Enabled with options
+    "@boost/renderer-bar": {}, // Enabled with empty options
+    "@scope/boost-renderer-baz": false, // Disabled
+    "../custom/renderer.js": true // Enabled
   }
 }
 ```
 
+  </TabItem>
+  <TabItem value="js">
+
 ```js
 module.exports = {
   renderers: {
-    foo: { async: true },
-    '@boost/renderer-bar': {},
-    '@scope/boost-renderer-baz': true,
+    foo: { async: true }, // Enabled with options
+    '@boost/renderer-bar': {}, // Enabled with empty options
+    '@scope/boost-renderer-baz': false, // Disabled
+    '../custom/renderer.js': true, // Enabled
   },
 };
 ```
 
-And Webpack/Rollup styled configurations where plugins are instantiated manually.
+  </TabItem>
+</Tabs>
 
-<!-- prettier-ignore -->
-```js
-import foo from 'boost-renderer-foo';
-import bar from '@boost/renderer-bar';
-import baz from '@scope/boost-renderer-baz';
-import qux from './renderers/qux';
-
-const barInstance = bar();
-barInstance.priority = 1;
-
-export default {
-  renderers: [
-    foo({ async: true }),
-    barInstance,
-    baz(),
-    qux(),
-  ],
-};
-```
+> Configuration files are designed to be serializable, so passing class instances (Webpack/Rollup
+> style) is not supported. It's also not necessary with our factory pattern!
 
 ## Ecosystem
 

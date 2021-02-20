@@ -3,13 +3,14 @@ import { PluginsSetting, PluginsSettingList, PluginsSettingMap } from '../types'
 import mergeObject from './mergeObject';
 
 function convertListToMap(list: PluginsSettingList): PluginsSettingMap {
-  return list.reduce(
-    (map, name) => ({
+  return list.reduce((map, entry) => {
+    const [name, options = true] = Array.isArray(entry) ? entry : [entry];
+
+    return {
       ...map,
-      [name]: true,
-    }),
-    {},
-  );
+      [name]: options,
+    };
+  }, {});
 }
 
 export default function mergePlugins(
