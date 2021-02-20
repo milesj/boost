@@ -506,7 +506,7 @@ module, both long and short forms are supported.
 
 <Tabs
   groupId="package-manager"
-  defaultValue="yarn"
+  defaultValue="json"
   values={[
     { label: 'JSON', value: 'json' },
     { label: 'JS', value: 'js' },
@@ -514,7 +514,7 @@ module, both long and short forms are supported.
 >
   <TabItem value="json">
 
-```json
+```js
 {
   "renderers": [
     "foo", // @boost/renderer-foo, boost-renderer-foo
@@ -547,7 +547,7 @@ a tuple alongside the source. Plugins can also be disabled by passing a `false` 
 
 <Tabs
   groupId="package-manager"
-  defaultValue="yarn"
+  defaultValue="json"
   values={[
     { label: 'JSON', value: 'json' },
     { label: 'JS', value: 'js' },
@@ -555,7 +555,7 @@ a tuple alongside the source. Plugins can also be disabled by passing a `false` 
 >
   <TabItem value="json">
 
-```json
+```js
 {
   "renderers": [
     ["foo", { "async": true }],
@@ -584,12 +584,11 @@ module.exports = {
 </Tabs>
 
 The final format, which is quite advanced, is using an object that maps plugin sources to
-configurable options or flags (enable or disable the plugin). This format can be passed to
-[`loadMany()`](#loading-plugins).
+configurable options or flags (enable or disable the plugin).
 
 <Tabs
   groupId="package-manager"
-  defaultValue="yarn"
+  defaultValue="json"
   values={[
     { label: 'JSON', value: 'json' },
     { label: 'JS', value: 'js' },
@@ -597,7 +596,7 @@ configurable options or flags (enable or disable the plugin). This format can be
 >
   <TabItem value="json">
 
-```json
+```js
 {
   "renderers": {
     "foo": { "async": true }, // Enabled with options
@@ -624,6 +623,9 @@ module.exports = {
 
   </TabItem>
 </Tabs>
+
+> Configuration files are designed to be serializable, so passing class instances (Webpack/Rollup
+> style) is not supported. It's also not necessary with our factory pattern!
 
 ## Ecosystem
 

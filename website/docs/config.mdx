@@ -207,6 +207,9 @@ class Manager extends Configuration<ConfigFile> {
 A config file is a file that explicitly defines settings (key-value pairs) according to a defined
 structure.
 
+> Configuration files are designed to be serializable, so please use primitive, object, and array
+> values only. Try to avoid non-serializable values like class instances.
+
 ### File patterns
 
 Config files are grouped into either the root or branch category. Root config files are located in a

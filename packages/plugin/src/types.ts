@@ -29,7 +29,7 @@ export interface RegisterOptions<T = unknown> {
 }
 
 export interface Registration<T extends Pluggable> extends RegisterOptions {
-  name: Source;
+  name: ModuleName;
   plugin: T;
 }
 
