@@ -1,21 +1,13 @@
 /* eslint-disable security/detect-non-literal-regexp */
 
 import path from 'path';
-import {
-  FilePath,
-  isFilePath,
-  isObject,
-  MODULE_NAME_PART,
-  ModuleName,
-  PathResolver,
-  requireModule,
-} from '@boost/common';
+import { isFilePath, isObject, MODULE_NAME_PART, PathResolver, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import debug from './debug';
 import PluginError from './PluginError';
 import Registry from './Registry';
-import { Factory, Pluggable } from './types';
+import { Factory, Pluggable, Source } from './types';
 
 export default class Loader<Plugin extends Pluggable> {
   readonly debug: Debugger;
@@ -32,7 +24,7 @@ export default class Loader<Plugin extends Pluggable> {
    * based on a list of acceptable plugin module name patterns.
    */
   // eslint-disable-next-line complexity
-  createResolver(name: FilePath | ModuleName): PathResolver {
+  createResolver(name: Source): PathResolver {
     const resolver = new PathResolver();
     const { singularName: typeName, projectName } = this.registry;
     const moduleName = name.toLowerCase();
@@ -106,12 +98,13 @@ export default class Loader<Plugin extends Pluggable> {
   }
 
   /**
-   * Load a plugin by short name or fully qualified module name, with an optional options object.
+   * Load a plugin by short name or fully qualified module name, or file path,
+   * and with an optional options object.
    */
-  async load(name: FilePath | ModuleName, options: object = {}): Promise<Plugin> {
-    const { originalPath, resolvedPath } = this.createResolver(name).resolve();
+  async load(source: Source, options: object = {}): Promise<Plugin> {
+    const { originalPath, resolvedPath } = this.createResolver(source).resolve();
 
-    this.debug('Loading %s from %s', color.moduleName(name), color.filePath(resolvedPath));
+    this.debug('Loading %s from %s', color.moduleName(source), color.filePath(resolvedPath));
 
     const factory: Factory<Plugin> = requireModule(resolvedPath);
 

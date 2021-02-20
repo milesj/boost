@@ -219,8 +219,9 @@ describe('Processor', () => {
             defaults,
             [
               stubConfigFile({ plugins: { foo: true, qux: { on: true } } }),
-              stubConfigFile({ plugins: { bar: false } }),
+              stubConfigFile({ plugins: [['bar', false]] }),
               stubConfigFile({ plugins: { foo: { legacy: true }, baz: true, qux: { on: false } } }),
+              stubConfigFile({ plugins: ['oop'] }),
             ],
             blueprint,
           ),
@@ -231,6 +232,7 @@ describe('Processor', () => {
             bar: false,
             baz: true,
             qux: { on: false },
+            oop: true,
           },
         });
       });

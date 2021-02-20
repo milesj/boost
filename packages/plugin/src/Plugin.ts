@@ -4,7 +4,7 @@ import { Pluggable } from './types';
 export default abstract class Plugin<T = unknown, Options extends object = {}>
   extends Contract<Options>
   implements Pluggable<T> {
-  name = '';
+  readonly name = '';
 
   startup(tool: T) {}
 

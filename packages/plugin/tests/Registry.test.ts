@@ -132,6 +132,7 @@ describe('Registry', () => {
     function createClass(name: string, options?: { value: string }) {
       const renderer = new Renderer(options);
 
+      // @ts-expect-error
       renderer.name = name;
 
       return renderer;
@@ -155,7 +156,7 @@ describe('Registry', () => {
       expect(spy).toHaveBeenCalledWith('bar', {});
     });
 
-    it('loads plugins based on name', async () => {
+    it('loads plugins based on source', async () => {
       fixtures.push(
         copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
         copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
@@ -196,6 +197,62 @@ describe('Registry', () => {
         {
           name: '@boost-test/renderer-bar',
           plugin: expect.any(Object),
+          priority: DEFAULT_PRIORITY,
+        },
+        {
+          name: '@test/boost-test-renderer-baz',
+          plugin: expect.any(Object),
+          priority: DEFAULT_PRIORITY,
+        },
+      ]);
+    });
+
+    it('loads plugins using a tuple with options', async () => {
+      fixtures.push(
+        copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
+        copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
+        copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
+      );
+
+      await registry.loadMany(
+        [
+          // Short names
+          ['foo', { value: 'foo' }],
+          'bar',
+          // Full names
+          'boost-test-renderer-foo',
+          ['@boost-test/renderer-bar', { value: 'bar' }],
+          // Full name with custom scope
+          '@test/boost-test-renderer-baz',
+          ['@test/baz', false],
+        ],
+        { tool },
+      );
+
+      // @ts-expect-error
+      expect(registry.plugins).toEqual([
+        {
+          name: 'boost-test-renderer-foo',
+          plugin: expect.objectContaining({
+            options: { value: 'foo' },
+          }),
+          priority: DEFAULT_PRIORITY,
+        },
+        {
+          name: '@boost-test/renderer-bar',
+          plugin: expect.any(Object),
+          priority: DEFAULT_PRIORITY,
+        },
+        {
+          name: 'boost-test-renderer-foo',
+          plugin: expect.any(Object),
+          priority: DEFAULT_PRIORITY,
+        },
+        {
+          name: '@boost-test/renderer-bar',
+          plugin: expect.objectContaining({
+            options: { value: 'bar' },
+          }),
           priority: DEFAULT_PRIORITY,
         },
         {

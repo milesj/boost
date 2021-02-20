@@ -14,15 +14,13 @@ export function createExtendsPredicate(preds: Predicates = predicates) {
 }
 
 export function createPluginsPredicate(preds: Predicates = predicates) {
-  const { array, bool, object, string, tuple, union } = preds;
-  const pluginSource = string().notEmpty();
-  const pluginOptions = union<PluginOptions>([bool(), object().notNullable()], {});
-  const pluginEntry = tuple<[string, PluginOptions]>([pluginSource, pluginOptions]);
+  const { array, bool, object, union } = preds;
+  const pluginOptions = union<PluginOptions>([bool(), object()], {});
+  // TODO: Bug in optimal, fix upstream
+  // const pluginSource = string();
+  // const pluginEntry = tuple<[string, PluginOptions]>([pluginSource, pluginOptions]);
 
-  return union<PluginsSetting>(
-    [array(union([pluginSource, pluginEntry], '')), object(pluginOptions).notNullable()],
-    {},
-  );
+  return union<PluginsSetting>([array(), object(pluginOptions).notNullable()], {});
 }
 
 export function createOverridesPredicate<T extends object>(

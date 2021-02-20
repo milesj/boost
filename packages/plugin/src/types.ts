@@ -1,4 +1,10 @@
-import { ModuleName } from '@boost/common';
+import { FilePath, ModuleName } from '@boost/common';
+
+export type Source = FilePath | ModuleName;
+
+export type SourceOptions = boolean | object;
+
+export type SourceWithOptions = [Source, SourceOptions];
 
 export type Callback<T = unknown> = (value: T) => Promise<void> | void;
 
@@ -11,9 +17,7 @@ export interface Pluggable<T = any> {
   startup?: Callback<T>;
 }
 
-export interface Setting {
-  [name: string]: boolean | object;
-}
+export type Setting = Record<string, SourceOptions>;
 
 export type Factory<T extends Pluggable, O extends object = object> = (
   options: Partial<O>,
@@ -25,7 +29,7 @@ export interface RegisterOptions<T = unknown> {
 }
 
 export interface Registration<T extends Pluggable> extends RegisterOptions {
-  name: ModuleName;
+  name: Source;
   plugin: T;
 }
 

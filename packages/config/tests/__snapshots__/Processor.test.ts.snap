@@ -13,10 +13,10 @@ exports[`Processor processing extends setting errors for an empty string in an a
 exports[`Processor processing extends setting errors for an invalid value 1`] = `"Invalid field \\"extends\\" in .boost.js. Type must be one of: string, array<string>."`;
 
 exports[`Processor processing plugins setting errors for an invalid option value 1`] = `
-"Invalid field \\"plugins\\" in .boost.js. Type must be one of: array<string | [string, boolean | object]>, object<boolean | object>. Received object with the following invalidations:
+"Invalid field \\"plugins\\" in .boost.js. Type must be one of: array, object<boolean | object>. Received object with the following invalidations:
  - Invalid field \\"plugins.foo\\" in .boost.js. Type must be one of: boolean, object."
 `;
 
-exports[`Processor processing plugins setting errors for an invalid value 1`] = `"Invalid field \\"plugins\\" in .boost.js. Type must be one of: array<string | [string, boolean | object]>, object<boolean | object>."`;
+exports[`Processor processing plugins setting errors for an invalid value 1`] = `"Invalid field \\"plugins\\" in .boost.js. Type must be one of: array, object<boolean | object>."`;
 
 exports[`Processor processing validation validates each config 1`] = `"Invalid field \\"debug\\" in .boost.js. Must be a boolean."`;
