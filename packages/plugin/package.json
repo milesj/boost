@@ -1,6 +1,6 @@
 {
   "name": "@boost/plugin",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "release": "1594765247526",
   "description": "Plugin based architecture that supports module loading, custom types, registries, scopes, and more.",
   "keywords": [

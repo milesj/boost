@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.3.0 - 2021-02-20
+
+#### 🚀 Updates
+
+- Support tuples (source and options) for plugin settings. (#143) ([4b15a8e](https://github.com/milesj/boost/commit/4b15a8e)), closes [#143](https://github.com/milesj/boost/issues/143)
+
+**Note:** Version bump only for package @boost/plugin
+
+
+
+
+
 ### 2.2.3 - 2021-02-18
 
 #### ⚙️ Types
