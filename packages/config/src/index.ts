@@ -26,4 +26,5 @@ export {
   mergePlugins,
   overwrite,
 };
+
 export type { ConfigErrorCode };

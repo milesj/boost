@@ -3,8 +3,8 @@ import {
   ExtendsSetting,
   FileGlob,
   OverridesSettingItem,
+  PluginOptions,
   PluginsSetting,
-  PluginsSettingMapItem,
 } from './types';
 
 export function createExtendsPredicate(preds: Predicates = predicates) {
@@ -14,13 +14,13 @@ export function createExtendsPredicate(preds: Predicates = predicates) {
 }
 
 export function createPluginsPredicate(preds: Predicates = predicates) {
-  const { array, bool, object, string, union } = preds;
+  const { array, bool, object, string, tuple, union } = preds;
+  const pluginSource = string().notEmpty();
+  const pluginOptions = union<PluginOptions>([bool(), object().notNullable()], {});
+  const pluginEntry = tuple<[string, PluginOptions]>([pluginSource, pluginOptions]);
 
   return union<PluginsSetting>(
-    [
-      array(string().notEmpty()),
-      object(union<PluginsSettingMapItem>([bool(), object().notNullable()], {})).notNullable(),
-    ],
+    [array(union([pluginSource, pluginEntry], '')), object(pluginOptions).notNullable()],
     {},
   );
 }
