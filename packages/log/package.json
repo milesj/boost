@@ -1,6 +1,6 @@
 {
   "name": "@boost/log",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "release": "1594765247526",
   "description": "Lightweight level based logging system.",
   "keywords": [
@@ -27,9 +27,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^2.7.0",
+    "@boost/common": "^2.7.1",
     "@boost/internal": "^2.2.1",
-    "@boost/translate": "^2.2.3",
+    "@boost/translate": "^2.2.4",
     "chalk": "^4.1.0"
   },
   "funding": {
