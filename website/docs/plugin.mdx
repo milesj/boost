@@ -69,7 +69,7 @@ In our examples moving forward, we will use "renderer" as our plugin type.
 ```ts
 import { Registry, Pluggable } from '@boost/plugin';
 
-export interface Renderable<T> extends Pluggable<T> {
+export interface Renderable<T = unknown> extends Pluggable<T> {
   render(): string | Promise<string>;
 }
 
@@ -124,7 +124,7 @@ import { Renderable } from './registry';
 
 export default class Renderer extends Plugin implements Renderable {
   // Using private scope
-  name = '@boost/renderer-example';
+  readonly name = '@boost/renderer-example';
 
   render() {
     return 'Something rendered here?';
@@ -136,7 +136,9 @@ export default class Renderer extends Plugin implements Renderable {
   <TabItem value="object">
 
 ```ts
-const renderer = {
+import { Renderable } from './registry';
+
+const renderer: Renderable = {
   // Using public scope
   name: 'boost-renderer-example',
 
@@ -216,7 +218,7 @@ import { Plugin } from '@boost/plugin';
 import { Renderable } from './registry';
 
 export default class Renderer extends Plugin implements Renderable {
-  name = '@boost/renderer-example';
+  readonly name = '@boost/renderer-example';
 
   priority = 50;
 
@@ -230,7 +232,9 @@ export default class Renderer extends Plugin implements Renderable {
   <TabItem value="object">
 
 ```ts
-const renderer = {
+import { Renderable } from './registry';
+
+const renderer: Renderable = {
   name: 'boost-renderer-example',
 
   priority: 50,
