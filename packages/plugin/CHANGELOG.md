@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.3.2 - 2021-02-22
+
+#### ⚙️ Types
+
+- Undo readonly name on abstract Plugin. ([a743b66](https://github.com/milesj/boost/commit/a743b66))
+
+**Note:** Version bump only for package @boost/plugin
+
+
+
+
+
 ### 2.3.1 - 2021-02-21
 
 **Note:** Version bump only for package @boost/plugin
