@@ -1,8 +1,0 @@
-src/
-tests/
-types/
-*.lock
-*.log
-*.tsbuildinfo
-tsconfig.json
-.eslintrc
