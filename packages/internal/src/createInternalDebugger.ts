@@ -8,6 +8,6 @@ export function sentenceCase(value: unknown): string {
 
 debug.formatters.S = sentenceCase;
 
-export default function createInternalDebugger(namespace: string): Debugger {
+export function createInternalDebugger(namespace: string): Debugger {
   return debug(`boost:${namespace}`);
 }
