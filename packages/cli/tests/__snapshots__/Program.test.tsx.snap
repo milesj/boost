@@ -53,7 +53,7 @@ exports[`<Program /> error renders a thrown error from a component 1`] = `
 "[1m[41m[30m ERROR [39m[49m[22m
 
  Fail from component
-[31merror[39m The above error occurred in the <ErrorComponent> component:
+The above error occurred in the <ErrorComponent> component:
     in ErrorComponent
     in ink-box (created by Box)
     in Box (created by Wrapper)

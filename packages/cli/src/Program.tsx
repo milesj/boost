@@ -244,7 +244,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     }
 
     const { stdin, stdout, stderr } = this.streams;
-    const unpatch = patchConsole(this.logger, this.errBuffer);
+    const unpatch = patchConsole(this.outBuffer, this.errBuffer);
 
     try {
       this.onBeforeRender.emit([element]);
