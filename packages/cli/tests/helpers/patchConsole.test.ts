@@ -1,6 +1,4 @@
-import chalk from 'chalk';
 import debug from 'debug';
-import { createLogger, formats, Loggable, StreamTransport } from '@boost/log';
 import patchConsole from '../../src/helpers/patchConsole';
 import LogBuffer from '../../src/LogBuffer';
 import { mockStreams } from '../../src/test';
@@ -8,7 +6,6 @@ import { mockStreams } from '../../src/test';
 describe('patchConsole()', () => {
   let errBuffer: LogBuffer;
   let outBuffer: LogBuffer;
-  let logger: Loggable;
   let unpatch: () => void;
 
   beforeEach(() => {
@@ -17,24 +14,7 @@ describe('patchConsole()', () => {
     errBuffer = new LogBuffer(stderr);
     outBuffer = new LogBuffer(stdout);
 
-    // Match Program usage
-    logger = createLogger({
-      name: 'cli',
-      transports: [
-        new StreamTransport({
-          format: formats.console,
-          levels: ['error', 'trace', 'warn'],
-          stream: errBuffer,
-        }),
-        new StreamTransport({
-          format: formats.console,
-          levels: ['debug', 'info', 'log'],
-          stream: outBuffer,
-        }),
-      ],
-    });
-
-    unpatch = patchConsole(logger, errBuffer);
+    unpatch = patchConsole(outBuffer, errBuffer);
   });
 
   afterEach(() => {
@@ -47,7 +27,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.log('Hello');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`Hello`));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Hello'));
   });
 
   it('wraps `console.info`', () => {
@@ -56,7 +36,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.info('Hello');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.cyan('info')} Hello`));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Hello'));
   });
 
   it('wraps `console.debug`', () => {
@@ -65,7 +45,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.debug('Hello');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.gray('debug')} Hello`));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Hello'));
   });
 
   it('wraps `console.error`', () => {
@@ -74,7 +54,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.error('Hello');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.red('error')} Hello`));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Hello'));
   });
 
   it('wraps `console.trace`', () => {
@@ -83,9 +63,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.trace('Hello');
 
-    expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining(`${chalk.magenta('trace')} Trace: Hello`),
-    );
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Trace: Hello'));
   });
 
   it('wraps `console.warn`', () => {
@@ -94,7 +72,7 @@ describe('patchConsole()', () => {
     errBuffer.on(spy);
     console.warn('Hello');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`${chalk.yellow('warn')} Hello`));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Hello'));
   });
 
   it('wraps `console.assert`', () => {
@@ -104,9 +82,7 @@ describe('patchConsole()', () => {
     console.assert(true, 'does nothing');
     console.assert(false, 'does something');
 
-    expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining(`${chalk.red('error')} Assertion failed: does something`),
-    );
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Assertion failed: does something'));
   });
 
   it('wraps `console.count`', () => {
@@ -115,7 +91,7 @@ describe('patchConsole()', () => {
     outBuffer.on(spy);
     console.count('foo');
 
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining(`foo: 1`));
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('foo: 1'));
   });
 
   it('wraps `console.dir`', () => {
@@ -165,7 +141,7 @@ describe('patchConsole()', () => {
 
     const inst = debug('boostcli:test');
 
-    unpatch = patchConsole(logger, errBuffer);
+    unpatch = patchConsole(outBuffer, errBuffer);
 
     const spy = jest.fn();
 

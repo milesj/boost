@@ -1,11 +1,11 @@
-/* eslint-disable no-param-reassign, no-console, import/no-extraneous-dependencies */
+/* eslint-disable no-console, no-param-reassign, import/no-extraneous-dependencies */
 
 import { PassThrough } from 'stream';
-import util from 'util';
-import { Loggable } from '@boost/log';
 import LogBuffer from '../LogBuffer';
 
-const CONSOLE_METHODS: (keyof typeof console)[] = [
+type ConsoleMethod = keyof typeof console;
+
+const CONSOLE_METHODS: ConsoleMethod[] = [
   'assert',
   'count',
   'debug',
@@ -23,77 +23,49 @@ const CONSOLE_METHODS: (keyof typeof console)[] = [
   'warn',
 ];
 
-// Utility method for wrapping and patching an API temporarily
-function wrap<T, K extends keyof T>(api: T, method: K, callback: T[K]): () => void {
-  const original = api[method];
-
-  api[method] = callback;
-
-  return () => {
-    api[method] = original;
-  };
-}
-
 /**
  * Wrap the global `console` to write to our logger and inherit formatting
  * functionality. This is kind of crazy, I know.
  */
-export default function patchConsole(logger: Loggable, errBuffer: LogBuffer): () => void {
+export default function patchConsole(outBuffer: LogBuffer, errBuffer: LogBuffer): () => void {
   const unwrappers: (() => void)[] = [];
-
-  // Wrap the native `console` and pipe to our logger
-  let lastMethod = '';
 
   const patchedConsole = new console.Console(
     new PassThrough({
       write: (data) => {
-        const message = String(data);
-
-        if (lastMethod === 'debug') {
-          logger.debug(message);
-        } else if (lastMethod === 'info') {
-          logger.info(message);
-        } else {
-          logger.log(message);
-        }
+        outBuffer.write(String(data));
       },
     }),
     new PassThrough({
       write: (data) => {
-        const message = String(data);
-
-        if (lastMethod === 'trace') {
-          logger.trace(message);
-        } else if (lastMethod === 'warn') {
-          logger.warn(message);
-        } else {
-          logger.error(message);
-        }
+        errBuffer.write(String(data));
       },
     }),
   );
 
+  const wrap = (
+    api: Record<ConsoleMethod, unknown>,
+    method: ConsoleMethod,
+    patchMethod?: ConsoleMethod,
+  ) => {
+    const original = api[method];
+
+    api[method] = (...args: unknown[]) => patchedConsole[patchMethod || method](...args);
+
+    return () => {
+      api[method] = original;
+    };
+  };
+
   CONSOLE_METHODS.forEach((method) => {
-    unwrappers.push(
-      wrap(console, method, (...args: unknown[]) => {
-        lastMethod = method;
-        patchedConsole[method](...args);
-      }),
-    );
+    unwrappers.push(wrap(console, method));
   });
 
   // Wrap the `debug` stream since it writes to `process.stderr` directly
   // https://www.npmjs.com/package/debug#output-streams
   if (process.env.DEBUG) {
     // eslint-disable-next-line
-    const debug = require('debug');
-
-    unwrappers.push(
-      wrap(debug, 'log', (message: string, ...args: unknown[]) => {
-        // Do not pass to our logger since it's pre-formatted
-        errBuffer.write(`${util.format(message, ...args)}\n`);
-      }),
-    );
+    unwrappers.push(wrap(require('debug'), 'log', 'error'));
   }
 
   return () => {
