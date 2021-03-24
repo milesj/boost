@@ -1,9 +1,0 @@
-examples/
-src/
-tests/
-types/
-*.lock
-*.log
-*.tsbuildinfo
-tsconfig.json
-.DS_Store

@@ -4,7 +4,7 @@
  */
 
 import color from './color';
-import createInternalDebugger from './createInternalDebugger';
+import { createInternalDebugger } from './createInternalDebugger';
 import createScopedError from './createScopedError';
 import env from './env';
 

@@ -16,6 +16,14 @@
   ],
   "main": "./lib/index.js",
   "types": "./dts/index.d.ts",
+  "files": [
+    "dts/**/*.d.ts",
+    "lib/**/*.{js,map}",
+    "res/",
+    "src/**/*.{ts,tsx,json}",
+    "test.d.ts",
+    "test.js"
+  ],
   "engines": {
     "node": ">=10.3.0",
     "npm": ">=6.1.0"

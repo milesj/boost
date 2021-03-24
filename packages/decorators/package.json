@@ -7,8 +7,15 @@
     "decorators"
   ],
   "main": "./lib/node/index.js",
+  "browser": "./lib/browser/index.js",
   "module": "./esm/index.js",
   "types": "./dts/index.d.ts",
+  "files": [
+    "dts/**/*.d.ts",
+    "esm/**/*.{js,map}",
+    "lib/**/*.{js,map}",
+    "src/**/*.{ts,tsx,json}"
+  ],
   "engines": {
     "node": ">=10.3.0",
     "npm": ">=6.1.0"

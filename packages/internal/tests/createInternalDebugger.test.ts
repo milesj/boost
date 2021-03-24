@@ -1,4 +1,4 @@
-import createInternalDebugger, { sentenceCase } from '../src/createInternalDebugger';
+import { createInternalDebugger, sentenceCase } from '../src/createInternalDebugger';
 
 describe('createInternalDebugger()', () => {
   it('returns a `debug` instance', () => {
