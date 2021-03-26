@@ -43,6 +43,33 @@ import {
   TaskContext,
 } from './types';
 
+/**
+ * Create a proxy command using itself as the super class.
+ */
+export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
+  path: CommandPath,
+  { description, options, params, ...config }: ProxyCommandConfig<O, P>,
+  runner: ProxyCommandRunner<O, P>,
+): Command<O, P> {
+  @Config(path, description, config)
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  class ProxyCommand extends Command<O, P> {
+    run(): Promise<RunResult> | RunResult {
+      return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
+    }
+  }
+
+  if (options !== undefined) {
+    ProxyCommand.options = options;
+  }
+
+  if (params !== undefined) {
+    ProxyCommand.params = params;
+  }
+
+  return new ProxyCommand();
+}
+
 export default abstract class Command<
     O extends GlobalOptions = GlobalOptions,
     P extends PrimitiveType[] = ArgList,
@@ -288,25 +315,10 @@ export default abstract class Command<
    */
   protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
     path: CommandPath,
-    { description, options, params, ...config }: ProxyCommandConfig<O, P>,
+    config: ProxyCommandConfig<O, P>,
     runner: ProxyCommandRunner<O, P>,
   ): Command<O, P> {
-    @Config(path, description, config)
-    class ProxyCommand extends Command<O, P> {
-      run(): Promise<RunResult> | RunResult {
-        return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
-      }
-    }
-
-    if (options !== undefined) {
-      ProxyCommand.options = options;
-    }
-
-    if (params !== undefined) {
-      ProxyCommand.params = params;
-    }
-
-    return new ProxyCommand();
+    return createProxyCommand(path, config, runner);
   }
 
   /**

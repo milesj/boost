@@ -16,7 +16,7 @@ import { Event } from '@boost/event';
 import { env } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
 import CLIError from './CLIError';
-import Command from './Command';
+import Command, { createProxyCommand } from './Command';
 import CommandManager from './CommandManager';
 import { Failure } from './components/Failure';
 import { Help } from './components/Help';
@@ -402,8 +402,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     config: ProxyCommandConfig<O, P>,
     runner: ProxyCommandRunner<O, P>,
   ): Command<O, P> {
-    // @ts-expect-error Janky but avoids duplication and circular references
-    return new Command().createProxyCommand(path, config, runner);
+    return createProxyCommand(path, config, runner);
   }
 
   /**
