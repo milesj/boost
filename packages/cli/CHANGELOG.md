@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.10.4 - 2021-03-26
+
+#### 🐞 Fixes
+
+- Resolve circular reference caused by sub-command proxies. (#147) ([79054b6](https://github.com/milesj/boost/commit/79054b6)), closes [#147](https://github.com/milesj/boost/issues/147)
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.10.3 - 2021-03-26
 
 #### 🐞 Fixes
