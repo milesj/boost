@@ -49,20 +49,6 @@ exports[`<Program /> error renders a thrown error 1`] = `
 "
 `;
 
-exports[`<Program /> error renders a thrown error from a component 1`] = `
-"[1m[41m[30m ERROR [39m[49m[22m
-
- Fail from component
-The above error occurred in the <ErrorComponent> component:
-    in ErrorComponent
-    in ink-box (created by Box)
-    in Box (created by Wrapper)
-    in Wrapper
-    in InternalApp
-
-React will try to recreate this component tree from scratch using the error boundary you provided, Wrapper."
-`;
-
 exports[`<Program /> errors for invalid version format 1`] = `"Invalid Program field \\"version\\". String does not match. (pattern \\"^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\\+([0-9a-zA-Z-]+(?:\\\\.[0-9a-zA-Z-]+)*))?$\\")"`;
 
 exports[`<Program /> errors if bin is not kebab case 1`] = `"Invalid Program field \\"bin\\". String must be in kebab case. (pattern \\"^[a-z][\\\\x2D0-9a-z]+$\\")"`;
