@@ -50,6 +50,8 @@ import {
   ProgramBootstrap,
   ProgramOptions,
   ProgramStreams,
+  ProxyCommandConfig,
+  ProxyCommandRunner,
   RunResult,
 } from './types';
 
@@ -390,6 +392,18 @@ export default class Program extends CommandManager<ProgramOptions> {
     };
 
     return next(argv);
+  }
+
+  /**
+   * Create a proxy command using the `Command` class as the super class.
+   */
+  protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
+    path: CommandPath,
+    config: ProxyCommandConfig<O, P>,
+    runner: ProxyCommandRunner<O, P>,
+  ): Command<O, P> {
+    // @ts-expect-error Janky but avoids duplication and circular references
+    return new Command().createProxyCommand(path, config, runner);
   }
 
   /**

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable max-classes-per-file, @typescript-eslint/consistent-type-assertions */
 
 import React from 'react';
 import execa, { Options as ExecaOptions } from 'execa';
@@ -19,6 +19,7 @@ import CLIError from './CLIError';
 import CommandManager from './CommandManager';
 import { Help } from './components/Help';
 import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
+import Config from './decorators/Config';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
 import getConstructor from './metadata/getConstructor';
 import getInheritedCategories from './metadata/getInheritedCategories';
@@ -36,6 +37,8 @@ import {
   ExitCode,
   ExitHandler,
   GlobalOptions,
+  ProxyCommandConfig,
+  ProxyCommandRunner,
   RunResult,
   TaskContext,
 } from './types';
@@ -279,6 +282,32 @@ export default abstract class Command<
    * Executed when the command is being ran.
    */
   abstract run(...params: P): Promise<RunResult> | RunResult;
+
+  /**
+   * Create a proxy command using itself as the super class.
+   */
+  protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
+    path: CommandPath,
+    { description, options, params, ...config }: ProxyCommandConfig<O, P>,
+    runner: ProxyCommandRunner<O, P>,
+  ): Command<O, P> {
+    @Config(path, description, config)
+    class ProxyCommand extends Command<O, P> {
+      run(): Promise<RunResult> | RunResult {
+        return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
+      }
+    }
+
+    if (options !== undefined) {
+      ProxyCommand.options = options;
+    }
+
+    if (params !== undefined) {
+      ProxyCommand.params = params;
+    }
+
+    return new ProxyCommand();
+  }
 
   /**
    * Return the program instance or fail.
