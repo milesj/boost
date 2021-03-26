@@ -16,7 +16,7 @@ import { Event } from '@boost/event';
 import { env } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
 import CLIError from './CLIError';
-import Command, { createProxyCommand } from './Command';
+import { Command, createProxyCommand } from './Command';
 import CommandManager from './CommandManager';
 import { Failure } from './components/Failure';
 import { Help } from './components/Help';

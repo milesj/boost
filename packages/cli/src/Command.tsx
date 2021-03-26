@@ -70,7 +70,7 @@ export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveT
   return new ProxyCommand();
 }
 
-export default abstract class Command<
+export abstract class Command<
     O extends GlobalOptions = GlobalOptions,
     P extends PrimitiveType[] = ArgList,
     Options extends object = {}

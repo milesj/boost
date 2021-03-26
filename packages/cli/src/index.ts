@@ -5,7 +5,7 @@
 
 import type { CLIErrorCode } from './CLIError';
 import CLIError from './CLIError';
-import Command from './Command';
+import { Command } from './Command';
 import Program from './Program';
 import ProgramContext from './ProgramContext';
 
