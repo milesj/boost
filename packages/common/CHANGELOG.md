@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.7.2 - 2021-03-26
+
+#### 📦 Dependencies
+
+- Change typescript to an optional peer. ([f19cc0d](https://github.com/milesj/boost/commit/f19cc0d))
+- **[packemon]** Update to v0.14. (#145) ([9897e2a](https://github.com/milesj/boost/commit/9897e2a)), closes [#145](https://github.com/milesj/boost/issues/145)
+- **[yaml]** Update to latest. ([eb6579c](https://github.com/milesj/boost/commit/eb6579c))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 2.7.1 - 2021-02-21
 
 #### 📦 Dependencies

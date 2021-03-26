@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.3.1 - 2021-03-26
+
+#### 📦 Dependencies
+
+- **[packemon]** Update to v0.14. (#145) ([9897e2a](https://github.com/milesj/boost/commit/9897e2a)), closes [#145](https://github.com/milesj/boost/issues/145)
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ## 2.3.0 - 2021-02-18
 
 #### 🚀 Updates

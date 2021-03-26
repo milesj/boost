@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.2.1 - 2021-03-26
+
+#### 📦 Dependencies
+
+- Update ANSI handling dependencies. ([5bd7cd3](https://github.com/milesj/boost/commit/5bd7cd3))
+- **[packemon]** Update to v0.14. (#145) ([9897e2a](https://github.com/milesj/boost/commit/9897e2a)), closes [#145](https://github.com/milesj/boost/issues/145)
+
+**Note:** Version bump only for package @boost/terminal
+
+
+
+
+
 ## 2.2.0 - 2021-01-16
 
 #### 🚀 Updates

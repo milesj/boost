@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.10.3 - 2021-03-26
+
+#### 🐞 Fixes
+
+- Dont format patched console messages. (#144) ([456a25e](https://github.com/milesj/boost/commit/456a25e)), closes [#144](https://github.com/milesj/boost/issues/144)
+- Use Ink's native console patching. (#146) ([1a91760](https://github.com/milesj/boost/commit/1a91760)), closes [#146](https://github.com/milesj/boost/issues/146)
+
+#### 📦 Dependencies
+
+- **[packemon]** Update to v0.14. (#145) ([9897e2a](https://github.com/milesj/boost/commit/9897e2a)), closes [#145](https://github.com/milesj/boost/issues/145)
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.10.2 - 2021-02-21
 
 **Note:** Version bump only for package @boost/cli

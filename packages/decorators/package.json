@@ -1,6 +1,6 @@
 {
   "name": "@boost/decorators",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Experimental decorators for common patterns.",
   "keywords": [
     "boost",

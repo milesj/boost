@@ -1,6 +1,6 @@
 {
   "name": "@boost/debug",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "release": "1594765247526",
   "description": "Lightweight debugging and crash reporting.",
   "keywords": [
@@ -36,8 +36,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^2.7.1",
-    "@boost/internal": "^2.2.1",
+    "@boost/common": "^2.7.2",
+    "@boost/internal": "^2.2.2",
     "@types/debug": "^4.1.5",
     "debug": "^4.3.1",
     "execa": "^5.0.0",
