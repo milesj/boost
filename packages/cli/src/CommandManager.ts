@@ -4,11 +4,11 @@ import { ArgList, PrimitiveType } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
 import CLIError from './CLIError';
-import createProxyCommand from './helpers/createProxyCommand';
 import {
   Commandable,
   CommandMetadata,
   CommandPath,
+  GlobalOptions,
   ProxyCommandConfig,
   ProxyCommandRunner,
 } from './types';
@@ -66,7 +66,7 @@ export default abstract class CommandManager<
       typeof config !== 'undefined' &&
       typeof runner === 'function'
     ) {
-      command = createProxyCommand(
+      command = this.createProxyCommand(
         commandOrPath,
         config as ProxyCommandConfig<never, ArgList>,
         runner as ProxyCommandRunner<never, ArgList>,
@@ -102,4 +102,10 @@ export default abstract class CommandManager<
       throw new CLIError('COMMAND_DEFINED', [path]);
     }
   }
+
+  protected abstract createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
+    path: CommandPath,
+    config: ProxyCommandConfig<O, P>,
+    runner: ProxyCommandRunner<O, P>,
+  ): Commandable<O, P>;
 }
