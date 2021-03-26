@@ -338,18 +338,6 @@ describe('<Program />', () => {
       expect(output).toMatchSnapshot();
       expect(code).toBe(1);
     });
-
-    it('renders a thrown error from a component', async () => {
-      program.default(new ErrorCommand());
-
-      const { code, output } = await runProgram(program, ['--component']);
-
-      expect(output.trim()).toMatchSnapshot();
-
-      // This should be 1 but waitUntilExit() doesnt get called in tests
-      // which is what would set the code via an ExitError.
-      expect(code).toBe(0);
-    });
   });
 
   describe('commands', () => {

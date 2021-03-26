@@ -33,7 +33,7 @@ import {
 } from './constants';
 import isArgvSize from './helpers/isArgvSize';
 import mapCommandMetadata from './helpers/mapCommandMetadata';
-import patchConsole from './helpers/patchConsole';
+import patchDebugModule from './helpers/patchDebugModule';
 import LogBuffer from './LogBuffer';
 import getConstructor from './metadata/getConstructor';
 import removeProcessBin from './middleware/removeProcessBin';
@@ -244,7 +244,7 @@ export default class Program extends CommandManager<ProgramOptions> {
     }
 
     const { stdin, stdout, stderr } = this.streams;
-    const unpatch = patchConsole(this.outBuffer, this.errBuffer);
+    const unpatchDebug = patchDebugModule();
 
     try {
       this.onBeforeRender.emit([element]);
@@ -263,7 +263,7 @@ export default class Program extends CommandManager<ProgramOptions> {
           debug: process.env.NODE_ENV === 'test',
           exitOnCtrlC: true,
           experimental: true,
-          patchConsole: false,
+          patchConsole: true,
           stderr,
           stdin,
           stdout,
@@ -283,7 +283,7 @@ export default class Program extends CommandManager<ProgramOptions> {
       this.exit(error);
     } finally {
       this.rendering = false;
-      unpatch();
+      unpatchDebug();
     }
   }
 
