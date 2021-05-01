@@ -28,6 +28,7 @@ module.exports = {
   organizationName: 'milesj',
   projectName: 'boost',
   themeConfig: {
+    algolia: { apiKey: 'f1f15b6694e2f453f638aac4c482df0f', indexName: 'boostlib' },
     navbar: {
       title: 'Boost',
       logo: {
