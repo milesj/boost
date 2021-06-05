@@ -23,6 +23,7 @@ jobs:
       - run: yarn run build
       - run: yarn run type
       - run: yarn run coverage
+      - run: yarn run test:cts
       - run: yarn run lint
   pack:
     name: Pack
