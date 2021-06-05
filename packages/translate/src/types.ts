@@ -26,11 +26,10 @@ export interface MessageOptions {
 }
 
 export interface Translator {
+  (key: string[] | string, params?: InterpolationParams, options?: MessageOptions): string;
   direction: Direction;
   locale: Locale;
   changeLocale: (locale: Locale) => Promise<void>;
-  (key: string[] | string, params?: InterpolationParams, options?: MessageOptions): string;
   // Testing only
-  // eslint-disable-next-line @typescript-eslint/member-ordering
   i18n: i18n;
 }

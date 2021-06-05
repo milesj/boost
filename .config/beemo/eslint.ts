@@ -1,6 +1,4 @@
-/* eslint-disable sort-keys */
-
-module.exports = {
+export default {
   rules: {
     'no-void': 'off',
     'node/no-unsupported-features/node-builtins': 'warn',
