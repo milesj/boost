@@ -1,0 +1,38 @@
+{
+  "name": "@boost/module",
+  "version": "0.0.0",
+  "description": "Module loading utilities with TypeScript support.",
+  "keywords": [
+    "boost",
+    "module",
+    "cjs",
+    "mjs",
+    "typescript"
+  ],
+  "main": "./lib/index.js",
+  "types": "./dts/index.d.ts",
+  "engines": {
+    "node": ">=10.3.0",
+    "npm": ">=6.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/module"
+  },
+  "author": "Miles Johnson",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "optionalPeerDependencies": {
+    "typescript": "^4.0.0"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/milesjohnson"
+  },
+  "packemon": {
+    "platform": "node"
+  }
+}
