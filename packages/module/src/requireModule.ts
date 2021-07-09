@@ -9,5 +9,9 @@ export function requireModule<T>(path: PathLike): T {
     return requireTypedModule(filePath);
   }
 
+  if (filePath.endsWith('.mjs')) {
+    throw new Error(`Unable to require non-CommonJS file "${filePath}", use ES imports instead.`);
+  }
+
   return interopRequireModule(filePath) as T;
 }
