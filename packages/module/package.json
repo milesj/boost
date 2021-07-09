@@ -13,6 +13,7 @@
   "types": "./dts/index.d.ts",
   "files": [
     "lib/**/*.{js,map}",
+    "mjs/**/*.{mjs,map}",
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
@@ -36,11 +37,21 @@
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"
   },
-  "packemon": {
-    "inputs": {
-      "index": "src/index.ts",
-      "commonjs": "src/commonjs/requireModule.ts"
+  "packemon": [
+    {
+      "inputs": {
+        "index": "src/index.ts",
+        "commonjs": "src/commonjs/requireModule.ts",
+        "esmodule": "src/esmodule/importModule.ts"
+      },
+      "platform": "node"
     },
-    "platform": "node"
-  }
+    {
+      "inputs": {
+        "typescript": "src/loaders/typescript.ts"
+      },
+      "format": "mjs",
+      "platform": "node"
+    }
+  ]
 }

@@ -9,6 +9,18 @@ export const COMPILER_OPTIONS = {
   noEmit: true,
 };
 
+export function getModuleFromNodeVersion(ts: TS) {
+  const version = Number.parseFloat(process.version);
+
+  if (version >= 15) {
+    return ts.ModuleKind.ES2020;
+  } else if (version >= 12) {
+    return ts.ModuleKind.ES2015;
+  }
+
+  return ts.ModuleKind.CommonJS;
+}
+
 export function getTargetFromNodeVersion(ts: TS) {
   const version = Number.parseFloat(process.version);
 

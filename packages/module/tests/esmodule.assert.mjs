@@ -1,21 +1,21 @@
 // This file is necessary for testing as it's not possible within Jest.
 // Most likely because of its custom module and mocking layer.
 
-const path = require('path');
-const assert = require('assert').strict;
-const { requireModule } = require('../lib/commonjs/requireModule');
+import { strict as assert } from 'assert';
+import path from 'path';
+import { importModule } from '../lib/esmodule/importModule.js';
 
 // FORMATS
 
 function getFormatFixture(type) {
-  return path.join(__dirname, `__fixtures__/format-${type}.${type}`);
+  return path.join(path.dirname(import.meta.url), `__fixtures__/format-${type}.${type}`);
 }
 
 // JS
-assert.equal(requireModule(getFormatFixture('js')), 'default');
+assert.equal(await importModule(getFormatFixture('js')), 'default');
 
 // CJS
-assert.deepEqual(requireModule(getFormatFixture('cjs')), {
+assert.deepEqual(await importModule(getFormatFixture('cjs')), {
   a: 1,
   b: 2,
   c: 3,
@@ -23,7 +23,7 @@ assert.deepEqual(requireModule(getFormatFixture('cjs')), {
 
 // MJS
 try {
-  requireModule(getFormatFixture('mjs'));
+  await importModule(getFormatFixture('mjs'));
 } catch (error) {
   assert.equal(
     error.message,
@@ -32,10 +32,10 @@ try {
 }
 
 // TS
-assert.equal(requireModule(getFormatFixture('ts')), 'default');
+assert.equal(await importModule(getFormatFixture('ts')), 'default');
 
 // TSX
-assert.deepEqual(requireModule(getFormatFixture('tsx')), {
+assert.deepEqual(await importModule(getFormatFixture('tsx')), {
   a: 1,
   b: 2,
   c: 3,
@@ -44,21 +44,21 @@ assert.deepEqual(requireModule(getFormatFixture('tsx')), {
 // TYPESCRIPT
 
 function getFixture(file) {
-  return path.join(__dirname, '__fixtures__', file);
+  return path.join(path.dirname(import.meta.url), '__fixtures__', file);
 }
 
 // Default exports only
-assert.equal(requireModule(getFixture('default-export.ts')), 'default');
+assert.equal(await importModule(getFixture('default-export.ts')), 'default');
 
 // Named exports only
-assert.deepEqual(requireModule(getFixture('named-exports.ts')), {
+assert.deepEqual(await importModule(getFixture('named-exports.ts')), {
   a: 1,
   b: 2,
   c: 3,
 });
 
 // Default AND named exports
-assert.deepEqual(requireModule(getFixture('default-named-exports.ts')), {
+assert.deepEqual(await importModule(getFixture('default-named-exports.ts')), {
   a: 1,
   b: 2,
   c: 3,
@@ -66,14 +66,14 @@ assert.deepEqual(requireModule(getFixture('default-named-exports.ts')), {
 });
 
 // Resolves nested imports
-assert.deepEqual(requireModule(getFixture('imports.ts')), {
+assert.deepEqual(await importModule(getFixture('imports.ts')), {
   defaultExport: 'default',
   defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
   namedExports: { a: 1, b: 2, c: 3 },
 });
 
 // Built-ins are the same
-const obj = requireModule(getFixture('named-exports.ts'));
+const obj = await importModule(getFixture('named-exports.ts'));
 const objExp = {};
 
 assert.equal(Object.getPrototypeOf(obj), Object.getPrototypeOf(objExp));
