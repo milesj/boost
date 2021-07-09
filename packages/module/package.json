@@ -11,6 +11,10 @@
   ],
   "main": "./lib/index.js",
   "types": "./dts/index.d.ts",
+  "files": [
+    "lib/**/*.{js,map}",
+    "src/**/*.{ts,tsx,json}"
+  ],
   "engines": {
     "node": ">=10.3.0",
     "npm": ">=6.1.0"
@@ -33,10 +37,11 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
+    "bundle": true,
+    "inputs": {
+      "index": "src/index.ts",
+      "commonjs": "src/commonjs/requireModule.ts"
+    },
     "platform": "node"
-  },
-  "files": [
-    "lib/**/*.{js,map}",
-    "src/**/*.{ts,tsx,json}"
-  ]
+  }
 }

@@ -2,33 +2,42 @@
 
 import fs from 'fs';
 import type Module from 'module';
-import { interopRequireModule } from '../interopRequireModule';
 import { PathLike } from '../types';
-import { COMPILER_OPTIONS, getTargetFromNodeVersion } from './helpers';
+import { COMPILER_OPTIONS, getTargetFromNodeVersion } from '../typescript';
+import { interopRequireModule } from './interopRequireModule';
 
-let ts: typeof import('typescript') | null = null;
+let tsInstance: typeof import('typescript') | null = null;
 
-try {
-  // eslint-disable-next-line
-  ts = require('typescript');
-} catch {
-  // Ignore and check at runtime
+function loadTypeScript() {
+  if (!tsInstance) {
+    try {
+      // eslint-disable-next-line
+      tsInstance = require('typescript');
+    } catch {
+      // Ignore and check at runtime
+    }
+  }
+
+  return tsInstance;
 }
 
 const transformCache = new Map<string, string>();
 
-function transform(contents: string, fileName: string): string {
+function transform(contents: string, filePath: string): string {
+  const ts = loadTypeScript();
+
   if (!ts) {
-    throw new Error(`\`typescript\` package required for importing file "${fileName}".`);
+    throw new Error(`\`typescript\` package required for transforming file "${filePath}".`);
   }
 
   return ts.transpileModule(contents, {
     compilerOptions: {
       ...COMPILER_OPTIONS,
       module: ts.ModuleKind.CommonJS,
+      resolveJsonModule: true,
       target: getTargetFromNodeVersion(ts),
     },
-    fileName,
+    fileName: filePath,
   }).outputText;
 }
 
@@ -53,7 +62,7 @@ function unregisterExtensions() {
   delete require.extensions['.tsx'];
 }
 
-export function requireTypedModule<T>(path: PathLike): T {
+export function requireTSModule<T>(path: PathLike): T {
   const filePath = String(path);
 
   if (!filePath.endsWith('.ts') && !filePath.endsWith('.tsx')) {

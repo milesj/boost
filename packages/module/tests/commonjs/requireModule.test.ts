@@ -1,5 +1,5 @@
-import { requireModule } from '../src/requireModule';
-import { getFixture } from './helpers';
+import { requireModule } from '../../src/commonjs/requireModule';
+import { getFixture } from '../helpers';
 
 jest.mock('example', () => 123, { virtual: true });
 jest.mock('example-es-default', () => ({ __esModule: true, default: 456 }), { virtual: true });
@@ -8,8 +8,8 @@ jest.mock('example-es-default-named', () => ({ __esModule: true, default: 456, n
 });
 jest.mock('example-es-named', () => ({ __esModule: true, a: 1, b: 2, c: 3 }), { virtual: true });
 
-jest.mock('../src/typescript/requireTypedModule', () => ({
-  requireTypedModule: () => 'ts',
+jest.mock('../../src/commonjs/requireTSModule', () => ({
+  requireTSModule: () => 'ts',
 }));
 
 describe('requireModule()', () => {
@@ -60,6 +60,7 @@ describe('requireModule()', () => {
     });
 
     it('cannot load .mjs files', () => {
+      // eslint-disable-next-line jest/require-to-throw-message
       expect(() => requireModule(getFixture('format-mjs.mjs'))).toThrow();
     });
 

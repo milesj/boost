@@ -7,7 +7,6 @@ export const COMPILER_OPTIONS = {
   allowSyntheticDefaultImports: true,
   esModuleInterop: true,
   noEmit: true,
-  resolveJsonModule: true,
 };
 
 export function getTargetFromNodeVersion(ts: TS) {
