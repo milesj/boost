@@ -1,5 +1,5 @@
+import { interopModule } from '../interopModule';
 import { PathLike } from '../types';
-import { interopRequireModule } from './interopRequireModule';
 import { requireTSModule } from './requireTSModule';
 
 export function requireModule<T>(path: PathLike): T {
@@ -13,5 +13,6 @@ export function requireModule<T>(path: PathLike): T {
     return requireTSModule(filePath);
   }
 
-  return interopRequireModule(filePath) as T;
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  return interopModule(require(filePath)) as T;
 }

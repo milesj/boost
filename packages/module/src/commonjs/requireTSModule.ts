@@ -2,9 +2,9 @@
 
 import fs from 'fs';
 import type Module from 'module';
+import { interopModule } from '../interopModule';
 import { PathLike } from '../types';
 import { COMPILER_OPTIONS, getTargetFromNodeVersion } from '../typescript';
-import { interopRequireModule } from './interopRequireModule';
 
 let tsInstance: typeof import('typescript') | null = null;
 
@@ -73,7 +73,8 @@ export function requireTSModule<T>(path: PathLike): T {
 
   registerExtensions();
 
-  const result = interopRequireModule(filePath);
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  const result = interopModule(require(filePath));
 
   unregisterExtensions();
 

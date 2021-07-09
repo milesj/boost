@@ -37,7 +37,6 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
-    "bundle": true,
     "inputs": {
       "index": "src/index.ts",
       "commonjs": "src/commonjs/requireModule.ts"
