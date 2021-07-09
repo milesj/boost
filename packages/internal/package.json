@@ -39,6 +39,10 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
+    "format": [
+      "lib",
+      "esm"
+    ],
     "support": "legacy",
     "platform": [
       "browser",
