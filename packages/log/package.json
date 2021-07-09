@@ -49,6 +49,7 @@
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
+    "support": "legacy",
     "platform": "node"
   }
 }
