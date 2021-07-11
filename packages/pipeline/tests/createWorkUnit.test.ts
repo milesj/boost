@@ -1,7 +1,7 @@
-import createWorkUnit from '../src/createWorkUnit';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
-import WorkUnit from '../src/WorkUnit';
+import { createWorkUnit } from '../src/createWorkUnit';
+import { Routine } from '../src/Routine';
+import { Task } from '../src/Task';
+import { WorkUnit } from '../src/WorkUnit';
 
 describe('createWorkUnit()', () => {
 	class TestRoutine extends Routine<string, string, {}> {
@@ -47,7 +47,7 @@ describe('createWorkUnit()', () => {
 		const work = createWorkUnit('title', action);
 
 		expect(work).toBeInstanceOf(Task);
-		// @ts-expect-error
+		// @ts-expect-error Allow access
 		expect(work.action).toBe(action);
 	});
 
@@ -61,7 +61,7 @@ describe('createWorkUnit()', () => {
 		expect(() => {
 			createWorkUnit(
 				'title',
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				123,
 			);
 		}).toThrow('Unknown work unit type. Must be a `Routine`, `Task`, `WorkUnit`, or function.');

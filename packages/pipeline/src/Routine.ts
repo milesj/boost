@@ -4,27 +4,27 @@ import split from 'split';
 import { toArray } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
-import AggregatedPipeline from './AggregatedPipeline';
-import ConcurrentPipeline from './ConcurrentPipeline';
-import Context from './Context';
-import debug from './debug';
-import Monitor from './Monitor';
-import Pipeline from './Pipeline';
-import PipelineError from './PipelineError';
-import PooledPipeline, { PooledOptions } from './PooledPipeline';
+import { AggregatedPipeline } from './AggregatedPipeline';
+import { ConcurrentPipeline } from './ConcurrentPipeline';
+import { Context } from './Context';
+import { debug } from './debug';
+import { Monitor } from './Monitor';
+import { Pipeline } from './Pipeline';
+import { PipelineError } from './PipelineError';
+import { PooledOptions, PooledPipeline } from './PooledPipeline';
 import { AnyWorkUnit, Hierarchical } from './types';
-import WaterfallPipeline from './WaterfallPipeline';
-import WorkUnit from './WorkUnit';
+import { WaterfallPipeline } from './WaterfallPipeline';
+import { WorkUnit } from './WorkUnit';
 
 export interface ExecuteCommandOptions {
 	wrap?: (process: ExecaChildProcess) => void;
 	workUnit?: AnyWorkUnit;
 }
 
-export default abstract class Routine<
+export abstract class Routine<
 	Output = unknown,
 	Input = unknown,
-	Options extends object = {},
+	Options extends object = {}
 > extends WorkUnit<Options, Input, Output> {
 	readonly debug: Debugger;
 
@@ -39,6 +39,7 @@ export default abstract class Routine<
 	protected monitorInstance: Monitor | null = null;
 
 	constructor(key: string[] | string, title: string, options?: Options) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		super(title, (context, value) => this.execute(context, value), options);
 
 		if (!key || key.length === 0 || (typeof key !== 'string' && !Array.isArray(key))) {
@@ -65,7 +66,7 @@ export default abstract class Routine<
 		this.onCommand.emit([command, args]);
 
 		// Push chunks to the reporter
-		const unit = workUnit || this;
+		const unit = workUnit ?? this;
 		const handler = (line: string) => {
 			if (unit.isRunning()) {
 				// Only capture the status when not empty

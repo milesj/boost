@@ -1,11 +1,11 @@
-import Context from './Context';
-import debug from './debug';
-import ParallelPipeline from './ParallelPipeline';
+import { Context } from './Context';
+import { debug } from './debug';
+import { ParallelPipeline } from './ParallelPipeline';
 
-export default class ConcurrentPipeline<
+export class ConcurrentPipeline<
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input,
+	Output = Input
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
 	/**
 	 * Execute all work units in parallel with a value being passed to each work unit.

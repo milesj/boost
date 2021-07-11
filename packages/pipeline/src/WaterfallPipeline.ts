@@ -1,10 +1,10 @@
-/* eslint-disable no-restricted-syntax, no-await-in-loop */
+/* eslint-disable no-await-in-loop */
 
-import Context from './Context';
-import debug from './debug';
-import SerialPipeline from './SerialPipeline';
+import { Context } from './Context';
+import { debug } from './debug';
+import { SerialPipeline } from './SerialPipeline';
 
-export default class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
+export class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
 	{},
 	Ctx,
 	Input
@@ -15,7 +15,7 @@ export default class WaterfallPipeline<Ctx extends Context, Input = unknown> ext
 	 */
 	async run(): Promise<Input> {
 		const work = this.getWorkUnits();
-		let { value } = this.root;
+		let value = this.root.value as Input;
 
 		debug('Running %d as a waterfall', work.length);
 

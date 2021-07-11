@@ -1,7 +1,7 @@
-import AggregatedPipeline from '../src/AggregatedPipeline';
-import Context from '../src/Context';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
+import { AggregatedPipeline } from '../src/AggregatedPipeline';
+import { Context } from '../src/Context';
+import { Routine } from '../src/Routine';
+import { Task } from '../src/Task';
 import { AggregatedResult } from '../src/types';
 
 describe('AggregatedPipeline', () => {
@@ -79,8 +79,9 @@ describe('AggregatedPipeline', () => {
 		const pipeline = new AggregatedPipeline(new Context(), 'foo').add(
 			'Scope',
 			function scopeAction() {
-				// @ts-expect-error
-				expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
+				// @ts-expect-error Allow type
+				// eslint-disable-next-line @typescript-eslint/no-invalid-this
+				expect(this).toBe(scope);
 
 				return 'bar';
 			},

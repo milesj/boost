@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import Context from '../src/Context';
+import { Context } from '../src/Context';
 
 describe('Context', () => {
 	class TestContext extends Context {
@@ -116,7 +116,7 @@ describe('Context', () => {
 
 		it('calls the clone method', () => {
 			const ctx = new ObjectContext('foo', 'bar', 'baz');
-			// @ts-expect-error
+			// @ts-expect-error Allow overwrite
 			ctx.object.clone = () => ({ foo: 123 });
 
 			const clone = ctx.clone();

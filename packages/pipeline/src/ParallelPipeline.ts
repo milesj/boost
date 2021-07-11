@@ -1,15 +1,15 @@
 import { Blueprint, instanceOf, Predicates } from '@boost/common';
-import Context from './Context';
-import createWorkUnit from './createWorkUnit';
-import Pipeline from './Pipeline';
+import { Context } from './Context';
+import { createWorkUnit } from './createWorkUnit';
+import { Pipeline } from './Pipeline';
 import { Action, AggregatedResult } from './types';
-import WorkUnit from './WorkUnit';
+import { WorkUnit } from './WorkUnit';
 
-export default abstract class ParallelPipeline<
+export abstract class ParallelPipeline<
 	Options extends object,
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input,
+	Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
 	// Empty blueprint so that sub-classes may type correctly
 	blueprint(preds: Predicates): Blueprint<object> {

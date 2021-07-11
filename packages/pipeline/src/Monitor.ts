@@ -1,8 +1,10 @@
+/* eslint-disable promise/prefer-await-to-callbacks */
+
 import { BailEvent, Event } from '@boost/event';
-import Routine from './Routine';
+import { Routine } from './Routine';
 import { AnyPipeline, AnyWorkUnit } from './types';
 
-export default class Monitor {
+export class Monitor {
 	readonly onPipelineAfterRun = new Event<[AnyPipeline]>('after-run');
 
 	readonly onPipelineBeforeRun = new Event<[AnyPipeline, unknown]>('before-run');

@@ -1,6 +1,6 @@
-import Context from './Context';
-import Pipeline from './Pipeline';
-import WorkUnit from './WorkUnit';
+import type { Context } from './Context';
+import type { Pipeline } from './Pipeline';
+import type { WorkUnit } from './WorkUnit';
 
 export type Action<Ctx extends Context, Input = unknown, Output = Input> = (
 	context: Ctx,

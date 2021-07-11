@@ -1,12 +1,12 @@
-import Context from './Context';
-import debug from './debug';
-import ParallelPipeline from './ParallelPipeline';
+import { Context } from './Context';
+import { debug } from './debug';
+import { ParallelPipeline } from './ParallelPipeline';
 import { AggregatedResult } from './types';
 
-export default class AggregatedPipeline<
+export class AggregatedPipeline<
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input,
+	Output = Input
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
 	/**
 	 * Execute all work units in parallel with a value being passed to each work unit.
@@ -21,10 +21,14 @@ export default class AggregatedPipeline<
 		this.onBeforeRun.emit([value]);
 
 		const result = await Promise.all(
-			work.map((unit) => {
+			work.map(async (unit) => {
 				this.onRunWorkUnit.emit([unit, value]);
 
-				return unit.run(context, value).catch((error) => error);
+				try {
+					return await unit.run(context, value);
+				} catch (error: unknown) {
+					return error as Error;
+				}
 			}),
 		).then((responses) => this.aggregateResult(responses));
 

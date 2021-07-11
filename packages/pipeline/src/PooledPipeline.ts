@@ -1,11 +1,14 @@
+/* eslint-disable promise/prefer-await-to-callbacks */
+/* eslint-disable promise/prefer-await-to-then */
+
 import os from 'os';
 import { Blueprint, Predicates } from '@boost/common';
-import Context from './Context';
-import debug from './debug';
-import ParallelPipeline from './ParallelPipeline';
-import PipelineError from './PipelineError';
+import { Context } from './Context';
+import { debug } from './debug';
+import { ParallelPipeline } from './ParallelPipeline';
+import { PipelineError } from './PipelineError';
 import { AggregatedResult } from './types';
-import WorkUnit from './WorkUnit';
+import { WorkUnit } from './WorkUnit';
 
 export interface PooledOptions {
 	/** How many work units to process in parallel. */
@@ -16,10 +19,10 @@ export interface PooledOptions {
 	timeout?: number;
 }
 
-export default class PooledPipeline<
+export class PooledPipeline<
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input,
+	Output = Input
 > extends ParallelPipeline<PooledOptions, Ctx, Input, Output> {
 	protected resolver?: (response: AggregatedResult<Output>) => void;
 
@@ -54,8 +57,7 @@ export default class PooledPipeline<
 
 			this.resolver = resolve;
 
-			// eslint-disable-next-line promise/catch-or-return, @typescript-eslint/no-floating-promises
-			Promise.all(
+			void Promise.all(
 				this.work
 					.slice(0, this.options.concurrency)
 					.map(() => this.runWorkUnit(this.context, this.value)),
@@ -82,7 +84,8 @@ export default class PooledPipeline<
 
 			if (this.work.length > 0 && this.running.length < concurrency) {
 				return this.runWorkUnit(context, value);
-			} if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
+			}
+			if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
 				this.resolver(this.aggregateResult(this.results));
 			}
 
@@ -112,7 +115,7 @@ export default class PooledPipeline<
 					return result;
 				})
 				.catch((error) => {
-					resolve(handleResult(error));
+					resolve(handleResult(error as Error));
 				});
 		});
 	}

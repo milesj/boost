@@ -10,4 +10,4 @@ const errors = {
 
 export type PipelineErrorCode = keyof typeof errors;
 
-export default createScopedError<PipelineErrorCode>('PLN', 'PipelineError', errors);
+export const PipelineError = createScopedError<PipelineErrorCode>('PLN', 'PipelineError', errors);

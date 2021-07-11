@@ -1,15 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 import { isObject, isPlainObject } from '@boost/common';
 
 interface Cloneable {
 	clone?: () => unknown;
 }
 
-export default class Context {
+export class Context {
 	/**
 	 * Create a new instance of the current context and shallow clone all properties.
 	 */
 	clone(...args: any[]): this {
-		// @ts-expect-error
+		// @ts-expect-error Allow invalid args
 		const context = new this.constructor(...args);
 
 		// Copy enumerable properties

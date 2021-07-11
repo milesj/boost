@@ -1,15 +1,15 @@
 import { Blueprint, Predicates } from '@boost/common';
-import Context from './Context';
-import createWorkUnit from './createWorkUnit';
-import Pipeline from './Pipeline';
+import { Context } from './Context';
+import { createWorkUnit } from './createWorkUnit';
+import { Pipeline } from './Pipeline';
 import { Action } from './types';
-import WorkUnit from './WorkUnit';
+import { WorkUnit } from './WorkUnit';
 
-export default abstract class SerialPipeline<
+export abstract class SerialPipeline<
 	Options extends object,
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input,
+	Output = Input
 > extends Pipeline<Options, Ctx, Input, Output> {
 	// Unknown does not work here as the output type changes for each
 	// node in the linked list chain.
@@ -24,17 +24,17 @@ export default abstract class SerialPipeline<
 	/**
 	 * Pipe a work unit to be ran with the return value of the previous work unit.
 	 */
-	pipe<Output>(
+	pipe<O>(
 		title: string,
-		action: Action<Ctx, Input, Output>,
+		action: Action<Ctx, Input, O>,
 		scope?: unknown,
-	): SerialPipeline<Options, Ctx, Output>;
-	pipe<Output>(workUnit: WorkUnit<{}, Input, Output>): SerialPipeline<Options, Ctx, Output>;
-	pipe<Output>(
-		titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
-		action?: Action<Ctx, Input, Output>,
+	): SerialPipeline<Options, Ctx, O>;
+	pipe<O>(workUnit: WorkUnit<{}, Input, O>): SerialPipeline<Options, Ctx, O>;
+	pipe<O>(
+		titleOrWorkUnit: WorkUnit<{}, Input, O> | string,
+		action?: Action<Ctx, Input, O>,
 		scope?: unknown,
-	): SerialPipeline<Options, Ctx, Output> {
+	): SerialPipeline<Options, Ctx, O> {
 		const workUnit = createWorkUnit(titleOrWorkUnit, action, scope);
 
 		workUnit.depth = this.depth;
@@ -42,8 +42,12 @@ export default abstract class SerialPipeline<
 
 		this.root.work.push(workUnit);
 
-		// @ts-expect-error
-		const next = new this.constructor(this.context, this.value, this.options);
+		// @ts-expect-error How to type this?
+		const next = new this.constructor(this.context, this.value, this.options) as SerialPipeline<
+			Options,
+			Ctx,
+			O
+		>;
 
 		next.depth = this.depth;
 		next.root = this.root;
@@ -59,6 +63,7 @@ export default abstract class SerialPipeline<
 	 * Traverse the linked list to return a list of work units in defined order.
 	 */
 	getWorkUnits(): WorkUnit<{}, Input, Output>[] {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return this.root.work;
 	}
 

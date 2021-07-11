@@ -7,14 +7,13 @@ import {
 	STATUS_RUNNING,
 	STATUS_SKIPPED,
 } from './constants';
-import Context from './Context';
-import PipelineError from './PipelineError';
+import { Context } from './Context';
+import { PipelineError } from './PipelineError';
 import { Action, Hierarchical, Runnable, Status } from './types';
 
-export default abstract class WorkUnit<Options extends object, Input = unknown, Output = Input>
+export abstract class WorkUnit<Options extends object, Input = unknown, Output = Input>
 	extends Contract<Options>
-	implements Runnable<Input, Output>, Hierarchical
-{
+	implements Runnable<Input, Output>, Hierarchical {
 	depth: number = 0;
 
 	index: number = 0;
@@ -122,7 +121,7 @@ export default abstract class WorkUnit<Options extends object, Input = unknown, 
 
 			// Allow input as output. This is problematic for skipping
 			// since the expected output is no longer in sync. Revisit.
-			// @ts-expect-error
+			// @ts-expect-error Allow invalid type
 			return Promise.resolve(value);
 		}
 
@@ -134,17 +133,20 @@ export default abstract class WorkUnit<Options extends object, Input = unknown, 
 			this.status = STATUS_PASSED;
 			this.stopTime = Date.now();
 			this.onPass.emit([this.output]);
-		} catch (error) {
+		} catch (error: unknown) {
 			this.status = STATUS_FAILED;
 			this.stopTime = Date.now();
-			this.onFail.emit([error]);
 
-			throw error;
+			if (error instanceof Error) {
+				this.onFail.emit([error]);
+
+				throw error;
+			}
 		}
 
 		this.statusText = '';
 
-		return this.output;
+		return this.output!;
 	}
 
 	/**

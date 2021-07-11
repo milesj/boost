@@ -1,7 +1,7 @@
-import Context from '../src/Context';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
-import WaterfallPipeline from '../src/WaterfallPipeline';
+import { Context } from '../src/Context';
+import { Routine } from '../src/Routine';
+import { Task } from '../src/Task';
+import { WaterfallPipeline } from '../src/WaterfallPipeline';
 
 describe('WaterfallPipeline', () => {
 	it('supports piping action functions and passing a value between each', async () => {
@@ -66,8 +66,9 @@ describe('WaterfallPipeline', () => {
 		const pipeline = new WaterfallPipeline(new Context(), 123).pipe(
 			'Scope',
 			function scopeAction(ctx, value) {
-				// @ts-expect-error
-				expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
+				// @ts-expect-error Allow type
+				// eslint-disable-next-line @typescript-eslint/no-invalid-this
+				expect(this).toBe(scope);
 
 				return value * 2;
 			},

@@ -1,7 +1,7 @@
-import ConcurrentPipeline from '../src/ConcurrentPipeline';
-import Context from '../src/Context';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
+import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
+import { Context } from '../src/Context';
+import { Routine } from '../src/Routine';
+import { Task } from '../src/Task';
 
 describe('ConcurrentPipeline', () => {
 	it('supports piping action functions and passing a value to each', async () => {
@@ -66,8 +66,9 @@ describe('ConcurrentPipeline', () => {
 		const pipeline = new ConcurrentPipeline(new Context(), 'foo').add(
 			'Scope',
 			function scopeAction() {
-				// @ts-expect-error
-				expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
+				// @ts-expect-error Allow type
+				// eslint-disable-next-line @typescript-eslint/no-invalid-this
+				expect(this).toBe(scope);
 
 				return 'bar';
 			},

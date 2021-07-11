@@ -1,7 +1,7 @@
-import PipelineError from './PipelineError';
-import Task from './Task';
+import { PipelineError } from './PipelineError';
+import { Task } from './Task';
 import { Action } from './types';
-import WorkUnit from './WorkUnit';
+import { WorkUnit } from './WorkUnit';
 
 /**
  * Create or return an executable work unit. Supports the following patterns:
@@ -11,7 +11,7 @@ import WorkUnit from './WorkUnit';
  * - A custom `WorkUnit` instance.
  * - A title and function that returns a `Task` instance.
  */
-export default function createWorkUnit<Input = unknown, Output = Input>(
+export function createWorkUnit<Input = unknown, Output = Input>(
 	titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	action?: Action<any, Input, Output>,

@@ -1,7 +1,7 @@
 import { STATUS_RUNNING } from '../src/constants';
-import Context from '../src/Context';
-import Task from '../src/Task';
-import WorkUnit from '../src/WorkUnit';
+import { Context } from '../src/Context';
+import { Task } from '../src/Task';
+import { WorkUnit } from '../src/WorkUnit';
 
 describe('Work', () => {
 	let context: Context;
@@ -29,7 +29,7 @@ describe('Work', () => {
 			expect(
 				() =>
 					new Task(
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						123,
 						() => {},
 					),
@@ -41,7 +41,7 @@ describe('Work', () => {
 				() =>
 					new Task(
 						'title',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						123,
 					),
 			).toThrowErrorMatchingSnapshot();
@@ -117,7 +117,7 @@ describe('Work', () => {
 		it('returns false when running', () => {
 			expect(passWork.isComplete()).toBe(false);
 
-			// @ts-expect-error
+			// @ts-expect-error Invalid type
 			passWork.status = STATUS_RUNNING;
 
 			expect(passWork.isComplete()).toBe(false);
@@ -134,7 +134,7 @@ describe('Work', () => {
 		it('returns a boolean for STATUS_RUNNING status state', () => {
 			expect(passWork.isRunning()).toBe(false);
 
-			// @ts-expect-error
+			// @ts-expect-error Invalid type
 			passWork.status = STATUS_RUNNING;
 
 			expect(passWork.isRunning()).toBe(true);
@@ -304,7 +304,7 @@ describe('Work', () => {
 		it('evaluates a condition to determine whether to skip', () => {
 			expect(passWork.isSkipped()).toBe(false);
 
-			// @ts-expect-error
+			// @ts-expect-error Invalid type
 			passWork.skip(1 === 2);
 
 			expect(passWork.isSkipped()).toBe(false);

@@ -1,11 +1,11 @@
 /* eslint-disable jest/no-standalone-expect */
 
 import { Predicates } from '@boost/common';
-import ConcurrentPipeline from '../src/ConcurrentPipeline';
-import Context from '../src/Context';
-import Routine from '../src/Routine';
+import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
+import { Context } from '../src/Context';
+import { Routine } from '../src/Routine';
 import { Runnable } from '../src/types';
-import WorkUnit from '../src/WorkUnit';
+import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';
 
 describe('ParallelPipeline', () => {

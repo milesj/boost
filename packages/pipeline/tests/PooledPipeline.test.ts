@@ -1,8 +1,8 @@
-import Context from '../src/Context';
-import PipelineError from '../src/PipelineError';
-import PooledPipeline from '../src/PooledPipeline';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
+import { Context } from '../src/Context';
+import { PipelineError } from '../src/PipelineError';
+import { PooledPipeline } from '../src/PooledPipeline';
+import { Routine } from '../src/Routine';
+import { Task } from '../src/Task';
 import { AggregatedResult } from '../src/types';
 
 describe('PooledPipeline', () => {
@@ -80,8 +80,9 @@ describe('PooledPipeline', () => {
 		const pipeline = new PooledPipeline(new Context(), 'foo').add(
 			'Scope',
 			function scopeAction() {
-				// @ts-expect-error
-				expect(this).toBe(scope); // eslint-disable-line babel/no-invalid-this
+				// @ts-expect-error Allow type
+				// eslint-disable-next-line @typescript-eslint/no-invalid-this
+				expect(this).toBe(scope);
 
 				return 'bar';
 			},

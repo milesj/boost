@@ -1,11 +1,11 @@
 /* eslint-disable jest/no-standalone-expect */
 
 import { Predicates } from '@boost/common';
-import Context from '../src/Context';
-import Routine from '../src/Routine';
+import { Context } from '../src/Context';
+import { Routine } from '../src/Routine';
 import { Runnable } from '../src/types';
-import WaterfallPipeline from '../src/WaterfallPipeline';
-import WorkUnit from '../src/WorkUnit';
+import { WaterfallPipeline } from '../src/WaterfallPipeline';
+import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';
 
 describe('SerialPipeline', () => {

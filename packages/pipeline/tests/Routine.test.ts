@@ -1,13 +1,13 @@
 import execa from 'execa';
 import { Predicates } from '@boost/common';
-import AggregatedPipeline from '../src/AggregatedPipeline';
-import ConcurrentPipeline from '../src/ConcurrentPipeline';
+import { AggregatedPipeline } from '../src/AggregatedPipeline';
+import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { STATUS_RUNNING } from '../src/constants';
-import Context from '../src/Context';
-import PooledPipeline from '../src/PooledPipeline';
-import Routine from '../src/Routine';
-import Task from '../src/Task';
-import WaterfallPipeline from '../src/WaterfallPipeline';
+import { Context } from '../src/Context';
+import { PooledPipeline } from '../src/PooledPipeline';
+import { Routine } from '../src/Routine';
+import { Task } from '../src/Task';
+import { WaterfallPipeline } from '../src/WaterfallPipeline';
 
 jest.mock('execa');
 
@@ -38,7 +38,7 @@ describe('Routine', () => {
 		expect(
 			() =>
 				new TestRoutine(
-					// @ts-expect-error
+					// @ts-expect-error Invalid type
 					123,
 					'title',
 				),
@@ -151,7 +151,7 @@ describe('Routine', () => {
 		}
 
 		function mockExeca(value: string) {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
+			((execa as unknown) as jest.Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 				stdout: new FakeStream(value),
 				stderr: new FakeStream(value),
@@ -188,7 +188,7 @@ describe('Routine', () => {
 			const commandDataSpy = jest.fn();
 			const task = new Task<string, string>('title', () => '');
 
-			// @ts-expect-error
+			// @ts-expect-error Allow overwrite
 			task.status = STATUS_RUNNING;
 
 			routine.onCommand.listen(commandSpy);
@@ -203,7 +203,7 @@ describe('Routine', () => {
 		it('sets `statusText` on work unit', async () => {
 			const task = new Task('title', () => {});
 
-			// @ts-expect-error
+			// @ts-expect-error Allow overwrite
 			task.status = STATUS_RUNNING;
 
 			await routine.executeCommand('yarn', ['--help'], { workUnit: task });
@@ -216,7 +216,7 @@ describe('Routine', () => {
 
 			const task = new Task('title', () => {});
 
-			// @ts-expect-error
+			// @ts-expect-error Allow overwrite
 			task.status = STATUS_RUNNING;
 			task.statusText = 'Should not be changed';
 

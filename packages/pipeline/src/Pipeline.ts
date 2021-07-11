@@ -2,16 +2,15 @@ import kebabCase from 'lodash/kebabCase';
 import { Contract } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
-import Context from './Context';
-import debug from './debug';
-import Monitor from './Monitor';
+import { Context } from './Context';
+import { debug } from './debug';
+import { Monitor } from './Monitor';
 import { Hierarchical } from './types';
-import WorkUnit from './WorkUnit';
+import { WorkUnit } from './WorkUnit';
 
-export default abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>
+export abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>
 	extends Contract<Options>
-	implements Hierarchical
-{
+	implements Hierarchical {
 	depth: number = 0;
 
 	index: number = 0;
@@ -45,7 +44,7 @@ export default abstract class Pipeline<Options extends object, Ctx extends Conte
 
 		// This is technically invalid, but we want to allow optional values.
 		// Luckily the input type defaults to `unknown`, so it forces consumers to validate.
-		// @ts-expect-error
+		// @ts-expect-error Allow
 		this.value = value;
 
 		debug('New %S created', name);
