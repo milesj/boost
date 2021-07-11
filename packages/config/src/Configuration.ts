@@ -1,9 +1,9 @@
 import { Blueprint, Contract, PortablePath, predicates } from '@boost/common';
 import { Event, WaterfallEvent } from '@boost/event';
-import Cache from './Cache';
-import ConfigFinder from './ConfigFinder';
-import IgnoreFinder from './IgnoreFinder';
-import Processor from './Processor';
+import { Cache } from './Cache';
+import { ConfigFinder } from './ConfigFinder';
+import { IgnoreFinder } from './IgnoreFinder';
+import { Processor } from './Processor';
 import {
 	ConfigFile,
 	ConfigFinderOptions,
@@ -13,7 +13,7 @@ import {
 	ProcessorOptions,
 } from './types';
 
-export default abstract class Configuration<T extends object> extends Contract<T> {
+export abstract class Configuration<T extends object> extends Contract<T> {
 	readonly onLoadedConfig = new WaterfallEvent<ConfigFile<T>[]>('loaded-config');
 
 	readonly onLoadedIgnore = new WaterfallEvent<IgnoreFile[]>('loaded-ignore');

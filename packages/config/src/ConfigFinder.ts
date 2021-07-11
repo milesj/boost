@@ -11,17 +11,17 @@ import {
 	toArray,
 } from '@boost/common';
 import { color } from '@boost/internal';
-import ConfigError from './ConfigError';
+import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
-import Finder from './Finder';
-import createFileName from './helpers/createFileName';
-import getEnv from './helpers/getEnv';
-import loadCjs from './loaders/cjs';
-import loadJs from './loaders/js';
-import loadJson from './loaders/json';
-import loadMjs from './loaders/mjs';
-import loadTs from './loaders/ts';
-import loadYaml from './loaders/yaml';
+import { Finder } from './Finder';
+import { createFileName } from './helpers/createFileName';
+import { getEnv } from './helpers/getEnv';
+import { loadCjs } from './loaders/cjs';
+import { loadJs } from './loaders/js';
+import { loadJson } from './loaders/json';
+import { loadMjs } from './loaders/mjs';
+import { loadTs } from './loaders/ts';
+import { loadYaml } from './loaders/yaml';
 import {
 	ConfigFile,
 	ConfigFinderOptions,
@@ -31,10 +31,7 @@ import {
 	OverridesSetting,
 } from './types';
 
-export default class ConfigFinder<T extends object> extends Finder<
-	ConfigFile<T>,
-	ConfigFinderOptions<T>
-> {
+export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, ConfigFinderOptions<T>> {
 	blueprint({ array, bool, func, shape, string }: Predicates): Blueprint<ConfigFinderOptions<T>> {
 		return {
 			extendsSetting: string(),
@@ -105,7 +102,6 @@ export default class ConfigFinder<T extends object> extends Finder<
 		return this.cache.cacheFilesInDir(baseDir, async () => {
 			const paths: Path[] = [];
 
-			// eslint-disable-next-line no-restricted-syntax
 			for (const ext of this.options.extensions) {
 				const files = [baseDir.append(this.getFileName(ext, !isRoot, false))];
 

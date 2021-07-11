@@ -1,7 +1,7 @@
 import { Path } from '@boost/common';
 import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';
-import Cache from '../src/Cache';
-import ConfigFinder from '../src/ConfigFinder';
+import { Cache } from '../src/Cache';
+import { ConfigFinder } from '../src/ConfigFinder';
 import { stubPath } from './helpers';
 
 describe('ConfigFinder', () => {
@@ -597,7 +597,7 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-root-config-toml');
 
 			finder.configure(
-				// @ts-expect-error
+				// @ts-expect-error Invalid format
 				{ extensions: ['toml'] },
 			);
 

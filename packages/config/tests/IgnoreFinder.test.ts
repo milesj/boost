@@ -1,7 +1,7 @@
 import { EOL } from 'os';
 import { getFixturePath } from '@boost/test-utils';
-import Cache from '../src/Cache';
-import IgnoreFinder from '../src/IgnoreFinder';
+import { Cache } from '../src/Cache';
+import { IgnoreFinder } from '../src/IgnoreFinder';
 import { stubPath } from './helpers';
 
 describe('IgnoreFinder', () => {

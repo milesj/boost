@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { json, Path } from '@boost/common';
 
-export default async function loadJson<T>(path: Path): Promise<T> {
-	return fs.promises.readFile(path.path(), 'utf8').then((data) => json.parse(data));
+export async function loadJson<T>(path: Path): Promise<T> {
+	return json.parse(await fs.promises.readFile(path.path(), 'utf8'));
 }

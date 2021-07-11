@@ -9,4 +9,4 @@ try {
 	supportsImport = false;
 }
 
-export default supportsImport;
+export { supportsImport };

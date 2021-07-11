@@ -1,4 +1,4 @@
-import mergePlugins from '../../src/helpers/mergePlugins';
+import { mergePlugins } from '../../src/helpers/mergePlugins';
 
 describe('mergePlugins()', () => {
 	describe('objects', () => {
@@ -28,7 +28,7 @@ describe('mergePlugins()', () => {
 				mergePlugins(
 					{ foo: true },
 					{
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						foo: undefined,
 					},
 				),
@@ -60,7 +60,7 @@ describe('mergePlugins()', () => {
 			expect(
 				mergePlugins(
 					['foo'],
-					// @ts-expect-error
+					// @ts-expect-error Invalid type
 					[['bar', undefined]],
 				),
 			).toEqual({ foo: true, bar: true });

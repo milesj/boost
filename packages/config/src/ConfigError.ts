@@ -13,4 +13,4 @@ const errors = {
 
 export type ConfigErrorCode = keyof typeof errors;
 
-export default createScopedError<ConfigErrorCode>('CFG', 'ConfigError', errors);
+export const ConfigError = createScopedError<ConfigErrorCode>('CFG', 'ConfigError', errors);

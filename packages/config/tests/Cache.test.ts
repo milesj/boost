@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Path } from '@boost/common';
-import Cache from '../src/Cache';
+import { Cache } from '../src/Cache';
 
 describe('Cache', () => {
 	let cache: Cache;
@@ -16,7 +16,7 @@ describe('Cache', () => {
 			jest
 				.spyOn(fs.promises, 'stat')
 				.mockImplementation(() =>
-					Promise.resolve({ mtimeMs: statMtime || 100 } as unknown as fs.Stats),
+					Promise.resolve(({ mtimeMs: statMtime || 100 } as unknown) as fs.Stats),
 				);
 		});
 

@@ -1,4 +1,4 @@
-import overwrite from '../../src/helpers/overwrite';
+import { overwrite } from '../../src/helpers/overwrite';
 
 describe('overwrite()', () => {
 	it('returns the next value', () => {

@@ -1,4 +1,4 @@
-import mergeExtends from '../../src/helpers/mergeExtends';
+import { mergeExtends } from '../../src/helpers/mergeExtends';
 
 describe('mergeExtends()', () => {
 	it('removes duplicates', () => {

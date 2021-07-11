@@ -41,9 +41,9 @@ describe('Configuration', () => {
 
 	describe('clearCache()', () => {
 		it('clears file and finder cache on cache engine', () => {
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			const spy1 = jest.spyOn(config.cache, 'clearFileCache');
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			const spy2 = jest.spyOn(config.cache, 'clearFinderCache');
 
 			config.clearCache();
@@ -55,7 +55,7 @@ describe('Configuration', () => {
 
 	describe('clearFileCache()', () => {
 		it('clears file cache on cache engine', () => {
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			const spy = jest.spyOn(config.cache, 'clearFileCache');
 
 			config.clearFileCache();
@@ -66,7 +66,7 @@ describe('Configuration', () => {
 
 	describe('clearFinderCache()', () => {
 		it('clears finder cache on cache engine', () => {
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			const spy = jest.spyOn(config.cache, 'clearFinderCache');
 
 			config.clearFinderCache();

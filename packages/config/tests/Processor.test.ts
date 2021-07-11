@@ -1,13 +1,13 @@
 import { Blueprint, Path, predicates } from '@boost/common';
-import mergeExtends from '../src/helpers/mergeExtends';
-import mergePlugins from '../src/helpers/mergePlugins';
-import overwrite from '../src/helpers/overwrite';
+import { mergeExtends } from '../src/helpers/mergeExtends';
+import { mergePlugins } from '../src/helpers/mergePlugins';
+import { overwrite } from '../src/helpers/overwrite';
 import {
 	createExtendsPredicate,
 	createOverridesPredicate,
 	createPluginsPredicate,
 } from '../src/predicates';
-import Processor from '../src/Processor';
+import { Processor } from '../src/Processor';
 import { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
 
 describe('Processor', () => {
@@ -133,7 +133,7 @@ describe('Processor', () => {
 						[
 							stubConfigFile({ debug: true }),
 							stubConfigFile({
-								// @ts-expect-error
+								// @ts-expect-error Invalid type
 								debug: 123,
 							}),
 						],
@@ -151,13 +151,12 @@ describe('Processor', () => {
 						[
 							stubConfigFile({ debug: true }),
 							stubConfigFile({
-								// @ts-expect-error
+								// @ts-expect-error Invalid type
 								debug: 123,
 							}),
 						],
 						blueprint,
 					),
-					// eslint-disable-next-line jest/no-expect-resolves
 				).resolves.not.toThrow();
 			});
 		});
@@ -188,7 +187,7 @@ describe('Processor', () => {
 						defaults,
 						[
 							stubConfigFile({
-								// @ts-expect-error
+								// @ts-expect-error Invalid type
 								extends: 123,
 							}),
 						],
@@ -243,7 +242,7 @@ describe('Processor', () => {
 						defaults,
 						[
 							stubConfigFile({
-								// @ts-expect-error
+								// @ts-expect-error Invalid type
 								plugins: true,
 							}),
 						],
@@ -258,7 +257,7 @@ describe('Processor', () => {
 						defaults,
 						[
 							stubConfigFile({
-								// @ts-expect-error
+								// @ts-expect-error Invalid type
 								plugins: {
 									foo: 123,
 								},

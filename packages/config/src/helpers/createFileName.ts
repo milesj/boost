@@ -1,4 +1,4 @@
-export default function createFileName(
+export function createFileName(
 	name: string,
 	ext: string,
 	{ envSuffix, leadingDot }: { envSuffix?: string; leadingDot?: boolean },

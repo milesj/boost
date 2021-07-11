@@ -1,14 +1,14 @@
 import { Contract, Path, PortablePath } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import Cache from './Cache';
-import ConfigError from './ConfigError';
+import { Cache } from './Cache';
+import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, PACKAGE_FILE } from './constants';
 import { File } from './types';
 
-export default abstract class Finder<
+export abstract class Finder<
 	T extends File,
-	Options extends { name: string },
+	Options extends { name: string }
 > extends Contract<Options> {
 	protected readonly debug: Debugger;
 
@@ -90,7 +90,8 @@ export default abstract class Finder<
 	protected isRootDir(dir: Path, abort: boolean = false): boolean {
 		if (dir.path() === this.cache.rootDir?.path()) {
 			return true;
-		} if (!dir.isDirectory() || abort) {
+		}
+		if (!dir.isDirectory() || abort) {
 			return false;
 		}
 

@@ -7,7 +7,7 @@ export interface FileCache<T> {
 	mtime: number;
 }
 
-export default class Cache {
+export class Cache {
 	configDir?: Path;
 
 	dirFilesCache: Record<string, Path[]> = {};
@@ -19,16 +19,16 @@ export default class Cache {
 
 	rootDir?: Path;
 
-	async cacheFileContents<T>(path: Path, cb: () => Promise<T>): Promise<T> {
+	async cacheFileContents<T>(path: Path, commit: () => Promise<T>): Promise<T> {
 		const key = path.path();
 		const cache = this.fileContentCache[key];
 		const stats = await fs.promises.stat(path.path());
 
 		if (cache && cache.mtime === stats.mtimeMs) {
-			return cache.content;
+			return cache.content as T;
 		}
 
-		const content = await cb();
+		const content = await commit();
 
 		this.fileContentCache[key] = {
 			content,
@@ -39,14 +39,14 @@ export default class Cache {
 		return content;
 	}
 
-	async cacheFilesInDir(dir: Path, cb: () => Promise<Path[]>): Promise<Path[]> {
+	async cacheFilesInDir(dir: Path, commit: () => Promise<Path[]>): Promise<Path[]> {
 		const key = dir.path();
 
 		if (this.dirFilesCache[key]) {
 			return this.dirFilesCache[key];
 		}
 
-		const files = await cb();
+		const files = await commit();
 
 		this.dirFilesCache[key] = files;
 

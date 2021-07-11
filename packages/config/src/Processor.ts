@@ -1,13 +1,13 @@
-/* eslint-disable no-await-in-loop, no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 
 import { Blueprint, Contract, isObject, optimal, Predicates } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import mergeArray from './helpers/mergeArray';
-import mergeObject from './helpers/mergeObject';
+import { mergeArray } from './helpers/mergeArray';
+import { mergeObject } from './helpers/mergeObject';
 import { ConfigFile, Handler, ProcessorOptions } from './types';
 
-export default class Processor<T extends object> extends Contract<ProcessorOptions> {
+export class Processor<T extends object> extends Contract<ProcessorOptions> {
 	protected readonly debug: Debugger;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
