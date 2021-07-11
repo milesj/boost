@@ -1,4 +1,4 @@
-import Event from '../src/Event';
+import { Event } from '../src/Event';
 
 describe('Event', () => {
 	let event: Event<unknown[]>;
@@ -80,7 +80,7 @@ describe('Event', () => {
 	describe('listen()', () => {
 		it('errors if listener is not a function', () => {
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				event.listen(123);
 			}).toThrowErrorMatchingSnapshot();
 		});
@@ -159,7 +159,7 @@ describe('Event', () => {
 	describe('once()', () => {
 		it('errors if listener is not a function', () => {
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				event.once(123);
 			}).toThrowErrorMatchingSnapshot();
 		});

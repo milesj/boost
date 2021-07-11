@@ -8,4 +8,4 @@ const errors = {
 
 export type EventErrorCode = keyof typeof errors;
 
-export default createScopedError<EventErrorCode>('EVT', 'EventError', errors);
+export const EventError = createScopedError<EventErrorCode>('EVT', 'EventError', errors);

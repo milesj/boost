@@ -1,13 +1,9 @@
 import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
-import debug from './debug';
-import EventError from './EventError';
+import { debug } from './debug';
+import { EventError } from './EventError';
 import { Listener, Unlistener, WildstarScope } from './types';
 
-export default abstract class BaseEvent<
-	Return,
-	Args extends unknown[],
-	Scope extends string = string,
-> {
+export abstract class BaseEvent<Return, Args extends unknown[], Scope extends string = string> {
 	listeners = new Map<Scope | WildstarScope, Set<Listener<Args, Return>>>();
 
 	name: string;
@@ -37,7 +33,7 @@ export default abstract class BaseEvent<
 	 * Return a set of listeners for a specific event scope.
 	 */
 	getListeners(scope?: Scope): Set<Listener<Args, Return>> {
-		const key = this.validateName(scope || WILDCARD_SCOPE, 'scope');
+		const key = this.validateName(scope ?? WILDCARD_SCOPE, 'scope');
 
 		if (!this.listeners.has(key)) {
 			this.listeners.set(key, new Set());
@@ -100,8 +96,8 @@ export default abstract class BaseEvent<
 	 */
 	protected validateListener<L>(listener: L): L {
 		if (__DEV__ && typeof listener !== 'function') {
-				throw new EventError('LISTENER_INVALID', [this.name]);
-			}
+			throw new EventError('LISTENER_INVALID', [this.name]);
+		}
 
 		return listener;
 	}
@@ -115,8 +111,8 @@ export default abstract class BaseEvent<
 		}
 
 		if (__DEV__ && !name.match(EVENT_NAME_PATTERN)) {
-				throw new EventError('NAME_INVALID', [type, name]);
-			}
+			throw new EventError('NAME_INVALID', [type, name]);
+		}
 
 		return name;
 	}

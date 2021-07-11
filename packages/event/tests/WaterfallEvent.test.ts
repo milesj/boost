@@ -1,4 +1,4 @@
-import WaterfallEvent from '../src/WaterfallEvent';
+import { WaterfallEvent } from '../src/WaterfallEvent';
 
 describe('WaterfallEvent', () => {
 	it('executes listeners in order with the value being passed to each function', () => {

@@ -1,3 +1,3 @@
 import { createInternalDebugger } from '@boost/internal';
 
-export default createInternalDebugger('event');
+export const debug = createInternalDebugger('event');

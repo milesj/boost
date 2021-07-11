@@ -1,10 +1,11 @@
-import BaseEvent from './BaseEvent';
-import debug from './debug';
+import { BaseEvent } from './BaseEvent';
+import { debug } from './debug';
 
-export default class BailEvent<
-	Args extends unknown[],
-	Scope extends string = string,
-> extends BaseEvent<boolean | void, Args, Scope> {
+export class BailEvent<Args extends unknown[], Scope extends string = string> extends BaseEvent<
+	boolean | void,
+	Args,
+	Scope
+> {
 	/**
 	 * Synchronously execute listeners with the defined arguments.
 	 * If a listener returns `false`, the loop with be aborted early,

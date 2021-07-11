@@ -1,4 +1,4 @@
-import ConcurrentEvent from '../src/ConcurrentEvent';
+import { ConcurrentEvent } from '../src/ConcurrentEvent';
 
 describe('ConcurrentEvent', () => {
 	let event: ConcurrentEvent<[number]>;

@@ -1,4 +1,4 @@
-import Event from '../src/Event';
+import { Event } from '../src/Event';
 
 describe('Event', () => {
 	let event: Event<[string, string, string]>;

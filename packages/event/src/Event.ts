@@ -1,6 +1,6 @@
-import BaseEvent from './BaseEvent';
+import { BaseEvent } from './BaseEvent';
 
-export default class Event<Args extends unknown[], Scope extends string = string> extends BaseEvent<
+export class Event<Args extends unknown[], Scope extends string = string> extends BaseEvent<
 	void,
 	Args,
 	Scope

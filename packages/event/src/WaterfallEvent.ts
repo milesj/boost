@@ -1,7 +1,7 @@
-import BaseEvent from './BaseEvent';
-import debug from './debug';
+import { BaseEvent } from './BaseEvent';
+import { debug } from './debug';
 
-export default class WaterfallEvent<Arg, Scope extends string = string> extends BaseEvent<
+export class WaterfallEvent<Arg, Scope extends string = string> extends BaseEvent<
 	Arg,
 	[Arg],
 	Scope
@@ -15,9 +15,6 @@ export default class WaterfallEvent<Arg, Scope extends string = string> extends 
 			debug('Emitting "%s%s" as waterfall', this.name, scope ? `:${scope}` : '');
 		}
 
-		return [...this.getListeners(scope)].reduce(
-			(nextValue, listener) => listener(nextValue),
-			arg,
-		);
+		return [...this.getListeners(scope)].reduce((nextValue, listener) => listener(nextValue), arg);
 	}
 }

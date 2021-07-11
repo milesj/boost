@@ -1,4 +1,4 @@
-import BailEvent from '../src/BailEvent';
+import { BailEvent } from '../src/BailEvent';
 
 describe('BailEvent', () => {
 	let event: BailEvent<[string, number]>;
