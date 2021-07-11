@@ -23,7 +23,7 @@
     "node": ">=10.3.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.17.1",
+    "@beemo/dev": "^1.2.0",
     "@types/babel__core": "^7.1.14",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.9",
