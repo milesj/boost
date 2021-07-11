@@ -7,7 +7,7 @@ jest.mock('example-es-default-named', () => ({ __esModule: true, default: 456, n
 });
 jest.mock('example-es-named', () => ({ __esModule: true, a: 1, b: 2, c: 3 }), { virtual: true });
 
-jest.mock('../../src/helpers/requireTypedModule', () => () => 'ts');
+jest.mock('../../src/helpers/requireTypedModule', () => ({ requireTypedModule: () => 'ts' }));
 
 describe('requireModule()', () => {
 	it('returns default exported', () => {
