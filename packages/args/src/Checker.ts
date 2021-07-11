@@ -1,7 +1,7 @@
 import levenary from 'levenary';
-import ArgsError, { ArgsErrorCode } from './ArgsError';
+import { ArgsError, ArgsErrorCode } from './ArgsError';
 import { COMMAND_FORMAT } from './constants';
-import ParseError from './ParseError';
+import { ParseError } from './ParseError';
 import {
 	AliasMap,
 	LongOptionName,
@@ -11,9 +11,9 @@ import {
 	ShortOptionName,
 	ValueType,
 } from './types';
-import ValidationError from './ValidationError';
+import { ValidationError } from './ValidationError';
 
-export default class Checker {
+export class Checker {
 	arg: string = '';
 
 	argIndex: number = 0;
@@ -110,8 +110,8 @@ export default class Checker {
 		if (config.validate) {
 			try {
 				config.validate(value);
-			} catch (error) {
-				this.logInvalid(error.message, option);
+			} catch (error: unknown) {
+				this.logInvalid((error as Error).message, option);
 			}
 		}
 	}
@@ -120,8 +120,8 @@ export default class Checker {
 		if (config.validate) {
 			try {
 				config.validate(value);
-			} catch (error) {
-				this.logInvalid(error.message);
+			} catch (error: unknown) {
+				this.logInvalid((error as Error).message);
 			}
 		}
 

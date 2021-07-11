@@ -1,10 +1,7 @@
-import ArgsError from '../ArgsError';
+import { ArgsError } from '../ArgsError';
 import { Option, ValueType } from '../types';
 
-export default function formatValue(
-	value: ValueType,
-	format?: Option<ValueType>['format'],
-): ValueType {
+export function formatValue(value: ValueType, format?: Option<ValueType>['format']): ValueType {
 	let nextValue = value;
 	const prevType = typeof nextValue;
 

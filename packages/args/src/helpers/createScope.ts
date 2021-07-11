@@ -1,11 +1,11 @@
-import Scope from '../Scope';
+import { Scope } from '../Scope';
 import { LongOptionName, OptionConfig, OptionMap } from '../types';
 
 function camelCase(value: string): string {
-	return value.replace(/-([a-z0-9])/giu, (match, char) => char.toUpperCase());
+	return value.replace(/-([a-z0-9])/giu, (match, char) => String(char).toUpperCase());
 }
 
-export default function createScope(
+export function createScope(
 	optionName: LongOptionName,
 	optionConfigs: Record<string, OptionConfig>,
 	options: OptionMap,

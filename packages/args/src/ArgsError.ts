@@ -34,4 +34,4 @@ const errors = {
 
 export type ArgsErrorCode = keyof typeof errors;
 
-export default createScopedError<ArgsErrorCode>('ARG', 'ArgsError', errors);
+export const ArgsError = createScopedError<ArgsErrorCode>('ARG', 'ArgsError', errors);

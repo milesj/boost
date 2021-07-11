@@ -1,10 +1,10 @@
-import ArgsError from '../ArgsError';
+import { ArgsError } from '../ArgsError';
 import { AliasMap, LongOptionName, ShortOptionName } from '../types';
 
 /**
  * Expand a short option name to a long option name.
  */
-export default function expandShortOption(
+export function expandShortOption(
 	short: ShortOptionName,
 	map: AliasMap,
 	loose: boolean,

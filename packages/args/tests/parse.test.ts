@@ -11,7 +11,7 @@ import {
 	optsConfigExpanded,
 	SPECIAL_CHARS,
 	SPECIAL_NUMBERS,
-} from './__mocks__/options';
+} from './__fixtures__/options';
 
 describe('parse()', () => {
 	it('supports camel case option names by default', () => {
@@ -300,7 +300,7 @@ describe('parse()', () => {
 				const result = parse<{ opt: string }>([], {
 					options: {
 						opt: {
-							// @ts-expect-error
+							// @ts-expect-error Invalid type
 							count: true,
 							description: '',
 							type: 'string',
@@ -1944,7 +1944,7 @@ describe('parse()', () => {
 					foo: {
 						description: '',
 						type: 'boolean',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						default: 123,
 					},
 				},
@@ -1972,7 +1972,7 @@ describe('parse()', () => {
 					foo: {
 						description: '',
 						type: 'string',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						default: 123,
 					},
 				},
@@ -2000,7 +2000,7 @@ describe('parse()', () => {
 					foo: {
 						description: '',
 						type: 'number',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						default: 'abc',
 					},
 				},
@@ -2029,7 +2029,7 @@ describe('parse()', () => {
 						description: '',
 						multiple: true,
 						type: 'number',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						default: 'abc',
 					},
 				},
@@ -2057,7 +2057,7 @@ describe('parse()', () => {
 					foo: {
 						description: '',
 						type: 'string',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						short: 'ab',
 					},
 				},
@@ -2320,7 +2320,7 @@ describe('parse()', () => {
 				options: {
 					foo: {
 						description: '',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						format: () => 123,
 						type: 'string',
 					},
@@ -2488,7 +2488,7 @@ describe('parse()', () => {
 				options: {
 					flag: {
 						description: '',
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						format: () => 123,
 						type: 'boolean',
 					},

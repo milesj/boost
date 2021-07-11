@@ -8,7 +8,7 @@ function mapToStringList(value: ValueType): ArgList {
 	return (value as string[]).map(String);
 }
 
-export default function format({
+export function format({
 	command = [],
 	options = {},
 	params = [],

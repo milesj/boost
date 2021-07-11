@@ -5,7 +5,7 @@ import {
 	numsConfig,
 	optConfig,
 	optsConfigArity,
-} from './__mocks__/options';
+} from './__fixtures__/options';
 
 describe('parseInContext()', () => {
 	interface FooOptions {
@@ -51,7 +51,7 @@ describe('parseInContext()', () => {
 		options: {
 			choice: {
 				...optConfig,
-				// @ts-expect-error
+				// @ts-expect-error TS not resolving correctly
 				choices: ['a', 'b', 'c'],
 				default: 'a',
 			},
@@ -62,9 +62,11 @@ describe('parseInContext()', () => {
 	const contextFactory: ContextFactory = (arg, argv) => {
 		if (arg === 'foo' || arg === '--unknown-option') {
 			return fooParserOptions;
-		} if (arg === 'bar') {
+		}
+		if (arg === 'bar') {
 			return barParserOptions;
-		} if (arg === 'baz' && argv.includes('--allow')) {
+		}
+		if (arg === 'baz' && argv.includes('--allow')) {
 			return bazParserOptions;
 		}
 

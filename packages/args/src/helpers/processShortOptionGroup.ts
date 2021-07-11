@@ -1,13 +1,13 @@
 /* eslint-disable no-param-reassign */
 
-import ArgsError from '../ArgsError';
+import { ArgsError } from '../ArgsError';
 import { AliasMap, OptionConfigMap, OptionMap, ShortOptionName } from '../types';
-import expandShortOption from './expandShortOption';
+import { expandShortOption } from './expandShortOption';
 
 /**
  * Expand a group of short option names to a list of long option names.
  */
-export default function processShortOptionGroup(
+export function processShortOptionGroup(
 	group: string,
 	configs: OptionConfigMap,
 	options: OptionMap,

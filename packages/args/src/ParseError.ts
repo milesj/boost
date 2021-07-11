@@ -1,4 +1,4 @@
-export default class ParseError extends Error {
+export class ParseError extends Error {
 	arg: string;
 
 	index: number;

@@ -1,7 +1,7 @@
 import { DEFAULT_NUMBER_VALUE } from '../constants';
 import { ValueType } from '../types';
 
-export default function castValue(
+export function castValue(
 	value: unknown,
 	type?: 'boolean' | 'number' | 'string',
 	multiple?: boolean,

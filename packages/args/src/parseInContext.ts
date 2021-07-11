@@ -1,8 +1,8 @@
-import ArgsError from './ArgsError';
-import parse from './parse';
+import { ArgsError } from './ArgsError';
+import { parse } from './parse';
 import { ArgList, Arguments, Argv, ContextFactory, ParserOptions, PrimitiveType } from './types';
 
-export default function parseInContext<O extends object = {}, P extends PrimitiveType[] = ArgList>(
+export function parseInContext<O extends object = {}, P extends PrimitiveType[] = ArgList>(
 	argv: Argv,
 	context: ContextFactory,
 ): Arguments<O, P> {

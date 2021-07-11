@@ -1,22 +1,22 @@
 /* eslint-disable complexity, no-continue */
 
-import ArgsError from './ArgsError';
-import Checker from './Checker';
+import { ArgsError } from './ArgsError';
+import { Checker } from './Checker';
 import { DEFAULT_STRING_VALUE } from './constants';
-import debug from './debug';
-import castValue from './helpers/castValue';
-import createScope from './helpers/createScope';
-import expandShortOption from './helpers/expandShortOption';
-import formatValue from './helpers/formatValue';
-import getDefaultValue from './helpers/getDefaultValue';
-import isCommand from './helpers/isCommand';
-import isLongOption from './helpers/isLongOption';
-import isOptionLike from './helpers/isOptionLike';
-import isShortOption from './helpers/isShortOption';
-import isShortOptionGroup from './helpers/isShortOptionGroup';
-import mapParserOptions from './helpers/mapParserOptions';
-import processShortOptionGroup from './helpers/processShortOptionGroup';
-import Scope from './Scope';
+import { debug } from './debug';
+import { castValue } from './helpers/castValue';
+import { createScope } from './helpers/createScope';
+import { expandShortOption } from './helpers/expandShortOption';
+import { formatValue } from './helpers/formatValue';
+import { getDefaultValue } from './helpers/getDefaultValue';
+import { isCommand } from './helpers/isCommand';
+import { isLongOption } from './helpers/isLongOption';
+import { isOptionLike } from './helpers/isOptionLike';
+import { isShortOption } from './helpers/isShortOption';
+import { isShortOptionGroup } from './helpers/isShortOptionGroup';
+import { mapParserOptions } from './helpers/mapParserOptions';
+import { processShortOptionGroup } from './helpers/processShortOptionGroup';
+import { Scope } from './Scope';
 import {
 	AliasMap,
 	ArgList,
@@ -52,7 +52,7 @@ import {
 // Arity count - Required number of argument values to consume for multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
-export default function parse<O extends object = {}, P extends PrimitiveType[] = ArgList>(
+export function parse<O extends object = {}, P extends PrimitiveType[] = ArgList>(
 	argv: Argv,
 	parserOptions: ParserOptions<O, P>,
 ): Arguments<O, P> {
@@ -222,9 +222,9 @@ export default function parse<O extends object = {}, P extends PrimitiveType[] =
 			} else {
 				throw new ArgsError('PARAM_UNKNOWN', [arg]);
 			}
-		} catch (error) {
+		} catch (error: unknown) {
 			currentScope = null;
-			checker.logFailure(error.message);
+			checker.logFailure((error as Error).message);
 
 			continue;
 		}

@@ -1,6 +1,6 @@
 import { LongOptionName } from './types';
 
-export default class ValidationError extends Error {
+export class ValidationError extends Error {
 	option: string;
 
 	constructor(message: string, option: LongOptionName = '') {
