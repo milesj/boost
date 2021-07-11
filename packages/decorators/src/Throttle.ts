@@ -23,7 +23,7 @@ export function Throttle(delay: number): MethodDecorator {
 				return;
 			}
 
-			((func as unknown) as Function).apply(this, args);
+			(func as unknown as Function).apply(this, args);
 			throttling.set(this, true);
 
 			setTimeout(() => {

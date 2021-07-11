@@ -15,7 +15,7 @@ export function Bind(): MethodDecorator {
 		return {
 			configurable: true,
 			get(this: Function) {
-				const bound = ((func as unknown) as Function).bind(this);
+				const bound = (func as unknown as Function).bind(this);
 
 				// Only cache the bound function when in the deepest sub-class,
 				// otherwise any `super` calls will overwrite each other.

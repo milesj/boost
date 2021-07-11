@@ -29,7 +29,7 @@ export function Debounce(delay: number): MethodDecorator {
 			timers.set(
 				this,
 				setTimeout(() => {
-					((func as unknown) as Function).apply(this, args);
+					(func as unknown as Function).apply(this, args);
 				}, delay),
 			);
 		};

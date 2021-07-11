@@ -24,7 +24,7 @@ export interface ExecuteCommandOptions {
 export abstract class Routine<
 	Output = unknown,
 	Input = unknown,
-	Options extends object = {}
+	Options extends object = {},
 > extends WorkUnit<Options, Input, Output> {
 	readonly debug: Debugger;
 

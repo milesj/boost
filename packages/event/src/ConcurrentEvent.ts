@@ -3,7 +3,7 @@ import { debug } from './debug';
 
 export class ConcurrentEvent<
 	Args extends unknown[],
-	Scope extends string = string
+	Scope extends string = string,
 > extends BaseEvent<Promise<unknown>, Args, Scope> {
 	/**
 	 * Asynchronously execute listeners for with the defined arguments.

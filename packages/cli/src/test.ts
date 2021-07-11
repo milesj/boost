@@ -50,11 +50,11 @@ export class MockWriteStream {
 }
 
 export function mockStreams(append?: boolean): ProgramStreams {
-	return ({
+	return {
 		stderr: new MockWriteStream(append),
 		stdin: new MockReadStream(),
 		stdout: new MockWriteStream(append),
-	} as unknown) as ProgramStreams;
+	} as unknown as ProgramStreams;
 }
 
 export function mockProgram(options?: Partial<ProgramOptions>, streams?: ProgramStreams): Program {
@@ -78,7 +78,7 @@ export async function renderComponent(
 	await render(element, {
 		debug: true,
 		experimental: true,
-		stdout: (stdout as unknown) as NodeJS.WriteStream,
+		stdout: stdout as unknown as NodeJS.WriteStream,
 	});
 
 	const output = stdout.get();
@@ -154,15 +154,15 @@ export async function runProgram(
 	{ append }: { append?: boolean } = {},
 ): Promise<{ code: ExitCode; output: string; outputStripped: string }> {
 	if (!(program.streams.stderr instanceof MockWriteStream)) {
-		program.streams.stderr = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
+		program.streams.stderr = new MockWriteStream(append) as unknown as NodeJS.WriteStream;
 	}
 
 	if (!(program.streams.stdout instanceof MockWriteStream)) {
-		program.streams.stdout = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
+		program.streams.stdout = new MockWriteStream(append) as unknown as NodeJS.WriteStream;
 	}
 
 	if (!(program.streams.stdin instanceof MockReadStream)) {
-		program.streams.stdin = (new MockReadStream() as unknown) as NodeJS.ReadStream;
+		program.streams.stdin = new MockReadStream() as unknown as NodeJS.ReadStream;
 	}
 
 	// Ink async rendering never resolves while testing,
@@ -175,8 +175,8 @@ export async function runProgram(
 	env('CLI_TEST_ONLY', null);
 
 	const output =
-		((program.streams.stdout as unknown) as MockWriteStream).get() +
-		((program.streams.stderr as unknown) as MockWriteStream).get();
+		(program.streams.stdout as unknown as MockWriteStream).get() +
+		(program.streams.stderr as unknown as MockWriteStream).get();
 
 	return {
 		code,

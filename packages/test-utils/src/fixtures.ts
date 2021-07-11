@@ -61,7 +61,7 @@ export function copyFixtureToNodeModule(
 }
 
 export function copyFixtureToMock(fixture: string, mockName: string): () => void {
-	const module = (jest.requireActual(getFixturePath(fixture)) as unknown) as object;
+	const module = jest.requireActual(getFixturePath(fixture)) as unknown as object;
 
 	jest.doMock(mockName, () => module, { virtual: true });
 

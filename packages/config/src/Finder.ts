@@ -8,7 +8,7 @@ import { File } from './types';
 
 export abstract class Finder<
 	T extends File,
-	Options extends { name: string }
+	Options extends { name: string },
 > extends Contract<Options> {
 	protected readonly debug: Debugger;
 

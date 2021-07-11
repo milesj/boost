@@ -151,7 +151,7 @@ describe('Routine', () => {
 		}
 
 		function mockExeca(value: string) {
-			((execa as unknown) as jest.Mock).mockImplementation((command, args) => ({
+			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 				stdout: new FakeStream(value),
 				stderr: new FakeStream(value),

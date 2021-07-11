@@ -10,7 +10,8 @@ import { WorkUnit } from './WorkUnit';
 
 export abstract class Pipeline<Options extends object, Ctx extends Context, Input, Output>
 	extends Contract<Options>
-	implements Hierarchical {
+	implements Hierarchical
+{
 	depth: number = 0;
 
 	index: number = 0;

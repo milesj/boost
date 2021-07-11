@@ -6,7 +6,7 @@ import { AggregatedResult } from './types';
 export class AggregatedPipeline<
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input
+	Output = Input,
 > extends ParallelPipeline<{}, Ctx, Input, Output> {
 	/**
 	 * Execute all work units in parallel with a value being passed to each work unit.

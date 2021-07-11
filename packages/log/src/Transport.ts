@@ -6,7 +6,8 @@ import { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from '.
 
 export abstract class Transport<Options extends TransportOptions>
 	extends Contract<Options>
-	implements Transportable {
+	implements Transportable
+{
 	readonly levels: LogLevel[] = [];
 
 	constructor(options: Options) {

@@ -16,7 +16,7 @@ describe('Cache', () => {
 			jest
 				.spyOn(fs.promises, 'stat')
 				.mockImplementation(() =>
-					Promise.resolve(({ mtimeMs: statMtime || 100 } as unknown) as fs.Stats),
+					Promise.resolve({ mtimeMs: statMtime || 100 } as unknown as fs.Stats),
 				);
 		});
 

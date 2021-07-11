@@ -73,10 +73,11 @@ export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveT
 export abstract class Command<
 		O extends GlobalOptions = GlobalOptions,
 		P extends PrimitiveType[] = ArgList,
-		Options extends object = {}
+		Options extends object = {},
 	>
 	extends CommandManager<Options>
-	implements Commandable<O, P> {
+	implements Commandable<O, P>
+{
 	static aliases: string[] = [];
 
 	static allowUnknownOptions: boolean = false;
@@ -200,7 +201,7 @@ export abstract class Command<
 			command: this.getPath().split(':'),
 			errors: [],
 			options: (this[INTERNAL_OPTIONS] ?? {}) as O,
-			params: ((this[INTERNAL_PARAMS] ?? []) as unknown) as MapParamType<P>,
+			params: (this[INTERNAL_PARAMS] ?? []) as unknown as MapParamType<P>,
 			rest: this.rest,
 			unknown: this.unknown,
 		};
@@ -245,14 +246,8 @@ export abstract class Command<
 	 * Return metadata as options for argument parsing.
 	 */
 	getParserOptions(): ParserOptions<O, P> {
-		const {
-			aliases,
-			allowUnknownOptions,
-			allowVariadicParams,
-			options,
-			params,
-			path,
-		} = this.getMetadata();
+		const { aliases, allowUnknownOptions, allowVariadicParams, options, params, path } =
+			this.getMetadata();
 
 		return {
 			commands: [path, ...aliases],

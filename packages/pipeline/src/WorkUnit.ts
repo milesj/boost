@@ -13,7 +13,8 @@ import { Action, Hierarchical, Runnable, Status } from './types';
 
 export abstract class WorkUnit<Options extends object, Input = unknown, Output = Input>
 	extends Contract<Options>
-	implements Runnable<Input, Output>, Hierarchical {
+	implements Runnable<Input, Output>, Hierarchical
+{
 	depth: number = 0;
 
 	index: number = 0;

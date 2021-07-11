@@ -9,7 +9,7 @@ export abstract class ParallelPipeline<
 	Options extends object,
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input
+	Output = Input,
 > extends Pipeline<Options, Ctx, Input, Output> {
 	// Empty blueprint so that sub-classes may type correctly
 	blueprint(preds: Predicates): Blueprint<object> {

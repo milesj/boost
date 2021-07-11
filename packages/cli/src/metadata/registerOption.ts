@@ -9,7 +9,7 @@ export function registerOption<O extends OptionConfig>(
 	config: O,
 ) {
 	const ctor = getConstructor(target);
-	const { name } = (ctor as unknown) as Function;
+	const { name } = ctor as unknown as Function;
 	const key = String(property);
 
 	// Without this check we would mutate the prototype chain,
