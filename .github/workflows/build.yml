@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [10, 12, 14, 15]
+        node-version: [10, 12, 14, 16]
       fail-fast: true
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --ignore-engines --frozen-lockfile
-      - run: yarn global add packemon@0.14.3 --force
+      - run: yarn global add packemon@1.1.0 --force --ignore-engines
       - run: yarn run build
       - run: yarn run type
       - run: yarn run coverage
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
       - run: yarn install --ignore-engines --frozen-lockfile
-      - run: yarn global add packemon@0.14.3 --force
+      - run: yarn global add packemon@1.1.0 --force --ignore-engines
       - run: yarn run pack
   docs:
     name: Docs

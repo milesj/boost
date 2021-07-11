@@ -12,28 +12,24 @@ import PackageGraph from './PackageGraph';
 import Path from './Path';
 import PathResolver from './PathResolver';
 import Project from './Project';
-import * as json from './serializers/json';
-import * as yaml from './serializers/yaml';
 
 export * from './constants';
 export * from './helpers';
+export * as json from './serializers/json';
+export * as yaml from './serializers/yaml';
 export * from './types';
 export * from '@boost/decorators';
 
 export {
-  Blueprint,
   CommonError,
   Contract,
   ExitError,
-  json,
   optimal,
   PackageGraph,
   Path,
   PathResolver,
-  Predicates,
   predicates,
   Project,
-  yaml,
 };
 
-export type { CommonErrorCode };
+export type { Blueprint, CommonErrorCode, Predicates };
