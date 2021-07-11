@@ -15,7 +15,7 @@
     "test:cli": "node ./packages/cli/examples/bin.js",
     "test:tsm": "node packages/common/tests/helpers/requireTypedModule.assert.js",
     "posttest": "yarn run lint",
-    "type": "beemo typescript --reference-workspaces --build --decorators",
+    "type": "beemo typescript --build",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
@@ -44,40 +44,5 @@
   "workspaces": [
     "packages/*",
     "themes/*"
-  ],
-  "beemo": {
-    "module": "@milesj/build-tools",
-    "drivers": [
-      "babel",
-      "eslint",
-      {
-        "driver": "jest",
-        "env": {
-          "NODE_ENV": "test",
-          "BOOSTJS_ENV": "test"
-        }
-      },
-      "prettier",
-      {
-        "driver": "typescript",
-        "buildFolder": "dts",
-        "declarationOnly": true
-      }
-    ],
-    "settings": {
-      "decorators": true,
-      "node": true,
-      "react": true
-    },
-    "prettier": {
-      "ignore": [
-        "CHANGELOG.md"
-      ]
-    },
-    "typescript": {
-      "compilerOptions": {
-        "keyofStringsOnly": true
-      }
-    }
-  }
+  ]
 }
