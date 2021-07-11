@@ -2,7 +2,7 @@ import fs from 'fs';
 import zlib from 'zlib';
 import { Blueprint, Path, PortablePath, Predicates } from '@boost/common';
 import { MAX_LOG_SIZE } from '../constants';
-import Transport from '../Transport';
+import { Transport } from '../Transport';
 import { TransportOptions } from '../types';
 
 export interface FileTransportOptions extends TransportOptions {
@@ -11,8 +11,8 @@ export interface FileTransportOptions extends TransportOptions {
 	path: PortablePath;
 }
 
-export default class FileTransport<
-	Options extends FileTransportOptions = FileTransportOptions,
+export class FileTransport<
+	Options extends FileTransportOptions = FileTransportOptions
 > extends Transport<Options> {
 	readonly path: Path;
 
@@ -48,12 +48,9 @@ export default class FileTransport<
 	/**
 	 * Close the file stream and trigger the callback when finished.
 	 */
-	close(cb?: () => void) {
+	close(commit?: () => void) {
 		const onClose = () => {
-			if (cb) {
-				cb();
-			}
-
+			commit?.();
 			this.stream = undefined;
 		};
 
@@ -164,7 +161,6 @@ export default class FileTransport<
 	 */
 	protected getNextIncrementCount(name: string): number {
 		const files = fs.readdirSync(this.path.parent().path());
-		// eslint-disable-next-line security/detect-non-literal-regexp
 		const pattern = new RegExp(`^${name}.\\d+$`, 'u');
 		let count = 0;
 

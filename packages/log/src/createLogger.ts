@@ -1,6 +1,6 @@
 import { isObject } from '@boost/common';
 import { LOG_LEVELS } from './constants';
-import Logger from './Logger';
+import { Logger } from './Logger';
 import { LoggerFunction, LoggerOptions, LogLevel } from './types';
 
 function pipeLog(logger: Logger, level?: LogLevel) {
@@ -23,7 +23,7 @@ function pipeLog(logger: Logger, level?: LogLevel) {
 	};
 }
 
-export default function createLogger(options: LoggerOptions): LoggerFunction {
+export function createLogger(options: LoggerOptions): LoggerFunction {
 	const logger = new Logger(options);
 	const log = pipeLog(logger);
 

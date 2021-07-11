@@ -1,6 +1,6 @@
 import { Blueprint, Predicates } from '@boost/common';
 import { Rotation } from '../types';
-import FileTransport, { FileTransportOptions } from './FileTransport';
+import { FileTransport, FileTransportOptions } from './FileTransport';
 
 const DAYS_IN_WEEK = 7;
 
@@ -8,7 +8,7 @@ export interface RotatingFileTransportOptions extends FileTransportOptions {
 	rotation: Rotation;
 }
 
-export default class RotatingFileTransport extends FileTransport<RotatingFileTransportOptions> {
+export class RotatingFileTransport extends FileTransport<RotatingFileTransportOptions> {
 	protected lastTimestamp: string = this.formatTimestamp(Date.now());
 
 	blueprint(preds: Predicates): Blueprint<RotatingFileTransportOptions> {

@@ -3,12 +3,12 @@ import util from 'util';
 import { Blueprint, Contract, Predicates } from '@boost/common';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
-import debug from './debug';
-import Transport from './Transport';
-import ConsoleTransport from './transports/ConsoleTransport';
+import { debug } from './debug';
+import { Transport } from './Transport';
+import { ConsoleTransport } from './transports/ConsoleTransport';
 import { LoggerOptions, LogLevel, LogMetadata } from './types';
 
-export default class Logger extends Contract<LoggerOptions> {
+export class Logger extends Contract<LoggerOptions> {
 	protected silent: boolean = false;
 
 	constructor(options: LoggerOptions) {
@@ -56,7 +56,6 @@ export default class Logger extends Contract<LoggerOptions> {
 			return true;
 		}
 
-		// eslint-disable-next-line no-restricted-syntax
 		for (const currentLevel of LOG_LEVELS) {
 			if (currentLevel === level) {
 				return true;
@@ -81,7 +80,7 @@ export default class Logger extends Contract<LoggerOptions> {
 		message: string;
 		metadata?: LogMetadata;
 	}) {
-		const logLevel = level || env('LOG_DEFAULT_LEVEL') || 'log';
+		const logLevel = level ?? env('LOG_DEFAULT_LEVEL') ?? 'log';
 
 		if (this.silent || !this.isAllowed(logLevel, env('LOG_MAX_LEVEL'))) {
 			return;
@@ -89,7 +88,7 @@ export default class Logger extends Contract<LoggerOptions> {
 
 		const item = {
 			host: os.hostname(),
-			label: this.options.labels[logLevel] || DEFAULT_LABELS[logLevel] || '',
+			label: this.options.labels[logLevel] ?? DEFAULT_LABELS[logLevel] ?? '',
 			level: logLevel,
 			message: util.format(message, ...args),
 			metadata: {

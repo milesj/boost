@@ -4,10 +4,9 @@ import { LOG_LEVELS } from './constants';
 import * as formats from './formats';
 import { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from './types';
 
-export default abstract class Transport<Options extends TransportOptions>
+export abstract class Transport<Options extends TransportOptions>
 	extends Contract<Options>
-	implements Transportable
-{
+	implements Transportable {
 	readonly levels: LogLevel[] = [];
 
 	constructor(options: Options) {
@@ -33,7 +32,7 @@ export default abstract class Transport<Options extends TransportOptions>
 		let output = typeof format === 'function' ? format(item) : formats.debug(item);
 
 		if (!output.endsWith(eol!)) {
-			output += eol;
+			output += String(eol);
 		}
 
 		return output;

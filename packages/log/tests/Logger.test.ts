@@ -1,4 +1,4 @@
-import Logger from '../src/Logger';
+import { Logger } from '../src/Logger';
 
 describe('Logger', () => {
 	let logger: Logger;
@@ -11,7 +11,7 @@ describe('Logger', () => {
 		it('returns false for unknown level', () => {
 			expect(
 				logger.isAllowed(
-					// @ts-expect-error
+					// @ts-expect-error Invalid level
 					'unknown',
 					'log',
 				),
@@ -22,7 +22,7 @@ describe('Logger', () => {
 			expect(
 				logger.isAllowed(
 					'debug',
-					// @ts-expect-error
+					// @ts-expect-error Invalid level
 					'unknown',
 				),
 			).toBe(true);

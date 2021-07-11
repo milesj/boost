@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import msg from './translate';
+import { msg } from './translate';
 import { LogLevel, LogLevelLabels } from './types';
 
 // In order of priority!
