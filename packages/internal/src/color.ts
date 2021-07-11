@@ -7,7 +7,7 @@ function createColor(open: number): ColorFormatter {
 	return (message) => `\u001B[${open}m${String(message)}\u001B[39m`;
 }
 
-export default {
+export const color = {
 	// States
 	fail: createColor(31),
 	mute: createColor(90),

@@ -12,7 +12,7 @@ export interface ScopedError<Code extends string = string> {
 	scope: string;
 }
 
-export default function createScopedError<Code extends string = string>(
+export function createScopedError<Code extends string = string>(
 	scope: string,
 	name: string,
 	errors: Errors,
@@ -23,13 +23,13 @@ export default function createScopedError<Code extends string = string>(
 		}
 
 		return `${messages[code].replace(TOKEN_PATTERN, (match, index) =>
-			String(params[index]),
+			String(params[index as number]),
 		)} [${scope}:${code}]`;
 	}
 
 	if (__DEV__ && (scope.length !== 3 || scope !== scope.toUpperCase())) {
-			throw new Error(msg('INVALID_SCOPE_NAME', internalErrors));
-		}
+		throw new Error(msg('INVALID_SCOPE_NAME', internalErrors));
+	}
 
 	return class InternalError extends Error implements ScopedError<Code> {
 		code: Code | 'UNKNOWN_ERROR';
