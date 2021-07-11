@@ -2,9 +2,7 @@ export type LogLevel = 'debug' | 'error' | 'info' | 'log' | 'trace' | 'warn';
 
 export type LogLevelLabels = { [L in LogLevel]?: string };
 
-export interface LogMetadata {
-	[field: string]: unknown;
-}
+export type LogMetadata = Record<string, unknown>;
 
 export interface LogItem {
 	host: string;

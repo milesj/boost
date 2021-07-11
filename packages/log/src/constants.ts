@@ -14,4 +14,4 @@ export const DEFAULT_LABELS: LogLevelLabels = {
 	warn: chalk.yellow(msg('log:levelWarn')),
 };
 
-export const MAX_LOG_SIZE = 10485760;
+export const MAX_LOG_SIZE = 10_485_760;

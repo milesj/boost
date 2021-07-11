@@ -6,9 +6,7 @@ export type Format = 'js' | 'json' | 'yaml';
 
 export type Locale = string;
 
-export interface InterpolationParams {
-	[key: string]: unknown;
-}
+export type InterpolationParams = Record<string, unknown>;
 
 export interface MessageOptions {
 	/** Default value to return if a translation was not found. */

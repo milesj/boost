@@ -12,17 +12,11 @@ export type PrimitiveType = ScalarType | boolean;
 
 export type ValueType = ListType | PrimitiveType;
 
-export interface OptionMap {
-	[option: string]: ValueType;
-}
+export type OptionMap = Record<string, ValueType>;
 
-export interface UnknownOptionMap {
-	[option: string]: string;
-}
+export type UnknownOptionMap = Record<string, string>;
 
-export interface AliasMap {
-	[name: string]: string;
-}
+export type AliasMap = Record<string, string>;
 
 // Determine option based on type. Only primitives are allowed.
 export type InferParamConfig<T> = T extends PrimitiveType ? Param<T> : never;
@@ -183,9 +177,7 @@ export type OptionConfig = Option<any> & {
 	multiple?: boolean;
 };
 
-export interface OptionConfigMap {
-	[name: string]: OptionConfig;
-}
+export type OptionConfigMap = Record<string, OptionConfig>;
 
 // Abstract type for easier typing
 export type ParamConfig = Param<any>;

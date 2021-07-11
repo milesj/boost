@@ -5,6 +5,8 @@ import { render } from 'ink';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
 import { stripAnsi } from '@boost/terminal';
+import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from ".";
+
 import type {
 	ExitCode,
 	GlobalOptions,
@@ -12,8 +14,7 @@ import type {
 	ProgramOptions,
 	ProgramStreams,
 	TaskContext,
-} from './index';
-import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from './index';
+} from ".";
 
 export class MockReadStream {
 	isTTY = false;

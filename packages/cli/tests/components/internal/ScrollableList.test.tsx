@@ -35,7 +35,6 @@ describe('ScrollableList', () => {
 				{...props}
 				currentIndex={0}
 				limit={5}
-				rowHeight={2}
 				renderItem={({ value }) => (
 					<React.Fragment key={value}>
 						<Box>
@@ -46,6 +45,7 @@ describe('ScrollableList', () => {
 						</Box>
 					</React.Fragment>
 				)}
+				rowHeight={2}
 			/>,
 		);
 
@@ -107,9 +107,9 @@ describe('ScrollableList', () => {
 			const { lastFrame } = render(
 				<ScrollableList
 					{...props}
-					scrollType="overflow"
 					overflowAfterLabel="Below"
 					overflowBeforeLabel="Above"
+					scrollType="overflow"
 				/>,
 			);
 
@@ -120,9 +120,9 @@ describe('ScrollableList', () => {
 			const { lastFrame } = render(
 				<ScrollableList
 					{...props}
-					scrollType="overflow"
 					overflowAfterLabel={(count) => `${count} below`}
 					overflowBeforeLabel={(count) => `${count} above`}
+					scrollType="overflow"
 				/>,
 			);
 

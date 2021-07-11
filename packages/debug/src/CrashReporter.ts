@@ -131,7 +131,7 @@ export default class CrashReporter {
 				}
 
 				if (version) {
-					this.add(languages[bin!], version, resolveHome(run('where', [bin])));
+					this.add(languages[bin], version, resolveHome(run('where', [bin])));
 				}
 			} catch {
 				// Ignore

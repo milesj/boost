@@ -24,7 +24,7 @@ export default function format({
 	// Options
 	Object.entries(options).forEach(([name, value]) => {
 		if (typeof value === 'boolean') {
-			args.push(`--${value === false ? 'no-' : ''}${name}`);
+			args.push(`--${!value ? 'no-' : ''}${name}`);
 		} else {
 			args.push(`--${name}`, ...mapToStringList(value));
 		}

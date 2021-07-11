@@ -99,10 +99,10 @@ export function Input({
 			onBackspace={handleBackspace}
 			onDelete={handleBackspace}
 			onInput={handleInput}
-			onKeyUp={handleKeyUp}
 			onKeyDown={handleKeyDown}
 			onKeyLeft={handleKeyLeft}
 			onKeyRight={handleKeyRight}
+			onKeyUp={handleKeyUp}
 			onReturn={handleReturn}
 		/>
 	);

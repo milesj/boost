@@ -70,15 +70,13 @@ export default function Memoize<T>(
 ): MethodDecorator {
 	// eslint-disable-next-line complexity
 	return (target, property, descriptor) => {
-		if (__DEV__) {
-			if (
+		if (__DEV__ && (
 				!isMethod(target, property, descriptor) ||
 				(!('value' in descriptor && typeof descriptor.value === 'function') &&
 					!('get' in descriptor && typeof descriptor.get === 'function'))
-			) {
+			)) {
 				throw new TypeError(`\`@Memoize\` may only be applied to class methods or getters.`);
 			}
-		}
 
 		const config = {
 			cache: null,

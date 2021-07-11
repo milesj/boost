@@ -7,14 +7,14 @@ function camelCase(value: string): string {
 
 export default function createScope(
 	optionName: LongOptionName,
-	optionConfigs: { [key: string]: OptionConfig },
+	optionConfigs: Record<string, OptionConfig>,
 	options: OptionMap,
 ): Scope {
 	let name = optionName;
 	let negated = false;
 
 	// Check for negated types
-	if (name.slice(0, 3) === 'no-') {
+	if (name.startsWith('no-')) {
 		negated = true;
 		name = name.slice(3);
 	}

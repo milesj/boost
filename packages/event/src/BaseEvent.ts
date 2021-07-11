@@ -50,7 +50,7 @@ export default abstract class BaseEvent<
 	 * Return a list of all scopes with listeners.
 	 */
 	getScopes(): (Scope | WildstarScope)[] {
-		return Array.from(this.listeners.keys())!;
+		return [...this.listeners.keys()]!;
 	}
 
 	/**
@@ -99,11 +99,9 @@ export default abstract class BaseEvent<
 	 * Validate the listener is a function.
 	 */
 	protected validateListener<L>(listener: L): L {
-		if (__DEV__) {
-			if (typeof listener !== 'function') {
+		if (__DEV__ && typeof listener !== 'function') {
 				throw new EventError('LISTENER_INVALID', [this.name]);
 			}
-		}
 
 		return listener;
 	}
@@ -116,11 +114,9 @@ export default abstract class BaseEvent<
 			return name;
 		}
 
-		if (__DEV__) {
-			if (!name.match(EVENT_NAME_PATTERN)) {
+		if (__DEV__ && !name.match(EVENT_NAME_PATTERN)) {
 				throw new EventError('NAME_INVALID', [type, name]);
 			}
-		}
 
 		return name;
 	}

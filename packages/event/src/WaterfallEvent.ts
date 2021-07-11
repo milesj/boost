@@ -15,7 +15,7 @@ export default class WaterfallEvent<Arg, Scope extends string = string> extends 
 			debug('Emitting "%s%s" as waterfall', this.name, scope ? `:${scope}` : '');
 		}
 
-		return Array.from(this.getListeners(scope)).reduce(
+		return [...this.getListeners(scope)].reduce(
 			(nextValue, listener) => listener(nextValue),
 			arg,
 		);

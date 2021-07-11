@@ -48,7 +48,7 @@ describe('Select', () => {
 		describe('cycle scroll', () => {
 			it('truncates list (odd)', () => {
 				const { lastFrame } = render(
-					<Select {...props} options={options} limit={5} scrollType="cycle" />,
+					<Select {...props} limit={5} options={options} scrollType="cycle" />,
 				);
 
 				expect(lastFrame()).toMatchSnapshot();
@@ -56,7 +56,7 @@ describe('Select', () => {
 
 			it('loops around when hitting an edge (odd)', async () => {
 				const { lastFrame, stdin } = render(
-					<Select {...props} options={options} limit={5} scrollType="cycle" />,
+					<Select {...props} limit={5} options={options} scrollType="cycle" />,
 				);
 
 				await delay();
@@ -70,7 +70,7 @@ describe('Select', () => {
 
 			it('truncates list (even)', () => {
 				const { lastFrame } = render(
-					<Select {...props} options={options} limit={6} scrollType="cycle" />,
+					<Select {...props} limit={6} options={options} scrollType="cycle" />,
 				);
 
 				expect(lastFrame()).toMatchSnapshot();
@@ -78,7 +78,7 @@ describe('Select', () => {
 
 			it('loops around when hitting an edge (even)', async () => {
 				const { lastFrame, stdin } = render(
-					<Select {...props} options={options} limit={6} scrollType="cycle" />,
+					<Select {...props} limit={6} options={options} scrollType="cycle" />,
 				);
 
 				await delay();
@@ -96,7 +96,7 @@ describe('Select', () => {
 		describe('overflow scroll', () => {
 			it('truncates list (odd)', () => {
 				const { lastFrame } = render(
-					<Select {...props} options={options} limit={5} scrollType="overflow" />,
+					<Select {...props} limit={5} options={options} scrollType="overflow" />,
 				);
 
 				expect(lastFrame()).toMatchSnapshot();
@@ -104,7 +104,7 @@ describe('Select', () => {
 
 			it('displays correct before/after more numbers (odd)', async () => {
 				const { lastFrame, stdin } = render(
-					<Select {...props} options={options} limit={5} scrollType="overflow" />,
+					<Select {...props} limit={5} options={options} scrollType="overflow" />,
 				);
 
 				await delay();
@@ -120,7 +120,7 @@ describe('Select', () => {
 
 			it('truncates list (even)', () => {
 				const { lastFrame } = render(
-					<Select {...props} options={options} limit={6} scrollType="overflow" />,
+					<Select {...props} limit={6} options={options} scrollType="overflow" />,
 				);
 
 				expect(lastFrame()).toMatchSnapshot();
@@ -128,7 +128,7 @@ describe('Select', () => {
 
 			it('displays correct before/after more numbers (even)', async () => {
 				const { lastFrame, stdin } = render(
-					<Select {...props} options={options} limit={6} scrollType="overflow" />,
+					<Select {...props} limit={6} options={options} scrollType="overflow" />,
 				);
 
 				await delay();

@@ -104,7 +104,6 @@ export function Select<T = string>({
 				limit={limit}
 				overflowAfterLabel={overflowAfterLabel}
 				overflowBeforeLabel={overflowBeforeLabel}
-				scrollType={scrollType}
 				renderItem={(option) => {
 					if (option.divider) {
 						return <DividerRow key={option.index} label={option.label} />;
@@ -121,6 +120,7 @@ export function Select<T = string>({
 						/>
 					);
 				}}
+				scrollType={scrollType}
 			/>
 		</Prompt>
 	);

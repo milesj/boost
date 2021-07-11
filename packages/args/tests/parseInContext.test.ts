@@ -62,9 +62,9 @@ describe('parseInContext()', () => {
 	const contextFactory: ContextFactory = (arg, argv) => {
 		if (arg === 'foo' || arg === '--unknown-option') {
 			return fooParserOptions;
-		} else if (arg === 'bar') {
+		} if (arg === 'bar') {
 			return barParserOptions;
-		} else if (arg === 'baz' && argv.includes('--allow')) {
+		} if (arg === 'baz' && argv.includes('--allow')) {
 			return bazParserOptions;
 		}
 

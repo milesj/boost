@@ -255,10 +255,10 @@ describe('MultiSelect', () => {
 					{...props}
 					limit={5}
 					options={options}
-					onSubmit={spy}
 					validate={() => {
 						throw new Error('Failed validation');
 					}}
+					onSubmit={spy}
 				/>,
 			);
 

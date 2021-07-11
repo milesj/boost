@@ -90,7 +90,7 @@ export default abstract class Finder<
 	protected isRootDir(dir: Path, abort: boolean = false): boolean {
 		if (dir.path() === this.cache.rootDir?.path()) {
 			return true;
-		} else if (!dir.isDirectory() || abort) {
+		} if (!dir.isDirectory() || abort) {
 			return false;
 		}
 

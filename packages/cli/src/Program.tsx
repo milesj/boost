@@ -346,7 +346,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 			);
 		}
 
-		const commands: { [key: string]: Commandable } = {};
+		const commands: Record<string, Commandable> = {};
 
 		// Remove sub-commands
 		Object.entries(this.commands).forEach(([path, command]) => {
@@ -358,10 +358,10 @@ export default class Program extends CommandManager<ProgramOptions> {
 		return (
 			<IndexHelp {...this.options}>
 				<Help
-					header={msg('cli:labelAbout')}
 					categories={this.sharedCategories}
 					commands={mapCommandMetadata(commands)}
 					delimiter={this.options.delimiter}
+					header={msg('cli:labelAbout')}
 				/>
 			</IndexHelp>
 		);
@@ -429,7 +429,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 	 * Render an error and warnings menu based on the list provided.
 	 * If argument parser or validation errors are found, treat them with special logic.
 	 */
-	protected renderErrors(errors: Error[]): Promise<ExitCode> {
+	protected async renderErrors(errors: Error[]): Promise<ExitCode> {
 		const exitError = errors[0];
 
 		if (exitError instanceof ExitError && exitError.code === 0) {

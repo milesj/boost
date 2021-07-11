@@ -197,7 +197,7 @@ export default class ConfigFinder<T extends object> extends Finder<
 	 * config files, which is typically from the root. The list to extract can be located within
 	 * a property that matches the `extendsSetting` option.
 	 */
-	protected extractExtendedConfigs(configs: ConfigFile<T>[]): Promise<ConfigFile<T>[]> {
+	protected async extractExtendedConfigs(configs: ConfigFile<T>[]): Promise<ConfigFile<T>[]> {
 		const { name, extendsSetting } = this.options;
 		const extendsPaths: Path[] = [];
 

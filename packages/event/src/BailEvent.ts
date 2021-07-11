@@ -15,6 +15,6 @@ export default class BailEvent<
 			debug('Emitting "%s%s" as bail', this.name, scope ? `:${scope}` : '');
 		}
 
-		return Array.from(this.getListeners(scope)).some((listener) => listener(...args) === false);
+		return [...this.getListeners(scope)].some((listener) => listener(...args) === false);
 	}
 }

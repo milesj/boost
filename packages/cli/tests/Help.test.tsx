@@ -10,8 +10,8 @@ describe('<Help />', () => {
 		expect(
 			await renderComponent(
 				<Help
-					config={{ description: 'I am a command that does cool things.', usage: '$ ink foo bar' }}
 					commands={commands}
+					config={{ description: 'I am a command that does cool things.', usage: '$ ink foo bar' }}
 					options={options}
 					params={params}
 				/>,

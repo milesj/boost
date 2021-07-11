@@ -37,25 +37,25 @@ export function MultiSelect<T>({
 		// istanbul ignore next
 		if (value === null) {
 			return;
-		} else if (selectedValues.has(value)) {
+		} if (selectedValues.has(value)) {
 			selectedValues.delete(value);
 		} else {
 			selectedValues.add(value);
 		}
 
 		setSelectedValues(new Set(selectedValues));
-		onChange?.(Array.from(selectedValues));
+		onChange?.([...selectedValues]);
 	}, [highlightedIndex, onChange, options, selectedValues]);
 
 	const handleReturn = useCallback(() => {
 		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-		onSubmit?.(Array.from(selectedValues));
+		onSubmit?.([...selectedValues]);
 
 		// Trigger submit
 		return true;
 	}, [onSubmit, selectedValues]);
 
-	const selectedList = Array.from(selectedValues);
+	const selectedList = [...selectedValues];
 
 	return (
 		<Prompt<T[]>
@@ -73,7 +73,6 @@ export function MultiSelect<T>({
 				limit={limit}
 				overflowAfterLabel={overflowAfterLabel}
 				overflowBeforeLabel={overflowBeforeLabel}
-				scrollType={scrollType}
 				renderItem={(option) => {
 					if (option.divider) {
 						return <DividerRow key={option.index} label={option.label} />;
@@ -90,6 +89,7 @@ export function MultiSelect<T>({
 						/>
 					);
 				}}
+				scrollType={scrollType}
 			/>
 		</Prompt>
 	);

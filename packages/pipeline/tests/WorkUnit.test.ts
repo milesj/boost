@@ -162,7 +162,7 @@ describe('Work', () => {
 		it('resolves a value with the action', async () => {
 			try {
 				expect(await passWork.run(context, 123)).toBe(246);
-			} catch (error) {
+			} catch {
 				expect(true).toBe(false);
 			}
 		});
@@ -172,7 +172,7 @@ describe('Work', () => {
 				passWork.skip();
 
 				expect(await passWork.run(context, 123)).toBe(123);
-			} catch (error) {
+			} catch {
 				expect(true).toBe(false);
 			}
 		});
@@ -215,7 +215,7 @@ describe('Work', () => {
 		it('sets times on failure', async () => {
 			try {
 				await failWork.run(context, '');
-			} catch (error) {
+			} catch {
 				// Ignore
 			}
 

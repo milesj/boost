@@ -168,8 +168,8 @@ export abstract class Command<
 		return (
 			<Help
 				categories={metadata.categories}
-				config={metadata}
 				commands={mapCommandMetadata(metadata.commands)}
+				config={metadata}
 				delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
 				header={metadata.path}
 				options={metadata.options}

@@ -122,7 +122,7 @@ export function createTempFolderStructureFromJSON(structure: DirectoryStructure)
 
 if (typeof afterAll === 'function') {
 	afterAll(() => {
-		Array.from(TEMPORARY_FILES).forEach((tempFile) => {
+		[...TEMPORARY_FILES].forEach((tempFile) => {
 			removeTempFile(tempFile);
 		});
 	});

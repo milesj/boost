@@ -70,7 +70,7 @@ export default class PooledPipeline<
 	/**
 	 * Run a single work unit from the queue, and start the next work unit when it passes or fails.
 	 */
-	protected runWorkUnit(context: Ctx, value: Input): Promise<void> {
+	protected async runWorkUnit(context: Ctx, value: Input): Promise<void> {
 		const { concurrency, filo, timeout } = this.options;
 		const unit = filo ? this.work.pop()! : this.work.shift()!;
 
@@ -82,7 +82,7 @@ export default class PooledPipeline<
 
 			if (this.work.length > 0 && this.running.length < concurrency) {
 				return this.runWorkUnit(context, value);
-			} else if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
+			} if (this.work.length === 0 && this.running.length === 0 && this.resolver) {
 				this.resolver(this.aggregateResult(this.results));
 			}
 

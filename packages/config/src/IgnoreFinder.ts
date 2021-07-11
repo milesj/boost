@@ -14,7 +14,7 @@ export default class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions
 	/**
 	 * Find a single ignore file in the provided directory.
 	 */
-	findFilesInDir(dir: Path): Promise<Path[]> {
+	async findFilesInDir(dir: Path): Promise<Path[]> {
 		const files: Path[] = [];
 		const path = dir.append(this.getFileName());
 

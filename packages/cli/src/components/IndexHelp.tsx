@@ -18,7 +18,7 @@ export function IndexHelp({
 	version,
 }: IndexHelpProps) {
 	return (
-		<Box marginBottom={1} flexDirection="column">
+		<Box flexDirection="column" marginBottom={1}>
 			{!!banner && (
 				<Box>
 					<Text>{banner}</Text>

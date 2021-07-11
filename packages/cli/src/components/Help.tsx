@@ -91,7 +91,7 @@ export class Help extends React.Component<HelpProps> {
 							const desc = formatDescription(config);
 
 							return (
-								<Box key={key + config.path} paddingLeft={SPACING_COL} flexDirection="row">
+								<Box key={key + config.path} flexDirection="row" paddingLeft={SPACING_COL}>
 									<Box flexGrow={0} width={pathWidth + SPACING_COL_WIDE}>
 										<Text>{config.pathCall}</Text>
 									</Box>
@@ -159,7 +159,7 @@ export class Help extends React.Component<HelpProps> {
 						)}
 
 						{category.items.map((config) => (
-							<Box key={key + config.name} paddingLeft={SPACING_COL} flexDirection="row">
+							<Box key={key + config.name} flexDirection="row" paddingLeft={SPACING_COL}>
 								{showShortColumn && (
 									<Box flexGrow={0} width={shortWidth + SPACING_COL}>
 										<Text>{config.shortLabel}</Text>
@@ -200,7 +200,7 @@ export class Help extends React.Component<HelpProps> {
 					const desc = config ? formatDescription(config, this.gatherParamTags(config)) : '';
 
 					return (
-						<Box key={`${labels[index]}-${index}`} paddingLeft={SPACING_COL} flexDirection="row">
+						<Box key={`${labels[index]}-${index}`} flexDirection="row" paddingLeft={SPACING_COL}>
 							<Box flexGrow={0} width={labelWidth + SPACING_COL_WIDE}>
 								<Text>{labels[index]}</Text>
 							</Box>

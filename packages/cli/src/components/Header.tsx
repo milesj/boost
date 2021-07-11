@@ -18,7 +18,7 @@ export function Header({
 	type = 'default',
 }: HeaderProps) {
 	return (
-		<Box marginTop={marginTop} marginBottom={marginBottom}>
+		<Box marginBottom={marginBottom} marginTop={marginTop}>
 			<Style bold inverted type={type}>
 				{` ${label.toLocaleUpperCase()} `}
 			</Style>

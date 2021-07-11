@@ -1,4 +1,4 @@
-let envVars: { [key: string]: unknown } = {};
+let envVars: Record<string, unknown> = {};
 
 if (typeof global.process !== 'undefined') {
 	envVars = process.env;

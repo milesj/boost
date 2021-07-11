@@ -3,7 +3,7 @@ import semver from 'semver';
 import { json } from '@boost/common';
 import { Middleware } from '../types';
 
-function fetchPackageLatestVersion(name: string): Promise<string | undefined> {
+async function fetchPackageLatestVersion(name: string): Promise<string | undefined> {
 	return new Promise((resolve) => {
 		https.get(`https://registry.npmjs.org/${name}`, (resp) => {
 			let data = '';

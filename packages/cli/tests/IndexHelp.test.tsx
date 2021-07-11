@@ -44,12 +44,12 @@ describe('<IndexHelp />', () => {
 			await renderComponent(
 				<IndexHelp {...props}>
 					<Help
-						header="test"
+						commands={commands}
 						config={{
 							description: 'I am a command that does cool things.',
 							usage: '$ ink foo bar',
 						}}
-						commands={commands}
+						header="test"
 						options={options}
 						params={params}
 					/>
@@ -64,16 +64,16 @@ describe('<IndexHelp />', () => {
 				<IndexHelp
 					{...props}
 					banner={banner}
-					header="For more information, see https://github.com/milesj/boost"
 					footer="Powered by Boost CLI v1.2.3"
+					header="For more information, see https://github.com/milesj/boost"
 				>
 					<Help
-						header="test"
+						commands={commands}
 						config={{
 							description: 'I am a command that does cool things.',
 							usage: '$ ink foo bar',
 						}}
-						commands={commands}
+						header="test"
 					/>
 				</IndexHelp>,
 			),

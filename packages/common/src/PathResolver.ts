@@ -70,7 +70,7 @@ export default class PathResolver {
 				try {
 					resolvedPath = require.resolve(lookup.path.path());
 					resolvedLookup = lookup;
-				} catch (error) {
+				} catch {
 					return false;
 				}
 			}

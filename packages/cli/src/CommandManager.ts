@@ -22,7 +22,7 @@ export default abstract class CommandManager<
 
 	protected commands: CommandMetadata['commands'] = {};
 
-	protected commandAliases: { [path: string]: string } = {};
+	protected commandAliases: Record<string, string> = {};
 
 	/**
 	 * Return a command by registered path, or `null` if not found.

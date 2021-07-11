@@ -6,6 +6,6 @@ describe('formatMs()', () => {
 	});
 
 	it('formats large milliseconds', () => {
-		expect(formatMs(482639237)).toBe('5d 14h 3m 59.2s');
+		expect(formatMs(482_639_237)).toBe('5d 14h 3m 59.2s');
 	});
 });

@@ -34,7 +34,7 @@ export default class Loader<Plugin extends Pluggable> {
 		this.debug('Resolving possible %s module using lookup: %s', color.symbol(typeName), name);
 
 		// Absolute or relative file path
-		if (isFilePath(name) && (path.isAbsolute(name) || name.charAt(0) === '.')) {
+		if (isFilePath(name) && (path.isAbsolute(name) || name.startsWith('.'))) {
 			this.debug('Found a file path: %s', color.filePath(name));
 
 			resolver.lookupFilePath(name);

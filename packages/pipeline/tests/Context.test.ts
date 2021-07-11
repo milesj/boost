@@ -90,7 +90,7 @@ describe('Context', () => {
 
 	describe('objects', () => {
 		class ObjectContext extends Context {
-			object: { [key: string]: string } = {};
+			object: Record<string, string> = {};
 
 			constructor(...values: string[]) {
 				super();
@@ -176,7 +176,7 @@ describe('Context', () => {
 
 			clone.map.set('qux', 'qux');
 
-			expect(Array.from(ctx.map.keys())).toEqual(['foo', 'bar', 'baz']);
+			expect([...ctx.map.keys()]).toEqual(['foo', 'bar', 'baz']);
 		});
 	});
 
@@ -203,7 +203,7 @@ describe('Context', () => {
 
 			clone.set.add('qux');
 
-			expect(Array.from(ctx.set.keys())).toEqual(['foo', 'bar', 'baz']);
+			expect([...ctx.set.keys()]).toEqual(['foo', 'bar', 'baz']);
 		});
 	});
 

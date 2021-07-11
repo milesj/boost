@@ -2,14 +2,12 @@ import isMethod from './helpers/isMethod';
 
 export default function Throttle(delay: number): MethodDecorator {
 	return (target, property, descriptor) => {
-		if (__DEV__) {
-			if (
+		if (__DEV__ && (
 				!isMethod(target, property, descriptor) ||
 				!('value' in descriptor && typeof descriptor.value === 'function')
-			) {
+			)) {
 				throw new TypeError(`\`@Throttle\` may only be applied to class methods.`);
 			}
-		}
 
 		// We must use a map as all class instances would share the
 		// same boolean value otherwise.

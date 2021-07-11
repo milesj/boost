@@ -112,7 +112,7 @@ function countEnabledItems(items: ScrollableItem[]): number {
 	return items.filter((i) => {
 		if ('disabled' in i) {
 			return !i.disabled;
-		} else if ('divider' in i) {
+		} if ('divider' in i) {
 			return !i.divider;
 		}
 

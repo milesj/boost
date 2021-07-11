@@ -15,7 +15,7 @@ describe('Confirm', () => {
 	});
 
 	it('can customize yes/no', () => {
-		const { lastFrame } = render(<Confirm {...props} yes="t" no="F" />);
+		const { lastFrame } = render(<Confirm {...props} no="F" yes="t" />);
 
 		expect(lastFrame()).toMatchSnapshot();
 	});

@@ -1,8 +1,6 @@
 /* eslint-disable no-magic-numbers, sort-keys */
 
-export interface ColorFormatter {
-	(message: string | { toString: () => string }): string;
-}
+export type ColorFormatter = (message: string | { toString: () => string }) => string;
 
 // https://github.com/chalk/ansi-styles/blob/master/index.js#L75
 function createColor(open: number): ColorFormatter {

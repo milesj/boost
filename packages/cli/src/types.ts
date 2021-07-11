@@ -64,9 +64,7 @@ export type Options<T extends object> = MapOptionConfig<Omit<T, keyof GlobalOpti
 
 export type Params<T extends PrimitiveType[]> = MapParamConfig<T>;
 
-export interface Categories {
-	[name: string]: Category | string;
-}
+export type Categories = Record<string, Category | string>;
 
 // PROGRAM
 
@@ -114,9 +112,7 @@ export interface CommandConfig extends BaseCommandConfig {
 	path?: CommandPath; // Canonical name used on the command line
 }
 
-export interface CommandConfigMap {
-	[path: string]: CommandConfig;
-}
+export type CommandConfigMap = Record<string, CommandConfig>;
 
 // Constructor
 export interface CommandStaticConfig extends Required<CommandConfig> {
@@ -124,12 +120,10 @@ export interface CommandStaticConfig extends Required<CommandConfig> {
 }
 
 export interface CommandMetadata extends CommandStaticConfig {
-	commands: { [path: string]: Commandable };
+	commands: Record<string, Commandable>;
 }
 
-export interface CommandMetadataMap {
-	[path: string]: CommandMetadata;
-}
+export type CommandMetadataMap = Record<string, CommandMetadata>;
 
 export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
 	createHelp: () => React.ReactElement | string;

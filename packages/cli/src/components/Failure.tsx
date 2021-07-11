@@ -126,7 +126,7 @@ export class Failure extends React.Component<FailureProps> {
 				<Header label={msg('cli:labelWarnings')} type="warning" />
 
 				{warnings.map((warn) => (
-					<Box key={warn.message} paddingLeft={SPACING_COL} flexDirection="row">
+					<Box key={warn.message} flexDirection="row" paddingLeft={SPACING_COL}>
 						<Box width={2}>
 							<Text>{'–'}</Text>
 						</Box>
@@ -146,7 +146,7 @@ export class Failure extends React.Component<FailureProps> {
 			<Box flexDirection="column" marginBottom={1}>
 				<Header label={msg('cli:labelError')} type="failure" />
 
-				<Box paddingLeft={SPACING_COL} flexDirection="column">
+				<Box flexDirection="column" paddingLeft={SPACING_COL}>
 					<Box>
 						<Text>{error.message}</Text>
 					</Box>

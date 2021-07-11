@@ -5,9 +5,7 @@ const internalErrors = {
 
 const TOKEN_PATTERN = /\{(\d+)\}/gu;
 
-export interface Errors {
-	[code: string]: string;
-}
+export type Errors = Record<string, string>;
 
 export interface ScopedError<Code extends string = string> {
 	code: Code | 'UNKNOWN_ERROR';
@@ -29,11 +27,9 @@ export default function createScopedError<Code extends string = string>(
 		)} [${scope}:${code}]`;
 	}
 
-	if (__DEV__) {
-		if (scope.length !== 3 || scope !== scope.toUpperCase()) {
+	if (__DEV__ && (scope.length !== 3 || scope !== scope.toUpperCase())) {
 			throw new Error(msg('INVALID_SCOPE_NAME', internalErrors));
 		}
-	}
 
 	return class InternalError extends Error implements ScopedError<Code> {
 		code: Code | 'UNKNOWN_ERROR';

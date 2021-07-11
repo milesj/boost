@@ -2,14 +2,12 @@ import isMethod from './helpers/isMethod';
 
 export default function Bind(): MethodDecorator {
 	return (target, property, descriptor) => {
-		if (__DEV__) {
-			if (
+		if (__DEV__ && (
 				!isMethod(target, property, descriptor) ||
 				!('value' in descriptor && typeof descriptor.value === 'function')
-			) {
+			)) {
 				throw new TypeError(`\`@Bind\` may only be applied to class methods.`);
 			}
-		}
 
 		const func = descriptor.value;
 

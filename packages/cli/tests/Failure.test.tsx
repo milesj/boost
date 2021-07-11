@@ -8,7 +8,7 @@ jest.mock('term-size');
 describe('<Failure />', () => {
 	it('renders a common error', async () => {
 		expect(
-			await renderComponent(<Failure error={new Error('Something is broken!')} binName="boost" />),
+			await renderComponent(<Failure binName="boost" error={new Error('Something is broken!')} />),
 		).toMatchSnapshot();
 	});
 
@@ -16,9 +16,9 @@ describe('<Failure />', () => {
 		expect(
 			await renderComponent(
 				<Failure
-					error={new Error('Something is broken!')}
 					binName="boost"
 					commandLine="foo --bar"
+					error={new Error('Something is broken!')}
 				/>,
 			),
 		).toMatchSnapshot();
@@ -32,7 +32,7 @@ describe('<Failure />', () => {
 		);
 
 		expect(
-			await renderComponent(<Failure error={error} binName="boost" commandLine="foo --bar" />),
+			await renderComponent(<Failure binName="boost" commandLine="foo --bar" error={error} />),
 		).toMatchSnapshot();
 	});
 
@@ -43,7 +43,7 @@ describe('<Failure />', () => {
 		];
 
 		const out = await renderComponent(
-			<Failure error={new Error('Something is broken!')} binName="boost" warnings={warnings} />,
+			<Failure binName="boost" error={new Error('Something is broken!')} warnings={warnings} />,
 		);
 
 		// Do not use snapshots a they differ on windows
@@ -70,7 +70,7 @@ describe('<Failure />', () => {
 
 		expect(
 			await renderComponent(
-				<Failure error={error} binName="boost" commandLine="--foo value --flag=123 -gSA" />,
+				<Failure binName="boost" commandLine="--foo value --flag=123 -gSA" error={error} />,
 				true,
 			),
 		).toMatchSnapshot();
@@ -87,7 +87,7 @@ describe('<Failure />', () => {
 
 		expect(
 			await renderComponent(
-				<Failure error={error} binName="boost" commandLine="--foo value --flag=123 -gSA" />,
+				<Failure binName="boost" commandLine="--foo value --flag=123 -gSA" error={error} />,
 				true,
 			),
 		).toMatchSnapshot();
@@ -103,7 +103,7 @@ describe('<Failure />', () => {
 		);
 
 		expect(
-			await renderComponent(<Failure binName="boost" error={error} commandLine={line} />, true),
+			await renderComponent(<Failure binName="boost" commandLine={line} error={error} />, true),
 		).toMatchSnapshot();
 	});
 });

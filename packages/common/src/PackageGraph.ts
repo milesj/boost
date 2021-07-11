@@ -132,11 +132,11 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
 		const batches: T[][] = [];
 		const seen: Set<Node> = new Set();
 		const addBatch = () => {
-			const nextBatch = Array.from(this.nodes.values()).filter(
+			const nextBatch = [...this.nodes.values()].filter(
 				(node) =>
 					!seen.has(node) &&
 					(node.requirements.size === 0 ||
-						Array.from(node.requirements.values()).filter((dep) => !seen.has(dep)).length === 0),
+						[...node.requirements.values()].filter((dep) => !seen.has(dep)).length === 0),
 			);
 
 			// Some nodes are missing, so they must be a cycle
@@ -172,7 +172,7 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
 	protected detectCycle() {
 		const dig = (node: Node, cycle: Set<Node>) => {
 			if (cycle.has(node)) {
-				const path = [...Array.from(cycle), node].map((n) => n.name).join(' -> ');
+				const path = [...[...cycle], node].map((n) => n.name).join(' -> ');
 
 				throw new Error(`Circular dependency detected: ${path}`);
 			}
@@ -203,7 +203,7 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
 		});
 
 		// If no root nodes are found, but nodes exist, then we have a cycle
-		if (rootNodes.length === 0 && this.nodes.size !== 0) {
+		if (rootNodes.length === 0 && this.nodes.size > 0) {
 			this.detectCycle();
 		}
 
@@ -264,7 +264,7 @@ export default class PackageGraph<T extends PackageStructure = PackageStructure>
 	 * Sort a set of nodes by most depended on, fall back to alpha sort as tie breaker
 	 */
 	protected sortByDependedOn(nodes: Node[] | Set<Node>): Node[] {
-		return Array.from(nodes).sort((a, b) => {
+		return [...nodes].sort((a, b) => {
 			const diff = b.dependents.size - a.dependents.size;
 
 			if (diff === 0) {

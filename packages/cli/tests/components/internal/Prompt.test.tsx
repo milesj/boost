@@ -15,9 +15,9 @@ describe('Prompt', () => {
 	it('renders content before and after label', () => {
 		const { lastFrame } = render(
 			<Prompt
+				afterLabel={<Text>After</Text>}
 				beforeLabel={<Text>Before</Text>}
 				label="Label"
-				afterLabel={<Text>After</Text>}
 				value=""
 			/>,
 		);
@@ -66,10 +66,10 @@ describe('Prompt', () => {
 			<Prompt
 				focused
 				label="Label"
-				value=""
 				validate={() => {
 					throw new Error('Failed validation');
 				}}
+				value=""
 			>
 				<Box>
 					<Text>Foo</Text>
@@ -252,7 +252,7 @@ describe('Prompt', () => {
 		const spaceSpy = jest.fn();
 		const inputSpy = jest.fn();
 		const { stdin } = render(
-			<Prompt label="Label" value="" onSpace={spaceSpy} onInput={inputSpy} />,
+			<Prompt label="Label" value="" onInput={inputSpy} onSpace={spaceSpy} />,
 		);
 
 		await delay();

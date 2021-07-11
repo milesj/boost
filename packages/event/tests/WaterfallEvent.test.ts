@@ -26,7 +26,7 @@ describe('WaterfallEvent', () => {
 	});
 
 	it('supports objects', () => {
-		const event = new WaterfallEvent<{ [key: string]: string }>('waterfall.array.test');
+		const event = new WaterfallEvent<Record<string, string>>('waterfall.array.test');
 
 		event.listen((value) => ({ ...value, B: 'B' }));
 		event.listen((value) => ({ ...value, C: 'C' }));
