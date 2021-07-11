@@ -2,10 +2,10 @@
 
 import i18next, { InitOptions } from 'i18next';
 import { Path, PortablePath, toArray } from '@boost/common';
-import debug from './debug';
-import FileBackend from './FileBackend';
-import LocaleDetector from './LocaleDetector';
-import TranslateError from './TranslateError';
+import { debug } from './debug';
+import { FileBackend } from './FileBackend';
+import { LocaleDetector } from './LocaleDetector';
+import { TranslateError } from './TranslateError';
 import { Format, InterpolationParams, Locale, MessageOptions, Translator } from './types';
 
 // istanbul ignore next
@@ -30,7 +30,7 @@ export interface TranslatorOptions {
 	resourceFormat?: Format;
 }
 
-export default function createTranslator(
+export function createTranslator(
 	namespace: string[] | string,
 	resourcePath: PortablePath | PortablePath[],
 	{

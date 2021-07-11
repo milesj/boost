@@ -1,6 +1,6 @@
 import { BackendModule, Resource, ResourceKey } from 'i18next';
 import { Blueprint, Contract, parseFile, Path, Predicates } from '@boost/common';
-import TranslateError from './TranslateError';
+import { TranslateError } from './TranslateError';
 import { Format, Locale } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
@@ -14,7 +14,7 @@ export interface FileBackendOptions {
 	paths?: Path[];
 }
 
-export default class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
+export class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
 	fileCache = new Map<Path, ResourceKey>();
 
 	type: 'backend' = 'backend';
@@ -45,7 +45,7 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
 	read(
 		locale: Locale,
 		namespace: string,
-		callback: (error: Error | null, resources: Resource) => void,
+		handler: (error: Error | null, resources: Resource) => void,
 	): ResourceKey {
 		const { format, paths } = this.options;
 		const resources: ResourceKey = {};
@@ -69,7 +69,7 @@ export default class FileBackend extends Contract<FileBackendOptions> implements
 			});
 		});
 
-		callback(null, resources);
+		handler(null, resources);
 
 		return resources;
 	}

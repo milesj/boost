@@ -1,5 +1,5 @@
 import { getFixturePath } from '@boost/test-utils';
-import createTranslator from '../src/createTranslator';
+import { createTranslator } from '../src/createTranslator';
 import { Translator } from '../src/types';
 
 describe('createTranslator()', () => {

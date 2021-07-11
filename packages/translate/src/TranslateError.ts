@@ -9,4 +9,8 @@ const errors = {
 
 export type TranslateErrorCode = keyof typeof errors;
 
-export default createScopedError<TranslateErrorCode>('TLT', 'TranslateError', errors);
+export const TranslateError = createScopedError<TranslateErrorCode>(
+	'TLT',
+	'TranslateError',
+	errors,
+);

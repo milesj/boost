@@ -1,6 +1,6 @@
 import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
-import FileBackend from '../src/FileBackend';
+import { FileBackend } from '../src/FileBackend';
 
 describe('FileBackend', () => {
 	let backend: FileBackend;

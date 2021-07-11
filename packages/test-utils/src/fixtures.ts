@@ -61,7 +61,7 @@ export function copyFixtureToNodeModule(
 }
 
 export function copyFixtureToMock(fixture: string, mockName: string): () => void {
-	const module = jest.requireActual(getFixturePath(fixture)) as unknown as object;
+	const module = (jest.requireActual(getFixturePath(fixture)) as unknown) as object;
 
 	jest.doMock(mockName, () => module, { virtual: true });
 
@@ -80,6 +80,7 @@ export function copyFixtureToTempFolder(fixture: string): string {
 export function createTempFileInFixture(fixture: string, file: string, data: any): () => void {
 	const filePath = getFixturePath(fixture, file);
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	fs.writeFileSync(filePath, data);
 
 	return () => {

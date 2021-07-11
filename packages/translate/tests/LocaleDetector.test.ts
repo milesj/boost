@@ -1,4 +1,4 @@
-import LocaleDetector from '../src/LocaleDetector';
+import { LocaleDetector } from '../src/LocaleDetector';
 
 jest.mock('os-locale', () => ({
 	sync: () => 'en-US',

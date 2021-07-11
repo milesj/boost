@@ -1,9 +1,9 @@
 import { LanguageDetectorModule } from 'i18next';
 import osLocale from 'os-locale';
-import debug from './debug';
+import { debug } from './debug';
 import { Locale } from './types';
 
-export default class LocaleDetector implements LanguageDetectorModule {
+export class LocaleDetector implements LanguageDetectorModule {
 	locale: Locale = 'en';
 
 	type: 'languageDetector' = 'languageDetector';
@@ -23,7 +23,7 @@ export default class LocaleDetector implements LanguageDetectorModule {
 			return this.locale;
 		}
 
-		return this.detectFromArgv() || this.detectFromOS();
+		return this.detectFromArgv() ?? this.detectFromOS();
 	}
 
 	detectFromArgv(): Locale | undefined {
