@@ -24,7 +24,7 @@ describe('@Debounce()', () => {
 
 	it('errors if applied to a class', () => {
 		expect(() => {
-			// @ts-expect-error
+			// @ts-expect-error Allow decorator here
 			@Debounce(100)
 			class TestClass {}
 
@@ -36,7 +36,7 @@ describe('@Debounce()', () => {
 		expect(
 			() =>
 				class TestProp {
-					// @ts-expect-error
+					// @ts-expect-error Allow decorator here
 					@Debounce(100)
 					value = 123;
 				},

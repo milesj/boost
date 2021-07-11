@@ -36,6 +36,7 @@ describe('@Memoize()', () => {
 		manyArgs(a: string, b: number, c: boolean): string {
 			this.spy();
 
+			// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 			return a + b + c;
 		}
 
@@ -62,7 +63,7 @@ describe('@Memoize()', () => {
 
 	it('errors if applied to a class', () => {
 		expect(() => {
-			// @ts-expect-error
+			// @ts-expect-error Allow decorator here
 			@Memoize()
 			class TestClass {}
 
@@ -74,7 +75,7 @@ describe('@Memoize()', () => {
 		expect(
 			() =>
 				class TestProp {
-					// @ts-expect-error
+					// @ts-expect-error Allow decorator here
 					@Memoize()
 					value = 123;
 				},
@@ -84,7 +85,7 @@ describe('@Memoize()', () => {
 	it('errors if `cache` is not a map', () => {
 		expect(() => {
 			class TestClass {
-				// @ts-expect-error
+				// @ts-expect-error Allow decorator here
 				@Memoize({ cache: {} })
 				test() {}
 			}
@@ -96,7 +97,7 @@ describe('@Memoize()', () => {
 	it('errors if `expires` is not a number', () => {
 		expect(() => {
 			class TestClass {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				@Memoize({ expires: 'abc' })
 				test() {}
 			}
@@ -119,7 +120,7 @@ describe('@Memoize()', () => {
 	it('errors if `hasher` is not a function', () => {
 		expect(() => {
 			class TestClass {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				@Memoize({ hasher: 123 })
 				test() {}
 			}

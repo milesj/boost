@@ -30,7 +30,7 @@ describe('@Bind()', () => {
 
 	it('errors if applied to a class', () => {
 		expect(() => {
-			// @ts-expect-error
+			// @ts-expect-error Allow decorator here
 			@Bind()
 			class TestClass {}
 
@@ -42,7 +42,7 @@ describe('@Bind()', () => {
 		expect(
 			() =>
 				class TestProp {
-					// @ts-expect-error
+					// @ts-expect-error Allow decorator here
 					@Bind()
 					value = 123;
 				},

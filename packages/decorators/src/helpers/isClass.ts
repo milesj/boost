@@ -1,4 +1,4 @@
-export default function isClass(
+export function isClass(
 	target: Function | Object,
 	property?: string | symbol,
 	descriptor?: unknown,

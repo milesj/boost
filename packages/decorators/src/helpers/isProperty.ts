@@ -1,4 +1,4 @@
-export default function isProperty(
+export function isProperty(
 	target: Function | Object,
 	property?: string | symbol,
 	descriptor?: unknown,

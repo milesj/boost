@@ -1,4 +1,4 @@
-export default function isParam(
+export function isParam(
 	target: Function | Object,
 	property?: string | symbol,
 	index?: unknown,

@@ -24,7 +24,7 @@ describe('@Throttle()', () => {
 
 	it('errors if applied to a class', () => {
 		expect(() => {
-			// @ts-expect-error
+			// @ts-expect-error Allow decorator here
 			@Throttle(100)
 			class TestClass {}
 
@@ -36,7 +36,7 @@ describe('@Throttle()', () => {
 		expect(
 			() =>
 				class TestProp {
-					// @ts-expect-error
+					// @ts-expect-error Allow decorator here
 					@Throttle(100)
 					value = 123;
 				},

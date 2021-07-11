@@ -1,4 +1,4 @@
-export default function isMethod(
+export function isMethod(
 	target: Function | Object,
 	property?: string | symbol,
 	descriptor?: unknown,

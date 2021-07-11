@@ -1,6 +1,4 @@
-/* eslint-disable babel/no-invalid-this */
-
-import isMethod from './helpers/isMethod';
+import { isMethod } from './helpers/isMethod';
 
 export type MemoizedFunction<T> = (...args: unknown[]) => T;
 
@@ -58,6 +56,7 @@ function createMemoizer<T>(
 
 		// Only cache if successful
 		if (value instanceof Promise) {
+			// eslint-disable-next-line promise/prefer-await-to-then
 			value.catch(() => cache?.delete(key));
 		}
 
@@ -65,18 +64,17 @@ function createMemoizer<T>(
 	};
 }
 
-export default function Memoize<T>(
-	options: MemoizeHasher | MemoizeOptions<T> = {},
-): MethodDecorator {
+export function Memoize<T>(options: MemoizeHasher | MemoizeOptions<T> = {}): MethodDecorator {
 	// eslint-disable-next-line complexity
 	return (target, property, descriptor) => {
-		if (__DEV__ && (
-				!isMethod(target, property, descriptor) ||
+		if (
+			__DEV__ &&
+			(!isMethod(target, property, descriptor) ||
 				(!('value' in descriptor && typeof descriptor.value === 'function') &&
-					!('get' in descriptor && typeof descriptor.get === 'function'))
-			)) {
-				throw new TypeError(`\`@Memoize\` may only be applied to class methods or getters.`);
-			}
+					!('get' in descriptor && typeof descriptor.get === 'function')))
+		) {
+			throw new TypeError(`\`@Memoize\` may only be applied to class methods or getters.`);
+		}
 
 		const config = {
 			cache: null,
@@ -104,10 +102,10 @@ export default function Memoize<T>(
 		const rootCache = new WeakMap<Function, MemoizeCache<T>>();
 
 		if (descriptor.get) {
-			// @ts-expect-error
+			// @ts-expect-error Override generic
 			descriptor.get = createMemoizer<T>(descriptor.get, rootCache, config);
 		} else if (descriptor.value) {
-			// @ts-expect-error
+			// @ts-expect-error Override generic
 			descriptor.value = createMemoizer<T>(descriptor.value, rootCache, config);
 		}
 	};

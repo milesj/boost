@@ -1,20 +1,21 @@
-import isMethod from './helpers/isMethod';
+import { isMethod } from './helpers/isMethod';
 
-export default function Bind(): MethodDecorator {
+export function Bind(): MethodDecorator {
 	return (target, property, descriptor) => {
-		if (__DEV__ && (
-				!isMethod(target, property, descriptor) ||
-				!('value' in descriptor && typeof descriptor.value === 'function')
-			)) {
-				throw new TypeError(`\`@Bind\` may only be applied to class methods.`);
-			}
+		if (
+			__DEV__ &&
+			(!isMethod(target, property, descriptor) ||
+				!('value' in descriptor && typeof descriptor.value === 'function'))
+		) {
+			throw new TypeError(`\`@Bind\` may only be applied to class methods.`);
+		}
 
 		const func = descriptor.value;
 
 		return {
 			configurable: true,
 			get(this: Function) {
-				const bound = (func as unknown as Function).bind(this);
+				const bound = ((func as unknown) as Function).bind(this);
 
 				// Only cache the bound function when in the deepest sub-class,
 				// otherwise any `super` calls will overwrite each other.
@@ -26,6 +27,7 @@ export default function Bind(): MethodDecorator {
 					});
 				}
 
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 				return bound;
 			},
 		};
