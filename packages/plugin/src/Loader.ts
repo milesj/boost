@@ -1,15 +1,13 @@
-/* eslint-disable security/detect-non-literal-regexp */
-
 import path from 'path';
 import { isFilePath, isObject, MODULE_NAME_PART, PathResolver, requireModule } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import debug from './debug';
-import PluginError from './PluginError';
-import Registry from './Registry';
+import { debug } from './debug';
+import { PluginError } from './PluginError';
+import { Registry } from './Registry';
 import { Factory, Pluggable, Source } from './types';
 
-export default class Loader<Plugin extends Pluggable> {
+export class Loader<Plugin extends Pluggable> {
 	readonly debug: Debugger;
 
 	private registry: Registry<Plugin>;

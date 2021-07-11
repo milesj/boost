@@ -12,4 +12,4 @@ const errors = {
 
 export type PluginErrorCode = keyof typeof errors;
 
-export default createScopedError<PluginErrorCode>('PLG', 'PluginError', errors);
+export const PluginError = createScopedError<PluginErrorCode>('PLG', 'PluginError', errors);

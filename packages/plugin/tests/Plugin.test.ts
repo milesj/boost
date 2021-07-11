@@ -1,4 +1,4 @@
-import { Renderer } from './__mocks__/Renderer';
+import { Renderer } from './__fixtures__/Renderer';
 
 describe('Plugin', () => {
 	it('accepts options in the constructor', () => {

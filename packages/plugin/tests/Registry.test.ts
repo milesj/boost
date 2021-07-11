@@ -1,6 +1,6 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { DEFAULT_PRIORITY, Registry } from '../src';
-import { createRendererRegistry, Renderable, Renderer } from './__mocks__/Renderer';
+import { createRendererRegistry, Renderable, Renderer } from './__fixtures__/Renderer';
 
 describe('Registry', () => {
 	const tool = { name: 'Tool', tool: true };
@@ -45,10 +45,10 @@ describe('Registry', () => {
 		const barBaz = new Renderer();
 		const qux = new Renderer();
 
-		beforeEach(() => {
-			registry.register('boost-test-renderer-foo', foo, tool);
-			registry.register('@boost-test/renderer-bar-baz', barBaz, tool);
-			registry.register('@test/boost-test-renderer-qux', qux, tool);
+		beforeEach(async () => {
+			await registry.register('boost-test-renderer-foo', foo, tool);
+			await registry.register('@boost-test/renderer-bar-baz', barBaz, tool);
+			await registry.register('@test/boost-test-renderer-qux', qux, tool);
 		});
 
 		it('errors if name is not registered', () => {
@@ -83,10 +83,10 @@ describe('Registry', () => {
 		const bar = new Renderer();
 		const baz = new Renderer();
 
-		beforeEach(() => {
-			registry.register('boost-test-renderer-foo', foo, tool);
-			registry.register('boost-test-renderer-bar', bar, tool);
-			registry.register('boost-test-renderer-baz', baz, tool);
+		beforeEach(async () => {
+			await registry.register('boost-test-renderer-foo', foo, tool);
+			await registry.register('boost-test-renderer-bar', bar, tool);
+			await registry.register('boost-test-renderer-baz', baz, tool);
 		});
 
 		it('returns all registered plugins', () => {
@@ -99,10 +99,10 @@ describe('Registry', () => {
 		const bar = new Renderer();
 		const baz = new Renderer();
 
-		beforeEach(() => {
-			registry.register('boost-test-renderer-foo', foo, tool);
-			registry.register('@boost-test/renderer-bar', bar, tool);
-			registry.register('@test/boost-test-renderer-baz', baz, tool);
+		beforeEach(async () => {
+			await registry.register('boost-test-renderer-foo', foo, tool);
+			await registry.register('@boost-test/renderer-bar', bar, tool);
+			await registry.register('@test/boost-test-renderer-baz', baz, tool);
 		});
 
 		it('returns all by short name', () => {
@@ -132,7 +132,7 @@ describe('Registry', () => {
 		function createClass(name: string, options?: { value: string }) {
 			const renderer = new Renderer(options);
 
-			// @ts-expect-error
+			// @ts-expect-error Allow overwrite
 			renderer.name = name;
 
 			return renderer;
@@ -177,7 +177,7 @@ describe('Registry', () => {
 				{ tool },
 			);
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
 					name: 'boost-test-renderer-foo',
@@ -229,7 +229,7 @@ describe('Registry', () => {
 				{ tool },
 			);
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
 					name: 'boost-test-renderer-foo',
@@ -284,7 +284,7 @@ describe('Registry', () => {
 				{ tool },
 			);
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
 					name: 'boost-test-renderer-foo',
@@ -318,7 +318,7 @@ describe('Registry', () => {
 					// Basic
 					{ name: 'boost-test-renderer-foo', render },
 					// With options
-					// @ts-expect-error
+					// @ts-expect-error Invalid options
 					{ name: '@boost-test/renderer-bar', options: { value: 'bar' }, render },
 					// With options and priority
 					{ name: '@test/boost-test-renderer-baz', options: { value: 'baz' }, priority: 1, render },
@@ -326,7 +326,7 @@ describe('Registry', () => {
 				{},
 			);
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
 					name: '@test/boost-test-renderer-baz',
@@ -363,7 +363,7 @@ describe('Registry', () => {
 
 			await registry.loadMany([foo, bar, baz], { tool });
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
 					name: '@test/boost-test-renderer-baz',
@@ -387,7 +387,7 @@ describe('Registry', () => {
 			await expect(
 				registry.loadMany(
 					[
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						123,
 					],
 					{},
@@ -398,7 +398,7 @@ describe('Registry', () => {
 		it('errors if object is passed without a name', async () => {
 			await expect(
 				registry.loadMany(
-					// @ts-expect-error
+					// @ts-expect-error Invalid type
 					[{}],
 					{},
 				),
@@ -435,7 +435,7 @@ describe('Registry', () => {
 			await expect(
 				registry.register(
 					'foo',
-					// @ts-expect-error
+					// @ts-expect-error Invalid type
 					123,
 				),
 			).rejects.toThrow('Renderers expect an object or class instance, found number.');
@@ -445,7 +445,7 @@ describe('Registry', () => {
 			await expect(
 				registry.register(
 					'foo',
-					// @ts-expect-error
+					// @ts-expect-error Invalid type
 					{},
 				),
 			).rejects.toThrow('Renderer requires a `render()` method.');
@@ -480,7 +480,7 @@ describe('Registry', () => {
 
 			await registry.register('foo', result.plugin, tool, { priority: 1 });
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([result]);
 		});
 
@@ -546,7 +546,7 @@ describe('Registry', () => {
 		it('removes a plugin by name', async () => {
 			await registry.unregister('foo');
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([]);
 		});
 

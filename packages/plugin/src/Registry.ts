@@ -13,9 +13,9 @@ import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { color } from '@boost/internal';
 import { DEFAULT_PRIORITY } from './constants';
-import debug from './debug';
-import Loader from './Loader';
-import PluginError from './PluginError';
+import { debug } from './debug';
+import { Loader } from './Loader';
+import { PluginError } from './PluginError';
 import {
 	Callback,
 	Pluggable,
@@ -27,7 +27,7 @@ import {
 	SourceWithOptions,
 } from './types';
 
-export default class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
+export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract<
 	RegistryOptions<Plugin>
 > {
 	readonly debug: Debugger;
