@@ -1,10 +1,10 @@
 import coreDebug from 'debug';
 import { toArray } from '@boost/common';
 import { color, env } from '@boost/internal';
-import debug from './debug';
+import { debug } from './debug';
 import { Debugger } from './types';
 
-export default function createDebugger(namespace: string[] | string): Debugger {
+export function createDebugger(namespace: string[] | string): Debugger {
 	const globalNamespace = env('DEBUG_NAMESPACE');
 	const namespaces = toArray(namespace);
 
@@ -27,8 +27,7 @@ export default function createDebugger(namespace: string[] | string): Debugger {
 	logger.disable = () => {
 		debug('Debugger %s disabled', mainNamespace);
 
-		process.env.DEBUG = (process.env.DEBUG || '')
-			// eslint-disable-next-line security/detect-non-literal-regexp
+		process.env.DEBUG = (process.env.DEBUG ?? '')
 			.replace(new RegExp(`${logger.namespace}(:\\*)?`, 'u'), '')
 			.replace(/(^,)|(,$)/u, '')
 			.replace(',,', ',');

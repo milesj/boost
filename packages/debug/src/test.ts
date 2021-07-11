@@ -1,6 +1,6 @@
-/* eslint-disable unicorn/import-index, jest/prefer-spy-on */
+/* eslint-disable jest/prefer-spy-on */
 
-import type { Debugger } from ".";
+import type { Debugger } from '.';
 
 export function mockDebugger(): Debugger {
 	const debug = jest.fn() as any;

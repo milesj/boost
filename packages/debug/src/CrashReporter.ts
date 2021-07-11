@@ -6,7 +6,7 @@ import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
 import { FilePath, PackageStructure, PortablePath, requireModule, toArray } from '@boost/common';
-import debug from './debug';
+import { debug } from './debug';
 
 function run(command: string, args: string[]): string {
 	let cmd = command;
@@ -28,7 +28,7 @@ function extractVersion(value: string): string {
 	return match ? match[0] : '';
 }
 
-export default class CrashReporter {
+export class CrashReporter {
 	contents: string = '';
 
 	/**
@@ -160,7 +160,7 @@ export default class CrashReporter {
 	 */
 	reportStackTrace(error: Error): this {
 		this.addSection('Stack Trace');
-		this.contents += error.stack;
+		this.contents += String(error.stack);
 		this.contents += '\n';
 
 		return this;

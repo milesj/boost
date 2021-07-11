@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
-import CrashReporter from '../src/CrashReporter';
+import { CrashReporter } from '../src/CrashReporter';
 
 jest.mock('execa');
 jest.mock('fast-glob');
