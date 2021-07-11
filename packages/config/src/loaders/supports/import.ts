@@ -2,11 +2,11 @@
 let supportsImport: boolean;
 
 try {
-  require('./importTest');
+	require('./importTest');
 
-  supportsImport = true;
+	supportsImport = true;
 } catch {
-  supportsImport = false;
+	supportsImport = false;
 }
 
-export default supportsImport;
+export { supportsImport };

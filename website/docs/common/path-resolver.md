@@ -21,9 +21,9 @@ and an optional current working directory (defaults to `process.cwd()`).
 ```ts
 // Look in current directory
 resolver
-  .lookupFilePath('tool.config.js')
-  .lookupFilePath('tool.config.json')
-  .lookupFilePath('tool.config.yaml');
+	.lookupFilePath('tool.config.js')
+	.lookupFilePath('tool.config.json')
+	.lookupFilePath('tool.config.yaml');
 
 // Look in a folder
 resolver.lookupFilePath('configs/tool.js');

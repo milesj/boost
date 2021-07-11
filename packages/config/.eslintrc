@@ -1,5 +1,5 @@
 {
-  "rules": {
-    "node/no-unsupported-features/node-builtins": "off"
-  }
+	"rules": {
+		"node/no-unsupported-features/node-builtins": "off"
+	}
 }

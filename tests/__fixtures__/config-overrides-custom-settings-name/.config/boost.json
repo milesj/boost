@@ -1,1 +1,1 @@
-{"level":1,"rules":[{"include":"*.ts","settings":{"level":2}}]}
+{ "level": 1, "rules": [{ "include": "*.ts", "settings": { "level": 2 } }] }

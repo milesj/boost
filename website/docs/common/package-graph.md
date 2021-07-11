@@ -10,17 +10,17 @@ optional `package.json` objects as the first argument.
 import { PackageGraph } from '@boost/common';
 
 const graph = new PackageGraph([
-  {
-    name: '@boost/common',
-    version: '1.2.3',
-  },
-  {
-    name: '@boost/cli',
-    version: '1.0.0',
-    dependencies: {
-      '@boost/common': '^1.0.0',
-    },
-  },
+	{
+		name: '@boost/common',
+		version: '1.2.3',
+	},
+	{
+		name: '@boost/cli',
+		version: '1.0.0',
+		dependencies: {
+			'@boost/common': '^1.0.0',
+		},
+	},
 ]);
 ```
 
@@ -46,12 +46,12 @@ package and its dependees found in `dependencies` and `peerDependencies`.
 
 ```ts
 graph.addPackage({
-  name: '@boost/plugin',
-  version: '1.6.0',
-  peerDependencies: {
-    '@boost/common': '^1.0.0',
-    '@boost/debug': '^1.0.0',
-  },
+	name: '@boost/plugin',
+	version: '1.6.0',
+	peerDependencies: {
+		'@boost/common': '^1.0.0',
+		'@boost/debug': '^1.0.0',
+	},
 });
 ```
 
@@ -63,14 +63,14 @@ Add multiple packages and map their dependencies.
 
 ```ts
 graph.addPackages([
-  {
-    name: '@boost/plugin',
-    version: '1.6.0',
-  },
-  {
-    name: '@boost/debug',
-    version: '1.2.0',
-  },
+	{
+		name: '@boost/plugin',
+		version: '1.6.0',
+	},
+	{
+		name: '@boost/debug',
+		version: '1.2.0',
+	},
 ]);
 ```
 
@@ -83,9 +83,9 @@ in the order they are depended on.
 
 ```ts
 graph.resolveBatchList().forEach((pkgs) => {
-  pkgs.forEach((pkg) => {
-    console.log(pkg.name);
-  });
+	pkgs.forEach((pkg) => {
+		console.log(pkg.name);
+	});
 });
 ```
 
@@ -98,7 +98,7 @@ depended on.
 
 ```ts
 graph.resolveList().forEach((pkg) => {
-  console.log(pkg.name);
+	console.log(pkg.name);
 });
 ```
 
@@ -111,10 +111,10 @@ dependency mappings.
 
 ```ts
 graph.resolveTree().nodes.forEach((node) => {
-  console.log(node.package.name);
+	console.log(node.package.name);
 
-  if (node.nodes) {
-    // Dependents
-  }
+	if (node.nodes) {
+		// Dependents
+	}
 });
 ```

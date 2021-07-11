@@ -1,7 +1,7 @@
-export default function isParam(
-  target: Function | Object,
-  property?: string | symbol,
-  index?: unknown,
+export function isParam(
+	target: Function | Object,
+	property?: string | symbol,
+	index?: unknown,
 ): boolean {
-  return Boolean(property && typeof index === 'number');
+	return Boolean(property && typeof index === 'number');
 }

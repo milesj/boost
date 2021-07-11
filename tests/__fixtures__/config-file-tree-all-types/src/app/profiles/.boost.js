@@ -1,1 +1,1 @@
-module.exports = {"type":"js"};
+module.exports = { type: 'js' };

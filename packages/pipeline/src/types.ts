@@ -1,26 +1,26 @@
-import Context from './Context';
-import Pipeline from './Pipeline';
-import WorkUnit from './WorkUnit';
+import type { Context } from './Context';
+import type { Pipeline } from './Pipeline';
+import type { WorkUnit } from './WorkUnit';
 
 export type Action<Ctx extends Context, Input = unknown, Output = Input> = (
-  context: Ctx,
-  value: Input,
-  workUnit: AnyWorkUnit,
+	context: Ctx,
+	value: Input,
+	workUnit: AnyWorkUnit,
 ) => Output | Promise<Output>;
 
 export interface AggregatedResult<T> {
-  errors: Error[];
-  results: T[];
+	errors: Error[];
+	results: T[];
 }
 
 export interface Hierarchical {
-  depth: number;
-  id: string;
-  index: number;
+	depth: number;
+	id: string;
+	index: number;
 }
 
 export interface Runnable<Input, Output> {
-  run: (context: Context, value: Input) => Promise<Output>;
+	run: (context: Context, value: Input) => Promise<Output>;
 }
 
 export type Status = 'failed' | 'passed' | 'pending' | 'running' | 'skipped';

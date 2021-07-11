@@ -6,7 +6,7 @@ const assert = require('assert').strict;
 const { requireTypedModule } = require('../../lib');
 
 function getFixture(file) {
-  return path.join(__dirname, '__fixtures__', file);
+	return path.join(__dirname, '__fixtures__', file);
 }
 
 // Default exports only
@@ -14,24 +14,24 @@ assert.equal(requireTypedModule(getFixture('default-export.ts')), 'default');
 
 // Named exports only
 assert.deepEqual(requireTypedModule(getFixture('named-exports.ts')), {
-  a: 1,
-  b: 2,
-  c: 3,
+	a: 1,
+	b: 2,
+	c: 3,
 });
 
 // Default AND named exports
 assert.deepEqual(requireTypedModule(getFixture('default-named-exports.ts')), {
-  a: 1,
-  b: 2,
-  c: 3,
-  default: 'default',
+	a: 1,
+	b: 2,
+	c: 3,
+	default: 'default',
 });
 
 // Resolves nested imports
 assert.deepEqual(requireTypedModule(getFixture('imports.ts')), {
-  defaultExport: 'default',
-  defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
-  namedExports: { a: 1, b: 2, c: 3 },
+	defaultExport: 'default',
+	defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
+	namedExports: { a: 1, b: 2, c: 3 },
 });
 
 // Built-ins are the same

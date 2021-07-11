@@ -4,19 +4,19 @@ const ScaffoldModelCommand = require('./scaffold/ScaffoldModelCommand');
 const ScaffoldViewCommand = require('./scaffold/ScaffoldViewCommand');
 
 module.exports = class ScaffoldCommand extends Command {
-  static description = 'Scaffold files based on a template';
+	static description = 'Scaffold files based on a template';
 
-  static path = 'scaffold';
+	static path = 'scaffold';
 
-  constructor() {
-    super();
+	constructor() {
+		super();
 
-    this.register(new ScaffoldControllerCommand())
-      .register(new ScaffoldModelCommand())
-      .register(new ScaffoldViewCommand());
-  }
+		this.register(new ScaffoldControllerCommand())
+			.register(new ScaffoldModelCommand())
+			.register(new ScaffoldViewCommand());
+	}
 
-  async run() {
-    return this.renderHelp();
-  }
+	async run() {
+		return this.renderHelp();
+	}
 };

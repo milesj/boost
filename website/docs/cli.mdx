@@ -93,10 +93,10 @@ import { Program } from '@boost/cli';
 import pkg from './package.json';
 
 const program = new Program({
-  bin: 'boost',
-  footer: 'Documentation: https://boostlib.dev',
-  name: 'Boost Examples',
-  version: pkg.version,
+	bin: 'boost',
+	footer: 'Documentation: https://boostlib.dev',
+	name: 'Boost Examples',
+	version: pkg.version,
 });
 ```
 
@@ -116,8 +116,8 @@ running.
 
 ```ts
 program.runAndExit(process.argv, async () => {
-  // CLI code to bootstrap before running
-  await bootstrapCli();
+	// CLI code to bootstrap before running
+	await bootstrapCli();
 });
 ```
 
@@ -130,9 +130,9 @@ to the program-aware file you have defined previously. For example, if my progra
 
 ```json
 {
-  "bin": {
-    "boost": "./bin/boost.js"
-  }
+	"bin": {
+		"boost": "./bin/boost.js"
+	}
 }
 ```
 
@@ -160,7 +160,7 @@ import { Program } from '@boost/cli';
 import StandAloneCommand from './commands/StandAloneCommand';
 
 const program = new Program({
-  // ...
+	// ...
 });
 
 program.default(new StandAloneCommand()).runAndExit(process.argv);
@@ -186,14 +186,14 @@ import UninstallCommand from './commands/UninstallCommand';
 import BuildCommand from './commands/BuildCommand';
 
 const program = new Program({
-  // ...
+	// ...
 });
 
 program
-  .register(new InstallCommand())
-  .register(new UninstallCommand())
-  .register(new BuildCommand())
-  .runAndExit(process.argv);
+	.register(new InstallCommand())
+	.register(new UninstallCommand())
+	.register(new BuildCommand())
+	.runAndExit(process.argv);
 ```
 
 > Some good examples of stand-alone binaries are `npm`, `yarn`, and `docker`.
@@ -213,29 +213,29 @@ below.
 import { Program, Middleware } from '@boost/cli';
 
 const example: Middleware = (argv, parse) => {
-  if (argv.includes('--help')) {
-    argv.push('--all');
-  }
+	if (argv.includes('--help')) {
+		argv.push('--all');
+	}
 
-  return parse();
+	return parse();
 };
 
 const program = new Program({
-  // ...
+	// ...
 });
 
 program
-  // Function reference
-  .middleware(example)
-  // Inline async function
-  .middleware(async (argv, parse) => {
-    const args = await parse();
+	// Function reference
+	.middleware(example)
+	// Inline async function
+	.middleware(async (argv, parse) => {
+		const args = await parse();
 
-    args.options.flag = true;
+		args.options.flag = true;
 
-    return args;
-  })
-  .runAndExit(process.argv);
+		return args;
+	})
+	.runAndExit(process.argv);
 ```
 
 Middleware is async, so the parse callback _must be_ awaited! This also means you can implement your
@@ -255,12 +255,12 @@ Boost provides the following built-in middleware for common scenarios.
 import { checkNodeRequirement, checkPackageOutdated } from '@boost/cli';
 
 program
-  // Log a message
-  .middleware(checkPackageOutdated('@boost/cli', require('@boost/cli/package.json').version))
-  // Log an error
-  .middleware(checkNodeRequirement('>=12.10.0'))
-  // Throw an error
-  .middleware(checkNodeRequirement('>=12.10.0', true));
+	// Log a message
+	.middleware(checkPackageOutdated('@boost/cli', require('@boost/cli/package.json').version))
+	// Log an error
+	.middleware(checkNodeRequirement('>=12.10.0'))
+	// Throw an error
+	.middleware(checkNodeRequirement('>=12.10.0', true));
 ```
 
 ## Commands
@@ -274,13 +274,13 @@ argument) is found on the command line. To create a command, import and extend t
 import { Command } from '@boost/cli';
 
 export default class BuildCommand extends Command {
-  async run() {
-    this.log('Starting process...');
+	async run() {
+		this.log('Starting process...');
 
-    await runHeavyAsyncProcess();
+		await runHeavyAsyncProcess();
 
-    this.log('Process finished!');
-  }
+		this.log('Process finished!');
+	}
 }
 ```
 
@@ -332,8 +332,8 @@ define static class properties of the same name!
 import { Command, Config } from '@boost/cli';
 
 @Config('build', 'Build a project', {
-  aliases: ['make'],
-  deprecated: true,
+	aliases: ['make'],
+	deprecated: true,
 })
 export default class BuildCommand extends Command {}
 ```
@@ -345,13 +345,13 @@ export default class BuildCommand extends Command {}
 import { Command } from '@boost/cli';
 
 export default class BuildCommand extends Command {
-  static path: string = 'build';
+	static path: string = 'build';
 
-  static aliases: string[] = ['make'];
+	static aliases: string[] = ['make'];
 
-  static description: string = 'Build a project';
+	static description: string = 'Build a project';
 
-  static deprecated: boolean = true;
+	static deprecated: boolean = true;
 }
 ```
 
@@ -393,34 +393,34 @@ easier type safety, the `Options` collection type can be used to type the static
 import { Command, Arg, GlobalOptions } from '@boost/cli';
 
 interface CustomOptions extends GlobalOptions {
-  flag: boolean;
-  number: number;
-  numbers: number[];
-  string: string;
-  strings: string[];
+	flag: boolean;
+	number: number;
+	numbers: number[];
+	string: string;
+	strings: string[];
 }
 
 export default class CustomCommand extends Command<CustomOptions> {
-  @Arg.Flag('Boolean flag')
-  flag: boolean = false;
+	@Arg.Flag('Boolean flag')
+	flag: boolean = false;
 
-  @Arg.Number('Single number', { count: true, short: 'N' })
-  number: number = 0;
+	@Arg.Number('Single number', { count: true, short: 'N' })
+	number: number = 0;
 
-  @Arg.Numbers('List of numbers', { deprecated: true })
-  numbers: number[] = [];
+	@Arg.Numbers('List of numbers', { deprecated: true })
+	numbers: number[] = [];
 
-  @Arg.String('Single string', { choices: ['a', 'b', 'c'], hidden: true })
-  string: string = '';
+	@Arg.String('Single string', { choices: ['a', 'b', 'c'], hidden: true })
+	string: string = '';
 
-  @Arg.Strings('List of strings', { arity: 5, short: 'S' })
-  strings: string[] = [];
+	@Arg.Strings('List of strings', { arity: 5, short: 'S' })
+	strings: string[] = [];
 
-  run() {
-    const { flag, strings } = this;
+	run() {
+		const { flag, strings } = this;
 
-    // ...
-  }
+		// ...
+	}
 }
 ```
 
@@ -431,61 +431,61 @@ export default class CustomCommand extends Command<CustomOptions> {
 import { Command, GlobalOptions, Options } from '@boost/cli';
 
 interface CustomOptions extends GlobalOptions {
-  flag: boolean;
-  number: number;
-  numbers: number[];
-  string: string;
-  strings: string[];
+	flag: boolean;
+	number: number;
+	numbers: number[];
+	string: string;
+	strings: string[];
 }
 
 export default class CustomCommand extends Command<CustomOptions> {
-  static options: Options<CustomOptions> = {
-    flag: {
-      description: 'Boolean flag',
-      type: 'boolean',
-    },
-    number: {
-      count: true,
-      description: 'Single number',
-      short: 'N',
-      type: 'number',
-    },
-    numbers: {
-      deprecated: true,
-      description: 'List of numbers',
-      multiple: true,
-      type: 'number',
-    },
-    string: {
-      choices: ['a', 'b', 'c'],
-      description: 'Single string',
-      hidden: true,
-      type: 'string',
-    },
-    strings: {
-      arity: 5,
-      description: 'List of strings',
-      multiple: true,
-      short: 'S',
-      type: 'string',
-    },
-  };
+	static options: Options<CustomOptions> = {
+		flag: {
+			description: 'Boolean flag',
+			type: 'boolean',
+		},
+		number: {
+			count: true,
+			description: 'Single number',
+			short: 'N',
+			type: 'number',
+		},
+		numbers: {
+			deprecated: true,
+			description: 'List of numbers',
+			multiple: true,
+			type: 'number',
+		},
+		string: {
+			choices: ['a', 'b', 'c'],
+			description: 'Single string',
+			hidden: true,
+			type: 'string',
+		},
+		strings: {
+			arity: 5,
+			description: 'List of strings',
+			multiple: true,
+			short: 'S',
+			type: 'string',
+		},
+	};
 
-  flag: boolean = false;
+	flag: boolean = false;
 
-  number: number = 0;
+	number: number = 0;
 
-  numbers: number[] = [];
+	numbers: number[] = [];
 
-  string: string = '';
+	string: string = '';
 
-  strings: string[] = [];
+	strings: string[] = [];
 
-  run() {
-    const { flag, strings } = this;
+	run() {
+		const { flag, strings } = this;
 
-    // ...
-  }
+		// ...
+	}
 }
 ```
 
@@ -515,10 +515,10 @@ import { Command, GlobalOptions, Config } from '@boost/cli';
 
 @Config('custom', 'Example', { allowUnknownOptions: true })
 export default class CustomCommand extends Command<GlobalOptions> {
-  run() {
-    const { foo, bar } = this.unknown;
-    // ...
-  }
+	run() {
+		const { foo, bar } = this.unknown;
+		// ...
+	}
 }
 ```
 
@@ -529,16 +529,16 @@ export default class CustomCommand extends Command<GlobalOptions> {
 import { Command, GlobalOptions } from '@boost/cli';
 
 export default class CustomCommand extends Command<GlobalOptions> {
-  static path: string = 'custom';
+	static path: string = 'custom';
 
-  static description: string = 'Example';
+	static description: string = 'Example';
 
-  static allowUnknownOptions: boolean = true;
+	static allowUnknownOptions: boolean = true;
 
-  run() {
-    const { foo, bar } = this.unknown;
-    // ...
-  }
+	run() {
+		const { foo, bar } = this.unknown;
+		// ...
+	}
 }
 ```
 
@@ -589,28 +589,28 @@ import { Command, Arg, GlobalOptions } from '@boost/cli';
 type CustomParams = [string, number, boolean];
 
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
-  @Arg.Params<CustomParams>(
-    {
-      description: 'String',
-      label: 'name',
-      required: true,
-      type: 'string',
-    },
-    {
-      default: 18,
-      description: 'Number',
-      label: 'age',
-      type: 'number',
-    },
-    {
-      description: 'Boolean',
-      label: 'active',
-      type: 'boolean',
-    },
-  )
-  run(name: string, age: number, active: boolean) {
-    // ...
-  }
+	@Arg.Params<CustomParams>(
+		{
+			description: 'String',
+			label: 'name',
+			required: true,
+			type: 'string',
+		},
+		{
+			default: 18,
+			description: 'Number',
+			label: 'age',
+			type: 'number',
+		},
+		{
+			description: 'Boolean',
+			label: 'active',
+			type: 'boolean',
+		},
+	)
+	run(name: string, age: number, active: boolean) {
+		// ...
+	}
 }
 ```
 
@@ -623,29 +623,29 @@ import { Command, Params, GlobalOptions } from '@boost/cli';
 type CustomParams = [string, number, boolean];
 
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
-  static params: Params<CustomParams> = [
-    {
-      description: 'String',
-      label: 'name',
-      required: true,
-      type: 'string',
-    },
-    {
-      default: 18,
-      description: 'Number',
-      label: 'age',
-      type: 'number',
-    },
-    {
-      description: 'Boolean',
-      label: 'active',
-      type: 'boolean',
-    },
-  ];
+	static params: Params<CustomParams> = [
+		{
+			description: 'String',
+			label: 'name',
+			required: true,
+			type: 'string',
+		},
+		{
+			default: 18,
+			description: 'Number',
+			label: 'age',
+			type: 'number',
+		},
+		{
+			description: 'Boolean',
+			label: 'active',
+			type: 'boolean',
+		},
+	];
 
-  run(name: string, age: number, active: boolean) {
-    // ...
-  }
+	run(name: string, age: number, active: boolean) {
+		// ...
+	}
 }
 ```
 
@@ -679,12 +679,12 @@ type CustomParams = [string, number];
 
 @Config('custom', 'Example', { allowVariadicParams: true })
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
-  @Arg.Params<CustomParams>([
-    // ...
-  ])
-  run(name: string, age: number, ...params: string[]) {
-    // ...
-  }
+	@Arg.Params<CustomParams>([
+		// ...
+	])
+	run(name: string, age: number, ...params: string[]) {
+		// ...
+	}
 }
 ```
 
@@ -697,19 +697,19 @@ import { Command, Params, GlobalOptions } from '@boost/cli';
 type CustomParams = [string, number];
 
 export default class CustomCommand extends Command<GlobalOptions, CustomParams> {
-  static path: string = 'custom';
+	static path: string = 'custom';
 
-  static description: string = 'Example';
+	static description: string = 'Example';
 
-  static allowVariadicParams: boolean = true;
+	static allowVariadicParams: boolean = true;
 
-  static params: Params<CustomParams> = [
-    // ...
-  ];
+	static params: Params<CustomParams> = [
+		// ...
+	];
 
-  run(name: string, age: number, ...params: string[]) {
-    // ...
-  }
+	run(name: string, age: number, ...params: string[]) {
+		// ...
+	}
 }
 ```
 
@@ -744,12 +744,12 @@ class ScaffoldModelCommand extends Command {}
 
 @Config('scaffold', 'Scaffold a template')
 class ScaffoldCommand extends Command {
-  constructor() {
-    super();
+	constructor() {
+		super();
 
-    this.register(new ScaffoldControllerCommand());
-    this.register(new ScaffoldModelCommand());
-  }
+		this.register(new ScaffoldControllerCommand());
+		this.register(new ScaffoldModelCommand());
+	}
 }
 ```
 
@@ -775,40 +775,40 @@ import { Box, Text } from 'ink';
 import { Style, useProgram } from '@boost/cli';
 
 interface WriteConfigProps {
-  data: object;
-  path: string;
+	data: object;
+	path: string;
 }
 
 export default function WriteConfig({ data, path }: WriteConfigProps) {
-  const { exit } = useProgram();
-  const [loading, setLoading] = useState(true);
+	const { exit } = useProgram();
+	const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fs.promises
-      .writeFile(path, JSON.stringify(data), 'utf8')
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((error) => {
-        exit(error);
-      });
-  }, [path]);
+	useEffect(() => {
+		fs.promises
+			.writeFile(path, JSON.stringify(data), 'utf8')
+			.then(() => {
+				setLoading(false);
+			})
+			.catch((error) => {
+				exit(error);
+			});
+	}, [path]);
 
-  if (loading) {
-    return (
-      <Box>
-        <Text>Writing config file...</Text>
-      </Box>
-    );
-  }
+	if (loading) {
+		return (
+			<Box>
+				<Text>Writing config file...</Text>
+			</Box>
+		);
+	}
 
-  return (
-    <Box>
-      <Text>
-        Wrote config to file <Style type="success">{path}</Style>
-      </Text>
-    </Box>
-  );
+	return (
+		<Box>
+			<Text>
+				Wrote config to file <Style type="success">{path}</Style>
+			</Text>
+		</Box>
+	);
 }
 ```
 
@@ -820,19 +820,19 @@ import WriteConfig from './components/WriteConfig';
 
 @Config('config', 'Manage configuration files')
 export default class ConfigCommand extends Command {
-  @Arg.Params({
-    description: 'Path to file',
-    type: 'string',
-    required: true,
-  })
-  async run(path: string) {
-    const data = await loadConfigFromSomeSource();
+	@Arg.Params({
+		description: 'Path to file',
+		type: 'string',
+		required: true,
+	})
+	async run(path: string) {
+		const data = await loadConfigFromSomeSource();
 
-    await this.render(<WriteConfig data={data} path={path} />);
+		await this.render(<WriteConfig data={data} path={path} />);
 
-    // Or...
-    return <WriteConfig data={data} path={path} />;
-  }
+		// Or...
+		return <WriteConfig data={data} path={path} />;
+	}
 }
 ```
 
@@ -896,17 +896,17 @@ import { TaskContext } from '@boost/cli';
 
 // Write a JSON blob to a file defined by a --path option
 export default async function writeJson(
-  this: TaskContext<{ path: string }>,
-  data: unknown,
-  pretty: boolean = false,
+	this: TaskContext<{ path: string }>,
+	data: unknown,
+	pretty: boolean = false,
 ) {
-  await fs.promises.writeFile(
-    this.path,
-    pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data),
-    'utf8',
-  );
+	await fs.promises.writeFile(
+		this.path,
+		pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data),
+		'utf8',
+	);
 
-  this.log('Wrote file to %s', this.path);
+	this.log('Wrote file to %s', this.path);
 }
 ```
 
@@ -919,14 +919,14 @@ import writeJson from './tasks/writeJson';
 
 @Config('init', 'Initialize project')
 export default class InitCommand extends Command {
-  @Arg.String('Path to config file')
-  path: string;
+	@Arg.String('Path to config file')
+	path: string;
 
-  async run() {
-    const data = await loadConfigFromSomeSource();
+	async run() {
+		const data = await loadConfigFromSomeSource();
 
-    await this.runTask(writeJson, data);
-  }
+		await this.runTask(writeJson, data);
+	}
 }
 ```
 
@@ -942,14 +942,14 @@ category names and optional weights, like so.
 
 ```ts
 program.categories({
-  // Explicit weight
-  cache: {
-    name: 'Caching',
-    weight: 60,
-  },
+	// Explicit weight
+	cache: {
+		name: 'Caching',
+		weight: 60,
+	},
 
-  // Automatic weight
-  error: 'Error handling',
+	// Automatic weight
+	error: 'Error handling',
 });
 ```
 
@@ -967,16 +967,16 @@ program.categories({
 import { Command, Config } from '@boost/cli';
 
 @Config('custom', 'Example', {
-  categories: {
-    cache: {
-      name: 'Caching',
-      weight: 60,
-    },
-    error: 'Error handling',
-  },
+	categories: {
+		cache: {
+			name: 'Caching',
+			weight: 60,
+		},
+		error: 'Error handling',
+	},
 })
 export default class CustomCommand extends Command {
-  // ...
+	// ...
 }
 ```
 
@@ -987,19 +987,19 @@ export default class CustomCommand extends Command {
 import { Command, Categories } from '@boost/cli';
 
 export default class CustomCommand extends Command {
-  static path: string = 'custom';
+	static path: string = 'custom';
 
-  static description: string = 'Example';
+	static description: string = 'Example';
 
-  static categories: Categories = {
-    cache: {
-      name: 'Caching',
-      weight: 60,
-    },
-    error: 'Error handling',
-  };
+	static categories: Categories = {
+		cache: {
+			name: 'Caching',
+			weight: 60,
+		},
+		error: 'Error handling',
+	};
 
-  // ...
+	// ...
 }
 ```
 
@@ -1027,15 +1027,15 @@ using the `category` setting! Here's an example using decorators.
 import { Command, Config, Arg, GlobalOptions } from '@boost/cli';
 
 interface BuildOptions extends GlobalOptions {
-  cache: boolean;
+	cache: boolean;
 }
 
 @Config('build', 'Build a project', { category: 'build' })
 export default class BuildCommand extends Command<BuildOptions> {
-  @Arg.Flag('Write output to cache', { category: 'cache' })
-  cache: boolean = false;
+	@Arg.Flag('Write output to cache', { category: 'cache' })
+	cache: boolean = false;
 
-  // ...
+	// ...
 }
 ```
 
@@ -1046,27 +1046,27 @@ export default class BuildCommand extends Command<BuildOptions> {
 import { Command, Options, GlobalOptions } from '@boost/cli';
 
 interface BuildOptions extends GlobalOptions {
-  cache: boolean;
+	cache: boolean;
 }
 
 export default class BuildCommand extends Command<BuildOptions> {
-  static path: string = 'build';
+	static path: string = 'build';
 
-  static description: string = 'Build a project';
+	static description: string = 'Build a project';
 
-  static category: string = 'build';
+	static category: string = 'build';
 
-  static options: Options<BuildOptions> = {
-    cache: {
-      category: 'cache',
-      description: 'Write output to cache',
-      type: 'boolean',
-    },
-  };
+	static options: Options<BuildOptions> = {
+		cache: {
+			category: 'cache',
+			description: 'Write output to cache',
+			type: 'boolean',
+		},
+	};
 
-  cache: boolean = false;
+	cache: boolean = false;
 
-  // ...
+	// ...
 }
 ```
 
@@ -1082,12 +1082,12 @@ Boost integrates its very own [logger](./log.mdx) so that logs can easily be sen
 import { Command } from '@boost/cli';
 
 class CustomCommand extends Command {
-  run() {
-    this.log('Normal log');
-    this.log.error('Failed log');
-    this.log.debug('Debug log');
-    // ...
-  }
+	run() {
+		this.log('Normal log');
+		this.log.error('Failed log');
+		this.log.debug('Debug log');
+		// ...
+	}
 }
 ```
 
@@ -1099,14 +1099,14 @@ import { Box } from 'ink';
 import { ProgramContext } from '@boost/cli';
 
 function CustomComponent() {
-  const { log } = useContext(ProgramContext);
+	const { log } = useContext(ProgramContext);
 
-  log('Normal log');
-  log.error('Failed log');
-  log.debug('Debug log');
-  // ...
+	log('Normal log');
+	log.error('Failed log');
+	log.debug('Debug log');
+	// ...
 
-  return <Box>Loading...</Box>;
+	return <Box>Loading...</Box>;
 }
 ```
 

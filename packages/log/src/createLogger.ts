@@ -1,49 +1,49 @@
 import { isObject } from '@boost/common';
 import { LOG_LEVELS } from './constants';
-import Logger from './Logger';
+import { Logger } from './Logger';
 import { LoggerFunction, LoggerOptions, LogLevel } from './types';
 
 function pipeLog(logger: Logger, level?: LogLevel) {
-  return (...args: unknown[]) => {
-    let metadata = {};
-    let message = '';
+	return (...args: unknown[]) => {
+		let metadata = {};
+		let message = '';
 
-    if (isObject(args[0])) {
-      metadata = (args as object[]).shift()!;
-    }
+		if (isObject(args[0])) {
+			metadata = (args as object[]).shift()!;
+		}
 
-    message = (args as string[]).shift()!;
+		message = (args as string[]).shift()!;
 
-    logger.log({
-      args,
-      level,
-      message,
-      metadata,
-    });
-  };
+		logger.log({
+			args,
+			level,
+			message,
+			metadata,
+		});
+	};
 }
 
-export default function createLogger(options: LoggerOptions): LoggerFunction {
-  const logger = new Logger(options);
-  const log = pipeLog(logger);
+export function createLogger(options: LoggerOptions): LoggerFunction {
+	const logger = new Logger(options);
+	const log = pipeLog(logger);
 
-  LOG_LEVELS.forEach((level) => {
-    Object.defineProperty(log, level, {
-      value: pipeLog(logger, level),
-    });
-  });
+	LOG_LEVELS.forEach((level) => {
+		Object.defineProperty(log, level, {
+			value: pipeLog(logger, level),
+		});
+	});
 
-  Object.defineProperty(log, 'disable', {
-    value: () => {
-      logger.disable();
-    },
-  });
+	Object.defineProperty(log, 'disable', {
+		value: () => {
+			logger.disable();
+		},
+	});
 
-  Object.defineProperty(log, 'enable', {
-    value: () => {
-      logger.enable();
-    },
-  });
+	Object.defineProperty(log, 'enable', {
+		value: () => {
+			logger.enable();
+		},
+	});
 
-  return log as LoggerFunction;
+	return log as LoggerFunction;
 }

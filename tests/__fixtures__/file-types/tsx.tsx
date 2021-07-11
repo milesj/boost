@@ -1,3 +1,3 @@
 export default {
-  type: 'tsx',
+	type: 'tsx',
 };

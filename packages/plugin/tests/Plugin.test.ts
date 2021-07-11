@@ -1,9 +1,9 @@
-import { Renderer } from './__mocks__/Renderer';
+import { Renderer } from './__fixtures__/Renderer';
 
 describe('Plugin', () => {
-  it('accepts options in the constructor', () => {
-    const plugin = new Renderer({ value: 'foo' });
+	it('accepts options in the constructor', () => {
+		const plugin = new Renderer({ value: 'foo' });
 
-    expect(plugin.options).toEqual({ value: 'foo' });
-  });
+		expect(plugin.options).toEqual({ value: 'foo' });
+	});
 });

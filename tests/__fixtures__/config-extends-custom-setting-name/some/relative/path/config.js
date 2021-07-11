@@ -1,1 +1,1 @@
-module.exports = {"type":"fs"};
+module.exports = { type: 'fs' };

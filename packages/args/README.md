@@ -11,32 +11,32 @@ not_ a command line interface.
 import { parse } from '@boost/args';
 
 interface Options {
-  help: boolean;
-  logLevel: 'info' | 'error' | 'warn';
-  version: boolean;
+	help: boolean;
+	logLevel: 'info' | 'error' | 'warn';
+	version: boolean;
 }
 
 const { command, errors, options, params, rest } = parse<Options>(process.argv.slice(2), {
-  commands: ['build', 'install', 'update'],
-  options: {
-    help: {
-      default: false,
-      description: 'Show a help menu',
-      type: 'boolean',
-      short: 'H',
-    },
-    logLevel: {
-      choices: ['info', 'error', 'warn'],
-      default: 'info',
-      description: 'Customize logging level',
-    },
-    version: {
-      default: false,
-      description: 'Show the version number',
-      type: 'boolean',
-      short: 'V',
-    },
-  },
+	commands: ['build', 'install', 'update'],
+	options: {
+		help: {
+			default: false,
+			description: 'Show a help menu',
+			type: 'boolean',
+			short: 'H',
+		},
+		logLevel: {
+			choices: ['info', 'error', 'warn'],
+			default: 'info',
+			description: 'Customize logging level',
+		},
+		version: {
+			default: false,
+			description: 'Show the version number',
+			type: 'boolean',
+			short: 'V',
+		},
+	},
 });
 ```
 

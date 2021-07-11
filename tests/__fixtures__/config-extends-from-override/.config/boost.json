@@ -1,1 +1,9 @@
-{"root":true,"overrides":[{"include":["*"],"settings":{"extends":"../some/relative/path/config.js","overridden":true}}]}
+{
+  "root": true,
+  "overrides": [
+    {
+      "include": ["*"],
+      "settings": { "extends": "../some/relative/path/config.js", "overridden": true }
+    }
+  ]
+}

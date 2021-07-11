@@ -1,5 +1,5 @@
 const config: Record<string, string> = {
-  type: 'ts',
+	type: 'ts',
 };
 
 export default config;

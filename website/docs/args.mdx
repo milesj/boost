@@ -22,7 +22,6 @@ A type-safe and convention based argument parsing library, with strict validatio
 >
   <TabItem value="yarn">
 
-
 ```bash
 yarn add @boost/args
 ```
@@ -30,14 +29,12 @@ yarn add @boost/args
   </TabItem>
   <TabItem value="npm">
 
-
 ```bash
 npm install @boost/args
 ```
 
   </TabItem>
 </Tabs>
-
 
 ## Parsing
 
@@ -58,21 +55,21 @@ const argv = process.argv.slice(2);
 
 // Parse argv into a consumable object
 const { command, errors, options, params, rest } = parse<{ help: boolean }, [string]>(argv, {
-  options: {
-    help: {
-      description: 'Show the help menu',
-      short: 'H',
-      type: 'boolean',
-    },
-  },
-  params: [
-    {
-      description: 'File path to source directory',
-      label: 'Source',
-      required: true,
-      type: 'string',
-    },
-  ],
+	options: {
+		help: {
+			description: 'Show the help menu',
+			short: 'H',
+			type: 'boolean',
+		},
+	},
+	params: [
+		{
+			description: 'File path to source directory',
+			label: 'Source',
+			required: true,
+			type: 'string',
+		},
+	],
 });
 ```
 
@@ -116,34 +113,34 @@ const argv = process.argv.slice(2);
 
 // Parse argv into a consumable object
 const { command, errors, options, params, rest } = parseInContext(argv, (arg) => {
-  // Build command found, define build specific options
-  if (arg === 'build') {
-    return {
-      command: ['build'],
-      options: {
-        dest: {
-          description: 'Destination path',
-          type: 'string',
-        },
-      },
-    };
-  }
+	// Build command found, define build specific options
+	if (arg === 'build') {
+		return {
+			command: ['build'],
+			options: {
+				dest: {
+					description: 'Destination path',
+					type: 'string',
+				},
+			},
+		};
+	}
 
-  // Install command found, require params
-  if (arg === 'install') {
-    return {
-      command: ['install'],
-      params: [
-        {
-          description: 'Package name(s)',
-          type: 'string',
-          required: true,
-        },
-      ],
-    };
-  }
+	// Install command found, require params
+	if (arg === 'install') {
+		return {
+			command: ['install'],
+			params: [
+				{
+					description: 'Package name(s)',
+					type: 'string',
+					required: true,
+				},
+			],
+		};
+	}
 
-  return undefined;
+	return undefined;
 });
 ```
 
@@ -163,11 +160,11 @@ as an array, split on `:`.
 
 ```ts
 const args = parse<{}>(argv, {
-  commands: ['build', 'build:esm', 'build:cjs', 'install'],
-  // OR
-  commands(arg) {
-    return arg === 'build'; // etc
-  },
+	commands: ['build', 'build:esm', 'build:cjs', 'install'],
+	// OR
+	commands(arg) {
+		return arg === 'build'; // etc
+	},
 });
 
 // build:esm src/ --out lib/
@@ -221,18 +218,18 @@ the following settings:
 ```ts
 const argv = ['--logLevel=2'];
 const args = parse<{ logLevel: number }>(argv, {
-  options: {
-    logLevel: {
-      description: 'Increase log output verbosity',
-      type: 'number',
-      short: 'L',
-      validate(value) {
-        if (value < 0 || value > 10) {
-          throw new Error('Log level must be between 0 and 10.');
-        }
-      },
-    },
-  },
+	options: {
+		logLevel: {
+			description: 'Increase log output verbosity',
+			type: 'number',
+			short: 'L',
+			validate(value) {
+				if (value < 0 || value > 10) {
+					throw new Error('Log level must be between 0 and 10.');
+				}
+			},
+		},
+	},
 });
 
 args.options.logLevel; // 2
@@ -262,13 +259,13 @@ only), and if using TypeScript, the option type must be a typed array.
 
 ```ts
 const args = parse<{ files: string[] }>(argv, {
-  options: {
-    files: {
-      description: 'List of files to process',
-      multiple: true,
-      type: 'string',
-    },
-  },
+	options: {
+		files: {
+			description: 'List of files to process',
+			multiple: true,
+			type: 'string',
+		},
+	},
 });
 ```
 
@@ -290,13 +287,13 @@ means to avoid collision.
 ```ts
 const argv = ['--legit', 'foo', '--unknown', 'bar'];
 const args = parse<{ legit: string }>(argv, {
-  options: {
-    legit: {
-      description: 'A legitimate option',
-      type: 'string',
-    },
-  },
-  unknown: true,
+	options: {
+		legit: {
+			description: 'A legitimate option',
+			type: 'string',
+		},
+	},
+	unknown: true,
 });
 
 args.options; // { legit: 'foo' }
@@ -319,12 +316,12 @@ provided), `hidden`, `usage`, and `short` settings mentioned above.
 ```ts
 const argv = ['--color'];
 const args = parse<{ color: boolean }>(argv, {
-  options: {
-    color: {
-      description: 'Enable colored output',
-      type: 'boolean',
-    },
-  },
+	options: {
+		color: {
+			description: 'Enable colored output',
+			type: 'boolean',
+		},
+	},
 });
 
 args.options.color; // true
@@ -352,16 +349,16 @@ settings as options, with the addition of:
 ```ts
 const argv = ['off', 'value', '123.45'];
 const args = parse<{}, [boolean, string, number]>(argv, {
-  params: [
-    {
-      description: 'First parameter',
-      label: 'First',
-      type: 'boolean',
-      required: true,
-    },
-    { description: 'Second parameter', label: 'Second', type: 'string' },
-    { description: 'Third parameter', label: 'Third', type: 'number' },
-  ],
+	params: [
+		{
+			description: 'First parameter',
+			label: 'First',
+			type: 'boolean',
+			required: true,
+		},
+		{ description: 'Second parameter', label: 'Second', type: 'string' },
+		{ description: 'Third parameter', label: 'Third', type: 'number' },
+	],
 });
 
 args.params; // [false, 'value', 123.45]
@@ -388,14 +385,14 @@ demonstrated below.
 // Variadic, appends all params
 const argv = ['foo', 'bar', 'baz'];
 const args = parse<{}, [string, string, string]>(argv, {
-  params: [
-    {
-      description: 'First parameter',
-      label: 'First',
-      type: 'string',
-      required: true,
-    },
-  ],
+	params: [
+		{
+			description: 'First parameter',
+			label: 'First',
+			type: 'string',
+			required: true,
+		},
+	],
 });
 
 args.params; // ['foo', 'bar', 'baz']
@@ -405,15 +402,15 @@ args.params; // ['foo', 'bar', 'baz']
 // Not variadic, will error for non-configured params
 const argv = ['foo', 'bar', 'baz'];
 const args = parse<{}, [string]>(argv, {
-  params: [
-    {
-      description: 'First parameter',
-      label: 'First',
-      type: 'string',
-      required: true,
-    },
-  ],
-  variadic: false,
+	params: [
+		{
+			description: 'First parameter',
+			label: 'First',
+			type: 'string',
+			required: true,
+		},
+	],
+	variadic: false,
 });
 
 args.params; // ['foo']
@@ -456,15 +453,15 @@ To make use of this feature, enable the `count` setting on a numeric option.
 ```ts
 const argv = ['-vvv'];
 const args = parse<{ verbose: number }>(argv, {
-  options: {
-    verbose: {
-      count: true,
-      default: 0,
-      description: 'Increase output verbosity',
-      short: 'v',
-      type: 'number',
-    },
-  },
+	options: {
+		verbose: {
+			count: true,
+			default: 0,
+			description: 'Increase output verbosity',
+			short: 'v',
+			type: 'number',
+		},
+	},
 });
 
 args.options.verbose; // 3
@@ -479,14 +476,14 @@ provided, the parser will throw an error.
 ```ts
 const argv = ['--modules', 'umd'];
 const args = parse<{ modules: 'cjs' | 'esm' | 'umd' }>(argv, {
-  options: {
-    modules: {
-      choices: ['cjs', 'esm', 'umd'] as 'esm'[],
-      default: 'esm',
-      description: 'Choose module output',
-      type: 'string',
-    },
-  },
+	options: {
+		modules: {
+			choices: ['cjs', 'esm', 'umd'] as 'esm'[],
+			default: 'esm',
+			description: 'Choose module output',
+			type: 'string',
+		},
+	},
 });
 
 args.options.modules; // 'umd'
@@ -504,14 +501,14 @@ with the `arity` + `multiple` settings.
 ```ts
 const argv = ['--colors', 'red', 'blue', 'green'];
 const args = parse<{ colors: string[] }>(argv, {
-  options: {
-    colors: {
-      arity: 3,
-      description: 'Pick 3 favorite colors',
-      multiple: true,
-      type: 'string',
-    },
-  },
+	options: {
+		colors: {
+			arity: 3,
+			description: 'Pick 3 favorite colors',
+			multiple: true,
+			type: 'string',
+		},
+	},
 });
 
 args.options.colors; // ['red', 'blue', 'green']
@@ -527,13 +524,13 @@ based on the category name.
 
 ```ts
 const args = parse<{ color: string }>(argv, {
-  options: {
-    color: {
-      category: 'style',
-      description: 'Your favorite color',
-      type: 'string',
-    },
-  },
+	options: {
+		color: {
+			category: 'style',
+			description: 'Your favorite color',
+			type: 'string',
+		},
+	},
 });
 ```
 
@@ -553,13 +550,13 @@ When loose mode is enabled, the following changes to the parser are made:
 ```ts
 const argv = ['-F', 'k=value', '--legit', 'foo', '--unknown', 'bar'];
 const args = parse<{ legit: string }>(argv, {
-  loose: true,
-  options: {
-    legit: {
-      description: 'A legitimate option',
-      type: 'string',
-    },
-  },
+	loose: true,
+	options: {
+		legit: {
+			description: 'A legitimate option',
+			type: 'string',
+		},
+	},
 });
 
 args.options; // { F: true, k: 'value', legit: 'foo', unknown: 'bar' }
@@ -619,10 +616,10 @@ import { format } from '@boost/args';
 
 // cmd --string abc --numbers 123 456 --bool foo bar baz -- qux --version
 const argv = format({
-  command: ['cmd'],
-  options: { string: 'abc', numbers: [123, 456], bool: true },
-  params: ['foo', 'bar', 'baz'],
-  rest: ['qux', '--version'],
+	command: ['cmd'],
+	options: { string: 'abc', numbers: [123, 456], bool: true },
+	params: ['foo', 'bar', 'baz'],
+	rest: ['qux', '--version'],
 });
 ```
 

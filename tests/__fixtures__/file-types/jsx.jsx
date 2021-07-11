@@ -1,4 +1,4 @@
 module.exports = {
-  jsx: true,
-  type: 'js',
+	jsx: true,
+	type: 'js',
 };

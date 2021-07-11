@@ -3,9 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import color from './color';
-import { createInternalDebugger } from './createInternalDebugger';
-import createScopedError from './createScopedError';
-import env from './env';
-
-export { color, createInternalDebugger, createScopedError, env };
+export * from './color';
+export * from './createInternalDebugger';
+export * from './createScopedError';
+export * from './env';

@@ -1,261 +1,261 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import Context from '../src/Context';
+import { Context } from '../src/Context';
 
 describe('Context', () => {
-  class TestContext extends Context {
-    foo = '';
+	class TestContext extends Context {
+		foo = '';
 
-    bar = 0;
+		bar = 0;
 
-    baz = false;
+		baz = false;
 
-    qux = () => {};
+		qux = () => {};
 
-    fixed: unknown = null;
+		fixed: unknown = null;
 
-    noop() {}
-  }
+		noop() {}
+	}
 
-  it('copies property values', () => {
-    const ctx = new TestContext();
-    ctx.foo = 'abc';
-    ctx.bar = 123;
-    ctx.baz = true;
-    ctx.qux = () => {};
+	it('copies property values', () => {
+		const ctx = new TestContext();
+		ctx.foo = 'abc';
+		ctx.bar = 123;
+		ctx.baz = true;
+		ctx.qux = () => {};
 
-    const clone = ctx.clone();
+		const clone = ctx.clone();
 
-    expect(clone.foo).toBe('abc');
-    expect(clone.bar).toBe(123);
-    expect(clone.baz).toBe(true);
-    expect(clone.qux).toBe(ctx.qux);
-  });
+		expect(clone.foo).toBe('abc');
+		expect(clone.bar).toBe(123);
+		expect(clone.baz).toBe(true);
+		expect(clone.qux).toBe(ctx.qux);
+	});
 
-  it('doesnt copy non-enumerable', () => {
-    const ctx = new TestContext();
+	it('doesnt copy non-enumerable', () => {
+		const ctx = new TestContext();
 
-    Object.defineProperty(ctx, 'fixed', {
-      enumerable: false,
-      value: {},
-    });
+		Object.defineProperty(ctx, 'fixed', {
+			enumerable: false,
+			value: {},
+		});
 
-    const clone = ctx.clone();
+		const clone = ctx.clone();
 
-    expect(ctx.fixed).toEqual({});
-    expect(clone.fixed).toBeNull();
-  });
+		expect(ctx.fixed).toEqual({});
+		expect(clone.fixed).toBeNull();
+	});
 
-  it('passes constructor values', () => {
-    class CtorContext extends Context {
-      constructor(cb: () => void) {
-        super();
+	it('passes constructor values', () => {
+		class CtorContext extends Context {
+			constructor(cb: () => void) {
+				super();
 
-        cb();
-      }
-    }
+				cb();
+			}
+		}
 
-    const spy = jest.fn();
-    const ctx = new CtorContext(spy);
+		const spy = jest.fn();
+		const ctx = new CtorContext(spy);
 
-    ctx.clone(spy);
+		ctx.clone(spy);
 
-    expect(spy).toHaveBeenCalledTimes(2);
-  });
+		expect(spy).toHaveBeenCalledTimes(2);
+	});
 
-  describe('arrays', () => {
-    class ArrayContext extends Context {
-      array: number[] = [];
+	describe('arrays', () => {
+		class ArrayContext extends Context {
+			array: number[] = [];
 
-      constructor(...args: number[]) {
-        super();
+			constructor(...args: number[]) {
+				super();
 
-        this.array.push(...args);
-      }
-    }
+				this.array.push(...args);
+			}
+		}
 
-    it('spreads to break references', () => {
-      const ctx = new ArrayContext(1, 2, 3);
-      const clone = ctx.clone();
+		it('spreads to break references', () => {
+			const ctx = new ArrayContext(1, 2, 3);
+			const clone = ctx.clone();
 
-      expect(clone).toEqual(ctx);
-      expect(clone).not.toBe(ctx);
-      expect(clone.array).not.toBe(ctx.array);
+			expect(clone).toEqual(ctx);
+			expect(clone).not.toBe(ctx);
+			expect(clone.array).not.toBe(ctx.array);
 
-      clone.array.push(4);
+			clone.array.push(4);
 
-      expect(ctx.array).toEqual([1, 2, 3]);
-    });
-  });
+			expect(ctx.array).toEqual([1, 2, 3]);
+		});
+	});
 
-  describe('objects', () => {
-    class ObjectContext extends Context {
-      object: { [key: string]: string } = {};
+	describe('objects', () => {
+		class ObjectContext extends Context {
+			object: Record<string, string> = {};
 
-      constructor(...values: string[]) {
-        super();
+			constructor(...values: string[]) {
+				super();
 
-        values.forEach((value) => {
-          this.object[value] = value;
-        });
-      }
-    }
+				values.forEach((value) => {
+					this.object[value] = value;
+				});
+			}
+		}
 
-    it('spreads to break references', () => {
-      const ctx = new ObjectContext('foo', 'bar', 'baz');
-      const clone = ctx.clone();
+		it('spreads to break references', () => {
+			const ctx = new ObjectContext('foo', 'bar', 'baz');
+			const clone = ctx.clone();
 
-      expect(clone).toEqual(ctx);
-      expect(clone).not.toBe(ctx);
-      expect(clone.object).not.toBe(ctx.object);
+			expect(clone).toEqual(ctx);
+			expect(clone).not.toBe(ctx);
+			expect(clone.object).not.toBe(ctx.object);
 
-      clone.object.qux = 'qux';
+			clone.object.qux = 'qux';
 
-      expect(ctx.object).toEqual({ foo: 'foo', bar: 'bar', baz: 'baz' });
-    });
+			expect(ctx.object).toEqual({ foo: 'foo', bar: 'bar', baz: 'baz' });
+		});
 
-    it('calls the clone method', () => {
-      const ctx = new ObjectContext('foo', 'bar', 'baz');
-      // @ts-expect-error
-      ctx.object.clone = () => ({ foo: 123 });
+		it('calls the clone method', () => {
+			const ctx = new ObjectContext('foo', 'bar', 'baz');
+			// @ts-expect-error Allow overwrite
+			ctx.object.clone = () => ({ foo: 123 });
 
-      const clone = ctx.clone();
+			const clone = ctx.clone();
 
-      expect(clone).not.toBe(ctx);
-      expect(clone.object).toEqual({ foo: 123 });
-    });
-  });
+			expect(clone).not.toBe(ctx);
+			expect(clone.object).toEqual({ foo: 123 });
+		});
+	});
 
-  describe('dates', () => {
-    class DateContext extends Context {
-      date: Date;
+	describe('dates', () => {
+		class DateContext extends Context {
+			date: Date;
 
-      constructor() {
-        super();
+			constructor() {
+				super();
 
-        this.date = new Date();
-      }
-    }
+				this.date = new Date();
+			}
+		}
 
-    it('creates a new `Date` instance', () => {
-      const date = new Date();
-      const ctx = new DateContext();
-      ctx.date = date;
-      const clone = ctx.clone();
+		it('creates a new `Date` instance', () => {
+			const date = new Date();
+			const ctx = new DateContext();
+			ctx.date = date;
+			const clone = ctx.clone();
 
-      expect(clone).toEqual(ctx);
-      expect(clone).not.toBe(ctx);
-      expect(clone.date).not.toBe(ctx.date);
+			expect(clone).toEqual(ctx);
+			expect(clone).not.toBe(ctx);
+			expect(clone.date).not.toBe(ctx.date);
 
-      clone.date.setFullYear(2000);
+			clone.date.setFullYear(2000);
 
-      expect(ctx.date.getFullYear()).toEqual(new Date().getFullYear());
-    });
-  });
+			expect(ctx.date.getFullYear()).toEqual(new Date().getFullYear());
+		});
+	});
 
-  describe('maps', () => {
-    class MapContext extends Context {
-      map: Map<string, string> = new Map();
+	describe('maps', () => {
+		class MapContext extends Context {
+			map: Map<string, string> = new Map();
 
-      constructor(...values: string[]) {
-        super();
+			constructor(...values: string[]) {
+				super();
 
-        values.forEach((value) => {
-          this.map.set(value, value);
-        });
-      }
-    }
+				values.forEach((value) => {
+					this.map.set(value, value);
+				});
+			}
+		}
 
-    it('creates a new `Map` instance', () => {
-      const ctx = new MapContext('foo', 'bar', 'baz');
-      const clone = ctx.clone();
+		it('creates a new `Map` instance', () => {
+			const ctx = new MapContext('foo', 'bar', 'baz');
+			const clone = ctx.clone();
 
-      expect(clone).toEqual(ctx);
-      expect(clone).not.toBe(ctx);
-      expect(clone.map).not.toBe(ctx.map);
+			expect(clone).toEqual(ctx);
+			expect(clone).not.toBe(ctx);
+			expect(clone.map).not.toBe(ctx.map);
 
-      clone.map.set('qux', 'qux');
+			clone.map.set('qux', 'qux');
 
-      expect(Array.from(ctx.map.keys())).toEqual(['foo', 'bar', 'baz']);
-    });
-  });
+			expect([...ctx.map.keys()]).toEqual(['foo', 'bar', 'baz']);
+		});
+	});
 
-  describe('sets', () => {
-    class SetContext extends Context {
-      set: Set<string> = new Set();
+	describe('sets', () => {
+		class SetContext extends Context {
+			set: Set<string> = new Set();
 
-      constructor(...values: string[]) {
-        super();
+			constructor(...values: string[]) {
+				super();
 
-        values.forEach((value) => {
-          this.set.add(value);
-        });
-      }
-    }
+				values.forEach((value) => {
+					this.set.add(value);
+				});
+			}
+		}
 
-    it('creates a new `Set` instance', () => {
-      const ctx = new SetContext('foo', 'bar', 'baz');
-      const clone = ctx.clone();
+		it('creates a new `Set` instance', () => {
+			const ctx = new SetContext('foo', 'bar', 'baz');
+			const clone = ctx.clone();
 
-      expect(clone).toEqual(ctx);
-      expect(clone).not.toBe(ctx);
-      expect(clone.set).not.toBe(ctx.set);
+			expect(clone).toEqual(ctx);
+			expect(clone).not.toBe(ctx);
+			expect(clone.set).not.toBe(ctx.set);
 
-      clone.set.add('qux');
+			clone.set.add('qux');
 
-      expect(Array.from(ctx.set.keys())).toEqual(['foo', 'bar', 'baz']);
-    });
-  });
+			expect([...ctx.set.keys()]).toEqual(['foo', 'bar', 'baz']);
+		});
+	});
 
-  describe('classes', () => {
-    class Test {
-      name: string;
+	describe('classes', () => {
+		class Test {
+			name: string;
 
-      flag: boolean = false;
+			flag: boolean = false;
 
-      constructor(name: string) {
-        this.name = name;
-      }
-    }
+			constructor(name: string) {
+				this.name = name;
+			}
+		}
 
-    class TestClone extends Test {
-      clone() {
-        return 'cloned';
-      }
-    }
+		class TestClone extends Test {
+			clone() {
+				return 'cloned';
+			}
+		}
 
-    class ClassContext extends Context {
-      instance: Test;
+		class ClassContext extends Context {
+			instance: Test;
 
-      constructor(instance: Test) {
-        super();
+			constructor(instance: Test) {
+				super();
 
-        this.instance = instance;
-      }
-    }
+				this.instance = instance;
+			}
+		}
 
-    it('doesnt spread and persists references', () => {
-      const inst = new Test('foo');
-      const ctx = new ClassContext(inst);
-      const clone = ctx.clone();
+		it('doesnt spread and persists references', () => {
+			const inst = new Test('foo');
+			const ctx = new ClassContext(inst);
+			const clone = ctx.clone();
 
-      expect(clone).toEqual(ctx);
-      expect(clone).not.toBe(ctx);
-      expect(clone.instance).toBe(ctx.instance);
-      expect(clone.instance).toBe(inst);
+			expect(clone).toEqual(ctx);
+			expect(clone).not.toBe(ctx);
+			expect(clone.instance).toBe(ctx.instance);
+			expect(clone.instance).toBe(inst);
 
-      clone.instance.flag = true;
+			clone.instance.flag = true;
 
-      expect(ctx.instance.flag).toBe(true);
-    });
+			expect(ctx.instance.flag).toBe(true);
+		});
 
-    it('calls the clone method', () => {
-      const inst = new TestClone('foo');
-      const ctx = new ClassContext(inst);
-      const clone = ctx.clone();
+		it('calls the clone method', () => {
+			const inst = new TestClone('foo');
+			const ctx = new ClassContext(inst);
+			const clone = ctx.clone();
 
-      expect(clone).not.toBe(ctx);
-      expect(clone.instance).toBe('cloned');
-    });
-  });
+			expect(clone).not.toBe(ctx);
+			expect(clone.instance).toBe('cloned');
+		});
+	});
 });

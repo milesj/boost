@@ -1,46 +1,45 @@
 import fs from 'fs';
 import { PortablePath } from '@boost/common';
-import FileTransport from '../../src/transports/FileTransport';
+import { FileTransport } from '../../src/transports/FileTransport';
 
 export function existsFile(path: PortablePath): boolean {
-  return fs.existsSync(String(path));
+	return fs.existsSync(String(path));
 }
 
 export function readFile(path: PortablePath): string {
-  if (existsFile(path)) {
-    return fs.readFileSync(String(path), 'utf8');
-  }
+	if (existsFile(path)) {
+		return fs.readFileSync(String(path), 'utf8');
+	}
 
-  // istanbul ignore next
-  return '';
+	// istanbul ignore next
+	return '';
 }
 
 export function writeFile(path: PortablePath, content: string) {
-  fs.writeFileSync(String(path), content, 'utf8');
+	fs.writeFileSync(String(path), content, 'utf8');
 }
 
 export function sizeFile(path: PortablePath): number {
-  return fs.statSync(String(path)).size;
+	return fs.statSync(String(path)).size;
 }
 
 export async function wait(delay: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
+	return new Promise((resolve) => {
+		setTimeout(resolve, delay);
+	});
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function closeStream(transport: FileTransport<any>) {
-  await wait(0);
+	await wait(0);
 
-  return new Promise((resolve, reject) => {
-    if (transport.stream) {
-      transport.stream.on('error', reject);
-      transport.close(() => {
-        resolve(undefined);
-      });
-    } else {
-      resolve(undefined);
-    }
-  });
+	return new Promise((resolve, reject) => {
+		if (transport.stream) {
+			transport.stream.on('error', reject);
+			transport.close(() => {
+				resolve(undefined);
+			});
+		} else {
+			resolve(undefined);
+		}
+	});
 }

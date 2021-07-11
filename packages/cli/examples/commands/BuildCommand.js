@@ -1,15 +1,15 @@
 const { Command } = require('../../lib');
 
 module.exports = class BuildCommand extends Command {
-  static path = 'build';
+	static path = 'build';
 
-  static aliases = ['make'];
+	static aliases = ['make'];
 
-  static description = 'Build a project';
+	static description = 'Build a project';
 
-  static deprecated = true;
+	static deprecated = true;
 
-  async run() {
-    //
-  }
+	async run() {
+		//
+	}
 };

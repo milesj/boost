@@ -1,24 +1,21 @@
-import isObject from './isObject';
+import { isObject } from './isObject';
 
-export default function isPlainObject<T = object>(
-  value: unknown,
-  loose: boolean = false,
-): value is T {
-  if (!isObject(value)) {
-    return false;
-  }
+export function isPlainObject<T = object>(value: unknown, loose: boolean = false): value is T {
+	if (!isObject(value)) {
+		return false;
+	}
 
-  const proto = Object.getPrototypeOf(value) as unknown;
+	const proto = Object.getPrototypeOf(value) as unknown;
 
-  if (
-    value.constructor === Object ||
-    proto === Object.prototype ||
-    proto === null ||
-    // This is to support cross-realm checks
-    (loose && value.constructor.name === 'Object')
-  ) {
-    return true;
-  }
+	if (
+		value.constructor === Object ||
+		proto === Object.prototype ||
+		proto === null ||
+		// This is to support cross-realm checks
+		(loose && value.constructor.name === 'Object')
+	) {
+		return true;
+	}
 
-  return false;
+	return false;
 }

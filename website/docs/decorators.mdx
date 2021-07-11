@@ -50,15 +50,15 @@ dereferenced, which is the primary use-case for this decorator. This is an alter
 import { Bind } from '@boost/decorators';
 
 class Example {
-  @Bind()
-  static test() {
-    return this; // Class constructor
-  }
+	@Bind()
+	static test() {
+		return this; // Class constructor
+	}
 
-  @Bind()
-  test() {
-    return this; // Class instance
-  }
+	@Bind()
+	test() {
+		return this; // Class instance
+	}
 }
 
 const example = new Example();
@@ -78,10 +78,10 @@ call occurs within this timeframe, the execution delay will be reset.
 import { Debounce } from '@boost/decorators';
 
 class Example {
-  @Debounce(250)
-  log() {
-    console.log('Fired!');
-  }
+	@Debounce(250)
+	log() {
+		console.log('Fired!');
+	}
 }
 
 const example = new Example();
@@ -105,11 +105,11 @@ import { Deprecate } from '@boost/decorators';
 
 @Deprecate()
 class Example {
-  @Deprecate()
-  static property = 123;
+	@Deprecate()
+	static property = 123;
 
-  @Deprecate('Can provide a custom message')
-  method() {}
+	@Deprecate('Can provide a custom message')
+	method() {}
 }
 ```
 
@@ -128,15 +128,15 @@ promise is rejected, the cache will be deleted so that subsequent calls can refr
 import { Memoize } from '@boost/decorators';
 
 class Example {
-  @Memoize()
-  someExpensiveOperation() {
-    // Return some value
-  }
+	@Memoize()
+	someExpensiveOperation() {
+		// Return some value
+	}
 
-  @Memoize({ expires: 3600 })
-  async fetchInBackground() {
-    // Return some async value with an expiration time
-  }
+	@Memoize({ expires: 3600 })
+	async fetchInBackground() {
+		// Return some async value with an expiration time
+	}
 }
 
 const example = new Example();
@@ -167,10 +167,10 @@ milliseconds). Will always fire on the first invocation.
 import { Throttle } from '@boost/decorators';
 
 class Example {
-  @Throttle(100)
-  log() {
-    console.log('Fired!');
-  }
+	@Throttle(100)
+	log() {
+		console.log('Fired!');
+	}
 }
 
 const example = new Example();

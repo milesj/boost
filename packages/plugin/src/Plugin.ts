@@ -1,12 +1,13 @@
 import { Contract } from '@boost/common';
 import { Pluggable } from './types';
 
-export default abstract class Plugin<T = unknown, Options extends object = {}>
-  extends Contract<Options>
-  implements Pluggable<T> {
-  name = '';
+export abstract class Plugin<T = unknown, Options extends object = {}>
+	extends Contract<Options>
+	implements Pluggable<T>
+{
+	abstract name: string;
 
-  startup(tool: T) {}
+	startup(tool: T) {}
 
-  shutdown(tool: T) {}
+	shutdown(tool: T) {}
 }

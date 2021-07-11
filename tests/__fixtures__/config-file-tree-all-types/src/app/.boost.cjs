@@ -1,1 +1,1 @@
-module.exports = {"type":"cjs"};
+module.exports = { type: 'cjs' };

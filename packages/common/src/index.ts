@@ -4,32 +4,20 @@
  */
 
 import optimal, { Blueprint, Predicates, predicates } from 'optimal';
-import type { CommonErrorCode } from './CommonError';
-import CommonError from './CommonError';
-import Contract from './Contract';
-import ExitError from './ExitError';
-import PackageGraph from './PackageGraph';
-import Path from './Path';
-import PathResolver from './PathResolver';
-import Project from './Project';
 
+export * from './CommonError';
 export * from './constants';
+export * from './Contract';
+export * from './ExitError';
 export * from './helpers';
+export * from './PackageGraph';
+export * from './Path';
+export * from './PathResolver';
+export * from './Project';
 export * as json from './serializers/json';
 export * as yaml from './serializers/yaml';
 export * from './types';
 export * from '@boost/decorators';
 
-export {
-  CommonError,
-  Contract,
-  ExitError,
-  optimal,
-  PackageGraph,
-  Path,
-  PathResolver,
-  predicates,
-  Project,
-};
-
-export type { Blueprint, CommonErrorCode, Predicates };
+export { optimal, predicates };
+export type { Blueprint, Predicates };

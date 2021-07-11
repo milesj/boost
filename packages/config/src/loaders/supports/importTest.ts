@@ -2,6 +2,6 @@
 // import() isn't supported, we can try/catch around the require() call
 // when loading this file. Thanks to Babel for the implementation!
 
-export default function testImport(filepath: string) {
-  return import(filepath);
+export async function testImport(filepath: string) {
+	return import(filepath);
 }

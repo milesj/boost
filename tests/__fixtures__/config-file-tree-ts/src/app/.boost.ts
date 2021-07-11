@@ -1,1 +1,2 @@
-const config: { debug: boolean } = { debug: false }; export default config;
+const config: { debug: boolean } = { debug: false };
+export default config;

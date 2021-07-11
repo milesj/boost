@@ -1,4 +1,2 @@
-import checkNodeRequirement from './checkNodeRequirement';
-import checkPackageOutdated from './checkPackageOutdated';
-
-export { checkNodeRequirement, checkPackageOutdated };
+export * from './checkNodeRequirement';
+export * from './checkPackageOutdated';

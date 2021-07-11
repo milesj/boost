@@ -8,89 +8,95 @@ import { OptionRow } from './internal/OptionRow';
 import { Prompt } from './internal/Prompt';
 import { ScrollableList } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
-import { normalizeOptions, SelectProps } from './Select';
+import { normalizeOptions, SelectOption, SelectProps } from './Select';
 
 export interface MultiSelectProps<T> extends SelectProps<T[], T> {
-  defaultSelected?: T[];
-  onChange?: (values: T[]) => void;
+	defaultSelected?: T[];
+	onChange?: (values: T[]) => void;
 }
 
 export function MultiSelect<T>({
-  defaultSelected,
-  limit,
-  onChange,
-  onSubmit,
-  overflowAfterLabel,
-  overflowBeforeLabel,
-  options: baseOptions,
-  scrollType,
-  ...props
+	defaultSelected,
+	limit,
+	onChange,
+	onSubmit,
+	overflowAfterLabel,
+	overflowBeforeLabel,
+	options: baseOptions,
+	scrollType,
+	...props
 }: MultiSelectProps<T>) {
-  const options = useMemo(() => normalizeOptions<T>(baseOptions), [baseOptions]);
-  const [selectedValues, setSelectedValues] = useState(new Set(toArray(defaultSelected)));
-  const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
-  const { isFocused } = useFocus({ autoFocus: true });
+	const options = useMemo(() => normalizeOptions<T>(baseOptions), [baseOptions]);
+	const [selectedValues, setSelectedValues] = useState(new Set(toArray(defaultSelected)));
+	const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
+	const { isFocused } = useFocus({ autoFocus: true });
 
-  const handleSpace = useCallback(() => {
-    const { value } = options[highlightedIndex];
+	const handleSpace = useCallback(() => {
+		const { value } = options[highlightedIndex];
 
-    // istanbul ignore next
-    if (value === null) {
-      return;
-    } else if (selectedValues.has(value)) {
-      selectedValues.delete(value);
-    } else {
-      selectedValues.add(value);
-    }
+		// istanbul ignore next
+		if (value === null) {
+			return;
+		}
+		if (selectedValues.has(value)) {
+			selectedValues.delete(value);
+		} else {
+			selectedValues.add(value);
+		}
 
-    setSelectedValues(new Set(selectedValues));
-    onChange?.(Array.from(selectedValues));
-  }, [highlightedIndex, onChange, options, selectedValues]);
+		setSelectedValues(new Set(selectedValues));
+		onChange?.([...selectedValues]);
+	}, [highlightedIndex, onChange, options, selectedValues]);
 
-  const handleReturn = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-    onSubmit?.(Array.from(selectedValues));
+	const handleReturn = useCallback(() => {
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+		onSubmit?.([...selectedValues]);
 
-    // Trigger submit
-    return true;
-  }, [onSubmit, selectedValues]);
+		// Trigger submit
+		return true;
+	}, [onSubmit, selectedValues]);
 
-  const selectedList = Array.from(selectedValues);
+	const renderItem = useCallback(
+		(option: SelectOption<T>) => {
+			if (option.divider) {
+				return <DividerRow key={option.index} label={option.label} />;
+			}
 
-  return (
-    <Prompt<T[]>
-      {...props}
-      {...arrowKeyProps}
-      afterLabel={selectedList.length > 0 && <Selected value={selectedList} />}
-      focused={isFocused}
-      value={selectedList}
-      onReturn={handleReturn}
-      onSpace={handleSpace}
-    >
-      <ScrollableList
-        currentIndex={highlightedIndex}
-        items={options}
-        limit={limit}
-        overflowAfterLabel={overflowAfterLabel}
-        overflowBeforeLabel={overflowBeforeLabel}
-        scrollType={scrollType}
-        renderItem={(option) => {
-          if (option.divider) {
-            return <DividerRow key={option.index} label={option.label} />;
-          }
+			return (
+				<OptionRow
+					key={option.index}
+					highlighted={highlightedIndex === option.index}
+					icon={figures.circleDotted}
+					iconActive={figures.bullet}
+					label={option.label}
+					selected={selectedValues.has(option.value!)}
+				/>
+			);
+		},
+		[highlightedIndex, selectedValues],
+	);
 
-          return (
-            <OptionRow
-              key={option.index}
-              highlighted={highlightedIndex === option.index}
-              icon={figures.circleDotted}
-              iconActive={figures.bullet}
-              label={option.label}
-              selected={selectedValues.has(option.value!)}
-            />
-          );
-        }}
-      />
-    </Prompt>
-  );
+	const selectedList = useMemo(() => [...selectedValues], [selectedValues]);
+
+	return (
+		<Prompt<T[]>
+			{...props}
+			{...arrowKeyProps}
+			afterLabel={selectedList.length > 0 && <Selected value={selectedList} />}
+			focused={isFocused}
+			value={selectedList}
+			onReturn={handleReturn}
+			onSpace={handleSpace}
+		>
+			<ScrollableList
+				currentIndex={highlightedIndex}
+				items={options}
+				limit={limit}
+				overflowAfterLabel={overflowAfterLabel}
+				overflowBeforeLabel={overflowBeforeLabel}
+				renderItem={renderItem}
+				scrollType={scrollType}
+			/>
+		</Prompt>
+	);
 }

@@ -101,14 +101,14 @@ typed properties, helper methods, and more.
 import { Context } from '@boost/pipeline';
 
 export default class ProcessContext extends Context {
-  readonly cwd: string;
+	readonly cwd: string;
 
-  readonly root: string;
+	readonly root: string;
 
-  constructor(root: string, cwd?: string) {
-    this.cwd = cwd || process.cwd();
-    this.root = root;
-  }
+	constructor(root: string, cwd?: string) {
+		this.cwd = cwd || process.cwd();
+		this.root = root;
+	}
 }
 ```
 
@@ -146,7 +146,7 @@ be represented by a standard function or a `Task` instance.
 import { Context } from '@boost/pipeline';
 
 function task(context: Context, value: number): string {
-  return value.toLocaleString();
+	return value.toLocaleString();
 }
 
 parallelPipeline.add('A title for this task', task);
@@ -156,7 +156,7 @@ parallelPipeline.add('A title for this task', task);
 import { Context, Task } from '@boost/pipeline';
 
 const task = new Task('A title for this task', (context: Context, value: number) =>
-  value.toLocaleString(),
+	value.toLocaleString(),
 );
 
 serialPipeline.pipe(task);
@@ -182,41 +182,41 @@ import { Blueprint, Predicates, Bind } from '@boost/common';
 import { Routine } from '@boost/pipeline';
 
 interface ExampleOptions {
-  limit?: number;
+	limit?: number;
 }
 
 type Input = number;
 type Output = string;
 
 export default class ExampleRoutine extends Routine<Output, Input, ExampleOptions> {
-  blueprint({ number }: Predicates): Blueprint<ExampleOptions> {
-    return {
-      limit: number(10),
-    };
-  }
+	blueprint({ number }: Predicates): Blueprint<ExampleOptions> {
+		return {
+			limit: number(10),
+		};
+	}
 
-  async execute(context: Context, value: Input): Promise<Output> {
-    return this.createWaterfallPipeline(context, value)
-      .pipe('Rounding to cents', this.roundToCents)
-      .pipe('Converting to readable format', this.makeReadable)
-      .pipe('Adding currency', this.addCurrency)
-      .run();
-  }
+	async execute(context: Context, value: Input): Promise<Output> {
+		return this.createWaterfallPipeline(context, value)
+			.pipe('Rounding to cents', this.roundToCents)
+			.pipe('Converting to readable format', this.makeReadable)
+			.pipe('Adding currency', this.addCurrency)
+			.run();
+	}
 
-  @Bind
-  roundToCents(context: Context, value: number): number {
-    return Number(value.toFixed(2));
-  }
+	@Bind
+	roundToCents(context: Context, value: number): number {
+		return Number(value.toFixed(2));
+	}
 
-  @Bind
-  makeReadable(context: Context, value: number): string {
-    return value.toLocaleString();
-  }
+	@Bind
+	makeReadable(context: Context, value: number): string {
+		return value.toLocaleString();
+	}
 
-  @Bind
-  addCurrency(context: Context, value: string): string {
-    return `$${value}`;
-  }
+	@Bind
+	addCurrency(context: Context, value: string): string {
+		return `$${value}`;
+	}
 }
 ```
 
@@ -263,11 +263,11 @@ useful for executing locally installed NPM/Yarn binaries.
 
 ```ts
 class ExampleRoutine extends Routine<string> {
-  async execute(context: Context): Promise<string> {
-    return this.executeCommand('babel', ['./src', '--out-dir', './lib'], {
-      preferLocal: true,
-    }).then((result) => result.stdout);
-  }
+	async execute(context: Context): Promise<string> {
+		return this.executeCommand('babel', ['./src', '--out-dir', './lib'], {
+			preferLocal: true,
+		}).then((result) => result.stdout);
+	}
 }
 ```
 
@@ -289,9 +289,9 @@ occurs, the pipeline will be interrupted.
 import { Context, ConcurrentPipeline } from '@boost/pipeline';
 
 const pipeline = new ConcurrentPipeline(new Context(), initialValue)
-  .add('First task', doSomething)
-  .add('Second task', anotherSomething)
-  .add('Final task', finalSomething);
+	.add('First task', doSomething)
+	.add('Second task', anotherSomething)
+	.add('Final task', finalSomething);
 
 const values = await pipeline.run();
 ```
@@ -308,9 +308,9 @@ Executes all work units in parallel _without_ interruption, and returns an objec
 import { Context, AggregatedPipeline } from '@boost/pipeline';
 
 const pipeline = new AggregatedPipeline(new Context(), initialValue)
-  .add('First task', doSomething)
-  .add('Second task', anotherSomething)
-  .add('Final task', finalSomething);
+	.add('First task', doSomething)
+	.add('Second task', anotherSomething)
+	.add('Final task', finalSomething);
 
 const { errors, results } = await pipeline.run();
 ```
@@ -328,9 +328,9 @@ all resolve.
 import { Context, PooledPipeline } from '@boost/pipeline';
 
 const pipeline = new PooledPipeline(new Context(), initialValue)
-  .add('First task', doSomething)
-  .add('Second task', anotherSomething)
-  .add('Final task', finalSomething);
+	.add('First task', doSomething)
+	.add('Second task', anotherSomething)
+	.add('Final task', finalSomething);
 
 const { errors, results } = await pipeline.run();
 ```
@@ -360,9 +360,9 @@ a value argument to the next work unit. Returns the final value once all resolve
 import { Context, WaterfallPipeline } from '@boost/pipeline';
 
 const pipeline = new WaterfallPipeline(new Context(), 1000)
-  .pipe('Multiply initial value', (ctx, value) => value * 3)
-  .pipe('Convert to a readable string', (ctx, value) => value.toLocaleString())
-  .pipe('Convert to an array for reasons unknown', (ctx, value) => [value]);
+	.pipe('Multiply initial value', (ctx, value) => value * 3)
+	.pipe('Convert to a readable string', (ctx, value) => value.toLocaleString())
+	.pipe('Convert to an array for reasons unknown', (ctx, value) => [value]);
 
 const finalValue = await pipeline.run(); // ['3,000']
 ```

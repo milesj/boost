@@ -1,4 +1,4 @@
 module.exports = {
-  yarn: true,
-  nohoist: true,
+	yarn: true,
+	nohoist: true,
 };

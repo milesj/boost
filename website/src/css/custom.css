@@ -6,37 +6,37 @@
  */
 
 :root {
-  --ifm-code-font-size: 95%;
+	--ifm-code-font-size: 95%;
 }
 
 /* https://www.colorbox.io/#steps=11#hue_start=359#hue_end=296#hue_curve=easeInQuad#sat_start=4#sat_end=90#sat_curve=easeOutQuad#sat_rate=130#lum_start=90#lum_end=40#lum_curve=easeOutQuad#minor_steps_map=0 */
 html[data-theme='light'] {
-  --ifm-color-primary: #8150e1;
-  --ifm-color-primary-dark: #5c13da;
-  --ifm-color-primary-darker: #5600ce;
-  --ifm-color-primary-darkest: #5b00bc;
-  --ifm-color-primary-light: #9c7ae3;
-  --ifm-color-primary-lighter: #bca9e5;
-  --ifm-color-primary-lightest: #cdc1e5;
+	--ifm-color-primary: #8150e1;
+	--ifm-color-primary-dark: #5c13da;
+	--ifm-color-primary-darker: #5600ce;
+	--ifm-color-primary-darkest: #5b00bc;
+	--ifm-color-primary-light: #9c7ae3;
+	--ifm-color-primary-lighter: #bca9e5;
+	--ifm-color-primary-lightest: #cdc1e5;
 }
 
 /* https://www.colorbox.io/#steps=11%23hue_start=359%23hue_end=296%23hue_curve=easeInQuad%23sat_start=4%23sat_end=90%23sat_curve=easeOutQuad%23sat_rate=130%23lum_start=90%23lum_end=40%23lum_curve=easeOutQuad%23minor_steps_map=0 */
 html[data-theme='dark'] {
-  --ifm-color-primary: #8e58f8;
-  --ifm-color-primary-dark: #6414ee;
-  --ifm-color-primary-darker: #5c00db;
-  --ifm-color-primary-darkest: #5c00b3;
-  --ifm-color-primary-light: #ad87fc;
-  --ifm-color-primary-lighter: #d1bbfe;
-  --ifm-color-primary-lightest: #e3d7fe;
+	--ifm-color-primary: #8e58f8;
+	--ifm-color-primary-dark: #6414ee;
+	--ifm-color-primary-darker: #5c00db;
+	--ifm-color-primary-darkest: #5c00b3;
+	--ifm-color-primary-light: #ad87fc;
+	--ifm-color-primary-lighter: #d1bbfe;
+	--ifm-color-primary-lightest: #e3d7fe;
 }
 
 .hero__subtitle {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .text--muted {
-  color: var(--ifm-color-secondary-darkest);
+	color: var(--ifm-color-secondary-darkest);
 }

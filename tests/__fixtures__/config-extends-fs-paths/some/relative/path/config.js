@@ -1,1 +1,1 @@
-module.exports = {"relative":true};
+module.exports = { relative: true };

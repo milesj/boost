@@ -51,8 +51,8 @@ an object to the factory.
 import { optimal, createBlueprint } from '@boost/common';
 
 const blueprint = createBlueprint(({ string, number }) => ({
-  name: string().required(),
-  age: number().gt(0),
+	name: string().required(),
+	age: number().gt(0),
 }));
 
 const data = optimal({}, blueprint);
@@ -114,7 +114,7 @@ initially fails. To disable this loose check, pass `false` as the 3rd argument.
 import { instanceOf } from '@boost/common';
 
 if (instanceOf(error, Error)) {
-  console.log(error.stack);
+	console.log(error.stack);
 }
 ```
 
@@ -195,11 +195,11 @@ Generics can be used to type the return value of the object (when necessary).
 
 ```ts
 interface Person {
-  name: string;
+	name: string;
 }
 
 if (isObject<Person>(person)) {
-  console.log(person.name);
+	console.log(person.name);
 }
 ```
 

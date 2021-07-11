@@ -1,3 +1,3 @@
 import { createInternalDebugger } from '@boost/internal';
 
-export default createInternalDebugger('args');
+export const debug = createInternalDebugger('args');

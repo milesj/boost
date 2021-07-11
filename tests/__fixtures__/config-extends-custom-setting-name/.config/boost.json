@@ -1,1 +1,1 @@
-{"root":true,"presets":["foo","../some/relative/path/config.js"]}
+{ "root": true, "presets": ["foo", "../some/relative/path/config.js"] }

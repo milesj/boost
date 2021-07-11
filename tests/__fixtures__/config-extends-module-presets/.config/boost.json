@@ -1,1 +1,1 @@
-{"root":true,"extends":["foo","@scope/bar"]}
+{ "root": true, "extends": ["foo", "@scope/bar"] }

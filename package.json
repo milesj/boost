@@ -5,17 +5,15 @@
     "build": "packemon build --addEngines",
     "pack": "NODE_ENV=production packemon pack --addEngines --declaration=standard",
     "clean": "packemon clean",
-    "coverage": "yarn run jest --coverage",
+    "check": "yarn run type && yarn run test && yarn run lint",
+    "coverage": "beemo jest --coverage",
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
-    "jest": "beemo jest",
     "format": "beemo prettier",
-    "pretest": "yarn run type",
-    "test": "yarn run jest && yarn run test:tsm",
+    "test": "beemo jest && yarn run test:tsm",
     "test:cli": "node ./packages/cli/examples/bin.js",
     "test:tsm": "node packages/common/tests/helpers/requireTypedModule.assert.js",
-    "posttest": "yarn run lint",
-    "type": "beemo typescript --reference-workspaces --build --decorators",
+    "type": "beemo typescript --build",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
     "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
   },
@@ -23,7 +21,7 @@
     "node": ">=10.3.0"
   },
   "devDependencies": {
-    "@milesj/build-tools": "^2.17.1",
+    "@beemo/dev": "^1.2.0",
     "@types/babel__core": "^7.1.14",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.9",
@@ -44,40 +42,5 @@
   "workspaces": [
     "packages/*",
     "themes/*"
-  ],
-  "beemo": {
-    "module": "@milesj/build-tools",
-    "drivers": [
-      "babel",
-      "eslint",
-      {
-        "driver": "jest",
-        "env": {
-          "NODE_ENV": "test",
-          "BOOSTJS_ENV": "test"
-        }
-      },
-      "prettier",
-      {
-        "driver": "typescript",
-        "buildFolder": "dts",
-        "declarationOnly": true
-      }
-    ],
-    "settings": {
-      "decorators": true,
-      "node": true,
-      "react": true
-    },
-    "prettier": {
-      "ignore": [
-        "CHANGELOG.md"
-      ]
-    },
-    "typescript": {
-      "compilerOptions": {
-        "keyofStringsOnly": true
-      }
-    }
-  }
+  ]
 }

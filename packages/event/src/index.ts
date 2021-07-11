@@ -3,16 +3,11 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import BailEvent from './BailEvent';
-import BaseEvent from './BaseEvent';
-import ConcurrentEvent from './ConcurrentEvent';
-import Event from './Event';
-import type { EventErrorCode } from './EventError';
-import EventError from './EventError';
-import WaterfallEvent from './WaterfallEvent';
-
+export * from './BailEvent';
+export * from './BaseEvent';
+export * from './ConcurrentEvent';
 export * from './constants';
+export * from './Event';
+export * from './EventError';
 export * from './types';
-
-export { BailEvent, BaseEvent, ConcurrentEvent, Event, EventError, WaterfallEvent };
-export type { EventErrorCode };
+export * from './WaterfallEvent';

@@ -6,31 +6,28 @@ export type Format = 'js' | 'json' | 'yaml';
 
 export type Locale = string;
 
-export interface InterpolationParams {
-  [key: string]: unknown;
-}
+export type InterpolationParams = Record<string, unknown>;
 
 export interface MessageOptions {
-  /** Default value to return if a translation was not found. */
-  defaultValue?: string;
-  /** Count used to determine plurals. */
-  count?: number;
-  /** Context used for special parsing (male, female, etc). */
-  context?: string;
-  /** Interpolation options to pass down. */
-  interpolation?: InterpolationOptions;
-  /** Force translation to this locale. */
-  locale?: Locale;
-  /** Post-processors to run on the translation. */
-  postProcess?: string[] | string;
+	/** Default value to return if a translation was not found. */
+	defaultValue?: string;
+	/** Count used to determine plurals. */
+	count?: number;
+	/** Context used for special parsing (male, female, etc). */
+	context?: string;
+	/** Interpolation options to pass down. */
+	interpolation?: InterpolationOptions;
+	/** Force translation to this locale. */
+	locale?: Locale;
+	/** Post-processors to run on the translation. */
+	postProcess?: string[] | string;
 }
 
 export interface Translator {
-  direction: Direction;
-  locale: Locale;
-  changeLocale: (locale: Locale) => Promise<void>;
-  (key: string[] | string, params?: InterpolationParams, options?: MessageOptions): string;
-  // Testing only
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  i18n: i18n;
+	(key: string[] | string, params?: InterpolationParams, options?: MessageOptions): string;
+	direction: Direction;
+	locale: Locale;
+	changeLocale: (locale: Locale) => Promise<void>;
+	// Testing only
+	i18n: i18n;
 }

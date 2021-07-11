@@ -5,41 +5,41 @@ import { Constructor } from '../types';
  * They will also fail when comparing against source and built files.
  * So emulate an `instanceof` check by comparing constructor names.
  */
-export default function instanceOf<T = unknown>(
-  object: unknown,
-  declaration: Constructor<T>,
-  loose: boolean = true,
+export function instanceOf<T = unknown>(
+	object: unknown,
+	declaration: Constructor<T>,
+	loose: boolean = true,
 ): object is T {
-  if (!object || typeof object !== 'object') {
-    return false;
-  }
+	if (!object || typeof object !== 'object') {
+		return false;
+	}
 
-  if (object instanceof declaration) {
-    return true;
-  }
+	if (object instanceof declaration) {
+		return true;
+	}
 
-  if (!loose) {
-    return false;
-  }
+	if (!loose) {
+		return false;
+	}
 
-  let current = object;
+	let current = object;
 
-  while (current) {
-    if (current.constructor.name === 'Object') {
-      break;
-    }
+	while (current) {
+		if (current.constructor.name === 'Object') {
+			break;
+		}
 
-    if (
-      current.constructor.name === declaration.name ||
-      // istanbul ignore next
-      (current instanceof Error && current.name === declaration.name)
-    ) {
-      return true;
-    }
+		if (
+			current.constructor.name === declaration.name ||
+			// istanbul ignore next
+			(current instanceof Error && current.name === declaration.name)
+		) {
+			return true;
+		}
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    current = Object.getPrototypeOf(current);
-  }
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		current = Object.getPrototypeOf(current);
+	}
 
-  return false;
+	return false;
 }

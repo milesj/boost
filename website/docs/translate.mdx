@@ -161,7 +161,7 @@ JSON, or YAML (default and preferred).
 
 ```js title="res/en/common.js"
 module.exports = {
-  welcome: 'Hello {{name}}!',
+	welcome: 'Hello {{name}}!',
 };
 ```
 
@@ -170,7 +170,7 @@ module.exports = {
 
 ```json title="res/en/common.json"
 {
-  "welcome": "Hello {{name}}!"
+	"welcome": "Hello {{name}}!"
 }
 ```
 
@@ -218,9 +218,9 @@ option.
 
 ```js title="res/en/user.js"
 module.exports = {
-  partner: 'Significant other',
-  partner_male: 'Husband',
-  partner_female: 'Wife',
+	partner: 'Significant other',
+	partner_male: 'Husband',
+	partner_female: 'Wife',
 };
 ```
 
@@ -229,9 +229,9 @@ module.exports = {
 
 ```json title="res/en/user.json"
 {
-  "partner": "Significant other",
-  "partner_male": "Husband",
-  "partner_female": "Wife"
+	"partner": "Significant other",
+	"partner_male": "Husband",
+	"partner_female": "Wife"
 }
 ```
 
@@ -270,8 +270,8 @@ through the combination of multiple keys and the `count` option.
 
 ```js title="res/en/cart.js"
 module.exports = {
-  item: '{{count}} item',
-  item_plural: '{{count}} items',
+	item: '{{count}} item',
+	item_plural: '{{count}} items',
 };
 ```
 
@@ -280,8 +280,8 @@ module.exports = {
 
 ```json title="res/en/cart.json"
 {
-  "item": "{{count}} item",
-  "item_plural": "{{count}} items"
+	"item": "{{count}} item",
+	"item_plural": "{{count}} items"
 }
 ```
 
@@ -320,10 +320,10 @@ namespace file, and they can be accessed using dot notation.
 
 ```js title="res/en/prompts.js"
 module.exports = {
-  dialog: {
-    confirm: 'Are you sure?',
-    back: 'Go back!',
-  },
+	dialog: {
+		confirm: 'Are you sure?',
+		back: 'Go back!',
+	},
 };
 ```
 
@@ -332,10 +332,10 @@ module.exports = {
 
 ```json title="res/en/prompts.json"
 {
-  "dialog": {
-    "confirm": "Are you sure?",
-    "back": "Go back!"
-  }
+	"dialog": {
+		"confirm": "Are you sure?",
+		"back": "Go back!"
+	}
 }
 ```
 
@@ -371,8 +371,8 @@ special `$t()` syntax.
 
 ```js title="res/en/prompts.js"
 module.exports = {
-  confirm: 'Are you sure? $t(warning)',
-  warning: 'This cannot be undone!',
+	confirm: 'Are you sure? $t(warning)',
+	warning: 'This cannot be undone!',
 };
 ```
 
@@ -381,8 +381,8 @@ module.exports = {
 
 ```json title="res/en/prompts.json"
 {
-  "confirm": "Are you sure? $t(warning)",
-  "warning": "This cannot be undone!"
+	"confirm": "Are you sure? $t(warning)",
+	"warning": "This cannot be undone!"
 }
 ```
 
