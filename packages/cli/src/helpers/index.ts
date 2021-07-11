@@ -11,15 +11,15 @@ import loadTheme from './loadTheme';
 import mapCommandMetadata from './mapCommandMetadata';
 
 export {
-  applyMarkdown,
-  applyStyle,
-  formatCommandCall,
-  formatDescription,
-  formatType,
-  formatValue,
-  getLongestWidth,
-  groupByCategory,
-  isArgvSize,
-  loadTheme,
-  mapCommandMetadata,
+	applyMarkdown,
+	applyStyle,
+	formatCommandCall,
+	formatDescription,
+	formatType,
+	formatValue,
+	getLongestWidth,
+	groupByCategory,
+	isArgvSize,
+	loadTheme,
+	mapCommandMetadata,
 };

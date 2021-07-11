@@ -16,12 +16,12 @@ export * from './constants';
 export * from './types';
 
 export {
-  ConsoleTransport,
-  createLogger,
-  FileTransport,
-  formats,
-  Logger,
-  RotatingFileTransport,
-  StreamTransport,
-  Transport,
+	ConsoleTransport,
+	createLogger,
+	FileTransport,
+	formats,
+	Logger,
+	RotatingFileTransport,
+	StreamTransport,
+	Transport,
 };

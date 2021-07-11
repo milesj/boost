@@ -11,17 +11,17 @@ import { Blueprint, Predicates } from '@boost/common';
 import { Configuration } from '@boost/config';
 
 interface ConfigFile {
-  debug: boolean;
-  sourceMaps: boolean;
+	debug: boolean;
+	sourceMaps: boolean;
 }
 
 class ConfigManager extends Configuration<ConfigFile> {
-  blueprint({ bool }: Predicates): Blueprint<ConfigFile> {
-    return {
-      debug: bool(),
-      sourceMaps: bool(),
-    };
-  }
+	blueprint({ bool }: Predicates): Blueprint<ConfigFile> {
+		return {
+			debug: bool(),
+			sourceMaps: bool(),
+		};
+	}
 }
 
 const configManager = new ConfigManager('boost');

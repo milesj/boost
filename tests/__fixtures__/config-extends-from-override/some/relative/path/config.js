@@ -1,1 +1,1 @@
-module.exports = {"extended":true};
+module.exports = { extended: true };

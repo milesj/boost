@@ -1,10 +1,10 @@
 export default class ExitError extends Error {
-  code: number;
+	code: number;
 
-  constructor(message: string, code: number) {
-    super(message);
+	constructor(message: string, code: number) {
+		super(message);
 
-    this.code = code;
-    this.name = 'ExitError';
-  }
+		this.code = code;
+		this.name = 'ExitError';
+	}
 }

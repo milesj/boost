@@ -21,15 +21,15 @@ export * from './types';
 export * from '@boost/decorators';
 
 export {
-  CommonError,
-  Contract,
-  ExitError,
-  optimal,
-  PackageGraph,
-  Path,
-  PathResolver,
-  predicates,
-  Project,
+	CommonError,
+	Contract,
+	ExitError,
+	optimal,
+	PackageGraph,
+	Path,
+	PathResolver,
+	predicates,
+	Project,
 };
 
 export type { Blueprint, CommonErrorCode, Predicates };

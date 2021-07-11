@@ -2,5 +2,5 @@ import fs from 'fs';
 import { Path, yaml } from '@boost/common';
 
 export default function loadYaml<T>(path: Path): Promise<T> {
-  return fs.promises.readFile(path.path(), 'utf8').then((data) => yaml.parse(data));
+	return fs.promises.readFile(path.path(), 'utf8').then((data) => yaml.parse(data));
 }

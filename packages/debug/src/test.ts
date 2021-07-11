@@ -3,12 +3,12 @@
 import type { Debugger } from './index';
 
 export function mockDebugger(): Debugger {
-  const debug = jest.fn() as any;
+	const debug = jest.fn() as any;
 
-  debug.disable = jest.fn();
-  debug.enable = jest.fn();
-  debug.invariant = jest.fn();
-  debug.verbose = jest.fn();
+	debug.disable = jest.fn();
+	debug.enable = jest.fn();
+	debug.invariant = jest.fn();
+	debug.verbose = jest.fn();
 
-  return debug;
+	return debug;
 }

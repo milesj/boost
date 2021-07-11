@@ -1,41 +1,41 @@
 import { LogItem, LogMetadata } from './types';
 
 function formatMetadata(metadata: LogMetadata): string {
-  const items: string[] = [];
-  const keys = Object.keys(metadata).sort();
+	const items: string[] = [];
+	const keys = Object.keys(metadata).sort();
 
-  keys.forEach((key) => {
-    items.push(`${key}=${metadata[key]}`);
-  });
+	keys.forEach((key) => {
+		items.push(`${key}=${metadata[key]}`);
+	});
 
-  return `(${items.join(', ')})`;
+	return `(${items.join(', ')})`;
 }
 
 export function console(item: LogItem): string {
-  let output = item.message;
+	let output = item.message;
 
-  if (item.level !== 'log') {
-    output = `${item.label} ${output}`;
-  }
+	if (item.level !== 'log') {
+		output = `${item.label} ${output}`;
+	}
 
-  return output;
+	return output;
 }
 
 export function debug(item: LogItem): string {
-  return `[${item.time.toISOString()}] ${item.level.toUpperCase()} ${item.message} ${formatMetadata(
-    {
-      ...item.metadata,
-      host: item.host,
-      name: item.name,
-      pid: item.pid,
-    },
-  )}`;
+	return `[${item.time.toISOString()}] ${item.level.toUpperCase()} ${item.message} ${formatMetadata(
+		{
+			...item.metadata,
+			host: item.host,
+			name: item.name,
+			pid: item.pid,
+		},
+	)}`;
 }
 
 export function json(item: LogItem): string {
-  return JSON.stringify(item);
+	return JSON.stringify(item);
 }
 
 export function message(item: LogItem): string {
-  return item.message;
+	return item.message;
 }

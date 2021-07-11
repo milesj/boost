@@ -3,7 +3,7 @@ import * as defaultNamedExports from './default-named-exports';
 import * as namedExports from './named-exports';
 
 export default {
-  defaultExport,
-  defaultNamedExports,
-  namedExports,
+	defaultExport,
+	defaultNamedExports,
+	namedExports,
 };

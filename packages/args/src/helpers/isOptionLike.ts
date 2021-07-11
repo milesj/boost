@@ -5,5 +5,5 @@ import { OPTION_LIKE } from '../constants';
  * or short option group. Do not return true for negative numbers.
  */
 export default function isOptionLike(arg: string): boolean {
-  return OPTION_LIKE.test(arg);
+	return OPTION_LIKE.test(arg);
 }

@@ -4,20 +4,20 @@ import { useCallback, useEffect, useReducer, useRef } from 'react';
 const DEFAULT_FPS = 1000 / 30;
 
 export function useRenderLoop(fps: number = DEFAULT_FPS): () => void {
-  const [, forceUpdate] = useReducer((count) => count + 1, 0);
-  const timer = useRef<NodeJS.Timeout>();
+	const [, forceUpdate] = useReducer((count) => count + 1, 0);
+	const timer = useRef<NodeJS.Timeout>();
 
-  const clear = useCallback(() => {
-    if (timer.current) {
-      clearInterval(timer.current);
-    }
-  }, []);
+	const clear = useCallback(() => {
+		if (timer.current) {
+			clearInterval(timer.current);
+		}
+	}, []);
 
-  useEffect(() => {
-    timer.current = setInterval(forceUpdate, fps);
+	useEffect(() => {
+		timer.current = setInterval(forceUpdate, fps);
 
-    return clear;
-  }, [clear, fps]);
+		return clear;
+	}, [clear, fps]);
 
-  return clear;
+	return clear;
 }

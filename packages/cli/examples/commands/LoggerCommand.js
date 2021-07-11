@@ -6,46 +6,46 @@ const random = require('../random');
 let timer;
 
 function Logger() {
-  const [count, setCount] = React.useState(0);
-  const ctx = React.useContext(ProgramContext);
+	const [count, setCount] = React.useState(0);
+	const ctx = React.useContext(ProgramContext);
 
-  React.useEffect(() => {
-    console.warn('Initial render');
+	React.useEffect(() => {
+		console.warn('Initial render');
 
-    function increment() {
-      if (timer) {
-        return;
-      }
+		function increment() {
+			if (timer) {
+				return;
+			}
 
-      setCount((prev) => prev + 1);
+			setCount((prev) => prev + 1);
 
-      const delay = random(3000, 250);
+			const delay = random(3000, 250);
 
-      console.info(`Sleeping for ${delay}ms`);
-      ctx.log.error('Logging from context');
+			console.info(`Sleeping for ${delay}ms`);
+			ctx.log.error('Logging from context');
 
-      timer = setTimeout(() => {
-        timer = null;
-        increment();
-      }, delay);
-    }
+			timer = setTimeout(() => {
+				timer = null;
+				increment();
+			}, delay);
+		}
 
-    increment();
-  }, [ctx]);
+		increment();
+	}, [ctx]);
 
-  return React.createElement(Box, {}, React.createElement(Text, {}, `Rendered ${count} times`));
+	return React.createElement(Box, {}, React.createElement(Text, {}, `Rendered ${count} times`));
 }
 
 module.exports = class LoggerCommand extends Command {
-  static description = 'Test console logs effect on the render loop';
+	static description = 'Test console logs effect on the render loop';
 
-  static path = 'log';
+	static path = 'log';
 
-  static category = 'test';
+	static category = 'test';
 
-  run() {
-    this.log.info('Rendering component');
+	run() {
+		this.log.info('Rendering component');
 
-    return React.createElement(Logger);
-  }
+		return React.createElement(Logger);
+	}
 };

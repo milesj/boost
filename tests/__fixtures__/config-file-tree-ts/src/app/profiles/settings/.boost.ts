@@ -1,1 +1,2 @@
-const config: { verbose: boolean } = { verbose: true }; export default config;
+const config: { verbose: boolean } = { verbose: true };
+export default config;

@@ -23,7 +23,6 @@ provide additional functionality.
 >
   <TabItem value="yarn">
 
-
 ```bash
 yarn add @boost/debug
 ```
@@ -31,14 +30,12 @@ yarn add @boost/debug
   </TabItem>
   <TabItem value="npm">
 
-
 ```bash
 npm install @boost/debug
 ```
 
   </TabItem>
 </Tabs>
-
 
 ## Environment variables
 
@@ -134,10 +131,10 @@ Returns a Jest spy that matches the return value shape of `createDebugger`.
 import { mockDebugger } from '@boost/debug/test';
 
 it('calls the debugger', () => {
-  const debug = mockDebugger();
+	const debug = mockDebugger();
 
-  debug('Something is broken!');
+	debug('Something is broken!');
 
-  expect(debug).toHaveBeenCalled();
+	expect(debug).toHaveBeenCalled();
 });
 ```

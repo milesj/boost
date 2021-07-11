@@ -1,1 +1,1 @@
-module.exports = {"debug":false};
+module.exports = { debug: false };

@@ -1,19 +1,19 @@
 export default function createFileName(
-  name: string,
-  ext: string,
-  { envSuffix, leadingDot }: { envSuffix?: string; leadingDot?: boolean },
+	name: string,
+	ext: string,
+	{ envSuffix, leadingDot }: { envSuffix?: string; leadingDot?: boolean },
 ): string {
-  let fileName = name;
+	let fileName = name;
 
-  if (leadingDot) {
-    fileName = `.${name}`;
-  }
+	if (leadingDot) {
+		fileName = `.${name}`;
+	}
 
-  if (envSuffix) {
-    fileName += `.${envSuffix}`;
-  }
+	if (envSuffix) {
+		fileName += `.${envSuffix}`;
+	}
 
-  fileName += `.${ext}`;
+	fileName += `.${ext}`;
 
-  return fileName;
+	return fileName;
 }

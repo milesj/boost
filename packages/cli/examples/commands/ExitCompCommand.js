@@ -4,38 +4,38 @@ const { Command, useProgram } = require('../../lib');
 const sleep = require('../sleep');
 
 function Exit({ error }) {
-  const { exit } = useProgram();
+	const { exit } = useProgram();
 
-  React.useEffect(() => {
-    if (error) {
-      exit('Failed!');
-    } else {
-      exit();
-    }
-  }, [exit, error]);
+	React.useEffect(() => {
+		if (error) {
+			exit('Failed!');
+		} else {
+			exit();
+		}
+	}, [exit, error]);
 
-  return React.createElement(Text, {}, 'Content');
+	return React.createElement(Text, {}, 'Content');
 }
 
 module.exports = class ExitCompCommand extends Command {
-  static description = 'Test exiting the program (via component)';
+	static description = 'Test exiting the program (via component)';
 
-  static path = 'exit-comp';
+	static path = 'exit-comp';
 
-  static category = 'test';
+	static category = 'test';
 
-  static options = {
-    error: {
-      description: 'Throw an error',
-      type: 'boolean',
-    },
-  };
+	static options = {
+		error: {
+			description: 'Throw an error',
+			type: 'boolean',
+		},
+	};
 
-  async run() {
-    console.log('Will render a component that exits in 1 second...');
+	async run() {
+		console.log('Will render a component that exits in 1 second...');
 
-    await sleep(1000);
+		await sleep(1000);
 
-    return React.createElement(Exit, { error: this.error });
-  }
+		return React.createElement(Exit, { error: this.error });
+	}
 };

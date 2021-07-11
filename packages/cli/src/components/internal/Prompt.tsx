@@ -8,170 +8,170 @@ import { Label } from './Label';
 export type KeyInput = Key;
 
 export interface PromptProps<T> {
-  label: NonNullable<React.ReactNode>;
-  prefix?: string;
-  onSubmit: (value: T) => void;
-  validate?: (value: T) => void;
+	label: NonNullable<React.ReactNode>;
+	prefix?: string;
+	onSubmit: (value: T) => void;
+	validate?: (value: T) => void;
 }
 
 export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'> {
-  afterLabel?: React.ReactNode;
-  beforeLabel?: React.ReactNode;
-  children?: React.ReactNode;
-  focused?: boolean;
-  onBackspace?: (key: KeyInput) => void;
-  onDelete?: (key: KeyInput) => void;
-  onEscape?: (key: KeyInput) => void;
-  onInput?: (value: string, key: KeyInput) => boolean | void;
-  onKeyDown?: (key: KeyInput) => void;
-  onKeyLeft?: (key: KeyInput) => void;
-  onKeyRight?: (key: KeyInput) => void;
-  onKeyUp?: (key: KeyInput) => void;
-  onPageDown?: (key: KeyInput) => void;
-  onPageUp?: (key: KeyInput) => void;
-  onReturn?: () => boolean | void;
-  onSpace?: (key: KeyInput) => void;
-  onTab?: (key: KeyInput) => void;
-  value: T | null;
+	afterLabel?: React.ReactNode;
+	beforeLabel?: React.ReactNode;
+	children?: React.ReactNode;
+	focused?: boolean;
+	onBackspace?: (key: KeyInput) => void;
+	onDelete?: (key: KeyInput) => void;
+	onEscape?: (key: KeyInput) => void;
+	onInput?: (value: string, key: KeyInput) => boolean | void;
+	onKeyDown?: (key: KeyInput) => void;
+	onKeyLeft?: (key: KeyInput) => void;
+	onKeyRight?: (key: KeyInput) => void;
+	onKeyUp?: (key: KeyInput) => void;
+	onPageDown?: (key: KeyInput) => void;
+	onPageUp?: (key: KeyInput) => void;
+	onReturn?: () => boolean | void;
+	onSpace?: (key: KeyInput) => void;
+	onTab?: (key: KeyInput) => void;
+	value: T | null;
 }
 
 export function Prompt<T>({
-  afterLabel,
-  beforeLabel,
-  children,
-  focused,
-  label,
-  onBackspace,
-  onDelete,
-  onEscape,
-  onInput,
-  onKeyDown,
-  onKeyLeft,
-  onKeyRight,
-  onKeyUp,
-  onPageDown,
-  onPageUp,
-  onReturn,
-  onSpace,
-  onTab,
-  prefix = '?',
-  validate,
-  value,
+	afterLabel,
+	beforeLabel,
+	children,
+	focused,
+	label,
+	onBackspace,
+	onDelete,
+	onEscape,
+	onInput,
+	onKeyDown,
+	onKeyLeft,
+	onKeyRight,
+	onKeyUp,
+	onPageDown,
+	onPageUp,
+	onReturn,
+	onSpace,
+	onTab,
+	prefix = '?',
+	validate,
+	value,
 }: InternalPromptProps<T>) {
-  const { focusNext } = useFocusManager();
-  const [error, setError] = useState<Error | null>(null);
-  const [submitted, setSubmitted] = useState(false);
-  const mounted = useIsMounted();
+	const { focusNext } = useFocusManager();
+	const [error, setError] = useState<Error | null>(null);
+	const [submitted, setSubmitted] = useState(false);
+	const mounted = useIsMounted();
 
-  const attemptSubmit = useCallback(
-    (cb: () => boolean | void) => {
-      let doSubmit = false;
+	const attemptSubmit = useCallback(
+		(cb: () => boolean | void) => {
+			let doSubmit = false;
 
-      try {
-        setError(null);
+			try {
+				setError(null);
 
-        doSubmit = !!cb();
-      } catch (error: unknown) {
-        doSubmit = false;
+				doSubmit = !!cb();
+			} catch (error: unknown) {
+				doSubmit = false;
 
-        if (error instanceof Error) {
-          setError(error);
-        }
-      }
+				if (error instanceof Error) {
+					setError(error);
+				}
+			}
 
-      if (!mounted.current) {
-        return;
-      }
+			if (!mounted.current) {
+				return;
+			}
 
-      setSubmitted(doSubmit);
+			setSubmitted(doSubmit);
 
-      if (doSubmit) {
-        focusNext();
-      }
-    },
-    [focusNext, mounted],
-  );
+			if (doSubmit) {
+				focusNext();
+			}
+		},
+		[focusNext, mounted],
+	);
 
-  useInput(
-    // eslint-disable-next-line complexity
-    (input, key) => {
-      if (!mounted.current) {
-        return;
-      }
+	useInput(
+		// eslint-disable-next-line complexity
+		(input, key) => {
+			if (!mounted.current) {
+				return;
+			}
 
-      if (key.upArrow) {
-        onKeyUp?.(key);
-      } else if (key.downArrow) {
-        onKeyDown?.(key);
-      } else if (key.leftArrow) {
-        onKeyLeft?.(key);
-      } else if (key.rightArrow) {
-        onKeyRight?.(key);
-      } else if (key.pageUp) {
-        onPageUp?.(key);
-      } else if (key.pageDown) {
-        onPageDown?.(key);
-      } else if (key.return) {
-        // Only run if we want validation or to submit,
-        // otherwise we trigger an unwanted submitted state
-        if (onReturn || validate) {
-          attemptSubmit(() => {
-            if (value !== null) {
-              validate?.(value);
-            }
+			if (key.upArrow) {
+				onKeyUp?.(key);
+			} else if (key.downArrow) {
+				onKeyDown?.(key);
+			} else if (key.leftArrow) {
+				onKeyLeft?.(key);
+			} else if (key.rightArrow) {
+				onKeyRight?.(key);
+			} else if (key.pageUp) {
+				onPageUp?.(key);
+			} else if (key.pageDown) {
+				onPageDown?.(key);
+			} else if (key.return) {
+				// Only run if we want validation or to submit,
+				// otherwise we trigger an unwanted submitted state
+				if (onReturn || validate) {
+					attemptSubmit(() => {
+						if (value !== null) {
+							validate?.(value);
+						}
 
-            return onReturn?.();
-          });
-        }
-      } else if (key.tab) {
-        onTab?.(key);
-      } else if (key.backspace) {
-        onBackspace?.(key);
-        setSubmitted(false);
-      } else if (key.delete) {
-        onDelete?.(key);
-        setSubmitted(false);
-      } else if (key.escape) {
-        onEscape?.(key);
-      } else if (input === ' ' && onSpace) {
-        onSpace(key);
-        setSubmitted(false);
-      } else {
-        attemptSubmit(() => onInput?.(input, key));
-      }
-    },
-    { isActive: focused },
-  );
+						return onReturn?.();
+					});
+				}
+			} else if (key.tab) {
+				onTab?.(key);
+			} else if (key.backspace) {
+				onBackspace?.(key);
+				setSubmitted(false);
+			} else if (key.delete) {
+				onDelete?.(key);
+				setSubmitted(false);
+			} else if (key.escape) {
+				onEscape?.(key);
+			} else if (input === ' ' && onSpace) {
+				onSpace(key);
+				setSubmitted(false);
+			} else {
+				attemptSubmit(() => onInput?.(input, key));
+			}
+		},
+		{ isActive: focused },
+	);
 
-  return (
-    <Box flexDirection="column">
-      <Box flexDirection="row">
-        <Box>
-          {submitted && !error && <Style type="success">{figures.tick}</Style>}
-          {!submitted && error && <Style type="failure">{figures.cross}</Style>}
-          {!submitted && !error && <Style type="info">{prefix}</Style>}
-        </Box>
+	return (
+		<Box flexDirection="column">
+			<Box flexDirection="row">
+				<Box>
+					{submitted && !error && <Style type="success">{figures.tick}</Style>}
+					{!submitted && error && <Style type="failure">{figures.cross}</Style>}
+					{!submitted && !error && <Style type="info">{prefix}</Style>}
+				</Box>
 
-        {beforeLabel}
+				{beforeLabel}
 
-        <Box marginLeft={1} marginRight={1}>
-          <Label>{label}</Label>
-        </Box>
+				<Box marginLeft={1} marginRight={1}>
+					<Label>{label}</Label>
+				</Box>
 
-        {afterLabel}
-      </Box>
+				{afterLabel}
+			</Box>
 
-      {error && (
-        <Box marginLeft={2}>
-          <Style type="failure">{error.message}</Style>
-        </Box>
-      )}
+			{error && (
+				<Box marginLeft={2}>
+					<Style type="failure">{error.message}</Style>
+				</Box>
+			)}
 
-      {children && focused && (
-        <Box flexDirection="column" marginLeft={2}>
-          {children}
-        </Box>
-      )}
-    </Box>
-  );
+			{children && focused && (
+				<Box flexDirection="column" marginLeft={2}>
+					{children}
+				</Box>
+			)}
+		</Box>
+	);
 }

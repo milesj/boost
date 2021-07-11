@@ -5,30 +5,30 @@ import debug from './debug';
 import SerialPipeline from './SerialPipeline';
 
 export default class WaterfallPipeline<Ctx extends Context, Input = unknown> extends SerialPipeline<
-  {},
-  Ctx,
-  Input
+	{},
+	Ctx,
+	Input
 > {
-  /**
-   * Execute the pipeline in sequential order with the output of each
-   * work unit being passed to the next work unit in the chain.
-   */
-  async run(): Promise<Input> {
-    const work = this.getWorkUnits();
-    let { value } = this.root;
+	/**
+	 * Execute the pipeline in sequential order with the output of each
+	 * work unit being passed to the next work unit in the chain.
+	 */
+	async run(): Promise<Input> {
+		const work = this.getWorkUnits();
+		let { value } = this.root;
 
-    debug('Running %d as a waterfall', work.length);
+		debug('Running %d as a waterfall', work.length);
 
-    this.onBeforeRun.emit([value]);
+		this.onBeforeRun.emit([value]);
 
-    for (const unit of work) {
-      this.onRunWorkUnit.emit([unit, value]);
+		for (const unit of work) {
+			this.onRunWorkUnit.emit([unit, value]);
 
-      value = await unit.run(this.context, value);
-    }
+			value = await unit.run(this.context, value);
+		}
 
-    this.onAfterRun.emit([]);
+		this.onAfterRun.emit([]);
 
-    return value;
-  }
+		return value;
+	}
 }

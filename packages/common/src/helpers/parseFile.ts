@@ -8,30 +8,30 @@ import requireModule from './requireModule';
 import requireTypedModule from './requireTypedModule';
 
 export default function parseFile<T>(filePath: PortablePath): T {
-  const path = Path.create(filePath);
+	const path = Path.create(filePath);
 
-  if (!path.isAbsolute()) {
-    throw new CommonError('PATH_REQUIRE_ABSOLUTE');
-  }
+	if (!path.isAbsolute()) {
+		throw new CommonError('PATH_REQUIRE_ABSOLUTE');
+	}
 
-  switch (path.ext()) {
-    case '.js':
-    case '.jsx':
-      return requireModule(path);
+	switch (path.ext()) {
+		case '.js':
+		case '.jsx':
+			return requireModule(path);
 
-    case '.ts':
-    case '.tsx':
-      return requireTypedModule(path);
+		case '.ts':
+		case '.tsx':
+			return requireTypedModule(path);
 
-    case '.json':
-    case '.json5':
-      return parseJSON(fs.readFileSync(path.path(), 'utf8'));
+		case '.json':
+		case '.json5':
+			return parseJSON(fs.readFileSync(path.path(), 'utf8'));
 
-    case '.yml':
-    case '.yaml':
-      return parseYAML(fs.readFileSync(path.path(), 'utf8'));
+		case '.yml':
+		case '.yaml':
+			return parseYAML(fs.readFileSync(path.path(), 'utf8'));
 
-    default:
-      throw new CommonError('PARSE_INVALID_EXT', [path.name()]);
-  }
+		default:
+			throw new CommonError('PARSE_INVALID_EXT', [path.name()]);
+	}
 }

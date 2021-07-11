@@ -3,135 +3,135 @@ import { Path } from '@boost/common';
 import Cache from '../src/Cache';
 
 describe('Cache', () => {
-  let cache: Cache;
+	let cache: Cache;
 
-  beforeEach(() => {
-    cache = new Cache();
-  });
+	beforeEach(() => {
+		cache = new Cache();
+	});
 
-  describe('cacheFileContents()', () => {
-    let statMtime: number;
+	describe('cacheFileContents()', () => {
+		let statMtime: number;
 
-    beforeEach(() => {
-      jest
-        .spyOn(fs.promises, 'stat')
-        .mockImplementation(() =>
-          Promise.resolve(({ mtimeMs: statMtime || 100 } as unknown) as fs.Stats),
-        );
-    });
+		beforeEach(() => {
+			jest
+				.spyOn(fs.promises, 'stat')
+				.mockImplementation(() =>
+					Promise.resolve({ mtimeMs: statMtime || 100 } as unknown as fs.Stats),
+				);
+		});
 
-    it('writes a files contents and stats to the cache', async () => {
-      expect(cache.fileContentCache['foo/bar']).toBeUndefined();
+		it('writes a files contents and stats to the cache', async () => {
+			expect(cache.fileContentCache['foo/bar']).toBeUndefined();
 
-      const content = await cache.cacheFileContents(new Path('foo/bar'), () =>
-        Promise.resolve('content'),
-      );
+			const content = await cache.cacheFileContents(new Path('foo/bar'), () =>
+				Promise.resolve('content'),
+			);
 
-      expect(content).toBe('content');
-      expect(cache.fileContentCache['foo/bar']).toEqual({
-        content: 'content',
-        exists: true,
-        mtime: 100,
-      });
-    });
+			expect(content).toBe('content');
+			expect(cache.fileContentCache['foo/bar']).toEqual({
+				content: 'content',
+				exists: true,
+				mtime: 100,
+			});
+		});
 
-    it('only writes to the cache once', async () => {
-      let count = 0;
-      const cb = () => {
-        count += 1;
+		it('only writes to the cache once', async () => {
+			let count = 0;
+			const cb = () => {
+				count += 1;
 
-        return Promise.resolve(`content${count}`);
-      };
+				return Promise.resolve(`content${count}`);
+			};
 
-      const c1 = await cache.cacheFileContents(new Path('foo/bar'), cb);
-      const c2 = await cache.cacheFileContents(new Path('foo/bar'), cb);
-      const c3 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c1 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c2 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c3 = await cache.cacheFileContents(new Path('foo/bar'), cb);
 
-      expect(c1).toBe('content1');
-      expect(c2).toBe('content1');
-      expect(c3).toBe('content1');
-      expect(count).toBe(1);
-    });
+			expect(c1).toBe('content1');
+			expect(c2).toBe('content1');
+			expect(c3).toBe('content1');
+			expect(count).toBe(1);
+		});
 
-    it('overwrites cache if mtime changes', async () => {
-      let count = 0;
-      const cb = () => {
-        count += 1;
+		it('overwrites cache if mtime changes', async () => {
+			let count = 0;
+			const cb = () => {
+				count += 1;
 
-        return Promise.resolve(`content${count}`);
-      };
+				return Promise.resolve(`content${count}`);
+			};
 
-      const c1 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c1 = await cache.cacheFileContents(new Path('foo/bar'), cb);
 
-      statMtime = 200;
+			statMtime = 200;
 
-      const c2 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c2 = await cache.cacheFileContents(new Path('foo/bar'), cb);
 
-      statMtime = 300;
+			statMtime = 300;
 
-      const c3 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c3 = await cache.cacheFileContents(new Path('foo/bar'), cb);
 
-      expect(c1).toBe('content1');
-      expect(c2).toBe('content2');
-      expect(c3).toBe('content3');
-      expect(count).toBe(3);
-    });
+			expect(c1).toBe('content1');
+			expect(c2).toBe('content2');
+			expect(c3).toBe('content3');
+			expect(count).toBe(3);
+		});
 
-    it('can clear cached file contents', async () => {
-      expect(cache.fileContentCache).toEqual({});
+		it('can clear cached file contents', async () => {
+			expect(cache.fileContentCache).toEqual({});
 
-      await cache.cacheFileContents(new Path('foo/bar'), () => Promise.resolve('content'));
+			await cache.cacheFileContents(new Path('foo/bar'), () => Promise.resolve('content'));
 
-      expect(cache.fileContentCache).not.toEqual({});
+			expect(cache.fileContentCache).not.toEqual({});
 
-      cache.clearFileCache();
+			cache.clearFileCache();
 
-      expect(cache.fileContentCache).toEqual({});
-    });
-  });
+			expect(cache.fileContentCache).toEqual({});
+		});
+	});
 
-  describe('cacheFilesInDir()', () => {
-    it('writes a list of files in a dir to the cache', async () => {
-      const files = [new Path('a'), new Path('b')];
+	describe('cacheFilesInDir()', () => {
+		it('writes a list of files in a dir to the cache', async () => {
+			const files = [new Path('a'), new Path('b')];
 
-      expect(cache.dirFilesCache['foo/bar']).toBeUndefined();
+			expect(cache.dirFilesCache['foo/bar']).toBeUndefined();
 
-      const list = await cache.cacheFilesInDir(new Path('foo/bar'), () => Promise.resolve(files));
+			const list = await cache.cacheFilesInDir(new Path('foo/bar'), () => Promise.resolve(files));
 
-      expect(list).toBe(files);
-      expect(cache.dirFilesCache['foo/bar']).toEqual(files);
-    });
+			expect(list).toBe(files);
+			expect(cache.dirFilesCache['foo/bar']).toEqual(files);
+		});
 
-    it('only writes to the cache once', async () => {
-      let count = 0;
-      const cb = () => {
-        count += 1;
+		it('only writes to the cache once', async () => {
+			let count = 0;
+			const cb = () => {
+				count += 1;
 
-        return Promise.resolve([new Path(String(count))]);
-      };
+				return Promise.resolve([new Path(String(count))]);
+			};
 
-      const c1 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
-      const c2 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
-      const c3 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
+			const c1 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
+			const c2 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
+			const c3 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
 
-      expect(c1).toEqual([new Path('1')]);
-      expect(c2).toEqual([new Path('1')]);
-      expect(c3).toEqual([new Path('1')]);
-      expect(count).toBe(1);
-    });
+			expect(c1).toEqual([new Path('1')]);
+			expect(c2).toEqual([new Path('1')]);
+			expect(c3).toEqual([new Path('1')]);
+			expect(count).toBe(1);
+		});
 
-    it('can clear cached dir contents', async () => {
-      expect(cache.dirFilesCache).toEqual({});
+		it('can clear cached dir contents', async () => {
+			expect(cache.dirFilesCache).toEqual({});
 
-      await cache.cacheFilesInDir(new Path('foo/bar'), () =>
-        Promise.resolve([new Path('a'), new Path('b')]),
-      );
+			await cache.cacheFilesInDir(new Path('foo/bar'), () =>
+				Promise.resolve([new Path('a'), new Path('b')]),
+			);
 
-      expect(cache.dirFilesCache).not.toEqual({});
+			expect(cache.dirFilesCache).not.toEqual({});
 
-      cache.clearFinderCache();
+			cache.clearFinderCache();
 
-      expect(cache.dirFilesCache).toEqual({});
-    });
-  });
+			expect(cache.dirFilesCache).toEqual({});
+		});
+	});
 });

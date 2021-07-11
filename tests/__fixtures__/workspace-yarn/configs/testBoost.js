@@ -1,3 +1,3 @@
 module.exports = {
-  yarn: true,
+	yarn: true,
 };

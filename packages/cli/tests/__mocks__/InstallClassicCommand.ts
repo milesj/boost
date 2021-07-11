@@ -1,52 +1,52 @@
 import { Categories, Command, GlobalOptions, Options, Params } from '../../src';
 
 export interface InstallOptions extends GlobalOptions {
-  save: boolean;
+	save: boolean;
 }
 
 export type InstallParams = [string, ...string[]];
 
 export default class InstallClassicCommand extends Command<InstallOptions, InstallParams> {
-  static path = 'install';
+	static path = 'install';
 
-  static description = 'Install package(s)';
+	static description = 'Install package(s)';
 
-  static deprecated = true;
+	static deprecated = true;
 
-  static hidden = true;
+	static hidden = true;
 
-  static category = 'setup';
+	static category = 'setup';
 
-  static categories: Categories = {
-    special: 'Special',
-  };
+	static categories: Categories = {
+		special: 'Special',
+	};
 
-  static options: Options<InstallOptions> = {
-    // --save
-    save: {
-      category: 'special',
-      default: true,
-      description: 'Save dependency to lock file',
-      type: 'boolean',
-    },
-  };
+	static options: Options<InstallOptions> = {
+		// --save
+		save: {
+			category: 'special',
+			default: true,
+			description: 'Save dependency to lock file',
+			type: 'boolean',
+		},
+	};
 
-  static params: Params<InstallParams> = [
-    {
-      description: 'Package name',
-      label: 'pkg',
-      required: true,
-      type: 'string',
-    },
-  ];
+	static params: Params<InstallParams> = [
+		{
+			description: 'Package name',
+			label: 'pkg',
+			required: true,
+			type: 'string',
+		},
+	];
 
-  static allowVariadicParams = 'pkgs';
+	static allowVariadicParams = 'pkgs';
 
-  save: boolean = true;
+	save: boolean = true;
 
-  async run(pkgName: string, ...morePkgNames: string[]) {
-    await Promise.resolve();
+	async run(pkgName: string, ...morePkgNames: string[]) {
+		await Promise.resolve();
 
-    return 'Install!';
-  }
+		return 'Install!';
+	}
 }

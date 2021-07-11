@@ -4,10 +4,10 @@ import msg from '../translate';
 import { paramBlueprint } from './blueprints';
 
 export default function validateParams(params: ParamConfigList) {
-  params.forEach((config, index) =>
-    optimal(config, paramBlueprint, {
-      name: msg('cli:labelParam', { name: config.label || index }),
-      unknown: false,
-    }),
-  );
+	params.forEach((config, index) =>
+		optimal(config, paramBlueprint, {
+			name: msg('cli:labelParam', { name: config.label || index }),
+			unknown: false,
+		}),
+	);
 }

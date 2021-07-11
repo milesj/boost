@@ -1,13 +1,13 @@
 export default class ParseError extends Error {
-  arg: string;
+	arg: string;
 
-  index: number;
+	index: number;
 
-  constructor(message: string, arg: string, index: number) {
-    super(message);
+	constructor(message: string, arg: string, index: number) {
+		super(message);
 
-    this.name = 'ParseError';
-    this.arg = arg;
-    this.index = index;
-  }
+		this.name = 'ParseError';
+		this.arg = arg;
+		this.index = index;
+	}
 }

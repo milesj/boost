@@ -1,1 +1,1 @@
-{"root":true,"extends":"../some/missing/path/config.js"}
+{ "root": true, "extends": "../some/missing/path/config.js" }

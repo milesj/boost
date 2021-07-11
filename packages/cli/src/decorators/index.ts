@@ -7,12 +7,12 @@ import String from './String';
 import Strings from './Strings';
 
 export const Arg = {
-  Flag,
-  Number,
-  Numbers,
-  Params,
-  String,
-  Strings,
+	Flag,
+	Number,
+	Numbers,
+	Params,
+	String,
+	Strings,
 };
 
 export { Config };

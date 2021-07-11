@@ -1,6 +1,6 @@
 {
-  "rules": {
-    "react/jsx-no-literals": "off",
-    "react/no-array-index-key": "off"
-  }
+	"rules": {
+		"react/jsx-no-literals": "off",
+		"react/no-array-index-key": "off"
+	}
 }

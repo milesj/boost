@@ -2,14 +2,14 @@ import { CommandConfig } from '../types';
 import formatType from './formatType';
 
 export default function formatCommandCall(name: string, metadata: CommandConfig): string {
-  let output = name;
+	let output = name;
 
-  if (metadata.params) {
-    metadata.params.forEach((param) => {
-      output += ' ';
-      output += formatType(param, true);
-    });
-  }
+	if (metadata.params) {
+		metadata.params.forEach((param) => {
+			output += ' ';
+			output += formatType(param, true);
+		});
+	}
 
-  return output;
+	return output;
 }

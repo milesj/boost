@@ -11,40 +11,40 @@ export type Handler<T> = (prev: T, next: T) => Promise<T | undefined> | T | unde
 export type FileSource = 'branch' | 'extended' | 'overridden' | 'root';
 
 export interface File {
-  path: Path;
-  source: FileSource;
+	path: Path;
+	source: FileSource;
 }
 
 export interface ConfigFile<T> extends File {
-  config: Partial<T>;
+	config: Partial<T>;
 }
 
 export interface IgnoreFile extends File {
-  ignore: string[];
+	ignore: string[];
 }
 
 export interface ProcessedConfig<T> {
-  config: Required<T>;
-  files: ConfigFile<T>[];
+	config: Required<T>;
+	files: ConfigFile<T>[];
 }
 
 export interface ConfigFinderOptions<T> {
-  extendsSetting?: string;
-  extensions?: ExtType[];
-  includeEnv?: boolean;
-  loaders?: { [K in LoaderType]: Loader<T> };
-  name: string;
-  overridesSetting?: string;
+	extendsSetting?: string;
+	extensions?: ExtType[];
+	includeEnv?: boolean;
+	loaders?: { [K in LoaderType]: Loader<T> };
+	name: string;
+	overridesSetting?: string;
 }
 
 export interface IgnoreFinderOptions {
-  name: string;
+	name: string;
 }
 
 export interface ProcessorOptions {
-  defaultWhenUndefined?: boolean;
-  name: string;
-  validate?: boolean;
+	defaultWhenUndefined?: boolean;
+	name: string;
+	validate?: boolean;
 }
 
 export type FileGlob = string[] | string;
@@ -52,9 +52,9 @@ export type FileGlob = string[] | string;
 export type ExtendsSetting = string[] | string;
 
 export interface OverridesSettingItem<T> {
-  exclude?: FileGlob;
-  include: FileGlob;
-  settings: Partial<T>;
+	exclude?: FileGlob;
+	include: FileGlob;
+	settings: Partial<T>;
 }
 
 export type OverridesSetting<T> = OverridesSettingItem<T>[];

@@ -18,17 +18,17 @@ matches the generic interface.
 import { Contract, Blueprint, Predicates } from '@boost/common';
 
 export interface AdapterOptions {
-  name?: string;
-  priority?: number;
+	name?: string;
+	priority?: number;
 }
 
 export default class Adapter extends Contract<AdapterOptions> {
-  blueprint({ number, string }: Predicates): Blueprint<AdapterOptions> {
-    return {
-      name: string().notEmpty(),
-      priority: number().gte(0),
-    };
-  }
+	blueprint({ number, string }: Predicates): Blueprint<AdapterOptions> {
+		return {
+			name: string().notEmpty(),
+			priority: number().gte(0),
+		};
+	}
 }
 ```
 
@@ -38,7 +38,7 @@ blueprint. If invalid, an error will be thrown. Furthermore, the `Contract#optio
 
 ```ts
 const adapter = new Adapter({
-  name: 'Boost',
+	name: 'Boost',
 });
 
 const { name } = adapter.options; // => Boost
@@ -52,16 +52,16 @@ need to be overridden so that the argument can be marked as non-optional.
 
 ```ts
 export interface AdapterOptions {
-  name: string;
-  priority?: number;
+	name: string;
+	priority?: number;
 }
 
 export default class Adapter extends Contract<AdapterOptions> {
-  constructor(options: AdapterOptions) {
-    super(options);
-  }
+	constructor(options: AdapterOptions) {
+		super(options);
+	}
 
-  // ...
+	// ...
 }
 ```
 
@@ -90,9 +90,9 @@ object.
 adapter.configure({ name: 'Boost' });
 
 adapter.configure((prevOptions) => ({
-  nestedObject: {
-    ...prevOptions.nestedObject,
-    some: 'value',
-  },
+	nestedObject: {
+		...prevOptions.nestedObject,
+		some: 'value',
+	},
 }));
 ```

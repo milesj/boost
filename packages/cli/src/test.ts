@@ -6,180 +6,180 @@ import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
 import { stripAnsi } from '@boost/terminal';
 import type {
-  ExitCode,
-  GlobalOptions,
-  PrimitiveType,
-  ProgramOptions,
-  ProgramStreams,
-  TaskContext,
+	ExitCode,
+	GlobalOptions,
+	PrimitiveType,
+	ProgramOptions,
+	ProgramStreams,
+	TaskContext,
 } from './index';
 import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from './index';
 
 export class MockReadStream {
-  isTTY = false;
+	isTTY = false;
 }
 
 export class MockWriteStream {
-  append: boolean = false;
+	append: boolean = false;
 
-  columns: number = 80;
+	columns: number = 80;
 
-  output: string;
+	output: string;
 
-  constructor(append: boolean = false) {
-    this.append = append;
-    this.output = '';
-  }
+	constructor(append: boolean = false) {
+		this.append = append;
+		this.output = '';
+	}
 
-  write(string: string) {
-    if (this.append) {
-      this.output += string;
-    } else {
-      this.output = string;
-    }
-  }
+	write(string: string) {
+		if (this.append) {
+			this.output += string;
+		} else {
+			this.output = string;
+		}
+	}
 
-  get(): string {
-    return this.output;
-  }
+	get(): string {
+		return this.output;
+	}
 
-  on() {}
+	on() {}
 
-  off() {}
+	off() {}
 }
 
 export function mockStreams(append?: boolean): ProgramStreams {
-  return ({
-    stderr: new MockWriteStream(append),
-    stdin: new MockReadStream(),
-    stdout: new MockWriteStream(append),
-  } as unknown) as ProgramStreams;
+	return {
+		stderr: new MockWriteStream(append),
+		stdin: new MockReadStream(),
+		stdout: new MockWriteStream(append),
+	} as unknown as ProgramStreams;
 }
 
 export function mockProgram(options?: Partial<ProgramOptions>, streams?: ProgramStreams): Program {
-  return new Program(
-    {
-      bin: 'test',
-      name: 'Test',
-      version: '0.0.0',
-      ...options,
-    },
-    streams || mockStreams(),
-  );
+	return new Program(
+		{
+			bin: 'test',
+			name: 'Test',
+			version: '0.0.0',
+			...options,
+		},
+		streams || mockStreams(),
+	);
 }
 
 export async function renderComponent(
-  element: React.ReactElement,
-  stripped: boolean = false,
+	element: React.ReactElement,
+	stripped: boolean = false,
 ): Promise<string> {
-  const stdout = new MockWriteStream();
+	const stdout = new MockWriteStream();
 
-  await render(element, {
-    debug: true,
-    experimental: true,
-    stdout: (stdout as unknown) as NodeJS.WriteStream,
-  });
+	await render(element, {
+		debug: true,
+		experimental: true,
+		stdout: stdout as unknown as NodeJS.WriteStream,
+	});
 
-  const output = stdout.get();
+	const output = stdout.get();
 
-  return stripped ? stripAnsi(output) : output;
+	return stripped ? stripAnsi(output) : output;
 }
 
 export async function runCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
-  command: Command<O, P>,
-  params: P,
-  options?: Partial<O>,
+	command: Command<O, P>,
+	params: P,
+	options?: Partial<O>,
 ): Promise<string> {
-  if (options) {
-    Object.assign(command, options);
+	if (options) {
+		Object.assign(command, options);
 
-    // @ts-expect-error
-    command[INTERNAL_OPTIONS] = {
-      help: false,
-      locale: 'en',
-      version: false,
-      ...options,
-    };
-  }
+		// @ts-expect-error
+		command[INTERNAL_OPTIONS] = {
+			help: false,
+			locale: 'en',
+			version: false,
+			...options,
+		};
+	}
 
-  command.exit = jest.fn();
-  command.log = mockLogger();
-  command[INTERNAL_PARAMS] = params;
+	command.exit = jest.fn();
+	command.log = mockLogger();
+	command[INTERNAL_PARAMS] = params;
 
-  const result = await command.run(...params);
+	const result = await command.run(...params);
 
-  if (!result || typeof result === 'string') {
-    return result || '';
-  }
+	if (!result || typeof result === 'string') {
+		return result || '';
+	}
 
-  return renderComponent(result);
+	return renderComponent(result);
 }
 
 export function runTask<A extends unknown[], R, T extends TaskContext>(
-  task: (this: T, ...args: A) => R,
-  args: A,
-  context?: Partial<T>,
+	task: (this: T, ...args: A) => R,
+	args: A,
+	context?: Partial<T>,
 ): R {
-  const notTestable = (name: string) => () => {
-    throw new Error(
-      `\`${name}\` is not testable using the \`runTask\` utility. Test using a full program.`,
-    );
-  };
+	const notTestable = (name: string) => () => {
+		throw new Error(
+			`\`${name}\` is not testable using the \`runTask\` utility. Test using a full program.`,
+		);
+	};
 
-  const baseContext: TaskContext = {
-    exit: jest.fn(),
-    help: false,
-    locale: 'en',
-    log: mockLogger(),
-    rest: [] as string[],
-    runProgram: notTestable('runProgram'),
-    runTask: notTestable('runTask'),
-    unknown: {},
-    version: false,
-  };
+	const baseContext: TaskContext = {
+		exit: jest.fn(),
+		help: false,
+		locale: 'en',
+		log: mockLogger(),
+		rest: [] as string[],
+		runProgram: notTestable('runProgram'),
+		runTask: notTestable('runTask'),
+		unknown: {},
+		version: false,
+	};
 
-  return task.apply(
-    {
-      ...baseContext,
-      ...context,
-    } as T,
-    args,
-  );
+	return task.apply(
+		{
+			...baseContext,
+			...context,
+		} as T,
+		args,
+	);
 }
 
 export async function runProgram(
-  program: Program,
-  argv: string[],
-  { append }: { append?: boolean } = {},
+	program: Program,
+	argv: string[],
+	{ append }: { append?: boolean } = {},
 ): Promise<{ code: ExitCode; output: string; outputStripped: string }> {
-  if (!(program.streams.stderr instanceof MockWriteStream)) {
-    program.streams.stderr = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
-  }
+	if (!(program.streams.stderr instanceof MockWriteStream)) {
+		program.streams.stderr = new MockWriteStream(append) as unknown as NodeJS.WriteStream;
+	}
 
-  if (!(program.streams.stdout instanceof MockWriteStream)) {
-    program.streams.stdout = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
-  }
+	if (!(program.streams.stdout instanceof MockWriteStream)) {
+		program.streams.stdout = new MockWriteStream(append) as unknown as NodeJS.WriteStream;
+	}
 
-  if (!(program.streams.stdin instanceof MockReadStream)) {
-    program.streams.stdin = (new MockReadStream() as unknown) as NodeJS.ReadStream;
-  }
+	if (!(program.streams.stdin instanceof MockReadStream)) {
+		program.streams.stdin = new MockReadStream() as unknown as NodeJS.ReadStream;
+	}
 
-  // Ink async rendering never resolves while testing,
-  // as it relies on system signals to "exit".
-  // So we set this to flag the renderer to avoid awaiting.
-  env('CLI_TEST_ONLY', 'true');
+	// Ink async rendering never resolves while testing,
+	// as it relies on system signals to "exit".
+	// So we set this to flag the renderer to avoid awaiting.
+	env('CLI_TEST_ONLY', 'true');
 
-  const code = await program.run(argv);
+	const code = await program.run(argv);
 
-  env('CLI_TEST_ONLY', null);
+	env('CLI_TEST_ONLY', null);
 
-  const output =
-    ((program.streams.stdout as unknown) as MockWriteStream).get() +
-    ((program.streams.stderr as unknown) as MockWriteStream).get();
+	const output =
+		(program.streams.stdout as unknown as MockWriteStream).get() +
+		(program.streams.stderr as unknown as MockWriteStream).get();
 
-  return {
-    code,
-    output,
-    outputStripped: stripAnsi(output),
-  };
+	return {
+		code,
+		output,
+		outputStripped: stripAnsi(output),
+	};
 }

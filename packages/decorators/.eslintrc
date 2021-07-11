@@ -1,7 +1,7 @@
 {
-  "rules": {
-    "no-param-reassign": "off",
-    // Any is required for lots of decorator stuff to work
-    "@typescript-eslint/no-unsafe-assignment": "off"
-  }
+	"rules": {
+		"no-param-reassign": "off",
+		// Any is required for lots of decorator stuff to work
+		"@typescript-eslint/no-unsafe-assignment": "off"
+	}
 }

@@ -6,13 +6,13 @@ import { CommandChecker } from '../types';
  * or looks like a sub-command ("cmd:sub") return true.
  */
 export default function isCommand(arg: string, commandCheck: CommandChecker | string[]): boolean {
-  if (Array.isArray(commandCheck) && commandCheck.length > 0) {
-    return commandCheck.includes(arg);
-  }
+	if (Array.isArray(commandCheck) && commandCheck.length > 0) {
+		return commandCheck.includes(arg);
+	}
 
-  if (typeof commandCheck === 'function') {
-    return commandCheck(arg);
-  }
+	if (typeof commandCheck === 'function') {
+		return commandCheck(arg);
+	}
 
-  return false;
+	return false;
 }

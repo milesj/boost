@@ -19,29 +19,29 @@ const banner = ` __                      __
 |_____|_____|_____|_____|____|`;
 
 new Program({
-  banner,
-  bin: 'boost',
-  footer: 'Documentation: https://boostlib.dev',
-  name: 'Boost Examples',
-  version: '1.2.3',
+	banner,
+	bin: 'boost',
+	footer: 'Documentation: https://boostlib.dev',
+	name: 'Boost Examples',
+	version: '1.2.3',
 })
-  .categories({
-    feature: 'Features',
-    test: 'Test cases',
-    prompt: 'Prompts',
-  })
-  .register(new BuildCommand())
-  .register(new ErrorCommand())
-  .register(new ErrorCompCommand())
-  .register(new ExitCommand())
-  .register(new ExitCompCommand())
-  .register(new LoggerCommand())
-  .register(new ScaffoldCommand())
-  .register(new OptionsCommand())
-  .register(new ParamsCommand())
-  // Prompts
-  .register(new ConfirmCommand())
-  .register(new InputCommand())
-  .register(new MultiSelectCommand())
-  .register(new SelectCommand())
-  .runAndExit(process.argv.slice(2));
+	.categories({
+		feature: 'Features',
+		test: 'Test cases',
+		prompt: 'Prompts',
+	})
+	.register(new BuildCommand())
+	.register(new ErrorCommand())
+	.register(new ErrorCompCommand())
+	.register(new ExitCommand())
+	.register(new ExitCompCommand())
+	.register(new LoggerCommand())
+	.register(new ScaffoldCommand())
+	.register(new OptionsCommand())
+	.register(new ParamsCommand())
+	// Prompts
+	.register(new ConfirmCommand())
+	.register(new InputCommand())
+	.register(new MultiSelectCommand())
+	.register(new SelectCommand())
+	.runAndExit(process.argv.slice(2));

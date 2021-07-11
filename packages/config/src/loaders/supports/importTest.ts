@@ -3,5 +3,5 @@
 // when loading this file. Thanks to Babel for the implementation!
 
 export default function testImport(filepath: string) {
-  return import(filepath);
+	return import(filepath);
 }

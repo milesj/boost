@@ -5,45 +5,45 @@ import { ProgramOptions } from '../types';
 import { Style } from './Style';
 
 export interface IndexHelpProps extends ProgramOptions {
-  children?: React.ReactNode;
+	children?: React.ReactNode;
 }
 
 export function IndexHelp({
-  banner,
-  bin,
-  children,
-  footer,
-  header,
-  name,
-  version,
+	banner,
+	bin,
+	children,
+	footer,
+	header,
+	name,
+	version,
 }: IndexHelpProps) {
-  return (
-    <Box marginBottom={1} flexDirection="column">
-      {!!banner && (
-        <Box>
-          <Text>{banner}</Text>
-        </Box>
-      )}
+	return (
+		<Box marginBottom={1} flexDirection="column">
+			{!!banner && (
+				<Box>
+					<Text>{banner}</Text>
+				</Box>
+			)}
 
-      <Box marginTop={SPACING_ROW}>
-        <Text>
-          {`${name} v${version}`} <Style type="muted">{bin}</Style>
-        </Text>
-      </Box>
+			<Box marginTop={SPACING_ROW}>
+				<Text>
+					{`${name} v${version}`} <Style type="muted">{bin}</Style>
+				</Text>
+			</Box>
 
-      {!!header && (
-        <Box marginTop={SPACING_ROW}>
-          <Text>{header}</Text>
-        </Box>
-      )}
+			{!!header && (
+				<Box marginTop={SPACING_ROW}>
+					<Text>{header}</Text>
+				</Box>
+			)}
 
-      {children}
+			{children}
 
-      {!!footer && (
-        <Box marginTop={SPACING_ROW}>
-          <Text>{footer}</Text>
-        </Box>
-      )}
-    </Box>
-  );
+			{!!footer && (
+				<Box marginTop={SPACING_ROW}>
+					<Text>{footer}</Text>
+				</Box>
+			)}
+		</Box>
+	);
 }

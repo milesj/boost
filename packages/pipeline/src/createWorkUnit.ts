@@ -12,18 +12,18 @@ import WorkUnit from './WorkUnit';
  * - A title and function that returns a `Task` instance.
  */
 export default function createWorkUnit<Input = unknown, Output = Input>(
-  titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  action?: Action<any, Input, Output>,
-  scope?: unknown,
+	titleOrWorkUnit: WorkUnit<{}, Input, Output> | string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	action?: Action<any, Input, Output>,
+	scope?: unknown,
 ): WorkUnit<{}, Input, Output> {
-  if (titleOrWorkUnit instanceof WorkUnit) {
-    return titleOrWorkUnit;
-  }
+	if (titleOrWorkUnit instanceof WorkUnit) {
+		return titleOrWorkUnit;
+	}
 
-  if (typeof titleOrWorkUnit === 'string' && typeof action === 'function') {
-    return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
-  }
+	if (typeof titleOrWorkUnit === 'string' && typeof action === 'function') {
+		return new Task(titleOrWorkUnit, scope ? action.bind(scope) : action);
+	}
 
-  throw new PipelineError('WORK_UNKNOWN');
+	throw new PipelineError('WORK_UNKNOWN');
 }

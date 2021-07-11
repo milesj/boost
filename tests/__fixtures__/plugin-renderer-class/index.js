@@ -1,20 +1,20 @@
 const { Plugin } = require('@boost/plugin');
 
 class Renderer extends Plugin {
-  blueprint({ string }) {
-    return {
-      value: string(),
-    };
-  }
+	blueprint({ string }) {
+		return {
+			value: string(),
+		};
+	}
 
-  render() {
-    return 'test';
-  }
+	render() {
+		return 'test';
+	}
 }
 
 // Async
 module.exports = async function rendererPlugin(options) {
-  await Promise.resolve();
+	await Promise.resolve();
 
-  return new Renderer(options);
+	return new Renderer(options);
 };

@@ -3,15 +3,15 @@
 import React from 'react';
 import execa, { Options as ExecaOptions } from 'execa';
 import {
-  ArgList,
-  Arguments,
-  Argv,
-  MapParamType,
-  OptionConfigMap,
-  ParamConfigList,
-  ParserOptions,
-  PrimitiveType,
-  UnknownOptionMap,
+	ArgList,
+	Arguments,
+	Argv,
+	MapParamType,
+	OptionConfigMap,
+	ParamConfigList,
+	ParserOptions,
+	PrimitiveType,
+	UnknownOptionMap,
 } from '@boost/args';
 import { Blueprint, Predicates } from '@boost/common';
 import { LoggerFunction } from '@boost/log';
@@ -30,318 +30,313 @@ import validateOptions from './metadata/validateOptions';
 import validateParams from './metadata/validateParams';
 import Program from './Program';
 import {
-  Categories,
-  Commandable,
-  CommandMetadata,
-  CommandPath,
-  ExitCode,
-  ExitHandler,
-  GlobalOptions,
-  ProxyCommandConfig,
-  ProxyCommandRunner,
-  RunResult,
-  TaskContext,
+	Categories,
+	Commandable,
+	CommandMetadata,
+	CommandPath,
+	ExitCode,
+	ExitHandler,
+	GlobalOptions,
+	ProxyCommandConfig,
+	ProxyCommandRunner,
+	RunResult,
+	TaskContext,
 } from './types';
 
 /**
  * Create a proxy command using itself as the super class.
  */
 export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
-  path: CommandPath,
-  { description, options, params, ...config }: ProxyCommandConfig<O, P>,
-  runner: ProxyCommandRunner<O, P>,
+	path: CommandPath,
+	{ description, options, params, ...config }: ProxyCommandConfig<O, P>,
+	runner: ProxyCommandRunner<O, P>,
 ): Command<O, P> {
-  @Config(path, description, config)
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  class ProxyCommand extends Command<O, P> {
-    run(): Promise<RunResult> | RunResult {
-      return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
-    }
-  }
+	@Config(path, description, config)
+	// eslint-disable-next-line @typescript-eslint/no-use-before-define
+	class ProxyCommand extends Command<O, P> {
+		run(): Promise<RunResult> | RunResult {
+			return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
+		}
+	}
 
-  if (options !== undefined) {
-    ProxyCommand.options = options;
-  }
+	if (options !== undefined) {
+		ProxyCommand.options = options;
+	}
 
-  if (params !== undefined) {
-    ProxyCommand.params = params;
-  }
+	if (params !== undefined) {
+		ProxyCommand.params = params;
+	}
 
-  return new ProxyCommand();
+	return new ProxyCommand();
 }
 
 export abstract class Command<
-    O extends GlobalOptions = GlobalOptions,
-    P extends PrimitiveType[] = ArgList,
-    Options extends object = {}
-  >
-  extends CommandManager<Options>
-  implements Commandable<O, P> {
-  static aliases: string[] = [];
+		O extends GlobalOptions = GlobalOptions,
+		P extends PrimitiveType[] = ArgList,
+		Options extends object = {},
+	>
+	extends CommandManager<Options>
+	implements Commandable<O, P>
+{
+	static aliases: string[] = [];
 
-  static allowUnknownOptions: boolean = false;
+	static allowUnknownOptions: boolean = false;
 
-  static allowVariadicParams: boolean | string = false;
+	static allowVariadicParams: boolean | string = false;
 
-  static categories: Categories = {};
+	static categories: Categories = {};
 
-  static category: string = '';
+	static category: string = '';
 
-  static description: string = '';
+	static description: string = '';
 
-  static deprecated: boolean = false;
+	static deprecated: boolean = false;
 
-  static hidden: boolean = false;
+	static hidden: boolean = false;
 
-  static options: OptionConfigMap = globalOptions;
+	static options: OptionConfigMap = globalOptions;
 
-  static params: ParamConfigList = [];
+	static params: ParamConfigList = [];
 
-  static path: string = '';
+	static path: string = '';
 
-  static usage: string[] | string = '';
+	static usage: string[] | string = '';
 
-  // Args
+	// Args
 
-  help: boolean = false;
+	help: boolean = false;
 
-  locale: string = 'en';
+	locale: string = 'en';
 
-  rest: string[] = [];
+	rest: string[] = [];
 
-  unknown: UnknownOptionMap = {};
+	unknown: UnknownOptionMap = {};
 
-  version: boolean = false;
+	version: boolean = false;
 
-  // Methods
+	// Methods
 
-  exit!: ExitHandler;
+	exit!: ExitHandler;
 
-  log!: LoggerFunction;
+	log!: LoggerFunction;
 
-  // Internals
+	// Internals
 
-  [INTERNAL_OPTIONS]?: O;
+	[INTERNAL_OPTIONS]?: O;
 
-  [INTERNAL_PARAMS]?: P;
+	[INTERNAL_PARAMS]?: P;
 
-  [INTERNAL_PROGRAM]?: Program;
+	[INTERNAL_PROGRAM]?: Program;
 
-  constructor(options?: Options) {
-    super(options);
+	constructor(options?: Options) {
+		super(options);
 
-    const ctor = getConstructor(this);
+		const ctor = getConstructor(this);
 
-    validateConfig(this.constructor.name, {
-      aliases: ctor.aliases,
-      allowUnknownOptions: ctor.allowUnknownOptions,
-      allowVariadicParams: ctor.allowVariadicParams,
-      categories: ctor.categories,
-      category: ctor.category,
-      deprecated: ctor.deprecated,
-      description: ctor.description,
-      hidden: ctor.hidden,
-      path: ctor.path,
-      usage: ctor.usage,
-    });
-    validateOptions(ctor.options);
-    validateParams(ctor.params);
+		validateConfig(this.constructor.name, {
+			aliases: ctor.aliases,
+			allowUnknownOptions: ctor.allowUnknownOptions,
+			allowVariadicParams: ctor.allowVariadicParams,
+			categories: ctor.categories,
+			category: ctor.category,
+			deprecated: ctor.deprecated,
+			description: ctor.description,
+			hidden: ctor.hidden,
+			path: ctor.path,
+			usage: ctor.usage,
+		});
+		validateOptions(ctor.options);
+		validateParams(ctor.params);
 
-    this.onBeforeRegister.listen(this.handleBeforeRegister);
-  }
+		this.onBeforeRegister.listen(this.handleBeforeRegister);
+	}
 
-  /**
-   * Validate options passed to the constructor.
-   */
-  // Empty blueprint so that sub-classes may type correctly
-  blueprint(preds: Predicates): Blueprint<object> {
-    return {};
-  }
+	/**
+	 * Validate options passed to the constructor.
+	 */
+	// Empty blueprint so that sub-classes may type correctly
+	blueprint(preds: Predicates): Blueprint<object> {
+		return {};
+	}
 
-  /**
-   * Create a React element based on the Help component.
-   */
-  createHelp(): React.ReactElement {
-    const metadata = this.getMetadata();
+	/**
+	 * Create a React element based on the Help component.
+	 */
+	createHelp(): React.ReactElement {
+		const metadata = this.getMetadata();
 
-    return (
-      <Help
-        categories={metadata.categories}
-        config={metadata}
-        commands={mapCommandMetadata(metadata.commands)}
-        delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
-        header={metadata.path}
-        options={metadata.options}
-        params={metadata.params}
-      />
-    );
-  }
+		return (
+			<Help
+				categories={metadata.categories}
+				config={metadata}
+				commands={mapCommandMetadata(metadata.commands)}
+				delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
+				header={metadata.path}
+				options={metadata.options}
+				params={metadata.params}
+			/>
+		);
+	}
 
-  /**
-   * Execute a system native command with the given arguments
-   * and pass the results through a promise. This does *not* execute Boost CLI
-   * commands, use `runProgram()` instead.
-   */
-  executeCommand(command: string, args: string[], options: ExecaOptions = {}) /* infer */ {
-    const { streams } = this.getProgram();
+	/**
+	 * Execute a system native command with the given arguments
+	 * and pass the results through a promise. This does *not* execute Boost CLI
+	 * commands, use `runProgram()` instead.
+	 */
+	executeCommand(command: string, args: string[], options: ExecaOptions = {}) /* infer */ {
+		const { streams } = this.getProgram();
 
-    return execa(command, args, {
-      ...streams,
-      ...options,
-    });
-  }
+		return execa(command, args, {
+			...streams,
+			...options,
+		});
+	}
 
-  /**
-   * Return the current command class as an arguments object.
-   * Options and params must be parsed first to operate correctly.
-   */
-  getArguments(): Arguments<O, P> {
-    return {
-      command: this.getPath().split(':'),
-      errors: [],
-      options: (this[INTERNAL_OPTIONS] || {}) as O,
-      params: ((this[INTERNAL_PARAMS] || []) as unknown) as MapParamType<P>,
-      rest: this.rest,
-      unknown: this.unknown,
-    };
-  }
+	/**
+	 * Return the current command class as an arguments object.
+	 * Options and params must be parsed first to operate correctly.
+	 */
+	getArguments(): Arguments<O, P> {
+		return {
+			command: this.getPath().split(':'),
+			errors: [],
+			options: (this[INTERNAL_OPTIONS] || {}) as O,
+			params: (this[INTERNAL_PARAMS] || []) as unknown as MapParamType<P>,
+			rest: this.rest,
+			unknown: this.unknown,
+		};
+	}
 
-  /**
-   * Validate and return all metadata registered to this command instance.
-   */
-  getMetadata(): CommandMetadata {
-    const ctor = getConstructor(this);
-    const options: OptionConfigMap = {};
+	/**
+	 * Validate and return all metadata registered to this command instance.
+	 */
+	getMetadata(): CommandMetadata {
+		const ctor = getConstructor(this);
+		const options: OptionConfigMap = {};
 
-    // Since default values for options are represented as class properties,
-    // we need to inject the defaults into the argument parsing layer.
-    // We can easily do this here and avoid a lot of headache.
-    Object.entries(getInheritedOptions(this)).forEach(([option, config]) => {
-      options[option] = {
-        ...config,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        default: this[option as keyof this] ?? config.default,
-      };
-    });
+		// Since default values for options are represented as class properties,
+		// we need to inject the defaults into the argument parsing layer.
+		// We can easily do this here and avoid a lot of headache.
+		Object.entries(getInheritedOptions(this)).forEach(([option, config]) => {
+			options[option] = {
+				...config,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				default: this[option as keyof this] ?? config.default,
+			};
+		});
 
-    return {
-      aliases: ctor.aliases,
-      allowUnknownOptions: ctor.allowUnknownOptions,
-      allowVariadicParams: ctor.allowVariadicParams,
-      categories: getInheritedCategories(this),
-      category: ctor.category,
-      commands: this.commands,
-      deprecated: ctor.deprecated,
-      description: ctor.description,
-      hidden: ctor.hidden,
-      options,
-      params: ctor.params,
-      path: ctor.path,
-      usage: ctor.usage,
-    };
-  }
+		return {
+			aliases: ctor.aliases,
+			allowUnknownOptions: ctor.allowUnknownOptions,
+			allowVariadicParams: ctor.allowVariadicParams,
+			categories: getInheritedCategories(this),
+			category: ctor.category,
+			commands: this.commands,
+			deprecated: ctor.deprecated,
+			description: ctor.description,
+			hidden: ctor.hidden,
+			options,
+			params: ctor.params,
+			path: ctor.path,
+			usage: ctor.usage,
+		};
+	}
 
-  /**
-   * Return metadata as options for argument parsing.
-   */
-  getParserOptions(): ParserOptions<O, P> {
-    const {
-      aliases,
-      allowUnknownOptions,
-      allowVariadicParams,
-      options,
-      params,
-      path,
-    } = this.getMetadata();
+	/**
+	 * Return metadata as options for argument parsing.
+	 */
+	getParserOptions(): ParserOptions<O, P> {
+		const { aliases, allowUnknownOptions, allowVariadicParams, options, params, path } =
+			this.getMetadata();
 
-    return {
-      commands: [path, ...aliases],
-      options,
-      params,
-      unknown: allowUnknownOptions,
-      variadic: Boolean(allowVariadicParams),
-    } as ParserOptions<O, P>;
-  }
+		return {
+			commands: [path, ...aliases],
+			options,
+			params,
+			unknown: allowUnknownOptions,
+			variadic: Boolean(allowVariadicParams),
+		} as ParserOptions<O, P>;
+	}
 
-  /**
-   * Return the command path (canonical name on the command line).
-   */
-  getPath(): string {
-    return getConstructor(this).path;
-  }
+	/**
+	 * Return the command path (canonical name on the command line).
+	 */
+	getPath(): string {
+		return getConstructor(this).path;
+	}
 
-  /**
-   * Render a React element with Ink and output to the configured streams.
-   */
-  async render(element: React.ReactElement) {
-    return this.getProgram().renderElement(element);
-  }
+	/**
+	 * Render a React element with Ink and output to the configured streams.
+	 */
+	async render(element: React.ReactElement) {
+		return this.getProgram().renderElement(element);
+	}
 
-  /**
-   * Run the program within itself, by passing a custom command and argv list.
-   */
-  runProgram = (argv: Argv): Promise<ExitCode> => this.getProgram().run(argv, undefined, true);
+	/**
+	 * Run the program within itself, by passing a custom command and argv list.
+	 */
+	runProgram = (argv: Argv): Promise<ExitCode> => this.getProgram().run(argv, undefined, true);
 
-  /**
-   * Run a task (function) with the defined arguments and
-   * the current command instance bound to the task's context.
-   */
-  runTask = <A extends unknown[], R>(
-    task: (this: TaskContext<O>, ...args: A) => R,
-    ...args: A
-  ): R => {
-    // We dont want tasks to have full access to the command
-    // and its methods, so recreate a similar but smaller context.
-    const context: TaskContext<O> = {
-      exit: this.exit,
-      log: this.log,
-      rest: this.rest,
-      unknown: this.unknown,
-      ...this[INTERNAL_OPTIONS]!,
-      runProgram: this.runProgram,
-      runTask: this.runTask,
-    };
+	/**
+	 * Run a task (function) with the defined arguments and
+	 * the current command instance bound to the task's context.
+	 */
+	runTask = <A extends unknown[], R>(
+		task: (this: TaskContext<O>, ...args: A) => R,
+		...args: A
+	): R => {
+		// We dont want tasks to have full access to the command
+		// and its methods, so recreate a similar but smaller context.
+		const context: TaskContext<O> = {
+			exit: this.exit,
+			log: this.log,
+			rest: this.rest,
+			unknown: this.unknown,
+			...this[INTERNAL_OPTIONS]!,
+			runProgram: this.runProgram,
+			runTask: this.runTask,
+		};
 
-    return task.apply(context, args);
-  };
+		return task.apply(context, args);
+	};
 
-  /**
-   * Executed when the command is being ran.
-   */
-  abstract run(...params: P): Promise<RunResult> | RunResult;
+	/**
+	 * Executed when the command is being ran.
+	 */
+	abstract run(...params: P): Promise<RunResult> | RunResult;
 
-  /**
-   * Create a proxy command using itself as the super class.
-   */
-  protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
-    path: CommandPath,
-    config: ProxyCommandConfig<O, P>,
-    runner: ProxyCommandRunner<O, P>,
-  ): Command<O, P> {
-    return createProxyCommand(path, config, runner);
-  }
+	/**
+	 * Create a proxy command using itself as the super class.
+	 */
+	protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
+		path: CommandPath,
+		config: ProxyCommandConfig<O, P>,
+		runner: ProxyCommandRunner<O, P>,
+	): Command<O, P> {
+		return createProxyCommand(path, config, runner);
+	}
 
-  /**
-   * Return the program instance or fail.
-   */
-  private getProgram(): Program {
-    const program = this[INTERNAL_PROGRAM];
+	/**
+	 * Return the program instance or fail.
+	 */
+	private getProgram(): Program {
+		const program = this[INTERNAL_PROGRAM];
 
-    if (!program) {
-      throw new CLIError('COMMAND_NO_PROGRAM');
-    }
+		if (!program) {
+			throw new CLIError('COMMAND_NO_PROGRAM');
+		}
 
-    return program;
-  }
+		return program;
+	}
 
-  /**
-   * Verify sub-command is prefixed with the correct path.
-   */
-  private handleBeforeRegister = (subPath: CommandPath) => {
-    const path = this.getPath();
+	/**
+	 * Verify sub-command is prefixed with the correct path.
+	 */
+	private handleBeforeRegister = (subPath: CommandPath) => {
+		const path = this.getPath();
 
-    if (!subPath.startsWith(path)) {
-      throw new CLIError('COMMAND_INVALID_SUBPATH', [subPath, path]);
-    }
-  };
+		if (!subPath.startsWith(path)) {
+			throw new CLIError('COMMAND_INVALID_SUBPATH', [subPath, path]);
+		}
+	};
 }

@@ -70,15 +70,15 @@ In our examples moving forward, we will use "renderer" as our plugin type.
 import { Registry, Pluggable } from '@boost/plugin';
 
 export interface Renderable<T = unknown> extends Pluggable<T> {
-  render(): string | Promise<string>;
+	render(): string | Promise<string>;
 }
 
 const rendererRegistry = new Registry<Renderable>('boost', 'renderer', {
-  validate(plugin) {
-    if (typeof plugin.render !== 'function') {
-      throw new TypeError('Renderers require a `render()` method.');
-    }
-  },
+	validate(plugin) {
+		if (typeof plugin.render !== 'function') {
+			throw new TypeError('Renderers require a `render()` method.');
+		}
+	},
 });
 
 export default rendererRegistry;
@@ -123,12 +123,12 @@ import { Plugin } from '@boost/plugin';
 import { Renderable } from './registry';
 
 export default class Renderer extends Plugin implements Renderable {
-  // Using private scope
-  readonly name = '@boost/renderer-example';
+	// Using private scope
+	readonly name = '@boost/renderer-example';
 
-  render() {
-    return 'Something rendered here?';
-  }
+	render() {
+		return 'Something rendered here?';
+	}
 }
 ```
 
@@ -139,12 +139,12 @@ export default class Renderer extends Plugin implements Renderable {
 import { Renderable } from './registry';
 
 const renderer: Renderable = {
-  // Using public scope
-  name: 'boost-renderer-example',
+	// Using public scope
+	name: 'boost-renderer-example',
 
-  render() {
-    return 'Something rendered here?';
-  },
+	render() {
+		return 'Something rendered here?';
+	},
 };
 
 export default renderer;
@@ -164,17 +164,17 @@ import { Plugin } from '@boost/plugin';
 import { Renderable } from './registry';
 
 export interface RendererOptions {
-  async?: boolean;
+	async?: boolean;
 }
 
 export default class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
-  // ...
+	// ...
 
-  blueprint({ bool }: Predicates): Blueprint<RendererOptions> {
-    return {
-      async: bool(),
-    };
-  }
+	blueprint({ bool }: Predicates): Blueprint<RendererOptions> {
+		return {
+			async: bool(),
+		};
+	}
 }
 
 // Example
@@ -191,7 +191,7 @@ import { Renderable } from './registry';
 import Tool from './Tool';
 
 export default class Renderer extends Plugin<Tool> implements Renderable<Tool> {
-  // ...
+	// ...
 }
 ```
 
@@ -218,13 +218,13 @@ import { Plugin } from '@boost/plugin';
 import { Renderable } from './registry';
 
 export default class Renderer extends Plugin implements Renderable {
-  readonly name = '@boost/renderer-example';
+	readonly name = '@boost/renderer-example';
 
-  priority = 50;
+	priority = 50;
 
-  render() {
-    return 'Something rendered here?';
-  }
+	render() {
+		return 'Something rendered here?';
+	}
 }
 ```
 
@@ -235,13 +235,13 @@ export default class Renderer extends Plugin implements Renderable {
 import { Renderable } from './registry';
 
 const renderer: Renderable = {
-  name: 'boost-renderer-example',
+	name: 'boost-renderer-example',
 
-  priority: 50,
+	priority: 50,
 
-  render() {
-    return 'Something rendered here?';
-  },
+	render() {
+		return 'Something rendered here?';
+	},
 };
 
 export default renderer;
@@ -283,15 +283,15 @@ import { Renderable } from './registry';
 import Tool from './Tool';
 
 export default class Renderer extends Plugin<Tool> implements Renderable<Tool> {
-  // ...
+	// ...
 
-  async startup(tool: Tool) {
-    // Do something
-  }
+	async startup(tool: Tool) {
+		// Do something
+	}
 
-  async shutdown(tool: Tool) {
-    // Do something
-  }
+	async shutdown(tool: Tool) {
+		// Do something
+	}
 }
 ```
 
@@ -302,15 +302,15 @@ export default class Renderer extends Plugin<Tool> implements Renderable<Tool> {
 import Tool from './Tool';
 
 const renderer = {
-  // ...
+	// ...
 
-  async startup(tool: Tool) {
-    // Do something
-  },
+	async startup(tool: Tool) {
+		// Do something
+	},
 
-  async shutdown(tool: Tool) {
-    // Do something
-  },
+	async shutdown(tool: Tool) {
+		// Do something
+	},
 };
 
 export default renderer;
@@ -350,9 +350,9 @@ import { Renderable } from './registry';
 import Renderer, { RendererOptions } from './Renderer';
 
 export default async function (options: RendererOptions): Renderable {
-  await someProcessThatNeedsToBeAwaited();
+	await someProcessThatNeedsToBeAwaited();
 
-  return new Renderer(options);
+	return new Renderer(options);
 }
 ```
 
@@ -363,17 +363,17 @@ export default async function (options: RendererOptions): Renderable {
 import { RendererOptions, Renderable } from './registry';
 
 export default function (options: RendererOptions): Renderable {
-  return {
-    name: 'boost-renderer-example',
+	return {
+		name: 'boost-renderer-example',
 
-    render() {
-      if (options.async) {
-        return Promise.resolve('Ooo, this is a fancy render.');
-      }
+		render() {
+			if (options.async) {
+				return Promise.resolve('Ooo, this is a fancy render.');
+			}
 
-      return 'Something rendered here?';
-    },
-  };
+			return 'Something rendered here?';
+		},
+	};
 }
 ```
 
@@ -429,16 +429,16 @@ or by passing an object of module names that map to booleans or options.
 ```ts
 // Load many with default options
 const renderers = await rendererRegistry.loadMany([
-  'foo',
-  '@boost/renderer-bar',
-  '@scope/boost-renderer-baz',
+	'foo',
+	'@boost/renderer-bar',
+	'@scope/boost-renderer-baz',
 ]);
 
 // Load many with custom options
 const renderers = await rendererRegistry.loadMany({
-  foo: { async: true },
-  '@boost/renderer-bar': true, // Enabled
-  '@scope/boost-renderer-baz': false, // Disabled
+	foo: { async: true },
+	'@boost/renderer-bar': true, // Enabled
+	'@scope/boost-renderer-baz': false, // Disabled
 });
 ```
 
@@ -446,10 +446,10 @@ And lastly, passing a plugin object directly is also supported.
 
 ```ts
 const renderer = await rendererRegistry.load({
-  name: '@scope/boost-renderer-baz',
-  render() {
-    return 'Hello world';
-  },
+	name: '@scope/boost-renderer-baz',
+	render() {
+		return 'Hello world';
+	},
 });
 
 // Or
@@ -478,7 +478,7 @@ import { Registry, Pluggable, Plugin } from '@boost/plugin';
 import Tool from './Tool';
 
 export interface Renderable<T> extends Pluggable<T> {
-  render(): string | Promise<string>;
+	render(): string | Promise<string>;
 }
 
 class Renderer<T> extends Plugin<T> implements Renderable<T> {}
@@ -534,12 +534,12 @@ module, both long and short forms are supported.
 
 ```js
 module.exports = {
-  renderers: [
-    'foo', // @boost/renderer-foo, boost-renderer-foo
-    '@boost/renderer-bar',
-    '@scope/boost-renderer-baz',
-    '../custom/renderer.js',
-  ],
+	renderers: [
+		'foo', // @boost/renderer-foo, boost-renderer-foo
+		'@boost/renderer-bar',
+		'@scope/boost-renderer-baz',
+		'../custom/renderer.js',
+	],
 };
 ```
 
@@ -575,12 +575,12 @@ a tuple alongside the source. Plugins can also be disabled by passing a `false` 
 
 ```js
 module.exports = {
-  renderers: [
-    ['foo', { async: true }],
-    '@boost/renderer-bar',
-    ['@scope/boost-renderer-baz', false], // Disabled
-    '../custom/renderer.js',
-  ],
+	renderers: [
+		['foo', { async: true }],
+		'@boost/renderer-bar',
+		['@scope/boost-renderer-baz', false], // Disabled
+		'../custom/renderer.js',
+	],
 };
 ```
 
@@ -616,12 +616,12 @@ configurable options or flags (enable or disable the plugin).
 
 ```js
 module.exports = {
-  renderers: {
-    foo: { async: true }, // Enabled with options
-    '@boost/renderer-bar': {}, // Enabled with empty options
-    '@scope/boost-renderer-baz': false, // Disabled
-    '../custom/renderer.js': true, // Enabled
-  },
+	renderers: {
+		foo: { async: true }, // Enabled with options
+		'@boost/renderer-bar': {}, // Enabled with empty options
+		'@scope/boost-renderer-baz': false, // Disabled
+		'../custom/renderer.js': true, // Enabled
+	},
 };
 ```
 
@@ -649,7 +649,7 @@ as a basis and reference for Boost's plugin system.
 | [Yarn][yarn]                   | Object with `factory()` that returns an object |                                        |                                                                       | factory()        |
 
 [babel]:
-  https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-writing-your-first-babel-plugin
+	https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#toc-writing-your-first-babel-plugin
 [eslint]: https://eslint.org/docs/developer-guide/working-with-plugins
 [gulp]: https://gulpjs.com/docs/en/getting-started/using-plugins
 [parcel-asset]: https://parceljs.org/asset_types.html

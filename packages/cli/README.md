@@ -12,9 +12,9 @@ import BuildCommand from './commands/Build';
 import CleanCommand from './commands/Clean';
 
 const program = new Program({
-  bin: 'boost',
-  name: 'Boost',
-  version: '1.2.3',
+	bin: 'boost',
+	name: 'Boost',
+	version: '1.2.3',
 });
 
 program.register(new BuildCommand());

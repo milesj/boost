@@ -3,7 +3,7 @@ import registerOption from './registerOption';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function createOptionDecorator<O extends Option<any>>(config: O): PropertyDecorator {
-  return (target, name) => {
-    registerOption(target, name, config);
-  };
+	return (target, name) => {
+		registerOption(target, name, config);
+	};
 }

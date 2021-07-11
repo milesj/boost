@@ -22,7 +22,6 @@ Lightweight level based logging system.
 >
   <TabItem value="yarn">
 
-
 ```bash
 yarn add @boost/log
 ```
@@ -30,14 +29,12 @@ yarn add @boost/log
   </TabItem>
   <TabItem value="npm">
 
-
 ```bash
 npm install @boost/log
 ```
 
   </TabItem>
 </Tabs>
-
 
 ## Environment variables
 
@@ -79,8 +76,8 @@ import { Logger } from '@boost/log';
 const logger = new Logger({ name: 'boost' });
 
 logger.log({
-  level: 'info',
-  message: 'Something else has happened…',
+	level: 'info',
+	message: 'Something else has happened…',
 });
 ```
 
@@ -99,11 +96,11 @@ import chalk from 'chalk';
 import { createLogger, StreamTransport } from '@boost/log';
 
 const log = createLogger({
-  name: 'boost',
-  labels: {
-    error: chalk.bgRed.black.bold(' FAIL '),
-  },
-  transports: [new StreamTransport({ levels: ['error'], stream: process.stderr })],
+	name: 'boost',
+	labels: {
+		error: chalk.bgRed.black.bold(' FAIL '),
+	},
+	transports: [new StreamTransport({ levels: ['error'], stream: process.stderr })],
 });
 ```
 
@@ -158,9 +155,9 @@ can be done on a per transport basis using the `format` option, like so.
 import { ConsoleTransport, formats } from '@boost/log';
 
 const transport = new ConsoleTransport({
-  format: (item) => `${item.level} ${item.message}`,
-  // Or a pre-built format
-  format: formats.json,
+	format: (item) => `${item.level} ${item.message}`,
+	// Or a pre-built format
+	format: formats.json,
 });
 ```
 
@@ -182,11 +179,11 @@ items.
 
 ```ts
 const log = createLogger({
-  name: 'boost',
-  metadata: {
-    locale: 'en',
-    region: 'eu',
-  },
+	name: 'boost',
+	metadata: {
+		locale: 'en',
+		region: 'eu',
+	},
 });
 ```
 
@@ -228,8 +225,8 @@ Logs messages to any writeable stream or an object that defines a `write(message
 import { StreamTransport } from '@boost/log';
 
 const transport = new StreamTransport({
-  levels: ['error', 'warn'],
-  stream: process.stderr,
+	levels: ['error', 'warn'],
+	stream: process.stderr,
 });
 ```
 
@@ -242,8 +239,8 @@ file size is met.
 import { FileTransport } from '@boost/log';
 
 const transport = new FileTransport({
-  levels: ['error'],
-  path: '/var/log/error.log',
+	levels: ['error'],
+	path: '/var/log/error.log',
 });
 ```
 
@@ -260,9 +257,9 @@ Like `FileTransport`, but also rotates files based on timestamps and a chosen pe
 import { RotatingFileTransport } from '@boost/log';
 
 const transport = new RotatingFileTransport({
-  levels: ['error'],
-  path: '/var/log/error.log',
-  rotation: 'daily',
+	levels: ['error'],
+	path: '/var/log/error.log',
+	rotation: 'daily',
 });
 ```
 
@@ -284,10 +281,10 @@ Returns a Jest spy that matches the return value shape of `createLogger`.
 import { mockLogger } from '@boost/log/test';
 
 it('calls the logger', () => {
-  const log = mockLogger();
+	const log = mockLogger();
 
-  log('Something has happened');
+	log('Something has happened');
 
-  expect(log).toHaveBeenCalled();
+	expect(log).toHaveBeenCalled();
 });
 ```

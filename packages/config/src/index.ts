@@ -17,14 +17,14 @@ export * from './predicates';
 export * from './types';
 
 export {
-  ConfigError,
-  Configuration,
-  getEnv,
-  mergeArray,
-  mergeExtends,
-  mergeObject,
-  mergePlugins,
-  overwrite,
+	ConfigError,
+	Configuration,
+	getEnv,
+	mergeArray,
+	mergeExtends,
+	mergeObject,
+	mergePlugins,
+	overwrite,
 };
 
 export type { ConfigErrorCode };

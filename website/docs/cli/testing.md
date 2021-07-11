@@ -43,7 +43,7 @@ import { renderComponent } from '@boost/cli/test';
 import TestComponent from '../src/components/TestComponent';
 
 it('renders a component', async () => {
-  expect(await renderComponent(<TestComponent />)).toMatchSnapshot();
+	expect(await renderComponent(<TestComponent />)).toMatchSnapshot();
 });
 ```
 
@@ -64,10 +64,10 @@ import { runCommand } from '@boost/cli/test';
 import TestCommand from '../src/commands/TestCommand';
 
 it('runs a command', async () => {
-  const command = new TestCommand();
+	const command = new TestCommand();
 
-  expect(await runCommand(command, ['foo', 'bar', 'baz'])).toMatchSnapshot();
-  expect(command.log).toHaveBeenCalled();
+	expect(await runCommand(command, ['foo', 'bar', 'baz'])).toMatchSnapshot();
+	expect(command.log).toHaveBeenCalled();
 });
 ```
 
@@ -86,12 +86,12 @@ import { runTask } from '@boost/cli/test';
 import testTask from '../src/tasks/testTask';
 
 it('runs a task', async () => {
-  const context = {
-    log: jest.fn(),
-  };
+	const context = {
+		log: jest.fn(),
+	};
 
-  expect(await runTask(testTask, ['foo', 'bar', 'baz'], context)).toMatchSnapshot();
-  expect(context.log).toHaveBeenCalled();
+	expect(await runTask(testTask, ['foo', 'bar', 'baz'], context)).toMatchSnapshot();
+	expect(context.log).toHaveBeenCalled();
 });
 ```
 
@@ -109,11 +109,11 @@ import { runProgram } from '@boost/cli/test';
 import Program from '../src/program';
 
 it('runs a program', async () => {
-  const program = new Program();
+	const program = new Program();
 
-  const { code, output } = await runProgram(program, ['cmd', '--foo', '123', 'bar']);
+	const { code, output } = await runProgram(program, ['cmd', '--foo', '123', 'bar']);
 
-  expect(output).toMatchSnapshot();
-  expect(code).toBe(0);
+	expect(output).toMatchSnapshot();
+	expect(code).toBe(0);
 });
 ```
