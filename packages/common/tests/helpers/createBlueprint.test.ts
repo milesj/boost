@@ -1,5 +1,5 @@
 import { string } from 'optimal';
-import createBlueprint from '../../src/helpers/createBlueprint';
+import { createBlueprint } from '../../src/helpers/createBlueprint';
 
 describe('createBlueprint()', () => {
 	it('returns a blueprint', () => {

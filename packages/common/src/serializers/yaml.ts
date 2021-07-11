@@ -1,7 +1,7 @@
 import YAML from 'yaml';
 
 export function parse<T = object>(content: string, options?: YAML.Options): T {
-	return YAML.parse(content, options);
+	return YAML.parse(content, options) as T;
 }
 
 export function stringify(content: unknown, options?: YAML.Options): string {

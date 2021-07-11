@@ -1,4 +1,4 @@
-import isPlainObject from '../../src/helpers/isPlainObject';
+import { isPlainObject } from '../../src/helpers/isPlainObject';
 
 describe('isPlainObject()', () => {
 	it('returns true if a plain object', () => {

@@ -1,4 +1,4 @@
-import toArray from '../../src/helpers/toArray';
+import { toArray } from '../../src/helpers/toArray';
 
 describe('toArray()', () => {
 	it('returns an empty array for undefined', () => {

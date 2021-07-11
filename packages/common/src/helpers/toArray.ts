@@ -1,4 +1,4 @@
-export default function toArray<T = unknown>(value?: T | T[]): T[] {
+export function toArray<T = unknown>(value?: T | T[]): T[] {
 	if (typeof value === 'undefined') {
 		return [];
 	}

@@ -5,7 +5,7 @@ import { Constructor } from '../types';
  * They will also fail when comparing against source and built files.
  * So emulate an `instanceof` check by comparing constructor names.
  */
-export default function instanceOf<T = unknown>(
+export function instanceOf<T = unknown>(
 	object: unknown,
 	declaration: Constructor<T>,
 	loose: boolean = true,

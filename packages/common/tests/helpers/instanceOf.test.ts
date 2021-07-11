@@ -1,4 +1,4 @@
-import instanceOf from '../../src/helpers/instanceOf';
+import { instanceOf } from '../../src/helpers/instanceOf';
 
 describe('instanceOf()', () => {
 	class Foo {}

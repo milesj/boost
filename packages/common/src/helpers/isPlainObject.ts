@@ -1,9 +1,6 @@
-import isObject from './isObject';
+import { isObject } from './isObject';
 
-export default function isPlainObject<T = object>(
-	value: unknown,
-	loose: boolean = false,
-): value is T {
+export function isPlainObject<T = object>(value: unknown, loose: boolean = false): value is T {
 	if (!isObject(value)) {
 		return false;
 	}

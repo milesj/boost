@@ -9,4 +9,4 @@ const errors = {
 
 export type CommonErrorCode = keyof typeof errors;
 
-export default createScopedError<CommonErrorCode>('CMN', 'CommonError', errors);
+export const CommonError = createScopedError<CommonErrorCode>('CMN', 'CommonError', errors);

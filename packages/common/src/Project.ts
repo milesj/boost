@@ -2,9 +2,9 @@
 
 import glob from 'fast-glob';
 import { Memoize } from '@boost/decorators';
-import CommonError from './CommonError';
-import parseFile from './helpers/parseFile';
-import Path from './Path';
+import { CommonError } from './CommonError';
+import { parseFile } from './helpers/parseFile';
+import { Path } from './Path';
 import {
 	FilePath,
 	PackageStructure,
@@ -17,7 +17,7 @@ export interface ProjectSearchOptions {
 	relative?: boolean;
 }
 
-export default class Project {
+export class Project {
 	readonly root: Path;
 
 	constructor(root: PortablePath = process.cwd()) {

@@ -1,4 +1,4 @@
-import formatMs from '../../src/helpers/formatMs';
+import { formatMs } from '../../src/helpers/formatMs';
 
 describe('formatMs()', () => {
 	it('handles zero', () => {

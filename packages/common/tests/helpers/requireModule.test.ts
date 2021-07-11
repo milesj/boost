@@ -1,4 +1,4 @@
-import requireModule from '../../src/helpers/requireModule';
+import { requireModule } from '../../src/helpers/requireModule';
 
 jest.mock('example', () => 123, { virtual: true });
 jest.mock('example-es-default', () => ({ __esModule: true, default: 456 }), { virtual: true });

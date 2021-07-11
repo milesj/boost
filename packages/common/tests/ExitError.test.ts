@@ -1,4 +1,4 @@
-import ExitError from '../src/ExitError';
+import { ExitError } from '../src/ExitError';
 
 describe('ExitError', () => {
 	it('sets the message and exit code', () => {

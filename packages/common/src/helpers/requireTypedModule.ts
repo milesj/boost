@@ -2,11 +2,10 @@
 
 import fs from 'fs';
 import type Module from 'module';
-import interopRequireModule from '../internal/interopRequireModule';
+import { interopRequireModule } from '../internal/interopRequireModule';
 import { PortablePath } from '../types';
 
 declare global {
-	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace NodeJS {
 		interface Module {
 			_compile: (code: string, file: string) => unknown;
@@ -17,7 +16,7 @@ declare global {
 let ts: typeof import('typescript') | null = null;
 
 try {
-	// eslint-disable-next-line
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, import/no-extraneous-dependencies
 	ts = require('typescript');
 } catch {
 	// Ignore and check at runtime
@@ -67,7 +66,7 @@ function unregisterExtensions() {
 	delete require.extensions['.tsx'];
 }
 
-export default function requireTypedModule<T>(path: PortablePath): T {
+export function requireTypedModule<T>(path: PortablePath): T {
 	const filePath = String(path);
 
 	if (!filePath.endsWith('.ts') && !filePath.endsWith('.tsx')) {

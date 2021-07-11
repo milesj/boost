@@ -1,13 +1,13 @@
 import fs from 'fs';
-import CommonError from '../CommonError';
-import Path from '../Path';
+import { CommonError } from '../CommonError';
+import { Path } from '../Path';
 import { parse as parseJSON } from '../serializers/json';
 import { parse as parseYAML } from '../serializers/yaml';
 import { PortablePath } from '../types';
-import requireModule from './requireModule';
-import requireTypedModule from './requireTypedModule';
+import { requireModule } from './requireModule';
+import { requireTypedModule } from './requireTypedModule';
 
-export default function parseFile<T>(filePath: PortablePath): T {
+export function parseFile<T>(filePath: PortablePath): T {
 	const path = Path.create(filePath);
 
 	if (!path.isAbsolute()) {

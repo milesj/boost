@@ -14,7 +14,7 @@ class Node {
 	}
 }
 
-export default class PackageGraph<T extends PackageStructure = PackageStructure> {
+export class PackageGraph<T extends PackageStructure = PackageStructure> {
 	protected mapped: boolean = false;
 
 	protected nodes = new Map<string, Node>();

@@ -1,10 +1,10 @@
-import Path from '../Path';
+import { Path } from '../Path';
 import { PortablePath } from '../types';
 
 const NIX_START = /^(\/|\.)/u;
 const WIN_START = /^([A-Z]:|\.)/u;
 
-export default function isFilePath(path: PortablePath): boolean {
+export function isFilePath(path: PortablePath): boolean {
 	const filePath = path instanceof Path ? path.path() : path;
 
 	if (filePath === '') {

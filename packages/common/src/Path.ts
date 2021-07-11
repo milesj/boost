@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { FilePath, PortablePath } from './types';
 
-export default class Path {
+export class Path {
 	static DELIMITER = path.delimiter;
 
 	static SEP = '/';
@@ -137,7 +137,7 @@ export default class Path {
 	 * resolved against the defined current working directory.
 	 */
 	resolve(cwd?: PortablePath): Path {
-		return new Path(path.resolve(String(cwd || process.cwd()), this.internalPath));
+		return new Path(path.resolve(String(cwd ?? process.cwd()), this.internalPath));
 	}
 
 	toJSON(): FilePath {

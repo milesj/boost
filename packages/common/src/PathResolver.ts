@@ -1,8 +1,8 @@
-import CommonError from './CommonError';
-import Path from './Path';
+import { CommonError } from './CommonError';
+import { Path } from './Path';
 import { Lookup, LookupType, PortablePath } from './types';
 
-export default class PathResolver {
+export class PathResolver {
 	private lookups: Lookup[] = [];
 
 	/**

@@ -1,4 +1,4 @@
-export default class ExitError extends Error {
+export class ExitError extends Error {
 	code: number;
 
 	constructor(message: string, code: number) {

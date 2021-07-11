@@ -1,4 +1,4 @@
-import isModuleName from '../../src/helpers/isModuleName';
+import { isModuleName } from '../../src/helpers/isModuleName';
 
 describe('isModuleName()', () => {
 	it('returns true for traditional names', () => {

@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-export default function interopRequireModule(path: string): unknown {
-	// eslint-disable-next-line
+export function interopRequireModule(path: string): unknown {
 	const result = require(path) as {
 		[named: string]: unknown;
 		default?: unknown;

@@ -1,4 +1,4 @@
-import deepFreeze from '../../src/helpers/deepFreeze';
+import { deepFreeze } from '../../src/helpers/deepFreeze';
 
 describe('deepFreeze()', () => {
 	it('returns a frozen object', () => {
@@ -19,7 +19,7 @@ describe('deepFreeze()', () => {
 		});
 
 		expect(() => {
-			// @ts-expect-error
+			// @ts-expect-error Allow type
 			obj.foo.bar = 123;
 		}).toThrowErrorMatchingSnapshot();
 	});

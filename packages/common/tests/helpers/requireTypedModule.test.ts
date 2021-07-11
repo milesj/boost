@@ -1,4 +1,4 @@
-import requireTypedModule from '../../src/helpers/requireTypedModule';
+import { requireTypedModule } from '../../src/helpers/requireTypedModule';
 
 describe('requireTypedModule()', () => {
 	it('errors if not a .ts file or .tsx file', () => {

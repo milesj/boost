@@ -1,6 +1,6 @@
 import { sep } from 'path';
-import isFilePath from '../../src/helpers/isFilePath';
-import Path from '../../src/Path';
+import { isFilePath } from '../../src/helpers/isFilePath';
+import { Path } from '../../src/Path';
 
 describe('isFilePath()', () => {
 	it('returns false if an empty string', () => {

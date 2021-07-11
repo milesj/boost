@@ -1,4 +1,4 @@
-import deepMerge from '../../src/helpers/deepMerge';
+import { deepMerge } from '../../src/helpers/deepMerge';
 
 describe('deepMerge()', () => {
 	describe('objects', () => {

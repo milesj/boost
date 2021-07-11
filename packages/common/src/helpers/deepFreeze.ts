@@ -1,6 +1,6 @@
-import isPlainObject from './isPlainObject';
+import { isPlainObject } from './isPlainObject';
 
-export default function deepFreeze<T extends object = object>(obj: T): T {
+export function deepFreeze<T extends object = object>(obj: T): T {
 	if (Object.isFrozen(obj)) {
 		return obj;
 	}

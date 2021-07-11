@@ -1,6 +1,6 @@
 import glob from 'fast-glob';
-import PackageGraph from '../src/PackageGraph';
-import Path from '../src/Path';
+import { PackageGraph } from '../src/PackageGraph';
+import { Path } from '../src/Path';
 import { PackageStructure } from '../src/types';
 
 function getBoostPackages() {
@@ -13,7 +13,6 @@ function getBoostPackages() {
 			cwd: new Path(__dirname, '../../').path(),
 		})
 		.forEach((pkgPath) => {
-			// eslint-disable-next-line
 			const pkg = require(pkgPath);
 			pkgs[pkg.name] = pkg;
 		});

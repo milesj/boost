@@ -1,5 +1,5 @@
 import { Blueprint, Predicates } from 'optimal';
-import Path from './Path';
+import type { Path } from './Path';
 
 // NODE
 

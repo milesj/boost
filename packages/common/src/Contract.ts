@@ -1,7 +1,7 @@
 import optimal, { Blueprint, Predicates, predicates } from 'optimal';
 import { Optionable } from './types';
 
-export default abstract class Contract<T extends object = {}> implements Optionable<T> {
+export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	readonly options: Readonly<Required<T>>;
 
 	constructor(options?: T) {
@@ -18,7 +18,7 @@ export default abstract class Contract<T extends object = {}> implements Optiona
 
 		// We don't want the options property to be modified directly,
 		// so it's read only, but we still want to modify it with this function.
-		// @ts-expect-error
+		// @ts-expect-error Allow readonly overwrite
 		this.options = Object.freeze(
 			optimal(
 				{ ...this.options, ...nextOptions },

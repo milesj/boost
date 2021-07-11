@@ -1,6 +1,6 @@
 import { getFixturePath } from '@boost/test-utils';
-import parseFile from '../../src/helpers/parseFile';
-import Path from '../../src/Path';
+import { parseFile } from '../../src/helpers/parseFile';
+import { Path } from '../../src/Path';
 
 describe('parseFile()', () => {
 	it('errors if path is not absolute', () => {

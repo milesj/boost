@@ -12,7 +12,6 @@ describe('Contract', () => {
 	}
 
 	class RequiredProps extends Contract<{ bar: number }> {
-		// eslint-disable-next-line no-useless-constructor
 		constructor(options: { bar: number }) {
 			super(options);
 		}
@@ -29,7 +28,7 @@ describe('Contract', () => {
 			expect(
 				() =>
 					new OptionalProps({
-						// @ts-expect-error
+						// @ts-expect-error Invalid type
 						foo: 123,
 					}),
 			).toThrowErrorMatchingSnapshot();
@@ -39,7 +38,7 @@ describe('Contract', () => {
 			expect(
 				() =>
 					new OptionalProps({
-						// @ts-expect-error
+						// @ts-expect-error Unknown arg
 						unknown: 'abc',
 					}),
 			).toThrowErrorMatchingSnapshot();
@@ -62,7 +61,7 @@ describe('Contract', () => {
 		it('requires non-optional options to be passed', () => {
 			expect(
 				() =>
-					// @ts-expect-error
+					// @ts-expect-error Missing arg
 					new RequiredProps(),
 			).toThrowErrorMatchingSnapshot();
 		});
@@ -78,7 +77,7 @@ describe('Contract', () => {
 		it('errors for invalid option type passed', () => {
 			expect(() => {
 				opts.configure({
-					// @ts-expect-error
+					// @ts-expect-error Invalid type
 					foo: 123,
 				});
 			}).toThrowErrorMatchingSnapshot();
@@ -87,7 +86,7 @@ describe('Contract', () => {
 		it('errors for unknown option', () => {
 			expect(() => {
 				opts.configure({
-					// @ts-expect-error
+					// @ts-expect-error Unknown arg
 					unknown: 'abc',
 				});
 			}).toThrowErrorMatchingSnapshot();
@@ -138,7 +137,7 @@ describe('Contract', () => {
 
 		it('freezes the object', () => {
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				opts.options.foo = 'override';
 			}).toThrowErrorMatchingSnapshot();
 		});

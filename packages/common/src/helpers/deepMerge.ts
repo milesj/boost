@@ -1,4 +1,4 @@
-import isObject from './isObject';
+import { isObject } from './isObject';
 
 export type MergableArray = unknown[];
 export type MergableObject = Record<string, unknown>;
@@ -27,10 +27,7 @@ function merge<T extends Mergeable>(prev: T, next: unknown): T {
 	return base as T;
 }
 
-export default function deepMerge<T extends Mergeable, V extends InferMergeable<T>>(
-	base: T,
-	other?: V,
-): T {
+export function deepMerge<T extends Mergeable, V extends InferMergeable<T>>(base: T, other?: V): T {
 	const next = Array.isArray(base)
 		? merge<MergableArray>([], base)
 		: merge<MergableObject>({}, base);

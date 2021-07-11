@@ -1,4 +1,4 @@
-import isEmpty from '../../src/helpers/isEmpty';
+import { isEmpty } from '../../src/helpers/isEmpty';
 
 describe('isEmpty()', () => {
 	it('returns true for falsy values', () => {

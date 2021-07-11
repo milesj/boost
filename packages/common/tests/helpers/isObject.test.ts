@@ -1,4 +1,4 @@
-import isObject from '../../src/helpers/isObject';
+import { isObject } from '../../src/helpers/isObject';
 
 describe('isObject()', () => {
 	it('returns true if an object', () => {
