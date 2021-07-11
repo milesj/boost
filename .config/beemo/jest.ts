@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	coveragePathIgnorePatterns: [
 		'test.ts',
 		// Annoying to test
