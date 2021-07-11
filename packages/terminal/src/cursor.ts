@@ -1,6 +1,6 @@
 import ansiEscapes from 'ansi-escapes';
 
-export default {
+export const cursor = {
 	backward: ansiEscapes.cursorBackward,
 	down: ansiEscapes.cursorDown,
 	forward: ansiEscapes.cursorForward,

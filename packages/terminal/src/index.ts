@@ -5,9 +5,9 @@
 
 import style from 'chalk';
 import figures from 'figures';
-import cursor from './cursor';
-import screen from './screen';
 
+export * from './cursor';
+export * from './screen';
 export * from './text';
 
-export { cursor, figures, screen, style };
+export { figures, style };

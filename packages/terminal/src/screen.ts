@@ -1,7 +1,7 @@
 import ansiEscapes from 'ansi-escapes';
 import termSize from 'term-size';
 
-export default {
+export const screen = {
 	clear: ansiEscapes.clearScreen,
 	clearTerminal: ansiEscapes.clearTerminal,
 	erase: ansiEscapes.eraseScreen,
