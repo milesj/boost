@@ -7,21 +7,21 @@ export interface InstallOptions extends GlobalOptions {
 export type InstallParams = [string, ...string[]];
 
 export class InstallClassicCommand extends Command<InstallOptions, InstallParams> {
-	static path = 'install';
+	static override path = 'install';
 
-	static description = 'Install package(s)';
+	static override description = 'Install package(s)';
 
-	static deprecated = true;
+	static override deprecated = true;
 
-	static hidden = true;
+	static override hidden = true;
 
-	static category = 'setup';
+	static override category = 'setup';
 
-	static categories: Categories = {
+	static override categories: Categories = {
 		special: 'Special',
 	};
 
-	static options: Options<InstallOptions> = {
+	static override options: Options<InstallOptions> = {
 		// --save
 		save: {
 			category: 'special',
@@ -31,7 +31,7 @@ export class InstallClassicCommand extends Command<InstallOptions, InstallParams
 		},
 	};
 
-	static params: Params<InstallParams> = [
+	static override params: Params<InstallParams> = [
 		{
 			description: 'Package name',
 			label: 'pkg',
@@ -40,7 +40,7 @@ export class InstallClassicCommand extends Command<InstallOptions, InstallParams
 		},
 	];
 
-	static allowVariadicParams = 'pkgs';
+	static override allowVariadicParams = 'pkgs';
 
 	save: boolean = true;
 

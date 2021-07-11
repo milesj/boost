@@ -1,6 +1,6 @@
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
-import FileTransport from '../../src/transports/FileTransport';
+import { FileTransport } from '../../src/transports/FileTransport';
 import {
 	closeStream,
 	existsFile,
@@ -48,7 +48,7 @@ describe('FileTransport', () => {
 
 		transport.write('Line 1\n');
 
-		// @ts-expect-error
+		// @ts-expect-error Allow access
 		transport.rotating = true;
 		transport.write('Line 2, duh\n');
 
@@ -56,7 +56,7 @@ describe('FileTransport', () => {
 
 		expect(readFile(path)).toBe('Line 1\n');
 
-		// @ts-expect-error
+		// @ts-expect-error Allow access
 		transport.rotating = false;
 		transport.write('Line 3, of course\n');
 
@@ -73,7 +73,7 @@ describe('FileTransport', () => {
 
 		transport.open(); // Trigger open
 
-		// @ts-expect-error
+		// @ts-expect-error Allow access
 		expect(sizeFile(path)).toBe(transport.lastSize);
 
 		transport.write('Line 1\n');

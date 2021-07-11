@@ -21,7 +21,7 @@ jest.mock('term-size');
 describe('Command', () => {
 	describe('executeCommand()', () => {
 		function mockExeca() {
-			((execa as unknown) as jest.Mock).mockImplementation((command, args) => ({
+			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 			}));
 		}
@@ -230,7 +230,7 @@ describe('Command', () => {
 			expect(() => {
 				class TestCommand extends Command {
 					@Arg.String('Description')
-					locale: string = '';
+					override locale: string = '';
 
 					run() {
 						return Promise.resolve('');

@@ -3,19 +3,19 @@ import { BuildCommand } from './BuildCommand';
 import { InstallClassicCommand } from './InstallClassicCommand';
 
 class ClientBuildCommand extends BuildCommand {
-	static path = 'client:build';
+	static override path = 'client:build';
 
-	static category = 'build';
+	static override category = 'build';
 
-	static aliases = ['client:compile'];
+	static override aliases = ['client:compile'];
 }
 
 class ClientInstallCommand extends InstallClassicCommand {
-	static path = 'client:install';
+	static override path = 'client:install';
 
-	static category = 'setup';
+	static override category = 'setup';
 
-	static aliases = ['client:compile'];
+	static override aliases = ['client:compile'];
 }
 
 @Config('client', 'Client', {

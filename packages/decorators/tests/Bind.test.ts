@@ -78,7 +78,7 @@ describe('@Bind()', () => {
 
 	it('allows sub-classes to overwrite', () => {
 		class TestSub extends Test {
-			getValue() {
+			override getValue() {
 				return 'xyz';
 			}
 		}
@@ -95,7 +95,7 @@ describe('@Bind()', () => {
 	it('allows sub-classes to overwrite and bind', () => {
 		class TestSub extends Test {
 			@Bind()
-			getValue() {
+			override getValue() {
 				return 'xyz';
 			}
 		}
@@ -123,7 +123,7 @@ describe('@Bind()', () => {
 	it('allows sub-class overwritten setters to work correctly', () => {
 		class TestSub extends Test {
 			@Bind()
-			setValue(value: string) {
+			override setValue(value: string) {
 				this.value = `inherited ${value}`;
 
 				return this;
@@ -147,7 +147,7 @@ describe('@Bind()', () => {
 	it('doesnt break parent super calls', () => {
 		class TestSub extends Test {
 			@Bind()
-			getValue() {
+			override getValue() {
 				return `${super.getValue()} child`;
 			}
 		}

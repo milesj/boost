@@ -15,7 +15,7 @@ export class StreamTransport extends Transport<StreamTransportOptions> {
 		this.stream = options.stream;
 	}
 
-	blueprint(preds: Predicates): Blueprint<StreamTransportOptions> {
+	override blueprint(preds: Predicates): Blueprint<StreamTransportOptions> {
 		const { func, shape } = preds;
 
 		return {

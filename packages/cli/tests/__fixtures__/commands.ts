@@ -1,9 +1,9 @@
 import { Command } from '../../src';
 
 export class Parent extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'parent';
+	static override path = 'parent';
 
 	run() {
 		return Promise.resolve('parent');
@@ -11,9 +11,9 @@ export class Parent extends Command {
 }
 
 export class Child extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'parent:child';
+	static override path = 'parent:child';
 
 	run() {
 		return Promise.resolve('parent:child');
@@ -21,9 +21,9 @@ export class Child extends Command {
 }
 
 export class GrandChild extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'parent:child:grandchild';
+	static override path = 'parent:child:grandchild';
 
 	run() {
 		return Promise.resolve('parent:child:grandchild');
@@ -31,9 +31,9 @@ export class GrandChild extends Command {
 }
 
 export class UnknownChild extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'unknown';
+	static override path = 'unknown';
 
 	run() {
 		return Promise.resolve('unknown');
@@ -41,9 +41,9 @@ export class UnknownChild extends Command {
 }
 
 export class UnknownGrandChild extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'parent:unknown';
+	static override path = 'parent:unknown';
 
 	run() {
 		return Promise.resolve('parent:unknown');

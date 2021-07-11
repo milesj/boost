@@ -9,7 +9,7 @@ export abstract class SerialPipeline<
 	Options extends object,
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input
+	Output = Input,
 > extends Pipeline<Options, Ctx, Input, Output> {
 	// Unknown does not work here as the output type changes for each
 	// node in the linked list chain.
@@ -62,7 +62,7 @@ export abstract class SerialPipeline<
 	/**
 	 * Traverse the linked list to return a list of work units in defined order.
 	 */
-	getWorkUnits(): WorkUnit<{}, Input, Output>[] {
+	override getWorkUnits(): WorkUnit<{}, Input, Output>[] {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return this.root.work;
 	}

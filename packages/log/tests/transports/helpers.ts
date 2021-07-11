@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { PortablePath } from '@boost/common';
-import FileTransport from '../../src/transports/FileTransport';
+import { FileTransport } from '../../src/transports/FileTransport';
 
 export function existsFile(path: PortablePath): boolean {
 	return fs.existsSync(String(path));
@@ -29,7 +29,6 @@ export async function wait(delay: number) {
 	});
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function closeStream(transport: FileTransport<any>) {
 	await wait(0);
 

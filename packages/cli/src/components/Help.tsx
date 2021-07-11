@@ -246,7 +246,7 @@ export class Help extends React.Component<HelpProps> {
 	}
 
 	// eslint-disable-next-line complexity
-	render() {
+	override render() {
 		const { commands, options, header, params, config } = this.props;
 		const hasDesc = Boolean(config?.description);
 		const hasUsage = Boolean(config?.usage && config.usage.length > 0);

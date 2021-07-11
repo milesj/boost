@@ -11,11 +11,11 @@ export interface AllOptions extends GlobalOptions {
 export type AllParams = [string, boolean, number];
 
 export class AllClassicCommand extends Command<AllOptions, AllParams> {
-	static path = 'all';
+	static override path = 'all';
 
-	static description = 'All options and params';
+	static override description = 'All options and params';
 
-	static options: Options<AllOptions> = {
+	static override options: Options<AllOptions> = {
 		// --flag, -F
 		flag: {
 			description: 'Boolean flag',
@@ -56,7 +56,7 @@ export class AllClassicCommand extends Command<AllOptions, AllParams> {
 		},
 	};
 
-	static params: Params<AllParams> = [
+	static override params: Params<AllParams> = [
 		{
 			description: 'String',
 			label: 'char',

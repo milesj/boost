@@ -11,7 +11,7 @@ export interface RotatingFileTransportOptions extends FileTransportOptions {
 export class RotatingFileTransport extends FileTransport<RotatingFileTransportOptions> {
 	protected lastTimestamp: string = this.formatTimestamp(Date.now());
 
-	blueprint(preds: Predicates): Blueprint<RotatingFileTransportOptions> {
+	override blueprint(preds: Predicates): Blueprint<RotatingFileTransportOptions> {
 		const { string } = preds;
 
 		return {
@@ -57,7 +57,7 @@ export class RotatingFileTransport extends FileTransport<RotatingFileTransportOp
 	/**
 	 * @inheritdoc
 	 */
-	protected checkIfNeedsRotation() {
+	protected override checkIfNeedsRotation() {
 		if (
 			this.lastSize > this.options.maxSize ||
 			this.formatTimestamp(Date.now()) !== this.lastTimestamp
@@ -69,7 +69,7 @@ export class RotatingFileTransport extends FileTransport<RotatingFileTransportOp
 	/**
 	 * @inheritdoc
 	 */
-	protected getRotatedFileName(): string {
+	protected override getRotatedFileName(): string {
 		const name = this.path.name(true);
 		const ext = this.path.ext(true);
 
@@ -79,7 +79,7 @@ export class RotatingFileTransport extends FileTransport<RotatingFileTransportOp
 	/**
 	 * @inheritdoc
 	 */
-	protected rotateFile() {
+	protected override rotateFile() {
 		super.rotateFile();
 
 		// Update timestamp to the new format

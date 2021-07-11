@@ -19,7 +19,7 @@ class BoostConfiguration extends Configuration<BoostConfig> {
 		};
 	}
 
-	bootstrap() {
+	override bootstrap() {
 		this.configureFinder({
 			extendsSetting: 'extends',
 		});

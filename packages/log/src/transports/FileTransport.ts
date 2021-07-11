@@ -12,7 +12,7 @@ export interface FileTransportOptions extends TransportOptions {
 }
 
 export class FileTransport<
-	Options extends FileTransportOptions = FileTransportOptions
+	Options extends FileTransportOptions = FileTransportOptions,
 > extends Transport<Options> {
 	readonly path: Path;
 
@@ -34,7 +34,7 @@ export class FileTransport<
 		this.checkFolderRequirements();
 	}
 
-	blueprint(preds: Predicates): Blueprint<FileTransportOptions> {
+	override blueprint(preds: Predicates): Blueprint<FileTransportOptions> {
 		const { bool, instance, union, number, string } = preds;
 
 		return {

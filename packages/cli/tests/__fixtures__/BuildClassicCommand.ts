@@ -6,17 +6,17 @@ export interface BuildOptions extends GlobalOptions {
 }
 
 export class BuildClassicCommand extends Command<BuildOptions> {
-	static path = 'build';
+	static override path = 'build';
 
-	static aliases = ['compile'];
+	static override aliases = ['compile'];
 
-	static description = 'Build a project';
+	static override description = 'Build a project';
 
-	static usage = 'build -S ./src -D ./lib';
+	static override usage = 'build -S ./src -D ./lib';
 
-	static category = 'build';
+	static override category = 'build';
 
-	static options: Options<BuildOptions> = {
+	static override options: Options<BuildOptions> = {
 		// --dst, -D
 		dst: {
 			description: 'Destination path',

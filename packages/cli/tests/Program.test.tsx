@@ -1,3 +1,6 @@
+/* eslint-disable promise/prefer-await-to-then */
+/* eslint-disable compat/compat */
+
 import React, { useContext, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { ExitError } from '@boost/common';
@@ -29,13 +32,13 @@ import { InstallCommand } from './__fixtures__/InstallCommand';
 jest.mock('term-size');
 
 class BoostCommand extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'boost';
+	static override path = 'boost';
 
-	static allowUnknownOptions = true;
+	static override allowUnknownOptions = true;
 
-	static allowVariadicParams = true;
+	static override allowVariadicParams = true;
 
 	run() {
 		return Promise.resolve();
@@ -43,11 +46,11 @@ class BoostCommand extends Command {
 }
 
 class ErrorCommand extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'boost';
+	static override path = 'boost';
 
-	static allowVariadicParams = true;
+	static override allowVariadicParams = true;
 
 	run(): Promise<void> {
 		throw new Error('Broken!');
@@ -55,9 +58,9 @@ class ErrorCommand extends Command {
 }
 
 class StringCommand extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'string';
+	static override path = 'string';
 
 	run() {
 		return 'Hello!';
@@ -65,9 +68,9 @@ class StringCommand extends Command {
 }
 
 class ComponentCommand extends Command {
-	static description = 'Description';
+	static override description = 'Description';
 
-	static path = 'comp';
+	static override path = 'comp';
 
 	run() {
 		return (
@@ -95,9 +98,9 @@ describe('<Program />', () => {
 				version: '1.2.3',
 			},
 			{
-				stderr: (stderr as unknown) as NodeJS.WriteStream,
-				stdout: (stdout as unknown) as NodeJS.WriteStream,
-				stdin: (stdin as unknown) as NodeJS.ReadStream,
+				stderr: stderr as unknown as NodeJS.WriteStream,
+				stdout: stdout as unknown as NodeJS.WriteStream,
+				stdin: stdin as unknown as NodeJS.ReadStream,
 			},
 		);
 	}
@@ -133,9 +136,9 @@ describe('<Program />', () => {
 			const order: string[] = [];
 
 			class BootstrapCommand extends Command {
-				static description = 'Description';
+				static override description = 'Description';
 
-				static path = 'boot';
+				static override path = 'boot';
 
 				run() {
 					order.push('second');
@@ -221,11 +224,11 @@ describe('<Program />', () => {
 		}
 
 		class ExitCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'boost';
+			static override path = 'boost';
 
-			static options = {
+			static override options = {
 				component: {
 					description: 'Render component',
 					type: 'boolean',
@@ -302,12 +305,12 @@ describe('<Program />', () => {
 			throw new Error('Fail from component');
 		}
 
-		class ErrorCommand extends Command {
-			static description = 'Description';
+		class Error2Command extends Command {
+			static override description = 'Description';
 
-			static path = 'boost';
+			static override path = 'boost';
 
-			static options = {
+			static override options = {
 				component: {
 					description: 'Render component',
 					type: 'boolean',
@@ -329,7 +332,7 @@ describe('<Program />', () => {
 		}
 
 		it('renders a thrown error', async () => {
-			program.default(new ErrorCommand());
+			program.default(new Error2Command());
 
 			const { code, output } = await runProgram(program, []);
 
@@ -633,13 +636,13 @@ describe('<Program />', () => {
 
 	describe('help', () => {
 		class HelpCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'boost';
+			static override path = 'boost';
 
-			static options = { ...options };
+			static override options = { ...options };
 
-			static params = [...params];
+			static override params = [...params];
 
 			run() {
 				return Promise.resolve();
@@ -807,9 +810,9 @@ describe('<Program />', () => {
 
 		it('renders with custom exit error', async () => {
 			class ExitCommand extends Command {
-				static description = 'Description';
+				static override description = 'Description';
 
-				static path = 'boost';
+				static override path = 'boost';
 
 				run() {
 					this.exit('Oops', 123);
@@ -913,9 +916,9 @@ describe('<Program />', () => {
 
 		it('can return nothing', async () => {
 			class NoneCommand extends Command {
-				static description = 'Description';
+				static override description = 'Description';
 
-				static path = 'none';
+				static override path = 'none';
 
 				run() {}
 			}
@@ -1003,9 +1006,9 @@ describe('<Program />', () => {
 
 	describe('option defaults', () => {
 		class DeclCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'cmd';
+			static override path = 'cmd';
 
 			@Arg.Number('Number')
 			numNoDefault: number = 0;
@@ -1041,11 +1044,11 @@ describe('<Program />', () => {
 		}
 
 		class ImpCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'cmd';
+			static override path = 'cmd';
 
-			static options: OptionConfigMap = {
+			static override options: OptionConfigMap = {
 				numNoDefault: {
 					description: 'Number',
 					type: 'number',
@@ -1267,11 +1270,11 @@ describe('<Program />', () => {
 		}
 
 		class LogCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'log';
+			static override path = 'log';
 
-			static options: OptionConfigMap = {
+			static override options: OptionConfigMap = {
 				component: {
 					description: 'With component',
 					type: 'boolean',
@@ -1435,9 +1438,9 @@ describe('<Program />', () => {
 
 	describe('nested programs', () => {
 		class NestedProgramCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'prog';
+			static override path = 'prog';
 
 			async run() {
 				this.log('Before run');
@@ -1451,9 +1454,9 @@ describe('<Program />', () => {
 		}
 
 		class NestedErrorCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'prog-error';
+			static override path = 'prog-error';
 
 			async run() {
 				await this.runProgram(['prog-error-inner']);
@@ -1461,9 +1464,9 @@ describe('<Program />', () => {
 		}
 
 		class NestedErrorInnerCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'prog-error-inner';
+			static override path = 'prog-error-inner';
 
 			run() {
 				throw new Error('Bubbles');
@@ -1532,9 +1535,9 @@ describe('<Program />', () => {
 
 		it('runs a sync task correctly', async () => {
 			class SyncTaskCommand extends Command {
-				static description = 'Description';
+				static override description = 'Description';
 
-				static path = 'task';
+				static override path = 'task';
 
 				run() {
 					return String(this.runTask(syncTask, 10, 5));
@@ -1559,11 +1562,11 @@ describe('<Program />', () => {
 
 		it('runs an async task correctly', async () => {
 			class AsyncTaskCommand extends Command<AsyncOptions> {
-				static description = 'Description';
+				static override description = 'Description';
 
-				static path = 'task';
+				static override path = 'task';
 
-				static options: Options<AsyncOptions> = {
+				static override options: Options<AsyncOptions> = {
 					value: {
 						description: 'Description',
 						type: 'string',
@@ -1600,9 +1603,9 @@ describe('<Program />', () => {
 
 		it('can run a task within a task', async () => {
 			class NestedSyncTaskCommand extends Command {
-				static description = 'Description';
+				static override description = 'Description';
 
-				static path = 'task';
+				static override path = 'task';
 
 				run() {
 					this.runTask(nestedSyncTask, 'Test');
@@ -1627,13 +1630,13 @@ describe('<Program />', () => {
 		}
 
 		class CompCommand extends Command {
-			static description = 'Description';
+			static override description = 'Description';
 
-			static path = 'comp';
+			static override path = 'comp';
 
-			static options = {};
+			static override options = {};
 
-			static params = [];
+			static override params = [];
 
 			async run() {
 				this.log('Before');

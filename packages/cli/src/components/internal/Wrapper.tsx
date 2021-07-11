@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from 'ink';
-import ProgramContext from '../../ProgramContext';
+import { ProgramContext } from '../../ProgramContext';
 import { ProgramContextType } from '../../types';
 import { Failure } from '../Failure';
 import { LogWriter, LogWriterProps } from './LogWriter';
@@ -14,24 +14,30 @@ export interface WrapperState {
 }
 
 export class Wrapper extends React.Component<WrapperProps, WrapperState> {
-	state: WrapperState = {
+	override state: WrapperState = {
 		error: null,
 	};
+
+	value?: ProgramContextType;
 
 	static getDerivedStateFromError(error: Error) {
 		return { error };
 	}
 
-	componentDidCatch(error: Error) {
+	override componentDidCatch(error: Error) {
 		this.setState({ error });
 	}
 
-	render() {
+	override render() {
 		const { error } = this.state;
 		const { children, exit, log, program, errBuffer, outBuffer } = this.props;
 
+		if (!this.value) {
+			this.value = { exit, log, program };
+		}
+
 		return (
-			<ProgramContext.Provider value={{ exit, log, program }}>
+			<ProgramContext.Provider value={this.value}>
 				<Box>
 					{error ? (
 						<Failure binName={program.bin} delimiter={program.delimiter} error={error} />

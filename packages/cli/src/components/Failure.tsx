@@ -140,7 +140,7 @@ export class Failure extends React.Component<FailureProps> {
 		);
 	}
 
-	render() {
+	override render() {
 		const { error } = this.props;
 
 		return (

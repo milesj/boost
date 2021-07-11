@@ -22,7 +22,7 @@ export interface PooledOptions {
 export class PooledPipeline<
 	Ctx extends Context,
 	Input = unknown,
-	Output = Input
+	Output = Input,
 > extends ParallelPipeline<PooledOptions, Ctx, Input, Output> {
 	protected resolver?: (response: AggregatedResult<Output>) => void;
 
@@ -30,7 +30,7 @@ export class PooledPipeline<
 
 	protected running: WorkUnit<{}, Input, Output>[] = [];
 
-	blueprint({ bool, number }: Predicates): Blueprint<PooledOptions> {
+	override blueprint({ bool, number }: Predicates): Blueprint<PooledOptions> {
 		return {
 			concurrency: number(os.cpus().length).gte(1),
 			filo: bool(),
