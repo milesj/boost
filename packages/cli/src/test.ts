@@ -1,11 +1,11 @@
-/* eslint-disable unicorn/import-index, no-param-reassign, jest/prefer-spy-on */
+/* eslint-disable no-param-reassign, jest/prefer-spy-on */
 
 import React from 'react';
 import { render } from 'ink';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
 import { stripAnsi } from '@boost/terminal';
-import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from ".";
+import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from '.';
 
 import type {
 	ExitCode,
@@ -14,7 +14,7 @@ import type {
 	ProgramOptions,
 	ProgramStreams,
 	TaskContext,
-} from ".";
+} from '.';
 
 export class MockReadStream {
 	isTTY = false;
@@ -50,11 +50,11 @@ export class MockWriteStream {
 }
 
 export function mockStreams(append?: boolean): ProgramStreams {
-	return {
+	return ({
 		stderr: new MockWriteStream(append),
 		stdin: new MockReadStream(),
 		stdout: new MockWriteStream(append),
-	} as unknown as ProgramStreams;
+	} as unknown) as ProgramStreams;
 }
 
 export function mockProgram(options?: Partial<ProgramOptions>, streams?: ProgramStreams): Program {
@@ -65,7 +65,7 @@ export function mockProgram(options?: Partial<ProgramOptions>, streams?: Program
 			version: '0.0.0',
 			...options,
 		},
-		streams || mockStreams(),
+		streams ?? mockStreams(),
 	);
 }
 
@@ -78,7 +78,7 @@ export async function renderComponent(
 	await render(element, {
 		debug: true,
 		experimental: true,
-		stdout: stdout as unknown as NodeJS.WriteStream,
+		stdout: (stdout as unknown) as NodeJS.WriteStream,
 	});
 
 	const output = stdout.get();
@@ -94,7 +94,7 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
 	if (options) {
 		Object.assign(command, options);
 
-		// @ts-expect-error
+		// @ts-expect-error Allow overwrite
 		command[INTERNAL_OPTIONS] = {
 			help: false,
 			locale: 'en',
@@ -110,14 +110,14 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
 	const result = await command.run(...params);
 
 	if (!result || typeof result === 'string') {
-		return result || '';
+		return result ?? '';
 	}
 
 	return renderComponent(result);
 }
 
 export function runTask<A extends unknown[], R, T extends TaskContext>(
-	task: (this: T, ...args: A) => R,
+	task: (this: T, ...argz: A) => R,
 	args: A,
 	context?: Partial<T>,
 ): R {
@@ -154,15 +154,15 @@ export async function runProgram(
 	{ append }: { append?: boolean } = {},
 ): Promise<{ code: ExitCode; output: string; outputStripped: string }> {
 	if (!(program.streams.stderr instanceof MockWriteStream)) {
-		program.streams.stderr = new MockWriteStream(append) as unknown as NodeJS.WriteStream;
+		program.streams.stderr = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
 	}
 
 	if (!(program.streams.stdout instanceof MockWriteStream)) {
-		program.streams.stdout = new MockWriteStream(append) as unknown as NodeJS.WriteStream;
+		program.streams.stdout = (new MockWriteStream(append) as unknown) as NodeJS.WriteStream;
 	}
 
 	if (!(program.streams.stdin instanceof MockReadStream)) {
-		program.streams.stdin = new MockReadStream() as unknown as NodeJS.ReadStream;
+		program.streams.stdin = (new MockReadStream() as unknown) as NodeJS.ReadStream;
 	}
 
 	// Ink async rendering never resolves while testing,
@@ -175,8 +175,8 @@ export async function runProgram(
 	env('CLI_TEST_ONLY', null);
 
 	const output =
-		(program.streams.stdout as unknown as MockWriteStream).get() +
-		(program.streams.stderr as unknown as MockWriteStream).get();
+		((program.streams.stdout as unknown) as MockWriteStream).get() +
+		((program.streams.stderr as unknown) as MockWriteStream).get();
 
 	return {
 		code,

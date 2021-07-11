@@ -15,9 +15,9 @@ import { Blueprint, ExitError, Predicates } from '@boost/common';
 import { Event } from '@boost/event';
 import { env } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
-import CLIError from './CLIError';
+import { CLIError } from './CLIError';
 import { Command, createProxyCommand } from './Command';
-import CommandManager from './CommandManager';
+import { CommandManager } from './CommandManager';
 import { Failure } from './components/Failure';
 import { Help } from './components/Help';
 import { IndexHelp } from './components/IndexHelp';
@@ -31,13 +31,13 @@ import {
 	INTERNAL_PROGRAM,
 	VERSION_FORMAT,
 } from './constants';
-import isArgvSize from './helpers/isArgvSize';
-import mapCommandMetadata from './helpers/mapCommandMetadata';
-import patchDebugModule from './helpers/patchDebugModule';
-import LogBuffer from './LogBuffer';
-import getConstructor from './metadata/getConstructor';
-import removeProcessBin from './middleware/removeProcessBin';
-import msg from './translate';
+import { isArgvSize } from './helpers/isArgvSize';
+import { mapCommandMetadata } from './helpers/mapCommandMetadata';
+import { patchDebugModule } from './helpers/patchDebugModule';
+import { LogBuffer } from './LogBuffer';
+import { getConstructor } from './metadata/getConstructor';
+import { removeProcessBin } from './middleware/removeProcessBin';
+import { msg } from './translate';
 import {
 	Categories,
 	Commandable,
@@ -55,7 +55,7 @@ import {
 	RunResult,
 } from './types';
 
-export default class Program extends CommandManager<ProgramOptions> {
+export class Program extends CommandManager<ProgramOptions> {
 	readonly onAfterRender = new Event('after-render');
 
 	readonly onAfterRun = new Event<[Error?]>('after-run');
@@ -219,7 +219,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 		try {
 			return parseInContext(argv, (arg) => this.getCommand<O, P>(arg)?.getParserOptions());
 		} catch {
-			const possibleCmd = argv.find((arg) => !arg.startsWith('-')) || '';
+			const possibleCmd = argv.find((arg) => !arg.startsWith('-')) ?? '';
 
 			this.onCommandNotFound.emit([argv, possibleCmd]);
 
@@ -279,10 +279,10 @@ export default class Program extends CommandManager<ProgramOptions> {
 			}
 
 			this.onAfterRender.emit([]);
-		} catch (error) {
+		} catch (error: unknown) {
 			// Never runs while testing
 			// istanbul ignore next
-			this.exit(error);
+			this.exit(error as Error);
 		} finally {
 			this.rendering = false;
 			unpatchDebug();
@@ -300,7 +300,7 @@ export default class Program extends CommandManager<ProgramOptions> {
 	async run(argv: Argv, bootstrap?: ProgramBootstrap, rethrow: boolean = false): Promise<ExitCode> {
 		this.onBeforeRun.emit([argv]);
 
-		let exitCode: ExitCode;
+		let exitCode: ExitCode = 0;
 
 		try {
 			if (bootstrap) {
@@ -310,13 +310,15 @@ export default class Program extends CommandManager<ProgramOptions> {
 			exitCode = await this.runAndRender(argv);
 
 			this.onAfterRun.emit([]);
-		} catch (error) {
-			exitCode = await this.renderErrors([error]);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				exitCode = await this.renderErrors([error]);
 
-			this.onAfterRun.emit([error]);
+				this.onAfterRun.emit([error]);
 
-			if (rethrow) {
-				throw error;
+				if (rethrow) {
+					throw error;
+				}
 			}
 		}
 

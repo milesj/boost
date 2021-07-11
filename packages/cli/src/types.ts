@@ -28,7 +28,7 @@ import {
 } from '@boost/args';
 import { Loggable, LoggerFunction } from '@boost/log';
 
-export {
+export type {
 	ArgList,
 	Arguments,
 	Argv,

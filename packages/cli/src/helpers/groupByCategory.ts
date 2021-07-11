@@ -1,13 +1,17 @@
 import { Categories } from '../types';
 
-export type CategoryItemMap<T> = Record<string, {
+export type CategoryItemMap<T> = Record<
+	string,
+	{
 		items: T[];
 		name: string;
-	}>;
+	}
+>;
 
-export default function groupByCategory<
-	T extends { category?: string; hidden?: boolean; name: string },
->(items: T[], categories: Categories): CategoryItemMap<T> {
+export function groupByCategory<T extends { category?: string; hidden?: boolean; name: string }>(
+	items: T[],
+	categories: Categories,
+): CategoryItemMap<T> {
 	const weightedCategories = Object.entries(categories).map(([key, category]) => ({
 		key,
 		weight: 50,

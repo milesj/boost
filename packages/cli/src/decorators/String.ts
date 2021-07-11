@@ -1,8 +1,8 @@
 import { SingleOption } from '@boost/args';
-import createOptionDecorator from '../metadata/createOptionDecorator';
+import { createOptionDecorator } from '../metadata/createOptionDecorator';
 import { PartialConfig } from '../types';
 
-export default function String(
+export function String(
 	description: string,
 	config?: PartialConfig<SingleOption<string>>,
 ): PropertyDecorator {

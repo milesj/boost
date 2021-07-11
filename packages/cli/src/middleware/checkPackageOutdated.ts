@@ -9,7 +9,7 @@ async function fetchPackageLatestVersion(name: string): Promise<string | undefin
 			let data = '';
 
 			resp.on('data', (chunk) => {
-				data += chunk;
+				data += String(chunk);
 			});
 
 			resp.on('end', () => {
@@ -26,7 +26,7 @@ async function fetchPackageLatestVersion(name: string): Promise<string | undefin
 	});
 }
 
-export default function checkPackageOutdated(name: string, version: string): Middleware {
+export function checkPackageOutdated(name: string, version: string): Middleware {
 	return async (argv, parse, logger) => {
 		const latestVersion = await fetchPackageLatestVersion(name);
 

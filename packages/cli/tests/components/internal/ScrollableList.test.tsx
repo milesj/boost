@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';

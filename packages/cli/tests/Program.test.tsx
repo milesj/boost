@@ -1,5 +1,3 @@
-/* eslint-disable babel/no-invalid-this */
-
 import React, { useContext, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { ExitError } from '@boost/common';
@@ -19,14 +17,14 @@ import {
 	useProgram,
 } from '../src';
 import { MockReadStream, MockWriteStream, runProgram, runTask } from '../src/test';
-import AllClassicCommand from './__mocks__/AllClassicCommand';
-import { options, params } from './__mocks__/args';
-import BuildClassicCommand from './__mocks__/BuildClassicCommand';
-import BuildCommand from './__mocks__/BuildCommand';
-import ClientCommand from './__mocks__/ClientCommand';
-import { Child, GrandChild, Parent } from './__mocks__/commands';
-import InstallClassicCommand from './__mocks__/InstallClassicCommand';
-import InstallCommand from './__mocks__/InstallCommand';
+import { AllClassicCommand } from './__fixtures__/AllClassicCommand';
+import { options, params } from './__fixtures__/args';
+import { BuildClassicCommand } from './__fixtures__/BuildClassicCommand';
+import { BuildCommand } from './__fixtures__/BuildCommand';
+import { ClientCommand } from './__fixtures__/ClientCommand';
+import { Child, GrandChild, Parent } from './__fixtures__/commands';
+import { InstallClassicCommand } from './__fixtures__/InstallClassicCommand';
+import { InstallCommand } from './__fixtures__/InstallCommand';
 
 jest.mock('term-size');
 
@@ -97,9 +95,9 @@ describe('<Program />', () => {
 				version: '1.2.3',
 			},
 			{
-				stderr: stderr as unknown as NodeJS.WriteStream,
-				stdout: stdout as unknown as NodeJS.WriteStream,
-				stdin: stdin as unknown as NodeJS.ReadStream,
+				stderr: (stderr as unknown) as NodeJS.WriteStream,
+				stdout: (stdout as unknown) as NodeJS.WriteStream,
+				stdin: (stdin as unknown) as NodeJS.ReadStream,
 			},
 		);
 	}
@@ -322,7 +320,7 @@ describe('<Program />', () => {
 				this.log('Before');
 
 				if (this.component) {
-					// @ts-expect-error
+					// @ts-expect-error JSX error
 					return <ErrorComponent />;
 				}
 
@@ -368,7 +366,7 @@ describe('<Program />', () => {
 
 		it('errors for invalid type', () => {
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				program.register(123);
 			}).toThrow('Invalid command type being registered.');
 		});
@@ -412,7 +410,7 @@ describe('<Program />', () => {
 
 			program.default(command);
 
-			// @ts-expect-error
+			// @ts-expect-error Allow access
 			expect(program.standAlone).toBe('build');
 		});
 
@@ -1339,11 +1337,9 @@ describe('<Program />', () => {
 	});
 
 	describe('middleware', () => {
-		/* eslint-disable promise/no-callback-in-promise */
-
 		it('errors if not a function', () => {
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error Invalid type
 				program.middleware(123);
 			}).toThrow('Middleware must be a function.');
 		});

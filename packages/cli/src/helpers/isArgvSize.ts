@@ -1,7 +1,7 @@
 import { Argv } from '../types';
-import isNodeBinary from './isNodeBinary';
+import { isNodeBinary } from './isNodeBinary';
 
-export default function isArgvSize(argv: Argv, size: number): boolean {
+export function isArgvSize(argv: Argv, size: number): boolean {
 	let list = [...argv];
 
 	// Node process binaries are included

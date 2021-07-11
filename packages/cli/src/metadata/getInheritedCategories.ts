@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { Categories } from '../types';
-import getConstructor from './getConstructor';
+import { getConstructor } from './getConstructor';
 
-export default function getInheritedCategories(base: Object): Categories {
+export function getInheritedCategories(base: Object): Categories {
 	const categories: Categories = {};
 	let target = Object.getPrototypeOf(base);
 

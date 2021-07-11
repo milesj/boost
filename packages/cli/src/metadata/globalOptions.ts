@@ -1,8 +1,8 @@
 import { LOCALE_FORMAT } from '../constants';
-import msg from '../translate';
+import { msg } from '../translate';
 import { OptionConfigMap } from '../types';
 
-const globalOptions: OptionConfigMap = {
+export const globalOptions: OptionConfigMap = {
 	help: {
 		category: 'global',
 		description: msg('cli:optionHelpDescription'),
@@ -27,5 +27,3 @@ const globalOptions: OptionConfigMap = {
 		type: 'boolean',
 	},
 };
-
-export default globalOptions;

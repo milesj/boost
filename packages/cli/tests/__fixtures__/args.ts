@@ -1,5 +1,3 @@
-/* eslint-disable sort-keys */
-
 import { CommandConfigMap, OptionConfigMap, ParamConfigList } from '../../src';
 
 export const commands: CommandConfigMap = {
@@ -42,7 +40,6 @@ export const options: OptionConfigMap = {
 		type: 'string',
 	},
 	numberFixedList: {
-		// eslint-disable-next-line no-magic-numbers
 		choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 		deprecated: true,
 		description: 'A list of numbers to choose from.',

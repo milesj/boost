@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable react/jsx-curly-brace-presence */
 
 import React from 'react';
@@ -5,10 +6,10 @@ import { Box, Text } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
 import { ExitError } from '@boost/common';
 import { screen } from '@boost/terminal';
-import CLIError from '../CLIError';
+import { CLIError } from '../CLIError';
 import { DELIMITER, SPACING_COL, SPACING_ROW } from '../constants';
-import applyStyle from '../helpers/applyStyle';
-import msg from '../translate';
+import { applyStyle } from '../helpers/applyStyle';
+import { msg } from '../translate';
 import { StyleType } from '../types';
 import { Header } from './Header';
 import { Style } from './Style';
@@ -50,7 +51,7 @@ export class Failure extends React.Component<FailureProps> {
 		let arg = '';
 
 		if (error instanceof ParseError) {
-			arg = error.arg;
+			({ arg } = error);
 		} else if (error instanceof ValidationError) {
 			type = 'warning';
 			arg = `--${error.option}`;

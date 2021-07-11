@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocus } from 'ink';
-import msg from '../translate';
+import { msg } from '../translate';
 import { Prompt, PromptProps } from './internal/Prompt';
 import { Selected } from './internal/Selected';
 import { Style } from './Style';
@@ -36,7 +36,7 @@ export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props 
 			} else {
 				setValue(null);
 
-				throw new Error(invalidError || msg('prompt:confirmInvalidValue', { no, yes }));
+				throw new Error(invalidError ?? msg('prompt:confirmInvalidValue', { no, yes }));
 			}
 
 			// Trigger submit

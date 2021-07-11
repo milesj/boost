@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from 'ink';
 import { useDimensions } from '../../hooks';
-import msg from '../../translate';
+import { msg } from '../../translate';
 import { Style } from '../Style';
 
 export type OverflowLabel = string | ((count: number) => string);
@@ -112,7 +112,8 @@ function countEnabledItems(items: ScrollableItem[]): number {
 	return items.filter((i) => {
 		if ('disabled' in i) {
 			return !i.disabled;
-		} if ('divider' in i) {
+		}
+		if ('divider' in i) {
 			return !i.divider;
 		}
 
@@ -150,7 +151,7 @@ export function ScrollableList<T extends ScrollableItem>({
 	// eslint-disable-next-line no-magic-numbers
 	const padding = isOverflow ? 4 : 2;
 	const maxLimit = Math.floor(
-		Math.min(limit || viewportHeight, viewportHeight - padding) / rowHeight,
+		Math.min(limit ?? viewportHeight, viewportHeight - padding) / rowHeight,
 	);
 
 	// Slice the list according to the chosen scroll type
@@ -169,7 +170,7 @@ export function ScrollableList<T extends ScrollableItem>({
 			{leadingCount > 0 && isOverflow && (
 				<Box marginLeft={2}>
 					<Style type="muted">
-						{renderOverflowLabel(overflowBeforeLabel, leadingCount) ||
+						{renderOverflowLabel(overflowBeforeLabel, leadingCount) ??
 							msg('prompt:scrollOverflowBefore', { count: leadingCount })}
 					</Style>
 				</Box>
@@ -180,7 +181,7 @@ export function ScrollableList<T extends ScrollableItem>({
 			{trailingCount > 0 && isOverflow && (
 				<Box marginLeft={2}>
 					<Style type="muted">
-						{renderOverflowLabel(overflowAfterLabel, trailingCount) ||
+						{renderOverflowLabel(overflowAfterLabel, trailingCount) ??
 							msg('prompt:scrollOverflowAfter', { count: trailingCount })}
 					</Style>
 				</Box>

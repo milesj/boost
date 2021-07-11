@@ -1,7 +1,7 @@
 import https from 'https';
 import { Loggable } from '@boost/log';
 import { mockLogger } from '@boost/log/test';
-import checkPackageOutdated from '../../src/middleware/checkPackageOutdated';
+import { checkPackageOutdated } from '../../src/middleware/checkPackageOutdated';
 
 describe('checkPackageOutdated()', () => {
 	let httpsSpy: jest.SpyInstance;

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useStderr, useStdout } from 'ink';
-import LogBuffer from '../../LogBuffer';
+import { LogBuffer } from '../../LogBuffer';
 
 export interface LogWriterProps {
 	errBuffer: LogBuffer;

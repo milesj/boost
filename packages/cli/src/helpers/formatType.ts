@@ -1,6 +1,6 @@
-import applyStyle from './applyStyle';
+import { applyStyle } from './applyStyle';
 
-export default function formatType(
+export function formatType(
 	config: {
 		label?: string;
 		multiple?: boolean;

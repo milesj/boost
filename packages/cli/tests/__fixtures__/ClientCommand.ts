@@ -1,8 +1,6 @@
-/* eslint-disable max-classes-per-file */
-
 import { Command, Config } from '../../src';
-import BuildCommand from './BuildCommand';
-import InstallClassicCommand from './InstallClassicCommand';
+import { BuildCommand } from './BuildCommand';
+import { InstallClassicCommand } from './InstallClassicCommand';
 
 class ClientBuildCommand extends BuildCommand {
 	static path = 'client:build';
@@ -31,7 +29,7 @@ class ClientInstallCommand extends InstallClassicCommand {
 	},
 	usage: ['client:install @foo/bar', 'client:build'],
 })
-class ClientCommand extends Command {
+export class ClientCommand extends Command {
 	constructor() {
 		super();
 
@@ -53,5 +51,3 @@ class ClientCommand extends Command {
 		return 'Run sub-command!';
 	}
 }
-
-export default ClientCommand;

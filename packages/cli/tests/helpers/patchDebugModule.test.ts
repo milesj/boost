@@ -1,5 +1,5 @@
 import debug from 'debug';
-import patchDebugModule from '../../src/helpers/patchDebugModule';
+import { patchDebugModule } from '../../src/helpers/patchDebugModule';
 
 describe('patchDebugModule()', () => {
 	it('wraps `debug`', () => {

@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React from 'react';
 import { Box, Text } from 'ink';
 import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@boost/args';
@@ -11,7 +13,7 @@ import {
 	getLongestWidth,
 	groupByCategory,
 } from '../helpers';
-import msg from '../translate';
+import { msg } from '../translate';
 import { Categories, CommandConfig, CommandConfigMap } from '../types';
 import { Header } from './Header';
 import { Style } from './Style';
@@ -70,7 +72,7 @@ export class Help extends React.Component<HelpProps> {
 			};
 		});
 
-		const categorizedCommands = groupByCategory(items, this.props.categories || {});
+		const categorizedCommands = groupByCategory(items, this.props.categories ?? {});
 		const categoryCount = Object.keys(categorizedCommands).length;
 
 		return (
@@ -140,7 +142,7 @@ export class Help extends React.Component<HelpProps> {
 			};
 		});
 
-		const categorizedOptions = groupByCategory(items, this.props.categories || {});
+		const categorizedOptions = groupByCategory(items, this.props.categories ?? {});
 		const categoryCount = Object.keys(categorizedOptions).length;
 		const showShortColumn = shortWidth > 0;
 
@@ -184,7 +186,7 @@ export class Help extends React.Component<HelpProps> {
 	}
 
 	renderParams(params: ParamConfigList) {
-		const labels = params.map((config, index) => `${config.label || index} ${formatType(config)}`);
+		const labels = params.map((config, index) => `${config.label ?? index} ${formatType(config)}`);
 		const labelWidth = getLongestWidth(labels);
 		const allowVariadic = this.props.config?.allowVariadicParams;
 
@@ -227,7 +229,7 @@ export class Help extends React.Component<HelpProps> {
 		);
 	}
 
-	renderUsage(usage: string[] | string) {
+	renderUsage(usage: string[] | string = '') {
 		const { delimiter = DELIMITER } = this.props;
 
 		return (
@@ -262,7 +264,7 @@ export class Help extends React.Component<HelpProps> {
 					</Box>
 				)}
 
-				{hasUsage && this.renderUsage(config?.usage!)}
+				{hasUsage && this.renderUsage(config?.usage)}
 
 				{hasParams && this.renderParams(params!)}
 

@@ -1,7 +1,7 @@
 import semver from 'semver';
 import { Middleware } from '../types';
 
-export default function checkNodeRequirement(range: string, throws: boolean = false): Middleware {
+export function checkNodeRequirement(range: string, throws: boolean = false): Middleware {
 	return (argv, parse, logger) => {
 		const { version } = process;
 

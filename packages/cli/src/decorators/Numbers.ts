@@ -1,8 +1,8 @@
 import { MultipleOption } from '@boost/args';
-import createOptionDecorator from '../metadata/createOptionDecorator';
+import { createOptionDecorator } from '../metadata/createOptionDecorator';
 import { PartialConfig } from '../types';
 
-export default function Numbers(
+export function Numbers(
 	description: string,
 	config?: PartialConfig<MultipleOption<number[]>>,
 ): PropertyDecorator {

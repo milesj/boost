@@ -1,13 +1,19 @@
 import execa from 'execa';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';
 import { mockProgram, mockStreams, runCommand } from '../src/test';
-import AllClassicCommand from './__mocks__/AllClassicCommand';
-import AllCommand from './__mocks__/AllCommand';
-import BuildClassicCommand from './__mocks__/BuildClassicCommand';
-import BuildCommand from './__mocks__/BuildCommand';
-import { Child, GrandChild, Parent, UnknownChild, UnknownGrandChild } from './__mocks__/commands';
-import InstallClassicCommand from './__mocks__/InstallClassicCommand';
-import InstallCommand from './__mocks__/InstallCommand';
+import { AllClassicCommand } from './__fixtures__/AllClassicCommand';
+import { AllCommand } from './__fixtures__/AllCommand';
+import { BuildClassicCommand } from './__fixtures__/BuildClassicCommand';
+import { BuildCommand } from './__fixtures__/BuildCommand';
+import {
+	Child,
+	GrandChild,
+	Parent,
+	UnknownChild,
+	UnknownGrandChild,
+} from './__fixtures__/commands';
+import { InstallClassicCommand } from './__fixtures__/InstallClassicCommand';
+import { InstallCommand } from './__fixtures__/InstallCommand';
 
 jest.mock('execa');
 jest.mock('term-size');
@@ -15,7 +21,7 @@ jest.mock('term-size');
 describe('Command', () => {
 	describe('executeCommand()', () => {
 		function mockExeca() {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
+			((execa as unknown) as jest.Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 			}));
 		}
@@ -209,7 +215,6 @@ describe('Command', () => {
 
 		it('errors if @Params is not on the run method', () => {
 			expect(() => {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				class TestCommand extends Command {
 					@Arg.Params()
 					unknownArg() {}
@@ -223,7 +228,6 @@ describe('Command', () => {
 
 		it('errors if option is using a reserved name', () => {
 			expect(() => {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				class TestCommand extends Command {
 					@Arg.String('Description')
 					locale: string = '';

@@ -64,18 +64,18 @@ export function Prompt<T>({
 	const mounted = useIsMounted();
 
 	const attemptSubmit = useCallback(
-		(cb: () => boolean | void) => {
+		(commit: () => boolean | void) => {
 			let doSubmit = false;
 
 			try {
 				setError(null);
 
-				doSubmit = !!cb();
-			} catch (error: unknown) {
+				doSubmit = !!commit();
+			} catch (error_: unknown) {
 				doSubmit = false;
 
-				if (error instanceof Error) {
-					setError(error);
+				if (error_ instanceof Error) {
+					setError(error_);
 				}
 			}
 

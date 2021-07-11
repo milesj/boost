@@ -6,7 +6,7 @@ export interface InstallOptions extends GlobalOptions {
 
 export type InstallParams = [string, ...string[]];
 
-export default class InstallClassicCommand extends Command<InstallOptions, InstallParams> {
+export class InstallClassicCommand extends Command<InstallOptions, InstallParams> {
 	static path = 'install';
 
 	static description = 'Install package(s)';

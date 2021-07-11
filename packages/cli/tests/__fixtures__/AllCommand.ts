@@ -11,7 +11,7 @@ export interface AllOptions extends GlobalOptions {
 export type AllParams = [string, boolean, number];
 
 @Config('all', 'All options and params')
-export default class AllCommand extends Command<AllOptions, AllParams> {
+export class AllCommand extends Command<AllOptions, AllParams> {
 	// --flag, -F
 	@Arg.Flag('Boolean flag', { short: 'F' })
 	flag: boolean = true;

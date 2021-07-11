@@ -1,6 +1,6 @@
 import { Commandable, CommandMetadataMap } from '../types';
 
-export default function mapCommandMetadata(commands: Record<string, Commandable>) {
+export function mapCommandMetadata(commands: Record<string, Commandable>) {
 	const map: CommandMetadataMap = {};
 
 	Object.entries(commands).forEach(([path, config]) => {

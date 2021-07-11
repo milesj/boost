@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextProps } from 'ink';
-import loadTheme from '../helpers/loadTheme';
+import { loadTheme } from '../helpers/loadTheme';
 import { StyleType, Writeable } from '../types';
 
 export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underline' | 'wrap'> {

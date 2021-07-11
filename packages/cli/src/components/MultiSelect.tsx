@@ -8,7 +8,7 @@ import { OptionRow } from './internal/OptionRow';
 import { Prompt } from './internal/Prompt';
 import { ScrollableList } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
-import { normalizeOptions, SelectProps } from './Select';
+import { normalizeOptions, SelectOption, SelectProps } from './Select';
 
 export interface MultiSelectProps<T> extends SelectProps<T[], T> {
 	defaultSelected?: T[];
@@ -37,7 +37,8 @@ export function MultiSelect<T>({
 		// istanbul ignore next
 		if (value === null) {
 			return;
-		} if (selectedValues.has(value)) {
+		}
+		if (selectedValues.has(value)) {
 			selectedValues.delete(value);
 		} else {
 			selectedValues.add(value);
@@ -55,7 +56,27 @@ export function MultiSelect<T>({
 		return true;
 	}, [onSubmit, selectedValues]);
 
-	const selectedList = [...selectedValues];
+	const renderItem = useCallback(
+		(option: SelectOption<T>) => {
+			if (option.divider) {
+				return <DividerRow key={option.index} label={option.label} />;
+			}
+
+			return (
+				<OptionRow
+					key={option.index}
+					highlighted={highlightedIndex === option.index}
+					icon={figures.circleDotted}
+					iconActive={figures.bullet}
+					label={option.label}
+					selected={selectedValues.has(option.value!)}
+				/>
+			);
+		},
+		[highlightedIndex, selectedValues],
+	);
+
+	const selectedList = useMemo(() => [...selectedValues], [selectedValues]);
 
 	return (
 		<Prompt<T[]>
@@ -73,22 +94,7 @@ export function MultiSelect<T>({
 				limit={limit}
 				overflowAfterLabel={overflowAfterLabel}
 				overflowBeforeLabel={overflowBeforeLabel}
-				renderItem={(option) => {
-					if (option.divider) {
-						return <DividerRow key={option.index} label={option.label} />;
-					}
-
-					return (
-						<OptionRow
-							key={option.index}
-							highlighted={highlightedIndex === option.index}
-							icon={figures.circleDotted}
-							iconActive={figures.bullet}
-							label={option.label}
-							selected={selectedValues.has(option.value!)}
-						/>
-					);
-				}}
+				renderItem={renderItem}
 				scrollType={scrollType}
 			/>
 		</Prompt>

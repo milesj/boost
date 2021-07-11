@@ -1,12 +1,12 @@
 import { CommandStaticConfig, PartialConfig } from '../types';
 
-export default function Config(
+export function Config(
 	path: string,
 	description: string,
 	config: Partial<PartialConfig<CommandStaticConfig>> = {},
 ): ClassDecorator {
 	return (target) => {
-		const ctor = target as unknown as CommandStaticConfig;
+		const ctor = (target as unknown) as CommandStaticConfig;
 
 		ctor.path = path;
 		ctor.description = description;

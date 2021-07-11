@@ -5,7 +5,7 @@ export interface BuildOptions extends GlobalOptions {
 	src: string;
 }
 
-export default class BuildClassicCommand extends Command<BuildOptions> {
+export class BuildClassicCommand extends Command<BuildOptions> {
 	static path = 'build';
 
 	static aliases = ['compile'];

@@ -1,6 +1,6 @@
 import { stripAnsi } from '@boost/terminal';
 
-export default function getLongestWidth(values: string[]): number {
+export function getLongestWidth(values: string[]): number {
 	return values.reduce((sum, value) => {
 		const text = stripAnsi(value);
 

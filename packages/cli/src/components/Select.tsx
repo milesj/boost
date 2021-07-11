@@ -33,7 +33,7 @@ export function normalizeOptions<T>(options: SelectProps<unknown>['options']): S
 				index,
 				label: '',
 				value: null,
-				...(option as any),
+				...(option as {}),
 			};
 		}
 
@@ -43,7 +43,7 @@ export function normalizeOptions<T>(options: SelectProps<unknown>['options']): S
 			label: String(option),
 			value: option,
 		};
-	});
+	}) as SelectOption<T>[];
 }
 
 export function Select<T = string>({
@@ -88,6 +88,26 @@ export function Select<T = string>({
 		return true;
 	}, [selectedValue, onSubmit, options, highlightedIndex]);
 
+	const renderItem = useCallback(
+		(option: SelectOption<T>) => {
+			if (option.divider) {
+				return <DividerRow key={option.index} label={option.label} />;
+			}
+
+			return (
+				<OptionRow
+					key={option.index}
+					highlighted={highlightedIndex === option.index}
+					icon={figures.pointerSmall}
+					iconActive={figures.pointer}
+					label={option.label}
+					selected={selectedValue === option.value}
+				/>
+			);
+		},
+		[highlightedIndex, selectedValue],
+	);
+
 	return (
 		<Prompt<T>
 			{...props}
@@ -104,22 +124,7 @@ export function Select<T = string>({
 				limit={limit}
 				overflowAfterLabel={overflowAfterLabel}
 				overflowBeforeLabel={overflowBeforeLabel}
-				renderItem={(option) => {
-					if (option.divider) {
-						return <DividerRow key={option.index} label={option.label} />;
-					}
-
-					return (
-						<OptionRow
-							key={option.index}
-							highlighted={highlightedIndex === option.index}
-							icon={figures.pointerSmall}
-							iconActive={figures.pointer}
-							label={option.label}
-							selected={selectedValue === option.value}
-						/>
-					);
-				}}
+				renderItem={renderItem}
 				scrollType={scrollType}
 			/>
 		</Prompt>

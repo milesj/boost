@@ -1,5 +1,5 @@
 import { env } from '@boost/internal';
-import loadTheme from '../../src/helpers/loadTheme';
+import { loadTheme } from '../../src/helpers/loadTheme';
 
 describe('loadTheme()', () => {
 	beforeEach(() => {

@@ -15,20 +15,20 @@ import {
 } from '@boost/args';
 import { Blueprint, Predicates } from '@boost/common';
 import { LoggerFunction } from '@boost/log';
-import CLIError from './CLIError';
-import CommandManager from './CommandManager';
+import { CLIError } from './CLIError';
+import { CommandManager } from './CommandManager';
 import { Help } from './components/Help';
 import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
-import Config from './decorators/Config';
-import mapCommandMetadata from './helpers/mapCommandMetadata';
-import getConstructor from './metadata/getConstructor';
-import getInheritedCategories from './metadata/getInheritedCategories';
-import getInheritedOptions from './metadata/getInheritedOptions';
-import globalOptions from './metadata/globalOptions';
-import validateConfig from './metadata/validateConfig';
-import validateOptions from './metadata/validateOptions';
-import validateParams from './metadata/validateParams';
-import Program from './Program';
+import { Config } from './decorators/Config';
+import { mapCommandMetadata } from './helpers/mapCommandMetadata';
+import { getConstructor } from './metadata/getConstructor';
+import { getInheritedCategories } from './metadata/getInheritedCategories';
+import { getInheritedOptions } from './metadata/getInheritedOptions';
+import { globalOptions } from './metadata/globalOptions';
+import { validateConfig } from './metadata/validateConfig';
+import { validateOptions } from './metadata/validateOptions';
+import { validateParams } from './metadata/validateParams';
+import { Program } from './Program';
 import {
 	Categories,
 	Commandable,
@@ -73,11 +73,10 @@ export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveT
 export abstract class Command<
 		O extends GlobalOptions = GlobalOptions,
 		P extends PrimitiveType[] = ArgList,
-		Options extends object = {},
+		Options extends object = {}
 	>
 	extends CommandManager<Options>
-	implements Commandable<O, P>
-{
+	implements Commandable<O, P> {
 	static aliases: string[] = [];
 
 	static allowUnknownOptions: boolean = false;
@@ -200,8 +199,8 @@ export abstract class Command<
 		return {
 			command: this.getPath().split(':'),
 			errors: [],
-			options: (this[INTERNAL_OPTIONS] || {}) as O,
-			params: (this[INTERNAL_PARAMS] || []) as unknown as MapParamType<P>,
+			options: (this[INTERNAL_OPTIONS] ?? {}) as O,
+			params: ((this[INTERNAL_PARAMS] ?? []) as unknown) as MapParamType<P>,
 			rest: this.rest,
 			unknown: this.unknown,
 		};
@@ -246,8 +245,14 @@ export abstract class Command<
 	 * Return metadata as options for argument parsing.
 	 */
 	getParserOptions(): ParserOptions<O, P> {
-		const { aliases, allowUnknownOptions, allowVariadicParams, options, params, path } =
-			this.getMetadata();
+		const {
+			aliases,
+			allowUnknownOptions,
+			allowVariadicParams,
+			options,
+			params,
+			path,
+		} = this.getMetadata();
 
 		return {
 			commands: [path, ...aliases],
@@ -308,11 +313,11 @@ export abstract class Command<
 	/**
 	 * Create a proxy command using itself as the super class.
 	 */
-	protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
+	protected createProxyCommand<PO extends GlobalOptions, PP extends PrimitiveType[]>(
 		path: CommandPath,
-		config: ProxyCommandConfig<O, P>,
-		runner: ProxyCommandRunner<O, P>,
-	): Command<O, P> {
+		config: ProxyCommandConfig<PO, PP>,
+		runner: ProxyCommandRunner<PO, PP>,
+	): Command<PO, PP> {
 		return createProxyCommand(path, config, runner);
 	}
 

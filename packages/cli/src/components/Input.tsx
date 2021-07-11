@@ -34,7 +34,7 @@ export function Input({
 	}, [onSubmit, value]);
 
 	// Remove characters
-	const handleBackspace = () => {
+	const handleBackspace = useCallback(() => {
 		if (!cursorPosition || !value) {
 			return;
 		}
@@ -47,20 +47,23 @@ export function Input({
 		setCursorPosition(cursorPosition - 1);
 		setValue(nextValue);
 		onChange?.(nextValue);
-	};
+	}, [cursorPosition, onChange, value]);
 
 	// Add characters
-	const handleInput = (input: string) => {
-		const nextValue =
-			cursorPosition >= value.length
-				? value + input
-				: value.slice(0, cursorPosition) + input + value.slice(cursorPosition);
+	const handleInput = useCallback(
+		(input: string) => {
+			const nextValue =
+				cursorPosition >= value.length
+					? value + input
+					: value.slice(0, cursorPosition) + input + value.slice(cursorPosition);
 
-		setCursorPosition(cursorPosition + input.length);
-		setValue(nextValue);
-		setDirty(true);
-		onChange?.(nextValue);
-	};
+			setCursorPosition(cursorPosition + input.length);
+			setValue(nextValue);
+			setDirty(true);
+			onChange?.(nextValue);
+		},
+		[cursorPosition, onChange, value],
+	);
 
 	// Navigation
 	const handleKeyUp = useCallback(() => {

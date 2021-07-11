@@ -1,6 +1,6 @@
 import { OptionConfig, OptionConfigMap } from '@boost/args';
 import { Blueprint, optimal } from '@boost/common';
-import msg from '../translate';
+import { msg } from '../translate';
 import {
 	flagBlueprint,
 	numberOptionBlueprint,
@@ -9,7 +9,7 @@ import {
 	stringsOptionBlueprint,
 } from './blueprints';
 
-export default function validateOptions(options: OptionConfigMap) {
+export function validateOptions(options: OptionConfigMap) {
 	Object.entries(options).forEach(([name, config]) => {
 		let blueprint: Blueprint<object>;
 

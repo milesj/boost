@@ -1,4 +1,4 @@
-import isNodeBinary from '../../src/helpers/isNodeBinary';
+import { isNodeBinary } from '../../src/helpers/isNodeBinary';
 
 describe('isNodeBinary()', () => {
 	describe('unix', () => {

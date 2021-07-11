@@ -1,10 +1,10 @@
 import { PrimitiveType } from '@boost/args';
-import msg from '../translate';
-import applyMarkdown from './applyMarkdown';
-import applyStyle from './applyStyle';
-import formatValue from './formatValue';
+import { msg } from '../translate';
+import { applyMarkdown } from './applyMarkdown';
+import { applyStyle } from './applyStyle';
+import { formatValue } from './formatValue';
 
-export default function formatDescription(
+export function formatDescription(
 	config: {
 		choices?: PrimitiveType[];
 		default?: PrimitiveType;

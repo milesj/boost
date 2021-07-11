@@ -1,9 +1,7 @@
-/* eslint-disable no-dupe-class-members */
-
 import { ArgList, PrimitiveType } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
-import CLIError from './CLIError';
+import { CLIError } from './CLIError';
 import {
 	Commandable,
 	CommandMetadata,
@@ -13,9 +11,7 @@ import {
 	ProxyCommandRunner,
 } from './types';
 
-export default abstract class CommandManager<
-	Options extends object = {},
-> extends Contract<Options> {
+export abstract class CommandManager<Options extends object = {}> extends Contract<Options> {
 	readonly onAfterRegister = new Event<[CommandPath, Commandable]>('after-register');
 
 	readonly onBeforeRegister = new Event<[CommandPath, Commandable]>('before-register');
@@ -43,7 +39,7 @@ export default abstract class CommandManager<
 	 * Return a list of all registered command paths (including aliases).
 	 */
 	getCommandPaths(): CommandPath[] {
-		return Object.keys(this.commands).concat(Object.keys(this.commandAliases));
+		return [...Object.keys(this.commands), ...Object.keys(this.commandAliases)];
 	}
 
 	/**

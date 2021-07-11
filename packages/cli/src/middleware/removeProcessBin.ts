@@ -1,6 +1,6 @@
-import isNodeBinary from '../helpers/isNodeBinary';
+import { isNodeBinary } from '../helpers/isNodeBinary';
 import { Middleware } from '../types';
 
-export default function removeProcessBin(): Middleware {
+export function removeProcessBin(): Middleware {
 	return (argv, parse) => parse(argv.length > 0 && isNodeBinary(argv[0]) ? argv.slice(2) : argv);
 }

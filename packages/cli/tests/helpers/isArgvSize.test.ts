@@ -1,4 +1,4 @@
-import isArgvSize from '../../src/helpers/isArgvSize';
+import { isArgvSize } from '../../src/helpers/isArgvSize';
 
 describe('isArgvSize()', () => {
 	it('returns true if an empty array', () => {

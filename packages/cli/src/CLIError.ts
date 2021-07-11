@@ -22,4 +22,4 @@ const errors = {
 
 export type CLIErrorCode = keyof typeof errors;
 
-export default createScopedError<CLIErrorCode>('CLI', 'CLIError', errors);
+export const CLIError = createScopedError<CLIErrorCode>('CLI', 'CLIError', errors);

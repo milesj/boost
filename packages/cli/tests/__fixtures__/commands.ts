@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 import { Command } from '../../src';
 
 export class Parent extends Command {

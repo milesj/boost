@@ -1,6 +1,6 @@
 type BufferListener = (message: string) => void;
 
-export default class LogBuffer {
+export class LogBuffer {
 	protected listener?: BufferListener;
 
 	protected stream: NodeJS.WriteStream;

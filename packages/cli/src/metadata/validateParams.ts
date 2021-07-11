@@ -1,12 +1,12 @@
 import { ParamConfigList } from '@boost/args';
 import { optimal } from '@boost/common';
-import msg from '../translate';
+import { msg } from '../translate';
 import { paramBlueprint } from './blueprints';
 
-export default function validateParams(params: ParamConfigList) {
+export function validateParams(params: ParamConfigList) {
 	params.forEach((config, index) =>
 		optimal(config, paramBlueprint, {
-			name: msg('cli:labelParam', { name: config.label || index }),
+			name: msg('cli:labelParam', { name: config.label ?? index }),
 			unknown: false,
 		}),
 	);

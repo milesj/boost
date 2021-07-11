@@ -1,4 +1,4 @@
-import LogBuffer from '../src/LogBuffer';
+import { LogBuffer } from '../src/LogBuffer';
 
 describe('LogBuffer', () => {
 	it('removes listener when calling return function', () => {
@@ -7,12 +7,12 @@ describe('LogBuffer', () => {
 
 		const undo = buffer.on(spy);
 
-		// @ts-expect-error
+		// @ts-expect-error Allow access
 		expect(buffer.listener).toBe(spy);
 
 		undo();
 
-		// @ts-expect-error
+		// @ts-expect-error Allow access
 		expect(buffer.listener).toBeUndefined();
 	});
 });
