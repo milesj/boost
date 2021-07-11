@@ -1,6 +1,7 @@
 export default {
 	coveragePathIgnorePatterns: [
-		'test.ts',
+		'__fixtures__',
+		'src/test.ts',
 		// Annoying to test
 		'cli/src/hooks',
 		// Impossible to test
@@ -13,6 +14,11 @@ export default {
 		'config/src/loaders/ts.ts',
 		'config/src/loaders/supports',
 		'decorators/src/helpers/isParam.ts',
+		// Ignore these packages
+		'internal/src',
+		'terminal/src',
+		'test-utils/src',
+		'website/src',
 	],
 	coverageThreshold: {
 		global: {
@@ -22,4 +28,5 @@ export default {
 			statements: 99,
 		},
 	},
+	testPathIgnorePatterns: ['src/test.ts'],
 };

@@ -6,7 +6,7 @@
     "pack": "NODE_ENV=production packemon pack --addEngines --declaration=standard",
     "clean": "packemon clean",
     "check": "yarn run type && yarn run test && yarn run lint",
-    "coverage": "yarn run jest --coverage",
+    "coverage": "beemo jest --coverage",
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
     "format": "beemo prettier",
