@@ -27,6 +27,7 @@
     "@types/babel__core": "^7.1.14",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.9",
+    "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.168",
     "@types/minimatch": "^3.0.4",
     "@types/pluralize": "^0.0.29",
