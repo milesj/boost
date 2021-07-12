@@ -34,13 +34,13 @@
   "dependencies": {
     "ansi-escapes": "^4.3.2",
     "ansi-regex": "^5.0.0",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.1",
     "cli-truncate": "^2.1.0",
     "figures": "^3.2.0",
     "slice-ansi": "^4.0.0",
     "string-width": "^4.2.2",
     "strip-ansi": "^6.0.0",
-    "supports-hyperlinks": "^2.1.0",
+    "supports-hyperlinks": "^2.2.0",
     "term-size": "^2.2.1",
     "wrap-ansi": "^7.0.0"
   },

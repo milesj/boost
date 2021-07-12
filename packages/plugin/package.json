@@ -36,7 +36,7 @@
     "@boost/debug": "^2.2.5",
     "@boost/event": "^2.3.2",
     "@boost/internal": "^2.2.2",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {

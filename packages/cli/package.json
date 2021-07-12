@@ -48,14 +48,14 @@
     "@boost/translate": "^2.2.5",
     "execa": "^5.0.0",
     "levenary": "^1.1.1",
-    "semver": "^7.3.4"
+    "semver": "^7.3.5"
   },
   "peerDependencies": {
     "ink": "^3.0.0",
     "react": "^16.8.0"
   },
   "devDependencies": {
-    "debug": "^4.3.1",
+    "debug": "^4.3.2",
     "ink": "^3.0.8",
     "ink-testing-library": "^2.1.0",
     "react": "^16.14.0"

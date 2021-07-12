@@ -33,7 +33,7 @@
   "dependencies": {
     "@boost/decorators": "^2.1.2",
     "@boost/internal": "^2.2.2",
-    "fast-glob": "^3.2.4",
+    "fast-glob": "^3.2.7",
     "json5": "^2.2.0",
     "optimal": "^4.3.0",
     "pretty-ms": "^7.0.1",

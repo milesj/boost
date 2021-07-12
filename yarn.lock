@@ -1930,13 +1930,13 @@ __metadata:
     "@boost/log": ^2.2.5
     "@boost/terminal": ^2.2.1
     "@boost/translate": ^2.2.5
-    debug: ^4.3.1
+    debug: ^4.3.2
     execa: ^5.0.0
     ink: ^3.0.8
     ink-testing-library: ^2.1.0
     levenary: ^1.1.1
     react: ^16.14.0
-    semver: ^7.3.4
+    semver: ^7.3.5
   peerDependencies:
     ink: ^3.0.0
     react: ^16.8.0
@@ -1950,7 +1950,7 @@ __metadata:
     "@boost/decorators": ^2.1.2
     "@boost/internal": ^2.2.2
     "@boost/test-utils": ^2.3.1
-    fast-glob: ^3.2.4
+    fast-glob: ^3.2.7
     json5: ^2.2.0
     optimal: ^4.3.0
     pretty-ms: ^7.0.1
@@ -1982,10 +1982,10 @@ __metadata:
   dependencies:
     "@boost/common": ^2.7.2
     "@boost/internal": ^2.2.2
-    "@types/debug": ^4.1.5
-    debug: ^4.3.1
+    "@types/debug": ^4.1.6
+    debug: ^4.3.2
     execa: ^5.0.0
-    fast-glob: ^3.2.4
+    fast-glob: ^3.2.7
   languageName: unknown
   linkType: soft
 
@@ -2007,7 +2007,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@boost/internal@workspace:packages/internal"
   dependencies:
-    debug: ^4.3.1
+    debug: ^4.3.2
   languageName: unknown
   linkType: soft
 
@@ -2018,7 +2018,7 @@ __metadata:
     "@boost/common": ^2.7.2
     "@boost/internal": ^2.2.2
     "@boost/translate": ^2.2.5
-    chalk: ^4.1.0
+    chalk: ^4.1.1
   languageName: unknown
   linkType: soft
 
@@ -2032,7 +2032,7 @@ __metadata:
     "@boost/internal": ^2.2.2
     "@boost/translate": ^2.2.5
     execa: ^5.0.0
-    lodash: ^4.17.20
+    lodash: ^4.17.21
     split: ^1.0.1
   languageName: unknown
   linkType: soft
@@ -2047,7 +2047,7 @@ __metadata:
     "@boost/internal": ^2.2.2
     "@boost/test-utils": ^2.3.1
     "@types/pluralize": ^0.0.29
-    lodash: ^4.17.20
+    lodash: ^4.17.21
     pluralize: ^8.0.0
   languageName: unknown
   linkType: soft
@@ -2058,13 +2058,13 @@ __metadata:
   dependencies:
     ansi-escapes: ^4.3.2
     ansi-regex: ^5.0.0
-    chalk: ^4.1.0
+    chalk: ^4.1.1
     cli-truncate: ^2.1.0
     figures: ^3.2.0
     slice-ansi: ^4.0.0
     string-width: ^4.2.2
     strip-ansi: ^6.0.0
-    supports-hyperlinks: ^2.1.0
+    supports-hyperlinks: ^2.2.0
     term-size: ^2.2.1
     wrap-ansi: ^7.0.0
   languageName: unknown
@@ -2074,7 +2074,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@boost/test-utils@workspace:packages/test-utils"
   dependencies:
-    fs-extra: ^9.0.1
+    fs-extra: ^9.1.0
   languageName: unknown
   linkType: soft
 
@@ -4203,7 +4203,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14, @types/babel__core@npm:^7.1.15":
   version: 7.1.15
   resolution: "@types/babel__core@npm:7.1.15"
   dependencies:
@@ -4244,7 +4244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.1.5":
+"@types/debug@npm:^4.1.6":
   version: 4.1.6
   resolution: "@types/debug@npm:4.1.6"
   checksum: f2816703a81f2cecb9fe575ed73f69378f190f92e49aab01b5b1832166cd89b19d4e85999c955f8993d3dba36e78ffd1ac5f697449eff13a6a13de309dc6e0f5
@@ -4287,7 +4287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fs-extra@npm:^9.0.9":
+"@types/fs-extra@npm:^9.0.12":
   version: 9.0.12
   resolution: "@types/fs-extra@npm:9.0.12"
   dependencies:
@@ -4389,7 +4389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.168":
+"@types/lodash@npm:^4.14.171":
   version: 4.14.171
   resolution: "@types/lodash@npm:4.14.171"
   checksum: e48668fb030ad7d8c0c7751061bd332ad8704937d976bd4e24fd9e2128f80c17112be11e5c13d39f6a210336dc3549f7fb00eaebb56b94c2bfb89ad64c57d721
@@ -4405,7 +4405,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/minimatch@npm:*, @types/minimatch@npm:^3.0.3, @types/minimatch@npm:^3.0.4":
+"@types/minimatch@npm:*, @types/minimatch@npm:^3.0.3, @types/minimatch@npm:^3.0.5":
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
   checksum: 517a8ea1bfad4cc9d2563fc70c3ecd9afb13f9ef2b2cb06f8910989baf199d24f2fc6a8ccaae16a27c856e022b311042ca67ff42ffbda48750f2f84a5bf48716
@@ -4489,7 +4489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^16.9.55":
+"@types/react@npm:^16.14.11":
   version: 16.14.11
   resolution: "@types/react@npm:16.14.11"
   dependencies:
@@ -4525,7 +4525,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.4":
+"@types/semver@npm:^7.3.7":
   version: 7.3.7
   resolution: "@types/semver@npm:7.3.7"
   checksum: fff3d8f012454d1e0faf9dbbbbbb9cd9657d9f85ee0fef112984dffa85937c5001774838954a7b88fcc06b85500c10300956059aba0211687a520468ec09901c
@@ -5889,15 +5889,15 @@ __metadata:
     "@beemo/cli": ^2.0.0-rc.4
     "@beemo/core": ^2.0.0-rc.4
     "@beemo/dev": ^1.2.0
-    "@types/babel__core": ^7.1.14
+    "@types/babel__core": ^7.1.15
     "@types/exit": ^0.1.31
-    "@types/fs-extra": ^9.0.9
+    "@types/fs-extra": ^9.0.12
     "@types/jest": ^26.0.24
-    "@types/lodash": ^4.14.168
-    "@types/minimatch": ^3.0.4
+    "@types/lodash": ^4.14.171
+    "@types/minimatch": ^3.0.5
     "@types/pluralize": ^0.0.29
-    "@types/react": ^16.9.55
-    "@types/semver": ^7.3.4
+    "@types/react": ^16.14.11
+    "@types/semver": ^7.3.7
     "@types/split": ^1.0.0
     "@types/wrap-ansi": ^3.0.0
     conventional-changelog-beemo: ^2.1.0
@@ -8972,7 +8972,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.4, fast-glob@npm:^3.2.5, fast-glob@npm:^3.2.7":
+"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.5, fast-glob@npm:^3.2.7":
   version: 3.2.7
   resolution: "fast-glob@npm:3.2.7"
   dependencies:
@@ -9360,7 +9360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^9.0.1, fs-extra@npm:^9.1.0":
+"fs-extra@npm:^9.1.0":
   version: 9.1.0
   resolution: "fs-extra@npm:9.1.0"
   dependencies:
@@ -17747,7 +17747,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"supports-hyperlinks@npm:^2.0.0, supports-hyperlinks@npm:^2.1.0":
+"supports-hyperlinks@npm:^2.0.0, supports-hyperlinks@npm:^2.2.0":
   version: 2.2.0
   resolution: "supports-hyperlinks@npm:2.2.0"
   dependencies:

@@ -41,7 +41,7 @@
     "@boost/internal": "^2.2.2",
     "@boost/translate": "^2.2.5",
     "execa": "^5.0.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "split": "^1.0.1"
   },
   "funding": {
