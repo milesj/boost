@@ -6,6 +6,8 @@
 		"packages/*/types/**/*",
 		"themes/*/src/**/*",
 		"themes/*/tests/**/*",
-		"themes/*/types/**/*"
+		"themes/*/types/**/*",
+		"website/src/**/*",
+		"website/types/**/*"
 	]
 }

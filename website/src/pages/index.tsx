@@ -1,9 +1,13 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import React from 'react';
 import clsx from 'clsx';
-import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Layout from '@theme/Layout';
 import styles from './styles.module.css';
 
 interface FeatureProps {
@@ -28,7 +32,7 @@ const features: FeatureProps[][] = [
 			description: (
 				<>
 					With the power of{' '}
-					<a href="https://www.typescriptlang.org/" target="_blank">
+					<a href="https://www.typescriptlang.org/" rel="noreferrer" target="_blank">
 						TypeScript
 					</a>
 					, we provide a strict, type-safe, and ergonomic API for a better developer experience.
@@ -83,7 +87,7 @@ function Feature({ imageUrl, title, description }: FeatureProps) {
 		<div className={clsx('col col--4', styles.feature)}>
 			{imgUrl && (
 				<div className="text--center">
-					<img className={styles.featureImage} src={imgUrl} alt={title} />
+					<img alt={title} className={styles.featureImage} src={imgUrl} />
 				</div>
 			)}
 
@@ -98,7 +102,7 @@ export default function Home() {
 	const { siteConfig = {} } = context;
 
 	return (
-		<Layout title="Cross-platform tooling" description={siteConfig.tagline}>
+		<Layout description={siteConfig.tagline} title="Cross-platform tooling">
 			<header className={clsx('hero hero--primary', styles.heroBanner)}>
 				<div className="container">
 					<h1 className="hero__title">{siteConfig.title}</h1>
@@ -112,11 +116,11 @@ export default function Home() {
 						</Link>
 
 						<iframe
-							src="https://ghbtns.com/github-btn.html?user=milesj&repo=boost&type=star&count=true&size=large"
 							frameBorder="0"
 							scrolling="0"
+							src="https://ghbtns.com/github-btn.html?user=milesj&repo=boost&type=star&count=true&size=large"
 							title="GitHub"
-						></iframe>
+						/>
 					</div>
 				</div>
 			</header>
