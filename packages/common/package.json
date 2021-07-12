@@ -42,8 +42,13 @@
   "devDependencies": {
     "@boost/test-utils": "^2.3.1"
   },
-  "optionalPeerDependencies": {
+  "peerDependencies": {
     "typescript": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
   },
   "funding": {
     "type": "ko-fi",

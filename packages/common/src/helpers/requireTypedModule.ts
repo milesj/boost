@@ -16,7 +16,7 @@ declare global {
 let ts: typeof import('typescript') | null = null;
 
 try {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, import/no-extraneous-dependencies
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	ts = require('typescript');
 } catch {
 	// Ignore and check at runtime

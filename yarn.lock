@@ -1955,6 +1955,11 @@ __metadata:
     optimal: ^4.3.0
     pretty-ms: ^7.0.1
     yaml: ^1.10.2
+  peerDependencies:
+    typescript: ^4.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
   languageName: unknown
   linkType: soft
 
