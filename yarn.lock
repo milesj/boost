@@ -5877,6 +5877,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "boost-root@workspace:."
   dependencies:
+    "@beemo/cli": ^2.0.0-rc.4
+    "@beemo/core": ^2.0.0-rc.4
     "@beemo/dev": ^1.2.0
     "@types/babel__core": ^7.1.14
     "@types/exit": ^0.1.31
