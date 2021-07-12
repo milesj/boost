@@ -39,6 +39,15 @@ describe('Configuration', () => {
 		config = new BoostConfiguration('boost');
 	});
 
+	it('can pass a custom resolver', () => {
+		const resolver = jest.fn();
+
+		config = new BoostConfiguration('boost', resolver);
+
+		// @ts-expect-error Allow access
+		expect(config.configFinder.options.resolver).toBe(resolver);
+	});
+
 	describe('clearCache()', () => {
 		it('clears file and finder cache on cache engine', () => {
 			// @ts-expect-error Allow access

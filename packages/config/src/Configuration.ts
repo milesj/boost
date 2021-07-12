@@ -1,4 +1,4 @@
-import { Blueprint, Contract, PortablePath, predicates } from '@boost/common';
+import { Blueprint, Contract, ModuleResolver, PortablePath, predicates } from '@boost/common';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
 import { ConfigFinder } from './ConfigFinder';
@@ -28,11 +28,11 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 
 	private processor: Processor<T>;
 
-	constructor(name: string) {
+	constructor(name: string, resolver?: ModuleResolver) {
 		super();
 
 		this.cache = new Cache();
-		this.configFinder = new ConfigFinder({ name }, this.cache);
+		this.configFinder = new ConfigFinder({ name, resolver }, this.cache);
 		this.ignoreFinder = new IgnoreFinder({ name }, this.cache);
 		this.processor = new Processor({ name });
 		this.bootstrap();

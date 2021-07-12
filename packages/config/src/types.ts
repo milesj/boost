@@ -1,4 +1,4 @@
-import { PackageStructure, Path } from '@boost/common';
+import { ModuleResolver, PackageStructure, Path } from '@boost/common';
 
 export type ExtType = 'cjs' | 'js' | 'json' | 'json5' | 'mjs' | 'ts' | 'yaml' | 'yml';
 
@@ -35,6 +35,7 @@ export interface ConfigFinderOptions<T> {
 	loaders?: { [K in LoaderType]: Loader<T> };
 	name: string;
 	overridesSetting?: string;
+	resolver?: ModuleResolver;
 }
 
 export interface IgnoreFinderOptions {

@@ -11,7 +11,11 @@ describe('ConfigFinder', () => {
 	beforeEach(() => {
 		cache = new Cache();
 		finder = new ConfigFinder(
-			{ extendsSetting: 'extends', name: 'boost', overridesSetting: 'overrides' },
+			{
+				extendsSetting: 'extends',
+				name: 'boost',
+				overridesSetting: 'overrides',
+			},
 			cache,
 		);
 	});
@@ -455,6 +459,10 @@ describe('ConfigFinder', () => {
 			it('extends config presets from node modules', async () => {
 				const tempRoot = copyFixtureToTempFolder('config-extends-module-presets');
 
+				finder.configure({
+					resolver: (id) => `${tempRoot}/node_modules/${id}`,
+				});
+
 				const files = await finder.loadFromBranchToRoot(tempRoot);
 
 				expect(files).toEqual([
@@ -502,6 +510,10 @@ describe('ConfigFinder', () => {
 
 			it('extends configs using a custom settings name', async () => {
 				const tempRoot = copyFixtureToTempFolder('config-extends-custom-setting-name');
+
+				finder.configure({
+					resolver: (id) => `${tempRoot}/node_modules/${id}`,
+				});
 
 				finder.configure({ extendsSetting: 'presets' });
 

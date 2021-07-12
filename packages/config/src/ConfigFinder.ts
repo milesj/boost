@@ -49,6 +49,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 			}).exact(),
 			name: string().required().camelCase(),
 			overridesSetting: string(),
+			resolver: func(require.resolve).notNullable(),
 		};
 	}
 
@@ -194,7 +195,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 	 * a property that matches the `extendsSetting` option.
 	 */
 	protected async extractExtendedConfigs(configs: ConfigFile<T>[]): Promise<ConfigFile<T>[]> {
-		const { name, extendsSetting } = this.options;
+		const { name, extendsSetting, resolver } = this.options;
 		const extendsPaths: Path[] = [];
 
 		this.debug('Extracting configs to extend from');
@@ -221,7 +222,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 
 					this.debug('Extending config from node module: %s', color.moduleName(modulePath.path()));
 
-					extendsPaths.push(this.cache.rootDir!.append('node_modules', modulePath));
+					extendsPaths.push(new Path(resolver(modulePath.path())));
 
 					// File path
 				} else if (isFilePath(extendsPath)) {
