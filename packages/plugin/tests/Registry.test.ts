@@ -22,6 +22,17 @@ describe('Registry', () => {
 		expect(registry.pluralName).toBe('renderers');
 	});
 
+	it('can pass a custom resolver', () => {
+		const resolver = jest.fn();
+
+		registry = createRendererRegistry({
+			resolver,
+		});
+
+		// @ts-expect-error Allow access
+		expect(registry.loader.createResolver('foo').resolver).toBe(resolver);
+	});
+
 	describe('formatModuleName()', () => {
 		it('allows a custom name', () => {
 			expect(registry.formatModuleName('bar')).toBe('boost-test-renderer-bar');

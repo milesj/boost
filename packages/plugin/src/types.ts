@@ -1,4 +1,4 @@
-import { FilePath, ModuleName } from '@boost/common';
+import { FilePath, ModuleName, ModuleResolver } from '@boost/common';
 
 export type Source = FilePath | ModuleName;
 
@@ -38,5 +38,6 @@ export interface RegistryOptions<T extends Pluggable> {
 	afterStartup?: Callback<T> | null;
 	beforeShutdown?: Callback<T> | null;
 	beforeStartup?: Callback<T> | null;
+	resolver?: ModuleResolver;
 	validate: Callback<T>;
 }

@@ -21,7 +21,7 @@ export class Renderer extends Plugin<unknown, { value: string }> implements Rend
 	}
 }
 
-export function createRendererRegistry(options?: RegistryOptions<Renderable>) {
+export function createRendererRegistry(options?: Partial<RegistryOptions<Renderable>>) {
 	return new Registry<Renderable>('boost-test', 'renderer', {
 		validate(plugin) {
 			if (typeof plugin.render !== 'function') {

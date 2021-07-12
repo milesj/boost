@@ -23,8 +23,8 @@ export class Loader<Plugin extends Pluggable> {
 	 */
 	// eslint-disable-next-line complexity
 	createResolver(name: Source): PathResolver {
-		const resolver = new PathResolver();
-		const { singularName: typeName, projectName } = this.registry;
+		const { singularName: typeName, projectName, options } = this.registry;
+		const resolver = new PathResolver(options.resolver);
 		const moduleName = name.toLowerCase();
 		const modulePattern = MODULE_NAME_PART.source;
 		const isNotProjectOrType = !moduleName.includes(projectName) && !moduleName.includes(typeName);
