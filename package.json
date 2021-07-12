@@ -2,9 +2,9 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "packemon build --addEngines",
-    "pack": "NODE_ENV=production packemon pack --addEngines --declaration=standard",
-    "clean": "packemon clean",
+    "build": "yarn run packemon build --addEngines",
+    "pack": "NODE_ENV=production yarn run packemon pack --addEngines --declaration=standard",
+    "clean": "yarn run packemon clean",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "beemo jest --coverage",
     "docs": "cd website && yarn run start",
@@ -15,7 +15,8 @@
     "test:tsm": "node packages/common/tests/helpers/requireTypedModule.assert.js",
     "type": "beemo typescript --build",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
-    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git"
+    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git",
+    "packemon": "yarn dlx packemon@1.1.1"
   },
   "engines": {
     "node": ">=10.3.0"
