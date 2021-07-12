@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.2.6 - 2021-07-12
+
+#### 📦 Dependencies
+
+- **[i18next]** Update to v20.3. ([f60673a](https://github.com/milesj/boost/commit/f60673a))
+- **[packemon]** Update to v1. (#151) ([7ffd612](https://github.com/milesj/boost/commit/7ffd612)), closes [#151](https://github.com/milesj/boost/issues/151)
+
+#### 🛠 Internals
+
+- Migrate to Beemo tooling. (#154) ([0cd2a6f](https://github.com/milesj/boost/commit/0cd2a6f)), closes [#154](https://github.com/milesj/boost/issues/154)
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 2.2.5 - 2021-03-26
 
 #### 📦 Dependencies

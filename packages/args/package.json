@@ -1,6 +1,6 @@
 {
   "name": "@boost/args",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "release": "1594765247526",
   "description": "A convention based argument parsing and formatting library, with strict validation checks.",
   "keywords": [
@@ -35,7 +35,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^2.2.2",
+    "@boost/internal": "^2.2.3",
     "levenary": "^1.1.1"
   },
   "packemon": {

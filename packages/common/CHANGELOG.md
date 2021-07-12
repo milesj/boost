@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.8.0 - 2021-07-12
+
+#### 🚀 Updates
+
+- **[PathResolver]** Add support for custom resolvers. ([b57269d](https://github.com/milesj/boost/commit/b57269d))
+
+#### 📦 Dependencies
+
+- **[packemon]** Update to v1. (#151) ([7ffd612](https://github.com/milesj/boost/commit/7ffd612)), closes [#151](https://github.com/milesj/boost/issues/151)
+- Update minor and patch versions. ([9b2cb32](https://github.com/milesj/boost/commit/9b2cb32))
+- Update to use proper optional peer dependencies syntax. ([679804b](https://github.com/milesj/boost/commit/679804b))
+
+#### 🛠 Internals
+
+- Migrate to Beemo tooling. (#154) ([0cd2a6f](https://github.com/milesj/boost/commit/0cd2a6f)), closes [#154](https://github.com/milesj/boost/issues/154)
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 2.7.2 - 2021-03-26
 
 #### 📦 Dependencies

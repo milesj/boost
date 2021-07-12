@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.1.1 - 2021-07-12
+
+#### 🛠 Internals
+
+- Migrate to Beemo tooling. (#154) ([0cd2a6f](https://github.com/milesj/boost/commit/0cd2a6f)), closes [#154](https://github.com/milesj/boost/issues/154)
+
+**Note:** Version bump only for package @boost/theme-moon-light
+
+
+
+
+
 ## 2.1.0 - 2020-11-29
 
 #### 🚀 Updates
