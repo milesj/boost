@@ -1,9 +1,15 @@
 import { CommonError } from './CommonError';
 import { Path } from './Path';
-import { Lookup, LookupType, PortablePath } from './types';
+import { Lookup, LookupType, ModuleResolver, PortablePath } from './types';
 
 export class PathResolver {
 	private lookups: Lookup[] = [];
+
+	private resolver: ModuleResolver;
+
+	constructor(resolver?: ModuleResolver) {
+		this.resolver = resolver ?? require.resolve;
+	}
 
 	/**
 	 * Return a list of all lookup paths.
@@ -68,7 +74,7 @@ export class PathResolver {
 				// The `require.resolve` function will throw an error if not found.
 			} else if (lookup.type === LookupType.NODE_MODULE) {
 				try {
-					resolvedPath = require.resolve(lookup.path.path());
+					resolvedPath = this.resolver(lookup.path.path());
 					resolvedLookup = lookup;
 				} catch {
 					return false;

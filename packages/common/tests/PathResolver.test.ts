@@ -111,5 +111,16 @@ describe('PathResolver', () => {
 
 			unmock();
 		});
+
+		it('can utilize a custom resolver', () => {
+			resolver = new PathResolver(() => 'custom');
+			resolver.lookupNodeModule('unknown'); // Exists
+
+			expect(resolver.resolve()).toEqual({
+				originalPath: new Path('unknown'),
+				resolvedPath: new Path('custom'),
+				type: LookupType.NODE_MODULE,
+			});
+		});
 	});
 });

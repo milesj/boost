@@ -22,6 +22,8 @@ export interface Lookup {
 	type: LookupType;
 }
 
+export type ModuleResolver = (path: ModuleName) => FilePath;
+
 // CLASSES
 
 export type AbstractConstructor<T> = Function & { prototype: T };
