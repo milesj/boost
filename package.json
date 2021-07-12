@@ -15,7 +15,7 @@
     "test:tsm": "node packages/common/tests/helpers/requireTypedModule.assert.js",
     "type": "beemo typescript --build",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
-    "release": "lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git",
+    "release": "yarn prerelease && lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git",
     "packemon": "yarn dlx packemon@1.1.1"
   },
   "engines": {
