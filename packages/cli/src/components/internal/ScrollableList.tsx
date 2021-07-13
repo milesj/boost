@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box } from 'ink';
 import { useDimensions } from '../../hooks';
 import { msg } from '../../translate';
@@ -113,6 +113,7 @@ function countEnabledItems(items: ScrollableItem[]): number {
 		if ('disabled' in i) {
 			return !i.disabled;
 		}
+
 		if ('divider' in i) {
 			return !i.divider;
 		}
@@ -161,7 +162,10 @@ export function ScrollableList<T extends ScrollableItem>({
 		maxLimit,
 		scrollType,
 	);
-	const { leading, list, trailing } = truncateList(items, startIndex, endIndex);
+	const { leading, list, trailing } = useMemo(
+		() => truncateList(items, startIndex, endIndex),
+		[endIndex, items, startIndex],
+	);
 	const leadingCount = countEnabledItems(leading);
 	const trailingCount = countEnabledItems(trailing);
 
