@@ -1,5 +1,6 @@
 const React = require('react');
-const { Command, Confirm } = require('../../lib');
+const { Command } = require('../../lib');
+const { Confirm } = require('../../lib/react');
 
 module.exports = class ConfirmCommand extends Command {
 	static description = 'Test `Confirm` component';

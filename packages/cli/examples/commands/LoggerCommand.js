@@ -1,6 +1,7 @@
 const React = require('react');
 const { Box, Text } = require('ink');
-const { Command, ProgramContext } = require('../../lib');
+const { Command } = require('../../lib');
+const { ProgramContext } = require('../../lib/react');
 const random = require('../random');
 
 let timer;

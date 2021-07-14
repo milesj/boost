@@ -1,6 +1,7 @@
 const React = require('react');
 const { Text } = require('ink');
-const { Command, useProgram } = require('../../lib');
+const { Command } = require('../../lib');
+const { useProgram } = require('../../lib/react');
 const sleep = require('../sleep');
 
 function Exit({ error }) {

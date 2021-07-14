@@ -1,4 +1,4 @@
-const { MultiSelect } = require('../../lib');
+const { MultiSelect } = require('../../lib/react');
 const SelectCommand = require('./SelectCommand');
 
 module.exports = class MultiSelectCommand extends SelectCommand {
