@@ -6,16 +6,11 @@ import { OptionConfig, OptionConfigMap, ParamConfig, ParamConfigList } from '@bo
 import { toArray } from '@boost/common';
 import { stripAnsi } from '@boost/terminal';
 import { DELIMITER, SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from '../constants';
-import {
-	formatCommandCall,
-	formatDescription,
-	formatType,
-	getLongestWidth,
-	groupByCategory,
-} from '../helpers';
+import { formatDescription, formatType, getLongestWidth, groupByCategory } from '../helpers';
 import { msg } from '../translate';
 import { Categories, CommandConfig, CommandConfigMap } from '../types';
 import { Header } from './Header';
+import { HelpCommands } from './internal/HelpCommands';
 import { Style } from './Style';
 
 export interface HelpProps {
@@ -51,63 +46,6 @@ export class Help extends React.Component<HelpProps> {
 		}
 
 		return tags;
-	}
-
-	renderCommands(commands: CommandConfigMap) {
-		let pathWidth = 0;
-
-		const items = Object.entries(commands).map(([path, command]) => {
-			const pathCall = formatCommandCall(path, command);
-			const pathCallStripped = stripAnsi(pathCall);
-
-			if (pathCallStripped.length > pathWidth) {
-				pathWidth = pathCallStripped.length;
-			}
-
-			return {
-				...command,
-				name: path,
-				path,
-				pathCall,
-			};
-		});
-
-		const categorizedCommands = groupByCategory(items, this.props.categories ?? {});
-		const categoryCount = Object.keys(categorizedCommands).length;
-
-		return (
-			<>
-				<Header label={msg('cli:labelCommands')} />
-
-				{Object.entries(categorizedCommands).map(([key, category], index) => (
-					<Box key={key} flexDirection="column">
-						{!!category.name && categoryCount > 1 && (
-							<Box marginTop={index === 0 ? 0 : SPACING_ROW} paddingLeft={SPACING_COL}>
-								<Style bold type="none">
-									{category.name}
-								</Style>
-							</Box>
-						)}
-
-						{category.items.map((config) => {
-							const desc = formatDescription(config);
-
-							return (
-								<Box key={key + config.path} flexDirection="row" paddingLeft={SPACING_COL}>
-									<Box flexGrow={0} width={pathWidth + SPACING_COL_WIDE}>
-										<Text>{config.pathCall}</Text>
-									</Box>
-
-									<Box flexGrow={1}>
-										<Text wrap="wrap">{desc}</Text>
-									</Box>
-								</Box>
-							);
-						})}
-					</Box>
-				))}
-			</>
-		);
 	}
 
 	renderOptions(options: OptionConfigMap) {
@@ -247,7 +185,7 @@ export class Help extends React.Component<HelpProps> {
 
 	// eslint-disable-next-line complexity
 	override render() {
-		const { commands, options, header, params, config } = this.props;
+		const { categories, commands, options, header, params, config } = this.props;
 		const hasDesc = Boolean(config?.description);
 		const hasUsage = Boolean(config?.usage && config.usage.length > 0);
 		const hasParams = Boolean(params && params.length > 0);
@@ -268,7 +206,7 @@ export class Help extends React.Component<HelpProps> {
 
 				{hasParams && this.renderParams(params!)}
 
-				{hasCommands && this.renderCommands(commands!)}
+				{hasCommands && <HelpCommands categories={categories} commands={commands!} />}
 
 				{hasOptions && this.renderOptions(options!)}
 			</Box>

@@ -1,3 +1,7 @@
+if (process.env.TIMING) {
+	require('time-require');
+}
+
 const { Program } = require('../lib');
 const BuildCommand = require('./commands/BuildCommand');
 const ConfirmCommand = require('./commands/ConfirmCommand');

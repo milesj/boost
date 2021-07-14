@@ -38,7 +38,8 @@
     "@types/wrap-ansi": "^3.0.0",
     "conventional-changelog-beemo": "^2.1.0",
     "fs-extra": "^9.1.0",
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "time-require": "^0.1.2"
   },
   "publishConfig": {
     "access": "public"
