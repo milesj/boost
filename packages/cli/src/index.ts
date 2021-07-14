@@ -5,12 +5,12 @@
 
 export * from './CLIError';
 export * from './Command';
-export * from './components';
 export * from './constants';
 export * from './decorators';
 export * from './helpers';
-export * from './hooks';
 export * from './middleware';
 export * from './Program';
-export * from './ProgramContext';
 export * from './types';
+
+// Remove in v3
+export * from './react';

@@ -19,6 +19,8 @@
   "files": [
     "dts/**/*.d.ts",
     "lib/**/*.{js,map}",
+    "react.d.ts",
+    "react.js",
     "res/",
     "src/**/*.{ts,tsx,json}",
     "test.d.ts",

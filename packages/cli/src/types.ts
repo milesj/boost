@@ -126,7 +126,7 @@ export interface CommandMetadata extends CommandStaticConfig {
 export type CommandMetadataMap = Record<string, CommandMetadata>;
 
 export interface Commandable<O extends object = any, P extends PrimitiveType[] = any[]> {
-	createHelp: () => React.ReactElement | string;
+	createHelp: () => Promise<React.ReactElement | string>;
 	getMetadata: () => CommandMetadata;
 	getParserOptions: () => ParserOptions<O, P>;
 	getPath: () => CommandPath;

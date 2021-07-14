@@ -18,10 +18,6 @@ import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/l
 import { CLIError } from './CLIError';
 import { Command, createProxyCommand } from './Command';
 import { CommandManager } from './CommandManager';
-import { Failure } from './components/Failure';
-import { Help } from './components/Help';
-import { IndexHelp } from './components/IndexHelp';
-import { Wrapper } from './components/internal/Wrapper';
 import {
 	DELIMITER,
 	EXIT_FAIL,
@@ -245,6 +241,9 @@ export class Program extends CommandManager<ProgramOptions> {
 			this.rendering = true;
 		}
 
+		// Import components on demand
+		const { Wrapper } = await import('./components/internal/Wrapper');
+
 		const { stdin, stdout, stderr } = this.streams;
 		const unpatchDebug = patchDebugModule();
 
@@ -341,7 +340,9 @@ export class Program extends CommandManager<ProgramOptions> {
 	 * Render the index screen when no args are passed.
 	 * Should include banner, header, footer, and command (if applicable).
 	 */
-	protected createIndex(): React.ReactElement {
+	protected async createIndex(): Promise<React.ReactElement> {
+		const { IndexHelp } = await import('./components/IndexHelp');
+
 		if (this.standAlone) {
 			return (
 				<IndexHelp {...this.options}>{this.getCommand(this.standAlone)!.createHelp()}</IndexHelp>
@@ -356,6 +357,8 @@ export class Program extends CommandManager<ProgramOptions> {
 				commands[path] = command;
 			}
 		});
+
+		const { Help } = await import('./components/Help');
 
 		return (
 			<IndexHelp {...this.options}>
@@ -449,6 +452,8 @@ export class Program extends CommandManager<ProgramOptions> {
 			throw error;
 		}
 
+		const { Failure } = await import('./components/Failure');
+
 		return this.render(
 			<Failure
 				binName={this.options.bin}
@@ -473,7 +478,7 @@ export class Program extends CommandManager<ProgramOptions> {
 		if ((isArgvSize(argv, 0) && !this.standAlone) || (isArgvSize(argv, 1) && showHelp)) {
 			this.onHelp.emit([]);
 
-			return this.render(this.createIndex());
+			return this.render(await this.createIndex());
 		}
 
 		// Display version
@@ -502,7 +507,7 @@ export class Program extends CommandManager<ProgramOptions> {
 		if (options.help) {
 			this.onHelp.emit([path]);
 
-			return this.render(command.createHelp());
+			return this.render(await command.createHelp());
 		}
 
 		// Display errors

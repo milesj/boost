@@ -17,7 +17,6 @@ import { Blueprint, Predicates } from '@boost/common';
 import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';
-import { Help } from './components/Help';
 import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
 import { Config } from './decorators/Config';
 import { mapCommandMetadata } from './helpers/mapCommandMetadata';
@@ -162,8 +161,9 @@ export abstract class Command<
 	/**
 	 * Create a React element based on the Help component.
 	 */
-	createHelp(): React.ReactElement {
+	async createHelp(): Promise<React.ReactElement> {
 		const metadata = this.getMetadata();
+		const { Help } = await import('./components/Help');
 
 		return (
 			<Help
