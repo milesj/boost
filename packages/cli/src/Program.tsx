@@ -241,9 +241,7 @@ export class Program extends CommandManager<ProgramOptions> {
 			this.rendering = true;
 		}
 
-		// Import components on demand
 		const { Wrapper } = await import('./components/internal/Wrapper');
-
 		const { stdin, stdout, stderr } = this.streams;
 		const unpatchDebug = patchDebugModule();
 
@@ -345,7 +343,9 @@ export class Program extends CommandManager<ProgramOptions> {
 
 		if (this.standAlone) {
 			return (
-				<IndexHelp {...this.options}>{this.getCommand(this.standAlone)!.createHelp()}</IndexHelp>
+				<IndexHelp {...this.options}>
+					{await this.getCommand(this.standAlone)!.createHelp()}
+				</IndexHelp>
 			);
 		}
 

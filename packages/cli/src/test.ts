@@ -73,15 +73,24 @@ export async function renderComponent(
 	element: React.ReactElement,
 	stripped: boolean = false,
 ): Promise<string> {
-	const stdout = new MockWriteStream();
+	let output = '';
 
-	await render(element, {
-		debug: true,
-		experimental: true,
-		stdout: stdout as unknown as NodeJS.WriteStream,
-	});
+	try {
+		const { render: renderAsTest } = await import('ink-testing-library');
+		const { lastFrame } = await renderAsTest(element);
 
-	const output = stdout.get();
+		output = lastFrame() ?? '';
+	} catch {
+		const stdout = new MockWriteStream();
+
+		await render(element, {
+			debug: true,
+			experimental: true,
+			stdout: stdout as unknown as NodeJS.WriteStream,
+		});
+
+		output = stdout.get();
+	}
 
 	return stripped ? stripAnsi(output) : output;
 }
