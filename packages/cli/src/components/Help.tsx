@@ -1,14 +1,30 @@
-import React from 'react';
+/* eslint-disable promise/prefer-await-to-then */
+
+import React, { Suspense } from 'react';
 import { Box, Text } from 'ink';
 import { OptionConfigMap, ParamConfigList } from '@boost/args';
 import { SPACING_COL } from '../constants';
 import { formatDescription } from '../helpers';
 import { Categories, CommandConfig, CommandConfigMap } from '../types';
 import { Header } from './Header';
-import { HelpCommands } from './internal/HelpCommands';
-import { HelpOptions } from './internal/HelpOptions';
-import { HelpParams } from './internal/HelpParams';
-import { HelpUsage } from './internal/HelpUsage';
+
+function extractDefault<K extends string, P>(
+	key: K,
+): (result: Record<K, React.ComponentType<P>>) => { default: React.ComponentType<P> } {
+	return ({ [key]: component }) => ({ default: component });
+}
+
+const Commands = React.lazy(() =>
+	import('./internal/HelpCommands').then(extractDefault('HelpCommands')),
+);
+
+const Options = React.lazy(() =>
+	import('./internal/HelpOptions').then(extractDefault('HelpOptions')),
+);
+
+const Params = React.lazy(() => import('./internal/HelpParams').then(extractDefault('HelpParams')));
+
+const Usage = React.lazy(() => import('./internal/HelpUsage').then(extractDefault('HelpUsage')));
 
 export interface HelpProps {
 	categories?: Categories;
@@ -46,13 +62,15 @@ export function Help({
 				</Box>
 			)}
 
-			{hasUsage && <HelpUsage delimiter={delimiter} usage={config?.usage} />}
+			<Suspense fallback={null}>
+				{hasUsage && <Usage delimiter={delimiter} usage={config?.usage} />}
 
-			{hasParams && <HelpParams config={config} params={params!} />}
+				{hasParams && <Params config={config} params={params!} />}
 
-			{hasCommands && <HelpCommands categories={categories} commands={commands!} />}
+				{hasCommands && <Commands categories={categories} commands={commands!} />}
 
-			{hasOptions && <HelpOptions categories={categories} options={options!} />}
+				{hasOptions && <Options categories={categories} options={options!} />}
+			</Suspense>
 		</Box>
 	);
 }
