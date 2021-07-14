@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2.11.0 - 2021-07-14
+
+#### 🚀 Updates
+
+- Improve CLI startup time and performance. (#156) ([7212c5f](https://github.com/milesj/boost/commit/7212c5f)), closes [#156](https://github.com/milesj/boost/issues/156)
+
+#### 🐞 Fixes
+
+- Fix infinite render caused by useProgram. ([537d5e3](https://github.com/milesj/boost/commit/537d5e3))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.10.5 - 2021-07-12
 
 #### 📦 Dependencies
