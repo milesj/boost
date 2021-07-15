@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.8.1 - 2021-07-15
+
+#### ⚙️ Types
+
+- **[PackageStructure]** Add `dependenciesMeta`, `peerDependenciesMeta`, and more to package types. ([f74ad7c](https://github.com/milesj/boost/commit/f74ad7c))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ## 2.8.0 - 2021-07-12
 
 #### 🚀 Updates

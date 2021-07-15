@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 0.1.1 - 2021-07-15
+
+#### 📘 Docs
+
+- Add new React import path. ([399e19d](https://github.com/milesj/boost/commit/399e19d))
+
+**Note:** Version bump only for package website
+
+
+
+
+
 # 0.1.0 - 2021-07-12
 
 #### 🎉 Release
