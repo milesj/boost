@@ -53,6 +53,8 @@ export interface Toolable {
 
 export type SettingMap<T extends string = string> = Record<T, string>;
 
+export type ConfigSetting = Record<string, boolean | number | string | null>;
+
 export interface BugSetting {
 	url?: string;
 	email?: string;
@@ -60,9 +62,19 @@ export interface BugSetting {
 
 export type DependencyMap = SettingMap;
 
+export interface DependencyMetaSetting {
+	built?: boolean;
+	optional?: boolean;
+	unplugged?: boolean;
+}
+
 export interface TypeSetting {
 	type: string;
 	url: string;
+}
+
+export interface PeerDependencyMetaSetting {
+	optional?: boolean;
 }
 
 export interface PeopleSetting {
@@ -82,10 +94,11 @@ export interface PackageStructure {
 	browserslist?: string[];
 	bugs?: BugSetting | string;
 	bundledDependencies?: string[];
-	config?: SettingMap;
+	config?: ConfigSetting;
 	contributors?: PeopleSetting[] | string[];
 	cpu?: string[];
 	dependencies?: DependencyMap;
+	dependenciesMeta?: Record<string, DependencyMetaSetting>;
 	description?: string;
 	devDependencies?: DependencyMap;
 	directories?: SettingMap<'bin' | 'doc' | 'example' | 'lib' | 'man' | 'test'>;
@@ -103,12 +116,9 @@ export interface PackageStructure {
 	optionalDependencies?: DependencyMap;
 	os?: string[];
 	peerDependencies?: DependencyMap;
+	peerDependenciesMeta?: Record<string, PeerDependencyMetaSetting>;
 	private?: boolean;
-	publishConfig?: {
-		access?: 'public' | 'restricted';
-		registry?: string;
-		tag?: string;
-	};
+	publishConfig?: ConfigSetting;
 	repository?: RepositorySetting | string;
 	scripts?: SettingMap;
 	type?: 'commonjs' | 'module';
@@ -121,6 +131,12 @@ export interface PackageStructure {
 	module?: string;
 	sideEffects?: string[] | boolean;
 	// Yarn
+	installConfig?: {
+		hoistingLimits?: boolean;
+	};
+	languageName?: string;
+	preferUnplugged?: boolean;
+	resolutions?: DependencyMap;
 	workspaces?:
 		| string[]
 		| {
