@@ -768,11 +768,13 @@ With that being said, components can be rendered from a command by returning a R
 `Command#run()`, or by calling the `Command#render()` method. For a quick demonstration, let's
 implement a component that writes to a file asynchronously.
 
+> Components and hooks provided by Boost can be imported from `@boost/cli/react`!
+
 ```tsx
 import fs from 'fs';
 import React, { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { Style, useProgram } from '@boost/cli';
+import { Style, useProgram } from '@boost/cli/react';
 
 interface WriteConfigProps {
 	data: object;
@@ -1091,15 +1093,15 @@ class CustomCommand extends Command {
 }
 ```
 
-The logger is also accessible within a component by using the `ProgramContext`, like so.
+The logger is also accessible within a component by using the `useProgram()` hook, like so.
 
 ```tsx
 import React, { useContext } from 'react';
 import { Box } from 'ink';
-import { ProgramContext } from '@boost/cli';
+import { useProgram } from '@boost/cli/react';
 
 function CustomComponent() {
-	const { log } = useContext(ProgramContext);
+	const { log } = useProgram();
 
 	log('Normal log');
 	log.error('Failed log');
@@ -1111,7 +1113,7 @@ function CustomComponent() {
 ```
 
 > It's highly encouraged to use the logger instead of the native console, so that logged messages do
-> not interrupt the React rendering process, and write to the configured streams!
+> not interrupt the React rendering process and write to the configured streams!
 
 ## Themes
 
