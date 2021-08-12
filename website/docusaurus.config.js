@@ -51,6 +51,11 @@ module.exports = {
 					position: 'left',
 				},
 				{
+					to: 'api',
+					label: 'API',
+					position: 'left',
+				},
+				{
 					href: 'https://github.com/milesj/boost',
 					label: 'GitHub',
 					position: 'right',
@@ -78,6 +83,29 @@ module.exports = {
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
 				},
+			},
+		],
+	],
+	plugins: [
+		[
+			'docusaurus-plugin-typedoc-api',
+			{
+				projectRoot: path.join(__dirname, '..'),
+				packageEntryPoints: [
+					'args',
+					'cli',
+					'common',
+					'config',
+					'debug',
+					'decorators',
+					'event',
+					'log',
+					'pipeline',
+					'plugin',
+					'terminal',
+					'translate',
+				].map((pkg) => `packages/${pkg}/src/index.ts`),
+				exclude: ['**/themes/*', '**/website/*'],
 			},
 		],
 	],
