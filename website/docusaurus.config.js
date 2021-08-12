@@ -1,6 +1,8 @@
 /* eslint-disable sort-keys */
 
-const pkgs = [
+const path = require('path');
+
+const pkgNames = [
 	'args',
 	'cli',
 	'common',
@@ -13,8 +15,9 @@ const pkgs = [
 	'plugin',
 	'terminal',
 	'translate',
-	// eslint-disable-next-line
-].map((name) => require(`../packages/${name}/package.json`));
+];
+
+const pkgs = pkgNames.map((name) => require(`../packages/${name}/package.json`));
 
 module.exports = {
 	title: 'Boost',
@@ -91,21 +94,9 @@ module.exports = {
 			'docusaurus-plugin-typedoc-api',
 			{
 				projectRoot: path.join(__dirname, '..'),
-				packageEntryPoints: [
-					'args',
-					'cli',
-					'common',
-					'config',
-					'debug',
-					'decorators',
-					'event',
-					'log',
-					'pipeline',
-					'plugin',
-					'terminal',
-					'translate',
-				].map((pkg) => `packages/${pkg}/src/index.ts`),
+				packageEntryPoints: pkgNames.map((pkg) => `packages/${pkg}/src/index.ts`),
 				exclude: ['**/themes/*', '**/website/*'],
+				includeReadmes: true,
 			},
 		],
 	],
