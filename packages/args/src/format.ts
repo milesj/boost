@@ -8,12 +8,11 @@ function mapToStringList(value: ValueType): ArgList {
 	return (value as string[]).map(String);
 }
 
-export function format({
-	command = [],
-	options = {},
-	params = [],
-	rest = [],
-}: Partial<Arguments<OptionMap, ArgList>>): Argv {
+/**
+ * Format a parsed arguments object back into a command line list of arguments.
+ */
+export function format(argument: Partial<Arguments<OptionMap, ArgList>>): Argv {
+	const { command = [], options = {}, params = [], rest = [] } = argument;
 	const args: Argv = [];
 
 	// Commands

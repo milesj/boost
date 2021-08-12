@@ -2,6 +2,11 @@ import { ArgsError } from './ArgsError';
 import { parse } from './parse';
 import { ArgList, Arguments, Argv, ContextFactory, ParserOptions, PrimitiveType } from './types';
 
+/**
+ * Parse a list of command line arguments (typically from `process.argv`) into an arguments
+ * object using a context factory. The factory can customize the parser options based on the
+ * arguments being parsed.
+ */
 export function parseInContext<O extends object = {}, P extends PrimitiveType[] = ArgList>(
 	argv: Argv,
 	context: ContextFactory,

@@ -6,7 +6,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges tooling />
+<EnvBadges tooling api="/api/args" />
 
 A type-safe and convention based argument parsing library, with strict validation checks.
 
@@ -43,9 +43,9 @@ supports [commands](#commands), [options](#options), [flags](#flags), [params](#
 [much more](#advanced-features)! It is _not_ a command line interface or application but provides
 the building blocks for such functionality.
 
-Parsing arguments is accomplished with the `parse()` function, which requires a list of strings
-(arguments also known as `argv`), and a settings object to control whats supported. It also utilizes
-TypeScript generics to type options and params respectively.
+Parsing arguments is accomplished with the [parse()][parse] function, which requires a list of
+strings (arguments also known as `argv`), and a settings object to control whats supported. It also
+utilizes TypeScript generics to type options and params respectively.
 
 ```ts
 import { parse } from '@boost/args';
@@ -98,9 +98,9 @@ While the above is straight forward (I hope so), it doesn't leave much room for 
 if we want different options based on the command passed? Or different params? Or how to handle
 global options? So on and so forth.
 
-To provide this functionality, the `parseInContext()` function can be used. Like `parse()`, this
-function requires a list of strings (`argv`), but unlike, it requires a factory function that
-returns contextual parser options.
+To provide this functionality, the [parseInContext()][parseincontext] function can be used. Like
+[parse()][parse], this function requires a list of strings (`argv`), but unlike, it requires a
+factory function that returns contextual parser options.
 
 The parser will loop through each argument, executing the factory function with the argument and
 argv list, until a match is found and options were returned.
@@ -184,10 +184,10 @@ args.params; // ['build:umd', 'src/']
 
 ## Options
 
-An option is an optional argument that accepts a single value or multiple values. It has 2 forms,
-the first being the default form, also known as a long option, which starts with `--` and is
-followed by a word or phrase (either in camel or kebab case). For example, `--log`, `--log-level`,
-or `--logLevel` (preferred).
+An option ([API](/api/args/interface/Option)) is an optional argument that accepts a single value or
+multiple values. It has 2 forms, the first being the default form, also known as a long option,
+which starts with `--` and is followed by a word or phrase (either in camel or kebab case). For
+example, `--log`, `--log-level`, or `--logLevel` (preferred).
 
 The second form is known as the short form and is represented by a single alpha character (either
 lower or uppercase) prefixed with `-`, for example, `-l` or `-L`. The short option can be enabled
@@ -252,6 +252,8 @@ A value can be passed as either an additional argument separated by a space, lik
 If you are passing a string that contains spaces or special characters, you must wrap the value in
 double quotes. For example, `--option "long value"` or `--option="long value"`.
 
+- [API](/api/args/interface/SingleOption)
+
 ### Multiple values
 
 To pass multiple values for an option, the `multiple` setting must be enabled (numbers and strings
@@ -277,12 +279,14 @@ Otherwise, each value can be passed as a standalone argument, like `--option foo
 using this approach, all values will be captured until another option is passed, or the end of the
 list is met.
 
+- [API](/api/args/interface/MultipleOption)
+
 ### Unknown options
 
-If an option is passed to `parse()` that is not configured in the `options` settings object, it will
-be [logged as a parse error](#validation-checks) unless the `unknown` setting is set to true. When
-true, all unknown options can be found in the result's `unknown` object and not in `options`, as a
-means to avoid collision.
+If an option is passed to [parse()][parse] that is not configured in the `options` settings object,
+it will be [logged as a parse error](#validation-checks) unless the `unknown` setting is set to
+true. When true, all unknown options can be found in the result's `unknown` object and not in
+`options`, as a means to avoid collision.
 
 ```ts
 const argv = ['--legit', 'foo', '--unknown', 'bar'];
@@ -305,10 +309,10 @@ args.unknown; // { unknown: 'bar' }
 
 ## Flags
 
-A flag is a special type of [option](#options) that accepts no value, is always boolean, and
-represents a binary on-off switch. When the flag is passed on the command line (without a value),
-for example, `--color`, the value is assumed to be `true`. To negate a truthy value and pass a falsy
-one, prefix the option with `no-`, for example, `--no-color`.
+A flag ([API](/api/args/interface/Flag)) is a special type of [option](#options) that accepts no
+value, is always boolean, and represents a binary on-off switch. When the flag is passed on the
+command line (without a value), for example, `--color`, the value is assumed to be `true`. To negate
+a truthy value and pass a falsy one, prefix the option with `no-`, for example, `--no-color`.
 
 Each flag supports the `type` (required), `description` (required), `default` (is `false` if not
 provided), `hidden`, `usage`, and `short` settings mentioned above.
@@ -329,8 +333,9 @@ args.options.color; // true
 
 ## Params
 
-Parameters (or positional arguments) are standalone arguments that are treated as values, and are
-parsed in a strict order. They're an important mechanism that serves 2 purposes.
+Parameters ([API](/api/args/interface/Param)), also known as positional arguments, are standalone
+arguments that are treated as values, and are parsed in a strict order. They're an important
+mechanism that serves 2 purposes.
 
 - They're a catch all bucket for arguments that _are not_ a command, option, or flag, nor do they
   appear after a rest `--` delimiter.
@@ -591,8 +596,8 @@ validation errors.
 - `ValidationError`s are logged for invalid values, types, settings, and more. The invalid option
   (when applicable), is stored as the `option` property.
 
-Furthermore, errors are not thrown and instead are returned as an array in the `parse()` result,
-under the `errors` property. It's designed this way so that command line interfaces and or
+Furthermore, errors are not thrown and instead are returned as an array in the [parse()][parse]
+result, under the `errors` property. It's designed this way so that command line interfaces and or
 applications have full control, and can theoretically provide output like the following.
 
 ```
@@ -606,10 +611,10 @@ An error has occurred:
 
 ## Formatting args
 
-If for some reason you need to format the args result from `parse()` back into an array of string
-arguments, the `format()` function can be used. This function will use the values as is and does not
-reference the settings object, so all formatted arguments will be in their long form, and will not
-use inline values.
+If for some reason you need to format the args result from [parse()][parse] back into an array of
+string arguments, the [format()][format] function can be used. This function will use the values as
+is and does not reference the settings object, so all formatted arguments will be in their long
+form, and will not use inline values.
 
 ```ts
 import { format } from '@boost/args';
@@ -625,3 +630,6 @@ const argv = format({
 
 <!-- prettier-ignore -->
 [dash-dash]: https://unix.stackexchange.com/questions/147143/when-and-how-was-the-double-dash-introduced-as-an-end-of-options-delimiter
+[format]: /api/args/function/format
+[parse]: /api/args/function/parse
+[parseincontext]: /api/args/function/parseInContext
