@@ -12,8 +12,10 @@ import {
 } from './types';
 
 export abstract class CommandManager<Options extends object = {}> extends Contract<Options> {
+	/** Called after a command has been registered. */
 	readonly onAfterRegister = new Event<[CommandPath, Commandable]>('after-register');
 
+	/** Called before a command has been registered. */
 	readonly onBeforeRegister = new Event<[CommandPath, Commandable]>('before-register');
 
 	protected commands: CommandMetadata['commands'] = {};

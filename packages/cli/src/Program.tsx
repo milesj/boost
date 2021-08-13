@@ -52,20 +52,28 @@ import {
 } from './types';
 
 export class Program extends CommandManager<ProgramOptions> {
+	/** Called after a component has rendered. */
 	readonly onAfterRender = new Event('after-render');
 
+	/** Called after the program and command have been ran. */
 	readonly onAfterRun = new Event<[Error?]>('after-run');
 
+	/** Called after a command has run but before a component will render. */
 	readonly onBeforeRender = new Event<[RunResult]>('before-render');
 
+	/** Called before the program and command will run. */
 	readonly onBeforeRun = new Event<[Argv]>('before-run');
 
+	/** Called when a command has been found after parsing argv. */
 	readonly onCommandFound = new Event<[Argv, CommandPath, Commandable]>('command-found');
 
+	/** Called when a command wasn't found after parsing argv. */
 	readonly onCommandNotFound = new Event<[Argv, CommandPath]>('command-not-found');
 
+	/** Called when the exit() handler is executed but before the process exits. */
 	readonly onExit = new Event<[string, ExitCode]>('exit');
 
+	/** Called when the help menu is rendered. */
 	readonly onHelp = new Event<[CommandPath?]>('help');
 
 	readonly streams: ProgramStreams = {
@@ -125,7 +133,9 @@ export class Program extends CommandManager<ProgramOptions> {
 		this.onBeforeRegister.listen(this.handleBeforeRegister);
 	}
 
-	blueprint({ string }: Predicates): Blueprint<ProgramOptions> {
+	blueprint(predicates: Predicates): Blueprint<ProgramOptions> {
+		const { string } = predicates;
+
 		return {
 			banner: string(),
 			bin: string().notEmpty().required().kebabCase(),

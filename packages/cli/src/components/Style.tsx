@@ -5,20 +5,27 @@ import { StyleType, Writeable } from '../types';
 
 export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underline' | 'wrap'> {
 	children: NonNullable<React.ReactNode>;
+	/** Invert the colors to style the background instead of foreground. Defaults
+  to `false`. */
 	inverted?: boolean;
+	/** Theme palette name to style with. Defaults to "none". */
 	type?: StyleType | 'none';
 }
 
-export function Style({ children, inverted = false, type = 'none', ...restProps }: StyleProps) {
+/**
+ * A React component that styles text and backgrounds based on the current Boost theme.
+ */
+export function Style(props: StyleProps) {
+	const { children, inverted = false, type = 'none', ...restProps } = props;
 	const theme = loadTheme();
-	const props: Writeable<TextProps> = {};
+	const nextProps: Writeable<TextProps> = {};
 
 	if (type !== 'none') {
 		if (inverted) {
-			props.backgroundColor = theme[type];
-			props.color = theme.inverted;
+			nextProps.backgroundColor = theme[type];
+			nextProps.color = theme.inverted;
 		} else {
-			props.color = theme[type];
+			nextProps.color = theme[type];
 		}
 	}
 

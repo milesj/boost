@@ -12,9 +12,17 @@ export interface ScrollableItem {
 }
 
 export interface ScrollableListProps {
+	/** Number of options to display before scrolling. Defaults to console height. */
 	limit?: number;
+	/** Label to display above scrollable options with the number of overflowing options. */
 	overflowAfterLabel?: OverflowLabel;
+	/** Label to display below scrollable options with the number of overflowing options. */
 	overflowBeforeLabel?: OverflowLabel;
+	/**
+	 * The pattern in which to limit options when scrolling. Defaults to `overflow`.
+	 * 	- `cycle` - Will continously cycle through options, even when navigating to and past edges.
+	 * 	- `overflow` - Will display options bound to an edge, with the number of options hidden above and below.
+	 */
 	scrollType?: 'cycle' | 'overflow';
 }
 

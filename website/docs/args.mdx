@@ -193,27 +193,8 @@ The second form is known as the short form and is represented by a single alpha 
 lower or uppercase) prefixed with `-`, for example, `-l` or `-L`. The short option can be enabled
 with the `short` setting.
 
-For options to parse correctly, they must be defined using a settings object. Each option supports
-the following settings:
-
-- `type` (`'boolean' | 'number' | 'string'`) - Expected type of the provided value. When a value is
-  captured from the command line, it will be type casted. _(Required)_
-- `category` (`string`) - A unique key to group options within categories. Couples with the
-  `Category` type.
-- `description` (`string`) - A description of what the option does. Primarily used in interface
-  output. _(Required)_
-- `default` (`*`) - The default value if option not provided on the command line. The value's type
-  is dependent on the `type` and `multiple` settings. Furthermore, this value defaults to the
-  following if not defined.
-  - A zero (`0`) when type is `number`.
-  - An empty string (`''`) when type is `string`.
-  - And `false` when type is `boolean`.
-- `format` (`(value: T) => T`) - An optional function to format the value after parsing. Must return
-  the same type.
-- `hidden` (`boolean`) - Hide the option from interface output. Defaults to `false`.
-- `short` (`string`) - Single character used as a the short option alias.
-- `usage` (`string`) - Example instructions on how to use the option.
-- `validate` (`(value: T) => void`) - An optional function to validate the provided value.
+For options to parse correctly, they must be defined using a settings object that abide the
+[Option](/api/cli/interface/Option) interface.
 
 ```ts
 const argv = ['--logLevel=2'];
@@ -314,8 +295,7 @@ value, is always boolean, and represents a binary on-off switch. When the flag i
 command line (without a value), for example, `--color`, the value is assumed to be `true`. To negate
 a truthy value and pass a falsy one, prefix the option with `no-`, for example, `--no-color`.
 
-Each flag supports the `type` (required), `description` (required), `default` (is `false` if not
-provided), `hidden`, `usage`, and `short` settings mentioned above.
+Each flag settings object must abide the [Flag](/api/cli/interface/Flag) interface.
 
 ```ts
 const argv = ['--color'];
@@ -343,13 +323,8 @@ mechanism that serves 2 purposes.
   params are the arguments that are passed to the function.
 
 Like [options](#options), params can be configured, but unlike options, the settings are not
-required. When a setting is not defined, a param is treated as a string. Params support similar
-settings as options, with the addition of:
-
-- `default`, `deprecated`, `description`, `hidden`, `type`, `validate` - Same setting as options.
-- `label` (`string`) - Informational label to display in interface output. _(Required)_
-- `required` (`boolean`) - Whether the param is required or not. If required and not passed, the
-  parser will throw an error. Defaults to `false`.
+required. When a setting is not defined, a param is treated as a string. Param setting objects must
+abide the [Param](/api/cli/interface/Param) interface.
 
 ```ts
 const argv = ['off', 'value', '123.45'];

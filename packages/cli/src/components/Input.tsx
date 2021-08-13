@@ -5,22 +5,31 @@ import { Prompt, PromptProps } from './internal/Prompt';
 import { Style } from './Style';
 
 export interface InputProps extends PromptProps<string> {
+	/** A default value. If none provided, will use an empty state. */
 	defaultValue?: string;
+	/** Hide the cursor in the terminal. Will remove the background color, but still functions. */
 	hideCursor?: boolean;
+	/** Mask to replace every inputted character with. */
 	mask?: string;
+	/** Callback triggered when the value changes. */
 	onChange?: (value: string) => void;
+	/** Custom string to display when the value is empty and non-dirty. */
 	placeholder?: string;
 }
 
-export function Input({
-	defaultValue = '',
-	hideCursor,
-	mask,
-	onChange,
-	onSubmit,
-	placeholder,
-	...props
-}: InputProps) {
+/**
+ * A React component that renders an input field, allowing the user to enter information.
+ */
+export function Input(props: InputProps) {
+	const {
+		defaultValue = '',
+		hideCursor,
+		mask,
+		onChange,
+		onSubmit,
+		placeholder,
+		...restProps
+	} = props;
 	const [value, setValue] = useState(defaultValue);
 	const [cursorPosition, setCursorPosition] = useState(0);
 	const [isDirty, setDirty] = useState(false);
@@ -84,7 +93,7 @@ export function Input({
 
 	return (
 		<Prompt<string>
-			{...props}
+			{...restProps}
 			afterLabel={
 				value === '' && !isDirty && placeholder ? (
 					<Style type="muted">{placeholder}</Style>

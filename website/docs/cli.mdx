@@ -7,7 +7,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges tooling />
+<EnvBadges tooling api="/api/cli" />
 
 A type-safe and interactive command line program, powered by [React][react] and [Ink][ink]. We also
 encourage the [Command Line Interface Guidelines](https://clig.dev) for building better programs.
@@ -51,42 +51,16 @@ npm install @boost/cli react ink
 - `BOOSTJS_CLI_THEME` (`string`) - Name of the theme module (without `@boost` or `boost` prefixes)
   to load for terminal style/color changes.
 
-## Events
-
-| Event                                                  | Arguments                                            | Description                                                                |
-| ------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------------------------------------- |
-| `Command#onAfterRegister`, `Program#onAfterRegister`   | `path: CommandPath, command: Commadable`             | Called after a command has been registered.                                |
-| `Command#onBeforeRegister`, `Program#onBeforeRegister` | `path: CommandPath, command: Commadable`             | Called before a command has been registered.                               |
-| `Program#onAfterRender`                                |                                                      | Called after a component has rendered.                                     |
-| `Program#onAfterRun`                                   | `error?: Error`                                      | Called after the program and command have been ran.                        |
-| `Program#onBeforeRender`                               | `result: RunResult`                                  | Called after a command has run but before a component will render.         |
-| `Program#onBeforeRun`                                  | `argv: Argv`                                         | Called before the program and command will run.                            |
-| `Program#onCommandFound`                               | `argv: Argv, path: CommandPath, command: Commadable` | Called when a command has been found after parsing argv.                   |
-| `Program#onCommandNotFound`                            | `argv: Argv, path: CommandPath`                      | Called when a command wasn't found after parsing argv.                     |
-| `Program#onExit`                                       | `message: string, code: number`                      | Called when the `exit()` handler is executed but before the process exits. |
-| `Program#onHelp`                                       | `CommandPath?`                                       | Called when the help menu is rendered.                                     |
-
 ## Program
 
 The entry point of the command line is commonly referred to as the binary, or script, and is managed
-by the `Program` class. This class handles the registration of commands, applying
-[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.mdx)
-(options, flags, etc), running the found command with these argument, outputing to the terminal, and
-finally cleaning up or handling failures.
+by the [Program](/api/cli/class/Program) class. This class handles the registration of commands,
+applying [middleware](#middleware) to argv (`process.argv`), parsing argv into
+[arguments](./args.mdx) (options, flags, etc), running the found command with these argument,
+outputing to the terminal, and finally cleaning up or handling failures.
 
 Begin by importing and instantiating the `Program` class, while passing required and optional
-options.
-
-- `banner` (`string`) - A large banner to appear at the top of the index help interface.
-- `bin` (`string`) - The name of the binary consumers enter on the command line. Must be in
-  kebab-case. _(Required)_
-- `delimiter` (`string`) - The character(s) displayed before command line usage examples.
-- `footer` (`string`) - A string of text to display at the bottom of the index help interface.
-- `header` (`string`) - A string of text to display at the top of the index help interface, below
-  the banner (if present).
-- `name` (`string`) - A human readable name for your program. _(Required)_
-- `version` (`string`) - Current version of your CLI program. Typically the version found in your
-  `package.json`. This is output when `--version` is passed. _(Required)_
+[ProgramOptions](/api/cli/interface/ProgramOptions).
 
 ```ts
 import { Program } from '@boost/cli';
@@ -243,13 +217,9 @@ own async functionality, like file system access, or network requests.
 
 #### Built-in
 
-Boost provides the following built-in middleware for common scenarios.
-
-- `checkNodeRequirement` - Verify that the currently running Node.js `process.version` satisfies the
-  given semver range. If not, a console error will be logged, or an error will be thrown.
-- `checkPackageOutdated` - Verify that a package and its provided version is using the latest
-  distribution version by checking against the NPM registry. If not, a console message will be
-  logged.
+Boost provides the following built-in middleware for common scenarios:
+[checkNodeRequirement](/api/cli/function/checkNodeRequirement) and
+[checkPackageOutdated](/api/cli/function/checkPackageOutdated).
 
 ```ts
 import { checkNodeRequirement, checkPackageOutdated } from '@boost/cli';
@@ -267,8 +237,8 @@ program
 
 Commands are self-encapsulated pieces of business logic that are ran when a matching path (a unique
 argument) is found on the command line. To create a command, import and extend the abstract
-`Command` class, and implement a `run()` method. This method can be async and even render
-[React components](#rendering-components)!
+[Command](/api/cli/class/Command) class, and implement a `run()` method. This method can be async
+and even render [React components](#rendering-components)!
 
 ```ts
 import { Command } from '@boost/cli';
@@ -290,33 +260,12 @@ static class properties. Both variants will be demonstrated in the examples belo
 
 ### Config
 
-All commands support the following metadata configuration, with `path` and `description` being
-mandatory.
+All commands support the metadata configuration defined in
+[CommandConfig](/api/cli/interface/CommandConfig), with `path` and `description` being mandatory.
 
-- `aliases` (`string[]`) - A list of aliased paths. Will not show up in the help menu, but will
-  match on the command line.
-- `allowUnknownOptions` (`boolean`) - Allow [unknown options](./args.mdx#unknown-options) to be
-  parsed, otherwise an error is thrown. Defaults to `false`.
-- `allowVariadicParams` (`boolean`) - Allow [variadic params](./args.mdx#variadic-params) to be
-  parsed, otherwise an error is thrown. Defaults to `false`.
-- `categories` (`object`) - A mapping of sub-command and option [categories](#categories) for this
-  command only. [Global options](#global-options) are automatically defined under the `global`
-  category.
-- `category` (`string`) - The category this command belongs to. Will be used to group in the parent
-  command or program. Defaults to no category.
-- `deprecated` (`boolean`) - Whether the command is deprecated or not. Will display a tag in the
-  help menu. Defaults to `false`.
-- `description` (`string`) - A description of what the command is and does. Supports basic markdown
-  for bold, italics, and underline. _(Required)_
-- `hidden` (`boolean`) - Whether the command should be hidden from the help menu or not. Will still
-  match on the command line. Defaults to `false`.
-- `path` (`string`) - A unique name in which to match the command on the command line amongst a list
-  of arguments (argv). _(Required)_
-- `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
-
-When using decorators, import the `Config` decorator and apply it to the `Command` class. The path
-and description are required, while all other metadata can be passed as an object. Otherwise, just
-define static class properties of the same name!
+When using decorators, import the [Config](/api/cli/function/Config) decorator and apply it to the
+`Command` class. The path and description are required, while all other metadata can be passed as an
+object. Otherwise, just define static class properties of the same name!
 
 <Tabs
   groupId="command-format"
@@ -377,7 +326,8 @@ _Imperative_: If you prefer to use static properties, all options are defined th
 static `options` property, which requires a mapping of option names to
 [option settings](./args.mdx#options). With this approach, `type` and `description` are required,
 with `default` either being configured with a setting, or coming from the class property value. For
-easier type safety, the `Options` collection type can be used to type the static property.
+easier type safety, the [Options](/api/cli#Options) collection type can be used to type the static
+property.
 
 <Tabs
   groupId="command-format"
@@ -571,7 +521,7 @@ they should be expected.
 
 _Imperative_: If you prefer to use static properties, all params are defined through the single
 static `params` property, which requires an array of [param settings](./args.mdx#params). For easier
-type safety, the `Params` collection type can be used to type the static property.
+type safety, the [Params](/api/cli#Params) collection type can be used to type the static property.
 
 <Tabs
   groupId="command-format"

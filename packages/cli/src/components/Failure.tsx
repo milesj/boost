@@ -15,14 +15,23 @@ import { Header } from './Header';
 import { Style } from './Style';
 
 export interface FailureProps {
+	/** Name of the binary being executed. */
 	binName?: string;
+	/** Full length command line being ran. */
 	commandLine?: string;
+	/** Delimiter to prefix within examples. Defaults to "$ ". */
 	delimiter?: string;
+	/** The primary error to display in red. */
 	error: Error;
+	/** Hide the primary error stack trace. Defaults to `false`. */
 	hideStackTrace?: boolean;
+	/** Optional errors as warnings to display in yellow. */
 	warnings?: Error[];
 }
 
+/**
+ * A React component that renders a failure state for errors and warnings.
+ */
 export class Failure extends React.Component<FailureProps> {
 	shouldHideStackTrace() {
 		const { error, hideStackTrace } = this.props;

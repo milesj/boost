@@ -103,28 +103,38 @@ export abstract class Command<
 
 	// Args
 
+	/** Value of `--help`, `-h` passed on the command line. */
 	help: boolean = false;
 
+	/** Value of `--locale` passed on the command line. */
 	locale: string = 'en';
 
+	/** Additional arguments passed after `--` on the command line. */
 	rest: string[] = [];
 
+	/** Unknown options passed on the command line. */
 	unknown: UnknownOptionMap = {};
 
+	/** Value of `--version`, `-v` passed on the command line. */
 	version: boolean = false;
 
 	// Methods
 
+	/** Method to exit the current program, with an optional error code. */
 	exit!: ExitHandler;
 
+	/** Method to log to the console using a log level. */
 	log!: LoggerFunction;
 
 	// Internals
 
+	/** @internal */
 	[INTERNAL_OPTIONS]?: O;
 
+	/** @internal */
 	[INTERNAL_PARAMS]?: P;
 
+	/** @internal */
 	[INTERNAL_PROGRAM]?: Program;
 
 	constructor(options?: Options) {
@@ -154,7 +164,7 @@ export abstract class Command<
 	 * Validate options passed to the constructor.
 	 */
 	// Empty blueprint so that sub-classes may type correctly
-	blueprint(preds: Predicates): Blueprint<object> {
+	blueprint(predicates: Predicates): Blueprint<object> {
 		return {};
 	}
 

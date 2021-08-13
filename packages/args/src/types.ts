@@ -112,13 +112,18 @@ export interface ParserOptions<O extends object, P extends PrimitiveType[] = Arg
 // BASE TYPES
 
 export interface Config {
+	/** Whether the object is deprecated or not. Will display a tag in the help menu. Defaults to `false`. */
 	deprecated?: boolean;
+	/** A description of what the object is and does. Supports basic markdown for bold, italics, and underline. */
 	description: string;
+	/** Whether the object should be hidden from the help menu or not. Will still match on the command line. Defaults to `false`. */
 	hidden?: boolean;
 }
 
 export interface Command extends Config {
+	/** The category this object belongs to. Will be used to group in the parent command or program. Defaults to no category. */
 	category?: string;
+	/** Define one or many usage examples to display in the help menu. */
 	usage?: string[] | string;
 }
 
@@ -131,26 +136,43 @@ export type InferArgType<T> = T extends boolean
 	: 'string';
 
 export interface Arg<T> extends Config {
+	/**
+	 * The default value if option not provided on the command line. The value's type
+	 * is dependent on the `type` and `multiple` settings. Furthermore, this value defaults
+	 * to the following if not defined.
+	 * 	- A zero (`0`) when type is `number`.
+	 * 	- An empty string (`''`) when type is `string`.
+	 * 	- And `false` when type is `boolean`.
+	 */
 	default?: T;
+	/** An optional function to format the value after parsing. Must return the same type. */
 	format?: ((value: T) => T) | null;
+	/** Expected type of the provided value. When a value is captured from the command line, it will be type casted. */
 	type: InferArgType<T>;
+	/** An optional function to validate the provided value. */
 	validate?: ((value: T) => void) | null;
 }
 
 export interface Option<T extends ValueType> extends Arg<T> {
+	/** A unique key to group options within categories. Couples with the `Category` type. */
 	category?: string;
+	/** Single character used as a the short option alias. */
 	short?: ShortOptionName;
 }
 
 export interface SingleOption<T extends ScalarType> extends Option<T> {
+	/** Whitelist of acceptable values. */
 	choices?: T[];
+	/** When found in an option group, increment the value for each occurrence. */
 	count?: T extends number ? true : never;
 	default?: T;
 }
 
 export interface MultipleOption<T extends ListType> extends Option<T> {
+	/** Error unless the list of values hit this required length. */
 	arity?: number;
 	default?: T;
+	/** Require multiple values to be passed. */
 	multiple: true;
 }
 
@@ -159,7 +181,10 @@ export interface Flag extends Omit<Option<boolean>, 'format' | 'validate'> {
 }
 
 export interface Param<T extends PrimitiveType> extends Arg<T> {
+	/** Informational label to display in terminal output. */
 	label?: string;
+	/** Whether the param is required or not. If required and not passed, the
+  parser will throw an error. Defaults to `false`. */
 	required?: boolean;
 }
 

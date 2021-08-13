@@ -8,12 +8,19 @@ import { Selected } from './internal/Selected';
 import { Style } from './Style';
 
 export interface ConfirmProps extends Omit<PromptProps<boolean>, 'validate'> {
+	/** Error message to display when an invalid character is pressed. Defaults to a custom message. */
 	invalidError?: string;
+	/** Character that triggers a falsy state when pressed. Defaults to "N". */
 	no?: string;
+	/** Character that triggers a truthy state when pressed. Defaults to "y". */
 	yes?: string;
 }
 
-export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props }: ConfirmProps) {
+/**
+ * A React component that renders a yes/no confirmation prompt.
+ */
+export function Confirm(props: ConfirmProps) {
+	const { invalidError, onSubmit, no = 'N', yes = 'y', ...restProps } = props;
 	const [value, setValue] = useState<boolean | null>(null);
 	const { isFocused } = useFocus({ autoFocus: true });
 
@@ -47,7 +54,7 @@ export function Confirm({ invalidError, onSubmit, no = 'N', yes = 'y', ...props 
 
 	return (
 		<Prompt<boolean>
-			{...props}
+			{...restProps}
 			afterLabel={
 				value === null ? <Style type="muted">{`(${yes}/${no})`}</Style> : <Selected value={value} />
 			}

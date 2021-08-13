@@ -29,25 +29,29 @@ import { HelpUsage } from './internal/HelpUsage';
 // const Usage = React.lazy(() => import('./internal/HelpUsage').then(extractDefault('HelpUsage')));
 
 export interface HelpProps {
+	/** Mapping of categories to use for command and option grouping. */
 	categories?: Categories;
+	/** Configuration metadata about the current command. */
 	config?: CommandConfig;
+	/** Mapping of commands, typically sub-commands. */
 	commands?: CommandConfigMap;
+	/** Delimiter to prefix within examples. Defaults to "$ ". */
 	delimiter?: string;
+	/** A header to display at the top of the output. */
 	header?: string;
+	/** Mapping of command options. */
 	options?: OptionConfigMap;
+	/** List of command params. */
 	params?: ParamConfigList;
 }
 
+/**
+ * A React component that renders a help menu for a command.
+ * Includes all sub-commands, options, params, and more.
+ */
 // eslint-disable-next-line complexity
-export function Help({
-	categories,
-	commands,
-	delimiter,
-	options,
-	header,
-	params,
-	config,
-}: HelpProps) {
+export function Help(props: HelpProps) {
+	const { categories, commands, delimiter, options, header, params, config } = props;
 	const hasDesc = Boolean(config?.description);
 	const hasUsage = Boolean(config?.usage && config.usage.length > 0);
 	const hasParams = Boolean(params && params.length > 0);
