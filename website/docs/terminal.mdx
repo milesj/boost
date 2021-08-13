@@ -41,7 +41,7 @@ Boost consolidates into a single package. The currently supported are as follows
 
 ## Cursor
 
-The [cursor](/api/terminal/namespace/cursor) object provides a set of
+The [`cursor`](/api/terminal/namespace/cursor) object provides a set of
 [ANSI escapes codes](https://www.npmjs.com/package/ansi-escapes) for use in manipulating the
 terminal cursor.
 
@@ -64,7 +64,7 @@ process.stdout.write(figures.tick);
 
 ## Screen
 
-The [screen](/api/terminal/namespace/screen) object provides a set of
+The [`screen`](/api/terminal/namespace/screen) object provides a set of
 [ANSI escapes codes](https://www.npmjs.com/package/ansi-escapes) for use in manipulating the
 terminal screen.
 
@@ -89,3 +89,9 @@ const pass = style.bgGreen.black.bold(' PASS ');
 
 A handful of functions can be used to operate on ANSI-aware strings.
 [View the API for a full list of functions](/api/terminal#Index).
+
+```ts
+import { calculateWidth } from '@boost/terminal';
+
+calculateWidth('古'); // 2
+```

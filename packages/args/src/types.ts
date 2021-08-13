@@ -18,7 +18,7 @@ export type UnknownOptionMap = Record<string, string>;
 
 export type AliasMap = Record<string, string>;
 
-// Determine option based on type. Only primitives are allowed.
+/** Determine option based on type. Only primitives are allowed. */
 export type InferParamConfig<T> = T extends PrimitiveType ? Param<T> : never;
 
 // This is janky but we don't have mapped array/tuples.
@@ -71,7 +71,7 @@ export type MapParamType<T extends PrimitiveType[]> = T extends [
 	? ArgList
 	: never;
 
-// Determine option based on type.
+/** Determine option based on type. */
 export type InferOptionConfig<T> = T extends boolean
 	? Flag
 	: T extends number[] | string[]
@@ -88,24 +88,36 @@ export type CommandChecker = (arg: string) => boolean;
 export type ContextFactory = (arg: string, argv: Argv) => ParserOptions<{}> | undefined;
 
 export interface Arguments<O extends object, P extends PrimitiveType[] = ArgList> {
+	/** Current running command and sub-commads. Is an array split on ":". */
 	command: string[];
+	/** List of errors detected during argument parsing. */
 	errors: Error[];
+	/** Mapping of options to their values passed on the command line (or their default). */
 	options: O;
+	/** List of parameter values passed on the command line. */
 	params: MapParamType<P>;
+	/** List of arguments that appear after "--" on the command line. */
 	rest: ArgList;
+	/** Mapping of unconfigured options to string values. */
 	unknown: UnknownOptionMap;
 }
 
 export interface ParserSettings {
+	/** Enable loose mode parsing. */
 	loose?: boolean;
+	/** Allow unknown options to be passed. Will be placed in a special `unknown` object. */
 	unknown?: boolean;
+	/** Allow variadic params to be passed. Will be accumlated after configured params. */
 	variadic?: boolean;
 }
 
 export interface ParserOptions<O extends object, P extends PrimitiveType[] = ArgList>
 	extends ParserSettings {
+	/** List of valid commands. Sub-commands should be denoted with ":". */
 	commands?: CommandChecker | string[];
+	/** Mapping of options to their type and configurations. */
 	options: MapOptionConfig<O>;
+	/** List of param configurations (in order). */
 	params?: MapParamConfig<P>;
 }
 
@@ -163,16 +175,16 @@ export interface Option<T extends ValueType> extends Arg<T> {
 export interface SingleOption<T extends ScalarType> extends Option<T> {
 	/** Whitelist of acceptable values. */
 	choices?: T[];
-	/** When found in an option group, increment the value for each occurrence. */
+	/** When found in an option group, increment the value for each occurrence. _(Numbers only)_ */
 	count?: T extends number ? true : never;
 	default?: T;
 }
 
 export interface MultipleOption<T extends ListType> extends Option<T> {
-	/** Error unless the list of values hit this required length. */
+	/** Throw an error unless the list of values satisfy this required length. */
 	arity?: number;
 	default?: T;
-	/** Require multiple values to be passed. */
+	/** Allow multiple values to be passed. */
 	multiple: true;
 }
 
@@ -193,7 +205,7 @@ export interface Category {
 	weight?: number;
 }
 
-// Abstract type for easier typing
+/** Abstract type for easier typing. */
 export type OptionConfig = Option<any> & {
 	arity?: number;
 	choices?: PrimitiveType[];
@@ -204,15 +216,15 @@ export type OptionConfig = Option<any> & {
 
 export type OptionConfigMap = Record<string, OptionConfig>;
 
-// Abstract type for easier typing
+/** Abstract type for easier typing. */
 export type ParamConfig = Param<any>;
 
 export type ParamConfigList = ParamConfig[];
 
-// Without leading "--"
+/** Option name without leading "--". */
 export type LongOptionName = string;
 
-// Without leading "-"
+/** Short option name without leading "-". */
 export type ShortOptionName =
 	| 'A'
 	| 'a'

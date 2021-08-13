@@ -43,7 +43,7 @@ supports [commands](#commands), [options](#options), [flags](#flags), [params](#
 [much more](#advanced-features)! It is _not_ a command line interface or application but provides
 the building blocks for such functionality.
 
-Parsing arguments is accomplished with the [parse()][parse] function, which requires a list of
+Parsing arguments is accomplished with the [`parse()`][parse] function, which requires a list of
 strings (arguments also known as `argv`), and a settings object to control whats supported. It also
 utilizes TypeScript generics to type options and params respectively.
 
@@ -98,8 +98,8 @@ While the above is straight forward (I hope so), it doesn't leave much room for 
 if we want different options based on the command passed? Or different params? Or how to handle
 global options? So on and so forth.
 
-To provide this functionality, the [parseInContext()][parseincontext] function can be used. Like
-[parse()][parse], this function requires a list of strings (`argv`), but unlike, it requires a
+To provide this functionality, the [`parseInContext()`][parseincontext] function can be used. Like
+[`parse()`][parse], this function requires a list of strings (`argv`), but unlike, it requires a
 factory function that returns contextual parser options.
 
 The parser will loop through each argument, executing the factory function with the argument and
@@ -154,9 +154,9 @@ A command in Boost should be the first argument passed, before [options](#option
 before [params](#params). They support numbers, letters, and dashes, with sub-commands being
 separated by a colon (`:`).
 
-To detect and parse commands, pass a list of all command and sub-command names to the `commands`
-setting, or use a custom function to manually do the checks. The detected command will be returned
-as an array, split on `:`.
+To detect and parse commands, pass a list of all command and sub-command names to the
+[`commands`](/api/args/interface/ParserOptions#commands) setting, or use a custom function to
+manually do the checks. The detected command will be returned as an array, split on `:`.
 
 ```ts
 const args = parse<{}>(argv, {
@@ -191,10 +191,10 @@ example, `--log`, `--log-level`, or `--logLevel` (preferred).
 
 The second form is known as the short form and is represented by a single alpha character (either
 lower or uppercase) prefixed with `-`, for example, `-l` or `-L`. The short option can be enabled
-with the `short` setting.
+with the [`short`](/api/args/interface/Option#short) setting.
 
 For options to parse correctly, they must be defined using a settings object that abide the
-[Option](/api/cli/interface/Option) interface.
+[`Option`](/api/cli/interface/Option) interface.
 
 ```ts
 const argv = ['--logLevel=2'];
@@ -216,9 +216,10 @@ const args = parse<{ logLevel: number }>(argv, {
 args.options.logLevel; // 2
 ```
 
-The name of options used on the command line are derived from the `options` keys (above), which are
-preferred to be camel case. Even though they are defined as camel case, kebab case variants are
-supported on the command line.
+The name of options used on the command line are derived from the
+[`options`](/api/args/interface/ParserOptions#options) keys (above), which are preferred to be camel
+case. Even though they are defined as camel case, kebab case variants are supported on the command
+line.
 
 > When using TypeScript, a mapping of option names to expected types is defined as the 1st generic
 > slot of `parse()`. If not provided, it defaults to `object`. It's highly encouraged to type
@@ -237,8 +238,9 @@ double quotes. For example, `--option "long value"` or `--option="long value"`.
 
 ### Multiple values
 
-To pass multiple values for an option, the `multiple` setting must be enabled (numbers and strings
-only), and if using TypeScript, the option type must be a typed array.
+To pass multiple values for an option, the [`multiple`](/api/args/interface/MultipleOption#multiple)
+setting must be enabled (numbers and strings only), and if using TypeScript, the option type must be
+a typed array.
 
 ```ts
 const args = parse<{ files: string[] }>(argv, {
@@ -264,10 +266,11 @@ list is met.
 
 ### Unknown options
 
-If an option is passed to [parse()][parse] that is not configured in the `options` settings object,
-it will be [logged as a parse error](#validation-checks) unless the `unknown` setting is set to
-true. When true, all unknown options can be found in the result's `unknown` object and not in
-`options`, as a means to avoid collision.
+If an option is passed to [`parse()`][parse] that is not configured in the `options` settings
+object, it will be [logged as a parse error](#validation-checks) unless the
+[`unknown`](/api/args/interface/ParserOptions#unknown) setting is set to true. When true, all
+unknown options can be found in the result's [`unknown`](/api/args/interface/Arguments#unknown)
+object and not in [`options`](/api/args/interface/Arguments#options), as a means to avoid collision.
 
 ```ts
 const argv = ['--legit', 'foo', '--unknown', 'bar'];
@@ -295,7 +298,7 @@ value, is always boolean, and represents a binary on-off switch. When the flag i
 command line (without a value), for example, `--color`, the value is assumed to be `true`. To negate
 a truthy value and pass a falsy one, prefix the option with `no-`, for example, `--no-color`.
 
-Each flag settings object must abide the [Flag](/api/cli/interface/Flag) interface.
+Each flag settings object must abide the [`Flag`](/api/cli/interface/Flag) interface.
 
 ```ts
 const argv = ['--color'];
@@ -324,7 +327,7 @@ mechanism that serves 2 purposes.
 
 Like [options](#options), params can be configured, but unlike options, the settings are not
 required. When a setting is not defined, a param is treated as a string. Param setting objects must
-abide the [Param](/api/cli/interface/Param) interface.
+abide the [`Param`](/api/cli/interface/Param) interface.
 
 ```ts
 const argv = ['off', 'value', '123.45'];
@@ -344,8 +347,9 @@ const args = parse<{}, [boolean, string, number]>(argv, {
 args.params; // [false, 'value', 123.45]
 ```
 
-Since parameters are order based and not named based, the `params` setting is an array, with each
-item configuring the corresponding position/index (hence the name positional arguments).
+Since parameters are order based and not named based, the
+[`params`](/api/args/interface/ParserOptions#params) setting is an array, with each item configuring
+the corresponding position/index (hence the name positional arguments).
 
 > When using TypeScript, the expected type of each param is defined as a tuple in the 2nd generic
 > slot of `parse()`. If not provided, it defaults to `string[]`.
@@ -357,9 +361,9 @@ command or option, is considered a param (string only), and is appended to the e
 list. This also applies to non-configured params.
 
 As mentioned in the previous section, params are a "catch all bucket", but this only applies when
-the parser allows variadic params. To disable this functionality, set `variadic` to false, which
-will throw an error on any param that is not explicitly configured. Both of these scenarios are
-demonstrated below.
+the parser allows variadic params. To disable this functionality, set
+[`variadic`](/api/args/interface/ParserOptions#variadic) to false, which will throw an error on any
+param that is not explicitly configured. Both of these scenarios are demonstrated below.
 
 ```ts
 // Variadic, appends all params
@@ -416,7 +420,8 @@ args.rest; // ['baz']
 Short options support a shortcut known as a short option group, where multiple short option names
 can be placed under a single leading `-`. For example, instead of passing `-a -b -c`, you can pass
 `-abc`. This shortcut is only available for [flags](#flags) (boolean options) and
-[counters](#counters) (numeric options with `count`), otherwise an error is thrown.
+[counters](#counters) (numeric options with [`count`](/api/args/interface/SingleOption#count)),
+otherwise an error is thrown.
 
 When passing flags within a group, it will mark the value as `true`. Flag negation is not supported
 within a group.
@@ -428,7 +433,8 @@ group will increment the option's value (starting from the `default` value). For
 `-vvv` will increment the value 3 times, once for each "v", resulting in a sum of 3. If not using a
 group, the numeric value will need to be explicitly passed, like `--verbose 3`.
 
-To make use of this feature, enable the `count` setting on a numeric option.
+To make use of this feature, enable the [`count`](/api/args/interface/SingleOption#count) setting on
+a numeric option.
 
 ```ts
 const argv = ['-vvv'];
@@ -450,8 +456,8 @@ args.options.verbose; // 3
 ### Choice options
 
 For scenarios where you want to only accept an option value from a pre-defined list of choices, the
-`choices` setting can be used (single number/string values only). If an unsupported value is
-provided, the parser will throw an error.
+[`choices`](/api/args/interface/SingleOption#choices) setting can be used (single number/string
+values only). If an unsupported value is provided, the parser will throw an error.
 
 ```ts
 const argv = ['--modules', 'umd'];
@@ -476,7 +482,8 @@ args.options.modules; // 'umd'
 
 Another scenario may require an exact number of [option values](#multiple-values), otherwise an
 error is thrown. This feature is known as arity (like function argument arity), and can be enabled
-with the `arity` + `multiple` settings.
+with the [`arity`](/api/args/interface/MultipleOption#arity) +
+[`multiple`](/api/args/interface/MultipleOption#multiple) settings.
 
 ```ts
 const argv = ['--colors', 'red', 'blue', 'green'];
@@ -520,10 +527,11 @@ const args = parse<{ color: string }>(argv, {
 
 When loose mode is enabled, the following changes to the parser are made:
 
-- Unknown options will be typed as strings and set into the `options` return object. This supersedes
-  the `unknown` setting as it works differently.
+- Unknown options will be typed as strings and set into the
+  [`options`](/api/args/interface/Arguments#options) return object. This supersedes the
+  [`unknown`](/api/args/interface/Arguments#unknown) setting as it works differently.
 - Short options without a configured parent will no longer throw an error, and will be set into the
-  `options` return object.
+  [`options`](/api/args/interface/Arguments#options) return object.
   - When no value is provided, they will be typed as `boolean`, otherwise as `string`.
   - When found in a short option group, they will be typed as `boolean`.
 
@@ -566,14 +574,16 @@ input provided.
 For improved interoperability and usability, the parser is strict, logging the following parse and
 validation errors.
 
-- `ParseError`s are logged for invalid syntax, unknown options, and formatting. The failed argument
-  and its index are stored as `arg` and `index` properties on the error instance, respectively.
-- `ValidationError`s are logged for invalid values, types, settings, and more. The invalid option
-  (when applicable), is stored as the `option` property.
+- [`ParseError`](/api/args/class/ParseError)s are logged for invalid syntax, unknown options, and
+  formatting. The failed argument and its index are stored as `arg` and `index` properties on the
+  error instance, respectively.
+- [`ValidationError`](/api/args/class/ValidationError)s are logged for invalid values, types,
+  settings, and more. The invalid option (when applicable), is stored as the `option` property.
 
-Furthermore, errors are not thrown and instead are returned as an array in the [parse()][parse]
-result, under the `errors` property. It's designed this way so that command line interfaces and or
-applications have full control, and can theoretically provide output like the following.
+Furthermore, errors are not thrown and instead are returned as an array in the [`parse()`][parse]
+result, under the [`errors`](/api/args/interface/Arguments#errors) property. It's designed this way
+so that command line interfaces and or applications have full control, and can theoretically provide
+output like the following.
 
 ```
 An error has occurred:
@@ -586,9 +596,9 @@ An error has occurred:
 
 ## Formatting args
 
-If for some reason you need to format the args result from [parse()][parse] back into an array of
-string arguments, the [format()][format] function can be used. This function will use the values as
-is and does not reference the settings object, so all formatted arguments will be in their long
+If for some reason you need to format the args result from [`parse()`][parse] back into an array of
+string arguments, the [`format()`][format] function can be used. This function will use the values
+as is and does not reference the settings object, so all formatted arguments will be in their long
 form, and will not use inline values.
 
 ```ts
