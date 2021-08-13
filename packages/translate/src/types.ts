@@ -28,6 +28,6 @@ export interface Translator {
 	direction: Direction;
 	locale: Locale;
 	changeLocale: (locale: Locale) => Promise<void>;
-	// Testing only
+	/** @internal */
 	i18n: i18n;
 }

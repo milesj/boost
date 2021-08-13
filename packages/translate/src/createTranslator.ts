@@ -30,18 +30,23 @@ export interface TranslatorOptions {
 	resourceFormat?: Format;
 }
 
+/**
+ * Create an return a `Translator` instance with the defined namespace.
+ * A list of resource paths are required for locating translation files.
+ */
 export function createTranslator(
 	namespace: string[] | string,
 	resourcePath: PortablePath | PortablePath[],
-	{
+	options: TranslatorOptions = {},
+): Translator {
+	const {
 		autoDetect = true,
 		debug: debugOpt = false,
 		fallbackLocale = 'en',
 		locale,
 		lookupType = 'all',
 		resourceFormat = 'yaml',
-	}: TranslatorOptions = {},
-): Translator {
+	} = options;
 	const namespaces = toArray(namespace);
 	const resourcePaths = toArray(resourcePath).map(Path.create);
 
@@ -85,11 +90,11 @@ export function createTranslator(
 	function msg(
 		key: string[] | string,
 		params?: InterpolationParams,
-		{ interpolation, locale: lng, ...options }: MessageOptions = {},
+		{ interpolation, locale: lng, ...opts }: MessageOptions = {},
 	): string {
 		return translator.t(key, {
 			interpolation: { escapeValue: false, ...interpolation },
-			...options,
+			...opts,
 			lng,
 			replace: params,
 		});
