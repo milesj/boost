@@ -52,28 +52,52 @@ import {
 } from './types';
 
 export class Program extends CommandManager<ProgramOptions> {
-	/** Called after a component has rendered. */
+	/**
+	 * Called after a component has rendered.
+	 * @category Events
+	 */
 	readonly onAfterRender = new Event('after-render');
 
-	/** Called after the program and command have been ran. */
+	/**
+	 * Called after the program and command have been ran.
+	 * @category Events
+	 */
 	readonly onAfterRun = new Event<[Error?]>('after-run');
 
-	/** Called after a command has run but before a component will render. */
+	/**
+	 * Called after a command has run but before a component will render.
+	 * @category Events
+	 */
 	readonly onBeforeRender = new Event<[RunResult]>('before-render');
 
-	/** Called before the program and command will run. */
+	/**
+	 * Called before the program and command will run.
+	 * @category Events
+	 */
 	readonly onBeforeRun = new Event<[Argv]>('before-run');
 
-	/** Called when a command has been found after parsing argv. */
+	/**
+	 * Called when a command has been found after parsing argv.
+	 * @category Events
+	 */
 	readonly onCommandFound = new Event<[Argv, CommandPath, Commandable]>('command-found');
 
-	/** Called when a command wasn't found after parsing argv. */
+	/**
+	 * Called when a command wasn't found after parsing argv.
+	 * @category Events
+	 */
 	readonly onCommandNotFound = new Event<[Argv, CommandPath]>('command-not-found');
 
-	/** Called when the exit() handler is executed but before the process exits. */
+	/**
+	 * Called when the exit() handler is executed but before the process exits.
+	 * @category Events
+	 */
 	readonly onExit = new Event<[string, ExitCode]>('exit');
 
-	/** Called when the help menu is rendered. */
+	/**
+	 * Called when the help menu is rendered.
+	 * @category Events
+	 */
 	readonly onHelp = new Event<[CommandPath?]>('help');
 
 	readonly streams: ProgramStreams = {

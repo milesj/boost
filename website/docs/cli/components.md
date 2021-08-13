@@ -4,9 +4,9 @@ title: Components
 
 Boost provides the following components for use within your programs.
 
-## `Header`
+## Header
 
-The [Header](/api/cli/function/Header) component is simply that, a header! It renders an inverted
+The [`Header`](/api/cli/function/Header) component is simply that, a header! It renders an inverted
 background, with bold and uppercased text, and appropriate margins. It's what the [help](#help) and
 [failure](#failure) menus use to separate and denote sections.
 
@@ -16,9 +16,9 @@ import { Header } from '@boost/cli';
 <Header label="About" />;
 ```
 
-## `Help`
+## Help
 
-The [Help](/api/cli/function/Help) component can be used to render elegant command usage and help
+The [`Help`](/api/cli/function/Help) component can be used to render elegant command usage and help
 menus. It's a very complex component that supports everything from command metadata to variadic
 params, all through the following props (all optional).
 
@@ -37,10 +37,10 @@ import { Help } from '@boost/cli';
 />;
 ```
 
-## `Failure`
+## Failure
 
-The [Failure](/api/cli/class/Failure) component can be used to render a beautiful failure menu, for
-an error and its stack trace. The `error` prop must be provided with an `Error` instance.
+The [`Failure`](/api/cli/class/Failure) component can be used to render a beautiful failure menu,
+for an error and its stack trace. The `error` prop must be provided with an `Error` instance.
 
 ```tsx
 import { Failure } from '@boost/cli';
@@ -48,9 +48,9 @@ import { Failure } from '@boost/cli';
 <Failure error={new Error('Something is broken!')} />;
 ```
 
-## `Style`
+## Style
 
-The [Style](/api/cli/function/Style) component is special in that it renders and applies colors
+The [`Style`](/api/cli/function/Style) component is special in that it renders and applies colors
 based on the [chosen theme](../cli.mdx#themes). It accomplishes this through the `type` prop, which
 accepts one of the theme palette names.
 
