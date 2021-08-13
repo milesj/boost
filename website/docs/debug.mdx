@@ -6,7 +6,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges backend tooling />
+<EnvBadges backend tooling api="/api/debug" />
 
 Lightweight debugging. Wraps the amazing [debug](https://www.npmjs.com/package/debug) library to
 provide additional functionality.
@@ -50,7 +50,7 @@ Like [logging](./log.mdx), a "debugger" is a collection of functions that write 
 The key difference is that debug messages are only displayed if the `DEBUG` environment variable is
 set and contains the debugger's namespace (logic provided by the
 [debug](https://www.npmjs.com/package/debug) package). The namespace can be defined when
-instantiating a debugger using `createDebugger`.
+instantiating a debugger using [`createDebugger`](/api/debug/function/createDebugger).
 
 ```ts
 import { createDebugger } from '@boost/debug';
@@ -66,7 +66,7 @@ debug('Something is broken!');
 
 Each debug function that logs (excluding invariants) requires a message string as the 1st argument,
 and an optional rest of arguments to interpolate into the message using
-[util.format()](https://nodejs.org/api/util.html#util_util_format_format_args).
+[`util.format()`](https://nodejs.org/api/util.html#util_util_format_format_args).
 
 ```ts
 debug('Name: %s %s', user.first_name, user.last_name);
@@ -77,8 +77,8 @@ debug('Object: %O', data);
 
 Invariant debugging logs either a success or a failure message, depending on the truthy evaluation
 of a condition. This can be achieved with
-`debugger.invariant(condition: boolean, message: string, pass: string, fail: string)`, which
-requires the condition to evaluate, a message to always display, and a success and failure message.
+[`debugger.invariant()`](/api/debug/interface/Debugger#invariant), which requires the condition to
+evaluate, a message to always display, and a success and failure message.
 
 ```ts
 debug.invariant(fs.existsSync(filePath), 'Does file exist?', 'Yes!', 'No');
@@ -88,7 +88,7 @@ debug.invariant(fs.existsSync(filePath), 'Does file exist?', 'Yes!', 'No');
 
 Debug messages are already hidden behind the `DEBUG` environment variable, but Boost takes it a step
 further to support verbose debugging. Messages logged with
-`debugger.verbose(message: string, ...args: any[])` will not be displayed unless the
+[`debugger.verbose()`](/api/debug/interface/Debugger#verbose) will not be displayed unless the
 `BOOSTJS_DEBUG_VERBOSE` environment variable is set -- even if `DEBUG` is set.
 
 ```ts
@@ -104,8 +104,9 @@ debug.verbose('We need extra information (again)');
 ### Silencing output
 
 By default, all logged messages are immediately written when `DEBUG` contains the debugger
-namespace. To silence output for a specific debugger, call the `debugger.disable()` function, and to
-re-enable, call `debugger.enable()`.
+namespace. To silence output for a specific debugger, call the
+[`debugger.disable()`](/api/debug/interface/Debugger#disable) function, and to re-enable, call
+[`debugger.enable()`](/api/debug/interface/Debugger#enable).
 
 ```ts
 debug.disable();

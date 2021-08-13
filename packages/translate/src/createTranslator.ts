@@ -31,7 +31,7 @@ export interface TranslatorOptions {
 }
 
 /**
- * Create an return a `Translator` instance with the defined namespace.
+ * Create and return a `Translator` instance with the defined namespace.
  * A list of resource paths are required for locating translation files.
  */
 export function createTranslator(

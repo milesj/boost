@@ -13,8 +13,17 @@ export type MemoizeCache<T> = Map<
 >;
 
 export interface MemoizeOptions<T> {
+	/** A custom `Map` instance to store cached values. Can also be used to pre-cache expected values. */
 	cache?: MemoizeCache<T> | null;
+	/**
+	 * Time in milliseconds in which to keep the cache alive (TTL).
+	 * Pass `0` to cache indefinitely. Defaults to `0`.
+	 */
 	expires?: number;
+	/**
+	 *  A hashing function to determine the cache key. Is passed the method's arguments
+	 * and must return a string. If not provided, arguments are hashed using `JSON.stringify()`.
+	 */
 	hasher?: MemoizeHasher;
 }
 
@@ -64,6 +73,10 @@ function createMemoizer<T>(
 	};
 }
 
+/**
+ * A method decorator that caches the return value of a class method or
+ * getter to consistently and efficiently return the same value.
+ */
 export function Memoize<T>(options: MemoizeHasher | MemoizeOptions<T> = {}): MethodDecorator {
 	// eslint-disable-next-line complexity
 	return (target, property, descriptor) => {

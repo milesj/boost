@@ -1,5 +1,9 @@
 import { isMethod } from './helpers/isMethod';
 
+/**
+ * A method decorator that delays the execution of the class method
+ * by the provided time in milliseconds.
+ */
 export function Debounce(delay: number): MethodDecorator {
 	return (target, property, descriptor) => {
 		if (

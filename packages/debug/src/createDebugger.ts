@@ -4,6 +4,9 @@ import { color, env } from '@boost/internal';
 import { debug } from './debug';
 import { Debugger } from './types';
 
+/**
+ * Create and return a `Debugger` instance with the defined namespace.
+ */
 export function createDebugger(namespace: string[] | string): Debugger {
 	const globalNamespace = env('DEBUG_NAMESPACE');
 	const namespaces = toArray(namespace);

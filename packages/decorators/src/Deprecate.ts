@@ -5,6 +5,11 @@ import { isMethod } from './helpers/isMethod';
 import { isParam } from './helpers/isParam';
 import { isProperty } from './helpers/isProperty';
 
+/**
+ * A decorator that marks a class declaration, class method,
+ * class property, or method parameter as deprecated by
+ * logging a deprecation message to the console.
+ */
 export function Deprecate(message?: string) {
 	return (target: Function | Object, property?: string | symbol, descriptor?: unknown): void => {
 		const isProtoOrStatic = typeof target === 'function';

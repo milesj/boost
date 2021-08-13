@@ -1,5 +1,9 @@
 import { isMethod } from './helpers/isMethod';
 
+/**
+ * A method decorator that throttles the execution of a class method to
+ * only fire once within every delay timeframe (in milliseconds).
+ */
 export function Throttle(delay: number): MethodDecorator {
 	return (target, property, descriptor) => {
 		if (
