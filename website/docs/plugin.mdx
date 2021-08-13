@@ -6,7 +6,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges backend tooling />
+<EnvBadges backend tooling api="/api/plugin" />
 
 Plugin based architecture that supports module loading, custom types, scopes, and more.
 
@@ -36,16 +36,6 @@ npm install @boost/plugin
   </TabItem>
 </Tabs>
 
-## Events
-
-| Event                         | Arguments        | Description                                                           |
-| ----------------------------- | ---------------- | --------------------------------------------------------------------- |
-| `Registry#onAfterRegister`    | `Plugin`         | Called after a plugin is registered.                                  |
-| `Registry#onAfterUnregister`  | `Plugin`         | Called after a plugin is unregistered.                                |
-| `Registry#onBeforeRegister`   | `Plugin`         | Called before a plugin is registered and the `startup` life-cycle.    |
-| `Registry#onBeforeUnregister` | `Plugin`         | Called before a plugin is unregistered and the `shutdown` life-cycle. |
-| `Registry#onLoad`             | `string, object` | Called after a plugin is loaded but before it's registered.           |
-
 ## Preface
 
 The plugin system is comprised of 2 parts -- one for projects or libraries that want plugins, and
@@ -60,9 +50,9 @@ to handle multiple plugins in parallel through configuration and setting based a
 ## Registries
 
 For project authors, we begin by defining a unique plugin type, like "renderer", "engine", "asset",
-or simply "plugin" if you're not looking to be creative. We can accomplish this with the `Registry`
-class, which requires a project name (used as a [package prefix and scope](#naming-guidelines)),
-plugin type name, and customizable options.
+or simply "plugin" if you're not looking to be creative. We can accomplish this with the
+[`Registry`][registry] class, which requires a project name (used as a
+[package prefix and scope](#naming-guidelines)), plugin type name, and customizable options.
 
 In our examples moving forward, we will use "renderer" as our plugin type.
 
@@ -84,30 +74,22 @@ const rendererRegistry = new Registry<Renderable>('boost', 'renderer', {
 export default rendererRegistry;
 ```
 
-You may have noticed the `validate` option above. This option is required as it forces you to verify
-a plugin being loaded or registered abides the contract you expect. In the example above, we expect
-all our renderers to have a `render` method, otherwise, what would happen if an "engine" plugin was
-passed instead? Nothing good.
+You may have noticed the [`validate`](/api/plugin/interface/RegistryOptions#validate) option above.
+This option is required as it forces you to verify a plugin being loaded or registered abides the
+contract you expect. In the example above, we expect all our renderers to have a `render` method,
+otherwise, what would happen if an "engine" plugin was passed instead? Nothing good.
 
-Besides `validate`, the following options can be passed, all of which are optional. For more
-information on life cycles, continue to the next [plugins](#plugins) chapter.
-
-- `beforeStartup` (`async (plugin: T) => void`) - Callback fired before a plugin's `startup` life
-  cycle is executed.
-- `beforeShutdown` (`async (plugin: T) => void`) - Callback fired before a plugin's `shutdown` life
-  cycle is executed.
-- `afterStartup` (`async (plugin: T) => void`) - Callback fired after a plugin's `startup` life
-  cycle is executed.
-- `afterShutdown` (`async (plugin: T) => void`) - Callback fired after a plugin's `shutdown` life
-  cycle is executed.
-- `resolver` (`(id: string) => string`) - Custom module resolver instead of `require.resolve`.
+Besides `validate`, there are a handful of other options that can be passed, based on the
+[`RegistryOptions`](/api/plugin/interface/RegistryOptions) interface. For more information on life
+cycles, continue to the next [plugins](#plugins) chapter.
 
 ## Plugins
 
 For both project owners and plugin authors, we keep talking about plugins, but what exactly is a
 plugin? In the context of this system, a plugin is either a plain object, or class instance that
-extends `Plugin`, with both abiding a defined contract (the `validate` option). A plugin must also
-have a unique `name` property, which is typically the NPM package name.
+extends [Plugin][plugin], with both abiding a defined contract (the `validate` option). A plugin
+must also have a unique [`name`](/api/plugin/interface/Pluggable#name) property, which is typically
+the NPM package name.
 
 <Tabs
   groupId="plugin-format"
@@ -155,9 +137,9 @@ export default renderer;
 </Tabs>
 
 Now why would we use a class instead of an object, as an object seems much simpler? For 2 reasons,
-the 1st being that `Plugin` extends from [`Contract`](./common/contract.md), which allows the plugin
-to inherit options through its constructor. This automatically happens when loading plugins from a
-configuration file.
+the 1st being that [`Plugin`][plugin] extends from [`Contract`](./common/contract.md), which allows
+the plugin to inherit options through its constructor. This automatically happens when loading
+plugins from a configuration file.
 
 ```ts
 import { Blueprint, Predicates } from '@boost/common';
@@ -183,8 +165,8 @@ const renderer = new Renderer({ async: true });
 ```
 
 The 2nd reason is for TypeScript, as we can type our [tool](#tool-instances) that is passed to
-[life cycles](#life-cycles) -- more specifically, the `Pluggable` type. More information on the tool
-can be found in later chapters.
+[life cycles](#life-cycles) -- more specifically, the [`Pluggable`][pluggable] type. More
+information on the tool can be found in later chapters.
 
 ```ts
 import { Plugin } from '@boost/plugin';
@@ -202,7 +184,8 @@ After a plugin is loaded, the current plugins list is sorted based on priority. 
 number, in ascending order, that determines the order and precedence of plugins. Priority enables
 plugin authors and consumers to "mark" as high or low priority.
 
-Plugin authors can set a priority using the `priority` property.
+Plugin authors can set a priority using the [`priority`](/api/plugin/interface/Pluggable#priority)
+property.
 
 <Tabs
   groupId="plugin-format"
@@ -262,9 +245,11 @@ rendererRegistry.load('boost-renderer-example', {}, { priority: 50 });
 ### Life cycles
 
 A life cycle is an optional method on a plugin that is executed at specific points in the life of a
-plugin. Currently, plugins support 2 life cycles, `startup` and `shutdown`. Startup is executed
-after a plugin is loaded and validated, but before it's registered in the registry. Shutdown on the
-otherhand is executed before a plugin is unregistered from the registry.
+plugin. Currently, plugins support 2 life cycles,
+[`startup`](/api/plugin/interface/Pluggable#startup) and
+[`shutdown`](/api/plugin/interface/Pluggable#shutdown). Startup is executed after a plugin is loaded
+and validated, but before it's registered in the registry. Shutdown on the otherhand is executed
+before a plugin is unregistered from the registry.
 
 All life cycles are asynchronouse and receive a [tool](#tool-instances) as its only argument.
 
@@ -404,9 +389,10 @@ All name parts should be in kebab-case and abide the official
 ## Loading plugins
 
 Plugins are either asynchronously loaded from an NPM package, a relative file system path, or
-explicitly passed using the `Registry` class. The `load()` method can be used to load a single
-plugin, while `loadMany()` will load multiple. Loading accepts 3 different formats, which are
-outlined with the examples below.
+explicitly passed using the [`Registry`][registry] class. The
+[`Registry#load()`](/api/plugin/class/Registry#load) method can be used to load a single plugin,
+while [`Registry#loadMany()`](/api/plugin/class/Registry#loadMany) will load multiple. Loading
+accepts 3 different formats, which are outlined with the examples below.
 
 Passing a string will load based on module name or file path. Names can either be short (just the
 plugin name), or in the long fully qualified form (project, type, and plugin name). When using the
@@ -457,8 +443,10 @@ const renderer = await rendererRegistry.load({
 const renderer = await rendererRegistry.load(new Renderer());
 ```
 
-Loaded and registered plugins should then be accessed with `get()`, `getMany()`, or `getAll()`, all
-of which check based on the plugin's `name` property.
+Loaded and registered plugins should then be accessed with
+[`get()`](/api/plugin/class/Registry#get), [`getMany()`](/api/plugin/class/Registry#getMany), or
+[`getAll()`](/api/plugin/class/Registry#getAll), all of which check based on the plugin's `name`
+property.
 
 ```ts
 const renderer = rendererRegistry.get('boost-renderer-foo');
@@ -472,7 +460,7 @@ in developer or build tool).
 
 Tools are optional, but when defined, they're passed to plugin life cycles, so that plugins may
 interact and integrate with them. For proper type-safety, the Tool type should be passed as a
-generic to `Registry`, `Plugin`, and `Pluggable`.
+generic to [`Registry`][registry], [`Plugin`][plugin], and [`Pluggable`][pluggable].
 
 ```ts
 import { Registry, Pluggable, Plugin } from '@boost/plugin';
@@ -488,8 +476,9 @@ const registry = new Registry<Renderable, Tool>(/* ... */);
 const renderer = new Renderer<Tool>();
 ```
 
-If you have a tool instance, pass the tool as an option to `Registry#load()` and
-`Registry#loadMany()`.
+If you have a tool instance, pass the tool as an option to
+[`Registry#load()`](/api/plugin/class/Registry#load) and
+[`Registry#loadMany()`](/api/plugin/class/Registry#loadMany).
 
 ```ts
 import Tool from './Tool';
@@ -659,3 +648,6 @@ as a basis and reference for Boost's plugin system.
 [rollup]: https://rollupjs.org/guide/en/#plugins-overview
 [webpack]: https://webpack.js.org/contribute/writing-a-plugin/
 [yarn]: https://next.yarnpkg.com/advanced/plugin-tutorial
+[plugin]: /api/plugin/class/Plugin
+[pluggable]: /api/plugin/interface/Pluggable
+[registry]: /api/plugin/class/Registry

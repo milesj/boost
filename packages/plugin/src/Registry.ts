@@ -33,19 +33,34 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 > {
 	readonly debug: Debugger;
 
-	// Emits after a plugin is registered
+	/**
+	 * Called after a plugin is registered.
+	 * @category Events
+	 */
 	readonly onAfterRegister = new Event<[Plugin]>('after-register');
 
-	// Emits after a plugin is unregistered
+	/**
+	 * Called after a plugin is unregistered.
+	 * @category Events
+	 */
 	readonly onAfterUnregister = new Event<[Plugin]>('after-unregister');
 
-	// Emits before a plugin is registered
+	/**
+	 * Called before a plugin is registered and the `startup` life-cycle.
+	 * @category Events
+	 */
 	readonly onBeforeRegister = new Event<[Plugin]>('before-register');
 
-	// Emits before a plugin is unregistered
+	/**
+	 * Called before a plugin is unregistered and the `shutdown` life-cycle.
+	 * @category Events
+	 */
 	readonly onBeforeUnregister = new Event<[Plugin]>('before-unregister');
 
-	// Emits after a plugin is loaded but before its registered
+	/**
+	 * Called after a plugin is loaded but before it's registered.
+	 * @category Events
+	 */
 	readonly onLoad = new Event<[string, object]>('load');
 
 	readonly pluralName: string;
@@ -72,7 +87,9 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		debug('New plugin type created: %s', this.singularName);
 	}
 
-	blueprint({ func }: Predicates): Blueprint<RegistryOptions<Plugin>> {
+	blueprint(predicates: Predicates): Blueprint<RegistryOptions<Plugin>> {
+		const { func } = predicates;
+
 		return {
 			afterShutdown: func<Callback>(),
 			afterStartup: func<Callback>(),
@@ -212,7 +229,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		name: ModuleName,
 		plugin: Plugin,
 		tool: Tool | undefined = undefined,
-		{ priority }: RegisterOptions<Tool> = {},
+		options: RegisterOptions<Tool> = {},
 	): Promise<Plugin> {
 		if (!name.match(MODULE_NAME_PATTERN)) {
 			throw new PluginError('MODULE_NAME_INVALID', [this.pluralName]);
@@ -235,7 +252,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		this.plugins.push({
 			name,
 			plugin,
-			priority: priority ?? DEFAULT_PRIORITY,
+			priority: options.priority ?? DEFAULT_PRIORITY,
 		});
 
 		this.plugins.sort((a, b) => a.priority! - b.priority!);
