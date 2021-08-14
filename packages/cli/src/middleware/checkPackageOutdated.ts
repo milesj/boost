@@ -28,7 +28,7 @@ async function fetchPackageLatestVersion(name: string): Promise<string | undefin
 
 /**
  * Verify that a package and its provided version is using the latest distribution
- * version by checking against the NPM registry. If not, a console message will be logged.
+ * version by checking against the npm registry. If not, a console message will be logged.
  */
 export function checkPackageOutdated(name: string, version: string): Middleware {
 	return async (argv, parse, logger) => {

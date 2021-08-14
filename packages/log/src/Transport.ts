@@ -16,7 +16,9 @@ export abstract class Transport<Options extends TransportOptions>
 		this.levels = this.options.levels;
 	}
 
-	blueprint({ array, func, string }: Predicates): Blueprint<TransportOptions> {
+	blueprint(predicates: Predicates): Blueprint<TransportOptions> {
+		const { array, func, string } = predicates;
+
 		return {
 			eol: string(os.EOL),
 			format: func<Formatter>().nullable(),

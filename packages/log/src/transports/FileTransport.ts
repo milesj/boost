@@ -6,8 +6,14 @@ import { Transport } from '../Transport';
 import { TransportOptions } from '../types';
 
 export interface FileTransportOptions extends TransportOptions {
+	/** Apply gzip compression to the write stream. */
 	gzip?: boolean;
+	/**
+	 * Maximum file size before rotating file.
+	 * Will create a backup and truncate the current file. Defaults to 10mb.
+	 */
 	maxSize?: number;
+	/** Absolute file system path for the intended log file. */
 	path: PortablePath;
 }
 
@@ -34,11 +40,11 @@ export class FileTransport<
 		this.checkFolderRequirements();
 	}
 
-	override blueprint(preds: Predicates): Blueprint<FileTransportOptions> {
-		const { bool, instance, union, number, string } = preds;
+	override blueprint(predicates: Predicates): Blueprint<FileTransportOptions> {
+		const { bool, instance, union, number, string } = predicates;
 
 		return {
-			...super.blueprint(preds),
+			...super.blueprint(predicates),
 			gzip: bool(),
 			maxSize: number(MAX_LOG_SIZE).positive(),
 			path: union([string(), instance(Path)], '').required(),

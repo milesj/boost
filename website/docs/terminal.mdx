@@ -17,7 +17,7 @@ A collection of utilities for managing and interacting with a terminal.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
-    { label: 'NPM', value: 'npm' },
+    { label: 'npm', value: 'npm' },
   ]}
 >
   <TabItem value="yarn">
@@ -36,7 +36,7 @@ npm install @boost/terminal
   </TabItem>
 </Tabs>
 
-There are many terminal based libraries and utilities available in the NPM ecosystem, many of which
+There are many terminal based libraries and utilities available in the npm ecosystem, many of which
 Boost consolidates into a single package. The currently supported are as follows.
 
 ## Cursor
@@ -54,7 +54,7 @@ process.stdout.write(cursor.to(10, 10));
 ## Figures
 
 The `figures` object provides a set of cross-platform symbols.
-[View the official NPM package for a full list](https://www.npmjs.com/package/figures).
+[View the official npm package for a full list](https://www.npmjs.com/package/figures).
 
 ```ts
 import { figures } from '@boost/terminal';

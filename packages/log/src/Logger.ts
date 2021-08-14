@@ -6,7 +6,7 @@ import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { debug } from './debug';
 import { Transport } from './Transport';
 import { ConsoleTransport } from './transports/ConsoleTransport';
-import { LoggerOptions, LogLevel, LogMetadata } from './types';
+import { LoggerOptions, LogLevel, LogOptions } from './types';
 
 export class Logger extends Contract<LoggerOptions> {
 	protected silent: boolean = false;
@@ -25,14 +25,9 @@ export class Logger extends Contract<LoggerOptions> {
 		);
 	}
 
-	blueprint({
-		array,
-		func,
-		instance,
-		object,
-		shape,
-		string,
-	}: Predicates): Blueprint<LoggerOptions> {
+	blueprint(predicates: Predicates): Blueprint<LoggerOptions> {
+		const { array, instance, object, string } = predicates;
+
 		return {
 			labels: object(string()),
 			metadata: object(),
@@ -41,11 +36,17 @@ export class Logger extends Contract<LoggerOptions> {
 		};
 	}
 
+	/**
+	 * Disable all logger messages from logging to the console.
+	 */
 	disable() {
 		debug('Logger %s disabled', this.options.name);
 		this.silent = true;
 	}
 
+	/**
+	 * Enable all logger messages to log the console.
+	 */
 	enable() {
 		debug('Logger %s enabled', this.options.name);
 		this.silent = false;
@@ -69,17 +70,8 @@ export class Logger extends Contract<LoggerOptions> {
 		return false;
 	}
 
-	log({
-		args = [],
-		level,
-		message,
-		metadata = {},
-	}: {
-		args?: unknown[];
-		level?: LogLevel;
-		message: string;
-		metadata?: LogMetadata;
-	}) {
+	log(options: LogOptions) {
+		const { args = [], level, message, metadata = {} } = options;
 		const logLevel = level ?? env('LOG_DEFAULT_LEVEL') ?? 'log';
 
 		if (this.silent || !this.isAllowed(logLevel, env('LOG_MAX_LEVEL'))) {

@@ -61,7 +61,7 @@ export class CrashReporter {
 
 		const bins = {
 			node: 'Node',
-			npm: 'NPM',
+			npm: 'npm',
 			yarn: 'Yarn',
 		};
 
@@ -190,7 +190,7 @@ export class CrashReporter {
 	}
 
 	/**
-	 * Report NPM package versions for all that match the defined pattern.
+	 * Report npm package versions for all that match the defined pattern.
 	 * Only searches in the root node modules folder and _will not_ work with PnP.
 	 */
 	reportPackageVersions(patterns: string[] | string, title: string = 'Packages'): this {

@@ -3,7 +3,7 @@ title: Project
 ---
 
 A `Project` class provides workspace and package metadata for a project. A project is denoted by a
-root `package.json` file and abides the NPM and Node.js module pattern. To begin, import and
+root `package.json` file and abides the npm and Node.js module pattern. To begin, import and
 instantiate the `Project` class with a path to the project's root.
 
 ```ts
@@ -24,7 +24,7 @@ aligns with:
 
 - **Project** - Typically a repository with a root `package.json`. Can either be a collection of
   packages, or a package itself.
-- **Package** - A folder with a `package.json` file that represents an NPM package. Contains source
+- **Package** - A folder with a `package.json` file that represents an npm package. Contains source
   and test files specific to the package.
 - **Workspace** - A folder that houses one or many packages.
 

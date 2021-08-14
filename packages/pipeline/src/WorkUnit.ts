@@ -27,12 +27,28 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 
 	stopTime: number = 0;
 
+	/**
+	 * Called when an execution fails.
+	 * @category Events
+	 */
 	readonly onFail = new Event<[Error | null]>('fail');
 
+	/**
+	 * Called when an execution succeeds.
+	 * @category Events
+	 */
 	readonly onPass = new Event<[Output]>('pass');
 
+	/**
+	 * Called before a work unit is executed. Can return `true` to skip the work unit.
+	 * @category Events
+	 */
 	readonly onRun = new BailEvent<[Input]>('run');
 
+	/**
+	 * Called when an execution is skipped.
+	 * @category Events
+	 */
 	readonly onSkip = new Event<[Input]>('skip');
 
 	readonly title: string;

@@ -101,7 +101,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	}
 
 	/**
-	 * Format a name into a fully qualified and compatible Node/NPM module name,
+	 * Format a name into a fully qualified and compatible Node/npm module name,
 	 * with the tool and type names being used as scopes and prefixes.
 	 */
 	formatModuleName(name: string, scoped: boolean = false): ModuleName {

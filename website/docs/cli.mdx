@@ -27,7 +27,7 @@ handling ANSI escape sequences and terminal widths can be tedious and complicate
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
-    { label: 'NPM', value: 'npm' },
+    { label: 'npm', value: 'npm' },
   ]}
 >
   <TabItem value="yarn">
@@ -1083,7 +1083,7 @@ function CustomComponent() {
 ## Themes
 
 Themes allow consumers to alter the color of text and backgrounds for elements rendered with the
-`Style` component. Themes are simply NPM modules that return an object of hexcodes or ANSI colors,
+`Style` component. Themes are simply npm modules that return an object of hexcodes or ANSI colors,
 and can be enabled by defining the `BOOSTJS_CLI_THEME` environment variable.
 
 ```bash
