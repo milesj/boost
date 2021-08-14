@@ -6,7 +6,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges backend frontend tooling />
+<EnvBadges backend frontend tooling api="/api/event" />
 
 A type-safe event system with multiple emitter patterns.
 
@@ -38,12 +38,13 @@ npm install @boost/event
 
 ## Events
 
-The event system is built around individual `Event` classes that can be instantiated in isolation,
-register and unregister their own listeners, and emit values by executing each listener with
-arguments. There are multiple [types of events](#types), so choose the best one for each use case.
+The event system is built around individual [`Event`][event] classes that can be instantiated in
+isolation, register and unregister their own listeners, and emit values by executing each listener
+with arguments. There are multiple [types of events](#types), so choose the best one for each use
+case.
 
-To begin using events, instantiate an `Event` with a unique name -- the name is purely for debugging
-purposes.
+To begin using events, instantiate an [`Event`][event] with a unique name -- the name is purely for
+debugging purposes.
 
 ```ts
 import { Event } from '@boost/event';
@@ -51,8 +52,8 @@ import { Event } from '@boost/event';
 const event = new Event<[string]>('example');
 ```
 
-`Event`s utilize TypeScript generics for typing the arguments passed to listener functions. This can
-be defined using a tuple or an array in the 1st generic slot. The 2nd slot is reserved for
+[`Event`][event]s utilize TypeScript generics for typing the arguments passed to listener functions.
+This can be defined using a tuple or an array in the 1st generic slot. The 2nd slot is reserved for
 [scopes](#scopes).
 
 ```ts
@@ -71,15 +72,15 @@ new Event<unknown[]>('foo');
 
 ### Registering listeners
 
-Listeners are simply functions that can be registered to an event using `Event#listen()`. The same
-listener function reference will only be registered once.
+Listeners are simply functions that can be registered to an event using [`Event#listen()`][listen].
+The same listener function reference will only be registered once.
 
 ```ts
 event.listen(listener);
 ```
 
-A listener can also be registered to execute only once, using `Event#once()`, regardless of how many
-times the event has been emitted.
+A listener can also be registered to execute only once, using [`Event#once()`][once], regardless of
+how many times the event has been emitted.
 
 ```ts
 event.once(listener);
@@ -87,14 +88,14 @@ event.once(listener);
 
 ### Unregistering listeners
 
-A listener can be unregistered from an event using `Event#unlisten()`. The same listener reference
-used to register must also be used for unregistering.
+A listener can be unregistered from an event using [`Event#unlisten()`][unlisten]. The same listener
+reference used to register must also be used for unregistering.
 
 ```ts
 event.unlisten(listener);
 ```
 
-To make this flow easier, a pre-configured unlistener is returned from `Event#listen()`.
+To make this flow easier, a pre-configured unlistener is returned from [`Event#listen()`][listen].
 
 ```ts
 const unlisten = event.listen(listener);
@@ -104,8 +105,8 @@ unlisten();
 ### Emitting events
 
 Emitting is the concept of executing all registered listeners with a set of arguments. This can be
-achieved through the `Event#emit()` method, which requires an array of values to pass to each
-listener as arguments.
+achieved through the [`Event#emit()`][emit] method, which requires an array of values to pass to
+each listener as arguments.
 
 ```ts
 event.emit(['abc']);
@@ -116,7 +117,8 @@ event.emit(['abc']);
 ## Scopes
 
 Scopes are a mechanism for restricting listeners to a unique subset. Scopes are defined as the 2nd
-argument to `Event#listen()`, `unlisten()`, `once()`, and `emit()`.
+argument to [`Event#listen()`][listen], [`#unlisten()`][unlisten], [`#once()`][once], and
+[`#emit()`][emit].
 
 ```ts
 event.listen(listener);
@@ -130,8 +132,8 @@ event.emit([]);
 event.emit([], 'foo');
 ```
 
-A list of acceptable scope names can be passed as the 2nd generic slot to `Event`, otherwise all
-strings are allowed.
+A list of acceptable scope names can be passed as the 2nd generic slot to [`Event`][event],
+otherwise all strings are allowed.
 
 ```ts
 new Event<[number], 'foo' | 'bar' | 'baz'>('event');
@@ -141,9 +143,9 @@ new Event<[number], 'foo' | 'bar' | 'baz'>('event');
 
 There are 4 types of events that can be instantiated and emitted.
 
-### `Event`
+### Event
 
-Standard event that executes listeners in the order they were registered.
+Standard [`Event`][event] that executes listeners in the order they were registered.
 
 ```ts
 import { Event } from '@boost/event';
@@ -155,10 +157,10 @@ event.listen(listener);
 event.emit(['abc', 123]);
 ```
 
-### `BailEvent`
+### BailEvent
 
-Like `Event` but can bail the execution loop early if a listener returns `false`. The `emit` method
-will return `true` if a bail occurs.
+The [`BailEvent`](/api/event/class/BailEvent) is like [`Event`][event] but can bail the execution
+loop early if a listener returns `false`. The emit method will return `true` if a bail occurs.
 
 ```ts
 import { BailEvent } from '@boost/event';
@@ -177,9 +179,10 @@ event.listen(() => {});
 const bailed = event.emit([{ example: true }]);
 ```
 
-### `ConcurrentEvent`
+### ConcurrentEvent
 
-Executes listeners in parallel and returns a promise with the result of all listeners.
+The [`ConcurrentEvent`](/api/event/class/ConcurrentEvent) executes listeners in parallel and returns
+a promise with the result of all listeners.
 
 ```ts
 import { ConcurrentEvent } from '@boost/event';
@@ -193,13 +196,14 @@ event.listen(doBackgroundJob);
 const result = await event.emit([]);
 
 // Promise
-event.emit([]).then((result) => {});
+event.emit([]).then((results) => {});
 ```
 
-### `WaterfallEvent`
+### WaterfallEvent
 
-Executes each listener in order, passing the previous listeners return value as an argument to the
-next listener.
+The [`WaterfallEvent`](/api/event/class/WaterfallEvent) executes each listener in order, passing the
+previous listeners return value as an argument to the next listener. The final value is then
+returned as a result.
 
 ```ts
 import { WaterfallEvent } from '@boost/event';
@@ -214,3 +218,9 @@ const result = event.emit(10); // 60
 
 > This event only accepts a single argument. The generic type should not be an array, as it types
 > the only argument and the return type.
+
+[event]: /api/event/class/Event
+[listen]: /api/event/class/Event#listen
+[unlisten]: /api/event/class/Event#unlisten
+[emit]: /api/event/class/Event#emit
+[once]: /api/event/class/Event#once
