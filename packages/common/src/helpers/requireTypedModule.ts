@@ -66,6 +66,20 @@ function unregisterExtensions() {
 	delete require.extensions['.tsx'];
 }
 
+/**
+ * Like `requireModule` but for importing TypeScript files ending in `ts` or `tsx`.
+ * When imported, will transform the file using the `typescript` package (must be installed),
+ * evaluate the code in the current module context, and apply the same process to all child imports.
+ *
+ * ```ts
+ * import { requireTypedModule } from '@boost/common';
+ *
+ * const result: ReturnShape = requireTypedModule('../../some/module.ts');
+ * ```
+ *
+ * > This helper rarely needs to be used directly as `parseFile` and `requireModule` will
+ * > call it under the hood based on the file extension.
+ */
 export function requireTypedModule<T>(path: PortablePath): T {
 	const filePath = String(path);
 

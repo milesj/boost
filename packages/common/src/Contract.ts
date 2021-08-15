@@ -2,6 +2,7 @@ import optimal, { Blueprint, Predicates, predicates } from 'optimal';
 import { Optionable } from './types';
 
 export abstract class Contract<T extends object = {}> implements Optionable<T> {
+	/** Validated and configured options. */
 	readonly options: Readonly<Required<T>>;
 
 	constructor(options?: T) {
@@ -12,6 +13,17 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	 * Set an options object by merging the new partial and existing options
 	 * with the defined blueprint, while running all validation checks.
 	 * Freeze and return the options object.
+	 *
+	 * ```ts
+	 * object.configure({ name: 'Boost' });
+	 *
+	 * object.configure((prevOptions) => ({
+	 * 	nestedObject: {
+	 * 		...prevOptions.nestedObject,
+	 * 		some: 'value',
+	 * 	},
+	 * }));
+	 * ```
 	 */
 	configure(options?: Partial<T> | ((options: Required<T>) => Partial<T>)): Readonly<Required<T>> {
 		const nextOptions = typeof options === 'function' ? options(this.options) : options;
@@ -33,8 +45,12 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	}
 
 	/**
-	 * Define an optimal blueprint in which to validate and build the
+	 * Define an `optimal` blueprint in which to validate and build the
 	 * options object passed to the constructor, or when manual setting.
+	 *
+	 * A boolean is passed as the 2nd argument to determine whether this is
+	 * validating on class instantiation (first time), or by calling
+	 * `configure()` (all other times).
 	 */
 	abstract blueprint(predicates: Predicates, onConstruction?: boolean): Blueprint<object>;
 }

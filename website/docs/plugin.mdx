@@ -137,9 +137,9 @@ export default renderer;
 </Tabs>
 
 Now why would we use a class instead of an object, as an object seems much simpler? For 2 reasons,
-the 1st being that [`Plugin`][plugin] extends from [`Contract`](./common/contract.md), which allows
-the plugin to inherit options through its constructor. This automatically happens when loading
-plugins from a configuration file.
+the 1st being that [`Plugin`][plugin] extends from [`Contract`](./common.mdx#class-contracts), which
+allows the plugin to inherit options through its constructor. This automatically happens when
+loading plugins from a configuration file.
 
 ```ts
 import { Blueprint, Predicates } from '@boost/common';

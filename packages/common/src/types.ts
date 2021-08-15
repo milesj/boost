@@ -40,8 +40,13 @@ export type BlueprintFactory<T extends object> = (
 ) => Blueprint<T>;
 
 export interface Optionable<T extends object = {}> {
+	/** Validated and configured options. */
 	readonly options: Required<T>;
 
+	/**
+	 * Define an `optimal` blueprint in which to validate and build the
+	 * options object passed to the constructor, or when manual setting.
+	 */
 	blueprint: BlueprintFactory<object>;
 }
 
@@ -87,6 +92,10 @@ export interface RepositorySetting extends TypeSetting {
 	directory?: string;
 }
 
+/**
+ * Shape of `package.json`, with support for third-party properties
+ * like Yarn, Webpack, and TypeScript.
+ */
 export interface PackageStructure {
 	author?: PeopleSetting | string;
 	bin?: SettingMap | string;

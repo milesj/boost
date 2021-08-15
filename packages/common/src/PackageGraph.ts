@@ -58,6 +58,12 @@ export class PackageGraph<T extends PackageStructure = PackageStructure> {
 	/**
 	 * Resolve the dependency graph and return a list of all
 	 * `package.json` objects in the order they are depended on.
+	 *
+	 * ```ts
+	 * graph.resolveList().forEach((pkg) => {
+	 * 	console.log(pkg.name);
+	 * });
+	 * ```
 	 */
 	resolveList(): T[] {
 		return this.resolveBatchList().reduce((flatList, batchList) => {
@@ -70,6 +76,16 @@ export class PackageGraph<T extends PackageStructure = PackageStructure> {
 	/**
 	 * Resolve the dependency graph and return a tree of nodes for all
 	 * `package.json` objects and their dependency mappings.
+	 *
+	 * ```ts
+	 * graph.resolveTree().nodes.forEach((node) => {
+	 * 	console.log(node.package.name);
+	 *
+	 * 	if (node.nodes) {
+	 * 		// Dependents
+	 * 	}
+	 * });
+	 * ```
 	 */
 	resolveTree(): PackageGraphTree<T> {
 		this.mapDependencies();
@@ -123,8 +139,16 @@ export class PackageGraph<T extends PackageStructure = PackageStructure> {
 	}
 
 	/**
-	 * Resolve the dependency graph and return a list of batched
-	 * `package.json` objects in the order they are depended on.
+	 * Resolve the dependency graph and return a list of batched `package.json` objects
+	 * (array of arrays) in the order they are depended on.
+	 *
+	 * ```ts
+	 * graph.resolveBatchList().forEach((pkgs) => {
+	 * 	pkgs.forEach((pkg) => {
+	 * 		console.log(pkg.name);
+	 * 	});
+	 * });
+	 * ```
 	 */
 	resolveBatchList(): T[][] {
 		this.mapDependencies();
