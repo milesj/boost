@@ -47,9 +47,11 @@ import {
  */
 export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
 	path: CommandPath,
-	{ description, options, params, ...config }: ProxyCommandConfig<O, P>,
+	proxyConfig: ProxyCommandConfig<O, P>,
 	runner: ProxyCommandRunner<O, P>,
 ): Command<O, P> {
+	const { description, options, params, ...config } = proxyConfig;
+
 	@Config(path, description, config)
 	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	class ProxyCommand extends Command<O, P> {

@@ -5,7 +5,9 @@ import { Finder } from './Finder';
 import { IgnoreFile, IgnoreFinderOptions } from './types';
 
 export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
-	blueprint({ string }: Predicates): Blueprint<IgnoreFinderOptions> {
+	blueprint(predicates: Predicates): Blueprint<IgnoreFinderOptions> {
+		const { string } = predicates;
+
 		return {
 			name: string().required().camelCase(),
 		};

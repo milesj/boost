@@ -30,7 +30,9 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 		});
 	}
 
-	blueprint({ array, instance, string }: Predicates): Blueprint<FileBackendOptions> {
+	blueprint(predicates: Predicates): Blueprint<FileBackendOptions> {
+		const { array, instance, string } = predicates;
+
 		return {
 			format: string('yaml').oneOf<Format>(['js', 'json', 'yaml']),
 			paths: array(instance(Path, true).notNullable()),

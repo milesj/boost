@@ -7880,9 +7880,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docusaurus-plugin-typedoc-api@npm:^1.0.0-alpha.4":
-  version: 1.0.0-alpha.4
-  resolution: "docusaurus-plugin-typedoc-api@npm:1.0.0-alpha.4"
+"docusaurus-plugin-typedoc-api@npm:^1.0.0-alpha.5":
+  version: 1.0.0-alpha.5
+  resolution: "docusaurus-plugin-typedoc-api@npm:1.0.0-alpha.5"
   dependencies:
     "@docusaurus/types": 2.0.0-beta.4
     "@vscode/codicons": ^0.0.21
@@ -7890,7 +7890,7 @@ __metadata:
     typedoc: ^0.21.5
   peerDependencies:
     react: ">=16.0.0"
-  checksum: b9458fcde815fdacab06f828185d9a30472268d05ee2433d7a997f4583700933db8b752eef806bbae12aacefe8d1624e2eb346074a40c728f25d7b9206270cf3
+  checksum: 83ab57a87ac35a2f71ac66d73cb270eb30f366aa63a9619de63adaa3ecf8a818b2fe40a2cb4b734ac03f250e145dd83fdf363ca311749791a24784320a546711
   languageName: node
   linkType: hard
 
@@ -19437,7 +19437,7 @@ typescript@^4.3.5:
     "@docusaurus/preset-classic": 2.0.0-beta.4
     "@mdx-js/react": ^1.6.22
     clsx: ^1.1.1
-    docusaurus-plugin-typedoc-api: ^1.0.0-alpha.4
+    docusaurus-plugin-typedoc-api: ^1.0.0-alpha.5
     react: ^16.14.0
     react-dom: ^16.14.0
   languageName: unknown
