@@ -231,6 +231,8 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		tool: Tool | undefined = undefined,
 		options: RegisterOptions<Tool> = {},
 	): Promise<Plugin> {
+		const { priority } = options;
+
 		if (!name.match(MODULE_NAME_PATTERN)) {
 			throw new PluginError('MODULE_NAME_INVALID', [this.pluralName]);
 		}
@@ -252,7 +254,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		this.plugins.push({
 			name,
 			plugin,
-			priority: options.priority ?? DEFAULT_PRIORITY,
+			priority: priority ?? DEFAULT_PRIORITY,
 		});
 
 		this.plugins.sort((a, b) => a.priority! - b.priority!);

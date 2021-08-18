@@ -30,7 +30,7 @@ export function Style(props: StyleProps) {
 	}
 
 	return (
-		<Text {...restProps} {...props}>
+		<Text {...restProps} {...nextProps}>
 			{children}
 		</Text>
 	);

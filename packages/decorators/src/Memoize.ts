@@ -21,7 +21,7 @@ export interface MemoizeOptions<T> {
 	 */
 	expires?: number;
 	/**
-	 *  A hashing function to determine the cache key. Is passed the method's arguments
+	 * A hashing function to determine the cache key. Is passed the method's arguments
 	 * and must return a string. If not provided, arguments are hashed using `JSON.stringify()`.
 	 */
 	hasher?: MemoizeHasher;
