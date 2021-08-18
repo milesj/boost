@@ -12,7 +12,7 @@ module.exports = {
 				{
 					type: 'category',
 					label: 'CLI',
-					items: ['cli', 'cli/components', 'cli/prompts', 'cli/testing'],
+					items: ['cli', 'cli/components', 'cli/prompts'],
 				},
 				'common',
 				'config',

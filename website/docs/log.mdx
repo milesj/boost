@@ -246,22 +246,5 @@ const transport = new RotatingFileTransport({
 
 ## Test utilities
 
-The following [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/log/test` module.
-
-### Mocking the logger
-
-The `mockLogger` function returns a Jest spy that matches the return value shape of
-[`createLogger`](/api/log/function/createLogger).
-
-```ts
-import { mockLogger } from '@boost/log/test';
-
-it('calls the logger', () => {
-	const log = mockLogger();
-
-	log('Something has happened');
-
-	expect(log).toHaveBeenCalled();
-});
-```
+A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
+`@boost/log/test` module. [View the API for a full list](/api/log-test).

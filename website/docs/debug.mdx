@@ -119,23 +119,5 @@ debug('Something is broken!');
 
 ## Test utilities
 
-The following [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/debug/test` module.
-
-### `mockDebugger`
-
-> mockDebugger(): Debugger
-
-Returns a Jest spy that matches the return value shape of `createDebugger`.
-
-```ts
-import { mockDebugger } from '@boost/debug/test';
-
-it('calls the debugger', () => {
-	const debug = mockDebugger();
-
-	debug('Something is broken!');
-
-	expect(debug).toHaveBeenCalled();
-});
-```
+A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
+`@boost/debug/test` module. [View the API for a full list](/api/debug-test).
