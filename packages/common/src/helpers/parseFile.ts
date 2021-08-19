@@ -7,6 +7,19 @@ import { PortablePath } from '../types';
 import { requireModule } from './requireModule';
 import { requireTypedModule } from './requireTypedModule';
 
+/**
+ * Can be used to *sync*hronously parse and return an object for the following
+ * file types & extensions: `js`, `ts`, `tsx`, `json`, `json5`, `yaml`, `yml`.
+ * The function requires an absolute file path, and any unsupported file type will throw an error.
+ *
+ * ```ts
+ * import { parseFile } from '@boost/common';
+ *
+ * const data: ReturnShape = parseFile('/absolute/file/path');
+ * ```
+ *
+ * > TypeScript files require the `typescript` package to be installed.
+ */
 export function parseFile<T>(filePath: PortablePath): T {
 	const path = Path.create(filePath);
 

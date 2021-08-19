@@ -9,17 +9,23 @@ export type Action<Ctx extends Context, Input = unknown, Output = Input> = (
 ) => Output | Promise<Output>;
 
 export interface AggregatedResult<T> {
+	/** List of `Errors` that occurred during execution. */
 	errors: Error[];
+	/** List of successful execution results. */
 	results: T[];
 }
 
 export interface Hierarchical {
+	/** Current depth of nested pipelines. */
 	depth: number;
+	/** Unique ID of the work unit. */
 	id: string;
+	/** Current index amongst sibling work units. */
 	index: number;
 }
 
 export interface Runnable<Input, Output> {
+	/** Accept an input and produce an output. */
 	run: (context: Context, value: Input) => Promise<Output>;
 }
 

@@ -4,18 +4,10 @@ title: Prompts
 
 Prompts are specialized [React components](./components.md) for handling `process.stdin` input.
 
-All prompt components share most of the following props.
+## Confirm
 
-- `label` (`React.ReactNode`) - Label to display before or above the prompt itself. _(Required)_
-- `prefix` (`string`) - Single character symbol to display before the label. Defaults to `?`.
-- `onSubmit` (`(value: T) => void`) - Callback triggered when the value is submitted.
-- `validate` (`(value: T) => void`) - Function to validate the value on submit. To trigger a failed
-  state, thrown an `Error`.
-
-## `Confirm`
-
-The `Confirm` component provides a binary choice through the input of a single character. On
-submission, either a `true` or `false` value will be passed.
+The [`Confirm`](/api/cli/function/Confirm) component provides a binary choice through the input of a
+single character. On submission, either a `true` or `false` value will be passed.
 
 ```tsx
 import { Confirm } from '@boost/cli';
@@ -25,18 +17,10 @@ import { Confirm } from '@boost/cli';
 
 ![Confirm example](/img/cli/prompts/confirm.gif)
 
-### Props
+## HiddenInput
 
-- `invalidError` (`string`) - Error message to display when an invalid character is pressed.
-  Defaults to a custom message.
-- `no` (`string`) - Character that triggers a falsy state when pressed. Defaults to `N`.
-- `yes` (`string`) - Character that triggers a truthy state when pressed. Defaults to `y`.
-- Does not support the `validate` prop.
-
-## `HiddenInput`
-
-The `HiddenInput` component is a specialized [Input](#input) that accepts user input, hides it from
-the console, and returns the entered string on submission.
+The [`HiddenInput`](/api/cli/function/HiddenInput) component is a specialized [`Input`](#input) that
+accepts user input, hides it from the console, and returns the entered string on submission.
 
 ```tsx
 import { HiddenInput } from '@boost/cli';
@@ -46,18 +30,15 @@ import { HiddenInput } from '@boost/cli';
 
 ![Hidden input example](/img/cli/prompts/hidden-input.gif)
 
-### Props
-
-- Inherits all the same props as [Input](#input) except for `hideCursor`.
-
 ### Controls
 
 - Inherits all the same keyboard controls as [Input](#input).
 
-## `Input`
+## Input
 
-The `Input` component is a simple text prompt that takes user input and returns a string. Supports
-standard typing, backspacing. On submission, the final `string` will be trimmed of whitespace.
+The [`Input`](/api/cli/function/Input) component is a simple text prompt that takes user input and
+returns a string. Supports standard typing, backspacing. On submission, the final `string` will be
+trimmed of whitespace.
 
 ```tsx
 import { Input } from '@boost/cli';
@@ -72,14 +53,6 @@ import { Input } from '@boost/cli';
 
 ![Input example](/img/cli/prompts/input.gif)
 
-### Props
-
-- `defaultValue` (`string`) - A default value. If none provided, will use an empty state.
-- `hideCursor` (`boolean`) - Hide the cursor in the console. Will remove the background color, but
-  still functions.
-- `placeholder` (`string`) - Custom string to display when the value is empty and non-dirty.
-- `onChange` (`(value: string) => void`) - Callback triggered when the value changes.
-
 ### Controls
 
 - <kbd>↑</kbd>, <kbd>↓</kbd> - Move cursor to the beginning or end of the entered text.
@@ -88,10 +61,10 @@ import { Input } from '@boost/cli';
   position.
 - <kbd>return</kbd> - Submit the currently entered text.
 
-## `MultiSelect`
+## MultiSelect
 
-The `MultiSelect` component works in a similar fashion to [Select](#select), but allows for multiple
-values to be selected before submission.
+The [`MultiSelect`](/api/cli/function/MultiSelect) component works in a similar fashion to
+[`Select`](#select), but allows for multiple values to be selected before submission.
 
 ```tsx
 import { MultiSelect } from '@boost/cli';
@@ -121,12 +94,6 @@ import { MultiSelect } from '@boost/cli';
 
 ![Multiple select example](/img/cli/prompts/multiselect.gif)
 
-### Props
-
-- `defaultSelected` (`T[]`) - List of option values selected by default.
-- `onChange` (`(values: T[]) => void`) - Callback triggered when a value is selected or unselected.
-- Inherits all the same props as [Select](#select).
-
 ### Controls
 
 - <kbd>↑</kbd>, <kbd>↓</kbd> - Move forward or backward through options in the list.
@@ -134,10 +101,10 @@ import { MultiSelect } from '@boost/cli';
 - <kbd>space</kbd> - Select or unselect the currently highlighted option.
 - <kbd>return</kbd> - Submit the currently selected options.
 
-## `PasswordInput`
+## PasswordInput
 
-The `PasswordInput` component is a specialized [Input](#input) that masks user input and replaces
-each character with a star (`*`).
+The [`PasswordInput`](/api/cli/function/PasswordInput) component is a specialized [`Input`](#input)
+that masks user input and replaces each character with a star (`*`).
 
 ```tsx
 import { PasswordInput } from '@boost/cli';
@@ -147,19 +114,15 @@ import { PasswordInput } from '@boost/cli';
 
 ![Password input example](/img/cli/prompts/password-input.gif)
 
-### Props
-
-- Inherits all the same props as [Input](#input) except for `hideCursor`.
-
 ### Controls
 
 - Inherits all the same keyboard controls as [Input](#input).
 
-## `Select`
+## Select
 
-The `Select` component allows a value to be selected from a pre-defined list of options. Supports
-standard keyboard navigation. To select or unselect a value, press the space bar, or on submission,
-the currently highlighted option will be chosen.
+The [`Select`](/api/cli/function/Select) component allows a value to be selected from a pre-defined
+list of options. Supports standard keyboard navigation. To select or unselect a value, press the
+space bar, or on submission, the currently highlighted option will be chosen.
 
 ```tsx
 import { Select } from '@boost/cli';
@@ -215,22 +178,6 @@ import { Select } from '@boost/cli';
 ```
 
 ![Select with labels example](/img/cli/prompts/select-labels.gif)
-
-### Props
-
-- `defaultSelected` (`T`) - Option value selected by default.
-- `limit` (`number`) - Number of options to display before scrolling. Defaults to console height.
-- `options` (`(T | SelectOption<T>)[]`) - List of options to choose from. Can either be a string,
-  number, or object with a `label` and `value`. _(Required)_
-- `overflowAfterLabel` (`string | (count: number) => string`) - Label to display above scrollable
-  options with the number of overflowing options.
-- `overflowBeforeLabel` (`string | (count: number) => string`) - Label to display below scrollable
-  options with the number of overflowing options.
-- `scrollType` (`cycle | overflow`) - The pattern in which to limit options when scrolling. Defaults
-  to `overflow`.
-  - `cycle` - Will continously cycle through options, even when navigating to and past edges.
-  - `overflow` - Will display options bound to an edge, with the number of options hidden above and
-    below.
 
 ### Controls
 

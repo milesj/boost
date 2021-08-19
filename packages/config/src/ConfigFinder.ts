@@ -32,7 +32,9 @@ import {
 } from './types';
 
 export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, ConfigFinderOptions<T>> {
-	blueprint({ array, bool, func, shape, string }: Predicates): Blueprint<ConfigFinderOptions<T>> {
+	blueprint(predicates: Predicates): Blueprint<ConfigFinderOptions<T>> {
+		const { array, bool, func, shape, string } = predicates;
+
 		return {
 			extendsSetting: string(),
 			extensions: array(string<ExtType>(), DEFAULT_EXTS),

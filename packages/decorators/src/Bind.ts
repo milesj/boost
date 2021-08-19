@@ -1,5 +1,9 @@
 import { isMethod } from './helpers/isMethod';
 
+/**
+ * A method decorator that automatically binds a class method's
+ * `this` context to its current instance.
+ */
 export function Bind(): MethodDecorator {
 	return (target, property, descriptor) => {
 		if (

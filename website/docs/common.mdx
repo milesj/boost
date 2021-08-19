@@ -1,13 +1,12 @@
 ---
 title: Common utilities
-sidebar_label: Overview
 ---
 
 import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges backend tooling />
+<EnvBadges backend tooling api="/api/common" />
 
 A collection of common utilities, classes, and helpers.
 
@@ -18,7 +17,7 @@ A collection of common utilities, classes, and helpers.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
-    { label: 'NPM', value: 'npm' },
+    { label: 'npm', value: 'npm' },
   ]}
 >
   <TabItem value="yarn">
@@ -37,267 +36,17 @@ npm install @boost/common
   </TabItem>
 </Tabs>
 
-## Helpers
+## Helpers and serializers
 
-### `createBlueprint`
+Boost provides many functions for common scenarios and patterns, like
+[`isObject`](/api/common/function/isObject) for verifying a value is an object, or
+[`toArray`](/api/common/function/toArray) for converting a value to an array.
+[View the API for a full list of functions with examples](/api/common#Functions).
 
-> createBlueprint<T\>(factory: BlueprintFactory<T\>): Blueprint<T\>
+#### JSON
 
-Can be used to generate a blueprint object for use within
-[optimal](https://github.com/milesj/optimal) checks. All supported optimal predicates are passed as
-an object to the factory.
-
-```ts
-import { optimal, createBlueprint } from '@boost/common';
-
-const blueprint = createBlueprint(({ string, number }) => ({
-	name: string().required(),
-	age: number().gt(0),
-}));
-
-const data = optimal({}, blueprint);
-```
-
-### `deepFreeze`
-
-> deepFreeze<T extends object\>(obj: T): T
-
-Can be used to recursively freeze plain objects with `Object.freeze`.
-
-```ts
-import { deepFreeze } from '@boost/common';
-
-const obj = deepFreeze({ foo: 123 });
-
-// Errors!
-obj.foo = 456;
-```
-
-### `deepMerge`
-
-> deepMerge<T extends object | unknown[]\>(base: T, other?: T): T
-
-Can be used to recursively merge objects and arrays, where values on the right-hand side will
-overwrite values on the left-hand based on the key or index respectively. Furthermore, if the 2nd
-argument is not provided, it will simply clone the base value.
-
-```ts
-import { deepMerge } from '@boost/common';
-
-const obj = deepMerge({ foo: 123, bar: 'abc' }, { foo: 456, baz: true });
-
-// -> { foo: 456, bar: 'abc', baz: true }
-```
-
-### `formatMs`
-
-> formatMs(time: number, options?: Options): string
-
-Can be used to format a UNIX timestamp in milliseconds into a shorthand human readable format. Wraps
-the [pretty-ms](https://www.npmjs.com/package/pretty-ms) package to handle infinite numbers, zeros,
-and more.
-
-```ts
-import { formatMs } from '@boost/common';
-
-formatMs(1337000000); // 15d 11h 23m 20s
-```
-
-### `instanceOf`
-
-> instanceOf(object: unknown, declaration: Constructor, loose?: boolean): boolean
-
-Performs a loose instance check by comparing class names up the prototype chain if `instanceof`
-initially fails. To disable this loose check, pass `false` as the 3rd argument.
-
-```ts
-import { instanceOf } from '@boost/common';
-
-if (instanceOf(error, Error)) {
-	console.log(error.stack);
-}
-```
-
-Generics can be used to type the object being checked. This will default to the declaration passed
-to the 2nd argument.
-
-```ts
-instanceOf<ParseError>(error, Error);
-```
-
-> Loose checks can be useful if multiple copies of the same class declaration exists in the module
-> tree. For example, multiple versions of the same package are imported.
-
-### `isEmpty`
-
-> isEmpty(value: unknown): boolean
-
-Returns `true` if an object has no properties, an array has no items, or the value is falsy,
-otherwise, it returns `false`.
-
-```ts
-import { isEmpty } from '@boost/common';
-
-isEmpty({}); // true
-isEmpty({ name: 'Boost' }); // false
-
-isEmpty([]); // true
-isEmpty(['Boost']); // false
-```
-
-### `isFilePath`
-
-> isFilePath(path: PortablePath): boolean
-
-Returns `true` if a string or `Path` instance looks like a file system path, by checking for
-absolute or relative path markers, or the existence of path separating slashes. Will return `false`
-for values that are only the file or folder name.
-
-```ts
-import { isFilePath } from '@boost/common';
-
-isFilePath('./path/to/file.ts'); // true
-isFilePath(new Path('/path/to/folder')); // true
-isFilePath('file.ts'); // false
-```
-
-### `isModuleName`
-
-> isModuleName(name: ModuleName): boolean
-
-Returns `true` if a string is a valid Node module package name, according to the rules defined in
-[validate-npm-package-name](https://github.com/npm/validate-npm-package-name). Will `return` false
-for native builtin modules, like `fs`, and for the old name format.
-
-```ts
-import { isModuleName } from '@boost/common';
-
-isModuleName('boost'); // true
-isModuleName('@boost/common'); // true
-isModuleName('fs'); // false
-```
-
-### `isObject`
-
-> isObject<T\>(value: unknown): value is T
-
-Returns `true` if the value is an object.
-
-```ts
-import { isObject } from '@boost/common';
-
-isObject({}); // true
-isObject(new Foo()); // true
-isObject([]); // false
-```
-
-Generics can be used to type the return value of the object (when necessary).
-
-```ts
-interface Person {
-	name: string;
-}
-
-if (isObject<Person>(person)) {
-	console.log(person.name);
-}
-```
-
-### `isPlainObject`
-
-> isPlainObject<T\>(value: unknown, loose?: boolean): value is T
-
-Like `isObject` but only returns true if the value is a plain object (no class instances, built-ins,
-etc). It achieves this by comparing the value's prototype to the built-in `Object` types. If you
-need to run these checks for cross-realm objects, pass true to the `loose` argument.
-
-```ts
-import { isPlainObject } from '@boost/common';
-
-isPlainObject({}); // true
-isPlainObject(new Foo()); // false
-isPlainObject([]); // false
-```
-
-### `parseFile`
-
-> parseFile<T\>(path: string): T
-
-Can be used to *sync*hronously parse and return an object for the following file types & extensions:
-`js`, `ts`, `tsx`, `json`, `json5`, `yaml`, `yml`. The function requires an absolute file path, and
-any unsupported file type will throw an error.
-
-```ts
-import { parseFile } from '@boost/common';
-
-const data: ReturnShape = parseFile('/absolute/file/path');
-```
-
-> TypeScript files require the `typescript` package to be installed.
-
-### `requireModule`
-
-> requireModule<T\>(path: string): T
-
-Works in a similar fashion to the native NodeJS `require()`, but also handles files built with Babel
-or TypeScript by properly returning the `default` export if an "ES module", and also allowing the
-expected type to be defined.
-
-```ts
-import { requireModule } from '@boost/common';
-
-const result: ReturnShape = requireModule('../../some/module');
-```
-
-There are some caveats to be aware of in regards to default and named exports in the file being
-required, they are:
-
-- When only a default export, the exported value is returned directly instead of on an object with a
-  `default` property.
-- When only named exports, the returned value is an object with all the named exports as properties
-  on the object.
-- When a default export and named exports together, the returned value is an object with a `default`
-  property, and an additional property for every named export. It's best to stay away from this
-  pattern.
-
-### `requireTypedModule`
-
-> requireTypedModule<T\>(path: string): T
-
-Like `requireModule` but for importing TypeScript files ending in `ts` or `tsx`. When imported, will
-transform the file using the `typescript` package (must be installed), evaluate the code in the
-current module context, and apply the same process to all child imports.
-
-```ts
-import { requireTypedModule } from '@boost/common';
-
-const result: ReturnShape = requireTypedModule('../../some/module.ts');
-```
-
-> This helper rarely needs to be used directly as `parseFile` and `requireModule` will call it under
-> the hood based on the file extension.
-
-### `toArray`
-
-> toArray<T\>(value?: T | T[]): T[]
-
-Converts a non-array to an array. If the provided value is falsy, an empty array is returned. If the
-provided value is truthy and a non-array, an array of 1 item is returned.
-
-```ts
-import { toArray } from '@boost/common';
-
-toArray(123); // [123]
-toArray('abc'); // ['abc']
-toArray(['a', 'b', 'c']); // ['a', 'b', 'c']
-```
-
-## Serializers
-
-### JSON
-
-Powered by the [JSON5](https://www.npmjs.com/package/json5) package, the `json` serializer can be
-used to parse and stringify JSON data.
+Powered by the [JSON5](https://www.npmjs.com/package/json5) package, the
+[`json`](/api/common/namespace/json) serializer can be used to parse and stringify JSON data.
 
 ```ts
 import { json } from '@boost/common';
@@ -306,10 +55,10 @@ json.parse(data);
 json.stringify(data);
 ```
 
-### YAML
+#### YAML
 
-Powered by the [YAML](https://www.npmjs.com/package/yaml) package, the `yaml` serializer can be used
-to parse and stringify YAML data.
+Powered by the [YAML](https://www.npmjs.com/package/yaml) package, the
+[`yaml`](/api/common/namespace/yaml) serializer can be used to parse and stringify YAML data.
 
 ```ts
 import { yaml } from '@boost/common';
@@ -317,3 +66,243 @@ import { yaml } from '@boost/common';
 yaml.parse(data);
 yaml.stringify(data);
 ```
+
+## Class contracts
+
+A [`Contract`][contract]is an abstract class that implements the
+[`Optionable`](/api/common/interface/Optionable) interface, which provides an options object layer,
+and is meant to be inherited from as a super class. All classes that extend [`Contract`][contract]
+accept an options object through the constructor, which is validated and built using
+[optimal](https://github.com/milesj/optimal).
+
+To start, extend [`Contract`][contract] with a generic interface that represents the shape of the
+options object. Next, implement the abstract
+[`Contract#blueprint()`](/api/common/class/Contract#blueprint) method, which is passed
+[optimal predicates](https://github.com/milesj/optimal/blob/master/docs/predicates.md) as an
+argument, and must return an
+[optimal blueprint](https://github.com/milesj/optimal/blob/master/docs/usage.md#blueprint) that
+matches the generic interface.
+
+```ts
+import { Contract, Blueprint, Predicates } from '@boost/common';
+
+export interface AdapterOptions {
+	name?: string;
+	priority?: number;
+}
+
+export default class Adapter extends Contract<AdapterOptions> {
+	blueprint({ number, string }: Predicates): Blueprint<AdapterOptions> {
+		return {
+			name: string().notEmpty(),
+			priority: number().gte(0),
+		};
+	}
+}
+```
+
+When the class is instantiated, the provided values will be checked and validated using the
+blueprint. If invalid, an error will be thrown. Furthermore, the
+[`Contract#options`](/api/common/class/Contract#options) property is `readonly`, and will error when
+mutated.
+
+```ts
+const adapter = new Adapter({
+	name: 'Boost',
+});
+
+const { name } = adapter.options; // => Boost
+```
+
+### Required options
+
+By default, the options argument in the constructor is optional, and if your interface has a
+required property, it will not be bubbled up in TypeScript. To support this, the constructor will
+need to be overridden so that the argument can be marked as non-optional.
+
+```ts
+export interface AdapterOptions {
+	name: string;
+	priority?: number;
+}
+
+export default class Adapter extends Contract<AdapterOptions> {
+	constructor(options: AdapterOptions) {
+		super(options);
+	}
+
+	// ...
+}
+```
+
+## Project management
+
+The [`Project`][project] class provides workspace and package metadata for a project. A project is
+denoted by a root `package.json` file and abides the npm and Node.js module pattern. To begin,
+import and instantiate the [`Project`][project] class with a path to the project's root.
+
+```ts
+import { Project } from '@boost/common';
+
+const project = new Project();
+```
+
+> Root defaults to `process.cwd()` if not provided.
+
+### Workspaces
+
+The primary feature of this class is to extract metadata about a project's workspaces. Workspaces
+are used to support multi-package architectures known as monorepos, typically through
+[Yarn](https://yarnpkg.com/features/workspaces), [PNPM](https://pnpm.js.org/en/pnpm-workspace_yaml),
+or [Lerna](https://github.com/lerna/lerna#lernajson). In Boost, our implementation of workspaces
+aligns with:
+
+- **Project** - Typically a repository with a root `package.json`. Can either be a collection of
+  packages, or a package itself.
+- **Package** - A folder with a `package.json` file that represents an npm package. Contains source
+  and test files specific to the package.
+- **Workspace** - A folder that houses one or many packages.
+
+### Package graph
+
+The [`PackageGraph`][packagegraph] class can be used to generate a dependency graph for a list of
+packages, based on their defined `dependencies` and `peerDependencies`. To begin, import and
+instantiate the class, which accepts a list of optional `package.json` objects as the 1st argument.
+
+```ts
+import { PackageGraph } from '@boost/common';
+
+const graph = new PackageGraph([
+	{
+		name: '@boost/common',
+		version: '1.2.3',
+	},
+	{
+		name: '@boost/cli',
+		version: '1.0.0',
+		dependencies: {
+			'@boost/common': '^1.0.0',
+		},
+	},
+]);
+```
+
+Once all packages have been defined, we can resolve our graph into 1 of 3 formats, using the
+following methods. [View the API for more information on these methods][packagegraph].
+
+```ts
+const batch = graph.resolveBatchList();
+const list = graph.resolveList();
+const tree = graph.resolveTree();
+```
+
+> Will only resolve and return packages that have been defined. Will _not_ return non-defined
+> packages found in `dependencies` and `peerDependencies`.
+
+## Path management
+
+The [`Path`][path] class is an immutable abstraction around file/module paths and the Node.js `fs`
+and `path` modules. It aims to solve cross platform and operating system related issues in a
+straight forward way. To begin, import and instantiate the [`Path`][path] class, with either a
+single path, or a list of path parts that will be joined.
+
+```ts
+import { Path } from '@boost/common';
+
+const absPath = new Path('/root/some/path');
+const relPath = new Path('some/path', '../move/around', 'again');
+```
+
+By default, the class operates on the defined path parts as-is. If you would prefer to operate
+against real or resolved paths, use the [`Path#realPath()`](/api/common/class/Path#realPath) and
+[`Path#resolve()`](/api/common/class/Path#resolve) methods respectively. The current path is
+[resolved against](https://nodejs.org/api/path.html#path_path_resolve_paths) the defined current
+working directory (`process.cwd()`).
+
+```ts
+path.path(); // Possibly inaccurate
+path.resolve().path(); // Resolved accurately
+```
+
+With that being said, the class supports many convenient methods.
+[View the API for a full list](/api/common/class/Path).
+
+### Static factories
+
+The static [`Path.create()`](/api/common/class/Path#create) and
+[`Path.resolve()`](/api/common/class/Path#resolve) methods can be used to factory a [`Path`][path]
+instance from a string or an existing instance. Especially useful when used in combination with the
+[`PortablePath`](/api/common#PortablePath) type.
+
+```ts
+Path.create('some/file/path'); // Path
+```
+
+### Resolving lookup paths
+
+The [`PathResolver`][pathresolver] class can be used to find a real path amongst a list of possible
+lookups. A lookup is either a file system path or a Node.js module. If a path is found, an absolute
+resolved [`Path`][path] instance is returned, otherwise an error is thrown.
+
+A perfect scenario for this mechanism would be finding a valid configuration file, which we'll
+demonstrate below. Import and instantiate the class to begin.
+
+```ts
+import { PathResolver } from '@boost/common';
+
+const resolver = new PathResolver();
+```
+
+To add a file system lookup, use the
+[`PathResolver#lookupFilePath()`](/api/common/class/PathResolver#lookupFilePath) method, which
+requires a path and an optional current working directory (defaults to `process.cwd()`).
+
+```ts
+// Look in current directory
+resolver
+	.lookupFilePath('tool.config.js')
+	.lookupFilePath('tool.config.json')
+	.lookupFilePath('tool.config.yaml');
+
+// Look in a folder
+resolver.lookupFilePath('configs/tool.js');
+
+// Look in user's home directory
+resolver.lookupFilePath('tool.config.js', os.homedir());
+```
+
+And to add a Node.js module lookup, use the
+[`PathResolver#lookupNodeModule()`](/api/common/class/PathResolver#lookupNodeModule) method, which
+accepts a module name or path.
+
+```ts
+// Look in module (assuming index export)
+resolver.lookupNodeModule('tool-config-module');
+
+// Look in module with sub-path
+resolver.lookupNodeModule('tool-config-module/lib/configs/tool.js');
+```
+
+Once all the lookup paths have been defined, the
+[`PathResolver#resolve()`](/api/common/class/PathResolver#resolve) method will iterate through them
+in order until one is found. If a file system path, `fs.existsSync()` will be used to check for
+existence, while `require.resolve()` will be used for Node.js modules. If found, a result object
+will be returned with the resolved [`Path`][path] and original lookup parts.
+
+```ts
+const { originalPath, resolvedPath, type } = resolver.resolve();
+```
+
+If you'd prefer to only have the resolved path returned, the
+[`PathResolver#resolvePath()`](/api/common/class/PathResolver#resolvePath) method can be used
+instead.
+
+```ts
+const resolvedPath = resolver.resolvePath();
+```
+
+[contract]: /api/common/class/Contract
+[packagegraph]: /api/common/class/PackageGraph
+[path]: /api/common/class/Path
+[pathresolver]: /api/common/class/PathResolver
+[project]: /api/common/class/Project

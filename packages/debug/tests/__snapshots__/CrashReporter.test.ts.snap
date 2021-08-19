@@ -47,7 +47,7 @@ BINARIES
 
 Node:
   0.0.0 - /node
-NPM:
+npm:
   0.0.0 - /npm
 Yarn:
   0.0.0 - /yarn

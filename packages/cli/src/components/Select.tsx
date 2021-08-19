@@ -21,7 +21,9 @@ export interface SelectOption<T> {
 }
 
 export interface SelectProps<T, V = T> extends PromptProps<T>, ScrollableListProps {
+	/** Option value selected by default. */
 	defaultSelected?: T;
+	/** List of options to choose from. Can either be a string, number, or object with a `label` and `value`. */
 	options: (SelectOptionLike<V> | V)[];
 }
 
@@ -46,16 +48,21 @@ export function normalizeOptions<T>(options: SelectProps<unknown>['options']): S
 	}) as SelectOption<T>[];
 }
 
-export function Select<T = string>({
-	defaultSelected,
-	limit,
-	onSubmit,
-	options: baseOptions,
-	overflowAfterLabel,
-	overflowBeforeLabel,
-	scrollType,
-	...props
-}: SelectProps<T>) {
+/**
+ * A React component that renders a select menu with options, where a single option can be seleted.
+ * Options can be navigated with arrow keys, selected with "space", and submitted with "enter".
+ */
+export function Select<T = string>(props: SelectProps<T>) {
+	const {
+		defaultSelected,
+		limit,
+		onSubmit,
+		options: baseOptions,
+		overflowAfterLabel,
+		overflowBeforeLabel,
+		scrollType,
+		...restProps
+	} = props;
 	const options = useMemo(() => normalizeOptions<T>(baseOptions), [baseOptions]);
 	const [selectedValue, setSelectedValue] = useState<T | null>(defaultSelected ?? null);
 	const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
@@ -110,7 +117,7 @@ export function Select<T = string>({
 
 	return (
 		<Prompt<T>
-			{...props}
+			{...restProps}
 			{...arrowKeyProps}
 			afterLabel={selectedValue !== null && <Selected value={selectedValue} />}
 			focused={isFocused}

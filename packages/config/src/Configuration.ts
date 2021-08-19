@@ -14,10 +14,22 @@ import {
 } from './types';
 
 export abstract class Configuration<T extends object> extends Contract<T> {
+	/**
+	 * Called after config files are loaded but before processed. Can modify config file list.
+	 * @category Events
+	 */
 	readonly onLoadedConfig = new WaterfallEvent<ConfigFile<T>[]>('loaded-config');
 
+	/**
+	 * Called after ignore files are loaded. Can modify ignore file list.
+	 * @category Events
+	 */
 	readonly onLoadedIgnore = new WaterfallEvent<IgnoreFile[]>('loaded-ignore');
 
+	/**
+	 * Called after config files are loaded and processed.
+	 * @category Events
+	 */
 	readonly onProcessedConfig = new Event<[Required<T>]>('processed-config');
 
 	private cache: Cache;
@@ -111,6 +123,7 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 	/**
 	 * Add a process handler to customize the processing of key-value setting pairs.
 	 * May only run a processor on settings found in the root of the configuration object.
+	 * @public
 	 */
 	protected addProcessHandler<K extends keyof T, V = T[K]>(key: K, handler: Handler<V>): this {
 		this.getProcessor().addHandler(key, handler);
@@ -119,12 +132,14 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 	}
 
 	/**
-	 * Called on initialization.
+	 * Life cycle called on initialization.
+	 * @public
 	 */
 	protected bootstrap() {}
 
 	/**
 	 * Configure the finder instance.
+	 * @public
 	 */
 	protected configureFinder(options: Omit<ConfigFinderOptions<T>, 'name'>): this {
 		this.getConfigFinder().configure(options);
@@ -134,6 +149,7 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 
 	/**
 	 * Configure the processor instance.
+	 * @public
 	 */
 	protected configureProcessor(options: Omit<ProcessorOptions, 'name'>): this {
 		this.getProcessor().configure(options);

@@ -11,6 +11,10 @@ function formatMetadata(metadata: LogMetadata): string {
 	return `(${items.join(', ')})`;
 }
 
+/**
+ * Format the item as if it's being logged to `console`.
+ * _Only_ inclues the label and message.
+ */
 export function console(item: LogItem): string {
 	let output = item.message;
 
@@ -21,6 +25,10 @@ export function console(item: LogItem): string {
 	return output;
 }
 
+/**
+ * Format the item into a human-readable message with all item fields included.
+ * This is the default format for most transports.
+ */
 export function debug(item: LogItem): string {
 	return `[${item.time.toISOString()}] ${item.level.toUpperCase()} ${item.message} ${formatMetadata(
 		{
@@ -32,10 +40,16 @@ export function debug(item: LogItem): string {
 	)}`;
 }
 
+/**
+ * Format the entire item into JSON.
+ */
 export function json(item: LogItem): string {
 	return JSON.stringify(item);
 }
 
+/**
+ * Format the item using _only_ the message.
+ */
 export function message(item: LogItem): string {
 	return item.message;
 }

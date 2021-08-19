@@ -8,9 +8,13 @@ import { Label } from './Label';
 export type KeyInput = Key;
 
 export interface PromptProps<T> {
+	/** Label to display before or above the prompt itself. */
 	label: NonNullable<React.ReactNode>;
+	/** Single character symbol to display before the label. Defaults to "?"". */
 	prefix?: string;
+	/** Callback triggered when the value is submitted. */
 	onSubmit: (value: T) => void;
+	/** Function to validate the value on submit. To trigger a failed state, thrown an `Error`. */
 	validate?: (value: T) => void;
 }
 

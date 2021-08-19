@@ -17,7 +17,7 @@ export abstract class SerialPipeline<
 	root: SerialPipeline<Options, Ctx, any> = this;
 
 	// Empty blueprint so that sub-classes may type correctly
-	blueprint(preds: Predicates): Blueprint<object> {
+	blueprint(predicates: Predicates): Blueprint<object> {
 		return {};
 	}
 

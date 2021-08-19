@@ -7,12 +7,18 @@ import {
 	PluginsSetting,
 } from './types';
 
+/**
+ * Create an `optimal` predicate for validating the structure of an "extends" setting.
+ */
 export function createExtendsPredicate(preds: Predicates = predicates) {
 	const { array, string, union } = preds;
 
 	return union<ExtendsSetting>([string().notEmpty(), array(string().notEmpty())], []).notNullable();
 }
 
+/**
+ * Create an `optimal` predicate for validating the structure of a "plugins" setting.
+ */
 export function createPluginsPredicate(preds: Predicates = predicates) {
 	const { array, bool, object, string, tuple, union } = preds;
 	const pluginOptions = union<PluginOptions>([bool(), object()], {});
@@ -25,6 +31,9 @@ export function createPluginsPredicate(preds: Predicates = predicates) {
 	);
 }
 
+/**
+ * Create an `optimal` predicate for validating the structure of an "overrides" setting.
+ */
 export function createOverridesPredicate<T extends object>(
 	blueprint: Blueprint<T>,
 	preds: Predicates = predicates,

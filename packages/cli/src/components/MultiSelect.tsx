@@ -11,21 +11,28 @@ import { Selected } from './internal/Selected';
 import { normalizeOptions, SelectOption, SelectProps } from './Select';
 
 export interface MultiSelectProps<T> extends SelectProps<T[], T> {
+	/** List of option values selected by default. */
 	defaultSelected?: T[];
+	/** Callback triggered when a value is selected or unselected. */
 	onChange?: (values: T[]) => void;
 }
 
-export function MultiSelect<T>({
-	defaultSelected,
-	limit,
-	onChange,
-	onSubmit,
-	overflowAfterLabel,
-	overflowBeforeLabel,
-	options: baseOptions,
-	scrollType,
-	...props
-}: MultiSelectProps<T>) {
+/**
+ * A React component that renders a select menu with options, where multiple options can be seleted.
+ * Options can be navigated with arrow keys, selected with "space", and submitted with "enter".
+ */
+export function MultiSelect<T>(props: MultiSelectProps<T>) {
+	const {
+		defaultSelected,
+		limit,
+		onChange,
+		onSubmit,
+		overflowAfterLabel,
+		overflowBeforeLabel,
+		options: baseOptions,
+		scrollType,
+		...restProps
+	} = props;
 	const options = useMemo(() => normalizeOptions<T>(baseOptions), [baseOptions]);
 	const [selectedValues, setSelectedValues] = useState(new Set(toArray(defaultSelected)));
 	const { highlightedIndex, ...arrowKeyProps } = useListNavigation(options);
@@ -80,7 +87,7 @@ export function MultiSelect<T>({
 
 	return (
 		<Prompt<T[]>
-			{...props}
+			{...restProps}
 			{...arrowKeyProps}
 			afterLabel={selectedList.length > 0 && <Selected value={selectedList} />}
 			focused={isFocused}

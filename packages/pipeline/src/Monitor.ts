@@ -5,20 +5,52 @@ import { Routine } from './Routine';
 import { AnyPipeline, AnyWorkUnit } from './types';
 
 export class Monitor {
+	/**
+	 * Called after a pipeline class has ran.
+	 * @category Events
+	 */
 	readonly onPipelineAfterRun = new Event<[AnyPipeline]>('after-run');
 
+	/**
+	 * Called before a pipeline class is ran.
+	 * @category Events
+	 */
 	readonly onPipelineBeforeRun = new Event<[AnyPipeline, unknown]>('before-run');
 
+	/**
+	 * Called before a pipeline's work unit is executed.
+	 * @category Events
+	 */
 	readonly onPipelineRunWorkUnit = new Event<[AnyPipeline, AnyWorkUnit, unknown]>('run-work-unit');
 
+	/**
+	 * Called when any work unit has failed.
+	 * @category Events
+	 */
 	readonly onWorkUnitFail = new Event<[AnyWorkUnit, Error | null]>('fail');
 
+	/**
+	 * Called when any work unit has passed.
+	 * @category Events
+	 */
 	readonly onWorkUnitPass = new Event<[AnyWorkUnit, unknown]>('pass');
 
+	/**
+	 * Called when any work unit is ran.
+	 * @category Events
+	 */
 	readonly onWorkUnitRun = new BailEvent<[AnyWorkUnit, unknown]>('run');
 
+	/**
+	 * Called when any work unit is skipped.
+	 * @category Events
+	 */
 	readonly onWorkUnitSkip = new Event<[AnyWorkUnit, unknown]>('skip');
 
+	/**
+	 * Monitor events for the provided pipeline, its work units, and all other
+	 * pipelines and work units down the hierarchical tree.
+	 */
 	monitor(pipeline: AnyPipeline): this {
 		pipeline.onAfterRun.listen(() => {
 			this.onPipelineAfterRun.emit([pipeline]);

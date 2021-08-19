@@ -23,6 +23,9 @@ function pipeLog(logger: Logger, level?: LogLevel) {
 	};
 }
 
+/**
+ * Create and return a logger with any configured transports.
+ */
 export function createLogger(options: LoggerOptions): LoggerFunction {
 	const logger = new Logger(options);
 	const log = pipeLog(logger);

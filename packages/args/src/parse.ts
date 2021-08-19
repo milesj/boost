@@ -52,6 +52,10 @@ import {
 // Arity count - Required number of argument values to consume for multiples.
 // Choices - List of valid values to choose from. Errors otherwise.
 
+/**
+ * Parse a list of command line arguments (typically from `process.argv`) into an arguments
+ * object. Will extract commands, options, flags, and params based on the defined parser options.
+ */
 export function parse<O extends object = {}, P extends PrimitiveType[] = ArgList>(
 	argv: Argv,
 	parserOptions: ParserOptions<O, P>,

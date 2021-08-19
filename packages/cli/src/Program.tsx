@@ -52,20 +52,52 @@ import {
 } from './types';
 
 export class Program extends CommandManager<ProgramOptions> {
+	/**
+	 * Called after a component has rendered.
+	 * @category Events
+	 */
 	readonly onAfterRender = new Event('after-render');
 
+	/**
+	 * Called after the program and command have been ran.
+	 * @category Events
+	 */
 	readonly onAfterRun = new Event<[Error?]>('after-run');
 
+	/**
+	 * Called after a command has run but before a component will render.
+	 * @category Events
+	 */
 	readonly onBeforeRender = new Event<[RunResult]>('before-render');
 
+	/**
+	 * Called before the program and command will run.
+	 * @category Events
+	 */
 	readonly onBeforeRun = new Event<[Argv]>('before-run');
 
+	/**
+	 * Called when a command has been found after parsing argv.
+	 * @category Events
+	 */
 	readonly onCommandFound = new Event<[Argv, CommandPath, Commandable]>('command-found');
 
+	/**
+	 * Called when a command wasn't found after parsing argv.
+	 * @category Events
+	 */
 	readonly onCommandNotFound = new Event<[Argv, CommandPath]>('command-not-found');
 
+	/**
+	 * Called when the exit() handler is executed but before the process exits.
+	 * @category Events
+	 */
 	readonly onExit = new Event<[string, ExitCode]>('exit');
 
+	/**
+	 * Called when the help menu is rendered.
+	 * @category Events
+	 */
 	readonly onHelp = new Event<[CommandPath?]>('help');
 
 	readonly streams: ProgramStreams = {
@@ -125,7 +157,9 @@ export class Program extends CommandManager<ProgramOptions> {
 		this.onBeforeRegister.listen(this.handleBeforeRegister);
 	}
 
-	blueprint({ string }: Predicates): Blueprint<ProgramOptions> {
+	blueprint(predicates: Predicates): Blueprint<ProgramOptions> {
+		const { string } = predicates;
+
 		return {
 			banner: string(),
 			bin: string().notEmpty().required().kebabCase(),
@@ -288,11 +322,11 @@ export class Program extends CommandManager<ProgramOptions> {
 
 	/**
 	 * Run the program in the following steps:
-	 *  - Apply middleware to argv list.
-	 *  - Parse argv into an args object (of options, params, etc).
-	 *  - Determine command to run, or fail.
-	 *  - Run command and render output.
-	 *  - Return exit code.
+	 * - Apply middleware to argv list.
+	 * - Parse argv into an args object (of options, params, etc).
+	 * - Determine command to run, or fail.
+	 * - Run command and render output.
+	 * - Return exit code.
 	 */
 	async run(argv: Argv, bootstrap?: ProgramBootstrap, rethrow: boolean = false): Promise<ExitCode> {
 		this.onBeforeRun.emit([argv]);

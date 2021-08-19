@@ -8,15 +8,12 @@ export interface IndexHelpProps extends ProgramOptions {
 	children?: React.ReactNode;
 }
 
-export function IndexHelp({
-	banner,
-	bin,
-	children,
-	footer,
-	header,
-	name,
-	version,
-}: IndexHelpProps) {
+/**
+ * A React component that renders a help menu for the entire program.
+ */
+export function IndexHelp(props: IndexHelpProps) {
+	const { banner, bin, children, footer, header, name, version } = props;
+
 	return (
 		<Box flexDirection="column" marginBottom={1}>
 			{!!banner && (

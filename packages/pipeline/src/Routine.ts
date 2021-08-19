@@ -30,10 +30,16 @@ export abstract class Routine<
 
 	readonly key: string;
 
-	// Emits before the command is ran
+	/**
+	 * Called after `execa` was executed.
+	 * @category Events
+	 */
 	readonly onCommand = new Event<[string, string[]]>('command');
 
-	// Emits on each line chunk of the running command
+	/**
+	 * Called while a command is being executed.
+	 * @category Events
+	 */
 	readonly onCommandData = new Event<[string, string]>('command-data');
 
 	protected monitorInstance: Monitor | null = null;

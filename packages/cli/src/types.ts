@@ -73,12 +73,19 @@ export type ExitCode = number;
 export type ExitHandler = (error?: Error | string, code?: ExitCode) => void;
 
 export interface ProgramOptions {
+	/** A large banner to appear at the top of the index help interface. */
 	banner?: string;
+	/** The name of the binary consumers enter on the command line. Must be in kebab-case. */
 	bin: string;
+	/** The character(s) displayed before command line usage examples. */
 	delimiter?: string;
+	/** A string of text to display at the bottom of the index help interface. */
 	footer?: string;
+	/** A string of text to display at the top of the index help interface, below the banner (if present). */
 	header?: string;
+	/** A human readable name for your program. */
 	name: string;
+	/** Current version of your CLI program. Typically the version found in your `package.json`. This is output when `--version` is passed. */
 	version: string;
 }
 
@@ -103,12 +110,17 @@ export type RunResult = React.ReactElement | string | undefined | void;
 export type CommandPath = string;
 
 export interface CommandConfig extends BaseCommandConfig {
+	/** A list of aliased paths. Will not show up in the help menu, but will match on the command line. */
 	aliases?: string[];
+	/** Allow unknown options to be parsed, otherwise an error is thrown. Defaults to `false`. */
 	allowUnknownOptions?: boolean;
+	/** Allow variadic params to be parsed, otherwise an error is thrown. Defaults to `false`. */
 	allowVariadicParams?: boolean | string;
+	/** A mapping of sub-command and option categories for this command only. Global options are automatically defined under the `global` category. */
 	categories?: Categories;
 	options?: OptionConfigMap;
 	params?: ParamConfigList;
+	/** A unique name in which to match the command on the command line amongst a list of arguments (argv). */
 	path?: CommandPath; // Canonical name used on the command line
 }
 

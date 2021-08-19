@@ -12,8 +12,8 @@ export class ConsoleTransport extends Transport<TransportOptions> {
 		});
 	}
 
-	write(message: string, { level }: LogItem) {
+	write(message: string, item: LogItem) {
 		// eslint-disable-next-line no-console
-		console[level](message.trim());
+		console[item.level](message.trim());
 	}
 }

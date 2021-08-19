@@ -13,6 +13,12 @@ function convertListToMap(list: PluginsSettingList): PluginsSettingMap {
 	}, {});
 }
 
+/**
+ * Merges previous and next plugin configurations into an object.
+ * Plugin configs can either be a list of sources, or list of sources
+ * with flags/options (tuples), or a map of sources to flags/options.
+ * This is useful if utilizing the `@boost/plugin` package.
+ */
 export function mergePlugins(prev: PluginsSetting, next: PluginsSetting): PluginsSettingMap {
 	const plugins = Array.isArray(prev) ? convertListToMap(prev) : { ...prev };
 

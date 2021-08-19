@@ -7,7 +7,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges tooling />
+<EnvBadges tooling api="/api/cli" />
 
 A type-safe and interactive command line program, powered by [React][react] and [Ink][ink]. We also
 encourage the [Command Line Interface Guidelines](https://clig.dev) for building better programs.
@@ -17,8 +17,8 @@ with clear separation of commands, middleware, args, a program instance, and mor
 streamlines the development process by utilizing [Ink][ink] for terminal rendering, as manually
 handling ANSI escape sequences and terminal widths can be tedious and complicated.
 
-> The CLI makes heavy usage of the [args](./args.mdx) package, which will be continually referenced
-> throughout this documentation. It's encouraged to read and understand it first.
+> The CLI makes heavy usage of the [@boost/args](./args.mdx) package, which will be continually
+> referenced throughout this documentation. It's encouraged to read and understand it first.
 
 ## Installation
 
@@ -27,7 +27,7 @@ handling ANSI escape sequences and terminal widths can be tedious and complicate
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
-    { label: 'NPM', value: 'npm' },
+    { label: 'npm', value: 'npm' },
   ]}
 >
   <TabItem value="yarn">
@@ -51,42 +51,16 @@ npm install @boost/cli react ink
 - `BOOSTJS_CLI_THEME` (`string`) - Name of the theme module (without `@boost` or `boost` prefixes)
   to load for terminal style/color changes.
 
-## Events
-
-| Event                                                  | Arguments                                            | Description                                                                |
-| ------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------------------------------------- |
-| `Command#onAfterRegister`, `Program#onAfterRegister`   | `path: CommandPath, command: Commadable`             | Called after a command has been registered.                                |
-| `Command#onBeforeRegister`, `Program#onBeforeRegister` | `path: CommandPath, command: Commadable`             | Called before a command has been registered.                               |
-| `Program#onAfterRender`                                |                                                      | Called after a component has rendered.                                     |
-| `Program#onAfterRun`                                   | `error?: Error`                                      | Called after the program and command have been ran.                        |
-| `Program#onBeforeRender`                               | `result: RunResult`                                  | Called after a command has run but before a component will render.         |
-| `Program#onBeforeRun`                                  | `argv: Argv`                                         | Called before the program and command will run.                            |
-| `Program#onCommandFound`                               | `argv: Argv, path: CommandPath, command: Commadable` | Called when a command has been found after parsing argv.                   |
-| `Program#onCommandNotFound`                            | `argv: Argv, path: CommandPath`                      | Called when a command wasn't found after parsing argv.                     |
-| `Program#onExit`                                       | `message: string, code: number`                      | Called when the `exit()` handler is executed but before the process exits. |
-| `Program#onHelp`                                       | `CommandPath?`                                       | Called when the help menu is rendered.                                     |
-
 ## Program
 
 The entry point of the command line is commonly referred to as the binary, or script, and is managed
-by the `Program` class. This class handles the registration of commands, applying
-[middleware](#middleware) to argv (`process.argv`), parsing argv into [arguments](./args.mdx)
-(options, flags, etc), running the found command with these argument, outputing to the terminal, and
-finally cleaning up or handling failures.
+by the [`Program`](/api/cli/class/Program) class. This class handles the registration of commands,
+applying [middleware](#middleware) to argv (`process.argv`), parsing argv into
+[arguments](./args.mdx) (options, flags, etc), running the found command with these argument,
+outputing to the terminal, and finally cleaning up or handling failures.
 
 Begin by importing and instantiating the `Program` class, while passing required and optional
-options.
-
-- `banner` (`string`) - A large banner to appear at the top of the index help interface.
-- `bin` (`string`) - The name of the binary consumers enter on the command line. Must be in
-  kebab-case. _(Required)_
-- `delimiter` (`string`) - The character(s) displayed before command line usage examples.
-- `footer` (`string`) - A string of text to display at the bottom of the index help interface.
-- `header` (`string`) - A string of text to display at the top of the index help interface, below
-  the banner (if present).
-- `name` (`string`) - A human readable name for your program. _(Required)_
-- `version` (`string`) - Current version of your CLI program. Typically the version found in your
-  `package.json`. This is output when `--version` is passed. _(Required)_
+[`ProgramOptions`](/api/cli/interface/ProgramOptions).
 
 ```ts
 import { Program } from '@boost/cli';
@@ -103,7 +77,8 @@ const program = new Program({
 ![Program example](/img/cli/program.png)
 
 Once [commands](#commands) and optional [middleware](#middleware) have been registered, you must run
-the program with `Program#run()` or `Program#runAndExit()`, with the latter automatically passing
+the program with [`Program#run()`](/api/cli/class/Program#run) or
+[`Program#runAndExit()`](/api/cli/class/Program#runAndExit), with the latter automatically passing
 the exit code to `process.exitCode`. Both methods require an argv list to run.
 
 ```ts
@@ -153,7 +128,8 @@ program. This implementation only supports 1 [command](#commands) known as the d
 which is immediately ran when the binary is. It does not support sub-commands.
 
 To create a stand-alone binary, create and instantiate a command, then pass it to
-`Command#default()`. The command's `path` is ignored for this situation.
+[`Program#default()`](/api/cli/class/Program#default). The command's `path` is ignored for this
+situation.
 
 ```ts
 import { Program } from '@boost/cli';
@@ -176,8 +152,8 @@ the default command. Otherwise, if arguments _are_ passed, a registered command 
 matching path name.
 
 To create a multi-command binary, create and instantiate multiple commands, and pass them all to
-`Command#register()`. In the example below, the `boost` binary would support the `boost install`,
-`boost uninstall`, and `boost build` commands.
+[`Program#register()`](/api/cli/class/Program#register). In the example below, the `boost` binary
+would support the `boost install`, `boost uninstall`, and `boost build` commands.
 
 ```ts
 import { Program } from '@boost/cli';
@@ -202,7 +178,8 @@ program
 
 Boost will parse provided argv (a list of string arguments, typically from `process.argv`) into
 [args][args] (an object of options, flags, params, etc) for easier consumption. This process can be
-intercepted with `Program#middleware()`, which allows both argv and args to be read and mutated.
+intercepted with [`Program#middleware()`](/api/cli/class/Program#middleware), which allows both argv
+and args to be read and mutated.
 
 Middleware is a function, that receives the argv list as the 1st argument, and a parse callback as
 the 2nd argument. It _must_ return an args object, which can be built by executing the parse
@@ -243,13 +220,9 @@ own async functionality, like file system access, or network requests.
 
 #### Built-in
 
-Boost provides the following built-in middleware for common scenarios.
-
-- `checkNodeRequirement` - Verify that the currently running Node.js `process.version` satisfies the
-  given semver range. If not, a console error will be logged, or an error will be thrown.
-- `checkPackageOutdated` - Verify that a package and its provided version is using the latest
-  distribution version by checking against the NPM registry. If not, a console message will be
-  logged.
+Boost provides the following built-in middleware for common scenarios:
+[`checkNodeRequirement`](/api/cli/function/checkNodeRequirement) and
+[`checkPackageOutdated`](/api/cli/function/checkPackageOutdated).
 
 ```ts
 import { checkNodeRequirement, checkPackageOutdated } from '@boost/cli';
@@ -267,7 +240,8 @@ program
 
 Commands are self-encapsulated pieces of business logic that are ran when a matching path (a unique
 argument) is found on the command line. To create a command, import and extend the abstract
-`Command` class, and implement a `run()` method. This method can be async and even render
+[`Command`](/api/cli/class/Command) class, and implement a
+[`Command#run()`](/api/cli/class/Command#run) method. This method can be async and even render
 [React components](#rendering-components)!
 
 ```ts
@@ -290,33 +264,12 @@ static class properties. Both variants will be demonstrated in the examples belo
 
 ### Config
 
-All commands support the following metadata configuration, with `path` and `description` being
-mandatory.
+All commands support the metadata configuration defined in
+[`CommandConfig`](/api/cli/interface/CommandConfig), with `path` and `description` being mandatory.
 
-- `aliases` (`string[]`) - A list of aliased paths. Will not show up in the help menu, but will
-  match on the command line.
-- `allowUnknownOptions` (`boolean`) - Allow [unknown options](./args.mdx#unknown-options) to be
-  parsed, otherwise an error is thrown. Defaults to `false`.
-- `allowVariadicParams` (`boolean`) - Allow [variadic params](./args.mdx#variadic-params) to be
-  parsed, otherwise an error is thrown. Defaults to `false`.
-- `categories` (`object`) - A mapping of sub-command and option [categories](#categories) for this
-  command only. [Global options](#global-options) are automatically defined under the `global`
-  category.
-- `category` (`string`) - The category this command belongs to. Will be used to group in the parent
-  command or program. Defaults to no category.
-- `deprecated` (`boolean`) - Whether the command is deprecated or not. Will display a tag in the
-  help menu. Defaults to `false`.
-- `description` (`string`) - A description of what the command is and does. Supports basic markdown
-  for bold, italics, and underline. _(Required)_
-- `hidden` (`boolean`) - Whether the command should be hidden from the help menu or not. Will still
-  match on the command line. Defaults to `false`.
-- `path` (`string`) - A unique name in which to match the command on the command line amongst a list
-  of arguments (argv). _(Required)_
-- `usage` (`string | string[]`) - Define one or many usage examples to display in the help menu.
-
-When using decorators, import the `Config` decorator and apply it to the `Command` class. The path
-and description are required, while all other metadata can be passed as an object. Otherwise, just
-define static class properties of the same name!
+When using decorators, import the [`Config`](/api/cli/function/Config) decorator and apply it to the
+`Command` class. The path and description are required, while all other metadata can be passed as an
+object. Otherwise, just define static class properties of the same name!
 
 <Tabs
   groupId="command-format"
@@ -365,19 +318,21 @@ export default class BuildCommand extends Command {
 [Options](./args.mdx#options) are optional arguments that accept a value on the command line. When a
 command is ran, each option is set as a class property based on the matching command line value, or
 the provided default value. Like configuration above, options can be defined declaratively or
-imperatively, with option types being passed to the 1st `Command` generic slot.
+imperatively, with option types being passed to the 1st [`Command`](/api/cli/class/Command) generic
+slot.
 
-_Declarative_: There are 5 `Arg` decorators to choose from when defining options, all of which are
-defined on a class property, where the property name becomes the option name. For example, a
-property of `save` would become the `--save` option. Depending on the decorator, they support many
-[option settings](./args.mdx#options), excluding `type` and `description`, which are inferred, and
-`default` which comes from the property value.
+_Declarative_: There are 5 [`Arg`](/api/cli/namespace/Arg) decorators to choose from when defining
+options, all of which are defined on a class property, where the property name becomes the option
+name. For example, a property of `save` would become the `--save` option. Depending on the
+decorator, they support many [option settings](./args.mdx#options), excluding `type` and
+`description`, which are inferred, and `default` which comes from the property value.
 
 _Imperative_: If you prefer to use static properties, all options are defined through the single
 static `options` property, which requires a mapping of option names to
 [option settings](./args.mdx#options). With this approach, `type` and `description` are required,
 with `default` either being configured with a setting, or coming from the class property value. For
-easier type safety, the `Options` collection type can be used to type the static property.
+easier type safety, the [`Options`](/api/cli#Options) collection type can be used to type the static
+property.
 
 <Tabs
   groupId="command-format"
@@ -498,7 +453,8 @@ export default class CustomCommand extends Command<CustomOptions> {
 
 By default, unknown options are not allowed and will throw an error. To allow, set the
 `allowUnknownOptions` [configuration setting](#config) to true. When enabled, all unknown options
-will be set as a string object to the `Command#unknown` class property.
+will be set as a string object to the [`Command#unknown`](/api/cli/class/Command#unknown) class
+property.
 
 <Tabs
   groupId="command-format"
@@ -565,13 +521,14 @@ Boost provides the follow options that are always available to all commands.
 arguments. When defining params, all [param settings](./args.mdx#params) are supported, and required
 are mandatory. Param types are passed to the 2nd `Command` generic slot.
 
-_Declarative_: When using decorators, the `Arg.Params` decorator must be defined on the
-`Command#run()` method. It accepts an argument for each param you want to configure, in the order
-they should be expected.
+_Declarative_: When using decorators, the [`Arg.Params`](/api/cli/namespace/Arg#Params) decorator
+must be defined on the [`Command#run()`](/api/cli/class/Command#run) method. It accepts an argument
+for each param you want to configure, in the order they should be expected.
 
 _Imperative_: If you prefer to use static properties, all params are defined through the single
-static `params` property, which requires an array of [param settings](./args.mdx#params). For easier
-type safety, the `Params` collection type can be used to type the static property.
+static [`params`](/api/cli/class/Command#params) property, which requires an array of
+[param settings](./args.mdx#params). For easier type safety, the [`Params`](/api/cli#Params)
+collection type can be used to type the static property.
 
 <Tabs
   groupId="command-format"
@@ -658,7 +615,8 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 
 By default, variadic params are not enabled and will throw an error when an unconfigured param is
 found. To allow, set the `allowVariadicParams` [configuration setting](#config) to true. When
-enabled, all extra params will spread onto the end of the `Command#run()` method as strings.
+enabled, all extra params will spread onto the end of the
+[`Command#run()`](/api/cli/class/Command#run) method as strings.
 
 Using the example above, it would look like the following.
 
@@ -721,7 +679,8 @@ export default class CustomCommand extends Command<GlobalOptions, CustomParams> 
 ### Rest args
 
 [Rest arguments](./args.mdx#rest-args) are all arguments that come after a standalone `--`
-delimiter, and can be accessed using the `Command#rest` property, which is an array of strings.
+delimiter, and can be accessed using the [`Command#rest`](/api/cli/class/Command#rest) property,
+which is an array of strings.
 
 ### Sub-commands
 
@@ -765,7 +724,8 @@ it's highly encouraged to study those topics, but building CLIs with React is no
 requirement as you can use [logging](#logging) instead.
 
 With that being said, components can be rendered from a command by returning a React element from
-`Command#run()`, or by calling the `Command#render()` method. For a quick demonstration, let's
+[`Command#run()`](/api/cli/class/Command#run), or by calling the
+[`Command#render()`](/api/cli/class/Command#render) method. For a quick demonstration, let's
 implement a component that writes to a file asynchronously.
 
 > Components and hooks provided by Boost can be imported from `@boost/cli/react`!
@@ -838,15 +798,17 @@ export default class ConfigCommand extends Command {
 }
 ```
 
-Using the `render()` method allows for multiple and or different components to be rendered within
-the same run cycle. Returning a component will only use 1. However, both can be used together!
+Using the [`Command#render()`](/api/cli/class/Command#render) method allows for multiple and or
+different components to be rendered within the same run cycle. Returning a component will only
+use 1. However, both can be used together!
 
 ### Shorthand registration
 
 Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
 commands, where only objects and functions are used. To utilize shorthand commands, call either the
-`Program#register()` or `Command#register()` methods, with a unique path, settings object (config,
-options, params, etc)), and run function.
+[`Program#register()`](/api/cli/class/Program#register) or
+[`Command#register()`](/api/cli/class/Command#register) methods, with a unique path, settings object
+(config, options, params, etc), and run function.
 
 ```ts
 import { Program, TaskContext } from '@boost/cli';
@@ -912,8 +874,9 @@ export default async function writeJson(
 }
 ```
 
-Now that are task is created, we can now execute it within a command using `Command#runTask()`. This
-method requires the task as a function reference, and all it's required arguments.
+Now that are task is created, we can now execute it within a command using
+[`Command#runTask()`](/api/cli/class/Command#runTask). This method requires the task as a function
+reference, and all it's required arguments.
 
 ```ts
 import { Command, Config, Arg } from '@boost/cli';
@@ -938,9 +901,9 @@ export default class InitCommand extends Command {
 
 Categories are a mechanism for grouping commands and options in the help menu for easier
 readability. They're shared between both commands and options for interoperability purposes, and can
-be defined globally with `Program#categories()`, or per command through
-[`categories` configuration](#config). To make use of categories, define a mapping of keys to
-category names and optional weights, like so.
+be defined globally with [`Program#categories()`](/api/cli/class/Program#categories), or per command
+through [`categories` configuration](#config). To make use of categories, define a mapping of keys
+to category names and optional weights, like so.
 
 ```ts
 program.categories({
@@ -1078,7 +1041,8 @@ export default class BuildCommand extends Command<BuildOptions> {
 ## Logging
 
 Boost integrates its very own [logger](./log.mdx) so that logs can easily be sent to the configured
-`stdout` and `stderr`. The logger is accessible using `Command#log()` and associated methods.
+`stdout` and `stderr`. The logger is accessible using [`Command#log()`](/api/cli/class/Command#log)
+and associated methods.
 
 ```ts
 import { Command } from '@boost/cli';
@@ -1093,7 +1057,8 @@ class CustomCommand extends Command {
 }
 ```
 
-The logger is also accessible within a component by using the `useProgram()` hook, like so.
+The logger is also accessible within a component by using the
+[`useProgram()`](/api/cli/function/useProgram) hook, like so.
 
 ```tsx
 import React, { useContext } from 'react';
@@ -1118,7 +1083,7 @@ function CustomComponent() {
 ## Themes
 
 Themes allow consumers to alter the color of text and backgrounds for elements rendered with the
-`Style` component. Themes are simply NPM modules that return an object of hexcodes or ANSI colors,
+`Style` component. Themes are simply npm modules that return an object of hexcodes or ANSI colors,
 and can be enabled by defining the `BOOSTJS_CLI_THEME` environment variable.
 
 ```bash
@@ -1127,6 +1092,11 @@ BOOSTJS_CLI_THEME=nyan <program>
 
 When defining a theme, we'll attempt to load from `@boost/theme-<name>` or `boost-theme-<name>`,
 otherwise we throw an error. Third-party modules are currently not supported.
+
+## Test utilities
+
+A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
+`@boost/cli/test` module. [View the API for a full list](/api/cli-test).
 
 [args]: https://www.npmjs.com/package/@boost/args
 [ink]: https://github.com/vadimdemedes/ink

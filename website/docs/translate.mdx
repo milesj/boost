@@ -6,7 +6,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges backend tooling />
+<EnvBadges backend tooling api="/api/translate" />
 
 Package and application level translations made easy.
 
@@ -17,7 +17,7 @@ Package and application level translations made easy.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
-    { label: 'NPM', value: 'npm' },
+    { label: 'npm', value: 'npm' },
   ]}
 >
   <TabItem value="yarn">
@@ -50,10 +50,10 @@ features found in i18next.
 The translator is _designed for Node.js_, primarily for package level translations, command line
 scripts, developer tools, and even applications, but _not_ for the web or the browser.
 
-To begin, instantiate a translator with `createTranslator` with a list of [namespaces](#namespaces)
-to load, a list of [resource paths](#resources) to locate bundles in, and an optional
-[options](#options) object. This returns a function that can be used for loading and retrieving
-translations.
+To begin, instantiate a translator with [`createTranslator`][createtranslator] with a list of
+[namespaces](#namespaces) to load, a list of [resource paths](#resources) to locate bundles in, and
+an optional [`TranslatorOptions`](/api/translate/interface/TranslatorOptions) object. This returns a
+function that can be used for loading and retrieving translations.
 
 ```ts
 import { createTranslator } from '@boost/translate';
@@ -66,7 +66,7 @@ const msg = createTranslator(['common', 'errors'], '../path/to/resources');
 The returned translator function, aptly named `msg` above, should be used anywhere that a message
 string should be translated. It accepts [translation key(s)](#translations) as the 1st argument, an
 optional object for interpolation as the 2nd argument, and an optional
-[options object](#message-options) as the 3rd argument.
+[`MessageOptions`](/api/translate/interface/MessageOptions) object as the 3rd argument.
 
 ```ts
 msg('common:welcome', { name: 'Boost' }); // Hello Boost!
@@ -74,37 +74,6 @@ msg('common:welcome', { name: 'Boost' }); // Hello Boost!
 
 > Once the translator has been created, associated [resource files](#resources) must also be
 > created.
-
-### Options
-
-The following options can be passed to `createTranslator`. They _cannot_ be customized after
-creation.
-
-- `autoDetect` (`boolean`) - Automatically detect the locale from the environment. Defaults to
-  `true`.
-- `debug` (`boolean`) - Enable i18next debugging by logging info to the console. Defaults to
-  `false`.
-- `fallbackLocale` (`Locale | Locale[]`) - Fallback locale(s) to use when the detected locale isn't
-  translated. Defaults to `en`.
-- `locale` (`Locale`) - Locale to explicitly use.
-- `lookupType` (`'all' | 'currentOnly' | 'languageOnly'`) - Order in which to load and lookup locale
-  translations. Based on the i18next `load` option.
-- `resourceFormat` (`'js' | 'json' | 'yaml'`) - File format resource bundles are written in.
-  Defaults to `yaml`.
-
-#### Message options
-
-And these options can be passed to the created translator function (`msg` above).
-
-- `defaultValue` (`string`) - Default value to return if a translation was not found.
-- `count` (`number`) - Count used to determine plurals.
-  [More information](https://www.i18next.com/translation-function/plurals).
-- `context` (`string`) - Context used for special parsing (male, female, etc).
-  [More information](https://www.i18next.com/translation-function/context).
-- `interpolation` (`i18next.InterpolationOptions`) - Interpolation options to pass down to i18next.
-  [More information](https://www.i18next.com/translation-function/interpolation#additional-options).
-- `locale` (`Locale`) - Force translation to this locale.
-- `postProcess` (`string | string[]`) - Post-processors to run on the translation.
 
 ### Locale detection
 
@@ -124,7 +93,8 @@ by one, until a valid locale is found.
 ## Resources
 
 A resource bundle is a per locale collection of [namespaced](#namespaces)
-[translation](#translations) files, located within a resource path passed to `createTranslator`.
+[translation](#translations) files, located within a resource path passed to
+[`createTranslator`][createtranslator].
 
 An example file structure of a resources folder, with multiple locale bundles, would look something
 like the following.
@@ -400,3 +370,5 @@ warning: This cannot be undone!
 ```ts
 msg('prompts:confirm'); // Are you sure? This cannot be undone!
 ```
+
+[createtranslator]: /api/translate/function/createTranslator

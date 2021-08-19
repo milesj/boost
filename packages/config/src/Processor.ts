@@ -19,7 +19,9 @@ export class Processor<T extends object> extends Contract<ProcessorOptions> {
 		this.debug = createDebugger(['processor', this.options.name]);
 	}
 
-	blueprint({ bool, string }: Predicates): Blueprint<ProcessorOptions> {
+	blueprint(predicates: Predicates): Blueprint<ProcessorOptions> {
+		const { bool, string } = predicates;
+
 		return {
 			defaultWhenUndefined: bool(true),
 			name: string().required().camelCase(),

@@ -15,7 +15,8 @@ export interface PooledOptions {
 	concurrency?: number;
 	/** Process with first-in-last-out order, instead of first-in-first-out. */
 	filo?: boolean;
-	/** Timeout in milliseconds that each work unit may run. */
+	/** Timeout in milliseconds that each work unit may run, or `0` to avoid a
+  timeout. Defaults to `0`. */
 	timeout?: number;
 }
 
@@ -30,7 +31,9 @@ export class PooledPipeline<
 
 	protected running: WorkUnit<{}, Input, Output>[] = [];
 
-	override blueprint({ bool, number }: Predicates): Blueprint<PooledOptions> {
+	override blueprint(predicates: Predicates): Blueprint<PooledOptions> {
+		const { bool, number } = predicates;
+
 		return {
 			concurrency: number(os.cpus().length).gte(1),
 			filo: bool(),

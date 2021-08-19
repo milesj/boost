@@ -1,6 +1,10 @@
 import semver from 'semver';
 import { Middleware } from '../types';
 
+/**
+ * Verify that the currently running Node.js process.version satisfies the given semver range.
+ * If not, a console error will be logged, or an error will be thrown.
+ */
 export function checkNodeRequirement(range: string, throws: boolean = false): Middleware {
 	return (argv, parse, logger) => {
 		const { version } = process;

@@ -12,20 +12,9 @@ module.exports = {
 				{
 					type: 'category',
 					label: 'CLI',
-					items: ['cli', 'cli/components', 'cli/prompts', 'cli/testing'],
+					items: ['cli', 'cli/components', 'cli/prompts'],
 				},
-				{
-					type: 'category',
-					label: 'Common utilities',
-					items: [
-						'common',
-						'common/contract',
-						'common/package-graph',
-						'common/path',
-						'common/path-resolver',
-						'common/project',
-					],
-				},
+				'common',
 				'config',
 				'crash',
 				'debug',

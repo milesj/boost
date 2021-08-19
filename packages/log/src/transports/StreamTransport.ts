@@ -3,6 +3,7 @@ import { Transport } from '../Transport';
 import { TransportOptions, Writable } from '../types';
 
 export interface StreamTransportOptions extends TransportOptions {
+	/** The stream to pipe messages to. */
 	stream: Writable;
 }
 
@@ -15,17 +16,20 @@ export class StreamTransport extends Transport<StreamTransportOptions> {
 		this.stream = options.stream;
 	}
 
-	override blueprint(preds: Predicates): Blueprint<StreamTransportOptions> {
-		const { func, shape } = preds;
+	override blueprint(predicates: Predicates): Blueprint<StreamTransportOptions> {
+		const { func, shape } = predicates;
 
 		return {
-			...super.blueprint(preds),
+			...super.blueprint(predicates),
 			stream: shape({
 				write: func().required().notNullable(),
 			}),
 		};
 	}
 
+	/**
+	 * Write a message to the configured stream.
+	 */
 	write(message: string) {
 		this.stream.write(message);
 	}

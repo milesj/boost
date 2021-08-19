@@ -1,5 +1,7 @@
 /* eslint-disable sort-keys */
 
+const path = require('path');
+
 const pkgs = [
 	'args',
 	'cli',
@@ -13,7 +15,6 @@ const pkgs = [
 	'plugin',
 	'terminal',
 	'translate',
-	// eslint-disable-next-line
 ].map((name) => require(`../packages/${name}/package.json`));
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
 		'A collection of type-safe cross-platform packages for building robust server-side and client-side applications, packages, and tooling.',
 	url: 'https://boostlib.dev',
 	baseUrl: '/',
-	onBrokenLinks: 'throw',
+	onBrokenLinks: 'warn',
 	onDuplicateRoutes: 'throw',
 	favicon: 'img/favicon.svg',
 	organizationName: 'milesj',
@@ -48,6 +49,11 @@ module.exports = {
 					to: 'docs',
 					activeBasePath: 'docs',
 					label: 'Docs',
+					position: 'left',
+				},
+				{
+					to: 'api',
+					label: 'API',
 					position: 'left',
 				},
 				{
@@ -78,6 +84,52 @@ module.exports = {
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
 				},
+			},
+		],
+	],
+	plugins: [
+		[
+			'docusaurus-plugin-typedoc-api',
+			{
+				projectRoot: path.join(__dirname, '..'),
+				packages: [
+					...[
+						'args',
+						'common',
+						'config',
+						'decorators',
+						'event',
+						'pipeline',
+						'plugin',
+						'terminal',
+						'translate',
+					].map((pkg) => `packages/${pkg}`),
+					{
+						path: 'packages/cli',
+						entry: {
+							index: 'src/index.ts',
+							react: { path: 'src/react.ts', label: 'Components & hooks' },
+							test: { path: 'src/test.ts', label: 'Test utilities' },
+						},
+					},
+					{
+						path: 'packages/debug',
+						entry: {
+							index: { path: 'src/index.ts', label: 'Index' },
+							test: { path: 'src/test.ts', label: 'Test utilities' },
+						},
+					},
+					{
+						path: 'packages/log',
+						entry: {
+							index: { path: 'src/index.ts', label: 'Index' },
+							test: { path: 'src/test.ts', label: 'Test utilities' },
+						},
+					},
+				],
+				exclude: ['**/themes/*', '**/website/*'],
+				minimal: true,
+				readmes: true,
 			},
 		],
 	],

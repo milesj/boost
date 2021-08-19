@@ -22,13 +22,22 @@ export abstract class Pipeline<Options extends object, Ctx extends Context, Inpu
 
 	readonly value: Input;
 
-	// Emits after work units are ran
+	/**
+	 * Called after the pipeline executes work units.
+	 * @category Events
+	 */
 	readonly onAfterRun = new Event('after-run');
 
-	// Emits before work units are ran
+	/**
+	 * Called before the pipeline executes work units.
+	 * @category Events
+	 */
 	readonly onBeforeRun = new Event<[Input]>('before-run');
 
-	// Emits before a single work unit is ran
+	/**
+	 * Called before a single work unit is executed.
+	 * @category Events
+	 */
 	readonly onRunWorkUnit = new Event<[WorkUnit<{}, Input, Output>, Input]>('run-work-unit');
 
 	protected monitorInstance: Monitor | null = null;

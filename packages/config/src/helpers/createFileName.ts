@@ -1,8 +1,10 @@
 export function createFileName(
 	name: string,
 	ext: string,
-	{ envSuffix, leadingDot }: { envSuffix?: string; leadingDot?: boolean },
+	options: { envSuffix?: string; leadingDot?: boolean },
 ): string {
+	const { envSuffix, leadingDot } = options;
+
 	let fileName = name;
 
 	if (leadingDot) {

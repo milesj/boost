@@ -5,17 +5,18 @@ import { FileTransport, FileTransportOptions } from './FileTransport';
 const DAYS_IN_WEEK = 7;
 
 export interface RotatingFileTransportOptions extends FileTransportOptions {
+	/** Period in which to rotate files. Will append a timestamp to the rotated log file. */
 	rotation: Rotation;
 }
 
 export class RotatingFileTransport extends FileTransport<RotatingFileTransportOptions> {
 	protected lastTimestamp: string = this.formatTimestamp(Date.now());
 
-	override blueprint(preds: Predicates): Blueprint<RotatingFileTransportOptions> {
-		const { string } = preds;
+	override blueprint(predicates: Predicates): Blueprint<RotatingFileTransportOptions> {
+		const { string } = predicates;
 
 		return {
-			...super.blueprint(preds),
+			...super.blueprint(predicates),
 			rotation: string().oneOf(['hourly', 'daily', 'weekly', 'monthly']),
 		};
 	}

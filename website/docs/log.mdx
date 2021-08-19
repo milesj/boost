@@ -6,7 +6,7 @@ import EnvBadges from '@theme/EnvBadges';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<EnvBadges backend tooling />
+<EnvBadges backend tooling api="/api/log" />
 
 Lightweight level based logging system.
 
@@ -17,7 +17,7 @@ Lightweight level based logging system.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
-    { label: 'NPM', value: 'npm' },
+    { label: 'npm', value: 'npm' },
   ]}
 >
   <TabItem value="yarn">
@@ -38,17 +38,19 @@ npm install @boost/log
 
 ## Environment variables
 
-- `BOOSTJS_LOG_DEFAULT_LEVEL` (`LogLevel`) - The default log level to use when calling the logger
-  function stand alone (the usage examples below). Defaults to the lowest level, `log`.
-- `BOOSTJS_LOG_MAX_LEVEL` (`LogLevel`) - The maximum level, based on priority, to write to a stream.
-  All levels higher than the maximum will be ignored. Defaults to allowing all levels.
+- `BOOSTJS_LOG_DEFAULT_LEVEL` ([`LogLevel`](/api/log#LogLevel)) - The default log level to use when
+  calling the logger function stand alone (the usage examples below). Defaults to the lowest level,
+  `log`.
+- `BOOSTJS_LOG_MAX_LEVEL` ([`LogLevel`](/api/log#LogLevel)) - The maximum level, based on priority,
+  to write to a stream. All levels higher than the maximum will be ignored. Defaults to allowing all
+  levels.
 
 ## Logging
 
 Logging is based around the concept of a "logger", which provides a set of functions of severity
 levels to log with. Logs are written to one or many provided transports -- or `console` if not
-defined. To begin, instantiate a logger with `createLogger`, which returns a function that can be
-used for standard level logging.
+defined. To begin, instantiate a logger with [`createLogger`](/api/log/function/createLogger), which
+returns a function that can be used for standard level logging.
 
 ```ts
 import { createLogger } from '@boost/log';
@@ -60,15 +62,16 @@ log('Something has happened…');
 
 Each logging function requires a message string as the 1st argument, and an optional rest of
 arguments to interpolate into the message using
-[util.format()](https://nodejs.org/api/util.html#util_util_format_format_args).
+[`util.format()`](https://nodejs.org/api/util.html#util_util_format_format_args).
 
 ```ts
 log('Name: %s %s', user.first_name, user.last_name);
 log('Object: %O', data);
 ```
 
-If you would prefer to interact with a class instance, you may use the `Logger` class. The major
-difference between the class and the function, is that the class only has 1 logging method, `log()`.
+If you would prefer to interact with a class instance, you may use the
+[`Logger`](/api/log/class/Logger) class. The major difference between the class and the function, is
+that the class only has 1 logging method, [`Logger#log()`](/api/log/class/Logger#log).
 
 ```ts
 import { Logger } from '@boost/log';
@@ -83,13 +86,8 @@ logger.log({
 
 ### Options
 
-The following options can be defined when creating a logger. They _cannot_ be customized after the
-fact.
-
-- `labels` (`object`) - A mapping of localized log level names. Can be used with
-  [chalk](https://www.npmjs.com/package/chalk).
-- `name` (`string`) - Unique name of this logger instance, for debugging purposes. _(Required)_
-- `transports` (`Transportable[]`) - List of transports in which to write formatted log messages to.
+When creating a logger, a [`LoggerOptions`](/api/log/interface/LoggerOptions) object can be passed.
+The options _cannot_ be customized after the fact.
 
 ```ts
 import chalk from 'chalk';
@@ -122,8 +120,8 @@ log.error('Systems are down! %s', error.message);
 ### Silencing output
 
 By default, all logged messages are immediately written to the configured transports. To silence
-output and disable writes, call the `logger.disable()` function, and to re-enable, call
-`logger.enable()`.
+output and disable writes, call the [`logger.disable()`](/api/log/interface/LoggerFunction#disable)
+function, and to re-enable, call [`logger.enable()`](/api/log/interface/LoggerFunction#enable).
 
 ```ts
 log.disable();
@@ -136,20 +134,12 @@ log.debug('Something is broken!');
 
 ## Formats
 
-All logs are represented as an object, known as a log item. These items contain the following
-metadata about the environment, the logger, and the current log message.
-
-- `host` (`string`) - The host name of the machine.
-- `label` (`string`) - The log level as a localized or customized label.
-- `level` (`LogLevel`) - The log level as a string.
-- `message` (`string`) - The log message with interpolated arguments applied.
-- `metadata` (`object`) - [Additional data](#metadata) to include with a log item.
-- `name` (`string`) - Name of the logger.
-- `pid` (`number`) - Current process ID.
-- `time` (`string`) - Timestamp of the log, native to the host machine.
+All logs are represented as an object, known as a [`LogItem`](/api/log/interface/LogItem). These
+items contain metadata about the environment, the logger, and the current log message.
 
 Before an item is written to a transport, it must be formatted from an object into a string. This
-can be done on a per transport basis using the `format` option, like so.
+can be done on a per transport basis using the
+[`format`](/api/log/interface/TransportOptions#format) option, like so.
 
 ```ts
 import { ConsoleTransport, formats } from '@boost/log';
@@ -162,14 +152,7 @@ const transport = new ConsoleTransport({
 ```
 
 Boost provides formats by default, all of which are pre-configured into each built-in transport.
-Feel free to use the following built-in formats, or customize your own!
-
-- `formats.console` - Formats the item as if it's being logged to `console`. Only inclues the label
-  and message.
-- `formats.debug` - Formats the item into a human-readable message with all item fields included.
-  This is the default format for most transports.
-- `formats.json` - Formats the entire item into JSON.
-- `formats.message` - Formats the item using only the message.
+Feel free to use the [built-in formats](/api/log/namespace/formats), or customize your own!
 
 ## Metadata
 
@@ -198,18 +181,14 @@ log({ locale: 'de' }, "What's going on?");
 
 ## Transport types
 
-There are multiple types of transports that can be used within a logger, all of which support the
-following shared options.
+There are multiple types of transports that can be used within a logger, all of which support a
+[`TransportOptions`](/api/log/interface/TransportOptions) object. Some transports support additional
+options, so please refer to their types.
 
-- `eol` (`string`) - End of line character to append to a message. Defaults to `os.EOL`.
-- `format` (`Formatter`) - Function to format a log item into a message string. Default is transport
-  dependent.
-- `levels` (`LogLevel[]`) - List of log levels to only write messages for. _(Required)_
+### ConsoleTransport
 
-### `ConsoleTransport`
-
-Logs messages to the native `console` and its corresponding level. This is the default transport
-when no transports are defined.
+The [`ConsoleTransport`](/api/log/class/ConsoleTransport) logs messages to the native `console` and
+its corresponding level. This is the default transport when no transports are defined.
 
 ```ts
 import { ConsoleTransport } from '@boost/log';
@@ -217,9 +196,11 @@ import { ConsoleTransport } from '@boost/log';
 const transport = new ConsoleTransport();
 ```
 
-### `StreamTransport`
+### StreamTransport
 
-Logs messages to any writeable stream or an object that defines a `write(message: string)` method.
+The [`StreamTransport`](/api/log/class/StreamTransport) logs messages to any writeable stream or an
+object that defines a [`write()`](/api/log/interface/Writable) method. Additional
+[`StreamTransportOptions`](/api/log/interface/StreamTransportOptions) options may be provided.
 
 ```ts
 import { StreamTransport } from '@boost/log';
@@ -230,10 +211,11 @@ const transport = new StreamTransport({
 });
 ```
 
-### `FileTransport`
+### FileTransport
 
-Appends and logs messages to a file at the defined path. Will automatically rotate files when a max
-file size is met.
+The [`FileTransport`](/api/log/class/FileTransport) appends and logs messages to a file at the
+defined path. Will automatically rotate files when a max file size is met. Additional
+[`FileTransportOptions`](/api/log/interface/FileTransportOptions) options may be provided.
 
 ```ts
 import { FileTransport } from '@boost/log';
@@ -244,14 +226,13 @@ const transport = new FileTransport({
 });
 ```
 
-- `gzip` (`boolean`) - Apply gzip compression to the write stream.
-- `maxSize` (`number`) - Maximum file size before rotating file. Will create a backup and truncate
-  the current file. Defaults to 10mb.
-- `path` (`string | Path`) - Absolute file system path for the intended log file. _(Required)_
+### RotatingFileTransport
 
-### `RotatingFileTransport`
-
-Like `FileTransport`, but also rotates files based on timestamps and a chosen periodic interval.
+The [`RotatingFileTransport`](/api/log/class/RotatingFileTransport) is like
+[`FileTransport`](/api/log/class/FileTransport), but also rotates files based on timestamps and a
+chosen periodic interval. Additional
+[`RotatingFileTransportOptions`](/api/log/interface/RotatingFileTransportOptions) options may be
+provided.
 
 ```ts
 import { RotatingFileTransport } from '@boost/log';
@@ -263,28 +244,7 @@ const transport = new RotatingFileTransport({
 });
 ```
 
-- `rotation` (`hourly | daily | weekly | monthly`) - Period in which to rotate files. Will append a
-  timestamp to the rotated log file.
-
 ## Test utilities
 
-The following [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/log/test` module.
-
-### `mockLogger`
-
-> mockLogger(): Logger
-
-Returns a Jest spy that matches the return value shape of `createLogger`.
-
-```ts
-import { mockLogger } from '@boost/log/test';
-
-it('calls the logger', () => {
-	const log = mockLogger();
-
-	log('Something has happened');
-
-	expect(log).toHaveBeenCalled();
-});
-```
+A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
+`@boost/log/test` module. [View the API for a full list](/api/log-test).

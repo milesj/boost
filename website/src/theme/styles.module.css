@@ -6,3 +6,7 @@
 .badgeGroup > span {
 	margin-right: 0.5rem;
 }
+
+.apiLink {
+	float: right;
+}
