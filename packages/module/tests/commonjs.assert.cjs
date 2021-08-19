@@ -5,11 +5,15 @@ const path = require('path');
 const assert = require('assert').strict;
 const { requireModule } = require('../lib');
 
-// FORMATS
+function getFixture(file) {
+	return path.join(__dirname, '__fixtures__', file);
+}
 
 function getFormatFixture(type) {
-	return path.join(__dirname, `__fixtures__/format-${type}.${type}`);
+	return getFixture(`format-${type}.${type}`);
 }
+
+// FORMATS
 
 // JS
 assert.equal(requireModule(getFormatFixture('js')), 'default');
@@ -42,10 +46,6 @@ assert.deepEqual(requireModule(getFormatFixture('tsx')), {
 });
 
 // TYPESCRIPT
-
-function getFixture(file) {
-	return path.join(__dirname, '__fixtures__', file);
-}
 
 // Default exports only
 assert.equal(requireModule(getFixture('default-export.ts')), 'default');

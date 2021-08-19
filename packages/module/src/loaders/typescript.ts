@@ -8,9 +8,11 @@ import {
 	isTypeScript,
 } from '../typescript';
 
+const FILE_WITH_EXT_PATTERN = /\.[a-z]+$/;
+
 async function loadTypeScript() {
 	try {
-		return await import('typescript');
+		return (await import('typescript')).default;
 	} catch {
 		return null;
 	}
@@ -25,6 +27,20 @@ export async function resolve(
 		return {
 			url: new URL(specifier, context.parentURL).href,
 		};
+	}
+
+	// Relative import doesn't have an extension, so attempt to find a TS file
+	if (specifier.startsWith('.') && !FILE_WITH_EXT_PATTERN.test(specifier)) {
+		for (const ext of ['.ts', '.tsx']) {
+			const url = new URL(specifier + ext, context.parentURL);
+
+			// @ts-expect-error Node not typed for URLs
+			if (fs.existsSync(url)) {
+				return {
+					url: url.href,
+				};
+			}
+		}
 	}
 
 	return defaultResolve(specifier, context, defaultResolve);
@@ -42,21 +58,6 @@ export async function getFormat(
 	}
 
 	return defaultGetFormat(url, context, defaultGetFormat);
-}
-
-export async function getSource(
-	url: string,
-	context: object,
-	defaultGetSource: typeof getSource,
-): Promise<{ source: SharedArrayBuffer | Uint8Array | string }> {
-	if (isTypeScript(url)) {
-		return {
-			// eslint-disable-next-line node/no-unsupported-features/node-builtins
-			source: await fs.promises.readFile(url, 'utf8'),
-		};
-	}
-
-	return defaultGetSource(url, context, defaultGetSource);
 }
 
 export async function transformSource(

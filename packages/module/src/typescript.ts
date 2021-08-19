@@ -14,7 +14,7 @@ export function isTypeScript(path: string) {
 }
 
 export function getModuleFromNodeVersion(ts: TS) {
-	const version = Number.parseFloat(process.version);
+	const version = Number.parseFloat(process.version.slice(1));
 
 	if (version >= 15) {
 		return ts.ModuleKind.ES2020;
@@ -28,7 +28,7 @@ export function getModuleFromNodeVersion(ts: TS) {
 }
 
 export function getTargetFromNodeVersion(ts: TS) {
-	const version = Number.parseFloat(process.version);
+	const version = Number.parseFloat(process.version.slice(1));
 
 	if (version >= 16) {
 		return ts.ScriptTarget.ES2020;
