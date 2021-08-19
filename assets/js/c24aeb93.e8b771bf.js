@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7727],{9617:function(e){"use strict";e.exports=JSON.parse('{"id":58,"name":"MockWriteStream","nextId":16,"permalink":"/api/cli-test/class/MockWriteStream","previousId":54}')}}]);

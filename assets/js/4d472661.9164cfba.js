@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3382],{8424:function(e){"use strict";e.exports=JSON.parse('{"id":865,"name":"ConfigFile","nextId":878,"permalink":"/api/config/interface/ConfigFile","previousId":8}')}}]);
