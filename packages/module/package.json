@@ -12,6 +12,7 @@
   "main": "./lib/index.js",
   "types": "./dts/index.d.ts",
   "files": [
+    "dts/**/*.d.ts",
     "lib/**/*.{js,map}",
     "mjs/**/*.{mjs,map}",
     "src/**/*.{ts,tsx,json}"

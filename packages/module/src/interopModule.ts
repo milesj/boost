@@ -1,6 +1,10 @@
 import { ModuleLike } from './types';
 
 export function interopModule(result: ModuleLike): unknown {
+	if (typeof result !== 'object') {
+		return result;
+	}
+
 	const hasDefaultExport = 'default' in result;
 	const namedExports = Object.keys(result).filter(
 		(key) => key !== '__esModule' && key !== 'default',

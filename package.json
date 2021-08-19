@@ -12,7 +12,7 @@
     "format": "beemo prettier",
     "test": "beemo jest && yarn run test:tsm",
     "test:cli": "node ./packages/cli/examples/bin.js",
-    "test:tsm": "node packages/common/tests/helpers/requireTypedModule.assert.js",
+    "test:tsm": "node packages/module/tests/commonjs.assert.cjs && node packages/module/tests/commonjs.assert.cjs",
     "type": "beemo typescript --build",
     "release": "yarn run pack && yarn run check && yarn beemo run-script lerna-release",
     "version": "yarn install && git add yarn.lock",

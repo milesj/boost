@@ -1,5 +1,5 @@
-import { requireModule } from '../../src/requireModule';
-import { getFixture } from '../helpers';
+import { requireModule } from '../src/requireModule';
+import { getFixture } from './helpers';
 
 jest.mock('example', () => 123, { virtual: true });
 jest.mock('example-es-default', () => ({ __esModule: true, default: 456 }), { virtual: true });
@@ -8,7 +8,7 @@ jest.mock('example-es-default-named', () => ({ __esModule: true, default: 456, n
 });
 jest.mock('example-es-named', () => ({ __esModule: true, a: 1, b: 2, c: 3 }), { virtual: true });
 
-jest.mock('../../src/commonjs/requireTSModule', () => ({
+jest.mock('../src/requireTSModule', () => ({
 	requireTSModule: () => 'ts',
 }));
 
