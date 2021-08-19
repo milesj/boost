@@ -2,16 +2,16 @@ import { CommandStaticConfig, PartialConfig } from '../types';
 
 /**
  * A class decorator for defining the following metadata on a `Command`.
- * 	- path
- * 	- description
- * 	- aliases
- * 	- allowUnknownOptions
- * 	- allowVariadicParams
- * 	- categories
- * 	- category
- * 	- deprecated
- * 	- hidden
- * 	- usage
+ * - path
+ * - description
+ * - aliases
+ * - allowUnknownOptions
+ * - allowVariadicParams
+ * - categories
+ * - category
+ * - deprecated
+ * - hidden
+ * - usage
  */
 export function Config(
 	path: string,

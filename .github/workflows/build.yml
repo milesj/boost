@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
-      - run: |
-          yarn install --immutable
-          cd website
-          yarn run build
+      - run: yarn install --immutable
+      - run: yarn run build
+      - run: yarn run type
+      - run: cd website && yarn run build

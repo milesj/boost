@@ -152,9 +152,10 @@ export interface Arg<T> extends Config {
 	 * The default value if option not provided on the command line. The value's type
 	 * is dependent on the `type` and `multiple` settings. Furthermore, this value defaults
 	 * to the following if not defined.
-	 * 	- A zero (`0`) when type is `number`.
-	 * 	- An empty string (`''`) when type is `string`.
-	 * 	- And `false` when type is `boolean`.
+	 *
+	 * - A zero (`0`) when type is `number`.
+	 * - An empty string (`''`) when type is `string`.
+	 * - And `false` when type is `boolean`.
 	 */
 	default?: T;
 	/** An optional function to format the value after parsing. Must return the same type. */

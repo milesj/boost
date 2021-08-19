@@ -20,8 +20,8 @@ export interface ScrollableListProps {
 	overflowBeforeLabel?: OverflowLabel;
 	/**
 	 * The pattern in which to limit options when scrolling. Defaults to `overflow`.
-	 * 	- `cycle` - Will continously cycle through options, even when navigating to and past edges.
-	 * 	- `overflow` - Will display options bound to an edge, with the number of options hidden above and below.
+	 * - `cycle` - Will continously cycle through options, even when navigating to and past edges.
+	 * - `overflow` - Will display options bound to an edge, with the number of options hidden above and below.
 	 */
 	scrollType?: 'cycle' | 'overflow';
 }

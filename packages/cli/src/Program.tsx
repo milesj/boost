@@ -322,11 +322,11 @@ export class Program extends CommandManager<ProgramOptions> {
 
 	/**
 	 * Run the program in the following steps:
-	 *  - Apply middleware to argv list.
-	 *  - Parse argv into an args object (of options, params, etc).
-	 *  - Determine command to run, or fail.
-	 *  - Run command and render output.
-	 *  - Return exit code.
+	 * - Apply middleware to argv list.
+	 * - Parse argv into an args object (of options, params, etc).
+	 * - Determine command to run, or fail.
+	 * - Run command and render output.
+	 * - Return exit code.
 	 */
 	async run(argv: Argv, bootstrap?: ProgramBootstrap, rethrow: boolean = false): Promise<ExitCode> {
 		this.onBeforeRun.emit([argv]);
