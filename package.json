@@ -16,7 +16,7 @@
     "type": "beemo typescript --build",
     "prerelease": "node scripts/checkReleaseRequirements.js && yarn run pack && yarn test",
     "release": "yarn prerelease && lerna version --conventional-commits --changelog-preset conventional-changelog-beemo --create-release github --push && lerna publish from-git",
-    "packemon": "yarn dlx packemon@1.1.1",
+    "packemon": "yarn dlx packemon@1.3.0",
     "version": "yarn install && git add yarn.lock"
   },
   "engines": {
