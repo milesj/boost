@@ -30,8 +30,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "optionalPeerDependencies": {
+  "peerDependencies": {
     "typescript": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
   },
   "funding": {
     "type": "ko-fi",
@@ -39,19 +44,19 @@
   },
   "packemon": [
     {
-      "inputs": {
-        "index": "src/index.ts",
-        "commonjs": "src/commonjs/requireModule.ts",
-        "esmodule": "src/esmodule/importModule.ts"
-      },
-      "platform": "node"
+      "bundle": true,
+      "format": "lib",
+      "platform": "node",
+      "support": "legacy"
     },
     {
+      "bundle": true,
       "inputs": {
         "typescript": "src/loaders/typescript.ts"
       },
       "format": "mjs",
-      "platform": "node"
+      "platform": "node",
+      "support": "legacy"
     }
   ]
 }
