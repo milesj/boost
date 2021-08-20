@@ -1,8 +1,8 @@
 export type TS = typeof import('typescript');
 
-export interface ModuleLike {
+export interface ModuleLike<T = unknown> {
 	[named: string]: unknown;
-	default?: unknown;
+	default: T;
 	__esModule?: boolean;
 }
 

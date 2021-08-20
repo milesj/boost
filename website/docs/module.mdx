@@ -1,0 +1,39 @@
+---
+title: Modules
+---
+
+import EnvBadges from '@theme/EnvBadges';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<EnvBadges backend tooling api="/api/module" />
+
+Load and resolve custom file types with Node.js's classic `require` or next-generation
+[loaders](https://nodejs.org/api/esm.html#esm_loaders). Currently supports TypeScript for `.ts` and
+`.tsx` files.
+
+## Installation
+
+<Tabs
+  groupId="package-manager"
+  defaultValue="yarn"
+  values={[
+    { label: 'Yarn', value: 'yarn' },
+    { label: 'npm', value: 'npm' },
+  ]}
+>
+  <TabItem value="yarn">
+
+```bash
+yarn add @boost/module
+```
+
+  </TabItem>
+  <TabItem value="npm">
+
+```bash
+npm install @boost/module
+```
+
+  </TabItem>
+</Tabs>

@@ -1,54 +1,65 @@
 import { requireModule } from '../src/requireModule';
 import { getFixture } from './helpers';
 
-jest.mock('example', () => 123, { virtual: true });
-jest.mock('example-es-default', () => ({ __esModule: true, default: 456 }), { virtual: true });
-jest.mock('example-es-default-named', () => ({ __esModule: true, default: 456, named: 'abc' }), {
+jest.mock('cjs-null', () => null, { virtual: true });
+jest.mock('cjs-default', () => 123, { virtual: true });
+jest.mock('cjs-default-object', () => ({ foo: 'bar' }), { virtual: true });
+jest.mock('cjs-pseudo-default', () => ({ default: 123 }), { virtual: true });
+jest.mock('cjs-named', () => ({ named: 'abc' }), { virtual: true });
+jest.mock('esm-default', () => ({ __esModule: true, default: 456 }), { virtual: true });
+jest.mock('esm-named', () => ({ __esModule: true, named: 'abc' }), { virtual: true });
+jest.mock('esm-both', () => ({ __esModule: true, default: 456, named: 'abc' }), {
 	virtual: true,
 });
-jest.mock('example-es-named', () => ({ __esModule: true, a: 1, b: 2, c: 3 }), { virtual: true });
 
 jest.mock('../src/requireTSModule', () => ({
 	requireTSModule: () => 'ts',
 }));
 
 describe('requireModule()', () => {
-	it('returns default exported', () => {
-		expect(requireModule('example')).toBe(123);
+	describe('commonjs', () => {
+		it('returns null value under default property', () => {
+			expect(requireModule('cjs-null')).toEqual({ default: null });
+		});
+
+		it('returns primitive value under default property', () => {
+			expect(requireModule('cjs-default')).toEqual({ default: 123 });
+		});
+
+		it('returns object under default property', () => {
+			expect(requireModule('cjs-default-object')).toEqual({ foo: 'bar', default: { foo: 'bar' } });
+		});
+
+		it('returns object with default property as-is', () => {
+			expect(requireModule('cjs-pseudo-default')).toEqual({ default: 123 });
+		});
+
+		it('returns named vales as-is and on default property', () => {
+			expect(requireModule('cjs-named')).toEqual({ named: 'abc', default: { named: 'abc' } });
+		});
+	});
+
+	describe('esmodules', () => {
+		it('returns default as-is', () => {
+			expect(requireModule('esm-default')).toEqual({ __esModule: true, default: 456 });
+		});
+
+		it('returns named as-is', () => {
+			expect(requireModule('esm-named')).toEqual({ __esModule: true, named: 'abc' });
+		});
+
+		it('returns default and named as-is', () => {
+			expect(requireModule('esm-both')).toEqual({ __esModule: true, default: 456, named: 'abc' });
+		});
 	});
 
 	it('calls `requireTypedModule` when a .ts file or .tsx file', () => {
 		expect(requireModule('some-fake-ts-file.ts')).toBe('ts');
 	});
 
-	describe('transpiled modules', () => {
-		it('returns default export directly when no named', () => {
-			expect(requireModule('example-es-default')).toBe(456);
-		});
-
-		it('returns default and named exports', () => {
-			expect(requireModule('example-es-default-named')).toEqual(
-				expect.objectContaining({
-					default: 456,
-					named: 'abc',
-				}),
-			);
-		});
-
-		it('returns named exports', () => {
-			expect(requireModule('example-es-named')).toEqual(
-				expect.objectContaining({
-					a: 1,
-					b: 2,
-					c: 3,
-				}),
-			);
-		});
-	});
-
 	describe('formats', () => {
 		it('can load .js files', () => {
-			expect(requireModule(getFixture('format-js.js'))).toBe('default');
+			expect(requireModule(getFixture('format-js.js'))).toEqual({ default: 'default' });
 		});
 
 		it('can load .cjs files', () => {
@@ -56,6 +67,11 @@ describe('requireModule()', () => {
 				a: 1,
 				b: 2,
 				c: 3,
+				default: {
+					a: 1,
+					b: 2,
+					c: 3,
+				},
 			});
 		});
 

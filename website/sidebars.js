@@ -21,6 +21,7 @@ module.exports = {
 				'decorators',
 				'event',
 				'log',
+				'module',
 				'pipeline',
 				'plugin',
 				'terminal',

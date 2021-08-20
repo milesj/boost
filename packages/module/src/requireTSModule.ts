@@ -61,7 +61,7 @@ function unregisterExtensions() {
 	delete require.extensions['.tsx'];
 }
 
-export function requireTSModule<T>(path: PathLike, requirer: NodeRequire = require): T {
+export function requireTSModule<T>(path: PathLike, requirer: NodeRequire = require): ModuleLike<T> {
 	const filePath = String(path);
 
 	if (!isTypeScript(filePath)) {
@@ -72,9 +72,9 @@ export function requireTSModule<T>(path: PathLike, requirer: NodeRequire = requi
 
 	registerExtensions();
 
-	const result = interopModule(requirer(filePath) as ModuleLike);
+	const result = interopModule<T>(requirer(filePath));
 
 	unregisterExtensions();
 
-	return result as T;
+	return result;
 }

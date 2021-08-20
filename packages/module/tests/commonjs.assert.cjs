@@ -16,13 +16,18 @@ function getFormatFixture(type) {
 // FORMATS
 
 // JS
-assert.equal(requireModule(getFormatFixture('js')), 'default');
+assert.deepEqual(requireModule(getFormatFixture('js')), { default: 'default' });
 
 // CJS
 assert.deepEqual(requireModule(getFormatFixture('cjs')), {
 	a: 1,
 	b: 2,
 	c: 3,
+	default: {
+		a: 1,
+		b: 2,
+		c: 3,
+	},
 });
 
 // MJS
@@ -36,7 +41,7 @@ try {
 }
 
 // TS
-assert.equal(requireModule(getFormatFixture('ts')), 'default');
+assert.deepEqual(requireModule(getFormatFixture('ts')), { default: 'default' });
 
 // TSX
 assert.deepEqual(requireModule(getFormatFixture('tsx')), {
@@ -48,7 +53,7 @@ assert.deepEqual(requireModule(getFormatFixture('tsx')), {
 // TYPESCRIPT
 
 // Default exports only
-assert.equal(requireModule(getFixture('default-export.ts')), 'default');
+assert.deepEqual(requireModule(getFixture('default-export.ts')), { default: 'default' });
 
 // Named exports only
 assert.deepEqual(requireModule(getFixture('named-exports.ts')), {
@@ -67,9 +72,11 @@ assert.deepEqual(requireModule(getFixture('default-named-exports.ts')), {
 
 // Resolves nested imports
 assert.deepEqual(requireModule(getFixture('imports.ts')), {
-	defaultExport: 'default',
-	defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
-	namedExports: { a: 1, b: 2, c: 3 },
+	default: {
+		defaultExport: 'default',
+		defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
+		namedExports: { a: 1, b: 2, c: 3 },
+	},
 });
 
 // Built-ins are the same

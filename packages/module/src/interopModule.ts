@@ -1,21 +1,16 @@
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+
 import { ModuleLike } from './types';
 
-export function interopModule(result: ModuleLike): unknown {
-	if (typeof result !== 'object') {
-		return result;
+export function interopModule<T>(result: unknown): ModuleLike<T> {
+	if (typeof result !== 'object' || result === null) {
+		return { default: result } as ModuleLike<T>;
 	}
 
-	const hasDefaultExport = 'default' in result;
-	const namedExports = Object.keys(result).filter(
-		(key) => key !== '__esModule' && key !== 'default',
-	);
-
-	// Default export only
-	if (hasDefaultExport && namedExports.length === 0) {
-		return result.default;
+	// Already a module, so return early
+	if ('__esModule' in result || 'default' in result) {
+		return result as ModuleLike<T>;
 	}
 
-	// Default AND named exports
-	// Named exports only
-	return result;
+	return { ...result, default: result } as unknown as ModuleLike<T>;
 }

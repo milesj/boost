@@ -3,7 +3,7 @@ import { requireTSModule } from './requireTSModule';
 import { ModuleLike, PathLike } from './types';
 import { isTypeScript } from './typescript';
 
-export function requireModule<T>(path: PathLike, requirer: NodeRequire = require): T {
+export function requireModule<T>(path: PathLike, requirer: NodeRequire = require): ModuleLike<T> {
 	const filePath = String(path);
 
 	if (filePath.endsWith('.mjs')) {
@@ -14,5 +14,5 @@ export function requireModule<T>(path: PathLike, requirer: NodeRequire = require
 		return requireTSModule(filePath, requirer);
 	}
 
-	return interopModule(requirer(filePath) as ModuleLike) as T;
+	return interopModule(requirer(filePath));
 }

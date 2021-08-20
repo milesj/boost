@@ -11,6 +11,7 @@ const pkgs = [
 	'decorators',
 	'event',
 	'log',
+	'module',
 	'pipeline',
 	'plugin',
 	'terminal',
@@ -115,15 +116,22 @@ module.exports = {
 					{
 						path: 'packages/debug',
 						entry: {
-							index: { path: 'src/index.ts', label: 'Index' },
+							index: 'src/index.ts',
 							test: { path: 'src/test.ts', label: 'Test utilities' },
 						},
 					},
 					{
 						path: 'packages/log',
 						entry: {
-							index: { path: 'src/index.ts', label: 'Index' },
+							index: 'src/index.ts',
 							test: { path: 'src/test.ts', label: 'Test utilities' },
+						},
+					},
+					{
+						path: 'packages/module',
+						entry: {
+							index: 'src/index.ts',
+							typescript: { path: 'src/loaders/typescript.ts', label: 'TypeScript loader' },
 						},
 					},
 				],
