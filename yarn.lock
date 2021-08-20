@@ -2033,6 +2033,11 @@ __metadata:
 "@boost/module@workspace:packages/module":
   version: 0.0.0-use.local
   resolution: "@boost/module@workspace:packages/module"
+  peerDependencies:
+    typescript: ^4.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
   languageName: unknown
   linkType: soft
 
