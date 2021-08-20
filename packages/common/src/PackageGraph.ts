@@ -196,7 +196,7 @@ export class PackageGraph<T extends PackageStructure = PackageStructure> {
 	protected detectCycle() {
 		const dig = (node: Node, cycle: Set<Node>) => {
 			if (cycle.has(node)) {
-				const path = [...[...cycle], node].map((n) => n.name).join(' -> ');
+				const path = [...cycle, node].map((n) => n.name).join(' -> ');
 
 				throw new Error(`Circular dependency detected: ${path}`);
 			}
