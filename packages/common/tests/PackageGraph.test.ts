@@ -3,14 +3,14 @@ import { PackageGraph } from '../src/PackageGraph';
 import { Path } from '../src/Path';
 import { PackageStructure } from '../src/types';
 
-function getBoostPackages() {
+function getBeemoPackages() {
 	const pkgs: Record<string, PackageStructure> = {};
 
 	// Globs must be forward slashes on Windows to work correctly
 	glob
 		.sync('*/package.json', {
 			absolute: true,
-			cwd: new Path(__dirname, '../../').path(),
+			cwd: new Path(__dirname, '../../../node_modules/@beemo').path(),
 		})
 		.forEach((pkgPath) => {
 			const pkg = require(pkgPath);
@@ -22,126 +22,107 @@ function getBoostPackages() {
 
 describe('PackageGraph', () => {
 	it('graphs dependencies correctly', () => {
-		const pkgs = getBoostPackages();
+		const pkgs = getBeemoPackages();
 		const graph = new PackageGraph(Object.values(pkgs));
 
 		expect(graph.resolveList()).toEqual([
-			pkgs['@boost/internal'],
-			pkgs['@boost/decorators'],
-			pkgs['@boost/terminal'],
-			pkgs['@boost/test-utils'],
-			pkgs['@boost/common'],
-			pkgs['@boost/event'],
-			pkgs['@boost/args'],
-			pkgs['@boost/debug'],
-			pkgs['@boost/translate'],
-			pkgs['@boost/log'],
-			pkgs['@boost/config'],
-			pkgs['@boost/pipeline'],
-			pkgs['@boost/plugin'],
-			pkgs['@boost/cli'],
+			pkgs['@beemo/core'],
+			pkgs['@beemo/config-constants'],
+			pkgs['@beemo/driver-babel'],
+			pkgs['@beemo/driver-eslint'],
+			pkgs['@beemo/driver-jest'],
+			pkgs['@beemo/driver-prettier'],
+			pkgs['@beemo/driver-typescript'],
+			pkgs['@beemo/cli'],
+			pkgs['@beemo/config-babel'],
+			pkgs['@beemo/config-eslint'],
+			pkgs['@beemo/config-jest'],
+			pkgs['@beemo/config-prettier'],
+			pkgs['@beemo/config-typescript'],
+			pkgs['@beemo/dev'],
 		]);
 
 		expect(graph.resolveBatchList()).toEqual([
+			[pkgs['@beemo/core'], pkgs['@beemo/config-constants']],
 			[
-				pkgs['@boost/internal'],
-				pkgs['@boost/decorators'],
-				pkgs['@boost/terminal'],
-				pkgs['@boost/test-utils'],
+				pkgs['@beemo/driver-babel'],
+				pkgs['@beemo/driver-eslint'],
+				pkgs['@beemo/driver-jest'],
+				pkgs['@beemo/driver-prettier'],
+				pkgs['@beemo/driver-typescript'],
+				pkgs['@beemo/cli'],
 			],
-			[pkgs['@boost/common'], pkgs['@boost/event'], pkgs['@boost/args']],
-			[pkgs['@boost/debug'], pkgs['@boost/translate']],
-			[pkgs['@boost/log'], pkgs['@boost/config'], pkgs['@boost/pipeline'], pkgs['@boost/plugin']],
-			[pkgs['@boost/cli']],
+			[
+				pkgs['@beemo/config-babel'],
+				pkgs['@beemo/config-eslint'],
+				pkgs['@beemo/config-jest'],
+				pkgs['@beemo/config-prettier'],
+				pkgs['@beemo/config-typescript'],
+			],
+			[pkgs['@beemo/dev']],
 		]);
 
 		expect(graph.resolveTree()).toEqual({
 			root: true,
 			nodes: [
 				{
-					package: pkgs['@boost/internal'],
+					package: pkgs['@beemo/core'],
 					nodes: [
 						{
-							package: pkgs['@boost/common'],
+							package: pkgs['@beemo/driver-babel'],
 							nodes: [
 								{
-									package: pkgs['@boost/debug'],
-									nodes: [
-										{ package: pkgs['@boost/config'] },
-										{ package: pkgs['@boost/pipeline'] },
-										{ package: pkgs['@boost/plugin'] },
-									],
-								},
-								{
-									package: pkgs['@boost/translate'],
+									package: pkgs['@beemo/config-babel'],
 									nodes: [
 										{
-											package: pkgs['@boost/log'],
-											nodes: [{ package: pkgs['@boost/cli'] }],
+											package: pkgs['@beemo/dev'],
 										},
 									],
 								},
 							],
 						},
-						{ package: pkgs['@boost/event'] },
-						{ package: pkgs['@boost/args'] },
+						{
+							package: pkgs['@beemo/driver-eslint'],
+							nodes: [
+								{
+									package: pkgs['@beemo/config-eslint'],
+								},
+							],
+						},
+						{
+							package: pkgs['@beemo/driver-jest'],
+							nodes: [
+								{
+									package: pkgs['@beemo/config-jest'],
+								},
+							],
+						},
+						{
+							package: pkgs['@beemo/driver-prettier'],
+							nodes: [
+								{
+									package: pkgs['@beemo/config-prettier'],
+								},
+							],
+						},
+						{
+							package: pkgs['@beemo/driver-typescript'],
+							nodes: [
+								{
+									package: pkgs['@beemo/config-typescript'],
+								},
+							],
+						},
+						{
+							package: pkgs['@beemo/cli'],
+						},
 					],
 				},
-				{ package: pkgs['@boost/decorators'] },
-				{ package: pkgs['@boost/terminal'] },
-				{ package: pkgs['@boost/test-utils'] },
+				{
+					package: pkgs['@beemo/config-constants'],
+				},
 			],
 		});
-
-		// expect(graph.resolveTree()).toEqual({
-		//   root: true,
-		//   nodes: [
-		//     {
-		//       package: pkgs['@beemo/dependency-graph'],
-		//       nodes: [
-		//         {
-		//           package: pkgs['@beemo/core'],
-		//           nodes: [
-		//             {
-		//               package: pkgs['@beemo/driver-babel'],
-		//               nodes: [
-		//                 {
-		//                   package: pkgs['@beemo/driver-jest'],
-		//                   nodes: [
-		//                     {
-		//                       package: pkgs['@beemo/local'],
-		//                     },
-		//                   ],
-		//                 },
-		//               ],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/driver-eslint'],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/driver-flow'],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/driver-mocha'],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/driver-prettier'],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/driver-typescript'],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/driver-webpack'],
-		//             },
-		//             {
-		//               package: pkgs['@beemo/cli'],
-		//             },
-		//           ],
-		//         },
-		//       ],
-		//     },
-		//   ],
-		// });
 	});
 
 	it('returns an empty array when no packages are defined', () => {
