@@ -3,7 +3,10 @@ import { requireTSModule } from './requireTSModule';
 import { ModuleLike, PathLike } from './types';
 import { isTypeScript } from './typescript';
 
-export function requireModule<T>(path: PathLike, requirer: NodeRequire = require): ModuleLike<T> {
+export function requireModule<D = unknown, N extends object = {}>(
+	path: PathLike,
+	requirer: NodeRequire = require,
+): ModuleLike<D, N> {
 	const filePath = String(path);
 
 	if (filePath.endsWith('.mjs')) {

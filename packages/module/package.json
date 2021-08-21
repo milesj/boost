@@ -53,7 +53,7 @@
     {
       "bundle": true,
       "inputs": {
-        "typescript": "src/loaders/typescript.ts"
+        "loader": "src/loaders/index.ts"
       },
       "format": "mjs",
       "platform": "node",

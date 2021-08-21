@@ -1,6 +1,7 @@
 // https://nodejs.org/api/esm.html#esm_loaders
 
 import fs from 'fs';
+import { LoaderGetFormat, LoaderResolve, LoaderTransformSource } from '../types';
 import {
 	COMPILER_OPTIONS,
 	getModuleFromNodeVersion,
@@ -18,11 +19,7 @@ async function loadTypeScript() {
 	}
 }
 
-export async function resolve(
-	specifier: string,
-	context: { conditions: string[]; parentURL?: string },
-	defaultResolve: typeof resolve,
-): Promise<{ url: string }> {
+export const resolve: LoaderResolve = async (specifier, context, defaultResolve) => {
 	if (isTypeScript(specifier)) {
 		return {
 			url: new URL(specifier, context.parentURL).href,
@@ -44,13 +41,9 @@ export async function resolve(
 	}
 
 	return defaultResolve(specifier, context, defaultResolve);
-}
+};
 
-export async function getFormat(
-	url: string,
-	context: object,
-	defaultGetFormat: typeof getFormat,
-): Promise<{ format: string }> {
+export const getFormat: LoaderGetFormat = async (url, context, defaultGetFormat) => {
 	if (isTypeScript(url)) {
 		return {
 			format: 'module',
@@ -58,13 +51,13 @@ export async function getFormat(
 	}
 
 	return defaultGetFormat(url, context, defaultGetFormat);
-}
+};
 
-export async function transformSource(
-	source: SharedArrayBuffer | Uint8Array | string,
-	context: { format: string; url: string },
-	defaultTransformSource: typeof transformSource,
-): Promise<{ source: string }> {
+export const transformSource: LoaderTransformSource = async (
+	source,
+	context,
+	defaultTransformSource,
+) => {
 	const { url } = context;
 
 	if (isTypeScript(url)) {
@@ -88,4 +81,4 @@ export async function transformSource(
 	}
 
 	return defaultTransformSource(source, context, defaultTransformSource);
-}
+};

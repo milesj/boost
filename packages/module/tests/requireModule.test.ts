@@ -19,23 +19,29 @@ jest.mock('../src/requireTSModule', () => ({
 describe('requireModule()', () => {
 	describe('commonjs', () => {
 		it('returns null value under default property', () => {
-			expect(requireModule('cjs-null')).toEqual({ default: null });
+			expect(requireModule<null>('cjs-null')).toEqual({ default: null });
 		});
 
 		it('returns primitive value under default property', () => {
-			expect(requireModule('cjs-default')).toEqual({ default: 123 });
+			expect(requireModule<123>('cjs-default')).toEqual({ default: 123 });
 		});
 
 		it('returns object under default property', () => {
-			expect(requireModule('cjs-default-object')).toEqual({ foo: 'bar', default: { foo: 'bar' } });
+			expect(requireModule<{ foo: string }>('cjs-default-object')).toEqual({
+				foo: 'bar',
+				default: { foo: 'bar' },
+			});
 		});
 
 		it('returns object with default property as-is', () => {
-			expect(requireModule('cjs-pseudo-default')).toEqual({ default: 123 });
+			expect(requireModule<123>('cjs-pseudo-default').default).toBe(123);
 		});
 
 		it('returns named vales as-is and on default property', () => {
-			expect(requireModule('cjs-named')).toEqual({ named: 'abc', default: { named: 'abc' } });
+			expect(requireModule<void, { named: string }>('cjs-named')).toEqual({
+				named: 'abc',
+				default: { named: 'abc' },
+			});
 		});
 	});
 
