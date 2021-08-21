@@ -16,6 +16,7 @@ export default {
 		'decorators/src/helpers/isParam.ts',
 		// Ignore these packages
 		'internal/src',
+		'module/src',
 		'terminal/src',
 		'test-utils/src',
 		'website/src',

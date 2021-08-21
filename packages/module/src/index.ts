@@ -6,3 +6,4 @@
 export * from './interopModule';
 export * from './requireModule';
 export * from './requireTSModule';
+export * from './types';

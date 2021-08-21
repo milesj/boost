@@ -131,7 +131,7 @@ module.exports = {
 						path: 'packages/module',
 						entry: {
 							index: 'src/index.ts',
-							typescript: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
+							loader: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
 						},
 					},
 				],
