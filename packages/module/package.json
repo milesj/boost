@@ -14,12 +14,10 @@
   "files": [
     "dts/**/*.d.ts",
     "lib/**/*.{js,map}",
-    "loader.d.ts",
     "loader.mjs",
+    "loader/**/*",
     "mjs/**/*.{mjs,map}",
-    "src/**/*.{ts,tsx,json}",
-    "typescript.d.ts",
-    "typescript.mjs"
+    "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
     "node": ">=10.3.0",

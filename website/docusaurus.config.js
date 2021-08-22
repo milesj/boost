@@ -127,13 +127,13 @@ module.exports = {
 							test: { path: 'src/test.ts', label: 'Test utilities' },
 						},
 					},
-					{
-						path: 'packages/module',
-						entry: {
-							index: 'src/index.ts',
-							loader: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
-						},
-					},
+					// {
+					// 	path: 'packages/module',
+					// 	entry: {
+					// 		index: 'src/index.ts',
+					// 		loader: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
+					// 	},
+					// },
 				],
 				exclude: ['**/themes/*', '**/website/*'],
 				minimal: true,

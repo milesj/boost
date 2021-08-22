@@ -1,4 +1,4 @@
-/** Shape of the `typescript` module. */
+/** @internal */
 export type TS = typeof import('typescript');
 
 /**
