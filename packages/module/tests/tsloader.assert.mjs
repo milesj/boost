@@ -26,62 +26,77 @@ function getFormatFixture(type) {
 	return getFixture(`format-${type}.${type}`);
 }
 
-// FORMATS
+async function test() {
+	// FORMATS
 
-// JS
-assert.deepEqual(unwrap(await import(getFormatFixture('js'))), { default: 'default' });
+	// JS
+	assert.deepEqual(unwrap(await import(getFormatFixture('js'))), { default: 'default' });
 
-// CJS
-assert.deepEqual(unwrap(await import(getFormatFixture('cjs'))), {
-	a: 1,
-	b: 2,
-	c: 3,
-	// Why???
-	default: {
+	// CJS
+	assert.deepEqual(
+		unwrap(await import(getFormatFixture('cjs'))),
+		parseFloat(process.version.slice(1)) < 12.2
+			? {
+					default: {
+						a: 1,
+						b: 2,
+						c: 3,
+					},
+			  }
+			: // Support for named exports in CommonJS was added in 12.20+
+			  {
+					a: 1,
+					b: 2,
+					c: 3,
+					default: {
+						a: 1,
+						b: 2,
+						c: 3,
+					},
+			  },
+	);
+
+	// MJS
+	assert.deepEqual(unwrap(await import(getFormatFixture('mjs'))), { default: 'default' });
+
+	// TS
+	assert.deepEqual(unwrap(await import(getFormatFixture('ts'))), { default: 'default' });
+
+	// TSX
+	assert.deepEqual(unwrap(await import(getFormatFixture('tsx'))), {
 		a: 1,
 		b: 2,
 		c: 3,
-	},
-});
+	});
 
-// MJS
-assert.deepEqual(unwrap(await import(getFormatFixture('mjs'))), { default: 'default' });
+	// TYPESCRIPT
 
-// TS
-assert.deepEqual(unwrap(await import(getFormatFixture('ts'))), { default: 'default' });
+	// Default exports only
+	assert.deepEqual(unwrap(await import(getFixture('default-export.ts'))), { default: 'default' });
 
-// TSX
-assert.deepEqual(unwrap(await import(getFormatFixture('tsx'))), {
-	a: 1,
-	b: 2,
-	c: 3,
-});
+	// Named exports only
+	assert.deepEqual(unwrap(await import(getFixture('named-exports.ts'))), {
+		a: 1,
+		b: 2,
+		c: 3,
+	});
 
-// TYPESCRIPT
+	// Default AND named exports
+	assert.deepEqual(unwrap(await import(getFixture('default-named-exports.ts'))), {
+		a: 1,
+		b: 2,
+		c: 3,
+		default: 'default',
+	});
 
-// Default exports only
-assert.deepEqual(unwrap(await import(getFixture('default-export.ts'))), { default: 'default' });
+	// Resolves nested imports
+	assert.deepEqual(unwrap(await import(getFixture('imports.ts'))), {
+		default: {
+			defaultExport: 'default',
+			defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
+			namedExports: { a: 1, b: 2, c: 3 },
+		},
+	});
+}
 
-// Named exports only
-assert.deepEqual(unwrap(await import(getFixture('named-exports.ts'))), {
-	a: 1,
-	b: 2,
-	c: 3,
-});
-
-// Default AND named exports
-assert.deepEqual(unwrap(await import(getFixture('default-named-exports.ts'))), {
-	a: 1,
-	b: 2,
-	c: 3,
-	default: 'default',
-});
-
-// Resolves nested imports
-assert.deepEqual(unwrap(await import(getFixture('imports.ts'))), {
-	default: {
-		defaultExport: 'default',
-		defaultNamedExports: { a: 1, b: 2, c: 3, default: 'default' },
-		namedExports: { a: 1, b: 2, c: 3 },
-	},
-});
+test().catch(console.error);

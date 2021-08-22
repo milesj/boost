@@ -1,2 +1,6 @@
 // This just tests that the CommonJS tools can be imported
-await import('../lib');
+async function test() {
+	await import('../lib');
+}
+
+test().catch(console.error);

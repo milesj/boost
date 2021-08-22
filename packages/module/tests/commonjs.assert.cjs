@@ -36,7 +36,7 @@ try {
 } catch (error) {
 	assert.equal(
 		error.message,
-		`Unable to require non-CommonJS file "${process.cwd()}/packages/module/tests/__fixtures__/format-mjs.mjs", use ES imports instead.`,
+		`Unable to require non-CommonJS file "${process.cwd()}/packages/module/tests/__fixtures__/format-mjs.mjs", use ESM imports instead.`,
 	);
 }
 
