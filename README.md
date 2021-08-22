@@ -19,6 +19,7 @@ applications, packages, and tooling.
   patterns.
 - [event](https://www.npmjs.com/package/@boost/event) - Sync or async based event emitters.
 - [log](https://www.npmjs.com/package/@boost/log) - Low-level system logging.
+- [module](https://www.npmjs.com/package/@boost/module) - Import custom file types at runtime.
 - [pipeline](https://www.npmjs.com/package/@boost/pipeline) - Serial or parallel based data
   pipelines.
 - [plugin](https://www.npmjs.com/package/@boost/plugin) - Plugin module registries and loading.
