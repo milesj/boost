@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9151],{2967:function(e){"use strict";e.exports=JSON.parse('{"id":836,"name":"createExtendsPredicate","nextId":842,"permalink":"/api/config/function/createExtendsPredicate"}')}}]);

@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1671],{5102:function(e){"use strict";e.exports=JSON.parse('{"id":2136,"name":"calculateWidth","nextId":2139,"permalink":"/api/terminal/function/calculateWidth","previousId":2132}')}}]);

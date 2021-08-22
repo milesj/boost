@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6761],{732:function(e){"use strict";e.exports=JSON.parse('{"id":2977,"name":"StyleProps","nextId":2193,"permalink":"/api/cli/interface/StyleProps","previousId":2642}')}}]);

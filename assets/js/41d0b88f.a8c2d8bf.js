@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[759],{2599:function(e){"use strict";e.exports=JSON.parse('{"id":570,"name":"LookupType","nextId":698,"permalink":"/api/common/enum/LookupType","previousId":5}')}}]);

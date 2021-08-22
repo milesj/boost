@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5978],{7012:function(e){"use strict";e.exports=JSON.parse('{"id":2116,"name":"screen","nextId":2165,"permalink":"/api/terminal/namespace/screen","previousId":2087}')}}]);

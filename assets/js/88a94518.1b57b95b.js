@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[89],{8387:function(e){"use strict";e.exports=JSON.parse('{"id":831,"name":"overwrite","nextId":865,"permalink":"/api/config/function/overwrite","previousId":827}')}}]);

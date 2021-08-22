@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4774],{1164:function(e){"use strict";e.exports=JSON.parse('{"id":3413,"name":"Transportable","nextId":3405,"permalink":"/api/log/interface/Transportable","previousId":3420}')}}]);
