@@ -52,7 +52,7 @@ function transformHandler(mod: Module, filePath: string) {
 }
 
 /**
- * Register `.ts` and `.tsx` file extensions into Node.js resolution algorithm.
+ * Register `.ts` and `.tsx` file extensions into Node.js's resolution algorithm.
  */
 export function registerExtensions() {
 	require.extensions['.ts'] = transformHandler;
