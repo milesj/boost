@@ -30,4 +30,5 @@ yarn add @boost/log
 
 ## Documentation
 
-[https://boostlib.dev/docs/log](https://boostlib.dev/docs/log)
+- [https://boostlib.dev/docs/log](https://boostlib.dev/docs/log)
+- [https://boostlib.dev/api/log](https://boostlib.dev/api/log)

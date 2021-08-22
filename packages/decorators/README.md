@@ -38,4 +38,5 @@ yarn add @boost/decorators
 
 ## Documentation
 
-[https://boostlib.dev/docs/decorators](https://boostlib.dev/docs/decorators)
+- [https://boostlib.dev/docs/decorators](https://boostlib.dev/docs/decorators)
+- [https://boostlib.dev/api/decorators](https://boostlib.dev/api/decorators)

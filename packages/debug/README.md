@@ -31,4 +31,5 @@ yarn add @boost/debug
 
 ## Documentation
 
-[https://boostlib.dev/docs/debug](https://boostlib.dev/docs/debug)
+- [https://boostlib.dev/docs/debug](https://boostlib.dev/docs/debug)
+- [https://boostlib.dev/api/debug](https://boostlib.dev/api/debug)

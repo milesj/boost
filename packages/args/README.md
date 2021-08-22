@@ -66,4 +66,5 @@ yarn add @boost/args
 
 ## Documentation
 
-[https://boostlib.dev/docs/args](https://boostlib.dev/docs/args)
+- [https://boostlib.dev/docs/args](https://boostlib.dev/docs/args)
+- [https://boostlib.dev/api/args](https://boostlib.dev/api/args)

@@ -41,4 +41,5 @@ yarn add @boost/plugin
 
 ## Documentation
 
-[https://boostlib.dev/docs/plugin](https://boostlib.dev/docs/plugin)
+- [https://boostlib.dev/docs/plugin](https://boostlib.dev/docs/plugin)
+- [https://boostlib.dev/api/plugin](https://boostlib.dev/api/plugin)

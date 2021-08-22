@@ -33,4 +33,5 @@ yarn add @boost/translate
 
 ## Documentation
 
-[https://boostlib.dev/docs/translate](https://boostlib.dev/docs/translate)
+- [https://boostlib.dev/docs/translate](https://boostlib.dev/docs/translate)
+- [https://boostlib.dev/api/translate](https://boostlib.dev/api/translate)
