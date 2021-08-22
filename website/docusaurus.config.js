@@ -131,8 +131,7 @@ module.exports = {
 						path: 'packages/module',
 						entry: {
 							index: 'src/index.ts',
-							// Causes OOM in GitHub???
-							// loader: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
+							loader: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
 						},
 					},
 				],

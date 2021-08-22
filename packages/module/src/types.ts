@@ -36,10 +36,15 @@ export interface ResolveResult {
 	url: string;
 }
 
+export type LoaderDefaultResolve = (
+	specifier: string,
+	context: ResolveContext,
+) => Promise<ResolveResult>;
+
 export type LoaderResolve = (
 	specifier: string,
 	context: ResolveContext,
-	defaultResolve: LoaderResolve,
+	defaultResolve: LoaderDefaultResolve,
 ) => Promise<ResolveResult>;
 
 export type GetFormatContext = Record<string, unknown>;
@@ -48,10 +53,15 @@ export interface GetFormatResult {
 	format: string;
 }
 
+export type LoaderDefaultGetFormat = (
+	url: string,
+	context: GetFormatContext,
+) => Promise<GetFormatResult>;
+
 export type LoaderGetFormat = (
 	url: string,
 	context: GetFormatContext,
-	defaultGetFormat: LoaderGetFormat,
+	defaultGetFormat: LoaderDefaultGetFormat,
 ) => Promise<GetFormatResult>;
 
 export interface TransformSourceContext {
@@ -63,8 +73,15 @@ export interface TransformSourceResult {
 	source: string;
 }
 
-export type LoaderTransformSource = (
-	source: SharedArrayBuffer | Uint8Array | string,
+export type TransformSourceType = SharedArrayBuffer | Uint8Array | string;
+
+export type LoaderDefaultTransformSource = (
+	source: TransformSourceType,
 	context: TransformSourceContext,
-	defaultTransformSource: LoaderTransformSource,
+) => Promise<TransformSourceResult>;
+
+export type LoaderTransformSource = (
+	source: TransformSourceType,
+	context: TransformSourceContext,
+	defaultTransformSource: LoaderDefaultTransformSource,
 ) => Promise<TransformSourceResult>;

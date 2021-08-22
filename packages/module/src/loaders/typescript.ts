@@ -40,7 +40,7 @@ export const resolve: LoaderResolve = async (specifier, context, defaultResolve)
 		}
 	}
 
-	return defaultResolve(specifier, context, defaultResolve);
+	return defaultResolve(specifier, context);
 };
 
 export const getFormat: LoaderGetFormat = async (url, context, defaultGetFormat) => {
@@ -50,7 +50,7 @@ export const getFormat: LoaderGetFormat = async (url, context, defaultGetFormat)
 		};
 	}
 
-	return defaultGetFormat(url, context, defaultGetFormat);
+	return defaultGetFormat(url, context);
 };
 
 export const transformSource: LoaderTransformSource = async (
@@ -80,5 +80,5 @@ export const transformSource: LoaderTransformSource = async (
 		};
 	}
 
-	return defaultTransformSource(source, context, defaultTransformSource);
+	return defaultTransformSource(source, context);
 };

@@ -15,7 +15,7 @@ const result = requireModule('./some/non-js/file.ts');
 Or with next-generation [loaders](https://nodejs.org/api/esm.html#esm_loaders).
 
 ```bash
-node --experimental-loader @boost/module/typescript.mjs ./path/to/entry-point.mjs
+node --experimental-loader @boost/module/loader.mjs ./path/to/entry-point.mjs
 ```
 
 ## Features
