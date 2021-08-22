@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "release": "1594765247526",
   "description": "A collection of common utilities, classes, and helpers.",
   "keywords": [
@@ -31,7 +31,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/decorators": "^2.1.3",
+    "@boost/decorators": "^2.1.4",
     "@boost/internal": "^2.2.3",
     "fast-glob": "^3.2.7",
     "json5": "^2.2.0",

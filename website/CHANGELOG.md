@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.2.0 - 2021-08-22
+
+#### 🎉 Release
+
+- Add new `@boost/module` package. (#159) ([c0dfdf5](https://github.com/milesj/boost/commit/c0dfdf5)), closes [#159](https://github.com/milesj/boost/issues/159)
+
+#### 📦 Dependencies
+
+- **[docusaurus-typedoc]** Update to latest and fix markdown rendering. ([0a46640](https://github.com/milesj/boost/commit/0a46640))
+
+#### 📘 Docs
+
+- Add TypeDoc API integration. (#157) ([ca6ac4b](https://github.com/milesj/boost/commit/ca6ac4b)), closes [#157](https://github.com/milesj/boost/issues/157)
+- Fix API index flash of content. ([fd200c0](https://github.com/milesj/boost/commit/fd200c0))
+
+**Note:** Version bump only for package website
+
+
+
+
+
 ### 0.1.1 - 2021-07-15
 
 #### 📘 Docs

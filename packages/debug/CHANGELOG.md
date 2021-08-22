@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 2.2.8 - 2021-08-22
+
+#### 📦 Dependencies
+
+- **[beemo-dev]** Update to latest configs. ([4e63a11](https://github.com/milesj/boost/commit/4e63a11))
+
+#### 📘 Docs
+
+- Add API links to each readme. ([80cc65f](https://github.com/milesj/boost/commit/80cc65f))
+- Add TypeDoc API integration. (#157) ([ca6ac4b](https://github.com/milesj/boost/commit/ca6ac4b)), closes [#157](https://github.com/milesj/boost/issues/157)
+- Fix broken badge images. ([ed85a88](https://github.com/milesj/boost/commit/ed85a88))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 2.2.7 - 2021-07-15
 
 **Note:** Version bump only for package @boost/debug
