@@ -1,0 +1,65 @@
+{
+  "name": "@boost/module",
+  "version": "2.0.0-alpha.0",
+  "description": "Module resolving and loading utilities with TypeScript support.",
+  "keywords": [
+    "boost",
+    "module",
+    "cjs",
+    "mjs",
+    "typescript"
+  ],
+  "main": "./lib/index.js",
+  "types": "./dts/index.d.ts",
+  "files": [
+    "dts/**/*.d.ts",
+    "lib/**/*.{js,map}",
+    "loader.mjs",
+    "loader/**/*",
+    "mjs/**/*.{mjs,map}",
+    "src/**/*.{ts,tsx,json}"
+  ],
+  "engines": {
+    "node": ">=10.3.0",
+    "npm": ">=6.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milesj/boost.git",
+    "directory": "packages/module"
+  },
+  "author": "Miles Johnson",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "typescript": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/milesjohnson"
+  },
+  "packemon": [
+    {
+      "bundle": true,
+      "format": "lib",
+      "platform": "node",
+      "support": "legacy"
+    },
+    {
+      "bundle": true,
+      "inputs": {
+        "loader": "src/loaders/index.ts"
+      },
+      "format": "mjs",
+      "platform": "node",
+      "support": "legacy"
+    }
+  ]
+}

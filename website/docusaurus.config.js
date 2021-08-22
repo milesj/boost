@@ -11,6 +11,7 @@ const pkgs = [
 	'decorators',
 	'event',
 	'log',
+	'module',
 	'pipeline',
 	'plugin',
 	'terminal',
@@ -115,21 +116,29 @@ module.exports = {
 					{
 						path: 'packages/debug',
 						entry: {
-							index: { path: 'src/index.ts', label: 'Index' },
+							index: 'src/index.ts',
 							test: { path: 'src/test.ts', label: 'Test utilities' },
 						},
 					},
 					{
 						path: 'packages/log',
 						entry: {
-							index: { path: 'src/index.ts', label: 'Index' },
+							index: 'src/index.ts',
 							test: { path: 'src/test.ts', label: 'Test utilities' },
 						},
 					},
+					{
+						path: 'packages/module',
+						entry: {
+							index: 'src/index.ts',
+							loader: { path: 'src/loaders/index.ts', label: 'ESM Loaders' },
+						},
+					},
 				],
-				exclude: ['**/themes/*', '**/website/*'],
 				minimal: true,
 				readmes: true,
+				debug: true,
+				tsconfigName: 'tsconfig.docs.json',
 			},
 		],
 	],
