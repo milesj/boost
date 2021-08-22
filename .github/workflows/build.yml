@@ -38,6 +38,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
       - run: yarn install --immutable
-      - run: yarn run build
-      - run: yarn run type
+      - run: yarn run pack
       - run: cd website && yarn run build
