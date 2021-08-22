@@ -18,4 +18,5 @@ yarn add @boost/common
 
 ## Documentation
 
-[https://boostlib.dev/docs/common](https://boostlib.dev/docs/common)
+- [https://boostlib.dev/docs/common](https://boostlib.dev/docs/common)
+- [https://boostlib.dev/api/common](https://boostlib.dev/api/common)

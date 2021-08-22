@@ -14,4 +14,5 @@ yarn add @boost/terminal
 
 ## Documentation
 
-[https://boostlib.dev/docs/terminal](https://boostlib.dev/docs/terminal)
+- [https://boostlib.dev/docs/terminal](https://boostlib.dev/docs/terminal)
+- [https://boostlib.dev/api/terminal](https://boostlib.dev/api/terminal)

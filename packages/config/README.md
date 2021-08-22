@@ -52,4 +52,5 @@ yarn add @boost/config
 
 ## Documentation
 
-[https://boostlib.dev/docs/config](https://boostlib.dev/docs/config)
+- [https://boostlib.dev/docs/config](https://boostlib.dev/docs/config)
+- [https://boostlib.dev/api/config](https://boostlib.dev/api/config)

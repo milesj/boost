@@ -29,4 +29,5 @@ yarn add @boost/event
 
 ## Documentation
 
-[https://boostlib.dev/docs/event](https://boostlib.dev/docs/event)
+- [https://boostlib.dev/docs/event](https://boostlib.dev/docs/event)
+- [https://boostlib.dev/api/event](https://boostlib.dev/api/event)

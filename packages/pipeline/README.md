@@ -34,4 +34,5 @@ yarn add @boost/pipeline
 
 ## Documentation
 
-[https://boostlib.dev/docs/pipeline](https://boostlib.dev/docs/pipeline)
+- [https://boostlib.dev/docs/pipeline](https://boostlib.dev/docs/pipeline)
+- [https://boostlib.dev/api/pipeline](https://boostlib.dev/api/pipeline)
