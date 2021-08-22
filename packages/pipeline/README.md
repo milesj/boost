@@ -1,7 +1,7 @@
 # Pipeline - Boost
 
 [![Build Status](https://github.com/milesj/boost/workflows/Build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
-[![npm version](https://badge.fury.io/js/%40boost%pipeline.svg)](https://www.npmjs.com/package/@boost/pipeline)
+[![npm version](https://badge.fury.io/js/%40boost%2Fpipeline.svg)](https://www.npmjs.com/package/@boost/pipeline)
 [![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/pipeline)](https://www.npmjs.com/package/@boost/pipeline)
 
 Pipe an input through a series of routines and tasks to produce an output, or simply, run logic in a
