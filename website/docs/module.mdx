@@ -8,9 +8,9 @@ import TabItem from '@theme/TabItem';
 
 <EnvBadges backend tooling api="/api/module" />
 
-Load and resolve custom file types at runtime with Node.js's classic `require` or next-generation
-[loaders](https://nodejs.org/api/esm.html#esm_loaders). Currently supports TypeScript for `.ts` and
-`.tsx` files.
+Load and resolve custom file types at runtime with a Node.js `require` replacement or
+next-generation [loaders](https://nodejs.org/api/esm.html#esm_loaders). Currently supports
+TypeScript for `.ts` and `.tsx` files.
 
 ## Installation
 
@@ -51,7 +51,7 @@ resolution. Begin by importing the function and importing
 ```ts
 import { requireModule } from '@boost/module';
 
-const result = require('./some/non-js/file');
+const result = requireModule('./some/non-js/file');
 ```
 
 > This function should only be used to import module-like files, like JavaScript and TypeScript. It
