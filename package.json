@@ -25,7 +25,7 @@
   "devDependencies": {
     "@beemo/cli": "^2.0.1",
     "@beemo/core": "^2.0.2",
-    "@beemo/dev": "^1.4.1",
+    "@beemo/dev": "^1.4.2",
     "@types/babel__core": "^7.1.15",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.12",
