@@ -11,6 +11,7 @@ View all changes for the [official releases](https://github.com/milesj/boost/rel
 - [@boost/event](./packages/event/CHANGELOG.md)
 - [@boost/internal](./packages/internal/CHANGELOG.md)
 - [@boost/log](./packages/log/CHANGELOG.md)
+- [@boost/module](./packages/module/CHANGELOG.md)
 - [@boost/pipeline](./packages/pipeline/CHANGELOG.md)
 - [@boost/plugin](./packages/plugin/CHANGELOG.md)
 - [@boost/terminal](./packages/terminal/CHANGELOG.md)
