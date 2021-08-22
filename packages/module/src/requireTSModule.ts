@@ -51,12 +51,18 @@ function transformHandler(mod: Module, filePath: string) {
 	mod._compile(code, filePath);
 }
 
-function registerExtensions() {
+/**
+ * Register `.ts` and `.tsx` file extensions into Node.js resolution algorithm.
+ */
+export function registerExtensions() {
 	require.extensions['.ts'] = transformHandler;
 	require.extensions['.tsx'] = transformHandler;
 }
 
-function unregisterExtensions() {
+/**
+ * Unregister `.ts` and `.tsx` file extensions.
+ */
+export function unregisterExtensions() {
 	delete require.extensions['.ts'];
 	delete require.extensions['.tsx'];
 }

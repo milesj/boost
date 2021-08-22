@@ -57,6 +57,11 @@ const result = requireModule('./some/non-js/file');
 > This function should only be used to import module-like files, like JavaScript and TypeScript. It
 > should _not_ be used for other file types, like JSON or YAML.
 
+If you'd prefer to _not_ use `requireModule()` and still use native `require()`, but also support
+custom file types, you may do so by calling
+[`registerExtensions()`](/api/module/function/registerExtensions) at the top of your script or
+application entry point.
+
 ### Module interoperability
 
 Unlike `require()` which returns imported values as-is, [`requireModule()`][requiremodule] changes
