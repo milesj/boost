@@ -4,8 +4,6 @@ import { Path } from '../Path';
 import { parse as parseJSON } from '../serializers/json';
 import { parse as parseYAML } from '../serializers/yaml';
 import { PortablePath } from '../types';
-import { requireModule } from './requireModule';
-import { requireTypedModule } from './requireTypedModule';
 
 /**
  * Can be used to *sync*hronously parse and return an object for the following
@@ -30,11 +28,9 @@ export function parseFile<T>(filePath: PortablePath): T {
 	switch (path.ext()) {
 		case '.js':
 		case '.jsx':
-			return requireModule(path);
-
 		case '.ts':
 		case '.tsx':
-			return requireTypedModule(path);
+			return require(path.path());
 
 		case '.json':
 		case '.json5':

@@ -9,6 +9,4 @@ export * from './isModuleName';
 export * from './isObject';
 export * from './isPlainObject';
 export * from './parseFile';
-export * from './requireModule';
-export * from './requireTypedModule';
 export * from './toArray';
