@@ -2043,6 +2043,7 @@ __metadata:
     "@boost/debug": ^3.0.0-alpha.0
     "@boost/event": ^3.0.0-alpha.0
     "@boost/internal": ^3.0.0-alpha.0
+    "@boost/module": ^3.0.0-alpha.0
     "@boost/test-utils": ^3.0.0-alpha.0
     minimatch: ^3.0.4
   languageName: unknown
@@ -2145,7 +2146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@boost/module@workspace:packages/module":
+"@boost/module@^3.0.0-alpha.0, @boost/module@workspace:packages/module":
   version: 0.0.0-use.local
   resolution: "@boost/module@workspace:packages/module"
   peerDependencies:
@@ -2209,6 +2210,7 @@ __metadata:
     "@boost/debug": ^3.0.0-alpha.0
     "@boost/event": ^3.0.0-alpha.0
     "@boost/internal": ^3.0.0-alpha.0
+    "@boost/module": ^3.0.0-alpha.0
     "@boost/test-utils": ^3.0.0-alpha.0
     "@types/pluralize": ^0.0.29
     lodash: ^4.17.21

@@ -1,7 +1,8 @@
 import path from 'path';
-import { isFilePath, isObject, MODULE_NAME_PART, PathResolver, requireModule } from '@boost/common';
+import { isFilePath, isObject, MODULE_NAME_PART, PathResolver } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
+import { requireModule } from '@boost/module';
 import { debug } from './debug';
 import { PluginError } from './PluginError';
 import { Registry } from './Registry';
@@ -104,7 +105,7 @@ export class Loader<Plugin extends Pluggable> {
 
 		this.debug('Loading %s from %s', color.moduleName(source), color.filePath(resolvedPath));
 
-		const factory: Factory<Plugin> = requireModule(resolvedPath);
+		const factory = requireModule<Factory<Plugin>>(resolvedPath).default;
 
 		if (typeof factory !== 'function') {
 			throw new PluginError('FACTORY_REQUIRED', [typeof factory]);
