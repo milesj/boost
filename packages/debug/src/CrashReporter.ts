@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
-import { FilePath, PackageStructure, PortablePath, requireModule, toArray } from '@boost/common';
+import { FilePath, PackageStructure, PortablePath, toArray } from '@boost/common';
 import { debug } from './debug';
 
 function run(command: string, args: string[]): string {
@@ -208,7 +208,7 @@ export class CrashReporter {
 				},
 			)
 			.forEach((pkgPath) => {
-				const pkg = requireModule<PackageStructure>(path.join(pkgPath, 'package.json'));
+				const pkg = require(path.join(pkgPath, 'package.json')) as PackageStructure;
 
 				map.set(pkg.name, pkg.version);
 			});

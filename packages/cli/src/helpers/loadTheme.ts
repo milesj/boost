@@ -1,4 +1,3 @@
-import { requireModule } from '@boost/common';
 import { env } from '@boost/internal';
 import { style } from '@boost/terminal';
 import { CLIError } from '../CLIError';
@@ -12,10 +11,10 @@ export function loadTheme(): ThemePalette {
 
 	if (style.level > 0 && !palette && !!theme) {
 		try {
-			palette = requireModule(`@boost/theme-${theme}`);
+			palette = require(`@boost/theme-${theme}`) as ThemePalette;
 		} catch {
 			try {
-				palette = requireModule(`boost-theme-${theme}`);
+				palette = require(`boost-theme-${theme}`) as ThemePalette;
 			} catch {
 				throw new CLIError('THEME_UNKNOWN', [theme]);
 			}
