@@ -1,6 +1,6 @@
 {
   "name": "@boost/module",
-  "version": "2.0.0",
+  "version": "3.0.0-alpha.0",
   "description": "Module resolving and loading utilities with TypeScript support.",
   "keywords": [
     "boost",
@@ -49,8 +49,7 @@
     {
       "bundle": true,
       "format": "lib",
-      "platform": "node",
-      "support": "legacy"
+      "platform": "node"
     },
     {
       "bundle": true,
@@ -58,8 +57,7 @@
         "loader": "src/loaders/index.ts"
       },
       "format": "mjs",
-      "platform": "node",
-      "support": "legacy"
+      "platform": "node"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "@boost/internal",
-  "version": "2.2.3",
+  "version": "3.0.0-alpha.0",
   "release": "1594765247526",
   "description": "Boost internals.",
   "keywords": [
