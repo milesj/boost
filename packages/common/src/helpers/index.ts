@@ -8,5 +8,4 @@ export * from './isFilePath';
 export * from './isModuleName';
 export * from './isObject';
 export * from './isPlainObject';
-export * from './parseFile';
 export * from './toArray';
