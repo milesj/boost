@@ -26,9 +26,9 @@ export type ModuleResolver = (path: ModuleName) => FilePath;
 
 // CLASSES
 
-export type AbstractConstructor<T> = Function & { prototype: T };
+export type AbstractConstructor<T> = abstract new (...args: any[]) => T;
 
-export type ConcreteConstructor<T> = new (...args: unknown[]) => T;
+export type ConcreteConstructor<T> = new (...args: any[]) => T;
 
 export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 
