@@ -36,6 +36,7 @@
     "@boost/debug": "^3.0.0-alpha.0",
     "@boost/event": "^3.0.0-alpha.0",
     "@boost/internal": "^3.0.0-alpha.0",
+    "@boost/module": "^3.0.0-alpha.0",
     "lodash": "^4.17.21",
     "pluralize": "^8.0.0"
   },
