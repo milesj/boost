@@ -1,4 +1,6 @@
+import fs from 'fs';
 import JSON from 'json5';
+import { PortablePath } from '../types';
 
 export type JSONReviver = (key: string, value: unknown) => unknown;
 
@@ -14,4 +16,8 @@ export function parse<T = object>(content: string, reviver?: JSONReviver): T {
 
 export function stringify(content: unknown, options: JSONStringifyOptions = {}): string {
 	return JSON.stringify(content, options);
+}
+
+export function load<T>(path: PortablePath): T {
+	return parse(fs.readFileSync(String(path), 'utf8'));
 }
