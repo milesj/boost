@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`parseFile() errors for unsupported extension 1`] = `"Unable to parse file \\"unknown.ext\\". Unsupported file extension. [CMN:PARSE_INVALID_EXT]"`;
-
-exports[`parseFile() errors if path is not absolute 1`] = `"An absolute file path is required. [CMN:PATH_REQUIRE_ABSOLUTE]"`;

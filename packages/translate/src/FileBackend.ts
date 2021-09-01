@@ -1,5 +1,5 @@
 import { BackendModule, Resource, ResourceKey } from 'i18next';
-import { Blueprint, Contract, parseFile, Path, Predicates } from '@boost/common';
+import { Blueprint, Contract, json, Path, Predicates, yaml } from '@boost/common';
 import { TranslateError } from './TranslateError';
 import { Format, Locale } from './types';
 
@@ -62,7 +62,23 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 				}
 
 				if (!isCached) {
-					this.fileCache.set(resPath, parseFile(resPath));
+					let content: ResourceKey;
+
+					switch (ext) {
+						case 'yml':
+						case 'yaml':
+							content = yaml.load(resPath);
+							break;
+						case 'json':
+						case 'json5':
+							content = json.load(resPath);
+							break;
+						default:
+							content = require(resPath.path()) as ResourceKey;
+							break;
+					}
+
+					this.fileCache.set(resPath, content);
 				}
 
 				Object.assign(resources, this.fileCache.get(resPath));

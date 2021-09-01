@@ -3,8 +3,9 @@
 import glob from 'fast-glob';
 import { Memoize } from '@boost/decorators';
 import { CommonError } from './CommonError';
-import { parseFile } from './helpers/parseFile';
 import { Path } from './Path';
+import * as json from './serializers/json';
+import * as yaml from './serializers/yaml';
 import {
 	FilePath,
 	PackageStructure,
@@ -52,7 +53,7 @@ export class Project {
 			throw new CommonError('PROJECT_NO_PACKAGE');
 		}
 
-		return parseFile<T>(pkgPath);
+		return json.load<T>(pkgPath);
 	}
 
 	/**
@@ -69,7 +70,7 @@ export class Project {
 
 		// Yarn
 		if (pkgPath.exists()) {
-			const pkg = parseFile<PackageStructure>(pkgPath);
+			const pkg = json.load<PackageStructure>(pkgPath);
 
 			if (pkg.workspaces) {
 				if (Array.isArray(pkg.workspaces)) {
@@ -82,7 +83,7 @@ export class Project {
 
 		// Lerna
 		if (workspacePaths.length === 0 && lernaPath.exists()) {
-			const lerna = parseFile<{ packages: string[] }>(lernaPath);
+			const lerna = json.load<{ packages: string[] }>(lernaPath);
 
 			if (Array.isArray(lerna.packages)) {
 				workspacePaths.push(...lerna.packages);
@@ -91,7 +92,7 @@ export class Project {
 
 		// PNPM
 		if (workspacePaths.length === 0 && pnpmPath.exists()) {
-			const pnpm = parseFile<{ packages: string[] }>(pnpmPath);
+			const pnpm = yaml.load<{ packages: string[] }>(pnpmPath);
 
 			if (Array.isArray(pnpm.packages)) {
 				workspacePaths.push(...pnpm.packages);
@@ -122,7 +123,7 @@ export class Project {
 
 				return {
 					metadata: this.createWorkspaceMetadata(filePath),
-					package: parseFile<T>(filePath),
+					package: json.load<T>(filePath),
 				};
 			});
 	}
