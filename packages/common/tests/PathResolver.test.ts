@@ -1,3 +1,4 @@
+import resolve from 'resolve';
 import {
 	copyFixtureToNodeModule,
 	getFixturePath,
@@ -44,7 +45,7 @@ describe('PathResolver', () => {
 			'@boost/common',
 		]);
 
-		expect(await resolver.resolvePath()).toEqual(new Path(require.resolve('@boost/common')));
+		expect(await resolver.resolvePath()).toEqual(new Path(resolve.sync('@boost/common')));
 	});
 
 	it('can utilize a custom resolver', async () => {
@@ -113,7 +114,7 @@ describe('PathResolver', () => {
 
 			expect(await resolver.resolve()).toEqual({
 				originalPath: new Path('@boost/common'),
-				resolvedPath: new Path(require.resolve('@boost/common')),
+				resolvedPath: new Path(resolve.sync('@boost/common')),
 				type: 'node-module',
 			});
 		});

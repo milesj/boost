@@ -201,17 +201,17 @@ describe('Registry', () => {
 					priority: DEFAULT_PRIORITY,
 				},
 				{
-					name: 'boost-test-renderer-foo',
-					plugin: expect.any(Object),
-					priority: DEFAULT_PRIORITY,
-				},
-				{
 					name: '@boost-test/renderer-bar',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
 				{
 					name: '@test/boost-test-renderer-baz',
+					plugin: expect.any(Object),
+					priority: DEFAULT_PRIORITY,
+				},
+				{
+					name: 'boost-test-renderer-foo',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
@@ -220,22 +220,22 @@ describe('Registry', () => {
 
 		it('loads plugins using a tuple with options', async () => {
 			fixtures.push(
-				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
-				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
-				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
+				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo2'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar2'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz2'),
 			);
 
 			await registry.loadMany(
 				[
 					// Short names
-					['foo', { value: 'foo' }],
-					'bar',
+					['foo2', { value: 'foo2' }],
+					'bar2',
 					// Full names
-					'boost-test-renderer-foo',
-					['@boost-test/renderer-bar', { value: 'bar' }],
+					'boost-test-renderer-foo2',
+					['@boost-test/renderer-bar2', { value: 'bar2' }],
 					// Full name with custom scope
-					'@test/boost-test-renderer-baz',
-					['@test/baz', false],
+					'@test/boost-test-renderer-baz2',
+					['@test/baz2', false],
 				],
 				{ tool },
 			);
@@ -243,32 +243,32 @@ describe('Registry', () => {
 			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
-					name: 'boost-test-renderer-foo',
+					name: 'boost-test-renderer-foo2',
+					plugin: expect.any(Object),
+					priority: DEFAULT_PRIORITY,
+				},
+				{
+					name: '@boost-test/renderer-bar2',
+					plugin: expect.any(Object),
+					priority: DEFAULT_PRIORITY,
+				},
+				{
+					name: '@boost-test/renderer-bar2',
 					plugin: expect.objectContaining({
-						options: { value: 'foo' },
+						options: { value: 'bar2' },
 					}),
 					priority: DEFAULT_PRIORITY,
 				},
 				{
-					name: '@boost-test/renderer-bar',
+					name: '@test/boost-test-renderer-baz2',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
 				{
-					name: 'boost-test-renderer-foo',
-					plugin: expect.any(Object),
-					priority: DEFAULT_PRIORITY,
-				},
-				{
-					name: '@boost-test/renderer-bar',
+					name: 'boost-test-renderer-foo2',
 					plugin: expect.objectContaining({
-						options: { value: 'bar' },
+						options: { value: 'foo2' },
 					}),
-					priority: DEFAULT_PRIORITY,
-				},
-				{
-					name: '@test/boost-test-renderer-baz',
-					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
 			]);
@@ -276,19 +276,19 @@ describe('Registry', () => {
 
 		it('loads plugins using an object with options', async () => {
 			fixtures.push(
-				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo'),
-				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar'),
-				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
+				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo3'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar3'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz3'),
 			);
 
 			await registry.loadMany(
 				{
 					// Short names
-					foo: { value: 'foo' },
+					foo3: { value: 'foo3' },
 					// Full names
-					'@boost-test/renderer-bar': { value: 'bar' },
+					'@boost-test/renderer-bar3': { value: 'bar3' },
 					// Full name enabled
-					'@test/baz': true,
+					'@test/baz3': true,
 					// Short name disabled
 					qux: false,
 				},
@@ -298,23 +298,23 @@ describe('Registry', () => {
 			// @ts-expect-error Allow access
 			expect(registry.plugins).toEqual([
 				{
-					name: 'boost-test-renderer-foo',
+					name: '@boost-test/renderer-bar3',
 					plugin: expect.objectContaining({
-						options: { value: 'foo' },
+						options: { value: 'bar3' },
 					}),
 					priority: 100,
 				},
 				{
-					name: '@boost-test/renderer-bar',
-					plugin: expect.objectContaining({
-						options: { value: 'bar' },
-					}),
-					priority: 100,
-				},
-				{
-					name: '@test/boost-test-renderer-baz',
+					name: '@test/boost-test-renderer-baz3',
 					plugin: expect.objectContaining({
 						options: {},
+					}),
+					priority: 100,
+				},
+				{
+					name: 'boost-test-renderer-foo3',
+					plugin: expect.objectContaining({
+						options: { value: 'foo3' },
 					}),
 					priority: 100,
 				},

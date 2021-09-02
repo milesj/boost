@@ -48,7 +48,7 @@ export interface ConfigFinderOptions<T> {
 	name: string;
 	/** Name of the setting in which "config overriding" is enabled. */
 	overridesSetting?: string;
-	/** Custom module resolver instead of `require.resolve`. */
+	/** Custom module resolver. */
 	resolver?: ModuleResolver;
 }
 

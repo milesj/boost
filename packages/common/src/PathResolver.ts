@@ -64,25 +64,26 @@ export class PathResolver {
 	/**
 	 * Given a list of lookups, attempt to find the first real/existing path and
 	 * return a resolved absolute path. If a file system path, will check using `fs.exists`.
-	 * If a node module path, will check using `require.resolve`.
+	 * If a node module path, will check using the provided resolver.
 	 */
 	async resolve(startDir?: PortablePath): Promise<ResolvedLookup> {
 		let resolvedPath: PortablePath = '';
 		let resolvedLookup: Lookup | undefined;
 
-		for await (const lookup of this.lookups) {
+		// TODO: Switch to Promise.any() in Node.js v15
+		for (const lookup of this.lookups) {
 			// Check that the file exists on the file system.
-			if (lookup.type === 'file-system') {
-				if (lookup.path.exists()) {
-					resolvedPath = lookup.path;
-					resolvedLookup = lookup;
-					break;
-				}
+			if (lookup.type === 'file-system' && lookup.path.exists()) {
+				resolvedPath = lookup.path;
+				resolvedLookup = lookup;
+				break;
+			}
 
-				// Check that the module path exists using Node's module resolution.
-				// The `require.resolve` function will throw an error if not found.
-			} else if (lookup.type === 'node-module') {
+			// Check that the module path exists using Node's module resolution.
+			// The resolver function will throw an error if not found.
+			if (lookup.type === 'node-module') {
 				try {
+					// eslint-disable-next-line no-await-in-loop
 					resolvedPath = await this.resolver(
 						lookup.path.path(),
 						startDir ? String(startDir) : undefined,
