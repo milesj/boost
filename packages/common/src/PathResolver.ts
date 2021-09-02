@@ -26,7 +26,7 @@ export class PathResolver {
 		this.lookups.push({
 			path: Path.resolve(filePath, cwd),
 			raw: Path.create(filePath),
-			type: LookupType.FILE_SYSTEM,
+			type: 'file-system',
 		});
 
 		return this;
@@ -41,7 +41,7 @@ export class PathResolver {
 		this.lookups.push({
 			path,
 			raw: path,
-			type: LookupType.NODE_MODULE,
+			type: 'node-module',
 		});
 
 		return this;
@@ -62,7 +62,7 @@ export class PathResolver {
 
 		this.lookups.some((lookup) => {
 			// Check that the file exists on the file system.
-			if (lookup.type === LookupType.FILE_SYSTEM) {
+			if (lookup.type === 'file-system') {
 				if (lookup.path.exists()) {
 					resolvedPath = lookup.path;
 					resolvedLookup = lookup;
@@ -72,7 +72,7 @@ export class PathResolver {
 
 				// Check that the module path exists using Node's module resolution.
 				// The `require.resolve` function will throw an error if not found.
-			} else if (lookup.type === LookupType.NODE_MODULE) {
+			} else if (lookup.type === 'node-module') {
 				try {
 					resolvedPath = this.resolver(lookup.path.path());
 					resolvedLookup = lookup;
@@ -86,7 +86,9 @@ export class PathResolver {
 
 		if (!resolvedPath || !resolvedLookup) {
 			throw new CommonError('PATH_RESOLVE_LOOKUPS', [
-				this.lookups.map((lookup) => `  - ${lookup.path} (${lookup.type})`).join('\n'),
+				this.lookups
+					.map((lookup) => `  - ${lookup.path} (${lookup.type.replace('-', ' ')})`)
+					.join('\n'),
 			]);
 		}
 
