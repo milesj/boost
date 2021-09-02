@@ -25,7 +25,7 @@ export interface ResolvedLookup {
 	type: LookupType;
 }
 
-export type ModuleResolver = (path: FilePath, startDir?: FilePath) => FilePath | Promise<FilePath>;
+export type ModuleResolver = (id: ModuleName, startDir?: FilePath) => FilePath | Promise<FilePath>;
 
 // CLASSES
 

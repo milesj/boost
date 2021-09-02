@@ -203,7 +203,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 
 		this.debug('Extracting configs to extend from');
 
-		for await (const { config, path, source } of configs) {
+		for (const { config, path, source } of configs) {
 			const key = extendsSetting as keyof T;
 			const extendsFrom = config[key] as ExtendsSetting | undefined;
 
