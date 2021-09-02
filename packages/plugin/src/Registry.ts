@@ -8,6 +8,7 @@ import {
 	MODULE_NAME_PATTERN,
 	ModuleName,
 	ModuleResolver,
+	PathResolver,
 	Predicates,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
@@ -95,7 +96,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 			afterStartup: func<Callback>(),
 			beforeShutdown: func<Callback>(),
 			beforeStartup: func<Callback>(),
-			resolver: func<ModuleResolver>(require.resolve).notNullable(),
+			resolver: func<ModuleResolver>(PathResolver.defaultResolver).notNullable(),
 			validate: func<Callback>().notNullable().required(),
 		};
 	}
