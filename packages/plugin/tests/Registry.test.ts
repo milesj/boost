@@ -1,6 +1,10 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
-import { DEFAULT_PRIORITY, Registry } from '../src';
+import { DEFAULT_PRIORITY, Registration, Registry } from '../src';
 import { createRendererRegistry, Renderable, Renderer } from './__fixtures__/Renderer';
+
+function sortByName(a: Registration<Renderable>, b: Registration<Renderable>) {
+	return a.name.localeCompare(b.name);
+}
 
 describe('Registry', () => {
 	const tool = { name: 'Tool', tool: true };
@@ -189,12 +193,9 @@ describe('Registry', () => {
 			);
 
 			// @ts-expect-error Allow access
-			expect(registry.plugins).toEqual([
-				{
-					name: 'boost-test-renderer-foo',
-					plugin: expect.any(Object),
-					priority: DEFAULT_PRIORITY,
-				},
+			const plugins = registry.plugins.sort(sortByName);
+
+			expect(plugins).toEqual([
 				{
 					name: '@boost-test/renderer-bar',
 					plugin: expect.any(Object),
@@ -207,6 +208,11 @@ describe('Registry', () => {
 				},
 				{
 					name: '@test/boost-test-renderer-baz',
+					plugin: expect.any(Object),
+					priority: DEFAULT_PRIORITY,
+				},
+				{
+					name: 'boost-test-renderer-foo',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
@@ -241,12 +247,9 @@ describe('Registry', () => {
 			);
 
 			// @ts-expect-error Allow access
-			expect(registry.plugins).toEqual([
-				{
-					name: 'boost-test-renderer-foo2',
-					plugin: expect.any(Object),
-					priority: DEFAULT_PRIORITY,
-				},
+			const plugins = registry.plugins.sort(sortByName);
+
+			expect(plugins).toEqual([
 				{
 					name: '@boost-test/renderer-bar2',
 					plugin: expect.any(Object),
@@ -261,6 +264,11 @@ describe('Registry', () => {
 				},
 				{
 					name: '@test/boost-test-renderer-baz2',
+					plugin: expect.any(Object),
+					priority: DEFAULT_PRIORITY,
+				},
+				{
+					name: 'boost-test-renderer-foo2',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
@@ -296,7 +304,9 @@ describe('Registry', () => {
 			);
 
 			// @ts-expect-error Allow access
-			expect(registry.plugins).toEqual([
+			const plugins = registry.plugins.sort(sortByName);
+
+			expect(plugins).toEqual([
 				{
 					name: '@boost-test/renderer-bar3',
 					plugin: expect.objectContaining({
@@ -338,7 +348,17 @@ describe('Registry', () => {
 			);
 
 			// @ts-expect-error Allow access
-			expect(registry.plugins).toEqual([
+			const plugins = registry.plugins.sort(sortByName);
+
+			expect(plugins).toEqual([
+				{
+					name: '@boost-test/renderer-bar',
+					plugin: expect.objectContaining({
+						options: { value: 'bar' },
+						render,
+					}),
+					priority: DEFAULT_PRIORITY,
+				},
 				{
 					name: '@test/boost-test-renderer-baz',
 					plugin: expect.objectContaining({
@@ -350,14 +370,6 @@ describe('Registry', () => {
 				{
 					name: 'boost-test-renderer-foo',
 					plugin: expect.objectContaining({ render }),
-					priority: DEFAULT_PRIORITY,
-				},
-				{
-					name: '@boost-test/renderer-bar',
-					plugin: expect.objectContaining({
-						options: { value: 'bar' },
-						render,
-					}),
 					priority: DEFAULT_PRIORITY,
 				},
 			]);
@@ -375,7 +387,14 @@ describe('Registry', () => {
 			await registry.loadMany([foo, bar, baz], { tool });
 
 			// @ts-expect-error Allow access
-			expect(registry.plugins).toEqual([
+			const plugins = registry.plugins.sort(sortByName);
+
+			expect(plugins).toEqual([
+				{
+					name: '@boost-test/renderer-bar',
+					plugin: bar,
+					priority: DEFAULT_PRIORITY,
+				},
 				{
 					name: '@test/boost-test-renderer-baz',
 					plugin: baz,
@@ -384,11 +403,6 @@ describe('Registry', () => {
 				{
 					name: 'boost-test-renderer-foo',
 					plugin: foo,
-					priority: DEFAULT_PRIORITY,
-				},
-				{
-					name: '@boost-test/renderer-bar',
-					plugin: bar,
 					priority: DEFAULT_PRIORITY,
 				},
 			]);
