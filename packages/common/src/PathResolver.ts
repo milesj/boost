@@ -1,6 +1,7 @@
+import doResolve from 'resolve';
 import { CommonError } from './CommonError';
 import { Path } from './Path';
-import { Lookup, LookupType, ModuleResolver, PortablePath } from './types';
+import { Lookup, ModuleResolver, PortablePath, ResolvedLookup } from './types';
 
 export class PathResolver {
 	private lookups: Lookup[] = [];
@@ -8,7 +9,20 @@ export class PathResolver {
 	private resolver: ModuleResolver;
 
 	constructor(resolver?: ModuleResolver) {
-		this.resolver = resolver ?? require.resolve;
+		this.resolver = resolver ?? PathResolver.defaultResolver;
+	}
+
+	static async defaultResolver(path: string, startDir?: string): Promise<string> {
+		return new Promise((resolve, reject) => {
+			// eslint-disable-next-line promise/prefer-await-to-callbacks
+			doResolve(path, { basedir: startDir, includeCoreModules: false }, (error, foundPath) => {
+				if (error || !foundPath) {
+					reject(error);
+				} else {
+					resolve(foundPath);
+				}
+			});
+		});
 	}
 
 	/**
@@ -50,39 +64,37 @@ export class PathResolver {
 	/**
 	 * Given a list of lookups, attempt to find the first real/existing path and
 	 * return a resolved absolute path. If a file system path, will check using `fs.exists`.
-	 * If a node module path, will check using `require.resolve`.
+	 * If a node module path, will check using the provided resolver.
 	 */
-	resolve(): {
-		originalPath: Path;
-		resolvedPath: Path;
-		type: LookupType;
-	} {
+	async resolve(startDir?: PortablePath): Promise<ResolvedLookup> {
 		let resolvedPath: PortablePath = '';
 		let resolvedLookup: Lookup | undefined;
 
-		this.lookups.some((lookup) => {
+		// TODO: Switch to Promise.any() in Node.js v15
+		for (const lookup of this.lookups) {
 			// Check that the file exists on the file system.
-			if (lookup.type === 'file-system') {
-				if (lookup.path.exists()) {
-					resolvedPath = lookup.path;
-					resolvedLookup = lookup;
-				} else {
-					return false;
-				}
-
-				// Check that the module path exists using Node's module resolution.
-				// The `require.resolve` function will throw an error if not found.
-			} else if (lookup.type === 'node-module') {
-				try {
-					resolvedPath = this.resolver(lookup.path.path());
-					resolvedLookup = lookup;
-				} catch {
-					return false;
-				}
+			if (lookup.type === 'file-system' && lookup.path.exists()) {
+				resolvedPath = lookup.path;
+				resolvedLookup = lookup;
+				break;
 			}
 
-			return true;
-		});
+			// Check that the module path exists using Node's module resolution.
+			// The resolver function will throw an error if not found.
+			if (lookup.type === 'node-module') {
+				try {
+					// eslint-disable-next-line no-await-in-loop
+					resolvedPath = await this.resolver(
+						lookup.path.path(),
+						startDir ? String(startDir) : undefined,
+					);
+					resolvedLookup = lookup;
+					break;
+				} catch {
+					// Display errors?
+				}
+			}
+		}
 
 		if (!resolvedPath || !resolvedLookup) {
 			throw new CommonError('PATH_RESOLVE_LOOKUPS', [
@@ -102,7 +114,7 @@ export class PathResolver {
 	/**
 	 * Like `resolve()` but only returns the resolved path.
 	 */
-	resolvePath(): Path {
-		return this.resolve().resolvedPath;
+	async resolvePath(): Promise<Path> {
+		return (await this.resolve()).resolvedPath;
 	}
 }

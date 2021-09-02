@@ -101,7 +101,7 @@ export class Loader<Plugin extends Pluggable> {
 	 * and with an optional options object.
 	 */
 	async load(source: Source, options: object = {}): Promise<Plugin> {
-		const { originalPath, resolvedPath } = this.createResolver(source).resolve();
+		const { originalPath, resolvedPath } = await this.createResolver(source).resolve();
 
 		this.debug('Loading %s from %s', color.moduleName(source), color.filePath(resolvedPath));
 

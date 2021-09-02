@@ -251,6 +251,9 @@ demonstrate below. Import and instantiate the class to begin.
 import { PathResolver } from '@boost/common';
 
 const resolver = new PathResolver();
+
+// With a custom module resolver (can be async!)
+const resolver = new PathResolver(customResolver);
 ```
 
 To add a file system lookup, use the
@@ -286,11 +289,12 @@ resolver.lookupNodeModule('tool-config-module/lib/configs/tool.js');
 Once all the lookup paths have been defined, the
 [`PathResolver#resolve()`](/api/common/class/PathResolver#resolve) method will iterate through them
 in order until one is found. If a file system path, `fs.existsSync()` will be used to check for
-existence, while `require.resolve()` will be used for Node.js modules. If found, a result object
-will be returned with the resolved [`Path`][path] and original lookup parts.
+existence, while the [`resolve`](https://www.npmjs.com/package/resolve) npm package will be used for
+Node.js modules. If found, a result object will be returned with the resolved [`Path`][path] and
+original lookup parts.
 
 ```ts
-const { originalPath, resolvedPath, type } = resolver.resolve();
+const { originalPath, resolvedPath, type } = await resolver.resolve();
 ```
 
 If you'd prefer to only have the resolved path returned, the
@@ -298,7 +302,7 @@ If you'd prefer to only have the resolved path returned, the
 instead.
 
 ```ts
-const resolvedPath = resolver.resolvePath();
+const resolvedPath = await resolver.resolvePath();
 ```
 
 [contract]: /api/common/class/Contract

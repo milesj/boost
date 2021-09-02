@@ -50,7 +50,7 @@ export interface RegistryOptions<T extends Pluggable> {
 	beforeShutdown?: Callback<T> | null;
 	/** Callback fired before a plugin's `startup` life cycle is executed. */
 	beforeStartup?: Callback<T> | null;
-	/** Custom module resolver instead of `require.resolve`. */
+	/** Custom module resolver. */
 	resolver?: ModuleResolver;
 	/** Validate the shape of the plugin being registered. */
 	validate: Callback<T>;

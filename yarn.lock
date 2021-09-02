@@ -1989,10 +1989,12 @@ __metadata:
     "@boost/decorators": ^3.0.0-alpha.0
     "@boost/internal": ^3.0.0-alpha.0
     "@boost/test-utils": ^3.0.0-alpha.0
+    "@types/resolve": ^1.20.1
     fast-glob: ^3.2.7
     json5: ^2.2.0
     optimal: ^4.3.0
     pretty-ms: ^7.0.1
+    resolve: ^1.20.0
     yaml: ^1.10.2
   peerDependencies:
     typescript: ^4.0.0
@@ -4691,6 +4693,13 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 8b3e543bcde1f244246dff0a73ef604880514799a9e8c0d1371d3ac79f0b6b1e5aef27fa28a5bb66991e28662764bc40bff926de07762e8d5ff480bb372dc1de
+  languageName: node
+  linkType: hard
+
+"@types/resolve@npm:^1.20.1":
+  version: 1.20.1
+  resolution: "@types/resolve@npm:1.20.1"
+  checksum: d035d5aaadbd455027fa9457a4a263563d49647f088876aebd2b0388d4c35400b85c0382fdc2ec5253c35442abfc2d25431c989345b97fefe26a367811214343
   languageName: node
   linkType: hard
 

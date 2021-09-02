@@ -7,6 +7,7 @@ import {
 	isModuleName,
 	PackageStructure,
 	Path,
+	PathResolver,
 	Predicates,
 	toArray,
 } from '@boost/common';
@@ -51,7 +52,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 			}).exact(),
 			name: string().required().camelCase(),
 			overridesSetting: string(),
-			resolver: func(require.resolve).notNullable(),
+			resolver: func(PathResolver.defaultResolver).notNullable(),
 		};
 	}
 
@@ -202,7 +203,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 
 		this.debug('Extracting configs to extend from');
 
-		configs.forEach(({ config, path, source }) => {
+		for (const { config, path, source } of configs) {
 			const key = extendsSetting as keyof T;
 			const extendsFrom = config[key] as ExtendsSetting | undefined;
 
@@ -211,40 +212,48 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 			} else if (extendsFrom) {
 				throw new ConfigError('EXTENDS_ONLY_ROOT', [key]);
 			} else {
-				return;
+				// eslint-disable-next-line no-continue
+				continue;
 			}
 
-			toArray(extendsFrom).forEach((extendsPath) => {
-				// Node module
-				if (isModuleName(extendsPath)) {
-					const modulePath = new Path(
-						extendsPath,
-						createFileName(name, 'js', { envSuffix: 'preset' }),
-					);
+			const extendedPaths = await Promise.all(
+				toArray(extendsFrom).map(async (extendsPath) => {
+					// Node module
+					if (isModuleName(extendsPath)) {
+						const modulePath = new Path(
+							extendsPath,
+							createFileName(name, 'js', { envSuffix: 'preset' }),
+						);
 
-					this.debug('Extending config from node module: %s', color.moduleName(modulePath.path()));
+						this.debug(
+							'Extending config from node module: %s',
+							color.moduleName(modulePath.path()),
+						);
 
-					extendsPaths.push(new Path(resolver(modulePath.path())));
-
-					// File path
-				} else if (isFilePath(extendsPath)) {
-					let filePath = new Path(extendsPath);
-
-					// Relative to the config file its defined in
-					if (!filePath.isAbsolute()) {
-						filePath = path.parent().append(extendsPath);
+						return new Path(await resolver(modulePath.path()));
 					}
 
-					this.debug('Extending config from file path: %s', color.filePath(filePath.path()));
+					// File path
+					if (isFilePath(extendsPath)) {
+						let filePath = new Path(extendsPath);
 
-					extendsPaths.push(filePath);
+						// Relative to the config file its defined in
+						if (!filePath.isAbsolute()) {
+							filePath = path.parent().append(extendsPath);
+						}
+
+						this.debug('Extending config from file path: %s', color.filePath(filePath.path()));
+
+						return filePath;
+					}
 
 					// Unknown
-				} else {
 					throw new ConfigError('EXTENDS_UNKNOWN_PATH', [extendsPath]);
-				}
-			});
-		});
+				}),
+			);
+
+			extendsPaths.push(...extendedPaths);
+		}
 
 		return Promise.all(extendsPaths.map((path) => this.loadConfig(path, 'extended')));
 	}
