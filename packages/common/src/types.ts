@@ -11,10 +11,7 @@ export type FilePath = string;
 
 export type PortablePath = FilePath | Path;
 
-export enum LookupType {
-	FILE_SYSTEM = 'FILE_SYSTEM',
-	NODE_MODULE = 'NODE_MODULE',
-}
+export type LookupType = 'file-system' | 'node-module';
 
 export interface Lookup {
 	path: Path;

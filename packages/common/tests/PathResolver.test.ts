@@ -4,7 +4,7 @@ import {
 	getNodeModulePath,
 	normalizePath,
 } from '@boost/test-utils';
-import { LookupType, Path, PathResolver } from '../src';
+import { Path, PathResolver } from '../src';
 
 describe('PathResolver', () => {
 	let resolver: PathResolver;
@@ -20,10 +20,10 @@ describe('PathResolver', () => {
 		resolver.lookupNodeModule('bar-baz');
 
 		const error = `Failed to resolve a path using the following lookups (in order):
-  - foo-bar (NODE_MODULE)
-  - ${normalizePath(process.cwd(), 'foo/bar')} (FILE_SYSTEM)
-  - ${normalizePath(process.cwd(), 'bar/baz')} (FILE_SYSTEM)
-  - bar-baz (NODE_MODULE)
+  - foo-bar (node module)
+  - ${normalizePath(process.cwd(), 'foo/bar')} (file system)
+  - ${normalizePath(process.cwd(), 'bar/baz')} (file system)
+  - bar-baz (node module)
  [CMN:PATH_RESOLVE_LOOKUPS]`;
 
 		expect(() => {
@@ -60,7 +60,7 @@ describe('PathResolver', () => {
 			expect(resolver.resolve()).toEqual({
 				originalPath: new Path('bar.js'),
 				resolvedPath: new Path(cwd, 'bar.js'),
-				type: LookupType.FILE_SYSTEM,
+				type: 'file-system',
 			});
 		});
 
@@ -94,7 +94,7 @@ describe('PathResolver', () => {
 			expect(resolver.resolve()).toEqual({
 				originalPath: new Path('@boost/common'),
 				resolvedPath: new Path(require.resolve('@boost/common')),
-				type: LookupType.NODE_MODULE,
+				type: 'node-module',
 			});
 		});
 
@@ -119,7 +119,7 @@ describe('PathResolver', () => {
 			expect(resolver.resolve()).toEqual({
 				originalPath: new Path('unknown'),
 				resolvedPath: new Path('custom'),
-				type: LookupType.NODE_MODULE,
+				type: 'node-module',
 			});
 		});
 	});
