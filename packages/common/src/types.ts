@@ -19,7 +19,13 @@ export interface Lookup {
 	type: LookupType;
 }
 
-export type ModuleResolver = (path: ModuleName) => FilePath;
+export interface ResolvedLookup {
+	originalPath: Path;
+	resolvedPath: Path;
+	type: LookupType;
+}
+
+export type ModuleResolver = (path: FilePath, startDir?: FilePath) => FilePath | Promise<FilePath>;
 
 // CLASSES
 
