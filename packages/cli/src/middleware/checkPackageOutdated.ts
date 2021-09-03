@@ -5,24 +5,28 @@ import { Middleware } from '../types';
 
 async function fetchPackageLatestVersion(name: string): Promise<string | undefined> {
 	return new Promise((resolve) => {
-		https.get(`https://registry.npmjs.org/${name}`, (resp) => {
-			let data = '';
+		const exit = () => {
+			// Instead of failing the process, return a fake response
+			resolve(undefined);
+		};
 
-			resp.on('data', (chunk) => {
-				data += String(chunk);
-			});
+		https
+			.get(`https://registry.npmjs.org/${name}`, (resp) => {
+				let data = '';
 
-			resp.on('end', () => {
-				const pkg = json.parse<{ 'dist-tags': Record<string, string> }>(data);
+				resp.on('data', (chunk) => {
+					data += String(chunk);
+				});
 
-				resolve(pkg['dist-tags']?.latest);
-			});
+				resp.on('end', () => {
+					const pkg = json.parse<{ 'dist-tags': Record<string, string> }>(data);
 
-			resp.on('error', () => {
-				// Instead of failing the process, return a fake response
-				resolve(undefined);
-			});
-		});
+					resolve(pkg['dist-tags']?.latest);
+				});
+
+				resp.on('error', exit);
+			})
+			.on('error', exit);
 	});
 }
 
