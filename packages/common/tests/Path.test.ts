@@ -7,10 +7,10 @@ describe('Path', () => {
 			expect(Path.create('./foo')).toEqual(new Path('./foo'));
 		});
 
-		it('returns instance as is', () => {
+		it('returns a new instance', () => {
 			const path = new Path('./foo');
 
-			expect(Path.create(path)).toBe(path);
+			expect(Path.create(path)).not.toBe(path);
 		});
 	});
 

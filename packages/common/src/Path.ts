@@ -5,25 +5,23 @@ import { FilePath, PortablePath } from './types';
 export class Path {
 	static DELIMITER = path.delimiter;
 
-	static SEP = '/';
+	static SEP = path.sep;
 
 	private internalPath: string = '';
 
 	constructor(...parts: PortablePath[]) {
-		// Always use forward slashes for better interop
-		this.internalPath = path.normalize(path.join(...parts.map(String))).replace(/\\/gu, Path.SEP);
+		this.internalPath = path.join(...parts.map(String));
 	}
 
 	/**
 	 * Create and return a new `Path` instance if a string.
-	 * If already a `Path`, return as is.
 	 */
 	static create(filePath: PortablePath): Path {
-		return filePath instanceof Path ? filePath : new Path(filePath);
+		return new Path(filePath);
 	}
 
 	/**
-	 * Like `create()` but also resolves the path against CWD.
+	 * Like `create()` but also resolves the path against a working directory.
 	 */
 	static resolve(filePath: PortablePath, cwd?: PortablePath): Path {
 		return Path.create(filePath).resolve(cwd);
@@ -105,7 +103,9 @@ export class Path {
 	 * Return the current path as a normalized string.
 	 */
 	path(): FilePath {
-		return this.internalPath;
+		const filePath = path.normalize(this.internalPath);
+
+		return filePath;
 	}
 
 	/**
@@ -134,7 +134,7 @@ export class Path {
 
 	/**
 	 * Return a new `Path` instance where the current path is accurately
-	 * resolved against the defined current working directory.
+	 * resolved against the defined working directory.
 	 */
 	resolve(cwd?: PortablePath): Path {
 		return new Path(path.resolve(String(cwd ?? process.cwd()), this.internalPath));
