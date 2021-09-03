@@ -2,7 +2,8 @@
 title: Prompts
 ---
 
-Prompts are specialized [React components](./components.md) for handling `process.stdin` input.
+Prompts are specialized [React components](./components.md) for handling `process.stdin` input. All
+components can be imported from `@boost/cli/react`.
 
 ## Confirm
 
