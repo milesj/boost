@@ -9,6 +9,8 @@ export class Path {
 
 	private internalPath: string = '';
 
+	private isNormalized: boolean = false;
+
 	constructor(...parts: PortablePath[]) {
 		this.internalPath =
 			parts.length === 1 ? String(parts[0]) || '.' : path.join(...parts.map(String));
@@ -104,16 +106,12 @@ export class Path {
 	 * Return the current path as a normalized string.
 	 */
 	path(): FilePath {
-		const filePath = path.normalize(this.internalPath);
-
-		// This is an escape hatch for easier testing!
-		// We can write our tests using nix style file paths,
-		// and it will "just work" on Windows without issue.
-		if (process.env.BOOSTJS_ENV === 'test') {
-			return filePath.replace(/\\/g, '/');
+		if (!this.isNormalized) {
+			this.internalPath = path.normalize(this.internalPath);
+			this.isNormalized = true;
 		}
 
-		return filePath;
+		return this.internalPath;
 	}
 
 	/**
