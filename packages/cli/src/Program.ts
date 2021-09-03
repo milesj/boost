@@ -1,5 +1,3 @@
-import React from 'react';
-import { render } from 'ink';
 import levenary from 'levenary';
 import {
 	ArgList,
@@ -275,6 +273,8 @@ export class Program extends CommandManager<ProgramOptions> {
 			this.rendering = true;
 		}
 
+		const { render } = await import('ink');
+		const { createElement } = await import('react');
 		const { Wrapper } = await import('./components/internal/Wrapper');
 		const { stdin, stdout, stderr } = this.streams;
 		const unpatchDebug = patchDebugModule();
@@ -283,15 +283,18 @@ export class Program extends CommandManager<ProgramOptions> {
 			this.onBeforeRender.emit([element]);
 
 			const output = await render(
-				<Wrapper
-					errBuffer={this.errBuffer}
-					exit={this.exit}
-					log={this.logger}
-					outBuffer={this.outBuffer}
-					program={this.options}
-				>
-					{element}
-				</Wrapper>,
+				createElement(
+					Wrapper,
+					{
+						children: element,
+						errBuffer: this.errBuffer,
+						exit: this.exit,
+						log: this.logger,
+						outBuffer: this.outBuffer,
+						program: this.options,
+					},
+					element,
+				),
 				{
 					debug: process.env.NODE_ENV === 'test',
 					exitOnCtrlC: true,
@@ -373,13 +376,14 @@ export class Program extends CommandManager<ProgramOptions> {
 	 * Should include banner, header, footer, and command (if applicable).
 	 */
 	protected async createIndex(): Promise<React.ReactElement> {
+		const { createElement } = await import('react');
 		const { IndexHelp } = await import('./components/IndexHelp');
 
 		if (this.standAlone) {
-			return (
-				<IndexHelp {...this.options}>
-					{await this.getCommand(this.standAlone)!.createHelp()}
-				</IndexHelp>
+			return createElement(
+				IndexHelp,
+				this.options,
+				await this.getCommand(this.standAlone)!.createHelp(),
 			);
 		}
 
@@ -394,15 +398,15 @@ export class Program extends CommandManager<ProgramOptions> {
 
 		const { Help } = await import('./components/Help');
 
-		return (
-			<IndexHelp {...this.options}>
-				<Help
-					categories={this.sharedCategories}
-					commands={mapCommandMetadata(commands)}
-					delimiter={this.options.delimiter}
-					header={msg('cli:labelAbout')}
-				/>
-			</IndexHelp>
+		return createElement(
+			IndexHelp,
+			this.options,
+			createElement(Help, {
+				categories: this.sharedCategories,
+				commands: mapCommandMetadata(commands),
+				delimiter: this.options.delimiter,
+				header: msg('cli:labelAbout'),
+			}),
 		);
 	}
 
@@ -486,16 +490,17 @@ export class Program extends CommandManager<ProgramOptions> {
 			throw error;
 		}
 
+		const { createElement } = await import('react');
 		const { Failure } = await import('./components/Failure');
 
 		return this.render(
-			<Failure
-				binName={this.options.bin}
-				commandLine={this.commandLine}
-				delimiter={this.options.delimiter}
-				error={error}
-				warnings={validErrors.filter((verror) => verror !== error)}
-			/>,
+			createElement(Failure, {
+				binName: this.options.bin,
+				commandLine: this.commandLine,
+				delimiter: this.options.delimiter,
+				error,
+				warnings: validErrors.filter((verror) => verror !== error),
+			}),
 			error instanceof ExitError ? error.code : EXIT_FAIL,
 		);
 	}

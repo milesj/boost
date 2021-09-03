@@ -1093,6 +1093,34 @@ BOOSTJS_CLI_THEME=nyan <program>
 When defining a theme, we'll attempt to load from `@boost/theme-<name>` or `boost-theme-<name>`,
 otherwise we throw an error. Third-party modules are currently not supported.
 
+## Performance improvements
+
+If your program feels sluggish, or startup cost is high, or time-to-first-render lagging, please try
+one of the following performance improvements.
+
+### Defer React imports
+
+To reduce startup costs, you can defer Ink, React, any React components or hooks, and any non-Boost
+related imports by utilizing `import()` (Boost also does this internally). By using this approach,
+you defer evaluation of these modules _until_ they are needed.
+
+The downside of this approach is that you _cannot_ use JSX syntax. However, this only applies _within_ commands, as standard components can import React and use JSX as normal.
+
+```ts
+import { Command } from '@boost/cli';
+
+export default class ExampleCommand extends Command {
+	async run() {
+		const { createElement } = await import('react');
+		const { ExampleComponent } = await import('./components/ExampleComponent');
+
+		const data = await loadDataFromSomeSource();
+
+		return createElement(ExampleComponent, { data });
+	}
+}
+```
+
 ## Test utilities
 
 A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
