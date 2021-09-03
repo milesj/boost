@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file, @typescript-eslint/consistent-type-assertions */
 
-import React from 'react';
 import execa, { Options as ExecaOptions } from 'execa';
 import {
 	ArgList,
@@ -175,19 +174,18 @@ export abstract class Command<
 	 */
 	async createHelp(): Promise<React.ReactElement> {
 		const metadata = this.getMetadata();
+		const { createElement } = await import('react');
 		const { Help } = await import('./components/Help');
 
-		return (
-			<Help
-				categories={metadata.categories}
-				commands={mapCommandMetadata(metadata.commands)}
-				config={metadata}
-				delimiter={this[INTERNAL_PROGRAM]?.options.delimiter}
-				header={metadata.path}
-				options={metadata.options}
-				params={metadata.params}
-			/>
-		);
+		return createElement(Help, {
+			categories: metadata.categories,
+			commands: mapCommandMetadata(metadata.commands),
+			config: metadata,
+			delimiter: this[INTERNAL_PROGRAM]?.options.delimiter,
+			header: metadata.path,
+			options: metadata.options,
+			params: metadata.params,
+		});
 	}
 
 	/**
@@ -313,11 +311,6 @@ export abstract class Command<
 	};
 
 	/**
-	 * Executed when the command is being ran.
-	 */
-	abstract run(...params: P): Promise<RunResult> | RunResult;
-
-	/**
 	 * Create a proxy command using itself as the super class.
 	 */
 	protected createProxyCommand<PO extends GlobalOptions, PP extends PrimitiveType[]>(
@@ -351,4 +344,9 @@ export abstract class Command<
 			throw new CLIError('COMMAND_INVALID_SUBPATH', [subPath, path]);
 		}
 	};
+
+	/**
+	 * Executed when the command is being ran.
+	 */
+	abstract run(...params: P): Promise<RunResult> | RunResult;
 }
