@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file, @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 
 import execa, { Options as ExecaOptions } from 'execa';
 import {
@@ -17,7 +17,6 @@ import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';
 import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
-import { Config } from './decorators/Config';
 import { mapCommandMetadata } from './helpers/mapCommandMetadata';
 import { getConstructor } from './metadata/getConstructor';
 import { getInheritedCategories } from './metadata/getInheritedCategories';
@@ -35,40 +34,9 @@ import {
 	ExitCode,
 	ExitHandler,
 	GlobalOptions,
-	ProxyCommandConfig,
-	ProxyCommandRunner,
 	RunResult,
 	TaskContext,
 } from './types';
-
-/**
- * Create a proxy command using itself as the super class.
- */
-export function createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
-	path: CommandPath,
-	proxyConfig: ProxyCommandConfig<O, P>,
-	runner: ProxyCommandRunner<O, P>,
-): Command<O, P> {
-	const { description, options, params, ...config } = proxyConfig;
-
-	@Config(path, description, config)
-	// eslint-disable-next-line @typescript-eslint/no-use-before-define
-	class ProxyCommand extends Command<O, P> {
-		run(): Promise<RunResult> | RunResult {
-			return runner.call(this, this[INTERNAL_OPTIONS]!, this[INTERNAL_PARAMS]!, this.rest);
-		}
-	}
-
-	if (options !== undefined) {
-		ProxyCommand.options = options;
-	}
-
-	if (params !== undefined) {
-		ProxyCommand.params = params;
-	}
-
-	return new ProxyCommand();
-}
 
 export abstract class Command<
 		O extends GlobalOptions = GlobalOptions,
@@ -309,17 +277,6 @@ export abstract class Command<
 
 		return task.apply(context, args);
 	};
-
-	/**
-	 * Create a proxy command using itself as the super class.
-	 */
-	protected createProxyCommand<PO extends GlobalOptions, PP extends PrimitiveType[]>(
-		path: CommandPath,
-		config: ProxyCommandConfig<PO, PP>,
-		runner: ProxyCommandRunner<PO, PP>,
-	): Command<PO, PP> {
-		return createProxyCommand(path, config, runner);
-	}
 
 	/**
 	 * Return the program instance or fail.

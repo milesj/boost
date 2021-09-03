@@ -2,14 +2,7 @@ import { ArgList, PrimitiveType } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
 import { CLIError } from './CLIError';
-import {
-	Commandable,
-	CommandMetadata,
-	CommandPath,
-	GlobalOptions,
-	ProxyCommandConfig,
-	ProxyCommandRunner,
-} from './types';
+import { Commandable, CommandMetadata, CommandPath } from './types';
 
 export abstract class CommandManager<Options extends object = {}> extends Contract<Options> {
 	/**
@@ -54,30 +47,8 @@ export abstract class CommandManager<Options extends object = {}> extends Contra
 	 * Register a command and its canonical path (must be unique),
 	 * otherwise an error is thrown.
 	 */
-	register(command: Commandable): this;
-
-	register<O extends object, P extends PrimitiveType[]>(
-		path: CommandPath,
-		config: ProxyCommandConfig<O, P>,
-		runner: ProxyCommandRunner<O, P>,
-	): this;
-
-	register(commandOrPath: Commandable | CommandPath, config?: unknown, runner?: unknown): this {
-		let command: Commandable;
-
-		if (
-			typeof commandOrPath === 'string' &&
-			typeof config !== 'undefined' &&
-			typeof runner === 'function'
-		) {
-			command = this.createProxyCommand(
-				commandOrPath,
-				config as ProxyCommandConfig<never, ArgList>,
-				runner as ProxyCommandRunner<never, ArgList>,
-			);
-		} else if (isObject(commandOrPath) && typeof commandOrPath.run === 'function') {
-			command = commandOrPath;
-		} else {
+	register(command: Commandable): this {
+		if (!isObject(command) || typeof command.run !== 'function') {
 			throw new CLIError('COMMAND_INVALID_REGISTER');
 		}
 
@@ -106,10 +77,4 @@ export abstract class CommandManager<Options extends object = {}> extends Contra
 			throw new CLIError('COMMAND_DEFINED', [path]);
 		}
 	}
-
-	protected abstract createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
-		path: CommandPath,
-		config: ProxyCommandConfig<O, P>,
-		runner: ProxyCommandRunner<O, P>,
-	): Commandable<O, P>;
 }

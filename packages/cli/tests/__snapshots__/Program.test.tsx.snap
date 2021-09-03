@@ -186,10 +186,6 @@ exports[`<Program /> help outputs help for a nested sub-command 3`] = `
 
 [1m[47m[30m COMMANDS [39m[49m[22m
 
- [1mSetup[22m
- client:uninstall    Uninstall a package
-
- [1mBuild[22m
  client:build        Build a project
 
 [1m[47m[30m OPTIONS [39m[49m[22m
@@ -426,28 +422,6 @@ Install!
 After run
 Return
 "
-`;
-
-exports[`<Program /> proxy commands outputs help when \`--help\` is passed 1`] = `
-"
-[1m[47m[30m BUILD [39m[49m[22m
-
- Build something
-
-[1m[47m[30m PARAMS [39m[49m[22m
-
- pkg [90mstring[39m  Package name [90m[required][39m
- … [90mstring[][39m
-
-[1m[47m[30m OPTIONS [39m[49m[22m
-
- -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path
-
- [1mGlobal[22m
- -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
- -v, --version        Display version number"
 `;
 
 exports[`<Program /> success can return an element that writes with ink 1`] = `"Hello!"`;

@@ -8,6 +8,7 @@ import { mockLogger } from '@boost/log/test';
 import {
 	Arg,
 	Command,
+	Config,
 	GlobalOptions,
 	INTERNAL_OPTIONS,
 	OptionConfigMap,
@@ -447,7 +448,6 @@ describe('<Program />', () => {
 				'client',
 				'client:build',
 				'client:install',
-				'client:uninstall',
 				'client:compile',
 			]);
 		});
@@ -476,128 +476,6 @@ describe('<Program />', () => {
 
 			expect(beforeSpy).toHaveBeenCalledWith('client', cmd);
 			expect(afterSpy).toHaveBeenCalledWith('client', cmd);
-		});
-	});
-
-	describe('proxy commands', () => {
-		let result: object;
-
-		beforeEach(() => {
-			program.register<{}, [string, ...string[]]>(
-				'build',
-				{
-					aliases: ['compile'],
-					allowVariadicParams: true,
-					description: 'Build something',
-					options: BuildClassicCommand.options,
-					params: InstallClassicCommand.params,
-				},
-				function build(this: TaskContext, opts, pms, rest) {
-					result = { opts, pms, rest };
-
-					this.log('Testing class logger');
-				},
-			);
-		});
-
-		it('registers and returns a command with path', () => {
-			const command = program.getCommand('build')!;
-
-			expect(command).toBeInstanceOf(Command);
-			expect(command.getMetadata()).toEqual({
-				aliases: ['compile'],
-				allowUnknownOptions: false,
-				allowVariadicParams: true,
-				categories: expect.any(Object),
-				category: '',
-				commands: {},
-				description: 'Build something',
-				deprecated: false,
-				hidden: false,
-				options: {
-					dst: {
-						default: undefined,
-						description: 'Destination path',
-						short: 'D',
-						type: 'string',
-					},
-					help: {
-						category: 'global',
-						default: false,
-						description: 'Display help and usage menu',
-						short: 'h',
-						type: 'boolean',
-					},
-					locale: {
-						category: 'global',
-						default: 'en',
-						description: 'Display output in the chosen locale',
-						type: 'string',
-						validate: expect.any(Function),
-					},
-					src: {
-						default: undefined,
-						description: 'Source path',
-						short: 'S',
-						type: 'string',
-					},
-					version: {
-						category: 'global',
-						default: false,
-						description: 'Display version number',
-						short: 'v',
-						type: 'boolean',
-					},
-				},
-				params: InstallClassicCommand.params,
-				path: 'build',
-				usage: '',
-			});
-		});
-
-		it('outputs help when `--help` is passed', async () => {
-			const { code, output } = await runProgram(program, ['build', '--help']);
-
-			expect(output).toMatchSnapshot();
-			expect(code).toBe(0);
-		});
-
-		it('renders failure when args parsing fails', async () => {
-			const { code, output } = await runProgram(program, ['build', '--foo']);
-
-			expect(output).toContain('Unknown option "--foo" found.');
-			expect(code).toBe(1);
-		});
-
-		it('passes correct args to run method', async () => {
-			await runProgram(program, [
-				'build',
-				'--src',
-				'./src',
-				'@boost/cli',
-				'@boost/terminal',
-				'--',
-				'foo',
-				'bar',
-			]);
-
-			expect(result).toEqual({
-				opts: {
-					dst: '',
-					help: false,
-					locale: 'en',
-					src: './src',
-					version: false,
-				},
-				pms: ['@boost/cli', '@boost/terminal'],
-				rest: ['foo', 'bar'],
-			});
-		});
-
-		it('supports logger and aliased paths', async () => {
-			const { code } = await runProgram(program, ['compile', 'foo/bar']);
-
-			expect(code).toBe(0);
 		});
 	});
 
@@ -1418,15 +1296,35 @@ describe('<Program />', () => {
 
 	describe('categories', () => {
 		it('applies categories to index help', async () => {
+			@Config('foo', 'Description', { category: 'bottom' })
+			class FooCommand extends Command {
+				run() {}
+			}
+
+			@Config('bar', 'Description', { category: 'top' })
+			class BarCommand extends Command {
+				run() {}
+			}
+
+			@Config('baz', 'Description', { category: 'global' })
+			class BazCommand extends Command {
+				run() {}
+			}
+
+			@Config('qux', 'Description')
+			class QuxCommand extends Command {
+				run() {}
+			}
+
 			program.categories({
 				top: { name: 'Top', weight: 50 },
 				bottom: 'Bottom',
 			});
 
-			program.register('foo', { category: 'bottom', description: 'Description' }, () => {});
-			program.register('bar', { category: 'top', description: 'Description' }, () => {});
-			program.register('baz', { category: 'global', description: 'Description' }, () => {});
-			program.register('qux', { description: 'Description' }, () => {});
+			program.register(new FooCommand());
+			program.register(new BarCommand());
+			program.register(new BazCommand());
+			program.register(new QuxCommand());
 
 			const { output } = await runProgram(program, ['--help']);
 

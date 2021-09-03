@@ -35,14 +35,6 @@ export class ClientCommand extends Command {
 
 		this.register(new ClientBuildCommand());
 		this.register(new ClientInstallCommand());
-		this.register(
-			'client:uninstall',
-			{
-				category: 'setup',
-				description: 'Uninstall a package',
-			},
-			() => {},
-		);
 	}
 
 	async run() {
