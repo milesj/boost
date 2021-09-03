@@ -802,47 +802,6 @@ Using the [`Command#render()`](/api/cli/class/Command#render) method allows for 
 different components to be rendered within the same run cycle. Returning a component will only
 use 1. However, both can be used together!
 
-### Shorthand registration
-
-Sometimes classes may be overkill for commands, so Boost offers a feature known as shorthand
-commands, where only objects and functions are used. To utilize shorthand commands, call either the
-[`Program#register()`](/api/cli/class/Program#register) or
-[`Command#register()`](/api/cli/class/Command#register) methods, with a unique path, settings object
-(config, options, params, etc), and run function.
-
-```ts
-import { Program, TaskContext } from '@boost/cli';
-
-interface BuildOptions {
-  minify: boolean;
-}
-
-type BuildParams = [string];
-
-program.register<BuildOptions, BuildParams>(
-  'build',
-  {
-    description: 'Build a project',
-    options: {
-      minify: { description: 'Minify source files', type: 'boolean' },
-    },
-    params: [
-      { description: 'Name of project', label: 'name', type: 'string' }
-    ]
-  },
-  function build(this: TaskContext, options: BuildOptions, params: BuildParams, rest: string[]) => {
-    // ...
-  },
-);
-```
-
-Besides a different API, the arguments to the run function are also different. Instead of spread
-params like in a class, they are an options object, list of params, and list of rest arguments
-respectively.
-
-> If you want to access the [logger](#logging), be sure to use a function declaration instead of an
-> anonymous function, so that context binding works correctly!
-
 ## Tasks
 
 Tasks are reusable functions that can be executed within any command, while gaining contextual and
@@ -1104,7 +1063,8 @@ To reduce startup costs, you can defer Ink, React, any React components or hooks
 related imports by utilizing `import()` (Boost also does this internally). By using this approach,
 you defer evaluation of these modules _until_ they are needed.
 
-The downside of this approach is that you _cannot_ use JSX syntax. However, this only applies _within_ commands, as standard components can import React and use JSX as normal.
+The downside of this approach is that you _cannot_ use JSX syntax. However, this only applies
+_within_ commands, as standard components can import React and use JSX as normal.
 
 ```ts
 import { Command } from '@boost/cli';

@@ -10,6 +10,7 @@
     "docs": "cd website && yarn run start",
     "lint": "beemo eslint",
     "format": "beemo prettier",
+    "test:in": "beemo jest",
     "test": "beemo jest && yarn run test:tsm && yarn run test:loader",
     "test:cli": "node ./packages/cli/examples/bin.js",
     "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.cjs",

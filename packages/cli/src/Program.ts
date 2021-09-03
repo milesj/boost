@@ -14,7 +14,7 @@ import { Event } from '@boost/event';
 import { env } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
 import { CLIError } from './CLIError';
-import { Command, createProxyCommand } from './Command';
+import { Command } from './Command';
 import { CommandManager } from './CommandManager';
 import {
 	DELIMITER,
@@ -44,8 +44,6 @@ import {
 	ProgramBootstrap,
 	ProgramOptions,
 	ProgramStreams,
-	ProxyCommandConfig,
-	ProxyCommandRunner,
 	RunResult,
 } from './types';
 
@@ -435,17 +433,6 @@ export class Program extends CommandManager<ProgramOptions> {
 		};
 
 		return next(argv);
-	}
-
-	/**
-	 * Create a proxy command using the `Command` class as the super class.
-	 */
-	protected createProxyCommand<O extends GlobalOptions, P extends PrimitiveType[]>(
-		path: CommandPath,
-		config: ProxyCommandConfig<O, P>,
-		runner: ProxyCommandRunner<O, P>,
-	): Command<O, P> {
-		return createProxyCommand(path, config, runner);
 	}
 
 	/**
