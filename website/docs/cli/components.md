@@ -2,7 +2,8 @@
 title: Components
 ---
 
-Boost provides the following components for use within your programs.
+Boost provides the following components for use within your programs. All components can be imported
+from `@boost/cli/react`.
 
 ## Header
 
