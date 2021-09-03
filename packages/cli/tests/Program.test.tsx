@@ -13,11 +13,10 @@ import {
 	OptionConfigMap,
 	Options,
 	Program,
-	ProgramContext,
 	TaskContext,
 	UnknownOptionMap,
-	useProgram,
 } from '../src';
+import { ProgramContext, useProgram } from '../src/react';
 import { MockReadStream, MockWriteStream, runProgram, runTask } from '../src/test';
 import { AllClassicCommand } from './__fixtures__/AllClassicCommand';
 import { options, params } from './__fixtures__/args';

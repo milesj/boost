@@ -15,6 +15,3 @@ export * from './Program';
 export * from './types';
 
 export { Arg, Config };
-
-// Remove in v3
-export * from './react';

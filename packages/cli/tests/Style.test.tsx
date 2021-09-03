@@ -1,6 +1,6 @@
 import React from 'react';
-import { Style } from '../src';
 import { loadTheme } from '../src/helpers/loadTheme';
+import { Style } from '../src/react';
 import { renderComponent } from '../src/test';
 
 jest.mock('term-size');
