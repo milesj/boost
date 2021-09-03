@@ -1,4 +1,4 @@
-import { SelectOptionLike } from '../src';
+import { SelectOptionLike } from '../src/react';
 
 export const KEYS = {
 	backspace: '\u0008',

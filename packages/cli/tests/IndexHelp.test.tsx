@@ -1,5 +1,5 @@
 import React from 'react';
-import { Help, IndexHelp } from '../src';
+import { Help, IndexHelp } from '../src/react';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__fixtures__/args';
 
