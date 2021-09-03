@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from '../src';
+import { Header } from '../src/react';
 import { renderComponent } from '../src/test';
 
 jest.mock('term-size');
