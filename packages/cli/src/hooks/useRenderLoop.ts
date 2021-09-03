@@ -1,9 +1,8 @@
+/* eslint-disable no-magic-numbers */
+
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-// eslint-disable-next-line no-magic-numbers
-const DEFAULT_FPS = 1000 / 30;
-
-export function useRenderLoop(fps: number = DEFAULT_FPS): () => void {
+export function useRenderLoop(fps: number = 30): () => void {
 	const [, forceUpdate] = useReducer((count: number) => count + 1, 0);
 	const timer = useRef<NodeJS.Timeout>();
 
@@ -14,7 +13,7 @@ export function useRenderLoop(fps: number = DEFAULT_FPS): () => void {
 	}, []);
 
 	useEffect(() => {
-		timer.current = setInterval(forceUpdate, fps);
+		timer.current = setInterval(forceUpdate, fps / 1000);
 
 		return clear;
 	}, [clear, fps]);
