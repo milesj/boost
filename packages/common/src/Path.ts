@@ -10,7 +10,8 @@ export class Path {
 	private internalPath: string = '';
 
 	constructor(...parts: PortablePath[]) {
-		this.internalPath = path.join(...parts.map(String));
+		this.internalPath =
+			parts.length === 1 ? String(parts[0]) || '.' : path.join(...parts.map(String));
 	}
 
 	/**
@@ -46,7 +47,7 @@ export class Path {
 	 * Return the extension (if applicable) with or without leading period.
 	 */
 	ext(withoutPeriod: boolean = false): string {
-		const ext = path.extname(this.internalPath);
+		const ext = path.extname(this.path());
 
 		return withoutPeriod && ext.startsWith('.') ? ext.slice(1) : ext;
 	}
@@ -55,35 +56,35 @@ export class Path {
 	 * Return true if the current path exists.
 	 */
 	exists(): boolean {
-		return fs.existsSync(this.internalPath);
+		return fs.existsSync(this.path());
 	}
 
 	/**
 	 * Return true if the current path is absolute.
 	 */
 	isAbsolute(): boolean {
-		return path.isAbsolute(this.internalPath);
+		return path.isAbsolute(this.path());
 	}
 
 	/**
 	 * Return true if the current path is a folder.
 	 */
 	isDirectory(): boolean {
-		return fs.statSync(this.internalPath).isDirectory();
+		return fs.statSync(this.path()).isDirectory();
 	}
 
 	/**
 	 * Return true if the current path is a file.
 	 */
 	isFile(): boolean {
-		return fs.statSync(this.internalPath).isFile();
+		return fs.statSync(this.path()).isFile();
 	}
 
 	/**
 	 * Return the file name (with optional extension) or folder name.
 	 */
 	name(withoutExtension: boolean = false): string {
-		let name = path.basename(this.internalPath);
+		let name = path.basename(this.path());
 
 		if (withoutExtension) {
 			name = name.replace(this.ext(), '');
@@ -104,6 +105,13 @@ export class Path {
 	 */
 	path(): FilePath {
 		const filePath = path.normalize(this.internalPath);
+
+		// This is an escape hatch for easier testing!
+		// We can write our tests using nix style file paths,
+		// and it will "just work" on Windows without issue.
+		if (process.env.BOOSTJS_ENV === 'test') {
+			return filePath.replace(/\\/g, '/');
+		}
 
 		return filePath;
 	}
@@ -129,7 +137,7 @@ export class Path {
 	 * "from" path to the defined "to" path.
 	 */
 	relativeTo(to: PortablePath): Path {
-		return new Path(path.relative(this.path(), String(to)));
+		return new Path(path.relative(this.internalPath, String(to)));
 	}
 
 	/**
