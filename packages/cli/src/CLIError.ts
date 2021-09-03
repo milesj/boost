@@ -2,7 +2,8 @@ import { createScopedError } from '@boost/internal';
 
 const errors = {
 	COMMAND_DEFINED: 'A command already exists with the canonical path "{0}".',
-	COMMAND_INVALID_REGISTER: 'Invalid command type being registered.',
+	COMMAND_INVALID_REGISTER:
+		'Invalid command type being registered. Must be a command instance with a `run()` method.',
 	COMMAND_INVALID_RUN: 'Failed to determine a command to run.',
 	COMMAND_INVALID_SUBPATH: 'Sub-command "{0}" must start with "{1}:".',
 	COMMAND_MIXED_DEFAULT:

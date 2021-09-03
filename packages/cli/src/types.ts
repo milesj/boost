@@ -146,20 +146,6 @@ export interface Commandable<O extends object = any, P extends PrimitiveType[] =
 	run: (...params: P) => Promise<RunResult> | RunResult;
 }
 
-// PROXY COMMANDS
-
-export interface ProxyCommandConfig<O extends object, P extends PrimitiveType[]>
-	extends Omit<CommandConfig, 'options' | 'params' | 'path'> {
-	options?: MapOptionConfig<O>;
-	params?: MapParamConfig<P>;
-}
-
-export type ProxyCommandRunner<O extends object, P extends PrimitiveType[]> = (
-	options: O,
-	params: P,
-	rest: string[],
-) => Promise<RunResult> | RunResult;
-
 // TASKS
 
 export type TaskContext<O extends GlobalOptions = GlobalOptions> = O & {
