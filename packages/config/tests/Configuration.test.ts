@@ -1,8 +1,9 @@
 import { Blueprint, Predicates } from '@boost/common';
+import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
 import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
-import { stubPath } from './helpers';
+import { mockSystemPath } from './helpers';
 
 interface BoostConfig {
 	debug: boolean;
@@ -94,7 +95,7 @@ describe('Configuration', () => {
 			config.onProcessedConfig.listen(processSpy);
 
 			const result = await config.loadConfigFromBranchToRoot(
-				`${tempRoot}/src/app/profiles/settings`,
+				normalizeSeparators(`${tempRoot}/src/app/profiles/settings`),
 			);
 			const expected = {
 				config: {
@@ -105,27 +106,27 @@ describe('Configuration', () => {
 				files: [
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { type: 'json' },
-						path: stubPath(`${tempRoot}/src/.boost.json`),
+						path: mockSystemPath(`${tempRoot}/src/.boost.json`),
 						source: 'branch',
 					},
 					{
 						config: { type: 'cjs' },
-						path: stubPath(`${tempRoot}/src/app/.boost.cjs`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.cjs`),
 						source: 'branch',
 					},
 					{
 						config: { type: 'js' },
-						path: stubPath(`${tempRoot}/src/app/profiles/.boost.js`),
+						path: mockSystemPath(`${tempRoot}/src/app/profiles/.boost.js`),
 						source: 'branch',
 					},
 					{
 						config: { type: 'yaml' },
-						path: stubPath(`${tempRoot}/src/app/profiles/settings/.boost.yaml`),
+						path: mockSystemPath(`${tempRoot}/src/app/profiles/settings/.boost.yaml`),
 						source: 'branch',
 					},
 				],
@@ -157,7 +158,7 @@ describe('Configuration', () => {
 				files: [
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 				],
@@ -178,22 +179,22 @@ describe('Configuration', () => {
 			config.onLoadedIgnore.listen(spy);
 
 			const result = await config.loadIgnoreFromBranchToRoot(
-				`${tempRoot}/src/app/feature/signup/flow`,
+				normalizeSeparators(`${tempRoot}/src/app/feature/signup/flow`),
 			);
 			const expected = [
 				{
 					ignore: ['*.log', '*.lock'],
-					path: stubPath(`${tempRoot}/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/.boostignore`),
 					source: 'root',
 				},
 				{
 					ignore: ['lib/'],
-					path: stubPath(`${tempRoot}/src/app/feature/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/src/app/feature/.boostignore`),
 					source: 'branch',
 				},
 				{
 					ignore: [],
-					path: stubPath(`${tempRoot}/src/app/feature/signup/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/src/app/feature/signup/.boostignore`),
 					source: 'branch',
 				},
 			];
@@ -215,7 +216,7 @@ describe('Configuration', () => {
 			const expected = [
 				{
 					ignore: ['*.log', '*.lock'],
-					path: stubPath(`${tempRoot}/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/.boostignore`),
 					source: 'root',
 				},
 			];

@@ -1,7 +1,8 @@
 import doResolve from 'resolve';
 import { CommonError } from './CommonError';
+import { ModulePath } from './ModulePath';
 import { Path } from './Path';
-import { Lookup, ModuleResolver, PortablePath, ResolvedLookup } from './types';
+import { Lookup, ModuleResolver, Pathable, PortablePath, ResolvedLookup } from './types';
 
 export class PathResolver {
 	private lookups: Lookup[] = [];
@@ -49,12 +50,10 @@ export class PathResolver {
 	/**
 	 * Add a Node.js module, either by name or relative path, to look for.
 	 */
-	lookupNodeModule(modulePath: PortablePath): this {
-		const path = Path.create(modulePath);
-
+	lookupNodeModule(moduleId: PortablePath): this {
 		this.lookups.push({
-			path,
-			raw: path,
+			path: ModulePath.create(moduleId),
+			raw: ModulePath.create(moduleId),
 			type: 'node-module',
 		});
 
@@ -73,7 +72,7 @@ export class PathResolver {
 		// TODO: Switch to Promise.any() in Node.js v15
 		for (const lookup of this.lookups) {
 			// Check that the file exists on the file system.
-			if (lookup.type === 'file-system' && lookup.path.exists()) {
+			if (lookup.type === 'file-system' && (lookup.path as Path).exists()) {
 				resolvedPath = lookup.path;
 				resolvedLookup = lookup;
 				break;
@@ -105,16 +104,16 @@ export class PathResolver {
 		}
 
 		return {
-			originalPath: resolvedLookup.raw,
+			originalSource: resolvedLookup.raw,
 			resolvedPath: Path.create(resolvedPath),
 			type: resolvedLookup.type,
 		};
 	}
 
 	/**
-	 * Like `resolve()` but only returns the resolved path.
+	 * Like `resolve()` but only returns the resolved file path.
 	 */
-	async resolvePath(): Promise<Path> {
+	async resolvePath(): Promise<Pathable> {
 		return (await this.resolve()).resolvedPath;
 	}
 }

@@ -1,6 +1,6 @@
 import glob from 'fast-glob';
 import { PackageGraph } from '../src/PackageGraph';
-import { Path } from '../src/Path';
+import { mockFilePath } from '../src/test';
 import { PackageStructure } from '../src/types';
 
 function getBeemoPackages() {
@@ -10,7 +10,7 @@ function getBeemoPackages() {
 	glob
 		.sync('*/package.json', {
 			absolute: true,
-			cwd: new Path(__dirname, '../../../node_modules/@beemo').path(),
+			cwd: mockFilePath(__dirname, '../../../node_modules/@beemo').path(),
 		})
 		.forEach((pkgPath) => {
 			const pkg = require(pkgPath);

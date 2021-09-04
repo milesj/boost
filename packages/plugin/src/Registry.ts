@@ -6,7 +6,7 @@ import {
 	Contract,
 	isObject,
 	MODULE_NAME_PATTERN,
-	ModuleName,
+	ModuleID,
 	ModuleResolver,
 	PathResolver,
 	Predicates,
@@ -105,7 +105,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	 * Format a name into a fully qualified and compatible Node/npm module name,
 	 * with the tool and type names being used as scopes and prefixes.
 	 */
-	formatModuleName(name: string, scoped: boolean = false): ModuleName {
+	formatModuleName(name: string, scoped: boolean = false): ModuleID {
 		if (scoped) {
 			return `@${this.projectName}/${this.singularName}-${name.toLocaleLowerCase()}`;
 		}
@@ -117,7 +117,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	 * Return a single registered plugin by module name. If the plugin cannot be found,
 	 * an error will be thrown.
 	 */
-	get<T extends Plugin = Plugin>(name: ModuleName): T {
+	get<T extends Plugin = Plugin>(name: ModuleID): T {
 		const container = this.plugins.find((c) => this.isMatchingName(c, name));
 
 		if (container) {
@@ -137,7 +137,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	/**
 	 * Return multiple registered plugins by module name.
 	 */
-	getMany(names: ModuleName[]): Plugin[] {
+	getMany(names: ModuleID[]): Plugin[] {
 		return names.map((name) => this.get(name));
 	}
 
@@ -213,7 +213,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	/**
 	 * Return true if a plugin has been registered.
 	 */
-	isRegistered(name: ModuleName): boolean {
+	isRegistered(name: ModuleID): boolean {
 		try {
 			this.get(name);
 
@@ -227,7 +227,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	 * Register a plugin and trigger startup with the provided tool.
 	 */
 	async register(
-		name: ModuleName,
+		name: ModuleID,
 		plugin: Plugin,
 		tool: Tool | undefined = undefined,
 		options: RegisterOptions<Tool> = {},
@@ -270,7 +270,7 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 	/**
 	 * Unregister a plugin by name and trigger shutdown process.
 	 */
-	async unregister(name: ModuleName, tool?: Tool): Promise<Plugin> {
+	async unregister(name: ModuleID, tool?: Tool): Promise<Plugin> {
 		const plugin = this.get(name);
 
 		this.onBeforeUnregister.emit([plugin]);

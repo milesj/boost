@@ -1,8 +1,9 @@
 import { EOL } from 'os';
+import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';
 import { IgnoreFinder } from '../src/IgnoreFinder';
-import { stubPath } from './helpers';
+import { mockSystemPath } from './helpers';
 
 describe('IgnoreFinder', () => {
 	let cache: Cache;
@@ -24,24 +25,26 @@ describe('IgnoreFinder', () => {
 	it('caches root, file, and directory information', async () => {
 		const tempRoot = getFixturePath('config-ignore-file-tree');
 
-		await finder.loadFromBranchToRoot(`${tempRoot}/src/app/feature/signup/flow`);
+		await finder.loadFromBranchToRoot(
+			normalizeSeparators(`${tempRoot}/src/app/feature/signup/flow`),
+		);
 
-		expect(cache.rootDir).toEqual(stubPath(tempRoot));
-		expect(cache.configDir).toEqual(stubPath(`${tempRoot}/.config`));
-		expect(cache.pkgPath).toEqual(stubPath(`${tempRoot}/package.json`));
+		expect(cache.rootDir).toEqual(mockSystemPath(tempRoot));
+		expect(cache.configDir).toEqual(mockSystemPath(`${tempRoot}/.config`));
+		expect(cache.pkgPath).toEqual(mockSystemPath(`${tempRoot}/package.json`));
 		expect(cache.dirFilesCache).toEqual({});
 		expect(cache.fileContentCache).toEqual({
-			[stubPath(`${tempRoot}/.boostignore`).path()]: {
+			[mockSystemPath(`${tempRoot}/.boostignore`).path()]: {
 				content: `*.log${EOL}*.lock`,
 				exists: true,
 				mtime: expect.any(Number),
 			},
-			[stubPath(`${tempRoot}/src/app/feature/.boostignore`).path()]: {
+			[mockSystemPath(`${tempRoot}/src/app/feature/.boostignore`).path()]: {
 				content: `# Compiled${EOL}lib/`,
 				exists: true,
 				mtime: expect.any(Number),
 			},
-			[stubPath(`${tempRoot}/src/app/feature/signup/.boostignore`).path()]: {
+			[mockSystemPath(`${tempRoot}/src/app/feature/signup/.boostignore`).path()]: {
 				content: '# Empty',
 				exists: true,
 				mtime: expect.any(Number),
@@ -54,18 +57,18 @@ describe('IgnoreFinder', () => {
 			const tempRoot = getFixturePath('config-ignore-file-tree');
 
 			const files = await finder.loadFromBranchToRoot(
-				`${tempRoot}/src/app/components/build/Button.tsx`,
+				normalizeSeparators(`${tempRoot}/src/app/components/build/Button.tsx`),
 			);
 
 			expect(files).toEqual([
 				{
 					ignore: ['*.log', '*.lock'],
-					path: stubPath(`${tempRoot}/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/.boostignore`),
 					source: 'root',
 				},
 				{
 					ignore: ['esm/'],
-					path: stubPath(`${tempRoot}/src/app/components/build/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/src/app/components/build/.boostignore`),
 					source: 'branch',
 				},
 			]);
@@ -74,22 +77,24 @@ describe('IgnoreFinder', () => {
 		it('returns all ignore files from a target folder', async () => {
 			const tempRoot = getFixturePath('config-ignore-file-tree');
 
-			const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app/feature/signup/flow/`);
+			const files = await finder.loadFromBranchToRoot(
+				normalizeSeparators(`${tempRoot}/src/app/feature/signup/flow/`),
+			);
 
 			expect(files).toEqual([
 				{
 					ignore: ['*.log', '*.lock'],
-					path: stubPath(`${tempRoot}/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/.boostignore`),
 					source: 'root',
 				},
 				{
 					ignore: ['lib/'],
-					path: stubPath(`${tempRoot}/src/app/feature/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/src/app/feature/.boostignore`),
 					source: 'branch',
 				},
 				{
 					ignore: [],
-					path: stubPath(`${tempRoot}/src/app/feature/signup/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/src/app/feature/signup/.boostignore`),
 					source: 'branch',
 				},
 			]);
@@ -105,7 +110,7 @@ describe('IgnoreFinder', () => {
 			expect(files).toEqual([
 				{
 					ignore: ['*.log', '*.lock'],
-					path: stubPath(`${tempRoot}/.boostignore`),
+					path: mockSystemPath(`${tempRoot}/.boostignore`),
 					source: 'root',
 				},
 			]);
@@ -114,7 +119,7 @@ describe('IgnoreFinder', () => {
 		it('errors if not root folder', async () => {
 			const tempRoot = getFixturePath('config-ignore-file-tree');
 
-			await expect(finder.loadFromRoot(`${tempRoot}/src`)).rejects.toThrow(
+			await expect(finder.loadFromRoot(normalizeSeparators(`${tempRoot}/src`))).rejects.toThrow(
 				'Invalid configuration root. Requires a `.config` folder and `package.json`.',
 			);
 		});

@@ -5,12 +5,20 @@ import path from 'path';
 import fs from 'fs-extra';
 import { DirectoryStructure } from './types';
 
-const FIXTURES_DIR = path.join(process.cwd(), 'tests/__fixtures__');
+const FIXTURES_DIR = path.join(process.cwd(), 'tests', '__fixtures__');
 
 const TEMPORARY_FILES = new Set<string>();
 
+function normalizeSeparators(part: string) {
+	if (process.platform === 'win32') {
+		return part.replace(/\//g, '\\');
+	}
+
+	return part.replace(/\\/g, '/');
+}
+
 export function normalizePath(...parts: string[]): string {
-	return path.normalize(path.join(...parts)).replace(/\\/gu, '/');
+	return path.normalize(path.join(...parts.map(normalizeSeparators)));
 }
 
 export function getFixturePath(fixture: string, file: string = ''): string {

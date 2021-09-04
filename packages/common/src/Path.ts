@@ -1,29 +1,33 @@
 import fs from 'fs';
 import path from 'path';
-import { FilePath, PortablePath } from './types';
+import { FilePath, Pathable, PortablePath } from './types';
 
-export class Path {
+/**
+ * An immutable class for operating on file system paths.
+ */
+export class Path implements Pathable {
 	static DELIMITER = path.delimiter;
 
-	static SEP = '/';
+	static SEP = path.sep;
 
 	private internalPath: string = '';
 
+	private isNormalized: boolean = false;
+
 	constructor(...parts: PortablePath[]) {
-		// Always use forward slashes for better interop
-		this.internalPath = path.normalize(path.join(...parts.map(String))).replace(/\\/gu, Path.SEP);
+		this.internalPath =
+			parts.length === 1 ? String(parts[0]) || '.' : path.join(...parts.map(String));
 	}
 
 	/**
-	 * Create and return a new `Path` instance if a string.
-	 * If already a `Path`, return as is.
+	 * Create and return a new `Path` instance.
 	 */
 	static create(filePath: PortablePath): Path {
-		return filePath instanceof Path ? filePath : new Path(filePath);
+		return new Path(filePath);
 	}
 
 	/**
-	 * Like `create()` but also resolves the path against CWD.
+	 * Like `create()` but also resolves the path against a working directory.
 	 */
 	static resolve(filePath: PortablePath, cwd?: PortablePath): Path {
 		return Path.create(filePath).resolve(cwd);
@@ -48,7 +52,7 @@ export class Path {
 	 * Return the extension (if applicable) with or without leading period.
 	 */
 	ext(withoutPeriod: boolean = false): string {
-		const ext = path.extname(this.internalPath);
+		const ext = path.extname(this.path());
 
 		return withoutPeriod && ext.startsWith('.') ? ext.slice(1) : ext;
 	}
@@ -57,35 +61,35 @@ export class Path {
 	 * Return true if the current path exists.
 	 */
 	exists(): boolean {
-		return fs.existsSync(this.internalPath);
+		return fs.existsSync(this.path());
 	}
 
 	/**
 	 * Return true if the current path is absolute.
 	 */
 	isAbsolute(): boolean {
-		return path.isAbsolute(this.internalPath);
+		return path.isAbsolute(this.path());
 	}
 
 	/**
 	 * Return true if the current path is a folder.
 	 */
 	isDirectory(): boolean {
-		return fs.statSync(this.internalPath).isDirectory();
+		return fs.statSync(this.path()).isDirectory();
 	}
 
 	/**
 	 * Return true if the current path is a file.
 	 */
 	isFile(): boolean {
-		return fs.statSync(this.internalPath).isFile();
+		return fs.statSync(this.path()).isFile();
 	}
 
 	/**
 	 * Return the file name (with optional extension) or folder name.
 	 */
 	name(withoutExtension: boolean = false): string {
-		let name = path.basename(this.internalPath);
+		let name = path.basename(this.path());
 
 		if (withoutExtension) {
 			name = name.replace(this.ext(), '');
@@ -105,6 +109,11 @@ export class Path {
 	 * Return the current path as a normalized string.
 	 */
 	path(): FilePath {
+		if (!this.isNormalized) {
+			this.isNormalized = true;
+			this.internalPath = path.normalize(this.internalPath);
+		}
+
 		return this.internalPath;
 	}
 
@@ -129,12 +138,12 @@ export class Path {
 	 * "from" path to the defined "to" path.
 	 */
 	relativeTo(to: PortablePath): Path {
-		return new Path(path.relative(this.path(), String(to)));
+		return new Path(path.relative(this.internalPath, String(to)));
 	}
 
 	/**
 	 * Return a new `Path` instance where the current path is accurately
-	 * resolved against the defined current working directory.
+	 * resolved against the defined working directory.
 	 */
 	resolve(cwd?: PortablePath): Path {
 		return new Path(path.resolve(String(cwd ?? process.cwd()), this.internalPath));
