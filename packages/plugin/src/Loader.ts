@@ -101,9 +101,13 @@ export class Loader<Plugin extends Pluggable> {
 	 * and with an optional options object.
 	 */
 	async load(source: Source, options: object = {}): Promise<Plugin> {
-		const { originalPath, resolvedPath } = await this.createResolver(source).resolve();
+		const { originalSource, resolvedPath } = await this.createResolver(source).resolve();
 
-		this.debug('Loading %s from %s', color.moduleName(source), color.filePath(resolvedPath));
+		this.debug(
+			'Loading %s from %s',
+			color.moduleName(originalSource),
+			color.filePath(resolvedPath),
+		);
 
 		const factory = requireModule<Factory<Plugin>>(resolvedPath).default;
 
@@ -114,8 +118,8 @@ export class Loader<Plugin extends Pluggable> {
 		const plugin = await factory(options);
 
 		if (isObject(plugin) && !plugin.name) {
-			// @ts-expect-error Allow this
-			plugin.name = originalPath.path();
+			// @ts-expect-error Allow readonly overwrite
+			plugin.name = originalSource.path();
 		}
 
 		return plugin;

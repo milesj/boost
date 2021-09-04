@@ -21,13 +21,9 @@ describe('Loader', () => {
 			it('adds unix absolute path', () => {
 				const resolver = loader.createResolver('/foo/bar/baz.js');
 
-				// This only matches for GitHub actions, but we'll worry about it later
-				// eslint-disable-next-line jest/no-if
-				if (process.platform === 'win32') {
-					expect(resolver.getLookupPaths()).toEqual(['D:/foo/bar/baz.js']);
-				} else {
-					expect(resolver.getLookupPaths()).toEqual(['/foo/bar/baz.js']);
-				}
+				expect(resolver.getLookupPaths()).toEqual([
+					process.platform === 'win32' ? 'D:\\foo\\bar\\baz.js' : '/foo/bar/baz.js',
+				]);
 			});
 
 			it('adds relative path', () => {

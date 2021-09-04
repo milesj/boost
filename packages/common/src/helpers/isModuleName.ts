@@ -1,6 +1,6 @@
 import { builtinModules } from 'module';
 import { MODULE_NAME_PATTERN } from '../constants';
-import { ModuleName } from '../types';
+import { ModuleID } from '../types';
 
 const RESERVED = new Set([...builtinModules, 'node_modules', 'favicon.ico']);
 
@@ -18,7 +18,7 @@ const RESERVED = new Set([...builtinModules, 'node_modules', 'favicon.ico']);
  * isModuleName('fs'); // false
  * ```
  */
-export function isModuleName(name: ModuleName): boolean {
+export function isModuleName(name: ModuleID): boolean {
 	if (RESERVED.has(name)) {
 		return false;
 	}

@@ -1,6 +1,8 @@
 import fs from 'fs';
-import { Path } from '@boost/common';
+import { mockFilePath } from '@boost/common/test';
 import { Cache } from '../src/Cache';
+
+const CACHE_KEY = process.platform === 'win32' ? 'foo\\bar' : 'foo/bar';
 
 describe('Cache', () => {
 	let cache: Cache;
@@ -21,14 +23,14 @@ describe('Cache', () => {
 		});
 
 		it('writes a files contents and stats to the cache', async () => {
-			expect(cache.fileContentCache['foo/bar']).toBeUndefined();
+			expect(cache.fileContentCache[CACHE_KEY]).toBeUndefined();
 
-			const content = await cache.cacheFileContents(new Path('foo/bar'), () =>
+			const content = await cache.cacheFileContents(mockFilePath(CACHE_KEY), () =>
 				Promise.resolve('content'),
 			);
 
 			expect(content).toBe('content');
-			expect(cache.fileContentCache['foo/bar']).toEqual({
+			expect(cache.fileContentCache[CACHE_KEY]).toEqual({
 				content: 'content',
 				exists: true,
 				mtime: 100,
@@ -43,9 +45,9 @@ describe('Cache', () => {
 				return Promise.resolve(`content${count}`);
 			};
 
-			const c1 = await cache.cacheFileContents(new Path('foo/bar'), cb);
-			const c2 = await cache.cacheFileContents(new Path('foo/bar'), cb);
-			const c3 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c1 = await cache.cacheFileContents(mockFilePath(CACHE_KEY), cb);
+			const c2 = await cache.cacheFileContents(mockFilePath(CACHE_KEY), cb);
+			const c3 = await cache.cacheFileContents(mockFilePath(CACHE_KEY), cb);
 
 			expect(c1).toBe('content1');
 			expect(c2).toBe('content1');
@@ -61,15 +63,15 @@ describe('Cache', () => {
 				return Promise.resolve(`content${count}`);
 			};
 
-			const c1 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c1 = await cache.cacheFileContents(mockFilePath(CACHE_KEY), cb);
 
 			statMtime = 200;
 
-			const c2 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c2 = await cache.cacheFileContents(mockFilePath(CACHE_KEY), cb);
 
 			statMtime = 300;
 
-			const c3 = await cache.cacheFileContents(new Path('foo/bar'), cb);
+			const c3 = await cache.cacheFileContents(mockFilePath(CACHE_KEY), cb);
 
 			expect(c1).toBe('content1');
 			expect(c2).toBe('content2');
@@ -80,7 +82,7 @@ describe('Cache', () => {
 		it('can clear cached file contents', async () => {
 			expect(cache.fileContentCache).toEqual({});
 
-			await cache.cacheFileContents(new Path('foo/bar'), () => Promise.resolve('content'));
+			await cache.cacheFileContents(mockFilePath(CACHE_KEY), () => Promise.resolve('content'));
 
 			expect(cache.fileContentCache).not.toEqual({});
 
@@ -92,14 +94,16 @@ describe('Cache', () => {
 
 	describe('cacheFilesInDir()', () => {
 		it('writes a list of files in a dir to the cache', async () => {
-			const files = [new Path('a'), new Path('b')];
+			const files = [mockFilePath('a'), mockFilePath('b')];
 
-			expect(cache.dirFilesCache['foo/bar']).toBeUndefined();
+			expect(cache.dirFilesCache[CACHE_KEY]).toBeUndefined();
 
-			const list = await cache.cacheFilesInDir(new Path('foo/bar'), () => Promise.resolve(files));
+			const list = await cache.cacheFilesInDir(mockFilePath(CACHE_KEY), () =>
+				Promise.resolve(files),
+			);
 
 			expect(list).toBe(files);
-			expect(cache.dirFilesCache['foo/bar']).toEqual(files);
+			expect(cache.dirFilesCache[CACHE_KEY]).toEqual(files);
 		});
 
 		it('only writes to the cache once', async () => {
@@ -107,24 +111,24 @@ describe('Cache', () => {
 			const cb = () => {
 				count += 1;
 
-				return Promise.resolve([new Path(String(count))]);
+				return Promise.resolve([mockFilePath(String(count))]);
 			};
 
-			const c1 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
-			const c2 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
-			const c3 = await cache.cacheFilesInDir(new Path('foo/bar'), cb);
+			const c1 = await cache.cacheFilesInDir(mockFilePath(CACHE_KEY), cb);
+			const c2 = await cache.cacheFilesInDir(mockFilePath(CACHE_KEY), cb);
+			const c3 = await cache.cacheFilesInDir(mockFilePath(CACHE_KEY), cb);
 
-			expect(c1).toEqual([new Path('1')]);
-			expect(c2).toEqual([new Path('1')]);
-			expect(c3).toEqual([new Path('1')]);
+			expect(c1).toEqual([mockFilePath('1')]);
+			expect(c2).toEqual([mockFilePath('1')]);
+			expect(c3).toEqual([mockFilePath('1')]);
 			expect(count).toBe(1);
 		});
 
 		it('can clear cached dir contents', async () => {
 			expect(cache.dirFilesCache).toEqual({});
 
-			await cache.cacheFilesInDir(new Path('foo/bar'), () =>
-				Promise.resolve([new Path('a'), new Path('b')]),
+			await cache.cacheFilesInDir(mockFilePath(CACHE_KEY), () =>
+				Promise.resolve([mockFilePath('a'), mockFilePath('b')]),
 			);
 
 			expect(cache.dirFilesCache).not.toEqual({});

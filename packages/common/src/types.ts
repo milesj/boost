@@ -1,31 +1,41 @@
 import { Blueprint, Predicates } from 'optimal';
 import type { Path } from './Path';
 
-// NODE
+// PATHS
 
-export type ModuleName = string;
+export interface Pathable {
+	path: () => string;
+	toString: () => string;
+}
+
+export type PortablePath = FilePath | ModuleID | Pathable;
+
+// NODE MODULES
+
+export type ModuleID = string;
+
+export type ModuleResolver = (id: ModuleID, startDir?: FilePath) => FilePath | Promise<FilePath>;
 
 // FILE SYSTEM
 
 export type FilePath = string;
 
-export type PortablePath = FilePath | Path;
-
 export type LookupType = 'file-system' | 'node-module';
 
 export interface Lookup {
-	path: Path;
-	raw: Path;
+	path: Pathable;
+	raw: Pathable;
 	type: LookupType;
 }
 
 export interface ResolvedLookup {
-	originalPath: Path;
+	/** Original file path or module ID of the lookup. */
+	originalSource: Pathable;
+	/** Resolved absolute *file* path for the found lookup. */
 	resolvedPath: Path;
+	/** The type of lookup that was found. */
 	type: LookupType;
 }
-
-export type ModuleResolver = (id: ModuleName, startDir?: FilePath) => FilePath | Promise<FilePath>;
 
 // CLASSES
 

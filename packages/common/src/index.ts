@@ -10,6 +10,7 @@ export * from './constants';
 export * from './Contract';
 export * from './ExitError';
 export * from './helpers';
+export * from './ModulePath';
 export * from './PackageGraph';
 export * from './Path';
 export * from './PathResolver';

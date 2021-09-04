@@ -96,7 +96,6 @@ module.exports = {
 				packages: [
 					...[
 						'args',
-						'common',
 						'config',
 						'decorators',
 						'event',
@@ -110,6 +109,13 @@ module.exports = {
 						entry: {
 							index: 'src/index.ts',
 							react: { path: 'src/react.ts', label: 'Components & hooks' },
+							test: { path: 'src/test.ts', label: 'Test utilities' },
+						},
+					},
+					{
+						path: 'packages/common',
+						entry: {
+							index: 'src/index.ts',
 							test: { path: 'src/test.ts', label: 'Test utilities' },
 						},
 					},

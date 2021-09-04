@@ -1,6 +1,6 @@
-import { FilePath, ModuleName, ModuleResolver } from '@boost/common';
+import { FilePath, ModuleID, ModuleResolver } from '@boost/common';
 
-export type Source = FilePath | ModuleName;
+export type Source = FilePath | ModuleID;
 
 export type SourceOptions = boolean | object;
 
@@ -12,7 +12,7 @@ export type Callback<T = unknown> = (value: T) => Promise<void> | void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface Pluggable<T = any> {
 	/** Unique name of the plugin. Typically the npm package name. */
-	readonly name: ModuleName;
+	readonly name: ModuleID;
 	/** Priority in which to order the plugin. */
 	priority?: number;
 	/** Life cycle called when the plugin is unregistered. */
@@ -36,7 +36,7 @@ export interface RegisterOptions<T = unknown> {
 
 export interface Registration<T extends Pluggable> extends RegisterOptions {
 	/** Unique name of the plugin. */
-	name: ModuleName;
+	name: ModuleID;
 	/** Plugin instance or object. */
 	plugin: T;
 }
