@@ -1,7 +1,7 @@
-import { Path } from '@boost/common';
+import { mockNormalizedPath } from '@boost/common/test';
 
-export function stubPath(part: string, wrap: boolean = true) {
+export function mockSystemPath(part: string, wrap: boolean = true) {
 	return process.platform === 'win32' && wrap && !part.match(/^[A-Z]:/u)
-		? new Path('D:', part)
-		: new Path(part);
+		? mockNormalizedPath('D:', part)
+		: mockNormalizedPath(part);
 }

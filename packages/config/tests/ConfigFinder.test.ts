@@ -1,8 +1,9 @@
 import { Path } from '@boost/common';
+import { mockPath, normalizeSeparators } from '@boost/common/test';
 import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';
 import { ConfigFinder } from '../src/ConfigFinder';
-import { stubPath } from './helpers';
+import { mockSystemPath } from './helpers';
 
 describe('ConfigFinder', () => {
 	let cache: Cache;
@@ -33,13 +34,13 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			const pkg1 = await finder.determinePackageScope(
-				new Path(`${tempRoot}/packages/core/src/index.ts`),
+				mockPath(`${tempRoot}/packages/core/src/index.ts`),
 			);
 
 			expect(pkg1).toEqual({ name: 'core' });
 
 			const pkg2 = await finder.determinePackageScope(
-				new Path(`${tempRoot}/packages/log/src/index.js`),
+				mockPath(`${tempRoot}/packages/log/src/index.js`),
 			);
 
 			expect(pkg2).toEqual({ name: 'log' });
@@ -49,7 +50,7 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			const pkg = await finder.determinePackageScope(
-				new Path(`${tempRoot}/packages/plugin/nested/example/src`),
+				mockPath(`${tempRoot}/packages/plugin/nested/example/src`),
 			);
 
 			expect(pkg).toEqual({ name: 'plugin-example' });
@@ -58,7 +59,7 @@ describe('ConfigFinder', () => {
 		it('returns root `package.json` if outside a monorepo', async () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
-			const pkg = await finder.determinePackageScope(new Path(`${tempRoot}/index.ts`));
+			const pkg = await finder.determinePackageScope(mockPath(`${tempRoot}/index.ts`));
 
 			expect(pkg).toEqual({ name: 'boost-config-package-file-tree-monorepo', version: '0.0.0' });
 		});
@@ -67,10 +68,10 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			const pkg1 = await finder.determinePackageScope(
-				new Path(`${tempRoot}/packages/core/src/index.ts`),
+				mockPath(`${tempRoot}/packages/core/src/index.ts`),
 			);
 			const pkg2 = await finder.determinePackageScope(
-				new Path(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
+				mockPath(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
 			);
 
 			expect(pkg2).toEqual(pkg1);
@@ -80,7 +81,7 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			await finder.determinePackageScope(
-				new Path(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
+				mockPath(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
 			);
 
 			expect(cache.fileContentCache).toEqual({
@@ -134,17 +135,17 @@ describe('ConfigFinder', () => {
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { debug: false },
-						path: stubPath(`${tempRoot}/src/app/.boost.${ext}`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.${ext}`),
 						source: 'branch',
 					},
 					{
 						config: { verbose: true },
-						path: stubPath(`${tempRoot}/src/app/profiles/settings/.boost.${ext}`),
+						path: mockSystemPath(`${tempRoot}/src/app/profiles/settings/.boost.${ext}`),
 						source: 'branch',
 					},
 				]);
@@ -154,32 +155,34 @@ describe('ConfigFinder', () => {
 		it('returns all config files for all types from a branch up to root', async () => {
 			const tempRoot = getFixturePath('config-file-tree-all-types');
 
-			const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app/profiles/settings`);
+			const files = await finder.loadFromBranchToRoot(
+				normalizeSeparators(`${tempRoot}/src/app/profiles/settings`),
+			);
 
 			expect(files).toEqual([
 				{
 					config: { debug: true },
-					path: stubPath(`${tempRoot}/.config/boost.json`),
+					path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 					source: 'root',
 				},
 				{
 					config: { type: 'json' },
-					path: stubPath(`${tempRoot}/src/.boost.json`),
+					path: mockSystemPath(`${tempRoot}/src/.boost.json`),
 					source: 'branch',
 				},
 				{
 					config: { type: 'cjs' },
-					path: stubPath(`${tempRoot}/src/app/.boost.cjs`),
+					path: mockSystemPath(`${tempRoot}/src/app/.boost.cjs`),
 					source: 'branch',
 				},
 				{
 					config: { type: 'js' },
-					path: stubPath(`${tempRoot}/src/app/profiles/.boost.js`),
+					path: mockSystemPath(`${tempRoot}/src/app/profiles/.boost.js`),
 					source: 'branch',
 				},
 				{
 					config: { type: 'yaml' },
-					path: stubPath(`${tempRoot}/src/app/profiles/settings/.boost.yaml`),
+					path: mockSystemPath(`${tempRoot}/src/app/profiles/settings/.boost.yaml`),
 					source: 'branch',
 				},
 			]);
@@ -188,17 +191,19 @@ describe('ConfigFinder', () => {
 		it('doesnt load config files above root', async () => {
 			const tempRoot = getFixturePath('config-scenario-configs-above-root');
 
-			const files = await finder.loadFromBranchToRoot(`${tempRoot}/nested/deep`);
+			const files = await finder.loadFromBranchToRoot(
+				normalizeSeparators(`${tempRoot}/nested/deep`),
+			);
 
 			expect(files).toEqual([
 				{
 					config: { root: true },
-					path: stubPath(`${tempRoot}/nested/.config/boost.json`),
+					path: mockSystemPath(`${tempRoot}/nested/.config/boost.json`),
 					source: 'root',
 				},
 				{
 					config: { aboveRoot: true },
-					path: stubPath(`${tempRoot}/nested/deep/.boost.json`),
+					path: mockSystemPath(`${tempRoot}/nested/deep/.boost.json`),
 					source: 'branch',
 				},
 			]);
@@ -207,12 +212,12 @@ describe('ConfigFinder', () => {
 		it('doesnt load branch config files that do not start with a period', async () => {
 			const tempRoot = getFixturePath('config-scenario-branch-invalid-file-name');
 
-			const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
+			const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
 
 			expect(files).toEqual([
 				{
 					config: { debug: true },
-					path: stubPath(`${tempRoot}/.config/boost.json`),
+					path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 					source: 'root',
 				},
 			]);
@@ -221,12 +226,12 @@ describe('ConfigFinder', () => {
 		it('doesnt load branch config files that have an unknown extension', async () => {
 			const tempRoot = getFixturePath('config-scenario-branch-invalid-file-name');
 
-			const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
+			const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
 
 			expect(files).toEqual([
 				{
 					config: { debug: true },
-					path: stubPath(`${tempRoot}/.config/boost.json`),
+					path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 					source: 'root',
 				},
 			]);
@@ -235,17 +240,17 @@ describe('ConfigFinder', () => {
 		it('doesnt load multiple branch config file types, only the first  found', async () => {
 			const tempRoot = getFixturePath('config-scenario-branch-multiple-types');
 
-			const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
+			const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
 
 			expect(files).toEqual([
 				{
 					config: { debug: true },
-					path: stubPath(`${tempRoot}/.config/boost.json`),
+					path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 					source: 'root',
 				},
 				{
 					config: { type: 'json' },
-					path: stubPath(`${tempRoot}/src/app/.boost.json`),
+					path: mockSystemPath(`${tempRoot}/src/app/.boost.json`),
 					source: 'branch',
 				},
 			]);
@@ -257,22 +262,22 @@ describe('ConfigFinder', () => {
 
 				const tempRoot = getFixturePath('config-scenario-branch-with-envs');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
+				const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
 
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { env: 'all' },
-						path: stubPath(`${tempRoot}/src/app/.boost.json`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.json`),
 						source: 'branch',
 					},
 					{
 						config: { env: 'test' },
-						path: stubPath(`${tempRoot}/src/app/.boost.test.json`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.test.json`),
 						source: 'branch',
 					},
 				]);
@@ -285,22 +290,22 @@ describe('ConfigFinder', () => {
 
 				const tempRoot = getFixturePath('config-scenario-branch-with-envs');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
+				const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
 
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { env: 'all' },
-						path: stubPath(`${tempRoot}/src/app/.boost.json`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.json`),
 						source: 'branch',
 					},
 					{
 						config: { env: 'staging' },
-						path: stubPath(`${tempRoot}/src/app/.boost.staging.json`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.staging.json`),
 						source: 'branch',
 					},
 				]);
@@ -315,17 +320,17 @@ describe('ConfigFinder', () => {
 
 				finder.configure({ includeEnv: false });
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app`);
+				const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
 
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { env: 'all' },
-						path: stubPath(`${tempRoot}/src/app/.boost.json`),
+						path: mockSystemPath(`${tempRoot}/src/app/.boost.json`),
 						source: 'branch',
 					},
 				]);
@@ -338,17 +343,19 @@ describe('ConfigFinder', () => {
 			it('adds overrides that match the `include` glob', async () => {
 				const tempRoot = getFixturePath('config-overrides-from-branch');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/foo/does-match.ts`);
+				const files = await finder.loadFromBranchToRoot(
+					normalizeSeparators(`${tempRoot}/src/foo/does-match.ts`),
+				);
 
 				expect(files).toEqual([
 					{
 						config: { level: 1 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { level: 2 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'overridden',
 					},
 				]);
@@ -357,17 +364,19 @@ describe('ConfigFinder', () => {
 			it('adds overrides that match the `include` glob and dont match the `exclude` glob', async () => {
 				const tempRoot = getFixturePath('config-overrides-from-branch-with-excludes');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/bar.ts`);
+				const files = await finder.loadFromBranchToRoot(
+					normalizeSeparators(`${tempRoot}/src/bar.ts`),
+				);
 
 				expect(files).toEqual([
 					{
 						config: { level: 1 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { level: 2 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'overridden',
 					},
 				]);
@@ -378,17 +387,19 @@ describe('ConfigFinder', () => {
 
 				finder.configure({ overridesSetting: 'rules' });
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/foo/does-match.ts`);
+				const files = await finder.loadFromBranchToRoot(
+					normalizeSeparators(`${tempRoot}/src/foo/does-match.ts`),
+				);
 
 				expect(files).toEqual([
 					{
 						config: { level: 1 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { level: 2 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'overridden',
 					},
 				]);
@@ -397,12 +408,14 @@ describe('ConfigFinder', () => {
 			it('doesnt add overrides that dont match the `include` glob', async () => {
 				const tempRoot = getFixturePath('config-overrides-from-branch');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/foo/doesnt-match.js`);
+				const files = await finder.loadFromBranchToRoot(
+					normalizeSeparators(`${tempRoot}/src/foo/doesnt-match.js`),
+				);
 
 				expect(files).toEqual([
 					{
 						config: { level: 1 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 				]);
@@ -411,12 +424,14 @@ describe('ConfigFinder', () => {
 			it('doesnt add overrides that match the `include` glob AND the `exclude` glob', async () => {
 				const tempRoot = getFixturePath('config-overrides-from-branch-with-excludes');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/baz.ts`);
+				const files = await finder.loadFromBranchToRoot(
+					normalizeSeparators(`${tempRoot}/src/baz.ts`),
+				);
 
 				expect(files).toEqual([
 					{
 						config: { level: 1 },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 				]);
@@ -425,9 +440,9 @@ describe('ConfigFinder', () => {
 			it('errors if overrides are found in a branch config', async () => {
 				const tempRoot = getFixturePath('config-invalid-branch-nested-overrides');
 
-				await expect(finder.loadFromBranchToRoot(`${tempRoot}/src`)).rejects.toThrow(
-					'Overrides setting `overrides` must only be defined in a root config.',
-				);
+				await expect(
+					finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src`)),
+				).rejects.toThrow('Overrides setting `overrides` must only be defined in a root config.');
 			});
 		});
 
@@ -440,17 +455,17 @@ describe('ConfigFinder', () => {
 				expect(files).toEqual([
 					{
 						config: { relative: true },
-						path: stubPath(`${tempRoot}/some/relative/path/config.js`),
+						path: mockSystemPath(`${tempRoot}/some/relative/path/config.js`),
 						source: 'extended',
 					},
 					{
 						config: { absolute: true },
-						path: stubPath(`${tempRoot}/some/absolute/path/config.yml`, false),
+						path: mockSystemPath(`${tempRoot}/some/absolute/path/config.yml`, false),
 						source: 'extended',
 					},
 					{
 						config: { root: true },
-						path: stubPath(`${tempRoot}/.config/boost.js`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.js`),
 						source: 'root',
 					},
 				]);
@@ -460,7 +475,7 @@ describe('ConfigFinder', () => {
 				const tempRoot = copyFixtureToTempFolder('config-extends-module-presets');
 
 				finder.configure({
-					resolver: (id) => `${tempRoot}/node_modules/${id}`,
+					resolver: (id) => normalizeSeparators(`${tempRoot}/node_modules/${id}`),
 				});
 
 				const files = await finder.loadFromBranchToRoot(tempRoot);
@@ -468,17 +483,17 @@ describe('ConfigFinder', () => {
 				expect(files).toEqual([
 					{
 						config: { name: 'foo' },
-						path: stubPath(`${tempRoot}/node_modules/foo/boost.preset.js`),
+						path: mockSystemPath(`${tempRoot}/node_modules/foo/boost.preset.js`),
 						source: 'extended',
 					},
 					{
 						config: { name: '@scope/bar' },
-						path: stubPath(`${tempRoot}/node_modules/@scope/bar/boost.preset.js`),
+						path: mockSystemPath(`${tempRoot}/node_modules/@scope/bar/boost.preset.js`),
 						source: 'extended',
 					},
 					{
 						config: { root: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 				]);
@@ -487,22 +502,24 @@ describe('ConfigFinder', () => {
 			it('extends configs that were defined in an override', async () => {
 				const tempRoot = getFixturePath('config-extends-from-override');
 
-				const files = await finder.loadFromBranchToRoot(`${tempRoot}/some/relative/path`);
+				const files = await finder.loadFromBranchToRoot(
+					normalizeSeparators(`${tempRoot}/some/relative/path`),
+				);
 
 				expect(files).toEqual([
 					{
 						config: { extended: true },
-						path: stubPath(`${tempRoot}/some/relative/path/config.js`),
+						path: mockSystemPath(`${tempRoot}/some/relative/path/config.js`),
 						source: 'extended',
 					},
 					{
 						config: { root: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
 						config: { overridden: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'overridden',
 					},
 				]);
@@ -512,7 +529,7 @@ describe('ConfigFinder', () => {
 				const tempRoot = copyFixtureToTempFolder('config-extends-custom-setting-name');
 
 				finder.configure({
-					resolver: (id) => `${tempRoot}/node_modules/${id}`,
+					resolver: (id) => normalizeSeparators(`${tempRoot}/node_modules/${id}`),
 				});
 
 				finder.configure({ extendsSetting: 'presets' });
@@ -522,17 +539,17 @@ describe('ConfigFinder', () => {
 				expect(files).toEqual([
 					{
 						config: { type: 'module' },
-						path: stubPath(`${tempRoot}/node_modules/foo/boost.preset.js`),
+						path: mockSystemPath(`${tempRoot}/node_modules/foo/boost.preset.js`),
 						source: 'extended',
 					},
 					{
 						config: { type: 'fs' },
-						path: stubPath(`${tempRoot}/some/relative/path/config.js`),
+						path: mockSystemPath(`${tempRoot}/some/relative/path/config.js`),
 						source: 'extended',
 					},
 					{
 						config: { root: true },
-						path: stubPath(`${tempRoot}/.config/boost.json`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 				]);
@@ -541,9 +558,9 @@ describe('ConfigFinder', () => {
 			it('errors if extends are found in a branch config', async () => {
 				const tempRoot = getFixturePath('config-invalid-branch-nested-extends');
 
-				await expect(finder.loadFromBranchToRoot(`${tempRoot}/src`)).rejects.toThrow(
-					'Extends setting `extends` must only be defined in a root config.',
-				);
+				await expect(
+					finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src`)),
+				).rejects.toThrow('Extends setting `extends` must only be defined in a root config.');
 			});
 
 			it('errors for an invalid extends path', async () => {
@@ -582,7 +599,7 @@ describe('ConfigFinder', () => {
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: stubPath(`${tempRoot}/.config/boost.${ext}`),
+						path: mockSystemPath(`${tempRoot}/.config/boost.${ext}`),
 						source: 'root',
 					},
 				]);

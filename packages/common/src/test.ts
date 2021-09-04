@@ -1,12 +1,15 @@
-import os from 'os';
 import { Path, PortablePath } from '.';
 
+/**
+ * Normalize a path or its parts by ensuring all path separators match
+ * the operating systems default character.
+ */
 export function normalizeSeparators<T extends PortablePath | PortablePath[]>(path: T): T {
 	if (Array.isArray(path)) {
 		return path.map(normalizeSeparators) as T;
 	}
 
-	if (os.platform() === 'win32') {
+	if (process.platform === 'win32') {
 		return String(path).replace(/\//g, '\\') as T;
 	}
 
