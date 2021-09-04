@@ -14,6 +14,12 @@ import {
 	WorkspacePackage,
 } from './types';
 
+// fast-glob requires forward slashes for globs:
+// @link https://github.com/mrmlnc/fast-glob#how-to-write-patterns-on-windows
+function normalizeToNix(paths: string[]): string[] {
+	return paths.map((part) => part.replace(/\\/g, '/'));
+}
+
 export interface ProjectSearchOptions {
 	relative?: boolean;
 }
@@ -113,7 +119,7 @@ export class Project {
 	@Memoize()
 	getWorkspacePackages<T extends PackageStructure>(): WorkspacePackage<T>[] {
 		return glob
-			.sync(this.getWorkspaceGlobs({ relative: true }), {
+			.sync(normalizeToNix(this.getWorkspaceGlobs({ relative: true })), {
 				absolute: true,
 				cwd: this.root.path(),
 				onlyDirectories: true,
@@ -133,7 +139,7 @@ export class Project {
 	 */
 	@Memoize()
 	getWorkspacePackagePaths(options: ProjectSearchOptions = {}): FilePath[] {
-		return glob.sync(this.getWorkspaceGlobs({ relative: true }), {
+		return glob.sync(normalizeToNix(this.getWorkspaceGlobs({ relative: true })), {
 			absolute: !options.relative,
 			cwd: this.root.path(),
 			onlyDirectories: true,
