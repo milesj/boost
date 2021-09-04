@@ -6,7 +6,7 @@ import {
 	normalizePath,
 } from '@boost/test-utils';
 import { Path, PathResolver } from '../src';
-import { mockNormalizedPath, mockPath, normalizeSeparators } from '../src/test';
+import { mockFilePath, mockModulePath } from '../src/test';
 
 describe('PathResolver', () => {
 	let resolver: PathResolver;
@@ -40,13 +40,13 @@ describe('PathResolver', () => {
 		resolver.lookupNodeModule('@boost/common'); // Exists
 
 		expect(resolver.getLookupPaths()).toEqual([
-			mockPath(cwd, 'qux.js').path(),
+			mockFilePath(cwd, 'qux.js').path(),
 			'@boost/unknown',
-			mockPath(process.cwd(), 'bar.js').path(),
+			mockFilePath(process.cwd(), 'bar.js').path(),
 			'@boost/common',
 		]);
 
-		expect(await resolver.resolvePath()).toEqual(mockPath(resolve.sync('@boost/common')));
+		expect(await resolver.resolvePath()).toEqual(mockFilePath(resolve.sync('@boost/common')));
 	});
 
 	it('can utilize a custom resolver', async () => {
@@ -54,8 +54,8 @@ describe('PathResolver', () => {
 		resolver.lookupNodeModule('unknown'); // Exists
 
 		expect(await resolver.resolve()).toEqual({
-			originalPath: mockPath('unknown'),
-			resolvedPath: mockPath('custom'),
+			originalSource: mockModulePath('unknown'),
+			resolvedPath: mockFilePath('custom'),
 			type: 'node-module',
 		});
 	});
@@ -65,8 +65,8 @@ describe('PathResolver', () => {
 		resolver.lookupNodeModule('unknown'); // Exists
 
 		expect(await resolver.resolve()).toEqual({
-			originalPath: mockPath('unknown'),
-			resolvedPath: mockPath('custom'),
+			originalSource: mockModulePath('unknown'),
+			resolvedPath: mockFilePath('custom'),
 			type: 'node-module',
 		});
 	});
@@ -80,8 +80,8 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('foo.js', cwd); // Exists
 
 			expect(await resolver.resolve()).toEqual({
-				originalPath: mockPath('bar.js'),
-				resolvedPath: mockPath(cwd, 'bar.js'),
+				originalSource: mockFilePath('bar.js'),
+				resolvedPath: mockFilePath(cwd, 'bar.js'),
 				type: 'file-system',
 			});
 		});
@@ -93,7 +93,7 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('bar.js'); // Doesnt exist at this cwd
 			resolver.lookupFilePath('foo.js', cwd); // Exists
 
-			expect(await resolver.resolvePath()).toEqual(mockPath(cwd, 'foo.js'));
+			expect(await resolver.resolvePath()).toEqual(mockFilePath(cwd, 'foo.js'));
 		});
 
 		it('works with completely different parent folders and file extensions', async () => {
@@ -103,7 +103,7 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('bar.js', src); // Doesnt exist
 			resolver.lookupFilePath('toArray.ts', src.append('helpers')); // Exists
 
-			expect(await resolver.resolvePath()).toEqual(mockPath(src, 'helpers/toArray.ts'));
+			expect(await resolver.resolvePath()).toEqual(mockFilePath(src, 'helpers/toArray.ts'));
 		});
 	});
 
@@ -114,8 +114,8 @@ describe('PathResolver', () => {
 			resolver.lookupNodeModule('@boost/log'); // Exists
 
 			expect(await resolver.resolve()).toEqual({
-				originalPath: mockPath('@boost/common'),
-				resolvedPath: mockPath(resolve.sync('@boost/common')),
+				originalSource: mockModulePath('@boost/common'),
+				resolvedPath: mockFilePath(resolve.sync('@boost/common')),
 				type: 'node-module',
 			});
 		});
@@ -128,7 +128,7 @@ describe('PathResolver', () => {
 			resolver.lookupNodeModule('test-module-path-resolver/foo.js'); // Exists
 
 			expect(await resolver.resolvePath()).toEqual(
-				mockPath(getNodeModulePath('test-module-path-resolver', 'bar.js')),
+				mockFilePath(getNodeModulePath('test-module-path-resolver', 'bar.js')),
 			);
 
 			unmock();

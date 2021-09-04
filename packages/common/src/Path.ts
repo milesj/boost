@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { FilePath, PortablePath } from './types';
+import { FilePath, Pathable, PortablePath } from './types';
 
-export class Path {
+/**
+ * A class for operating on file system paths.
+ */
+export class Path implements Pathable {
 	static DELIMITER = path.delimiter;
 
 	static SEP = path.sep;
@@ -17,7 +20,7 @@ export class Path {
 	}
 
 	/**
-	 * Create and return a new `Path` instance if a string.
+	 * Create and return a new `Path` instance.
 	 */
 	static create(filePath: PortablePath): Path {
 		return new Path(filePath);
@@ -107,8 +110,8 @@ export class Path {
 	 */
 	path(): FilePath {
 		if (!this.isNormalized) {
-			this.internalPath = path.normalize(this.internalPath);
 			this.isNormalized = true;
+			this.internalPath = path.normalize(this.internalPath);
 		}
 
 		return this.internalPath;

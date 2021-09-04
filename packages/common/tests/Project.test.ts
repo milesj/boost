@@ -1,6 +1,6 @@
 import { getFixturePath } from '@boost/test-utils';
 import { Path, Project } from '../src';
-import { mockPath, normalizeSeparators } from '../src/test';
+import { mockFilePath, normalizeSeparators } from '../src/test';
 
 describe('Project', () => {
 	describe('getProject()', () => {
@@ -70,7 +70,7 @@ describe('Project', () => {
 		});
 
 		it('loads all package.jsons and appends metadata', () => {
-			const rootPath = mockPath(getFixturePath('workspace-multiple'));
+			const rootPath = mockFilePath(getFixturePath('workspace-multiple'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
@@ -96,7 +96,7 @@ describe('Project', () => {
 		});
 
 		it("loads package.json's for yarn", () => {
-			const rootPath = mockPath(getFixturePath('workspace-yarn'));
+			const rootPath = mockFilePath(getFixturePath('workspace-yarn'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
@@ -110,7 +110,7 @@ describe('Project', () => {
 		});
 
 		it("loads package.json's for lerna", () => {
-			const rootPath = mockPath(getFixturePath('workspace-lerna'));
+			const rootPath = mockFilePath(getFixturePath('workspace-lerna'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
@@ -124,7 +124,7 @@ describe('Project', () => {
 		});
 
 		it("loads package.json's for pnpm", () => {
-			const rootPath = mockPath(getFixturePath('workspace-pnpm'));
+			const rootPath = mockFilePath(getFixturePath('workspace-pnpm'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([

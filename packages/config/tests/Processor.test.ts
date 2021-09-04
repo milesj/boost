@@ -1,5 +1,5 @@
 import { Blueprint, predicates } from '@boost/common';
-import { mockPath } from '@boost/common/test';
+import { mockFilePath } from '@boost/common/test';
 import { mergeExtends } from '../src/helpers/mergeExtends';
 import { mergePlugins } from '../src/helpers/mergePlugins';
 import { overwrite } from '../src/helpers/overwrite';
@@ -32,7 +32,7 @@ describe('Processor', () => {
 	function stubConfigFile(config: Partial<ConfigShape>): ConfigFile<ConfigShape> {
 		return {
 			config,
-			path: mockPath('.boost.js'),
+			path: mockFilePath('.boost.js'),
 			source: 'branch',
 		};
 	}

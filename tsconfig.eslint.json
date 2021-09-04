@@ -8,6 +8,7 @@
 		"themes/*/tests/**/*",
 		"themes/*/types/**/*",
 		"website/src/**/*",
-		"website/types/**/*"
+		"website/types/**/*",
+		"types/**/*"
 	]
 }

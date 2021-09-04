@@ -10,7 +10,7 @@ const FIXTURES_DIR = path.join(process.cwd(), 'tests', '__fixtures__');
 const TEMPORARY_FILES = new Set<string>();
 
 function normalizeSeparators(part: string) {
-	if (os.platform() === 'win32') {
+	if (process.platform === 'win32') {
 		return part.replace(/\//g, '\\');
 	}
 

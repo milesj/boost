@@ -1,5 +1,5 @@
 import { Path } from '@boost/common';
-import { mockPath, normalizeSeparators } from '@boost/common/test';
+import { mockFilePath, normalizeSeparators } from '@boost/common/test';
 import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';
 import { ConfigFinder } from '../src/ConfigFinder';
@@ -34,13 +34,13 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			const pkg1 = await finder.determinePackageScope(
-				mockPath(`${tempRoot}/packages/core/src/index.ts`),
+				mockFilePath(`${tempRoot}/packages/core/src/index.ts`),
 			);
 
 			expect(pkg1).toEqual({ name: 'core' });
 
 			const pkg2 = await finder.determinePackageScope(
-				mockPath(`${tempRoot}/packages/log/src/index.js`),
+				mockFilePath(`${tempRoot}/packages/log/src/index.js`),
 			);
 
 			expect(pkg2).toEqual({ name: 'log' });
@@ -50,7 +50,7 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			const pkg = await finder.determinePackageScope(
-				mockPath(`${tempRoot}/packages/plugin/nested/example/src`),
+				mockFilePath(`${tempRoot}/packages/plugin/nested/example/src`),
 			);
 
 			expect(pkg).toEqual({ name: 'plugin-example' });
@@ -59,7 +59,7 @@ describe('ConfigFinder', () => {
 		it('returns root `package.json` if outside a monorepo', async () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
-			const pkg = await finder.determinePackageScope(mockPath(`${tempRoot}/index.ts`));
+			const pkg = await finder.determinePackageScope(mockFilePath(`${tempRoot}/index.ts`));
 
 			expect(pkg).toEqual({ name: 'boost-config-package-file-tree-monorepo', version: '0.0.0' });
 		});
@@ -68,10 +68,10 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			const pkg1 = await finder.determinePackageScope(
-				mockPath(`${tempRoot}/packages/core/src/index.ts`),
+				mockFilePath(`${tempRoot}/packages/core/src/index.ts`),
 			);
 			const pkg2 = await finder.determinePackageScope(
-				mockPath(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
+				mockFilePath(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
 			);
 
 			expect(pkg2).toEqual(pkg1);
@@ -81,7 +81,7 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-package-file-tree-monorepo');
 
 			await finder.determinePackageScope(
-				mockPath(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
+				mockFilePath(`${tempRoot}/packages/core/src/deep/nested/core.ts`),
 			);
 
 			expect(cache.fileContentCache).toEqual({

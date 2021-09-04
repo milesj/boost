@@ -1,4 +1,4 @@
-import { Path, PortablePath } from '.';
+import { ModulePath, Path, PortablePath } from '.';
 
 /**
  * Normalize a path or its parts by ensuring all path separators match
@@ -16,13 +16,17 @@ export function normalizeSeparators<T extends PortablePath | PortablePath[]>(pat
 	return String(path).replace(/\\/g, '/') as T;
 }
 
-export function mockPath(...parts: PortablePath[]): Path {
+export function mockFilePath(...parts: PortablePath[]): Path {
 	return new Path(...parts.map(normalizeSeparators));
 }
 
-export function mockNormalizedPath(...parts: PortablePath[]): Path {
-	const path = mockPath(...parts);
+export function mockNormalizedFilePath(...parts: PortablePath[]): Path {
+	const path = mockFilePath(...parts);
 	// Trigger normalize
 	path.path();
 	return path;
+}
+
+export function mockModulePath(...parts: PortablePath[]): ModulePath {
+	return new ModulePath(...parts);
 }
