@@ -45,15 +45,15 @@ describe('ModulePath', () => {
 			expect(p3.path()).toBe('foo-bar/baz/qux/current');
 		});
 
-		it('appends with a `Path` instance', () => {
+		it('appends with a `ModulePath` instance', () => {
 			const p1 = new ModulePath('/foo/bar', '../baz');
 
-			expect(p1.path()).toBeFilePath('/foo/baz');
+			expect(p1.path()).toBe('/foo/baz');
 
 			const p2 = p1.append(new ModulePath('qux/foo'));
 
-			expect(p1.path()).toBeFilePath('/foo/baz');
-			expect(p2.path()).toBeFilePath('/foo/baz/qux/foo');
+			expect(p1.path()).toBe('/foo/baz');
+			expect(p2.path()).toBe('/foo/baz/qux/foo');
 		});
 	});
 

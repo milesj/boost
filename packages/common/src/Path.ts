@@ -3,7 +3,7 @@ import path from 'path';
 import { FilePath, Pathable, PortablePath } from './types';
 
 /**
- * A class for operating on file system paths.
+ * An immutable class for operating on file system paths.
  */
 export class Path implements Pathable {
 	static DELIMITER = path.delimiter;

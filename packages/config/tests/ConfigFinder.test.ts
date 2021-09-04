@@ -85,22 +85,22 @@ describe('ConfigFinder', () => {
 			);
 
 			expect(cache.fileContentCache).toEqual({
-				[`${tempRoot}/packages/core/package.json`]: {
+				[normalizeSeparators(`${tempRoot}/packages/core/package.json`)]: {
 					content: { name: 'core' },
 					exists: true,
 					mtime: expect.any(Number),
 				},
-				[`${tempRoot}/packages/core/src/package.json`]: {
+				[normalizeSeparators(`${tempRoot}/packages/core/src/package.json`)]: {
 					content: null,
 					exists: false,
 					mtime: 0,
 				},
-				[`${tempRoot}/packages/core/src/deep/package.json`]: {
+				[normalizeSeparators(`${tempRoot}/packages/core/src/deep/package.json`)]: {
 					content: null,
 					exists: false,
 					mtime: 0,
 				},
-				[`${tempRoot}/packages/core/src/deep/nested/package.json`]: {
+				[normalizeSeparators(`${tempRoot}/packages/core/src/deep/nested/package.json`)]: {
 					content: null,
 					exists: false,
 					mtime: 0,

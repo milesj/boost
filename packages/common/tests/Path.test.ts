@@ -286,7 +286,7 @@ describe('Path', () => {
 			const path = new Path('foo/bar/baz');
 
 			expect(JSON.stringify({ path })).toBe(
-				process.platform === 'win32' ? '{"path":"foo\\bar\\baz"}' : '{"path":"foo/bar/baz"}',
+				process.platform === 'win32' ? '{"path":"foo\\\\bar\\\\baz"}' : '{"path":"foo/bar/baz"}',
 			);
 		});
 	});

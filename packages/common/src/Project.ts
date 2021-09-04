@@ -100,7 +100,7 @@ export class Project {
 		}
 
 		if (options.relative) {
-			return workspacePaths;
+			return workspacePaths.map((workspace) => new Path(workspace).path());
 		}
 
 		return workspacePaths.map((workspace) => this.root.append(workspace).path());

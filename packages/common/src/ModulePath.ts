@@ -2,7 +2,7 @@ import path from 'path';
 import { ModuleID, Pathable, PortablePath } from './types';
 
 /**
- * A class for operating on Node.js module IDs, names, and paths.
+ * An immutable class for operating on Node.js module IDs, names, and paths.
  */
 export class ModulePath implements Pathable {
 	private internalPath: string = '';

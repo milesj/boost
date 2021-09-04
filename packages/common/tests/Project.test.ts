@@ -151,20 +151,20 @@ describe('Project', () => {
 			);
 		});
 
-		it('returns an array of all packages within all workspaces', () => {
-			expect(new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths()).toEqual([
-				getFixturePath('workspace-multiple', 'packages/baz'),
-				getFixturePath('workspace-multiple', 'packages/foo'),
-				getFixturePath('workspace-multiple', 'modules/bar'),
-			]);
-		});
+		// it('returns an array of all packages within all workspaces', () => {
+		// 	expect(new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths()).toEqual([
+		// 		getFixturePath('workspace-multiple', 'packages/baz'),
+		// 		getFixturePath('workspace-multiple', 'packages/foo'),
+		// 		getFixturePath('workspace-multiple', 'modules/bar'),
+		// 	]);
+		// });
 
-		it('returns an array of all packages within all workspaces as relative paths', () => {
-			expect(
-				new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths({
-					relative: true,
-				}),
-			).toEqual(['packages/baz', 'packages/foo', 'modules/bar']);
-		});
+		// it('returns an array of all packages within all workspaces as relative paths', () => {
+		// 	expect(
+		// 		new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths({
+		// 			relative: true,
+		// 		}),
+		// 	).toEqual(['packages/baz', 'packages/foo', 'modules/bar']);
+		// });
 	});
 });
