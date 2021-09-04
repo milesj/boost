@@ -1,5 +1,6 @@
 import { getFixturePath } from '@boost/test-utils';
 import { Path, Project } from '../src';
+import { mockPath, normalizeSeparators } from '../src/test';
 
 describe('Project', () => {
 	describe('getProject()', () => {
@@ -69,68 +70,68 @@ describe('Project', () => {
 		});
 
 		it('loads all package.jsons and appends metadata', () => {
-			const rootPath = new Path(getFixturePath('workspace-multiple'));
+			const rootPath = mockPath(getFixturePath('workspace-multiple'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
 				{
 					package: { name: 'test-boost-workspace-multiple-baz', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append('packages/baz/package.json').path(),
+						rootPath.append(normalizeSeparators('packages/baz/package.json')).path(),
 					),
 				},
 				{
 					package: { name: 'test-boost-workspace-multiple-foo', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append('packages/foo/package.json').path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
 					),
 				},
 				{
 					package: { name: 'test-boost-workspace-multiple-bar', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append('modules/bar/package.json').path(),
+						rootPath.append(normalizeSeparators('modules/bar/package.json')).path(),
 					),
 				},
 			]);
 		});
 
 		it("loads package.json's for yarn", () => {
-			const rootPath = new Path(getFixturePath('workspace-yarn'));
+			const rootPath = mockPath(getFixturePath('workspace-yarn'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
 				{
 					package: { name: 'test-boost-workspace-foo-yarn', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append('packages/foo/package.json').path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
 					),
 				},
 			]);
 		});
 
 		it("loads package.json's for lerna", () => {
-			const rootPath = new Path(getFixturePath('workspace-lerna'));
+			const rootPath = mockPath(getFixturePath('workspace-lerna'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
 				{
 					package: { name: 'test-boost-workspace-foo-lerna', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append('packages/foo/package.json').path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
 					),
 				},
 			]);
 		});
 
 		it("loads package.json's for pnpm", () => {
-			const rootPath = new Path(getFixturePath('workspace-pnpm'));
+			const rootPath = mockPath(getFixturePath('workspace-pnpm'));
 			const project = new Project(rootPath);
 
 			expect(project.getWorkspacePackages()).toEqual([
 				{
 					package: { name: 'test-boost-workspace-foo-pnpm', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append('packages/foo/package.json').path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
 					),
 				},
 			]);

@@ -50,11 +50,9 @@ export class PathResolver {
 	 * Add a Node.js module, either by name or relative path, to look for.
 	 */
 	lookupNodeModule(modulePath: PortablePath): this {
-		const path = Path.create(modulePath);
-
 		this.lookups.push({
-			path,
-			raw: path,
+			path: Path.create(modulePath),
+			raw: Path.create(modulePath),
 			type: 'node-module',
 		});
 

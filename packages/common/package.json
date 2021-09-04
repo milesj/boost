@@ -14,7 +14,9 @@
   "files": [
     "dts/**/*.d.ts",
     "lib/**/*.{js,map}",
-    "src/**/*.{ts,tsx,json}"
+    "src/**/*.{ts,tsx,json}",
+    "test.d.ts",
+    "test.js"
   ],
   "engines": {
     "node": ">=12.17.0",
