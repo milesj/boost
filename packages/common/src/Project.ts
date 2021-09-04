@@ -14,12 +14,6 @@ import {
 	WorkspacePackage,
 } from './types';
 
-// fast-glob requires forward slashes for globs:
-// @link https://github.com/mrmlnc/fast-glob#how-to-write-patterns-on-windows
-function normalizeToNix(paths: string[]): string[] {
-	return paths.map((part) => part.replace(/\\/g, '/'));
-}
-
 export interface ProjectSearchOptions {
 	relative?: boolean;
 }
@@ -67,7 +61,6 @@ export class Project {
 	 * in `package.json` or `lerna.json`.
 	 */
 	@Memoize()
-	// eslint-disable-next-line complexity
 	getWorkspaceGlobs(options: ProjectSearchOptions = {}): FilePath[] {
 		const pkgPath = this.root.append('package.json');
 		const lernaPath = this.root.append('lerna.json');
@@ -105,11 +98,15 @@ export class Project {
 			}
 		}
 
-		if (options.relative) {
-			return workspacePaths.map((workspace) => new Path(workspace).path());
-		}
+		return workspacePaths.map((workspace) => {
+			const path = options.relative
+				? new Path(workspace).path()
+				: this.root.append(workspace).path();
 
-		return workspacePaths.map((workspace) => this.root.append(workspace).path());
+			// fast-glob requires forward slashes for globs:
+			// @link https://github.com/mrmlnc/fast-glob#how-to-write-patterns-on-windows
+			return path.replace(/\\/g, '/');
+		});
 	}
 
 	/**
@@ -119,7 +116,7 @@ export class Project {
 	@Memoize()
 	getWorkspacePackages<T extends PackageStructure>(): WorkspacePackage<T>[] {
 		return glob
-			.sync(normalizeToNix(this.getWorkspaceGlobs({ relative: true })), {
+			.sync(this.getWorkspaceGlobs({ relative: true }), {
 				absolute: true,
 				cwd: this.root.path(),
 				onlyDirectories: true,
@@ -139,7 +136,7 @@ export class Project {
 	 */
 	@Memoize()
 	getWorkspacePackagePaths(options: ProjectSearchOptions = {}): FilePath[] {
-		return glob.sync(normalizeToNix(this.getWorkspaceGlobs({ relative: true })), {
+		return glob.sync(this.getWorkspaceGlobs({ relative: true }), {
 			absolute: !options.relative,
 			cwd: this.root.path(),
 			onlyDirectories: true,
