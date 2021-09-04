@@ -25,40 +25,42 @@ describe('Project', () => {
 		});
 
 		it('returns an array of workspaces for yarn `workspaces` property', () => {
-			expect(new Project(getFixturePath('workspace-yarn')).getWorkspaceGlobs()).toEqual([
-				getFixturePath('workspace-yarn', 'packages/*'),
-			]);
+			expect(new Project(getFixturePath('workspace-yarn')).getWorkspaceGlobs()).toEqual(
+				[getFixturePath('workspace-yarn', 'packages/*')].map(Project.normalizeGlob),
+			);
 		});
 
 		it('returns an array of workspaces for yarn no hoist `workspaces.packages` property', () => {
-			expect(new Project(getFixturePath('workspace-yarn-nohoist')).getWorkspaceGlobs()).toEqual([
-				getFixturePath('workspace-yarn-nohoist', 'packages/*'),
-			]);
+			expect(new Project(getFixturePath('workspace-yarn-nohoist')).getWorkspaceGlobs()).toEqual(
+				[getFixturePath('workspace-yarn-nohoist', 'packages/*')].map(Project.normalizeGlob),
+			);
 		});
 
 		it('returns an array of workspaces for lerna `packages` property', () => {
-			expect(new Project(getFixturePath('workspace-lerna')).getWorkspaceGlobs()).toEqual([
-				getFixturePath('workspace-lerna', 'packages/*'),
-			]);
+			expect(new Project(getFixturePath('workspace-lerna')).getWorkspaceGlobs()).toEqual(
+				[getFixturePath('workspace-lerna', 'packages/*')].map(Project.normalizeGlob),
+			);
 		});
 
 		it('returns an array of workspaces for pnpm `packages` property', () => {
 			expect(
 				new Project(getFixturePath('workspace-pnpm')).getWorkspaceGlobs({ relative: true }),
-			).toEqual(['packages/**', '!**/qux']);
+			).toEqual(['packages/**', '!**/qux'].map(Project.normalizeGlob));
 		});
 
 		it('returns an array of all workspaces', () => {
-			expect(new Project(getFixturePath('workspace-multiple')).getWorkspaceGlobs()).toEqual([
-				getFixturePath('workspace-multiple', 'packages/*'),
-				getFixturePath('workspace-multiple', 'modules/*'),
-			]);
+			expect(new Project(getFixturePath('workspace-multiple')).getWorkspaceGlobs()).toEqual(
+				[
+					getFixturePath('workspace-multiple', 'packages/*'),
+					getFixturePath('workspace-multiple', 'modules/*'),
+				].map(Project.normalizeGlob),
+			);
 		});
 
 		it('returns an array of all workspaces as relative paths', () => {
 			expect(
 				new Project(getFixturePath('workspace-multiple')).getWorkspaceGlobs({ relative: true }),
-			).toEqual(['packages/*', 'modules/*']);
+			).toEqual(['packages/*', 'modules/*'].map(Project.normalizeGlob));
 		});
 	});
 

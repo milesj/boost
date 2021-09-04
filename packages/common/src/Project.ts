@@ -26,6 +26,14 @@ export class Project {
 	}
 
 	/**
+	 * Normalize a glob pattern or path for use on POSIX and Windows machines.
+	 * @link https://github.com/mrmlnc/fast-glob#how-to-write-patterns-on-windows
+	 */
+	static normalizeGlob(pattern: string): string {
+		return pattern.replace(/\\/g, '/');
+	}
+
+	/**
 	 * Create a workspace metadata object composed of absolute file paths.
 	 */
 	createWorkspaceMetadata(jsonPath: PortablePath): WorkspaceMetadata {
@@ -103,9 +111,7 @@ export class Project {
 				? new Path(workspace).path()
 				: this.root.append(workspace).path();
 
-			// fast-glob requires forward slashes for globs:
-			// @link https://github.com/mrmlnc/fast-glob#how-to-write-patterns-on-windows
-			return path.replace(/\\/g, '/');
+			return Project.normalizeGlob(path);
 		});
 	}
 
