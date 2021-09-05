@@ -45,7 +45,7 @@
     "@types/pluralize": "^0.0.29"
   },
   "packemon": {
-    "format": "lib",
+    "format": "mjs",
     "platform": "node"
   }
 }

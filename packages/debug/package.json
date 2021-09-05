@@ -52,7 +52,7 @@
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
-    "format": "lib",
+    "format": "mjs",
     "platform": "node"
   }
 }

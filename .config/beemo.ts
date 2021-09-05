@@ -26,9 +26,4 @@ export default {
 		node: true,
 		react: true,
 	},
-	// typescript: {
-	//   compilerOptions: {
-	//     keyofStringsOnly: true,
-	//   },
-	// },
 };

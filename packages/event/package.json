@@ -42,7 +42,7 @@
   },
   "packemon": {
     "format": [
-      "lib",
+      "mjs",
       "esm"
     ],
     "platform": [
