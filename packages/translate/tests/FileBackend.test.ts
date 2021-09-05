@@ -1,3 +1,4 @@
+import path from 'path';
 import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
 import { FileBackend } from '../src/FileBackend';
@@ -19,7 +20,7 @@ describe('FileBackend', () => {
 		});
 
 		it('errors if resource path is not a directory', () => {
-			const resPath = new Path(__dirname, '../package.json');
+			const resPath = new Path(path.dirname(import.meta.url), '../package.json');
 
 			expect(() => {
 				backend.init(

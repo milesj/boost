@@ -1,3 +1,4 @@
+import path from 'path';
 import resolve from 'resolve';
 import {
 	copyFixtureToNodeModule,
@@ -97,7 +98,7 @@ describe('PathResolver', () => {
 		});
 
 		it('works with completely different parent folders and file extensions', async () => {
-			const src = new Path(__dirname, '../src');
+			const src = new Path(path.dirname(import.meta.url), '../src');
 
 			resolver.lookupFilePath('qux.js', getFixturePath('module-basic')); // Doesnt exist
 			resolver.lookupFilePath('bar.js', src); // Doesnt exist

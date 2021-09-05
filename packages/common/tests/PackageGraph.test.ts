@@ -1,3 +1,4 @@
+import path from 'path';
 import glob from 'fast-glob';
 import { PackageGraph } from '../src/PackageGraph';
 import { mockFilePath } from '../src/test';
@@ -10,7 +11,7 @@ function getBeemoPackages() {
 	glob
 		.sync('*/package.json', {
 			absolute: true,
-			cwd: mockFilePath(__dirname, '../../../node_modules/@beemo').path(),
+			cwd: mockFilePath(path.dirname(import.meta.url), '../../../node_modules/@beemo').path(),
 		})
 		.forEach((pkgPath) => {
 			const pkg = require(pkgPath);

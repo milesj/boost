@@ -14,6 +14,8 @@ describe('yaml', () => {
 	});
 
 	it('loads and parses from a file', () => {
-		expect(yaml.load(path.join(__dirname, '__fixtures__/test.yaml'))).toEqual(data);
+		expect(yaml.load(path.join(path.dirname(import.meta.url), '__fixtures__/test.yaml'))).toEqual(
+			data,
+		);
 	});
 });

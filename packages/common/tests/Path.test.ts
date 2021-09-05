@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 import { Path } from '../src';
 import { mockFilePath } from '../src/test';
 
@@ -103,19 +103,19 @@ describe('Path', () => {
 
 	describe('exists()', () => {
 		it('returns true if a folder', () => {
-			const path = new Path(__dirname);
+			const path = new Path(dirname(import.meta.url));
 
 			expect(path.exists()).toBe(true);
 		});
 
 		it('returns true if a file', () => {
-			const path = new Path(__filename);
+			const path = new Path(import.meta.url);
 
 			expect(path.exists()).toBe(true);
 		});
 
 		it('returns false for an invalid path', () => {
-			const path = new Path(__dirname, 'some/fake/path');
+			const path = new Path(dirname(import.meta.url), 'some/fake/path');
 
 			expect(path.exists()).toBe(false);
 		});
@@ -163,13 +163,13 @@ describe('Path', () => {
 
 	describe('isDirectory()', () => {
 		it('returns true if a folder', () => {
-			const path = new Path(__dirname);
+			const path = new Path(dirname(import.meta.url));
 
 			expect(path.isDirectory()).toBe(true);
 		});
 
 		it('returns false if a file', () => {
-			const path = new Path(__filename);
+			const path = new Path(import.meta.url);
 
 			expect(path.isDirectory()).toBe(false);
 		});
@@ -177,13 +177,13 @@ describe('Path', () => {
 
 	describe('isFile()', () => {
 		it('returns true if a file', () => {
-			const path = new Path(__filename);
+			const path = new Path(import.meta.url);
 
 			expect(path.isFile()).toBe(true);
 		});
 
 		it('returns false if a folder', () => {
-			const path = new Path(__dirname);
+			const path = new Path(dirname(import.meta.url));
 
 			expect(path.isFile()).toBe(false);
 		});

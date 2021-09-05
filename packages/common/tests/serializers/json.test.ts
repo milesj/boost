@@ -14,6 +14,8 @@ describe('json', () => {
 	});
 
 	it('loads and parses from a file', () => {
-		expect(json.load(path.join(__dirname, '__fixtures__/test.json'))).toEqual(data);
+		expect(json.load(path.join(path.dirname(import.meta.url), '__fixtures__/test.json'))).toEqual(
+			data,
+		);
 	});
 });
