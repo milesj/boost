@@ -74,7 +74,7 @@ export class ModulePath implements Pathable {
 			return null;
 		}
 
-		return this.internalPath.slice(0, this.internalPath.indexOf('/'));
+		return this.path().slice(0, this.path().indexOf('/'));
 	}
 
 	toJSON(): ModuleID {
