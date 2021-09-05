@@ -79,19 +79,19 @@ describe('Project', () => {
 				{
 					package: { name: 'test-boost-workspace-multiple-baz', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append(normalizeSeparators('packages/baz/package.json')).path(),
+						rootPath.append(normalizeSeparators('packages/baz/package.json')),
 					),
 				},
 				{
 					package: { name: 'test-boost-workspace-multiple-foo', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')),
 					),
 				},
 				{
 					package: { name: 'test-boost-workspace-multiple-bar', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append(normalizeSeparators('modules/bar/package.json')).path(),
+						rootPath.append(normalizeSeparators('modules/bar/package.json')),
 					),
 				},
 			]);
@@ -105,7 +105,7 @@ describe('Project', () => {
 				{
 					package: { name: 'test-boost-workspace-foo-yarn', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')),
 					),
 				},
 			]);
@@ -119,7 +119,7 @@ describe('Project', () => {
 				{
 					package: { name: 'test-boost-workspace-foo-lerna', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')),
 					),
 				},
 			]);
@@ -133,7 +133,7 @@ describe('Project', () => {
 				{
 					package: { name: 'test-boost-workspace-foo-pnpm', version: '0.0.0' },
 					metadata: project.createWorkspaceMetadata(
-						rootPath.append(normalizeSeparators('packages/foo/package.json')).path(),
+						rootPath.append(normalizeSeparators('packages/foo/package.json')),
 					),
 				},
 			]);
@@ -153,20 +153,24 @@ describe('Project', () => {
 			);
 		});
 
-		// it('returns an array of all packages within all workspaces', () => {
-		// 	expect(new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths()).toEqual([
-		// 		getFixturePath('workspace-multiple', 'packages/baz'),
-		// 		getFixturePath('workspace-multiple', 'packages/foo'),
-		// 		getFixturePath('workspace-multiple', 'modules/bar'),
-		// 	]);
-		// });
+		it('returns an array of all packages within all workspaces', () => {
+			expect(new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths()).toEqual([
+				mockFilePath(getFixturePath('workspace-multiple', 'packages/baz')),
+				mockFilePath(getFixturePath('workspace-multiple', 'packages/foo')),
+				mockFilePath(getFixturePath('workspace-multiple', 'modules/bar')),
+			]);
+		});
 
-		// it('returns an array of all packages within all workspaces as relative paths', () => {
-		// 	expect(
-		// 		new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths({
-		// 			relative: true,
-		// 		}),
-		// 	).toEqual(['packages/baz', 'packages/foo', 'modules/bar']);
-		// });
+		it('returns an array of all packages within all workspaces as relative paths', () => {
+			expect(
+				new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths({
+					relative: true,
+				}),
+			).toEqual([
+				mockFilePath('packages/baz'),
+				mockFilePath('packages/foo'),
+				mockFilePath('modules/bar'),
+			]);
+		});
 	});
 });
