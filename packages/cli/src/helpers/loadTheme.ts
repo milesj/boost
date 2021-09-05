@@ -1,4 +1,4 @@
-import { env } from '@boost/internal';
+import { env, internalRequire } from '@boost/internal';
 import { style } from '@boost/terminal';
 import { CLIError } from '../CLIError';
 import { ThemePalette } from '../types';
@@ -11,10 +11,10 @@ export function loadTheme(): ThemePalette {
 
 	if (style.level > 0 && !palette && !!theme) {
 		try {
-			palette = require(`@boost/theme-${theme}`) as ThemePalette;
+			palette = internalRequire(`@boost/theme-${theme}`) as ThemePalette;
 		} catch {
 			try {
-				palette = require(`boost-theme-${theme}`) as ThemePalette;
+				palette = internalRequire(`boost-theme-${theme}`) as ThemePalette;
 			} catch {
 				throw new CLIError('THEME_UNKNOWN', [theme]);
 			}

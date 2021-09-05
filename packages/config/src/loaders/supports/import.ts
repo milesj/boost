@@ -1,8 +1,11 @@
+import { internalRequire } from '@boost/internal';
+
 // Node < 13.3 doesn't support import() syntax
 let supportsImport: boolean;
 
 try {
-	require('./importTest');
+	// Is this correct???
+	internalRequire('./importTest');
 
 	supportsImport = true;
 } catch {

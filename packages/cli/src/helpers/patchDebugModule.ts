@@ -1,5 +1,7 @@
 /* eslint-disable no-console, import/no-extraneous-dependencies */
 
+import { internalRequire } from '@boost/internal';
+
 /**
  * Wrap the `debug` stream since it writes to `process.stderr` directly.
  * https://www.npmjs.com/package/debug#output-streams
@@ -9,7 +11,7 @@ export function patchDebugModule(): () => void {
 		return () => {};
 	}
 
-	const debug = require('debug') as typeof import('debug');
+	const debug = internalRequire('debug') as typeof import('debug');
 	const originalLog = debug.log;
 
 	debug.log = console.error.bind(console);

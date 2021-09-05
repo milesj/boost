@@ -11,6 +11,7 @@ let tsInstance: TS | null = null;
 function loadTypeScript() {
 	if (!tsInstance) {
 		try {
+			// This code is only ran in CommonJS
 			tsInstance = require('typescript') as TS;
 		} catch {
 			// Ignore and check at runtime

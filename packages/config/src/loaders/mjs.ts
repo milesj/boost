@@ -1,13 +1,12 @@
 import { pathToFileURL } from 'url';
 import { Path } from '@boost/common';
-import { supportsImport } from './supports/import';
 
 export async function loadMjs<T>(path: Path): Promise<T> {
-	if (!supportsImport) {
-		throw new Error(
-			`Unable to use \`mjs\` loader. Native ECMAScript modules aren't supported by this platform. Found Node.js v${process.version}, requires v13.3.`,
-		);
-	}
+	// if (!supportsImport) {
+	// 	throw new Error(
+	// 		`Unable to use \`mjs\` loader. Native ECMAScript modules aren't supported by this platform. Found Node.js v${process.version}, requires v13.3.`,
+	// 	);
+	// }
 
 	// import() expects URLs, not file paths.
 	// https://github.com/nodejs/node/issues/31710
