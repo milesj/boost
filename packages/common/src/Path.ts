@@ -15,8 +15,7 @@ export class Path implements Pathable {
 	private isNormalized: boolean = false;
 
 	constructor(...parts: PortablePath[]) {
-		this.internalPath =
-			parts.length === 1 ? String(parts[0]) || '.' : path.join(...parts.map(String));
+		this.internalPath = path.join(...parts.map(String));
 	}
 
 	/**
