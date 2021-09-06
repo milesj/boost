@@ -20,7 +20,7 @@
     "res/",
     "src/**/*.{ts,tsx,json}",
     "test.d.ts",
-    "test.js"
+    "test.mjs"
   ],
   "engines": {
     "node": ">=12.17.0",
