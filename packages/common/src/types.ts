@@ -180,10 +180,10 @@ export interface PackageGraphTree<T extends PackageStructure> {
 // WORKSPACES
 
 export interface WorkspaceMetadata {
-	jsonPath: string;
-	packagePath: string;
+	jsonPath: Path;
+	packagePath: Path;
 	packageName: string;
-	workspacePath: string;
+	workspacePath: Path;
 	workspaceName: string;
 }
 

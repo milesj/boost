@@ -10,8 +10,7 @@ export class ModulePath implements Pathable {
 	private isNormalized: boolean = false;
 
 	constructor(...parts: PortablePath[]) {
-		this.internalPath =
-			parts.length === 1 ? String(parts[0]) || '.' : path.join(...parts.map(String));
+		this.internalPath = path.join(...parts.map(String));
 	}
 
 	/**
@@ -75,7 +74,7 @@ export class ModulePath implements Pathable {
 			return null;
 		}
 
-		return this.internalPath.slice(0, this.internalPath.indexOf('/'));
+		return this.path().slice(0, this.path().indexOf('/'));
 	}
 
 	toJSON(): ModuleID {
