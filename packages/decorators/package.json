@@ -6,14 +6,14 @@
     "boost",
     "decorators"
   ],
-  "main": "./lib/node/index.js",
-  "browser": "./lib/browser/index.js",
+  "type": "module",
+  "main": "./mjs/index.mjs",
   "module": "./esm/index.js",
   "types": "./dts/index.d.ts",
   "files": [
     "dts/**/*.d.ts",
     "esm/**/*.{js,map}",
-    "lib/**/*.{js,map}",
+    "mjs/**/*.{mjs,map}",
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
@@ -43,5 +43,18 @@
       "browser",
       "node"
     ]
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "browser": {
+        "import": "./esm/index.js",
+        "module": "./esm/index.js"
+      },
+      "node": {
+        "import": "./mjs/index.mjs"
+      },
+      "types": "./dts/index.d.ts"
+    }
   }
 }

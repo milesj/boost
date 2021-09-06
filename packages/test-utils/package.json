@@ -8,11 +8,13 @@
     "test",
     "utils"
   ],
-  "main": "./lib/index.js",
+  "type": "module",
+  "module": "./mjs/index.mjs",
+  "main": "./mjs/index.mjs",
   "types": "./dts/index.d.ts",
   "files": [
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
+    "mjs/**/*.{mjs,map}",
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
@@ -37,7 +39,18 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
-    "format": ["lib", "mjs"],
+    "format": [
+      "mjs"
+    ],
     "platform": "node"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "node": {
+        "import": "./mjs/index.mjs"
+      },
+      "types": "./dts/index.d.ts"
+    }
   }
 }

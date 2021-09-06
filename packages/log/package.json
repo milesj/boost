@@ -10,11 +10,13 @@
     "logging",
     "levels"
   ],
-  "main": "./lib/index.js",
+  "type": "module",
+  "module": "./mjs/index.mjs",
+  "main": "./mjs/index.mjs",
   "types": "./dts/index.d.ts",
   "files": [
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
+    "mjs/**/*.{mjs,map}",
     "res/",
     "src/**/*.{ts,tsx,json}",
     "test.d.ts",
@@ -51,5 +53,20 @@
     },
     "format": "mjs",
     "platform": "node"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "node": {
+        "import": "./mjs/index.mjs"
+      },
+      "types": "./dts/index.d.ts"
+    },
+    "./test": {
+      "node": {
+        "import": "./mjs/test.mjs"
+      },
+      "types": "./dts/test.d.ts"
+    }
   }
 }

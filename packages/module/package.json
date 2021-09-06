@@ -59,5 +59,18 @@
       "format": "mjs",
       "platform": "node"
     }
-  ]
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "node": "./lib/index.js",
+      "types": "./dts/index.d.ts"
+    },
+    "./loader": {
+      "node": {
+        "import": "./mjs/loader.mjs"
+      },
+      "types": "./dts/loaders/index.d.ts"
+    }
+  }
 }
