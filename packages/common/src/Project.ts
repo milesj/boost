@@ -6,13 +6,7 @@ import { CommonError } from './CommonError';
 import { Path } from './Path';
 import * as json from './serializers/json';
 import * as yaml from './serializers/yaml';
-import {
-	FilePath,
-	PackageStructure,
-	PortablePath,
-	WorkspaceMetadata,
-	WorkspacePackage,
-} from './types';
+import { PackageStructure, PortablePath, WorkspaceMetadata, WorkspacePackage } from './types';
 
 export interface ProjectSearchOptions {
 	relative?: boolean;
@@ -42,10 +36,10 @@ export class Project {
 		const pkgPath = filePath.parent();
 		const wsPath = pkgPath.parent();
 
-		metadata.jsonPath = filePath.path();
-		metadata.packagePath = pkgPath.path();
+		metadata.jsonPath = filePath;
+		metadata.packagePath = pkgPath;
 		metadata.packageName = pkgPath.name();
-		metadata.workspacePath = wsPath.path();
+		metadata.workspacePath = wsPath;
 		metadata.workspaceName = wsPath.name();
 
 		return metadata as WorkspaceMetadata;
@@ -66,10 +60,11 @@ export class Project {
 
 	/**
 	 * Return a list of all workspace globs as they are configured
-	 * in `package.json` or `lerna.json`.
+	 * in `package.json` or `lerna.json`. Glob patterns will _always_
+	 * use forward slashes, regardless of OS.
 	 */
 	@Memoize()
-	getWorkspaceGlobs(options: ProjectSearchOptions = {}): FilePath[] {
+	getWorkspaceGlobs(options: ProjectSearchOptions = {}): string[] {
 		const pkgPath = this.root.append('package.json');
 		const lernaPath = this.root.append('lerna.json');
 		const pnpmPath = this.root.append('pnpm-workspace.yaml');
@@ -139,14 +134,17 @@ export class Project {
 
 	/**
 	 * Return a list of all workspace package paths, resolved against the file system.
+	 * Absolute file paths are returned unless the `relative` option is true.
 	 */
 	@Memoize()
-	getWorkspacePackagePaths(options: ProjectSearchOptions = {}): FilePath[] {
-		return glob.sync(this.getWorkspaceGlobs({ relative: true }), {
-			absolute: !options.relative,
-			cwd: this.root.path(),
-			onlyDirectories: true,
-			onlyFiles: false,
-		});
+	getWorkspacePackagePaths(options: ProjectSearchOptions = {}): Path[] {
+		return glob
+			.sync(this.getWorkspaceGlobs({ relative: true }), {
+				absolute: !options.relative,
+				cwd: this.root.path(),
+				onlyDirectories: true,
+				onlyFiles: false,
+			})
+			.map(Path.create);
 	}
 }
