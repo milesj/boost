@@ -41,6 +41,9 @@
       "optional": true
     }
   },
+  "devDependencies": {
+    "@jest/globals": "*"
+  },
   "funding": {
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"

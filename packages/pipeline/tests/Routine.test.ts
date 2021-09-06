@@ -1,4 +1,3 @@
-import execa from 'execa';
 import { Predicates } from '@boost/common';
 import { jest } from '@jest/globals';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
@@ -9,8 +8,6 @@ import { PooledPipeline } from '../src/PooledPipeline';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
-
-jest.mock('execa');
 
 describe('Routine', () => {
 	class TestRoutine extends Routine<string, string, { test: number }> {
@@ -151,35 +148,41 @@ describe('Routine', () => {
 			}
 		}
 
-		function mockExeca(value: string) {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
-				command: `${command} ${args.join(' ')}`,
-				stdout: new FakeStream(value),
-				stderr: new FakeStream(value),
+		function mockExeca(value?: string): typeof import('execa') {
+			// @ts-expect-error Ignore type
+			return jest.fn((command, args) => ({
+				command: `${command} ${(args as string[]).join(' ')}`,
+				stdout: new FakeStream(value ?? 'Mocked stream line'),
+				stderr: new FakeStream(value ?? 'Mocked stream line'),
 			}));
 		}
 
-		beforeEach(() => {
-			mockExeca('Mocked stream line');
-		});
-
 		it('runs a local command', async () => {
-			const result = await routine.executeCommand('yarn', ['-v']);
+			const result = await routine.executeCommand('yarn', ['-v'], {
+				executor: mockExeca(),
+			});
 
 			expect(result).toEqual(expect.objectContaining({ command: 'yarn -v' }));
 		});
 
 		it('runs a local command in a shell', async () => {
-			const result = await routine.executeCommand('echo', ['boost'], { shell: true });
+			const executor = mockExeca();
+			const result = await routine.executeCommand('echo', ['boost'], {
+				executor,
+				shell: true,
+			});
 
-			expect(execa).toHaveBeenCalledWith('echo', ['boost'], { shell: true });
+			expect(executor).toHaveBeenCalledWith('echo', ['boost'], { shell: true });
 			expect(result).toEqual(expect.objectContaining({ command: 'echo boost' }));
 		});
 
 		it('calls callback with stream', async () => {
 			const spy = jest.fn();
 
-			await routine.executeCommand('yarn', ['-v'], { wrap: spy });
+			await routine.executeCommand('yarn', ['-v'], {
+				executor: mockExeca(),
+				wrap: spy,
+			});
 
 			expect(spy).toHaveBeenCalled();
 		});
@@ -195,7 +198,10 @@ describe('Routine', () => {
 			routine.onCommand.listen(commandSpy);
 			routine.onCommandData.listen(commandDataSpy);
 
-			await routine.executeCommand('yarn', ['-v'], { workUnit: task });
+			await routine.executeCommand('yarn', ['-v'], {
+				executor: mockExeca(),
+				workUnit: task,
+			});
 
 			expect(commandSpy).toHaveBeenCalledWith('yarn', ['-v']);
 			expect(commandDataSpy).toHaveBeenCalledWith('yarn', expect.anything());
@@ -207,21 +213,25 @@ describe('Routine', () => {
 			// @ts-expect-error Allow overwrite
 			task.status = STATUS_RUNNING;
 
-			await routine.executeCommand('yarn', ['--help'], { workUnit: task });
+			await routine.executeCommand('yarn', ['--help'], {
+				executor: mockExeca(),
+				workUnit: task,
+			});
 
 			expect(task.statusText).toBe('Mocked stream line');
 		});
 
 		it('doesnt set `statusText` when chunk line is empty', async () => {
-			mockExeca('');
-
 			const task = new Task('title', () => {});
 
 			// @ts-expect-error Allow overwrite
 			task.status = STATUS_RUNNING;
 			task.statusText = 'Should not be changed';
 
-			await routine.executeCommand('yarn', ['-v'], { workUnit: task });
+			await routine.executeCommand('yarn', ['-v'], {
+				executor: mockExeca(''),
+				workUnit: task,
+			});
 
 			expect(task.statusText).toBe('Should not be changed');
 		});
@@ -229,7 +239,10 @@ describe('Routine', () => {
 		it('doesnt set `statusText` or `output` on work unit when not running', async () => {
 			const task = new Task('title', () => {});
 
-			await routine.executeCommand('yarn', ['-v'], { workUnit: task });
+			await routine.executeCommand('yarn', ['-v'], {
+				executor: mockExeca(),
+				workUnit: task,
+			});
 
 			expect(task.statusText).toBe('');
 			expect(task.output).toBeUndefined();

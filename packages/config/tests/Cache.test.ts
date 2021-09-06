@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { mockFilePath } from '@boost/common/test';
+import { jest } from '@jest/globals';
 import { Cache } from '../src/Cache';
 
 const CACHE_KEY = process.platform === 'win32' ? 'foo\\bar' : 'foo/bar';

@@ -45,6 +45,9 @@
     "execa": "^5.1.1",
     "fast-glob": "^3.2.7"
   },
+  "devDependencies": {
+    "@jest/globals": "*"
+  },
   "funding": {
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"

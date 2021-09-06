@@ -42,6 +42,9 @@
     "@boost/translate": "^3.0.0-alpha.0",
     "chalk": "^4.1.1"
   },
+  "devDependencies": {
+    "@jest/globals": "*"
+  },
   "funding": {
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"

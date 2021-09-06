@@ -1,10 +1,7 @@
 import React from 'react';
-import { jest } from '@jest/globals';
 import { Help } from '../src/react';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__fixtures__/args';
-
-jest.mock('term-size');
 
 describe('<Help />', () => {
 	it('renders everything', async () => {

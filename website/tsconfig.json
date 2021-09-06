@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "lib": [
+      "dom"
+    ],
+    "jsx": "react",
     "declarationDir": "dts",
     "outDir": "dts",
     "rootDir": "src",

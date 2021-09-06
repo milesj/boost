@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@boost/test-utils": "^3.0.0-alpha.0",
+    "@jest/globals": "*",
     "@types/pluralize": "^0.0.29"
   },
   "packemon": {

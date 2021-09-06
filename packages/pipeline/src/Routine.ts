@@ -17,6 +17,7 @@ import { WaterfallPipeline } from './WaterfallPipeline';
 import { WorkUnit } from './WorkUnit';
 
 export interface ExecuteCommandOptions {
+	executor?: typeof execa;
 	wrap?: (process: ExecaChildProcess) => void;
 	workUnit?: AnyWorkUnit;
 }
@@ -66,8 +67,9 @@ export abstract class Routine<
 		args: string[],
 		options: ExecaOptions & ExecuteCommandOptions = {},
 	) /* infer */ {
-		const { wrap, workUnit, ...opts } = options;
-		const stream = execa(command, args, opts);
+		const { executor, wrap, workUnit, ...opts } = options;
+		const execute = executor ?? execa;
+		const stream = execute(command, args, opts);
 
 		this.onCommand.emit([command, args]);
 

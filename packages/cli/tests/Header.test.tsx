@@ -1,9 +1,6 @@
 import React from 'react';
-import { jest } from '@jest/globals';
 import { Header } from '../src/react';
 import { renderComponent } from '../src/test';
-
-jest.mock('term-size');
 
 describe('<Header />', () => {
 	it('renders `default`', async () => {

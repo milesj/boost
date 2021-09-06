@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import optimal, { Blueprint, Predicates, predicates } from 'optimal';
+import { Blueprint, Predicates, predicates } from 'optimal';
 
 export * from './CommonError';
 export * from './constants';
@@ -20,5 +20,5 @@ export * as yaml from './serializers/yaml';
 export * from './types';
 export * from '@boost/decorators';
 
-export { optimal, predicates };
+export { predicates };
 export type { Blueprint, Predicates };

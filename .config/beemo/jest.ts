@@ -30,4 +30,5 @@ export default {
 		},
 	},
 	testPathIgnorePatterns: ['src/test.ts'],
+	resolver: './.config/beemo/jest-resolve.js',
 };

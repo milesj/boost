@@ -1,10 +1,9 @@
 import React from 'react';
 import { ParseError, ValidationError } from '@boost/args';
+import { screen } from '@boost/terminal';
 import { jest } from '@jest/globals';
 import { Failure } from '../src/react';
 import { renderComponent } from '../src/test';
-
-jest.mock('term-size');
 
 describe('<Failure />', () => {
 	it('renders a common error', async () => {

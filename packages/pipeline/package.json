@@ -46,6 +46,9 @@
     "lodash": "^4.17.21",
     "split": "^1.0.1"
   },
+  "devDependencies": {
+    "@jest/globals": "*"
+  },
   "funding": {
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"

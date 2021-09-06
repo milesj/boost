@@ -9,6 +9,8 @@ export default {
 				env: {
 					NODE_ENV: 'test',
 					BOOSTJS_ENV: 'test',
+					COLUMNS: '80',
+					LINES: '80',
 				},
 			},
 		],

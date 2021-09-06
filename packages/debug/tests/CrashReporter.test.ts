@@ -5,17 +5,15 @@ import glob from 'fast-glob';
 import { jest } from '@jest/globals';
 import { CrashReporter } from '../src/CrashReporter';
 
-jest.mock('execa');
-jest.mock('fast-glob');
-
 describe('CrashReporter', () => {
 	let reporter: CrashReporter;
 	let writeSpy: jest.SpyInstance;
 
 	beforeEach(() => {
-		(execa.sync as jest.Mock).mockImplementation((command, args = []) => {
+		// @ts-expect-error Ignore return type
+		jest.spyOn(execa, 'sync').mockImplementation((command, args) => {
 			// Test the fallback to `version`
-			if (command === 'php' && args[0] === '--version') {
+			if (command === 'php' && Array.isArray(args) && args[0] === '--version') {
 				return {
 					stderr: '',
 					stdout: '',
@@ -24,12 +22,14 @@ describe('CrashReporter', () => {
 
 			return {
 				stderr: '',
-				stdout: command.includes('where') ? `/${args.join(' ')}` : '0.0.0',
+				stdout: command.includes('where') && Array.isArray(args) ? `/${args.join(' ')}` : '0.0.0',
 			};
 		});
 
 		reporter = new CrashReporter();
-		writeSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(jest.fn());
+
+		writeSpy = jest.spyOn(fs, 'writeFileSync') as jest.SpyInstance;
+		writeSpy.mockImplementation(() => {});
 	});
 
 	afterEach(() => {

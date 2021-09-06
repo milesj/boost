@@ -16,7 +16,8 @@ describe('createDebugger()', () => {
 		// Doesn't write unless an env var is set, so force it
 		debugFunc.enable();
 
-		errSpy = jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
+		errSpy = jest.spyOn(process.stderr, 'write') as jest.SpyInstance;
+		errSpy.mockImplementation(() => true);
 	});
 
 	afterEach(() => {
