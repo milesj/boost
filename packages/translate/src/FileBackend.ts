@@ -1,8 +1,10 @@
+import { createRequire } from 'module';
 import { BackendModule, Resource, ResourceKey } from 'i18next';
 import { Blueprint, Contract, json, Path, Predicates, yaml } from '@boost/common';
-import { internalRequire } from '@boost/internal';
 import { TranslateError } from './TranslateError';
 import { Format, Locale } from './types';
+
+export const fileRequire = createRequire(import.meta.url);
 
 const EXTS: { [K in Format]: string[] } = {
 	js: ['js'],
@@ -75,7 +77,7 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 							content = json.load(resPath);
 							break;
 						default:
-							content = internalRequire(resPath.path()) as ResourceKey;
+							content = fileRequire(resPath.path()) as ResourceKey;
 							break;
 					}
 

@@ -1,7 +1,8 @@
-import { env, internalRequire } from '@boost/internal';
+import { env } from '@boost/internal';
 import { style } from '@boost/terminal';
 import { CLIError } from '../CLIError';
 import { ThemePalette } from '../types';
+import { internalRequire } from './internalRequire';
 
 const loadedThemes = new Map<string, ThemePalette>();
 

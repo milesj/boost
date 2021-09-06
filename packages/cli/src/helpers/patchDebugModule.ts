@@ -1,6 +1,6 @@
-/* eslint-disable no-console, import/no-extraneous-dependencies */
+/* eslint-disable no-console */
 
-import { internalRequire } from '@boost/internal';
+import { internalRequire } from './internalRequire';
 
 /**
  * Wrap the `debug` stream since it writes to `process.stderr` directly.

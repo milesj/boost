@@ -1,4 +1,6 @@
-import { internalRequire } from '@boost/internal';
+import { createRequire } from 'module';
+
+export const internalRequire = createRequire(import.meta.url);
 
 // Node < 13.3 doesn't support import() syntax
 let supportsImport: boolean;

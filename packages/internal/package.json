@@ -14,6 +14,7 @@
   "files": [
     "dts/**/*.d.ts",
     "esm/**/*.{js,map}",
+    "mjs/**/*.{mjs,map}",
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
@@ -46,5 +47,18 @@
       "browser",
       "node"
     ]
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "browser": {
+        "import": "./esm/index.js",
+        "module": "./esm/index.js"
+      },
+      "node": {
+        "import": "./mjs/index.mjs"
+      },
+      "types": "./dts/index.d.ts"
+    }
   }
 }
