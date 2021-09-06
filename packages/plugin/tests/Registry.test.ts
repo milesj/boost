@@ -1,4 +1,5 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
+import { jest } from '@jest/globals';
 import { DEFAULT_PRIORITY, Registration, Registry } from '../src';
 import { createRendererRegistry, Renderable, Renderer } from './__fixtures__/Renderer';
 

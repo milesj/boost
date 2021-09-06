@@ -10,6 +10,7 @@ export function stringify(content: unknown, options?: YAML.Options): string {
 	return YAML.stringify(content, options);
 }
 
-export function load<T>(path: PortablePath): T {
-	return parse(fs.readFileSync(String(path), 'utf8'));
+export function load<T>(path: PortablePath | URL): T {
+	// @ts-expect-error Mismatch between node and dom URL
+	return parse(fs.readFileSync(path instanceof URL ? path : String(path), 'utf8'));
 }

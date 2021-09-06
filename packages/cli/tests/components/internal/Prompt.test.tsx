@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
+import { jest } from '@jest/globals';
 import { Prompt } from '../../../src/components/internal/Prompt';
 import { KEYS } from '../../helpers';
 

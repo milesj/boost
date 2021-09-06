@@ -1,5 +1,6 @@
 import React from 'react';
 import { ParseError, ValidationError } from '@boost/args';
+import { jest } from '@jest/globals';
 import { Failure } from '../src/react';
 import { renderComponent } from '../src/test';
 

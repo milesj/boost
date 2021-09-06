@@ -1,5 +1,6 @@
 import debug from 'debug';
 import { color } from '@boost/internal';
+import { jest } from '@jest/globals';
 import { createDebugger } from '../src/createDebugger';
 import { Debugger } from '../src/types';
 

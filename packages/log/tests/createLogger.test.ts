@@ -1,4 +1,5 @@
 import { env } from '@boost/internal';
+import { jest } from '@jest/globals';
 import { DEFAULT_LABELS } from '../src/constants';
 import { createLogger } from '../src/createLogger';
 import * as formats from '../src/formats';

@@ -1,9 +1,13 @@
+import { createRequire } from 'module';
 import path from 'path';
 import glob from 'fast-glob';
 import { PackageGraph } from '../src/PackageGraph';
 import { mockFilePath } from '../src/test';
 import { PackageStructure } from '../src/types';
 
+const beemoRequire = createRequire(import.meta.url);
+
+// TODO: Hardcodde this!
 function getBeemoPackages() {
 	const pkgs: Record<string, PackageStructure> = {};
 
@@ -14,7 +18,7 @@ function getBeemoPackages() {
 			cwd: mockFilePath(path.dirname(import.meta.url), '../../../node_modules/@beemo').path(),
 		})
 		.forEach((pkgPath) => {
-			const pkg = require(pkgPath);
+			const pkg = beemoRequire(pkgPath);
 			pkgs[pkg.name] = pkg;
 		});
 

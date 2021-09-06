@@ -1,5 +1,7 @@
 /* eslint-disable jest/prefer-spy-on */
 
+import { jest } from '@jest/globals';
+
 import type { Debugger } from '.';
 
 /**

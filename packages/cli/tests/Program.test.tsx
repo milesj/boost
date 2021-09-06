@@ -5,6 +5,7 @@ import { Box, Text } from 'ink';
 import { ExitError } from '@boost/common';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
+import { jest } from '@jest/globals';
 import {
 	Arg,
 	Command,
@@ -25,7 +26,6 @@ import { BuildClassicCommand } from './__fixtures__/BuildClassicCommand';
 import { BuildCommand } from './__fixtures__/BuildCommand';
 import { ClientCommand } from './__fixtures__/ClientCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
-import { InstallClassicCommand } from './__fixtures__/InstallClassicCommand';
 import { InstallCommand } from './__fixtures__/InstallCommand';
 
 jest.mock('term-size');

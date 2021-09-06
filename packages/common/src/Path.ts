@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+// import { fileURLToPath } from 'url';
 import { FilePath, Pathable, PortablePath } from './types';
 
 /**
@@ -16,6 +17,13 @@ export class Path implements Pathable {
 
 	constructor(...parts: PortablePath[]) {
 		this.internalPath = path.join(...parts.map(String));
+		// this.internalPath = path.join(
+		// 	...parts.map((part) => {
+		// 		const p = String(part);
+
+		// 		return p.startsWith('file:') ? fileURLToPath(p) : p;
+		// 	}),
+		// );
 	}
 
 	/**

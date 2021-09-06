@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';

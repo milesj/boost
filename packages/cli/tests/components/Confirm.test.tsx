@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { jest } from '@jest/globals';
 import { Confirm, ConfirmProps } from '../../src/components/Confirm';
 
 describe('Confirm', () => {

@@ -61,6 +61,10 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
+    "inputs": {
+      "index": "src/index.ts",
+      "test": "src/test.ts"
+    },
     "format": "mjs",
     "platform": "node"
   },
@@ -71,6 +75,12 @@
         "import": "./mjs/index.mjs"
       },
       "types": "./dts/index.d.ts"
+    },
+    "./test": {
+      "node": {
+        "import": "./mjs/test.mjs"
+      },
+      "types": "./dts/test.d.ts"
     }
   }
 }

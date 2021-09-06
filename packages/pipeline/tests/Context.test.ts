@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 
+import { jest } from '@jest/globals';
 import { Context } from '../src/Context';
 
 describe('Context', () => {

@@ -22,20 +22,20 @@ global.delay = function delay(time: number = 100) {
 	});
 };
 
-// Differs between osx/windows
-jest.mock('figures', () => ({
-	...jest.requireActual('figures'),
-	tick: '^',
-	cross: 'x',
-	pointer: '>>',
-	pointerSmall: '>',
-	circleDotted: 'o',
-	bullet: '●',
-}));
+// // Differs between osx/windows
+// jest.mock('figures', () => ({
+// 	...jest.requireActual('figures'),
+// 	tick: '^',
+// 	cross: 'x',
+// 	pointer: '>>',
+// 	pointerSmall: '>',
+// 	circleDotted: 'o',
+// 	bullet: '●',
+// }));
 
-// Focus is required for snapshots
-jest.mock('ink', () => ({
-	...jest.requireActual('ink'),
-	useFocus: () => ({ isFocused: true }),
-	useFocusManager: () => ({ focusNext() {} }),
-}));
+// // Focus is required for snapshots
+// jest.mock('ink', () => ({
+// 	...jest.requireActual('ink'),
+// 	useFocus: () => ({ isFocused: true }),
+// 	useFocusManager: () => ({ focusNext() {} }),
+// }));

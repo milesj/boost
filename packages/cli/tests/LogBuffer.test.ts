@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { LogBuffer } from '../src/LogBuffer';
 
 describe('LogBuffer', () => {

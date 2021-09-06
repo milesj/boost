@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Deprecate } from '../src';
 
 describe('@Deprecate', () => {

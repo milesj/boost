@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Throttle } from '../src';
 
 describe('@Throttle()', () => {

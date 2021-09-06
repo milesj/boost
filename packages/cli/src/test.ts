@@ -5,6 +5,7 @@ import { render } from 'ink';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
 import { stripAnsi } from '@boost/terminal';
+import { jest } from '@jest/globals';
 import { Command, INTERNAL_OPTIONS, INTERNAL_PARAMS, Program } from '.';
 
 import type {

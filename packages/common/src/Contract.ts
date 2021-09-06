@@ -1,5 +1,8 @@
-import optimal, { Blueprint, Predicates, predicates } from 'optimal';
+import optimalImport, { Blueprint, Predicates, predicates } from 'optimal';
 import { Optionable } from './types';
+
+// @ts-expect-error ESM interop
+const optimal = optimalImport.default as typeof import('optimal');
 
 export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	/** Validated and configured options. */

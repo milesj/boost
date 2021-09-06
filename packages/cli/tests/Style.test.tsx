@@ -1,4 +1,5 @@
 import React from 'react';
+import { jest } from '@jest/globals';
 import { loadTheme } from '../src/helpers/loadTheme';
 import { Style } from '../src/react';
 import { renderComponent } from '../src/test';

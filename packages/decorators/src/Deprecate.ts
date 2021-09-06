@@ -13,7 +13,7 @@ import { isProperty } from './helpers/isProperty';
 export function Deprecate(message?: string) {
 	return (target: Function | Object, property?: string | symbol, descriptor?: unknown): void => {
 		const isProtoOrStatic = typeof target === 'function';
-		const className = isProtoOrStatic ? (target as Function).name : target.constructor.name;
+		const className = isProtoOrStatic ? (target).name : target.constructor.name;
 		const accessSymbol = isProtoOrStatic ? `.${String(property)}` : `#${String(property)}`;
 
 		// Class

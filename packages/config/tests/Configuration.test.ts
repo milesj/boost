@@ -1,6 +1,7 @@
 import { Blueprint, Predicates } from '@boost/common';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
+import { jest } from '@jest/globals';
 import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
 import { mockSystemPath } from './helpers';

@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { jest } from '@jest/globals';
 import { patchDebugModule } from '../../src/helpers/patchDebugModule';
 
 describe('patchDebugModule()', () => {

@@ -1,5 +1,6 @@
 import { Blueprint, predicates } from '@boost/common';
 import { mockFilePath } from '@boost/common/test';
+import { jest } from '@jest/globals';
 import { mergeExtends } from '../src/helpers/mergeExtends';
 import { mergePlugins } from '../src/helpers/mergePlugins';
 import { overwrite } from '../src/helpers/overwrite';

@@ -1,6 +1,7 @@
 import https from 'https';
 import { Loggable } from '@boost/log';
 import { mockLogger } from '@boost/log/test';
+import { jest } from '@jest/globals';
 import { checkPackageOutdated } from '../../src/middleware/checkPackageOutdated';
 
 describe('checkPackageOutdated()', () => {

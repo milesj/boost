@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Contract, Predicates } from '../src';
 
 describe('Contract', () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { jest } from '@jest/globals';
 import { Header } from '../src/react';
 import { renderComponent } from '../src/test';
 

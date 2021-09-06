@@ -1,6 +1,7 @@
 import path from 'path';
 import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
+import { jest } from '@jest/globals';
 import { FileBackend } from '../src/FileBackend';
 
 describe('FileBackend', () => {

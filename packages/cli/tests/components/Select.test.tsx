@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { jest } from '@jest/globals';
 import { Select, SelectProps } from '../../src/components/Select';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
 

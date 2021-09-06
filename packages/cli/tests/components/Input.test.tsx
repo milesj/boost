@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { jest } from '@jest/globals';
 import { Input, InputProps } from '../../src/components/Input';
 import { KEYS } from '../helpers';
 

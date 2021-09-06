@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { jest } from '@jest/globals';
 import { HiddenInput, HiddenInputProps } from '../../src/components/HiddenInput';
 
 describe('HiddenInput', () => {

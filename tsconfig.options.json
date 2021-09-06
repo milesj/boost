@@ -8,8 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
-      "esnext",
-      "dom"
+      "esnext"
     ],
     "module": "esnext",
     "moduleResolution": "node",
@@ -25,7 +24,6 @@
     "target": "es2020",
     "composite": true,
     "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "jsx": "react"
+    "emitDeclarationOnly": true
   }
 }

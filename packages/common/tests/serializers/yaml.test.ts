@@ -1,4 +1,3 @@
-import path from 'path';
 import * as yaml from '../../src/serializers/yaml';
 
 describe('yaml', () => {
@@ -14,8 +13,6 @@ describe('yaml', () => {
 	});
 
 	it('loads and parses from a file', () => {
-		expect(yaml.load(path.join(path.dirname(import.meta.url), '__fixtures__/test.yaml'))).toEqual(
-			data,
-		);
+		expect(yaml.load(new URL('./__fixtures__/test.yaml', import.meta.url))).toEqual(data);
 	});
 });

@@ -1,4 +1,3 @@
-import path from 'path';
 import * as json from '../../src/serializers/json';
 
 describe('json', () => {
@@ -14,8 +13,6 @@ describe('json', () => {
 	});
 
 	it('loads and parses from a file', () => {
-		expect(json.load(path.join(path.dirname(import.meta.url), '__fixtures__/test.json'))).toEqual(
-			data,
-		);
+		expect(json.load(new URL('./__fixtures__/test.json', import.meta.url))).toEqual(data);
 	});
 });

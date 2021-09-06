@@ -23,7 +23,7 @@ export default {
 	],
 	settings: {
 		decorators: true,
+		esm: true,
 		node: true,
-		react: true,
 	},
 };

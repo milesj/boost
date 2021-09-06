@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { STATUS_RUNNING } from '../src/constants';
 import { Context } from '../src/Context';
 import { Task } from '../src/Task';

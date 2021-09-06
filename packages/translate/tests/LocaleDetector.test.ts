@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { LocaleDetector } from '../src/LocaleDetector';
 
 jest.mock('os-locale', () => ({

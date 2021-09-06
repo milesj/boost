@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { requireModule } from '../src/requireModule';
 import { getFixture } from './helpers';
 

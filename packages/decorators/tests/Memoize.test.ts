@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Memoize } from '../src';
 
 function sleep(time: number): Promise<void> {

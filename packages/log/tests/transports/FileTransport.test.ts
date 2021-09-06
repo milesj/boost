@@ -1,5 +1,6 @@
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
+import { jest } from '@jest/globals';
 import { FileTransport } from '../../src/transports/FileTransport';
 import {
 	closeStream,

@@ -1,4 +1,5 @@
 import { getFixturePath } from '@boost/test-utils';
+import { jest } from '@jest/globals';
 import { createTranslator } from '../src/createTranslator';
 import { Translator } from '../src/types';
 

@@ -3,6 +3,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
+import { jest } from '@jest/globals';
 import { DirectoryStructure } from './types';
 
 const FIXTURES_DIR = path.join(process.cwd(), 'tests', '__fixtures__');
@@ -69,7 +70,7 @@ export function copyFixtureToNodeModule(
 }
 
 export function copyFixtureToMock(fixture: string, mockName: string): () => void {
-	const module = jest.requireActual(getFixturePath(fixture)) as unknown as object;
+	const module = jest.requireActual(getFixturePath(fixture)) as object;
 
 	jest.doMock(mockName, () => module, { virtual: true });
 

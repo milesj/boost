@@ -1,4 +1,5 @@
 import execa from 'execa';
+import { jest } from '@jest/globals';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';
 import { mockProgram, mockStreams, runCommand } from '../src/test';
 import { AllClassicCommand } from './__fixtures__/AllClassicCommand';

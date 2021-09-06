@@ -1,4 +1,4 @@
-import levenary from 'levenary';
+import levenaryImport from 'levenary';
 import { ArgsError, ArgsErrorCode } from './ArgsError';
 import { COMMAND_FORMAT } from './constants';
 import { ParseError } from './ParseError';
@@ -12,6 +12,9 @@ import {
 	ValueType,
 } from './types';
 import { ValidationError } from './ValidationError';
+
+// @ts-expect-error ESM interop
+const { default: levenary } = levenaryImport;
 
 export class Checker {
 	arg: string = '';

@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Context } from '../src/Context';
 import { PipelineError } from '../src/PipelineError';
 import { PooledPipeline } from '../src/PooledPipeline';

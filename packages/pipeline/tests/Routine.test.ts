@@ -1,5 +1,6 @@
 import execa from 'execa';
 import { Predicates } from '@boost/common';
+import { jest } from '@jest/globals';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { STATUS_RUNNING } from '../src/constants';
