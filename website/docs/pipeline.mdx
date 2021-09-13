@@ -167,7 +167,7 @@ object that matches the structure of the generic options interface. The execute 
 the input type and return the expected output type.
 
 ```ts
-import { Blueprint, Predicates, Bind } from '@boost/common';
+import { Blueprint, Schemas, Bind } from '@boost/common';
 import { Routine } from '@boost/pipeline';
 
 interface ExampleOptions {
@@ -178,7 +178,7 @@ type Input = number;
 type Output = string;
 
 export default class ExampleRoutine extends Routine<Output, Input, ExampleOptions> {
-	blueprint({ number }: Predicates): Blueprint<ExampleOptions> {
+	blueprint({ number }: Schemas): Blueprint<ExampleOptions> {
 		return {
 			limit: number(10),
 		};

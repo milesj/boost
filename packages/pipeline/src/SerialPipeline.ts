@@ -1,4 +1,4 @@
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Context } from './Context';
 import { createWorkUnit } from './createWorkUnit';
 import { Pipeline } from './Pipeline';
@@ -17,7 +17,7 @@ export abstract class SerialPipeline<
 	root: SerialPipeline<Options, Ctx, any> = this;
 
 	// Empty blueprint so that sub-classes may type correctly
-	blueprint(predicates: Predicates): Blueprint<object> {
+	blueprint(schemas: Schemas): Blueprint<object> {
 		return {};
 	}
 

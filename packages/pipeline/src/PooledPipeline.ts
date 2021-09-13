@@ -2,7 +2,7 @@
 /* eslint-disable promise/prefer-await-to-then */
 
 import os from 'os';
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Context } from './Context';
 import { debug } from './debug';
 import { ParallelPipeline } from './ParallelPipeline';
@@ -31,8 +31,8 @@ export class PooledPipeline<
 
 	protected running: WorkUnit<{}, Input, Output>[] = [];
 
-	override blueprint(predicates: Predicates): Blueprint<PooledOptions> {
-		const { bool, number } = predicates;
+	override blueprint(schemas: Schemas): Blueprint<PooledOptions> {
+		const { bool, number } = schemas;
 
 		return {
 			concurrency: number(os.cpus().length).gte(1),

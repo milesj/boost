@@ -1,12 +1,12 @@
 import fs from 'fs';
-import { Blueprint, Path, Predicates } from '@boost/common';
+import { Blueprint, Path, Schemas } from '@boost/common';
 import { color } from '@boost/internal';
 import { Finder } from './Finder';
 import { IgnoreFile, IgnoreFinderOptions } from './types';
 
 export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
-	blueprint(predicates: Predicates): Blueprint<IgnoreFinderOptions> {
-		const { string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<IgnoreFinderOptions> {
+		const { string } = schemas;
 
 		return {
 			name: string().required().camelCase(),

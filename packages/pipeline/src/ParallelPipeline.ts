@@ -1,4 +1,4 @@
-import { Blueprint, instanceOf, Predicates } from '@boost/common';
+import { Blueprint, instanceOf, Schemas } from '@boost/common';
 import { Context } from './Context';
 import { createWorkUnit } from './createWorkUnit';
 import { Pipeline } from './Pipeline';
@@ -12,7 +12,7 @@ export abstract class ParallelPipeline<
 	Output = Input,
 > extends Pipeline<Options, Ctx, Input, Output> {
 	// Empty blueprint so that sub-classes may type correctly
-	blueprint(predicates: Predicates): Blueprint<object> {
+	blueprint(schemas: Schemas): Blueprint<object> {
 		return {};
 	}
 

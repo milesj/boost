@@ -15,10 +15,10 @@ import {
 	ShortOptionName,
 	SingleOption,
 } from '@boost/args';
-import { Blueprint, predicates } from '@boost/common';
+import { Blueprint, schemas } from '@boost/common';
 import { CommandStaticConfig } from '../types';
 
-const { array, bool, func, number, object, shape, string, union } = predicates;
+const { array, bool, func, number, object, shape, string, union } = schemas;
 
 export const commonBlueprint: Blueprint<Required<Config>> = {
 	deprecated: bool(),

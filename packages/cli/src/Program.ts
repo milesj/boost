@@ -9,7 +9,7 @@ import {
 	PrimitiveType,
 	ValidationError,
 } from '@boost/args';
-import { Blueprint, ExitError, Predicates } from '@boost/common';
+import { Blueprint, ExitError, Schemas } from '@boost/common';
 import { Event } from '@boost/event';
 import { env } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
@@ -153,8 +153,8 @@ export class Program extends CommandManager<ProgramOptions> {
 		this.onBeforeRegister.listen(this.handleBeforeRegister);
 	}
 
-	blueprint(predicates: Predicates): Blueprint<ProgramOptions> {
-		const { string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<ProgramOptions> {
+		const { string } = schemas;
 
 		return {
 			banner: string(),

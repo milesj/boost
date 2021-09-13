@@ -8,7 +8,7 @@ import {
 	PackageStructure,
 	Path,
 	PathResolver,
-	Predicates,
+	Schemas,
 	toArray,
 } from '@boost/common';
 import { color } from '@boost/internal';
@@ -33,8 +33,8 @@ import {
 } from './types';
 
 export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, ConfigFinderOptions<T>> {
-	blueprint(predicates: Predicates): Blueprint<ConfigFinderOptions<T>> {
-		const { array, bool, func, shape, string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<ConfigFinderOptions<T>> {
+		const { array, bool, func, shape, string } = schemas;
 
 		return {
 			extendsSetting: string(),

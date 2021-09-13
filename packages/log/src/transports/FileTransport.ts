@@ -1,6 +1,6 @@
 import fs from 'fs';
 import zlib from 'zlib';
-import { Blueprint, Path, PortablePath, Predicates } from '@boost/common';
+import { Blueprint, Path, PortablePath, Schemas } from '@boost/common';
 import { MAX_LOG_SIZE } from '../constants';
 import { Transport } from '../Transport';
 import { TransportOptions } from '../types';
@@ -40,11 +40,11 @@ export class FileTransport<
 		this.checkFolderRequirements();
 	}
 
-	override blueprint(predicates: Predicates): Blueprint<FileTransportOptions> {
-		const { bool, instance, union, number, string } = predicates;
+	override blueprint(schemas: Schemas): Blueprint<FileTransportOptions> {
+		const { bool, instance, union, number, string } = schemas;
 
 		return {
-			...super.blueprint(predicates),
+			...super.blueprint(schemas),
 			gzip: bool(),
 			maxSize: number(MAX_LOG_SIZE).positive(),
 			path: union([string(), instance(Path)], '').required(),

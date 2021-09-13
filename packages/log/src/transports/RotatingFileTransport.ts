@@ -1,4 +1,4 @@
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Rotation } from '../types';
 import { FileTransport, FileTransportOptions } from './FileTransport';
 
@@ -12,11 +12,11 @@ export interface RotatingFileTransportOptions extends FileTransportOptions {
 export class RotatingFileTransport extends FileTransport<RotatingFileTransportOptions> {
 	protected lastTimestamp: string = this.formatTimestamp(Date.now());
 
-	override blueprint(predicates: Predicates): Blueprint<RotatingFileTransportOptions> {
-		const { string } = predicates;
+	override blueprint(schemas: Schemas): Blueprint<RotatingFileTransportOptions> {
+		const { string } = schemas;
 
 		return {
-			...super.blueprint(predicates),
+			...super.blueprint(schemas),
 			rotation: string().oneOf(['hourly', 'daily', 'weekly', 'monthly']),
 		};
 	}

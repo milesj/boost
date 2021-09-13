@@ -1,6 +1,6 @@
 import os from 'os';
 import util from 'util';
-import { Blueprint, Contract, Predicates } from '@boost/common';
+import { Blueprint, Contract, Schemas } from '@boost/common';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { debug } from './debug';
@@ -25,8 +25,8 @@ export class Logger extends Contract<LoggerOptions> {
 		);
 	}
 
-	blueprint(predicates: Predicates): Blueprint<LoggerOptions> {
-		const { array, instance, object, string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<LoggerOptions> {
+		const { array, instance, object, string } = schemas;
 
 		return {
 			labels: object(string()),

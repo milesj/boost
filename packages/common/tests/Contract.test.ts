@@ -1,8 +1,8 @@
-import { Contract, Predicates } from '../src';
+import { Contract, Schemas } from '../src';
 
 describe('Contract', () => {
 	class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {
-		blueprint({ number, string, shape }: Predicates) {
+		blueprint({ number, string, shape }: Schemas) {
 			return {
 				foo: string('default'),
 				bar: number(),
@@ -16,7 +16,7 @@ describe('Contract', () => {
 			super(options);
 		}
 
-		blueprint({ number }: Predicates) {
+		blueprint({ number }: Schemas) {
 			return {
 				bar: number().required(),
 			};

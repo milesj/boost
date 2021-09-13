@@ -11,5 +11,5 @@ export * from './helpers/mergeExtends';
 export * from './helpers/mergeObject';
 export * from './helpers/mergePlugins';
 export * from './helpers/overwrite';
-export * from './predicates';
+export * from './schemas';
 export * from './types';

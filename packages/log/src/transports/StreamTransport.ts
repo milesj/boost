@@ -1,4 +1,4 @@
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Transport } from '../Transport';
 import { TransportOptions, Writable } from '../types';
 
@@ -16,11 +16,11 @@ export class StreamTransport extends Transport<StreamTransportOptions> {
 		this.stream = options.stream;
 	}
 
-	override blueprint(predicates: Predicates): Blueprint<StreamTransportOptions> {
-		const { func, shape } = predicates;
+	override blueprint(schemas: Schemas): Blueprint<StreamTransportOptions> {
+		const { func, shape } = schemas;
 
 		return {
-			...super.blueprint(predicates),
+			...super.blueprint(schemas),
 			stream: shape({
 				write: func().required().notNullable(),
 			}),

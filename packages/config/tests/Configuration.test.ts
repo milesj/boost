@@ -1,7 +1,7 @@
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
-import { Configuration, createExtendsPredicate, mergeExtends } from '../src';
+import { Configuration, createExtendsSchema, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
 import { mockSystemPath } from './helpers';
 
@@ -12,10 +12,10 @@ interface BoostConfig {
 }
 
 class BoostConfiguration extends Configuration<BoostConfig> {
-	blueprint({ bool, string }: Predicates): Blueprint<BoostConfig> {
+	blueprint({ bool, string }: Schemas): Blueprint<BoostConfig> {
 		return {
 			debug: bool(),
-			extends: createExtendsPredicate(),
+			extends: createExtendsSchema(),
 			type: string('js').oneOf<ExtType>(['js', 'cjs', 'mjs', 'json', 'yaml', 'yml']),
 		};
 	}

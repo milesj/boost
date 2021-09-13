@@ -1,4 +1,4 @@
-import { Blueprint, Contract, ModuleResolver, PortablePath, predicates } from '@boost/common';
+import { Blueprint, Contract, ModuleResolver, PortablePath, schemas } from '@boost/common';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
 import { ConfigFinder } from './ConfigFinder';
@@ -185,7 +185,7 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 		const config = await this.getProcessor().process(
 			this.options,
 			files,
-			this.blueprint(predicates) as Blueprint<T>,
+			this.blueprint(schemas) as Blueprint<T>,
 		);
 
 		this.onProcessedConfig.emit([config]);

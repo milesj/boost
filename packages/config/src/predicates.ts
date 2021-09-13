@@ -1,4 +1,4 @@
-import { Blueprint, Predicates, predicates } from '@boost/common';
+import { Blueprint, Schemas, schemas } from '@boost/common';
 import {
 	ExtendsSetting,
 	FileGlob,
@@ -8,19 +8,19 @@ import {
 } from './types';
 
 /**
- * Create an `optimal` predicate for validating the structure of an "extends" setting.
+ * Create an `optimal` schema for validating the structure of an "extends" setting.
  */
-export function createExtendsPredicate(preds: Predicates = predicates) {
-	const { array, string, union } = preds;
+export function createExtendsSchema(schemes: Schemas = schemas) {
+	const { array, string, union } = schemes;
 
 	return union<ExtendsSetting>([string().notEmpty(), array(string().notEmpty())], []).notNullable();
 }
 
 /**
- * Create an `optimal` predicate for validating the structure of a "plugins" setting.
+ * Create an `optimal` schema for validating the structure of a "plugins" setting.
  */
-export function createPluginsPredicate(preds: Predicates = predicates) {
-	const { array, bool, object, string, tuple, union } = preds;
+export function createPluginsSchema(schemes: Schemas = schemas) {
+	const { array, bool, object, string, tuple, union } = schemes;
 	const pluginOptions = union<PluginOptions>([bool(), object()], {});
 	const pluginSource = string().notEmpty();
 	const pluginEntry = tuple<[string, PluginOptions]>([pluginSource, pluginOptions]);
@@ -32,13 +32,13 @@ export function createPluginsPredicate(preds: Predicates = predicates) {
 }
 
 /**
- * Create an `optimal` predicate for validating the structure of an "overrides" setting.
+ * Create an `optimal` schema for validating the structure of an "overrides" setting.
  */
-export function createOverridesPredicate<T extends object>(
+export function createOverridesSchema<T extends object>(
 	blueprint: Blueprint<T>,
-	preds: Predicates = predicates,
+	schemes: Schemas = schemas,
 ) {
-	const { array, shape, string, union } = preds;
+	const { array, shape, string, union } = schemes;
 
 	return array<OverridesSettingItem<T>>(
 		shape({

@@ -48,7 +48,7 @@ a blueprint for the structure of our config file (using [optimal](./common.mdx#c
 This class will fulfill multiple roles: managing, finding, loading, and processing of files.
 
 ```ts
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Configuration } from '@boost/config';
 
 // Example structure
@@ -62,7 +62,7 @@ interface ConfigFile {
 }
 
 class Manager extends Configuration<ConfigFile> {
-	blueprint({ array, bool, string, object }: Predicates): Blueprint<ConfigFile> {
+	blueprint({ array, bool, string, object }: Schemas): Blueprint<ConfigFile> {
 		return {
 			ast: bool(),
 			cwd: string(process.cwd()),

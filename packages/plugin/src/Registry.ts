@@ -9,7 +9,7 @@ import {
 	ModuleID,
 	ModuleResolver,
 	PathResolver,
-	Predicates,
+	Schemas,
 } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
@@ -88,8 +88,8 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		debug('New plugin type created: %s', this.singularName);
 	}
 
-	blueprint(predicates: Predicates): Blueprint<RegistryOptions<Plugin>> {
-		const { func } = predicates;
+	blueprint(schemas: Schemas): Blueprint<RegistryOptions<Plugin>> {
+		const { func } = schemas;
 
 		return {
 			afterShutdown: func<Callback>(),

@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 
-import { Blueprint, Contract, isObject, optimal, Predicates } from '@boost/common';
+import { Blueprint, Contract, isObject, optimal, Schemas } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { mergeArray } from './helpers/mergeArray';
@@ -19,8 +19,8 @@ export class Processor<T extends object> extends Contract<ProcessorOptions> {
 		this.debug = createDebugger(['processor', this.options.name]);
 	}
 
-	blueprint(predicates: Predicates): Blueprint<ProcessorOptions> {
-		const { bool, string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<ProcessorOptions> {
+		const { bool, string } = schemas;
 
 		return {
 			defaultWhenUndefined: bool(true),

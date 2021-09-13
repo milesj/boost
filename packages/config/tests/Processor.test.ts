@@ -1,14 +1,10 @@
-import { Blueprint, predicates } from '@boost/common';
+import { Blueprint, schemas } from '@boost/common';
 import { mockFilePath } from '@boost/common/test';
 import { mergeExtends } from '../src/helpers/mergeExtends';
 import { mergePlugins } from '../src/helpers/mergePlugins';
 import { overwrite } from '../src/helpers/overwrite';
-import {
-	createExtendsPredicate,
-	createOverridesPredicate,
-	createPluginsPredicate,
-} from '../src/predicates';
 import { Processor } from '../src/Processor';
+import { createExtendsSchema, createOverridesSchema, createPluginsSchema } from '../src/schemas';
 import { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
 
 describe('Processor', () => {
@@ -66,20 +62,20 @@ describe('Processor', () => {
 
 	describe('processing', () => {
 		const commonBlueprint = {
-			debug: predicates.bool(false),
-			plugins: createPluginsPredicate(),
-			boolean: predicates.bool(true),
-			string: predicates.string(''),
-			stringList: predicates.array(predicates.string(), ['foo']),
-			number: predicates.number(123),
-			numberList: predicates.array(predicates.number(), []),
-			object: predicates.object(),
+			debug: schemas.bool(false),
+			plugins: createPluginsSchema(),
+			boolean: schemas.bool(true),
+			string: schemas.string(''),
+			stringList: schemas.array(schemas.string(), ['foo']),
+			number: schemas.number(123),
+			numberList: schemas.array(schemas.number(), []),
+			object: schemas.object(),
 		};
 
 		const blueprint: Blueprint<ConfigShape> = {
 			...commonBlueprint,
-			extends: createExtendsPredicate(),
-			overrides: createOverridesPredicate(commonBlueprint),
+			extends: createExtendsSchema(),
+			overrides: createOverridesSchema(commonBlueprint),
 		};
 
 		const defaults: ConfigShape = {

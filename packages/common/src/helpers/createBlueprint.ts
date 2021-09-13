@@ -4,7 +4,7 @@ import { BlueprintFactory } from '../types';
 /**
  * Can be used to generate a blueprint object for use within
  * [optimal](https://github.com/milesj/optimal) checks. All supported optimal
- * predicates are passed as an object to the factory.
+ * schemas are passed as an object to the factory.
  *
  * ```ts
  * import { optimal, createBlueprint } from '@boost/common';
