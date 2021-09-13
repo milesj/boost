@@ -1,4 +1,4 @@
-import { Blueprint, Predicates } from 'optimal';
+import type { Blueprint, Schemas } from 'optimal';
 import type { Path } from './Path';
 
 // PATHS
@@ -48,7 +48,7 @@ export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 // INTERFACES
 
 export type BlueprintFactory<T extends object> = (
-	predicates: Predicates,
+	schemas: Schemas,
 	onConstruction?: boolean,
 ) => Blueprint<T>;
 

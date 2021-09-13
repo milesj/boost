@@ -147,7 +147,7 @@ describe('Contract', () => {
 		const spy = jest.fn();
 
 		class BlueprintTest extends Contract<{}> {
-			blueprint(preds: unknown, onConstruct: boolean) {
+			blueprint(schemas: unknown, onConstruct: boolean) {
 				spy(onConstruct);
 
 				return {};

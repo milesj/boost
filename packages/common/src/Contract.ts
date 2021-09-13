@@ -1,4 +1,4 @@
-import optimal, { Blueprint, Predicates, predicates } from 'optimal';
+import { Blueprint, optimal, Schemas, schemas } from 'optimal';
 import { Optionable } from './types';
 
 export abstract class Contract<T extends object = {}> implements Optionable<T> {
@@ -34,7 +34,7 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 		this.options = Object.freeze(
 			optimal(
 				{ ...this.options, ...nextOptions },
-				this.blueprint(predicates, this.options === undefined) as Blueprint<T>,
+				this.blueprint(schemas, this.options === undefined) as Blueprint<T>,
 				{
 					name: this.constructor.name,
 				},
@@ -52,5 +52,5 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	 * validating on class instantiation (first time), or by calling
 	 * `configure()` (all other times).
 	 */
-	abstract blueprint(predicates: Predicates, onConstruction?: boolean): Blueprint<object>;
+	abstract blueprint(predicates: Schemas, onConstruction?: boolean): Blueprint<object>;
 }
