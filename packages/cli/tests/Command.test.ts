@@ -1,4 +1,3 @@
-import execa from 'execa';
 import { jest } from '@jest/globals';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';
 import { mockProgram, mockStreams, runCommand } from '../src/test';
@@ -16,30 +15,24 @@ import {
 import { InstallClassicCommand } from './__fixtures__/InstallClassicCommand';
 import { InstallCommand } from './__fixtures__/InstallCommand';
 
-jest.mock('execa');
-jest.mock('term-size');
-
 describe('Command', () => {
 	describe('executeCommand()', () => {
-		function mockExeca() {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
-				command: `${command} ${args.join(' ')}`,
-			}));
-		}
-
-		beforeEach(() => {
-			mockExeca();
-		});
-
 		it('runs a local command', async () => {
 			const streams = mockStreams();
 			const command = new BuildCommand();
 
 			command[INTERNAL_PROGRAM] = mockProgram({}, streams);
 
-			const result = await command.executeCommand('yarn', ['-v']);
+			const spy = jest.fn<object, [string, string[]]>().mockImplementation((cmd, args) => ({
+				command: `${cmd} ${args.join(' ')}`,
+			}));
 
-			expect(execa).toHaveBeenCalledWith('yarn', ['-v'], streams);
+			const result = await command.executeCommand('yarn', ['-v'], {
+				// @ts-expect-error Allow spy
+				executor: spy,
+			});
+
+			expect(spy).toHaveBeenCalledWith('yarn', ['-v'], { ...streams, executor: spy });
 			expect(result).toEqual(expect.objectContaining({ command: 'yarn -v' }));
 		});
 	});

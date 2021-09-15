@@ -28,8 +28,6 @@ import { ClientCommand } from './__fixtures__/ClientCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
 import { InstallCommand } from './__fixtures__/InstallCommand';
 
-jest.mock('term-size');
-
 class BoostCommand extends Command {
 	static override description = 'Description';
 

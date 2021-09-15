@@ -76,7 +76,9 @@
   },
   "tsconfig": {
     "compilerOptions": {
-      "lib": ["dom"],
+      "lib": [
+        "dom"
+      ],
       "jsx": "react"
     }
   },

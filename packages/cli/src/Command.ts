@@ -161,10 +161,18 @@ export abstract class Command<
 	 * and pass the results through a promise. This does *not* execute Boost CLI
 	 * commands, use `runProgram()` instead.
 	 */
-	executeCommand(command: string, args: string[], options: ExecaOptions = {}) /* infer */ {
+	executeCommand(
+		command: string,
+		args: string[],
+		options: ExecaOptions & {
+			/** @internal */
+			executor?: typeof execa;
+		} = {},
+	) /* infer */ {
 		const { streams } = this.getProgram();
+		const executor = options.executor ?? execa;
 
-		return execa(command, args, {
+		return executor(command, args, {
 			...streams,
 			...options,
 		});

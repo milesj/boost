@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 expect.extend({
 	toBeFilePath(received, expected) {
 		let path = String(expected);
@@ -22,16 +24,15 @@ global.delay = function delay(time: number = 100) {
 	});
 };
 
-// // Differs between osx/windows
-// jest.mock('figures', () => ({
-// 	...jest.requireActual('figures'),
-// 	tick: '^',
-// 	cross: 'x',
-// 	pointer: '>>',
-// 	pointerSmall: '>',
-// 	circleDotted: 'o',
-// 	bullet: '●',
-// }));
+// Differs between osx/windows
+jest.unstable_mockModule('figures', () => ({
+	tick: '^',
+	cross: 'x',
+	pointer: '>>',
+	pointerSmall: '>',
+	circleDotted: 'o',
+	bullet: '●',
+}));
 
 // // Focus is required for snapshots
 // jest.mock('ink', () => ({

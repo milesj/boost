@@ -38,7 +38,7 @@
     "@boost/common": "^3.0.0-alpha.0",
     "@boost/internal": "^3.0.0-alpha.0",
     "i18next": "^20.3.2",
-    "os-locale": "^5.0.0"
+    "os-locale": "^6.0.0"
   },
   "devDependencies": {
     "@jest/globals": "*"

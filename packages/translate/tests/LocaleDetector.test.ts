@@ -1,16 +1,17 @@
-import osLocale from 'os-locale';
 import { jest } from '@jest/globals';
 import { LocaleDetector } from '../src/LocaleDetector';
 
 describe('LocaleDetector', () => {
 	const { argv } = process;
 	let detector: LocaleDetector;
+	let spy: jest.Mock;
 
 	beforeEach(() => {
+		spy = jest.fn().mockImplementation(() => 'en-US');
+
 		detector = new LocaleDetector();
 		detector.locale = '';
-
-		jest.spyOn(osLocale, 'sync').mockImplementation(() => 'en-US');
+		detector.osDetector = spy;
 	});
 
 	afterEach(() => {

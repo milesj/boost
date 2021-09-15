@@ -1,26 +1,8 @@
 import React from 'react';
-import { jest } from '@jest/globals';
-import { loadTheme } from '../src/helpers/loadTheme';
 import { Style } from '../src/react';
 import { renderComponent } from '../src/test';
 
-jest.mock('term-size');
-jest.mock('../src/helpers/loadTheme');
-
 describe('<Style />', () => {
-	beforeEach(() => {
-		(loadTheme as jest.Mock).mockImplementation(() => ({
-			default: 'white',
-			failure: 'red',
-			info: 'cyan',
-			inverted: 'black',
-			muted: 'gray',
-			notice: 'magenta',
-			success: 'green',
-			warning: 'yellow',
-		}));
-	});
-
 	it('renders `none`', async () => {
 		expect(await renderComponent(<Style>Test</Style>)).toMatchSnapshot();
 	});

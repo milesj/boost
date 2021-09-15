@@ -14,7 +14,7 @@ describe('@Throttle()', () => {
 	beforeEach(() => {
 		jest.useFakeTimers();
 
-		spy = jest.spyOn(console, 'log').mockImplementation();
+		spy = jest.spyOn(console, 'log').mockImplementation(() => {});
 	});
 
 	afterEach(() => {

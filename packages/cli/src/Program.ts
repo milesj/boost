@@ -1,4 +1,4 @@
-import levenary from 'levenary';
+import levenaryImport from 'levenary';
 import {
 	ArgList,
 	Arguments,
@@ -46,6 +46,9 @@ import {
 	ProgramStreams,
 	RunResult,
 } from './types';
+
+// @ts-expect-error ESM interop
+const { default: levenary } = levenaryImport;
 
 export class Program extends CommandManager<ProgramOptions> {
 	/**
