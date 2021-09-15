@@ -1,4 +1,4 @@
-import { Blueprint, optimal, Schemas, schemas } from 'optimal';
+import { Blueprint, DeepPartial, optimal, Schemas, schemas } from 'optimal';
 import { Optionable } from './types';
 
 export abstract class Contract<T extends object = {}> implements Optionable<T> {
@@ -25,7 +25,7 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	 * }));
 	 * ```
 	 */
-	configure(options?: Partial<T> | ((options: Required<T>) => Partial<T>)): Readonly<Required<T>> {
+	configure(options?: Partial<T> | ((options: T) => Partial<T>)): Readonly<Required<T>> {
 		const nextOptions = typeof options === 'function' ? options(this.options) : options;
 
 		// We don't want the options property to be modified directly,
@@ -34,7 +34,7 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 		this.options = Object.freeze(
 			optimal(this.blueprint(schemas, this.options === undefined) as Blueprint<T>, {
 				name: this.constructor.name,
-			}).validate({ ...this.options, ...nextOptions }),
+			}).validate({ ...this.options, ...nextOptions } as DeepPartial<T>),
 		);
 
 		return this.options;

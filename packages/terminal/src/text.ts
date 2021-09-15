@@ -88,7 +88,7 @@ export function link(text: string, url: string): string {
  * ```
  */
 export function sliceAnsi(text: string, start: number, end?: number): string {
-	return slice(text, start, end) as string;
+	return slice(text, start, end)!;
 }
 
 /**

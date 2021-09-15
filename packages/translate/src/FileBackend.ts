@@ -35,7 +35,7 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 
 		return {
 			format: string('yaml').oneOf<Format>(['js', 'json', 'yaml']),
-			paths: array(instance(Path, true).notNullable()),
+			paths: array().of(instance().of(Path, true).notNullable()),
 		};
 	}
 

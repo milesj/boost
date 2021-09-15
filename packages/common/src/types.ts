@@ -54,7 +54,7 @@ export type BlueprintFactory<T extends object> = (
 
 export interface Optionable<T extends object = {}> {
 	/** Validated and configured options. */
-	readonly options: Required<T>;
+	readonly options: Readonly<Required<T>>;
 
 	/**
 	 * Define an `optimal` blueprint in which to validate and build the

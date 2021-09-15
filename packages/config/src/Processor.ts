@@ -65,9 +65,9 @@ export class Processor<T extends object> extends Contract<ProcessorOptions> {
 		for (const next of configs) {
 			// Validate next config object
 			if (validate) {
-				optimal(next.config, blueprint, {
+				optimal(blueprint, {
 					file: next.path.path(),
-				});
+				}).validate(next.config);
 			}
 
 			// Merge properties into previous object

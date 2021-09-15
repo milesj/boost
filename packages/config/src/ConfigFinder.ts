@@ -38,7 +38,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 
 		return {
 			extendsSetting: string(),
-			extensions: array(string<ExtType>(), DEFAULT_EXTS),
+			extensions: array(DEFAULT_EXTS).of(string<ExtType>()),
 			includeEnv: bool(true),
 			loaders: shape({
 				cjs: func(loadCjs).notNullable(),

@@ -6,8 +6,8 @@ export function validateConfig(
 	name: string,
 	config: Omit<CommandStaticConfig, 'options' | 'params'>,
 ) {
-	optimal(config, commandConstructorBlueprint, {
+	optimal(commandConstructorBlueprint, {
 		name,
 		unknown: true,
-	});
+	}).validate(config);
 }

@@ -5,9 +5,9 @@ import { paramBlueprint } from './blueprints';
 
 export function validateParams(params: ParamConfigList) {
 	params.forEach((config, index) =>
-		optimal(config, paramBlueprint, {
+		optimal(paramBlueprint, {
 			name: msg('cli:labelParam', { name: config.label ?? index }),
 			unknown: false,
-		}),
+		}).validate(config),
 	);
 }

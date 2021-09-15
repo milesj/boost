@@ -21,8 +21,8 @@ export abstract class Transport<Options extends TransportOptions>
 
 		return {
 			eol: string(os.EOL),
-			format: func<Formatter>().nullable(),
-			levels: array(string().oneOf(LOG_LEVELS)),
+			format: func<Formatter>(),
+			levels: array().of(string().oneOf(LOG_LEVELS)),
 		};
 	}
 

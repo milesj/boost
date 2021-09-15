@@ -6,7 +6,7 @@ import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { debug } from './debug';
 import { Transport } from './Transport';
 import { ConsoleTransport } from './transports/ConsoleTransport';
-import { LoggerOptions, LogLevel, LogOptions } from './types';
+import { LoggerOptions, LogLevel, LogOptions, Transportable } from './types';
 
 export class Logger extends Contract<LoggerOptions> {
 	protected silent: boolean = false;
@@ -29,10 +29,12 @@ export class Logger extends Contract<LoggerOptions> {
 		const { array, instance, object, string } = schemas;
 
 		return {
-			labels: object(string()),
+			labels: object().of(string().notRequired()),
 			metadata: object(),
 			name: string().required().notEmpty(),
-			transports: array(instance(Transport).notNullable(), [new ConsoleTransport()]),
+			transports: array([new ConsoleTransport()]).of<Transportable>(
+				instance().of(Transport).notNullable(),
+			),
 		};
 	}
 

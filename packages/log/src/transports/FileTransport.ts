@@ -47,7 +47,9 @@ export class FileTransport<
 			...super.blueprint(schemas),
 			gzip: bool(),
 			maxSize: number(MAX_LOG_SIZE).positive(),
-			path: union([string(), instance(Path)], '').required(),
+			path: union<PortablePath>('')
+				.of([string(), instance().of(Path)])
+				.required(),
 		};
 	}
 
