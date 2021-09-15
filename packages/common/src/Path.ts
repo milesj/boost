@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-// import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 import { FilePath, Pathable, PortablePath } from './types';
 
 /**
@@ -16,14 +16,14 @@ export class Path implements Pathable {
 	private isNormalized: boolean = false;
 
 	constructor(...parts: PortablePath[]) {
-		this.internalPath = path.join(...parts.map(String));
-		// this.internalPath = path.join(
-		// 	...parts.map((part) => {
-		// 		const p = String(part);
+		this.internalPath = path.join(
+			...parts.map((part) => {
+				const segment = String(part);
 
-		// 		return p.startsWith('file:') ? fileURLToPath(p) : p;
-		// 	}),
-		// );
+				// This is unfortunate, but not sure of a better way?
+				return segment.startsWith('file:') ? fileURLToPath(segment) : segment;
+			}),
+		);
 	}
 
 	/**
