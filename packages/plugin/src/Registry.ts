@@ -2,15 +2,14 @@ import kebabCase from 'lodash/kebabCase';
 import upperFirst from 'lodash/upperFirst';
 import pluralize from 'pluralize';
 import {
-	Blueprint,
 	Contract,
 	isObject,
 	MODULE_NAME_PATTERN,
 	ModuleID,
 	ModuleResolver,
 	PathResolver,
-	Schemas,
 } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { color } from '@boost/internal';

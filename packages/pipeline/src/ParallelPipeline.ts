@@ -1,4 +1,5 @@
-import { Blueprint, instanceOf, Schemas } from '@boost/common';
+import { instanceOf } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { Context } from './Context';
 import { createWorkUnit } from './createWorkUnit';
 import { Pipeline } from './Pipeline';

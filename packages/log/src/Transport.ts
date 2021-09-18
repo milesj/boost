@@ -1,5 +1,6 @@
 import os from 'os';
-import { Blueprint, Contract, Schemas } from '@boost/common';
+import { Contract } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LOG_LEVELS } from './constants';
 import * as formats from './formats';
 import { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from './types';

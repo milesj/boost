@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { Blueprint, Path, Schemas } from '@boost/common';
+import { Path } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { Finder } from './Finder';
 import { IgnoreFile, IgnoreFinderOptions } from './types';

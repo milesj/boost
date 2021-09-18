@@ -16,7 +16,7 @@ import {
 	ShortOptionName,
 	SingleOption,
 } from '@boost/args';
-import { Blueprint, schemas } from '@boost/common';
+import { Blueprint, schemas } from '@boost/common/optimal';
 import { CommandStaticConfig } from '../types';
 
 const { array, bool, func, number, object, shape, string, union } = schemas;
@@ -30,7 +30,7 @@ export const commonBlueprint: Blueprint<Config> = {
 // COMMANDS
 
 export const commandConstructorBlueprint: Blueprint<
-	Omit<CommandStaticConfig, 'options' | 'params'>
+	Partial<Omit<CommandStaticConfig, 'options' | 'params'>>
 > = {
 	...commonBlueprint,
 	aliases: array().of(string()),

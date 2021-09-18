@@ -1,5 +1,5 @@
 import { ParamConfigList } from '@boost/args';
-import { optimal } from '@boost/common';
+import { optimal } from '@boost/common/optimal';
 import { msg } from '../translate';
 import { paramBlueprint } from './blueprints';
 

@@ -1,4 +1,4 @@
-import { optimal } from '@boost/common';
+import { optimal } from '@boost/common/optimal';
 import { CommandStaticConfig } from '../types';
 import { commandConstructorBlueprint } from './blueprints';
 

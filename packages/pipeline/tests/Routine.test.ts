@@ -1,5 +1,5 @@
 import execa from 'execa';
-import { Schemas } from '@boost/common';
+import { Schemas } from '@boost/common/optimal';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { STATUS_RUNNING } from '../src/constants';

@@ -1,4 +1,5 @@
-import { Blueprint, Contract, ModuleResolver, PortablePath, schemas } from '@boost/common';
+import { Contract, ModuleResolver, PortablePath } from '@boost/common';
+import { Blueprint, schemas } from '@boost/common/optimal';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
 import { ConfigFinder } from './ConfigFinder';

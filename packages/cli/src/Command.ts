@@ -12,7 +12,7 @@ import {
 	PrimitiveType,
 	UnknownOptionMap,
 } from '@boost/args';
-import { Blueprint, Schemas } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';

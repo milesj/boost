@@ -3,8 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-import { Blueprint, optimal, Schemas, schemas } from 'optimal';
-
 export * from './CommonError';
 export * from './constants';
 export * from './Contract';
@@ -19,6 +17,3 @@ export * as json from './serializers/json';
 export * as yaml from './serializers/yaml';
 export * from './types';
 export * from '@boost/decorators';
-
-export { optimal, schemas };
-export type { Blueprint, Schemas };

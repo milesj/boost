@@ -1,4 +1,4 @@
-import { Blueprint, Schemas } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { Transport } from '../Transport';
 import { TransportOptions, Writable } from '../types';
 

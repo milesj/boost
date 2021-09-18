@@ -1,4 +1,5 @@
-import { Contract, Schemas } from '../src';
+import { Contract } from '../src';
+import { Schemas } from '../src/optimal';
 
 describe('Contract', () => {
 	class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {

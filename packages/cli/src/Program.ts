@@ -9,7 +9,8 @@ import {
 	PrimitiveType,
 	ValidationError,
 } from '@boost/args';
-import { Blueprint, ExitError, Schemas } from '@boost/common';
+import { ExitError } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { Event } from '@boost/event';
 import { env } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';

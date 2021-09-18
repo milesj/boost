@@ -1,5 +1,6 @@
 import { BackendModule, Resource, ResourceKey } from 'i18next';
-import { Blueprint, Contract, json, Path, Schemas, yaml } from '@boost/common';
+import { Contract, json, Path, yaml } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { TranslateError } from './TranslateError';
 import { Format, Locale } from './types';
 

@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
-import { Blueprint, Contract, isObject, optimal, Schemas } from '@boost/common';
+import { Contract, isObject } from '@boost/common';
+import { Blueprint, optimal, Schemas } from '@boost/common/optimal';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { mergeArray } from './helpers/mergeArray';

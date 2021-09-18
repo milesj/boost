@@ -1,6 +1,7 @@
 import fs from 'fs';
 import zlib from 'zlib';
-import { Blueprint, Path, PortablePath, Schemas } from '@boost/common';
+import { Path, PortablePath } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { MAX_LOG_SIZE } from '../constants';
 import { Transport } from '../Transport';
 import { TransportOptions } from '../types';

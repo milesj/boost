@@ -2,7 +2,7 @@
 /* eslint-disable promise/prefer-await-to-then */
 
 import os from 'os';
-import { Blueprint, Schemas } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { Context } from './Context';
 import { debug } from './debug';
 import { ParallelPipeline } from './ParallelPipeline';

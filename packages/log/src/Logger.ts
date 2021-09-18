@@ -1,6 +1,7 @@
 import os from 'os';
 import util from 'util';
-import { Blueprint, Contract, Schemas } from '@boost/common';
+import { Contract } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { debug } from './debug';
@@ -32,8 +33,8 @@ export class Logger extends Contract<LoggerOptions> {
 			labels: object().of(string().notRequired()),
 			metadata: object(),
 			name: string().required().notEmpty(),
-			transports: array([new ConsoleTransport()]).of<Transportable>(
-				instance().of(Transport).notNullable(),
+			transports: array([new ConsoleTransport()]).of(
+				instance().of<Transportable>(Transport).notNullable(),
 			),
 		};
 	}

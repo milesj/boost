@@ -2,15 +2,14 @@
 
 import minimatch from 'minimatch';
 import {
-	Blueprint,
 	isFilePath,
 	isModuleName,
 	PackageStructure,
 	Path,
 	PathResolver,
-	Schemas,
 	toArray,
 } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';

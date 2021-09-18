@@ -1,4 +1,4 @@
-import { Blueprint, Schemas, schemas } from '@boost/common';
+import { Blueprint, Schemas, schemas } from '@boost/common/optimal';
 import {
 	ExtendsSetting,
 	FileGlob,

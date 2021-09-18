@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-standalone-expect */
 
-import { Schemas } from '@boost/common';
+import { Schemas } from '@boost/common/optimal';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Runnable } from '../src/types';
