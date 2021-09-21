@@ -29,6 +29,12 @@ module.exports = {
 			],
 		},
 		{
+			type: 'category',
+			label: 'Migrations',
+			collapsed: true,
+			items: ['migrate/3.0'],
+		},
+		{
 			type: 'link',
 			label: 'Changelog',
 			href: 'https://github.com/milesj/boost/blob/master/CHANGELOG.md',
