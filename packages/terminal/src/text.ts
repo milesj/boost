@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import ansiEscapes from 'ansi-escapes';
 import ansiRegex from 'ansi-regex';
 import cliTruncate from 'cli-truncate';
@@ -88,7 +85,7 @@ export function link(text: string, url: string): string {
  * ```
  */
 export function sliceAnsi(text: string, start: number, end?: number): string {
-	return slice(text, start, end) as string;
+	return slice(text, start, end)!;
 }
 
 /**

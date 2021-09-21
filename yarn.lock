@@ -1992,7 +1992,7 @@ __metadata:
     "@types/resolve": ^1.20.1
     fast-glob: ^3.2.7
     json5: ^2.2.0
-    optimal: ^4.3.0
+    optimal: ^5.0.0-alpha.4
     pretty-ms: ^7.0.1
     resolve: ^1.20.0
     yaml: ^1.10.2
@@ -14319,6 +14319,13 @@ fsevents@^1.2.7:
   version: 4.3.0
   resolution: "optimal@npm:4.3.0"
   checksum: 7cc1445f368a53cdc51c7b1ef5cb25084887d62f9ecf9e9dcc8b82d12f2eade55a484b73aaa93daf2fd47a6db6f854b6cf0ec06f6905091facc0fcfccdcc2eeb
+  languageName: node
+  linkType: hard
+
+"optimal@npm:^5.0.0-alpha.4":
+  version: 5.0.0-alpha.4
+  resolution: "optimal@npm:5.0.0-alpha.4"
+  checksum: 9db0653d71bcafe28a93e5cfab010a09c758509566ae8feac6f417fb56cb488d229364610833c9ea8a00ac6f93b9a30a44514292b1b651f6b6697f173c148593
   languageName: node
   linkType: hard
 

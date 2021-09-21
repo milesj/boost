@@ -1,4 +1,4 @@
-import { optimal } from '@boost/common';
+import { optimal } from '@boost/common/optimal';
 import { CommandStaticConfig } from '../types';
 import { commandConstructorBlueprint } from './blueprints';
 
@@ -6,8 +6,8 @@ export function validateConfig(
 	name: string,
 	config: Omit<CommandStaticConfig, 'options' | 'params'>,
 ) {
-	optimal(config, commandConstructorBlueprint, {
+	optimal(commandConstructorBlueprint, {
 		name,
 		unknown: true,
-	});
+	}).validate(config);
 }

@@ -2,15 +2,14 @@ import kebabCase from 'lodash/kebabCase';
 import upperFirst from 'lodash/upperFirst';
 import pluralize from 'pluralize';
 import {
-	Blueprint,
 	Contract,
 	isObject,
 	MODULE_NAME_PATTERN,
 	ModuleID,
 	ModuleResolver,
 	PathResolver,
-	Predicates,
 } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { createDebugger, Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { color } from '@boost/internal';
@@ -88,16 +87,16 @@ export class Registry<Plugin extends Pluggable, Tool = unknown> extends Contract
 		debug('New plugin type created: %s', this.singularName);
 	}
 
-	blueprint(predicates: Predicates): Blueprint<RegistryOptions<Plugin>> {
-		const { func } = predicates;
+	blueprint(schemas: Schemas): Blueprint<RegistryOptions<Plugin>> {
+		const { func } = schemas;
 
 		return {
 			afterShutdown: func<Callback>(),
 			afterStartup: func<Callback>(),
 			beforeShutdown: func<Callback>(),
 			beforeStartup: func<Callback>(),
-			resolver: func<ModuleResolver>(PathResolver.defaultResolver).notNullable(),
-			validate: func<Callback>().notNullable().required(),
+			resolver: func<ModuleResolver>(() => PathResolver.defaultResolver),
+			validate: func<Callback>().required(),
 		};
 	}
 

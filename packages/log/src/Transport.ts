@@ -1,5 +1,6 @@
 import os from 'os';
-import { Blueprint, Contract, Predicates } from '@boost/common';
+import { Contract } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LOG_LEVELS } from './constants';
 import * as formats from './formats';
 import { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from './types';
@@ -16,13 +17,13 @@ export abstract class Transport<Options extends TransportOptions>
 		this.levels = this.options.levels;
 	}
 
-	blueprint(predicates: Predicates): Blueprint<TransportOptions> {
-		const { array, func, string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<TransportOptions> {
+		const { array, func, string } = schemas;
 
 		return {
 			eol: string(os.EOL),
-			format: func<Formatter>().nullable(),
-			levels: array(string().oneOf(LOG_LEVELS)),
+			format: func<Formatter>(),
+			levels: array().of(string().oneOf(LOG_LEVELS)),
 		};
 	}
 

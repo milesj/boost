@@ -1,10 +1,11 @@
 import { ModuleResolver, PackageStructure, Path } from '@boost/common';
+import { DeepPartial } from '@boost/common/optimal';
 
 export type ExtType = 'cjs' | 'js' | 'json' | 'json5' | 'mjs' | 'ts' | 'yaml' | 'yml';
 
 export type LoaderType = Exclude<ExtType, 'yml'>;
 
-export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<Partial<T>>;
+export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<DeepPartial<T>>;
 
 export type Handler<T> = (prev: T, next: T) => Promise<T | undefined> | T | undefined;
 
@@ -19,7 +20,7 @@ export interface File {
 
 export interface ConfigFile<T> extends File {
 	/** Config content of the file. */
-	config: Partial<T>;
+	config: DeepPartial<T>;
 }
 
 export interface IgnoreFile extends File {
@@ -80,7 +81,7 @@ export interface OverridesSettingItem<T> {
 	/** File path patterns/globs to match against. */
 	include: FileGlob;
 	/** Settings configured for this specific override. */
-	settings: Partial<T>;
+	settings: DeepPartial<T>;
 }
 
 export type OverridesSetting<T> = OverridesSettingItem<T>[];

@@ -94,7 +94,7 @@ export interface TransportOptions {
 	/** End of line character to append to a message. Defaults to `os.EOL`. */
 	eol?: string;
 	/** Function to format a log item into a message string. Default is transport dependent. */
-	format?: Formatter | null;
+	format?: Formatter;
 	/** List of log levels to only write messages for. */
 	levels: LogLevel[];
 }

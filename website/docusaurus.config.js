@@ -117,6 +117,7 @@ module.exports = {
 						entry: {
 							index: 'src/index.ts',
 							test: { path: 'src/test.ts', label: 'Test utilities' },
+							optimal: { path: 'src/optimal.ts', label: 'Optimal' },
 						},
 					},
 					{

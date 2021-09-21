@@ -7,7 +7,7 @@
 Powerful convention based finder, loader, and manager of both configuration and ignore files.
 
 ```ts
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Configuration } from '@boost/config';
 
 interface ConfigFile {
@@ -16,7 +16,7 @@ interface ConfigFile {
 }
 
 class ConfigManager extends Configuration<ConfigFile> {
-	blueprint({ bool }: Predicates): Blueprint<ConfigFile> {
+	blueprint({ bool }: Schemas): Blueprint<ConfigFile> {
 		return {
 			debug: bool(),
 			sourceMaps: bool(),

@@ -2,15 +2,14 @@
 
 import minimatch from 'minimatch';
 import {
-	Blueprint,
 	isFilePath,
 	isModuleName,
 	PackageStructure,
 	Path,
 	PathResolver,
-	Predicates,
 	toArray,
 } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
@@ -23,36 +22,29 @@ import { loadJson } from './loaders/json';
 import { loadMjs } from './loaders/mjs';
 import { loadTs } from './loaders/ts';
 import { loadYaml } from './loaders/yaml';
-import {
-	ConfigFile,
-	ConfigFinderOptions,
-	ExtendsSetting,
-	ExtType,
-	FileSource,
-	OverridesSetting,
-} from './types';
+import { ConfigFile, ConfigFinderOptions, ExtType, FileSource, OverridesSetting } from './types';
 
 export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, ConfigFinderOptions<T>> {
-	blueprint(predicates: Predicates): Blueprint<ConfigFinderOptions<T>> {
-		const { array, bool, func, shape, string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<ConfigFinderOptions<T>> {
+		const { array, bool, func, shape, string } = schemas;
 
 		return {
 			extendsSetting: string(),
-			extensions: array(string<ExtType>(), DEFAULT_EXTS),
+			extensions: array(DEFAULT_EXTS).of(string<ExtType>()),
 			includeEnv: bool(true),
 			loaders: shape({
-				cjs: func(loadCjs).notNullable(),
-				js: func(loadJs).notNullable(),
-				json: func(loadJson).notNullable(),
-				json5: func(loadJson).notNullable(),
-				mjs: func(loadMjs).notNullable(),
-				ts: func(loadTs).notNullable(),
-				yaml: func(loadYaml).notNullable(),
-				yml: func(loadYaml).notNullable(),
+				cjs: func(() => loadCjs).notNullable(),
+				js: func(() => loadJs).notNullable(),
+				json: func(() => loadJson).notNullable(),
+				json5: func(() => loadJson).notNullable(),
+				mjs: func(() => loadMjs).notNullable(),
+				ts: func(() => loadTs).notNullable(),
+				yaml: func(() => loadYaml).notNullable(),
+				yml: func(() => loadYaml).notNullable(),
 			}).exact(),
 			name: string().required().camelCase(),
 			overridesSetting: string(),
-			resolver: func(PathResolver.defaultResolver).notNullable(),
+			resolver: func(() => PathResolver.defaultResolver).notNullable(),
 		};
 	}
 
@@ -204,8 +196,8 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 		this.debug('Extracting configs to extend from');
 
 		for (const { config, path, source } of configs) {
-			const key = extendsSetting as keyof T;
-			const extendsFrom = config[key] as ExtendsSetting | undefined;
+			const key = extendsSetting as keyof typeof config;
+			const extendsFrom = config[key];
 
 			if (source === 'root' || source === 'overridden') {
 				delete config[key];
@@ -217,7 +209,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 			}
 
 			const extendedPaths = await Promise.all(
-				toArray(extendsFrom).map(async (extendsPath) => {
+				(toArray(extendsFrom) as unknown as string[]).map(async (extendsPath) => {
 					// Node module
 					if (isModuleName(extendsPath)) {
 						const modulePath = new Path(
@@ -272,8 +264,8 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 		);
 
 		configs.forEach(({ config, path, source }) => {
-			const key = overridesSetting as keyof T;
-			const overrides = config[key] as OverridesSetting<T> | undefined;
+			const key = overridesSetting as keyof typeof config;
+			const overrides = config[key];
 
 			if (source === 'root') {
 				delete config[key];
@@ -283,34 +275,36 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 				return;
 			}
 
-			toArray(overrides).forEach(({ exclude, include, settings }) => {
-				const options = { dot: true, matchBase: true };
-				const excludePatterns = toArray(exclude);
-				const excluded = excludePatterns.some((pattern) =>
-					minimatch(basePath.path(), pattern, options),
-				);
-				const includePatterns = toArray(include);
-				const included = includePatterns.some((pattern) =>
-					minimatch(basePath.path(), pattern, options),
-				);
-				const passes = included && !excluded;
+			(toArray(overrides) as unknown as OverridesSetting<T>).forEach(
+				({ exclude, include, settings }) => {
+					const options = { dot: true, matchBase: true };
+					const excludePatterns = toArray(exclude);
+					const excluded = excludePatterns.some((pattern) =>
+						minimatch(basePath.path(), pattern, options),
+					);
+					const includePatterns = toArray(include);
+					const included = includePatterns.some((pattern) =>
+						minimatch(basePath.path(), pattern, options),
+					);
+					const passes = included && !excluded;
 
-				this.debug.invariant(
-					passes,
-					`Matching with includes "${includePatterns}" and excludes "${excludePatterns}"`,
-					'Matched',
-					// eslint-disable-next-line no-nested-ternary
-					excluded ? 'Excluded' : included ? 'Not matched' : 'Not included',
-				);
+					this.debug.invariant(
+						passes,
+						`Matching with includes "${includePatterns}" and excludes "${excludePatterns}"`,
+						'Matched',
+						// eslint-disable-next-line no-nested-ternary
+						excluded ? 'Excluded' : included ? 'Not matched' : 'Not included',
+					);
 
-				if (passes) {
-					overriddenConfigs.push({
-						config: settings,
-						path,
-						source: 'overridden',
-					});
-				}
-			});
+					if (passes) {
+						overriddenConfigs.push({
+							config: settings,
+							path,
+							source: 'overridden',
+						});
+					}
+				},
+			);
 		});
 
 		return overriddenConfigs;

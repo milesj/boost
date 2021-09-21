@@ -1,4 +1,4 @@
-import { Blueprint, Predicates } from 'optimal';
+import type { Blueprint, Schemas } from 'optimal';
 import type { Path } from './Path';
 
 // PATHS
@@ -48,13 +48,13 @@ export type Constructor<T> = AbstractConstructor<T> | ConcreteConstructor<T>;
 // INTERFACES
 
 export type BlueprintFactory<T extends object> = (
-	predicates: Predicates,
+	schemas: Schemas,
 	onConstruction?: boolean,
 ) => Blueprint<T>;
 
 export interface Optionable<T extends object = {}> {
 	/** Validated and configured options. */
-	readonly options: Required<T>;
+	readonly options: Readonly<Required<T>>;
 
 	/**
 	 * Define an `optimal` blueprint in which to validate and build the

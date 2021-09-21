@@ -1,8 +1,9 @@
-import { Contract, Predicates } from '../src';
+import { Contract } from '../src';
+import { Schemas } from '../src/optimal';
 
 describe('Contract', () => {
 	class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {
-		blueprint({ number, string, shape }: Predicates) {
+		blueprint({ number, string, shape }: Schemas) {
 			return {
 				foo: string('default'),
 				bar: number(),
@@ -16,7 +17,7 @@ describe('Contract', () => {
 			super(options);
 		}
 
-		blueprint({ number }: Predicates) {
+		blueprint({ number }: Schemas) {
 			return {
 				bar: number().required(),
 			};
@@ -147,7 +148,7 @@ describe('Contract', () => {
 		const spy = jest.fn();
 
 		class BlueprintTest extends Contract<{}> {
-			blueprint(preds: unknown, onConstruct: boolean) {
+			blueprint(schemas: unknown, onConstruct: boolean) {
 				spy(onConstruct);
 
 				return {};

@@ -12,15 +12,16 @@ import {
 	MultipleOption,
 	Option,
 	ParamConfig,
+	PrimitiveType,
 	ShortOptionName,
 	SingleOption,
 } from '@boost/args';
-import { Blueprint, predicates } from '@boost/common';
+import { Blueprint, schemas } from '@boost/common/optimal';
 import { CommandStaticConfig } from '../types';
 
-const { array, bool, func, number, object, shape, string, union } = predicates;
+const { array, bool, func, number, object, shape, string, union } = schemas;
 
-export const commonBlueprint: Blueprint<Required<Config>> = {
+export const commonBlueprint: Blueprint<Config> = {
 	deprecated: bool(),
 	description: string().notEmpty().required(),
 	hidden: bool(),
@@ -29,37 +30,34 @@ export const commonBlueprint: Blueprint<Required<Config>> = {
 // COMMANDS
 
 export const commandConstructorBlueprint: Blueprint<
-	Omit<CommandStaticConfig, 'options' | 'params'>
+	Partial<Omit<CommandStaticConfig, 'options' | 'params'>>
 > = {
 	...commonBlueprint,
-	aliases: array(string()),
+	aliases: array().of(string()),
 	allowUnknownOptions: bool(),
-	allowVariadicParams: union([bool(), string()], false),
-	categories: object(
-		union<Category | string>(
-			[
-				string().notEmpty(),
-				shape({
-					name: string().notEmpty(),
-					weight: number(),
-				}),
-			],
-			'',
-		),
+	allowVariadicParams: union<boolean | string>(false).of([bool(), string()]),
+	categories: object().of(
+		union<Category | string>('').of([
+			string().notEmpty(),
+			shape({
+				name: string().notEmpty(),
+				weight: number(),
+			}),
+		]),
 	),
 	category: string(),
 	hasRegisteredOptions: string(),
 	path: string().notEmpty().required().match(COMMAND_FORMAT),
-	usage: union([string(), array(string())], []),
+	usage: union<string[] | string>([]).of([string(), array().of(string())]),
 };
 
 // ARGS
 
-export const argBlueprint: Blueprint<Arg<unknown>> = {
+export const argBlueprint: Blueprint<Arg<any>> = {
 	...commonBlueprint,
-	default: union([bool(), number(), string()], ''),
+	default: union<PrimitiveType>('').of([bool(), number(), string()]),
 	format: func(),
-	type: string<'string'>('string').required(),
+	type: string<'boolean' | 'number' | 'string'>('string').required(),
 	validate: func(),
 };
 
@@ -79,7 +77,7 @@ export const flagBlueprint: Blueprint<Flag> = {
 
 export const stringOptionBlueprint: Blueprint<SingleOption<string>> = {
 	...optionBlueprint,
-	choices: array(string()),
+	choices: array().of(string()),
 	count: bool().never(),
 	default: string(DEFAULT_STRING_VALUE),
 	type: string().oneOf(['string']),
@@ -88,14 +86,14 @@ export const stringOptionBlueprint: Blueprint<SingleOption<string>> = {
 export const stringsOptionBlueprint: Blueprint<MultipleOption<string[]>> = {
 	...optionBlueprint,
 	arity: number(),
-	default: array(string(), []),
+	default: array().of(string()),
 	multiple: bool().onlyTrue(),
 	type: string().oneOf(['string']),
 };
 
 export const numberOptionBlueprint: Blueprint<SingleOption<number>> = {
 	...optionBlueprint,
-	choices: array(number()),
+	choices: array().of(number()),
 	count: bool().onlyTrue(),
 	default: number(DEFAULT_NUMBER_VALUE),
 	type: string().oneOf(['number']),
@@ -104,7 +102,7 @@ export const numberOptionBlueprint: Blueprint<SingleOption<number>> = {
 export const numbersOptionBlueprint: Blueprint<MultipleOption<number[]>> = {
 	...optionBlueprint,
 	arity: number(),
-	default: array(number(), []),
+	default: array().of(number()),
 	multiple: bool().onlyTrue(),
 	type: string().oneOf(['number']),
 };
