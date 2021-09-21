@@ -1,5 +1,5 @@
 import execa from 'execa';
-import { Predicates } from '@boost/common';
+import { Schemas } from '@boost/common/optimal';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { STATUS_RUNNING } from '../src/constants';
@@ -13,7 +13,7 @@ jest.mock('execa');
 
 describe('Routine', () => {
 	class TestRoutine extends Routine<string, string, { test: number }> {
-		blueprint({ number }: Predicates) {
+		blueprint({ number }: Schemas) {
 			return {
 				test: number(),
 			};

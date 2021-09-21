@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-standalone-expect */
 
-import { Predicates } from '@boost/common';
+import { Schemas } from '@boost/common/optimal';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Runnable } from '../src/types';
@@ -27,7 +27,7 @@ describe('SerialPipeline', () => {
 	}
 
 	class TestHierarchy extends Routine<string, string, { depth: number; index: number }> {
-		blueprint({ number }: Predicates) {
+		blueprint({ number }: Schemas) {
 			return {
 				depth: number(),
 				index: number(),

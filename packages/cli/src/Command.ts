@@ -12,7 +12,7 @@ import {
 	PrimitiveType,
 	UnknownOptionMap,
 } from '@boost/args';
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';
@@ -133,7 +133,7 @@ export abstract class Command<
 	 * Validate options passed to the constructor.
 	 */
 	// Empty blueprint so that sub-classes may type correctly
-	blueprint(predicates: Predicates): Blueprint<object> {
+	blueprint(schemas: Schemas): Blueprint<object> {
 		return {};
 	}
 

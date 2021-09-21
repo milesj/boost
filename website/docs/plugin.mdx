@@ -142,7 +142,7 @@ allows the plugin to inherit options through its constructor. This automatically
 loading plugins from a configuration file.
 
 ```ts
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common';
 import { Plugin } from '@boost/plugin';
 import { Renderable } from './registry';
 
@@ -153,7 +153,7 @@ export interface RendererOptions {
 export default class Renderer extends Plugin<unknown, RendererOptions> implements Renderable {
 	// ...
 
-	blueprint({ bool }: Predicates): Blueprint<RendererOptions> {
+	blueprint({ bool }: Schemas): Blueprint<RendererOptions> {
 		return {
 			async: bool(),
 		};

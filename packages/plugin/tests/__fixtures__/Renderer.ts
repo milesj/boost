@@ -1,4 +1,4 @@
-import { Blueprint, Predicates } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { DEFAULT_PRIORITY, Pluggable, Plugin, Registry, RegistryOptions } from '../../src';
 
 export interface Renderable extends Pluggable {
@@ -10,7 +10,7 @@ export class Renderer extends Plugin<unknown, { value: string }> implements Rend
 
 	priority = DEFAULT_PRIORITY;
 
-	blueprint({ string }: Predicates): Blueprint<{ value: string }> {
+	blueprint({ string }: Schemas): Blueprint<{ value: string }> {
 		return {
 			value: string(),
 		};

@@ -1,5 +1,5 @@
 import { OptionConfig, OptionConfigMap } from '@boost/args';
-import { Blueprint, optimal } from '@boost/common';
+import { Blueprint, optimal } from '@boost/common/optimal';
 import { msg } from '../translate';
 import {
 	flagBlueprint,
@@ -21,9 +21,9 @@ export function validateOptions(options: OptionConfigMap) {
 			blueprint = config.multiple ? stringsOptionBlueprint : stringOptionBlueprint;
 		}
 
-		optimal(config, blueprint as Blueprint<OptionConfig>, {
+		optimal(blueprint as Blueprint<OptionConfig>, {
 			name: msg('cli:labelOption', { name }),
 			unknown: false,
-		});
+		}).validate(config);
 	});
 }

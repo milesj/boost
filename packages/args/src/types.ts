@@ -159,11 +159,11 @@ export interface Arg<T> extends Config {
 	 */
 	default?: T;
 	/** An optional function to format the value after parsing. Must return the same type. */
-	format?: ((value: T) => T) | null;
+	format?: (value: T) => T;
 	/** Expected type of the provided value. When a value is captured from the command line, it will be type casted. */
 	type: InferArgType<T>;
 	/** An optional function to validate the provided value. */
-	validate?: ((value: T) => void) | null;
+	validate?: (value: T) => void;
 }
 
 export interface Option<T extends ValueType> extends Arg<T> {

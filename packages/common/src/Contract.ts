@@ -1,4 +1,4 @@
-import optimal, { Blueprint, Predicates, predicates } from 'optimal';
+import { Blueprint, DeepPartial, optimal, Schemas, schemas } from 'optimal';
 import { Optionable } from './types';
 
 export abstract class Contract<T extends object = {}> implements Optionable<T> {
@@ -32,13 +32,9 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 		// so it's read only, but we still want to modify it with this function.
 		// @ts-expect-error Allow readonly overwrite
 		this.options = Object.freeze(
-			optimal(
-				{ ...this.options, ...nextOptions },
-				this.blueprint(predicates, this.options === undefined) as Blueprint<T>,
-				{
-					name: this.constructor.name,
-				},
-			),
+			optimal(this.blueprint(schemas, this.options === undefined) as Blueprint<T>, {
+				name: this.constructor.name,
+			}).validate({ ...this.options, ...nextOptions } as DeepPartial<T>),
 		);
 
 		return this.options;
@@ -52,5 +48,5 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	 * validating on class instantiation (first time), or by calling
 	 * `configure()` (all other times).
 	 */
-	abstract blueprint(predicates: Predicates, onConstruction?: boolean): Blueprint<object>;
+	abstract blueprint(schemas: Schemas, onConstruction?: boolean): Blueprint<object>;
 }

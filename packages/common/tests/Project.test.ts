@@ -1,6 +1,6 @@
 import { getFixturePath } from '@boost/test-utils';
-import { Path, Project } from '../src';
-import { mockFilePath, mockNormalizedFilePath, normalizeSeparators } from '../src/test';
+import { Project } from '../src';
+import { mockFilePath, normalizeSeparators } from '../src/test';
 
 describe('Project', () => {
 	describe('getProject()', () => {
@@ -154,8 +154,6 @@ describe('Project', () => {
 		});
 
 		it('returns an array of all packages within all workspaces', () => {
-			console.log(new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths());
-
 			expect(new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths()).toEqual([
 				mockFilePath(getFixturePath('workspace-multiple', 'packages/baz')),
 				mockFilePath(getFixturePath('workspace-multiple', 'packages/foo')),
@@ -164,12 +162,6 @@ describe('Project', () => {
 		});
 
 		it('returns an array of all packages within all workspaces as relative paths', () => {
-			console.log(
-				new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths({
-					relative: true,
-				}),
-			);
-
 			expect(
 				new Project(getFixturePath('workspace-multiple')).getWorkspacePackagePaths({
 					relative: true,

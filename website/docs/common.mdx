@@ -78,13 +78,13 @@ accept an options object through the constructor, which is validated and built u
 To start, extend [`Contract`][contract] with a generic interface that represents the shape of the
 options object. Next, implement the abstract
 [`Contract#blueprint()`](/api/common/class/Contract#blueprint) method, which is passed
-[optimal predicates](https://github.com/milesj/optimal/blob/master/docs/predicates.md) as an
-argument, and must return an
+[optimal schemas](https://github.com/milesj/optimal/blob/master/docs/schemas.md) as an argument, and
+must return an
 [optimal blueprint](https://github.com/milesj/optimal/blob/master/docs/usage.md#blueprint) that
 matches the generic interface.
 
 ```ts
-import { Contract, Blueprint, Predicates } from '@boost/common';
+import { Contract, Blueprint, Schemas } from '@boost/common';
 
 export interface AdapterOptions {
 	name?: string;
@@ -92,7 +92,7 @@ export interface AdapterOptions {
 }
 
 export default class Adapter extends Contract<AdapterOptions> {
-	blueprint({ number, string }: Predicates): Blueprint<AdapterOptions> {
+	blueprint({ number, string }: Schemas): Blueprint<AdapterOptions> {
 		return {
 			name: string().notEmpty(),
 			priority: number().gte(0),

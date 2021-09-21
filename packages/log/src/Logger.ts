@@ -1,12 +1,13 @@
 import os from 'os';
 import util from 'util';
-import { Blueprint, Contract, Predicates } from '@boost/common';
+import { Contract } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { debug } from './debug';
 import { Transport } from './Transport';
 import { ConsoleTransport } from './transports/ConsoleTransport';
-import { LoggerOptions, LogLevel, LogOptions } from './types';
+import { LoggerOptions, LogLevel, LogOptions, Transportable } from './types';
 
 export class Logger extends Contract<LoggerOptions> {
 	protected silent: boolean = false;
@@ -25,14 +26,16 @@ export class Logger extends Contract<LoggerOptions> {
 		);
 	}
 
-	blueprint(predicates: Predicates): Blueprint<LoggerOptions> {
-		const { array, instance, object, string } = predicates;
+	blueprint(schemas: Schemas): Blueprint<LoggerOptions> {
+		const { array, instance, object, string } = schemas;
 
 		return {
-			labels: object(string()),
+			labels: object().of(string().notRequired()),
 			metadata: object(),
 			name: string().required().notEmpty(),
-			transports: array(instance(Transport).notNullable(), [new ConsoleTransport()]),
+			transports: array([new ConsoleTransport()]).of(
+				instance().of<Transportable>(Transport).notNullable(),
+			),
 		};
 	}
 

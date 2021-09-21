@@ -24,9 +24,7 @@ describe('ConfigFinder', () => {
 	it('errors if name is not in camel case', () => {
 		expect(() => {
 			finder = new ConfigFinder({ name: 'Boosty Boost' }, cache);
-		}).toThrow(
-			'Invalid ConfigFinder field "name". String must be in camel case. (pattern "^[a-z][0-9A-Za-z]+$")',
-		);
+		}).toThrowErrorMatchingSnapshot();
 	});
 
 	describe('determinePackageScope()', () => {

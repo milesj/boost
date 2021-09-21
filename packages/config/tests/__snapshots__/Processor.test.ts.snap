@@ -1,22 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Processor processing extends setting errors for an empty string 1`] = `
-"Invalid field \\"extends\\" in .boost.js. Received \\"\\" but must be a union of: string, array<string>
- - String cannot be empty."
+".boost.js: The following validations have failed:
+  - Invalid field \\"extends\\" with value \\"\\". Received string with the following failures:
+    - String cannot be empty."
 `;
 
 exports[`Processor processing extends setting errors for an empty string in an array 1`] = `
-"Invalid field \\"extends\\" in .boost.js. Received array but must be a union of: string, array<string>
- - Invalid field \\"extends[1]\\" in .boost.js. String cannot be empty."
+".boost.js: The following validations have failed:
+  - Invalid field \\"extends\\". Received array/tuple with the following failures:
+    - Invalid member \\"[1]\\" with value \\"\\". String cannot be empty."
 `;
 
-exports[`Processor processing extends setting errors for an invalid value 1`] = `"Invalid field \\"extends\\" in .boost.js. Received 123 but must be a union of: string, array<string>"`;
+exports[`Processor processing extends setting errors for an invalid value 1`] = `
+".boost.js: The following validations have failed:
+  - Invalid field \\"extends\\" with value 123. Value must be one of: string, array<string>."
+`;
 
 exports[`Processor processing plugins setting errors for an invalid option value 1`] = `
-"Invalid field \\"plugins\\" in .boost.js. Received object but must be a union of: array<string | tuple<string, boolean | object>>, object<boolean | object>
- - Invalid field \\"plugins.foo\\" in .boost.js. Received 123 but must be a union of: boolean, object"
+".boost.js: The following validations have failed:
+  - Invalid field \\"plugins\\". Received object/shape with the following failures:
+    - Invalid field \\"foo\\" with value 123. Value must be one of: boolean, object."
 `;
 
-exports[`Processor processing plugins setting errors for an invalid value 1`] = `"Invalid field \\"plugins\\" in .boost.js. Received true but must be a union of: array<string | tuple<string, boolean | object>>, object<boolean | object>"`;
+exports[`Processor processing plugins setting errors for an invalid value 1`] = `
+".boost.js: The following validations have failed:
+  - Invalid field \\"plugins\\" with value \`true\`. Value must be one of: array<string | tuple<string, boolean | object>>, object<boolean | object>."
+`;
 
-exports[`Processor processing validation validates each config 1`] = `"Invalid field \\"debug\\" in .boost.js. Must be a boolean, received 123."`;
+exports[`Processor processing validation validates each config 1`] = `
+".boost.js: The following validations have failed:
+  - Invalid field \\"debug\\" with value 123. Must be a boolean."
+`;

@@ -43,13 +43,13 @@ export interface Registration<T extends Pluggable> extends RegisterOptions {
 
 export interface RegistryOptions<T extends Pluggable> {
 	/** Callback fired after a plugin's `shutdown` life cycle is executed. */
-	afterShutdown?: Callback<T> | null;
+	afterShutdown?: Callback<T>;
 	/** Callback fired after a plugin's `startup` life cycle is executed. */
-	afterStartup?: Callback<T> | null;
+	afterStartup?: Callback<T>;
 	/** Callback fired before a plugin's `shutdown` life cycle is executed. */
-	beforeShutdown?: Callback<T> | null;
+	beforeShutdown?: Callback<T>;
 	/** Callback fired before a plugin's `startup` life cycle is executed. */
-	beforeStartup?: Callback<T> | null;
+	beforeStartup?: Callback<T>;
 	/** Custom module resolver. */
 	resolver?: ModuleResolver;
 	/** Validate the shape of the plugin being registered. */
