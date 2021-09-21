@@ -1,7 +1,7 @@
 import fs from 'fs';
 import zlib from 'zlib';
 import { Path, PortablePath } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import { Blueprint, portablePathSchema, Schemas } from '@boost/common/optimal';
 import { MAX_LOG_SIZE } from '../constants';
 import { Transport } from '../Transport';
 import { TransportOptions } from '../types';
@@ -42,15 +42,13 @@ export class FileTransport<
 	}
 
 	override blueprint(schemas: Schemas): Blueprint<FileTransportOptions> {
-		const { bool, instance, union, number, string } = schemas;
+		const { bool, number } = schemas;
 
 		return {
 			...super.blueprint(schemas),
 			gzip: bool(),
 			maxSize: number(MAX_LOG_SIZE).positive(),
-			path: union<PortablePath>('')
-				.of([string(), instance().of(Path)])
-				.required(),
+			path: portablePathSchema.required(),
 		};
 	}
 

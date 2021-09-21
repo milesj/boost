@@ -10,8 +10,8 @@ import {
 /**
  * Create an `optimal` schema for validating the structure of an "extends" setting.
  */
-export function createExtendsSchema(schemes: Schemas = schemas) {
-	const { array, string, union } = schemes;
+export function createExtendsSchema(schematics: Schemas = schemas) {
+	const { array, string, union } = schematics;
 
 	return union<ExtendsSetting>([])
 		.of([string().notEmpty(), array().of(string().notEmpty())])
@@ -21,8 +21,8 @@ export function createExtendsSchema(schemes: Schemas = schemas) {
 /**
  * Create an `optimal` schema for validating the structure of a "plugins" setting.
  */
-export function createPluginsSchema(schemes: Schemas = schemas) {
-	const { array, bool, object, string, tuple, union } = schemes;
+export function createPluginsSchema(schematics: Schemas = schemas) {
+	const { array, bool, object, string, tuple, union } = schematics;
 	const pluginOptions = union<PluginOptions>({}).of([bool(), object()]);
 	const pluginSource = string().notEmpty();
 	const pluginEntry = tuple<[string, PluginOptions]>([pluginSource, pluginOptions]);
@@ -38,9 +38,9 @@ export function createPluginsSchema(schemes: Schemas = schemas) {
  */
 export function createOverridesSchema<T extends object>(
 	blueprint: Blueprint<T>,
-	schemes: Schemas = schemas,
+	schematics: Schemas = schemas,
 ) {
-	const { array, shape, string, union } = schemes;
+	const { array, shape, string, union } = schematics;
 
 	return array<OverridesSettingItem<T>>()
 		.of(

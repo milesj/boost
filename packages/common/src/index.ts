@@ -17,3 +17,4 @@ export * as json from './serializers/json';
 export * as yaml from './serializers/yaml';
 export * from './types';
 export * from '@boost/decorators';
+export type { Blueprint, DeepPartial, Schemas } from 'optimal';

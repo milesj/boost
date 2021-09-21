@@ -7,14 +7,15 @@ import { BlueprintFactory } from '../types';
  * schemas are passed as an object to the factory.
  *
  * ```ts
- * import { optimal, createBlueprint } from '@boost/common';
+ * import { createBlueprint } from '@boost/common';
+ * import { optimal } from '@boost/common/optimal';
  *
  * const blueprint = createBlueprint(({ string, number }) => ({
  * 	name: string().required(),
  * 	age: number().gt(0),
  * }));
  *
- * const data = optimal(blueprint).validate({});
+ * const object = optimal(blueprint).validate({});
  * ```
  */
 export function createBlueprint<T extends object>(factory: BlueprintFactory<T>): Blueprint<T> {
