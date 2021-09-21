@@ -1,4 +1,4 @@
-import { Blueprint, schemas } from '@boost/common';
+import { Blueprint, schemas } from '@boost/common/optimal';
 import { mockFilePath } from '@boost/common/test';
 import { mergeExtends } from '../src/helpers/mergeExtends';
 import { mergePlugins } from '../src/helpers/mergePlugins';
@@ -66,9 +66,9 @@ describe('Processor', () => {
 			plugins: createPluginsSchema(),
 			boolean: schemas.bool(true),
 			string: schemas.string(''),
-			stringList: schemas.array(schemas.string(), ['foo']),
+			stringList: schemas.array(['foo']).of(schemas.string()),
 			number: schemas.number(123),
-			numberList: schemas.array(schemas.number(), []),
+			numberList: schemas.array([]).of(schemas.number()),
 			object: schemas.object(),
 		};
 

@@ -14,9 +14,9 @@
   "files": [
     "dts/**/*.d.ts",
     "lib/**/*.{js,map}",
-    "src/**/*.{ts,tsx,json}",
     "optimal.d.ts",
     "optimal.js",
+    "src/**/*.{ts,tsx,json}",
     "test.d.ts",
     "test.js"
   ],
@@ -39,7 +39,7 @@
     "@boost/internal": "^3.0.0-alpha.0",
     "fast-glob": "^3.2.7",
     "json5": "^2.2.0",
-    "optimal": "^5.0.0-alpha.2",
+    "optimal": "^5.0.0-alpha.4",
     "pretty-ms": "^7.0.1",
     "resolve": "^1.20.0",
     "yaml": "^1.10.2"

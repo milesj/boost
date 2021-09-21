@@ -5,7 +5,7 @@ export type ExtType = 'cjs' | 'js' | 'json' | 'json5' | 'mjs' | 'ts' | 'yaml' | 
 
 export type LoaderType = Exclude<ExtType, 'yml'>;
 
-export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<Partial<T>>;
+export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<DeepPartial<T>>;
 
 export type Handler<T> = (prev: T, next: T) => Promise<T | undefined> | T | undefined;
 

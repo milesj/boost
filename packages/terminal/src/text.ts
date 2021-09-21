@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import ansiEscapes from 'ansi-escapes';
 import ansiRegex from 'ansi-regex';
 import cliTruncate from 'cli-truncate';

@@ -67,8 +67,8 @@ class Manager extends Configuration<ConfigFile> {
 			ast: bool(),
 			cwd: string(process.cwd()),
 			debug: bool(),
-			exclude: array(string()),
-			include: array(string()),
+			exclude: array().of(string()),
+			include: array().of(string()),
 			options: object(),
 		};
 	}

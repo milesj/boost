@@ -7,8 +7,7 @@ describe('createBlueprint()', () => {
 			foo: schemas.string(),
 		}));
 
-		expect(blueprint).toEqual({
-			foo: string(),
-		});
+		expect(blueprint).toHaveProperty('foo');
+		expect(blueprint.foo.schema()).toBe('string');
 	});
 });

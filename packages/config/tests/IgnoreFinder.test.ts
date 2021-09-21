@@ -17,9 +17,7 @@ describe('IgnoreFinder', () => {
 	it('errors if name is not in camel case', () => {
 		expect(() => {
 			finder = new IgnoreFinder({ name: 'Boosty Boost' }, cache);
-		}).toThrow(
-			'Invalid IgnoreFinder field "name". String must be in camel case. (pattern "^[a-z][0-9A-Za-z]+$")',
-		);
+		}).toThrowErrorMatchingSnapshot();
 	});
 
 	it('caches root, file, and directory information', async () => {

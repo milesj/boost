@@ -1,4 +1,4 @@
-import { Blueprint, Schemas } from '@boost/common';
+import { Blueprint, Schemas } from '@boost/common/optimal';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
 import { Configuration, createExtendsSchema, mergeExtends } from '../src';

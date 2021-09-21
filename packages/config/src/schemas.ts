@@ -29,7 +29,7 @@ export function createPluginsSchema(schemes: Schemas = schemas) {
 
 	return union<PluginsSetting>({}).of([
 		array().of(union('').of([pluginSource, pluginEntry])),
-		object(pluginOptions).notNullable(),
+		object().of(pluginOptions).notNullable(),
 	]);
 }
 

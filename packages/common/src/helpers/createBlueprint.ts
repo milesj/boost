@@ -14,7 +14,7 @@ import { BlueprintFactory } from '../types';
  * 	age: number().gt(0),
  * }));
  *
- * const data = optimal({}, blueprint);
+ * const data = optimal(blueprint).validate({});
  * ```
  */
 export function createBlueprint<T extends object>(factory: BlueprintFactory<T>): Blueprint<T> {
