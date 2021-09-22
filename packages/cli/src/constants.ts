@@ -13,6 +13,7 @@ export const EXIT_FAIL: ExitCode = 1;
 export const INTERNAL_OPTIONS = Symbol('options');
 export const INTERNAL_PARAMS = Symbol('params');
 export const INTERNAL_PROGRAM = Symbol('program');
+export const INTERNAL_INITIALIZER = Symbol('initializer');
 
 export const RESERVED_OPTIONS = [
 	// Existing args

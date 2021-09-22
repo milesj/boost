@@ -27,6 +27,7 @@ import {
 	ValueType,
 } from '@boost/args';
 import { Loggable, LoggerFunction } from '@boost/log';
+import { INTERNAL_INITIALIZER } from './constants';
 
 export type {
 	ArgList,
@@ -50,7 +51,7 @@ export type {
 	ValueType,
 };
 
-export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'path' | 'type'>;
+export type PartialConfig<T> = Omit<T, 'description' | 'multiple' | 'path' | 'type'>;
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -125,6 +126,11 @@ export interface CommandConfig extends BaseCommandConfig {
 }
 
 export type CommandConfigMap = Record<string, CommandConfig>;
+
+export interface OptionInitializer {
+	[INTERNAL_INITIALIZER]: boolean;
+	register: (command: Commandable, property: string) => void;
+}
 
 // Constructor
 export interface CommandStaticConfig extends Required<CommandConfig> {
