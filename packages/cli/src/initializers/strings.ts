@@ -5,11 +5,11 @@ import { PartialConfig } from '../types';
 /**
  * A property initializer for declaring a command line option with multiple string values.
  */
-export function strings(
+export function strings<T extends string[] = string[]>(
 	description: string,
 	config?: PartialConfig<MultipleOption<string[]>>,
-): string[] {
-	return createOptionInitializer<MultipleOption<string[]>, string[]>({
+): T {
+	return createOptionInitializer<MultipleOption<string[]>, T>({
 		default: [],
 		...config,
 		description,

@@ -5,11 +5,11 @@ import { PartialConfig } from '../types';
 /**
  * A property initializer for declaring a command line option with multiple numeric values.
  */
-export function numbers(
+export function numbers<T extends number[] = number[]>(
 	description: string,
 	config?: PartialConfig<MultipleOption<number[]>>,
-): number[] {
-	return createOptionInitializer<MultipleOption<number[]>, number[]>({
+): T {
+	return createOptionInitializer<MultipleOption<number[]>, T>({
 		default: [],
 		...config,
 		description,
