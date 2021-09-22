@@ -13,7 +13,7 @@ export type InstallParams = [string, ...string[]];
 	deprecated: true,
 	hidden: true,
 })
-export class InstallCommand extends Command<InstallOptions, InstallParams> {
+export class InstallDecoratorCommand extends Command<InstallOptions, InstallParams> {
 	// --save
 	@Arg.Flag('Save dependency to lock file', { category: 'special' })
 	save: boolean = true;

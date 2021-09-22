@@ -6,7 +6,7 @@ export interface InstallOptions extends GlobalOptions {
 
 export type InstallParams = [string, ...string[]];
 
-export class InstallClassicCommand extends Command<InstallOptions, InstallParams> {
+export class InstallPropsCommand extends Command<InstallOptions, InstallParams> {
 	static override path = 'install';
 
 	static override description = 'Install package(s)';

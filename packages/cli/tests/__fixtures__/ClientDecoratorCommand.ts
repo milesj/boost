@@ -1,8 +1,8 @@
 import { Command, Config } from '../../src';
-import { BuildCommand } from './BuildCommand';
-import { InstallClassicCommand } from './InstallClassicCommand';
+import { BuildDecoratorCommand } from './BuildDecoratorCommand';
+import { InstallPropsCommand } from './InstallPropsCommand';
 
-class ClientBuildCommand extends BuildCommand {
+class ClientBuildCommand extends BuildDecoratorCommand {
 	static override path = 'client:build';
 
 	static override category = 'build';
@@ -10,7 +10,7 @@ class ClientBuildCommand extends BuildCommand {
 	static override aliases = ['client:compile'];
 }
 
-class ClientInstallCommand extends InstallClassicCommand {
+class ClientInstallCommand extends InstallPropsCommand {
 	static override path = 'client:install';
 
 	static override category = 'setup';
@@ -29,7 +29,7 @@ class ClientInstallCommand extends InstallClassicCommand {
 	},
 	usage: ['client:install @foo/bar', 'client:build'],
 })
-export class ClientCommand extends Command {
+export class ClientDecoratorCommand extends Command {
 	constructor() {
 		super();
 

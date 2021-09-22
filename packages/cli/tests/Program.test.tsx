@@ -19,14 +19,14 @@ import {
 } from '../src';
 import { ProgramContext, useProgram } from '../src/react';
 import { MockReadStream, MockWriteStream, runProgram, runTask } from '../src/test';
-import { AllClassicCommand } from './__fixtures__/AllClassicCommand';
+import { AllPropsCommand } from './__fixtures__/AllPropsCommand';
 import { options, params } from './__fixtures__/args';
-import { BuildClassicCommand } from './__fixtures__/BuildClassicCommand';
-import { BuildCommand } from './__fixtures__/BuildCommand';
-import { ClientCommand } from './__fixtures__/ClientCommand';
+import { BuildDecoratorCommand } from './__fixtures__/BuildDecoratorCommand';
+import { BuildPropsCommand } from './__fixtures__/BuildPropsCommand';
+import { ClientDecoratorCommand } from './__fixtures__/ClientDecoratorCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
-import { InstallClassicCommand } from './__fixtures__/InstallClassicCommand';
-import { InstallCommand } from './__fixtures__/InstallCommand';
+import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
+import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
 
 jest.mock('term-size');
 
@@ -342,7 +342,7 @@ describe('<Program />', () => {
 
 	describe('commands', () => {
 		it('registers and returns a command with path', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			program.register(command);
 
@@ -350,7 +350,7 @@ describe('<Program />', () => {
 		});
 
 		it('returns an aliased command', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			program.register(command);
 
@@ -358,7 +358,7 @@ describe('<Program />', () => {
 		});
 
 		it('errors if command with same path is registered', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			expect(() => {
 				program.register(command);
@@ -400,7 +400,7 @@ describe('<Program />', () => {
 		});
 
 		it('returns nested alias commands', () => {
-			const command = new ClientCommand();
+			const command = new ClientDecoratorCommand();
 
 			program.register(command);
 
@@ -408,7 +408,7 @@ describe('<Program />', () => {
 		});
 
 		it('registers a default command', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			program.default(command);
 
@@ -435,14 +435,14 @@ describe('<Program />', () => {
 		});
 
 		it('returns all command paths', () => {
-			program.register(new BuildCommand());
-			program.register(new InstallCommand());
+			program.register(new BuildDecoratorCommand());
+			program.register(new InstallDecoratorCommand());
 
 			expect(program.getCommandPaths()).toEqual(['build', 'install', 'compile']);
 		});
 
 		it('returns all command paths, including nested', () => {
-			program.register(new ClientCommand());
+			program.register(new ClientDecoratorCommand());
 
 			expect(program.getCommandPaths()).toEqual([
 				'client',
@@ -453,7 +453,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onBeforeRegister` and `onAfterRegister` events', () => {
-			const cmd = new ClientCommand();
+			const cmd = new ClientDecoratorCommand();
 			const beforeSpy = jest.fn();
 			const afterSpy = jest.fn();
 
@@ -466,7 +466,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onBeforeRegister` and `onAfterRegister` events for default command', () => {
-			const cmd = new ClientCommand();
+			const cmd = new ClientDecoratorCommand();
 			const beforeSpy = jest.fn();
 			const afterSpy = jest.fn();
 
@@ -501,7 +501,7 @@ describe('<Program />', () => {
 
 	describe('locale', () => {
 		it('errors for invalid `--locale`', async () => {
-			program.default(new BuildCommand());
+			program.default(new BuildDecoratorCommand());
 
 			const { code, output } = await runProgram(program, ['--locale', 'wtf']);
 
@@ -544,8 +544,8 @@ describe('<Program />', () => {
 		});
 
 		it('outputs help for a specific command', async () => {
-			program.register(new BuildCommand());
-			program.register(new InstallCommand());
+			program.register(new BuildDecoratorCommand());
+			program.register(new InstallDecoratorCommand());
 
 			const { output: o1 } = await runProgram(program, ['build', '-h']);
 
@@ -557,7 +557,7 @@ describe('<Program />', () => {
 		});
 
 		it('outputs help for a nested sub-command', async () => {
-			program.register(new ClientCommand());
+			program.register(new ClientDecoratorCommand());
 
 			const { output: o1 } = await runProgram(program, ['client:build', '-h']);
 
@@ -573,7 +573,7 @@ describe('<Program />', () => {
 		});
 
 		it('outputs help for an aliased command', async () => {
-			program.register(new BuildCommand());
+			program.register(new BuildDecoratorCommand());
 
 			const { output: o1 } = await runProgram(program, ['build', '-h']);
 
@@ -609,7 +609,7 @@ describe('<Program />', () => {
 
 	describe('default command', () => {
 		it('executes default when no args passed', async () => {
-			program.default(new BuildCommand());
+			program.default(new BuildDecoratorCommand());
 
 			const { code, output } = await runProgram(program, []);
 
@@ -618,8 +618,8 @@ describe('<Program />', () => {
 		});
 
 		it('renders commands when no args passed', async () => {
-			program.register(new BuildCommand());
-			program.register(new InstallCommand());
+			program.register(new BuildDecoratorCommand());
+			program.register(new InstallDecoratorCommand());
 
 			const { code, output } = await runProgram(program, []);
 
@@ -637,8 +637,8 @@ describe('<Program />', () => {
 		});
 
 		it('renders when invalid command name passed', async () => {
-			program.register(new BuildCommand());
-			program.register(new InstallCommand());
+			program.register(new BuildDecoratorCommand());
+			program.register(new InstallDecoratorCommand());
 
 			const { code, output } = await runProgram(program, ['prune']);
 
@@ -647,8 +647,8 @@ describe('<Program />', () => {
 		});
 
 		it('renders when misspelt command name passed', async () => {
-			program.register(new BuildCommand());
-			program.register(new InstallCommand());
+			program.register(new BuildDecoratorCommand());
+			program.register(new InstallDecoratorCommand());
 
 			const { code, output } = await runProgram(program, ['buld']);
 
@@ -657,8 +657,8 @@ describe('<Program />', () => {
 		});
 
 		it('renders when no commands could be found', async () => {
-			program.register(new BuildCommand());
-			program.register(new InstallCommand());
+			program.register(new BuildDecoratorCommand());
+			program.register(new InstallDecoratorCommand());
 
 			const { code, output } = await runProgram(program, ['--locale=en']);
 
@@ -724,7 +724,7 @@ describe('<Program />', () => {
 			const spy = jest.fn();
 
 			program.onCommandNotFound.listen(spy);
-			program.register(new BuildCommand());
+			program.register(new BuildDecoratorCommand());
 
 			await runProgram(program, ['install', 'foo', 'bar']);
 
@@ -742,7 +742,7 @@ describe('<Program />', () => {
 		});
 
 		it('sets rest args to the rest command property', async () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			program.register(command);
 
@@ -752,7 +752,7 @@ describe('<Program />', () => {
 		});
 
 		it('sets options as command properties (declarative)', async () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			program.register(command);
 
@@ -766,7 +766,7 @@ describe('<Program />', () => {
 		});
 
 		it('sets options as command properties (imperative)', async () => {
-			const command = new BuildClassicCommand();
+			const command = new BuildPropsCommand();
 
 			program.register(command);
 
@@ -780,7 +780,7 @@ describe('<Program />', () => {
 		});
 
 		it('passes params to run method', async () => {
-			const command = new AllClassicCommand();
+			const command = new AllPropsCommand();
 			const spy = jest.spyOn(command, 'run');
 
 			program.default(command);
@@ -823,7 +823,7 @@ describe('<Program />', () => {
 		});
 
 		it('can run command using aliased path', async () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 			const spy = jest.fn();
 
 			program.onCommandFound.listen(spy);
@@ -1224,7 +1224,7 @@ describe('<Program />', () => {
 		});
 
 		it('removes node and binary from `process.argv`', async () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			program.register(command);
 
@@ -1372,7 +1372,7 @@ describe('<Program />', () => {
 		it('can run a program within a command', async () => {
 			stdout.append = true;
 
-			program.register(new NestedProgramCommand()).register(new ClientCommand());
+			program.register(new NestedProgramCommand()).register(new ClientDecoratorCommand());
 
 			const { output } = await runProgram(program, ['prog']);
 

@@ -119,7 +119,9 @@ export interface CommandConfig extends BaseCommandConfig {
 	allowVariadicParams?: boolean | string;
 	/** A mapping of sub-command and option categories for this command only. Global options are automatically defined under the `global` category. */
 	categories?: Categories;
+	/** A mapping of options to their configurations. */
 	options?: OptionConfigMap;
+	/** A list of param (positional args) configurations. */
 	params?: ParamConfigList;
 	/** A unique name in which to match the command on the command line amongst a list of arguments (argv). */
 	path?: CommandPath; // Canonical name used on the command line
