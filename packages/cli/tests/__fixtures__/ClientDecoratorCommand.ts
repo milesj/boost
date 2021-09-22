@@ -1,5 +1,6 @@
 import { Command, Config } from '../../src';
 import { BuildDecoratorCommand } from './BuildDecoratorCommand';
+import { InstallInitializerCommand } from './InstallInitializerCommand';
 import { InstallPropsCommand } from './InstallPropsCommand';
 
 class ClientBuildCommand extends BuildDecoratorCommand {
@@ -15,7 +16,15 @@ class ClientInstallCommand extends InstallPropsCommand {
 
 	static override category = 'setup';
 
-	static override aliases = ['client:compile'];
+	static override aliases = ['client:up'];
+}
+
+class ClientUninstallCommand extends InstallInitializerCommand {
+	static override path = 'client:uninstall';
+
+	static override category = 'teardown';
+
+	static override aliases = ['client:down'];
 }
 
 @Config('client', 'Client', {
@@ -35,6 +44,7 @@ export class ClientDecoratorCommand extends Command {
 
 		this.register(new ClientBuildCommand());
 		this.register(new ClientInstallCommand());
+		this.register(new ClientUninstallCommand());
 	}
 
 	async run() {

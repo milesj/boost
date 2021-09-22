@@ -192,7 +192,10 @@ exports[`<Program /> help outputs help for a nested sub-command 3`] = `
 
 [1m[47m[30m COMMANDS [39m[49m[22m
 
- client:build        Build a project
+ client:uninstall [90mpkg[39m  Install package(s) [90m[deprecated][39m
+
+ [1mBuild[22m
+ client:build          Build a project
 
 [1m[47m[30m OPTIONS [39m[49m[22m
 

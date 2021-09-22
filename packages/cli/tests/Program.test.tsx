@@ -448,7 +448,10 @@ describe('<Program />', () => {
 				'client',
 				'client:build',
 				'client:install',
+				'client:uninstall',
 				'client:compile',
+				'client:up',
+				'client:down',
 			]);
 		});
 
