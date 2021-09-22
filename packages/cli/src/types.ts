@@ -130,6 +130,7 @@ export type CommandConfigMap = Record<string, CommandConfig>;
 export interface OptionInitializer {
 	[INTERNAL_INITIALIZER]: boolean;
 	register: (command: Commandable, property: string) => void;
+	value: unknown;
 }
 
 // Constructor

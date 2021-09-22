@@ -12,6 +12,7 @@ export function createOptionInitializer<O extends Option<any>, Return = unknown>
 		register(target, property) {
 			registerOption(target, property, config);
 		},
+		value: config.default,
 	};
 
 	// We are being very tricky here! Initializers actually return an object (above)

@@ -12,11 +12,17 @@ import {
 	PrimitiveType,
 	UnknownOptionMap,
 } from '@boost/args';
+import { isObject } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';
-import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
+import {
+	INTERNAL_INITIALIZER,
+	INTERNAL_OPTIONS,
+	INTERNAL_PARAMS,
+	INTERNAL_PROGRAM,
+} from './constants';
 import { mapCommandMetadata } from './helpers/mapCommandMetadata';
 import { getConstructor } from './metadata/getConstructor';
 import { getInheritedCategories } from './metadata/getInheritedCategories';
@@ -34,6 +40,7 @@ import {
 	ExitCode,
 	ExitHandler,
 	GlobalOptions,
+	OptionInitializer,
 	RunResult,
 	TaskContext,
 } from './types';
@@ -108,6 +115,8 @@ export abstract class Command<
 
 	constructor(options?: Options) {
 		super(options);
+
+		this.initializeOptions();
 
 		const ctor = getConstructor(this);
 
@@ -277,6 +286,20 @@ export abstract class Command<
 
 		return task.apply(context, args);
 	};
+
+	/**
+	 * Loop through class properties and register options for all
+	 */
+	private initializeOptions() {
+		Object.entries(this).forEach(([prop, value]) => {
+			if (isObject<OptionInitializer>(value) && value[INTERNAL_INITIALIZER]) {
+				value.register(this as unknown as Commandable, prop);
+
+				// @ts-expect-error Allow this hack!
+				this[prop] = value.value;
+			}
+		});
+	}
 
 	/**
 	 * Return the program instance or fail.
