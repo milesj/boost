@@ -12,7 +12,7 @@ import {
 	PrimitiveType,
 	UnknownOptionMap,
 } from '@boost/args';
-import { isObject } from '@boost/common';
+import { isObject, Memoize } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
@@ -116,25 +116,6 @@ export abstract class Command<
 	constructor(options?: Options) {
 		super(options);
 
-		this.initializeOptions();
-
-		const ctor = getConstructor(this);
-
-		validateConfig(this.constructor.name, {
-			aliases: ctor.aliases,
-			allowUnknownOptions: ctor.allowUnknownOptions,
-			allowVariadicParams: ctor.allowVariadicParams,
-			categories: ctor.categories,
-			category: ctor.category,
-			deprecated: ctor.deprecated,
-			description: ctor.description,
-			hidden: ctor.hidden,
-			path: ctor.path,
-			usage: ctor.usage,
-		});
-		validateOptions(ctor.options);
-		validateParams(ctor.params);
-
 		this.onBeforeRegister.listen(this.handleBeforeRegister);
 	}
 
@@ -198,6 +179,8 @@ export abstract class Command<
 	 * Validate and return all metadata registered to this command instance.
 	 */
 	getMetadata(): CommandMetadata {
+		this.initializeAndValidate();
+
 		const ctor = getConstructor(this);
 		const options: OptionConfigMap = {};
 
@@ -288,9 +271,14 @@ export abstract class Command<
 	};
 
 	/**
-	 * Loop through class properties and register options for all
+	 * Loop through class properties and register any options/params that are using
+	 * the initializer pattern, then validate all the metadata on the command.
+	 *
+	 * Note: We memoize so this only runs once!
 	 */
-	private initializeOptions() {
+	// eslint-disable-next-line @typescript-eslint/member-ordering
+	@Memoize()
+	private initializeAndValidate() {
 		Object.entries(this).forEach(([prop, value]) => {
 			if (isObject<OptionInitializer>(value) && value[INTERNAL_INITIALIZER]) {
 				value.register(this as unknown as Commandable, prop);
@@ -299,6 +287,23 @@ export abstract class Command<
 				this[prop] = value.value;
 			}
 		});
+
+		const ctor = getConstructor(this);
+
+		validateConfig(this.constructor.name, {
+			aliases: ctor.aliases,
+			allowUnknownOptions: ctor.allowUnknownOptions,
+			allowVariadicParams: ctor.allowVariadicParams,
+			categories: ctor.categories,
+			category: ctor.category,
+			deprecated: ctor.deprecated,
+			description: ctor.description,
+			hidden: ctor.hidden,
+			path: ctor.path,
+			usage: ctor.usage,
+		});
+		validateOptions(ctor.options);
+		validateParams(ctor.params);
 	}
 
 	/**

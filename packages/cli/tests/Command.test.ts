@@ -2,8 +2,10 @@ import execa from 'execa';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';
 import { mockProgram, mockStreams, runCommand } from '../src/test';
 import { AllDecoratorCommand } from './__fixtures__/AllDecoratorCommand';
+import { AllInitializerCommand } from './__fixtures__/AllInitializerCommand';
 import { AllPropsCommand } from './__fixtures__/AllPropsCommand';
 import { BuildDecoratorCommand } from './__fixtures__/BuildDecoratorCommand';
+import { BuildInitializerCommand } from './__fixtures__/BuildInitializerCommand';
 import { BuildPropsCommand } from './__fixtures__/BuildPropsCommand';
 import {
 	Child,
@@ -13,6 +15,7 @@ import {
 	UnknownGrandChild,
 } from './__fixtures__/commands';
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
+import { InstallInitializerCommand } from './__fixtures__/InstallInitializerCommand';
 import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
 
 jest.mock('execa');
@@ -247,6 +250,212 @@ describe('Command', () => {
 
 		it('returns parser options', () => {
 			const command = new BuildDecoratorCommand();
+
+			expect(command.getParserOptions()).toEqual({
+				commands: ['build', 'compile'],
+				options: {
+					dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
+					src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
+					help: {
+						category: 'global',
+						default: false,
+						description: 'Display help and usage menu',
+						short: 'h',
+						type: 'boolean',
+					},
+					locale: {
+						category: 'global',
+						default: 'en',
+						description: 'Display output in the chosen locale',
+						type: 'string',
+						validate: expect.any(Function),
+					},
+					version: {
+						category: 'global',
+						default: false,
+						description: 'Display version number',
+						short: 'v',
+						type: 'boolean',
+					},
+				},
+				params: [],
+				unknown: false,
+				variadic: false,
+			});
+		});
+	});
+
+	describe('initializers', () => {
+		it('inherits metadata from static properties', () => {
+			const command = new BuildInitializerCommand();
+			const meta = command.getMetadata();
+
+			expect(BuildInitializerCommand.aliases).toEqual(['compile']);
+			expect(BuildInitializerCommand.description).toBe('Build a project');
+			expect(BuildInitializerCommand.path).toBe('build');
+			expect(BuildInitializerCommand.usage).toBe('build -S ./src -D ./lib');
+
+			expect(BuildInitializerCommand.description).toBe(meta.description);
+			expect(BuildInitializerCommand.path).toBe(meta.path);
+			expect(BuildInitializerCommand.usage).toBe(meta.usage);
+			expect(BuildInitializerCommand.category).toBe(meta.category);
+
+			// Again with different properties
+			const command2 = new InstallInitializerCommand();
+			const meta2 = command2.getMetadata();
+
+			expect(InstallInitializerCommand.description).toBe('Install package(s)');
+			expect(InstallInitializerCommand.path).toBe('install');
+			expect(InstallInitializerCommand.deprecated).toBe(true);
+			expect(InstallInitializerCommand.hidden).toBe(false);
+
+			expect(InstallInitializerCommand.description).toBe(meta2.description);
+			expect(InstallInitializerCommand.path).toBe(meta2.path);
+			expect(InstallInitializerCommand.deprecated).toBe(meta2.deprecated);
+			expect(InstallInitializerCommand.hidden).toBe(meta2.hidden);
+			expect(InstallInitializerCommand.category).toBe(meta2.category);
+		});
+
+		it('inherits global options from parent', () => {
+			const command = new BuildInitializerCommand();
+			const { options } = command.getMetadata();
+
+			expect(options).toEqual({
+				dst: { short: 'D', default: '', description: 'Destination path', type: 'string' },
+				src: { short: 'S', default: './src', description: 'Source path', type: 'string' },
+				help: {
+					category: 'global',
+					default: false,
+					description: 'Display help and usage menu',
+					short: 'h',
+					type: 'boolean',
+				},
+				locale: {
+					category: 'global',
+					default: 'en',
+					description: 'Display output in the chosen locale',
+					type: 'string',
+					validate: expect.any(Function),
+				},
+				version: {
+					category: 'global',
+					default: false,
+					description: 'Display version number',
+					short: 'v',
+					type: 'boolean',
+				},
+			});
+		});
+
+		it('inherits global categories from parent', () => {
+			const command = new InstallInitializerCommand();
+			const { categories } = command.getMetadata();
+
+			expect(categories).toEqual({
+				special: 'Special',
+			});
+		});
+
+		it('sets params with @Arg.Params', () => {
+			const command = new InstallInitializerCommand();
+			const { params } = command.getMetadata();
+
+			expect(params).toEqual([
+				{ description: 'Package name', label: 'pkg', required: true, type: 'string' },
+			]);
+		});
+
+		it('supports all options and params types', () => {
+			const command = new AllInitializerCommand();
+			const { options, params } = command.getMetadata();
+
+			expect(options).toEqual(
+				expect.objectContaining({
+					flag: { default: true, description: 'Boolean flag', short: 'F', type: 'boolean' },
+					help: {
+						category: 'global',
+						default: false,
+						description: 'Display help and usage menu',
+						short: 'h',
+						type: 'boolean',
+					},
+					locale: {
+						category: 'global',
+						default: 'en',
+						description: 'Display output in the chosen locale',
+						type: 'string',
+						validate: expect.any(Function),
+					},
+					num: {
+						count: true,
+						default: 0,
+						description: 'Single number',
+						short: 'N',
+						type: 'number',
+					},
+					nums: {
+						default: [],
+						deprecated: true,
+						description: 'List of numbers',
+						multiple: true,
+						type: 'number',
+					},
+					str: {
+						choices: ['a', 'b', 'c'],
+						default: 'a',
+						description: 'Single string',
+						hidden: true,
+						type: 'string',
+					},
+					strs: {
+						arity: 5,
+						default: [],
+						description: 'List of strings',
+						multiple: true,
+						short: 'S',
+						type: 'string',
+						validate: expect.any(Function),
+					},
+					version: {
+						category: 'global',
+						default: false,
+						description: 'Display version number',
+						short: 'v',
+						type: 'boolean',
+					},
+				}),
+			);
+
+			expect(params).toEqual([
+				{ description: 'String', label: 'char', required: true, type: 'string' },
+				{ description: 'Boolean', type: 'boolean', default: true },
+				{ description: 'Number', label: 'int', type: 'number', default: 123 },
+			]);
+		});
+
+		it('errors if option is using a reserved name', () => {
+			expect(() => {
+				class TestCommand extends Command {
+					override locale = Arg.string('Description');
+
+					run() {
+						return Promise.resolve('');
+					}
+				}
+
+				// Initializers have to be triggered
+				return new TestCommand().getMetadata();
+			}).toThrow('Option "locale" is a reserved name and cannot be used.');
+		});
+
+		it('returns command line path', () => {
+			const command = new BuildInitializerCommand();
+
+			expect(command.getPath()).toBe('build');
+		});
+
+		it('returns parser options', () => {
+			const command = new BuildInitializerCommand();
 
 			expect(command.getParserOptions()).toEqual({
 				commands: ['build', 'compile'],
