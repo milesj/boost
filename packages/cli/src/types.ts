@@ -27,6 +27,7 @@ import {
 	ValueType,
 } from '@boost/args';
 import { Loggable, LoggerFunction } from '@boost/log';
+import { INTERNAL_INITIALIZER } from './constants';
 
 export type {
 	ArgList,
@@ -50,7 +51,7 @@ export type {
 	ValueType,
 };
 
-export type PartialConfig<T> = Omit<T, 'default' | 'description' | 'multiple' | 'path' | 'type'>;
+export type PartialConfig<T> = Omit<T, 'description' | 'multiple' | 'path' | 'type'>;
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -118,13 +119,21 @@ export interface CommandConfig extends BaseCommandConfig {
 	allowVariadicParams?: boolean | string;
 	/** A mapping of sub-command and option categories for this command only. Global options are automatically defined under the `global` category. */
 	categories?: Categories;
+	/** A mapping of options to their configurations. */
 	options?: OptionConfigMap;
+	/** A list of param (positional args) configurations. */
 	params?: ParamConfigList;
 	/** A unique name in which to match the command on the command line amongst a list of arguments (argv). */
 	path?: CommandPath; // Canonical name used on the command line
 }
 
 export type CommandConfigMap = Record<string, CommandConfig>;
+
+export interface OptionInitializer {
+	[INTERNAL_INITIALIZER]: boolean;
+	register: (command: Commandable, property: string) => void;
+	value: unknown;
+}
 
 // Constructor
 export interface CommandStaticConfig extends Required<CommandConfig> {

@@ -12,11 +12,17 @@ import {
 	PrimitiveType,
 	UnknownOptionMap,
 } from '@boost/args';
+import { isObject, Memoize } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';
-import { INTERNAL_OPTIONS, INTERNAL_PARAMS, INTERNAL_PROGRAM } from './constants';
+import {
+	INTERNAL_INITIALIZER,
+	INTERNAL_OPTIONS,
+	INTERNAL_PARAMS,
+	INTERNAL_PROGRAM,
+} from './constants';
 import { mapCommandMetadata } from './helpers/mapCommandMetadata';
 import { getConstructor } from './metadata/getConstructor';
 import { getInheritedCategories } from './metadata/getInheritedCategories';
@@ -34,6 +40,7 @@ import {
 	ExitCode,
 	ExitHandler,
 	GlobalOptions,
+	OptionInitializer,
 	RunResult,
 	TaskContext,
 } from './types';
@@ -109,23 +116,6 @@ export abstract class Command<
 	constructor(options?: Options) {
 		super(options);
 
-		const ctor = getConstructor(this);
-
-		validateConfig(this.constructor.name, {
-			aliases: ctor.aliases,
-			allowUnknownOptions: ctor.allowUnknownOptions,
-			allowVariadicParams: ctor.allowVariadicParams,
-			categories: ctor.categories,
-			category: ctor.category,
-			deprecated: ctor.deprecated,
-			description: ctor.description,
-			hidden: ctor.hidden,
-			path: ctor.path,
-			usage: ctor.usage,
-		});
-		validateOptions(ctor.options);
-		validateParams(ctor.params);
-
 		this.onBeforeRegister.listen(this.handleBeforeRegister);
 	}
 
@@ -189,6 +179,8 @@ export abstract class Command<
 	 * Validate and return all metadata registered to this command instance.
 	 */
 	getMetadata(): CommandMetadata {
+		this.initializeAndValidate();
+
 		const ctor = getConstructor(this);
 		const options: OptionConfigMap = {};
 
@@ -277,6 +269,42 @@ export abstract class Command<
 
 		return task.apply(context, args);
 	};
+
+	/**
+	 * Loop through class properties and register any options/params that are using
+	 * the initializer pattern, then validate all the metadata on the command.
+	 *
+	 * Note: We memoize so this only runs once!
+	 */
+	// eslint-disable-next-line @typescript-eslint/member-ordering
+	@Memoize()
+	private initializeAndValidate() {
+		Object.entries(this).forEach(([prop, value]) => {
+			if (isObject<OptionInitializer>(value) && value[INTERNAL_INITIALIZER]) {
+				value.register(this as unknown as Commandable, prop);
+
+				// @ts-expect-error Allow this hack!
+				this[prop] = value.value;
+			}
+		});
+
+		const ctor = getConstructor(this);
+
+		validateConfig(this.constructor.name, {
+			aliases: ctor.aliases,
+			allowUnknownOptions: ctor.allowUnknownOptions,
+			allowVariadicParams: ctor.allowVariadicParams,
+			categories: ctor.categories,
+			category: ctor.category,
+			deprecated: ctor.deprecated,
+			description: ctor.description,
+			hidden: ctor.hidden,
+			path: ctor.path,
+			usage: ctor.usage,
+		});
+		validateOptions(ctor.options);
+		validateParams(ctor.params);
+	}
 
 	/**
 	 * Return the program instance or fail.

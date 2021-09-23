@@ -10,7 +10,7 @@ export interface BuildOptions extends GlobalOptions {
 	category: 'setup',
 	usage: 'build -S ./src -D ./lib',
 })
-export class BuildCommand extends Command<BuildOptions> {
+export class BuildDecoratorCommand extends Command<BuildOptions> {
 	// --dst, -D
 	@Arg.String('Destination path', { short: 'D' })
 	dst: string = '';
