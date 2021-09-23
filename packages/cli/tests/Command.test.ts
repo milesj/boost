@@ -1,10 +1,12 @@
 import execa from 'execa';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';
 import { mockProgram, mockStreams, runCommand } from '../src/test';
-import { AllClassicCommand } from './__fixtures__/AllClassicCommand';
-import { AllCommand } from './__fixtures__/AllCommand';
-import { BuildClassicCommand } from './__fixtures__/BuildClassicCommand';
-import { BuildCommand } from './__fixtures__/BuildCommand';
+import { AllDecoratorCommand } from './__fixtures__/AllDecoratorCommand';
+import { AllInitializerCommand } from './__fixtures__/AllInitializerCommand';
+import { AllPropsCommand } from './__fixtures__/AllPropsCommand';
+import { BuildDecoratorCommand } from './__fixtures__/BuildDecoratorCommand';
+import { BuildInitializerCommand } from './__fixtures__/BuildInitializerCommand';
+import { BuildPropsCommand } from './__fixtures__/BuildPropsCommand';
 import {
 	Child,
 	GrandChild,
@@ -12,8 +14,9 @@ import {
 	UnknownChild,
 	UnknownGrandChild,
 } from './__fixtures__/commands';
-import { InstallClassicCommand } from './__fixtures__/InstallClassicCommand';
-import { InstallCommand } from './__fixtures__/InstallCommand';
+import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
+import { InstallInitializerCommand } from './__fixtures__/InstallInitializerCommand';
+import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
 
 jest.mock('execa');
 jest.mock('term-size');
@@ -32,7 +35,7 @@ describe('Command', () => {
 
 		it('runs a local command', async () => {
 			const streams = mockStreams();
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			command[INTERNAL_PROGRAM] = mockProgram({}, streams);
 
@@ -45,7 +48,7 @@ describe('Command', () => {
 
 	describe('getArguments()', () => {
 		it('returns an args object', async () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			await runCommand(command, ['foo'], { dst: './lib' });
 
@@ -65,39 +68,39 @@ describe('Command', () => {
 		});
 	});
 
-	describe('declarative', () => {
+	describe('decorators', () => {
 		it('inherits metadata from @Config and sets static properties', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 			const meta = command.getMetadata();
 
-			expect(BuildCommand.aliases).toEqual(['compile']);
-			expect(BuildCommand.description).toBe('Build a project');
-			expect(BuildCommand.path).toBe('build');
-			expect(BuildCommand.usage).toBe('build -S ./src -D ./lib');
+			expect(BuildDecoratorCommand.aliases).toEqual(['compile']);
+			expect(BuildDecoratorCommand.description).toBe('Build a project');
+			expect(BuildDecoratorCommand.path).toBe('build');
+			expect(BuildDecoratorCommand.usage).toBe('build -S ./src -D ./lib');
 
-			expect(BuildCommand.description).toBe(meta.description);
-			expect(BuildCommand.path).toBe(meta.path);
-			expect(BuildCommand.usage).toBe(meta.usage);
-			expect(BuildCommand.category).toBe(meta.category);
+			expect(BuildDecoratorCommand.description).toBe(meta.description);
+			expect(BuildDecoratorCommand.path).toBe(meta.path);
+			expect(BuildDecoratorCommand.usage).toBe(meta.usage);
+			expect(BuildDecoratorCommand.category).toBe(meta.category);
 
 			// Again with different properties
-			const command2 = new InstallCommand();
+			const command2 = new InstallDecoratorCommand();
 			const meta2 = command2.getMetadata();
 
-			expect(InstallCommand.description).toBe('Install package(s)');
-			expect(InstallCommand.path).toBe('install');
-			expect(InstallCommand.deprecated).toBe(true);
-			expect(InstallCommand.hidden).toBe(true);
+			expect(InstallDecoratorCommand.description).toBe('Install package(s)');
+			expect(InstallDecoratorCommand.path).toBe('install');
+			expect(InstallDecoratorCommand.deprecated).toBe(true);
+			expect(InstallDecoratorCommand.hidden).toBe(true);
 
-			expect(InstallCommand.description).toBe(meta2.description);
-			expect(InstallCommand.path).toBe(meta2.path);
-			expect(InstallCommand.deprecated).toBe(meta2.deprecated);
-			expect(InstallCommand.hidden).toBe(meta2.hidden);
-			expect(InstallCommand.category).toBe(meta2.category);
+			expect(InstallDecoratorCommand.description).toBe(meta2.description);
+			expect(InstallDecoratorCommand.path).toBe(meta2.path);
+			expect(InstallDecoratorCommand.deprecated).toBe(meta2.deprecated);
+			expect(InstallDecoratorCommand.hidden).toBe(meta2.hidden);
+			expect(InstallDecoratorCommand.category).toBe(meta2.category);
 		});
 
 		it('inherits global options from parent', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 			const { options } = command.getMetadata();
 
 			expect(options).toEqual({
@@ -128,7 +131,7 @@ describe('Command', () => {
 		});
 
 		it('inherits global categories from parent', () => {
-			const command = new InstallCommand();
+			const command = new InstallDecoratorCommand();
 			const { categories } = command.getMetadata();
 
 			expect(categories).toEqual({
@@ -137,7 +140,7 @@ describe('Command', () => {
 		});
 
 		it('sets params with @Arg.Params', () => {
-			const command = new InstallCommand();
+			const command = new InstallDecoratorCommand();
 			const { params } = command.getMetadata();
 
 			expect(params).toEqual([
@@ -146,7 +149,7 @@ describe('Command', () => {
 		});
 
 		it('supports all options and params types', () => {
-			const command = new AllCommand();
+			const command = new AllDecoratorCommand();
 			const { options, params } = command.getMetadata();
 
 			expect(options).toEqual(
@@ -240,13 +243,13 @@ describe('Command', () => {
 		});
 
 		it('returns command line path', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			expect(command.getPath()).toBe('build');
 		});
 
 		it('returns parser options', () => {
-			const command = new BuildCommand();
+			const command = new BuildDecoratorCommand();
 
 			expect(command.getParserOptions()).toEqual({
 				commands: ['build', 'compile'],
@@ -282,39 +285,39 @@ describe('Command', () => {
 		});
 	});
 
-	describe('imperative', () => {
+	describe('initializers', () => {
 		it('inherits metadata from static properties', () => {
-			const command = new BuildClassicCommand();
+			const command = new BuildInitializerCommand();
 			const meta = command.getMetadata();
 
-			expect(BuildClassicCommand.aliases).toEqual(['compile']);
-			expect(BuildClassicCommand.description).toBe('Build a project');
-			expect(BuildClassicCommand.path).toBe('build');
-			expect(BuildClassicCommand.usage).toBe('build -S ./src -D ./lib');
+			expect(BuildInitializerCommand.aliases).toEqual(['compile']);
+			expect(BuildInitializerCommand.description).toBe('Build a project');
+			expect(BuildInitializerCommand.path).toBe('build');
+			expect(BuildInitializerCommand.usage).toBe('build -S ./src -D ./lib');
 
-			expect(BuildClassicCommand.description).toBe(meta.description);
-			expect(BuildClassicCommand.path).toBe(meta.path);
-			expect(BuildClassicCommand.usage).toBe(meta.usage);
-			expect(BuildClassicCommand.category).toBe(meta.category);
+			expect(BuildInitializerCommand.description).toBe(meta.description);
+			expect(BuildInitializerCommand.path).toBe(meta.path);
+			expect(BuildInitializerCommand.usage).toBe(meta.usage);
+			expect(BuildInitializerCommand.category).toBe(meta.category);
 
 			// Again with different properties
-			const command2 = new InstallClassicCommand();
+			const command2 = new InstallInitializerCommand();
 			const meta2 = command2.getMetadata();
 
-			expect(InstallClassicCommand.description).toBe('Install package(s)');
-			expect(InstallClassicCommand.path).toBe('install');
-			expect(InstallClassicCommand.deprecated).toBe(true);
-			expect(InstallClassicCommand.hidden).toBe(true);
+			expect(InstallInitializerCommand.description).toBe('Install package(s)');
+			expect(InstallInitializerCommand.path).toBe('install');
+			expect(InstallInitializerCommand.deprecated).toBe(true);
+			expect(InstallInitializerCommand.hidden).toBe(false);
 
-			expect(InstallClassicCommand.description).toBe(meta2.description);
-			expect(InstallClassicCommand.path).toBe(meta2.path);
-			expect(InstallClassicCommand.deprecated).toBe(meta2.deprecated);
-			expect(InstallClassicCommand.hidden).toBe(meta2.hidden);
-			expect(InstallClassicCommand.category).toBe(meta2.category);
+			expect(InstallInitializerCommand.description).toBe(meta2.description);
+			expect(InstallInitializerCommand.path).toBe(meta2.path);
+			expect(InstallInitializerCommand.deprecated).toBe(meta2.deprecated);
+			expect(InstallInitializerCommand.hidden).toBe(meta2.hidden);
+			expect(InstallInitializerCommand.category).toBe(meta2.category);
 		});
 
 		it('inherits global options from parent', () => {
-			const command = new BuildClassicCommand();
+			const command = new BuildInitializerCommand();
 			const { options } = command.getMetadata();
 
 			expect(options).toEqual({
@@ -345,7 +348,7 @@ describe('Command', () => {
 		});
 
 		it('inherits global categories from parent', () => {
-			const command = new InstallClassicCommand();
+			const command = new InstallInitializerCommand();
 			const { categories } = command.getMetadata();
 
 			expect(categories).toEqual({
@@ -353,8 +356,8 @@ describe('Command', () => {
 			});
 		});
 
-		it('sets params', () => {
-			const command = new InstallClassicCommand();
+		it('sets params with @Arg.Params', () => {
+			const command = new InstallInitializerCommand();
 			const { params } = command.getMetadata();
 
 			expect(params).toEqual([
@@ -363,7 +366,213 @@ describe('Command', () => {
 		});
 
 		it('supports all options and params types', () => {
-			const command = new AllClassicCommand();
+			const command = new AllInitializerCommand();
+			const { options, params } = command.getMetadata();
+
+			expect(options).toEqual(
+				expect.objectContaining({
+					flag: { default: true, description: 'Boolean flag', short: 'F', type: 'boolean' },
+					help: {
+						category: 'global',
+						default: false,
+						description: 'Display help and usage menu',
+						short: 'h',
+						type: 'boolean',
+					},
+					locale: {
+						category: 'global',
+						default: 'en',
+						description: 'Display output in the chosen locale',
+						type: 'string',
+						validate: expect.any(Function),
+					},
+					num: {
+						count: true,
+						default: 0,
+						description: 'Single number',
+						short: 'N',
+						type: 'number',
+					},
+					nums: {
+						default: [],
+						deprecated: true,
+						description: 'List of numbers',
+						multiple: true,
+						type: 'number',
+					},
+					str: {
+						choices: ['a', 'b', 'c'],
+						default: 'a',
+						description: 'Single string',
+						hidden: true,
+						type: 'string',
+					},
+					strs: {
+						arity: 5,
+						default: [],
+						description: 'List of strings',
+						multiple: true,
+						short: 'S',
+						type: 'string',
+						validate: expect.any(Function),
+					},
+					version: {
+						category: 'global',
+						default: false,
+						description: 'Display version number',
+						short: 'v',
+						type: 'boolean',
+					},
+				}),
+			);
+
+			expect(params).toEqual([
+				{ description: 'String', label: 'char', required: true, type: 'string' },
+				{ description: 'Boolean', type: 'boolean', default: true },
+				{ description: 'Number', label: 'int', type: 'number', default: 123 },
+			]);
+		});
+
+		it('errors if option is using a reserved name', () => {
+			expect(() => {
+				class TestCommand extends Command {
+					override locale = Arg.string('Description');
+
+					run() {
+						return Promise.resolve('');
+					}
+				}
+
+				// Initializers have to be triggered
+				return new TestCommand().getMetadata();
+			}).toThrow('Option "locale" is a reserved name and cannot be used.');
+		});
+
+		it('returns command line path', () => {
+			const command = new BuildInitializerCommand();
+
+			expect(command.getPath()).toBe('build');
+		});
+
+		it('returns parser options', () => {
+			const command = new BuildInitializerCommand();
+
+			expect(command.getParserOptions()).toEqual({
+				commands: ['build', 'compile'],
+				options: {
+					dst: { default: '', short: 'D', description: 'Destination path', type: 'string' },
+					src: { default: './src', short: 'S', description: 'Source path', type: 'string' },
+					help: {
+						category: 'global',
+						default: false,
+						description: 'Display help and usage menu',
+						short: 'h',
+						type: 'boolean',
+					},
+					locale: {
+						category: 'global',
+						default: 'en',
+						description: 'Display output in the chosen locale',
+						type: 'string',
+						validate: expect.any(Function),
+					},
+					version: {
+						category: 'global',
+						default: false,
+						description: 'Display version number',
+						short: 'v',
+						type: 'boolean',
+					},
+				},
+				params: [],
+				unknown: false,
+				variadic: false,
+			});
+		});
+	});
+
+	describe('static properties', () => {
+		it('inherits metadata from static properties', () => {
+			const command = new BuildPropsCommand();
+			const meta = command.getMetadata();
+
+			expect(BuildPropsCommand.aliases).toEqual(['compile']);
+			expect(BuildPropsCommand.description).toBe('Build a project');
+			expect(BuildPropsCommand.path).toBe('build');
+			expect(BuildPropsCommand.usage).toBe('build -S ./src -D ./lib');
+
+			expect(BuildPropsCommand.description).toBe(meta.description);
+			expect(BuildPropsCommand.path).toBe(meta.path);
+			expect(BuildPropsCommand.usage).toBe(meta.usage);
+			expect(BuildPropsCommand.category).toBe(meta.category);
+
+			// Again with different properties
+			const command2 = new InstallPropsCommand();
+			const meta2 = command2.getMetadata();
+
+			expect(InstallPropsCommand.description).toBe('Install package(s)');
+			expect(InstallPropsCommand.path).toBe('install');
+			expect(InstallPropsCommand.deprecated).toBe(true);
+			expect(InstallPropsCommand.hidden).toBe(true);
+
+			expect(InstallPropsCommand.description).toBe(meta2.description);
+			expect(InstallPropsCommand.path).toBe(meta2.path);
+			expect(InstallPropsCommand.deprecated).toBe(meta2.deprecated);
+			expect(InstallPropsCommand.hidden).toBe(meta2.hidden);
+			expect(InstallPropsCommand.category).toBe(meta2.category);
+		});
+
+		it('inherits global options from parent', () => {
+			const command = new BuildPropsCommand();
+			const { options } = command.getMetadata();
+
+			expect(options).toEqual({
+				dst: { short: 'D', default: '', description: 'Destination path', type: 'string' },
+				src: { short: 'S', default: './src', description: 'Source path', type: 'string' },
+				help: {
+					category: 'global',
+					default: false,
+					description: 'Display help and usage menu',
+					short: 'h',
+					type: 'boolean',
+				},
+				locale: {
+					category: 'global',
+					default: 'en',
+					description: 'Display output in the chosen locale',
+					type: 'string',
+					validate: expect.any(Function),
+				},
+				version: {
+					category: 'global',
+					default: false,
+					description: 'Display version number',
+					short: 'v',
+					type: 'boolean',
+				},
+			});
+		});
+
+		it('inherits global categories from parent', () => {
+			const command = new InstallPropsCommand();
+			const { categories } = command.getMetadata();
+
+			expect(categories).toEqual({
+				special: 'Special',
+			});
+		});
+
+		it('sets params', () => {
+			const command = new InstallPropsCommand();
+			const { params } = command.getMetadata();
+
+			expect(params).toEqual([
+				{ description: 'Package name', label: 'pkg', required: true, type: 'string' },
+			]);
+		});
+
+		it('supports all options and params types', () => {
+			const command = new AllPropsCommand();
 			const { options, params } = command.getMetadata();
 
 			expect(options).toEqual({
@@ -423,13 +632,13 @@ describe('Command', () => {
 		});
 
 		it('returns command line path', () => {
-			const command = new BuildClassicCommand();
+			const command = new BuildPropsCommand();
 
 			expect(command.getPath()).toBe('build');
 		});
 
 		it('returns parser options', () => {
-			const command = new BuildClassicCommand();
+			const command = new BuildPropsCommand();
 
 			expect(command.getParserOptions()).toEqual({
 				commands: ['build', 'compile'],

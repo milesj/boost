@@ -10,7 +10,7 @@ export interface AllOptions extends GlobalOptions {
 
 export type AllParams = [string, boolean, number];
 
-export class AllClassicCommand extends Command<AllOptions, AllParams> {
+export class AllPropsCommand extends Command<AllOptions, AllParams> {
 	static override path = 'all';
 
 	static override description = 'All options and params';

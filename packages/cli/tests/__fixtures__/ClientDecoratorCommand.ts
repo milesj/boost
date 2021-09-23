@@ -1,8 +1,9 @@
 import { Command, Config } from '../../src';
-import { BuildCommand } from './BuildCommand';
-import { InstallClassicCommand } from './InstallClassicCommand';
+import { BuildDecoratorCommand } from './BuildDecoratorCommand';
+import { InstallInitializerCommand } from './InstallInitializerCommand';
+import { InstallPropsCommand } from './InstallPropsCommand';
 
-class ClientBuildCommand extends BuildCommand {
+class ClientBuildCommand extends BuildDecoratorCommand {
 	static override path = 'client:build';
 
 	static override category = 'build';
@@ -10,12 +11,20 @@ class ClientBuildCommand extends BuildCommand {
 	static override aliases = ['client:compile'];
 }
 
-class ClientInstallCommand extends InstallClassicCommand {
+class ClientInstallCommand extends InstallPropsCommand {
 	static override path = 'client:install';
 
 	static override category = 'setup';
 
-	static override aliases = ['client:compile'];
+	static override aliases = ['client:up'];
+}
+
+class ClientUninstallCommand extends InstallInitializerCommand {
+	static override path = 'client:uninstall';
+
+	static override category = 'teardown';
+
+	static override aliases = ['client:down'];
 }
 
 @Config('client', 'Client', {
@@ -29,12 +38,13 @@ class ClientInstallCommand extends InstallClassicCommand {
 	},
 	usage: ['client:install @foo/bar', 'client:build'],
 })
-export class ClientCommand extends Command {
+export class ClientDecoratorCommand extends Command {
 	constructor() {
 		super();
 
 		this.register(new ClientBuildCommand());
 		this.register(new ClientInstallCommand());
+		this.register(new ClientUninstallCommand());
 	}
 
 	async run() {
