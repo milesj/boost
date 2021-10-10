@@ -66,7 +66,11 @@ export const argBlueprint: Blueprint<Arg<any>> = {
 export const optionBlueprint: Blueprint<Option<any>> = {
 	...argBlueprint,
 	category: string(),
-	short: string<ShortOptionName>().match(/^[a-z]$/giu),
+	short: string<ShortOptionName>().when(
+		// @ts-expect-error Ignore types
+		(value) => value !== '',
+		string().match(/^[a-z]$/giu),
+	),
 };
 
 export const flagBlueprint: Blueprint<Flag> = {

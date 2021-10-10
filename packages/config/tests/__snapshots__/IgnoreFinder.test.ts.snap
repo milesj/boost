@@ -2,5 +2,5 @@
 
 exports[`IgnoreFinder errors if name is not in camel case 1`] = `
 "IgnoreFinder: The following validations have failed:
-  - Invalid field \\"name\\" with value \\"Boosty Boost\\". String must be in camel case. (pattern \\"^[a-z][a-zA-Z0-9]+$\\")"
+  - Invalid field \\"name\\". String must be in camel case. (pattern \\"^[a-z][a-zA-Z0-9]+$\\")"
 `;

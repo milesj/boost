@@ -21,127 +21,127 @@ describe('<Style />', () => {
 	});
 
 	it('renders `none`', async () => {
-		expect(await renderComponent(<Style>Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style>Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `none` inverted', async () => {
-		expect(await renderComponent(<Style inverted>Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style inverted>Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `default`', async () => {
-		expect(await renderComponent(<Style type="default">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="default">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `default` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="default">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders `info`', async () => {
-		expect(await renderComponent(<Style type="info">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="info">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `info` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="info">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders `inverted`', async () => {
-		expect(await renderComponent(<Style type="inverted">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="inverted">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `inverted` inverted', async () => {
-		expect(await renderComponent(<Style type="inverted">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="inverted">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `failure`', async () => {
-		expect(await renderComponent(<Style type="failure">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="failure">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `failure` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="failure">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders `muted`', async () => {
-		expect(await renderComponent(<Style type="muted">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="muted">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `muted` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="muted">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders `notice`', async () => {
-		expect(await renderComponent(<Style type="notice">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="notice">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `notice` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="notice">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders `success`', async () => {
-		expect(await renderComponent(<Style type="success">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="success">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `success` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="success">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders `warning`', async () => {
-		expect(await renderComponent(<Style type="warning">Test</Style>)).toMatchSnapshot();
+		await expect(renderComponent(<Style type="warning">Test</Style>)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `warning` inverted', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style inverted type="warning">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('supports bold, italics, etc', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Style bold italic type="default">
 					Test
 				</Style>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	// TODO: GH CI terminal does not support hexcodes

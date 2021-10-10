@@ -39,7 +39,7 @@
     "@boost/internal": "^3.0.0-alpha.0",
     "fast-glob": "^3.2.7",
     "json5": "^2.2.0",
-    "optimal": "^5.0.0-alpha.4",
+    "optimal": "^5.1.0",
     "pretty-ms": "^7.0.1",
     "resolve": "^1.20.0",
     "yaml": "^1.10.2"

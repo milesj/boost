@@ -2,21 +2,27 @@
 
 exports[`Contract configure() errors for invalid option type passed 1`] = `
 "OptionalProps: The following validations have failed:
-  - Invalid field \\"foo\\" with value 123. Must be a string."
+  - Invalid field \\"foo\\". Must be a string, received number."
 `;
 
-exports[`Contract configure() errors for unknown option 1`] = `"OptionalProps: Unknown fields: unknown."`;
+exports[`Contract configure() errors for unknown option 1`] = `
+"OptionalProps: The following validations have failed:
+  - Unknown fields: unknown."
+`;
 
 exports[`Contract configure() freezes the object 1`] = `"Cannot assign to read only property 'foo' of object '#<Object>'"`;
 
 exports[`Contract constructor() errors for invalid option type passed 1`] = `
 "OptionalProps: The following validations have failed:
-  - Invalid field \\"foo\\" with value 123. Must be a string."
+  - Invalid field \\"foo\\". Must be a string, received number."
 `;
 
-exports[`Contract constructor() errors for unknown option 1`] = `"OptionalProps: Unknown fields: unknown."`;
+exports[`Contract constructor() errors for unknown option 1`] = `
+"OptionalProps: The following validations have failed:
+  - Unknown fields: unknown."
+`;
 
 exports[`Contract constructor() requires non-optional options to be passed 1`] = `
 "RequiredProps: The following validations have failed:
-  - Invalid field \\"bar\\" with value \`undefined\`. Field is required and must be defined."
+  - Invalid field \\"bar\\". Field is required and must be defined."
 `;

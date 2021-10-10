@@ -6,22 +6,22 @@ jest.mock('term-size');
 
 describe('<Header />', () => {
 	it('renders `default`', async () => {
-		expect(await renderComponent(<Header label="Title" type="default" />)).toMatchSnapshot();
+		await expect(renderComponent(<Header label="Title" type="default" />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `muted`', async () => {
-		expect(await renderComponent(<Header label="Title" type="muted" />)).toMatchSnapshot();
+		await expect(renderComponent(<Header label="Title" type="muted" />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `failure`', async () => {
-		expect(await renderComponent(<Header label="Title" type="failure" />)).toMatchSnapshot();
+		await expect(renderComponent(<Header label="Title" type="failure" />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `success`', async () => {
-		expect(await renderComponent(<Header label="Title" type="success" />)).toMatchSnapshot();
+		await expect(renderComponent(<Header label="Title" type="success" />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders `warning`', async () => {
-		expect(await renderComponent(<Header label="Title" type="warning" />)).toMatchSnapshot();
+		await expect(renderComponent(<Header label="Title" type="warning" />)).resolves.toMatchSnapshot();
 	});
 });

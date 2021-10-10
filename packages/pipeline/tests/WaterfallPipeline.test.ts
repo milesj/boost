@@ -10,7 +10,7 @@ describe('WaterfallPipeline', () => {
 			.pipe('Two', (ctx, value) => String(value))
 			.pipe('Three', (ctx, value) => [value]);
 
-		expect(await pipeline.run()).toEqual(['246']);
+		await expect(pipeline.run()).resolves.toEqual(['246']);
 	});
 
 	it('supports piping `Task` instances and passing a value between each', async () => {
@@ -19,7 +19,7 @@ describe('WaterfallPipeline', () => {
 			.pipe(new Task('Two', (ctx, value) => String(value)))
 			.pipe(new Task('Three', (ctx, value) => [value]));
 
-		expect(await pipeline.run()).toEqual(['246']);
+		await expect(pipeline.run()).resolves.toEqual(['246']);
 	});
 
 	it('supports piping `Routine` instances and passing a value between each', async () => {
@@ -58,7 +58,7 @@ describe('WaterfallPipeline', () => {
 			.pipe(new Two('two', 'Two'))
 			.pipe(new Three('three', 'Three'));
 
-		expect(await pipeline.run()).toEqual(['246']);
+		await expect(pipeline.run()).resolves.toEqual(['246']);
 	});
 
 	it('can define a custom scope for actions', async () => {
@@ -75,7 +75,7 @@ describe('WaterfallPipeline', () => {
 			scope,
 		);
 
-		expect(await pipeline.run()).toEqual(246);
+		await expect(pipeline.run()).resolves.toBe(246);
 	});
 
 	it('emits `onRun` and `onFinish`', async () => {
@@ -117,6 +117,6 @@ describe('WaterfallPipeline', () => {
 	it('resolves the initial value when no work units are defined', async () => {
 		const pipeline = new WaterfallPipeline(new Context(), 123);
 
-		expect(await pipeline.run()).toBe(123);
+		await expect(pipeline.run()).resolves.toBe(123);
 	});
 });

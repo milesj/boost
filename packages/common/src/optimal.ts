@@ -11,7 +11,7 @@ export * from 'optimal';
 export const portablePathSchema = union<PortablePath>('').of([
 	string(),
 	instance().of(Path),
-	instance().of(Path, true),
+	instance().of(Path, { loose: true }),
 	shape({
 		path: string(),
 	}),
