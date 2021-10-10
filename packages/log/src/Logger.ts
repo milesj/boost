@@ -30,7 +30,7 @@ export class Logger extends Contract<LoggerOptions> {
 		const { array, instance, object, string } = schemas;
 
 		return {
-			labels: object().of(string().notRequired()),
+			labels: object().of(string()),
 			metadata: object(),
 			name: string().required().notEmpty(),
 			transports: array([new ConsoleTransport()]).of(

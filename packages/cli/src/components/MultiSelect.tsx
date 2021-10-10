@@ -56,7 +56,6 @@ export function MultiSelect<T>(props: MultiSelectProps<T>) {
 	}, [highlightedIndex, onChange, options, selectedValues]);
 
 	const handleReturn = useCallback(() => {
-		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		onSubmit?.([...selectedValues]);
 
 		// Trigger submit

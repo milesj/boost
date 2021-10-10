@@ -88,7 +88,7 @@ describe('AggregatedPipeline', () => {
 			scope,
 		);
 
-		expect(await pipeline.run()).toEqual({ errors: [], results: ['bar'] });
+		await expect(pipeline.run()).resolves.toEqual({ errors: [], results: ['bar'] });
 	});
 
 	it('emits `onRun` and `onFinish`', async () => {

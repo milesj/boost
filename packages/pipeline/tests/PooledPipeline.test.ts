@@ -89,7 +89,7 @@ describe('PooledPipeline', () => {
 			scope,
 		);
 
-		expect(await pipeline.run()).toEqual({ errors: [], results: ['bar'] });
+		await expect(pipeline.run()).resolves.toEqual({ errors: [], results: ['bar'] });
 	});
 
 	it('emits `onRun` and `onFinish`', async () => {
@@ -163,7 +163,7 @@ describe('PooledPipeline', () => {
 				.add('Two', () => 'bar')
 				.add('Three', () => 'baz');
 
-			expect(await pipeline.run()).toEqual({
+			await expect(pipeline.run()).resolves.toEqual({
 				errors: [],
 				results: ['foo', 'bar', 'baz'],
 			});
@@ -175,7 +175,7 @@ describe('PooledPipeline', () => {
 				.add('Two', () => 'bar')
 				.add('Three', () => 'baz');
 
-			expect(await pipeline.run()).toEqual({
+			await expect(pipeline.run()).resolves.toEqual({
 				errors: [],
 				results: ['baz', 'bar', 'foo'],
 			});

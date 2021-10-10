@@ -46,14 +46,14 @@ describe('PathResolver', () => {
 			'@boost/common',
 		]);
 
-		expect(await resolver.resolvePath()).toEqual(mockFilePath(resolve.sync('@boost/common')));
+		await expect(resolver.resolvePath()).resolves.toEqual(mockFilePath(resolve.sync('@boost/common')));
 	});
 
 	it('can utilize a custom resolver', async () => {
 		resolver = new PathResolver(() => 'custom');
 		resolver.lookupNodeModule('unknown'); // Exists
 
-		expect(await resolver.resolve()).toEqual({
+		await expect(resolver.resolve()).resolves.toEqual({
 			originalSource: mockModulePath('unknown'),
 			resolvedPath: mockFilePath('custom'),
 			type: 'node-module',
@@ -64,7 +64,7 @@ describe('PathResolver', () => {
 		resolver = new PathResolver(() => Promise.resolve('custom'));
 		resolver.lookupNodeModule('unknown'); // Exists
 
-		expect(await resolver.resolve()).toEqual({
+		await expect(resolver.resolve()).resolves.toEqual({
 			originalSource: mockModulePath('unknown'),
 			resolvedPath: mockFilePath('custom'),
 			type: 'node-module',
@@ -79,7 +79,7 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('bar.js', cwd); // Exists
 			resolver.lookupFilePath('foo.js', cwd); // Exists
 
-			expect(await resolver.resolve()).toEqual({
+			await expect(resolver.resolve()).resolves.toEqual({
 				originalSource: mockFilePath('bar.js'),
 				resolvedPath: mockFilePath(cwd, 'bar.js'),
 				type: 'file-system',
@@ -93,7 +93,7 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('bar.js'); // Doesnt exist at this cwd
 			resolver.lookupFilePath('foo.js', cwd); // Exists
 
-			expect(await resolver.resolvePath()).toEqual(mockFilePath(cwd, 'foo.js'));
+			await expect(resolver.resolvePath()).resolves.toEqual(mockFilePath(cwd, 'foo.js'));
 		});
 
 		it('works with completely different parent folders and file extensions', async () => {
@@ -103,7 +103,7 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('bar.js', src); // Doesnt exist
 			resolver.lookupFilePath('toArray.ts', src.append('helpers')); // Exists
 
-			expect(await resolver.resolvePath()).toEqual(mockFilePath(src, 'helpers/toArray.ts'));
+			await expect(resolver.resolvePath()).resolves.toEqual(mockFilePath(src, 'helpers/toArray.ts'));
 		});
 	});
 
@@ -113,7 +113,7 @@ describe('PathResolver', () => {
 			resolver.lookupNodeModule('@boost/common'); // Exists
 			resolver.lookupNodeModule('@boost/log'); // Exists
 
-			expect(await resolver.resolve()).toEqual({
+			await expect(resolver.resolve()).resolves.toEqual({
 				originalSource: mockModulePath('@boost/common'),
 				resolvedPath: mockFilePath(resolve.sync('@boost/common')),
 				type: 'node-module',
@@ -127,7 +127,7 @@ describe('PathResolver', () => {
 			resolver.lookupNodeModule('test-module-path-resolver/bar'); // Exists (without extension)
 			resolver.lookupNodeModule('test-module-path-resolver/foo.js'); // Exists
 
-			expect(await resolver.resolvePath()).toEqual(
+			await expect(resolver.resolvePath()).resolves.toEqual(
 				mockFilePath(getNodeModulePath('test-module-path-resolver', 'bar.js')),
 			);
 

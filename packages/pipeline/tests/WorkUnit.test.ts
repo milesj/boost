@@ -161,7 +161,7 @@ describe('Work', () => {
 
 		it('resolves a value with the action', async () => {
 			try {
-				expect(await passWork.run(context, 123)).toBe(246);
+				await expect(passWork.run(context, 123)).resolves.toBe(246);
 			} catch {
 				expect(true).toBe(false);
 			}
@@ -171,7 +171,7 @@ describe('Work', () => {
 			try {
 				passWork.skip();
 
-				expect(await passWork.run(context, 123)).toBe(123);
+				await expect(passWork.run(context, 123)).resolves.toBe(123);
 			} catch {
 				expect(true).toBe(false);
 			}

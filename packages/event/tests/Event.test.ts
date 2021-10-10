@@ -14,7 +14,7 @@ describe('Event', () => {
 			value = value.toUpperCase();
 		});
 		event.listen(() => {
-			value = value.split('').reverse().join('');
+			value = [...value].reverse().join('');
 		});
 		event.listen(() => {
 			value = `${value}-${value}`;

@@ -14,7 +14,7 @@ export function processShortOptionGroup(
 	map: AliasMap,
 	loose: boolean,
 ) {
-	group.split('').forEach((short) => {
+	[...group].forEach((short) => {
 		const name = expandShortOption(short as ShortOptionName, map, loose);
 		const config = configs[name];
 

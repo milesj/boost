@@ -437,8 +437,8 @@ describe('@Memoize()', () => {
 
 			const result = await a;
 
-			expect(await b).toBe(result);
-			expect(await c).toBe(result);
+			await expect(b).resolves.toBe(result);
+			await expect(c).resolves.toBe(result);
 
 			const another = await test.resolvedPromise();
 
@@ -464,8 +464,8 @@ describe('@Memoize()', () => {
 				const result = await a;
 
 				// Should not run
-				expect(await b).toBe(result);
-				expect(await c).toBe(result);
+				await expect(b).resolves.toBe(result);
+				await expect(c).resolves.toBe(result);
 			} catch {
 				// Ignore
 			}

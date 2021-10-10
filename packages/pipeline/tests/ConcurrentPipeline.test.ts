@@ -75,7 +75,7 @@ describe('ConcurrentPipeline', () => {
 			scope,
 		);
 
-		expect(await pipeline.run()).toEqual(['bar']);
+		await expect(pipeline.run()).resolves.toEqual(['bar']);
 	});
 
 	it('emits `onRun` and `onFinish`', async () => {
@@ -135,6 +135,6 @@ describe('ConcurrentPipeline', () => {
 	it('resolves an empty list when no work units are defined', async () => {
 		const pipeline = new ConcurrentPipeline(new Context(), '');
 
-		expect(await pipeline.run()).toEqual([]);
+		await expect(pipeline.run()).resolves.toEqual([]);
 	});
 });

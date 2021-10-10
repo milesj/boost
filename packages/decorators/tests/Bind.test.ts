@@ -54,7 +54,7 @@ describe('@Bind()', () => {
 		const { getValue, getAsyncValue } = test;
 
 		expect(getValue()).toBe('abc');
-		expect(await getAsyncValue()).toBe('abc');
+		await expect(getAsyncValue()).resolves.toBe('abc');
 	});
 
 	it('binds method only once', () => {
@@ -73,7 +73,7 @@ describe('@Bind()', () => {
 		const c = new Test('c');
 
 		expect(a.getValue()).not.toBe(b.getValue());
-		expect(await b.getAsyncValue()).not.toBe(await c.getAsyncValue());
+		await expect(b.getAsyncValue()).resolves.not.toBe(await c.getAsyncValue());
 	});
 
 	it('allows sub-classes to overwrite', () => {

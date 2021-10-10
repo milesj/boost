@@ -7,8 +7,8 @@ jest.mock('term-size');
 
 describe('<Help />', () => {
 	it('renders everything', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Help
 					commands={commands}
 					config={{ description: 'I am a command that does cool things.', usage: '$ ink foo bar' }}
@@ -16,31 +16,31 @@ describe('<Help />', () => {
 					params={params}
 				/>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	describe('config', () => {
 		it('renders description', async () => {
-			expect(
-				await renderComponent(
+			await expect(
+				renderComponent(
 					<Help config={{ description: 'I am a command that does cool things.' }} />,
 				),
-			).toMatchSnapshot();
+			).resolves.toMatchSnapshot();
 		});
 
 		it('renders description with additional params', async () => {
-			expect(
-				await renderComponent(
+			await expect(
+				renderComponent(
 					<Help
 						config={{ description: 'I am a command that does cool things.', deprecated: true }}
 					/>,
 				),
-			).toMatchSnapshot();
+			).resolves.toMatchSnapshot();
 		});
 
 		it('renders description with markdown', async () => {
-			expect(
-				await renderComponent(
+			await expect(
+				renderComponent(
 					<Help
 						config={{
 							description:
@@ -48,65 +48,65 @@ describe('<Help />', () => {
 						}}
 					/>,
 				),
-			).toMatchSnapshot();
+			).resolves.toMatchSnapshot();
 		});
 	});
 
 	describe('usage', () => {
 		it('renders usage string', async () => {
-			expect(
-				await renderComponent(<Help config={{ description: '', usage: '$ ink foo bar' }} />),
-			).toMatchSnapshot();
+			await expect(
+				renderComponent(<Help config={{ description: '', usage: '$ ink foo bar' }} />),
+			).resolves.toMatchSnapshot();
 		});
 
 		it('renders usage array', async () => {
-			expect(
-				await renderComponent(
+			await expect(
+				renderComponent(
 					<Help config={{ description: '', usage: ['$ ink foo bar', '$ test --foo -b'] }} />,
 				),
-			).toMatchSnapshot();
+			).resolves.toMatchSnapshot();
 		});
 	});
 
 	describe('params', () => {
 		it('doesnt render empty params', async () => {
-			expect(await renderComponent(<Help params={[]} />)).toMatchSnapshot();
+			await expect(renderComponent(<Help params={[]} />)).resolves.toMatchSnapshot();
 		});
 
 		it('renders params', async () => {
-			expect(await renderComponent(<Help params={params} />)).toMatchSnapshot();
+			await expect(renderComponent(<Help params={params} />)).resolves.toMatchSnapshot();
 		});
 
 		it('renders params (stripped)', async () => {
-			expect(await renderComponent(<Help params={params} />, true)).toMatchSnapshot();
+			await expect(renderComponent(<Help params={params} />, true)).resolves.toMatchSnapshot();
 		});
 	});
 
 	describe('commands', () => {
 		it('doesnt render empty commands', async () => {
-			expect(await renderComponent(<Help commands={{}} />)).toMatchSnapshot();
+			await expect(renderComponent(<Help commands={{}} />)).resolves.toMatchSnapshot();
 		});
 
 		it('renders commands', async () => {
-			expect(await renderComponent(<Help commands={commands} />)).toMatchSnapshot();
+			await expect(renderComponent(<Help commands={commands} />)).resolves.toMatchSnapshot();
 		});
 
 		it('renders commands (stripped)', async () => {
-			expect(await renderComponent(<Help commands={commands} />, true)).toMatchSnapshot();
+			await expect(renderComponent(<Help commands={commands} />, true)).resolves.toMatchSnapshot();
 		});
 	});
 
 	describe('options', () => {
 		it('doesnt render empty options', async () => {
-			expect(await renderComponent(<Help options={{}} />)).toMatchSnapshot();
+			await expect(renderComponent(<Help options={{}} />)).resolves.toMatchSnapshot();
 		});
 
 		it('renders options', async () => {
-			expect(await renderComponent(<Help options={options} />)).toMatchSnapshot();
+			await expect(renderComponent(<Help options={options} />)).resolves.toMatchSnapshot();
 		});
 
 		it('renders options (stripped)', async () => {
-			expect(await renderComponent(<Help options={options} />, true)).toMatchSnapshot();
+			await expect(renderComponent(<Help options={options} />, true)).resolves.toMatchSnapshot();
 		});
 	});
 });

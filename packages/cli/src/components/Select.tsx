@@ -88,7 +88,6 @@ export function Select<T = string>(props: SelectProps<T>) {
 			setSelectedValue(value);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		onSubmit?.(value!);
 
 		// Trigger submit

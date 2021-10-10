@@ -7,21 +7,21 @@ jest.mock('term-size');
 
 describe('<Failure />', () => {
 	it('renders a common error', async () => {
-		expect(
-			await renderComponent(<Failure binName="boost" error={new Error('Something is broken!')} />),
-		).toMatchSnapshot();
+		await expect(
+			renderComponent(<Failure binName="boost" error={new Error('Something is broken!')} />),
+		).resolves.toMatchSnapshot();
 	});
 
 	it('doesnt render code frame if a common error', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Failure
 					binName="boost"
 					commandLine="foo --bar"
 					error={new Error('Something is broken!')}
 				/>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('doesnt render code frame if arg not found', async () => {
@@ -31,9 +31,9 @@ describe('<Failure />', () => {
 			16,
 		);
 
-		expect(
-			await renderComponent(<Failure binName="boost" commandLine="foo --bar" error={error} />),
-		).toMatchSnapshot();
+		await expect(
+			renderComponent(<Failure binName="boost" commandLine="foo --bar" error={error} />),
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders an error with warnings', async () => {
@@ -58,7 +58,7 @@ describe('<Failure />', () => {
 			16,
 		);
 
-		expect(await renderComponent(<Failure binName="boost" error={error} />)).toMatchSnapshot();
+		await expect(renderComponent(<Failure binName="boost" error={error} />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders a parse error with a command line', async () => {
@@ -68,29 +68,29 @@ describe('<Failure />', () => {
 			16,
 		);
 
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Failure binName="boost" commandLine="--foo value --flag=123 -gSA" error={error} />,
 				true,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders a validation error', async () => {
 		const error = new ValidationError('Not enough arity arguments.', 'foo');
 
-		expect(await renderComponent(<Failure binName="boost" error={error} />)).toMatchSnapshot();
+		await expect(renderComponent(<Failure binName="boost" error={error} />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders a validation error with a command line', async () => {
 		const error = new ValidationError('Not enough arity arguments.', 'foo');
 
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<Failure binName="boost" commandLine="--foo value --flag=123 -gSA" error={error} />,
 				true,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('reduces command line by half when index appears off screen', async () => {
@@ -102,8 +102,8 @@ describe('<Failure />', () => {
 			line.indexOf('--flag=123'),
 		);
 
-		expect(
-			await renderComponent(<Failure binName="boost" commandLine={line} error={error} />, true),
-		).toMatchSnapshot();
+		await expect(
+			renderComponent(<Failure binName="boost" commandLine={line} error={error} />, true),
+		).resolves.toMatchSnapshot();
 	});
 });

@@ -18,30 +18,30 @@ describe('<IndexHelp />', () => {
 	};
 
 	it('renders with base props', async () => {
-		expect(await renderComponent(<IndexHelp {...props} />)).toMatchSnapshot();
+		await expect(renderComponent(<IndexHelp {...props} />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders a banner', async () => {
-		expect(await renderComponent(<IndexHelp {...props} banner={banner} />)).toMatchSnapshot();
+		await expect(renderComponent(<IndexHelp {...props} banner={banner} />)).resolves.toMatchSnapshot();
 	});
 
 	it('renders a header', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<IndexHelp {...props} header="For more information, see https://github.com/milesj/boost" />,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders a footer', async () => {
-		expect(
-			await renderComponent(<IndexHelp {...props} footer="Powered by Boost CLI v1.2.3" />),
-		).toMatchSnapshot();
+		await expect(
+			renderComponent(<IndexHelp {...props} footer="Powered by Boost CLI v1.2.3" />),
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders children', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<IndexHelp {...props}>
 					<Help
 						commands={commands}
@@ -55,12 +55,12 @@ describe('<IndexHelp />', () => {
 					/>
 				</IndexHelp>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders with everything', async () => {
-		expect(
-			await renderComponent(
+		await expect(
+			renderComponent(
 				<IndexHelp
 					{...props}
 					banner={banner}
@@ -77,6 +77,6 @@ describe('<IndexHelp />', () => {
 					/>
 				</IndexHelp>,
 			),
-		).toMatchSnapshot();
+		).resolves.toMatchSnapshot();
 	});
 });

@@ -92,30 +92,30 @@ describe('Processor', () => {
 		};
 
 		it('returns defaults if no configs', async () => {
-			expect(await processor.process(defaults, [], blueprint)).toEqual(defaults);
+			await expect(processor.process(defaults, [], blueprint)).resolves.toEqual(defaults);
 		});
 
 		describe('undefined values', () => {
 			it('can reset to default using undefined', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ debug: true }), stubConfigFile({ debug: undefined })],
 						blueprint,
 					),
-				).toEqual(defaults);
+				).resolves.toEqual(defaults);
 			});
 
 			it('does not reset to default if `defaultWhenUndefined` option is false', async () => {
 				processor.configure({ defaultWhenUndefined: false });
 
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ debug: true }), stubConfigFile({ debug: undefined })],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					debug: undefined,
 				});
@@ -162,8 +162,8 @@ describe('Processor', () => {
 			it('supports extends from multiple configs', async () => {
 				processor.addHandler('extends', mergeExtends);
 
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[
 							stubConfigFile({ extends: 'foo' }),
@@ -172,7 +172,7 @@ describe('Processor', () => {
 						],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					extends: ['foo', 'bar', './baz.js', '/qux.js'],
 				});
@@ -210,8 +210,8 @@ describe('Processor', () => {
 			it('supports plugins from multiple configs', async () => {
 				processor.addHandler('plugins', mergePlugins);
 
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[
 							stubConfigFile({ plugins: { foo: true, qux: { on: true } } }),
@@ -221,7 +221,7 @@ describe('Processor', () => {
 						],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					plugins: {
 						foo: { legacy: true },
@@ -268,13 +268,13 @@ describe('Processor', () => {
 
 		describe('booleans', () => {
 			it('can overwrite', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ debug: true }), stubConfigFile({ boolean: false })],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					debug: true,
 					boolean: false,
@@ -282,70 +282,70 @@ describe('Processor', () => {
 			});
 
 			it('can reset to default using undefined', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ debug: true }), stubConfigFile({ debug: undefined })],
 						blueprint,
 					),
-				).toEqual(defaults);
+				).resolves.toEqual(defaults);
 			});
 		});
 
 		describe('strings', () => {
 			it('can overwrite', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ string: 'foo' }), stubConfigFile({ string: 'bar' })],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					string: 'bar',
 				});
 			});
 
 			it('can reset to default using undefined', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ string: 'foo' }), stubConfigFile({ string: undefined })],
 						blueprint,
 					),
-				).toEqual(defaults);
+				).resolves.toEqual(defaults);
 			});
 		});
 
 		describe('numbers', () => {
 			it('can overwrite', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ number: 123 }), stubConfigFile({ number: 456 })],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					number: 456,
 				});
 			});
 
 			it('can reset to default using undefined', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ number: 999 }), stubConfigFile({ number: undefined })],
 						blueprint,
 					),
-				).toEqual(defaults);
+				).resolves.toEqual(defaults);
 			});
 		});
 
 		describe('arrays', () => {
 			it('merges and flattens by default', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[
 							stubConfigFile({ stringList: ['foo', 'bar'] }),
@@ -354,7 +354,7 @@ describe('Processor', () => {
 						],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					stringList: ['foo', 'bar', 'baz'],
 				});
@@ -363,21 +363,21 @@ describe('Processor', () => {
 			it('can overwrite using a custom handler', async () => {
 				processor.addHandler('numberList', overwrite);
 
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ numberList: [1, 2, 3] }), stubConfigFile({ numberList: [4, 5, 6] })],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					numberList: [4, 5, 6],
 				});
 			});
 
 			it('can reset to default using undefined', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[
 							stubConfigFile({ stringList: ['foo', 'bar', 'baz'] }),
@@ -385,14 +385,14 @@ describe('Processor', () => {
 						],
 						blueprint,
 					),
-				).toEqual(defaults);
+				).resolves.toEqual(defaults);
 			});
 		});
 
 		describe('objects', () => {
 			it('shallow merges by default', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[
 							stubConfigFile({ object: { foo: 123, nested: { a: true }, baz: false } }),
@@ -401,7 +401,7 @@ describe('Processor', () => {
 						],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					object: { foo: 456, nested: { b: true }, bar: 'abc', baz: false },
 				});
@@ -410,26 +410,26 @@ describe('Processor', () => {
 			it('can overwrite using a custom handler', async () => {
 				processor.addHandler('object', overwrite);
 
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ object: { foo: 123 } }), stubConfigFile({ object: { bar: 456 } })],
 						blueprint,
 					),
-				).toEqual({
+				).resolves.toEqual({
 					...defaults,
 					object: { bar: 456 },
 				});
 			});
 
 			it('can reset to default using undefined', async () => {
-				expect(
-					await processor.process(
+				await expect(
+					processor.process(
 						defaults,
 						[stubConfigFile({ object: { bar: 456 } }), stubConfigFile({ object: undefined })],
 						blueprint,
 					),
-				).toEqual(defaults);
+				).resolves.toEqual(defaults);
 			});
 		});
 	});
