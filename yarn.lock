@@ -2326,7 +2326,7 @@ __metadata:
   dependencies:
     "@boost/common": ^3.0.0-alpha.0
     "@boost/internal": ^3.0.0-alpha.0
-    i18next: ^20.3.2
+    i18next: ^21.2.6
     os-locale: ^5.0.0
   languageName: unknown
   linkType: soft
@@ -10703,6 +10703,15 @@ fsevents@^1.2.7:
   dependencies:
     "@babel/runtime": ^7.12.0
   checksum: 71867418c1d3e477b453daa0696999fe80a4b2c6d37b27fff073645a5e06b36b6adbf02bff738e288e523add10bb6b16dd72e0c13f3d6a2a3733836dcdbcd5ec
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^21.2.6":
+  version: 21.2.6
+  resolution: "i18next@npm:21.2.6"
+  dependencies:
+    "@babel/runtime": ^7.12.0
+  checksum: cd91e609aed6ee21a8de4d4e9bc2c52030aac6440bb3b6de60d97c58c30107de90159e56551470e0c8ddccb381be1fc477523a8d83e2fa379d13b0ee4236fce1
   languageName: node
   linkType: hard
 
