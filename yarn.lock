@@ -1972,7 +1972,7 @@ __metadata:
     "@boost/translate": ^3.0.0-alpha.0
     debug: ^4.3.2
     execa: ^5.1.1
-    ink: ^3.0.9
+    ink: ^3.2.0
     ink-testing-library: ^2.1.0
     levenary: ^1.1.1
     react: ^17.0.2
@@ -10905,7 +10905,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"ink@npm:^3.0.9, ink@npm:^3.2.0":
+"ink@npm:^3.2.0":
   version: 3.2.0
   resolution: "ink@npm:3.2.0"
   dependencies:
