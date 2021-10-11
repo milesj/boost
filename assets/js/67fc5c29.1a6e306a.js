@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4145],{3227:function(e){"use strict";e.exports=JSON.parse('{"id":3481,"name":"ResolveResult","nextId":3508,"permalink":"/api/module/interface/ResolveResult","previousId":3478}')}}]);

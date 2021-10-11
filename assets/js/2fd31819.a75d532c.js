@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9734],{3221:function(e){"use strict";e.exports=JSON.parse('{"id":992,"name":"BailEvent","nextId":1035,"permalink":"/api/event/class/BailEvent"}')}}]);

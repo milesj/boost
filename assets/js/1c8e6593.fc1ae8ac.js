@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6101],{4733:function(e){"use strict";e.exports=JSON.parse('{"id":1795,"name":"Hierarchical","nextId":1481,"permalink":"/api/pipeline/interface/Hierarchical","previousId":1552}')}}]);

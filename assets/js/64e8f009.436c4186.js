@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5290],{4865:function(e){"use strict";e.exports=JSON.parse('{"id":3399,"name":"LoggerFunction","nextId":3417,"permalink":"/api/log/interface/LoggerFunction","previousId":3380}')}}]);

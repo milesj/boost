@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5562],{7149:function(e){"use strict";e.exports=JSON.parse('{"id":2442,"name":"checkPackageOutdated","nextId":2246,"permalink":"/api/cli/function/checkPackageOutdated","previousId":2438}')}}]);

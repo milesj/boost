@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[522],{1497:function(e){"use strict";e.exports=JSON.parse('{"id":2619,"name":"deepFreeze","nextId":2623,"permalink":"/api/common/function/deepFreeze","previousId":2615}')}}]);

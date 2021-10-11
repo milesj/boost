@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1302],{2099:function(e){"use strict";e.exports=JSON.parse('{"id":2900,"name":"RepositorySetting","nextId":2851,"permalink":"/api/common/interface/RepositorySetting","previousId":2808}')}}]);

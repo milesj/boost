@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6230],{2673:function(e){"use strict";e.exports=JSON.parse('{"id":2206,"name":"GlobalOptions","nextId":2115,"permalink":"/api/cli/interface/GlobalOptions","previousId":2106}')}}]);

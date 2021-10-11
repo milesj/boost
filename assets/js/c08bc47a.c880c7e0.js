@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3666],{6940:function(e){"use strict";e.exports=JSON.parse('{"id":835,"name":"mergeExtends","nextId":839,"permalink":"/api/config/function/mergeExtends","previousId":830}')}}]);

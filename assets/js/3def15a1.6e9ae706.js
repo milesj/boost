@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3974],{4190:function(e){"use strict";e.exports=JSON.parse('{"id":96,"name":"mockLogger","permalink":"/api/log-test/function/mockLogger"}')}}]);

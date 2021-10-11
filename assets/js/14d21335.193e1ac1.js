@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2255],{5520:function(e){"use strict";e.exports=JSON.parse('{"id":2968,"name":"SelectOption","nextId":2974,"permalink":"/api/cli/interface/SelectOption","previousId":2781}')}}]);

@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3086],{9107:function(e){"use strict";e.exports=JSON.parse('{"id":705,"name":"WorkspaceMetadata","nextId":711,"permalink":"/api/common/interface/WorkspaceMetadata","previousId":633}')}}]);

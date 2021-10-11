@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9318],{5668:function(e){"use strict";e.exports=JSON.parse('{"id":6,"name":"@boost/plugin","permalink":"/api/plugin"}')}}]);

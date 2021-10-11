@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6259],{6148:function(e){"use strict";e.exports=JSON.parse('{"id":2256,"name":"OptionInitializer","nextId":2155,"permalink":"/api/cli/interface/OptionInitializer","previousId":2132}')}}]);

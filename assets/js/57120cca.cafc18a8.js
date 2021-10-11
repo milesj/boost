@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9376],{7781:function(e){"use strict";e.exports=JSON.parse('{"id":2146,"name":"sliceAnsi","nextId":2151,"permalink":"/api/terminal/function/sliceAnsi","previousId":2142}')}}]);
