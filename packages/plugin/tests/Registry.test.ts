@@ -226,22 +226,24 @@ describe('Registry', () => {
 
 		it('loads plugins using a tuple with options', async () => {
 			fixtures.push(
-				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo2'),
-				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar2'),
-				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz2'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz-scoped'),
+				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo-short'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar-short'),
+				copyFixtureToNodeModule('plugin-renderer-object', 'boost-test-renderer-foo-full'),
+				copyFixtureToNodeModule('plugin-renderer-object', '@boost-test/renderer-bar-full'),
 			);
 
 			await registry.loadMany(
 				[
 					// Short names
-					['foo2', { value: 'foo2' }],
-					'bar2',
+					['foo-short', { value: 'foo-short' }],
+					'bar-short',
 					// Full names
-					'boost-test-renderer-foo2',
-					['@boost-test/renderer-bar2', { value: 'bar2' }],
+					'boost-test-renderer-foo-full',
+					['@boost-test/renderer-bar-full', { value: 'bar-full' }],
 					// Full name with custom scope
-					'@test/boost-test-renderer-baz2',
-					['@test/baz2', false],
+					'@test/boost-test-renderer-baz-scoped',
+					['@test/baz-scoped', false],
 				],
 				{ tool },
 			);
@@ -251,31 +253,31 @@ describe('Registry', () => {
 
 			expect(plugins).toEqual([
 				{
-					name: '@boost-test/renderer-bar2',
-					plugin: expect.any(Object),
-					priority: DEFAULT_PRIORITY,
-				},
-				{
-					name: '@boost-test/renderer-bar2',
+					name: '@boost-test/renderer-bar-full',
 					plugin: expect.objectContaining({
-						options: { value: 'bar2' },
+						options: { value: 'bar-full' },
 					}),
 					priority: DEFAULT_PRIORITY,
 				},
 				{
-					name: '@test/boost-test-renderer-baz2',
+					name: '@boost-test/renderer-bar-short',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
 				{
-					name: 'boost-test-renderer-foo2',
+					name: '@test/boost-test-renderer-baz-scoped',
 					plugin: expect.any(Object),
 					priority: DEFAULT_PRIORITY,
 				},
 				{
-					name: 'boost-test-renderer-foo2',
+					name: 'boost-test-renderer-foo-full',
+					plugin: expect.any(Object),
+					priority: DEFAULT_PRIORITY,
+				},
+				{
+					name: 'boost-test-renderer-foo-short',
 					plugin: expect.objectContaining({
-						options: { value: 'foo2' },
+						options: { value: 'foo-short' },
 					}),
 					priority: DEFAULT_PRIORITY,
 				},
