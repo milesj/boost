@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2233],{404:function(e){"use strict";e.exports=JSON.parse('{"id":2896,"name":"PeopleSetting","nextId":2808,"permalink":"/api/common/interface/PeopleSetting","previousId":2894}')}}]);
