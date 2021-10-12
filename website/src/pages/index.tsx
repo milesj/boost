@@ -1,6 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import React from 'react';
 import clsx from 'clsx';
