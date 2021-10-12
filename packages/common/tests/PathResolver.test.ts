@@ -46,7 +46,9 @@ describe('PathResolver', () => {
 			'@boost/common',
 		]);
 
-		await expect(resolver.resolvePath()).resolves.toEqual(mockFilePath(resolve.sync('@boost/common')));
+		await expect(resolver.resolvePath()).resolves.toEqual(
+			mockFilePath(resolve.sync('@boost/common')),
+		);
 	});
 
 	it('can utilize a custom resolver', async () => {
@@ -86,6 +88,44 @@ describe('PathResolver', () => {
 			});
 		});
 
+		it('supports a list of extensions', async () => {
+			const cwd = getFixturePath('module-basic');
+
+			resolver.lookupFilePathWithExts('bar', ['ts', 'tsx', 'jsx', 'js'], cwd);
+
+			await expect(resolver.resolve()).resolves.toEqual({
+				originalSource: mockFilePath('bar.js'),
+				resolvedPath: mockFilePath(cwd, 'bar.js'),
+				type: 'file-system',
+			});
+
+			expect(resolver.getLookupPaths()).toEqual([
+				mockFilePath(cwd, 'bar.ts').path(),
+				mockFilePath(cwd, 'bar.tsx').path(),
+				mockFilePath(cwd, 'bar.jsx').path(),
+				mockFilePath(cwd, 'bar.js').path(),
+			]);
+		});
+
+		it('supports a list of extensions with leading period', async () => {
+			const cwd = getFixturePath('module-basic');
+
+			resolver.lookupFilePathWithExts('bar', ['.ts', '.tsx', '.jsx', '.js'], cwd);
+
+			await expect(resolver.resolve()).resolves.toEqual({
+				originalSource: mockFilePath('bar.js'),
+				resolvedPath: mockFilePath(cwd, 'bar.js'),
+				type: 'file-system',
+			});
+
+			expect(resolver.getLookupPaths()).toEqual([
+				mockFilePath(cwd, 'bar.ts').path(),
+				mockFilePath(cwd, 'bar.tsx').path(),
+				mockFilePath(cwd, 'bar.jsx').path(),
+				mockFilePath(cwd, 'bar.js').path(),
+			]);
+		});
+
 		it('supports different cwds', async () => {
 			const cwd = getFixturePath('module-basic');
 
@@ -103,7 +143,9 @@ describe('PathResolver', () => {
 			resolver.lookupFilePath('bar.js', src); // Doesnt exist
 			resolver.lookupFilePath('toArray.ts', src.append('helpers')); // Exists
 
-			await expect(resolver.resolvePath()).resolves.toEqual(mockFilePath(src, 'helpers/toArray.ts'));
+			await expect(resolver.resolvePath()).resolves.toEqual(
+				mockFilePath(src, 'helpers/toArray.ts'),
+			);
 		});
 	});
 

@@ -48,6 +48,20 @@ export class PathResolver {
 	}
 
 	/**
+	 * Add a file system path with a list of possible extensions to look for,
+	 * resolved against the defined current working directory (or `process.cwd()` otherwise).
+	 */
+	lookupFilePathWithExts(filePath: PortablePath, exts: string[], cwd?: PortablePath): this {
+		exts.forEach((ext) => {
+			const extWithPeriod = ext.startsWith('.') ? ext : `.${ext}`;
+
+			this.lookupFilePath(`${filePath}${extWithPeriod}`, cwd);
+		});
+
+		return this;
+	}
+
+	/**
 	 * Add a Node.js module, either by name or relative path, to look for.
 	 */
 	lookupNodeModule(moduleId: PortablePath): this {
