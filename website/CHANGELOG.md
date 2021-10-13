@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.3.0 - 2021-10-13
+
+#### 💥 Breaking
+
+- Drop Node.js v10 and IE 11. ([cecbd70](https://github.com/milesj/boost/commit/cecbd70))
+- Migrate to `optimal` v5. (#167) ([5422ad0](https://github.com/milesj/boost/commit/5422ad0)), closes [#167](https://github.com/milesj/boost/issues/167)
+- Remove React imports from index. Add new sub-module. ([4890e42](https://github.com/milesj/boost/commit/4890e42))
+- Remove shorthand/proxy commands. ([01f2689](https://github.com/milesj/boost/commit/01f2689))
+- Update `Path` to use native directory separator. (#164) ([d057e3d](https://github.com/milesj/boost/commit/d057e3d)), closes [#164](https://github.com/milesj/boost/issues/164)
+- Update `PathResolver` and resolver functions to be async. (#162) ([25d5970](https://github.com/milesj/boost/commit/25d5970)), closes [#162](https://github.com/milesj/boost/issues/162)
+- Update `Project` to use `Path`s. (#165) ([5649886](https://github.com/milesj/boost/commit/5649886)), closes [#165](https://github.com/milesj/boost/issues/165)
+- Update `useRenderLoop` to use seconds. ([80e15c8](https://github.com/milesj/boost/commit/80e15c8))
+
+#### 🚀 Updates
+
+- Add new option/param initializer pattern. (#168) ([49707b5](https://github.com/milesj/boost/commit/49707b5)), closes [#168](https://github.com/milesj/boost/issues/168)
+- Support React v17. ([3a4c547](https://github.com/milesj/boost/commit/3a4c547))
+
+#### ⚙️ Types
+
+- Change `LookupType` to a string union. ([e1d1853](https://github.com/milesj/boost/commit/e1d1853))
+
+#### 📦 Dependencies
+
+- **[packemon]** Update to v1.6. ([9337cc5](https://github.com/milesj/boost/commit/9337cc5))
+
+#### 📘 Docs
+
+- Update Docusaurus API. ([707f7cd](https://github.com/milesj/boost/commit/707f7cd))
+
+#### 🛠 Internals
+
+- Defer React and Ink imports. ([10f4304](https://github.com/milesj/boost/commit/10f4304))
+
+**Note:** Version bump only for package website
+
+
+
+
+
 # 0.2.0 - 2021-08-22
 
 #### 🎉 Release

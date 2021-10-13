@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 - 2021-10-13
+
+#### 💥 Breaking
+
+- Drop Node.js v10 and IE 11. ([cecbd70](https://github.com/milesj/boost/commit/cecbd70))
+- Migrate to `optimal` v5. (#167) ([5422ad0](https://github.com/milesj/boost/commit/5422ad0)), closes [#167](https://github.com/milesj/boost/issues/167)
+- Remove `parseFile` function. ([801ab7e](https://github.com/milesj/boost/commit/801ab7e))
+- Remove `requireModule` function. ([5f681f8](https://github.com/milesj/boost/commit/5f681f8))
+- Update `Path` to use native directory separator. (#164) ([d057e3d](https://github.com/milesj/boost/commit/d057e3d)), closes [#164](https://github.com/milesj/boost/issues/164)
+- Update `PathResolver` and resolver functions to be async. (#162) ([25d5970](https://github.com/milesj/boost/commit/25d5970)), closes [#162](https://github.com/milesj/boost/issues/162)
+- Update `Project` to use `Path`s. (#165) ([5649886](https://github.com/milesj/boost/commit/5649886)), closes [#165](https://github.com/milesj/boost/issues/165)
+
+#### 🚀 Updates
+
+- Add `load` to json and yaml serializers. ([41236fa](https://github.com/milesj/boost/commit/41236fa))
+- **[PathResolver]** Add extension lookup support for file paths. ([98dc5df](https://github.com/milesj/boost/commit/98dc5df))
+
+#### ⚙️ Types
+
+- Change `LookupType` to a string union. ([e1d1853](https://github.com/milesj/boost/commit/e1d1853))
+- Switch to new `abstract new` constructor. ([ba4b340](https://github.com/milesj/boost/commit/ba4b340))
+
+#### 🛠 Internals
+
+- Bump versions to an alpha v3 release. ([942d4c4](https://github.com/milesj/boost/commit/942d4c4))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 ### 2.8.2 - 2021-08-22
 
 #### 📦 Dependencies

@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 - 2021-10-13
+
+#### 💥 Breaking
+
+- Drop Node.js v10 and IE 11. ([cecbd70](https://github.com/milesj/boost/commit/cecbd70))
+- Migrate to `optimal` v5. (#167) ([5422ad0](https://github.com/milesj/boost/commit/5422ad0)), closes [#167](https://github.com/milesj/boost/issues/167)
+- Remove React imports from index. Add new sub-module. ([4890e42](https://github.com/milesj/boost/commit/4890e42))
+- Remove shorthand/proxy commands. ([01f2689](https://github.com/milesj/boost/commit/01f2689))
+- Update `useRenderLoop` to use seconds. ([80e15c8](https://github.com/milesj/boost/commit/80e15c8))
+
+#### 🚀 Updates
+
+- Add new option/param initializer pattern. (#168) ([49707b5](https://github.com/milesj/boost/commit/49707b5)), closes [#168](https://github.com/milesj/boost/issues/168)
+- Support React v17. ([3a4c547](https://github.com/milesj/boost/commit/3a4c547))
+
+#### 🐞 Fixes
+
+- Fix `fetchPackageLatestVersion` failing when theres no internet connection. ([da86c1e](https://github.com/milesj/boost/commit/da86c1e))
+
+#### 📦 Dependencies
+
+- **[ink]** Update to v3.2. ([eeb5ee5](https://github.com/milesj/boost/commit/eeb5ee5))
+
+#### 🛠 Internals
+
+- Bump versions to an alpha v3 release. ([942d4c4](https://github.com/milesj/boost/commit/942d4c4))
+- Defer React and Ink imports. ([10f4304](https://github.com/milesj/boost/commit/10f4304))
+- Migrate to standard require. ([efd526e](https://github.com/milesj/boost/commit/efd526e))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 2.11.2 - 2021-08-22
 
 #### 📦 Dependencies

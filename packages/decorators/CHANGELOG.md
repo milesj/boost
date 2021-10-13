@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 - 2021-10-13
+
+#### 💥 Breaking
+
+- Drop Node.js v10 and IE 11. ([cecbd70](https://github.com/milesj/boost/commit/cecbd70))
+
+#### 🛠 Internals
+
+- Bump versions to an alpha v3 release. ([942d4c4](https://github.com/milesj/boost/commit/942d4c4))
+
+**Note:** Version bump only for package @boost/decorators
+
+
+
+
+
 ### 2.1.4 - 2021-08-22
 
 #### 📘 Docs
