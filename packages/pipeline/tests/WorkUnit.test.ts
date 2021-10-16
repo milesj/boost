@@ -260,7 +260,7 @@ describe('Work', () => {
 
 			await passWork.run(context, 123);
 
-			expect(spy).toHaveBeenCalledWith(246);
+			expect(spy).toHaveBeenCalledWith(246, 123);
 		});
 
 		it('emits `onFail` event on error', async () => {
@@ -271,7 +271,7 @@ describe('Work', () => {
 			try {
 				await failWork.run(context, '');
 			} catch (error) {
-				expect(spy).toHaveBeenCalledWith(error);
+				expect(spy).toHaveBeenCalledWith(error, '');
 			}
 		});
 

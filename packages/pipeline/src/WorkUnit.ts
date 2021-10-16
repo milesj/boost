@@ -31,13 +31,13 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 	 * Called when an execution fails.
 	 * @category Events
 	 */
-	readonly onFail = new Event<[Error | null]>('fail');
+	readonly onFail = new Event<[Error | null, Input]>('fail');
 
 	/**
 	 * Called when an execution succeeds.
 	 * @category Events
 	 */
-	readonly onPass = new Event<[Output]>('pass');
+	readonly onPass = new Event<[Output, Input]>('pass');
 
 	/**
 	 * Called before a work unit is executed. Can return `true` to skip the work unit.
@@ -149,13 +149,13 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 			this.output = await runner(context, value, this);
 			this.status = STATUS_PASSED;
 			this.stopTime = Date.now();
-			this.onPass.emit([this.output]);
+			this.onPass.emit([this.output, value]);
 		} catch (error: unknown) {
 			this.status = STATUS_FAILED;
 			this.stopTime = Date.now();
 
 			if (error instanceof Error) {
-				this.onFail.emit([error]);
+				this.onFail.emit([error, value]);
 
 				throw error;
 			}
