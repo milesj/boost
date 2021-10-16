@@ -1,6 +1,6 @@
 {
   "name": "@boost/plugin",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "release": "1594765247526",
   "description": "Plugin based architecture that supports module loading, custom types, registries, scopes, and more.",
   "keywords": [
@@ -36,7 +36,7 @@
     "@boost/debug": "^3.0.0",
     "@boost/event": "^3.0.0",
     "@boost/internal": "^3.0.0",
-    "@boost/module": "^3.0.0",
+    "@boost/module": "^3.0.1",
     "lodash": "^4.17.21",
     "pluralize": "^8.0.0"
   },

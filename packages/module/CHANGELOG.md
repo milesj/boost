@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 3.0.1 - 2021-10-16
+
+#### 🐞 Fixes
+
+- Remove internal cache and rely on require.cache. ([0493c27](https://github.com/milesj/boost/commit/0493c27))
+
+**Note:** Version bump only for package @boost/module
+
+
+
+
+
 # 3.0.0 - 2021-10-13
 
 #### 💥 Breaking

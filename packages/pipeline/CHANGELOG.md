@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 3.1.0 - 2021-10-16
+
+#### 🚀 Updates
+
+- **[WorkUnit]** Emit input for `onPass` and `onFail`. ([32da2d3](https://github.com/milesj/boost/commit/32da2d3))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 # 3.0.0 - 2021-10-13
 
 #### 💥 Breaking

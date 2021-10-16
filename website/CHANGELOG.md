@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 0.3.1 - 2021-10-16
+
+#### 📦 Dependencies
+
+- **[docusaurus]** Update to beta.7. ([88f7a4e](https://github.com/milesj/boost/commit/88f7a4e))
+
+#### 📘 Docs
+
+- Update dropdown to v3. ([00aeec6](https://github.com/milesj/boost/commit/00aeec6))
+
+**Note:** Version bump only for package website
+
+
+
+
+
 # 0.3.0 - 2021-10-13
 
 #### 💥 Breaking
