@@ -20,8 +20,6 @@ function loadTypeScript() {
 	return tsInstance;
 }
 
-const transformCache = new Map<string, string>();
-
 function transform(contents: string, filePath: string): string {
 	const ts = loadTypeScript();
 
@@ -41,14 +39,7 @@ function transform(contents: string, filePath: string): string {
 }
 
 function transformHandler(mod: Module, filePath: string) {
-	let code = transformCache.get(filePath);
-
-	if (!code) {
-		code = transform(fs.readFileSync(filePath, 'utf8'), filePath);
-		transformCache.set(filePath, code);
-	}
-
-	mod._compile(code, filePath);
+	mod._compile(transform(fs.readFileSync(filePath, 'utf8'), filePath), filePath);
 }
 
 /**
