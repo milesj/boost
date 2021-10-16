@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 3.1.1 - 2021-10-16
+
+#### 🐞 Fixes
+
+- **[Monitor]** Add missing event inputs. ([162995c](https://github.com/milesj/boost/commit/162995c))
+
+**Note:** Version bump only for package @boost/pipeline
+
+
+
+
+
 ## 3.1.0 - 2021-10-16
 
 #### 🚀 Updates
