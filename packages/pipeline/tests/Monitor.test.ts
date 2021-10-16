@@ -26,7 +26,7 @@ describe('Monitor', () => {
 			['onBeforeRun', ['pipeline[0:0]', 123]],
 			['onRunWorkUnit', ['pipeline[0:0]', 'work[0:0]', 123]],
 			['onRun', ['work[0:0]', 123]],
-			['onFail', ['work[0:0]', new Error('Failure')]],
+			['onFail', ['work[0:0]', new Error('Failure'), 123]],
 		]);
 	});
 

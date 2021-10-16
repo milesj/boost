@@ -27,13 +27,13 @@ export class Monitor {
 	 * Called when any work unit has failed.
 	 * @category Events
 	 */
-	readonly onWorkUnitFail = new Event<[AnyWorkUnit, Error | null]>('fail');
+	readonly onWorkUnitFail = new Event<[AnyWorkUnit, Error | null, unknown]>('fail');
 
 	/**
 	 * Called when any work unit has passed.
 	 * @category Events
 	 */
-	readonly onWorkUnitPass = new Event<[AnyWorkUnit, unknown]>('pass');
+	readonly onWorkUnitPass = new Event<[AnyWorkUnit, unknown, unknown]>('pass');
 
 	/**
 	 * Called when any work unit is ran.
@@ -67,12 +67,12 @@ export class Monitor {
 
 			this.onPipelineRunWorkUnit.emit([pipeline, workUnit, value]);
 
-			workUnit.onFail.listen((error) => {
-				this.onWorkUnitFail.emit([workUnit, error]);
+			workUnit.onFail.listen((error, input) => {
+				this.onWorkUnitFail.emit([workUnit, error, input]);
 			});
 
-			workUnit.onPass.listen((output) => {
-				this.onWorkUnitPass.emit([workUnit, output]);
+			workUnit.onPass.listen((output, input) => {
+				this.onWorkUnitPass.emit([workUnit, output, input]);
 			});
 
 			workUnit.onRun.listen((input) => {
