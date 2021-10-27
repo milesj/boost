@@ -212,6 +212,13 @@ describe('Work', () => {
 			expect(passWork.stopTime).not.toBe(0);
 		});
 
+		it('sets input', async () => {
+			const input = 123;
+			await passWork.run(context, input);
+
+			expect(passWork.input).toBe(input);
+		});
+
 		it('sets times on failure', async () => {
 			try {
 				await failWork.run(context, '');

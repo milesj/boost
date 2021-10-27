@@ -21,6 +21,8 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 
 	output?: Output;
 
+	input?: Input;
+
 	startTime: number = 0;
 
 	statusText: string = '';
@@ -129,6 +131,7 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 	 * Run the current task by executing it and performing any before and after processes.
 	 */
 	async run(context: Context, value: Input): Promise<Output> {
+		this.input = value;
 		const skip = this.onRun.emit([value]);
 		const runner: Action<Context, Input, Output> = this.action;
 
