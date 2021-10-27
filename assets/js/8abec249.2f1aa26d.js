@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[114],{8664:function(e){"use strict";e.exports=JSON.parse('{"id":2571,"name":"yaml","nextId":2863,"permalink":"/api/common/namespace/yaml","previousId":2544}')}}]);

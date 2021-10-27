@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[685],{7962:function(e){"use strict";e.exports=JSON.parse('{"id":1612,"name":"Registration","nextId":1618,"permalink":"/api/plugin/interface/Registration","previousId":1608}')}}]);

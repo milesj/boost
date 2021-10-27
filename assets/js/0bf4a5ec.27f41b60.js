@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3950],{7286:function(e){"use strict";e.exports=JSON.parse('{"id":3391,"name":"interopModule","nextId":3404,"permalink":"/api/module/function/interopModule"}')}}]);

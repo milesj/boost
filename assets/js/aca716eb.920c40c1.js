@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2233],{404:function(e){"use strict";e.exports=JSON.parse('{"id":2896,"name":"TypeSetting","nextId":2968,"permalink":"/api/common/interface/TypeSetting","previousId":2883}')}}]);

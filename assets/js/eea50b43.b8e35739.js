@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4184],{7879:function(e){"use strict";e.exports=JSON.parse('{"id":1025,"name":"PooledOptions","nextId":1339,"permalink":"/api/pipeline/interface/PooledOptions","previousId":1335}')}}]);

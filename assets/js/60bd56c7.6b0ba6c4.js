@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2139],{7271:function(e){"use strict";e.exports=JSON.parse('{"id":2841,"name":"Pathable","nextId":2902,"permalink":"/api/common/interface/Pathable","previousId":2912}')}}]);

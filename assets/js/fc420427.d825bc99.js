@@ -1,0 +1,1 @@
+(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[8651],{3246:function(e){"use strict";e.exports=JSON.parse('{"id":505,"name":"Deprecate","nextId":513,"permalink":"/api/decorators/function/Deprecate","previousId":502}')}}]);

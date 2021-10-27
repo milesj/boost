@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4582],{1562:function(e){"use strict";e.exports=JSON.parse('{"id":1206,"name":"SerialPipeline","nextId":1263,"permalink":"/api/pipeline/class/SerialPipeline","previousId":1100}')}}]);
