@@ -4,15 +4,17 @@ import { FilePath, Pathable, PortablePath } from './types';
 
 /**
  * An immutable class for operating on file system paths.
+ * Will normalize path separators based on the operating system,
+ * "/" on Linux/MacOS, and "\\" on Windows.
  */
 export class Path implements Pathable {
 	static DELIMITER = path.delimiter;
 
 	static SEP = path.sep;
 
-	private internalPath: string = '';
+	protected internalPath: string = '';
 
-	private isNormalized: boolean = false;
+	protected isNormalized: boolean = false;
 
 	constructor(...parts: PortablePath[]) {
 		this.internalPath = path.join(...parts.map(String));

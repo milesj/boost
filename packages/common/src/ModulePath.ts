@@ -5,9 +5,9 @@ import { ModuleID, Pathable, PortablePath } from './types';
  * An immutable class for operating on Node.js module IDs, names, and paths.
  */
 export class ModulePath implements Pathable {
-	private internalPath: string = '';
+	protected internalPath: string = '';
 
-	private isNormalized: boolean = false;
+	protected isNormalized: boolean = false;
 
 	constructor(...parts: PortablePath[]) {
 		this.internalPath = path.join(...parts.map(String));
