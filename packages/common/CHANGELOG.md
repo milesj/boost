@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 3.1.0 - 2021-11-12
+
+#### 🚀 Updates
+
+- Add `VirtualPath` class. ([479ca04](https://github.com/milesj/boost/commit/479ca04))
+
+**Note:** Version bump only for package @boost/common
+
+
+
+
+
 # 3.0.0 - 2021-10-13
 
 #### 💥 Breaking
