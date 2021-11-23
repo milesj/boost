@@ -21,6 +21,13 @@ export class ModulePath implements Pathable {
 	}
 
 	/**
+	 * Convert a module path-like value to a formatted module path string.
+	 */
+	static path(part: PortablePath): ModuleID {
+		return new ModulePath(part).path();
+	}
+
+	/**
 	 * Append path parts to the end of the current path
 	 * and return a new `ModulePath` instance.
 	 */

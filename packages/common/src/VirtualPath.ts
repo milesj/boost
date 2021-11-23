@@ -1,6 +1,6 @@
 import path from 'path';
 import { Path } from './Path';
-import { FilePath } from './types';
+import { FilePath, PortablePath } from './types';
 
 /**
  * An immutable class for operating on file system paths,
@@ -8,6 +8,13 @@ import { FilePath } from './types';
  * Useful for paths found in configurations, globs, etc.
  */
 export class VirtualPath extends Path {
+	/**
+	 * Convert a path-like value to a formatted virtual path string.
+	 */
+	static override path(part: PortablePath): FilePath {
+		return new VirtualPath(part).path();
+	}
+
 	/**
 	 * Return the current module path as a normalized string,
 	 * converting all path separators to "/".

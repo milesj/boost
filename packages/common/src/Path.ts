@@ -28,6 +28,13 @@ export class Path implements Pathable {
 	}
 
 	/**
+	 * Convert a path-like value to a formatted path string.
+	 */
+	static path(part: PortablePath): FilePath {
+		return new Path(part).path();
+	}
+
+	/**
 	 * Like `create()` but also resolves the path against a working directory.
 	 */
 	static resolve(filePath: PortablePath, cwd?: PortablePath): Path {

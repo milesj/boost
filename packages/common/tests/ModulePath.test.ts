@@ -13,6 +13,16 @@ describe('ModulePath', () => {
 		});
 	});
 
+	describe('.path()', () => {
+		it('returns a path for a string', () => {
+			expect(ModulePath.path('foo')).toBe('foo');
+		});
+
+		it('returns a path for an instance', () => {
+			expect(ModulePath.path(new ModulePath('@foo\\bar'))).toBe('@foo/bar');
+		});
+	});
+
 	describe('constructor()', () => {
 		it('joins multiple parts', () => {
 			const path = new ModulePath('foo', 'sub', 'file.js');

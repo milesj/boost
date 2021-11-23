@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { Path } from '../src';
+import { Path, VirtualPath } from '../src';
 import { mockFilePath } from '../src/test';
 
 describe('Path', () => {
@@ -12,6 +12,20 @@ describe('Path', () => {
 			const path = new Path('./foo');
 
 			expect(Path.create(path)).not.toBe(path);
+		});
+	});
+
+	describe('.path()', () => {
+		it('returns a path for a string', () => {
+			expect(Path.path('foo/bar')).toBe('foo/bar');
+		});
+
+		it('returns a path for an instance', () => {
+			expect(Path.path(new Path('foo', 'bar'))).toBe('foo/bar');
+		});
+
+		it('returns a path for a `VirtualPath` instance', () => {
+			expect(Path.path(new VirtualPath('foo\\bar'))).toBe('foo/bar');
 		});
 	});
 
