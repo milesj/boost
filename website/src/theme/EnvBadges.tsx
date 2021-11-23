@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from '@docusaurus/Link';
+// @ts-expect-error Not typed
 import IconExternalLink from '@theme/IconExternalLink';
 import Badge from './Badge';
 import BadgeGroup from './BadgeGroup';
