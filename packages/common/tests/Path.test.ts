@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { Path, VirtualPath } from '../src';
-import { mockFilePath } from '../src/test';
+import { mockFilePath, normalizeSeparators } from '../src/test';
 
 describe('Path', () => {
 	describe('.create()', () => {
@@ -17,15 +17,15 @@ describe('Path', () => {
 
 	describe('.path()', () => {
 		it('returns a path for a string', () => {
-			expect(Path.path('foo/bar')).toBe('foo/bar');
+			expect(Path.path('foo/bar')).toBe(normalizeSeparators('foo/bar'));
 		});
 
 		it('returns a path for an instance', () => {
-			expect(Path.path(new Path('foo', 'bar'))).toBe('foo/bar');
+			expect(Path.path(new Path('foo', 'bar'))).toBe(normalizeSeparators('foo/bar'));
 		});
 
 		it('returns a path for a `VirtualPath` instance', () => {
-			expect(Path.path(new VirtualPath('foo\\bar'))).toBe('foo/bar');
+			expect(Path.path(new VirtualPath('foo\\bar'))).toBe(normalizeSeparators('foo/bar'));
 		});
 	});
 

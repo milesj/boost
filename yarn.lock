@@ -1984,7 +1984,7 @@ __metadata:
     "@types/resolve": ^1.20.1
     fast-glob: ^3.2.7
     json5: ^2.2.0
-    optimal: ^5.1.0
+    optimal: ^5.1.1
     pretty-ms: ^7.0.1
     resolve: ^1.20.0
     yaml: ^1.10.2
@@ -13720,10 +13720,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"optimal@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "optimal@npm:5.1.0"
-  checksum: 001dabd82bbd9bd75a822b32d77929d963d4d77839758d39afc7299bd2b3eb460c32147bd93526818f33d9fce0d67b4f96f2d1521cbd1e5b7a7eb0010fceae9a
+"optimal@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "optimal@npm:5.1.1"
+  checksum: 7e7d2c831126239fbbb0d5ac034aa8d6fc08e7fc798ecf8598895b83d9147c1defe7e6d02b6eb93e9269b581cfdb895f968d0d47c477096e0898f79287748693
   languageName: node
   linkType: hard
 
