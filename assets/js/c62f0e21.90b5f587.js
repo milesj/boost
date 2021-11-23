@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4400],{1392:function(e){e.exports=JSON.parse('{"id":502,"name":"Debounce","nextId":505,"permalink":"/api/decorators/function/Debounce","previousId":500}')}}]);

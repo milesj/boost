@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1184],{839:function(e){"use strict";e.exports=JSON.parse('{"id":427,"name":"createOverridesSchema","nextId":424,"permalink":"/api/config/function/createOverridesSchema","previousId":421}')}}]);

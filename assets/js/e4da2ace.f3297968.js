@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5460],{802:function(e){e.exports=JSON.parse('{"id":3471,"name":"requireTSModule","nextId":3469,"permalink":"/api/module/function/requireTSModule","previousId":3460}')}}]);

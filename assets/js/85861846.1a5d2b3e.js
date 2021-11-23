@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4219],{2442:function(e){"use strict";e.exports=JSON.parse('{"id":1983,"name":"mapCommandMetadata","nextId":2096,"permalink":"/api/cli/function/mapCommandMetadata","previousId":1981}')}}]);

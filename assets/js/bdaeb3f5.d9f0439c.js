@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6038],{6580:function(e){"use strict";e.exports=JSON.parse('{"id":421,"name":"createExtendsSchema","nextId":427,"permalink":"/api/config/function/createExtendsSchema"}')}}]);

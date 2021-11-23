@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9961],{2196:function(e){"use strict";e.exports=JSON.parse('{"id":2967,"name":"PackageGraphTree","nextId":2963,"permalink":"/api/common/interface/PackageGraphTree","previousId":2881}')}}]);

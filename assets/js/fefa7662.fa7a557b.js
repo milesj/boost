@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1169],{4430:function(e){"use strict";e.exports=JSON.parse('{"id":455,"name":"IgnoreFile","nextId":480,"permalink":"/api/config/interface/IgnoreFile","previousId":447}')}}]);

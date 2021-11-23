@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[8371],{9263:function(e){"use strict";e.exports=JSON.parse('{"minimal":true,"pluginId":"default"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1450],{7190:function(e){e.exports=JSON.parse('{"id":1626,"name":"cursor","nextId":1655,"permalink":"/api/terminal/namespace/cursor","previousId":1705}')}}]);

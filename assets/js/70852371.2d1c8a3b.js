@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3402],{4477:function(e){e.exports=JSON.parse('{"id":82,"name":"mockNormalizedFilePath","nextId":75,"permalink":"/api/common-test/function/mockNormalizedFilePath","previousId":85}')}}]);

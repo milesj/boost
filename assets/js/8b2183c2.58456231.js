@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7494],{330:function(e){e.exports=JSON.parse('{"id":1709,"name":"createTranslator","nextId":1731,"permalink":"/api/translate/function/createTranslator"}')}}]);

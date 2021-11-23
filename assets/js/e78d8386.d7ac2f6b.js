@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[8409],{9657:function(e){"use strict";e.exports=JSON.parse('{"id":3048,"name":"Memoize","nextId":3071,"permalink":"/api/common/function/Memoize","previousId":3040}')}}]);

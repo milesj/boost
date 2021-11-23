@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7726],{8737:function(e){"use strict";e.exports=JSON.parse('{"id":1671,"name":"annotate","nextId":1675,"permalink":"/api/terminal/function/annotate"}')}}]);

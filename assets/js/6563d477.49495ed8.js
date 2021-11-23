@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7190],{8869:function(e){"use strict";e.exports=JSON.parse('{"id":1690,"name":"stripAnsi","nextId":1693,"permalink":"/api/terminal/function/stripAnsi","previousId":1685}')}}]);
