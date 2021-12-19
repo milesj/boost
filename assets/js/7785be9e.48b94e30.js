@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5039],{4455:function(e){e.exports=JSON.parse('{"id":334,"name":"Configuration","nextId":426,"permalink":"/api/config/class/Configuration"}')}}]);

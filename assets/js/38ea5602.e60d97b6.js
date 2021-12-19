@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5945],{4394:function(e){e.exports=JSON.parse('{"id":1600,"name":"Pluggable","nextId":1613,"permalink":"/api/plugin/interface/Pluggable","previousId":1514}')}}]);

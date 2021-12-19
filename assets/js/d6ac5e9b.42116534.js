@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[8564],{2927:function(e){e.exports=JSON.parse('{"id":100,"name":"getFormat","nextId":105,"permalink":"/api/module-loader/function/getFormat"}')}}]);

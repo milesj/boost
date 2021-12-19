@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9048],{6797:function(e){e.exports=JSON.parse('{"id":3439,"name":"Writable","nextId":3143,"permalink":"/api/log/interface/Writable","previousId":3447}')}}]);

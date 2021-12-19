@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3979],{7686:function(e){e.exports=JSON.parse('{"id":1623,"name":"RegistryOptions","nextId":1595,"permalink":"/api/plugin/interface/RegistryOptions","previousId":1617}')}}]);

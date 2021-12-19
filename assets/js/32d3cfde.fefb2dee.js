@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5476],{4859:function(e){e.exports=JSON.parse('{"id":541,"name":"Throttle","nextId":536,"permalink":"/api/decorators/function/Throttle","previousId":518}')}}]);

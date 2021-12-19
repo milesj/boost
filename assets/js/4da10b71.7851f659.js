@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5870],{7742:function(e){e.exports=JSON.parse('{"id":1936,"name":"applyStyle","nextId":1991,"permalink":"/api/cli/function/applyStyle","previousId":1933}')}}]);

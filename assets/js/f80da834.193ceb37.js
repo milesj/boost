@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9250],{4271:function(e){e.exports=JSON.parse('{"id":485,"name":"IgnoreFinderOptions","nextId":493,"permalink":"/api/config/interface/IgnoreFinderOptions","previousId":460}')}}]);

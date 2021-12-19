@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5491],{8477:function(e){e.exports=JSON.parse('{"id":1105,"name":"Routine","nextId":1212,"permalink":"/api/pipeline/class/Routine","previousId":1034}')}}]);

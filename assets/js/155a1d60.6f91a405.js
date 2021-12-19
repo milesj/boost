@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6155],{919:function(e){e.exports=JSON.parse('{"id":493,"name":"OverridesSettingItem","nextId":464,"permalink":"/api/config/interface/OverridesSettingItem","previousId":485}')}}]);
