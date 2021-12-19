@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 3.0.3 - 2021-12-19
+
+#### 📦 Dependencies
+
+- **[optimal]** Update to v5.1 latest. ([8adbddf](https://github.com/milesj/boost/commit/8adbddf))
+
+**Note:** Version bump only for package @boost/config
+
+
+
+
+
 ### 3.0.2 - 2021-11-12
 
 **Note:** Version bump only for package @boost/config

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 3.1.0 - 2021-12-19
+
+#### 🚀 Updates
+
+- Support the new loader API. (#171) ([155c50b](https://github.com/milesj/boost/commit/155c50b)), closes [#171](https://github.com/milesj/boost/issues/171)
+
+**Note:** Version bump only for package @boost/module
+
+
+
+
+
 ### 3.0.1 - 2021-10-16
 
 #### 🐞 Fixes
