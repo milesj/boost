@@ -26,7 +26,6 @@ import { BuildPropsCommand } from './__fixtures__/BuildPropsCommand';
 import { ClientDecoratorCommand } from './__fixtures__/ClientDecoratorCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
-import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
 
 jest.mock('term-size');
 

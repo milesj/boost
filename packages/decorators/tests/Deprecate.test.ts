@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Deprecate } from '../src';
 
 describe('@Deprecate', () => {

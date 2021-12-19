@@ -61,17 +61,17 @@ export abstract class Pipeline<Options extends object, Ctx extends Context, Inpu
 	}
 
 	/**
-	 * Return a list of registered work units for the current pipeline.
-	 */
-	getWorkUnits(): WorkUnit<{}, Input, Output>[] {
-		return this.work;
-	}
-
-	/**
 	 * Return a unique hierarchical ID.
 	 */
 	get id() {
 		return `pipeline[${this.depth}:${this.index}]`;
+	}
+
+	/**
+	 * Return a list of registered work units for the current pipeline.
+	 */
+	getWorkUnits(): WorkUnit<{}, Input, Output>[] {
+		return this.work;
 	}
 
 	/**

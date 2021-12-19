@@ -1,4 +1,3 @@
-import { string } from 'optimal';
 import { createBlueprint } from '../../src/helpers/createBlueprint';
 
 describe('createBlueprint()', () => {

@@ -218,6 +218,7 @@ describe('Command', () => {
 
 		it('errors if @Params is not on the run method', () => {
 			expect(() => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				class TestCommand extends Command {
 					@Arg.Params()
 					unknownArg() {}
@@ -231,6 +232,7 @@ describe('Command', () => {
 
 		it('errors if option is using a reserved name', () => {
 			expect(() => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				class TestCommand extends Command {
 					@Arg.String('Description')
 					override locale: string = '';

@@ -79,6 +79,13 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 	}
 
 	/**
+	 * Return a unique hierarchical ID.
+	 */
+	get id() {
+		return `work[${this.depth}:${this.index}]`;
+	}
+
+	/**
 	 * Return true if the task failed when executing.
 	 */
 	hasFailed(): boolean {
@@ -90,13 +97,6 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 	 */
 	hasPassed(): boolean {
 		return this.status === STATUS_PASSED;
-	}
-
-	/**
-	 * Return a unique hierarchical ID.
-	 */
-	get id() {
-		return `work[${this.depth}:${this.index}]`;
 	}
 
 	/**

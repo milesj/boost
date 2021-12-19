@@ -19,6 +19,13 @@ describe('@Memoize()', () => {
 		}
 
 		@Memoize()
+		get getter(): number {
+			this.spy();
+
+			return Date.now() + this.inc();
+		}
+
+		@Memoize()
 		noArgs(): number {
 			this.spy();
 
@@ -42,13 +49,6 @@ describe('@Memoize()', () => {
 
 		@Memoize()
 		restArgs(...args: unknown[]): number {
-			this.spy();
-
-			return Date.now() + this.inc();
-		}
-
-		@Memoize()
-		get getter(): number {
 			this.spy();
 
 			return Date.now() + this.inc();
