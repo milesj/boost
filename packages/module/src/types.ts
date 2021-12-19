@@ -47,6 +47,26 @@ export type LoaderResolve = (
 	defaultResolve: LoaderDefaultResolve,
 ) => Promise<ResolveResult>;
 
+export interface LoadContext {
+	format: string | null | undefined;
+	importAssertions?: object;
+}
+
+export interface LoadResult {
+	format: string;
+	source?: ArrayBuffer | string;
+}
+
+export type LoaderDefaultLoad = (url: string, context: LoadContext) => Promise<LoadResult>;
+
+export type LoaderLoad = (
+	url: string,
+	context: LoadContext,
+	defaultLoad: LoaderDefaultLoad,
+) => Promise<LoadResult>;
+
+// LEGACY LOADERS
+
 export type GetFormatContext = Record<string, unknown>;
 
 export interface GetFormatResult {
