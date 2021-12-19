@@ -1,9 +1,10 @@
 // https://nodejs.org/api/esm.html#esm_loaders
 
 import fs from 'fs';
-import { LoaderGetFormat, LoaderResolve, LoaderTransformSource } from '../types';
+import { LoaderGetFormat, LoaderLoad, LoaderResolve, LoaderTransformSource } from '../types';
 import {
 	COMPILER_OPTIONS,
+	getModuleFormat,
 	getModuleFromNodeVersion,
 	getTargetFromNodeVersion,
 	isTypeScript,
@@ -18,6 +19,26 @@ async function loadTypeScript() {
 		return null;
 	}
 }
+
+async function transform(url: string, source: string): Promise<string> {
+	const ts = await loadTypeScript();
+
+	if (!ts) {
+		throw new Error(`\`typescript\` package required for transforming file "${url}".`);
+	}
+
+	return ts.transpileModule(String(source), {
+		compilerOptions: {
+			...COMPILER_OPTIONS,
+			module: getModuleFromNodeVersion(ts),
+			resolveJsonModule: false,
+			target: getTargetFromNodeVersion(ts),
+		},
+		fileName: url,
+	}).outputText;
+}
+
+// NEW API
 
 export const resolve: LoaderResolve = async (specifier, context, defaultResolve) => {
 	if (isTypeScript(specifier)) {
@@ -43,6 +64,27 @@ export const resolve: LoaderResolve = async (specifier, context, defaultResolve)
 	return defaultResolve(specifier, context);
 };
 
+export const load: LoaderLoad = async (url, context, defaultLoad) => {
+	if (isTypeScript(url)) {
+		const format = getModuleFormat(url);
+
+		if (format === 'commonjs') {
+			return { format };
+		}
+
+		const { source: rawSource } = await defaultLoad(url, { format });
+
+		return {
+			format,
+			source: await transform(url, String(rawSource)),
+		};
+	}
+
+	return defaultLoad(url, context);
+};
+
+// OLD API
+
 export const getFormat: LoaderGetFormat = async (url, context, defaultGetFormat) => {
 	if (isTypeScript(url)) {
 		return {
@@ -61,22 +103,8 @@ export const transformSource: LoaderTransformSource = async (
 	const { url } = context;
 
 	if (isTypeScript(url)) {
-		const ts = await loadTypeScript();
-
-		if (!ts) {
-			throw new Error(`\`typescript\` package required for transforming file "${url}".`);
-		}
-
 		return {
-			source: ts.transpileModule(String(source), {
-				compilerOptions: {
-					...COMPILER_OPTIONS,
-					module: getModuleFromNodeVersion(ts),
-					resolveJsonModule: false,
-					target: getTargetFromNodeVersion(ts),
-				},
-				fileName: url,
-			}).outputText,
+			source: await transform(url, String(source)),
 		};
 	}
 

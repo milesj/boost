@@ -1,1 +1,1 @@
-export { getFormat, resolve, transformSource } from './mjs/loader.mjs';
+export { getFormat, load, resolve, transformSource } from './mjs/loader.mjs';
