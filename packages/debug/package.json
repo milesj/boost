@@ -39,9 +39,9 @@
     "@boost/common": "^3.2.0",
     "@boost/internal": "^3.0.0",
     "@types/debug": "^4.1.7",
-    "debug": "^4.3.2",
+    "debug": "^4.3.3",
     "execa": "^5.1.1",
-    "fast-glob": "^3.2.7"
+    "fast-glob": "^3.2.11"
   },
   "funding": {
     "type": "ko-fi",
