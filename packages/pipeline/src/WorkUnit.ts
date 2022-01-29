@@ -142,7 +142,7 @@ export abstract class WorkUnit<Options extends object, Input = unknown, Output =
 			// Allow input as output. This is problematic for skipping
 			// since the expected output is no longer in sync. Revisit.
 			// @ts-expect-error Allow invalid type
-			return Promise.resolve(value);
+			return value;
 		}
 
 		this.status = STATUS_RUNNING;

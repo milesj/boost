@@ -464,7 +464,7 @@ export class Program extends CommandManager<ProgramOptions> {
 		const exitError = errors[0];
 
 		if (exitError instanceof ExitError && exitError.code === 0) {
-			return Promise.resolve(exitError.code);
+			return exitError.code;
 		}
 
 		// eslint-disable-next-line unicorn/prefer-array-find
