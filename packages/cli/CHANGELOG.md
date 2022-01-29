@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 3.0.3 - 2022-01-29
+
+#### 📦 Dependencies
+
+- **[beemo-dev]** Update to latest configs. ([dfa69a1](https://github.com/milesj/boost/commit/dfa69a1))
+- Updated utility deps. ([89a5d1e](https://github.com/milesj/boost/commit/89a5d1e))
+
+**Note:** Version bump only for package @boost/cli
+
+
+
+
+
 ### 3.0.2 - 2021-12-19
 
 #### 📦 Dependencies

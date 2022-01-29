@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 3.0.3 - 2022-01-29
+
+#### 📦 Dependencies
+
+- Updated utility deps. ([89a5d1e](https://github.com/milesj/boost/commit/89a5d1e))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 3.0.2 - 2021-12-19
 
 #### 📦 Dependencies

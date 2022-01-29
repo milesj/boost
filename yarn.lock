@@ -1913,11 +1913,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@boost/args@^3.0.0, @boost/args@workspace:packages/args":
+"@boost/args@^3.0.0, @boost/args@^3.0.1, @boost/args@workspace:packages/args":
   version: 0.0.0-use.local
   resolution: "@boost/args@workspace:packages/args"
   dependencies:
-    "@boost/internal": ^3.0.0
+    "@boost/internal": ^3.0.1
     levenary: ^1.1.1
   languageName: unknown
   linkType: soft
@@ -1926,13 +1926,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@boost/cli@workspace:packages/cli"
   dependencies:
-    "@boost/args": ^3.0.0
-    "@boost/common": ^3.2.0
-    "@boost/event": ^3.0.0
-    "@boost/internal": ^3.0.0
-    "@boost/log": ^3.0.2
+    "@boost/args": ^3.0.1
+    "@boost/common": ^3.2.1
+    "@boost/event": ^3.0.1
+    "@boost/internal": ^3.0.1
+    "@boost/log": ^3.0.3
     "@boost/terminal": ^3.0.0
-    "@boost/translate": ^3.0.2
+    "@boost/translate": ^3.0.3
     debug: ^4.3.3
     execa: ^5.1.1
     ink: ^3.2.0
@@ -1946,12 +1946,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/common@^3.1.0, @boost/common@^3.2.0, @boost/common@workspace:packages/common":
+"@boost/common@^3.1.0, @boost/common@^3.2.1, @boost/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@boost/common@workspace:packages/common"
   dependencies:
     "@boost/decorators": ^3.0.0
-    "@boost/internal": ^3.0.0
+    "@boost/internal": ^3.0.1
     "@boost/test-utils": ^3.0.0
     "@types/resolve": ^1.20.1
     fast-glob: ^3.2.11
@@ -1972,22 +1972,22 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@boost/config@workspace:packages/config"
   dependencies:
-    "@boost/common": ^3.2.0
-    "@boost/debug": ^3.0.2
-    "@boost/event": ^3.0.0
-    "@boost/internal": ^3.0.0
+    "@boost/common": ^3.2.1
+    "@boost/debug": ^3.0.3
+    "@boost/event": ^3.0.1
+    "@boost/internal": ^3.0.1
     "@boost/module": ^3.1.0
     "@boost/test-utils": ^3.0.0
     minimatch: ^3.0.4
   languageName: unknown
   linkType: soft
 
-"@boost/debug@^3.0.1, @boost/debug@^3.0.2, @boost/debug@workspace:packages/debug":
+"@boost/debug@^3.0.1, @boost/debug@^3.0.3, @boost/debug@workspace:packages/debug":
   version: 0.0.0-use.local
   resolution: "@boost/debug@workspace:packages/debug"
   dependencies:
-    "@boost/common": ^3.2.0
-    "@boost/internal": ^3.0.0
+    "@boost/common": ^3.2.1
+    "@boost/internal": ^3.0.1
     "@types/debug": ^4.1.7
     debug: ^4.3.3
     execa: ^5.1.1
@@ -2001,15 +2001,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/event@^3.0.0, @boost/event@workspace:packages/event":
+"@boost/event@^3.0.0, @boost/event@^3.0.1, @boost/event@workspace:packages/event":
   version: 0.0.0-use.local
   resolution: "@boost/event@workspace:packages/event"
   dependencies:
-    "@boost/internal": ^3.0.0
+    "@boost/internal": ^3.0.1
   languageName: unknown
   linkType: soft
 
-"@boost/internal@^3.0.0, @boost/internal@workspace:packages/internal":
+"@boost/internal@^3.0.0, @boost/internal@^3.0.1, @boost/internal@workspace:packages/internal":
   version: 0.0.0-use.local
   resolution: "@boost/internal@workspace:packages/internal"
   dependencies:
@@ -2017,13 +2017,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/log@^3.0.1, @boost/log@^3.0.2, @boost/log@workspace:packages/log":
+"@boost/log@^3.0.1, @boost/log@^3.0.3, @boost/log@workspace:packages/log":
   version: 0.0.0-use.local
   resolution: "@boost/log@workspace:packages/log"
   dependencies:
-    "@boost/common": ^3.2.0
-    "@boost/internal": ^3.0.0
-    "@boost/translate": ^3.0.2
+    "@boost/common": ^3.2.1
+    "@boost/internal": ^3.0.1
+    "@boost/translate": ^3.0.3
     chalk: ^4.1.2
   languageName: unknown
   linkType: soft
@@ -2043,11 +2043,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@boost/pipeline@workspace:packages/pipeline"
   dependencies:
-    "@boost/common": ^3.2.0
-    "@boost/debug": ^3.0.2
-    "@boost/event": ^3.0.0
-    "@boost/internal": ^3.0.0
-    "@boost/translate": ^3.0.2
+    "@boost/common": ^3.2.1
+    "@boost/debug": ^3.0.3
+    "@boost/event": ^3.0.1
+    "@boost/internal": ^3.0.1
+    "@boost/translate": ^3.0.3
     execa: ^5.1.1
     lodash: ^4.17.21
     split: ^1.0.1
@@ -2058,10 +2058,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@boost/plugin@workspace:packages/plugin"
   dependencies:
-    "@boost/common": ^3.2.0
-    "@boost/debug": ^3.0.2
-    "@boost/event": ^3.0.0
-    "@boost/internal": ^3.0.0
+    "@boost/common": ^3.2.1
+    "@boost/debug": ^3.0.3
+    "@boost/event": ^3.0.1
+    "@boost/internal": ^3.0.1
     "@boost/module": ^3.1.0
     "@boost/test-utils": ^3.0.0
     "@types/pluralize": ^0.0.29
@@ -2138,12 +2138,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/translate@^3.0.1, @boost/translate@^3.0.2, @boost/translate@workspace:packages/translate":
+"@boost/translate@^3.0.1, @boost/translate@^3.0.3, @boost/translate@workspace:packages/translate":
   version: 0.0.0-use.local
   resolution: "@boost/translate@workspace:packages/translate"
   dependencies:
-    "@boost/common": ^3.2.0
-    "@boost/internal": ^3.0.0
+    "@boost/common": ^3.2.1
+    "@boost/internal": ^3.0.1
     i18next: ^21.2.6
     os-locale: ^5.0.0
   languageName: unknown
