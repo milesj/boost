@@ -17,6 +17,7 @@ export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 	/**
 	 * Find a single ignore file in the provided directory.
 	 */
+	// eslint-disable-next-line @typescript-eslint/require-await
 	async findFilesInDir(dir: Path): Promise<Path[]> {
 		const files: Path[] = [];
 		const path = dir.append(this.getFileName());
@@ -32,7 +33,7 @@ export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 			'No files',
 		);
 
-		return Promise.resolve(files);
+		return files;
 	}
 
 	/**
