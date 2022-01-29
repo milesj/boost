@@ -17,7 +17,7 @@
     "type": "beemo typescript --build",
     "release": "yarn run pack && yarn run check && yarn beemo run-script lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx packemon@1.6.0"
+    "packemon": "yarn dlx packemon@1.11.1"
   },
   "engines": {
     "node": ">=12.17.0"
