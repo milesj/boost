@@ -7,9 +7,10 @@ import { IgnoreFile, IgnoreFinderOptions } from './types';
 
 export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 	blueprint(schemas: Schemas): Blueprint<IgnoreFinderOptions> {
-		const { string } = schemas;
+		const { bool, string } = schemas;
 
 		return {
+			errorIfNoRootFound: bool(true),
 			name: string().required().camelCase(),
 		};
 	}
@@ -62,7 +63,7 @@ export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 				return {
 					ignore,
 					path: filePath,
-					source: this.isRootDir(filePath.parent(), true) ? ('root' as const) : ('branch' as const),
+					source: this.isRootDir(filePath.parent()) ? ('root' as const) : ('branch' as const),
 				};
 			}),
 		);

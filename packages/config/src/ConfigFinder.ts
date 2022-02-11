@@ -12,7 +12,12 @@ import {
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { ConfigError } from './ConfigError';
-import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
+import {
+	DEFAULT_EXTS,
+	PACKAGE_FILE,
+	ROOT_CONFIG_DIR_REGEX,
+	ROOT_CONFIG_FILE_REGEX,
+} from './constants';
 import { Finder } from './Finder';
 import { createFileName } from './helpers/createFileName';
 import { getEnv } from './helpers/getEnv';
@@ -22,13 +27,21 @@ import { loadJson } from './loaders/json';
 import { loadMjs } from './loaders/mjs';
 import { loadTs } from './loaders/ts';
 import { loadYaml } from './loaders/yaml';
-import { ConfigFile, ConfigFinderOptions, ExtType, FileSource, OverridesSetting } from './types';
+import {
+	ConfigFile,
+	ConfigFinderOptions,
+	ExtType,
+	FileSource,
+	FileType,
+	OverridesSetting,
+} from './types';
 
 export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, ConfigFinderOptions<T>> {
 	blueprint(schemas: Schemas): Blueprint<ConfigFinderOptions<T>> {
 		const { array, bool, func, shape, string } = schemas;
 
 		return {
+			errorIfNoRootFound: bool(true),
 			extendsSetting: string(),
 			extensions: array(DEFAULT_EXTS).of(string<ExtType>()),
 			includeEnv: bool(true),
@@ -92,23 +105,34 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 	 * Will only search until the first file is found, and will not return multiple extensions.
 	 */
 	async findFilesInDir(dir: Path): Promise<Path[]> {
+		const { extensions, includeEnv } = this.options;
 		const isRoot = this.isRootDir(dir);
-		const baseDir = isRoot ? dir.append(CONFIG_FOLDER) : dir;
+		const hash = isRoot ? '#root' : '#branch';
 
-		return this.cache.cacheFilesInDir(baseDir, async () => {
+		return this.cache.cacheFilesInDir(dir, hash, async () => {
 			const paths: Path[] = [];
 
-			for (const ext of this.options.extensions) {
-				const files = [baseDir.append(this.getFileName(ext, !isRoot, false))];
+			for (const ext of extensions) {
+				const files: (Path | false)[] = [];
 
-				if (this.options.includeEnv) {
-					files.push(baseDir.append(this.getFileName(ext, !isRoot, true)));
+				if (isRoot) {
+					files.push(
+						dir.append(this.getFileName('root-file', ext, false)),
+						includeEnv && dir.append(this.getFileName('root-file', ext, true)),
+						dir.append(this.getFileName('root-folder', ext, false)),
+						includeEnv && dir.append(this.getFileName('root-folder', ext, true)),
+					);
+				} else {
+					files.push(
+						dir.append(this.getFileName('branch', ext, false)),
+						includeEnv && dir.append(this.getFileName('branch', ext, true)),
+					);
 				}
 
 				await Promise.all(
-					files.map((configPath) => {
-						if (configPath.exists()) {
-							paths.push(configPath);
+					files.filter(Boolean).map((configPath) => {
+						if ((configPath as Path).exists()) {
+							paths.push(configPath as Path);
 						}
 
 						return configPath;
@@ -123,7 +147,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 
 			this.debug.invariant(
 				paths.length > 0,
-				`Finding config files in ${color.filePath(baseDir.path())}`,
+				`Finding config files in ${color.filePath(dir.path())}`,
 				paths.map((path) => path.name()).join(', '),
 				'No files',
 			);
@@ -138,13 +162,10 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 	/**
 	 * Create and return a config file name, with optional branch and environment variants.
 	 */
-	getFileName(ext: string, isBranch: boolean, isEnv: boolean): string {
+	getFileName(type: FileType, ext: string, isEnv: boolean): string {
 		const { name } = this.options;
 
-		return createFileName(name, ext, {
-			envSuffix: isEnv ? getEnv(name) : '',
-			leadingDot: isBranch,
-		});
+		return createFileName(type, name, ext, isEnv ? getEnv(name) : '');
 	}
 
 	/**
@@ -214,7 +235,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 					if (isModuleName(extendsPath)) {
 						const modulePath = new Path(
 							extendsPath,
-							createFileName(name, 'js', { envSuffix: 'preset' }),
+							createFileName('preset', name, 'js', 'preset'),
 						);
 
 						this.debug(
@@ -344,10 +365,13 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 			}
 		});
 
+		const isRoot =
+			ROOT_CONFIG_DIR_REGEX.test(path.path()) || ROOT_CONFIG_FILE_REGEX.test(path.path());
+
 		return {
 			config,
 			path,
-			source: source ?? (path.path().includes(CONFIG_FOLDER) ? 'root' : 'branch'),
+			source: source ?? (isRoot ? 'root' : 'branch'),
 		};
 	}
 }
