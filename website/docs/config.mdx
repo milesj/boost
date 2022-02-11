@@ -195,15 +195,15 @@ structure.
 
 ### File patterns
 
-Config files are grouped into either the root or branch category. Root config files are located in a
-`.config` folder in the root of a project (denoted by the current working directory). Branch config
-files are located within folders (at any depth) below the root, and are prefixed with a leading dot
-(`.`).
+Config files are grouped into either the root or branch category. The root of a project is denoted
+by a root `*.config.*` file, or a folder with the name `.config`, which contains config files.
+Branch config files are located within folders (at any depth) below the root, and are prefixed with
+a leading dot (`.`).
 
-| Root                         | Branch                |
-| ---------------------------- | --------------------- |
-| `.config/<name>.<ext>`       | `.<name>.<ext>`       |
-| `.config/<name>.<env>.<ext>` | `.<name>.<env>.<ext>` |
+| Root                                                      | Branch                |
+| --------------------------------------------------------- | --------------------- |
+| `.config/<name>.<ext>`, `<name>.config.<ext>`             | `.<name>.<ext>`       |
+| `.config/<name>.<env>.<ext>`, `<name>.config.<env>.<ext>` | `.<name>.<env>.<ext>` |
 
 - `<name>` - Name passed to your [`Configuration`][configuration] instance (in camel case).
 - `<env>` - Current environment derived from `NODE_ENV`.
@@ -357,8 +357,8 @@ Once a file is found, the lookup process is aborted, and the confg is returned.
 #### From root
 
 The [`Configuration#loadConfigFromRoot()`][loadconfigfromroot] will load the config file found in
-the root `.config` folder (typically 1 file). If no root path is provided, it defaults to
-process.cwd().
+the root, either a `*.config.*` or `.config/*.*` file. If no root path is provided, it defaults to
+`process.cwd()`.
 
 ```json title="root/.config/boost.json"
 {
@@ -382,10 +382,6 @@ const { config } = await manager.loadConfigFromRoot('/root');
   ],
 }
 ```
-
-> Why are root config files located within a `.config` folder? In an effort to reduce the root
-> config and dotfile churn that many projects suffer from, we're trying to push forward an idiomatic
-> standard that we hope many others will follow.
 
 #### From branch
 
