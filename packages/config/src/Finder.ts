@@ -1,9 +1,10 @@
+import fs from 'fs';
 import { Contract, Path, PortablePath } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { Cache } from './Cache';
 import { ConfigError } from './ConfigError';
-import { CONFIG_FOLDER, PACKAGE_FILE } from './constants';
+import { CONFIG_FOLDER, PACKAGE_FILE, ROOT_CONFIG_FILE_REGEX } from './constants';
 import { File } from './types';
 
 export abstract class Finder<
@@ -40,7 +41,8 @@ export abstract class Finder<
 				filesToLoad.unshift(...files);
 			}
 
-			if (this.isRootDir(currentDir)) {
+			// eslint-disable-next-line no-await-in-loop
+			if (await this.isRootDir(currentDir)) {
 				break;
 			} else {
 				currentDir = currentDir.parent();
@@ -57,7 +59,7 @@ export abstract class Finder<
 	async loadFromRoot(dir: PortablePath = process.cwd()): Promise<T[]> {
 		this.debug('Loading files from possible root %s', color.filePath(String(dir)));
 
-		const root = this.getRootDir(dir);
+		const root = await this.getRootDir(dir);
 		const files = await this.findFilesInDir(root);
 
 		return this.resolveFiles(root, files);
@@ -66,14 +68,41 @@ export abstract class Finder<
 	/**
 	 * Return the root directory path or throw an error.
 	 */
-	protected getRootDir(dir: PortablePath): Path {
+	protected async getRootDir(dir: PortablePath): Promise<Path> {
 		const root = Path.resolve(dir);
 
-		if (!this.isRootDir(root)) {
-			throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER]);
+		if (!(await this.isRootDir(root))) {
+			throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
 		}
 
 		return root;
+	}
+
+	protected async hasRootFile(dir: Path): Promise<Path | null> {
+		const results = await this.cache.cacheFilesInDir(dir, async () => {
+			const files = await new Promise<string[]>((resolve, reject) => {
+				fs.readdir(dir.path(), (error, list) => {
+					if (error) {
+						reject(error);
+					} else {
+						resolve(list);
+					}
+				});
+			});
+
+			console.log(files);
+
+			// Filter down to files that match our root config format
+			return files.filter((file) => ROOT_CONFIG_FILE_REGEX.test(file)).map(Path.create);
+		});
+
+		if (results.length > 1) {
+			throw new ConfigError('ROOT_FILE_ONLY_ONE', [results.length]);
+		} else if (results.length === 1) {
+			return results[0];
+		}
+
+		return null;
 	}
 
 	/**
@@ -84,17 +113,31 @@ export abstract class Finder<
 	}
 
 	/**
-	 * Detect the root directory, config directory, and `package.json`
+	 * Detect the root directory, config file/directory, and `package.json`
 	 * path from the provided directory path, and return true if valid.
 	 */
-	protected isRootDir(dir: Path, abort: boolean = false): boolean {
+	protected async isRootDir(dir: Path, abort: boolean = false): Promise<boolean> {
 		if (dir.path() === this.cache.rootDir?.path()) {
 			return true;
 		}
+
 		if (!dir.isDirectory() || abort) {
 			return false;
 		}
 
+		// Check for `<name>.config.<ext>` file first
+		const configFile = await this.hasRootFile(dir);
+
+		if (configFile) {
+			this.cache.configFile = configFile;
+			this.cache.rootDir = dir;
+
+			this.debug('Project root found at %s', color.filePath(dir.path()));
+
+			return true;
+		}
+
+		// Then check for `.config/<name>.<ext>` second
 		const configDir = dir.append(CONFIG_FOLDER);
 		const isValid = configDir.exists() && configDir.isDirectory();
 

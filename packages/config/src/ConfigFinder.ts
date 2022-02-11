@@ -12,7 +12,13 @@ import {
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { ConfigError } from './ConfigError';
-import { CONFIG_FOLDER, DEFAULT_EXTS, PACKAGE_FILE } from './constants';
+import {
+	CONFIG_FOLDER,
+	DEFAULT_EXTS,
+	PACKAGE_FILE,
+	ROOT_CONFIG_DIR_REGEX,
+	ROOT_CONFIG_FILE_REGEX,
+} from './constants';
 import { Finder } from './Finder';
 import { createFileName } from './helpers/createFileName';
 import { getEnv } from './helpers/getEnv';
@@ -92,7 +98,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 	 * Will only search until the first file is found, and will not return multiple extensions.
 	 */
 	async findFilesInDir(dir: Path): Promise<Path[]> {
-		const isRoot = this.isRootDir(dir);
+		const isRoot = await this.isRootDir(dir);
 		const baseDir = isRoot ? dir.append(CONFIG_FOLDER) : dir;
 
 		return this.cache.cacheFilesInDir(baseDir, async () => {
@@ -344,10 +350,13 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 			}
 		});
 
+		const isRoot =
+			ROOT_CONFIG_DIR_REGEX.test(path.path()) || ROOT_CONFIG_FILE_REGEX.test(path.path());
+
 		return {
 			config,
 			path,
-			source: source ?? (path.path().includes(CONFIG_FOLDER) ? 'root' : 'branch'),
+			source: source ?? (isRoot ? 'root' : 'branch'),
 		};
 	}
 }
