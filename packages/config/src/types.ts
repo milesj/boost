@@ -38,7 +38,14 @@ export interface ProcessedConfig<T> {
 	files: ConfigFile<T>[];
 }
 
-export interface ConfigFinderOptions<T> {
+export interface BaseFinderOptions {
+	/** Name of files, without extension. */
+	name: string;
+	/** Throw an error if the root config cannot be located. */
+	errorIfNoRootConfig?: boolean;
+}
+
+export interface ConfigFinderOptions<T> extends BaseFinderOptions {
 	/** Name of the setting in which "config extending" is enabled. */
 	extendsSetting?: string;
 	/** List of extensions, in order, to find config files within each folder. Defaults to built-in file format list. */
@@ -47,18 +54,13 @@ export interface ConfigFinderOptions<T> {
 	includeEnv?: boolean;
 	/** Mapping of loader functions by type. Defaults to built-in file type loaders. */
 	loaders?: { [K in LoaderType]: Loader<T> };
-	/** Name of config files, without extension. */
-	name: string;
 	/** Name of the setting in which "config overriding" is enabled. */
 	overridesSetting?: string;
 	/** Custom module resolver. */
 	resolver?: ModuleResolver;
 }
 
-export interface IgnoreFinderOptions {
-	/** Name of ignore files, without extension. */
-	name: string;
-}
+export interface IgnoreFinderOptions extends BaseFinderOptions {}
 
 export interface ProcessorOptions {
 	/**

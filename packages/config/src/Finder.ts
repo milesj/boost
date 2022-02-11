@@ -5,11 +5,11 @@ import { color } from '@boost/internal';
 import { Cache } from './Cache';
 import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, PACKAGE_FILE, ROOT_CONFIG_FILE_REGEX } from './constants';
-import { File } from './types';
+import { BaseFinderOptions, File } from './types';
 
 export abstract class Finder<
 	T extends File,
-	Options extends { name: string },
+	Options extends BaseFinderOptions,
 > extends Contract<Options> {
 	protected readonly debug: Debugger;
 
@@ -77,7 +77,17 @@ export abstract class Finder<
 		}
 
 		if (this.isFileSystemRoot(dir)) {
-			throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
+			if (this.options.errorIfNoRootConfig) {
+				throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
+			} else {
+				// If we've checked the entire ancestry and found no root,
+				// let's just assume the current working directory is the root.
+				const cwd = Path.create(process.cwd());
+
+				this.cache.rootDir = cwd;
+
+				return cwd;
+			}
 		}
 
 		const files = await new Promise<string[]>((resolve, reject) => {

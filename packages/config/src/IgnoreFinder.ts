@@ -7,9 +7,10 @@ import { IgnoreFile, IgnoreFinderOptions } from './types';
 
 export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 	blueprint(schemas: Schemas): Blueprint<IgnoreFinderOptions> {
-		const { string } = schemas;
+		const { bool, string } = schemas;
 
 		return {
+			errorIfNoRootConfig: bool(true),
 			name: string().required().camelCase(),
 		};
 	}
