@@ -117,6 +117,7 @@ describe('ConfigFinder', () => {
 
 	describe('loadFromBranchToRoot()', () => {
 		const fixtures = [
+			{ ext: 'js', root: getFixturePath('config-file-tree-js-root-file') },
 			{ ext: 'js', root: getFixturePath('config-file-tree-js') },
 			{ ext: 'json', root: getFixturePath('config-file-tree-json') },
 			{ ext: 'json5', root: getFixturePath('config-file-tree-json5') },
@@ -126,14 +127,17 @@ describe('ConfigFinder', () => {
 			{ ext: 'yml', root: getFixturePath('config-file-tree-yml') },
 		];
 
-		fixtures.forEach(({ ext, root: tempRoot }) => {
+		fixtures.forEach(({ ext, root: tempRoot }, index) => {
 			it(`returns all \`.${ext}\` config files from a branch up to root`, async () => {
 				const files = await finder.loadFromBranchToRoot(`${tempRoot}/src/app/profiles/settings`);
 
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: mockSystemPath(`${tempRoot}/.config/boost.json`),
+						path:
+							index === 0
+								? mockSystemPath(`${tempRoot}/boost.config.json`)
+								: mockSystemPath(`${tempRoot}/.config/boost.json`),
 						source: 'root',
 					},
 					{
@@ -254,7 +258,7 @@ describe('ConfigFinder', () => {
 			]);
 		});
 
-		it.only('returns all config files from a branch up to root config file', async () => {
+		it('returns all config files from a branch up to root config file', async () => {
 			const tempRoot = getFixturePath('config-scenario-branch-root-file');
 
 			const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
@@ -267,7 +271,7 @@ describe('ConfigFinder', () => {
 				},
 				{
 					config: { type: 'json' },
-					path: mockSystemPath(`${tempRoot}/src/.boost.json`),
+					path: mockSystemPath(`${tempRoot}/src/app/.boost.json`),
 					source: 'branch',
 				},
 			]);
@@ -610,26 +614,21 @@ describe('ConfigFinder', () => {
 			{ ext: 'yml', root: getFixturePath('config-root-config-yml') },
 		];
 
-		fixtures.forEach(({ ext, root: tempRoot }) => {
+		fixtures.forEach(({ ext, root: tempRoot }, index) => {
 			it(`returns \`.${ext}\` config file from root`, async () => {
 				const files = await finder.loadFromRoot(tempRoot);
 
 				expect(files).toEqual([
 					{
 						config: { debug: true },
-						path: mockSystemPath(`${tempRoot}/.config/boost.${ext}`),
+						path:
+							index === 0
+								? mockSystemPath(`${tempRoot}/boost.config.${ext}`)
+								: mockSystemPath(`${tempRoot}/.config/boost.${ext}`),
 						source: 'root',
 					},
 				]);
 			});
-		});
-
-		it('errors if not root folder', async () => {
-			const tempRoot = getFixturePath('config-scenario-not-root');
-
-			await expect(finder.loadFromRoot(tempRoot)).rejects.toThrow(
-				'Invalid configuration root. Requires a `.config` folder and `package.json`, OR a `boost.config.*` file.',
-			);
 		});
 
 		it('errors if root folder is missing a `package.json`', async () => {

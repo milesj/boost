@@ -5,7 +5,7 @@ import { color } from '@boost/internal';
 import { Cache } from './Cache';
 import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, PACKAGE_FILE, ROOT_CONFIG_FILE_REGEX } from './constants';
-import { File, FileType } from './types';
+import { File } from './types';
 
 export abstract class Finder<
 	T extends File,
@@ -43,8 +43,7 @@ export abstract class Finder<
 				filesToLoad.unshift(...files);
 			}
 
-			// eslint-disable-next-line no-await-in-loop
-			if (await this.isRootDir(currentDir)) {
+			if (this.isRootDir(currentDir)) {
 				break;
 			} else {
 				currentDir = currentDir.parent();
@@ -59,22 +58,22 @@ export abstract class Finder<
 	 * and `package.json` file.
 	 */
 	async loadFromRoot(dir: PortablePath = process.cwd()): Promise<T[]> {
-		await this.findRootDir(Path.resolve(dir));
+		const root = await this.findRootDir(Path.resolve(dir));
 
 		this.debug('Loading files from possible root %s', color.filePath(String(dir)));
 
-		const files = await this.findFilesInDir(this.cache.configDir ?? this.cache.rootDir!);
+		const files = await this.findFilesInDir(root);
 
-		return this.resolveFiles(this.cache.rootDir!, files);
+		return this.resolveFiles(root, files);
 	}
 
 	/**
 	 * Find the root directory by searching for a `.config` folder,
 	 * or a `*.config.*` file. Throw an error if none found.
 	 */
-	protected async findRootDir(dir: Path) {
+	protected async findRootDir(dir: Path): Promise<Path> {
 		if (this.cache.rootDir) {
-			return;
+			return this.cache.rootDir;
 		}
 
 		if (this.isFileSystemRoot(dir)) {
@@ -112,17 +111,18 @@ export abstract class Finder<
 
 			if (ROOT_CONFIG_FILE_REGEX.test(file)) {
 				this.cache.rootDir = dir;
-				this.cache.configFile = dir.append(file);
 
 				break;
 			}
 		}
 
 		if (this.cache.rootDir) {
-			this.debug('Project root found at %s', color.filePath(this.cache.rootDir.path()));
-		} else {
-			await this.findRootDir(dir.parent());
+			this.debug('Project root found at %s', color.filePath(dir.path()));
+
+			return dir;
 		}
+
+		return this.findRootDir(dir.parent());
 	}
 
 	/**

@@ -113,14 +113,6 @@ describe('IgnoreFinder', () => {
 			]);
 		});
 
-		it('errors if not root folder', async () => {
-			const tempRoot = getFixturePath('config-ignore-file-tree');
-
-			await expect(finder.loadFromRoot(normalizeSeparators(`${tempRoot}/src`))).rejects.toThrow(
-				'Invalid configuration root. Requires a `.config` folder and `package.json`, OR a `boost.config.*` file.',
-			);
-		});
-
 		it('errors if root folder is missing a `package.json`', async () => {
 			const tempRoot = getFixturePath('config-root-without-package-json');
 

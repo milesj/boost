@@ -105,7 +105,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 	 */
 	async findFilesInDir(dir: Path): Promise<Path[]> {
 		const { extensions, includeEnv } = this.options;
-		const isRoot = await this.isRootDir(dir);
+		const isRoot = this.isRootDir(dir);
 		const hash = isRoot ? '#root' : '#branch';
 
 		return this.cache.cacheFilesInDir(dir, hash, async () => {
@@ -128,7 +128,6 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 					);
 				}
 
-				// TODO change to stat
 				await Promise.all(
 					files.filter(Boolean).map((configPath) => {
 						if ((configPath as Path).exists()) {
