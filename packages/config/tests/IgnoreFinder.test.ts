@@ -30,7 +30,6 @@ describe('IgnoreFinder', () => {
 		expect(cache.rootDir).toEqual(mockSystemPath(tempRoot));
 		expect(cache.configDir).toEqual(mockSystemPath(`${tempRoot}/.config`));
 		expect(cache.pkgPath).toEqual(mockSystemPath(`${tempRoot}/package.json`));
-		expect(cache.dirFilesCache).toEqual({});
 		expect(cache.fileContentCache).toEqual({
 			[mockSystemPath(`${tempRoot}/.boostignore`).path()]: {
 				content: `*.log${EOL}*.lock`,
@@ -118,7 +117,7 @@ describe('IgnoreFinder', () => {
 			const tempRoot = getFixturePath('config-ignore-file-tree');
 
 			await expect(finder.loadFromRoot(normalizeSeparators(`${tempRoot}/src`))).rejects.toThrow(
-				'Invalid configuration root. Requires a `.config` folder and `package.json`.',
+				'Invalid configuration root. Requires a `.config` folder and `package.json`, OR a `boost.config.*` file.',
 			);
 		});
 

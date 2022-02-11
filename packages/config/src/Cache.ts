@@ -41,8 +41,12 @@ export class Cache {
 		return content;
 	}
 
-	async cacheFilesInDir(dir: Path, commit: () => Promise<Path[]>): Promise<Path[]> {
-		const key = dir.path();
+	async cacheFilesInDir(
+		dir: Path,
+		commit: () => Promise<Path[]>,
+		keyHash: string = '',
+	): Promise<Path[]> {
+		const key = dir.path() + keyHash;
 
 		if (this.dirFilesCache[key]) {
 			return this.dirFilesCache[key];

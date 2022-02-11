@@ -79,22 +79,25 @@ export abstract class Finder<
 	}
 
 	protected async hasRootFile(dir: Path): Promise<Path | null> {
-		const results = await this.cache.cacheFilesInDir(dir, async () => {
-			const files = await new Promise<string[]>((resolve, reject) => {
-				fs.readdir(dir.path(), (error, list) => {
-					if (error) {
-						reject(error);
-					} else {
-						resolve(list);
-					}
+		const results = await this.cache.cacheFilesInDir(
+			dir,
+			async () => {
+				const files = await new Promise<string[]>((resolve, reject) => {
+					fs.readdir(dir.path(), (error, list) => {
+						if (error) {
+							reject(error);
+						} else {
+							resolve(list);
+						}
+					});
 				});
-			});
 
-			console.log(files);
-
-			// Filter down to files that match our root config format
-			return files.filter((file) => ROOT_CONFIG_FILE_REGEX.test(file)).map(Path.create);
-		});
+				// Filter down to files that match our root config format
+				return files.filter((file) => ROOT_CONFIG_FILE_REGEX.test(file)).map(Path.create);
+			},
+			// We need a key here to differentiate between normal file cache lookups
+			'#rootConfigFile',
+		);
 
 		if (results.length > 1) {
 			throw new ConfigError('ROOT_FILE_ONLY_ONE', [results.length]);

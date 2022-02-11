@@ -608,7 +608,7 @@ describe('ConfigFinder', () => {
 			const tempRoot = getFixturePath('config-scenario-not-root');
 
 			await expect(finder.loadFromRoot(tempRoot)).rejects.toThrow(
-				'Invalid configuration root. Requires a `.config` folder and `package.json`.',
+				'Invalid configuration root. Requires a `.config` folder and `package.json`, OR a `boost.config.*` file.',
 			);
 		});
 
