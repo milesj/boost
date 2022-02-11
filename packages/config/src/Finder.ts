@@ -77,7 +77,7 @@ export abstract class Finder<
 		}
 
 		if (this.isFileSystemRoot(dir)) {
-			if (this.options.errorIfNoRootConfig) {
+			if (this.options.errorIfNoRootFound) {
 				throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
 			} else {
 				// If we've checked the entire ancestry and found no root,
@@ -90,15 +90,7 @@ export abstract class Finder<
 			}
 		}
 
-		const files = await new Promise<string[]>((resolve, reject) => {
-			fs.readdir(dir.path(), (error, list) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve(list);
-				}
-			});
-		});
+		const files = await fs.promises.readdir(dir.path());
 
 		for (const file of files) {
 			if (file === CONFIG_FOLDER) {

@@ -42,7 +42,7 @@ export interface BaseFinderOptions {
 	/** Name of files, without extension. */
 	name: string;
 	/** Throw an error if the root config cannot be located. */
-	errorIfNoRootConfig?: boolean;
+	errorIfNoRootFound?: boolean;
 }
 
 export interface ConfigFinderOptions<T> extends BaseFinderOptions {

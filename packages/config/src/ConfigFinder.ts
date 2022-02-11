@@ -41,7 +41,7 @@ export class ConfigFinder<T extends object> extends Finder<ConfigFile<T>, Config
 		const { array, bool, func, shape, string } = schemas;
 
 		return {
-			errorIfNoRootConfig: bool(true),
+			errorIfNoRootFound: bool(true),
 			extendsSetting: string(),
 			extensions: array(DEFAULT_EXTS).of(string<ExtType>()),
 			includeEnv: bool(true),

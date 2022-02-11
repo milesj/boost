@@ -5,7 +5,6 @@ const errors = {
 	EXTENDS_UNKNOWN_PATH: 'Cannot extend configuration. Unknown module or file path "{0}".',
 	LOADER_UNSUPPORTED: 'Unsupported loader format "{0}".',
 	PACKAGE_UNKNOWN_SCOPE: 'Unable to determine package scope. No parent `package.json` found.',
-	ROOT_FILE_ONLY_ONE: 'Only 1 root config file may exist, found {0}.',
 	ROOT_INVALID: 'Cannot find root configuration. Requires a `{0}` folder or a `{1}.config.*` file.',
 	ROOT_NO_PACKAGE:
 		'Config folder `{0}` found without a relative `package.json`. Both must be located in the project root.',

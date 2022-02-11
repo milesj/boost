@@ -10,7 +10,7 @@ export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 		const { bool, string } = schemas;
 
 		return {
-			errorIfNoRootConfig: bool(true),
+			errorIfNoRootFound: bool(true),
 			name: string().required().camelCase(),
 		};
 	}
