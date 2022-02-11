@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1955],{9576:function(e){e.exports=JSON.parse('{"id":469,"name":"BaseFinderOptions","nextId":456,"permalink":"/api/config/interface/BaseFinderOptions","previousId":421}')}}]);

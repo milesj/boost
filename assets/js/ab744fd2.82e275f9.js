@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6890],{7242:function(e){e.exports=JSON.parse('{"id":2652,"name":"instanceOf","nextId":2658,"permalink":"/api/common/function/instanceOf","previousId":2648}')}}]);

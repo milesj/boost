@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2779],{3830:function(e){e.exports=JSON.parse('{"id":1965,"name":"getLongestWidth","nextId":1968,"permalink":"/api/cli/function/getLongestWidth","previousId":1962}')}}]);

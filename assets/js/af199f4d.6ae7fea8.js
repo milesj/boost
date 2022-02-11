@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7203],{963:function(e){e.exports=JSON.parse('{"id":2285,"name":"CommandMetadata","nextId":2271,"permalink":"/api/cli/interface/CommandMetadata","previousId":2250}')}}]);

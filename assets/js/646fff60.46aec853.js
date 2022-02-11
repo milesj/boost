@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7],{3405:function(e){e.exports=JSON.parse('{"id":3474,"name":"unregisterExtensions","nextId":3529,"permalink":"/api/module/function/unregisterExtensions","previousId":3476}')}}]);

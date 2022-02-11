@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[765],{2178:function(e){e.exports=JSON.parse('{"id":2988,"name":"WorkspacePackage","nextId":2549,"permalink":"/api/common/interface/WorkspacePackage","previousId":2982}')}}]);

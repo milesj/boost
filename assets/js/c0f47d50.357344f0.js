@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5084],{9833:function(e){e.exports=JSON.parse('{"id":2547,"name":"useProgram","nextId":2549,"permalink":"/api/cli-react/function/useProgram","previousId":2526}')}}]);

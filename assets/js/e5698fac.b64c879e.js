@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[963],{1078:function(e){e.exports=JSON.parse('{"id":2520,"name":"useListNavigation","nextId":2541,"permalink":"/api/cli-react/function/useListNavigation","previousId":2518}')}}]);

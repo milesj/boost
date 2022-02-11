@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[9520],{5995:function(e){e.exports=JSON.parse('{"id":2998,"name":"VirtualPath","nextId":3055,"permalink":"/api/common/class/VirtualPath","previousId":2835}')}}]);

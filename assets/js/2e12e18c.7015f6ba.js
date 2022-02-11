@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1242],{9933:function(e){e.exports=JSON.parse('{"id":2674,"name":"ModulePath","nextId":2702,"permalink":"/api/common/class/ModulePath","previousId":2617}')}}]);

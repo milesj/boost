@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5355],{7219:function(e){e.exports=JSON.parse('{"id":3559,"name":"typescript","nextId":3591,"permalink":"/api/module-loader/namespace/typescript","previousId":115}')}}]);

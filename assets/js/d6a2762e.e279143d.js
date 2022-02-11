@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[669],{72:function(e){e.exports=JSON.parse('{"id":1338,"name":"AggregatedResult","nextId":1100,"permalink":"/api/pipeline/interface/AggregatedResult","previousId":1421}')}}]);

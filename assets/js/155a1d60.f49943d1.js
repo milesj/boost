@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6155],{919:function(e){e.exports=JSON.parse('{"id":493,"name":"ProcessorOptions","nextId":328,"permalink":"/api/config/interface/ProcessorOptions","previousId":465}')}}]);

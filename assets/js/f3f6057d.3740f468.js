@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1306],{2285:function(e){e.exports=JSON.parse('{"id":2392,"name":"Header","nextId":2400,"permalink":"/api/cli-react/function/Header","previousId":2356}')}}]);

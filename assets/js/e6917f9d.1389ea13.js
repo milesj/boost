@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4456],{1080:function(e){e.exports=JSON.parse('{"id":1719,"name":"TranslatorOptions","nextId":1732,"permalink":"/api/translate/interface/TranslatorOptions","previousId":1743}')}}]);

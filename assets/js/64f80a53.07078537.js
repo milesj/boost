@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[277],{6870:function(e){e.exports=JSON.parse('{"id":3545,"name":"TransformSourceResult","nextId":3528,"permalink":"/api/module/interface/TransformSourceResult","previousId":3542}')}}]);

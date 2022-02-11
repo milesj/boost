@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2223],{3324:function(e){e.exports=JSON.parse('{"id":2898,"name":"Optionable","nextId":2984,"permalink":"/api/common/interface/Optionable","previousId":3086}')}}]);
