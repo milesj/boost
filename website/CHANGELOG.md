@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.4.0 - 2022-02-11
+
+#### 🚀 Updates
+
+- Support `<name>.config.<ext>` style root configs. (#174) ([43eb85d](https://github.com/milesj/boost/commit/43eb85d)), closes [#174](https://github.com/milesj/boost/issues/174)
+
+**Note:** Version bump only for package website
+
+
+
+
+
 ### 0.3.2 - 2021-12-19
 
 #### 📦 Dependencies

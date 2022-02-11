@@ -1,6 +1,6 @@
 {
   "name": "@boost/config",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "release": "1594765247526",
   "description": "Powerful convention based finder, loader, and manager of both configuration and ignore files.",
   "keywords": [
