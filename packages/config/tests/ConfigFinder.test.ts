@@ -254,6 +254,25 @@ describe('ConfigFinder', () => {
 			]);
 		});
 
+		it.only('returns all config files from a branch up to root config file', async () => {
+			const tempRoot = getFixturePath('config-scenario-branch-root-file');
+
+			const files = await finder.loadFromBranchToRoot(normalizeSeparators(`${tempRoot}/src/app`));
+
+			expect(files).toEqual([
+				{
+					config: { debug: true },
+					path: mockSystemPath(`${tempRoot}/boost.config.json`),
+					source: 'root',
+				},
+				{
+					config: { type: 'json' },
+					path: mockSystemPath(`${tempRoot}/src/.boost.json`),
+					source: 'branch',
+				},
+			]);
+		});
+
 		describe('environment context', () => {
 			it('loads branch config files (using BOOST_ENV)', async () => {
 				process.env.BOOST_ENV = 'test';
@@ -581,6 +600,7 @@ describe('ConfigFinder', () => {
 
 	describe('loadFromRoot()', () => {
 		const fixtures = [
+			{ ext: 'js', root: getFixturePath('config-root-config-js-file') },
 			{ ext: 'js', root: getFixturePath('config-root-config-js') },
 			{ ext: 'json', root: getFixturePath('config-root-config-json') },
 			{ ext: 'json5', root: getFixturePath('config-root-config-json5') },

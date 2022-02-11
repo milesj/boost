@@ -5,7 +5,7 @@ import { color } from '@boost/internal';
 import { Cache } from './Cache';
 import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, PACKAGE_FILE, ROOT_CONFIG_FILE_REGEX } from './constants';
-import { File } from './types';
+import { File, FileType } from './types';
 
 export abstract class Finder<
 	T extends File,
@@ -30,6 +30,8 @@ export abstract class Finder<
 		const filesToLoad: Path[] = [];
 		const branch = Path.resolve(dir);
 		let currentDir = branch.isDirectory() ? branch : branch.parent();
+
+		await this.findRootDir(currentDir);
 
 		this.debug('Loading files from branch %s to root', color.filePath(branch.path()));
 
@@ -57,55 +59,70 @@ export abstract class Finder<
 	 * and `package.json` file.
 	 */
 	async loadFromRoot(dir: PortablePath = process.cwd()): Promise<T[]> {
+		await this.findRootDir(Path.resolve(dir));
+
 		this.debug('Loading files from possible root %s', color.filePath(String(dir)));
 
-		const root = await this.getRootDir(dir);
-		const files = await this.findFilesInDir(root);
+		const files = await this.findFilesInDir(this.cache.configDir ?? this.cache.rootDir!);
 
-		return this.resolveFiles(root, files);
+		return this.resolveFiles(this.cache.rootDir!, files);
 	}
 
 	/**
-	 * Return the root directory path or throw an error.
+	 * Find the root directory by searching for a `.config` folder,
+	 * or a `*.config.*` file. Throw an error if none found.
 	 */
-	protected async getRootDir(dir: PortablePath): Promise<Path> {
-		const root = Path.resolve(dir);
+	protected async findRootDir(dir: Path) {
+		if (this.cache.rootDir) {
+			return;
+		}
 
-		if (!(await this.isRootDir(root))) {
+		if (this.isFileSystemRoot(dir)) {
 			throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
 		}
 
-		return root;
-	}
+		const files = await new Promise<string[]>((resolve, reject) => {
+			fs.readdir(dir.path(), (error, list) => {
+				if (error) {
+					reject(error);
+				} else {
+					resolve(list);
+				}
+			});
+		});
 
-	protected async hasRootFile(dir: Path): Promise<Path | null> {
-		const results = await this.cache.cacheFilesInDir(
-			dir,
-			async () => {
-				const files = await new Promise<string[]>((resolve, reject) => {
-					fs.readdir(dir.path(), (error, list) => {
-						if (error) {
-							reject(error);
-						} else {
-							resolve(list);
-						}
-					});
-				});
+		for (const file of files) {
+			if (file === CONFIG_FOLDER) {
+				const configDir = dir.append(CONFIG_FOLDER);
 
-				// Filter down to files that match our root config format
-				return files.filter((file) => ROOT_CONFIG_FILE_REGEX.test(file)).map(Path.create);
-			},
-			// We need a key here to differentiate between normal file cache lookups
-			'#rootConfigFile',
-		);
+				if (configDir.isDirectory()) {
+					const pkgPath = dir.append(PACKAGE_FILE);
 
-		if (results.length > 1) {
-			throw new ConfigError('ROOT_FILE_ONLY_ONE', [results.length]);
-		} else if (results.length === 1) {
-			return results[0];
+					if (!pkgPath.exists()) {
+						throw new ConfigError('ROOT_NO_PACKAGE', [CONFIG_FOLDER]);
+					}
+
+					this.cache.rootDir = dir;
+					this.cache.configDir = configDir;
+					this.cache.pkgPath = pkgPath;
+
+					break;
+				}
+			}
+
+			if (ROOT_CONFIG_FILE_REGEX.test(file)) {
+				this.cache.rootDir = dir;
+				this.cache.configFile = dir.append(file);
+
+				break;
+			}
 		}
 
-		return null;
+		if (this.cache.rootDir) {
+			this.debug('Project root found at %s', color.filePath(this.cache.rootDir.path()));
+		} else {
+			await this.findRootDir(dir.parent());
+		}
 	}
 
 	/**
@@ -116,52 +133,10 @@ export abstract class Finder<
 	}
 
 	/**
-	 * Detect the root directory, config file/directory, and `package.json`
-	 * path from the provided directory path, and return true if valid.
+	 * Return true if the provided dir matches the root dir.
 	 */
-	protected async isRootDir(dir: Path, abort: boolean = false): Promise<boolean> {
-		if (dir.path() === this.cache.rootDir?.path()) {
-			return true;
-		}
-
-		if (!dir.isDirectory() || abort) {
-			return false;
-		}
-
-		// Check for `<name>.config.<ext>` file first
-		const configFile = await this.hasRootFile(dir);
-
-		if (configFile) {
-			this.cache.configFile = configFile;
-			this.cache.rootDir = dir;
-
-			this.debug('Project root found at %s', color.filePath(dir.path()));
-
-			return true;
-		}
-
-		// Then check for `.config/<name>.<ext>` second
-		const configDir = dir.append(CONFIG_FOLDER);
-		const isValid = configDir.exists() && configDir.isDirectory();
-
-		if (!isValid) {
-			return false;
-		}
-
-		this.cache.configDir = configDir;
-		this.cache.rootDir = dir;
-
-		const pkgPath = dir.append(PACKAGE_FILE);
-
-		if (!pkgPath.exists()) {
-			throw new ConfigError('ROOT_NO_PACKAGE', [CONFIG_FOLDER]);
-		}
-
-		this.cache.pkgPath = pkgPath;
-
-		this.debug('Project root found at %s', color.filePath(dir.path()));
-
-		return true;
+	protected isRootDir(dir: Path): boolean {
+		return dir.path() === this.cache.rootDir?.path();
 	}
 
 	abstract findFilesInDir(dir: Path): Promise<Path[]>;

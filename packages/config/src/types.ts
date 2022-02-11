@@ -9,6 +9,8 @@ export type Loader<T> = (path: Path, pkg: PackageStructure) => Promise<DeepParti
 
 export type Handler<T> = (prev: T, next: T) => Promise<T | undefined> | T | undefined;
 
+export type FileType = 'branch' | 'preset' | 'root-file' | 'root-folder';
+
 export type FileSource = 'branch' | 'extended' | 'overridden' | 'root';
 
 export interface File {
