@@ -1,4 +1,4 @@
-import { Contract, ModuleResolver, PortablePath } from '@boost/common';
+import { Contract, ModuleResolver, Path, PortablePath } from '@boost/common';
 import { Blueprint, schemas } from '@boost/common/optimal';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
@@ -80,6 +80,15 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 	}
 
 	/**
+	 * Attempt to find the root directory starting from the provided directory.
+	 * Once the root is found, it will be cached for further lookups,
+	 * otherwise an error is thrown based on current configuration.
+	 */
+	async findRootDir(fromDir: PortablePath = process.cwd()): Promise<Path> {
+		return this.getConfigFinder().findRootDir(fromDir);
+	}
+
+	/**
 	 * Traverse upwards from the branch directory, until the root directory is found,
 	 * or we reach to top of the file system. While traversing, find all config files
 	 * within each branch directory, and the root.
@@ -94,8 +103,8 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 	 * Load config files from the defined root. Root is determined by a relative
 	 * `.config` folder and `package.json` file.
 	 */
-	async loadConfigFromRoot(dir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
-		const configs = await this.getConfigFinder().loadFromRoot(dir);
+	async loadConfigFromRoot(fromDir: PortablePath = process.cwd()): Promise<ProcessedConfig<T>> {
+		const configs = await this.getConfigFinder().loadFromRoot(fromDir);
 
 		return this.processConfigs(this.onLoadedConfig.emit(configs));
 	}

@@ -23,58 +23,15 @@ export abstract class Finder<
 	}
 
 	/**
-	 * Traverse upwards from the branch directory, until the root directory is found,
-	 * or we reach to top of the file system. While traversing, find all files.
-	 */
-	async loadFromBranchToRoot(dir: PortablePath): Promise<T[]> {
-		const filesToLoad: Path[] = [];
-		const branch = Path.resolve(dir);
-		let currentDir = branch.isDirectory() ? branch : branch.parent();
-
-		await this.findRootDir(currentDir);
-
-		this.debug('Loading files from branch %s to root', color.filePath(branch.path()));
-
-		while (!this.isFileSystemRoot(currentDir)) {
-			// eslint-disable-next-line no-await-in-loop
-			const files = await this.findFilesInDir(currentDir);
-
-			if (files.length > 0) {
-				filesToLoad.unshift(...files);
-			}
-
-			if (this.isRootDir(currentDir)) {
-				break;
-			} else {
-				currentDir = currentDir.parent();
-			}
-		}
-
-		return this.resolveFiles(branch, filesToLoad);
-	}
-
-	/**
-	 * Load files from the root, determined by a relative `.config` folder
-	 * and `package.json` file.
-	 */
-	async loadFromRoot(dir: PortablePath = process.cwd()): Promise<T[]> {
-		const root = await this.findRootDir(Path.resolve(dir));
-
-		this.debug('Loading files from possible root %s', color.filePath(String(dir)));
-
-		const files = await this.findFilesInDir(root);
-
-		return this.resolveFiles(root, files);
-	}
-
-	/**
 	 * Find the root directory by searching for a `.config` folder,
 	 * or a `*.config.*` file. Throw an error if none found.
 	 */
-	protected async findRootDir(dir: Path): Promise<Path> {
+	async findRootDir(fromDir: PortablePath): Promise<Path> {
 		if (this.cache.rootDir) {
 			return this.cache.rootDir;
 		}
+
+		const dir = Path.create(fromDir);
 
 		if (this.isFileSystemRoot(dir)) {
 			if (this.options.errorIfNoRootFound) {
@@ -125,6 +82,51 @@ export abstract class Finder<
 		}
 
 		return this.findRootDir(dir.parent());
+	}
+
+	/**
+	 * Traverse upwards from the branch directory, until the root directory is found,
+	 * or we reach to top of the file system. While traversing, find all files.
+	 */
+	async loadFromBranchToRoot(dir: PortablePath): Promise<T[]> {
+		const filesToLoad: Path[] = [];
+		const branch = Path.resolve(dir);
+		let currentDir = branch.isDirectory() ? branch : branch.parent();
+
+		await this.findRootDir(currentDir);
+
+		this.debug('Loading files from branch %s to root', color.filePath(branch.path()));
+
+		while (!this.isFileSystemRoot(currentDir)) {
+			// eslint-disable-next-line no-await-in-loop
+			const files = await this.findFilesInDir(currentDir);
+
+			if (files.length > 0) {
+				filesToLoad.unshift(...files);
+			}
+
+			if (this.isRootDir(currentDir)) {
+				break;
+			} else {
+				currentDir = currentDir.parent();
+			}
+		}
+
+		return this.resolveFiles(branch, filesToLoad);
+	}
+
+	/**
+	 * Load files from the root, determined by a relative `.config` folder
+	 * and `package.json` file.
+	 */
+	async loadFromRoot(dir: PortablePath = process.cwd()): Promise<T[]> {
+		const root = await this.findRootDir(Path.resolve(dir));
+
+		this.debug('Loading files from possible root %s', color.filePath(String(dir)));
+
+		const files = await this.findFilesInDir(root);
+
+		return this.resolveFiles(root, files);
 	}
 
 	/**
