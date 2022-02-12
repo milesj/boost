@@ -41,7 +41,7 @@ export abstract class Finder<
 				// let's just assume the current working directory is the root.
 				const cwd = Path.create(process.cwd());
 
-				this.cache.rootDir = cwd;
+				this.cache.setRootDir(cwd);
 
 				return cwd;
 			}
@@ -60,7 +60,7 @@ export abstract class Finder<
 						throw new ConfigError('ROOT_NO_PACKAGE', [CONFIG_FOLDER]);
 					}
 
-					this.cache.rootDir = dir;
+					this.cache.setRootDir(dir);
 					this.cache.configDir = configDir;
 					this.cache.pkgPath = pkgPath;
 
@@ -69,7 +69,7 @@ export abstract class Finder<
 			}
 
 			if (ROOT_CONFIG_FILE_REGEX.test(file)) {
-				this.cache.rootDir = dir;
+				this.cache.setRootDir(dir);
 
 				break;
 			}

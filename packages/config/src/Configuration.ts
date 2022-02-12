@@ -2,7 +2,6 @@ import { Contract, ModuleResolver, Path, PortablePath } from '@boost/common';
 import { Blueprint, schemas } from '@boost/common/optimal';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
-import { ConfigError } from './ConfigError';
 import { ConfigFinder } from './ConfigFinder';
 import { IgnoreFinder } from './IgnoreFinder';
 import { Processor } from './Processor';
@@ -138,13 +137,7 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 	 * This *does not* check for the existence of the root config file or folder.
 	 */
 	setRootDir(dir: PortablePath): this {
-		const root = Path.resolve(dir);
-
-		if (!root.isDirectory()) {
-			throw new ConfigError('ROOT_INVALID_DIR');
-		}
-
-		this.cache.rootDir = root;
+		this.cache.setRootDir(dir);
 
 		return this;
 	}
