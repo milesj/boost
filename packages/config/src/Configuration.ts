@@ -2,6 +2,7 @@ import { Contract, ModuleResolver, Path, PortablePath } from '@boost/common';
 import { Blueprint, schemas } from '@boost/common/optimal';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
+import { ConfigError } from './ConfigError';
 import { ConfigFinder } from './ConfigFinder';
 import { IgnoreFinder } from './IgnoreFinder';
 import { Processor } from './Processor';
@@ -128,6 +129,24 @@ export abstract class Configuration<T extends object> extends Contract<T> {
 		const ignores = await this.getIgnoreFinder().loadFromRoot(dir);
 
 		return this.onLoadedIgnore.emit(ignores);
+	}
+
+	/**
+	 * Explicitly set the root directory to stop traversal at. This should only be set
+	 * manually when you want full control, and know file boundaries up front.
+	 *
+	 * This *does not* check for the existence of the root config file or folder.
+	 */
+	setRootDir(dir: PortablePath): this {
+		const root = Path.resolve(dir);
+
+		if (!root.isDirectory()) {
+			throw new ConfigError('ROOT_INVALID_DIR');
+		}
+
+		this.cache.rootDir = root;
+
+		return this;
 	}
 
 	/**
