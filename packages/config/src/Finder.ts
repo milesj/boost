@@ -23,6 +23,68 @@ export abstract class Finder<
 	}
 
 	/**
+	 * Find the root directory by searching for a `.config` folder,
+	 * or a `*.config.*` file. Throw an error if none found.
+	 */
+	async findRootDir(fromDir: PortablePath): Promise<Path> {
+		if (this.cache.rootDir) {
+			return this.cache.rootDir;
+		}
+
+		const dir = Path.create(fromDir);
+
+		if (this.isFileSystemRoot(dir)) {
+			if (this.options.errorIfNoRootFound) {
+				throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
+			} else {
+				// If we've checked the entire ancestry and found no root,
+				// let's just assume the current working directory is the root.
+				const cwd = Path.create(process.cwd());
+
+				this.cache.setRootDir(cwd);
+
+				return cwd;
+			}
+		}
+
+		const files = await fs.promises.readdir(dir.path());
+
+		for (const file of files) {
+			if (file === CONFIG_FOLDER) {
+				const configDir = dir.append(CONFIG_FOLDER);
+
+				if (configDir.isDirectory()) {
+					const pkgPath = dir.append(PACKAGE_FILE);
+
+					if (!pkgPath.exists()) {
+						throw new ConfigError('ROOT_NO_PACKAGE', [CONFIG_FOLDER]);
+					}
+
+					this.cache.setRootDir(dir);
+					this.cache.configDir = configDir;
+					this.cache.pkgPath = pkgPath;
+
+					break;
+				}
+			}
+
+			if (ROOT_CONFIG_FILE_REGEX.test(file)) {
+				this.cache.setRootDir(dir);
+
+				break;
+			}
+		}
+
+		if (this.cache.rootDir) {
+			this.debug('Project root found at %s', color.filePath(dir.path()));
+
+			return dir;
+		}
+
+		return this.findRootDir(dir.parent());
+	}
+
+	/**
 	 * Traverse upwards from the branch directory, until the root directory is found,
 	 * or we reach to top of the file system. While traversing, find all files.
 	 */
@@ -65,66 +127,6 @@ export abstract class Finder<
 		const files = await this.findFilesInDir(root);
 
 		return this.resolveFiles(root, files);
-	}
-
-	/**
-	 * Find the root directory by searching for a `.config` folder,
-	 * or a `*.config.*` file. Throw an error if none found.
-	 */
-	protected async findRootDir(dir: Path): Promise<Path> {
-		if (this.cache.rootDir) {
-			return this.cache.rootDir;
-		}
-
-		if (this.isFileSystemRoot(dir)) {
-			if (this.options.errorIfNoRootFound) {
-				throw new ConfigError('ROOT_INVALID', [CONFIG_FOLDER, this.options.name]);
-			} else {
-				// If we've checked the entire ancestry and found no root,
-				// let's just assume the current working directory is the root.
-				const cwd = Path.create(process.cwd());
-
-				this.cache.rootDir = cwd;
-
-				return cwd;
-			}
-		}
-
-		const files = await fs.promises.readdir(dir.path());
-
-		for (const file of files) {
-			if (file === CONFIG_FOLDER) {
-				const configDir = dir.append(CONFIG_FOLDER);
-
-				if (configDir.isDirectory()) {
-					const pkgPath = dir.append(PACKAGE_FILE);
-
-					if (!pkgPath.exists()) {
-						throw new ConfigError('ROOT_NO_PACKAGE', [CONFIG_FOLDER]);
-					}
-
-					this.cache.rootDir = dir;
-					this.cache.configDir = configDir;
-					this.cache.pkgPath = pkgPath;
-
-					break;
-				}
-			}
-
-			if (ROOT_CONFIG_FILE_REGEX.test(file)) {
-				this.cache.rootDir = dir;
-
-				break;
-			}
-		}
-
-		if (this.cache.rootDir) {
-			this.debug('Project root found at %s', color.filePath(dir.path()));
-
-			return dir;
-		}
-
-		return this.findRootDir(dir.parent());
 	}
 
 	/**

@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { Path } from '@boost/common';
+import { Path, PortablePath } from '@boost/common';
+import { ConfigError } from './ConfigError';
 
 export interface FileCache<T> {
 	content: T;
@@ -71,6 +72,18 @@ export class Cache {
 			exists: false,
 			mtime: 0,
 		};
+
+		return this;
+	}
+
+	setRootDir(dir: PortablePath): this {
+		const root = Path.resolve(dir);
+
+		if (!root.isDirectory()) {
+			throw new ConfigError('ROOT_INVALID_DIR');
+		}
+
+		this.rootDir = root;
 
 		return this;
 	}
