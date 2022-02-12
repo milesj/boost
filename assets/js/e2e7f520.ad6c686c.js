@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3888],{7501:function(e){e.exports=JSON.parse('{"id":2525,"name":"useDimensions","nextId":2530,"permalink":"/api/cli-react/function/useDimensions","previousId":2479}')}}]);

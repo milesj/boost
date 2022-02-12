@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[8938],{2225:function(e){e.exports=JSON.parse('{"id":400,"name":"getEnv","nextId":403,"permalink":"/api/config/function/getEnv","previousId":429}')}}]);

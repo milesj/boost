@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[8391],{4822:function(e){e.exports=JSON.parse('{"id":478,"name":"ConfigFinderOptions","nextId":459,"permalink":"/api/config/interface/ConfigFinderOptions","previousId":462}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5594],{3860:function(e){e.exports=JSON.parse('{"id":2935,"name":"PackageStructure","nextId":2864,"permalink":"/api/common/interface/PackageStructure","previousId":2986}')}}]);

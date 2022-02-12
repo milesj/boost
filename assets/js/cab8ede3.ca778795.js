@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2564],{935:function(e){e.exports=JSON.parse('{"id":417,"name":"mergePlugins","nextId":421,"permalink":"/api/config/function/mergePlugins","previousId":412}')}}]);

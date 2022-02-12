@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[7708],{7690:function(e){e.exports=JSON.parse('{"id":2362,"name":"Confirm","nextId":2398,"permalink":"/api/cli-react/function/Confirm","previousId":2381}')}}]);

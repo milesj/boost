@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5294],{9691:function(e){e.exports=JSON.parse('{"id":517,"name":"Bind","nextId":519,"permalink":"/api/decorators/function/Bind"}')}}]);
