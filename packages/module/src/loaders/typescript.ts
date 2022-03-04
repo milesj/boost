@@ -52,7 +52,6 @@ export const resolve: LoaderResolve = async (specifier, context, defaultResolve)
 		for (const ext of ['.ts', '.tsx']) {
 			const url = new URL(specifier + ext, context.parentURL);
 
-			// @ts-expect-error Node not typed for URLs
 			if (fs.existsSync(url)) {
 				return {
 					url: url.href,
