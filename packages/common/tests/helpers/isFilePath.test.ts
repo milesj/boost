@@ -19,7 +19,7 @@ describe('isFilePath()', () => {
 	});
 
 	it('returns true for absolute paths', () => {
-		// eslint-disable-next-line jest/no-if
+		// eslint-disable-next-line jest/no-conditional-in-test
 		const root = process.platform === 'win32' ? 'C:/' : '/';
 
 		expect(isFilePath(`${root}foo/bar`)).toBe(true);

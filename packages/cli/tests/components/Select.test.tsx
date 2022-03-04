@@ -32,6 +32,7 @@ describe('Select', () => {
 
 	it('renders options and dividers using strings', () => {
 		const { lastFrame } = render(
+			// eslint-disable-next-line jest/no-conditional-in-test
 			<Select {...props} options={options.map((o) => ('divider' in o ? o : o.value))} />,
 		);
 

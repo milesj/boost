@@ -51,6 +51,7 @@ describe('checkPackageOutdated()', () => {
 		httpsSpy.mockImplementation((url, res) => {
 			(res as Function)({
 				on(type: string, cb: Function) {
+					// eslint-disable-next-line jest/no-conditional-in-test
 					if (type === 'error') {
 						cb();
 					}

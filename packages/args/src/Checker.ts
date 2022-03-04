@@ -42,6 +42,7 @@ export class Checker {
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 	checkUnknownOption(option: LongOptionName | ShortOptionName) {
 		const guess = levenary(option, Object.keys(this.options));
 

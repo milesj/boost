@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-conditional-in-test */
+
 import { Flag, parse, ParseError, ValidationError } from '../src';
 import {
 	flagConfig,
@@ -1619,7 +1621,6 @@ describe('parse()', () => {
 				function commands(arg: string): boolean {
 					const [main, sub] = arg.split(':');
 
-					// eslint-disable-next-line jest/no-if
 					if (main !== 'cmd') {
 						return false;
 					}

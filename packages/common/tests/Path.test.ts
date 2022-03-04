@@ -300,6 +300,7 @@ describe('Path', () => {
 			const path = new Path('foo/bar/baz');
 
 			expect(JSON.stringify({ path })).toBe(
+				// eslint-disable-next-line jest/no-conditional-in-test
 				process.platform === 'win32' ? '{"path":"foo\\\\bar\\\\baz"}' : '{"path":"foo/bar/baz"}',
 			);
 		});

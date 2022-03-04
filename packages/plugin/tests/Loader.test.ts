@@ -22,6 +22,7 @@ describe('Loader', () => {
 				const resolver = loader.createResolver('/foo/bar/baz.js');
 
 				expect(resolver.getLookupPaths()).toEqual([
+					// eslint-disable-next-line jest/no-conditional-in-test
 					process.platform === 'win32' ? 'D:\\foo\\bar\\baz.js' : '/foo/bar/baz.js',
 				]);
 			});
