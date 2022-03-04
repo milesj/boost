@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6199],{2002:function(e){e.exports=JSON.parse('{"id":1715,"name":"wrapAnsi","nextId":1722,"permalink":"/api/terminal/function/wrapAnsi","previousId":1710}')}}]);

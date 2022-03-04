@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[5580],{8678:function(e){e.exports=JSON.parse('{"id":2262,"name":"CommandConfig","nextId":2297,"permalink":"/api/cli/interface/CommandConfig","previousId":2123}')}}]);

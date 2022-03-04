@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[4595],{8020:function(e){e.exports=JSON.parse('{"id":966,"name":"Monitor","nextId":979,"permalink":"/api/pipeline/class/Monitor","previousId":960}')}}]);

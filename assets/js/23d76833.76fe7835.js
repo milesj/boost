@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[3671],{4572:function(e){e.exports=JSON.parse('{"id":110,"name":"resolve","nextId":115,"permalink":"/api/module-loader/function/resolve","previousId":105}')}}]);

@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2277],{6584:function(e){e.exports=JSON.parse('{"id":8,"name":"@boost/translate","permalink":"/api/translate"}')}}]);

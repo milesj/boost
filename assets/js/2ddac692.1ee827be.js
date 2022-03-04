@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[1514],{3781:function(e){e.exports=JSON.parse('{"id":3484,"name":"registerExtensions","nextId":3477,"permalink":"/api/module/function/registerExtensions","previousId":3471}')}}]);

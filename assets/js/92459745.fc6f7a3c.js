@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[203],{2033:function(e){e.exports=JSON.parse('{"id":10,"name":"@boost/cli/react","permalink":"/api/cli-react"}')}}]);
