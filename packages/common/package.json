@@ -42,7 +42,7 @@
     "optimal": "^5.1.1",
     "pretty-ms": "^7.0.1",
     "resolve": "^1.22.0",
-    "yaml": "^1.10.2"
+    "yaml": "^2.0.1"
   },
   "devDependencies": {
     "@boost/test-utils": "^3.0.0",
