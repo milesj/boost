@@ -57,7 +57,6 @@ export function calculateIndexes(
 
 		// Current index is placed within the middle of the limit,
 		// while navigation caps at either edge.
-		case 'overflow':
 		default: {
 			const beforeLimit = Math.floor(limit / 2);
 			const afterLimit = Math.floor(limit / 2) - (limit % 2 === 0 ? 1 : 0);
