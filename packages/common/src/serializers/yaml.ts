@@ -1,12 +1,25 @@
 import fs from 'fs';
-import YAML from 'yaml';
+import YAML, {
+	CreateNodeOptions,
+	DocumentOptions,
+	ParseOptions,
+	SchemaOptions,
+	ToJSOptions,
+	ToStringOptions,
+} from 'yaml';
 import { PortablePath } from '../types';
 
-export function parse<T = object>(content: string, options?: YAML.Options): T {
+export function parse<T = object>(
+	content: string,
+	options?: DocumentOptions & ParseOptions & SchemaOptions & ToJSOptions,
+): T {
 	return YAML.parse(content, options) as T;
 }
 
-export function stringify(content: unknown, options?: YAML.Options): string {
+export function stringify(
+	content: unknown,
+	options?: CreateNodeOptions & DocumentOptions & ParseOptions & SchemaOptions & ToStringOptions,
+): string {
 	return YAML.stringify(content, options);
 }
 
