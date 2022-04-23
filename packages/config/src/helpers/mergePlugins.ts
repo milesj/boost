@@ -4,7 +4,6 @@ import { mergeObject } from './mergeObject';
 
 function convertListToMap(list: PluginsSettingList): PluginsSettingMap {
 	// TODO: Migrate after Node 12 upgrade
-	// eslint-disable-next-line unicorn/prefer-object-from-entries
 	return list.reduce((map, entry) => {
 		const [name, options = true] = Array.isArray(entry) ? entry : [entry];
 

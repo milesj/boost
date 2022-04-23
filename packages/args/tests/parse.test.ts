@@ -1272,7 +1272,7 @@ describe('parse()', () => {
 				command: [],
 				errors: [],
 				options: {
-					nums: SPECIAL_NUMBERS.map((no) => Number(no)),
+					nums: SPECIAL_NUMBERS.map(Number),
 				},
 				params: [],
 				rest: [],
