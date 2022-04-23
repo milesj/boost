@@ -1654,7 +1654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.8.4":
   version: 7.17.2
   resolution: "@babel/runtime@npm:7.17.2"
   dependencies:
@@ -2154,7 +2154,7 @@ __metadata:
   dependencies:
     "@boost/common": ^3.2.1
     "@boost/internal": ^3.0.1
-    i18next: ^21.2.6
+    i18next: ^21.6.16
     os-locale: ^5.0.0
   languageName: unknown
   linkType: soft
@@ -10334,12 +10334,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^21.2.6":
-  version: 21.2.6
-  resolution: "i18next@npm:21.2.6"
+"i18next@npm:^21.6.16":
+  version: 21.6.16
+  resolution: "i18next@npm:21.6.16"
   dependencies:
-    "@babel/runtime": ^7.12.0
-  checksum: cd91e609aed6ee21a8de4d4e9bc2c52030aac6440bb3b6de60d97c58c30107de90159e56551470e0c8ddccb381be1fc477523a8d83e2fa379d13b0ee4236fce1
+    "@babel/runtime": ^7.17.2
+  checksum: f210130fd835ebd90bfdc6a497d3c1d992261174e030e995a03d070b099acba680e495a376eb9255bb8eb68b4e518fe8ea96ec71507e194fd043aecb3397c9a2
   languageName: node
   linkType: hard
 
