@@ -30,7 +30,7 @@
     "access": "public"
   },
   "dependencies": {
-    "fs-extra": "^9.1.0"
+    "fs-extra": "^10.1.0"
   },
   "funding": {
     "type": "ko-fi",
