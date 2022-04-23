@@ -3,15 +3,13 @@ import { PluginsSetting, PluginsSettingList, PluginsSettingMap } from '../types'
 import { mergeObject } from './mergeObject';
 
 function convertListToMap(list: PluginsSettingList): PluginsSettingMap {
-	// TODO: Migrate after Node 12 upgrade
-	return list.reduce((map, entry) => {
-		const [name, options = true] = Array.isArray(entry) ? entry : [entry];
+	return Object.fromEntries(
+		list.map((entry) => {
+			const [name, options = true] = Array.isArray(entry) ? entry : [entry];
 
-		return {
-			...map,
-			[name]: options,
-		};
-	}, {});
+			return [name, options];
+		}),
+	);
 }
 
 /**
