@@ -1,6 +1,7 @@
 {
   "name": "@boost/cli",
   "version": "3.0.3",
+  "type": "commonjs",
   "release": "1594765247526",
   "description": "An interactive command line program builder, powered by React and Ink.",
   "keywords": [
@@ -14,11 +15,11 @@
     "react",
     "ink"
   ],
-  "main": "./lib/index.js",
+  "main": "./cjs/index.cjs",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
     "react.d.ts",
     "react.js",
     "res/",
@@ -67,7 +68,7 @@
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
-    "format": "lib",
+    "format": "cjs",
     "platform": "node"
   }
 }

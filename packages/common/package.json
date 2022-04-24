@@ -1,6 +1,7 @@
 {
   "name": "@boost/common",
   "version": "3.2.1",
+  "type": "commonjs",
   "release": "1594765247526",
   "description": "A collection of common utilities, classes, and helpers.",
   "keywords": [
@@ -9,11 +10,11 @@
     "utils",
     "helpers"
   ],
-  "main": "./lib/index.js",
+  "main": "./cjs/index.cjs",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
     "optimal.d.ts",
     "optimal.js",
     "src/**/*.{ts,tsx,json}",
@@ -61,7 +62,7 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
-    "format": "lib",
+    "format": "cjs",
     "platform": "node"
   }
 }

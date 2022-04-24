@@ -1,6 +1,7 @@
 {
   "name": "@boost/translate",
   "version": "3.0.3",
+  "type": "commonjs",
   "release": "1594765247526",
   "description": "Package and application level translations made easy.",
   "keywords": [
@@ -11,11 +12,11 @@
     "message",
     "resources"
   ],
-  "main": "./lib/index.js",
+  "main": "./cjs/index.cjs",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
@@ -43,7 +44,7 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
-    "format": "lib",
+    "format": "cjs",
     "platform": "node"
   }
 }

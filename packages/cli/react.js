@@ -1,1 +1,1 @@
-module.exports = require('./lib/react.js');
+module.exports = require('./cjs/react.cjs');
