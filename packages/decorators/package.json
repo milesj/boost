@@ -1,16 +1,18 @@
 {
   "name": "@boost/decorators",
   "version": "3.0.0",
+  "type": "commonjs",
   "description": "Experimental decorators for common patterns.",
   "keywords": [
     "boost",
     "decorators"
   ],
-  "main": "./lib/node/index.js",
-  "browser": "./lib/browser/index.js",
+  "main": "./cjs/index.cjs",
+  "browser": "./lib/index.js",
   "module": "./esm/index.js",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
     "esm/**/*.{js,map}",
     "lib/**/*.{js,map}",
@@ -40,7 +42,7 @@
       "platform": "browser"
     },
     {
-      "format": "lib",
+      "format": "cjs",
       "platform": "node"
     }
   ]

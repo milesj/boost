@@ -1,1 +1,1 @@
-module.exports = require('./lib/optimal.js');
+module.exports = require('./cjs/optimal.cjs');

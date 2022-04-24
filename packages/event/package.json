@@ -1,6 +1,7 @@
 {
   "name": "@boost/event",
   "version": "3.0.1",
+  "type": "commonjs",
   "release": "1594765247526",
   "description": "An event system with multiple emitter patterns.",
   "keywords": [
@@ -9,11 +10,12 @@
     "emitter",
     "type-safe"
   ],
-  "main": "./lib/node/index.js",
-  "browser": "./lib/browser/index.js",
+  "main": "./cjs/index.cjs",
+  "browser": "./lib/index.js",
   "module": "./esm/index.js",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
     "esm/**/*.{js,map}",
     "lib/**/*.{js,map}",
@@ -46,7 +48,7 @@
       "platform": "browser"
     },
     {
-      "format": "lib",
+      "format": "cjs",
       "platform": "node"
     }
   ]

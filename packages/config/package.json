@@ -1,6 +1,7 @@
 {
   "name": "@boost/config",
   "version": "3.2.0",
+  "type": "commonjs",
   "release": "1594765247526",
   "description": "Powerful convention based finder, loader, and manager of both configuration and ignore files.",
   "keywords": [
@@ -9,11 +10,11 @@
     "configuration",
     "loader"
   ],
-  "main": "./lib/index.js",
+  "main": "./cjs/index.cjs",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
@@ -46,7 +47,7 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
-    "format": "lib",
+    "format": "cjs",
     "platform": "node"
   }
 }
