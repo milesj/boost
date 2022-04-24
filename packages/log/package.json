@@ -1,6 +1,7 @@
 {
   "name": "@boost/log",
   "version": "3.0.3",
+  "type": "commonjs",
   "release": "1594765247526",
   "description": "Lightweight level based logging system.",
   "keywords": [
@@ -10,11 +11,11 @@
     "logging",
     "levels"
   ],
-  "main": "./lib/index.js",
+  "main": "./cjs/index.cjs",
   "types": "./dts/index.d.ts",
   "files": [
+    "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "lib/**/*.{js,map}",
     "res/",
     "src/**/*.{ts,tsx,json}",
     "test.d.ts",
@@ -49,7 +50,7 @@
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
-    "format": "lib",
+    "format": "cjs",
     "platform": "node"
   }
 }
