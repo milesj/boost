@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-
-import i18next, { InitOptions } from 'i18next';
+import { createInstance, InitOptions } from 'i18next';
 import { Path, PortablePath, toArray } from '@boost/common';
 import { debug } from './debug';
 import { FileBackend } from './FileBackend';
@@ -60,13 +58,13 @@ export function createTranslator(
 
 	debug('New translator created: %s namespace(s)', namespaces.join(', '));
 
-	const translator = i18next.createInstance().use(new FileBackend());
+	const translator = createInstance().use(new FileBackend());
 
 	if (autoDetect) {
 		translator.use(new LocaleDetector());
 	}
 
-	translator.init(
+	void translator.init(
 		{
 			backend: {
 				format: resourceFormat,
