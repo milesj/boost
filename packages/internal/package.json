@@ -18,8 +18,8 @@
     "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
-    "node": ">=14.19.0",
-    "npm": ">=6.13.0"
+    "node": ">=14.15.0",
+    "npm": ">=6.14.0"
   },
   "repository": {
     "type": "git",
@@ -38,14 +38,14 @@
     "type": "ko-fi",
     "url": "https://ko-fi.com/milesjohnson"
   },
-  "packemon": {
-    "format": [
-      "lib",
-      "esm"
-    ],
-    "platform": [
-      "browser",
-      "node"
-    ]
-  }
+  "packemon": [
+    {
+      "format": "esm",
+      "platform": "browser"
+    },
+    {
+      "format": "lib",
+      "platform": "node"
+    }
+  ]
 }
