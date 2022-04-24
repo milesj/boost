@@ -20,7 +20,7 @@
     "packemon": "yarn dlx packemon@1.14.0"
   },
   "engines": {
-    "node": ">=12.17.0"
+    "node": ">=14.19.0"
   },
   "devDependencies": {
     "@beemo/cli": "^2.0.6",

@@ -30,7 +30,7 @@ applications, packages, and tooling.
 ## Requirements
 
 - Linux, OSX, Windows
-- Node 12.17+ (for backend and tooling)
+- Node 14.19+ (for backend and tooling)
 - Edge, Chrome, Firefox (for frontend)
 
 ## Documentation

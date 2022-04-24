@@ -39,7 +39,15 @@ export function getNodeModulePath(moduleName: string, file: string = ''): string
 
 export function removeTempFile(filePath: string) {
 	if (fs.existsSync(filePath)) {
-		fs.removeSync(filePath);
+		try {
+			if (fs.statSync(filePath).isDirectory()) {
+				fs.emptyDirSync(filePath);
+			}
+
+			fs.removeSync(filePath);
+		} catch {
+			// Ignore?
+		}
 	}
 
 	TEMPORARY_FILES.delete(filePath);
