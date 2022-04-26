@@ -15,8 +15,6 @@
   "files": [
     "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "loader.mjs",
-    "loader/**/*",
     "mjs/**/*.{mjs,map}",
     "src/**/*.{ts,tsx,json}"
   ],
@@ -48,6 +46,7 @@
   },
   "packemon": [
     {
+      "api": "private",
       "bundle": true,
       "format": "cjs",
       "platform": "node"
@@ -55,10 +54,33 @@
     {
       "bundle": true,
       "inputs": {
-        "loader": "src/loaders/index.ts"
+        "loader": "src/loaders/index.ts",
+        "loader-typescript": "src/loaders/typescript.ts"
       },
       "format": "mjs",
       "platform": "node"
     }
-  ]
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./loader-typescript": {
+      "types": "./dts/loaders/typescript.d.ts",
+      "node": {
+        "import": "./mjs/loader-typescript.mjs"
+      }
+    },
+    "./loader": {
+      "types": "./dts/loaders/index.d.ts",
+      "node": {
+        "import": "./mjs/loader.mjs"
+      }
+    },
+    ".": {
+      "types": "./dts/index.d.ts",
+      "node": {
+        "import": "./cjs/index-wrapper.mjs",
+        "require": "./cjs/index.cjs"
+      }
+    }
+  }
 }

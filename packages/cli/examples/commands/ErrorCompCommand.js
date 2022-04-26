@@ -1,6 +1,6 @@
 const React = require('react');
 const { Text } = require('ink');
-const { Command } = require('../../lib');
+const { Command } = require('../../cjs/index.cjs');
 const sleep = require('../sleep');
 
 function ThrowError() {

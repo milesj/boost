@@ -1,6 +1,6 @@
 const React = require('react');
-const { Command } = require('../../lib');
-const { Input, PasswordInput, HiddenInput } = require('../../lib/react');
+const { Command } = require('../../cjs/index.cjs');
+const { Input, PasswordInput, HiddenInput } = require('../../cjs/react.cjs');
 
 module.exports = class InputCommand extends Command {
 	static description = 'Test `Input` and related components';

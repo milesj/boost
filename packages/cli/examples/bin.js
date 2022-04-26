@@ -2,7 +2,7 @@ if (process.env.TIMING) {
 	require('time-require');
 }
 
-const { Program } = require('../lib');
+const { Program } = require('../cjs/index.cjs');
 const BuildCommand = require('./commands/BuildCommand');
 const ConfirmCommand = require('./commands/ConfirmCommand');
 const ErrorCommand = require('./commands/ErrorCommand');
