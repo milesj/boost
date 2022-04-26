@@ -1,6 +1,6 @@
 const React = require('react');
-const { Command } = require('../../lib');
-const { Select } = require('../../lib/react');
+const { Command } = require('../../cjs/index.cjs');
+const { Select } = require('../../cjs/react.cjs');
 
 module.exports = class SelectCommand extends Command {
 	static description = 'Test `Select` component';

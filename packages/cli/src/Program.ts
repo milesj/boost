@@ -17,6 +17,7 @@ import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/l
 import { CLIError } from './CLIError';
 import { Command } from './Command';
 import { CommandManager } from './CommandManager';
+import { Wrapper } from './components/internal/Wrapper';
 import {
 	DELIMITER,
 	EXIT_FAIL,
@@ -32,6 +33,7 @@ import { patchDebugModule } from './helpers/patchDebugModule';
 import { LogBuffer } from './LogBuffer';
 import { getConstructor } from './metadata/getConstructor';
 import { removeProcessBin } from './middleware/removeProcessBin';
+import { Failure, Help, IndexHelp } from './react';
 import { msg } from './translate';
 import {
 	Categories,
@@ -274,7 +276,6 @@ export class Program extends CommandManager<ProgramOptions> {
 
 		const { render } = await import('ink');
 		const { createElement } = await import('react');
-		const { Wrapper } = await import('./components/internal/Wrapper');
 		const { stdin, stdout, stderr } = this.streams;
 		const unpatchDebug = patchDebugModule();
 
@@ -376,7 +377,6 @@ export class Program extends CommandManager<ProgramOptions> {
 	 */
 	protected async createIndex(): Promise<React.ReactElement> {
 		const { createElement } = await import('react');
-		const { IndexHelp } = await import('./components/IndexHelp');
 
 		if (this.standAlone) {
 			return createElement(
@@ -394,8 +394,6 @@ export class Program extends CommandManager<ProgramOptions> {
 				commands[path] = command;
 			}
 		});
-
-		const { Help } = await import('./components/Help');
 
 		return createElement(
 			IndexHelp,
@@ -479,7 +477,6 @@ export class Program extends CommandManager<ProgramOptions> {
 		}
 
 		const { createElement } = await import('react');
-		const { Failure } = await import('./components/Failure');
 
 		return this.render(
 			createElement(Failure, {

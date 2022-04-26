@@ -1,4 +1,4 @@
-const { Command } = require('../../lib');
+const { Command } = require('../../cjs/index.cjs');
 
 module.exports = class OptionsCommand extends Command {
 	static description = 'List of all possible option types';

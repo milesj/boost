@@ -17,9 +17,7 @@
     "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
     "res/",
-    "src/**/*.{ts,tsx,json}",
-    "test.d.ts",
-    "test.js"
+    "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
     "node": ">=14.15.0",
@@ -46,11 +44,29 @@
     "url": "https://ko-fi.com/milesjohnson"
   },
   "packemon": {
+    "api": "private",
     "inputs": {
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
     "format": "cjs",
     "platform": "node"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./test": {
+      "types": "./dts/test.d.ts",
+      "node": {
+        "import": "./cjs/test-wrapper.mjs",
+        "require": "./cjs/test.cjs"
+      }
+    },
+    ".": {
+      "types": "./dts/index.d.ts",
+      "node": {
+        "import": "./cjs/index-wrapper.mjs",
+        "require": "./cjs/index.cjs"
+      }
+    }
   }
 }

@@ -20,12 +20,8 @@
   "files": [
     "cjs/**/*.{cjs,mjs,map}",
     "dts/**/*.d.ts",
-    "react.d.ts",
-    "react.js",
     "res/",
-    "src/**/*.{ts,tsx,json}",
-    "test.d.ts",
-    "test.js"
+    "src/**/*.{ts,tsx,json}"
   ],
   "engines": {
     "node": ">=14.15.0",
@@ -64,11 +60,37 @@
     "react": "^17.0.2"
   },
   "packemon": {
+    "api": "private",
     "inputs": {
       "index": "src/index.ts",
+      "react": "src/react.ts",
       "test": "src/test.ts"
     },
     "format": "cjs",
     "platform": "node"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./react": {
+      "types": "./dts/react.d.ts",
+      "node": {
+        "import": "./cjs/react-wrapper.mjs",
+        "require": "./cjs/react.cjs"
+      }
+    },
+    "./test": {
+      "types": "./dts/test.d.ts",
+      "node": {
+        "import": "./cjs/test-wrapper.mjs",
+        "require": "./cjs/test.cjs"
+      }
+    },
+    ".": {
+      "types": "./dts/index.d.ts",
+      "node": {
+        "import": "./cjs/index-wrapper.mjs",
+        "require": "./cjs/index.cjs"
+      }
+    }
   }
 }

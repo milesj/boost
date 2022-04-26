@@ -2,8 +2,8 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "yarn run packemon build --addEngines",
-    "pack": "NODE_ENV=production yarn run packemon pack --addEngines --declaration",
+    "build": "yarn run packemon build --addEngines --addExports",
+    "pack": "NODE_ENV=production yarn run packemon pack --addEngines --addExports --declaration",
     "clean": "yarn run packemon clean",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "beemo jest --coverage",
@@ -17,15 +17,18 @@
     "type": "beemo typescript --build",
     "release": "yarn run pack && yarn run check && yarn beemo run-script lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx --package packemon@2.1.0 --package typescript --quiet packemon"
+    "packemon": "yarn dlx --package packemon@2.2.0 --package typescript --quiet packemon"
   },
   "engines": {
     "node": ">=14.19.0"
   },
+  "resolutions": {
+    "typescript": "beta"
+  },
   "devDependencies": {
     "@beemo/cli": "^2.0.6",
     "@beemo/core": "^2.1.4",
-    "@beemo/dev": "^1.7.12",
+    "@beemo/dev": "^1.7.13",
     "@types/babel__core": "^7.1.19",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.13",

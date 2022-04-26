@@ -32,6 +32,7 @@ import { validateConfig } from './metadata/validateConfig';
 import { validateOptions } from './metadata/validateOptions';
 import { validateParams } from './metadata/validateParams';
 import { Program } from './Program';
+import { Help } from './react';
 import {
 	Categories,
 	Commandable,
@@ -133,7 +134,6 @@ export abstract class Command<
 	async createHelp(): Promise<React.ReactElement> {
 		const metadata = this.getMetadata();
 		const { createElement } = await import('react');
-		const { Help } = await import('./components/Help');
 
 		return createElement(Help, {
 			categories: metadata.categories,

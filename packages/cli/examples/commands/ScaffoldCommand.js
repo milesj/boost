@@ -1,4 +1,4 @@
-const { Command } = require('../../lib');
+const { Command } = require('../../cjs/index.cjs');
 const ScaffoldControllerCommand = require('./scaffold/ScaffoldControllerCommand');
 const ScaffoldModelCommand = require('./scaffold/ScaffoldModelCommand');
 const ScaffoldViewCommand = require('./scaffold/ScaffoldViewCommand');
