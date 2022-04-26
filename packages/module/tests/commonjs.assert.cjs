@@ -3,7 +3,7 @@
 
 const path = require('path');
 const assert = require('assert').strict;
-const { requireModule } = require('../lib');
+const { requireModule } = require('../cjs/index.cjs');
 
 function getFixture(file) {
 	return path.join(__dirname, '__fixtures__', file);

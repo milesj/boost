@@ -1,4 +1,4 @@
-const { Command } = require('../../lib');
+const { Command } = require('../../cjs/index.cjs');
 const sleep = require('../sleep');
 
 module.exports = class ErrorCommand extends Command {

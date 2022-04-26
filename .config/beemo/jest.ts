@@ -29,5 +29,6 @@ export default {
 			statements: 99,
 		},
 	},
+	testEnvironment: 'node',
 	testPathIgnorePatterns: ['src/test.ts'],
 };

@@ -155,7 +155,7 @@ If you meet all of these requirements, then you may run your Node.js script with
 that supports _all_ file types (demonstrated below).
 
 ```bash
-node --experimental-loader @boost/module/loader.mjs ./path/to/entry-point.mjs
+node --experimental-loader @boost/module/loader ./path/to/entry-point.mjs
 ```
 
 For example, with the loader above you can now import TypeScript files as if they were standard
@@ -173,6 +173,6 @@ import defaultValue, { namedValue } from './some/file/written/in.ts';
 extensions. The TypeScript source code will be down-leveled according to the currently running
 Node.js version and its capabilities.
 
-The TypeScript only ESM loader can be referenced with `@boost/module/loader/typescript.mjs`.
+The TypeScript only ESM loader can be referenced with `@boost/module/loader-typescript`.
 
 [requiremodule]: /api/module/function/requireModule
