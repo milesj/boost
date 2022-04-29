@@ -2,7 +2,7 @@
   "private": true,
   "name": "boost-root",
   "scripts": {
-    "build": "yarn run packemon build --addEngines --addExports",
+    "build": "yarn run packemon build --addEngines",
     "pack": "NODE_ENV=production yarn run packemon pack --addEngines --addExports --declaration",
     "clean": "yarn run packemon clean",
     "check": "yarn run type && yarn run test && yarn run lint",
@@ -12,12 +12,12 @@
     "format": "beemo prettier",
     "test": "beemo jest",
     "test:cli": "node ./packages/cli/examples/bin.js",
-    "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.cjs",
-    "test:loader": "node --experimental-loader @boost/module/loader.mjs ./packages/module/tests/esmloader.assert.mjs",
+    "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.mjs",
+    "test:loader": "node --experimental-loader @boost/module/loader ./packages/module/tests/esmloader.assert.mjs && node --loader @boost/module/loader-typescript ./packages/module/tests/esmloader.assert.mjs",
     "type": "beemo typescript --build",
     "release": "yarn run pack && yarn run check && yarn beemo run-script lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx --package packemon@2.2.0 --package typescript --quiet packemon"
+    "packemon": "yarn dlx --package packemon@2.2.1 --package typescript --quiet packemon"
   },
   "engines": {
     "node": ">=14.19.0"
