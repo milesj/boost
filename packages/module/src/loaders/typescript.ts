@@ -1,12 +1,13 @@
 // https://nodejs.org/api/esm.html#esm_loaders
 
 import fs from 'fs';
-import { LoaderGetFormat, LoaderLoad, LoaderResolve, LoaderTransformSource } from '../types';
+import { LoaderLoad, LoaderResolve } from '../types';
 import {
 	COMPILER_OPTIONS,
 	getModuleFormat,
 	getModuleFromNodeVersion,
 	getTargetFromNodeVersion,
+	isNodeNext,
 	isTypeScript,
 } from '../typescript';
 
@@ -27,18 +28,21 @@ async function transform(url: string, source: string): Promise<string> {
 		throw new Error(`\`typescript\` package required for transforming file "${url}".`);
 	}
 
+	const nodeNext = isNodeNext(url);
+
 	return ts.transpileModule(String(source), {
 		compilerOptions: {
 			...COMPILER_OPTIONS,
-			module: getModuleFromNodeVersion(ts),
+			module: getModuleFromNodeVersion(ts, nodeNext),
+			moduleResolution: nodeNext
+				? ts.ModuleResolutionKind.NodeNext
+				: ts.ModuleResolutionKind.NodeJs,
 			resolveJsonModule: false,
 			target: getTargetFromNodeVersion(ts),
 		},
 		fileName: url,
 	}).outputText;
 }
-
-// NEW API
 
 export const resolve: LoaderResolve = async (specifier, context, defaultResolve) => {
 	if (isTypeScript(specifier)) {
@@ -49,7 +53,7 @@ export const resolve: LoaderResolve = async (specifier, context, defaultResolve)
 
 	// Relative import doesn't have an extension, so attempt to find a TS file
 	if (specifier.startsWith('.') && !FILE_WITH_EXT_PATTERN.test(specifier)) {
-		for (const ext of ['.ts', '.tsx']) {
+		for (const ext of ['.ts', '.tsx', '.cts', '.mts']) {
 			const url = new URL(specifier + ext, context.parentURL);
 
 			if (fs.existsSync(url)) {
@@ -80,32 +84,4 @@ export const load: LoaderLoad = async (url, context, defaultLoad) => {
 	}
 
 	return defaultLoad(url, context);
-};
-
-// OLD API
-
-export const getFormat: LoaderGetFormat = async (url, context, defaultGetFormat) => {
-	if (isTypeScript(url)) {
-		return {
-			format: 'module',
-		};
-	}
-
-	return defaultGetFormat(url, context);
-};
-
-export const transformSource: LoaderTransformSource = async (
-	source,
-	context,
-	defaultTransformSource,
-) => {
-	const { url } = context;
-
-	if (isTypeScript(url)) {
-		return {
-			source: await transform(url, String(source)),
-		};
-	}
-
-	return defaultTransformSource(source, context);
 };
