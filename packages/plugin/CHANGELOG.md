@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 4.0.0-alpha.1 - 2022-05-02
+
+#### 💥 Breaking
+
+- Add `exports` to all `package.json`s. ([c520941](https://github.com/milesj/boost/commit/c520941))
+- Drop Node.js v12 support. (#177) ([5f8a392](https://github.com/milesj/boost/commit/5f8a392)), closes [#177](https://github.com/milesj/boost/issues/177)
+
+#### 🚀 Updates
+
+- Convert package to `.cjs`. ([9666faa](https://github.com/milesj/boost/commit/9666faa))
+
+#### 📦 Dependencies
+
+- **[beemo-dev]** Update to latest configs. ([0cdac02](https://github.com/milesj/boost/commit/0cdac02))
+- **[packemon]** Update to v2.1. ([05ab522](https://github.com/milesj/boost/commit/05ab522))
+
+#### 🛠 Internals
+
+- Bump versions to an alpha v4 release. ([6d38bca](https://github.com/milesj/boost/commit/6d38bca))
+
+**Note:** Version bump only for package @boost/plugin
+
+
+
+
+
 ### 3.0.4 - 2022-01-29
 
 **Note:** Version bump only for package @boost/plugin

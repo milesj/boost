@@ -1,6 +1,6 @@
 {
   "name": "@boost/pipeline",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.1",
   "type": "commonjs",
   "release": "1651512175959",
   "description": "Pipe an input through a series of routines and tasks to produce an output, or simply, run logic in a series of stages.",
@@ -36,11 +36,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^4.0.0-alpha.0",
-    "@boost/debug": "^4.0.0-alpha.0",
-    "@boost/event": "^4.0.0-alpha.0",
-    "@boost/internal": "^4.0.0-alpha.0",
-    "@boost/translate": "^4.0.0-alpha.0",
+    "@boost/common": "^4.0.0-alpha.1",
+    "@boost/debug": "^4.0.0-alpha.1",
+    "@boost/event": "^4.0.0-alpha.1",
+    "@boost/internal": "^4.0.0-alpha.1",
+    "@boost/translate": "^4.0.0-alpha.1",
     "execa": "^5.1.1",
     "lodash": "^4.17.21",
     "split": "^1.0.1"

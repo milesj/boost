@@ -1,6 +1,6 @@
 {
   "name": "@boost/plugin",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.1",
   "type": "commonjs",
   "release": "1651512175959",
   "description": "Plugin based architecture that supports module loading, custom types, registries, scopes, and more.",
@@ -33,16 +33,16 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^4.0.0-alpha.0",
-    "@boost/debug": "^4.0.0-alpha.0",
-    "@boost/event": "^4.0.0-alpha.0",
-    "@boost/internal": "^4.0.0-alpha.0",
-    "@boost/module": "^4.0.0-alpha.0",
+    "@boost/common": "^4.0.0-alpha.1",
+    "@boost/debug": "^4.0.0-alpha.1",
+    "@boost/event": "^4.0.0-alpha.1",
+    "@boost/internal": "^4.0.0-alpha.1",
+    "@boost/module": "^4.0.0-alpha.1",
     "lodash": "^4.17.21",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@boost/test-utils": "^4.0.0-alpha.0",
+    "@boost/test-utils": "^4.0.0-alpha.1",
     "@types/pluralize": "^0.0.29"
   },
   "packemon": {

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.0.0-alpha.0 - 2022-05-02
+
+#### 💥 Breaking
+
+- Add `exports` to all `package.json`s. ([c520941](https://github.com/milesj/boost/commit/c520941))
+- Drop Node.js v12 support. (#177) ([5f8a392](https://github.com/milesj/boost/commit/5f8a392)), closes [#177](https://github.com/milesj/boost/issues/177)
+
+#### 🚀 Updates
+
+- Support `.mts`, `.cts`, `nodenext`, and newer TypeScript targets. (#181) ([420d079](https://github.com/milesj/boost/commit/420d079)), closes [#181](https://github.com/milesj/boost/issues/181)
+
+#### 📘 Docs
+
+- Add 4.0 migration docs. ([3339ecf](https://github.com/milesj/boost/commit/3339ecf))
+- Update to latest Docusaurus. ([e3bbfc4](https://github.com/milesj/boost/commit/e3bbfc4))
+
+**Note:** Version bump only for package website
+
+
+
+
+
 ## 0.4.0 - 2022-02-11
 
 #### 🚀 Updates
