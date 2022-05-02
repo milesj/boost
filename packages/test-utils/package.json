@@ -1,8 +1,8 @@
 {
   "name": "@boost/test-utils",
-  "version": "3.0.0",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
-  "release": "1594765247526",
+  "release": "1651512178249",
   "description": "Utility classes and functions for testing Boost applications in Jest.",
   "keywords": [
     "boost",

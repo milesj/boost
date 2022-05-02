@@ -1,8 +1,8 @@
 {
   "name": "@boost/args",
-  "version": "3.0.1",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
-  "release": "1594765247526",
+  "release": "1651512176134",
   "description": "A convention based argument parsing and formatting library, with strict validation checks.",
   "keywords": [
     "boost",
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^3.0.1",
+    "@boost/internal": "^4.0.0-alpha.0",
     "levenary": "^1.1.1"
   },
   "packemon": {

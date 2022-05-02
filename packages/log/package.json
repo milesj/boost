@@ -1,8 +1,8 @@
 {
   "name": "@boost/log",
-  "version": "3.0.3",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
-  "release": "1594765247526",
+  "release": "1651512176170",
   "description": "Lightweight level based logging system.",
   "keywords": [
     "boost",
@@ -34,9 +34,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^3.2.1",
-    "@boost/internal": "^3.0.1",
-    "@boost/translate": "^3.0.3",
+    "@boost/common": "^4.0.0-alpha.0",
+    "@boost/internal": "^4.0.0-alpha.0",
+    "@boost/translate": "^4.0.0-alpha.0",
     "chalk": "^4.1.2"
   },
   "funding": {

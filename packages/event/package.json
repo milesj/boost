@@ -1,8 +1,8 @@
 {
   "name": "@boost/event",
-  "version": "3.0.1",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
-  "release": "1594765247526",
+  "release": "1651512177861",
   "description": "An event system with multiple emitter patterns.",
   "keywords": [
     "boost",
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^3.0.1"
+    "@boost/internal": "^4.0.0-alpha.0"
   },
   "funding": {
     "type": "ko-fi",
