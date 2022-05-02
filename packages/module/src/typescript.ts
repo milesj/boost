@@ -11,14 +11,12 @@ export const COMPILER_OPTIONS = {
 
 export const NODE_VERSION = Number.parseFloat(process.version.slice(1));
 
-export function isTypeScript(path: string) {
-	return (
-		path.endsWith('.ts') || path.endsWith('.tsx') || path.endsWith('.cts') || path.endsWith('.mts')
-	);
-}
-
 export function isNodeNext(path: string) {
 	return path.endsWith('.cts') || path.endsWith('.mts');
+}
+
+export function isTypeScript(path: string) {
+	return path.endsWith('.ts') || path.endsWith('.tsx') || isNodeNext(path);
 }
 
 export function getModuleFormat(url: string) {

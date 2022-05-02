@@ -100,7 +100,11 @@ export default function Home() {
 	const { siteConfig } = context;
 
 	return (
-		<Layout description={siteConfig.tagline} title="Cross-platform tooling">
+		<Layout
+			// @ts-expect-error Invalid types
+			description={siteConfig.tagline}
+			title="Cross-platform tooling"
+		>
 			<header className={clsx('hero hero--primary', styles.heroBanner)}>
 				<div className="container">
 					<h1 className="hero__title">{siteConfig.title}</h1>
