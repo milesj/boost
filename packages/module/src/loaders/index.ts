@@ -11,4 +11,4 @@ export { typescript };
 // Since we only have 1 loader at the moment, just return it directly.
 // Once we have multiple loaders, we can iterate through them as a whole.
 
-export const { getFormat, load, resolve, transformSource } = typescript;
+export const { load, resolve } = typescript;

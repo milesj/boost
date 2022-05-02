@@ -48,6 +48,8 @@ function transformHandler(mod: Module, filePath: string) {
 export function registerExtensions() {
 	require.extensions['.ts'] = transformHandler;
 	require.extensions['.tsx'] = transformHandler;
+	require.extensions['.cts'] = transformHandler;
+	require.extensions['.mts'] = transformHandler;
 }
 
 /**
@@ -56,6 +58,8 @@ export function registerExtensions() {
 export function unregisterExtensions() {
 	delete require.extensions['.ts'];
 	delete require.extensions['.tsx'];
+	delete require.extensions['.cts'];
+	delete require.extensions['.mts'];
 }
 
 /**
