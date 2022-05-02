@@ -43,7 +43,7 @@ module.exports = {
 			},
 			items: [
 				{
-					label: 'v3',
+					label: `v${pkgs[0].version[0]}`,
 					position: 'left',
 					items: pkgs.map((pkg) => ({
 						label: `v${pkg.version} · ${pkg.name.split('/')[1]}`,
