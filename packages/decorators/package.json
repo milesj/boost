@@ -1,7 +1,8 @@
 {
   "name": "@boost/decorators",
-  "version": "3.0.0",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
+  "release": "1651512178029",
   "description": "Experimental decorators for common patterns.",
   "keywords": [
     "boost",

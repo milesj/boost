@@ -1,8 +1,8 @@
 {
   "name": "@boost/debug",
-  "version": "3.0.3",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
-  "release": "1594765247526",
+  "release": "1651512175897",
   "description": "Lightweight debugging and crash reporting.",
   "keywords": [
     "boost",
@@ -35,8 +35,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^3.2.1",
-    "@boost/internal": "^3.0.1",
+    "@boost/common": "^4.0.0-alpha.0",
+    "@boost/internal": "^4.0.0-alpha.0",
     "@types/debug": "^4.1.7",
     "debug": "^4.3.4",
     "execa": "^5.1.1",

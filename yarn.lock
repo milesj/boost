@@ -1923,18 +1923,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@boost/args@^3.0.1, @boost/args@workspace:packages/args":
+"@boost/args@^4.0.0-alpha.0, @boost/args@workspace:packages/args":
   version: 0.0.0-use.local
   resolution: "@boost/args@workspace:packages/args"
   dependencies:
-    "@boost/internal": ^3.0.1
+    "@boost/internal": ^4.0.0-alpha.0
     levenary: ^1.1.1
   languageName: unknown
   linkType: soft
 
-"@boost/cli@^3.0.3, @boost/cli@workspace:packages/cli":
-  version: 0.0.0-use.local
-  resolution: "@boost/cli@workspace:packages/cli"
+"@boost/args@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@boost/args@npm:3.0.1"
+  dependencies:
+    "@boost/internal": ^3.0.1
+    levenary: ^1.1.1
+  checksum: d2b26a5568bbe2be27f58903526d0a9a6b85786900de5c3c811a2c2f28298083ffba1762b26b058ed59b6cec869c5cd04b99389611c9dcd4d2fb0c398248dd73
+  languageName: node
+  linkType: hard
+
+"@boost/cli@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@boost/cli@npm:3.0.3"
   dependencies:
     "@boost/args": ^3.0.1
     "@boost/common": ^3.2.1
@@ -1943,6 +1953,27 @@ __metadata:
     "@boost/log": ^3.0.3
     "@boost/terminal": ^3.0.0
     "@boost/translate": ^3.0.3
+    execa: ^5.1.1
+    levenary: ^1.1.1
+    semver: ^7.3.5
+  peerDependencies:
+    ink: ^3.0.0
+    react: ^16.8.0 || ^17.0.0
+  checksum: 0ddf767d7937a735b94ea2e4e941cb933393485adb6623c9e32fa06797ebf8ae8a4a095624d21daec181a9353ee3978df0d33ccd656a562f6a9993c54365982c
+  languageName: node
+  linkType: hard
+
+"@boost/cli@workspace:packages/cli":
+  version: 0.0.0-use.local
+  resolution: "@boost/cli@workspace:packages/cli"
+  dependencies:
+    "@boost/args": ^4.0.0-alpha.0
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/event": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
+    "@boost/log": ^4.0.0-alpha.0
+    "@boost/terminal": ^4.0.0-alpha.0
+    "@boost/translate": ^4.0.0-alpha.0
     debug: ^4.3.4
     execa: ^5.1.1
     ink: ^3.2.0
@@ -1956,13 +1987,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/common@^3.2.1, @boost/common@workspace:packages/common":
+"@boost/common@^4.0.0-alpha.0, @boost/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@boost/common@workspace:packages/common"
   dependencies:
-    "@boost/decorators": ^3.0.0
-    "@boost/internal": ^3.0.1
-    "@boost/test-utils": ^3.0.0
+    "@boost/decorators": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
+    "@boost/test-utils": ^4.0.0-alpha.0
     "@types/resolve": ^1.20.2
     fast-glob: ^3.2.11
     json5: ^2.2.1
@@ -1978,26 +2009,61 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/config@^3.2.0, @boost/config@workspace:packages/config":
-  version: 0.0.0-use.local
-  resolution: "@boost/config@workspace:packages/config"
+"@boost/common@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@boost/common@npm:3.2.1"
+  dependencies:
+    "@boost/decorators": ^3.0.0
+    "@boost/internal": ^3.0.1
+    fast-glob: ^3.2.11
+    json5: ^2.2.0
+    optimal: ^5.1.1
+    pretty-ms: ^7.0.1
+    resolve: ^1.22.0
+    yaml: ^1.10.2
+  peerDependencies:
+    typescript: ^4.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 18b520e9d34d9312e7ad2dca5c4d0fe2f243c331e28027063957b96c90a14f381ed4c38989d2152bc85a5f79b8eff6ec59c0974bb0ac3d6f5baf07c0f3632a31
+  languageName: node
+  linkType: hard
+
+"@boost/config@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@boost/config@npm:3.2.0"
   dependencies:
     "@boost/common": ^3.2.1
     "@boost/debug": ^3.0.3
     "@boost/event": ^3.0.1
     "@boost/internal": ^3.0.1
     "@boost/module": ^3.1.0
-    "@boost/test-utils": ^3.0.0
+    minimatch: ^3.0.5
+  checksum: 0653312664285c6386b4535e68fc0e90df12f5295679c36c0cfa9816d33694fd342280c795614e6bbc1b7bf792048240fa18ff53323a7e1fab8944b1b96d79ed
+  languageName: node
+  linkType: hard
+
+"@boost/config@workspace:packages/config":
+  version: 0.0.0-use.local
+  resolution: "@boost/config@workspace:packages/config"
+  dependencies:
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/debug": ^4.0.0-alpha.0
+    "@boost/event": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
+    "@boost/module": ^4.0.0-alpha.0
+    "@boost/test-utils": ^4.0.0-alpha.0
     minimatch: ^5.0.1
   languageName: unknown
   linkType: soft
 
-"@boost/debug@^3.0.3, @boost/debug@workspace:packages/debug":
+"@boost/debug@^4.0.0-alpha.0, @boost/debug@workspace:packages/debug":
   version: 0.0.0-use.local
   resolution: "@boost/debug@workspace:packages/debug"
   dependencies:
-    "@boost/common": ^3.2.1
-    "@boost/internal": ^3.0.1
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     execa: ^5.1.1
@@ -2005,21 +2071,51 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/decorators@^3.0.0, @boost/decorators@workspace:packages/decorators":
+"@boost/debug@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@boost/debug@npm:3.0.3"
+  dependencies:
+    "@boost/common": ^3.2.1
+    "@boost/internal": ^3.0.1
+    "@types/debug": ^4.1.7
+    debug: ^4.3.3
+    execa: ^5.1.1
+    fast-glob: ^3.2.11
+  checksum: f5e8b853e3edd5bb0c81d2bccd8801432e19e11b845b35efeda3066696c49088bea2bf2938681edbabfb48cefa2a9d563c980a4c86a71d1e6ce9d45c5d8cb635
+  languageName: node
+  linkType: hard
+
+"@boost/decorators@^4.0.0-alpha.0, @boost/decorators@workspace:packages/decorators":
   version: 0.0.0-use.local
   resolution: "@boost/decorators@workspace:packages/decorators"
   languageName: unknown
   linkType: soft
 
-"@boost/event@^3.0.1, @boost/event@workspace:packages/event":
+"@boost/decorators@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@boost/decorators@npm:3.0.0"
+  checksum: a01844642c70cbe2938922ffee23d3f1ef491f19154479168d7ffa83939c3b29442f53f7b5201c99a5516baaa4fb8947a96921f3eeef0e57a361f97616b04aab
+  languageName: node
+  linkType: hard
+
+"@boost/event@^4.0.0-alpha.0, @boost/event@workspace:packages/event":
   version: 0.0.0-use.local
   resolution: "@boost/event@workspace:packages/event"
   dependencies:
-    "@boost/internal": ^3.0.1
+    "@boost/internal": ^4.0.0-alpha.0
   languageName: unknown
   linkType: soft
 
-"@boost/internal@^3.0.1, @boost/internal@workspace:packages/internal":
+"@boost/event@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@boost/event@npm:3.0.1"
+  dependencies:
+    "@boost/internal": ^3.0.1
+  checksum: 17a81442c7124341d630661e601937fa63c6bab15f445b0951533cb3fdb490cd371118aa43a65b5e0faa1800d4e5be6b4e8e00bfe568de4c17ff4d3e22455904
+  languageName: node
+  linkType: hard
+
+"@boost/internal@^4.0.0-alpha.0, @boost/internal@workspace:packages/internal":
   version: 0.0.0-use.local
   resolution: "@boost/internal@workspace:packages/internal"
   dependencies:
@@ -2027,18 +2123,39 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/log@^3.0.3, @boost/log@workspace:packages/log":
+"@boost/internal@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@boost/internal@npm:3.0.1"
+  dependencies:
+    debug: ^4.3.3
+  checksum: 9886da9082eee160cdc7c29666c99777d543a68e2e17dbb25890ddef35c49eeb600d8398a514c1e870289a39962a85464135bd9702b73375e2b3a72e336da27b
+  languageName: node
+  linkType: hard
+
+"@boost/log@^4.0.0-alpha.0, @boost/log@workspace:packages/log":
   version: 0.0.0-use.local
   resolution: "@boost/log@workspace:packages/log"
+  dependencies:
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
+    "@boost/translate": ^4.0.0-alpha.0
+    chalk: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@boost/log@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@boost/log@npm:3.0.3"
   dependencies:
     "@boost/common": ^3.2.1
     "@boost/internal": ^3.0.1
     "@boost/translate": ^3.0.3
     chalk: ^4.1.2
-  languageName: unknown
-  linkType: soft
+  checksum: 82984b1c5f52a797bfd382dfac492e4bc23c130800ef26b6bf829583ef0a1f471b29ef5d4b0a7fdf13970b38ea542c0c7a25cab07ef50073af09dd6d991bb5c1
+  languageName: node
+  linkType: hard
 
-"@boost/module@^3.1.0, @boost/module@workspace:packages/module":
+"@boost/module@^4.0.0-alpha.0, @boost/module@workspace:packages/module":
   version: 0.0.0-use.local
   resolution: "@boost/module@workspace:packages/module"
   peerDependencies:
@@ -2049,9 +2166,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/pipeline@^3.2.2, @boost/pipeline@workspace:packages/pipeline":
-  version: 0.0.0-use.local
-  resolution: "@boost/pipeline@workspace:packages/pipeline"
+"@boost/module@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@boost/module@npm:3.1.0"
+  peerDependencies:
+    typescript: ^4.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 321dc5e67d5e1cc1030597471ee73351f4c71150238b34e7aa88996f5b7da29a8bb8e6a008ae218144f723ac143c3091b7be6c036f6c196ea27ce5cfa8e0036f
+  languageName: node
+  linkType: hard
+
+"@boost/pipeline@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "@boost/pipeline@npm:3.2.2"
   dependencies:
     "@boost/common": ^3.2.1
     "@boost/debug": ^3.0.3
@@ -2061,26 +2190,57 @@ __metadata:
     execa: ^5.1.1
     lodash: ^4.17.21
     split: ^1.0.1
+  checksum: deb76a24cbd673e237126ce6b9e51160459d8a64c78f8136dd229399afdb90c7f6e09a80fd02411c75b3bbd33ba59383914e3f1298011f60a72599acecbe385b
+  languageName: node
+  linkType: hard
+
+"@boost/pipeline@workspace:packages/pipeline":
+  version: 0.0.0-use.local
+  resolution: "@boost/pipeline@workspace:packages/pipeline"
+  dependencies:
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/debug": ^4.0.0-alpha.0
+    "@boost/event": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
+    "@boost/translate": ^4.0.0-alpha.0
+    execa: ^5.1.1
+    lodash: ^4.17.21
+    split: ^1.0.1
   languageName: unknown
   linkType: soft
 
-"@boost/plugin@^3.0.4, @boost/plugin@workspace:packages/plugin":
-  version: 0.0.0-use.local
-  resolution: "@boost/plugin@workspace:packages/plugin"
+"@boost/plugin@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@boost/plugin@npm:3.0.4"
   dependencies:
     "@boost/common": ^3.2.1
     "@boost/debug": ^3.0.3
     "@boost/event": ^3.0.1
     "@boost/internal": ^3.0.1
     "@boost/module": ^3.1.0
-    "@boost/test-utils": ^3.0.0
+    lodash: ^4.17.21
+    pluralize: ^8.0.0
+  checksum: 97120efdb92db3d8da8ef69829bd657bd2214b46f4c6a746342cb0f87bdddf1097c203110ee568975cc45fe0c087bc838960603c39f2a2f7cd25c0968dcd900f
+  languageName: node
+  linkType: hard
+
+"@boost/plugin@workspace:packages/plugin":
+  version: 0.0.0-use.local
+  resolution: "@boost/plugin@workspace:packages/plugin"
+  dependencies:
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/debug": ^4.0.0-alpha.0
+    "@boost/event": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
+    "@boost/module": ^4.0.0-alpha.0
+    "@boost/test-utils": ^4.0.0-alpha.0
     "@types/pluralize": ^0.0.29
     lodash: ^4.17.21
     pluralize: ^8.0.0
   languageName: unknown
   linkType: soft
 
-"@boost/terminal@^3.0.0, @boost/terminal@workspace:packages/terminal":
+"@boost/terminal@^4.0.0-alpha.0, @boost/terminal@workspace:packages/terminal":
   version: 0.0.0-use.local
   resolution: "@boost/terminal@workspace:packages/terminal"
   dependencies:
@@ -2098,7 +2258,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/test-utils@^3.0.0, @boost/test-utils@workspace:packages/test-utils":
+"@boost/terminal@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@boost/terminal@npm:3.0.0"
+  dependencies:
+    ansi-escapes: ^4.3.2
+    ansi-regex: ^5.0.1
+    chalk: ^4.1.2
+    cli-truncate: ^2.1.0
+    figures: ^3.2.0
+    slice-ansi: ^4.0.0
+    string-width: ^4.2.3
+    strip-ansi: ^6.0.1
+    supports-hyperlinks: ^2.2.0
+    term-size: ^2.2.1
+    wrap-ansi: ^7.0.0
+  checksum: 0fe82964906505d9566e7319cd2b7c0ccdfb36e5da1a277e7d5acfa85853d4a60feb40cf4c562480aebf947f4e6db6a4a3e6be036466e5f023a8999bbfe396c2
+  languageName: node
+  linkType: hard
+
+"@boost/test-utils@^4.0.0-alpha.0, @boost/test-utils@workspace:packages/test-utils":
   version: 0.0.0-use.local
   resolution: "@boost/test-utils@workspace:packages/test-utils"
   dependencies:
@@ -2148,16 +2327,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@boost/translate@^3.0.3, @boost/translate@workspace:packages/translate":
+"@boost/translate@^4.0.0-alpha.0, @boost/translate@workspace:packages/translate":
   version: 0.0.0-use.local
   resolution: "@boost/translate@workspace:packages/translate"
   dependencies:
-    "@boost/common": ^3.2.1
-    "@boost/internal": ^3.0.1
+    "@boost/common": ^4.0.0-alpha.0
+    "@boost/internal": ^4.0.0-alpha.0
     i18next: ^21.6.16
     os-locale: ^5.0.0
   languageName: unknown
   linkType: soft
+
+"@boost/translate@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@boost/translate@npm:3.0.3"
+  dependencies:
+    "@boost/common": ^3.2.1
+    "@boost/internal": ^3.0.1
+    i18next: ^21.2.6
+    os-locale: ^5.0.0
+  checksum: d9ff693537da7aa20dc196d2f5347262848ed51d917603a6bfc67cb285a28a0dfb26e83a4cd5542ad592c3821629170eef49dd248133cf341725193481b360c8
+  languageName: node
+  linkType: hard
 
 "@docsearch/css@npm:3.0.0":
   version: 3.0.0
@@ -10454,7 +10645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^21.6.16":
+"i18next@npm:^21.2.6, i18next@npm:^21.6.16":
   version: 21.6.16
   resolution: "i18next@npm:21.6.16"
   dependencies:
@@ -12008,7 +12199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.2, json5@npm:^2.2.1":
+"json5@npm:^2.1.2, json5@npm:^2.2.0, json5@npm:^2.2.1":
   version: 2.2.1
   resolution: "json5@npm:2.2.1"
   bin:
@@ -12944,7 +13135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.4, minimatch@npm:^3.1.2":
+"minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:

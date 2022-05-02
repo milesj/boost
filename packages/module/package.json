@@ -1,7 +1,8 @@
 {
   "name": "@boost/module",
-  "version": "3.1.0",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
+  "release": "1651512177871",
   "description": "Module resolving and loading utilities with TypeScript support.",
   "keywords": [
     "boost",

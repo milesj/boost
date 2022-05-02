@@ -1,8 +1,8 @@
 {
   "name": "@boost/translate",
-  "version": "3.0.3",
+  "version": "4.0.0-alpha.0",
   "type": "commonjs",
-  "release": "1594765247526",
+  "release": "1651512178249",
   "description": "Package and application level translations made easy.",
   "keywords": [
     "boost",
@@ -34,8 +34,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^3.2.1",
-    "@boost/internal": "^3.0.1",
+    "@boost/common": "^4.0.0-alpha.0",
+    "@boost/internal": "^4.0.0-alpha.0",
     "i18next": "^21.6.16",
     "os-locale": "^5.0.0"
   },
