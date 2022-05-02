@@ -17,6 +17,10 @@ export function isTypeScript(path: string) {
 	);
 }
 
+export function isNodeNext(path: string) {
+	return path.endsWith('.cts') || path.endsWith('.mts');
+}
+
 export function getModuleFormat(url: string) {
 	if (url.endsWith('.json')) {
 		return 'json';
@@ -25,8 +29,16 @@ export function getModuleFormat(url: string) {
 	return NODE_VERSION >= 12 ? 'module' : 'commonjs';
 }
 
-export function getModuleFromNodeVersion(ts: TS) {
-	if (NODE_VERSION >= 15) {
+export function getModuleFromNodeVersion(ts: TS, nodeNext: boolean) {
+	if (nodeNext) {
+		return ts.ModuleKind.NodeNext;
+	}
+
+	if (NODE_VERSION >= 18) {
+		return ts.ModuleKind.ES2022;
+	}
+
+	if (NODE_VERSION >= 16) {
 		return ts.ModuleKind.ES2020;
 	}
 
@@ -38,6 +50,14 @@ export function getModuleFromNodeVersion(ts: TS) {
 }
 
 export function getTargetFromNodeVersion(ts: TS) {
+	if (NODE_VERSION >= 18) {
+		return ts.ScriptTarget.ES2022;
+	}
+
+	if (NODE_VERSION >= 17) {
+		return ts.ScriptTarget.ES2021;
+	}
+
 	if (NODE_VERSION >= 16) {
 		return ts.ScriptTarget.ES2020;
 	}

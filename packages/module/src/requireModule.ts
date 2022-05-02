@@ -36,7 +36,7 @@ export function requireModule<D = unknown, N extends object = {}>(
 ): ModuleLike<D, N> {
 	const filePath = String(path);
 
-	if (filePath.endsWith('.mjs')) {
+	if (filePath.endsWith('.mjs') || filePath.endsWith('.mts')) {
 		throw new Error(`Unable to require non-CommonJS file "${filePath}", use ESM imports instead.`);
 	}
 

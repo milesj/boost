@@ -7,6 +7,7 @@ import {
 	getModuleFormat,
 	getModuleFromNodeVersion,
 	getTargetFromNodeVersion,
+	isNodeNext,
 	isTypeScript,
 } from '../typescript';
 
@@ -27,10 +28,15 @@ async function transform(url: string, source: string): Promise<string> {
 		throw new Error(`\`typescript\` package required for transforming file "${url}".`);
 	}
 
+	const nodeNext = isNodeNext(url);
+
 	return ts.transpileModule(String(source), {
 		compilerOptions: {
 			...COMPILER_OPTIONS,
-			module: getModuleFromNodeVersion(ts),
+			module: getModuleFromNodeVersion(ts, nodeNext),
+			moduleResolution: nodeNext
+				? ts.ModuleResolutionKind.NodeNext
+				: ts.ModuleResolutionKind.NodeJs,
 			resolveJsonModule: false,
 			target: getTargetFromNodeVersion(ts),
 		},
