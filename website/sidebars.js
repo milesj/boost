@@ -32,7 +32,7 @@ module.exports = {
 			type: 'category',
 			label: 'Migrations',
 			collapsed: true,
-			items: ['migrate/3.0'],
+			items: ['migrate/3.0', 'migrate/4.0'],
 		},
 		{
 			type: 'link',
