@@ -5044,6 +5044,8 @@ __metadata:
     conventional-changelog-beemo: ^3.0.1
     fs-extra: ^10.1.0
     lerna: ^4.0.0
+    prettier: ^2.7.1
+    prettier-config-moon: ^1.0.0
     time-require: ^0.1.2
   languageName: unknown
   linkType: soft
@@ -11957,6 +11959,22 @@ fsevents@~2.3.2:
   version: 2.0.0
   resolution: "prepend-http@npm:2.0.0"
   checksum: 7694a9525405447662c1ffd352fcb41b6410c705b739b6f4e3a3e21cf5fdede8377890088e8934436b8b17ba55365a615f153960f30877bf0d0392f9e93503ea
+  languageName: node
+  linkType: hard
+
+"prettier-config-moon@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "prettier-config-moon@npm:1.0.0"
+  checksum: 369a1cb863dffe028344ba9c44d17dec7b62af9c2f590439d097834741246c9455e304d920f2f6438501f1f61bfe92769aa97b669f82c537f9497dc862c62850
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.7.1":
+  version: 2.7.1
+  resolution: "prettier@npm:2.7.1"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 55a4409182260866ab31284d929b3cb961e5fdb91fe0d2e099dac92eaecec890f36e524b4c19e6ceae839c99c6d7195817579cdffc8e2c80da0cb794463a748b
   languageName: node
   linkType: hard
 
