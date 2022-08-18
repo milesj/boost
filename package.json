@@ -26,9 +26,6 @@
     "typescript": "beta"
   },
   "devDependencies": {
-    "@beemo/cli": "^2.0.6",
-    "@beemo/core": "^2.1.4",
-    "@beemo/dev": "^1.7.13",
     "@types/babel__core": "^7.1.19",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.13",
