@@ -1,7 +1,9 @@
 {
   "name": "test-boost-workspace-mismatch",
   "version": "0.0.0",
-  "workspaces": ["workspaces/*"],
+  "workspaces": [
+    "workspaces/*"
+  ],
   "testBoost": {
     "yarn": true
   }

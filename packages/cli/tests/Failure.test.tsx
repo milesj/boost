@@ -58,7 +58,9 @@ describe('<Failure />', () => {
 			16,
 		);
 
-		await expect(renderComponent(<Failure binName="boost" error={error} />)).resolves.toMatchSnapshot();
+		await expect(
+			renderComponent(<Failure binName="boost" error={error} />),
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders a parse error with a command line', async () => {
@@ -79,7 +81,9 @@ describe('<Failure />', () => {
 	it('renders a validation error', async () => {
 		const error = new ValidationError('Not enough arity arguments.', 'foo');
 
-		await expect(renderComponent(<Failure binName="boost" error={error} />)).resolves.toMatchSnapshot();
+		await expect(
+			renderComponent(<Failure binName="boost" error={error} />),
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders a validation error with a command line', async () => {

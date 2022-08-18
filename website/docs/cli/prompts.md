@@ -45,10 +45,10 @@ trimmed of whitespace.
 import { Input } from '@boost/cli';
 
 <Input
-	label="What is your name?"
-	placeholder="<name>"
-	onChange={handleChange}
-	onSubmit={handleSubmit}
+  label="What is your name?"
+  placeholder="<name>"
+  onChange={handleChange}
+  onSubmit={handleSubmit}
 />;
 ```
 
@@ -71,25 +71,25 @@ The [`MultiSelect`](/api/cli/function/MultiSelect) component works in a similar 
 import { MultiSelect } from '@boost/cli';
 
 <MultiSelect
-	label="What is your favorite fruits?"
-	defaultSelected={['banana']}
-	onChange={handleChange}
-	onSubmit={handleSubmit}
-	options={[
-		{ label: '🍎 Apple', value: 'apple' },
-		{ label: '🍌 Banana', value: 'banana' },
-		{ label: '🥥 Coconut', value: 'coconut' },
-		{ label: '🍇 Grapes', value: 'grapes' },
-		{ label: '🥝 Kiwi', value: 'kiwi' },
-		{ label: '🍋 Lemon', value: 'lemon' },
-		{ label: '🍈 Melon', value: 'melon' },
-		{ label: '🍊 Orange', value: 'orange' },
-		{ label: '🍑 Peach', value: 'peach' },
-		{ label: '🍐 Pear', value: 'pear' },
-		{ label: '🍍 Pineapple', value: 'pineapple' },
-		{ label: '🍓 Strawberry', value: 'strawberry' },
-		{ label: '🍉 Watermelon', value: 'watermelon' },
-	]}
+  label="What is your favorite fruits?"
+  defaultSelected={['banana']}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+  options={[
+    { label: '🍎 Apple', value: 'apple' },
+    { label: '🍌 Banana', value: 'banana' },
+    { label: '🥥 Coconut', value: 'coconut' },
+    { label: '🍇 Grapes', value: 'grapes' },
+    { label: '🥝 Kiwi', value: 'kiwi' },
+    { label: '🍋 Lemon', value: 'lemon' },
+    { label: '🍈 Melon', value: 'melon' },
+    { label: '🍊 Orange', value: 'orange' },
+    { label: '🍑 Peach', value: 'peach' },
+    { label: '🍐 Pear', value: 'pear' },
+    { label: '🍍 Pineapple', value: 'pineapple' },
+    { label: '🍓 Strawberry', value: 'strawberry' },
+    { label: '🍉 Watermelon', value: 'watermelon' },
+  ]}
 />;
 ```
 
@@ -129,23 +129,23 @@ space bar, or on submission, the currently highlighted option will be chosen.
 import { Select } from '@boost/cli';
 
 <Select
-	label="What is your favorite fruit?"
-	onSubmit={handleSubmit}
-	options={[
-		'apple',
-		'banana',
-		'coconut',
-		'grapes',
-		'kiwi',
-		'lemon',
-		'melon',
-		'orange',
-		'peach',
-		'pear',
-		'pineapple',
-		'strawberry',
-		'watermelon',
-	]}
+  label="What is your favorite fruit?"
+  onSubmit={handleSubmit}
+  options={[
+    'apple',
+    'banana',
+    'coconut',
+    'grapes',
+    'kiwi',
+    'lemon',
+    'melon',
+    'orange',
+    'peach',
+    'pear',
+    'pineapple',
+    'strawberry',
+    'watermelon',
+  ]}
 />;
 ```
 
@@ -158,23 +158,23 @@ can also be grouped by inserting `divider` only options.
 import { Select } from '@boost/cli';
 
 <Select
-	label="What is your favorite fruit?"
-	onSubmit={handleSubmit}
-	options={[
-		{ label: '🍎 Apple', value: 'apple' },
-		{ label: '🍌 Banana', value: 'banana' },
-		{ label: '🥥 Coconut', value: 'coconut' },
-		{ label: '🍇 Grapes', value: 'grapes' },
-		{ label: '🥝 Kiwi', value: 'kiwi' },
-		{ label: '🍋 Lemon', value: 'lemon' },
-		{ label: '🍈 Melon', value: 'melon' },
-		{ label: '🍊 Orange', value: 'orange' },
-		{ label: '🍑 Peach', value: 'peach' },
-		{ label: '🍐 Pear', value: 'pear' },
-		{ label: '🍍 Pineapple', value: 'pineapple' },
-		{ label: '🍓 Strawberry', value: 'strawberry' },
-		{ label: '🍉 Watermelon', value: 'watermelon' },
-	]}
+  label="What is your favorite fruit?"
+  onSubmit={handleSubmit}
+  options={[
+    { label: '🍎 Apple', value: 'apple' },
+    { label: '🍌 Banana', value: 'banana' },
+    { label: '🥥 Coconut', value: 'coconut' },
+    { label: '🍇 Grapes', value: 'grapes' },
+    { label: '🥝 Kiwi', value: 'kiwi' },
+    { label: '🍋 Lemon', value: 'lemon' },
+    { label: '🍈 Melon', value: 'melon' },
+    { label: '🍊 Orange', value: 'orange' },
+    { label: '🍑 Peach', value: 'peach' },
+    { label: '🍐 Pear', value: 'pear' },
+    { label: '🍍 Pineapple', value: 'pineapple' },
+    { label: '🍓 Strawberry', value: 'strawberry' },
+    { label: '🍉 Watermelon', value: 'watermelon' },
+  ]}
 />;
 ```
 
@@ -200,16 +200,16 @@ import { prompt } from 'enquirer';
 import { Command } from '@boost/cli';
 
 export default class InitCommand extends Command {
-	async run() {
-		const { stdin, stdout } = this.getProgram().streams;
+  async run() {
+    const { stdin, stdout } = this.getProgram().streams;
 
-		const { username } = await prompt({
-			type: 'input',
-			name: 'username',
-			message: 'What is your username?',
-			stdin,
-			stdout,
-		});
-	}
+    const { username } = await prompt({
+      type: 'input',
+      name: 'username',
+      message: 'What is your username?',
+      stdin,
+      stdout,
+    });
+  }
 }
 ```

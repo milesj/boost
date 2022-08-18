@@ -1,14 +1,14 @@
 {
-	"extends":"./tsconfig.options.json",
-	"include":[
-		"packages/*/src/**/*",
-		"packages/*/tests/**/*",
-		"packages/*/types/**/*",
-		"themes/*/src/**/*",
-		"themes/*/tests/**/*",
-		"themes/*/types/**/*",
-		"website/src/**/*",
-		"website/types/**/*",
-		"types/**/*"
-	]
+  "extends": "./tsconfig.options.json",
+  "include": [
+    "packages/*/src/**/*",
+    "packages/*/tests/**/*",
+    "packages/*/types/**/*",
+    "themes/*/src/**/*",
+    "themes/*/tests/**/*",
+    "themes/*/types/**/*",
+    "website/src/**/*",
+    "website/types/**/*",
+    "types/**/*"
+  ]
 }

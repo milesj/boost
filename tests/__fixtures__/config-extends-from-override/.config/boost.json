@@ -2,8 +2,13 @@
   "root": true,
   "overrides": [
     {
-      "include": ["*"],
-      "settings": { "extends": "../some/relative/path/config.js", "overridden": true }
+      "include": [
+        "*"
+      ],
+      "settings": {
+        "extends": "../some/relative/path/config.js",
+        "overridden": true
+      }
     }
   ]
 }

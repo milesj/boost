@@ -27,14 +27,14 @@ params, all through the following props (all optional).
 import { Help } from '@boost/cli';
 
 <Help
-	header="Info"
-	config={{ description: 'This is a very cool program', deprecated: true }}
-	params={[
-		{
-			description: 'Name',
-			type: 'string',
-		},
-	]}
+  header="Info"
+  config={{ description: 'This is a very cool program', deprecated: true }}
+  params={[
+    {
+      description: 'Name',
+      type: 'string',
+    },
+  ]}
 />;
 ```
 
@@ -66,7 +66,7 @@ Furthermore, it also supports text styling similar to Ink's `Text` component. Th
 
 ```tsx
 <Style bold type="failure">
-	Failed to download packages
+  Failed to download packages
 </Style>
 ```
 

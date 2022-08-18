@@ -22,7 +22,9 @@ describe('<IndexHelp />', () => {
 	});
 
 	it('renders a banner', async () => {
-		await expect(renderComponent(<IndexHelp {...props} banner={banner} />)).resolves.toMatchSnapshot();
+		await expect(
+			renderComponent(<IndexHelp {...props} banner={banner} />),
+		).resolves.toMatchSnapshot();
 	});
 
 	it('renders a header', async () => {

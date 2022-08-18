@@ -22,9 +22,7 @@ describe('<Help />', () => {
 	describe('config', () => {
 		it('renders description', async () => {
 			await expect(
-				renderComponent(
-					<Help config={{ description: 'I am a command that does cool things.' }} />,
-				),
+				renderComponent(<Help config={{ description: 'I am a command that does cool things.' }} />),
 			).resolves.toMatchSnapshot();
 		});
 

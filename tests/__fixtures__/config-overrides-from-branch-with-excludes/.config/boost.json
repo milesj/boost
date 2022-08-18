@@ -1,4 +1,14 @@
 {
   "level": 1,
-  "overrides": [{ "exclude": "baz.ts", "include": ["ba*"], "settings": { "level": 2 } }]
+  "overrides": [
+    {
+      "exclude": "baz.ts",
+      "include": [
+        "ba*"
+      ],
+      "settings": {
+        "level": 2
+      }
+    }
+  ]
 }
