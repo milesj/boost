@@ -79,8 +79,8 @@ import { Logger } from '@boost/log';
 const logger = new Logger({ name: 'boost' });
 
 logger.log({
-	level: 'info',
-	message: 'Something else has happened…',
+  level: 'info',
+  message: 'Something else has happened…',
 });
 ```
 
@@ -94,11 +94,11 @@ import chalk from 'chalk';
 import { createLogger, StreamTransport } from '@boost/log';
 
 const log = createLogger({
-	name: 'boost',
-	labels: {
-		error: chalk.bgRed.black.bold(' FAIL '),
-	},
-	transports: [new StreamTransport({ levels: ['error'], stream: process.stderr })],
+  name: 'boost',
+  labels: {
+    error: chalk.bgRed.black.bold(' FAIL '),
+  },
+  transports: [new StreamTransport({ levels: ['error'], stream: process.stderr })],
 });
 ```
 
@@ -145,9 +145,9 @@ can be done on a per transport basis using the
 import { ConsoleTransport, formats } from '@boost/log';
 
 const transport = new ConsoleTransport({
-	format: (item) => `${item.level} ${item.message}`,
-	// Or a pre-built format
-	format: formats.json,
+  format: (item) => `${item.level} ${item.message}`,
+  // Or a pre-built format
+  format: formats.json,
 });
 ```
 
@@ -162,11 +162,11 @@ items.
 
 ```ts
 const log = createLogger({
-	name: 'boost',
-	metadata: {
-		locale: 'en',
-		region: 'eu',
-	},
+  name: 'boost',
+  metadata: {
+    locale: 'en',
+    region: 'eu',
+  },
 });
 ```
 
@@ -206,8 +206,8 @@ object that defines a [`write()`](/api/log/interface/Writable) method. Additiona
 import { StreamTransport } from '@boost/log';
 
 const transport = new StreamTransport({
-	levels: ['error', 'warn'],
-	stream: process.stderr,
+  levels: ['error', 'warn'],
+  stream: process.stderr,
 });
 ```
 
@@ -221,8 +221,8 @@ defined path. Will automatically rotate files when a max file size is met. Addit
 import { FileTransport } from '@boost/log';
 
 const transport = new FileTransport({
-	levels: ['error'],
-	path: '/var/log/error.log',
+  levels: ['error'],
+  path: '/var/log/error.log',
 });
 ```
 
@@ -238,9 +238,9 @@ provided.
 import { RotatingFileTransport } from '@boost/log';
 
 const transport = new RotatingFileTransport({
-	levels: ['error'],
-	path: '/var/log/error.log',
-	rotation: 'daily',
+  levels: ['error'],
+  path: '/var/log/error.log',
+  rotation: 'daily',
 });
 ```
 

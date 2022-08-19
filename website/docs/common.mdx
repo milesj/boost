@@ -87,17 +87,17 @@ matches the generic interface.
 import { Contract, Blueprint, Schemas } from '@boost/common';
 
 export interface AdapterOptions {
-	name?: string;
-	priority?: number;
+  name?: string;
+  priority?: number;
 }
 
 export default class Adapter extends Contract<AdapterOptions> {
-	blueprint({ number, string }: Schemas): Blueprint<AdapterOptions> {
-		return {
-			name: string().notEmpty(),
-			priority: number().gte(0),
-		};
-	}
+  blueprint({ number, string }: Schemas): Blueprint<AdapterOptions> {
+    return {
+      name: string().notEmpty(),
+      priority: number().gte(0),
+    };
+  }
 }
 ```
 
@@ -108,7 +108,7 @@ mutated.
 
 ```ts
 const adapter = new Adapter({
-	name: 'Boost',
+  name: 'Boost',
 });
 
 const { name } = adapter.options; // => Boost
@@ -122,16 +122,16 @@ need to be overridden so that the argument can be marked as non-optional.
 
 ```ts
 export interface AdapterOptions {
-	name: string;
-	priority?: number;
+  name: string;
+  priority?: number;
 }
 
 export default class Adapter extends Contract<AdapterOptions> {
-	constructor(options: AdapterOptions) {
-		super(options);
-	}
+  constructor(options: AdapterOptions) {
+    super(options);
+  }
 
-	// ...
+  // ...
 }
 ```
 
@@ -173,17 +173,17 @@ instantiate the class, which accepts a list of optional `package.json` objects a
 import { PackageGraph } from '@boost/common';
 
 const graph = new PackageGraph([
-	{
-		name: '@boost/common',
-		version: '1.2.3',
-	},
-	{
-		name: '@boost/cli',
-		version: '1.0.0',
-		dependencies: {
-			'@boost/common': '^1.0.0',
-		},
-	},
+  {
+    name: '@boost/common',
+    version: '1.2.3',
+  },
+  {
+    name: '@boost/cli',
+    version: '1.0.0',
+    dependencies: {
+      '@boost/common': '^1.0.0',
+    },
+  },
 ]);
 ```
 
@@ -263,9 +263,9 @@ requires a path and an optional current working directory (defaults to `process.
 ```ts
 // Look in current directory
 resolver
-	.lookupFilePath('tool.config.js')
-	.lookupFilePath('tool.config.json')
-	.lookupFilePath('tool.config.yaml');
+  .lookupFilePath('tool.config.js')
+  .lookupFilePath('tool.config.json')
+  .lookupFilePath('tool.config.yaml');
 
 // Look in a folder
 resolver.lookupFilePath('configs/tool.js');

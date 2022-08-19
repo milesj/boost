@@ -10,15 +10,15 @@ Plugin based architecture that supports module loading, custom types, registries
 import { Registry, Pluggable } from '@boost/plugin';
 
 export interface Renderable<T> extends Pluggable<T> {
-	render(): string | Promise<string>;
+  render(): string | Promise<string>;
 }
 
 const registry = new Registry<Renderable>('boost', 'plugin', {
-	validate(plugin) {
-		if (typeof plugin.render !== 'function') {
-			throw new TypeError('Plugins require a `render()` method.');
-		}
-	},
+  validate(plugin) {
+    if (typeof plugin.render !== 'function') {
+      throw new TypeError('Plugins require a `render()` method.');
+    }
+  },
 });
 
 const plugin = await registry.load('boost-plugin-example');

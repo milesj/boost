@@ -1,4 +1,4 @@
-/* eslint-disable promise/prefer-await-to-then */
+/* eslint-disable compat/compat, promise/prefer-await-to-then */
 
 import React, { useContext, useEffect } from 'react';
 import { Box, Text } from 'ink';

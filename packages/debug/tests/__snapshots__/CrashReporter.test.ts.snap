@@ -70,13 +70,11 @@ FOO:
 
 exports[`CrashReporter reports package versions (scoped) 1`] = `
 "
-BEEMO
-=====
+MOON
+====
 
-@beemo/core:
-  2.1.4
-@beemo/cli:
-  2.0.6
+@moonrepo/dev:
+  1.0.0
 "
 `;
 

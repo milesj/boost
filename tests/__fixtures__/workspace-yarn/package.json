@@ -1,5 +1,7 @@
 {
   "name": "test-boost-workspace-yarn",
   "version": "0.0.0",
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "packages/*"
+  ]
 }

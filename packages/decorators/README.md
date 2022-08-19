@@ -10,15 +10,15 @@ Experimental decorators for common patterns.
 import { Bind, Memoize } from '@boost/decorators';
 
 class Example {
-	@Bind()
-	referencedMethod() {
-		return this; // Class instance
-	}
+  @Bind()
+  referencedMethod() {
+    return this; // Class instance
+  }
 
-	@Memoize()
-	someExpensiveOperation() {
-		// Do something heavy
-	}
+  @Memoize()
+  someExpensiveOperation() {
+    // Do something heavy
+  }
 }
 ```
 

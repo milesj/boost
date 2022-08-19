@@ -1,1 +1,4 @@
-{ "root": true, "extends": "123!#?" }
+{
+  "root": true,
+  "extends": "123!#?"
+}

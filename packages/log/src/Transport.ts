@@ -35,7 +35,7 @@ export abstract class Transport<Options extends TransportOptions>
 
 		let output = typeof format === 'function' ? format(item) : formats.debug(item);
 
-		if (!output.endsWith(eol!)) {
+		if (eol && !output.endsWith(eol)) {
 			output += String(eol);
 		}
 

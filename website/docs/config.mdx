@@ -53,25 +53,25 @@ import { Configuration } from '@boost/config';
 
 // Example structure
 interface ConfigFile {
-	ast?: boolean;
-	cwd?: string;
-	debug?: boolean;
-	exclude?: string[];
-	include?: string[];
-	options?: object;
+  ast?: boolean;
+  cwd?: string;
+  debug?: boolean;
+  exclude?: string[];
+  include?: string[];
+  options?: object;
 }
 
 class Manager extends Configuration<ConfigFile> {
-	blueprint({ array, bool, string, object }: Schemas): Blueprint<ConfigFile> {
-		return {
-			ast: bool(),
-			cwd: string(process.cwd()),
-			debug: bool(),
-			exclude: array().of(string()),
-			include: array().of(string()),
-			options: object(),
-		};
-	}
+  blueprint({ array, bool, string, object }: Schemas): Blueprint<ConfigFile> {
+    return {
+      ast: bool(),
+      cwd: string(process.cwd()),
+      debug: bool(),
+      exclude: array().of(string()),
+      include: array().of(string()),
+      options: object(),
+    };
+  }
 }
 ```
 
@@ -94,14 +94,14 @@ To customize the config file finding and loading layer, call
 
 ```ts
 class Manager extends Configuration<ConfigFile> {
-	// ...
+  // ...
 
-	bootstrap() {
-		this.configureFinder({
-			extendsSetting: 'extends',
-			includeEnv: false,
-		});
-	}
+  bootstrap() {
+    this.configureFinder({
+      extendsSetting: 'extends',
+      includeEnv: false,
+    });
+  }
 }
 ```
 
@@ -114,13 +114,13 @@ in [`ProcessorOptions`](/api/config/interface/ProcessorOptions) except for `name
 
 ```ts
 class Manager extends Configuration<ConfigFile> {
-	// ...
+  // ...
 
-	bootstrap() {
-		this.configureProcessor({
-			defaultWhenUndefined: false,
-		});
-	}
+  bootstrap() {
+    this.configureProcessor({
+      defaultWhenUndefined: false,
+    });
+  }
 }
 ```
 
@@ -142,15 +142,15 @@ method requires a setting name and handler function (which is passed the previou
 
 ```ts
 class Manager extends Configuration<ConfigFile> {
-	// ...
+  // ...
 
-	bootstrap() {
-		// Always use forward slashes
-		this.addProcessHandler('cwd', (prev, next) => next.replace(/\\/g, '/'));
+  bootstrap() {
+    // Always use forward slashes
+    this.addProcessHandler('cwd', (prev, next) => next.replace(/\\/g, '/'));
 
-		// Deep merge options since they're dynamic
-		this.addProcessHandler('options', (prev, next) => deepMerge(prev, next));
-	}
+    // Deep merge options since they're dynamic
+    this.addProcessHandler('options', (prev, next) => deepMerge(prev, next));
+  }
 }
 ```
 
@@ -176,12 +176,12 @@ used for common scenarios (these handlers power the default rules mentioned abov
 import { mergePlugins } from '@boost/config';
 
 class Manager extends Configuration<ConfigFile> {
-	// ...
+  // ...
 
-	bootstrap() {
-		// Using example from @boost/plugin documentation
-		this.addProcessHandler('renderers', mergePlugins);
-	}
+  bootstrap() {
+    // Using example from @boost/plugin documentation
+    this.addProcessHandler('renderers', mergePlugins);
+  }
 }
 ```
 
@@ -241,11 +241,11 @@ demonstrated as followed (excluding standard JavaScript since it's either CJS or
 
 ```js
 module.exports = {
-	ast: false,
-	debug: true,
-	exclude: ['**/node_modules/**'],
-	include: ['src/**', 'tests/**'],
-	options: { experimental: true },
+  ast: false,
+  debug: true,
+  exclude: ['**/node_modules/**'],
+  include: ['src/**', 'tests/**'],
+  options: { experimental: true },
 };
 ```
 
@@ -254,11 +254,11 @@ module.exports = {
 
 ```js
 export default {
-	ast: false,
-	debug: true,
-	exclude: ['**/node_modules/**'],
-	include: ['src/**', 'tests/**'],
-	options: { experimental: true },
+  ast: false,
+  debug: true,
+  exclude: ['**/node_modules/**'],
+  include: ['src/**', 'tests/**'],
+  options: { experimental: true },
 };
 ```
 
@@ -269,11 +269,11 @@ export default {
 import type { ConfigFile } from './types';
 
 const config: ConfigFile = {
-	ast: false,
-	debug: true,
-	exclude: ['**/node_modules/**'],
-	include: ['src/**', 'tests/**'],
-	options: { experimental: true },
+  ast: false,
+  debug: true,
+  exclude: ['**/node_modules/**'],
+  include: ['src/**', 'tests/**'],
+  options: { experimental: true },
 };
 
 export default config;
@@ -284,11 +284,11 @@ export default config;
 
 ```json
 {
-	"ast": false,
-	"debug": true,
-	"exclude": ["**/node_modules/**"],
-	"include": ["src/**", "tests/**"],
-	"options": { "experimental": true }
+  "ast": false,
+  "debug": true,
+  "exclude": ["**/node_modules/**"],
+  "include": ["src/**", "tests/**"],
+  "options": { "experimental": true }
 }
 ```
 
@@ -362,7 +362,7 @@ the root, either a `*.config.*` or `.config/*.*` file. If no root path is provid
 
 ```json title="root/.config/boost.json"
 {
-	"debug": true
+  "debug": true
 }
 ```
 
@@ -392,7 +392,7 @@ previous branch (or root).
 
 ```js title="root/modules/features/.boost.mjs"
 export default {
-	ast: true,
+  ast: true,
 };
 ```
 
@@ -403,7 +403,7 @@ options:
 
 ```json title="root/.config/boost.json"
 {
-	"debug": true
+  "debug": true
 }
 ```
 
@@ -454,13 +454,13 @@ which extending would be configured.
 
 ```ts
 class Manager extends Configuration<ConfigFile> {
-	// ...
+  // ...
 
-	bootstrap() {
-		this.configureFinder({
-			extendsSetting: 'extend',
-		});
-	}
+  bootstrap() {
+    this.configureFinder({
+      extendsSetting: 'extend',
+    });
+  }
 }
 ```
 
@@ -469,8 +469,8 @@ Consumers may now extend external config files by defining a string or an array 
 
 ```ts
 export default {
-	extend: ['./some/relative/path.js', 'npm-module'],
-	debug: false,
+  extend: ['./some/relative/path.js', 'npm-module'],
+  debug: false,
 };
 ```
 
@@ -484,7 +484,7 @@ To extend from a Node.js module, we must use a preset. A preset is a
 
 ```ts title="npm-module/boost.preset.js"
 module.exports = {
-	exclude: ['**/node_modules'],
+  exclude: ['**/node_modules'],
 };
 ```
 
@@ -501,13 +501,13 @@ configured.
 
 ```ts
 class Manager extends Configuration<ConfigFile> {
-	// ...
+  // ...
 
-	bootstrap() {
-		this.configureFinder({
-			overridesSetting: 'override',
-		});
-	}
+  bootstrap() {
+    this.configureFinder({
+      overridesSetting: 'override',
+    });
+  }
 }
 ```
 
@@ -520,15 +520,15 @@ setting (name derived from the example above). Each item must abide the
 
 ```ts
 export default {
-	debug: false,
-	override: [
-		{
-			include: '*.test.ts',
-			settings: {
-				debug: true,
-			},
-		},
-	],
+  debug: false,
+  override: [
+    {
+      include: '*.test.ts',
+      settings: {
+        debug: true,
+      },
+    },
+  ],
 };
 ```
 
@@ -592,11 +592,11 @@ const list = await manager.loadIgnoreFromRoot('/root');
 
 ```js
 [
-	{
-		ignore: ['*.log', '*.lock'],
-		path: new Path('/root/.boostignore'),
-		source: 'root',
-	},
+  {
+    ignore: ['*.log', '*.lock'],
+    path: new Path('/root/.boostignore'),
+    source: 'root',
+  },
 ];
 ```
 
@@ -613,16 +613,16 @@ const list = await manager.loadIgnoreFromBranchToRoot('/root/modules/features');
 
 ```js
 [
-	{
-		ignore: ['*.log', '*.lock'],
-		path: new Path('/root'),
-		source: 'root',
-	},
-	{
-		ignore: ['build/'],
-		path: new Path('/root/modules/features/.boostignore'),
-		source: 'branch',
-	},
+  {
+    ignore: ['*.log', '*.lock'],
+    path: new Path('/root'),
+    source: 'root',
+  },
+  {
+    ignore: ['build/'],
+    path: new Path('/root/modules/features/.boostignore'),
+    source: 'branch',
+  },
 ];
 ```
 

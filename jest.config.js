@@ -1,4 +1,5 @@
-export default {
+module.exports = {
+	preset: 'jest-preset-moon',
 	coveragePathIgnorePatterns: [
 		'__fixtures__',
 		'src/test.ts',
@@ -16,7 +17,7 @@ export default {
 		'decorators/src/helpers/isParam.ts',
 		// Ignore these packages
 		'internal/src',
-		'module/src',
+		'module',
 		'terminal/src',
 		'test-utils/src',
 		'website/src',
@@ -29,6 +30,5 @@ export default {
 			statements: 99,
 		},
 	},
-	testEnvironment: 'node',
 	testPathIgnorePatterns: ['src/test.ts'],
 };
