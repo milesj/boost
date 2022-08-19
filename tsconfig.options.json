@@ -2,6 +2,7 @@
   "extends": "tsconfig-moon/tsconfig.projects.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "moduleResolution": "nodenext"
+    "moduleResolution": "nodenext",
+    "jsx": "react"
   }
 }
