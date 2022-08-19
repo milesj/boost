@@ -1,7 +1,5 @@
 module.exports = {
 	preset: 'jest-preset-moon',
-	extensionsToTreatAsEsm: [],
-	testEnvironment: 'node',
 	coveragePathIgnorePatterns: [
 		'__fixtures__',
 		'src/test.ts',

@@ -134,12 +134,9 @@ Label:
 	it('reports package versions (scoped)', () => {
 		jest
 			.spyOn(glob, 'sync')
-			.mockImplementationOnce(() => [
-				path.join(process.cwd(), 'node_modules/@beemo/core'),
-				path.join(process.cwd(), 'node_modules/@beemo/cli'),
-			]);
+			.mockImplementationOnce(() => [path.join(process.cwd(), 'node_modules/@moonrepo/dev')]);
 
-		reporter.reportPackageVersions('@beemo/*', 'Beemo');
+		reporter.reportPackageVersions('@moonrepo/*', 'moon');
 
 		expect(reporter.contents).toMatchSnapshot();
 	});
