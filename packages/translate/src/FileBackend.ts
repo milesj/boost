@@ -18,7 +18,7 @@ export interface FileBackendOptions {
 export class FileBackend extends Contract<FileBackendOptions> implements BackendModule {
 	fileCache = new Map<Path, ResourceKey>();
 
-	type: 'backend' = 'backend';
+	type = 'backend' as const;
 
 	init(services: unknown, options: Partial<FileBackendOptions>) {
 		this.configure(options);
