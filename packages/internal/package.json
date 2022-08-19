@@ -64,7 +64,8 @@
       "node": {
         "import": "./cjs/index-wrapper.mjs",
         "require": "./cjs/index.cjs"
-      }
+      },
+      "default": "./lib/index.js"
     }
   }
 }
