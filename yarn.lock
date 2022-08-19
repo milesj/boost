@@ -1757,7 +1757,7 @@ __metadata:
     optimal: ^5.1.1
     pretty-ms: ^7.0.1
     resolve: ^1.22.0
-    yaml: ^2.0.1
+    yaml: ^2.1.1
   peerDependencies:
     typescript: ^4.0.0
   peerDependenciesMeta:
@@ -18222,10 +18222,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "yaml@npm:2.0.1"
-  checksum: 23f95ff0d646c894048ac5072b5b6d393a398af1b2553916f0de276d62dbb3279ae3c969d7fcefe7a213be4efc9b4aa3ae1439c97095d3d3765fc6bc424807ac
+"yaml@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "yaml@npm:2.1.1"
+  checksum: f48bb209918aa57cfaf78ef6448d1a1f8187f45c746f933268b7023dc59e5456004611879126c9bb5ea55b0a2b1c2b392dfde436931ece0c703a3d754562bb96
   languageName: node
   linkType: hard
 
