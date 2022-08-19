@@ -1,4 +1,7 @@
-export default {
+module.exports = {
+	preset: 'jest-preset-moon',
+	extensionsToTreatAsEsm: [],
+	testEnvironment: 'node',
 	coveragePathIgnorePatterns: [
 		'__fixtures__',
 		'src/test.ts',
@@ -29,6 +32,5 @@ export default {
 			statements: 99,
 		},
 	},
-	testEnvironment: 'node',
 	testPathIgnorePatterns: ['src/test.ts'],
 };
