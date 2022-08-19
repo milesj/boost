@@ -1942,7 +1942,7 @@ __metadata:
   dependencies:
     "@boost/common": ^4.0.0-alpha.1
     "@boost/internal": ^4.0.0-alpha.1
-    i18next: ^21.6.16
+    i18next: ^21.9.1
     os-locale: ^5.0.0
   languageName: unknown
   linkType: soft
@@ -10096,12 +10096,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^21.6.16":
-  version: 21.6.16
-  resolution: "i18next@npm:21.6.16"
+"i18next@npm:^21.9.1":
+  version: 21.9.1
+  resolution: "i18next@npm:21.9.1"
   dependencies:
     "@babel/runtime": ^7.17.2
-  checksum: f210130fd835ebd90bfdc6a497d3c1d992261174e030e995a03d070b099acba680e495a376eb9255bb8eb68b4e518fe8ea96ec71507e194fd043aecb3397c9a2
+  checksum: 1bc59c61fbb27385841f76436c7dd60e9f42a3fb326797db44a65dd165c489420e549b5370e3de75b85f8d61239f4869fc9fbcf63deae5f40ee606bc04916e6d
   languageName: node
   linkType: hard
 
