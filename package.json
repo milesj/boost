@@ -17,7 +17,7 @@
     "type": "tsc --build",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx --package packemon@2.2.1 --package typescript --quiet packemon"
+    "packemon": "yarn dlx --package packemon@2.3.3 --package typescript --quiet packemon"
   },
   "engines": {
     "node": ">=14.19.0"
