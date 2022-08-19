@@ -17,7 +17,7 @@ module.exports = {
 		'decorators/src/helpers/isParam.ts',
 		// Ignore these packages
 		'internal/src',
-		'module/src',
+		'module',
 		'terminal/src',
 		'test-utils/src',
 		'website/src',
