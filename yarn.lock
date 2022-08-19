@@ -1984,7 +1984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/core@npm:2.0.1":
+"@docusaurus/core@npm:2.0.1, @docusaurus/core@npm:^2.0.1":
   version: 2.0.1
   resolution: "@docusaurus/core@npm:2.0.1"
   dependencies:
@@ -2118,7 +2118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/module-type-aliases@npm:2.0.1":
+"@docusaurus/module-type-aliases@npm:2.0.1, @docusaurus/module-type-aliases@npm:^2.0.1":
   version: 2.0.1
   resolution: "@docusaurus/module-type-aliases@npm:2.0.1"
   dependencies:
@@ -2277,7 +2277,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/preset-classic@npm:2.0.1":
+"@docusaurus/preset-classic@npm:^2.0.1":
   version: 2.0.1
   resolution: "@docusaurus/preset-classic@npm:2.0.1"
   dependencies:
@@ -17854,9 +17854,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "website@workspace:website"
   dependencies:
-    "@docusaurus/core": 2.0.1
-    "@docusaurus/module-type-aliases": 2.0.1
-    "@docusaurus/preset-classic": 2.0.1
+    "@docusaurus/core": ^2.0.1
+    "@docusaurus/module-type-aliases": ^2.0.1
+    "@docusaurus/preset-classic": ^2.0.1
     "@mdx-js/react": ^1.6.22
     clsx: ^1.2.1
     docusaurus-plugin-typedoc-api: ^2.3.0
