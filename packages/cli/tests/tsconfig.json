@@ -3,7 +3,9 @@
     "composite": false,
     "emitDeclarationOnly": false,
     "noEmit": true,
-    "rootDir": "."
+    "rootDir": ".",
+    "jsx": "react",
+    "noUnusedLocals": false
   },
   "extends": "../../../tsconfig.options.json",
   "include": [

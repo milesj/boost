@@ -15,7 +15,7 @@
     "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.mjs",
     "test:loader": "node --experimental-loader @boost/module/loader ./packages/module/tests/esmloader.assert.mjs && node --loader @boost/module/loader-typescript ./packages/module/tests/esmloader.assert.mjs",
     "type": "tsc --build",
-    "release": "yarn run pack && yarn run check && yarn beemo run-script lerna-release",
+    "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
     "packemon": "yarn dlx --package packemon@2.2.1 --package typescript --quiet packemon"
   },
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
+    "@moonrepo/dev": "^1.0.0",
     "@types/babel__core": "^7.1.19",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^9.0.13",
@@ -36,7 +37,6 @@
     "@types/split": "^1.0.1",
     "@types/wrap-ansi": "^3.0.0",
     "babel-preset-moon": "^1.0.0",
-    "conventional-changelog-beemo": "^3.0.1",
     "eslint": "^8.22.0",
     "eslint-config-moon": "^1.0.0",
     "fs-extra": "^10.1.0",
