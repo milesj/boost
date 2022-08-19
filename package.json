@@ -10,7 +10,7 @@
     "docs": "cd website && yarn run start",
     "lint": "eslint --cache --color --fix --ext .ts,.tsx ./packages/*/{src,tests}",
     "format": "prettier --write .",
-    "test": "NODE_ENV=test BOOSTJS_ENV=test jest",
+    "test": "NODE_ENV=test BOOSTJS_ENV=test jest --colors --logHeapUsage",
     "test:cli": "node ./packages/cli/examples/bin.js",
     "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.mjs",
     "test:loader": "node --experimental-loader @boost/module/loader ./packages/module/tests/esmloader.assert.mjs && node --loader @boost/module/loader-typescript ./packages/module/tests/esmloader.assert.mjs",
