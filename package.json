@@ -6,11 +6,11 @@
     "pack": "NODE_ENV=production yarn run packemon pack --addEngines --addExports --declaration",
     "clean": "yarn run packemon clean",
     "check": "yarn run type && yarn run test && yarn run lint",
-    "coverage": "jest --coverage",
+    "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
     "lint": "eslint --cache --color --fix --ext .ts,.tsx ./packages/*/{src,tests}",
     "format": "prettier --write .",
-    "test": "jest",
+    "test": "BOOSTJS_ENV=test jest",
     "test:cli": "node ./packages/cli/examples/bin.js",
     "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.mjs",
     "test:loader": "node --experimental-loader @boost/module/loader ./packages/module/tests/esmloader.assert.mjs && node --loader @boost/module/loader-typescript ./packages/module/tests/esmloader.assert.mjs",
@@ -46,6 +46,7 @@
     "prettier": "^2.7.1",
     "prettier-config-moon": "^1.0.0",
     "time-require": "^0.1.2",
+    "tsconfig-moon": "^1.0.0",
     "typescript": "^4.7.4"
   },
   "publishConfig": {

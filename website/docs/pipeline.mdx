@@ -99,9 +99,6 @@ export default class ProcessContext extends Context {
 }
 ```
 
-> A good example of context usage can be found in the
-> [Beemo project](https://github.com/beemojs/beemo/tree/master/packages/core/src/contexts).
-
 A unique feature of contexts is the ability to deep clone itself using
 [`Context#clone()`](/api/pipeline/class/Context#clone). This method is extremely useful when a
 context of the same shape must be passed to another pipeline without collisions or mutations
