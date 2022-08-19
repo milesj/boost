@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.0.0 - 2022-08-19
+
+#### 📘 Docs
+
+- Fix version label. ([81f9b73](https://github.com/milesj/boost/commit/81f9b73))
+- Update to latest Docusaurus. Update readmes. (#183) ([26c9e93](https://github.com/milesj/boost/commit/26c9e93)), closes [#183](https://github.com/milesj/boost/issues/183)
+
+#### 🛠 Internals
+
+- Migrate from beemo to moon. (#182) ([a00f98d](https://github.com/milesj/boost/commit/a00f98d)), closes [#182](https://github.com/milesj/boost/issues/182)
+
+**Note:** Version bump only for package website
+
+
+
+
+
 # 1.0.0-alpha.0 - 2022-05-02
 
 #### 💥 Breaking

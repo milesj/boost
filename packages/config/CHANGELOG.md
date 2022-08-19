@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 4.0.0 - 2022-08-19
+
+#### 📦 Dependencies
+
+- **[minimatch]** Update to v5.1. ([bb17519](https://github.com/milesj/boost/commit/bb17519))
+
+#### 📘 Docs
+
+- Update to latest Docusaurus. Update readmes. (#183) ([26c9e93](https://github.com/milesj/boost/commit/26c9e93)), closes [#183](https://github.com/milesj/boost/issues/183)
+
+#### 🛠 Internals
+
+- Migrate from beemo to moon. (#182) ([a00f98d](https://github.com/milesj/boost/commit/a00f98d)), closes [#182](https://github.com/milesj/boost/issues/182)
+
+**Note:** Version bump only for package @boost/config
+
+
+
+
+
 # 4.0.0-alpha.1 - 2022-05-02
 
 #### 💥 Breaking
