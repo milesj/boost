@@ -1,8 +1,7 @@
 # Plugins - Boost
 
-[![Build Status](https://github.com/milesj/boost/workflows/Build/badge.svg)](https://github.com/milesj/boost/actions?query=branch%3Amaster)
-[![npm version](https://badge.fury.io/js/%40boost%2Fplugin.svg)](https://www.npmjs.com/package/@boost/plugin)
-[![npm deps](https://david-dm.org/milesj/boost.svg?path=packages/plugin)](https://www.npmjs.com/package/@boost/plugin)
+![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![npm version](https://img.shields.io/npm/v/@boost/plugin)
 
 Plugin based architecture that supports module loading, custom types, registries, scopes, and more.
 
