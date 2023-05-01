@@ -30,7 +30,6 @@
     "@types/fs-extra": "^11.0.1",
     "@types/jest": "^29.5.1",
     "@types/lodash": "^4.14.194",
-    "@types/minimatch": "^3.0.5",
     "@types/pluralize": "^0.0.29",
     "@types/react": "^17.0.58",
     "@types/semver": "^7.3.13",

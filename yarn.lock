@@ -1793,7 +1793,7 @@ __metadata:
     "@boost/internal": ^4.0.0
     "@boost/module": ^4.0.0
     "@boost/test-utils": ^4.0.0
-    minimatch: ^5.1.0
+    minimatch: ^9.0.0
   languageName: unknown
   linkType: soft
 
