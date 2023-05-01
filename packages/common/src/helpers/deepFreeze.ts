@@ -21,11 +21,7 @@ export function deepFreeze<T extends object = object>(obj: T): T {
 
 	Object.entries(obj).forEach(([key, value]) => {
 		// Only freeze plain objects
-		if (isPlainObject(value, true)) {
-			nextObj[key] = deepFreeze(value);
-		} else {
-			nextObj[key] = value;
-		}
+		nextObj[key] = isPlainObject(value, true) ? deepFreeze(value) : value;
 	});
 
 	return Object.freeze(nextObj) as T;

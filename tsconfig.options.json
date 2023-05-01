@@ -3,6 +3,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "moduleResolution": "nodenext",
-    "jsx": "react"
+    "jsx": "react",
+    "verbatimModuleSyntax": false
   }
 }

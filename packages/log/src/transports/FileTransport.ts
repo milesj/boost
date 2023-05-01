@@ -129,7 +129,8 @@ export class FileTransport<
 	 * Check if we should change and rotate files because of max size.
 	 */
 	protected checkIfNeedsRotation() {
-		if (this.lastSize > this.options.maxSize) {
+		// @ts-expect-error Valid is defined
+		if (this.options && this.lastSize > this.options.maxSize) {
 			this.closeStreamAndRotateFile();
 		}
 	}

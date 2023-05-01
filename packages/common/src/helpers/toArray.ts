@@ -12,7 +12,7 @@
  * ```
  */
 export function toArray<T = unknown>(value?: T | T[]): T[] {
-	if (typeof value === 'undefined') {
+	if (value === undefined) {
 		return [];
 	}
 

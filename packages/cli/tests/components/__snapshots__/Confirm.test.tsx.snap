@@ -4,12 +4,12 @@ exports[`Confirm can customize yes/no 1`] = `"[36m?[39m [1mConfirm?[22m [90
 
 exports[`Confirm errors for incorrectly cased input value 1`] = `
 "[31mx[39m [1mConfirm?[22m [90m(y/N)[39m
-  [31mPlease select \\"y\\" or \\"N\\"[39m"
+  [31mPlease select "y" or "N"[39m"
 `;
 
 exports[`Confirm errors for invalid input value 1`] = `
 "[31mx[39m [1mConfirm?[22m [90m(y/N)[39m
-  [31mPlease select \\"y\\" or \\"N\\"[39m"
+  [31mPlease select "y" or "N"[39m"
 `;
 
 exports[`Confirm errors with custom message 1`] = `

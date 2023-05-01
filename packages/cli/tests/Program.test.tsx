@@ -1135,10 +1135,10 @@ describe('<Program />', () => {
 
 	describe('logging', () => {
 		function Log() {
-			const ctx = useContext(ProgramContext);
+			const { log } = useContext(ProgramContext);
 
-			ctx.log('Component log');
-			ctx.log.error('Component error');
+			log('Component log');
+			log.error('Component error');
 
 			return (
 				<Box>

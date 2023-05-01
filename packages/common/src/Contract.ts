@@ -48,5 +48,5 @@ export abstract class Contract<T extends object = {}> implements Optionable<T> {
 	 * validating on class instantiation (first time), or by calling
 	 * `configure()` (all other times).
 	 */
-	abstract blueprint(schemas: Schemas, onConstruction?: boolean): Blueprint<object>;
+	abstract blueprint(_schemas: Schemas, onConstruction?: boolean): Blueprint<object>;
 }

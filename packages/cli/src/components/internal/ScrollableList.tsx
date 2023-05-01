@@ -45,7 +45,7 @@ export function calculateIndexes(
 	switch (scrollType) {
 		// Current index is placed at the top, while navigation
 		// always displays up to the maximum limit, and wraps around edges.
-		case 'cycle': {
+		case 'cycle':
 			startIndex = Math.min(Math.max(currentIndex, 0), maxIndex);
 			endIndex = startIndex + limit - 1;
 
@@ -53,7 +53,6 @@ export function calculateIndexes(
 				endIndex = (endIndex - maxIndex - 1) * -1;
 			}
 			break;
-		}
 
 		// Current index is placed within the middle of the limit,
 		// while navigation caps at either edge.
