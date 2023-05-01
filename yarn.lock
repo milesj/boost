@@ -1672,7 +1672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.8.4":
   version: 7.21.5
   resolution: "@babel/runtime@npm:7.21.5"
   dependencies:
@@ -1959,7 +1959,7 @@ __metadata:
   dependencies:
     "@boost/common": ^4.0.0
     "@boost/internal": ^4.0.0
-    i18next: ^21.9.1
+    i18next: ^22.4.15
     os-locale: ^5.0.0
   languageName: unknown
   linkType: soft
@@ -10251,12 +10251,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^21.9.1":
-  version: 21.9.1
-  resolution: "i18next@npm:21.9.1"
+"i18next@npm:^22.4.15":
+  version: 22.4.15
+  resolution: "i18next@npm:22.4.15"
   dependencies:
-    "@babel/runtime": ^7.17.2
-  checksum: 1bc59c61fbb27385841f76436c7dd60e9f42a3fb326797db44a65dd165c489420e549b5370e3de75b85f8d61239f4869fc9fbcf63deae5f40ee606bc04916e6d
+    "@babel/runtime": ^7.20.6
+  checksum: fced898227983e439c59e7aa6e7b87e53ad1b8a1c85f0613a968881418266e5336e9443831125590559796075d516fe3dbf8118679c894094a0a404be78b02a2
   languageName: node
   linkType: hard
 
