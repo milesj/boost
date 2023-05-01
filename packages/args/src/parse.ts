@@ -88,11 +88,7 @@ export function parse<O extends object = {}, P extends PrimitiveType[] = ArgList
 
 		// Support loose mode
 		if (looseMode) {
-			if (value === undefined) {
-				options[name] = !currentScope.negated;
-			} else {
-				options[name] = finalValue;
-			}
+			options[name] = value === undefined ? !currentScope.negated : finalValue;
 
 			// Set an unknown value
 		} else if (currentScope.unknown) {

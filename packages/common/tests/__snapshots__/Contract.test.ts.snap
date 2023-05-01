@@ -2,7 +2,7 @@
 
 exports[`Contract configure() errors for invalid option type passed 1`] = `
 "The following validations have failed for \`OptionalProps\`:
-  - Invalid field \\"foo\\". Must be a string, received number."
+  - Invalid field "foo". Must be a string, received number."
 `;
 
 exports[`Contract configure() errors for unknown option 1`] = `
@@ -14,7 +14,7 @@ exports[`Contract configure() freezes the object 1`] = `"Cannot assign to read o
 
 exports[`Contract constructor() errors for invalid option type passed 1`] = `
 "The following validations have failed for \`OptionalProps\`:
-  - Invalid field \\"foo\\". Must be a string, received number."
+  - Invalid field "foo". Must be a string, received number."
 `;
 
 exports[`Contract constructor() errors for unknown option 1`] = `
@@ -24,5 +24,5 @@ exports[`Contract constructor() errors for unknown option 1`] = `
 
 exports[`Contract constructor() requires non-optional options to be passed 1`] = `
 "The following validations have failed for \`RequiredProps\`:
-  - Invalid field \\"bar\\". Field is required and must be defined."
+  - Invalid field "bar". Field is required and must be defined."
 `;

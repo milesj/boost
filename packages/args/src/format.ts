@@ -23,7 +23,7 @@ export function format(argument: Partial<Arguments<OptionMap, ArgList>>): Argv {
 	// Options
 	Object.entries(options).forEach(([name, value]) => {
 		if (typeof value === 'boolean') {
-			args.push(`--${!value ? 'no-' : ''}${name}`);
+			args.push(`--${value ? '' : 'no-'}${name}`);
 		} else {
 			args.push(`--${name}`, ...mapToStringList(value));
 		}

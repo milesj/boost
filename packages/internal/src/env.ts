@@ -1,8 +1,8 @@
 let envVars: Record<string, unknown> = {};
 
-if (typeof global.process !== 'undefined') {
+if (global.process !== undefined) {
 	envVars = process.env;
-} else if (typeof global.window !== 'undefined') {
+} else if (global.window !== undefined) {
 	// @ts-expect-error Allow type mismatch
 	envVars = window;
 }

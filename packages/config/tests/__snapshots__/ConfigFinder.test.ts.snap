@@ -2,5 +2,5 @@
 
 exports[`ConfigFinder errors if name is not in camel case 1`] = `
 "The following validations have failed for \`ConfigFinder\`:
-  - Invalid field \\"name\\". String must be in camel case. (pattern \\"^[a-z][a-zA-Z0-9]+$\\")"
+  - Invalid field "name". String must be in camel case. (pattern "^[a-z][a-zA-Z0-9]+$")"
 `;

@@ -51,12 +51,12 @@ exports[`<Program /> error renders a thrown error 1`] = `
 
 exports[`<Program /> errors for invalid version format 1`] = `
 "The following validations have failed for \`Program\`:
-  - Invalid field \\"version\\". String does not match. (pattern \\"^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\\+([0-9a-zA-Z-]+(?:\\\\.[0-9a-zA-Z-]+)*))?$\\")"
+  - Invalid field "version". String does not match. (pattern "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$")"
 `;
 
 exports[`<Program /> errors if bin is not kebab case 1`] = `
 "The following validations have failed for \`Program\`:
-  - Invalid field \\"bin\\". String must be in kebab case. (pattern \\"^[a-z][a-z0-9-]+$\\")"
+  - Invalid field "bin". String must be in kebab case. (pattern "^[a-z][a-z0-9-]+$")"
 `;
 
 exports[`<Program /> exit renders a non-zero exit 1`] = `
@@ -88,7 +88,7 @@ exports[`<Program /> failure renders when args parsing fails 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Unknown option \\"--foo\\" found. Did you mean \\"help\\"? [ARG:OPTION_UNKNOWN_MORE]
+ Unknown option "--foo" found. Did you mean "help"? [ARG:OPTION_UNKNOWN_MORE]
 
  [90m$ boost [31m--foo[39m[90m[39m
  [31m        └───┘[39m
@@ -99,7 +99,7 @@ exports[`<Program /> failure renders when invalid command name passed 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Unknown command \\"prune\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]
+ Unknown command "prune". Did you mean "build"? [CLI:COMMAND_UNKNOWN]
 "
 `;
 
@@ -107,7 +107,7 @@ exports[`<Program /> failure renders when misspelt command name passed 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Unknown command \\"buld\\". Did you mean \\"build\\"? [CLI:COMMAND_UNKNOWN]
+ Unknown command "buld". Did you mean "build"? [CLI:COMMAND_UNKNOWN]
 "
 `;
 
@@ -149,11 +149,11 @@ exports[`<Program /> help outputs help for a nested sub-command 1`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path (default: \\"./src\\")
+ -S, --src [90mstring[39m     Source path (default: "./src")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -175,7 +175,7 @@ exports[`<Program /> help outputs help for a nested sub-command 2`] = `
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -200,7 +200,7 @@ exports[`<Program /> help outputs help for a nested sub-command 3`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -217,11 +217,11 @@ exports[`<Program /> help outputs help for a specific command 1`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path (default: \\"./src\\")
+ -S, --src [90mstring[39m     Source path (default: "./src")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -243,7 +243,7 @@ exports[`<Program /> help outputs help for a specific command 2`] = `
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -260,11 +260,11 @@ exports[`<Program /> help outputs help for an aliased command 1`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path (default: \\"./src\\")
+ -S, --src [90mstring[39m     Source path (default: "./src")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -281,11 +281,11 @@ exports[`<Program /> help outputs help for an aliased command 2`] = `
 [1m[47m[30m OPTIONS [39m[49m[22m
 
  -D, --dst [90mstring[39m     Destination path
- -S, --src [90mstring[39m     Source path (default: \\"./src\\")
+ -S, --src [90mstring[39m     Source path (default: "./src")
 
  [1mGlobal[22m
  -h, --help           Display help and usage menu
-     --locale [90mstring[39m  Display output in the chosen locale (default: \\"en\\")
+     --locale [90mstring[39m  Display output in the chosen locale (default: "en")
  -v, --version        Display version number"
 `;
 
@@ -322,8 +322,8 @@ Boost v1.2.3 [90mboost[39m
                                               [90m[multiple(10)][39m
      --str [90mstring[39m                            Standard string option.
  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
-                                              \\"foo\\", \\"bar\\", \\"baz\\") (default:
-                                             \\"bar\\")
+                                              "foo", "bar", "baz") (default:
+                                             "bar")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)
@@ -331,7 +331,7 @@ Boost v1.2.3 [90mboost[39m
  [1mGlobal[22m
  -h, --help                                  Display help and usage menu
      --locale [90mstring[39m                         Display output in the chosen locale
-                                              (default: \\"en\\")
+                                              (default: "en")
  -v, --version                               Display version number
 "
 `;
@@ -369,8 +369,8 @@ Boost v1.2.3 [90mboost[39m
                                               [90m[multiple(10)][39m
      --str [90mstring[39m                            Standard string option.
  -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
-                                              \\"foo\\", \\"bar\\", \\"baz\\") (default:
-                                             \\"bar\\")
+                                              "foo", "bar", "baz") (default:
+                                             "bar")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
  -t, --no-truthyBool                         Flag that is on by default, so name
                                               should be negated. (default: true)
@@ -378,7 +378,7 @@ Boost v1.2.3 [90mboost[39m
  [1mGlobal[22m
  -h, --help                                  Display help and usage menu
      --locale [90mstring[39m                         Display output in the chosen locale
-                                              (default: \\"en\\")
+                                              (default: "en")
  -v, --version                               Display version number
 "
 `;
@@ -387,7 +387,7 @@ exports[`<Program /> locale errors for invalid \`--locale\` 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Locale must be in the format of \\"en\\" or \\"en-US\\".
+ Locale must be in the format of "en" or "en-US".
 
  [90m$ boost [33m--locale[39m[90m wtf[39m
  [33m        └──────┘[39m
