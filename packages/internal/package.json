@@ -1,6 +1,6 @@
 {
   "name": "@boost/internal",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "type": "commonjs",
   "release": "1651512176170",
   "description": "Boost internals.",

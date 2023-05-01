@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 1.0.1 - 2023-05-01
+
+#### 📦 Dependencies
+
+- **[docusaurus-plugin-typedoc-api]** Update to v3. ([f81cb99](https://github.com/milesj/boost/commit/f81cb99))
+- **[docusaurus]** Update to v2.4. ([fcdef6d](https://github.com/milesj/boost/commit/fcdef6d))
+- Update dev and test dependencies. ([f21bf2e](https://github.com/milesj/boost/commit/f21bf2e))
+
+**Note:** Version bump only for package website
+
+
+
+
+
 ### 1.0.0 - 2022-08-19
 
 #### 📘 Docs

@@ -1,6 +1,6 @@
 {
   "name": "@boost/terminal",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "type": "commonjs",
   "release": "1651512178248",
   "description": "A collection of utilities for managing and interacting with a terminal.",

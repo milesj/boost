@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 4.0.1 - 2023-05-01
+
+#### 📦 Dependencies
+
+- **[i18next]** Update to v22.4. ([ea0db4d](https://github.com/milesj/boost/commit/ea0db4d))
+
+**Note:** Version bump only for package @boost/translate
+
+
+
+
+
 ### 4.0.0 - 2022-08-19
 
 #### 📦 Dependencies

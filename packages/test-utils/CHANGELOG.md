@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 4.0.1 - 2023-05-01
+
+#### 📦 Dependencies
+
+- **[fs-extra]** Update to v11. ([e58a813](https://github.com/milesj/boost/commit/e58a813))
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 ### 4.0.0 - 2022-08-19
 
 #### 📘 Docs

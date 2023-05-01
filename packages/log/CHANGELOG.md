@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 4.0.1 - 2023-05-01
+
+#### 📦 Dependencies
+
+- **[docusaurus]** Update to v2.4. ([fcdef6d](https://github.com/milesj/boost/commit/fcdef6d))
+- Update dev and test dependencies. ([f21bf2e](https://github.com/milesj/boost/commit/f21bf2e))
+
+**Note:** Version bump only for package @boost/log
+
+
+
+
+
 ### 4.0.0 - 2022-08-19
 
 #### 📘 Docs

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### 4.0.1 - 2023-05-01
+
+#### 📦 Dependencies
+
+- **[supports-hyperlinks]** Updated to v3. ([88b034c](https://github.com/milesj/boost/commit/88b034c))
+
+**Note:** Version bump only for package @boost/terminal
+
+
+
+
+
 ### 4.0.0 - 2022-08-19
 
 #### 📘 Docs
