@@ -56,7 +56,7 @@ export class RotatingFileTransport extends FileTransport<RotatingFileTransportOp
 	}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	protected override checkIfNeedsRotation() {
 		if (
@@ -68,7 +68,7 @@ export class RotatingFileTransport extends FileTransport<RotatingFileTransportOp
 	}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	protected override getRotatedFileName(): string {
 		const name = this.path.name(true);
@@ -78,7 +78,7 @@ export class RotatingFileTransport extends FileTransport<RotatingFileTransportOp
 	}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	protected override rotateFile() {
 		super.rotateFile();
