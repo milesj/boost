@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign, no-await-in-loop */
 
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import {
 	isFilePath,
 	isModuleName,

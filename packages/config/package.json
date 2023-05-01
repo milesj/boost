@@ -37,7 +37,7 @@
     "@boost/event": "^4.0.0",
     "@boost/internal": "^4.0.0",
     "@boost/module": "^4.0.0",
-    "minimatch": "^5.1.0"
+    "minimatch": "^9.0.0"
   },
   "devDependencies": {
     "@boost/test-utils": "^4.0.0"
