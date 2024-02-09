@@ -1,7 +1,7 @@
 import { resolve } from 'path';
+import { describe, expect,it } from 'vitest';
 import { Path, VirtualPath } from '../src';
 import { mockFilePath, normalizeSeparators } from '../src/test';
-import { describe, it, expect } from 'vitest';
 
 describe('Path', () => {
 	describe('.create()', () => {
@@ -301,7 +301,6 @@ describe('Path', () => {
 			const path = new Path('foo/bar/baz');
 
 			expect(JSON.stringify({ path })).toBe(
-				// eslint-disable-next-line jest/no-conditional-in-test
 				process.platform === 'win32' ? '{"path":"foo\\\\bar\\\\baz"}' : '{"path":"foo/bar/baz"}',
 			);
 		});

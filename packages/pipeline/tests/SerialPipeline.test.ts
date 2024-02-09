@@ -1,5 +1,4 @@
-/* eslint-disable jest/no-standalone-expect */
-
+import { describe, expect,it } from 'vitest';
 import { Schemas } from '@boost/common/optimal';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
@@ -7,7 +6,6 @@ import { Runnable } from '../src/types';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
 import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';
-import { describe, it, expect } from 'vitest';
 
 describe('SerialPipeline', () => {
 	function log(depth: number, index: number) {

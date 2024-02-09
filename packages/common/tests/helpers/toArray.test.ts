@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { toArray } from '../../src/helpers/toArray';
-import { describe, it, expect } from 'vitest';
 
 describe('toArray()', () => {
 	it('returns an empty array for undefined', () => {

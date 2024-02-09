@@ -1,8 +1,8 @@
 import https from 'https';
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Loggable } from '@boost/log';
 import { mockLogger } from '@boost/log/test';
 import { checkPackageOutdated } from '../../src/middleware/checkPackageOutdated';
-import { describe, beforeEach, afterEach, it, expect, vi, MockInstance } from 'vitest';
 
 describe('checkPackageOutdated()', () => {
 	let httpsSpy: MockInstance;
@@ -52,7 +52,6 @@ describe('checkPackageOutdated()', () => {
 		httpsSpy.mockImplementation((url, res) => {
 			(res as Function)({
 				on(type: string, cb: Function) {
-					// eslint-disable-next-line jest/no-conditional-in-test
 					if (type === 'error') {
 						cb();
 					}

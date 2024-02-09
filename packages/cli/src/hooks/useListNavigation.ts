@@ -14,7 +14,7 @@ export function useListNavigation(
 				nextIndex = list.length - 1;
 			}
 
-			if (list[nextIndex]?.disabled || list[nextIndex]?.divider) {
+			if (list[nextIndex]?.disabled ?? list[nextIndex]?.divider) {
 				nextIndex = getNextIndex(nextIndex + step, step);
 			}
 

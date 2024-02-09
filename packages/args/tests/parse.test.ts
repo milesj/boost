@@ -1,5 +1,4 @@
-/* eslint-disable jest/no-conditional-in-test */
-
+import { describe, expect,it } from 'vitest';
 import { Flag, parse, ParseError, ValidationError } from '../src';
 import {
 	flagConfig,
@@ -14,7 +13,6 @@ import {
 	SPECIAL_CHARS,
 	SPECIAL_NUMBERS,
 } from './__fixtures__/options';
-import { describe, it, expect } from 'vitest';
 
 describe('parse()', () => {
 	it('supports camel case option names by default', () => {

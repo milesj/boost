@@ -1,7 +1,7 @@
+import { describe, expect,it } from 'vitest';
 import { getFixturePath } from '@boost/test-utils';
 import { Project } from '../src';
 import { mockFilePath, normalizeSeparators } from '../src/test';
-import { describe, it, expect } from 'vitest';
 
 describe('Project', () => {
 	describe('getProject()', () => {

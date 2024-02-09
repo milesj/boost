@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 
+import { describe, expect, it, vi } from 'vitest';
 import { Context } from '../src/Context';
-import { describe, it, expect, vi } from 'vitest';
 
 describe('Context', () => {
 	class TestContext extends Context {

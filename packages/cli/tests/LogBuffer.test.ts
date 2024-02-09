@@ -1,5 +1,5 @@
+import { describe, it,vi } from 'vitest';
 import { LogBuffer } from '../src/LogBuffer';
-import { vi, describe, it } from 'vitest';
 
 describe('LogBuffer', () => {
 	it('removes listener when calling return function', () => {

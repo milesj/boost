@@ -2,9 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
+import { afterEach, beforeEach, describe, expect,it,Mock, MockInstance, vi  } from 'vitest';
 import { CrashReporter } from '../src/CrashReporter';
-import { Mock, MockInstance, vi } from 'vitest';
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 vi.mock('execa');
 vi.mock('fast-glob');

@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { ExitError } from '../src/ExitError';
-import { describe, it, expect } from 'vitest';
 
 describe('ExitError', () => {
 	it('sets the message and exit code', () => {

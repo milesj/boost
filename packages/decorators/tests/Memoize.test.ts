@@ -1,7 +1,7 @@
+import { describe, expect, it, Mock,vi } from 'vitest';
 import { Memoize } from '../src';
-import { vi, describe, it, expect, Mock } from 'vitest';
 
-function sleep(time: number): Promise<void> {
+async function sleep(time: number): Promise<void> {
 	return new Promise((resolve) => {
 		setTimeout(resolve, time);
 	});
@@ -44,7 +44,7 @@ describe('@Memoize()', () => {
 		manyArgs(a: string, b: number, c: boolean): string {
 			this.spy();
 
-			// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+			 
 			return a + b + c;
 		}
 

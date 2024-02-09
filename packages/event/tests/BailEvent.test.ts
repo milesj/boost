@@ -1,5 +1,5 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { BailEvent } from '../src/BailEvent';
-import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('BailEvent', () => {
 	let event: BailEvent<[string, number]>;

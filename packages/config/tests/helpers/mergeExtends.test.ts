@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { mergeExtends } from '../../src/helpers/mergeExtends';
-import { describe, it, expect } from 'vitest';
 
 describe('mergeExtends()', () => {
 	it('removes duplicates', () => {

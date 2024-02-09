@@ -1,8 +1,8 @@
+import { describe, expect, it, vi } from 'vitest';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
-import { describe, it, expect, vi } from 'vitest';
 
 describe('WaterfallPipeline', () => {
 	it('supports piping action functions and passing a value between each', async () => {

@@ -1,7 +1,9 @@
 /* eslint-disable compat/compat, promise/prefer-await-to-then */
+/* eslint-disable @typescript-eslint/require-await */
 
 import React, { useContext, useEffect } from 'react';
 import { Box, Text } from 'ink';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExitError } from '@boost/common';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
@@ -26,8 +28,6 @@ import { BuildPropsCommand } from './__fixtures__/BuildPropsCommand';
 import { ClientDecoratorCommand } from './__fixtures__/ClientDecoratorCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
-import { vi } from 'vitest';
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 vi.mock('term-size');
 
@@ -40,9 +40,7 @@ class BoostCommand extends Command {
 
 	static override allowVariadicParams = true;
 
-	run() {
-		return Promise.resolve();
-	}
+	async run() {}
 }
 
 class ErrorCommand extends Command {
@@ -52,7 +50,7 @@ class ErrorCommand extends Command {
 
 	static override allowVariadicParams = true;
 
-	run(): Promise<void> {
+	async run(): Promise<void> {
 		throw new Error('Broken!');
 	}
 }
@@ -524,9 +522,7 @@ describe('<Program />', () => {
 
 			static override params = [...params];
 
-			run() {
-				return Promise.resolve();
-			}
+			async run() {}
 		}
 
 		it('outputs help when `--help` is passed', async () => {
@@ -694,10 +690,8 @@ describe('<Program />', () => {
 
 				static override path = 'boost';
 
-				run() {
+				async run() {
 					this.exit('Oops', 123);
-
-					return Promise.resolve();
 				}
 			}
 

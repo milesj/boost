@@ -1,5 +1,3 @@
-/* eslint-disable jest/prefer-spy-on */
-
 import type { LoggerFunction } from '.';
 
 /**

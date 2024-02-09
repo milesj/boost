@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Prompt } from '../../../src/components/internal/Prompt';
 import { KEYS } from '../../helpers';
-import { vi, describe, it, expect } from 'vitest';
 
 // http://ascii-table.com/ansi-escape-sequences-vt-100.php
 describe('Prompt', () => {

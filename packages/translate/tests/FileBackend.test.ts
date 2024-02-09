@@ -1,7 +1,7 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
 import { FileBackend } from '../src/FileBackend';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('FileBackend', () => {
 	let backend: FileBackend;

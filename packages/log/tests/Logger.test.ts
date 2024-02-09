@@ -1,5 +1,5 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { Logger } from '../src/Logger';
-import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Logger', () => {
 	let logger: Logger;

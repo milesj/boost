@@ -1,5 +1,5 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { ConcurrentEvent } from '../src/ConcurrentEvent';
-import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('ConcurrentEvent', () => {
 	let event: ConcurrentEvent<[number]>;

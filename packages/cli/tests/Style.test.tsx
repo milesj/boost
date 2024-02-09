@@ -1,9 +1,9 @@
 import React from 'react';
+import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock } from 'vitest';
 import { loadTheme } from '../src/helpers/loadTheme';
 import { Style } from '../src/react';
 import { renderComponent } from '../src/test';
-import { vi } from 'vitest';
-import { describe, beforeEach, it, expect, type Mock } from 'vitest';
 
 vi.mock('term-size');
 vi.mock('../src/helpers/loadTheme');

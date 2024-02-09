@@ -1,6 +1,6 @@
 import debug from 'debug';
+import { describe, expect,it, vi } from 'vitest';
 import { patchDebugModule } from '../../src/helpers/patchDebugModule';
-import { vi, describe, it, expect } from 'vitest';
 
 describe('patchDebugModule()', () => {
 	it('wraps `debug`', () => {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Deprecate } from '../src';
-import { describe, beforeEach, vi, afterEach, it, expect, MockInstance } from 'vitest';
 
 describe('@Deprecate', () => {
 	let spy: MockInstance;

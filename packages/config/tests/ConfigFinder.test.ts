@@ -1,10 +1,10 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { Path } from '@boost/common';
 import { mockFilePath, normalizeSeparators } from '@boost/common/test';
 import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';
 import { ConfigFinder } from '../src/ConfigFinder';
 import { mockSystemPath } from './helpers';
-import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('ConfigFinder', () => {
 	let cache: Cache;
@@ -136,7 +136,6 @@ describe('ConfigFinder', () => {
 					{
 						config: { debug: true },
 						path:
-							// eslint-disable-next-line jest/no-conditional-in-test
 							index === 0
 								? mockSystemPath(`${tempRoot}/boost.config.json`)
 								: mockSystemPath(`${tempRoot}/.config/boost.json`),
@@ -624,7 +623,6 @@ describe('ConfigFinder', () => {
 					{
 						config: { debug: true },
 						path:
-							// eslint-disable-next-line jest/no-conditional-in-test
 							index === 0
 								? mockSystemPath(`${tempRoot}/boost.config.${ext}`)
 								: mockSystemPath(`${tempRoot}/.config/boost.${ext}`),

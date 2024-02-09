@@ -1,10 +1,10 @@
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS } from '../src/constants';
 import { createLogger } from '../src/createLogger';
 import * as formats from '../src/formats';
 import { StreamTransport } from '../src/transports/StreamTransport';
 import { Formatter, LoggerFunction, LoggerOptions } from '../src/types';
-import { describe, beforeEach, it, afterEach, expect, Mock, vi } from 'vitest';
 
 describe('createLogger()', () => {
 	let logger: LoggerFunction;

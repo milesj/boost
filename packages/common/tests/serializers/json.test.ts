@@ -1,6 +1,6 @@
 import path from 'path';
+import { describe, expect,it } from 'vitest';
 import * as json from '../../src/serializers/json';
-import { describe, it, expect } from 'vitest';
 
 describe('json', () => {
 	const data = {

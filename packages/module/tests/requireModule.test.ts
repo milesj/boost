@@ -1,6 +1,6 @@
+import { describe, expect,it, vi } from 'vitest';
 import { requireModule } from '../src/requireModule';
 import { getFixture } from './helpers';
-import { vi, describe, it, expect } from 'vitest';
 
 vi.mock('cjs-null', () => null);
 vi.mock('cjs-default', () => 123);
@@ -81,7 +81,6 @@ describe('requireModule()', () => {
 		});
 
 		it('cannot load .mjs files', () => {
-			// eslint-disable-next-line jest/require-to-throw-message
 			expect(() => requireModule(getFixture('format-mjs.mjs'))).toThrow();
 		});
 

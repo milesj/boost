@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { mergeArray } from '../../src/helpers/mergeArray';
-import { describe, it, expect } from 'vitest';
 
 describe('mergeArray()', () => {
 	it('returns a merged array', () => {

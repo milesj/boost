@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { isPlainObject } from '../../src/helpers/isPlainObject';
-import { describe, it, expect } from 'vitest';
 
 describe('isPlainObject()', () => {
 	it('returns true if a plain object', () => {

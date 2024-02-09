@@ -1,8 +1,8 @@
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import { RotatingFileTransport } from '../../src/transports/RotatingFileTransport';
 import { closeStream, existsFile, readFile, wait as waitForWrite } from './helpers';
-import { describe, beforeEach, it, afterEach, vi, expect, MockInstance } from 'vitest';
 
 describe('RotatingFileTransport', () => {
 	let fixtureDir: string;

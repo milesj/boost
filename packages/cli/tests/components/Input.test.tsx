@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Input, InputProps } from '../../src/components/Input';
 import { KEYS } from '../helpers';
-import { vi, describe, it, expect } from 'vitest';
 
 describe('Input', () => {
 	const props: InputProps = {

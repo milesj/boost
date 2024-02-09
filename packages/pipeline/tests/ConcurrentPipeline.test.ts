@@ -1,8 +1,8 @@
+import { describe, expect, it, vi } from 'vitest';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
-import { describe, it, expect, vi } from 'vitest';
 
 describe('ConcurrentPipeline', () => {
 	it('supports piping action functions and passing a value to each', async () => {

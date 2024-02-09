@@ -1,5 +1,5 @@
+import { describe, expect, it } from 'vitest';
 import { Bind } from '../src';
-import { describe, beforeEach, afterEach, it, expect, vi, MockInstance } from 'vitest';
 
 describe('@Bind()', () => {
 	class Test {

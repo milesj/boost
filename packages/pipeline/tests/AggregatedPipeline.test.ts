@@ -1,9 +1,9 @@
+import { describe, expect, it, vi } from 'vitest';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { AggregatedResult } from '../src/types';
-import { describe, it, expect, vi } from 'vitest';
 
 describe('AggregatedPipeline', () => {
 	function sortAggregated(result: AggregatedResult<unknown>) {

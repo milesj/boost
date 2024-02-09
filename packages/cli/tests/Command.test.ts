@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/require-await */
+
 import execa from 'execa';
+import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock } from 'vitest';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';
 import { mockProgram, mockStreams, runCommand } from '../src/test';
 import { AllDecoratorCommand } from './__fixtures__/AllDecoratorCommand';
@@ -17,8 +21,6 @@ import {
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
 import { InstallInitializerCommand } from './__fixtures__/InstallInitializerCommand';
 import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
-import { vi } from 'vitest';
-import { describe, beforeEach, it, expect, type Mock } from 'vitest';
 
 vi.mock('execa');
 vi.mock('term-size');
@@ -225,8 +227,8 @@ describe('Command', () => {
 					@Arg.Params()
 					unknownArg() {}
 
-					run() {
-						return Promise.resolve('');
+					async run() {
+						return '';
 					}
 				}
 			}).toThrow('Parameters must be defined on the `run()` method.');
@@ -239,8 +241,8 @@ describe('Command', () => {
 					@Arg.String('Description')
 					override locale: string = '';
 
-					run() {
-						return Promise.resolve('');
+					async run() {
+						return '';
 					}
 				}
 			}).toThrow('Option "locale" is a reserved name and cannot be used.');
@@ -442,8 +444,8 @@ describe('Command', () => {
 				class TestCommand extends Command {
 					override locale = Arg.string('Description');
 
-					run() {
-						return Promise.resolve('');
+					async run() {
+						return '';
 					}
 				}
 

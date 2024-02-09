@@ -1,6 +1,6 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Contract } from '../src';
 import { Schemas } from '../src/optimal';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('Contract', () => {
 	class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {

@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { createInternalDebugger, sentenceCase } from '../src/createInternalDebugger';
-import { describe, it, expect } from 'vitest';
 
 describe('createInternalDebugger()', () => {
 	it('returns a `debug` instance', () => {

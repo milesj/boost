@@ -1,8 +1,8 @@
+import { afterEach, beforeEach, describe, expect,it } from 'vitest';
 import { Path } from '@boost/common';
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { Loader } from '../src/Loader';
 import { createRendererRegistry, Renderable } from './__fixtures__/Renderer';
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('Loader', () => {
 	let fixtures: Function[];
@@ -23,7 +23,6 @@ describe('Loader', () => {
 				const resolver = loader.createResolver('/foo/bar/baz.js');
 
 				expect(resolver.getLookupPaths()).toEqual([
-					// eslint-disable-next-line jest/no-conditional-in-test
 					process.platform === 'win32' ? 'D:\\foo\\bar\\baz.js' : '/foo/bar/baz.js',
 				]);
 			});

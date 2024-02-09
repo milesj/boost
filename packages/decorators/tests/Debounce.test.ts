@@ -1,5 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Debounce } from '../src';
-import { describe, beforeEach, afterEach, it, expect, vi, MockInstance } from 'vitest';
 
 describe('@Debounce()', () => {
 	class Test {

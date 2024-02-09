@@ -1,10 +1,10 @@
 import { EOL } from 'os';
+import { beforeEach, describe, expect,it } from 'vitest';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';
 import { IgnoreFinder } from '../src/IgnoreFinder';
 import { mockSystemPath } from './helpers';
-import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('IgnoreFinder', () => {
 	let cache: Cache;

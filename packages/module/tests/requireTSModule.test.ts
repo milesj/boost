@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { requireTSModule } from '../src/requireTSModule';
-import { describe, it, expect } from 'vitest';
 
 describe('requireTSModule()', () => {
 	it('errors if not a .ts file or .tsx file', () => {

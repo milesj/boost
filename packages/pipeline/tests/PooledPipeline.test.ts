@@ -1,10 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
 import { Context } from '../src/Context';
 import { PipelineError } from '../src/PipelineError';
 import { PooledPipeline } from '../src/PooledPipeline';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { AggregatedResult } from '../src/types';
-import { describe, it, expect, vi } from 'vitest';
 
 describe('PooledPipeline', () => {
 	function sortAggregated(result: AggregatedResult<unknown>) {

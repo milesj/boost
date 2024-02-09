@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Confirm, ConfirmProps } from '../../src/components/Confirm';
-import { vi, describe, it, expect } from 'vitest';
 
 describe('Confirm', () => {
 	const props: ConfirmProps = {

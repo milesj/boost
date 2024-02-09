@@ -1,7 +1,7 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import { FileTransport } from '../../src/transports/FileTransport';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
 import {
 	closeStream,
 	existsFile,

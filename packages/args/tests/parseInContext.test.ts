@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { ContextFactory, ParseError, parseInContext, ParserOptions } from '../src';
 import {
 	flagConfig,
@@ -6,7 +7,6 @@ import {
 	optConfig,
 	optsConfigArity,
 } from './__fixtures__/options';
-import { describe, it, expect } from 'vitest';
 
 describe('parseInContext()', () => {
 	interface FooOptions {

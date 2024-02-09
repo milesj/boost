@@ -1,5 +1,5 @@
+import { describe, expect,it } from 'vitest';
 import { Path, VirtualPath } from '../src';
-import { describe, it, expect } from 'vitest';
 
 describe('VirtualPath', () => {
 	describe('.path()', () => {

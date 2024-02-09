@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, jest/prefer-spy-on */
+/* eslint-disable no-param-reassign */
 
 import React from 'react';
 import { render } from 'ink';
@@ -136,7 +136,7 @@ export async function renderComponent(
  * Runs a `Command` outside the context of a `Program`, but mimics similar functionality,
  * including React component rendering. Params are required as they're passed to the run method,
  * while options are optional and assume class properties have been defined. Also, the `exit`
- * and `log` methods have been mocked with Jest spies so that they can be asserted.
+ * and `log` methods have been mocked with Vitest spies so that they can be asserted.
  *
  * ```ts
  * import { runCommand } from '@boost/cli/test';
@@ -173,7 +173,9 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
 	}
 
 	command.exit = vi.fn();
+	// eslint-disable-next-line require-atomic-updates
 	command.log = await mockLogger();
+	// eslint-disable-next-line require-atomic-updates
 	command[INTERNAL_PARAMS] = params;
 
 	const result = await command.run(...params);
@@ -196,7 +198,7 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
  *
  * it('runs a task', async () => {
  * 	const context = {
- * 		log: jest.fn(),
+ * 		log: vi.fn(),
  * 	};
  *
  * 	expect(await runTask(testTask, ['foo', 'bar', 'baz'], context)).toMatchSnapshot();

@@ -1,10 +1,10 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
 import { Configuration, createExtendsSchema, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
 import { mockSystemPath } from './helpers';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 interface BoostConfig {
 	debug: boolean;

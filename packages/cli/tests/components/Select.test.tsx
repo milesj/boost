@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Select, SelectProps } from '../../src/components/Select';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
-import { vi, describe, it, expect } from 'vitest';
 
 describe('Select', () => {
 	const props: SelectProps<string> = {
@@ -33,7 +33,6 @@ describe('Select', () => {
 
 	it('renders options and dividers using strings', () => {
 		const { lastFrame } = render(
-			// eslint-disable-next-line jest/no-conditional-in-test
 			<Select {...props} options={options.map((o) => ('divider' in o ? o : o.value))} />,
 		);
 

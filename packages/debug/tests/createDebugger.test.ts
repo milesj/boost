@@ -1,8 +1,8 @@
 import debug from 'debug';
+import { afterEach,beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { color } from '@boost/internal';
 import { createDebugger } from '../src/createDebugger';
 import { Debugger } from '../src/types';
-import { describe, beforeEach, vi, it, expect, MockInstance, afterEach } from 'vitest';
 
 describe('createDebugger()', () => {
 	let errSpy: MockInstance;
