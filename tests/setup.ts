@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi, expect } from 'vitest';
 
 expect.extend({
 	toBeFilePath(received, expected) {
@@ -14,7 +14,7 @@ expect.extend({
 			expect(received).toBe(path);
 		}
 
-		return { pass: !this.isNot };
+		return { pass: !this.isNot, message: '' };
 	},
 });
 
