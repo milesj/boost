@@ -1,4 +1,5 @@
 import { ModulePath } from '../src';
+import { describe, it, expect } from 'vitest';
 
 describe('ModulePath', () => {
 	describe('.create()', () => {

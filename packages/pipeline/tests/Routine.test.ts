@@ -9,7 +9,7 @@ import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
 import { vi } from 'vitest';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, Mock } from 'vitest';
 
 vi.mock('execa');
 
@@ -153,7 +153,7 @@ describe('Routine', () => {
 		}
 
 		function mockExeca(value: string) {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
+			(execa as unknown as Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 				stdout: new FakeStream(value),
 				stderr: new FakeStream(value),
@@ -178,7 +178,7 @@ describe('Routine', () => {
 		});
 
 		it('calls callback with stream', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			await routine.executeCommand('yarn', ['-v'], { wrap: spy });
 
@@ -186,8 +186,8 @@ describe('Routine', () => {
 		});
 
 		it('pipes stdout/stderr to handler', async () => {
-			const commandSpy = jest.fn();
-			const commandDataSpy = jest.fn();
+			const commandSpy = vi.fn();
+			const commandDataSpy = vi.fn();
 			const task = new Task<string, string>('title', () => '');
 
 			// @ts-expect-error Allow overwrite

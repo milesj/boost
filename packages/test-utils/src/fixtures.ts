@@ -3,7 +3,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
-import vi from 'vitest';
+import { vi } from 'vitest';
 import { DirectoryStructure } from './types';
 
 const FIXTURES_DIR = path.join(process.cwd(), 'tests', '__fixtures__');
@@ -77,12 +77,15 @@ export function copyFixtureToNodeModule(
 	};
 }
 
+// TODO
 export function copyFixtureToMock(fixture: string, mockName: string): () => void {
 	const module = require(getFixturePath(fixture)) as unknown as object;
 
-	vi.doMock(mockName, () => module, { virtual: true });
+	vi.doMock(mockName, () => module);
 
-	return () => vi.dontMock(mockName);
+	return () => {
+		vi.doUnmock(mockName);
+	};
 }
 
 export function copyFixtureToTempFolder(fixture: string): string {

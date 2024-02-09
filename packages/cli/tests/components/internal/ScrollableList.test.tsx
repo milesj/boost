@@ -7,6 +7,7 @@ import {
 	ScrollableList,
 	truncateList,
 } from '../../../src/components/internal/ScrollableList';
+import { describe, it, expect } from 'vitest';
 
 const items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const maxIndex = items.length - 1;

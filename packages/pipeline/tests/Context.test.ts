@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 
 import { Context } from '../src/Context';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('Context', () => {
 	class TestContext extends Context {
@@ -55,7 +56,7 @@ describe('Context', () => {
 			}
 		}
 
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const ctx = new CtorContext(spy);
 
 		ctx.clone(spy);

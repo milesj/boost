@@ -2,6 +2,7 @@ import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('ConcurrentPipeline', () => {
 	it('supports piping action functions and passing a value to each', async () => {
@@ -84,8 +85,8 @@ describe('ConcurrentPipeline', () => {
 			.add(new Task('One', action))
 			.add(new Task('Two', action))
 			.add(new Task('Three', action));
-		const runSpy = jest.fn();
-		const finSpy = jest.fn();
+		const runSpy = vi.fn();
+		const finSpy = vi.fn();
 
 		pipeline.onBeforeRun.listen(runSpy);
 		pipeline.onAfterRun.listen(finSpy);
@@ -102,7 +103,7 @@ describe('ConcurrentPipeline', () => {
 		const two = new Task('Two', (ctx, value: string) => value.repeat(2));
 		const three = new Task('Three', (ctx, value: string) => value.repeat(3));
 		const pipeline = new ConcurrentPipeline(new Context(), 'o').add(one).add(two).add(three);
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		pipeline.onRunWorkUnit.listen(spy);
 

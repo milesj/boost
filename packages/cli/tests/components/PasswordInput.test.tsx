@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
 import { PasswordInput, PasswordInputProps } from '../../src/components/PasswordInput';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('PasswordInput', () => {
 	const props: PasswordInputProps = {
@@ -37,7 +38,7 @@ describe('PasswordInput', () => {
 	});
 
 	it('calls `onChange` with unmasked value', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<PasswordInput {...props} onChange={spy} />);
 
 		await delay();
@@ -48,7 +49,7 @@ describe('PasswordInput', () => {
 	});
 
 	it('calls `onSubmit` with unmasked value when pressing return', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<PasswordInput {...props} onSubmit={spy} />);
 
 		await delay();

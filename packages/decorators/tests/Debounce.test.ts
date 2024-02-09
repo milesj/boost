@@ -1,5 +1,5 @@
 import { Debounce } from '../src';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, afterEach, it, expect, vi, MockInstance } from 'vitest';
 
 describe('@Debounce()', () => {
 	class Test {
@@ -9,18 +9,18 @@ describe('@Debounce()', () => {
 		}
 	}
 
-	let spy: jest.SpyInstance;
+	let spy: MockInstance;
 
 	beforeEach(() => {
-		jest.useFakeTimers();
+		vi.useFakeTimers();
 
-		spy = jest.spyOn(console, 'log').mockImplementation();
+		spy = vi.spyOn(console, 'log').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		spy.mockRestore();
 
-		jest.useRealTimers();
+		vi.useRealTimers();
 	});
 
 	it('errors if applied to a class', () => {
@@ -55,7 +55,7 @@ describe('@Debounce()', () => {
 
 		expect(spy).not.toHaveBeenCalled();
 
-		jest.advanceTimersByTime(150);
+		vi.advanceTimersByTime(150);
 
 		expect(spy).toHaveBeenCalledWith('Logged!');
 		expect(spy).toHaveBeenCalledTimes(1);
@@ -68,7 +68,7 @@ describe('@Debounce()', () => {
 		test.log(3, 4);
 		test.log(5, 6);
 
-		jest.advanceTimersByTime(150);
+		vi.advanceTimersByTime(150);
 
 		expect(spy).toHaveBeenCalledWith('Logged!', 5, 6);
 		expect(spy).toHaveBeenCalledTimes(1);

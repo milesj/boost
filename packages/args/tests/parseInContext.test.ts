@@ -6,6 +6,7 @@ import {
 	optConfig,
 	optsConfigArity,
 } from './__fixtures__/options';
+import { describe, it, expect } from 'vitest';
 
 describe('parseInContext()', () => {
 	interface FooOptions {

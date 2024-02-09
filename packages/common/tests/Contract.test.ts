@@ -1,6 +1,6 @@
 import { Contract } from '../src';
 import { Schemas } from '../src/optimal';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('Contract', () => {
 	class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {
@@ -146,7 +146,7 @@ describe('Contract', () => {
 	});
 
 	describe('blueprint()', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		class BlueprintTest extends Contract<{}> {
 			blueprint(schemas: unknown, onConstruct: boolean) {

@@ -1,4 +1,5 @@
 import { mergeObject } from '../../src/helpers/mergeObject';
+import { describe, it, expect } from 'vitest';
 
 describe('mergeObject()', () => {
 	it('returns a merged object', () => {

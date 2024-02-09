@@ -2,7 +2,7 @@ import React from 'react';
 import { Help } from '../src/react';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__fixtures__/args';
-import { vi } from 'vitest';
+import { describe, it, vi, expect } from 'vitest';
 
 vi.mock('term-size');
 

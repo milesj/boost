@@ -7,6 +7,7 @@ import { Runnable } from '../src/types';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
 import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';
+import { describe, it, expect } from 'vitest';
 
 describe('SerialPipeline', () => {
 	function log(depth: number, index: number) {

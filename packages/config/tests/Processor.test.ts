@@ -6,7 +6,7 @@ import { overwrite } from '../src/helpers/overwrite';
 import { Processor } from '../src/Processor';
 import { createExtendsSchema, createOverridesSchema, createPluginsSchema } from '../src/schemas';
 import { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('Processor', () => {
 	interface ConfigShape {
@@ -40,17 +40,17 @@ describe('Processor', () => {
 
 	describe('handlers', () => {
 		it('sets a handler', () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			processor.addHandler('debug', spy);
 
 			expect(processor.getHandler('debug')).toBe(spy);
 		});
 
 		it('overwrites a handler of the same name', () => {
-			const spy1 = jest.fn();
+			const spy1 = vi.fn();
 			processor.addHandler('debug', spy1);
 
-			const spy2 = jest.fn();
+			const spy2 = vi.fn();
 			processor.addHandler('debug', spy2);
 
 			expect(processor.getHandler('debug')).toBe(spy2);

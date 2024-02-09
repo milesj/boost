@@ -4,7 +4,7 @@
   "scripts": {
     "build": "yarn run packemon build --addEngines",
     "pack": "NODE_ENV=production yarn run packemon pack --addEngines --addExports --declaration",
-    "clean": "yarn run packemon clean",
+    "clean": "yarn run packemon clean && rm -rf ./packages/*/tsconfig.tsbuildinfo",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",

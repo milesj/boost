@@ -1,5 +1,6 @@
 import { PackageGraph } from '../src/PackageGraph';
 import { PackageStructure } from '../src/types';
+import { describe, it, expect } from 'vitest';
 
 describe('PackageGraph', () => {
 	it('returns an empty array when no packages are defined', () => {

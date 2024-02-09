@@ -2,10 +2,10 @@ import https from 'https';
 import { Loggable } from '@boost/log';
 import { mockLogger } from '@boost/log/test';
 import { checkPackageOutdated } from '../../src/middleware/checkPackageOutdated';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, afterEach, it, expect, vi, MockInstance } from 'vitest';
 
 describe('checkPackageOutdated()', () => {
-	let httpsSpy: jest.SpyInstance;
+	let httpsSpy: MockInstance;
 	let logSpy: Loggable;
 
 	const parse = () =>
@@ -18,8 +18,8 @@ describe('checkPackageOutdated()', () => {
 			unknown: {},
 		});
 
-	beforeEach(() => {
-		httpsSpy = jest.spyOn(https, 'get').mockImplementation((url, res) => {
+	beforeEach(async () => {
+		httpsSpy = vi.spyOn(https, 'get').mockImplementation((url, res) => {
 			(res as Function)({
 				on(type: string, cb: (data?: string) => void) {
 					if (type === 'data') {
@@ -33,7 +33,7 @@ describe('checkPackageOutdated()', () => {
 			return {} as any;
 		});
 
-		logSpy = mockLogger();
+		logSpy = await mockLogger();
 	});
 
 	afterEach(() => {

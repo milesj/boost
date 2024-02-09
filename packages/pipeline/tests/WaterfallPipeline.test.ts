@@ -2,6 +2,7 @@ import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('WaterfallPipeline', () => {
 	it('supports piping action functions and passing a value between each', async () => {
@@ -84,8 +85,8 @@ describe('WaterfallPipeline', () => {
 			.pipe(new Task('One', action))
 			.pipe(new Task('Two', action))
 			.pipe(new Task('Three', action));
-		const runSpy = jest.fn();
-		const finSpy = jest.fn();
+		const runSpy = vi.fn();
+		const finSpy = vi.fn();
 
 		pipeline.onBeforeRun.listen(runSpy);
 		pipeline.onAfterRun.listen(finSpy);
@@ -102,7 +103,7 @@ describe('WaterfallPipeline', () => {
 		const two = new Task('Two', (ctx, value: number) => value * 2);
 		const three = new Task('Three', (ctx, value: number) => value * 3);
 		const pipeline = new WaterfallPipeline(new Context(), 123).pipe(one).pipe(two).pipe(three);
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		pipeline.onRunWorkUnit.listen(spy);
 

@@ -1,4 +1,5 @@
 import { isModuleName } from '../../src/helpers/isModuleName';
+import { describe, it, expect } from 'vitest';
 
 describe('isModuleName()', () => {
 	it('returns true for traditional names', () => {

@@ -3,13 +3,13 @@
 import type { Debugger } from '.';
 
 /**
- * Returns a Jest spy that matches the return value shape of `createDebugger`.
+ * Returns a Vitest spy that matches the return value shape of `createDebugger`.
  *
  * ```ts
  * import { mockDebugger } from '@boost/debug/test';
  *
- * it('calls the debugger', () => {
- * 	const debug = mockDebugger();
+ * it('calls the debugger', async () => {
+ * 	const debug = await mockDebugger();
  *
  * 	debug('Something is broken!');
  *
@@ -17,13 +17,14 @@ import type { Debugger } from '.';
  * });
  * ```
  */
-export function mockDebugger(): Debugger {
-	const debug = jest.fn() as any;
+export async function mockDebugger(): Promise<Debugger> {
+	const { vi } = await import('vitest');
+	const debug = vi.fn() as any;
 
-	debug.disable = jest.fn();
-	debug.enable = jest.fn();
-	debug.invariant = jest.fn();
-	debug.verbose = jest.fn();
+	debug.disable = vi.fn();
+	debug.enable = vi.fn();
+	debug.invariant = vi.fn();
+	debug.verbose = vi.fn();
 
 	return debug;
 }

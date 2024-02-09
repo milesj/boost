@@ -158,6 +158,8 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
 	params: P,
 	options?: Partial<O>,
 ): Promise<string> {
+	const { vi } = await import('vitest');
+
 	if (options) {
 		Object.assign(command, options);
 
@@ -170,8 +172,8 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
 		};
 	}
 
-	command.exit = jest.fn();
-	command.log = mockLogger();
+	command.exit = vi.fn();
+	command.log = await mockLogger();
 	command[INTERNAL_PARAMS] = params;
 
 	const result = await command.run(...params);
@@ -202,11 +204,12 @@ export async function runCommand<O extends GlobalOptions, P extends PrimitiveTyp
  * });
  * ```
  */
-export function runTask<A extends unknown[], R, T extends TaskContext>(
+export async function runTask<A extends unknown[], R, T extends TaskContext>(
 	task: (this: T, ...argz: A) => R,
 	args: A,
 	context?: Partial<T>,
-): R {
+): Promise<R> {
+	const { vi } = await import('vitest');
 	const notTestable = (name: string) => () => {
 		throw new Error(
 			`\`${name}\` is not testable using the \`runTask\` utility. Test using a full program.`,
@@ -214,10 +217,10 @@ export function runTask<A extends unknown[], R, T extends TaskContext>(
 	};
 
 	const baseContext: TaskContext = {
-		exit: jest.fn(),
+		exit: vi.fn(),
 		help: false,
 		locale: 'en',
-		log: mockLogger(),
+		log: await mockLogger(),
 		rest: [] as string[],
 		runProgram: notTestable('runProgram'),
 		runTask: notTestable('runTask'),

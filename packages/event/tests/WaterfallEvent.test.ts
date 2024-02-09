@@ -1,4 +1,5 @@
 import { WaterfallEvent } from '../src/WaterfallEvent';
+import { describe, it, expect } from 'vitest';
 
 describe('WaterfallEvent', () => {
 	it('executes listeners in order with the value being passed to each function', () => {

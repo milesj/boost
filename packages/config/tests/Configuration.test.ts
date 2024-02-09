@@ -4,7 +4,7 @@ import { getFixturePath } from '@boost/test-utils';
 import { Configuration, createExtendsSchema, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
 import { mockSystemPath } from './helpers';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 interface BoostConfig {
 	debug: boolean;
@@ -42,7 +42,7 @@ describe('Configuration', () => {
 	});
 
 	it('can pass a custom resolver', () => {
-		const resolver = jest.fn();
+		const resolver = vi.fn();
 
 		config = new BoostConfiguration('boost', resolver);
 
@@ -53,9 +53,9 @@ describe('Configuration', () => {
 	describe('clearCache()', () => {
 		it('clears file and finder cache on cache engine', () => {
 			// @ts-expect-error Allow access
-			const spy1 = jest.spyOn(config.cache, 'clearFileCache');
+			const spy1 = vi.spyOn(config.cache, 'clearFileCache');
 			// @ts-expect-error Allow access
-			const spy2 = jest.spyOn(config.cache, 'clearFinderCache');
+			const spy2 = vi.spyOn(config.cache, 'clearFinderCache');
 
 			config.clearCache();
 
@@ -67,7 +67,7 @@ describe('Configuration', () => {
 	describe('clearFileCache()', () => {
 		it('clears file cache on cache engine', () => {
 			// @ts-expect-error Allow access
-			const spy = jest.spyOn(config.cache, 'clearFileCache');
+			const spy = vi.spyOn(config.cache, 'clearFileCache');
 
 			config.clearFileCache();
 
@@ -78,7 +78,7 @@ describe('Configuration', () => {
 	describe('clearFinderCache()', () => {
 		it('clears finder cache on cache engine', () => {
 			// @ts-expect-error Allow access
-			const spy = jest.spyOn(config.cache, 'clearFinderCache');
+			const spy = vi.spyOn(config.cache, 'clearFinderCache');
 
 			config.clearFinderCache();
 
@@ -88,8 +88,8 @@ describe('Configuration', () => {
 
 	describe('loadConfigFromBranchToRoot()', () => {
 		it('loads and processes all configs', async () => {
-			const loadSpy = jest.fn((c) => c);
-			const processSpy = jest.fn();
+			const loadSpy = vi.fn((c) => c);
+			const processSpy = vi.fn();
 			const tempRoot = getFixturePath('config-file-tree-all-types');
 
 			config.onLoadedConfig.listen(loadSpy);
@@ -142,8 +142,8 @@ describe('Configuration', () => {
 
 	describe('loadConfigFromRoot()', () => {
 		it('loads and processes root config', async () => {
-			const loadSpy = jest.fn((c) => c);
-			const processSpy = jest.fn();
+			const loadSpy = vi.fn((c) => c);
+			const processSpy = vi.fn();
 			const tempRoot = getFixturePath('config-root-config-json');
 
 			config.onLoadedConfig.listen(loadSpy);
@@ -174,7 +174,7 @@ describe('Configuration', () => {
 
 	describe('loadIgnoreFromBranchToRoot()', () => {
 		it('loads all ignores', async () => {
-			const spy = jest.fn((c) => c);
+			const spy = vi.fn((c) => c);
 			const tempRoot = getFixturePath('config-ignore-file-tree');
 
 			config.onLoadedIgnore.listen(spy);
@@ -208,7 +208,7 @@ describe('Configuration', () => {
 
 	describe('loadIgnoreFromRoot()', () => {
 		it('loads root ignore', async () => {
-			const spy = jest.fn((c) => c);
+			const spy = vi.fn((c) => c);
 			const tempRoot = getFixturePath('config-ignore-file-tree');
 
 			config.onLoadedIgnore.listen(spy);

@@ -4,6 +4,7 @@ import { PooledPipeline } from '../src/PooledPipeline';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { AggregatedResult } from '../src/types';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('PooledPipeline', () => {
 	function sortAggregated(result: AggregatedResult<unknown>) {
@@ -98,8 +99,8 @@ describe('PooledPipeline', () => {
 			.add(new Task('One', action))
 			.add(new Task('Two', action))
 			.add(new Task('Three', action));
-		const runSpy = jest.fn();
-		const finSpy = jest.fn();
+		const runSpy = vi.fn();
+		const finSpy = vi.fn();
 
 		pipeline.onBeforeRun.listen(runSpy);
 		pipeline.onAfterRun.listen(finSpy);
@@ -116,7 +117,7 @@ describe('PooledPipeline', () => {
 		const two = new Task('Two', (ctx, value: string) => value.repeat(2));
 		const three = new Task('Three', (ctx, value: string) => value.repeat(3));
 		const pipeline = new PooledPipeline(new Context(), 'o').add(one).add(two).add(three);
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		pipeline.onRunWorkUnit.listen(spy);
 

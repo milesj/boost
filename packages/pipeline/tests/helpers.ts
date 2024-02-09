@@ -1,7 +1,7 @@
 import { Monitor } from '../src/Monitor';
 import { Pipeline } from '../src/Pipeline';
 import { WorkUnit } from '../src/WorkUnit';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { beforeEach } from 'vitest';
 
 let events: unknown[][] = [];
 

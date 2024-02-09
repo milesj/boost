@@ -2,6 +2,7 @@ import { createWorkUnit } from '../src/createWorkUnit';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WorkUnit } from '../src/WorkUnit';
+import { describe, it, expect } from 'vitest';
 
 describe('createWorkUnit()', () => {
 	class TestRoutine extends Routine<string, string, {}> {

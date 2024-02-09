@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
 import { HiddenInput, HiddenInputProps } from '../../src/components/HiddenInput';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('HiddenInput', () => {
 	const props: HiddenInputProps = {
@@ -37,7 +38,7 @@ describe('HiddenInput', () => {
 	});
 
 	it('calls `onChange` with unmasked value', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<HiddenInput {...props} onChange={spy} />);
 
 		await delay();
@@ -48,7 +49,7 @@ describe('HiddenInput', () => {
 	});
 
 	it('calls `onSubmit` with unmasked value when pressing return', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<HiddenInput {...props} onSubmit={spy} />);
 
 		await delay();

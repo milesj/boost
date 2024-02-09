@@ -14,6 +14,7 @@ import {
 	SPECIAL_CHARS,
 	SPECIAL_NUMBERS,
 } from './__fixtures__/options';
+import { describe, it, expect } from 'vitest';
 
 describe('parse()', () => {
 	it('supports camel case option names by default', () => {

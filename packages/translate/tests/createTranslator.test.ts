@@ -1,7 +1,7 @@
 import { getFixturePath } from '@boost/test-utils';
 import { createTranslator } from '../src/createTranslator';
 import { Translator } from '../src/types';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('createTranslator()', () => {
 	let translator: Translator;
@@ -51,7 +51,7 @@ describe('createTranslator()', () => {
 	});
 
 	it('calls `t` on i18next instance', () => {
-		const spy = jest.spyOn(translator.i18n, 't');
+		const spy = vi.spyOn(translator.i18n, 't');
 
 		expect(translator('missing', { foo: 'bar' }, { defaultValue: 'Hello' })).toBe('Hello');
 
@@ -86,7 +86,7 @@ describe('createTranslator()', () => {
 
 	describe('changeLocale()', () => {
 		it('calls `changeLanguage` on i18next', async () => {
-			const spy = jest.spyOn(translator.i18n, 'changeLanguage');
+			const spy = vi.spyOn(translator.i18n, 'changeLanguage');
 
 			await translator.changeLocale('ja');
 

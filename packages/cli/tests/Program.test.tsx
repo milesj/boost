@@ -27,7 +27,7 @@ import { ClientDecoratorCommand } from './__fixtures__/ClientDecoratorCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
 import { vi } from 'vitest';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 vi.mock('term-size');
 
@@ -192,7 +192,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onExit` event', () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			program.onExit.listen(spy);
 
@@ -458,8 +458,8 @@ describe('<Program />', () => {
 
 		it('emits `onBeforeRegister` and `onAfterRegister` events', () => {
 			const cmd = new ClientDecoratorCommand();
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			program.onBeforeRegister.listen(beforeSpy);
 			program.onAfterRegister.listen(afterSpy);
@@ -471,8 +471,8 @@ describe('<Program />', () => {
 
 		it('emits `onBeforeRegister` and `onAfterRegister` events for default command', () => {
 			const cmd = new ClientDecoratorCommand();
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			program.onBeforeRegister.listen(beforeSpy);
 			program.onAfterRegister.listen(afterSpy);
@@ -589,7 +589,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onHelp` event', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			program.onHelp.listen(spy);
 			program.register(new HelpCommand());
@@ -600,7 +600,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onHelp` event for default', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			program.onHelp.listen(spy);
 			program.default(new HelpCommand());
@@ -710,8 +710,8 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onBeforeRun` and `onAfterRun` events', async () => {
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			program.onBeforeRun.listen(beforeSpy);
 			program.onAfterRun.listen(afterSpy);
@@ -725,7 +725,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onCommandNotFound` event', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			program.onCommandNotFound.listen(spy);
 			program.register(new BuildDecoratorCommand());
@@ -785,7 +785,7 @@ describe('<Program />', () => {
 
 		it('passes params to run method', async () => {
 			const command = new AllPropsCommand();
-			const spy = jest.spyOn(command, 'run');
+			const spy = vi.spyOn(command, 'run');
 
 			program.default(command);
 
@@ -828,7 +828,7 @@ describe('<Program />', () => {
 
 		it('can run command using aliased path', async () => {
 			const command = new BuildDecoratorCommand();
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			program.onCommandFound.listen(spy);
 			program.register(command);
@@ -840,8 +840,8 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onBeforeRun` and `onAfterRun` events', async () => {
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			program.onBeforeRun.listen(beforeSpy);
 			program.onAfterRun.listen(afterSpy);
@@ -854,7 +854,7 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onCommandFound` event', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const cmd = new BoostCommand();
 
 			program.onCommandFound.listen(spy);
@@ -866,8 +866,8 @@ describe('<Program />', () => {
 		});
 
 		it('emits `onBeforeRender` and `onAfterRender` events for components', async () => {
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			program.onBeforeRender.listen(beforeSpy);
 			program.onAfterRender.listen(afterSpy);
@@ -1185,8 +1185,8 @@ describe('<Program />', () => {
 		});
 
 		it('handles logging when rendering a component', async () => {
-			const logSpy = jest.spyOn(stdout, 'write');
-			const errSpy = jest.spyOn(stderr, 'write');
+			const logSpy = vi.spyOn(stdout, 'write');
+			const errSpy = vi.spyOn(stderr, 'write');
 
 			program.register(new LogCommand());
 
@@ -1202,8 +1202,8 @@ describe('<Program />', () => {
 		});
 
 		it('handles logging when returning a string', async () => {
-			const logSpy = jest.spyOn(stdout, 'write');
-			const errSpy = jest.spyOn(stderr, 'write');
+			const logSpy = vi.spyOn(stdout, 'write');
+			const errSpy = vi.spyOn(stderr, 'write');
 
 			program.register(new LogCommand());
 
@@ -1452,7 +1452,7 @@ describe('<Program />', () => {
 		});
 
 		it('runs a sync task correctly (using test util)', async () => {
-			const log = mockLogger();
+			const log = await mockLogger();
 			const output = await runTask(syncTask, [10, 5], { log });
 
 			expect(output).toBe(15);

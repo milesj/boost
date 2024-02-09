@@ -1,7 +1,7 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { DEFAULT_PRIORITY, Registration, Registry } from '../src';
 import { createRendererRegistry, Renderable, Renderer } from './__fixtures__/Renderer';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, afterEach, vi } from 'vitest';
 
 function sortByName(a: Registration<Renderable>, b: Registration<Renderable>) {
 	return a.name.localeCompare(b.name);
@@ -28,7 +28,7 @@ describe('Registry', () => {
 	});
 
 	it('can pass a custom resolver', () => {
-		const resolver = jest.fn();
+		const resolver = vi.fn();
 
 		registry = createRendererRegistry({
 			resolver,
@@ -161,7 +161,7 @@ describe('Registry', () => {
 				copyFixtureToNodeModule('plugin-renderer-object', '@test/boost-test-renderer-baz'),
 			);
 
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			registry.onLoad.listen(spy);
 
@@ -481,7 +481,7 @@ describe('Registry', () => {
 
 		it('triggers `startup` lifecycle with tool', async () => {
 			const plugin = new Renderer();
-			const spy = jest.spyOn(plugin, 'startup');
+			const spy = vi.spyOn(plugin, 'startup');
 
 			await registry.register('foo', plugin, tool);
 
@@ -489,8 +489,8 @@ describe('Registry', () => {
 		});
 
 		it('triggers `beforeStartup` and `afterStartup` events', async () => {
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			registry.configure({
 				beforeStartup: beforeSpy,
@@ -514,7 +514,7 @@ describe('Registry', () => {
 
 		it('emits `onBeforeRegister` event', async () => {
 			const plugin = new Renderer();
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			registry.onBeforeRegister.listen(spy);
 
@@ -526,7 +526,7 @@ describe('Registry', () => {
 
 		it('emits `onAfterRegister` event', async () => {
 			const plugin = new Renderer();
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			registry.onAfterRegister.listen(spy);
 
@@ -549,7 +549,7 @@ describe('Registry', () => {
 		});
 
 		it('triggers `shutdown` lifecycle with tool', async () => {
-			const spy = jest.spyOn(registry.get('foo'), 'shutdown');
+			const spy = vi.spyOn(registry.get('foo'), 'shutdown');
 
 			await registry.unregister('foo', tool);
 
@@ -557,8 +557,8 @@ describe('Registry', () => {
 		});
 
 		it('triggers `beforeShutdown` and `afterShutdown` events', async () => {
-			const beforeSpy = jest.fn();
-			const afterSpy = jest.fn();
+			const beforeSpy = vi.fn();
+			const afterSpy = vi.fn();
 
 			registry.configure({
 				beforeShutdown: beforeSpy,
@@ -579,7 +579,7 @@ describe('Registry', () => {
 		});
 
 		it('emits `onAfterUnregister` event', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			registry.onAfterUnregister.listen(spy);
 
@@ -590,7 +590,7 @@ describe('Registry', () => {
 		});
 
 		it('emits `onBeforeUnregister` event', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			registry.onBeforeUnregister.listen(spy);
 

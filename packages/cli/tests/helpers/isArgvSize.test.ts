@@ -1,4 +1,5 @@
 import { isArgvSize } from '../../src/helpers/isArgvSize';
+import { describe, it, expect } from 'vitest';
 
 describe('isArgvSize()', () => {
 	it('returns true if an empty array', () => {

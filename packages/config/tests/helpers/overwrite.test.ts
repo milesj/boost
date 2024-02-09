@@ -1,4 +1,5 @@
 import { overwrite } from '../../src/helpers/overwrite';
+import { describe, it, expect } from 'vitest';
 
 describe('overwrite()', () => {
 	it('returns the next value', () => {

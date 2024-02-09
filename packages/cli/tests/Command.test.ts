@@ -18,7 +18,7 @@ import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand'
 import { InstallInitializerCommand } from './__fixtures__/InstallInitializerCommand';
 import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
 import { vi } from 'vitest';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, type Mock } from 'vitest';
 
 vi.mock('execa');
 vi.mock('term-size');
@@ -26,7 +26,7 @@ vi.mock('term-size');
 describe('Command', () => {
 	describe('executeCommand()', () => {
 		function mockExeca() {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
+			(execa as unknown as Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 			}));
 		}

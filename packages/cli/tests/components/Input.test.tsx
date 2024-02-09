@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'ink-testing-library';
 import { Input, InputProps } from '../../src/components/Input';
 import { KEYS } from '../helpers';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('Input', () => {
 	const props: InputProps = {
@@ -40,7 +41,7 @@ describe('Input', () => {
 	});
 
 	it('calls `onSubmit` when pressing return', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Input {...props} onSubmit={spy} />);
 
 		await delay();
@@ -53,7 +54,7 @@ describe('Input', () => {
 	});
 
 	it('trims the submitted value', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Input {...props} onSubmit={spy} />);
 
 		await delay();
@@ -66,7 +67,7 @@ describe('Input', () => {
 	});
 
 	it('doesnt call `onChange` on mount', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		render(<Input {...props} onChange={spy} />);
 
@@ -151,7 +152,7 @@ describe('Input', () => {
 		});
 
 		it('renders value and calls `onChange`', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(<Input {...props} onChange={spy} />);
 
 			await delay();
@@ -209,7 +210,7 @@ describe('Input', () => {
 		});
 
 		it('renders value and calls `onChange`', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(<Input {...props} onChange={spy} />);
 
 			await delay();

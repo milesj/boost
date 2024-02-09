@@ -1,4 +1,5 @@
 import { createBlueprint } from '../../src/helpers/createBlueprint';
+import { describe, it, expect } from 'vitest';
 
 describe('createBlueprint()', () => {
 	it('returns a blueprint', () => {

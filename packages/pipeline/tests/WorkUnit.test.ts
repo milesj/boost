@@ -2,7 +2,7 @@ import { STATUS_RUNNING } from '../src/constants';
 import { Context } from '../src/Context';
 import { Task } from '../src/Task';
 import { WorkUnit } from '../src/WorkUnit';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('Work', () => {
 	let context: Context;
@@ -232,7 +232,7 @@ describe('Work', () => {
 		});
 
 		it('passes work unit as 3rd argument to action', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			passWork = new Task('title', spy);
 
@@ -242,7 +242,7 @@ describe('Work', () => {
 		});
 
 		it('emits `onSkip` event when skipped', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			passWork.onSkip.listen(spy);
 
@@ -252,7 +252,7 @@ describe('Work', () => {
 		});
 
 		it('emits `onRun` event before running', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			passWork.onRun.listen(spy);
 
@@ -262,7 +262,7 @@ describe('Work', () => {
 		});
 
 		it('emits `onPass` event on success', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			passWork.onPass.listen(spy);
 
@@ -272,7 +272,7 @@ describe('Work', () => {
 		});
 
 		it('emits `onFail` event on error', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			failWork.onFail.listen(spy);
 
@@ -284,8 +284,8 @@ describe('Work', () => {
 		});
 
 		it('can skip if `onRun` listener returns false', async () => {
-			const skipSpy = jest.fn();
-			const otherSpy = jest.fn();
+			const skipSpy = vi.fn();
+			const otherSpy = vi.fn();
 
 			passWork.onRun.listen(() => false);
 			passWork.onSkip.listen(skipSpy);

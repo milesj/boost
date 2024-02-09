@@ -2,6 +2,7 @@ import React from 'react';
 import { Text } from 'ink';
 import { render } from 'ink-testing-library';
 import { Label } from '../../../src/components/internal/Label';
+import { describe, it, expect } from 'vitest';
 
 describe('Label', () => {
 	it('renders a string wrapped in text', () => {

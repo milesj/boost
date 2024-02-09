@@ -3,18 +3,18 @@ import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
 import { CrashReporter } from '../src/CrashReporter';
-import { vi } from 'vitest';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { Mock, MockInstance, vi } from 'vitest';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 vi.mock('execa');
 vi.mock('fast-glob');
 
 describe('CrashReporter', () => {
 	let reporter: CrashReporter;
-	let writeSpy: jest.SpyInstance;
+	let writeSpy: MockInstance;
 
 	beforeEach(() => {
-		(execa.sync as jest.Mock).mockImplementation((command, args = []) => {
+		(execa.sync as Mock).mockImplementation((command, args = []) => {
 			// Test the fallback to `version`
 			if (command === 'php' && args[0] === '--version') {
 				return {
@@ -30,7 +30,7 @@ describe('CrashReporter', () => {
 		});
 
 		reporter = new CrashReporter();
-		writeSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(jest.fn());
+		writeSpy = vi.spyOn(fs, 'writeFileSync').mockImplementation(vi.fn());
 	});
 
 	afterEach(() => {
@@ -121,12 +121,10 @@ Label:
 	});
 
 	it('reports package versions', () => {
-		jest
-			.spyOn(glob, 'sync')
-			.mockImplementationOnce(() => [
-				path.join(process.cwd(), 'node_modules/path-exists'),
-				path.join(process.cwd(), 'node_modules/path-is-absolute'),
-			]);
+		vi.spyOn(glob, 'sync').mockImplementationOnce(() => [
+			path.join(process.cwd(), 'node_modules/path-exists'),
+			path.join(process.cwd(), 'node_modules/path-is-absolute'),
+		]);
 
 		reporter.reportPackageVersions('path-*');
 
@@ -134,9 +132,9 @@ Label:
 	});
 
 	it('reports package versions (scoped)', () => {
-		jest
-			.spyOn(glob, 'sync')
-			.mockImplementationOnce(() => [path.join(process.cwd(), 'node_modules/@moonrepo/dev')]);
+		vi.spyOn(glob, 'sync').mockImplementationOnce(() => [
+			path.join(process.cwd(), 'node_modules/@moonrepo/dev'),
+		]);
 
 		reporter.reportPackageVersions('@moonrepo/*', 'moon');
 

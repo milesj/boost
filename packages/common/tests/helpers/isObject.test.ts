@@ -1,4 +1,5 @@
 import { isObject } from '../../src/helpers/isObject';
+import { describe, it, expect } from 'vitest';
 
 describe('isObject()', () => {
 	it('returns true if an object', () => {

@@ -1,4 +1,5 @@
 import { deepFreeze } from '../../src/helpers/deepFreeze';
+import { describe, it, expect } from 'vitest';
 
 describe('deepFreeze()', () => {
 	it('returns a frozen object', () => {

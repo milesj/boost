@@ -1,4 +1,5 @@
 import { format } from '../src';
+import { describe, it, expect } from 'vitest';
 
 describe('format()', () => {
 	it('handles commands', () => {

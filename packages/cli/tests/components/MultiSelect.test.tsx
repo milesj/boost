@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'ink-testing-library';
 import { MultiSelect, MultiSelectProps } from '../../src/components/MultiSelect';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('MultiSelect', () => {
 	const props: MultiSelectProps<string> = {
@@ -172,7 +173,7 @@ describe('MultiSelect', () => {
 
 	describe('selection', () => {
 		it('selects and displays a value when hitting space bar', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<MultiSelect {...props} limit={5} options={options} onSubmit={spy} />,
 			);
@@ -186,7 +187,7 @@ describe('MultiSelect', () => {
 		});
 
 		it('calls `onChange` when selecting values', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { stdin } = render(
 				<MultiSelect {...props} limit={5} options={options} onChange={spy} />,
 			);
@@ -217,7 +218,7 @@ describe('MultiSelect', () => {
 		});
 
 		it('can unselect a value when hitting space bar again', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { stdin } = render(
 				<MultiSelect {...props} limit={5} options={options} onChange={spy} />,
 			);
@@ -235,7 +236,7 @@ describe('MultiSelect', () => {
 		});
 
 		it('calls `onSubmit` with selected values when hitting enter', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<MultiSelect {...props} limit={5} options={options} onSubmit={spy} />,
 			);
@@ -250,7 +251,7 @@ describe('MultiSelect', () => {
 		});
 
 		it('doesnt call `onSubmit` if validation fails', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<MultiSelect
 					{...props}

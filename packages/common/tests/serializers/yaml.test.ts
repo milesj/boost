@@ -1,5 +1,6 @@
 import path from 'path';
 import * as yaml from '../../src/serializers/yaml';
+import { describe, it, expect } from 'vitest';
 
 describe('yaml', () => {
 	const data = {

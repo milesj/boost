@@ -1,4 +1,5 @@
 import { isNodeBinary } from '../../src/helpers/isNodeBinary';
+import { describe, it, expect } from 'vitest';
 
 describe('isNodeBinary()', () => {
 	describe('unix', () => {

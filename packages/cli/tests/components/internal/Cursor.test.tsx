@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
 import { Cursor } from '../../../src/components/internal/Cursor';
+import { describe, it, expect } from 'vitest';
 
 describe('Cursor', () => {
 	it('renders value with no cursor if not focused', () => {

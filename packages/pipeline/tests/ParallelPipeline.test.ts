@@ -7,6 +7,7 @@ import { Routine } from '../src/Routine';
 import { Runnable } from '../src/types';
 import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';
+import { describe, it, expect } from 'vitest';
 
 describe('ParallelPipeline', () => {
 	function log(depth: number, index: number) {

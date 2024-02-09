@@ -1,17 +1,15 @@
 import { requireModule } from '../src/requireModule';
 import { getFixture } from './helpers';
-import { vi } from 'vitest';
+import { vi, describe, it, expect } from 'vitest';
 
-vi.mock('cjs-null', () => null, { virtual: true });
-vi.mock('cjs-default', () => 123, { virtual: true });
-vi.mock('cjs-default-object', () => ({ foo: 'bar' }), { virtual: true });
-vi.mock('cjs-pseudo-default', () => ({ default: 123 }), { virtual: true });
-vi.mock('cjs-named', () => ({ named: 'abc' }), { virtual: true });
-vi.mock('esm-default', () => ({ __esModule: true, default: 456 }), { virtual: true });
-vi.mock('esm-named', () => ({ __esModule: true, named: 'abc' }), { virtual: true });
-vi.mock('esm-both', () => ({ __esModule: true, default: 456, named: 'abc' }), {
-	virtual: true,
-});
+vi.mock('cjs-null', () => null);
+vi.mock('cjs-default', () => 123);
+vi.mock('cjs-default-object', () => ({ foo: 'bar' }));
+vi.mock('cjs-pseudo-default', () => ({ default: 123 }));
+vi.mock('cjs-named', () => ({ named: 'abc' }));
+vi.mock('esm-default', () => ({ __esModule: true, default: 456 }));
+vi.mock('esm-named', () => ({ __esModule: true, named: 'abc' }));
+vi.mock('esm-both', () => ({ __esModule: true, default: 456, named: 'abc' }));
 
 vi.mock('../src/requireTSModule', () => ({
 	requireTSModule: () => 'ts',

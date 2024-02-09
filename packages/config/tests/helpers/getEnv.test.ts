@@ -1,4 +1,5 @@
 import { getEnv } from '../../src/helpers/getEnv';
+import { describe, it, expect } from 'vitest';
 
 describe('getEnv()', () => {
 	it('returns from project named env', () => {

@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { Path, VirtualPath } from '../src';
 import { mockFilePath, normalizeSeparators } from '../src/test';
+import { describe, it, expect } from 'vitest';
 
 describe('Path', () => {
 	describe('.create()', () => {

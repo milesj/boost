@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'ink-testing-library';
 import { Select, SelectProps } from '../../src/components/Select';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('Select', () => {
 	const props: SelectProps<string> = {
@@ -271,7 +272,7 @@ describe('Select', () => {
 
 	describe('selection', () => {
 		it('selects and displays a value when hitting space bar', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<Select {...props} limit={5} options={options} onSubmit={spy} />,
 			);
@@ -304,7 +305,7 @@ describe('Select', () => {
 		});
 
 		it('calls `onSubmit` with highlighted (but not selected) value when hitting enter', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<Select {...props} limit={5} options={options} onSubmit={spy} />,
 			);
@@ -318,7 +319,7 @@ describe('Select', () => {
 		});
 
 		it('calls `onSubmit` with selected value when hitting enter', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<Select {...props} limit={5} options={options} onSubmit={spy} />,
 			);

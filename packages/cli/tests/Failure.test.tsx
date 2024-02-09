@@ -3,6 +3,7 @@ import { ParseError, ValidationError } from '@boost/args';
 import { Failure } from '../src/react';
 import { renderComponent } from '../src/test';
 import { vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 vi.mock('term-size');
 

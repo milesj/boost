@@ -1,8 +1,9 @@
 import { LogBuffer } from '../src/LogBuffer';
+import { vi, describe, it } from 'vitest';
 
 describe('LogBuffer', () => {
 	it('removes listener when calling return function', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const buffer = new LogBuffer(process.stdout);
 
 		const undo = buffer.on(spy);

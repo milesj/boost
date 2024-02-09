@@ -1,4 +1,5 @@
 import { instanceOf } from '../../src/helpers/instanceOf';
+import { describe, it, expect } from 'vitest';
 
 describe('instanceOf()', () => {
 	class Foo {}

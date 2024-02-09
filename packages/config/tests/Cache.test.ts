@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { mockFilePath } from '@boost/common/test';
 import { Cache } from '../src/Cache';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 const CACHE_KEY = process.platform === 'win32' ? 'foo\\bar' : 'foo/bar';
 
@@ -16,11 +16,9 @@ describe('Cache', () => {
 		let statMtime: number;
 
 		beforeEach(() => {
-			jest
-				.spyOn(fs.promises, 'stat')
-				.mockImplementation(() =>
-					Promise.resolve({ mtimeMs: statMtime || 100 } as unknown as fs.Stats),
-				);
+			vi.spyOn(fs.promises, 'stat').mockImplementation(() =>
+				Promise.resolve({ mtimeMs: statMtime || 100 } as unknown as fs.Stats),
+			);
 		});
 
 		it('writes a files contents and stats to the cache', async () => {
