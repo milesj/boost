@@ -26,8 +26,9 @@ import { BuildPropsCommand } from './__fixtures__/BuildPropsCommand';
 import { ClientDecoratorCommand } from './__fixtures__/ClientDecoratorCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
+import { vi } from 'vitest';
 
-jest.mock('term-size');
+vi.mock('term-size');
 
 class BoostCommand extends Command {
 	static override description = 'Description';

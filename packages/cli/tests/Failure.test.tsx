@@ -2,8 +2,9 @@ import React from 'react';
 import { ParseError, ValidationError } from '@boost/args';
 import { Failure } from '../src/react';
 import { renderComponent } from '../src/test';
+import { vi } from 'vitest';
 
-jest.mock('term-size');
+vi.mock('term-size');
 
 describe('<Failure />', () => {
 	it('renders a common error', async () => {

@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 expect.extend({
 	toBeFilePath(received, expected) {
 		let path = String(expected);
@@ -23,8 +25,8 @@ global.delay = function delay(time: number = 100) {
 };
 
 // Differs between osx/windows
-jest.mock('figures', () => ({
-	...jest.requireActual('figures'),
+vi.mock('figures', async () => ({
+	...(await vi.importActual('figures')),
 	tick: '^',
 	cross: 'x',
 	pointer: '>>',
@@ -34,8 +36,8 @@ jest.mock('figures', () => ({
 }));
 
 // Focus is required for snapshots
-jest.mock('ink', () => ({
-	...jest.requireActual('ink'),
+vi.mock('ink', async () => ({
+	...(await vi.importActual('ink')),
 	useFocus: () => ({ isFocused: true }),
 	useFocusManager: () => ({ focusNext() {} }),
 }));

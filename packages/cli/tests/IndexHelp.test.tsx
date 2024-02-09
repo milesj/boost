@@ -2,8 +2,9 @@ import React from 'react';
 import { Help, IndexHelp } from '../src/react';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__fixtures__/args';
+import { vi } from 'vitest';
 
-jest.mock('term-size');
+vi.mock('term-size');
 
 const banner = ` _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|

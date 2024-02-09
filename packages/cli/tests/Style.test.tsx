@@ -2,9 +2,10 @@ import React from 'react';
 import { loadTheme } from '../src/helpers/loadTheme';
 import { Style } from '../src/react';
 import { renderComponent } from '../src/test';
+import { vi } from 'vitest';
 
-jest.mock('term-size');
-jest.mock('../src/helpers/loadTheme');
+vi.mock('term-size');
+vi.mock('../src/helpers/loadTheme');
 
 describe('<Style />', () => {
 	beforeEach(() => {

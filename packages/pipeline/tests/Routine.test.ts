@@ -8,8 +8,9 @@ import { PooledPipeline } from '../src/PooledPipeline';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
+import { vi } from 'vitest';
 
-jest.mock('execa');
+vi.mock('execa');
 
 describe('Routine', () => {
 	class TestRoutine extends Routine<string, string, { test: number }> {

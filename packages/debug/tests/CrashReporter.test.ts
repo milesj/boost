@@ -3,9 +3,10 @@ import path from 'path';
 import execa from 'execa';
 import glob from 'fast-glob';
 import { CrashReporter } from '../src/CrashReporter';
+import { vi } from 'vitest';
 
-jest.mock('execa');
-jest.mock('fast-glob');
+vi.mock('execa');
+vi.mock('fast-glob');
 
 describe('CrashReporter', () => {
 	let reporter: CrashReporter;
