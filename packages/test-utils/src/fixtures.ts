@@ -3,6 +3,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
+import vi from 'vitest';
 import { DirectoryStructure } from './types';
 
 const FIXTURES_DIR = path.join(process.cwd(), 'tests', '__fixtures__');
@@ -77,11 +78,11 @@ export function copyFixtureToNodeModule(
 }
 
 export function copyFixtureToMock(fixture: string, mockName: string): () => void {
-	const module = jest.requireActual(getFixturePath(fixture)) as unknown as object;
+	const module = require(getFixturePath(fixture)) as unknown as object;
 
-	jest.doMock(mockName, () => module, { virtual: true });
+	vi.doMock(mockName, () => module, { virtual: true });
 
-	return () => jest.dontMock(mockName);
+	return () => vi.dontMock(mockName);
 }
 
 export function copyFixtureToTempFolder(fixture: string): string {
@@ -137,10 +138,11 @@ export function createTempFolderStructureFromJSON(structure: DirectoryStructure)
 	return root;
 }
 
-if (typeof afterAll === 'function') {
-	afterAll(() => {
-		[...TEMPORARY_FILES].forEach((tempFile) => {
-			removeTempFile(tempFile);
-		});
-	});
-}
+// TODO
+// if (typeof afterAll === 'function') {
+// 	afterAll(() => {
+// 		[...TEMPORARY_FILES].forEach((tempFile) => {
+// 			removeTempFile(tempFile);
+// 		});
+// 	});
+// }

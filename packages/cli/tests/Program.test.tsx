@@ -27,6 +27,7 @@ import { ClientDecoratorCommand } from './__fixtures__/ClientDecoratorCommand';
 import { Child, GrandChild, Parent } from './__fixtures__/commands';
 import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand';
 import { vi } from 'vitest';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 vi.mock('term-size');
 

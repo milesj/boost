@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Deprecate } from '../src';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('@Deprecate', () => {
 	let spy: jest.SpyInstance;

@@ -1,4 +1,5 @@
 import { Throttle } from '../src';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('@Throttle()', () => {
 	class Test {

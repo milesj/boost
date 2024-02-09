@@ -3,6 +3,7 @@ import { loadTheme } from '../src/helpers/loadTheme';
 import { Style } from '../src/react';
 import { renderComponent } from '../src/test';
 import { vi } from 'vitest';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 vi.mock('term-size');
 vi.mock('../src/helpers/loadTheme');

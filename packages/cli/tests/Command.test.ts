@@ -18,6 +18,7 @@ import { InstallDecoratorCommand } from './__fixtures__/InstallDecoratorCommand'
 import { InstallInitializerCommand } from './__fixtures__/InstallInitializerCommand';
 import { InstallPropsCommand } from './__fixtures__/InstallPropsCommand';
 import { vi } from 'vitest';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 vi.mock('execa');
 vi.mock('term-size');

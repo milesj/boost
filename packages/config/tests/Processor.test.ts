@@ -6,6 +6,7 @@ import { overwrite } from '../src/helpers/overwrite';
 import { Processor } from '../src/Processor';
 import { createExtendsSchema, createOverridesSchema, createPluginsSchema } from '../src/schemas';
 import { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Processor', () => {
 	interface ConfigShape {

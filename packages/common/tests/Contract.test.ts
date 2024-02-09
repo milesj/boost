@@ -1,5 +1,6 @@
 import { Contract } from '../src';
 import { Schemas } from '../src/optimal';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Contract', () => {
 	class OptionalProps extends Contract<{ foo?: string; bar?: number; baz?: { qux: string } }> {

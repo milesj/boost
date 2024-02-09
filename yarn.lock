@@ -1890,6 +1890,7 @@ __metadata:
   resolution: "@boost/test-utils@workspace:packages/test-utils"
   dependencies:
     fs-extra: ^11.1.1
+    vitest: ^1.2.2
   languageName: unknown
   linkType: soft
 

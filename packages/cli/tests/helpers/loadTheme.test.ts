@@ -1,5 +1,6 @@
 import { env } from '@boost/internal';
 import { loadTheme } from '../../src/helpers/loadTheme';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('loadTheme()', () => {
 	beforeEach(() => {

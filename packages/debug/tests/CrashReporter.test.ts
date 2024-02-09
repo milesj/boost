@@ -4,6 +4,7 @@ import execa from 'execa';
 import glob from 'fast-glob';
 import { CrashReporter } from '../src/CrashReporter';
 import { vi } from 'vitest';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 vi.mock('execa');
 vi.mock('fast-glob');

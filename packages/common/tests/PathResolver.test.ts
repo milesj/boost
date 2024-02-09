@@ -6,6 +6,7 @@ import {
 	normalizePath,
 } from '@boost/test-utils';
 import { Path, PathResolver } from '../src';
+import { describe, beforeEach, it, expect } from 'vitest';
 import { mockFilePath, mockModulePath } from '../src/test';
 
 describe('PathResolver', () => {

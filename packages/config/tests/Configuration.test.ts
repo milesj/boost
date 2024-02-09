@@ -4,6 +4,7 @@ import { getFixturePath } from '@boost/test-utils';
 import { Configuration, createExtendsSchema, mergeExtends } from '../src';
 import { ExtendsSetting, ExtType } from '../src/types';
 import { mockSystemPath } from './helpers';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 interface BoostConfig {
 	debug: boolean;

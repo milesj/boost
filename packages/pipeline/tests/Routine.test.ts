@@ -9,6 +9,7 @@ import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
 import { vi } from 'vitest';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 vi.mock('execa');
 

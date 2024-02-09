@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { mockFilePath } from '@boost/common/test';
 import { Cache } from '../src/Cache';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 const CACHE_KEY = process.platform === 'win32' ? 'foo\\bar' : 'foo/bar';
 

@@ -1,4 +1,5 @@
 import { Debounce } from '../src';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('@Debounce()', () => {
 	class Test {

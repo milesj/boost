@@ -1,6 +1,7 @@
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import { FileTransport } from '../../src/transports/FileTransport';
+import { describe, beforeEach, it, expect } from 'vitest';
 import {
 	closeStream,
 	existsFile,

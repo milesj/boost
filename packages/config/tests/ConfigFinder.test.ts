@@ -4,6 +4,7 @@ import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';
 import { ConfigFinder } from '../src/ConfigFinder';
 import { mockSystemPath } from './helpers';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('ConfigFinder', () => {
 	let cache: Cache;

@@ -1,6 +1,7 @@
 import { getFixturePath } from '@boost/test-utils';
 import { createTranslator } from '../src/createTranslator';
 import { Translator } from '../src/types';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('createTranslator()', () => {
 	let translator: Translator;

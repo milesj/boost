@@ -1,6 +1,7 @@
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { DEFAULT_PRIORITY, Registration, Registry } from '../src';
 import { createRendererRegistry, Renderable, Renderer } from './__fixtures__/Renderer';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 function sortByName(a: Registration<Renderable>, b: Registration<Renderable>) {
 	return a.name.localeCompare(b.name);

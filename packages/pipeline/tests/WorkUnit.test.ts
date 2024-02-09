@@ -2,6 +2,7 @@ import { STATUS_RUNNING } from '../src/constants';
 import { Context } from '../src/Context';
 import { Task } from '../src/Task';
 import { WorkUnit } from '../src/WorkUnit';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Work', () => {
 	let context: Context;

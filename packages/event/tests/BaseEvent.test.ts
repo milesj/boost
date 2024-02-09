@@ -1,4 +1,5 @@
 import { Event } from '../src/Event';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Event', () => {
 	let event: Event<unknown[]>;

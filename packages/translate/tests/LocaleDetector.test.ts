@@ -1,5 +1,6 @@
 import { LocaleDetector } from '../src/LocaleDetector';
 import { vi } from 'vitest';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 vi.mock('os-locale', () => ({
 	sync: () => 'en-US',

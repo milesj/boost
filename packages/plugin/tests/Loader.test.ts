@@ -2,6 +2,7 @@ import { Path } from '@boost/common';
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { Loader } from '../src/Loader';
 import { createRendererRegistry, Renderable } from './__fixtures__/Renderer';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Loader', () => {
 	let fixtures: Function[];

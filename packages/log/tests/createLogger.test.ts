@@ -4,6 +4,7 @@ import { createLogger } from '../src/createLogger';
 import * as formats from '../src/formats';
 import { StreamTransport } from '../src/transports/StreamTransport';
 import { Formatter, LoggerFunction, LoggerOptions } from '../src/types';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('createLogger()', () => {
 	let logger: LoggerFunction;
