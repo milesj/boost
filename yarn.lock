@@ -2102,7 +2102,7 @@ __metadata:
     string-width: ^4.2.3
     strip-ansi: ^7.1.0
     supports-hyperlinks: ^3.0.0
-    term-size: ^2.2.1
+    term-size: ^3.0.2
     wrap-ansi: ^8.1.0
   languageName: unknown
   linkType: soft
@@ -17795,6 +17795,13 @@ __metadata:
   version: 2.2.1
   resolution: "term-size@npm:2.2.1"
   checksum: 1ed981335483babc1e8206f843e06bd2bf89b85f0bf5a9a9d928033a0fcacdba183c03ba7d91814643015543ba002f1339f7112402a21da8f24b6c56b062a5a9
+  languageName: node
+  linkType: hard
+
+"term-size@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "term-size@npm:3.0.2"
+  checksum: 41847f8d7c1d1f80ed6bd2da60281e04901057ea113299873eae30033fbff43840f700feee26679ce66cf168d7eacb8773a78e742bbae46ddaf794a33ff0b0dd
   languageName: node
   linkType: hard
 
