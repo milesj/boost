@@ -22,6 +22,7 @@ jobs:
           auto-install: true
       - run: moon ci --color
         env:
+          MOONBASE_SECRET_KEY: ${{ secrets.MOONBASE_SECRET_KEY }}
           MOON_NODE_VERSION: ${{ matrix.node-version }}
   pack:
     name: Pack
@@ -34,6 +35,8 @@ jobs:
         with:
           auto-install: true
       - run: 'moon run :pack --color'
+        env:
+          MOONBASE_SECRET_KEY: ${{ secrets.MOONBASE_SECRET_KEY }}
   # docs:
   #   name: Docs
   #   runs-on: ubuntu-latest
