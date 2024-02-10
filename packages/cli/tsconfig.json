@@ -3,7 +3,8 @@
   "compilerOptions": {
     "jsx": "react",
     "outDir": "dts",
-    "rootDir": "."
+    "rootDir": ".",
+    "noUnusedLocals": false
   },
   "include": [
     "src/**/*",

@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { json, Path } from '@boost/common';
 
 export async function loadJson<T>(path: Path): Promise<T> {

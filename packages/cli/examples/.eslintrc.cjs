@@ -1,0 +1,8 @@
+module.exports = {
+	rules: {
+		'max-classes-per-file': 'off',
+		'no-magic-numbers': 'off',
+		'sort-keys': 'off',
+		'import/no-extraneous-dependencies': 'off',
+	},
+};

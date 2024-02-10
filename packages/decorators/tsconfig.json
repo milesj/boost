@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
     "outDir": "dts",
-    "rootDir": "."
+    "rootDir": ".",
+    "noUnusedLocals": false
   },
   "include": [
     "src/**/*",

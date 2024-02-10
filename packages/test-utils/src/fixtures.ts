@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
-import os from 'os';
-import path from 'path';
+import os from 'node:os';
+import path from 'node:path';
 import fs from 'fs-extra';
 import { vi } from 'vitest';
 import { DirectoryStructure } from './types';

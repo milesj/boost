@@ -1,7 +1,7 @@
 /* eslint-disable promise/prefer-await-to-callbacks */
 /* eslint-disable promise/prefer-await-to-then */
 
-import os from 'os';
+import os from 'node:os';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { Context } from './Context';
 import { debug } from './debug';
