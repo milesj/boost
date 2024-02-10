@@ -2103,7 +2103,7 @@ __metadata:
     strip-ansi: ^7.1.0
     supports-hyperlinks: ^3.0.0
     term-size: ^2.2.1
-    wrap-ansi: ^7.0.0
+    wrap-ansi: ^8.1.0
   languageName: unknown
   linkType: soft
 
@@ -4956,13 +4956,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/wrap-ansi@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@types/wrap-ansi@npm:3.0.0"
-  checksum: 492f0610093b5802f45ca292777679bb9b381f1f32ae939956dd9e00bf81dba7cc99979687620a2817d9a7d8b59928207698166c47a0861c6a2e5c30d4aaf1e9
-  languageName: node
-  linkType: hard
-
 "@types/ws@npm:^8.5.1":
   version: 8.5.3
   resolution: "@types/ws@npm:8.5.3"
@@ -6419,7 +6412,6 @@ __metadata:
     "@types/react": ^17.0.58
     "@types/semver": ^7.3.13
     "@types/split": ^1.0.2
-    "@types/wrap-ansi": ^3.0.0
     "@vitest/coverage-v8": ^1.2.2
     eslint: ^8.56.0
     eslint-config-moon: ^2.1.1
