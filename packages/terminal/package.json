@@ -36,7 +36,7 @@
     "chalk": "^4.1.2",
     "cli-truncate": "^2.1.0",
     "figures": "^3.2.0",
-    "slice-ansi": "^4.0.0",
+    "slice-ansi": "^7.1.0",
     "string-width": "^4.2.3",
     "strip-ansi": "^6.0.1",
     "supports-hyperlinks": "^3.0.0",
