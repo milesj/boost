@@ -1845,7 +1845,7 @@ __metadata:
     ink-testing-library: ^2.1.0
     levenary: ^1.1.1
     react: ^17.0.2
-    semver: ^7.5.0
+    semver: ^7.6.0
   peerDependencies:
     ink: ^3.0.0
     react: ^16.8.0 || ^17.0.0
