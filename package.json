@@ -7,7 +7,7 @@
     "pack": "packemon pack-workspace --addEngines --addExports --declaration",
     "pack:all": "bash ./scripts/buildPackages.sh",
     "pack:in": "cd ${0} && packemon pack --addEngines --addExports --declaration",
-    "clean": "packemon clean && rm -rf ./packages/*/tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./packages/*/{cjs,esm,mjs,*.tsbuildinfo}",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
