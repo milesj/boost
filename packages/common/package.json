@@ -33,7 +33,7 @@
     "@boost/decorators": "^5.0.0-alpha.0",
     "@boost/internal": "^5.0.0-alpha.0",
     "enhanced-resolve": "^5.15.0",
-    "fast-glob": "^3.2.12",
+    "fast-glob": "^3.3.2",
     "json5": "^2.2.3",
     "optimal": "^5.1.1",
     "pretty-ms": "^7.0.1",
