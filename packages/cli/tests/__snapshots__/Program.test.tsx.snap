@@ -63,7 +63,7 @@ exports[`<Program /> > exit > renders a non-zero exit 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Fail!
 "
 `;
 
@@ -80,7 +80,7 @@ exports[`<Program /> > failure > renders if an error is thrown 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Broken!
 "
 `;
 
@@ -88,7 +88,10 @@ exports[`<Program /> > failure > renders when args parsing fails 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Unknown option "--foo" found. Did you mean "help"? [ARG:OPTION_UNKNOWN_MORE]
+
+ [90m$ boost [31m--foo[39m[90m[39m
+ [31m        └───┘[39m
 "
 `;
 
@@ -96,7 +99,7 @@ exports[`<Program /> > failure > renders when invalid command name passed 1`] = 
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Unknown command "prune". Did you mean "build"? [CLI:COMMAND_UNKNOWN]
 "
 `;
 
@@ -104,7 +107,7 @@ exports[`<Program /> > failure > renders when misspelt command name passed 1`] =
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Unknown command "buld". Did you mean "build"? [CLI:COMMAND_UNKNOWN]
 "
 `;
 
@@ -112,7 +115,7 @@ exports[`<Program /> > failure > renders when no commands could be found 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Failed to determine a command to run. [CLI:COMMAND_INVALID_RUN]
 "
 `;
 
@@ -120,7 +123,8 @@ exports[`<Program /> > failure > renders when no commands have been registered 1
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ No commands have been registered. At least 1 is required.
+ [CLI:COMMAND_NONE_REGISTERED]
 "
 `;
 
@@ -128,7 +132,7 @@ exports[`<Program /> > failure > renders with custom exit error 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Oops
 "
 `;
 
@@ -383,7 +387,10 @@ exports[`<Program /> > locale > errors for invalid \`--locale\` 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Locale must be in the format of "en" or "en-US".
+
+ [90m$ boost [33m--locale[39m[90m wtf[39m
+ [33m        └──────┘[39m
 "
 `;
 
@@ -414,7 +421,7 @@ exports[`<Program /> > nested programs > bubbles up errors 1`] = `
 "
 [1m[41m[30m ERROR [39m[49m[22m
 
- Cannot read properties of undefined (reading 'columns')
+ Bubbles
 "
 `;
 
