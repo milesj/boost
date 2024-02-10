@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
-import execa, { Options as ExecaOptions } from 'execa';
+import { execa, type Options as ExecaOptions } from 'execa';
 import {
 	ArgList,
 	Arguments,

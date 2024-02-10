@@ -1,4 +1,4 @@
-import execa, { ExecaChildProcess, Options as ExecaOptions } from 'execa';
+import { execa, type ExecaChildProcess, type Options as ExecaOptions } from 'execa';
 import { kebabCase } from 'lodash-es';
 import split from 'split';
 import { toArray } from '@boost/common';

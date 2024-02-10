@@ -42,7 +42,7 @@
     "@boost/log": "^5.0.0-alpha.0",
     "@boost/terminal": "^5.0.0-alpha.0",
     "@boost/translate": "^5.0.0-alpha.0",
-    "execa": "^5.1.1",
+    "execa": "^8.0.1",
     "levenary": "^1.1.1",
     "semver": "^7.6.0"
   },
