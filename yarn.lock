@@ -1859,7 +1859,6 @@ __metadata:
     "@boost/decorators": ^5.0.0-alpha.0
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/test-utils": ^5.0.0-alpha.0
-    "@types/resolve": ^1.20.2
     enhanced-resolve: ^5.15.0
     fast-glob: ^3.3.2
     json5: ^2.2.3
@@ -1929,7 +1928,7 @@ __metadata:
   dependencies:
     "@boost/common": ^5.0.0-alpha.0
     "@boost/internal": ^5.0.0-alpha.0
-    "@types/debug": ^4.1.7
+    "@types/debug": ^4.1.12
     debug: ^4.3.4
     execa: ^5.1.1
     fast-glob: ^3.3.2
@@ -2083,7 +2082,7 @@ __metadata:
     "@boost/event": ^5.0.0-alpha.0
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/test-utils": ^5.0.0-alpha.0
-    "@types/pluralize": ^0.0.29
+    "@types/pluralize": ^0.0.33
     lodash-es: ^4.17.21
     pluralize: ^8.0.0
   languageName: unknown
@@ -4548,12 +4547,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.1.7":
-  version: 4.1.7
-  resolution: "@types/debug@npm:4.1.7"
+"@types/debug@npm:^4.1.12, @types/debug@npm:^4.1.7":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
   dependencies:
     "@types/ms": "*"
-  checksum: 0a7b89d8ed72526858f0b61c6fd81f477853e8c4415bb97f48b1b5545248d2ae389931680b94b393b993a7cfe893537a200647d93defe6d87159b96812305adc
+  checksum: 47876a852de8240bfdaf7481357af2b88cb660d30c72e73789abf00c499d6bc7cd5e52f41c915d1b9cd8ec9fef5b05688d7b7aef17f7f272c2d04679508d1053
   languageName: node
   linkType: hard
 
@@ -4591,12 +4590,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/exit@npm:^0.1.31":
-  version: 0.1.31
-  resolution: "@types/exit@npm:0.1.31"
+"@types/exit@npm:^0.1.33":
+  version: 0.1.33
+  resolution: "@types/exit@npm:0.1.33"
   dependencies:
     "@types/node": "*"
-  checksum: 1ff29203cc68ee6994385caa50f39e659b2646ac7b5a5dbca0652416170fba4eac635fb62a5d5e9161d17517c8dc3a51d4afdb6ba33f8fb258e3713441c21c7d
+  checksum: 74e8e74ea3ce2c2a0ebc7dbf1ac06a93bc99a073872db203ced3de7b439985a932dce5bc63b6841b21f34929b1e2f5f7db28c11c39fe43c0b09c3d4fb6bb7eec
   languageName: node
   linkType: hard
 
@@ -4785,10 +4784,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pluralize@npm:^0.0.29":
-  version: 0.0.29
-  resolution: "@types/pluralize@npm:0.0.29"
-  checksum: db7732b733ba1dc59f080f87364c9f985c1ae9f1e5ec5fcefb83c1327149e01ecac42766352eb7b19b117cf39defa99cf514629f3666968a3bdeb00e74f2a97e
+"@types/pluralize@npm:^0.0.33":
+  version: 0.0.33
+  resolution: "@types/pluralize@npm:0.0.33"
+  checksum: 282d42dc0187e5e0912f9f36ee0f5615bfd273a08d40afe5bf5881cb28daf1977abe10564543032aa0f42352ebba739ff3d86bf5562ac4691c6d1761fcc7cf39
   languageName: node
   linkType: hard
 
@@ -4856,7 +4855,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/resolve@npm:1.20.2, @types/resolve@npm:^1.20.2":
+"@types/resolve@npm:1.20.2":
   version: 1.20.2
   resolution: "@types/resolve@npm:1.20.2"
   checksum: 61c2cad2499ffc8eab36e3b773945d337d848d3ac6b7b0a87c805ba814bc838ef2f262fc0f109bfd8d2e0898ff8bd80ad1025f9ff64f1f71d3d4294c9f14e5f6
@@ -4895,7 +4894,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.13, @types/semver@npm:^7.5.0":
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0, @types/semver@npm:^7.5.6":
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
   checksum: 563a0120ec0efcc326567db2ed920d5d98346f3638b6324ea6b50222b96f02a8add3c51a916b6897b51523aad8ac227d21d3dcf8913559f1bfc6c15b14d23037
@@ -4930,13 +4929,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/split@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@types/split@npm:1.0.2"
+"@types/split@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "@types/split@npm:1.0.5"
   dependencies:
     "@types/node": "*"
     "@types/through": "*"
-  checksum: ba9f000b18e25671ad329df73b95ef95128844f49470c8836bacbd0f0c181d258c07e7e4828209aa6c2af36bd508fb6eee114958696667da79e702001a5af5bf
+  checksum: fd3eb167e69b46e2d3f7e198a5b4ce27f552e0b9e19f35a1696f09be7faf869462047d3b9d0eb4edd8c2949d15ac08287b046143d1036596f0dfc7eaf4d24a09
   languageName: node
   linkType: hard
 
@@ -6405,13 +6404,13 @@ __metadata:
   dependencies:
     "@moonrepo/cli": ^1.21.3
     "@moonrepo/dev": ^2.0.1
-    "@types/exit": ^0.1.31
+    "@types/exit": ^0.1.33
     "@types/fs-extra": ^11.0.4
     "@types/lodash-es": ^4.17.12
-    "@types/pluralize": ^0.0.29
+    "@types/pluralize": ^0.0.33
     "@types/react": ^17.0.58
-    "@types/semver": ^7.3.13
-    "@types/split": ^1.0.2
+    "@types/semver": ^7.5.6
+    "@types/split": ^1.0.5
     "@vitest/coverage-v8": ^1.2.2
     eslint: ^8.56.0
     eslint-config-moon: ^2.1.1

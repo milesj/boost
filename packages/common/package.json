@@ -40,8 +40,7 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@boost/test-utils": "^5.0.0-alpha.0",
-    "@types/resolve": "^1.20.2"
+    "@boost/test-utils": "^5.0.0-alpha.0"
   },
   "peerDependencies": {
     "typescript": "^4.0.0 || ^5.0.0"

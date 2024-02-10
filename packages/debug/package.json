@@ -35,7 +35,7 @@
   "dependencies": {
     "@boost/common": "^5.0.0-alpha.0",
     "@boost/internal": "^5.0.0-alpha.0",
-    "@types/debug": "^4.1.7",
+    "@types/debug": "^4.1.12",
     "debug": "^4.3.4",
     "execa": "^5.1.1",
     "fast-glob": "^3.3.2"
