@@ -10,8 +10,8 @@ tasks:
   clean:
     command:
       'rm -rf cjs esm mjs tsconfig.cjs.tsbuildinfo tsconfig.esm.tsbuildinfo tsconfig.mjs.tsbuildinfo'
+    local: true
     options:
-      cache: false
       shell: true
 
   build:
@@ -55,8 +55,7 @@ tasks:
   lint-fix:
     extends: 'lint'
     args: '--fix'
-    options:
-      runInCI: false
+    local: true
 
   format:
     command: 'prettier --check --ignore-path @in(0) --config @in(1) .'
@@ -67,8 +66,7 @@ tasks:
   format-write:
     extends: 'format'
     args: '--write'
-    options:
-      runInCI: false
+    local: true
 
   typecheck:
     command: 'tsc --build'

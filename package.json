@@ -3,7 +3,7 @@
   "name": "boost-root",
   "type": "module",
   "scripts": {
-    "moon": "$(yarn bin moon)",
+    "moon": "$(yarn bin moon) --color",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
     "test": "NODE_ENV=test BOOSTJS_ENV=test vitest",
