@@ -42,9 +42,9 @@ async function test() {
 						b: 2,
 						c: 3,
 					},
-			  }
+				}
 			: // Support for named exports in CommonJS was added in 12.20+
-			  {
+				{
 					a: 1,
 					b: 2,
 					c: 3,
@@ -53,7 +53,7 @@ async function test() {
 						b: 2,
 						c: 3,
 					},
-			  },
+				},
 	);
 
 	// MJS
