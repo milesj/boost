@@ -8,20 +8,17 @@
     "boost",
     "decorators"
   ],
-  "main": "./cjs/index.cjs",
+  "main": "./mjs/index.mjs",
   "browser": "./lib/index.js",
   "module": "./esm/index.js",
   "types": "./dts/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "esm/**/*.{js,map}",
-    "lib/**/*.{js,map}",
-    "src/**/*.{ts,tsx,json}"
+    "esm/**/*",
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",

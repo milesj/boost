@@ -14,16 +14,14 @@
     "params",
     "cli"
   ],
-  "main": "./cjs/index.cjs",
+  "main": "./mjs/index.mjs",
   "types": "./dts/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "src/**/*.{ts,tsx,json}"
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",

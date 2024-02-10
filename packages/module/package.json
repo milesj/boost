@@ -1,7 +1,6 @@
 {
   "name": "@boost/module",
   "version": "5.0.0-alpha.0",
-  "type": "module",
   "release": "1651512177871",
   "description": "Module resolving and loading utilities with TypeScript support.",
   "keywords": [
@@ -12,16 +11,14 @@
     "typescript"
   ],
   "main": "./cjs/index.cjs",
-  "types": "./dts/index.d.ts",
+  "types": "./cjs/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "mjs/**/*.{mjs,map}",
-    "src/**/*.{ts,tsx,json}"
+    "cjs/**/*",
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",
@@ -61,5 +58,27 @@
       "format": "mjs",
       "platform": "node"
     }
-  ]
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./loader-typescript": {
+      "node": {
+        "types": "./mjs/loaders/typescript.d.ts",
+        "import": "./mjs/loader-typescript.mjs"
+      }
+    },
+    "./loader": {
+      "node": {
+        "types": "./mjs/loaders/index.d.ts",
+        "import": "./mjs/loader.mjs"
+      }
+    },
+    ".": {
+      "node": {
+        "types": "./cjs/index.d.ts",
+        "import": "./cjs/index-wrapper.mjs",
+        "require": "./cjs/index.cjs"
+      }
+    }
+  }
 }

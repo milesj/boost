@@ -7699,7 +7699,7 @@ __metadata:
     eslint-config-moon: ^2.1.1
     fs-extra: ^11.1.1
     lerna: ^6.6.1
-    packemon: ^3.3.0
+    packemon: ^3.3.1
     prettier: ^2.8.8
     prettier-config-moon: ^1.1.2
     time-require: ^0.1.2
@@ -15575,9 +15575,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"packemon@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "packemon@npm:3.3.0"
+"packemon@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "packemon@npm:3.3.1"
   dependencies:
     "@babel/core": ^7.23.9
     "@babel/plugin-external-helpers": ^7.23.3
@@ -15632,7 +15632,7 @@ __metadata:
       optional: true
   bin:
     packemon: cjs/bin.cjs
-  checksum: 602fb9c11929fea8b66d3ce96acf3280a0b684d439d92211ebdfccd22d89834fe2d2496ec32fda80498831c1111d70d2e579c79f58ead2927ced242deb5bd419
+  checksum: aa0a97b7107a5785d30f55e23f265fc9fb95fd7fca288f960cf27cecd06e341b7d037d57411e9edf47c23facf4bc5bbff1f456d8276c477085627a56706d1ebb
   languageName: node
   linkType: hard
 

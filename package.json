@@ -3,9 +3,9 @@
   "name": "boost-root",
   "type": "module",
   "scripts": {
-    "build": "yarn run packemon build-workspace --addEngines",
-    "pack": "NODE_ENV=production yarn run packemon pack-workspace --addEngines --addExports --declaration",
-    "clean": "yarn run packemon clean && rm -rf ./packages/*/tsconfig.tsbuildinfo",
+    "build": "packemon build-workspace --addEngines",
+    "pack": "NODE_ENV=production packemon pack-workspace --addEngines --addExports --declaration",
+    "clean": "packemon clean && rm -rf ./packages/*/tsconfig.tsbuildinfo",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
@@ -18,7 +18,7 @@
     "type": "tsc --build",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx --package packemon@3.3.0 --package typescript --quiet packemon"
+    "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
   },
   "engines": {
     "node": "^18.0.0"
@@ -40,7 +40,7 @@
     "eslint-config-moon": "^2.1.1",
     "fs-extra": "^11.1.1",
     "lerna": "^6.6.1",
-    "packemon": "^3.3.0",
+    "packemon": "^3.3.1",
     "prettier": "^2.8.8",
     "prettier-config-moon": "^1.1.2",
     "time-require": "^0.1.2",
