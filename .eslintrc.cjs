@@ -6,6 +6,7 @@ module.exports = {
 		tsconfigRootDir: __dirname,
 	},
 	rules: {
+		'node/no-unpublished-import': 'off',
 		// Doesnt work with `package.json` exports
 		'import/no-unresolved': 'off',
 		// Not ESM yet

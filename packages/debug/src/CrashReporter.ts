@@ -1,8 +1,8 @@
 /* eslint-disable no-magic-numbers */
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import execa from 'execa';
 import glob from 'fast-glob';
 import { FilePath, PackageStructure, PortablePath, toArray } from '@boost/common';

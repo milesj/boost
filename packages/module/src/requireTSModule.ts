@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, node/no-deprecated-api */
 
-import fs from 'fs';
-import type Module from 'module';
+import fs from 'node:fs';
+import type Module from 'node:module';
 import { interopModule } from './interopModule';
 import { ModuleLike, PathLike, TS } from './types';
 import { COMPILER_OPTIONS, getTargetFromNodeVersion, isTypeScript } from './typescript';

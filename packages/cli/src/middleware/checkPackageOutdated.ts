@@ -1,4 +1,4 @@
-import https from 'https';
+import https from 'node:https';
 import semver from 'semver';
 import { json } from '@boost/common';
 import { Middleware } from '../types';

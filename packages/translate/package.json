@@ -1,7 +1,7 @@
 {
   "name": "@boost/translate",
-  "version": "4.0.1",
-  "type": "commonjs",
+  "version": "5.0.0-alpha.0",
+  "type": "module",
   "release": "1651512178249",
   "description": "Package and application level translations made easy.",
   "keywords": [
@@ -12,16 +12,14 @@
     "message",
     "resources"
   ],
-  "main": "./cjs/index.cjs",
-  "types": "./dts/index.d.ts",
+  "main": "./mjs/index.mjs",
+  "types": "./mjs/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "src/**/*.{ts,tsx,json}"
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",
@@ -34,8 +32,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^4.1.0",
-    "@boost/internal": "^4.0.1",
+    "@boost/common": "^5.0.0-alpha.0",
+    "@boost/internal": "^5.0.0-alpha.0",
     "i18next": "^22.4.15",
     "os-locale": "^5.0.0"
   },
@@ -45,16 +43,15 @@
   },
   "packemon": {
     "api": "private",
-    "format": "cjs",
+    "format": "mjs",
     "platform": "node"
   },
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dts/index.d.ts",
       "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
       }
     }
   }

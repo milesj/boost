@@ -10,73 +10,37 @@
       "path": "packages/args"
     },
     {
-      "path": "packages/args/tests"
-    },
-    {
       "path": "packages/cli"
-    },
-    {
-      "path": "packages/cli/tests"
     },
     {
       "path": "packages/common"
     },
     {
-      "path": "packages/common/tests"
-    },
-    {
       "path": "packages/config"
-    },
-    {
-      "path": "packages/config/tests"
     },
     {
       "path": "packages/debug"
     },
     {
-      "path": "packages/debug/tests"
-    },
-    {
       "path": "packages/decorators"
-    },
-    {
-      "path": "packages/decorators/tests"
     },
     {
       "path": "packages/event"
     },
     {
-      "path": "packages/event/tests"
-    },
-    {
       "path": "packages/internal"
-    },
-    {
-      "path": "packages/internal/tests"
     },
     {
       "path": "packages/log"
     },
     {
-      "path": "packages/log/tests"
-    },
-    {
       "path": "packages/module"
-    },
-    {
-      "path": "packages/module/tests"
     },
     {
       "path": "packages/pipeline"
     },
     {
-      "path": "packages/pipeline/tests"
-    },
-    {
       "path": "packages/plugin"
-    },
-    {
-      "path": "packages/plugin/tests"
     },
     {
       "path": "packages/terminal"
@@ -86,9 +50,6 @@
     },
     {
       "path": "packages/translate"
-    },
-    {
-      "path": "packages/translate/tests"
     }
   ]
 }

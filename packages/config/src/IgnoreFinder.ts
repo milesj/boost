@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { Path } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';

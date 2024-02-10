@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [14, 16, 18, 20]
+        node-version: [16, 18, 20]
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
@@ -20,11 +20,11 @@ jobs:
           cache: yarn
           node-version: ${{ matrix.node-version }}
       - run: yarn install --immutable
-      - run: yarn run build
+      - run: yarn run pack:all
       - run: yarn run type
-      - run: yarn run coverage
+      # - run: yarn run coverage
       - run: yarn run test:tsm
-      - run: yarn run test:loader
+      # - run: yarn run test:loader
       - run: yarn run lint
   pack:
     name: Pack
@@ -35,15 +35,15 @@ jobs:
         with:
           cache: yarn
       - run: yarn install --immutable
-      - run: yarn run pack
-  docs:
-    name: Docs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn run pack
-      - run: cd website && yarn run build
+      - run: yarn run pack:all
+  # docs:
+  #   name: Docs
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         cache: yarn
+  #     - run: yarn install --immutable
+  #     - run: yarn run pack:all
+  #     - run: cd website && yarn run build

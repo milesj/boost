@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { Path, yaml } from '@boost/common';
 
 export async function loadYaml<T>(path: Path): Promise<T> {

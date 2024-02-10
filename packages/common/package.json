@@ -1,7 +1,7 @@
 {
   "name": "@boost/common",
-  "version": "4.1.0",
-  "type": "commonjs",
+  "version": "5.0.0-alpha.0",
+  "type": "module",
   "release": "1651512176767",
   "description": "A collection of common utilities, classes, and helpers.",
   "keywords": [
@@ -10,16 +10,14 @@
     "utils",
     "helpers"
   ],
-  "main": "./cjs/index.cjs",
-  "types": "./dts/index.d.ts",
+  "main": "./mjs/index.mjs",
+  "types": "./mjs/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "src/**/*.{ts,tsx,json}"
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",
@@ -32,17 +30,17 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/decorators": "^4.0.0",
-    "@boost/internal": "^4.0.1",
+    "@boost/decorators": "^5.0.0-alpha.0",
+    "@boost/internal": "^5.0.0-alpha.0",
     "fast-glob": "^3.2.12",
     "json5": "^2.2.3",
     "optimal": "^5.1.1",
     "pretty-ms": "^7.0.1",
     "resolve": "^1.22.1",
-    "yaml": "^2.2.2"
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@boost/test-utils": "^4.0.1",
+    "@boost/test-utils": "^5.0.0-alpha.0",
     "@types/resolve": "^1.20.2"
   },
   "peerDependencies": {
@@ -64,30 +62,27 @@
       "optimal": "src/optimal.ts",
       "test": "src/test.ts"
     },
-    "format": "cjs",
+    "format": "mjs",
     "platform": "node"
   },
   "exports": {
     "./package.json": "./package.json",
     "./optimal": {
-      "types": "./dts/optimal.d.ts",
       "node": {
-        "import": "./cjs/optimal-wrapper.mjs",
-        "require": "./cjs/optimal.cjs"
+        "types": "./mjs/optimal.d.ts",
+        "import": "./mjs/optimal.mjs"
       }
     },
     "./test": {
-      "types": "./dts/test.d.ts",
       "node": {
-        "import": "./cjs/test-wrapper.mjs",
-        "require": "./cjs/test.cjs"
+        "types": "./mjs/test.d.ts",
+        "import": "./mjs/test.mjs"
       }
     },
     ".": {
-      "types": "./dts/index.d.ts",
       "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
       }
     }
   }
