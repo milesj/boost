@@ -1,7 +1,11 @@
-import { vi, expect } from 'vitest';
+/* eslint-disable no-underscore-dangle */
 
+import { expect, vi } from 'vitest';
+
+// @ts-expect-error Allow access
 global.__DEV__ = true;
 global.__PROD__ = true;
+// @ts-expect-error Allow access
 global.__TEST__ = true;
 
 expect.extend({
@@ -18,7 +22,7 @@ expect.extend({
 			expect(received).toBe(path);
 		}
 
-		return { pass: !this.isNot, message: '' };
+		return { pass: !this.isNot, message: () => '' };
 	},
 });
 

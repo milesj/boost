@@ -9,6 +9,7 @@
     "themes/*/types/**/*",
     "website/src/**/*",
     "website/types/**/*",
+    "tests/setup.ts",
     "types/**/*",
     "*.config.js",
     "*.config.ts"
