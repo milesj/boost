@@ -11,7 +11,7 @@
     "helpers"
   ],
   "main": "./mjs/index.mjs",
-  "types": "./dts/index.d.ts",
+  "types": "./mjs/index.d.ts",
   "files": [
     "mjs/**/*",
     "src/**/*"
@@ -37,7 +37,7 @@
     "optimal": "^5.1.1",
     "pretty-ms": "^7.0.1",
     "resolve": "^1.22.1",
-    "yaml": "^2.2.2"
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@boost/test-utils": "^5.0.0-alpha.0",
@@ -64,5 +64,26 @@
     },
     "format": "mjs",
     "platform": "node"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./optimal": {
+      "node": {
+        "types": "./mjs/optimal.d.ts",
+        "import": "./mjs/optimal.mjs"
+      }
+    },
+    "./test": {
+      "node": {
+        "types": "./mjs/test.d.ts",
+        "import": "./mjs/test.mjs"
+      }
+    },
+    ".": {
+      "node": {
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
+      }
+    }
   }
 }

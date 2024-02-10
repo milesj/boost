@@ -11,9 +11,8 @@
     "type-safe"
   ],
   "main": "./mjs/index.mjs",
-  "browser": "./lib/index.js",
   "module": "./esm/index.js",
-  "types": "./dts/index.d.ts",
+  "types": "./mjs/index.d.ts",
   "files": [
     "esm/**/*",
     "mjs/**/*",
@@ -50,5 +49,19 @@
       "format": "mjs",
       "platform": "node"
     }
-  ]
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "browser": {
+        "types": "./esm/index.d.ts",
+        "module": "./esm/index.js",
+        "import": "./esm/index.js"
+      },
+      "node": {
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
+      }
+    }
+  }
 }
