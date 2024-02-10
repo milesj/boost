@@ -1,0 +1,20 @@
+fileGroups:
+  sources:
+    - 'src/**/*'
+    - '/types/**/*'
+  tests:
+    - 'tests/**/*'
+    - '/tests/**/*'
+
+tasks:
+  typecheck:
+    command: 'tsc --build'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - 'tsconfig.json'
+      - 'tsconfig.*.json'
+      - '/tsconfig.json'
+      - '/tsconfig.*.json'
+    deps:
+      - '^:typecheck'

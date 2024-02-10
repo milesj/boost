@@ -17,13 +17,12 @@
     "test:cli": "node ./packages/cli/examples/bin.js",
     "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.mjs",
     "test:loader": "node --experimental-loader @boost/module/loader ./packages/module/tests/esmloader.assert.mjs && node --loader @boost/module/loader-typescript ./packages/module/tests/esmloader.assert.mjs",
-    "type": "tsc --build",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
     "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
   },
   "engines": {
-    "node": "^20.0.0"
+    "node": "20.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
