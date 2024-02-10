@@ -1,0 +1,153 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<Help /> > commands > doesnt render empty commands 1`] = `""`;
+
+exports[`<Help /> > commands > renders commands (stripped) 1`] = `
+"
+ COMMANDS 
+
+ barbar         This is a deprecated command with no params. [deprecated]
+ foo src [dst]  This is a normal command with params."
+`;
+
+exports[`<Help /> > commands > renders commands 1`] = `
+"
+[1m[47m[30m COMMANDS [39m[49m[22m
+
+ barbar         This is a deprecated command with no params. [90m[deprecated][39m
+ foo [90msrc[39m [90m[dst][39m  This is a normal command with params."
+`;
+
+exports[`<Help /> > config > renders description 1`] = `" I am a command that does cool things."`;
+
+exports[`<Help /> > config > renders description with additional params 1`] = `" I am a command that does cool things. [90m[deprecated][39m"`;
+
+exports[`<Help /> > config > renders description with markdown 1`] = `
+" This is the top level command description.
+ All descriptions support markdown like [1mbold[22m, [1mstrong[22m, [3mitalics[23m, [3memphasis[23m, and [9mstrikethroughs[29m."
+`;
+
+exports[`<Help /> > options > doesnt render empty options 1`] = `""`;
+
+exports[`<Help /> > options > renders options (stripped) 1`] = `
+"
+ OPTIONS 
+
+     --deprecatedFlag                        A deprecated flag. [deprecated]
+     --deprecatedStringWithALongName string  Deprecated string option with custom label.
+                                             [deprecated]
+     --flag                                  Standard boolean option.
+     --num number                            Standard number option.
+ -C, --numberCountable number                Number option that increments a count for each
+                                             occurence. (default: 10) [counter]
+ -n, --numberFixedList number                A list of numbers to choose from. (choices: 1, 2, 3, 4,
+                                              5, 6, 7, 8, 9, 10) [deprecated]
+     --numWithArity number[]                 A multiple number option that requires an exact number
+                                             of values. [multiple(10)]
+     --str string                            Standard string option.
+ -s, --stringChoices string                  Choice list with strings. (choices: "foo", "bar",
+                                             "baz") (default: "bar")
+ -S, --strList string[]                      String option list. [multiple]
+ -t, --no-truthyBool                         Flag that is on by default, so name should be negated.
+                                             (default: true)"
+`;
+
+exports[`<Help /> > options > renders options 1`] = `
+"
+[1m[47m[30m OPTIONS [39m[49m[22m
+
+     --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
+     --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with custom label.
+                                             [90m[deprecated][39m
+     --flag                                  Standard boolean option.
+     --num [90mnumber[39m                            Standard number option.
+ -C, --numberCountable [90mnumber[39m                Number option that increments a count for each
+                                             occurence. (default: 10) [90m[counter][39m
+ -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4,
+                                              5, 6, 7, 8, 9, 10) [90m[deprecated][39m
+     --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number
+                                             of values. [90m[multiple(10)][39m
+     --str [90mstring[39m                            Standard string option.
+ -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: "foo", "bar",
+                                             "baz") (default: "bar")
+ -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
+ -t, --no-truthyBool                         Flag that is on by default, so name should be negated.
+                                             (default: true)"
+`;
+
+exports[`<Help /> > params > doesnt render empty params 1`] = `""`;
+
+exports[`<Help /> > params > renders params (stripped) 1`] = `
+"
+ PARAMS 
+
+ 0 string     Complex param with many tags. [deprecated, required]
+ path string  This is a string param thats required. [required]
+ ms number    And this a number param with a label.
+ 3 boolean    And finally a boolean param. [deprecated]"
+`;
+
+exports[`<Help /> > params > renders params 1`] = `
+"
+[1m[47m[30m PARAMS [39m[49m[22m
+
+ 0 [90mstring[39m     Complex param with many tags. [90m[deprecated, required][39m
+ path [90mstring[39m  This is a string param thats required. [90m[required][39m
+ ms [90mnumber[39m    And this a number param with a label.
+ 3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m"
+`;
+
+exports[`<Help /> > renders everything 1`] = `
+" I am a command that does cool things.
+
+[1m[47m[30m USAGE [39m[49m[22m
+
+ $ ink foo bar
+
+[1m[47m[30m PARAMS [39m[49m[22m
+
+ 0 [90mstring[39m     Complex param with many tags. [90m[deprecated, required][39m
+ path [90mstring[39m  This is a string param thats required. [90m[required][39m
+ ms [90mnumber[39m    And this a number param with a label.
+ 3 [90mboolean[39m    And finally a boolean param. [90m[deprecated][39m
+
+[1m[47m[30m COMMANDS [39m[49m[22m
+
+ barbar         This is a deprecated command with no params. [90m[deprecated][39m
+ foo [90msrc[39m [90m[dst][39m  This is a normal command with params.
+
+[1m[47m[30m OPTIONS [39m[49m[22m
+
+     --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
+     --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with custom label.
+                                             [90m[deprecated][39m
+     --flag                                  Standard boolean option.
+     --num [90mnumber[39m                            Standard number option.
+ -C, --numberCountable [90mnumber[39m                Number option that increments a count for each
+                                             occurence. (default: 10) [90m[counter][39m
+ -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4,
+                                              5, 6, 7, 8, 9, 10) [90m[deprecated][39m
+     --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number
+                                             of values. [90m[multiple(10)][39m
+     --str [90mstring[39m                            Standard string option.
+ -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: "foo", "bar",
+                                             "baz") (default: "bar")
+ -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
+ -t, --no-truthyBool                         Flag that is on by default, so name should be negated.
+                                             (default: true)"
+`;
+
+exports[`<Help /> > usage > renders usage array 1`] = `
+"
+[1m[47m[30m USAGE [39m[49m[22m
+
+ $ ink foo bar
+ $ test --foo -b"
+`;
+
+exports[`<Help /> > usage > renders usage string 1`] = `
+"
+[1m[47m[30m USAGE [39m[49m[22m
+
+ $ ink foo bar"
+`;

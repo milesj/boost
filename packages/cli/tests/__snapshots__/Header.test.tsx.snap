@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<Header /> > renders \`default\` 1`] = `
+"
+[1m[47m[30m TITLE [39m[49m[22m
+"
+`;
+
+exports[`<Header /> > renders \`failure\` 1`] = `
+"
+[1m[41m[30m TITLE [39m[49m[22m
+"
+`;
+
+exports[`<Header /> > renders \`muted\` 1`] = `
+"
+[1m[100m[30m TITLE [39m[49m[22m
+"
+`;
+
+exports[`<Header /> > renders \`success\` 1`] = `
+"
+[1m[42m[30m TITLE [39m[49m[22m
+"
+`;
+
+exports[`<Header /> > renders \`warning\` 1`] = `
+"
+[1m[43m[30m TITLE [39m[49m[22m
+"
+`;

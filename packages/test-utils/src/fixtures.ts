@@ -3,10 +3,10 @@
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'fs-extra';
-import { vi } from 'vitest';
+import { afterAll } from 'vitest';
 import { DirectoryStructure } from './types';
 
-const FIXTURES_DIR = path.join(process.cwd(), '../../tests', '__fixtures__');
+const FIXTURES_DIR = path.join(process.cwd(), '../../tests/__fixtures__');
 
 const TEMPORARY_FILES = new Set<string>();
 
@@ -130,11 +130,8 @@ export function createTempFolderStructureFromJSON(structure: DirectoryStructure)
 	return root;
 }
 
-// TODO
-// if (typeof afterAll === 'function') {
-// 	afterAll(() => {
-// 		[...TEMPORARY_FILES].forEach((tempFile) => {
-// 			removeTempFile(tempFile);
-// 		});
-// 	});
-// }
+afterAll(() => {
+	[...TEMPORARY_FILES].forEach((tempFile) => {
+		removeTempFile(tempFile);
+	});
+});

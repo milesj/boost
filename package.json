@@ -26,6 +26,7 @@
     "@types/semver": "^7.3.13",
     "@types/split": "^1.0.2",
     "@types/wrap-ansi": "^3.0.0",
+    "@vitest/coverage-v8": "^1.2.2",
     "babel-preset-moon": "^2.0.14",
     "eslint": "^8.56.0",
     "eslint-config-moon": "^2.1.1",

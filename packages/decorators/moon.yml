@@ -1,4 +1,4 @@
 workspace:
   inheritedTasks:
     # Vitest doesn't support TS decorators!
-    exclude: ['test']
+    exclude: ['test', 'test-cov']

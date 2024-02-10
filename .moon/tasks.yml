@@ -15,7 +15,7 @@ tasks:
       shell: true
 
   build:
-    command: 'packemon build --addEngines'
+    command: 'packemon build --addEngines --quiet'
     deps:
       - '^:build'
     inputs:
@@ -80,6 +80,11 @@ tasks:
       - 'build'
     env:
       BOOSTJS_ENV: 'test'
+
+  test-cov:
+    extends: 'test'
+    args: '--coverage'
+    local: true
 
   typecheck:
     command: 'tsc --build'

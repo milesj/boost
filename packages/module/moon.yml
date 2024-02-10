@@ -17,4 +17,4 @@ tasks:
 
 workspace:
   inheritedTasks:
-    exclude: ['test']
+    exclude: ['test', 'test-cov']
