@@ -2004,7 +2004,7 @@ __metadata:
     "@boost/common": ^5.0.0-alpha.0
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/translate": ^5.0.0-alpha.0
-    chalk: ^4.1.2
+    chalk: ^5.3.0
   languageName: unknown
   linkType: soft
 
@@ -2095,7 +2095,7 @@ __metadata:
   dependencies:
     ansi-escapes: ^6.2.0
     ansi-regex: ^6.0.1
-    chalk: ^4.1.2
+    chalk: ^5.3.0
     cli-truncate: ^3.1.0
     figures: ^3.2.0
     slice-ansi: ^7.1.0
@@ -6812,6 +6812,13 @@ __metadata:
     ansi-styles: ^4.1.0
     supports-color: ^7.1.0
   checksum: fe75c9d5c76a7a98d45495b91b2172fa3b7a09e0cc9370e5c8feb1c567b85c4288e2b3fded7cfdd7359ac28d6b3844feb8b82b8686842e93d23c827c417e83fc
+  languageName: node
+  linkType: hard
+
+"chalk@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "chalk@npm:5.3.0"
+  checksum: 623922e077b7d1e9dedaea6f8b9e9352921f8ae3afe739132e0e00c275971bdd331268183b2628cf4ab1727c45ea1f28d7e24ac23ce1db1eb653c414ca8a5a80
   languageName: node
   linkType: hard
 

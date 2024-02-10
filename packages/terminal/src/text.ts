@@ -1,6 +1,6 @@
 import ansiEscapes from 'ansi-escapes';
 import ansiRegex from 'ansi-regex';
-import cliTruncate from 'cli-truncate';
+import cliTruncate, { type Options as CliTruncateOptions } from 'cli-truncate';
 import slice from 'slice-ansi';
 import stringWidth from 'string-width';
 import strip from 'strip-ansi';
@@ -102,7 +102,7 @@ export function stripAnsi(text: string): string {
 	return strip(text);
 }
 
-export type TruncateOptions = cliTruncate.Options;
+export type TruncateOptions = CliTruncateOptions;
 
 /**
  * Truncate a string to a desired terminal width while preserving ANSI escape codes,
