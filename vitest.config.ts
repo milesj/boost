@@ -52,9 +52,6 @@ export default defineConfig({
 				statements: 99,
 			},
 		},
-		deps: {
-			moduleDirectories: ['node_modules', 'tests/__mocks__'],
-		},
 		passWithNoTests: true,
 		setupFiles: [path.join(path.dirname(fileURLToPath(import.meta.url)), './tests/setup.ts')],
 	},
