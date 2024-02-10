@@ -1,6 +1,6 @@
 {
   "name": "@boost/translate",
-  "version": "4.0.1",
+  "version": "5.0.0-alpha.0",
   "type": "module",
   "release": "1651512178249",
   "description": "Package and application level translations made easy.",
@@ -34,8 +34,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^4.1.0",
-    "@boost/internal": "^4.0.1",
+    "@boost/common": "^5.0.0-alpha.0",
+    "@boost/internal": "^5.0.0-alpha.0",
     "i18next": "^22.4.15",
     "os-locale": "^5.0.0"
   },

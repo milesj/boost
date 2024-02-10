@@ -1,6 +1,6 @@
 {
   "name": "@boost/common",
-  "version": "4.1.0",
+  "version": "5.0.0-alpha.0",
   "type": "module",
   "release": "1651512176767",
   "description": "A collection of common utilities, classes, and helpers.",
@@ -32,8 +32,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/decorators": "^4.0.0",
-    "@boost/internal": "^4.0.1",
+    "@boost/decorators": "^5.0.0-alpha.0",
+    "@boost/internal": "^5.0.0-alpha.0",
     "fast-glob": "^3.2.12",
     "json5": "^2.2.3",
     "optimal": "^5.1.1",
@@ -42,7 +42,7 @@
     "yaml": "^2.2.2"
   },
   "devDependencies": {
-    "@boost/test-utils": "^4.0.1",
+    "@boost/test-utils": "^5.0.0-alpha.0",
     "@types/resolve": "^1.20.2"
   },
   "peerDependencies": {

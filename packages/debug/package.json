@@ -1,6 +1,6 @@
 {
   "name": "@boost/debug",
-  "version": "4.0.1",
+  "version": "5.0.0-alpha.0",
   "type": "module",
   "release": "1651512175897",
   "description": "Lightweight debugging and crash reporting.",
@@ -35,8 +35,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^4.1.0",
-    "@boost/internal": "^4.0.1",
+    "@boost/common": "^5.0.0-alpha.0",
+    "@boost/internal": "^5.0.0-alpha.0",
     "@types/debug": "^4.1.7",
     "debug": "^4.3.4",
     "execa": "^5.1.1",
