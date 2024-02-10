@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, Text } from 'ink';
 import { ParamConfig, ParamConfigList } from '@boost/args';
 import { SPACING_COL, SPACING_COL_WIDE } from '../../constants';

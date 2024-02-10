@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from 'ink';
 import { OptionConfigMap, ParamConfigList } from '@boost/args';
 import { SPACING_COL } from '../constants';

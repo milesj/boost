@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input, InputProps } from './Input';
 
 export type PasswordInputProps = Omit<InputProps, 'mask'>;

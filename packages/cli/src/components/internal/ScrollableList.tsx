@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { type ReactElement, useMemo } from 'react';
 import { Box } from 'ink';
 import { useDimensions } from '../../hooks';
 import { msg } from '../../translate';
@@ -29,7 +29,7 @@ export interface ScrollableListProps {
 export interface InternalScrollableListProps<T extends ScrollableItem> extends ScrollableListProps {
 	currentIndex: number;
 	items: T[];
-	renderItem: (item: T) => React.ReactElement;
+	renderItem: (item: T) => ReactElement;
 	rowHeight?: number;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, type ReactNode } from 'react';
 import { Box } from 'ink';
 import { ProgramContext } from '../../ProgramContext';
 import { ProgramContextType } from '../../types';
@@ -6,14 +6,14 @@ import { Failure } from '../Failure';
 import { LogWriter, LogWriterProps } from './LogWriter';
 
 export interface WrapperProps extends LogWriterProps, ProgramContextType {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 export interface WrapperState {
 	error: Error | null;
 }
 
-export class Wrapper extends React.Component<WrapperProps, WrapperState> {
+export class Wrapper extends Component<WrapperProps, WrapperState> {
 	override state: WrapperState = {
 		error: null,
 	};

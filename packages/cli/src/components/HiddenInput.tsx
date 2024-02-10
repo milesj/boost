@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input, InputProps } from './Input';
 
 export type HiddenInputProps = Omit<InputProps, 'hideCursor' | 'mask'>;

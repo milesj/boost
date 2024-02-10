@@ -1,4 +1,3 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Header } from '../src/react';
 import { renderComponent } from '../src/test';

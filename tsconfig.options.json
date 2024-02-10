@@ -4,7 +4,7 @@
     "experimentalDecorators": true,
     "module": "es2022",
     "moduleResolution": "bundler",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "verbatimModuleSyntax": false,
     "resolvePackageJsonExports": true,
     "resolvePackageJsonImports": true,

@@ -298,7 +298,6 @@ export class Program extends CommandManager<ProgramOptions> {
 				{
 					debug: process.env.NODE_ENV === 'test',
 					exitOnCtrlC: true,
-					experimental: true,
 					patchConsole: true,
 					stderr,
 					stdin,

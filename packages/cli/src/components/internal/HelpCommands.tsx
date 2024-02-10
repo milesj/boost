@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Box, Text } from 'ink';
 import { stripAnsi } from '@boost/terminal';
 import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from '../../constants';

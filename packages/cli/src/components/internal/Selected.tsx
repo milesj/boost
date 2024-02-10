@@ -1,4 +1,3 @@
-import React from 'react';
 import { applyStyle } from '../../helpers';
 import { Style } from '../Style';
 

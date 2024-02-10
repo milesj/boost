@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Box, Text } from 'ink';
 import { OptionConfig, OptionConfigMap } from '@boost/args';
 import { stripAnsi } from '@boost/terminal';
