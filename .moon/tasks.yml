@@ -7,6 +7,23 @@ fileGroups:
     - '/tests/**/*'
 
 tasks:
+  lint:
+    command:
+      'eslint --cache --color --ext .ts,.tsx --report-unused-disable-directives
+      --no-error-on-unmatched-pattern ./src ./tests'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - '.eslintrc.*'
+    deps:
+      - '^:typecheck'
+
+  lint-fix:
+    extends: 'lint'
+    args: '--fix'
+    options:
+      runInCI: false
+
   typecheck:
     command: 'tsc --build'
     inputs:
