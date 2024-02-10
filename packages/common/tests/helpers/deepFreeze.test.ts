@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { deepFreeze } from '../../src/helpers/deepFreeze';
 
 describe('deepFreeze()', () => {

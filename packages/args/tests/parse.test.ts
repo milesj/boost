@@ -1,5 +1,4 @@
-/* eslint-disable jest/no-conditional-in-test */
-
+import { describe, expect,it } from 'vitest';
 import { Flag, parse, ParseError, ValidationError } from '../src';
 import {
 	flagConfig,

@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { deepMerge } from '../../src/helpers/deepMerge';
 
 describe('deepMerge()', () => {

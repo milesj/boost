@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Bind } from '../src';
 
 describe('@Bind()', () => {

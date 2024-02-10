@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from 'vitest';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
@@ -97,8 +98,8 @@ describe('AggregatedPipeline', () => {
 			.add(new Task('One', action))
 			.add(new Task('Two', action))
 			.add(new Task('Three', action));
-		const runSpy = jest.fn();
-		const finSpy = jest.fn();
+		const runSpy = vi.fn();
+		const finSpy = vi.fn();
 
 		pipeline.onBeforeRun.listen(runSpy);
 		pipeline.onAfterRun.listen(finSpy);
@@ -115,7 +116,7 @@ describe('AggregatedPipeline', () => {
 		const two = new Task('Two', (ctx, value: string) => value.repeat(2));
 		const three = new Task('Three', (ctx, value: string) => value.repeat(3));
 		const pipeline = new AggregatedPipeline(new Context(), 'o').add(one).add(two).add(three);
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		pipeline.onRunWorkUnit.listen(spy);
 

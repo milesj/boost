@@ -1,10 +1,11 @@
 import https from 'https';
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Loggable } from '@boost/log';
 import { mockLogger } from '@boost/log/test';
 import { checkPackageOutdated } from '../../src/middleware/checkPackageOutdated';
 
 describe('checkPackageOutdated()', () => {
-	let httpsSpy: jest.SpyInstance;
+	let httpsSpy: MockInstance;
 	let logSpy: Loggable;
 
 	const parse = () =>
@@ -17,8 +18,8 @@ describe('checkPackageOutdated()', () => {
 			unknown: {},
 		});
 
-	beforeEach(() => {
-		httpsSpy = jest.spyOn(https, 'get').mockImplementation((url, res) => {
+	beforeEach(async () => {
+		httpsSpy = vi.spyOn(https, 'get').mockImplementation((url, res) => {
 			(res as Function)({
 				on(type: string, cb: (data?: string) => void) {
 					if (type === 'data') {
@@ -32,7 +33,7 @@ describe('checkPackageOutdated()', () => {
 			return {} as any;
 		});
 
-		logSpy = mockLogger();
+		logSpy = await mockLogger();
 	});
 
 	afterEach(() => {
@@ -51,7 +52,6 @@ describe('checkPackageOutdated()', () => {
 		httpsSpy.mockImplementation((url, res) => {
 			(res as Function)({
 				on(type: string, cb: Function) {
-					// eslint-disable-next-line jest/no-conditional-in-test
 					if (type === 'error') {
 						cb();
 					}

@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { describe, expect,it, vi } from 'vitest';
 import { patchDebugModule } from '../../src/helpers/patchDebugModule';
 
 describe('patchDebugModule()', () => {
@@ -7,7 +8,7 @@ describe('patchDebugModule()', () => {
 		process.env.DEBUG = '*';
 
 		const inst = debug('boostcli:test');
-		const spy = jest.spyOn(console, 'error').mockImplementation();
+		const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 		const unpatch = patchDebugModule();
 
 		debug.enable('boostcli:*');

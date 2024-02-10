@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { env } from '@boost/internal';
 import { loadTheme } from '../../src/helpers/loadTheme';
 

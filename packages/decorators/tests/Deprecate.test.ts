@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Deprecate } from '../src';
 
 describe('@Deprecate', () => {
-	let spy: jest.SpyInstance;
+	let spy: MockInstance;
 
 	beforeEach(() => {
-		spy = jest.spyOn(console, 'debug').mockImplementation();
+		spy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 	});
 
 	afterEach(() => {

@@ -1,3 +1,4 @@
+import { beforeEach } from 'vitest';
 import { Monitor } from '../src/Monitor';
 import { Pipeline } from '../src/Pipeline';
 import { WorkUnit } from '../src/WorkUnit';

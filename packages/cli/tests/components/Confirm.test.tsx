@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Confirm, ConfirmProps } from '../../src/components/Confirm';
 
 describe('Confirm', () => {
@@ -21,7 +22,7 @@ describe('Confirm', () => {
 	});
 
 	it('console errors if `yes` is invalid', async () => {
-		const spy = jest.spyOn(console, 'error').mockImplementation();
+		const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
 		render(<Confirm {...props} yes="" />);
 
@@ -33,7 +34,7 @@ describe('Confirm', () => {
 	});
 
 	it('console errors if `no` is invalid', async () => {
-		const spy = jest.spyOn(console, 'error').mockImplementation();
+		const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
 		render(<Confirm {...props} no="" />);
 
@@ -75,7 +76,7 @@ describe('Confirm', () => {
 	});
 
 	it('doesnt call `onSubmit` invalid input value', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Confirm {...props} onSubmit={spy} />);
 
 		await delay();
@@ -97,7 +98,7 @@ describe('Confirm', () => {
 		});
 
 		it('calls `onSubmit`', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { stdin } = render(<Confirm {...props} onSubmit={spy} />);
 
 			await delay();
@@ -120,7 +121,7 @@ describe('Confirm', () => {
 		});
 
 		it('calls `onSubmit`', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { stdin } = render(<Confirm {...props} onSubmit={spy} />);
 
 			await delay();

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import { FileTransport } from '../../src/transports/FileTransport';
@@ -18,7 +19,7 @@ describe('FileTransport', () => {
 	});
 
 	it('triggers close callback if stream has not been opened', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const path = new Path(fixtureDir, 'current.log');
 		const transport = new FileTransport({ levels: ['log'], path });
 

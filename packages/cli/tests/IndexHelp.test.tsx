@@ -1,9 +1,10 @@
 import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { Help, IndexHelp } from '../src/react';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__fixtures__/args';
 
-jest.mock('term-size');
+vi.mock('term-size');
 
 const banner = ` _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|

@@ -1,4 +1,4 @@
-/* eslint-disable no-nested-ternary */
+/* eslint-disable no-nested-ternary, @typescript-eslint/prefer-nullish-coalescing */
 
 import React from 'react';
 import { Box } from 'ink';

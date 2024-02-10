@@ -1,5 +1,4 @@
-/* eslint-disable jest/no-standalone-expect */
-
+import { describe, expect,it } from 'vitest';
 import { Schemas } from '@boost/common/optimal';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { Context } from '../src/Context';

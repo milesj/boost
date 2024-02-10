@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { mergePlugins } from '../../src/helpers/mergePlugins';
 
 describe('mergePlugins()', () => {

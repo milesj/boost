@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Contract } from '../src';
 import { Schemas } from '../src/optimal';
 
@@ -145,7 +146,7 @@ describe('Contract', () => {
 	});
 
 	describe('blueprint()', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 
 		class BlueprintTest extends Contract<{}> {
 			blueprint(schemas: unknown, onConstruct: boolean) {

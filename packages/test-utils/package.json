@@ -3,7 +3,7 @@
   "version": "4.0.1",
   "type": "commonjs",
   "release": "1651512178249",
-  "description": "Utility classes and functions for testing Boost applications in Jest.",
+  "description": "Utility classes and functions for testing Boost applications in Vitest.",
   "keywords": [
     "boost",
     "test",
@@ -31,7 +31,8 @@
     "access": "public"
   },
   "dependencies": {
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.1.1",
+    "vitest": "^1.2.2"
   },
   "funding": {
     "type": "ko-fi",

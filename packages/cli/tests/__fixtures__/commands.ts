@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/require-await */
+
 import { Command } from '../../src';
 
 export class Parent extends Command {
@@ -5,8 +7,8 @@ export class Parent extends Command {
 
 	static override path = 'parent';
 
-	run() {
-		return Promise.resolve('parent');
+	async run() {
+		return 'parent';
 	}
 }
 
@@ -15,8 +17,8 @@ export class Child extends Command {
 
 	static override path = 'parent:child';
 
-	run() {
-		return Promise.resolve('parent:child');
+	async run() {
+		return 'parent:child';
 	}
 }
 
@@ -25,8 +27,8 @@ export class GrandChild extends Command {
 
 	static override path = 'parent:child:grandchild';
 
-	run() {
-		return Promise.resolve('parent:child:grandchild');
+	async run() {
+		return 'parent:child:grandchild';
 	}
 }
 
@@ -35,8 +37,8 @@ export class UnknownChild extends Command {
 
 	static override path = 'unknown';
 
-	run() {
-		return Promise.resolve('unknown');
+	async run() {
+		return 'unknown';
 	}
 }
 
@@ -45,7 +47,7 @@ export class UnknownGrandChild extends Command {
 
 	static override path = 'parent:unknown';
 
-	run() {
-		return Promise.resolve('parent:unknown');
+	async run() {
+		return 'parent:unknown';
 	}
 }

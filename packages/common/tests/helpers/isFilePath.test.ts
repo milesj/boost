@@ -1,4 +1,5 @@
 import { sep } from 'path';
+import { describe, expect,it } from 'vitest';
 import { isFilePath } from '../../src/helpers/isFilePath';
 import { Path } from '../../src/Path';
 
@@ -19,7 +20,6 @@ describe('isFilePath()', () => {
 	});
 
 	it('returns true for absolute paths', () => {
-		// eslint-disable-next-line jest/no-conditional-in-test
 		const root = process.platform === 'win32' ? 'C:/' : '/';
 
 		expect(isFilePath(`${root}foo/bar`)).toBe(true);

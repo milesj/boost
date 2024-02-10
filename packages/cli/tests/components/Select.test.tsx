@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Select, SelectProps } from '../../src/components/Select';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
 
@@ -32,7 +33,6 @@ describe('Select', () => {
 
 	it('renders options and dividers using strings', () => {
 		const { lastFrame } = render(
-			// eslint-disable-next-line jest/no-conditional-in-test
 			<Select {...props} options={options.map((o) => ('divider' in o ? o : o.value))} />,
 		);
 
@@ -271,7 +271,7 @@ describe('Select', () => {
 
 	describe('selection', () => {
 		it('selects and displays a value when hitting space bar', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<Select {...props} limit={5} options={options} onSubmit={spy} />,
 			);
@@ -304,7 +304,7 @@ describe('Select', () => {
 		});
 
 		it('calls `onSubmit` with highlighted (but not selected) value when hitting enter', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<Select {...props} limit={5} options={options} onSubmit={spy} />,
 			);
@@ -318,7 +318,7 @@ describe('Select', () => {
 		});
 
 		it('calls `onSubmit` with selected value when hitting enter', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const { lastFrame, stdin } = render(
 				<Select {...props} limit={5} options={options} onSubmit={spy} />,
 			);

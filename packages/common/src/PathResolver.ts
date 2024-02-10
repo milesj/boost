@@ -17,7 +17,8 @@ export class PathResolver {
 		return new Promise((resolve, reject) => {
 			// eslint-disable-next-line promise/prefer-await-to-callbacks
 			doResolve(path, { basedir: startDir, includeCoreModules: false }, (error, foundPath) => {
-				if (error || !foundPath) {
+				if (error ?? !foundPath) {
+					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 					reject(error);
 				} else {
 					resolve(foundPath);

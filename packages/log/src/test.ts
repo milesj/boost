@@ -1,15 +1,13 @@
-/* eslint-disable jest/prefer-spy-on */
-
 import type { LoggerFunction } from '.';
 
 /**
- * Returns a Jest spy that matches the return value shape of `createLogger`.
+ * Returns a Vitest spy that matches the return value shape of `createLogger`.
  *
  * ```ts
  * import { mockLogger } from '@boost/log/test';
  *
- * it('calls the logger', () => {
- * 	const log = mockLogger();
+ * it('calls the logger', async () => {
+ * 	const log = await mockLogger();
  *
  * 	log('Something has happened');
  *
@@ -17,17 +15,18 @@ import type { LoggerFunction } from '.';
  * });
  * ```
  */
-export function mockLogger(): LoggerFunction {
-	const log = jest.fn() as any;
+export async function mockLogger(): Promise<LoggerFunction> {
+	const { vi } = await import('vitest');
+	const log = vi.fn() as any;
 
-	log.disable = jest.fn();
-	log.enable = jest.fn();
-	log.debug = jest.fn();
-	log.error = jest.fn();
-	log.log = jest.fn();
-	log.info = jest.fn();
-	log.trace = jest.fn();
-	log.warn = jest.fn();
+	log.disable = vi.fn();
+	log.enable = vi.fn();
+	log.debug = vi.fn();
+	log.error = vi.fn();
+	log.log = vi.fn();
+	log.info = vi.fn();
+	log.trace = vi.fn();
+	log.warn = vi.fn();
 
 	return log;
 }

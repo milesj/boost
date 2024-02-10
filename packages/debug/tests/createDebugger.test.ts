@@ -1,10 +1,11 @@
 import debug from 'debug';
+import { afterEach,beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { color } from '@boost/internal';
 import { createDebugger } from '../src/createDebugger';
 import { Debugger } from '../src/types';
 
 describe('createDebugger()', () => {
-	let errSpy: jest.SpyInstance;
+	let errSpy: MockInstance;
 	let debugFunc: Debugger;
 	let oldDebugEnvVar: string | undefined;
 
@@ -15,7 +16,7 @@ describe('createDebugger()', () => {
 		// Doesn't write unless an env var is set, so force it
 		debugFunc.enable();
 
-		errSpy = jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
+		errSpy = vi.spyOn(process.stderr, 'write').mockImplementation(vi.fn());
 	});
 
 	afterEach(() => {
@@ -105,7 +106,7 @@ describe('createDebugger()', () => {
 
 	describe('enable()', () => {
 		it('enables the namespace on `debug`', () => {
-			const spy = jest.spyOn(debug, 'enable');
+			const spy = vi.spyOn(debug, 'enable');
 
 			debugFunc.enable();
 

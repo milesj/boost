@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Throttle } from '../src';
 
 describe('@Throttle()', () => {
@@ -8,18 +9,18 @@ describe('@Throttle()', () => {
 		}
 	}
 
-	let spy: jest.SpyInstance;
+	let spy: MockInstance;
 
 	beforeEach(() => {
-		jest.useFakeTimers();
+		vi.useFakeTimers();
 
-		spy = jest.spyOn(console, 'log').mockImplementation();
+		spy = vi.spyOn(console, 'log').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		spy.mockRestore();
 
-		jest.useRealTimers();
+		vi.useRealTimers();
 	});
 
 	it('errors if applied to a class', () => {
@@ -56,7 +57,7 @@ describe('@Throttle()', () => {
 
 		expect(spy).toHaveBeenCalledTimes(1);
 
-		jest.advanceTimersByTime(150);
+		vi.advanceTimersByTime(150);
 
 		test.log();
 
@@ -71,7 +72,7 @@ describe('@Throttle()', () => {
 		test.log(3, 4);
 		test.log(5, 6);
 
-		jest.advanceTimersByTime(150);
+		vi.advanceTimersByTime(150);
 
 		expect(spy).toHaveBeenCalledWith('Logged!', 1, 2);
 		expect(spy).toHaveBeenCalledTimes(1);
