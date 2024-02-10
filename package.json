@@ -23,10 +23,11 @@
     "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
   },
   "engines": {
-    "node": "^18.0.0"
+    "node": "^20.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
+    "@moonrepo/cli": "^1.21.3",
     "@moonrepo/dev": "^2.0.1",
     "@types/babel__core": "^7.20.5",
     "@types/exit": "^0.1.31",
