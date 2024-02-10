@@ -2099,7 +2099,7 @@ __metadata:
     cli-truncate: ^2.1.0
     figures: ^3.2.0
     slice-ansi: ^7.1.0
-    string-width: ^4.2.3
+    string-width: ^6.1.0
     strip-ansi: ^7.1.0
     supports-hyperlinks: ^3.0.0
     term-size: ^3.0.2
@@ -8377,6 +8377,13 @@ __metadata:
   version: 1.4.665
   resolution: "electron-to-chromium@npm:1.4.665"
   checksum: 6c863300909a2712a79bd8a00ff2d3747fb72edf3dfda892449aabd42a12448e8e215e318d628421bbdfc7e4e3bc1fb38a81bbd530a71036bb86a75868e9eb8a
+  languageName: node
+  linkType: hard
+
+"emoji-regex@npm:^10.2.1":
+  version: 10.3.0
+  resolution: "emoji-regex@npm:10.3.0"
+  checksum: 5da48edfeb9462fb1ae5495cff2d79129974c696853fb0ce952cbf560f29a2756825433bf51cfd5157ec7b9f93f46f31d712e896d63e3d8ac9c3832bdb45ab73
   languageName: node
   linkType: hard
 
@@ -17414,6 +17421,17 @@ __metadata:
     emoji-regex: ^9.2.2
     strip-ansi: ^7.0.1
   checksum: 7369deaa29f21dda9a438686154b62c2c5f661f8dda60449088f9f980196f7908fc39fdd1803e3e01541970287cf5deae336798337e9319a7055af89dafa7193
+  languageName: node
+  linkType: hard
+
+"string-width@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "string-width@npm:6.1.0"
+  dependencies:
+    eastasianwidth: ^0.2.0
+    emoji-regex: ^10.2.1
+    strip-ansi: ^7.0.1
+  checksum: 8aefb456a230c8d7fe254049b1b2d62603da1a3b6c7fc9f3332f6779583cc1c72653f9b6e4cd0c1c92befee1565d4a0a7542d09ba4ceb6d96af02fbd8425bb03
   languageName: node
   linkType: hard
 
