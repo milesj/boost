@@ -1,4 +1,4 @@
-import { describe, expect, it, Mock,vi } from 'vitest';
+import { describe, expect, it, Mock, vi } from 'vitest';
 import { Memoize } from '../src';
 
 async function sleep(time: number): Promise<void> {
@@ -44,7 +44,6 @@ describe('@Memoize()', () => {
 		manyArgs(a: string, b: number, c: boolean): string {
 			this.spy();
 
-			 
 			return a + b + c;
 		}
 

@@ -42,12 +42,29 @@ tasks:
       - '@group(sources)'
       - '@group(tests)'
       - '.eslintrc.*'
+      - '/.eslintrc.cjs'
+      - 'tsconfig.json'
+      - 'tsconfig.*.json'
+      - '/tsconfig.json'
+      - '/tsconfig.*.json'
     deps:
       - '^:typecheck'
 
   lint-fix:
     extends: 'lint'
     args: '--fix'
+    options:
+      runInCI: false
+
+  format:
+    command: 'prettier --check --ignore-path @in(0) --config @in(1) .'
+    inputs:
+      - '/.prettierignore'
+      - '/prettier.config.cjs'
+
+  format-write:
+    extends: 'format'
+    args: '--write'
     options:
       runInCI: false
 

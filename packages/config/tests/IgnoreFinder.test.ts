@@ -1,5 +1,5 @@
 import { EOL } from 'node:os';
-import { beforeEach, describe, expect,it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
 import { Cache } from '../src/Cache';

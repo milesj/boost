@@ -1,4 +1,4 @@
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { isNodeBinary } from '../../src/helpers/isNodeBinary';
 
 describe('isNodeBinary()', () => {

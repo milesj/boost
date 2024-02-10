@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect,it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Path } from '@boost/common';
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { Loader } from '../src/Loader';

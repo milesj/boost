@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
-import { describe, expect,it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { PasswordInput, PasswordInputProps } from '../../src/components/PasswordInput';
 
 describe('PasswordInput', () => {

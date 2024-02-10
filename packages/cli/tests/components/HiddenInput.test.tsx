@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'ink-testing-library';
-import { describe, expect,it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { HiddenInput, HiddenInputProps } from '../../src/components/HiddenInput';
 
 describe('HiddenInput', () => {
