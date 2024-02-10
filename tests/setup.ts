@@ -1,4 +1,12 @@
-import { vi, expect } from 'vitest';
+/* eslint-disable no-underscore-dangle */
+
+import { expect, vi } from 'vitest';
+
+// @ts-expect-error Allow access
+global.__DEV__ = true;
+global.__PROD__ = true;
+// @ts-expect-error Allow access
+global.__TEST__ = true;
 
 expect.extend({
 	toBeFilePath(received, expected) {
@@ -14,7 +22,7 @@ expect.extend({
 			expect(received).toBe(path);
 		}
 
-		return { pass: !this.isNot, message: '' };
+		return { pass: !this.isNot, message: () => '' };
 	},
 });
 
@@ -25,19 +33,21 @@ global.delay = function delay(time: number = 100) {
 };
 
 // Differs between osx/windows
-vi.mock('figures', async () => ({
-	...(await vi.importActual('figures')),
-	tick: '^',
-	cross: 'x',
-	pointer: '>>',
-	pointerSmall: '>',
-	circleDotted: 'o',
-	bullet: '●',
+vi.mock('figures', async (importOriginal) => ({
+	default: {
+		...(await importOriginal<object>()),
+		tick: '^',
+		cross: 'x',
+		pointer: '>>',
+		pointerSmall: '>',
+		circleDotted: 'o',
+		bullet: '●',
+	},
 }));
 
 // Focus is required for snapshots
-vi.mock('ink', async () => ({
-	...(await vi.importActual('ink')),
+vi.mock('ink', async (importOriginal) => ({
+	...(await importOriginal<object>()),
 	useFocus: () => ({ isFocused: true }),
 	useFocusManager: () => ({ focusNext() {} }),
 }));

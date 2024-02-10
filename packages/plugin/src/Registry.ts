@@ -1,5 +1,4 @@
-import kebabCase from 'lodash/kebabCase';
-import upperFirst from 'lodash/upperFirst';
+import { kebabCase, upperFirst } from 'lodash-es';
 import pluralize from 'pluralize';
 import {
 	Contract,

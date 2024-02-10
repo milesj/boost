@@ -40,7 +40,7 @@
     "@boost/internal": "^5.0.0-alpha.0",
     "@boost/translate": "^5.0.0-alpha.0",
     "execa": "^5.1.1",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "split": "^1.0.1"
   },
   "funding": {

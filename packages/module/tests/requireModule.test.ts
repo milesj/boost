@@ -84,6 +84,6 @@ describe('requireModule()', () => {
 			expect(() => requireModule(getFixture('format-mjs.mjs'))).toThrow();
 		});
 
-		// Unable to test .ts, .tsx because of Jest require patching
+		// Unable to test .ts, .tsx because of require patching
 	});
 });

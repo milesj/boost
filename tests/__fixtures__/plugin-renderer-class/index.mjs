@@ -1,4 +1,4 @@
-const { Plugin } = require('@boost/plugin');
+import { Plugin } from '@boost/plugin';
 
 class Renderer extends Plugin {
 	blueprint({ string }) {
@@ -13,7 +13,7 @@ class Renderer extends Plugin {
 }
 
 // Async
-module.exports = async function rendererPlugin(options) {
+export default async function rendererPlugin(options) {
 	await Promise.resolve();
 
 	return new Renderer(options);

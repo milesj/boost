@@ -1,3 +1,7 @@
+/* eslint-disable import/no-default-export */
+
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -8,12 +12,16 @@ export default defineConfig({
 				if (id.startsWith('cjs-') || id.startsWith('esm-')) {
 					return `virtual:${id}`;
 				}
+
+				return null;
 			},
 		},
 	],
+	resolve: {
+		conditions: ['node'],
+	},
 	test: {
 		coverage: {
-			provider: 'v8',
 			exclude: [
 				'__fixtures__',
 				'src/test.ts',
@@ -36,6 +44,7 @@ export default defineConfig({
 				'test-utils/src',
 				'website/src',
 			],
+			provider: 'v8',
 			thresholds: {
 				branches: 90,
 				functions: 99,
@@ -43,7 +52,7 @@ export default defineConfig({
 				statements: 99,
 			},
 		},
-		globalSetup: ['./tests/setup.ts'],
 		passWithNoTests: true,
+		setupFiles: [path.join(path.dirname(fileURLToPath(import.meta.url)), './tests/setup.ts')],
 	},
 });

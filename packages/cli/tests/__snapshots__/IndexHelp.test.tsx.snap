@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`<IndexHelp /> renders a banner 1`] = `
+exports[`<IndexHelp /> > renders a banner 1`] = `
 " _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|
 | __ -|  |  |  |  |__   | | |
@@ -10,7 +10,7 @@ Boost v1.2.3 [90mboost[39m
 "
 `;
 
-exports[`<IndexHelp /> renders a footer 1`] = `
+exports[`<IndexHelp /> > renders a footer 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 
@@ -18,7 +18,7 @@ Powered by Boost CLI v1.2.3
 "
 `;
 
-exports[`<IndexHelp /> renders a header 1`] = `
+exports[`<IndexHelp /> > renders a header 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 
@@ -26,7 +26,7 @@ For more information, see https://github.com/milesj/boost
 "
 `;
 
-exports[`<IndexHelp /> renders children 1`] = `
+exports[`<IndexHelp /> > renders children 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 
@@ -72,13 +72,13 @@ Boost v1.2.3 [90mboost[39m
 "
 `;
 
-exports[`<IndexHelp /> renders with base props 1`] = `
+exports[`<IndexHelp /> > renders with base props 1`] = `
 "
 Boost v1.2.3 [90mboost[39m
 "
 `;
 
-exports[`<IndexHelp /> renders with everything 1`] = `
+exports[`<IndexHelp /> > renders with everything 1`] = `
 " _____ _____ _____ _____ _____
 | __  |     |     |   __|_   _|
 | __ -|  |  |  |  |__   | | |

@@ -28,8 +28,8 @@ export function Deprecate(message?: string) {
 		} else if (isProperty(target, property, descriptor)) {
 			console.debug(message ?? `Property \`${className + accessSymbol}\` has been deprecated.`);
 
-			// Param (Babel/Jest doesnt support them)
-		} /* istanbul ignore next */ else if (isParam(target, property, descriptor)) {
+			// Param
+		} else if (isParam(target, property, descriptor)) {
 			console.debug(
 				message ??
 					`Parameter ${descriptor} for \`${className + accessSymbol}()\` has been deprecated.`,
