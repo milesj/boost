@@ -8,7 +8,8 @@ fileGroups:
 
 tasks:
   clean:
-    command: 'rm -rf {cjs,esm,mjs,*.tsbuildinfo}'
+    command:
+      'rm -rf cjs esm mjs tsconfig.cjs.tsbuildinfo tsconfig.esm.tsbuildinfo tsconfig.mjs.tsbuildinfo'
     options:
       cache: false
       shell: true
@@ -18,6 +19,20 @@ tasks:
     inputs:
       - '@group(sources)'
       - 'package.json'
+    options:
+      runInCI: false
+
+  pack:
+    command: 'packemon pack --addEngines --addExports --declaration'
+    inputs:
+      - '@group(sources)'
+      - 'package.json'
+      - 'tsconfig.*.json'
+      - '/tsconfig.options.json'
+    outputs:
+      - 'cjs/**/*'
+      - 'esm/**/*'
+      - 'mjs/**/*'
 
   lint:
     command:

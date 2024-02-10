@@ -3,10 +3,7 @@
   "name": "boost-root",
   "type": "module",
   "scripts": {
-    "pack": "packemon pack-workspace --addEngines --addExports --declaration",
-    "pack:all": "bash ./scripts/buildPackages.sh",
-    "pack:in": "cd ${0} && packemon pack --addEngines --addExports --declaration",
-    "check": "yarn run type && yarn run test && yarn run lint",
+    "pack:all": "$(yarn bin moon) run :pack",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
     "format": "prettier --write .",
