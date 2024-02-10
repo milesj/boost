@@ -35,7 +35,7 @@
     "@boost/common": "^5.0.0-alpha.0",
     "@boost/internal": "^5.0.0-alpha.0",
     "i18next": "^22.4.15",
-    "os-locale": "^5.0.0"
+    "os-locale": "^6.0.2"
   },
   "funding": {
     "type": "ko-fi",

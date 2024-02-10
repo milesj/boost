@@ -1,5 +1,5 @@
 import { LanguageDetectorModule } from 'i18next';
-import osLocale from 'os-locale';
+import { osLocaleSync } from 'os-locale';
 import { debug } from './debug';
 import { Locale } from './types';
 
@@ -43,7 +43,7 @@ export class LocaleDetector implements LanguageDetectorModule {
 	}
 
 	detectFromOS(): Locale {
-		const locale = osLocale.sync().replace(/_/gu, '-');
+		const locale = osLocaleSync().replace(/_/gu, '-');
 
 		debug('Locale "%s" detected from operating system', locale);
 
