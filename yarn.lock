@@ -1861,7 +1861,7 @@ __metadata:
     "@boost/test-utils": ^5.0.0-alpha.0
     "@types/resolve": ^1.20.2
     enhanced-resolve: ^5.15.0
-    fast-glob: ^3.2.12
+    fast-glob: ^3.3.2
     json5: ^2.2.3
     optimal: ^5.1.1
     pretty-ms: ^7.0.1
@@ -1932,7 +1932,7 @@ __metadata:
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     execa: ^5.1.1
-    fast-glob: ^3.2.12
+    fast-glob: ^3.3.2
   languageName: unknown
   linkType: soft
 
