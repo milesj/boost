@@ -1848,7 +1848,7 @@ __metadata:
     semver: ^7.6.0
   peerDependencies:
     ink: ^3.0.0
-    react: ^16.8.0 || ^17.0.0
+    react: ^18.0.0
   languageName: unknown
   linkType: soft
 
@@ -1918,7 +1918,7 @@ __metadata:
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/module": ^5.0.0-alpha.0
     "@boost/test-utils": ^5.0.0-alpha.0
-    minimatch: ^9.0.0
+    minimatch: ^9.0.3
   languageName: unknown
   linkType: soft
 
@@ -13083,7 +13083,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:9.0.3, minimatch@npm:^9.0.0":
+"minimatch@npm:9.0.3, minimatch@npm:^9.0.0, minimatch@npm:^9.0.3":
   version: 9.0.3
   resolution: "minimatch@npm:9.0.3"
   dependencies:
