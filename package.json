@@ -23,7 +23,6 @@
     "@types/react": "^17.0.58",
     "@types/semver": "^7.3.13",
     "@types/split": "^1.0.2",
-    "@types/wrap-ansi": "^3.0.0",
     "@vitest/coverage-v8": "^1.2.2",
     "eslint": "^8.56.0",
     "eslint-config-moon": "^2.1.1",
