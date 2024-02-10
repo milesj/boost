@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@boost/test-utils": "^5.0.0-alpha.0",
-    "@types/pluralize": "^0.0.29"
+    "@types/pluralize": "^0.0.33"
   },
   "packemon": {
     "api": "private",
