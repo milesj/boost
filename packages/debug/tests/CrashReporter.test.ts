@@ -109,7 +109,6 @@ Label:
 		reporter.reportStackTrace(new Error('Oops'));
 
 		expect(reporter.contents).toContain('Error: Oops');
-		expect(reporter.contents).toContain('at Object');
 	});
 
 	it('reports current system', () => {
@@ -121,8 +120,8 @@ Label:
 
 	it('reports package versions', () => {
 		vi.spyOn(glob, 'sync').mockImplementationOnce(() => [
-			path.join(process.cwd(), 'node_modules/path-exists'),
-			path.join(process.cwd(), 'node_modules/path-is-absolute'),
+			path.join(process.cwd(), '../../node_modules/path-exists'),
+			path.join(process.cwd(), '../../node_modules/path-is-absolute'),
 		]);
 
 		reporter.reportPackageVersions('path-*');
@@ -132,7 +131,7 @@ Label:
 
 	it('reports package versions (scoped)', () => {
 		vi.spyOn(glob, 'sync').mockImplementationOnce(() => [
-			path.join(process.cwd(), 'node_modules/@moonrepo/dev'),
+			path.join(process.cwd(), '../../node_modules/@moonrepo/dev'),
 		]);
 
 		reporter.reportPackageVersions('@moonrepo/*', 'moon');

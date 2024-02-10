@@ -1,12 +1,12 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CrashReporter adds content and sections 1`] = `
+exports[`CrashReporter > adds content and sections 1`] = `
 "Label:
   Value
 "
 `;
 
-exports[`CrashReporter adds content and sections 2`] = `
+exports[`CrashReporter > adds content and sections 2`] = `
 "Label:
   Value
 
@@ -20,7 +20,7 @@ Bar:
 "
 `;
 
-exports[`CrashReporter adds content and sections 3`] = `
+exports[`CrashReporter > adds content and sections 3`] = `
 "Label:
   Value
 
@@ -40,7 +40,7 @@ Baz:
 "
 `;
 
-exports[`CrashReporter reports binaries 1`] = `
+exports[`CrashReporter > reports binaries 1`] = `
 "
 BINARIES
 ========
@@ -54,7 +54,7 @@ Yarn:
 "
 `;
 
-exports[`CrashReporter reports environment variables 1`] = `
+exports[`CrashReporter > reports environment variables 1`] = `
 "
 ENVIRONMENT
 ===========
@@ -68,17 +68,17 @@ FOO:
 "
 `;
 
-exports[`CrashReporter reports package versions (scoped) 1`] = `
+exports[`CrashReporter > reports package versions (scoped) 1`] = `
 "
 MOON
 ====
 
 @moonrepo/dev:
-  2.0.0
+  2.0.1
 "
 `;
 
-exports[`CrashReporter reports package versions 1`] = `
+exports[`CrashReporter > reports package versions 1`] = `
 "
 PACKAGES
 ========

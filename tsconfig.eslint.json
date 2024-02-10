@@ -9,6 +9,9 @@
     "themes/*/types/**/*",
     "website/src/**/*",
     "website/types/**/*",
-    "types/**/*"
+    "tests/setup.ts",
+    "types/**/*",
+    "*.config.js",
+    "*.config.ts"
   ]
 }

@@ -10,8 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          cache: yarn
       - name: Add key to allow access to repository
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
@@ -32,7 +30,6 @@ jobs:
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "gh-actions"
-          yarn install --immutable
-          yarn run pack
+          yarn run moon run :pack
           cd website
           yarn run deploy

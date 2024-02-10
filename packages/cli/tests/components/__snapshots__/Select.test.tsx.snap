@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Select dividers displays at the beginning can cycle backwards past divider 1`] = `
+exports[`Select > dividers > displays at the beginning > can cycle backwards past divider 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90m────[39m
   [90m>[39m one
@@ -8,7 +8,7 @@ exports[`Select dividers displays at the beginning can cycle backwards past divi
   [36m>>[39m [36mthree[39m"
 `;
 
-exports[`Select dividers displays at the beginning renders divider first and highlights first non-divider option 1`] = `
+exports[`Select > dividers > displays at the beginning > renders divider first and highlights first non-divider option 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90m────[39m
   [36m>>[39m [36mone[39m
@@ -16,7 +16,7 @@ exports[`Select dividers displays at the beginning renders divider first and hig
   [90m>[39m three"
 `;
 
-exports[`Select dividers displays at the end can cycle forwards past divider 1`] = `
+exports[`Select > dividers > displays at the end > can cycle forwards past divider 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [90m>[39m one
   [36m>>[39m [36mtwo[39m
@@ -24,7 +24,7 @@ exports[`Select dividers displays at the end can cycle forwards past divider 1`]
     [90m────[39m"
 `;
 
-exports[`Select dividers displays at the end renders divider last and highlights first non-divider option 1`] = `
+exports[`Select > dividers > displays at the end > renders divider last and highlights first non-divider option 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mone[39m
   [90m>[39m two
@@ -32,7 +32,7 @@ exports[`Select dividers displays at the end renders divider last and highlights
     [90m────[39m"
 `;
 
-exports[`Select dividers skips dividers while cycling until a value is found 1`] = `
+exports[`Select > dividers > skips dividers while cycling until a value is found 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [90m>[39m one
     [90m────[39m
@@ -42,7 +42,7 @@ exports[`Select dividers skips dividers while cycling until a value is found 1`]
   [36m>>[39m [36mtwo[39m"
 `;
 
-exports[`Select limit cycle scroll loops around when hitting an edge (even) 1`] = `
+exports[`Select > limit > cycle scroll > loops around when hitting an edge (even) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mOrange[39m
     [90mP[39m
@@ -52,7 +52,7 @@ exports[`Select limit cycle scroll loops around when hitting an edge (even) 1`] 
     [90mW[39m"
 `;
 
-exports[`Select limit cycle scroll loops around when hitting an edge (odd) 1`] = `
+exports[`Select > limit > cycle scroll > loops around when hitting an edge (odd) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mRed[39m
     [90mW[39m
@@ -61,7 +61,7 @@ exports[`Select limit cycle scroll loops around when hitting an edge (odd) 1`] =
   [90m>[39m Yellow"
 `;
 
-exports[`Select limit cycle scroll truncates list (even) 1`] = `
+exports[`Select > limit > cycle scroll > truncates list (even) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mBlack[39m
   [90m>[39m Blue
@@ -71,7 +71,7 @@ exports[`Select limit cycle scroll truncates list (even) 1`] = `
     [90mG[39m"
 `;
 
-exports[`Select limit cycle scroll truncates list (odd) 1`] = `
+exports[`Select > limit > cycle scroll > truncates list (odd) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mBlack[39m
   [90m>[39m Blue
@@ -80,7 +80,7 @@ exports[`Select limit cycle scroll truncates list (odd) 1`] = `
   [90m>[39m Cyan"
 `;
 
-exports[`Select limit overflow scroll displays correct before/after more numbers (even) 1`] = `
+exports[`Select > limit > overflow scroll > displays correct before/after more numbers (even) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90m3 more[39m
   [90m>[39m Cyan
@@ -92,7 +92,7 @@ exports[`Select limit overflow scroll displays correct before/after more numbers
     [90m4 more[39m"
 `;
 
-exports[`Select limit overflow scroll displays correct before/after more numbers (odd) 1`] = `
+exports[`Select > limit > overflow scroll > displays correct before/after more numbers (odd) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90m4 more[39m
     [90mG[39m
@@ -103,7 +103,7 @@ exports[`Select limit overflow scroll displays correct before/after more numbers
     [90m4 more[39m"
 `;
 
-exports[`Select limit overflow scroll truncates list (even) 1`] = `
+exports[`Select > limit > overflow scroll > truncates list (even) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90mB[39m
   [36m>>[39m [36mBlack[39m
@@ -114,7 +114,7 @@ exports[`Select limit overflow scroll truncates list (even) 1`] = `
     [90m7 more[39m"
 `;
 
-exports[`Select limit overflow scroll truncates list (odd) 1`] = `
+exports[`Select > limit > overflow scroll > truncates list (odd) 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90mB[39m
   [36m>>[39m [36mBlack[39m
@@ -124,51 +124,51 @@ exports[`Select limit overflow scroll truncates list (odd) 1`] = `
     [90m8 more[39m"
 `;
 
-exports[`Select navigation can cycle backwards 1`] = `
+exports[`Select > navigation > can cycle backwards 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [90m>[39m one
   [90m>[39m two
   [36m>>[39m [36mthree[39m"
 `;
 
-exports[`Select navigation can cycle forwards 1`] = `
+exports[`Select > navigation > can cycle forwards 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [90m>[39m one
   [36m>>[39m [36mtwo[39m
   [90m>[39m three"
 `;
 
-exports[`Select navigation can jump between last and first 1`] = `
+exports[`Select > navigation > can jump between last and first 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [90m>[39m one
   [90m>[39m two
   [36m>>[39m [36mthree[39m"
 `;
 
-exports[`Select navigation can jump between last and first 2`] = `
+exports[`Select > navigation > can jump between last and first 2`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mone[39m
   [90m>[39m two
   [90m>[39m three"
 `;
 
-exports[`Select navigation displays info color when highlighted 1`] = `
+exports[`Select > navigation > displays info color when highlighted 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mone[39m
   [90m>[39m two
   [90m>[39m three"
 `;
 
-exports[`Select navigation displays notice color when selected 1`] = `
+exports[`Select > navigation > displays notice color when selected 1`] = `
 "[32m^[39m [1mFavorite color?[22m [35mone[39m
   [36m>>[39m [36mone[39m
   [90m>[39m two
   [90m>[39m three"
 `;
 
-exports[`Select renders label by default 1`] = `"[36m?[39m [1mFavorite color?[22m"`;
+exports[`Select > renders label by default 1`] = `"[36m?[39m [1mFavorite color?[22m"`;
 
-exports[`Select renders options and dividers using options 1`] = `
+exports[`Select > renders options and dividers using options 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90mB[39m
   [36m>>[39m [36mBlack[39m
@@ -191,7 +191,7 @@ exports[`Select renders options and dividers using options 1`] = `
   [90m>[39m Yellow"
 `;
 
-exports[`Select renders options and dividers using strings 1`] = `
+exports[`Select > renders options and dividers using strings 1`] = `
 "[36m?[39m [1mFavorite color?[22m
     [90mB[39m
   [36m>>[39m [36mblack[39m
@@ -214,7 +214,7 @@ exports[`Select renders options and dividers using strings 1`] = `
   [90m>[39m yellow"
 `;
 
-exports[`Select renders options using options 1`] = `
+exports[`Select > renders options using options 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mBlack[39m
   [90m>[39m Blue
@@ -229,7 +229,7 @@ exports[`Select renders options using options 1`] = `
   [90m>[39m Yellow"
 `;
 
-exports[`Select renders options using strings 1`] = `
+exports[`Select > renders options using strings 1`] = `
 "[36m?[39m [1mFavorite color?[22m
   [36m>>[39m [36mblack[39m
   [90m>[39m blue
@@ -244,7 +244,7 @@ exports[`Select renders options using strings 1`] = `
   [90m>[39m yellow"
 `;
 
-exports[`Select selection calls \`onSubmit\` with highlighted (but not selected) value when hitting enter 1`] = `
+exports[`Select > selection > calls \`onSubmit\` with highlighted (but not selected) value when hitting enter 1`] = `
 "[32m^[39m [1mFavorite color?[22m [35mblack[39m
     [90mB[39m
   [36m>>[39m [36mBlack[39m
@@ -254,7 +254,7 @@ exports[`Select selection calls \`onSubmit\` with highlighted (but not selected)
     [90m8 more[39m"
 `;
 
-exports[`Select selection calls \`onSubmit\` with selected value when hitting enter 1`] = `
+exports[`Select > selection > calls \`onSubmit\` with selected value when hitting enter 1`] = `
 "[32m^[39m [1mFavorite color?[22m [35mblack[39m
     [90m2 more[39m
   [90m>[39m Brown
@@ -265,7 +265,7 @@ exports[`Select selection calls \`onSubmit\` with selected value when hitting en
     [90m6 more[39m"
 `;
 
-exports[`Select selection can unselect a value when hitting space bar again 1`] = `
+exports[`Select > selection > can unselect a value when hitting space bar again 1`] = `
 "[36m?[39m [1mFavorite color?[22m [35mblack[39m
     [90mB[39m
   [35m>>[39m [35mBlack[39m
@@ -275,7 +275,7 @@ exports[`Select selection can unselect a value when hitting space bar again 1`] 
     [90m8 more[39m"
 `;
 
-exports[`Select selection can unselect a value when hitting space bar again 2`] = `
+exports[`Select > selection > can unselect a value when hitting space bar again 2`] = `
 "[36m?[39m [1mFavorite color?[22m [35mblue[39m
     [90mB[39m
   [90m>[39m Black
@@ -285,7 +285,7 @@ exports[`Select selection can unselect a value when hitting space bar again 2`] 
     [90m8 more[39m"
 `;
 
-exports[`Select selection selects and displays a value when hitting space bar 1`] = `
+exports[`Select > selection > selects and displays a value when hitting space bar 1`] = `
 "[36m?[39m [1mFavorite color?[22m [35mblack[39m
     [90mB[39m
   [35m>>[39m [35mBlack[39m
