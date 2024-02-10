@@ -20,7 +20,7 @@ jobs:
       - uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: true
-      - run: moon ci
+      - run: moon ci --color
         env:
           MOON_NODE_VERSION: ${{ matrix.node-version }}
   pack:
@@ -33,7 +33,7 @@ jobs:
       - uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: true
-      - run: 'moon run :pack'
+      - run: 'moon run :pack --color'
   # docs:
   #   name: Docs
   #   runs-on: ubuntu-latest
