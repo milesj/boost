@@ -1,6 +1,7 @@
+import { describe, expect, it, Mock,vi } from 'vitest';
 import { Memoize } from '../src';
 
-function sleep(time: number): Promise<void> {
+async function sleep(time: number): Promise<void> {
 	return new Promise((resolve) => {
 		setTimeout(resolve, time);
 	});
@@ -12,9 +13,9 @@ describe('@Memoize()', () => {
 	let count = 0;
 
 	class Test {
-		spy: jest.Mock;
+		spy: Mock;
 
-		constructor(spy: jest.Mock) {
+		constructor(spy: Mock) {
 			this.spy = spy;
 		}
 
@@ -43,7 +44,7 @@ describe('@Memoize()', () => {
 		manyArgs(a: string, b: number, c: boolean): string {
 			this.spy();
 
-			// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+			 
 			return a + b + c;
 		}
 
@@ -130,8 +131,8 @@ describe('@Memoize()', () => {
 	});
 
 	it('doesnt leak to separate instances', () => {
-		const spy1 = jest.fn();
-		const spy2 = jest.fn();
+		const spy1 = vi.fn();
+		const spy2 = vi.fn();
 
 		const a = new Test(spy1);
 		const b = new Test(spy2);
@@ -145,7 +146,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('caches result for getters', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.getter;
@@ -158,7 +159,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('caches result for 0 arguments', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.noArgs();
@@ -171,7 +172,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('caches result for 1 argument', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.oneArg('abc');
@@ -191,7 +192,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('caches result for many arguments', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.manyArgs('abc', 1, true);
@@ -215,7 +216,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('caches result for rest arguments', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.restArgs('abc', 1, true, {});
@@ -239,7 +240,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('returns cache for same object argument structure', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.restArgs({ foo: 123 });
@@ -262,7 +263,7 @@ describe('@Memoize()', () => {
 	});
 
 	it('returns cache for same array argument structure', () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const test = new Test(spy);
 
 		const a = test.restArgs([123]);
@@ -286,7 +287,7 @@ describe('@Memoize()', () => {
 
 	describe('cache map', () => {
 		it('can provide a custom cache map', () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const cache = new Map();
 			cache.set('[]', { value: 'pre-cached value' });
 
@@ -318,7 +319,7 @@ describe('@Memoize()', () => {
 		}
 
 		it('can provide a custom hash function', () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			class TestHash {
 				@Memoize({ hasher })
@@ -342,7 +343,7 @@ describe('@Memoize()', () => {
 		});
 
 		it('can provide a custom hash function by passing it directly to the decorator', () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			class TestHash {
 				@Memoize(hasher)
@@ -368,7 +369,7 @@ describe('@Memoize()', () => {
 
 	describe('expirations', () => {
 		it('will bypass cache when an expiration time has passed', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			class TestExpires {
 				@Memoize({ expires: 100 })
@@ -424,7 +425,7 @@ describe('@Memoize()', () => {
 		}
 
 		it('caches and reuses the same promise', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const test = new TestAsync(spy);
 
 			const a = test.resolvedPromise();
@@ -449,7 +450,7 @@ describe('@Memoize()', () => {
 		it('deletes the cache if promise is rejected', async () => {
 			expect.assertions(4);
 
-			const spy = jest.fn();
+			const spy = vi.fn();
 			const test = new TestAsync(spy);
 
 			const a = test.rejectedPromise();

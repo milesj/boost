@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { Path, VirtualPath } from '../src';
 
 describe('VirtualPath', () => {

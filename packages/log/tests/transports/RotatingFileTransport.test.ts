@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import { RotatingFileTransport } from '../../src/transports/RotatingFileTransport';
@@ -5,11 +6,11 @@ import { closeStream, existsFile, readFile, wait as waitForWrite } from './helpe
 
 describe('RotatingFileTransport', () => {
 	let fixtureDir: string;
-	let dateSpy: jest.SpyInstance;
+	let dateSpy: MockInstance;
 
 	beforeEach(() => {
 		fixtureDir = createTempFixtureFolder();
-		dateSpy = jest
+		dateSpy = vi
 			.spyOn(Date, 'now')
 			.mockImplementation(() => new Date(2020, 0, 1, 0, 0, 0).getTime());
 	});

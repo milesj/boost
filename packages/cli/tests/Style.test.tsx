@@ -1,14 +1,16 @@
 import React from 'react';
+import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock } from 'vitest';
 import { loadTheme } from '../src/helpers/loadTheme';
 import { Style } from '../src/react';
 import { renderComponent } from '../src/test';
 
-jest.mock('term-size');
-jest.mock('../src/helpers/loadTheme');
+vi.mock('term-size');
+vi.mock('../src/helpers/loadTheme');
 
 describe('<Style />', () => {
 	beforeEach(() => {
-		(loadTheme as jest.Mock).mockImplementation(() => ({
+		(loadTheme as Mock).mockImplementation(() => ({
 			default: 'white',
 			failure: 'red',
 			info: 'cyan',
@@ -146,7 +148,7 @@ describe('<Style />', () => {
 
 	// TODO: GH CI terminal does not support hexcodes
 	// it('supports hexcodes', async () => {
-	//   (loadTheme as jest.Mock).mockImplementation(() => ({
+	//   (loadTheme as Mock).mockImplementation(() => ({
 	//     default: '#fff',
 	//     failure: 'red',
 	//     inverted: '#000',

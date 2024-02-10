@@ -1,8 +1,9 @@
 import React from 'react';
+import { describe, expect,it,vi  } from 'vitest';
 import { Header } from '../src/react';
 import { renderComponent } from '../src/test';
 
-jest.mock('term-size');
+vi.mock('term-size');
 
 describe('<Header />', () => {
 	it('renders `default`', async () => {

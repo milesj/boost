@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { ConcurrentEvent } from '../src/ConcurrentEvent';
 
 describe('ConcurrentEvent', () => {

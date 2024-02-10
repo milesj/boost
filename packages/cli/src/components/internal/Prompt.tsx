@@ -118,7 +118,7 @@ export function Prompt<T>({
 			} else if (key.return) {
 				// Only run if we want validation or to submit,
 				// otherwise we trigger an unwanted submitted state
-				if (onReturn || validate) {
+				if (onReturn ?? validate) {
 					attemptSubmit(() => {
 						if (value !== null) {
 							validate?.(value);

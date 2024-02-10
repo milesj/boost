@@ -1,3 +1,5 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`deepFreeze() > returns a frozen object 1`] = `[TypeError: Cannot assign to read only property 'bar' of object '#<Object>']`;
 
 exports[`deepFreeze() returns a frozen object 1`] = `"Cannot assign to read only property 'bar' of object '#<Object>'"`;

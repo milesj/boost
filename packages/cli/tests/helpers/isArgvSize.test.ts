@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { isArgvSize } from '../../src/helpers/isArgvSize';
 
 describe('isArgvSize()', () => {

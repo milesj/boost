@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
+import { describe, expect,it, vi } from 'vitest';
 import { Prompt } from '../../../src/components/internal/Prompt';
 import { KEYS } from '../../helpers';
 
@@ -117,7 +118,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onKeyUp` for up arrow', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onKeyUp={spy} />);
 
 		await delay();
@@ -128,7 +129,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onKeyDown` for down arrow', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onKeyDown={spy} />);
 
 		await delay();
@@ -139,7 +140,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onKeyRight` for right arrow', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onKeyRight={spy} />);
 
 		await delay();
@@ -150,7 +151,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onKeyLeft` for left arrow', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onKeyLeft={spy} />);
 
 		await delay();
@@ -161,7 +162,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onPageUp` for page up', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onPageUp={spy} />);
 
 		await delay();
@@ -172,7 +173,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onPageDown` for page down', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onPageDown={spy} />);
 
 		await delay();
@@ -183,7 +184,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onTab` for tab', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onTab={spy} />);
 
 		await delay();
@@ -194,7 +195,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onBackspace` for backspace', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onBackspace={spy} />);
 
 		await delay();
@@ -205,7 +206,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onDelete` for delete', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onDelete={spy} />);
 
 		await delay();
@@ -216,7 +217,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onReturn` for return/enter', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onReturn={spy} />);
 
 		await delay();
@@ -227,7 +228,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onEscape` for escape', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onEscape={spy} />);
 
 		await delay();
@@ -238,7 +239,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onInput` for standard characters', async () => {
-		const spy = jest.fn();
+		const spy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onInput={spy} />);
 
 		await delay();
@@ -249,8 +250,8 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onSpace` (if provided) for space character', async () => {
-		const spaceSpy = jest.fn();
-		const inputSpy = jest.fn();
+		const spaceSpy = vi.fn();
+		const inputSpy = vi.fn();
 		const { stdin } = render(
 			<Prompt label="Label" value="" onInput={inputSpy} onSpace={spaceSpy} />,
 		);
@@ -264,7 +265,7 @@ describe('Prompt', () => {
 	});
 
 	it('calls `onInput` for space character if `onSpace` is not provided', async () => {
-		const inputSpy = jest.fn();
+		const inputSpy = vi.fn();
 		const { stdin } = render(<Prompt label="Label" value="" onInput={inputSpy} />);
 
 		await delay();

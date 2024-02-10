@@ -1,18 +1,17 @@
+import { describe, expect,it, vi } from 'vitest';
 import { requireModule } from '../src/requireModule';
 import { getFixture } from './helpers';
 
-jest.mock('cjs-null', () => null, { virtual: true });
-jest.mock('cjs-default', () => 123, { virtual: true });
-jest.mock('cjs-default-object', () => ({ foo: 'bar' }), { virtual: true });
-jest.mock('cjs-pseudo-default', () => ({ default: 123 }), { virtual: true });
-jest.mock('cjs-named', () => ({ named: 'abc' }), { virtual: true });
-jest.mock('esm-default', () => ({ __esModule: true, default: 456 }), { virtual: true });
-jest.mock('esm-named', () => ({ __esModule: true, named: 'abc' }), { virtual: true });
-jest.mock('esm-both', () => ({ __esModule: true, default: 456, named: 'abc' }), {
-	virtual: true,
-});
+vi.mock('cjs-null', () => null);
+vi.mock('cjs-default', () => 123);
+vi.mock('cjs-default-object', () => ({ foo: 'bar' }));
+vi.mock('cjs-pseudo-default', () => ({ default: 123 }));
+vi.mock('cjs-named', () => ({ named: 'abc' }));
+vi.mock('esm-default', () => ({ __esModule: true, default: 456 }));
+vi.mock('esm-named', () => ({ __esModule: true, named: 'abc' }));
+vi.mock('esm-both', () => ({ __esModule: true, default: 456, named: 'abc' }));
 
-jest.mock('../src/requireTSModule', () => ({
+vi.mock('../src/requireTSModule', () => ({
 	requireTSModule: () => 'ts',
 }));
 
@@ -82,7 +81,6 @@ describe('requireModule()', () => {
 		});
 
 		it('cannot load .mjs files', () => {
-			// eslint-disable-next-line jest/require-to-throw-message
 			expect(() => requireModule(getFixture('format-mjs.mjs'))).toThrow();
 		});
 

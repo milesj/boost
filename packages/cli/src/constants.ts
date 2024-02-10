@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/no-unsafe-regex */
+ 
 
 import { ExitCode } from './types';
 

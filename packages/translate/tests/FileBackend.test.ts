@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Path } from '@boost/common';
 import { getFixturePath } from '@boost/test-utils';
 import { FileBackend } from '../src/FileBackend';
@@ -89,7 +90,7 @@ describe('FileBackend', () => {
 		});
 
 		it('passes the resources to the callback', () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			backend.read('en', 'common', spy);
 

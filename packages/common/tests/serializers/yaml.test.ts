@@ -1,4 +1,5 @@
 import path from 'path';
+import { describe, expect,it } from 'vitest';
 import * as yaml from '../../src/serializers/yaml';
 
 describe('yaml', () => {

@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS } from '../src/constants';
 import { createLogger } from '../src/createLogger';
@@ -7,8 +8,8 @@ import { Formatter, LoggerFunction, LoggerOptions } from '../src/types';
 
 describe('createLogger()', () => {
 	let logger: LoggerFunction;
-	let outStream: { write: jest.Mock };
-	let errStream: { write: jest.Mock };
+	let outStream: { write: Mock };
+	let errStream: { write: Mock };
 
 	function mockLogger(options?: Partial<LoggerOptions>, format: Formatter = formats.console) {
 		return createLogger({
@@ -32,8 +33,8 @@ describe('createLogger()', () => {
 	}
 
 	beforeEach(() => {
-		errStream = { write: jest.fn() };
-		outStream = { write: jest.fn() };
+		errStream = { write: vi.fn() };
+		outStream = { write: vi.fn() };
 
 		logger = mockLogger();
 	});
@@ -46,8 +47,8 @@ describe('createLogger()', () => {
 	it('hooks up to console by default', () => {
 		logger = createLogger({ name: 'test' });
 
-		const outSpy = jest.spyOn(console, 'log').mockImplementation(() => true);
-		const errSpy = jest.spyOn(console, 'error').mockImplementation(() => true);
+		const outSpy = vi.spyOn(console, 'log').mockImplementation(() => true);
+		const errSpy = vi.spyOn(console, 'error').mockImplementation(() => true);
 
 		logger('Hello');
 		logger.error('Oops');

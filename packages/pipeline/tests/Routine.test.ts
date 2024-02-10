@@ -1,4 +1,5 @@
 import execa from 'execa';
+import { beforeEach, describe, expect, it, Mock,vi  } from 'vitest';
 import { Schemas } from '@boost/common/optimal';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
@@ -9,7 +10,7 @@ import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
 
-jest.mock('execa');
+vi.mock('execa');
 
 describe('Routine', () => {
 	class TestRoutine extends Routine<string, string, { test: number }> {
@@ -151,7 +152,7 @@ describe('Routine', () => {
 		}
 
 		function mockExeca(value: string) {
-			(execa as unknown as jest.Mock).mockImplementation((command, args) => ({
+			(execa as unknown as Mock).mockImplementation((command, args) => ({
 				command: `${command} ${args.join(' ')}`,
 				stdout: new FakeStream(value),
 				stderr: new FakeStream(value),
@@ -176,7 +177,7 @@ describe('Routine', () => {
 		});
 
 		it('calls callback with stream', async () => {
-			const spy = jest.fn();
+			const spy = vi.fn();
 
 			await routine.executeCommand('yarn', ['-v'], { wrap: spy });
 
@@ -184,8 +185,8 @@ describe('Routine', () => {
 		});
 
 		it('pipes stdout/stderr to handler', async () => {
-			const commandSpy = jest.fn();
-			const commandDataSpy = jest.fn();
+			const commandSpy = vi.fn();
+			const commandDataSpy = vi.fn();
 			const task = new Task<string, string>('title', () => '');
 
 			// @ts-expect-error Allow overwrite

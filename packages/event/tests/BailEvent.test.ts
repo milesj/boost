@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { BailEvent } from '../src/BailEvent';
 
 describe('BailEvent', () => {

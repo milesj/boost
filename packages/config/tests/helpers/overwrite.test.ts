@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { overwrite } from '../../src/helpers/overwrite';
 
 describe('overwrite()', () => {

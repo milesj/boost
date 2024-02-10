@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import * as formats from '../src/formats';
 import { LogItem } from '../src/types';
 

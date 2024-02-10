@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { Logger } from '../src/Logger';
 
 describe('Logger', () => {

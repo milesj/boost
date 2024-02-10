@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect,it } from 'vitest';
 import { Event } from '../src/Event';
 
 describe('Event', () => {

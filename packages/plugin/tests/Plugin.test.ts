@@ -1,3 +1,4 @@
+import { describe, expect,it } from 'vitest';
 import { Renderer } from './__fixtures__/Renderer';
 
 describe('Plugin', () => {
