@@ -3,7 +3,3 @@
 exports[`Routine > errors if key is not a string 1`] = `[PipelineError: Routine key must be a valid unique string. [PLN:ROUTINE_INVALID_KEY]]`;
 
 exports[`Routine > errors if no key is provided 1`] = `[PipelineError: Routine key must be a valid unique string. [PLN:ROUTINE_INVALID_KEY]]`;
-
-exports[`Routine errors if key is not a string 1`] = `"Routine key must be a valid unique string. [PLN:ROUTINE_INVALID_KEY]"`;
-
-exports[`Routine errors if no key is provided 1`] = `"Routine key must be a valid unique string. [PLN:ROUTINE_INVALID_KEY]"`;

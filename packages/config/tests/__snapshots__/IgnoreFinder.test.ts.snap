@@ -4,8 +4,3 @@ exports[`IgnoreFinder > errors if name is not in camel case 1`] = `
 [OptimalError: The following validations have failed for \`IgnoreFinder\`:
   - Invalid field "name". String must be in camel case. (pattern "^[a-z][a-zA-Z0-9]+$")]
 `;
-
-exports[`IgnoreFinder errors if name is not in camel case 1`] = `
-"The following validations have failed for \`IgnoreFinder\`:
-  - Invalid field "name". String must be in camel case. (pattern "^[a-z][a-zA-Z0-9]+$")"
-`;

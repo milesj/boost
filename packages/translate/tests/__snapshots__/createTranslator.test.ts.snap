@@ -5,9 +5,3 @@ exports[`createTranslator() > errors if \`autoDetect\` and \`locale\` are empty 
 exports[`createTranslator() > errors if no namespace is provided 1`] = `[TranslateError: A namespace is required for translations. [TLT:NAMESPACE_REQUIRED]]`;
 
 exports[`createTranslator() > errors if no resource paths are provided 1`] = `[TranslateError: At least 1 resource directory path is required. [TLT:RESOURCES_REQUIRED]]`;
-
-exports[`createTranslator() errors if \`autoDetect\` and \`locale\` are empty 1`] = `"A locale must be defined if auto-detection is disabled. [TLT:LOCALE_REQUIRED]"`;
-
-exports[`createTranslator() errors if no namespace is provided 1`] = `"A namespace is required for translations. [TLT:NAMESPACE_REQUIRED]"`;
-
-exports[`createTranslator() errors if no resource paths are provided 1`] = `"At least 1 resource directory path is required. [TLT:RESOURCES_REQUIRED]"`;
