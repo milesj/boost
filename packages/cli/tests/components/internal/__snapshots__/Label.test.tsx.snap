@@ -3,7 +3,3 @@
 exports[`Label > renders a string wrapped in text 1`] = `"[1mContent[22m"`;
 
 exports[`Label > renders an element 1`] = `"[31mContent[39m"`;
-
-exports[`Label renders a string wrapped in text 1`] = `"[1mContent[22m"`;
-
-exports[`Label renders an element 1`] = `"[31mContent[39m"`;

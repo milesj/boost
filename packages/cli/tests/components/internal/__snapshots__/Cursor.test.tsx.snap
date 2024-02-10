@@ -11,15 +11,3 @@ exports[`Cursor > renders cursor in the middle 1`] = `"Some str[46m[30mi[39m
 exports[`Cursor > renders no cursor if \`hideCursor\` is passed 1`] = `"Some string of text"`;
 
 exports[`Cursor > renders value with no cursor if not focused 1`] = `"Some string of text"`;
-
-exports[`Cursor renders cursor after value 1`] = `"Some string of text[46m[30m [39m[49m"`;
-
-exports[`Cursor renders cursor at the end 1`] = `"Some string of tex[46m[30mt[39m[49m"`;
-
-exports[`Cursor renders cursor at the start 1`] = `"[46m[30mS[39m[49mome string of text"`;
-
-exports[`Cursor renders cursor in the middle 1`] = `"Some str[46m[30mi[39m[49mng of text"`;
-
-exports[`Cursor renders no cursor if \`hideCursor\` is passed 1`] = `"Some string of text"`;
-
-exports[`Cursor renders value with no cursor if not focused 1`] = `"Some string of text"`;
