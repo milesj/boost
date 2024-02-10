@@ -3,7 +3,8 @@
   "name": "boost-root",
   "type": "module",
   "scripts": {
-    "pack:all": "$(yarn bin moon) run :pack",
+    "moon": "$(yarn bin moon)",
+    "pack:all": "yarn run moon run :pack",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
     "format": "prettier --write .",
