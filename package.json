@@ -4,14 +4,9 @@
   "type": "module",
   "scripts": {
     "moon": "$(yarn bin moon)",
-    "pack:all": "yarn run moon run :pack",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
-    "format": "prettier --write .",
     "test": "NODE_ENV=test BOOSTJS_ENV=test vitest",
-    "test:cli": "node ./packages/cli/examples/bin.js",
-    "test:tsm": "node ./packages/module/tests/commonjs.assert.cjs && node ./packages/module/tests/commonjs.assert.mjs",
-    "test:loader": "node --experimental-loader @boost/module/loader ./packages/module/tests/esmloader.assert.mjs && node --loader @boost/module/loader-typescript ./packages/module/tests/esmloader.assert.mjs",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
     "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
