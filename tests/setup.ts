@@ -1,5 +1,9 @@
 import { vi, expect } from 'vitest';
 
+global.__DEV__ = true;
+global.__PROD__ = true;
+global.__TEST__ = true;
+
 expect.extend({
 	toBeFilePath(received, expected) {
 		let path = String(expected);

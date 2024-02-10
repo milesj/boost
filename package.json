@@ -6,7 +6,6 @@
     "moon": "$(yarn bin moon) --color",
     "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
-    "test": "NODE_ENV=test BOOSTJS_ENV=test vitest",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
     "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
@@ -21,7 +20,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/exit": "^0.1.31",
     "@types/fs-extra": "^11.0.1",
-    "@types/lodash": "^4.14.194",
+    "@types/lodash-es": "^4.17.12",
     "@types/pluralize": "^0.0.29",
     "@types/react": "^17.0.58",
     "@types/semver": "^7.3.13",

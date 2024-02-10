@@ -1,4 +1,27 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Prompt > doesnt render content below label when not focused 1`] = `"[36m?[39m [1mLabel[22m"`;
+
+exports[`Prompt > renders content before and after label 1`] = `"[36m?[39mBefore [1mLabel[22m After"`;
+
+exports[`Prompt > renders content below label when focused 1`] = `
+"[36m?[39m [1mLabel[22m
+  Foo
+  Bar
+  Baz"
+`;
+
+exports[`Prompt > renders default state 1`] = `"[36m?[39m [1mLabel[22m"`;
+
+exports[`Prompt > renders error below label and above content 1`] = `
+"[31m✖[39m [1mLabel[22m
+  [31mFailed validation[39m
+  Foo"
+`;
+
+exports[`Prompt > renders success after input submission 1`] = `"[32m✔[39m [1mLabel[22m"`;
+
+exports[`Prompt > renders success after return submission 1`] = `"[32m✔[39m [1mLabel[22m"`;
 
 exports[`Prompt doesnt render content below label when not focused 1`] = `"[36m?[39m [1mLabel[22m"`;
 

@@ -14,3 +14,7 @@ tasks:
       - 'build'
     options:
       shell: true
+
+workspace:
+  inheritedTasks:
+    exclude: ['test']

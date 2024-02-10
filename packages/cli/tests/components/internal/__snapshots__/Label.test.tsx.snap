@@ -1,4 +1,8 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Label > renders a string wrapped in text 1`] = `"[1mContent[22m"`;
+
+exports[`Label > renders an element 1`] = `"[31mContent[39m"`;
 
 exports[`Label renders a string wrapped in text 1`] = `"[1mContent[22m"`;
 

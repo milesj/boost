@@ -1912,11 +1912,11 @@ __metadata:
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/test-utils": ^5.0.0-alpha.0
     "@types/resolve": ^1.20.2
+    enhanced-resolve: ^5.15.0
     fast-glob: ^3.2.12
     json5: ^2.2.3
     optimal: ^5.1.1
     pretty-ms: ^7.0.1
-    resolve: ^1.22.1
     yaml: ^2.3.4
   peerDependencies:
     typescript: ^4.0.0 || ^5.0.0
@@ -2121,7 +2121,7 @@ __metadata:
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/translate": ^5.0.0-alpha.0
     execa: ^5.1.1
-    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     split: ^1.0.1
   languageName: unknown
   linkType: soft
@@ -2134,10 +2134,9 @@ __metadata:
     "@boost/debug": ^5.0.0-alpha.0
     "@boost/event": ^5.0.0-alpha.0
     "@boost/internal": ^5.0.0-alpha.0
-    "@boost/module": ^5.0.0-alpha.0
     "@boost/test-utils": ^5.0.0-alpha.0
     "@types/pluralize": ^0.0.29
-    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     pluralize: ^8.0.0
   languageName: unknown
   linkType: soft
@@ -4791,10 +4790,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.194":
-  version: 4.14.194
-  resolution: "@types/lodash@npm:4.14.194"
-  checksum: 113f34831c461469d91feca2dde737f88487732898b4d25e9eb23b087bb193985f864d1e1e0f3b777edc5022e460443588b6000a3b2348c966f72d17eedc35ea
+"@types/lodash-es@npm:^4.17.12":
+  version: 4.17.12
+  resolution: "@types/lodash-es@npm:4.17.12"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 990a99e2243bebe9505cb5ad19fbc172beb4a8e00f9075c99fc06c46c2801ffdb40bc2867271cf580d5f48994fc9fb076ec92cd60a20e621603bf22114e5b077
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
   languageName: node
   linkType: hard
 
@@ -6483,7 +6491,7 @@ __metadata:
     "@types/babel__core": ^7.20.5
     "@types/exit": ^0.1.31
     "@types/fs-extra": ^11.0.1
-    "@types/lodash": ^4.14.194
+    "@types/lodash-es": ^4.17.12
     "@types/pluralize": ^0.0.29
     "@types/react": ^17.0.58
     "@types/semver": ^7.3.13
@@ -8510,13 +8518,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.10.0":
-  version: 5.10.0
-  resolution: "enhanced-resolve@npm:5.10.0"
+"enhanced-resolve@npm:^5.10.0, enhanced-resolve@npm:^5.15.0":
+  version: 5.15.0
+  resolution: "enhanced-resolve@npm:5.15.0"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
-  checksum: 0bb9830704db271610f900e8d79d70a740ea16f251263362b0c91af545576d09fe50103496606c1300a05e588372d6f9780a9bc2e30ce8ef9b827ec8f44687ff
+  checksum: fbd8cdc9263be71cc737aa8a7d6c57b43d6aa38f6cc75dde6fcd3598a130cc465f979d2f4d01bb3bf475acb43817749c79f8eef9be048683602ca91ab52e4f11
   languageName: node
   linkType: hard
 
@@ -12456,6 +12464,13 @@ __metadata:
   dependencies:
     p-locate: ^5.0.0
   checksum: 72eb661788a0368c099a184c59d2fee760b3831c9c1c33955e8a19ae4a21b4116e53fa736dc086cdeb9fce9f7cc508f2f92d2d3aae516f133e16a2bb59a39f5a
+  languageName: node
+  linkType: hard
+
+"lodash-es@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash-es@npm:4.17.21"
+  checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
   languageName: node
   linkType: hard
 

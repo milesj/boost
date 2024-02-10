@@ -1,4 +1,12 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`HiddenInput > renders default value as stars 1`] = `"[36m?[39m [1mAge?[22m"`;
+
+exports[`HiddenInput > renders entered text as stars 1`] = `"[36m?[39m [1mAge?[22m"`;
+
+exports[`HiddenInput > renders label by default 1`] = `"[36m?[39m [1mAge?[22m"`;
+
+exports[`HiddenInput > renders placeholder if no default value 1`] = `"[36m?[39m [1mAge?[22m [90m<number>[39m"`;
 
 exports[`HiddenInput renders default value as stars 1`] = `"[36m?[39m [1mAge?[22m"`;
 

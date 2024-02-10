@@ -1,4 +1,299 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Select > dividers > displays at the beginning > can cycle backwards past divider 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m────[39m
+  [90m›[39m one
+  [90m›[39m two
+  [36m❯[39m [36mthree[39m"
+`;
+
+exports[`Select > dividers > displays at the beginning > renders divider first and highlights first non-divider option 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m────[39m
+  [36m❯[39m [36mone[39m
+  [90m›[39m two
+  [90m›[39m three"
+`;
+
+exports[`Select > dividers > displays at the end > can cycle forwards past divider 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m›[39m one
+  [36m❯[39m [36mtwo[39m
+  [90m›[39m three
+    [90m────[39m"
+`;
+
+exports[`Select > dividers > displays at the end > renders divider last and highlights first non-divider option 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mone[39m
+  [90m›[39m two
+  [90m›[39m three
+    [90m────[39m"
+`;
+
+exports[`Select > dividers > skips dividers while cycling until a value is found 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m›[39m one
+    [90m────[39m
+    [90m────[39m
+    [90m────[39m
+    [90m────[39m
+  [36m❯[39m [36mtwo[39m"
+`;
+
+exports[`Select > limit > cycle scroll > loops around when hitting an edge (even) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mOrange[39m
+    [90mP[39m
+  [90m›[39m Purple
+    [90mR[39m
+  [90m›[39m Red
+    [90mW[39m"
+`;
+
+exports[`Select > limit > cycle scroll > loops around when hitting an edge (odd) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mRed[39m
+    [90mW[39m
+  [90m›[39m White
+    [90mY[39m
+  [90m›[39m Yellow"
+`;
+
+exports[`Select > limit > cycle scroll > truncates list (even) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+    [90mC[39m
+  [90m›[39m Cyan
+    [90mG[39m"
+`;
+
+exports[`Select > limit > cycle scroll > truncates list (odd) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+    [90mC[39m
+  [90m›[39m Cyan"
+`;
+
+exports[`Select > limit > overflow scroll > displays correct before/after more numbers (even) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m3 more[39m
+  [90m›[39m Cyan
+    [90mG[39m
+  [90m›[39m Gray
+  [36m❯[39m [36mGreen[39m
+    [90mO[39m
+  [90m›[39m Orange
+    [90m4 more[39m"
+`;
+
+exports[`Select > limit > overflow scroll > displays correct before/after more numbers (odd) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90m4 more[39m
+    [90mG[39m
+  [90m›[39m Gray
+  [36m❯[39m [36mGreen[39m
+    [90mO[39m
+  [90m›[39m Orange
+    [90m4 more[39m"
+`;
+
+exports[`Select > limit > overflow scroll > truncates list (even) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+    [90mC[39m
+  [90m›[39m Cyan
+    [90m7 more[39m"
+`;
+
+exports[`Select > limit > overflow scroll > truncates list (odd) 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
+
+exports[`Select > navigation > can cycle backwards 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m›[39m one
+  [90m›[39m two
+  [36m❯[39m [36mthree[39m"
+`;
+
+exports[`Select > navigation > can cycle forwards 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m›[39m one
+  [36m❯[39m [36mtwo[39m
+  [90m›[39m three"
+`;
+
+exports[`Select > navigation > can jump between last and first 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [90m›[39m one
+  [90m›[39m two
+  [36m❯[39m [36mthree[39m"
+`;
+
+exports[`Select > navigation > can jump between last and first 2`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mone[39m
+  [90m›[39m two
+  [90m›[39m three"
+`;
+
+exports[`Select > navigation > displays info color when highlighted 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mone[39m
+  [90m›[39m two
+  [90m›[39m three"
+`;
+
+exports[`Select > navigation > displays notice color when selected 1`] = `
+"[32m✔[39m [1mFavorite color?[22m [35mone[39m
+  [36m❯[39m [36mone[39m
+  [90m›[39m two
+  [90m›[39m three"
+`;
+
+exports[`Select > renders label by default 1`] = `"[36m?[39m [1mFavorite color?[22m"`;
+
+exports[`Select > renders options and dividers using options 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+    [90mC[39m
+  [90m›[39m Cyan
+    [90mG[39m
+  [90m›[39m Gray
+  [90m›[39m Green
+    [90mO[39m
+  [90m›[39m Orange
+    [90mP[39m
+  [90m›[39m Purple
+    [90mR[39m
+  [90m›[39m Red
+    [90mW[39m
+  [90m›[39m White
+    [90mY[39m
+  [90m›[39m Yellow"
+`;
+
+exports[`Select > renders options and dividers using strings 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+    [90mB[39m
+  [36m❯[39m [36mblack[39m
+  [90m›[39m blue
+  [90m›[39m brown
+    [90mC[39m
+  [90m›[39m cyan
+    [90mG[39m
+  [90m›[39m gray
+  [90m›[39m green
+    [90mO[39m
+  [90m›[39m orange
+    [90mP[39m
+  [90m›[39m purple
+    [90mR[39m
+  [90m›[39m red
+    [90mW[39m
+  [90m›[39m white
+    [90mY[39m
+  [90m›[39m yellow"
+`;
+
+exports[`Select > renders options using options 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+  [90m›[39m Cyan
+  [90m›[39m Gray
+  [90m›[39m Green
+  [90m›[39m Orange
+  [90m›[39m Purple
+  [90m›[39m Red
+  [90m›[39m White
+  [90m›[39m Yellow"
+`;
+
+exports[`Select > renders options using strings 1`] = `
+"[36m?[39m [1mFavorite color?[22m
+  [36m❯[39m [36mblack[39m
+  [90m›[39m blue
+  [90m›[39m brown
+  [90m›[39m cyan
+  [90m›[39m gray
+  [90m›[39m green
+  [90m›[39m orange
+  [90m›[39m purple
+  [90m›[39m red
+  [90m›[39m white
+  [90m›[39m yellow"
+`;
+
+exports[`Select > selection > calls \`onSubmit\` with highlighted (but not selected) value when hitting enter 1`] = `
+"[32m✔[39m [1mFavorite color?[22m [35mblack[39m
+    [90mB[39m
+  [36m❯[39m [36mBlack[39m
+  [90m›[39m Blue
+  [90m›[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
+
+exports[`Select > selection > calls \`onSubmit\` with selected value when hitting enter 1`] = `
+"[32m✔[39m [1mFavorite color?[22m [35mblack[39m
+    [90m2 more[39m
+  [90m›[39m Brown
+    [90mC[39m
+  [36m❯[39m [36mCyan[39m
+    [90mG[39m
+  [90m›[39m Gray
+    [90m6 more[39m"
+`;
+
+exports[`Select > selection > can unselect a value when hitting space bar again 1`] = `
+"[36m?[39m [1mFavorite color?[22m [35mblack[39m
+    [90mB[39m
+  [35m❯[39m [35mBlack[39m
+  [36m❯[39m [36mBlue[39m
+  [90m›[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
+
+exports[`Select > selection > can unselect a value when hitting space bar again 2`] = `
+"[36m?[39m [1mFavorite color?[22m [35mblue[39m
+    [90mB[39m
+  [90m›[39m Black
+  [36m❯[39m [36mBlue[39m
+  [90m›[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
+
+exports[`Select > selection > selects and displays a value when hitting space bar 1`] = `
+"[36m?[39m [1mFavorite color?[22m [35mblack[39m
+    [90mB[39m
+  [35m❯[39m [35mBlack[39m
+  [36m❯[39m [36mBlue[39m
+  [90m›[39m Brown
+    [90mC[39m
+    [90m8 more[39m"
+`;
 
 exports[`Select dividers displays at the beginning can cycle backwards past divider 1`] = `
 "[36m?[39m [1mFavorite color?[22m

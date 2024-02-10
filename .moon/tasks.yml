@@ -16,6 +16,8 @@ tasks:
 
   build:
     command: 'packemon build --addEngines'
+    deps:
+      - '^:build'
     inputs:
       - '@group(sources)'
       - 'package.json'
@@ -67,6 +69,17 @@ tasks:
     extends: 'format'
     args: '--write'
     local: true
+
+  test:
+    command: 'vitest run --config @in(0) .'
+    inputs:
+      - '/vitest.config.ts'
+      - '@group(sources)'
+      - '@group(tests)'
+    deps:
+      - 'build'
+    env:
+      BOOSTJS_ENV: 'test'
 
   typecheck:
     command: 'tsc --build'

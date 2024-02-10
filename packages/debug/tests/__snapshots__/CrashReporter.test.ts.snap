@@ -1,4 +1,94 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CrashReporter > adds content and sections 1`] = `
+"Label:
+  Value
+"
+`;
+
+exports[`CrashReporter > adds content and sections 2`] = `
+"Label:
+  Value
+
+SECTION 1
+=========
+
+Foo:
+  Value
+Bar:
+  Value 1 - Value 2
+"
+`;
+
+exports[`CrashReporter > adds content and sections 3`] = `
+"Label:
+  Value
+
+SECTION 1
+=========
+
+Foo:
+  Value
+Bar:
+  Value 1 - Value 2
+
+SECTION 2
+=========
+
+Baz:
+  123
+"
+`;
+
+exports[`CrashReporter > reports binaries 1`] = `
+"
+BINARIES
+========
+
+Node:
+  0.0.0 - /node
+npm:
+  0.0.0 - /npm
+Yarn:
+  0.0.0 - /yarn
+"
+`;
+
+exports[`CrashReporter > reports environment variables 1`] = `
+"
+ENVIRONMENT
+===========
+
+BAR:
+  bar
+BAZ:
+  baz
+FOO:
+  foo
+"
+`;
+
+exports[`CrashReporter > reports package versions (scoped) 1`] = `
+"
+MOON
+====
+
+@moonrepo/dev:
+  2.0.1
+"
+`;
+
+exports[`CrashReporter > reports package versions 1`] = `
+"
+PACKAGES
+========
+
+path-exists:
+  4.0.0
+path-is-absolute:
+  1.0.1
+"
+`;
 
 exports[`CrashReporter adds content and sections 1`] = `
 "Label:

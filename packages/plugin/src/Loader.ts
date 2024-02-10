@@ -2,7 +2,6 @@ import path from 'node:path';
 import { isFilePath, isObject, MODULE_NAME_PART, PathResolver } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
-import { requireModule } from '@boost/module';
 import { debug } from './debug';
 import { PluginError } from './PluginError';
 import { Registry } from './Registry';
@@ -109,7 +108,9 @@ export class Loader<Plugin extends Pluggable> {
 			color.filePath(resolvedPath),
 		);
 
-		const factory = requireModule<Factory<Plugin>>(resolvedPath).default;
+		// @ts-expect-error Allow dynamic import
+		const result = (await import(resolvedPath)) as { default: Factory<Plugin> };
+		const factory = result.default;
 
 		if (typeof factory !== 'function') {
 			throw new PluginError('FACTORY_REQUIRED', [typeof factory]);

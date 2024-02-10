@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import path from 'node:path';
 
 export default defineConfig({
 	plugins: [
@@ -11,6 +12,9 @@ export default defineConfig({
 			},
 		},
 	],
+	resolve: {
+		conditions: ['node'],
+	},
 	test: {
 		coverage: {
 			provider: 'v8',
@@ -43,7 +47,7 @@ export default defineConfig({
 				statements: 99,
 			},
 		},
-		globalSetup: ['./tests/setup.ts'],
+		setupFiles: [path.join(import.meta.dirname, './tests/setup.ts')],
 		passWithNoTests: true,
 	},
 });

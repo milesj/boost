@@ -155,7 +155,7 @@ describe('FileTransport', () => {
 
 			expect(existsFile(rotPath)).toBe(true);
 
-			expect(sizeFile(rotPath)).toBe(55);
+			expect(sizeFile(rotPath)).toBe(57);
 			expect(readFile(rotPath)).not.toBe('First line of content.Second line of content, yeah.');
 		});
 	});

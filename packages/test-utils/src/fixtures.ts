@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { vi } from 'vitest';
 import { DirectoryStructure } from './types';
 
-const FIXTURES_DIR = path.join(process.cwd(), 'tests', '__fixtures__');
+const FIXTURES_DIR = path.join(process.cwd(), '../../tests', '__fixtures__');
 
 const TEMPORARY_FILES = new Set<string>();
 
@@ -74,17 +74,6 @@ export function copyFixtureToNodeModule(
 
 	return () => {
 		removeTempFile(modulePath);
-	};
-}
-
-// TODO
-export function copyFixtureToMock(fixture: string, mockName: string): () => void {
-	const module = require(getFixturePath(fixture)) as unknown as object;
-
-	vi.doMock(mockName, () => module);
-
-	return () => {
-		vi.doUnmock(mockName);
 	};
 }
 

@@ -1,4 +1,4 @@
-import doResolve from 'resolve';
+import enhancedResolve from 'enhanced-resolve';
 import { CommonError } from './CommonError';
 import { ModulePath } from './ModulePath';
 import { Path } from './Path';
@@ -14,9 +14,14 @@ export class PathResolver {
 	}
 
 	static async defaultResolver(path: string, startDir?: string): Promise<string> {
+		const doResolve = enhancedResolve.create({
+			conditionNames: ['import', 'require', 'node'],
+			extensions: ['.mjs', '.cjs', '.js', '.json', '.node'],
+		});
+
 		return new Promise((resolve, reject) => {
 			// eslint-disable-next-line promise/prefer-await-to-callbacks
-			doResolve(path, { basedir: startDir, includeCoreModules: false }, (error, foundPath) => {
+			doResolve({}, startDir ?? process.cwd(), path, {}, (error, foundPath) => {
 				if (error ?? !foundPath) {
 					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 					reject(error);

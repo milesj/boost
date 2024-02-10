@@ -1,4 +1,40 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Input > adding characters > can add subsequent characters 1`] = `"[36m?[39m [1mName?[22m abc[46m[30m [39m[49m"`;
+
+exports[`Input > adding characters > can add to the beginning 1`] = `"[36m?[39m [1mName?[22m foo[46m[30m [39m[49m"`;
+
+exports[`Input > adding characters > can add to the beginning 2`] = `"[36m?[39m [1mName?[22m bar[46m[30mf[39m[49moo"`;
+
+exports[`Input > adding characters > can add to the beginning and end 1`] = `"[36m?[39m [1mName?[22m foo[46m[30m [39m[49m"`;
+
+exports[`Input > adding characters > can add to the beginning and end 2`] = `"[36m?[39m [1mName?[22m bar[46m[30mf[39m[49moo"`;
+
+exports[`Input > adding characters > can add to the beginning and end 3`] = `"[36m?[39m [1mName?[22m barfooqux[46m[30m [39m[49m"`;
+
+exports[`Input > adding characters > can add to the middle 1`] = `"[36m?[39m [1mName?[22m foobar[46m[30m [39m[49m"`;
+
+exports[`Input > adding characters > can add to the middle 2`] = `"[36m?[39m [1mName?[22m fooqux[46m[30mb[39m[49mar"`;
+
+exports[`Input > adding characters > renders value and calls \`onChange\` 1`] = `"[36m?[39m [1mName?[22m custom[46m[30m [39m[49m"`;
+
+exports[`Input > removing characters > can remove characters from the end 1`] = `"[36m?[39m [1mName?[22m foo[46m[30m [39m[49m"`;
+
+exports[`Input > removing characters > can remove characters from the end 2`] = `"[36m?[39m [1mName?[22m f[46m[30mo[39m[49m"`;
+
+exports[`Input > removing characters > can remove characters from the middle 1`] = `"[36m?[39m [1mName?[22m f[46m[30mo[39m[49mbar"`;
+
+exports[`Input > removing characters > does nothing if no value 1`] = `"[36m?[39m [1mName?[22m [46m[30m [39m[49m"`;
+
+exports[`Input > removing characters > renders value and calls \`onChange\` 1`] = `"[36m?[39m [1mName?[22m cust[46m[30m [39m[49m"`;
+
+exports[`Input > renders cursor instead of placeholder if value is dirty 1`] = `"[36m?[39m [1mName?[22m [46m[30m [39m[49m"`;
+
+exports[`Input > renders default value 1`] = `"[36m?[39m [1mName?[22m [46m[30mb[39m[49moost"`;
+
+exports[`Input > renders label by default 1`] = `"[36m?[39m [1mName?[22m [46m[30m [39m[49m"`;
+
+exports[`Input > renders placeholder if no default value 1`] = `"[36m?[39m [1mName?[22m [90m<name>[39m"`;
 
 exports[`Input adding characters can add subsequent characters 1`] = `"[36m?[39m [1mName?[22m abc[46m[30m [39m[49m"`;
 

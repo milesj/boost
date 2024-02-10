@@ -1,4 +1,203 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<Failure /> > doesnt render code frame if a common error 1`] = `
+"
+ [41m[37m ERROR [49m[39m Cannot read properties of undefined (reading 'columns')
+
+ [2msrc/components/Failure.tsx:57:29[22m
+
+ [2m54:[22m       return null;
+ [2m55:[22m     }
+ [2m56:[22m
+ [41m[37m57:[49m[39m[41m[37m     const width = screen.size().columns;[39m[49m
+ [2m58:[22m     let type: StyleType = 'failure';
+ [2m59:[22m     let cmd = \`\${delimiter}\${binName} \${commandLine}\`;
+ [2m60:[22m     let arg = '';
+
+ [2m- [22m[1m[2mFailure.renderCodeFrame[22m[90m[2m (src/components/Failure.tsx:57:29)[22m[39m[1m
+ [2m- [22m[1m[2mFailure.render[22m[90m[2m (src/components/Failure.tsx:164:12)[22m[39m[1m
+ [2m-[22m[1m[2mfinishClassCompo[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.[22m[39m[1m
+  [1m[2ment[22m[1m[22m             [22m[90m[2mdevelopment.js:8912:31)[22m[39m[1m
+ [2m-[22m[1m[2mupdateClassCompo[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.[22m[39m[1m
+  [1m[2ment[22m[1m[22m             [22m[90m[2mdevelopment.js:8862:24)[22m[39m[1m
+ [2m-[22m[1m[2mbeginWor[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.developm[22m[39m[1m
+          [90m[2ment.js:10500:16)[22m[39m
+ [2m-[22m[1m[2mObject.invokeGuardedCall[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-rec[22m[39m[1m
+  [1m[2mackProd[22m[1m[22m                 [22m[90m[2monciler.development.js:12101:10)[22m[39m[1m
+ [2m-[22m[1m[2minvokeGuardedCall[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler[22m[39m[1m
+  [1m[2mack[22m[1m[22m              [22m[90m[2m.development.js:12292:31)[22m[39m[1m
+ [2m-[22m[1m[2mbeginWork$[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.develo[22m[39m[1m
+            [90m[2mpment.js:16531:7)[22m[39m
+ [2m-[22m[1m[2mperformUnitOfW[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.de[22m[39m[1m
+  [1m[2mrk[22m[1m[22m            [22m[90m[2mvelopment.js:15340:12)[22m[39m[1m
+ [2m-[22m[1m[2mworkLoopSyn[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.devel[22m[39m[1m
+             [90m[2mopment.js:15268:5)[22m[39m
+"
+`;
+
+exports[`<Failure /> > doesnt render code frame if arg not found 1`] = `
+"
+ [41m[37m ERROR [49m[39m Cannot read properties of undefined (reading 'columns')
+
+ [2msrc/components/Failure.tsx:57:29[22m
+
+ [2m54:[22m       return null;
+ [2m55:[22m     }
+ [2m56:[22m
+ [41m[37m57:[49m[39m[41m[37m     const width = screen.size().columns;[39m[49m
+ [2m58:[22m     let type: StyleType = 'failure';
+ [2m59:[22m     let cmd = \`\${delimiter}\${binName} \${commandLine}\`;
+ [2m60:[22m     let arg = '';
+
+ [2m- [22m[1m[2mFailure.renderCodeFrame[22m[90m[2m (src/components/Failure.tsx:57:29)[22m[39m[1m
+ [2m- [22m[1m[2mFailure.render[22m[90m[2m (src/components/Failure.tsx:164:12)[22m[39m[1m
+ [2m-[22m[1m[2mfinishClassCompo[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.[22m[39m[1m
+  [1m[2ment[22m[1m[22m             [22m[90m[2mdevelopment.js:8912:31)[22m[39m[1m
+ [2m-[22m[1m[2mupdateClassCompo[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.[22m[39m[1m
+  [1m[2ment[22m[1m[22m             [22m[90m[2mdevelopment.js:8862:24)[22m[39m[1m
+ [2m-[22m[1m[2mbeginWor[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.developm[22m[39m[1m
+          [90m[2ment.js:10500:16)[22m[39m
+ [2m-[22m[1m[2mObject.invokeGuardedCall[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-rec[22m[39m[1m
+  [1m[2mackProd[22m[1m[22m                 [22m[90m[2monciler.development.js:12101:10)[22m[39m[1m
+ [2m-[22m[1m[2minvokeGuardedCall[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler[22m[39m[1m
+  [1m[2mack[22m[1m[22m              [22m[90m[2m.development.js:12292:31)[22m[39m[1m
+ [2m-[22m[1m[2mbeginWork$[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.develo[22m[39m[1m
+            [90m[2mpment.js:16531:7)[22m[39m
+ [2m-[22m[1m[2mperformUnitOfW[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.de[22m[39m[1m
+  [1m[2mrk[22m[1m[22m            [22m[90m[2mvelopment.js:15340:12)[22m[39m[1m
+ [2m-[22m[1m[2mworkLoopSyn[22m[90m[2m (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.devel[22m[39m[1m
+             [90m[2mopment.js:15268:5)[22m[39m
+"
+`;
+
+exports[`<Failure /> > reduces command line by half when index appears off screen 1`] = `
+"
+  ERROR  Cannot read properties of undefined (reading 'columns')
+
+ src/components/Failure.tsx:57:29
+
+ 54:       return null;
+ 55:     }
+ 56:
+ 57:     const width = screen.size().columns;
+ 58:     let type: StyleType = 'failure';
+ 59:     let cmd = \`\${delimiter}\${binName} \${commandLine}\`;
+ 60:     let arg = '';
+
+ - Failure.renderCodeFrame (src/components/Failure.tsx:57:29)
+ - Failure.render (src/components/Failure.tsx:164:12)
+ -finishClassCompo (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.
+  ent             development.js:8912:31)
+ -updateClassCompo (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.
+  ent             development.js:8862:24)
+ -beginWor (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.developm
+          ent.js:10500:16)
+ -Object.invokeGuardedCall (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-rec
+  ackProd                 onciler.development.js:12101:10)
+ -invokeGuardedCall (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler
+  ack              .development.js:12292:31)
+ -beginWork$ (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.develo
+            pment.js:16531:7)
+ -performUnitOfW (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.de
+  rk            velopment.js:15340:12)
+ -workLoopSyn (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.devel
+             opment.js:15268:5)
+"
+`;
+
+exports[`<Failure /> > renders a common error 1`] = `
+"
+[1m[41m[30m ERROR [39m[49m[22m
+
+ Something is broken!
+"
+`;
+
+exports[`<Failure /> > renders a parse error 1`] = `
+"
+[1m[41m[30m ERROR [39m[49m[22m
+
+ Flags and short option groups may not use inline values.
+"
+`;
+
+exports[`<Failure /> > renders a parse error with a command line 1`] = `
+"
+  ERROR  Cannot read properties of undefined (reading 'columns')
+
+ src/components/Failure.tsx:57:29
+
+ 54:       return null;
+ 55:     }
+ 56:
+ 57:     const width = screen.size().columns;
+ 58:     let type: StyleType = 'failure';
+ 59:     let cmd = \`\${delimiter}\${binName} \${commandLine}\`;
+ 60:     let arg = '';
+
+ - Failure.renderCodeFrame (src/components/Failure.tsx:57:29)
+ - Failure.render (src/components/Failure.tsx:164:12)
+ -finishClassCompo (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.
+  ent             development.js:8912:31)
+ -updateClassCompo (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.
+  ent             development.js:8862:24)
+ -beginWor (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.developm
+          ent.js:10500:16)
+ -Object.invokeGuardedCall (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-rec
+  ackProd                 onciler.development.js:12101:10)
+ -invokeGuardedCall (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler
+  ack              .development.js:12292:31)
+ -beginWork$ (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.develo
+            pment.js:16531:7)
+ -performUnitOfW (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.de
+  rk            velopment.js:15340:12)
+ -workLoopSyn (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.devel
+             opment.js:15268:5)
+"
+`;
+
+exports[`<Failure /> > renders a validation error 1`] = `
+"
+[1m[41m[30m ERROR [39m[49m[22m
+
+ Not enough arity arguments.
+"
+`;
+
+exports[`<Failure /> > renders a validation error with a command line 1`] = `
+"
+  ERROR  Cannot read properties of undefined (reading 'columns')
+
+ src/components/Failure.tsx:57:29
+
+ 54:       return null;
+ 55:     }
+ 56:
+ 57:     const width = screen.size().columns;
+ 58:     let type: StyleType = 'failure';
+ 59:     let cmd = \`\${delimiter}\${binName} \${commandLine}\`;
+ 60:     let arg = '';
+
+ - Failure.renderCodeFrame (src/components/Failure.tsx:57:29)
+ - Failure.render (src/components/Failure.tsx:164:12)
+ -finishClassCompo (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.
+  ent             development.js:8912:31)
+ -updateClassCompo (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.
+  ent             development.js:8862:24)
+ -beginWor (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.developm
+          ent.js:10500:16)
+ -Object.invokeGuardedCall (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-rec
+  ackProd                 onciler.development.js:12101:10)
+ -invokeGuardedCall (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler
+  ack              .development.js:12292:31)
+ -beginWork$ (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.develo
+            pment.js:16531:7)
+ -performUnitOfW (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.de
+  rk            velopment.js:15340:12)
+ -workLoopSyn (/Users/miles/Projects/boost/node_modules/react-reconciler/cjs/react-reconciler.devel
+             opment.js:15268:5)
+"
+`;
 
 exports[`<Failure /> doesnt render code frame if a common error 1`] = `
 "
