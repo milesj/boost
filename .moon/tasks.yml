@@ -24,6 +24,8 @@ tasks:
 
   pack:
     command: 'packemon pack --addEngines --addExports --declaration'
+    deps:
+      - '^:pack'
     inputs:
       - '@group(sources)'
       - 'package.json'
