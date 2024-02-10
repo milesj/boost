@@ -1,9 +1,10 @@
 {
   "private": true,
   "name": "boost-root",
+  "type": "module",
   "scripts": {
-    "build": "yarn run packemon build --addEngines",
-    "pack": "NODE_ENV=production yarn run packemon pack --addEngines --addExports --declaration",
+    "build": "yarn run packemon build-workspace --addEngines",
+    "pack": "NODE_ENV=production yarn run packemon pack-workspace --addEngines --addExports --declaration",
     "clean": "yarn run packemon clean && rm -rf ./packages/*/tsconfig.tsbuildinfo",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "yarn test --coverage",
@@ -17,10 +18,7 @@
     "type": "tsc --build",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx --package packemon@2.3.3 --package typescript --quiet packemon"
-  },
-  "engines": {
-    "node": ">=14.19.0"
+    "packemon": "yarn dlx --package packemon@3.3.0 --package typescript --quiet packemon"
   },
   "devDependencies": {
     "@babel/core": "^7.21.5",

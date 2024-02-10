@@ -1,7 +1,7 @@
 {
   "name": "@boost/module",
   "version": "4.1.0",
-  "type": "commonjs",
+  "type": "module",
   "release": "1651512177871",
   "description": "Module resolving and loading utilities with TypeScript support.",
   "keywords": [
@@ -61,27 +61,5 @@
       "format": "mjs",
       "platform": "node"
     }
-  ],
-  "exports": {
-    "./package.json": "./package.json",
-    "./loader-typescript": {
-      "types": "./dts/loaders/typescript.d.ts",
-      "node": {
-        "import": "./mjs/loader-typescript.mjs"
-      }
-    },
-    "./loader": {
-      "types": "./dts/loaders/index.d.ts",
-      "node": {
-        "import": "./mjs/loader.mjs"
-      }
-    },
-    ".": {
-      "types": "./dts/index.d.ts",
-      "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
-      }
-    }
-  }
+  ]
 }

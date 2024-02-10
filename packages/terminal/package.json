@@ -1,7 +1,7 @@
 {
   "name": "@boost/terminal",
   "version": "4.0.1",
-  "type": "commonjs",
+  "type": "module",
   "release": "1651512178248",
   "description": "A collection of utilities for managing and interacting with a terminal.",
   "keywords": [
@@ -51,17 +51,7 @@
   },
   "packemon": {
     "api": "private",
-    "format": "cjs",
+    "format": "mjs",
     "platform": "node"
-  },
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dts/index.d.ts",
-      "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
-      }
-    }
   }
 }

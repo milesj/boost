@@ -1,7 +1,7 @@
 {
   "name": "@boost/plugin",
   "version": "4.0.1",
-  "type": "commonjs",
+  "type": "module",
   "release": "1651512175959",
   "description": "Plugin based architecture that supports module loading, custom types, registries, scopes, and more.",
   "keywords": [
@@ -47,17 +47,7 @@
   },
   "packemon": {
     "api": "private",
-    "format": "cjs",
+    "format": "mjs",
     "platform": "node"
-  },
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dts/index.d.ts",
-      "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
-      }
-    }
   }
 }

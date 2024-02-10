@@ -1,7 +1,7 @@
 {
   "name": "@boost/log",
   "version": "4.0.1",
-  "type": "commonjs",
+  "type": "module",
   "release": "1651512176170",
   "description": "Lightweight level based logging system.",
   "keywords": [
@@ -49,24 +49,7 @@
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
-    "format": "cjs",
+    "format": "mjs",
     "platform": "node"
-  },
-  "exports": {
-    "./package.json": "./package.json",
-    "./test": {
-      "types": "./dts/test.d.ts",
-      "node": {
-        "import": "./cjs/test-wrapper.mjs",
-        "require": "./cjs/test.cjs"
-      }
-    },
-    ".": {
-      "types": "./dts/index.d.ts",
-      "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
-      }
-    }
   }
 }

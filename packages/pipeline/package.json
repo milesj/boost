@@ -1,7 +1,7 @@
 {
   "name": "@boost/pipeline",
   "version": "4.0.1",
-  "type": "commonjs",
+  "type": "module",
   "release": "1651512175959",
   "description": "Pipe an input through a series of routines and tasks to produce an output, or simply, run logic in a series of stages.",
   "keywords": [
@@ -51,17 +51,7 @@
   },
   "packemon": {
     "api": "private",
-    "format": "cjs",
+    "format": "mjs",
     "platform": "node"
-  },
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dts/index.d.ts",
-      "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
-      }
-    }
   }
 }
