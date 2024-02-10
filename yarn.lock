@@ -10981,7 +10981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ink-testing-library@npm:^3.0.0":
+"ink-testing-library@npm:3.0.0":
   version: 3.0.0
   resolution: "ink-testing-library@npm:3.0.0"
   peerDependencies:
@@ -10990,6 +10990,18 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 8fe9c42203c4523da42c53ee7927fd770611092770ad41343f757a061d36a3809452b89e8b320b4c3557210931fe96db2d7f379fcfb8cac5dde29ca09af9d342
+  languageName: node
+  linkType: hard
+
+"ink-testing-library@patch:ink-testing-library@npm%3A3.0.0#./.yarn/patches/ink-testing-library-npm-3.0.0-c20aad0bd9.patch::locator=boost-root%40workspace%3A.":
+  version: 3.0.0
+  resolution: "ink-testing-library@patch:ink-testing-library@npm%3A3.0.0#./.yarn/patches/ink-testing-library-npm-3.0.0-c20aad0bd9.patch::version=3.0.0&hash=8693fc&locator=boost-root%40workspace%3A."
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: df7cbb4568073f8d9dc98a0968cee85a8b510926bff7b593eef85960244e54205fc452e09489e67e51fd545a6893398638709c31749a1491f1c38564152eedca
   languageName: node
   linkType: hard
 
