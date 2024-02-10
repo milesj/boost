@@ -7,6 +7,18 @@ fileGroups:
     - '/tests/**/*'
 
 tasks:
+  clean:
+    command: 'rm -rf {cjs,esm,mjs,*.tsbuildinfo}'
+    options:
+      cache: false
+      shell: true
+
+  build:
+    command: 'packemon build --addEngines'
+    inputs:
+      - '@group(sources)'
+      - 'package.json'
+
   lint:
     command:
       'eslint --cache --color --ext .ts,.tsx --report-unused-disable-directives
