@@ -16,6 +16,6 @@
     },
     {
       "path": "./tsconfig.mjs.json"
-    },
+    }
   ]
 }

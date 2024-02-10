@@ -38,8 +38,6 @@ try {
 		error.message,
 		`Unable to require non-CommonJS file "${path.join(
 			process.cwd(),
-			'packages',
-			'module',
 			'tests',
 			'__fixtures__',
 			'format-mjs.mjs',

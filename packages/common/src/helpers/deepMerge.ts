@@ -6,8 +6,8 @@ export type Mergeable = MergableArray | MergableObject;
 export type InferMergeable<T> = T extends unknown[]
 	? MergableArray
 	: T extends object
-	? MergableObject
-	: never;
+		? MergableObject
+		: never;
 
 function merge<T extends Mergeable>(prev: T, next: unknown): T {
 	const base = prev as MergableObject;

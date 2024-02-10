@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
-import { describe, expect,it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Prompt } from '../../../src/components/internal/Prompt';
 import { KEYS } from '../../helpers';
 

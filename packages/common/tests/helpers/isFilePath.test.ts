@@ -1,5 +1,5 @@
 import { sep } from 'node:path';
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { isFilePath } from '../../src/helpers/isFilePath';
 import { Path } from '../../src/Path';
 

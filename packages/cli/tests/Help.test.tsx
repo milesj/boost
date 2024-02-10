@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, expect,it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Help } from '../src/react';
 import { renderComponent } from '../src/test';
 import { commands, options, params } from './__fixtures__/args';

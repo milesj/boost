@@ -1,4 +1,4 @@
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { formatMs } from '../../src/helpers/formatMs';
 
 describe('formatMs()', () => {

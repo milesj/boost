@@ -1,4 +1,4 @@
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Schemas } from '@boost/common/optimal';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { Context } from '../src/Context';

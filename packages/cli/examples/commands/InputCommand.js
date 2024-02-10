@@ -49,7 +49,7 @@ module.exports = class InputCommand extends Command {
 							if (value.length < 3) {
 								throw new Error('Must be at least 3 characters');
 							}
-					  },
+						},
 		});
 	}
 };

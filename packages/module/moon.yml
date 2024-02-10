@@ -1,0 +1,16 @@
+tasks:
+  test-tsm:
+    command: 'node ./tests/commonjs.assert.cjs && node ./tests/commonjs.assert.mjs'
+    deps:
+      - 'build'
+    options:
+      shell: true
+
+  test-loader:
+    command:
+      'node --experimental-loader @boost/module/loader ./tests/esmloader.assert.mjs && node --loader
+      @boost/module/loader-typescript ./tests/esmloader.assert.mjs'
+    deps:
+      - 'build'
+    options:
+      shell: true
