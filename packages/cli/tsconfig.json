@@ -1,21 +1,20 @@
 {
-  "compilerOptions": {
-    "outDir": "dts",
-    "rootDir": "src",
-    "emitDeclarationOnly": true,
-    "jsx": "react"
-  },
-  "exclude": [
-    "dts",
-    "tests"
-  ],
   "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "outDir": "dts",
+    "rootDir": "."
+  },
   "include": [
     "src/**/*",
+    "tests/**/*",
     "types/**/*",
     "../../types/**/*"
   ],
   "references": [
+    {
+      "path": "./tsconfig.mjs.json"
+    },
     {
       "path": "../args"
     },

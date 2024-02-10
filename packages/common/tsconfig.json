@@ -1,20 +1,19 @@
 {
+  "extends": "../../tsconfig.options.json",
   "compilerOptions": {
     "outDir": "dts",
-    "rootDir": "src",
-    "emitDeclarationOnly": true
+    "rootDir": "."
   },
-  "exclude": [
-    "dts",
-    "tests"
-  ],
-  "extends": "../../tsconfig.options.json",
   "include": [
     "src/**/*",
+    "tests/**/*",
     "types/**/*",
     "../../types/**/*"
   ],
   "references": [
+    {
+      "path": "./tsconfig.mjs.json"
+    },
     {
       "path": "../decorators"
     },

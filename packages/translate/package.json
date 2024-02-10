@@ -13,7 +13,7 @@
     "resources"
   ],
   "main": "./mjs/index.mjs",
-  "types": "./dts/index.d.ts",
+  "types": "./mjs/index.d.ts",
   "files": [
     "mjs/**/*",
     "src/**/*"
@@ -45,5 +45,14 @@
     "api": "private",
     "format": "mjs",
     "platform": "node"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "node": {
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
+      }
+    }
   }
 }

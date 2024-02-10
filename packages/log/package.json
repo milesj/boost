@@ -12,7 +12,7 @@
     "levels"
   ],
   "main": "./mjs/index.mjs",
-  "types": "./dts/index.d.ts",
+  "types": "./mjs/index.d.ts",
   "files": [
     "mjs/**/*",
     "src/**/*"
@@ -47,6 +47,24 @@
       "test": "src/test.ts"
     },
     "format": "mjs",
-    "platform": "node"
+    "platform": "node",
+    "externals": [
+      "vitest"
+    ]
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./test": {
+      "node": {
+        "types": "./mjs/test.d.ts",
+        "import": "./mjs/test.mjs"
+      }
+    },
+    ".": {
+      "node": {
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
+      }
+    }
   }
 }

@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "build": "packemon build-workspace --addEngines",
-    "pack": "NODE_ENV=production packemon pack-workspace --addEngines --addExports --declaration",
-    "pack:in": "cd ${0} && NODE_ENV=production packemon pack --addEngines --addExports --declaration",
+    "pack": "packemon pack-workspace --addEngines --addExports --declaration",
+    "pack:all": "bash ./scripts/buildPackages.sh",
+    "pack:in": "cd ${0} && packemon pack --addEngines --addExports --declaration",
     "clean": "packemon clean && rm -rf ./packages/*/tsconfig.tsbuildinfo",
     "check": "yarn run type && yarn run test && yarn run lint",
     "coverage": "yarn test --coverage",
