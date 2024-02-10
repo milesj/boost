@@ -1,5 +1,5 @@
 import https from 'node:https';
-import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { Loggable } from '@boost/log';
 import { mockLogger } from '@boost/log/test';
 import { checkPackageOutdated } from '../../src/middleware/checkPackageOutdated';

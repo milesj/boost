@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect,it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Context } from '../src/Context';
 import { Monitor } from '../src/Monitor';
 import { Task } from '../src/Task';

@@ -36,18 +36,18 @@ export type MapParamConfig<T extends PrimitiveType[]> = T extends [
 			InferParamConfig<C>,
 			InferParamConfig<D>,
 			InferParamConfig<E>,
-	  ]
+		]
 	: T extends [infer A, infer B, infer C, infer D]
-	? [InferParamConfig<A>, InferParamConfig<B>, InferParamConfig<C>, InferParamConfig<D>]
-	: T extends [infer A, infer B, infer C]
-	? [InferParamConfig<A>, InferParamConfig<B>, InferParamConfig<C>]
-	: T extends [infer A, infer B]
-	? [InferParamConfig<A>, InferParamConfig<B>]
-	: T extends [infer A]
-	? [InferParamConfig<A>]
-	: T extends ArgList
-	? Param<string>[]
-	: never;
+		? [InferParamConfig<A>, InferParamConfig<B>, InferParamConfig<C>, InferParamConfig<D>]
+		: T extends [infer A, infer B, infer C]
+			? [InferParamConfig<A>, InferParamConfig<B>, InferParamConfig<C>]
+			: T extends [infer A, infer B]
+				? [InferParamConfig<A>, InferParamConfig<B>]
+				: T extends [infer A]
+					? [InferParamConfig<A>]
+					: T extends ArgList
+						? Param<string>[]
+						: never;
 
 // Like the above but for the types themselves.
 // If nothing, we just fallback to an array of strings.
@@ -60,25 +60,25 @@ export type MapParamType<T extends PrimitiveType[]> = T extends [
 ]
 	? [A, B, C, D, E, ...ArgList]
 	: T extends [infer A, infer B, infer C, infer D]
-	? [A, B, C, D, ...ArgList]
-	: T extends [infer A, infer B, infer C]
-	? [A, B, C, ...ArgList]
-	: T extends [infer A, infer B]
-	? [A, B, ...ArgList]
-	: T extends [infer A]
-	? [A, ...ArgList]
-	: T extends ArgList
-	? ArgList
-	: never;
+		? [A, B, C, D, ...ArgList]
+		: T extends [infer A, infer B, infer C]
+			? [A, B, C, ...ArgList]
+			: T extends [infer A, infer B]
+				? [A, B, ...ArgList]
+				: T extends [infer A]
+					? [A, ...ArgList]
+					: T extends ArgList
+						? ArgList
+						: never;
 
 /** Determine option based on type. */
 export type InferOptionConfig<T> = T extends boolean
 	? Flag
 	: T extends number[] | string[]
-	? MultipleOption<T>
-	: T extends number | string
-	? SingleOption<T>
-	: never;
+		? MultipleOption<T>
+		: T extends number | string
+			? SingleOption<T>
+			: never;
 
 // Map over option types to infer the configs.
 export type MapOptionConfig<T extends object> = { [K in keyof T]: InferOptionConfig<T[K]> };
@@ -144,8 +144,8 @@ export interface Command extends Config {
 export type InferArgType<T> = T extends boolean
 	? 'boolean'
 	: T extends number[] | number
-	? 'number'
-	: 'string';
+		? 'number'
+		: 'string';
 
 export interface Arg<T> extends Config {
 	/**

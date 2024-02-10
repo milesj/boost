@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, MockInstance,vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { Path } from '@boost/common';
 import { createTempFixtureFolder } from '@boost/test-utils';
 import { RotatingFileTransport } from '../../src/transports/RotatingFileTransport';

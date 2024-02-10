@@ -1,4 +1,4 @@
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { ContextFactory, ParseError, parseInContext, ParserOptions } from '../src';
 import {
 	flagConfig,

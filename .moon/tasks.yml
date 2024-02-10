@@ -1,0 +1,81 @@
+fileGroups:
+  sources:
+    - 'src/**/*'
+    - '/types/**/*'
+  tests:
+    - 'tests/**/*'
+    - '/tests/**/*'
+
+tasks:
+  clean:
+    command:
+      'rm -rf cjs esm mjs tsconfig.cjs.tsbuildinfo tsconfig.esm.tsbuildinfo tsconfig.mjs.tsbuildinfo'
+    local: true
+    options:
+      shell: true
+
+  build:
+    command: 'packemon build --addEngines'
+    inputs:
+      - '@group(sources)'
+      - 'package.json'
+    options:
+      runInCI: false
+
+  pack:
+    command: 'packemon pack --addEngines --addExports --declaration'
+    deps:
+      - '^:pack'
+    inputs:
+      - '@group(sources)'
+      - 'package.json'
+      - 'tsconfig.*.json'
+      - '/tsconfig.options.json'
+    outputs:
+      - 'cjs/**/*'
+      - 'esm/**/*'
+      - 'mjs/**/*'
+
+  lint:
+    command:
+      'eslint --cache --color --ext .ts,.tsx --report-unused-disable-directives
+      --no-error-on-unmatched-pattern ./src ./tests'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - '.eslintrc.*'
+      - '/.eslintrc.cjs'
+      - 'tsconfig.json'
+      - 'tsconfig.*.json'
+      - '/tsconfig.json'
+      - '/tsconfig.*.json'
+    deps:
+      - '^:typecheck'
+
+  lint-fix:
+    extends: 'lint'
+    args: '--fix'
+    local: true
+
+  format:
+    command: 'prettier --check --ignore-path @in(0) --config @in(1) .'
+    inputs:
+      - '/.prettierignore'
+      - '/prettier.config.cjs'
+
+  format-write:
+    extends: 'format'
+    args: '--write'
+    local: true
+
+  typecheck:
+    command: 'tsc --build'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - 'tsconfig.json'
+      - 'tsconfig.*.json'
+      - '/tsconfig.json'
+      - '/tsconfig.*.json'
+    deps:
+      - '^:typecheck'

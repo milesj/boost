@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect,it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Path } from '@boost/common';
 import { mockFilePath, normalizeSeparators } from '@boost/common/test';
 import { copyFixtureToTempFolder, getFixturePath } from '@boost/test-utils';

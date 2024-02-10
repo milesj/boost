@@ -1,4 +1,4 @@
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { isModuleName } from '../../src/helpers/isModuleName';
 
 describe('isModuleName()', () => {

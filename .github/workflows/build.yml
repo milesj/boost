@@ -14,34 +14,32 @@ jobs:
         node-version: [16, 18, 20]
       fail-fast: true
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          cache: yarn
-          node-version: ${{ matrix.node-version }}
-      - run: yarn install --immutable
-      - run: yarn run pack:all
-      - run: yarn run type
-      # - run: yarn run coverage
-      - run: yarn run test:tsm
-      # - run: yarn run test:loader
-      - run: yarn run lint
+          fetch-depth: 0
+      - uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+      - run: moon ci --color
+        env:
+          MOON_NODE_VERSION: ${{ matrix.node-version }}
   pack:
     name: Pack
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn run pack:all
+          fetch-depth: 0
+      - uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+      - run: 'moon run :pack --color'
   # docs:
   #   name: Docs
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
   #       with:
   #         cache: yarn
   #     - run: yarn install --immutable
