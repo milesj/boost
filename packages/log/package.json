@@ -34,7 +34,7 @@
     "@boost/common": "^5.0.0-alpha.0",
     "@boost/internal": "^5.0.0-alpha.0",
     "@boost/translate": "^5.0.0-alpha.0",
-    "chalk": "^4.1.2"
+    "chalk": "^5.3.0"
   },
   "funding": {
     "type": "ko-fi",
