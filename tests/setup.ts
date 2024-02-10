@@ -33,19 +33,21 @@ global.delay = function delay(time: number = 100) {
 };
 
 // Differs between osx/windows
-vi.mock('figures', async () => ({
-	...(await vi.importActual('figures')),
-	tick: '^',
-	cross: 'x',
-	pointer: '>>',
-	pointerSmall: '>',
-	circleDotted: 'o',
-	bullet: '●',
+vi.mock('figures', async (importOriginal) => ({
+	default: {
+		...(await importOriginal<object>()),
+		tick: '^',
+		cross: 'x',
+		pointer: '>>',
+		pointerSmall: '>',
+		circleDotted: 'o',
+		bullet: '●',
+	},
 }));
 
 // Focus is required for snapshots
-vi.mock('ink', async () => ({
-	...(await vi.importActual('ink')),
+vi.mock('ink', async (importOriginal) => ({
+	...(await importOriginal<object>()),
 	useFocus: () => ({ isFocused: true }),
 	useFocusManager: () => ({ focusNext() {} }),
 }));
