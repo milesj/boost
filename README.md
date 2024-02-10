@@ -29,7 +29,7 @@ applications, packages, and tooling.
 ## Requirements
 
 - Linux, OSX, Windows
-- Node 14.19+ (for backend and tooling)
+- Node.js v16.12+ (for backend and tooling)
 - Edge, Chrome, Firefox (for frontend)
 
 ## Documentation
