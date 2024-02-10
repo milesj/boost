@@ -37,7 +37,7 @@
     "cli-truncate": "^2.1.0",
     "figures": "^3.2.0",
     "slice-ansi": "^7.1.0",
-    "string-width": "^4.2.3",
+    "string-width": "^6.1.0",
     "strip-ansi": "^7.1.0",
     "supports-hyperlinks": "^3.0.0",
     "term-size": "^3.0.2",
