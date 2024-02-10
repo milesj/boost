@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import execa from 'execa';
+import { execaSync } from 'execa';
 import glob from 'fast-glob';
 import { afterEach, beforeEach, describe, expect, it, Mock, MockInstance, vi } from 'vitest';
 import { CrashReporter } from '../src/CrashReporter';
@@ -13,7 +13,7 @@ describe('CrashReporter', () => {
 	let writeSpy: MockInstance;
 
 	beforeEach(() => {
-		(execa.sync as Mock).mockImplementation((command, args = []) => {
+		(execaSync as Mock).mockImplementation((command, args = []) => {
 			// Test the fallback to `version`
 			if (command === 'php' && args[0] === '--version') {
 				return {

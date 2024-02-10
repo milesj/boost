@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import execa from 'execa';
+import { execaSync } from 'execa';
 import glob from 'fast-glob';
 import { FilePath, PackageStructure, PortablePath, toArray } from '@boost/common';
 import { debug } from './debug';
@@ -15,7 +15,7 @@ function run(command: string, args: string[]): string {
 		cmd += '.exe';
 	}
 
-	return String(execa.sync(cmd, args, { preferLocal: true }).stdout);
+	return String(execaSync(cmd, args, { preferLocal: true }).stdout);
 }
 
 function resolveHome(filePath: FilePath): string {

@@ -1840,7 +1840,7 @@ __metadata:
     "@boost/terminal": ^5.0.0-alpha.0
     "@boost/translate": ^5.0.0-alpha.0
     debug: ^4.3.4
-    execa: ^5.1.1
+    execa: ^8.0.1
     ink: ^3.2.0
     ink-testing-library: ^2.1.0
     levenary: ^1.1.1
@@ -1930,7 +1930,7 @@ __metadata:
     "@boost/internal": ^5.0.0-alpha.0
     "@types/debug": ^4.1.12
     debug: ^4.3.4
-    execa: ^5.1.1
+    execa: ^8.0.1
     fast-glob: ^3.3.2
   languageName: unknown
   linkType: soft
@@ -2067,7 +2067,7 @@ __metadata:
     "@boost/event": ^5.0.0-alpha.0
     "@boost/internal": ^5.0.0-alpha.0
     "@boost/translate": ^5.0.0-alpha.0
-    execa: ^5.1.1
+    execa: ^8.0.1
     lodash-es: ^4.17.21
     split: ^1.0.1
   languageName: unknown

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 
-import execa from 'execa';
+import { execa } from 'execa';
 import { vi } from 'vitest';
 import { beforeEach, describe, expect, it, type Mock } from 'vitest';
 import { Arg, Command, INTERNAL_PROGRAM } from '../src';

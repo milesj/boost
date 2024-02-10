@@ -1,4 +1,4 @@
-import execa from 'execa';
+import { execa } from 'execa';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { Schemas } from '@boost/common/optimal';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
