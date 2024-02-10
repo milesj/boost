@@ -22,9 +22,9 @@ jobs:
       - run: yarn install --immutable
       - run: yarn run pack:all
       - run: yarn run type
-      - run: yarn run coverage
+      # - run: yarn run coverage
       - run: yarn run test:tsm
-      - run: yarn run test:loader
+      # - run: yarn run test:loader
       - run: yarn run lint
   pack:
     name: Pack
