@@ -1,4 +1,3 @@
-import { EOL } from 'node:os';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { normalizeSeparators } from '@boost/common/test';
 import { getFixturePath } from '@boost/test-utils';
@@ -33,12 +32,12 @@ describe('IgnoreFinder', () => {
 		expect(cache.pkgPath).toEqual(mockSystemPath(`${tempRoot}/package.json`));
 		expect(cache.fileContentCache).toEqual({
 			[mockSystemPath(`${tempRoot}/.boostignore`).path()]: {
-				content: `*.log${EOL}*.lock`,
+				content: `*.log\n*.lock`,
 				exists: true,
 				mtime: expect.any(Number),
 			},
 			[mockSystemPath(`${tempRoot}/src/app/feature/.boostignore`).path()]: {
-				content: `# Compiled${EOL}lib/`,
+				content: `# Compiled\nlib/`,
 				exists: true,
 				mtime: expect.any(Number),
 			},
