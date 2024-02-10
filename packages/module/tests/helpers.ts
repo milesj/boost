@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 export function getFixture(file: string): string {
 	return path.join(__dirname, '__fixtures__', file);

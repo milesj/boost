@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "outDir": "mjs",
+    "rootDir": "src",
+    "emitDeclarationOnly": true
+  },
+  "include": [
+    "src/**/*",
+    "../../types/**/*"
+  ]
+}

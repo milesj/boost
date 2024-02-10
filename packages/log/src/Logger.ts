@@ -1,5 +1,5 @@
-import os from 'os';
-import util from 'util';
+import os from 'node:os';
+import util from 'node:util';
 import { Contract } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { env } from '@boost/internal';

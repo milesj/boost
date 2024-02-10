@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import JSON from 'json5';
 import { PortablePath } from '../types';
 

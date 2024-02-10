@@ -1,6 +1,6 @@
 // https://nodejs.org/api/esm.html#esm_loaders
 
-import fs from 'fs';
+import fs from 'node:fs';
 import { LoaderLoad, LoaderResolve } from '../types';
 import {
 	COMPILER_OPTIONS,

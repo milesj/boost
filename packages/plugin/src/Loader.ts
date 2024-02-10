@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { isFilePath, isObject, MODULE_NAME_PART, PathResolver } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';

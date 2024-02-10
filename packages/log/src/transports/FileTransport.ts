@@ -1,5 +1,5 @@
-import fs from 'fs';
-import zlib from 'zlib';
+import fs from 'node:fs';
+import zlib from 'node:zlib';
 import { Path, PortablePath } from '@boost/common';
 import { Blueprint, portablePathSchema, Schemas } from '@boost/common/optimal';
 import { MAX_LOG_SIZE } from '../constants';

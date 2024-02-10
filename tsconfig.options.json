@@ -2,8 +2,12 @@
   "extends": "tsconfig-moon/tsconfig.projects.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "moduleResolution": "nodenext",
+    "module": "es2022",
+    "moduleResolution": "bundler",
     "jsx": "react",
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "resolvePackageJsonExports": true,
+    "resolvePackageJsonImports": true,
+    "customConditions": ["node"]
   }
 }

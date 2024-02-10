@@ -1,7 +1,7 @@
 {
   "name": "@boost/event",
-  "version": "4.0.1",
-  "type": "commonjs",
+  "version": "5.0.0-alpha.0",
+  "type": "module",
   "release": "1651512177861",
   "description": "An event system with multiple emitter patterns.",
   "keywords": [
@@ -10,20 +10,16 @@
     "emitter",
     "type-safe"
   ],
-  "main": "./cjs/index.cjs",
-  "browser": "./lib/index.js",
+  "main": "./mjs/index.mjs",
   "module": "./esm/index.js",
-  "types": "./dts/index.d.ts",
+  "types": "./mjs/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "esm/**/*.{js,map}",
-    "lib/**/*.{js,map}",
-    "src/**/*.{ts,tsx,json}"
+    "esm/**/*",
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",
@@ -36,7 +32,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/internal": "^4.0.1"
+    "@boost/internal": "^5.0.0-alpha.0"
   },
   "funding": {
     "type": "ko-fi",
@@ -50,24 +46,22 @@
     },
     {
       "api": "private",
-      "format": "cjs",
+      "format": "mjs",
       "platform": "node"
     }
   ],
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dts/index.d.ts",
       "browser": {
+        "types": "./esm/index.d.ts",
         "module": "./esm/index.js",
-        "import": "./esm/index.js",
-        "default": "./lib/index.js"
+        "import": "./esm/index.js"
       },
       "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
-      },
-      "default": "./lib/index.js"
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { PortablePath } from '@boost/common';
 import { FileTransport } from '../../src/transports/FileTransport';
 

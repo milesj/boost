@@ -1,4 +1,4 @@
-import os from 'os';
+import os from 'node:os';
 import { Contract } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { LOG_LEVELS } from './constants';

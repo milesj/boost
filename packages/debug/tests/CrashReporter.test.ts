@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import execa from 'execa';
 import glob from 'fast-glob';
 import { afterEach, beforeEach, describe, expect,it,Mock, MockInstance, vi  } from 'vitest';

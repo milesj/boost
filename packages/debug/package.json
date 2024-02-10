@@ -1,7 +1,7 @@
 {
   "name": "@boost/debug",
-  "version": "4.0.1",
-  "type": "commonjs",
+  "version": "5.0.0-alpha.0",
+  "type": "module",
   "release": "1651512175897",
   "description": "Lightweight debugging and crash reporting.",
   "keywords": [
@@ -13,16 +13,14 @@
     "report",
     "reporting"
   ],
-  "main": "./cjs/index.cjs",
-  "types": "./dts/index.d.ts",
+  "main": "./mjs/index.mjs",
+  "types": "./mjs/index.d.ts",
   "files": [
-    "cjs/**/*.{cjs,mjs,map}",
-    "dts/**/*.d.ts",
-    "src/**/*.{ts,tsx,json}"
+    "mjs/**/*",
+    "src/**/*"
   ],
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.0"
+    "node": ">=16.12.0"
   },
   "repository": {
     "type": "git",
@@ -35,8 +33,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^4.1.0",
-    "@boost/internal": "^4.0.1",
+    "@boost/common": "^5.0.0-alpha.0",
+    "@boost/internal": "^5.0.0-alpha.0",
     "@types/debug": "^4.1.7",
     "debug": "^4.3.4",
     "execa": "^5.1.1",
@@ -52,23 +50,24 @@
       "index": "src/index.ts",
       "test": "src/test.ts"
     },
-    "format": "cjs",
-    "platform": "node"
+    "format": "mjs",
+    "platform": "node",
+    "externals": [
+      "vitest"
+    ]
   },
   "exports": {
     "./package.json": "./package.json",
     "./test": {
-      "types": "./dts/test.d.ts",
       "node": {
-        "import": "./cjs/test-wrapper.mjs",
-        "require": "./cjs/test.cjs"
+        "types": "./mjs/test.d.ts",
+        "import": "./mjs/test.mjs"
       }
     },
     ".": {
-      "types": "./dts/index.d.ts",
       "node": {
-        "import": "./cjs/index-wrapper.mjs",
-        "require": "./cjs/index.cjs"
+        "types": "./mjs/index.d.ts",
+        "import": "./mjs/index.mjs"
       }
     }
   }

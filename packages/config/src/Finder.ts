@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { Contract, Path, PortablePath } from '@boost/common';
 import { createDebugger, Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
