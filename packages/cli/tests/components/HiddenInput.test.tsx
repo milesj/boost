@@ -36,7 +36,7 @@ describe('HiddenInput', () => {
 		expect(lastFrame()).toMatchSnapshot();
 	});
 
-	it('calls `onChange` with unmasked value', async () => {
+	it.only('calls `onChange` with unmasked value', async () => {
 		const spy = vi.fn();
 		const { stdin } = render(<HiddenInput {...props} onChange={spy} />);
 

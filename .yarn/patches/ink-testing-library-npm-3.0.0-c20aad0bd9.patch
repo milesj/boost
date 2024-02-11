@@ -1,34 +1,49 @@
 diff --git a/build/index.js b/build/index.js
-index bbdc07b3c1f1b8e447cd8b593c6e60fbcbd8db1f..a5790da9909df67011c9c6a538a6246383fcc5bc 100644
+index bbdc07b3c1f1b8e447cd8b593c6e60fbcbd8db1f..07a02d5c61b8004b6953870021473ee2d3520f79 100644
 --- a/build/index.js
 +++ b/build/index.js
-@@ -34,6 +34,9 @@ class Stdout extends EventEmitter {
-     get columns() {
-         return 100;
-     }
-+
-+    ref() {}
-+    unref() {}
- }
- class Stderr extends EventEmitter {
-     constructor() {
-@@ -66,6 +69,9 @@ class Stderr extends EventEmitter {
-             value: () => this._lastFrame
+@@ -77,12 +77,30 @@ class Stdin extends EventEmitter {
+             writable: true,
+             value: true
+         });
++        Object.defineProperty(this, "data", {
++            enumerable: true,
++            configurable: true,
++            writable: true,
++            value: null
++        });
+         Object.defineProperty(this, "write", {
+             enumerable: true,
+             configurable: true,
+             writable: true,
+             value: (data) => {
+-                this.emit('data', data);
++                this.data = data;
++                this.emit('readable');
++                // this.emit('data', data);
++            }
++        });
++        Object.defineProperty(this, "read", {
++            enumerable: true,
++            configurable: true,
++            writable: true,
++            value: () => {
++                let data = this.data;
++                this.data = null;
++                return data;
+             }
          });
      }
-+
-+    ref() {}
-+    unref() {}
- }
- class Stdin extends EventEmitter {
-     constructor() {
-@@ -98,6 +104,9 @@ class Stdin extends EventEmitter {
+@@ -98,6 +116,12 @@ class Stdin extends EventEmitter {
      pause() {
          // Do nothing
      }
-+
-+    ref() {}
-+    unref() {}
++    ref() {
++        // Do nothing
++    }
++    unref() {
++        // Do nothing
++    }
  }
  const instances = [];
  export const render = (tree) => {

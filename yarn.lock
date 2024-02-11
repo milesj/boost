@@ -10995,13 +10995,13 @@ __metadata:
 
 "ink-testing-library@patch:ink-testing-library@npm%3A3.0.0#./.yarn/patches/ink-testing-library-npm-3.0.0-c20aad0bd9.patch::locator=boost-root%40workspace%3A.":
   version: 3.0.0
-  resolution: "ink-testing-library@patch:ink-testing-library@npm%3A3.0.0#./.yarn/patches/ink-testing-library-npm-3.0.0-c20aad0bd9.patch::version=3.0.0&hash=8693fc&locator=boost-root%40workspace%3A."
+  resolution: "ink-testing-library@patch:ink-testing-library@npm%3A3.0.0#./.yarn/patches/ink-testing-library-npm-3.0.0-c20aad0bd9.patch::version=3.0.0&hash=62ef82&locator=boost-root%40workspace%3A."
   peerDependencies:
     "@types/react": ">=18.0.0"
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: df7cbb4568073f8d9dc98a0968cee85a8b510926bff7b593eef85960244e54205fc452e09489e67e51fd545a6893398638709c31749a1491f1c38564152eedca
+  checksum: 283c5f1d5aaddae0b5ef37fd94f9824c6c76196468161708ce9f6a47a6f163111f801d59aada626c35157e2aacbe9b758351db03df949a1fd1d139366cd0fd7c
   languageName: node
   linkType: hard
 
