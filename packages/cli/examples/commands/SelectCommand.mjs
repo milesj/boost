@@ -1,8 +1,8 @@
-const React = require('react');
-const { Command } = require('../../cjs/index.cjs');
-const { Select } = require('../../cjs/react.cjs');
+import { createElement } from 'react';
+import { Command } from '../../mjs/index.mjs';
+import { Select } from '../../mjs/react.mjs';
 
-module.exports = class SelectCommand extends Command {
+export default class SelectCommand extends Command {
 	static description = 'Test `Select` component';
 
 	static path = 'select';
@@ -73,7 +73,7 @@ module.exports = class SelectCommand extends Command {
 			}
 		}
 
-		return React.createElement(this.getComponent(), {
+		return createElement(this.getComponent(), {
 			label: this.flood ? 'Select a value' : 'What is your favorite fruit?',
 			limit: this.limit,
 			scrollType: this.scroll,
@@ -95,4 +95,4 @@ module.exports = class SelectCommand extends Command {
 	getComponent() {
 		return Select;
 	}
-};
+}

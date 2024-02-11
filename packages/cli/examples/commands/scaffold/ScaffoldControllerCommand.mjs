@@ -1,6 +1,6 @@
-const { Command } = require('../../../cjs/index.cjs');
+import { Command } from '../../../mjs/index.mjs';
 
-module.exports = class ScaffoldControllerCommand extends Command {
+export default class ScaffoldControllerCommand extends Command {
 	static description = 'Scaffold a controller';
 
 	static path = 'scaffold:controller';
@@ -8,4 +8,4 @@ module.exports = class ScaffoldControllerCommand extends Command {
 	async run() {
 		this.log('Scaffolded');
 	}
-};
+}

@@ -1,7 +1,7 @@
-const { Command } = require('../../cjs/index.cjs');
-const sleep = require('../sleep');
+import { Command } from '../../mjs/index.mjs';
+import sleep from '../sleep.mjs';
 
-module.exports = class ErrorCommand extends Command {
+export default class ErrorCommand extends Command {
 	static description = 'Test thrown errors render a failure state';
 
 	static path = 'error';
@@ -15,4 +15,4 @@ module.exports = class ErrorCommand extends Command {
 
 		throw new Error('Custom thrown error!');
 	}
-};
+}

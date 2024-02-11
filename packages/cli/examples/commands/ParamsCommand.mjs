@@ -1,6 +1,6 @@
-const { Command } = require('../../cjs/index.cjs');
+import { Command } from '../../mjs/index.mjs';
 
-module.exports = class ParamsCommand extends Command {
+export default class ParamsCommand extends Command {
 	static description = 'List of all possible param types';
 
 	static path = 'pms';
@@ -30,4 +30,4 @@ module.exports = class ParamsCommand extends Command {
 	run() {
 		//
 	}
-};
+}

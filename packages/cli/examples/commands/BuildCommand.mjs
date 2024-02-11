@@ -1,6 +1,6 @@
-const { Command } = require('../../cjs/index.cjs');
+import { Command } from '../../mjs/index.mjs';
 
-module.exports = class BuildCommand extends Command {
+export default class BuildCommand extends Command {
 	static path = 'build';
 
 	static aliases = ['make'];
@@ -12,4 +12,4 @@ module.exports = class BuildCommand extends Command {
 	async run() {
 		//
 	}
-};
+}

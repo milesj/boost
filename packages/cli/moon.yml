@@ -1,0 +1,6 @@
+type: 'application'
+
+tasks:
+  dev:
+    command: 'node ./examples/bin.mjs'
+    local: true
