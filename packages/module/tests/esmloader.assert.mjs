@@ -1,8 +1,9 @@
 // This file is necessary for testing as it's not possible within Jest.
 // Most likely because of its custom module and mocking layer.
 
-import { strict as assert } from 'assert';
-import path from 'path';
+import { strict as assert } from 'node:assert';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 // ES imports return modules wrapped in a `Module` class, which fails assertions.
 // We have no way of instantiating those classes, so spread to return a simple object.
@@ -19,11 +20,11 @@ function unwrap(mod) {
 }
 
 function getFixture(file) {
-	return path.join(path.dirname(import.meta.url), '__fixtures__', file);
+	return path.join(path.dirname(fileURLToPath(import.meta.url)), '__fixtures__', file);
 }
 
 function getFormatFixture(type) {
-	return getFixture(`format-${type}.${type}`);
+	return pathToFileURL(getFixture(`format-${type}.${type}`));
 }
 
 async function test() {
@@ -35,7 +36,7 @@ async function test() {
 	// CJS
 	assert.deepEqual(
 		unwrap(await import(getFormatFixture('cjs'))),
-		parseFloat(process.version.slice(1)) < 12.2
+		Number.parseFloat(process.version.slice(1)) < 12.2
 			? {
 					default: {
 						a: 1,
