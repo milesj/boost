@@ -90,7 +90,7 @@ exports[`<Program /> > failure > renders when args parsing fails 1`] = `
 
  Unknown option "--foo" found. Did you mean "help"? [ARG:OPTION_UNKNOWN_MORE]
 
- [90m$ boost [31m--foo[39m[90m[39m
+ [90m$ boost [31m--foo[39m
  [31m        └───┘[39m
 "
 `;
@@ -307,31 +307,27 @@ Boost v1.2.3 [90mboost[39m
 [1m[47m[30m OPTIONS [39m[49m[22m
 
      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
-     --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with
-                                             custom label. [90m[deprecated][39m
+    --deprecatedStringWithALongName Deprecated string option with custom label.
+    [90mstring[39m                          [90m[deprecated][39m
      --flag                                  Standard boolean option.
      --num [90mnumber[39m                            Standard number option.
- -C, --numberCountable [90mnumber[39m                Number option that increments a
-                                             count for each occurence. (default:
-                                              10) [90m[counter][39m
- -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from.
-                                             (choices: 1, 2, 3, 4, 5, 6, 7, 8,
-                                             9, 10) [90m[deprecated][39m
-     --numWithArity [90mnumber[][39m                 A multiple number option that
-                                             requires an exact number of values.
-                                              [90m[multiple(10)][39m
+ -C --numberCountable [90mnumber[39m   Number option that increments a count for each
+ ,                             occurence. (default: 10) [90m[counter][39m
+ -n --numberFixedList [90mnumber[39m  A list of numbers to choose from. (choices: 1, 2,
+ ,                            3, 4, 5, 6, 7, 8, 9, 10) [90m[deprecated][39m
+    --numWithArity [90mnumber[][39m      A multiple number option that requires an exact
+                                 number of values. [90m[multiple(10)][39m
      --str [90mstring[39m                            Standard string option.
- -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
-                                              "foo", "bar", "baz") (default:
-                                             "bar")
+ -s --stringChoices [90mstring[39m     Choice list with strings. (choices: "foo", "bar",
+ ,                             "baz") (default: "bar")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
- -t, --no-truthyBool                         Flag that is on by default, so name
-                                              should be negated. (default: true)
+ -t --no-truthyBool            Flag that is on by default, so name should be
+ ,                             negated. (default: true)
 
  [1mGlobal[22m
  -h, --help                                  Display help and usage menu
-     --locale [90mstring[39m                         Display output in the chosen locale
-                                              (default: "en")
+    --locale [90mstring[39m                   Display output in the chosen locale
+                                      (default: "en")
  -v, --version                               Display version number
 "
 `;
@@ -354,31 +350,27 @@ Boost v1.2.3 [90mboost[39m
 [1m[47m[30m OPTIONS [39m[49m[22m
 
      --deprecatedFlag                        A deprecated flag. [90m[deprecated][39m
-     --deprecatedStringWithALongName [90mstring[39m  Deprecated string option with
-                                             custom label. [90m[deprecated][39m
+    --deprecatedStringWithALongName Deprecated string option with custom label.
+    [90mstring[39m                          [90m[deprecated][39m
      --flag                                  Standard boolean option.
      --num [90mnumber[39m                            Standard number option.
- -C, --numberCountable [90mnumber[39m                Number option that increments a
-                                             count for each occurence. (default:
-                                              10) [90m[counter][39m
- -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from.
-                                             (choices: 1, 2, 3, 4, 5, 6, 7, 8,
-                                             9, 10) [90m[deprecated][39m
-     --numWithArity [90mnumber[][39m                 A multiple number option that
-                                             requires an exact number of values.
-                                              [90m[multiple(10)][39m
+ -C --numberCountable [90mnumber[39m   Number option that increments a count for each
+ ,                             occurence. (default: 10) [90m[counter][39m
+ -n --numberFixedList [90mnumber[39m  A list of numbers to choose from. (choices: 1, 2,
+ ,                            3, 4, 5, 6, 7, 8, 9, 10) [90m[deprecated][39m
+    --numWithArity [90mnumber[][39m      A multiple number option that requires an exact
+                                 number of values. [90m[multiple(10)][39m
      --str [90mstring[39m                            Standard string option.
- -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices:
-                                              "foo", "bar", "baz") (default:
-                                             "bar")
+ -s --stringChoices [90mstring[39m     Choice list with strings. (choices: "foo", "bar",
+ ,                             "baz") (default: "bar")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
- -t, --no-truthyBool                         Flag that is on by default, so name
-                                              should be negated. (default: true)
+ -t --no-truthyBool            Flag that is on by default, so name should be
+ ,                             negated. (default: true)
 
  [1mGlobal[22m
  -h, --help                                  Display help and usage menu
-     --locale [90mstring[39m                         Display output in the chosen locale
-                                              (default: "en")
+    --locale [90mstring[39m                   Display output in the chosen locale
+                                      (default: "en")
  -v, --version                               Display version number
 "
 `;
@@ -389,7 +381,7 @@ exports[`<Program /> > locale > errors for invalid \`--locale\` 1`] = `
 
  Locale must be in the format of "en" or "en-US".
 
- [90m$ boost [33m--locale[39m[90m wtf[39m
+ [90m$ boost [33m--locale[90m wtf[39m
  [33m        └──────┘[39m
 "
 `;
