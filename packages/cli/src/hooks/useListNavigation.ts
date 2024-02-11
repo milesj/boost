@@ -14,7 +14,8 @@ export function useListNavigation(
 				nextIndex = list.length - 1;
 			}
 
-			if (list[nextIndex]?.disabled ?? list[nextIndex]?.divider) {
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+			if (list[nextIndex]?.disabled || list[nextIndex]?.divider) {
 				nextIndex = getNextIndex(nextIndex + step, step);
 			}
 

@@ -1,0 +1,13 @@
+type: 'application'
+
+workspace:
+  inheritedTasks:
+    include: ['format', 'lint', 'typecheck']
+
+tasks:
+  build:
+    command: 'yarn run build'
+
+  dev:
+    command: 'yarn run start'
+    local: true

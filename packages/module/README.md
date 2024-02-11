@@ -11,18 +11,18 @@ import { requireModule } from '@boost/module';
 const result = requireModule('./some/non-js/file.ts');
 ```
 
-Or with next-generation [loaders](https://nodejs.org/api/esm.html#esm_loaders).
+Or with next-generation [Node.js hooks](https://nodejs.org/api/module.html#customization-hooks).
 
 ```bash
-node --experimental-loader @boost/module/loader.mjs ./path/to/entry-point.mjs
+node --import @boost/module/register ./path/to/entry-point.mjs
 ```
 
 ## Features
 
 - CommonJS based importing with `requireModule()`
 - CommonJS interoperability with ESM-like files
-- ECMAScript module based importing with a custom ESM loader
-- Supported file types: TypeScript (`.ts`, `.tsx`)
+- ECMAScript module based importing with a custom Node.js hook
+- Supported file types: TypeScript
 
 ## Installation
 

@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "moon": "$(yarn bin moon) --color",
-    "docs": "cd website && yarn run start",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
     "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
