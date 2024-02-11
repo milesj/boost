@@ -34,10 +34,13 @@ describe('FileBackend', () => {
 	});
 
 	describe('read()', () => {
-		it('supports .js extension', () => {
+		it('supports .js extension', async () => {
 			backend.configure({ format: 'js' });
+			backend.read('en', 'type-js', () => {});
 
-			expect(backend.read('en', 'type-js', () => {})).toEqual({ type: 'js' });
+			await delay();
+
+			expect(backend.resources).toEqual({ type: 'js' });
 		});
 
 		// it('supports .mjs extension', () => {
@@ -46,39 +49,59 @@ describe('FileBackend', () => {
 		//   expect(backend.read('en', 'type-mjs', () => {})).toEqual({ type: 'mjs' });
 		// });
 
-		it('supports .json extension', () => {
+		it('supports .json extension', async () => {
 			backend.configure({ format: 'json' });
+			backend.read('en', 'type-json', () => {});
 
-			expect(backend.read('en', 'type-json', () => {})).toEqual({ type: 'json' });
+			await delay();
+
+			expect(backend.resources).toEqual({ type: 'json' });
 		});
 
-		it('supports .json5 extension', () => {
+		it('supports .json5 extension', async () => {
 			backend.configure({ format: 'json' });
+			backend.read('en', 'type-json5', () => {});
 
-			expect(backend.read('en', 'type-json5', () => {})).toEqual({ type: 'json5' });
+			await delay();
+
+			expect(backend.resources).toEqual({ type: 'json5' });
 		});
 
-		it('supports .yaml extension', () => {
+		it('supports .yaml extension', async () => {
 			backend.configure({ format: 'yaml' });
+			backend.read('en', 'type-yaml', () => {});
 
-			expect(backend.read('en', 'type-yaml', () => {})).toEqual({ type: 'yaml' });
+			await delay();
+
+			expect(backend.resources).toEqual({ type: 'yaml' });
 		});
 
-		it('supports .yml extension', () => {
+		it('supports .yml extension', async () => {
 			backend.configure({ format: 'yaml' });
+			backend.read('en', 'type-yaml-short', () => {});
 
-			expect(backend.read('en', 'type-yaml-short', () => {})).toEqual({
+			await delay();
+
+			expect(backend.resources).toEqual({
 				type: 'yaml',
 				short: true,
 			});
 		});
 
-		it('returns empty object for missing locale', () => {
-			expect(backend.read('fr', 'unknown', () => {})).toEqual({});
+		it('returns empty object for missing locale', async () => {
+			backend.read('en', 'unknown', () => {});
+
+			await delay();
+
+			expect(backend.resources).toEqual({});
 		});
 
-		it('returns object for defined locale', () => {
-			expect(backend.read('en', 'common', () => {})).toEqual({ key: 'value' });
+		it('returns object for defined locale', async () => {
+			backend.read('en', 'common', () => {});
+
+			await delay();
+
+			expect(backend.resources).toEqual({ key: 'value' });
 		});
 
 		it('caches files after lookup', () => {
@@ -89,18 +112,23 @@ describe('FileBackend', () => {
 			expect(backend.fileCache.size).toBe(1);
 		});
 
-		it('passes the resources to the callback', () => {
+		it('passes the resources to the callback', async () => {
 			const spy = vi.fn();
 
 			backend.read('en', 'common', spy);
 
+			await delay();
+
 			expect(spy).toHaveBeenCalledWith(null, { key: 'value' });
 		});
 
-		it('merges objects from multiple resource paths', () => {
+		it('merges objects from multiple resource paths', async () => {
 			backend.options.paths.push(new Path(getFixturePath('i18n-resources-more')));
+			backend.read('en', 'common', () => {});
 
-			expect(backend.read('en', 'common', () => {})).toEqual({ key: 'value', lang: 'en' });
+			await delay();
+
+			expect(backend.resources).toEqual({ key: 'value', lang: 'en' });
 		});
 	});
 });

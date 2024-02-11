@@ -1,7 +1,6 @@
 import { Path } from '@boost/common';
-import { requireModule } from '@boost/module';
+import { loadJs } from './js';
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export async function loadCjs<T>(path: Path): Promise<T> {
-	return requireModule(path).default as T;
+	return loadJs<T>(path);
 }

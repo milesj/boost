@@ -21,8 +21,8 @@ Boost v1.2.3 [90mboost[39m
 
 exports[`<Program /> > components > renders and outputs multiple component renders 1`] = `
 "Before
-Foo[36mlevelInfo[39m Middle
-BarBaz[31mlevelError[39m After
+Foo[36minfo[39m Middle
+BarBaz[31merror[39m After
 "
 `;
 
@@ -388,24 +388,24 @@ exports[`<Program /> > locale > errors for invalid \`--locale\` 1`] = `
 
 exports[`<Program /> > logging > handles logging when rendering a component 1`] = `
 "Log
-[90mlevelDebug[39m Debug
-[36mlevelInfo[39m Info
+[90mdebug[39m Debug
+[36minfo[39m Info
 Component log
-Returned from component![33mlevelWarn[39m Warn
-[31mlevelError[39m Error
-[35mlevelTrace[39m Trace
-[31mlevelError[39m Component error
+Returned from component![33mwarn[39m Warn
+[31merror[39m Error
+[35mtrace[39m Trace
+[31merror[39m Component error
 "
 `;
 
 exports[`<Program /> > logging > handles logging when returning a string 1`] = `
 "Log
-[90mlevelDebug[39m Debug
-[36mlevelInfo[39m Info
+[90mdebug[39m Debug
+[36minfo[39m Info
 Returned from command!
-[33mlevelWarn[39m Warn
-[31mlevelError[39m Error
-[35mlevelTrace[39m Trace
+[33mwarn[39m Warn
+[31merror[39m Error
+[35mtrace[39m Trace
 "
 `;
 
@@ -431,14 +431,14 @@ exports[`<Program /> > tasks > can run a task within a task 1`] = `
 "Test
 Hi
 2
-[31mlevelError[39m Bye
+[31merror[39m Bye
 "
 `;
 
 exports[`<Program /> > tasks > runs a sync task correctly 1`] = `
 "Hi
 15
-[31mlevelError[39m Bye
+[31merror[39m Bye
 "
 `;
 

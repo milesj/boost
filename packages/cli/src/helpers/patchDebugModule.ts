@@ -1,4 +1,8 @@
-/* eslint-disable no-console, import/no-extraneous-dependencies */
+/* eslint-disable no-console */
+
+import { createRequire } from 'node:module';
+
+const requireDebug = createRequire(import.meta.url);
 
 /**
  * Wrap the `debug` stream since it writes to `process.stderr` directly.
@@ -9,7 +13,7 @@ export function patchDebugModule(): () => void {
 		return () => {};
 	}
 
-	const debug = require('debug') as typeof import('debug');
+	const debug = requireDebug('debug') as typeof import('debug');
 	const originalLog = debug.log;
 
 	debug.log = console.error.bind(console);

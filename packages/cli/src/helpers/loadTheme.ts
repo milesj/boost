@@ -1,9 +1,11 @@
+import { createRequire } from 'node:module';
 import { env } from '@boost/internal';
 import { style } from '@boost/terminal';
 import { CLIError } from '../CLIError';
 import { ThemePalette } from '../types';
 
 const loadedThemes = new Map<string, ThemePalette>();
+const requireTheme = createRequire(import.meta.url);
 
 export function loadTheme(): ThemePalette {
 	const theme = env('CLI_THEME') ?? '';
@@ -11,10 +13,10 @@ export function loadTheme(): ThemePalette {
 
 	if (style.level > 0 && !palette && !!theme) {
 		try {
-			palette = require(`@boost/theme-${theme}`) as ThemePalette;
+			palette = requireTheme(`@boost/theme-${theme}`) as ThemePalette;
 		} catch {
 			try {
-				palette = require(`boost-theme-${theme}`) as ThemePalette;
+				palette = requireTheme(`boost-theme-${theme}`) as ThemePalette;
 			} catch {
 				throw new CLIError('THEME_UNKNOWN', [theme]);
 			}
