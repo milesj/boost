@@ -1,6 +1,6 @@
 # Plugins - Boost
 
-![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![build status](https://img.shields.io/github/actions/workflow/status/milesj/boost/build.yml)
 ![npm version](https://img.shields.io/npm/v/@boost/plugin)
 
 Plugin based architecture that supports module loading, custom types, registries, scopes, and more.

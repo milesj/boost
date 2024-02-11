@@ -1,6 +1,6 @@
 # Common utilities - Boost
 
-![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![build status](https://img.shields.io/github/actions/workflow/status/milesj/boost/build.yml)
 ![npm version](https://img.shields.io/npm/v/@boost/common)
 
 A collection of common utilities and helpers for general purpose or Boost packages.

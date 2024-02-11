@@ -1,6 +1,6 @@
 # Modules - Boost
 
-![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![build status](https://img.shields.io/github/actions/workflow/status/milesj/boost/build.yml)
 ![npm version](https://img.shields.io/npm/v/@boost/module)
 
 Load and resolve custom file types at runtime with a more powerful Node.js `require` replacement.
