@@ -7,7 +7,7 @@ tasks:
       shell: true
 
   test-hook:
-    command: 'node --import @boost/module/register ./tests/esmloader.assert.mjs'
+    command: 'node ./tests/hook-tester.cjs'
     deps:
       - 'build'
     options:
