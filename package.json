@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "moon": "$(yarn bin moon) --color",
-    "coverage": "yarn test --coverage",
     "docs": "cd website && yarn run start",
     "release": "yarn run pack && yarn run check && lerna-release",
     "version": "yarn install && git add yarn.lock",
@@ -22,7 +21,7 @@
     "@types/node": "^20.11.17",
     "@types/pluralize": "^0.0.33",
     "@types/react": "^18.2.55",
-    "@types/semver": "^7.5.6",
+    "@types/semver": "^7.5.7",
     "@types/split": "^1.0.5",
     "@vitest/coverage-v8": "^1.2.2",
     "eslint": "^8.56.0",
