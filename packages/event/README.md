@@ -1,6 +1,6 @@
 # Events - Boost
 
-![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![build status](https://img.shields.io/github/actions/workflow/status/milesj/boost/build.yml)
 ![npm version](https://img.shields.io/npm/v/@boost/event)
 
 A strict event system with multiple emitter patterns.

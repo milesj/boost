@@ -1,6 +1,6 @@
 # Modules - Boost
 
-![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![build status](https://img.shields.io/github/actions/workflow/status/milesj/boost/build.yml)
 ![npm version](https://img.shields.io/npm/v/@boost/module)
 
 Load and resolve custom file types at runtime with a more powerful Node.js `require` replacement.
@@ -11,18 +11,18 @@ import { requireModule } from '@boost/module';
 const result = requireModule('./some/non-js/file.ts');
 ```
 
-Or with next-generation [loaders](https://nodejs.org/api/esm.html#esm_loaders).
+Or with next-generation [Node.js hooks](https://nodejs.org/api/module.html#customization-hooks).
 
 ```bash
-node --experimental-loader @boost/module/loader.mjs ./path/to/entry-point.mjs
+node --import @boost/module/register ./path/to/entry-point.mjs
 ```
 
 ## Features
 
 - CommonJS based importing with `requireModule()`
 - CommonJS interoperability with ESM-like files
-- ECMAScript module based importing with a custom ESM loader
-- Supported file types: TypeScript (`.ts`, `.tsx`)
+- ECMAScript module based importing with a custom Node.js hook
+- Supported file types: TypeScript
 
 ## Installation
 

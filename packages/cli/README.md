@@ -1,6 +1,6 @@
 # CLI - Boost
 
-![build status](https://img.shields.io/github/workflow/status/milesj/boost/Build)
+![build status](https://img.shields.io/github/actions/workflow/status/milesj/boost/build.yml)
 ![npm version](https://img.shields.io/npm/v/@boost/cli)
 
 An interactive command line program builder, powered by [React][react] and [Ink][ink].

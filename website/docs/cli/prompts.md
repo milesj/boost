@@ -7,8 +7,8 @@ components can be imported from `@boost/cli/react`.
 
 ## Confirm
 
-The [`Confirm`](/api/cli/function/Confirm) component provides a binary choice through the input of a
-single character. On submission, either a `true` or `false` value will be passed.
+The [`Confirm`](/api/cli-react/function/Confirm) component provides a binary choice through the
+input of a single character. On submission, either a `true` or `false` value will be passed.
 
 ```tsx
 import { Confirm } from '@boost/cli';
@@ -20,8 +20,9 @@ import { Confirm } from '@boost/cli';
 
 ## HiddenInput
 
-The [`HiddenInput`](/api/cli/function/HiddenInput) component is a specialized [`Input`](#input) that
-accepts user input, hides it from the console, and returns the entered string on submission.
+The [`HiddenInput`](/api/cli-react/function/HiddenInput) component is a specialized
+[`Input`](#input) that accepts user input, hides it from the console, and returns the entered string
+on submission.
 
 ```tsx
 import { HiddenInput } from '@boost/cli';
@@ -37,9 +38,9 @@ import { HiddenInput } from '@boost/cli';
 
 ## Input
 
-The [`Input`](/api/cli/function/Input) component is a simple text prompt that takes user input and
-returns a string. Supports standard typing, backspacing. On submission, the final `string` will be
-trimmed of whitespace.
+The [`Input`](/api/cli-react/function/Input) component is a simple text prompt that takes user input
+and returns a string. Supports standard typing, backspacing. On submission, the final `string` will
+be trimmed of whitespace.
 
 ```tsx
 import { Input } from '@boost/cli';
@@ -64,7 +65,7 @@ import { Input } from '@boost/cli';
 
 ## MultiSelect
 
-The [`MultiSelect`](/api/cli/function/MultiSelect) component works in a similar fashion to
+The [`MultiSelect`](/api/cli-react/function/MultiSelect) component works in a similar fashion to
 [`Select`](#select), but allows for multiple values to be selected before submission.
 
 ```tsx
@@ -104,8 +105,8 @@ import { MultiSelect } from '@boost/cli';
 
 ## PasswordInput
 
-The [`PasswordInput`](/api/cli/function/PasswordInput) component is a specialized [`Input`](#input)
-that masks user input and replaces each character with a star (`*`).
+The [`PasswordInput`](/api/cli-react/function/PasswordInput) component is a specialized
+[`Input`](#input) that masks user input and replaces each character with a star (`*`).
 
 ```tsx
 import { PasswordInput } from '@boost/cli';
@@ -121,9 +122,9 @@ import { PasswordInput } from '@boost/cli';
 
 ## Select
 
-The [`Select`](/api/cli/function/Select) component allows a value to be selected from a pre-defined
-list of options. Supports standard keyboard navigation. To select or unselect a value, press the
-space bar, or on submission, the currently highlighted option will be chosen.
+The [`Select`](/api/cli-react/function/Select) component allows a value to be selected from a
+pre-defined list of options. Supports standard keyboard navigation. To select or unselect a value,
+press the space bar, or on submission, the currently highlighted option will be chosen.
 
 ```tsx
 import { Select } from '@boost/cli';

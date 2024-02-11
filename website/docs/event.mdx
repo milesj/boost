@@ -17,6 +17,7 @@ A type-safe event system with multiple emitter patterns.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
+    { label: 'pnpm', value: 'pnpm' },
     { label: 'npm', value: 'npm' },
   ]}
 >
@@ -24,6 +25,13 @@ A type-safe event system with multiple emitter patterns.
 
 ```bash
 yarn add @boost/event
+```
+
+  </TabItem>
+  <TabItem value="pnpm">
+
+```bash
+pnpm add @boost/event
 ```
 
   </TabItem>
@@ -40,8 +48,8 @@ npm install @boost/event
 
 The event system is built around individual [`Event`][event] classes that can be instantiated in
 isolation, register and unregister their own listeners, and emit values by executing each listener
-with arguments. There are multiple [types of events](#types), so choose the best one for each use
-case.
+with arguments. There are multiple [types of events](#event-types), so choose the best one for each
+use case.
 
 To begin using events, instantiate an [`Event`][event] with a unique name -- the name is purely for
 debugging purposes.
