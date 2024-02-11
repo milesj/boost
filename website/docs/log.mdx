@@ -17,6 +17,7 @@ Lightweight level based logging system.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
+    { label: 'pnpm', value: 'pnpm' },
     { label: 'npm', value: 'npm' },
   ]}
 >
@@ -24,6 +25,13 @@ Lightweight level based logging system.
 
 ```bash
 yarn add @boost/log
+```
+
+  </TabItem>
+  <TabItem value="pnpm">
+
+```bash
+pnpm add @boost/log
 ```
 
   </TabItem>
@@ -246,5 +254,5 @@ const transport = new RotatingFileTransport({
 
 ## Test utilities
 
-A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/log/test` module. [View the API for a full list](/api/log-test).
+A handful of [Vitest](https://vitest.dev/) utilities are available in the `@boost/log/test` module.
+[View the API for a full list](/api/log-test).

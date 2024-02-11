@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 <EnvBadges backend tooling api="/api/module" />
 
 Load and resolve custom file types at runtime with a Node.js `require` replacement or
-next-generation [loaders](https://nodejs.org/api/esm.html#esm_loaders). Currently supports
+next-generation [hooks](https://nodejs.org/api/module.html#customization-hooks). Currently supports
 TypeScript for `.ts` and `.tsx` files.
 
 ## Installation
@@ -19,6 +19,7 @@ TypeScript for `.ts` and `.tsx` files.
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
+    { label: 'pnpm', value: 'pnpm' },
     { label: 'npm', value: 'npm' },
   ]}
 >
@@ -26,6 +27,13 @@ TypeScript for `.ts` and `.tsx` files.
 
 ```bash
 yarn add @boost/module
+```
+
+  </TabItem>
+  <TabItem value="pnpm">
+
+```bash
+pnpm add @boost/module
 ```
 
   </TabItem>
@@ -136,32 +144,38 @@ result.default.foo; // string
 result.default.bar; // number
 ```
 
-## ECMAScript module loaders
+## Node.js hooks
 
 Node.js supports an _experimental_ feature called
-[ESM loaders](https://nodejs.org/api/esm.html#esm_loaders), where non-JavaScript files can be
+[hooks](https://nodejs.org/api/module.html#customization-hooks), where non-JavaScript files can be
 loaded, parsed, and evaluated at runtime through Node.js's module system when using
 `import`/`export`.
 
-To make use of loaders, the following requirements must be met.
+To make use of hooks, the following requirements must be met.
 
-- Node.js >= v12.17
+- Node.js >= v16.20
 - Must use `import()` or `import`/`export` syntax (no `require`)
 - Source files must be modules (`.mjs`, `.ts`, etc)
 - Imported files must have trailing file extensions
 
-If you meet all of these requirements, then you may run your Node.js script with
-`--experimental-loader` and a [supported loader type](#supported-file-types), or the general loader
-that supports _all_ file types (demonstrated below).
+If you meet all of these requirements, then you may run your Node.js script with one of the
+following patterns.
 
-```bash
-node --experimental-loader @boost/module/loader ./path/to/entry-point.mjs
+```shell
+# v20+
+node --import @boost/module/register ./path/to/entry-point.mjs
+
+# v18+
+node --loader @boost/module/hook-typescript ./path/to/entry-point.mjs
+
+# v16+
+node --experimental-loader @boost/module/hook-typescript ./path/to/entry-point.mjs
 ```
 
-For example, with the loader above you can now import TypeScript files as if they were standard
-JavaScript!
+For example, with the above you can now import TypeScript files as if they were standard JavaScript!
 
 ```ts
+// entry-point.mjs
 import defaultValue, { namedValue } from './some/file/written/in.ts';
 ```
 
@@ -169,10 +183,10 @@ import defaultValue, { namedValue } from './some/file/written/in.ts';
 
 ### TypeScript
 
-[TypeScript](https://www.typescriptlang.org/) files are supported for `.ts` and `.tsx` file
-extensions. The TypeScript source code will be down-leveled according to the currently running
-Node.js version and its capabilities.
+[TypeScript](https://www.typescriptlang.org/) files are supported for `.ts`, `.tsx`, `.cts`, and
+`.mts` file extensions. The TypeScript source code will be down-leveled according to the currently
+running Node.js version and its capabilities.
 
-The TypeScript only ESM loader can be referenced with `@boost/module/loader-typescript`.
+The TypeScript only hook/loader can be referenced with `@boost/module/hook-typescript`.
 
 [requiremodule]: /api/module/function/requireModule

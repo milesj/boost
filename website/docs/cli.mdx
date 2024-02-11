@@ -27,6 +27,7 @@ handling ANSI escape sequences and terminal widths can be tedious and complicate
   defaultValue="yarn"
   values={[
     { label: 'Yarn', value: 'yarn' },
+    { label: 'pnpm', value: 'pnpm' },
     { label: 'npm', value: 'npm' },
   ]}
 >
@@ -34,6 +35,13 @@ handling ANSI escape sequences and terminal widths can be tedious and complicate
 
 ```bash
 yarn add @boost/cli react ink
+```
+
+  </TabItem>
+  <TabItem value="pnpm">
+
+```bash
+pnpm add @boost/cli react ink
 ```
 
   </TabItem>
@@ -1221,7 +1229,7 @@ class CustomCommand extends Command {
 ```
 
 The logger is also accessible within a component by using the
-[`useProgram()`](/api/cli/function/useProgram) hook, like so.
+[`useProgram()`](/api/cli-react/function/useProgram) hook, like so.
 
 ```tsx
 import { useContext } from 'react';
@@ -1287,8 +1295,8 @@ export default class ExampleCommand extends Command {
 
 ## Test utilities
 
-A handful of [Jest](https://github.com/facebook/jest) utilities are available in the
-`@boost/cli/test` module. [View the API for a full list](/api/cli-test).
+A handful of [Vitest](https://vitest.dev/) utilities are available in the `@boost/cli/test` module.
+[View the API for a full list](/api/cli-test).
 
 [args]: https://www.npmjs.com/package/@boost/args
 [ink]: https://github.com/vadimdemedes/ink
