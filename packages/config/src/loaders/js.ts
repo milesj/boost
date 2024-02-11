@@ -1,7 +1,7 @@
-import { PackageStructure, Path } from '@boost/common';
-import { loadCjs } from './cjs';
-import { loadMjs } from './mjs';
+import { Path } from '@boost/common';
+import { importAbsoluteModule } from '@boost/internal';
 
-export async function loadJs<T>(path: Path, pkg: PackageStructure): Promise<T> {
-	return pkg.type === 'module' ? loadMjs(path) : loadCjs(path);
+// eslint-disable-next-line @typescript-eslint/require-await
+export async function loadJs<T>(path: Path): Promise<T> {
+	return importAbsoluteModule<T>(path.path());
 }

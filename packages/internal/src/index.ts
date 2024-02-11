@@ -3,8 +3,6 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-export * from './color';
-export * from './createInternalDebugger';
-export * from './createScopedError';
-export * from './env';
+export * from './browser';
+export * from './importAbsoluteModule';
 export * from './interopDefault';
