@@ -17,6 +17,6 @@ export default class ScaffoldCommand extends Command {
 	}
 
 	async run() {
-		return this.renderHelp();
+		return this.render(await this.createHelp());
 	}
 }
