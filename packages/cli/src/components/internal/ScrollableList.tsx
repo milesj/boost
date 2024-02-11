@@ -29,7 +29,7 @@ export interface ScrollableListProps {
 export interface InternalScrollableListProps<T extends ScrollableItem> extends ScrollableListProps {
 	currentIndex: number;
 	items: T[];
-	renderItem: (item: T) => ReactElement;
+	renderItem: (item: T, index: number) => ReactElement;
 	rowHeight?: number;
 }
 
@@ -186,7 +186,7 @@ export function ScrollableList<T extends ScrollableItem>({
 				</Box>
 			)}
 
-			{list.map((item) => renderItem(item))}
+			{list.map((item, index) => renderItem(item, index))}
 
 			{trailingCount > 0 && isOverflow && (
 				<Box marginLeft={2}>

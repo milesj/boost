@@ -95,14 +95,16 @@ export function Select<T = string>(props: SelectProps<T>) {
 	}, [selectedValue, onSubmit, options, highlightedIndex]);
 
 	const renderItem = useCallback(
-		(option: SelectOption<T>) => {
+		(option: SelectOption<T>, index: number) => {
+			const key = `${option.index}-${index}`;
+
 			if (option.divider) {
-				return <DividerRow key={option.index} label={option.label} />;
+				return <DividerRow key={key} label={option.label} />;
 			}
 
 			return (
 				<OptionRow
-					key={option.index}
+					key={key}
 					highlighted={highlightedIndex === option.index}
 					icon={figures.pointerSmall}
 					iconActive={figures.pointer}

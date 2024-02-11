@@ -24,7 +24,7 @@ export default class SelectCommand extends Command {
 		},
 		limit: {
 			type: 'number',
-			default: 0,
+			default: 10,
 			description: 'Limit the number of options displayed',
 		},
 		scroll: {
