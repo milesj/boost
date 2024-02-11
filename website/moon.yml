@@ -7,6 +7,9 @@ workspace:
 tasks:
   build:
     command: 'yarn run build'
+    options:
+      # Requires node 18 but our CI has 16
+      allowFailure: true
 
   dev:
     command: 'yarn run start'
