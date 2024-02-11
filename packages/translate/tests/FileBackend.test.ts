@@ -43,11 +43,23 @@ describe('FileBackend', () => {
 			expect(backend.resources).toEqual({ type: 'js' });
 		});
 
-		// it('supports .mjs extension', () => {
-		//   backend.configure({ format: 'js' });
+		it('supports .cjs extension', async () => {
+			backend.configure({ format: 'cjs' });
+			backend.read('en', 'type-cjs', () => {});
 
-		//   expect(backend.read('en', 'type-mjs', () => {})).toEqual({ type: 'mjs' });
-		// });
+			await delay();
+
+			expect(backend.resources).toEqual({ type: 'cjs' });
+		});
+
+		it('supports .mjs extension', async () => {
+			backend.configure({ format: 'mjs' });
+			backend.read('en', 'type-mjs', () => {});
+
+			await delay();
+
+			expect(backend.resources).toEqual({ type: 'mjs' });
+		});
 
 		it('supports .json extension', async () => {
 			backend.configure({ format: 'json' });

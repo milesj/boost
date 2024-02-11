@@ -2,7 +2,7 @@ import { i18n, InterpolationOptions } from 'i18next';
 
 export type Direction = 'ltr' | 'rtl';
 
-export type Format = 'js' | 'json' | 'yaml';
+export type Format = 'cjs' | 'js' | 'json' | 'mjs' | 'yaml';
 
 export type Locale = string;
 
