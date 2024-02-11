@@ -6,10 +6,8 @@ tasks:
     options:
       shell: true
 
-  test-loader:
-    command:
-      'node --experimental-loader @boost/module/loader ./tests/esmloader.assert.mjs && node --loader
-      @boost/module/loader-typescript ./tests/esmloader.assert.mjs'
+  test-hook:
+    command: 'node --import @boost/module/register ./tests/esmloader.assert.mjs'
     deps:
       - 'build'
     options:

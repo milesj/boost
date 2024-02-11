@@ -1,8 +1,8 @@
 // This file is necessary for testing as it's not possible within Jest.
 // Most likely because of its custom module and mocking layer.
 
-const path = require('path');
-const assert = require('assert').strict;
+const path = require('node:path');
+const assert = require('node:assert').strict;
 const { requireModule } = require('../cjs/index.cjs');
 
 function getFixture(file) {
