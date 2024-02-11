@@ -1,9 +1,9 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Box } from 'ink';
 import { Style } from '../Style';
 
 export interface DividerRowProps {
-	label: NonNullable<React.ReactNode>;
+	label: NonNullable<ReactNode>;
 }
 
 export function DividerRow({ label }: DividerRowProps) {

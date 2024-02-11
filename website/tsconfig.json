@@ -4,7 +4,7 @@
     "outDir": "dts",
     "rootDir": "src",
     "emitDeclarationOnly": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "verbatimModuleSyntax": false
   },
   "exclude": [

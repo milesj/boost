@@ -38,18 +38,18 @@ exports[`<Help /> > options > renders options (stripped) 1`] = `
                                              [deprecated]
      --flag                                  Standard boolean option.
      --num number                            Standard number option.
- -C, --numberCountable number                Number option that increments a count for each
-                                             occurence. (default: 10) [counter]
- -n, --numberFixedList number                A list of numbers to choose from. (choices: 1, 2, 3, 4,
-                                              5, 6, 7, 8, 9, 10) [deprecated]
-     --numWithArity number[]                 A multiple number option that requires an exact number
-                                             of values. [multiple(10)]
+ -C,--numberCountable number        Number option that increments a count for each occurence.
+                                    (default: 10) [counter]
+ -n,--numberFixedList number      A list of numbers to choose from. (choices: 1, 2, 3, 4, 5, 6, 7,
+                                  8, 9, 10) [deprecated]
+    --numWithArity number[]         A multiple number option that requires an exact number of
+                                    values. [multiple(10)]
      --str string                            Standard string option.
- -s, --stringChoices string                  Choice list with strings. (choices: "foo", "bar",
-                                             "baz") (default: "bar")
+ -s,--stringChoices string            Choice list with strings. (choices: "foo", "bar", "baz")
+                                      (default: "bar")
  -S, --strList string[]                      String option list. [multiple]
- -t, --no-truthyBool                         Flag that is on by default, so name should be negated.
-                                             (default: true)"
+ -t,--no-truthyBool                    Flag that is on by default, so name should be negated.
+                                       (default: true)"
 `;
 
 exports[`<Help /> > options > renders options 1`] = `
@@ -61,18 +61,18 @@ exports[`<Help /> > options > renders options 1`] = `
                                              [90m[deprecated][39m
      --flag                                  Standard boolean option.
      --num [90mnumber[39m                            Standard number option.
- -C, --numberCountable [90mnumber[39m                Number option that increments a count for each
-                                             occurence. (default: 10) [90m[counter][39m
- -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4,
-                                              5, 6, 7, 8, 9, 10) [90m[deprecated][39m
-     --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number
-                                             of values. [90m[multiple(10)][39m
+ -C,--numberCountable [90mnumber[39m        Number option that increments a count for each occurence.
+                                    (default: 10) [90m[counter][39m
+ -n,--numberFixedList [90mnumber[39m      A list of numbers to choose from. (choices: 1, 2, 3, 4, 5, 6, 7,
+                                  8, 9, 10) [90m[deprecated][39m
+    --numWithArity [90mnumber[][39m         A multiple number option that requires an exact number of
+                                    values. [90m[multiple(10)][39m
      --str [90mstring[39m                            Standard string option.
- -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: "foo", "bar",
-                                             "baz") (default: "bar")
+ -s,--stringChoices [90mstring[39m            Choice list with strings. (choices: "foo", "bar", "baz")
+                                      (default: "bar")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
- -t, --no-truthyBool                         Flag that is on by default, so name should be negated.
-                                             (default: true)"
+ -t,--no-truthyBool                    Flag that is on by default, so name should be negated.
+                                       (default: true)"
 `;
 
 exports[`<Help /> > params > doesnt render empty params 1`] = `""`;
@@ -123,18 +123,18 @@ exports[`<Help /> > renders everything 1`] = `
                                              [90m[deprecated][39m
      --flag                                  Standard boolean option.
      --num [90mnumber[39m                            Standard number option.
- -C, --numberCountable [90mnumber[39m                Number option that increments a count for each
-                                             occurence. (default: 10) [90m[counter][39m
- -n, --numberFixedList [90mnumber[39m                A list of numbers to choose from. (choices: 1, 2, 3, 4,
-                                              5, 6, 7, 8, 9, 10) [90m[deprecated][39m
-     --numWithArity [90mnumber[][39m                 A multiple number option that requires an exact number
-                                             of values. [90m[multiple(10)][39m
+ -C,--numberCountable [90mnumber[39m        Number option that increments a count for each occurence.
+                                    (default: 10) [90m[counter][39m
+ -n,--numberFixedList [90mnumber[39m      A list of numbers to choose from. (choices: 1, 2, 3, 4, 5, 6, 7,
+                                  8, 9, 10) [90m[deprecated][39m
+    --numWithArity [90mnumber[][39m         A multiple number option that requires an exact number of
+                                    values. [90m[multiple(10)][39m
      --str [90mstring[39m                            Standard string option.
- -s, --stringChoices [90mstring[39m                  Choice list with strings. (choices: "foo", "bar",
-                                             "baz") (default: "bar")
+ -s,--stringChoices [90mstring[39m            Choice list with strings. (choices: "foo", "bar", "baz")
+                                      (default: "bar")
  -S, --strList [90mstring[][39m                      String option list. [90m[multiple][39m
- -t, --no-truthyBool                         Flag that is on by default, so name should be negated.
-                                             (default: true)"
+ -t,--no-truthyBool                    Flag that is on by default, so name should be negated.
+                                       (default: true)"
 `;
 
 exports[`<Help /> > usage > renders usage array 1`] = `

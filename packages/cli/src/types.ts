@@ -1,7 +1,7 @@
 // Some `any` is used so that its easier for consumers
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React from 'react';
+import type { ReactElement } from 'react';
 import {
 	ArgList,
 	Arguments,
@@ -106,7 +106,7 @@ export type ProgramBootstrap = () => Promise<void> | void;
 
 // COMMANDS
 
-export type RunResult = React.ReactElement | string | undefined | void;
+export type RunResult = ReactElement | string | undefined | void;
 
 export type CommandPath = string;
 

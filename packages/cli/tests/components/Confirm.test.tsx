@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from 'ink-testing-library';
 import { describe, expect, it, vi } from 'vitest';
 import { Confirm, ConfirmProps } from '../../src/components/Confirm';

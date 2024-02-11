@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from '@docusaurus/Link';
 // @ts-expect-error Not typed
 import IconExternalLink from '@theme/Icon/ExternalLink';

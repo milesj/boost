@@ -1,8 +1,8 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Text } from 'ink';
 
 export interface LabelProps {
-	children: NonNullable<React.ReactNode>;
+	children: NonNullable<ReactNode>;
 }
 
 export function Label({ children }: LabelProps) {

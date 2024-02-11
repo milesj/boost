@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from 'ink';
 import { toArray } from '@boost/common';
 import { DELIMITER, SPACING_COL } from '../../constants';

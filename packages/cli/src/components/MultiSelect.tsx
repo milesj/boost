@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useFocus } from 'ink';
 import { toArray } from '@boost/common';
 import { figures } from '@boost/terminal';

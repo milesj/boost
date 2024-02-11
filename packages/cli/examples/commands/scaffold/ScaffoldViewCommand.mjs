@@ -1,6 +1,6 @@
-const { Command } = require('../../../cjs/index.cjs');
+import { Command } from '../../../mjs/index.mjs';
 
-module.exports = class ScaffoldViewCommand extends Command {
+export default class ScaffoldViewCommand extends Command {
 	static description = 'Scaffold a view';
 
 	static path = 'scaffold:view';
@@ -8,4 +8,4 @@ module.exports = class ScaffoldViewCommand extends Command {
 	async run() {
 		this.log('Scaffolded');
 	}
-};
+}

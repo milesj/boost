@@ -2,11 +2,11 @@ let envVars: Record<string, unknown> = {};
 
 if (global.process !== undefined) {
 	envVars = process.env;
+} else if ('window' in global && global.window !== undefined) {
+	// @ts-expect-error Allow type mismatch
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	envVars = window;
 }
-// } else if (global.document !== undefined) {
-// 	// @ts-expect-error Allow type mismatch
-// 	envVars = window;
-// }
 
 export function env<T extends string = string>(key: string, value?: T | null): T | undefined {
 	const name = `BOOSTJS_${key}`;

@@ -1,16 +1,16 @@
-const React = require('react');
-const { Box, Text } = require('ink');
-const { Command } = require('../../cjs/index.cjs');
-const { ProgramContext } = require('../../cjs/react.cjs');
-const random = require('../random');
+import { createElement, useContext, useEffect, useState } from 'react';
+import { Box, Text } from 'ink';
+import { Command } from '../../mjs/index.mjs';
+import { ProgramContext } from '../../mjs/react.mjs';
+import random from '../random.mjs';
 
 let timer;
 
 function Logger() {
-	const [count, setCount] = React.useState(0);
-	const ctx = React.useContext(ProgramContext);
+	const [count, setCount] = useState(0);
+	const ctx = useContext(ProgramContext);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		console.warn('Initial render');
 
 		function increment() {
@@ -34,10 +34,10 @@ function Logger() {
 		increment();
 	}, [ctx]);
 
-	return React.createElement(Box, {}, React.createElement(Text, {}, `Rendered ${count} times`));
+	return createElement(Box, {}, createElement(Text, {}, `Rendered ${count} times`));
 }
 
-module.exports = class LoggerCommand extends Command {
+export default class LoggerCommand extends Command {
 	static description = 'Test console logs effect on the render loop';
 
 	static path = 'log';
@@ -47,6 +47,6 @@ module.exports = class LoggerCommand extends Command {
 	run() {
 		this.log.info('Rendering component');
 
-		return React.createElement(Logger);
+		return createElement(Logger);
 	}
-};
+}

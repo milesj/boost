@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { Box, Key, useFocusManager, useInput } from 'ink';
 import { figures } from '@boost/terminal';
 import { useIsMounted } from '../../hooks/useIsMounted';
@@ -9,7 +9,7 @@ export type KeyInput = Key;
 
 export interface PromptProps<T> {
 	/** Label to display before or above the prompt itself. */
-	label: NonNullable<React.ReactNode>;
+	label: NonNullable<ReactNode>;
 	/** Single character symbol to display before the label. Defaults to "?"". */
 	prefix?: string;
 	/** Callback triggered when the value is submitted. */
@@ -19,9 +19,9 @@ export interface PromptProps<T> {
 }
 
 export interface InternalPromptProps<T> extends Omit<PromptProps<T>, 'onSubmit'> {
-	afterLabel?: React.ReactNode;
-	beforeLabel?: React.ReactNode;
-	children?: React.ReactNode;
+	afterLabel?: ReactNode;
+	beforeLabel?: ReactNode;
+	children?: ReactNode;
 	focused?: boolean;
 	onBackspace?: (key: KeyInput) => void;
 	onDelete?: (key: KeyInput) => void;

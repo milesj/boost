@@ -1,8 +1,8 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import styles from './styles.module.css';
 
 export interface BadgeGroupProps {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 export default function BadgeGroup({ children }: BadgeGroupProps) {

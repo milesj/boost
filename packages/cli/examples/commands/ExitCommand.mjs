@@ -1,7 +1,7 @@
-const { Command } = require('../../cjs/index.cjs');
-const sleep = require('../sleep');
+import { Command } from '../../mjs/index.mjs';
+import sleep from '../sleep.mjs';
 
-module.exports = class ExitCommand extends Command {
+export default class ExitCommand extends Command {
 	static description = 'Test exiting the program';
 
 	static path = 'exit';
@@ -26,4 +26,4 @@ module.exports = class ExitCommand extends Command {
 			this.exit();
 		}
 	}
-};
+}

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { useFocus } from 'ink';
 import { isObject } from '@boost/common';
 import { figures } from '@boost/terminal';
@@ -10,13 +10,13 @@ import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
 
 export type SelectOptionLike<T> =
-	| { divider: boolean; label?: NonNullable<React.ReactNode> }
-	| { label: NonNullable<React.ReactNode>; value: T };
+	| { divider: boolean; label?: NonNullable<ReactNode> }
+	| { label: NonNullable<ReactNode>; value: T };
 
 export interface SelectOption<T> {
 	divider: boolean;
 	index: number;
-	label: NonNullable<React.ReactNode>;
+	label: NonNullable<ReactNode>;
 	value: T | null;
 }
 
@@ -95,14 +95,16 @@ export function Select<T = string>(props: SelectProps<T>) {
 	}, [selectedValue, onSubmit, options, highlightedIndex]);
 
 	const renderItem = useCallback(
-		(option: SelectOption<T>) => {
+		(option: SelectOption<T>, index: number) => {
+			const key = `${option.index}-${index}`;
+
 			if (option.divider) {
-				return <DividerRow key={option.index} label={option.label} />;
+				return <DividerRow key={key} label={option.label} />;
 			}
 
 			return (
 				<OptionRow
-					key={option.index}
+					key={key}
 					highlighted={highlightedIndex === option.index}
 					icon={figures.pointerSmall}
 					iconActive={figures.pointer}

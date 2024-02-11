@@ -1,4 +1,5 @@
 import levenary from 'levenary';
+import { interopDefault } from '@boost/internal';
 import { ArgsError, ArgsErrorCode } from './ArgsError';
 import { COMMAND_FORMAT } from './constants';
 import { ParseError } from './ParseError';
@@ -44,7 +45,10 @@ export class Checker {
 
 	// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 	checkUnknownOption(option: LongOptionName | ShortOptionName) {
-		const guess = levenary(option, Object.keys(this.options));
+		const guess = interopDefault<typeof import('levenary').default>(levenary)(
+			option,
+			Object.keys(this.options),
+		);
 
 		if (guess) {
 			this.logFailureError('OPTION_UNKNOWN_MORE', [option, guess]);

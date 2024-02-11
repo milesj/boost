@@ -1,5 +1,5 @@
-module.exports = function sleep(delay) {
+export default async function sleep(delay) {
 	return new Promise((resolve) => {
 		setTimeout(resolve, delay);
 	});
-};
+}

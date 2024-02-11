@@ -4,6 +4,7 @@
     "packages/*/src/**/*",
     "packages/*/tests/**/*",
     "packages/*/types/**/*",
+    "packages/cli/examples/**/*",
     "themes/*/src/**/*",
     "themes/*/tests/**/*",
     "themes/*/types/**/*",
