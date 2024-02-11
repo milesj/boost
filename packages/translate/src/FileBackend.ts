@@ -9,8 +9,10 @@ import { TranslateError } from './TranslateError';
 import { Format, Locale } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
+	cjs: ['cjs'],
 	js: ['js'],
 	json: ['json', 'json5'],
+	mjs: ['mjs'],
 	yaml: ['yaml', 'yml'],
 };
 
@@ -41,7 +43,7 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 		const { array, instance, string } = schemas;
 
 		return {
-			format: string('yaml').oneOf<Format>(['js', 'json', 'yaml']),
+			format: string('yaml').oneOf<Format>(['cjs', 'js', 'mjs', 'json', 'yaml']),
 			paths: array().of(instance().of(Path, { loose: true }).notNullable()),
 		};
 	}
@@ -64,11 +66,12 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 				await Promise.all(
 					EXTS[format].map(async (ext) => {
 						const resPath = path.append(locale, `${namespace}.${ext}`);
-						const isCached = this.fileCache.has(resPath);
 
 						if (!resPath.exists()) {
 							return;
 						}
+
+						const isCached = this.fileCache.has(resPath);
 
 						if (!isCached) {
 							let content: ResourceKey;
