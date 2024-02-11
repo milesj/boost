@@ -40,7 +40,10 @@
     {
       "api": "private",
       "format": "esm",
-      "platform": "browser"
+      "platform": "browser",
+      "inputs": {
+        "index": "src/browser.ts"
+      }
     },
     {
       "api": "private",
@@ -52,7 +55,7 @@
     "./package.json": "./package.json",
     ".": {
       "browser": {
-        "types": "./esm/index.d.ts",
+        "types": "./esm/browser.d.ts",
         "module": "./esm/index.js",
         "import": "./esm/index.js"
       },

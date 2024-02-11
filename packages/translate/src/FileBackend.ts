@@ -1,6 +1,10 @@
-import { BackendModule, Resource, ResourceKey } from 'i18next';
+/* eslint-disable promise/prefer-await-to-callbacks */
+/* eslint-disable promise/prefer-await-to-then */
+
+import { BackendModule, Resource, ResourceKey, ResourceKeys } from 'i18next';
 import { Contract, json, Path, yaml } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
+import { importAbsoluteModule } from '@boost/internal';
 import { TranslateError } from './TranslateError';
 import { Format, Locale } from './types';
 
@@ -19,6 +23,8 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 	fileCache = new Map<Path, ResourceKey>();
 
 	type = 'backend' as const;
+
+	resources: ResourceKeys = {};
 
 	init(services: unknown, options: Partial<FileBackendOptions>) {
 		this.configure(options);
@@ -49,47 +55,52 @@ export class FileBackend extends Contract<FileBackendOptions> implements Backend
 		locale: Locale,
 		namespace: string,
 		handler: (error: Error | null, resources: Resource) => void,
-	): ResourceKey {
+	): void {
 		const { format, paths } = this.options;
 		const resources: ResourceKey = {};
 
-		paths.forEach((path) => {
-			EXTS[format].some((ext) => {
-				const resPath = path.append(locale, `${namespace}.${ext}`);
-				const isCached = this.fileCache.has(resPath);
+		Promise.all(
+			paths.map(async (path) => {
+				await Promise.all(
+					EXTS[format].map(async (ext) => {
+						const resPath = path.append(locale, `${namespace}.${ext}`);
+						const isCached = this.fileCache.has(resPath);
 
-				if (!resPath.exists()) {
-					return false;
-				}
+						if (!resPath.exists()) {
+							return;
+						}
 
-				if (!isCached) {
-					let content: ResourceKey;
+						if (!isCached) {
+							let content: ResourceKey;
 
-					switch (ext) {
-						case 'yml':
-						case 'yaml':
-							content = yaml.load(resPath);
-							break;
-						case 'json':
-						case 'json5':
-							content = json.load(resPath);
-							break;
-						default:
-							content = require(resPath.path()) as ResourceKey;
-							break;
-					}
+							switch (ext) {
+								case 'yml':
+								case 'yaml':
+									content = yaml.load(resPath);
+									break;
+								case 'json':
+								case 'json5':
+									content = json.load(resPath);
+									break;
+								default:
+									content = await importAbsoluteModule<ResourceKey>(resPath.path());
+									break;
+							}
 
-					this.fileCache.set(resPath, content);
-				}
+							this.fileCache.set(resPath, content);
+						}
 
-				Object.assign(resources, this.fileCache.get(resPath));
-
-				return true;
+						Object.assign(resources, this.fileCache.get(resPath));
+					}),
+				);
+			}),
+		)
+			.then(() => {
+				this.resources = resources;
+				handler(null, resources);
+			})
+			.catch((error) => {
+				handler(error as Error, {});
 			});
-		});
-
-		handler(null, resources);
-
-		return resources;
 	}
 }

@@ -120,8 +120,6 @@ describe('Path', () => {
 		it('returns true if a folder', () => {
 			const path = new Path(__dirname);
 
-			console.log(path);
-
 			expect(path.exists()).toBe(true);
 		});
 
