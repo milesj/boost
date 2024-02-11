@@ -1,9 +1,9 @@
 import { instanceOf } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { Context } from './Context';
 import { createWorkUnit } from './createWorkUnit';
 import { Pipeline } from './Pipeline';
-import { Action, AggregatedResult } from './types';
+import type { Action, AggregatedResult } from './types';
 import { WorkUnit } from './WorkUnit';
 
 export abstract class ParallelPipeline<

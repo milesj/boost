@@ -1,4 +1,4 @@
-import { Commandable, CommandMetadataMap } from '../types';
+import type { Commandable, CommandMetadataMap } from '../types';
 
 export function mapCommandMetadata(commands: Record<string, Commandable>) {
 	const map: CommandMetadataMap = {};

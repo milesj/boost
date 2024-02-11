@@ -1,11 +1,11 @@
 import path from 'node:path';
 import { isFilePath, isObject, MODULE_NAME_PART, PathResolver } from '@boost/common';
-import { createDebugger, Debugger } from '@boost/debug';
+import { createDebugger, type Debugger } from '@boost/debug';
 import { color, importAbsoluteModule } from '@boost/internal';
 import { debug } from './debug';
 import { PluginError } from './PluginError';
 import { Registry } from './Registry';
-import { Factory, Pluggable, Source } from './types';
+import type { Factory, Pluggable, Source } from './types';
 
 export class Loader<Plugin extends Pluggable> {
 	readonly debug: Debugger;

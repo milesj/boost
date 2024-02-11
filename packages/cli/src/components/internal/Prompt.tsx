@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useState } from 'react';
-import { Box, Key, useFocusManager, useInput } from 'ink';
+import { Box, type Key, useFocusManager, useInput } from 'ink';
 import { figures } from '@boost/terminal';
 import { useIsMounted } from '../../hooks/useIsMounted';
 import { Style } from '../Style';

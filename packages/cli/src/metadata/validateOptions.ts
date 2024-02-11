@@ -1,5 +1,5 @@
-import { OptionConfig, OptionConfigMap } from '@boost/args';
-import { Blueprint, optimal } from '@boost/common/optimal';
+import type { OptionConfig, OptionConfigMap } from '@boost/args';
+import { type Blueprint, optimal } from '@boost/common/optimal';
 import { msg } from '../translate';
 import {
 	flagBlueprint,

@@ -2,7 +2,7 @@ import coreDebug from 'debug';
 import { toArray } from '@boost/common';
 import { color, env } from '@boost/internal';
 import { debug } from './debug';
-import { Debugger } from './types';
+import type { Debugger } from './types';
 
 /**
  * Create and return a `Debugger` instance with the defined namespace.

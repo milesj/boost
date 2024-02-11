@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { Schemas } from '@boost/common/optimal';
+import type { Schemas } from '@boost/common/optimal';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
-import { Runnable } from '../src/types';
+import type { Runnable } from '../src/types';
 import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';
 

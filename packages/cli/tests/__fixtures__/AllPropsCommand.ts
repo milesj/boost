@@ -1,4 +1,4 @@
-import { Command, GlobalOptions, Options, Params } from '../../src';
+import { Command, type GlobalOptions, type Options, type Params } from '../../src';
 
 export interface AllOptions extends GlobalOptions {
 	flag: boolean;

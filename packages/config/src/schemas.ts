@@ -1,5 +1,5 @@
-import { Blueprint, Schemas, schemas } from '@boost/common/optimal';
-import {
+import { type Blueprint, type Schemas, schemas } from '@boost/common/optimal';
+import type {
 	ExtendsSetting,
 	FileGlob,
 	OverridesSettingItem,

@@ -1,6 +1,6 @@
 import { render } from 'ink-testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Select, SelectProps } from '../../src/components/Select';
+import { Select, type SelectProps } from '../../src/components/Select';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
 
 describe('Select', () => {

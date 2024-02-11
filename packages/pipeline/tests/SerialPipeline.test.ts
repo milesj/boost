@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { Schemas } from '@boost/common/optimal';
+import type { Schemas } from '@boost/common/optimal';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
-import { Runnable } from '../src/types';
+import type { Runnable } from '../src/types';
 import { WaterfallPipeline } from '../src/WaterfallPipeline';
 import { WorkUnit } from '../src/WorkUnit';
 import { createMonitor, getMonitoredEvents } from './helpers';

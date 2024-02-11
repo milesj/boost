@@ -1,7 +1,7 @@
 import { LOG_LEVELS } from '../constants';
 import * as formats from '../formats';
 import { Transport } from '../Transport';
-import { LogItem, TransportOptions } from '../types';
+import type { LogItem, TransportOptions } from '../types';
 
 export class ConsoleTransport extends Transport<TransportOptions> {
 	constructor(options?: Partial<TransportOptions>) {

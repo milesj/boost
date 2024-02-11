@@ -1,5 +1,5 @@
 import semver from 'semver';
-import { Middleware } from '../types';
+import type { Middleware } from '../types';
 
 /**
  * Verify that the currently running Node.js process.version satisfies the given semver range.

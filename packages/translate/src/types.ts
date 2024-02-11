@@ -1,4 +1,4 @@
-import { i18n, InterpolationOptions } from 'i18next';
+import type { i18n, InterpolationOptions } from 'i18next';
 
 export type Direction = 'ltr' | 'rtl';
 

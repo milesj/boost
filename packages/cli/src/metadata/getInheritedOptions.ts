@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { OptionConfigMap } from '@boost/args';
+import type { OptionConfigMap } from '@boost/args';
 import { getConstructor } from './getConstructor';
 
 export function getInheritedOptions(base: Object): OptionConfigMap {

@@ -1,12 +1,12 @@
 /* eslint-disable no-await-in-loop */
 
 import { Contract, isObject } from '@boost/common';
-import { Blueprint, optimal, Schemas } from '@boost/common/optimal';
-import { createDebugger, Debugger } from '@boost/debug';
+import { type Blueprint, optimal, type Schemas } from '@boost/common/optimal';
+import { createDebugger, type Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { mergeArray } from './helpers/mergeArray';
 import { mergeObject } from './helpers/mergeObject';
-import { ConfigFile, Handler, ProcessorOptions } from './types';
+import type { ConfigFile, Handler, ProcessorOptions } from './types';
 
 export class Processor<T extends object> extends Contract<ProcessorOptions> {
 	protected readonly debug: Debugger;

@@ -1,6 +1,6 @@
-import { Flag as FlagConfig } from '@boost/args';
+import type { Flag as FlagConfig } from '@boost/args';
 import { createOptionInitializer } from '../metadata/createOptionInitializer';
-import { PartialConfig } from '../types';
+import type { PartialConfig } from '../types';
 
 /**
  * A property initializer for declaring a command line flag (boolean value).

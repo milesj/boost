@@ -3,7 +3,7 @@ import { useApp } from 'ink';
 import { ExitError } from '@boost/common';
 import { EXIT_FAIL, EXIT_PASS } from '../constants';
 import { ProgramContext } from '../ProgramContext';
-import { ProgramContextType } from '../types';
+import type { ProgramContextType } from '../types';
 
 export function useProgram(): ProgramContextType {
 	const { exit: appExit } = useApp();

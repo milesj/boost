@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Blueprint, schemas } from '@boost/common/optimal';
+import { type Blueprint, schemas } from '@boost/common/optimal';
 import { mockFilePath } from '@boost/common/test';
 import { mergeExtends } from '../src/helpers/mergeExtends';
 import { mergePlugins } from '../src/helpers/mergePlugins';
 import { overwrite } from '../src/helpers/overwrite';
 import { Processor } from '../src/Processor';
 import { createExtendsSchema, createOverridesSchema, createPluginsSchema } from '../src/schemas';
-import { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
+import type { ConfigFile, ExtendsSetting, OverridesSetting, PluginsSetting } from '../src/types';
 
 describe('Processor', () => {
 	interface ConfigShape {

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Box, Text } from 'ink';
-import { ParamConfig, ParamConfigList } from '@boost/args';
+import type { ParamConfig, ParamConfigList } from '@boost/args';
 import { SPACING_COL, SPACING_COL_WIDE } from '../../constants';
 import { formatDescription, formatType, getLongestWidth } from '../../helpers';
 import { msg } from '../../translate';
-import { CommandConfig } from '../../types';
+import type { CommandConfig } from '../../types';
 import { Header } from '../Header';
 
 function gatherParamTags(config: ParamConfig): string[] {

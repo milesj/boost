@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { msg } from './translate';
-import { LogLevel, LogLevelLabels } from './types';
+import type { LogLevel, LogLevelLabels } from './types';
 
 // In order of priority!
 export const LOG_LEVELS: LogLevel[] = ['log', 'trace', 'debug', 'info', 'warn', 'error'];

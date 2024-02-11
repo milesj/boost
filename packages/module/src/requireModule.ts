@@ -1,6 +1,6 @@
 import { interopModule } from './interopModule';
 import { requireTSModule } from './requireTSModule';
-import { ModuleLike, PathLike } from './types';
+import type { ModuleLike, PathLike } from './types';
 import { isTypeScript } from './typescript';
 
 /**

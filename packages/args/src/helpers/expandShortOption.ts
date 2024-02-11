@@ -1,5 +1,5 @@
 import { ArgsError } from '../ArgsError';
-import { AliasMap, LongOptionName, ShortOptionName } from '../types';
+import type { AliasMap, LongOptionName, ShortOptionName } from '../types';
 
 /**
  * Expand a short option name to a long option name.

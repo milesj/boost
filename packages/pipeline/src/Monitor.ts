@@ -2,7 +2,7 @@
 
 import { BailEvent, Event } from '@boost/event';
 import { Routine } from './Routine';
-import { AnyPipeline, AnyWorkUnit } from './types';
+import type { AnyPipeline, AnyWorkUnit } from './types';
 
 export class Monitor {
 	/**

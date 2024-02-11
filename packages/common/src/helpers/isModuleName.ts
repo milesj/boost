@@ -1,6 +1,6 @@
 import { builtinModules } from 'node:module';
 import { MODULE_NAME_PATTERN } from '../constants';
-import { ModuleID } from '../types';
+import type { ModuleID } from '../types';
 
 const RESERVED = new Set([...builtinModules, 'node_modules', 'favicon.ico']);
 

@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { Path, PortablePath } from '@boost/common';
+import { Path, type PortablePath } from '@boost/common';
 import { ConfigError } from './ConfigError';
 
 export interface FileCache<T> {

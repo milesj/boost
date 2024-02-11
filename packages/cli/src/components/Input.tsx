@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocus } from 'ink';
 import { Cursor } from './internal/Cursor';
-import { Prompt, PromptProps } from './internal/Prompt';
+import { Prompt, type PromptProps } from './internal/Prompt';
 import { Style } from './Style';
 
 export interface InputProps extends PromptProps<string> {

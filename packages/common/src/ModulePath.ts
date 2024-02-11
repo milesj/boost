@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { ModuleID, Pathable, PortablePath } from './types';
+import type { ModuleID, Pathable, PortablePath } from './types';
 
 /**
  * An immutable class for operating on Node.js module IDs, names, and paths.

@@ -4,7 +4,7 @@ import { render } from 'ink-testing-library';
 import { describe, expect, it } from 'vitest';
 import {
 	calculateIndexes,
-	InternalScrollableListProps,
+	type InternalScrollableListProps,
 	ScrollableList,
 	truncateList,
 } from '../../../src/components/internal/ScrollableList';

@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import type Module from 'node:module';
 import { interopModule } from './interopModule';
-import { ModuleLike, PathLike, TS } from './types';
+import type { ModuleLike, PathLike, TS } from './types';
 import { COMPILER_OPTIONS, getTargetFromNodeVersion, isTypeScript } from './typescript';
 
 let tsInstance: TS | null = null;

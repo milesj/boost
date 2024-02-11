@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Box, Text } from 'ink';
 import { SPACING_ROW } from '../constants';
-import { ProgramOptions } from '../types';
+import type { ProgramOptions } from '../types';
 import { Style } from './Style';
 
 export interface IndexHelpProps extends ProgramOptions {

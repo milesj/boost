@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { FilePath, Pathable, PortablePath } from './types';
+import type { FilePath, Pathable, PortablePath } from './types';
 
 /**
  * An immutable class for operating on file system paths.

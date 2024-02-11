@@ -1,6 +1,6 @@
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { Transport } from '../Transport';
-import { TransportOptions, Writable } from '../types';
+import type { TransportOptions, Writable } from '../types';
 
 export interface StreamTransportOptions extends TransportOptions {
 	/** The stream to pipe messages to. */

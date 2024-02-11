@@ -1,5 +1,5 @@
 import { CONFIG_FOLDER } from '../constants';
-import { FileType } from '../types';
+import type { FileType } from '../types';
 
 export function createFileName(type: FileType, name: string, ext: string, suffix?: string): string {
 	// boost.js

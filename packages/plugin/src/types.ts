@@ -1,4 +1,4 @@
-import { FilePath, ModuleID, ModuleResolver } from '@boost/common';
+import type { FilePath, ModuleID, ModuleResolver } from '@boost/common';
 
 export type Source = FilePath | ModuleID;
 

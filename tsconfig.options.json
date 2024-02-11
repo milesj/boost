@@ -5,9 +5,9 @@
     "module": "es2022",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": true,
     "resolvePackageJsonExports": true,
     "resolvePackageJsonImports": true,
-    "customConditions": ["node"]
+    "customConditions": ["node"],
   }
 }

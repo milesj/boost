@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 
 import type { ModuleFormat } from 'node:module';
-import { TS } from './types';
+import type { TS } from './types';
 
 export const COMPILER_OPTIONS = {
 	allowJs: true,

@@ -1,6 +1,13 @@
 import { ArgsError } from './ArgsError';
 import { parse } from './parse';
-import { ArgList, Arguments, Argv, ContextFactory, ParserOptions, PrimitiveType } from './types';
+import type {
+	ArgList,
+	Arguments,
+	Argv,
+	ContextFactory,
+	ParserOptions,
+	PrimitiveType,
+} from './types';
 
 /**
  * Parse a list of command line arguments (typically from `process.argv`) into an arguments

@@ -1,4 +1,4 @@
-import { MapParamConfig, ParamConfig, PrimitiveType } from '@boost/args';
+import type { MapParamConfig, ParamConfig, PrimitiveType } from '@boost/args';
 import { registerParams } from '../metadata/registerParams';
 
 /**

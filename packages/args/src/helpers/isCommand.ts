@@ -1,4 +1,4 @@
-import { CommandChecker } from '../types';
+import type { CommandChecker } from '../types';
 
 /**
  * Check that an argument is a command by looping through a list of available

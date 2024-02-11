@@ -4,12 +4,12 @@ import { minimatch } from 'minimatch';
 import {
 	isFilePath,
 	isModuleName,
-	PackageStructure,
+	type PackageStructure,
 	Path,
 	PathResolver,
 	toArray,
 } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { ConfigError } from './ConfigError';
 import {
@@ -27,7 +27,7 @@ import { loadJson } from './loaders/json';
 import { loadMjs } from './loaders/mjs';
 import { loadTs } from './loaders/ts';
 import { loadYaml } from './loaders/yaml';
-import {
+import type {
 	ConfigFile,
 	ConfigFinderOptions,
 	ExtType,

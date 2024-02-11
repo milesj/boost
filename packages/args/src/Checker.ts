@@ -1,9 +1,9 @@
 import levenary from 'levenary';
 import { interopDefault } from '@boost/internal';
-import { ArgsError, ArgsErrorCode } from './ArgsError';
+import { ArgsError, type ArgsErrorCode } from './ArgsError';
 import { COMMAND_FORMAT } from './constants';
 import { ParseError } from './ParseError';
-import {
+import type {
 	AliasMap,
 	LongOptionName,
 	OptionConfig,

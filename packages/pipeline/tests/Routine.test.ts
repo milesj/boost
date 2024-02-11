@@ -1,6 +1,6 @@
 import { execa } from 'execa';
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { Schemas } from '@boost/common/optimal';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import type { Schemas } from '@boost/common/optimal';
 import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { ConcurrentPipeline } from '../src/ConcurrentPipeline';
 import { STATUS_RUNNING } from '../src/constants';

@@ -1,6 +1,6 @@
 import { instance, shape, string, union } from 'optimal';
 import { Path } from './Path';
-import { PortablePath } from './types';
+import type { PortablePath } from './types';
 
 export * from 'optimal';
 

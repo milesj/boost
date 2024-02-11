@@ -1,4 +1,4 @@
-import { Constructor } from '../types';
+import type { Constructor } from '../types';
 
 /**
  * Native `instanceof` checks are problematic, as cross realm checks fail.
