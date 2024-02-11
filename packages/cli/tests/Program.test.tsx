@@ -1,7 +1,7 @@
 /* eslint-disable compat/compat, promise/prefer-await-to-then */
 /* eslint-disable @typescript-eslint/require-await */
 
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExitError } from '@boost/common';

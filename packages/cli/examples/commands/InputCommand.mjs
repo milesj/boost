@@ -1,8 +1,8 @@
-const React = require('react');
-const { Command } = require('../../cjs/index.cjs');
-const { Input, PasswordInput, HiddenInput } = require('../../cjs/react.cjs');
+import { createElement } from 'react';
+import { Command } from '../../mjs/index.mjs';
+import { HiddenInput, Input, PasswordInput } from '../../mjs/react.mjs';
 
-module.exports = class InputCommand extends Command {
+export default class InputCommand extends Command {
 	static description = 'Test `Input` and related components';
 
 	static path = 'input';
@@ -33,7 +33,7 @@ module.exports = class InputCommand extends Command {
 			placeholder = '<key>';
 		}
 
-		return React.createElement(component, {
+		return createElement(component, {
 			label,
 			placeholder,
 			// onChange: (value) => {
@@ -52,4 +52,4 @@ module.exports = class InputCommand extends Command {
 						},
 		});
 	}
-};
+}

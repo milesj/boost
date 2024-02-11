@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
 import { describe, expect, it } from 'vitest';
@@ -35,14 +35,14 @@ describe('ScrollableList', () => {
 				currentIndex={0}
 				limit={5}
 				renderItem={({ value }) => (
-					<React.Fragment key={value}>
+					<Fragment key={value}>
 						<Box>
 							<Text>{value}</Text>
 						</Box>
 						<Box>
 							<Text>{value}</Text>
 						</Box>
-					</React.Fragment>
+					</Fragment>
 				)}
 				rowHeight={2}
 			/>,

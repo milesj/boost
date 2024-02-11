@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from 'ink';
 import { render } from 'ink-testing-library';
 import { describe, expect, it, vi } from 'vitest';

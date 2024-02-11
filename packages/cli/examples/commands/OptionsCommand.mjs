@@ -1,6 +1,6 @@
-const { Command } = require('../../cjs/index.cjs');
+import { Command } from '../../mjs/index.mjs';
 
-module.exports = class OptionsCommand extends Command {
+export default class OptionsCommand extends Command {
 	static description = 'List of all possible option types';
 
 	static path = 'opts';
@@ -43,4 +43,4 @@ module.exports = class OptionsCommand extends Command {
 	run() {
 		//
 	}
-};
+}

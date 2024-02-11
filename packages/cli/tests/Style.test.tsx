@@ -1,4 +1,3 @@
-import React from 'react';
 import { vi } from 'vitest';
 import { beforeEach, describe, expect, it, type Mock } from 'vitest';
 import { loadTheme } from '../src/helpers/loadTheme';

@@ -1,13 +1,13 @@
-const React = require('react');
-const { Text } = require('ink');
-const { Command } = require('../../cjs/index.cjs');
-const { useProgram } = require('../../cjs/react.cjs');
-const sleep = require('../sleep');
+import { createElement, useEffect } from 'react';
+import { Text } from 'ink';
+import { Command } from '../../mjs/index.mjs';
+import { useProgram } from '../../mjs/react.mjs';
+import sleep from '../sleep.mjs';
 
 function Exit({ error }) {
 	const { exit } = useProgram();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (error) {
 			exit('Failed!');
 		} else {
@@ -15,10 +15,10 @@ function Exit({ error }) {
 		}
 	}, [exit, error]);
 
-	return React.createElement(Text, {}, 'Content');
+	return createElement(Text, {}, 'Content');
 }
 
-module.exports = class ExitCompCommand extends Command {
+export default class ExitCompCommand extends Command {
 	static description = 'Test exiting the program (via component)';
 
 	static path = 'exit-comp';
@@ -37,6 +37,6 @@ module.exports = class ExitCompCommand extends Command {
 
 		await sleep(1000);
 
-		return React.createElement(Exit, { error: this.error });
+		return createElement(Exit, { error: this.error });
 	}
-};
+}

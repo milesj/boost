@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Box } from 'ink';
 import { render } from 'ink-testing-library';
 import { describe, expect, it } from 'vitest';

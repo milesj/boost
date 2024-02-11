@@ -12,7 +12,7 @@ import {
 import { ExitError } from '@boost/common';
 import { Blueprint, Schemas } from '@boost/common/optimal';
 import { Event } from '@boost/event';
-import { env } from '@boost/internal';
+import { env, interopDefault } from '@boost/internal';
 import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
 import { CLIError } from './CLIError';
 import { Command } from './Command';
@@ -253,7 +253,10 @@ export class Program extends CommandManager<ProgramOptions> {
 			this.onCommandNotFound.emit([argv, possibleCmd]);
 
 			if (possibleCmd) {
-				const closestCmd = levenary(possibleCmd, this.getCommandPaths());
+				const closestCmd = interopDefault<typeof import('levenary').default>(levenary)(
+					possibleCmd,
+					this.getCommandPaths(),
+				);
 
 				throw new CLIError('COMMAND_UNKNOWN', [possibleCmd, closestCmd]);
 			}
@@ -298,7 +301,6 @@ export class Program extends CommandManager<ProgramOptions> {
 				{
 					debug: process.env.NODE_ENV === 'test',
 					exitOnCtrlC: true,
-					experimental: true,
 					patchConsole: true,
 					stderr,
 					stdin,

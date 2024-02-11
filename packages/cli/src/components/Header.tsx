@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box } from 'ink';
 import { SPACING_ROW } from '../constants';
 import { StyleType } from '../types';

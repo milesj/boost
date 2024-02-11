@@ -1,14 +1,14 @@
 /* eslint-disable no-nested-ternary, @typescript-eslint/prefer-nullish-coalescing */
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Box } from 'ink';
 import { Style } from '../Style';
 
 export interface OptionRowProps {
 	highlighted?: boolean;
-	icon: NonNullable<React.ReactNode>;
-	iconActive: NonNullable<React.ReactNode>;
-	label: NonNullable<React.ReactNode>;
+	icon: NonNullable<ReactNode>;
+	iconActive: NonNullable<ReactNode>;
+	label: NonNullable<ReactNode>;
 	selected?: boolean;
 }
 

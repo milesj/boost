@@ -1,8 +1,8 @@
-const React = require('react');
-const { Command } = require('../../cjs/index.cjs');
-const { Confirm } = require('../../cjs/react.cjs');
+import { createElement } from 'react';
+import { Command } from '../../mjs/index.mjs';
+import { Confirm } from '../../mjs/react.mjs';
 
-module.exports = class ConfirmCommand extends Command {
+export default class ConfirmCommand extends Command {
 	static description = 'Test `Confirm` component';
 
 	static path = 'confirm';
@@ -12,11 +12,11 @@ module.exports = class ConfirmCommand extends Command {
 	static options = {};
 
 	async run() {
-		return React.createElement(Confirm, {
+		return createElement(Confirm, {
 			label: 'Do you want to continue?',
 			onSubmit: (value) => {
 				this.log('SUBMIT', value);
 			},
 		});
 	}
-};
+}

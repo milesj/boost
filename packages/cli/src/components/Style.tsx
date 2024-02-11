@@ -1,10 +1,10 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Text, TextProps } from 'ink';
 import { loadTheme } from '../helpers/loadTheme';
 import { StyleType, Writeable } from '../types';
 
 export interface StyleProps extends Pick<TextProps, 'bold' | 'italic' | 'underline' | 'wrap'> {
-	children: NonNullable<React.ReactNode>;
+	children: NonNullable<ReactNode>;
 	/** Invert the colors to style the background instead of foreground. Defaults
   to `false`. */
 	inverted?: boolean;

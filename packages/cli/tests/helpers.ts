@@ -1,6 +1,10 @@
 import { SelectOptionLike } from '../src/react';
 
+// const isWindows = process.platform === 'win32';
+
 export const KEYS = {
+	// backspace: isWindows ? '\u0008' : '\u007F',
+	// delete: isWindows ? '\u007F' : '\u001B[3~',
 	backspace: '\u0008',
 	delete: '\u007F',
 	down: '\u001B[B',

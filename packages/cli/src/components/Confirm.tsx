@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFocus } from 'ink';
 import { msg } from '../translate';
 import { Prompt, PromptProps } from './internal/Prompt';

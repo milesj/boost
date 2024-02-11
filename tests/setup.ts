@@ -26,7 +26,7 @@ expect.extend({
 	},
 });
 
-global.delay = function delay(time: number = 100) {
+global.delay = function delay(time: number = 250) {
 	return new Promise((resolve) => {
 		setTimeout(resolve, time);
 	});

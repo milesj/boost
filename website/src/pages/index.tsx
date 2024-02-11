@@ -1,6 +1,6 @@
-/* eslint-disable react/no-array-index-key */
+/* eslint-disable sort-keys */
 
-import React from 'react';
+import { type ReactNode } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 
 interface FeatureProps {
 	title: string;
-	description: React.ReactNode;
+	description: ReactNode;
 	imageUrl?: string;
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable react/jsx-curly-brace-presence */
 
-import React from 'react';
+import { Component } from 'react';
 import { Box, Text } from 'ink';
 import { ParseError, ValidationError } from '@boost/args';
 import { ExitError } from '@boost/common';
@@ -32,7 +32,7 @@ export interface FailureProps {
 /**
  * A React component that renders a failure state for errors and warnings.
  */
-export class Failure extends React.Component<FailureProps> {
+export class Failure extends Component<FailureProps> {
 	shouldHideStackTrace() {
 		const { error, hideStackTrace } = this.props;
 

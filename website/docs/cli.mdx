@@ -888,7 +888,7 @@ implement a component that writes to a file asynchronously.
 
 ```tsx
 import fs from 'fs';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { Style, useProgram } from '@boost/cli/react';
 
@@ -1224,7 +1224,7 @@ The logger is also accessible within a component by using the
 [`useProgram()`](/api/cli/function/useProgram) hook, like so.
 
 ```tsx
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Box } from 'ink';
 import { useProgram } from '@boost/cli/react';
 

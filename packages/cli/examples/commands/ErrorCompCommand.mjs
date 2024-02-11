@@ -1,17 +1,17 @@
-const React = require('react');
-const { Text } = require('ink');
-const { Command } = require('../../cjs/index.cjs');
-const sleep = require('../sleep');
+import { createElement, useEffect } from 'react';
+import { Text } from 'ink';
+import { Command } from '../../mjs/index.mjs';
+import sleep from '../sleep.mjs';
 
 function ThrowError() {
-	React.useEffect(() => {
+	useEffect(() => {
 		throw new Error('Exit was triggered!');
 	}, []);
 
-	return React.createElement(Text, {}, 'Content');
+	return createElement(Text, {}, 'Content');
 }
 
-module.exports = class ErrorCompCommand extends Command {
+export default class ErrorCompCommand extends Command {
 	static description = 'Test thrown errors render a failure state (via component)';
 
 	static path = 'error-comp';
@@ -23,6 +23,6 @@ module.exports = class ErrorCompCommand extends Command {
 
 		await sleep(1000);
 
-		return React.createElement(ThrowError);
+		return createElement(ThrowError);
 	}
-};
+}

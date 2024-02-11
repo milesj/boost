@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import React from 'react';
+import type { ReactElement } from 'react';
 import { render } from 'ink';
 import { env } from '@boost/internal';
 import { mockLogger } from '@boost/log/test';
@@ -107,7 +107,7 @@ export function mockProgram(options?: Partial<ProgramOptions>, streams?: Program
  * > [ink-testing-library](https://github.com/vadimdemedes/ink-testing-library).
  */
 export async function renderComponent(
-	element: React.ReactElement,
+	element: ReactElement,
 	stripped: boolean = false,
 ): Promise<string> {
 	let output = '';
@@ -122,7 +122,6 @@ export async function renderComponent(
 
 		await render(element, {
 			debug: true,
-			experimental: true,
 			stdout: stdout as unknown as NodeJS.WriteStream,
 		});
 
