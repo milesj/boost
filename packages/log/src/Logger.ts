@@ -1,13 +1,13 @@
 import os from 'node:os';
 import util from 'node:util';
 import { Contract } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { env } from '@boost/internal';
 import { DEFAULT_LABELS, LOG_LEVELS } from './constants';
 import { debug } from './debug';
 import { Transport } from './Transport';
 import { ConsoleTransport } from './transports/ConsoleTransport';
-import { LoggerOptions, LogLevel, LogOptions, Transportable } from './types';
+import type { LoggerOptions, LogLevel, LogOptions, Transportable } from './types';
 
 export class Logger extends Contract<LoggerOptions> {
 	protected silent: boolean = false;

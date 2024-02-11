@@ -9,7 +9,7 @@ import {
 } from './constants';
 import { Context } from './Context';
 import { PipelineError } from './PipelineError';
-import { Action, Hierarchical, Runnable, Status } from './types';
+import type { Action, Hierarchical, Runnable, Status } from './types';
 
 export abstract class WorkUnit<Options extends object, Input = unknown, Output = Input>
 	extends Contract<Options>

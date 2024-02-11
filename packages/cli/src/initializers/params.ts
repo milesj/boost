@@ -1,4 +1,4 @@
-import { MapParamConfig, PrimitiveType } from '@boost/args';
+import type { MapParamConfig, PrimitiveType } from '@boost/args';
 
 /**
  * A property initializer for declaring command line parameters (positional arguments).

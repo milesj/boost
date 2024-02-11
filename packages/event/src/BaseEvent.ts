@@ -1,7 +1,7 @@
 import { EVENT_NAME_PATTERN, WILDCARD_SCOPE } from './constants';
 import { debug } from './debug';
 import { EventError } from './EventError';
-import { Listener, Unlistener, WildstarScope } from './types';
+import type { Listener, Unlistener, WildstarScope } from './types';
 
 export abstract class BaseEvent<Return, Args extends unknown[], Scope extends string = string> {
 	listeners = new Map<Scope | WildstarScope, Set<Listener<Args, Return>>>();

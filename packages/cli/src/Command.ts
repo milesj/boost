@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
 import { execa, type Options as ExecaOptions } from 'execa';
-import {
+import type {
 	ArgList,
 	Arguments,
 	Argv,
@@ -13,8 +13,8 @@ import {
 	UnknownOptionMap,
 } from '@boost/args';
 import { isObject, Memoize } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
-import { LoggerFunction } from '@boost/log';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
+import type { LoggerFunction } from '@boost/log';
 import { CLIError } from './CLIError';
 import { CommandManager } from './CommandManager';
 import {
@@ -33,7 +33,7 @@ import { validateOptions } from './metadata/validateOptions';
 import { validateParams } from './metadata/validateParams';
 import { Program } from './Program';
 import { Help } from './react';
-import {
+import type {
 	Categories,
 	Commandable,
 	CommandMetadata,

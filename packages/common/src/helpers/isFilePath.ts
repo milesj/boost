@@ -1,4 +1,4 @@
-import { PortablePath } from '../types';
+import type { PortablePath } from '../types';
 
 const NIX_START = /^(\/|\.)/u;
 const WIN_START = /^([A-Z]:|\.)/u;

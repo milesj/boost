@@ -1,4 +1,4 @@
-import { Arg, Command, GlobalOptions } from '../../src';
+import { Arg, Command, type GlobalOptions } from '../../src';
 
 export interface BuildOptions extends GlobalOptions {
 	dst: string;

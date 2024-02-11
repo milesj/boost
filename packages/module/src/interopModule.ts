@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
-import { ModuleLike } from './types';
+import type { ModuleLike } from './types';
 
 /**
  * Formats the shape of an imported module to align with the

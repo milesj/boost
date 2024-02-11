@@ -1,6 +1,6 @@
-import { Option } from '@boost/args';
+import type { Option } from '@boost/args';
 import { INTERNAL_INITIALIZER } from '../constants';
-import { OptionInitializer } from '../types';
+import type { OptionInitializer } from '../types';
 import { registerOption } from './registerOption';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 import zlib from 'node:zlib';
-import { Path, PortablePath } from '@boost/common';
-import { Blueprint, portablePathSchema, Schemas } from '@boost/common/optimal';
+import { Path, type PortablePath } from '@boost/common';
+import { type Blueprint, portablePathSchema, type Schemas } from '@boost/common/optimal';
 import { MAX_LOG_SIZE } from '../constants';
 import { Transport } from '../Transport';
-import { TransportOptions } from '../types';
+import type { TransportOptions } from '../types';
 
 export interface FileTransportOptions extends TransportOptions {
 	/** Apply gzip compression to the write stream. */

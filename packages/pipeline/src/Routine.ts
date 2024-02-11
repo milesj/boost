@@ -2,7 +2,7 @@ import { execa, type ExecaChildProcess, type Options as ExecaOptions } from 'exe
 import { kebabCase } from 'lodash-es';
 import split from 'split';
 import { toArray } from '@boost/common';
-import { createDebugger, Debugger } from '@boost/debug';
+import { createDebugger, type Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { AggregatedPipeline } from './AggregatedPipeline';
 import { ConcurrentPipeline } from './ConcurrentPipeline';
@@ -11,8 +11,8 @@ import { debug } from './debug';
 import { Monitor } from './Monitor';
 import { Pipeline } from './Pipeline';
 import { PipelineError } from './PipelineError';
-import { PooledOptions, PooledPipeline } from './PooledPipeline';
-import { AnyWorkUnit, Hierarchical } from './types';
+import { type PooledOptions, PooledPipeline } from './PooledPipeline';
+import type { AnyWorkUnit, Hierarchical } from './types';
 import { WaterfallPipeline } from './WaterfallPipeline';
 import { WorkUnit } from './WorkUnit';
 

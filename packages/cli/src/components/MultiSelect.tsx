@@ -8,7 +8,7 @@ import { OptionRow } from './internal/OptionRow';
 import { Prompt } from './internal/Prompt';
 import { ScrollableList } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
-import { normalizeOptions, SelectOption, SelectProps } from './Select';
+import { normalizeOptions, type SelectOption, type SelectProps } from './Select';
 
 export interface MultiSelectProps<T> extends SelectProps<T[], T> {
 	/** List of option values selected by default. */

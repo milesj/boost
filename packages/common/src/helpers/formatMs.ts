@@ -1,4 +1,4 @@
-import prettyMs, { Options } from 'pretty-ms';
+import prettyMs, { type Options } from 'pretty-ms';
 
 /**
  * Can be used to format a UNIX timestamp in milliseconds into a shorthand human readable format.

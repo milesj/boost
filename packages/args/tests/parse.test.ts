@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Flag, parse, ParseError, ValidationError } from '../src';
+import { type Flag, parse, ParseError, ValidationError } from '../src';
 import {
 	flagConfig,
 	numConfig,

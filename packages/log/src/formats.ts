@@ -1,4 +1,4 @@
-import { LogItem, LogMetadata } from './types';
+import type { LogItem, LogMetadata } from './types';
 
 function formatMetadata(metadata: LogMetadata): string {
 	const items: string[] = [];

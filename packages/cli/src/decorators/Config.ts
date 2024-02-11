@@ -1,4 +1,4 @@
-import { CommandStaticConfig, PartialConfig } from '../types';
+import type { CommandStaticConfig, PartialConfig } from '../types';
 
 /**
  * A class decorator for defining the following metadata on a `Command`.

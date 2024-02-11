@@ -4,7 +4,7 @@ import { stripAnsi } from '@boost/terminal';
 import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from '../../constants';
 import { formatCommandCall, formatDescription, groupByCategory } from '../../helpers';
 import { msg } from '../../translate';
-import { Categories, CommandConfigMap } from '../../types';
+import type { Categories, CommandConfigMap } from '../../types';
 import { Header } from '../Header';
 import { Style } from '../Style';
 

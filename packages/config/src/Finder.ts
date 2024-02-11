@@ -1,11 +1,11 @@
 import fs from 'node:fs';
-import { Contract, Path, PortablePath } from '@boost/common';
-import { createDebugger, Debugger } from '@boost/debug';
+import { Contract, Path, type PortablePath } from '@boost/common';
+import { createDebugger, type Debugger } from '@boost/debug';
 import { color } from '@boost/internal';
 import { Cache } from './Cache';
 import { ConfigError } from './ConfigError';
 import { CONFIG_FOLDER, PACKAGE_FILE, ROOT_CONFIG_FILE_REGEX } from './constants';
-import { BaseFinderOptions, File } from './types';
+import type { BaseFinderOptions, File } from './types';
 
 export abstract class Finder<
 	T extends File,

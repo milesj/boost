@@ -1,4 +1,4 @@
-import debug, { Debugger } from 'debug';
+import debug, { type Debugger } from 'debug';
 
 export function sentenceCase(value: unknown): string {
 	return String(value)

@@ -1,4 +1,4 @@
-import { ExtType } from './types';
+import type { ExtType } from './types';
 
 export const CONFIG_FOLDER = '.config';
 

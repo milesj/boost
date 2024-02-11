@@ -1,4 +1,4 @@
-import { SelectOptionLike } from '../src/react';
+import type { SelectOptionLike } from '../src/react';
 
 // const isWindows = process.platform === 'win32';
 

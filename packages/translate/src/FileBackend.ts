@@ -1,12 +1,12 @@
 /* eslint-disable promise/prefer-await-to-callbacks */
 /* eslint-disable promise/prefer-await-to-then */
 
-import { BackendModule, Resource, ResourceKey, ResourceKeys } from 'i18next';
+import type { BackendModule, Resource, ResourceKey, ResourceKeys } from 'i18next';
 import { Contract, json, Path, yaml } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { importAbsoluteModule } from '@boost/internal';
 import { TranslateError } from './TranslateError';
-import { Format, Locale } from './types';
+import type { Format, Locale } from './types';
 
 const EXTS: { [K in Format]: string[] } = {
 	cjs: ['cjs'],

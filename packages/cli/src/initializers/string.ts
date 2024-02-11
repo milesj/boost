@@ -1,6 +1,6 @@
-import { SingleOption } from '@boost/args';
+import type { SingleOption } from '@boost/args';
 import { createOptionInitializer } from '../metadata/createOptionInitializer';
-import { PartialConfig } from '../types';
+import type { PartialConfig } from '../types';
 
 /**
  * A property initializer for declaring a command line option with a string value.

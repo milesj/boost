@@ -1,4 +1,4 @@
-import { describe, expect, it, Mock, vi } from 'vitest';
+import { describe, expect, it, type Mock, vi } from 'vitest';
 import { Memoize } from '../src';
 
 async function sleep(time: number): Promise<void> {

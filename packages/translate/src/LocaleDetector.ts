@@ -1,7 +1,7 @@
-import { LanguageDetectorModule } from 'i18next';
+import type { LanguageDetectorModule } from 'i18next';
 import { osLocaleSync } from 'os-locale';
 import { debug } from './debug';
-import { Locale } from './types';
+import type { Locale } from './types';
 
 export class LocaleDetector implements LanguageDetectorModule {
 	locale: Locale = 'en';

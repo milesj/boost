@@ -1,11 +1,11 @@
-import { Contract, ModuleResolver, Path, PortablePath } from '@boost/common';
-import { Blueprint, schemas } from '@boost/common/optimal';
+import { Contract, type ModuleResolver, Path, type PortablePath } from '@boost/common';
+import { type Blueprint, schemas } from '@boost/common/optimal';
 import { Event, WaterfallEvent } from '@boost/event';
 import { Cache } from './Cache';
 import { ConfigFinder } from './ConfigFinder';
 import { IgnoreFinder } from './IgnoreFinder';
 import { Processor } from './Processor';
-import {
+import type {
 	ConfigFile,
 	ConfigFinderOptions,
 	Handler,

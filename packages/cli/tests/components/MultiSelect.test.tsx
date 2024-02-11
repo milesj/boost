@@ -1,6 +1,6 @@
 import { render } from 'ink-testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { MultiSelect, MultiSelectProps } from '../../src/components/MultiSelect';
+import { MultiSelect, type MultiSelectProps } from '../../src/components/MultiSelect';
 import { KEYS, options, optionsWithoutDivider } from '../helpers';
 
 describe('MultiSelect', () => {

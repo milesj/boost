@@ -1,4 +1,4 @@
-import { PrimitiveType } from '@boost/args';
+import type { PrimitiveType } from '@boost/args';
 import { msg } from '../translate';
 import { applyMarkdown } from './applyMarkdown';
 import { applyStyle } from './applyStyle';

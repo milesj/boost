@@ -1,11 +1,11 @@
 import { useMemo, useRef } from 'react';
 import { Box, Text } from 'ink';
-import { OptionConfig, OptionConfigMap } from '@boost/args';
+import type { OptionConfig, OptionConfigMap } from '@boost/args';
 import { stripAnsi } from '@boost/terminal';
 import { SPACING_COL, SPACING_COL_WIDE, SPACING_ROW } from '../../constants';
 import { formatDescription, formatType, groupByCategory } from '../../helpers';
 import { msg } from '../../translate';
-import { Categories } from '../../types';
+import type { Categories } from '../../types';
 import { Header } from '../Header';
 import { Style } from '../Style';
 

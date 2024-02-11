@@ -1,9 +1,9 @@
 import os from 'node:os';
 import { Contract } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { LOG_LEVELS } from './constants';
 import * as formats from './formats';
-import { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from './types';
+import type { Formatter, LogItem, LogLevel, Transportable, TransportOptions } from './types';
 
 export abstract class Transport<Options extends TransportOptions>
 	extends Contract<Options>

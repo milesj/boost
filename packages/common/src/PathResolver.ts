@@ -2,7 +2,7 @@ import enhancedResolve from 'enhanced-resolve';
 import { CommonError } from './CommonError';
 import { ModulePath } from './ModulePath';
 import { Path } from './Path';
-import { Lookup, ModuleResolver, Pathable, PortablePath, ResolvedLookup } from './types';
+import type { Lookup, ModuleResolver, Pathable, PortablePath, ResolvedLookup } from './types';
 
 export class PathResolver {
 	private lookups: Lookup[] = [];

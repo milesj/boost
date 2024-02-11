@@ -1,6 +1,6 @@
 import { castValue } from './helpers/castValue';
 import { formatValue } from './helpers/formatValue';
-import { LongOptionName, OptionConfig, ValueType } from './types';
+import type { LongOptionName, OptionConfig, ValueType } from './types';
 
 export class Scope {
 	config: OptionConfig;

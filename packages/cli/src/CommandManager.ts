@@ -1,8 +1,8 @@
-import { ArgList, PrimitiveType } from '@boost/args';
+import type { ArgList, PrimitiveType } from '@boost/args';
 import { Contract, isObject } from '@boost/common';
 import { Event } from '@boost/event';
 import { CLIError } from './CLIError';
-import { Commandable, CommandMetadata, CommandPath } from './types';
+import type { Commandable, CommandMetadata, CommandPath } from './types';
 
 export abstract class CommandManager<Options extends object = {}> extends Contract<Options> {
 	/**

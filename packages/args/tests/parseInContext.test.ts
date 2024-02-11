@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ContextFactory, ParseError, parseInContext, ParserOptions } from '../src';
+import { type ContextFactory, ParseError, parseInContext, type ParserOptions } from '../src';
 import {
 	flagConfig,
 	numConfigExpanded,

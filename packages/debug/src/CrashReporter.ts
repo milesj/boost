@@ -5,7 +5,13 @@ import os from 'node:os';
 import path from 'node:path';
 import { execaSync } from 'execa';
 import glob from 'fast-glob';
-import { FilePath, json, PackageStructure, PortablePath, toArray } from '@boost/common';
+import {
+	type FilePath,
+	json,
+	type PackageStructure,
+	type PortablePath,
+	toArray,
+} from '@boost/common';
 import { debug } from './debug';
 
 function run(command: string, args: string[]): string {
@@ -182,8 +188,8 @@ export class CrashReporter {
 
 		// istanbul ignore next
 		if (process.platform !== 'win32') {
-			this.add('Group ID', process.getgid());
-			this.add('User ID', process.getuid());
+			this.add('Group ID', process.getgid!());
+			this.add('User ID', process.getuid!());
 		}
 
 		return this;

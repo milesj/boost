@@ -1,7 +1,7 @@
 import https from 'node:https';
 import semver from 'semver';
 import { json } from '@boost/common';
-import { Middleware } from '../types';
+import type { Middleware } from '../types';
 
 async function fetchPackageLatestVersion(name: string): Promise<string | undefined> {
 	return new Promise((resolve) => {

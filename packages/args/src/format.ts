@@ -1,4 +1,4 @@
-import { ArgList, Arguments, Argv, OptionMap, ValueType } from './types';
+import type { ArgList, Arguments, Argv, OptionMap, ValueType } from './types';
 
 function mapToStringList(value: ValueType): ArgList {
 	if (!Array.isArray(value)) {

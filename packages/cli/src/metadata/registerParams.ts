@@ -1,4 +1,4 @@
-import { ParamConfig } from '@boost/args';
+import type { ParamConfig } from '@boost/args';
 import { CLIError } from '../CLIError';
 import { getConstructor } from './getConstructor';
 

@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import { Path } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { color } from '@boost/internal';
 import { Finder } from './Finder';
-import { IgnoreFile, IgnoreFinderOptions } from './types';
+import type { IgnoreFile, IgnoreFinderOptions } from './types';
 
 export class IgnoreFinder extends Finder<IgnoreFile, IgnoreFinderOptions> {
 	blueprint(schemas: Schemas): Blueprint<IgnoreFinderOptions> {

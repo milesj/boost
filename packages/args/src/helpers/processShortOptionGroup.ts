@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { ArgsError } from '../ArgsError';
-import { AliasMap, OptionConfigMap, OptionMap, ShortOptionName } from '../types';
+import type { AliasMap, OptionConfigMap, OptionMap, ShortOptionName } from '../types';
 import { expandShortOption } from './expandShortOption';
 
 /**

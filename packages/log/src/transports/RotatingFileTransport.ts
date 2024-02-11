@@ -1,6 +1,6 @@
-import { Blueprint, Schemas } from '@boost/common/optimal';
-import { Rotation } from '../types';
-import { FileTransport, FileTransportOptions } from './FileTransport';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Rotation } from '../types';
+import { FileTransport, type FileTransportOptions } from './FileTransport';
 
 const DAYS_IN_WEEK = 7;
 

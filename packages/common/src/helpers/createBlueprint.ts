@@ -1,5 +1,5 @@
-import { Blueprint, schemas } from 'optimal';
-import { BlueprintFactory } from '../types';
+import { type Blueprint, schemas } from 'optimal';
+import type { BlueprintFactory } from '../types';
 
 /**
  * Can be used to generate a blueprint object for use within
