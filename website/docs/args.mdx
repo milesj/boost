@@ -40,8 +40,8 @@ npm install @boost/args
 
 This library is strict parser for command line arguments, primarily `process.argv` in Node.js, that
 supports [commands](#commands), [options](#options), [flags](#flags), [params](#params), and
-[much more](#advanced-features)! It is _not_ a command line interface or application but provides
-the building blocks for such functionality.
+[much more](#advanced)! It is _not_ a command line interface or application but provides the
+building blocks for such functionality.
 
 Parsing arguments is accomplished with the [`parse()`][parse] function, which requires a list of
 strings (arguments also known as `argv`), and a settings object to control whats supported. It also
@@ -420,8 +420,8 @@ args.rest; // ['baz']
 Short options support a shortcut known as a short option group, where multiple short option names
 can be placed under a single leading `-`. For example, instead of passing `-a -b -c`, you can pass
 `-abc`. This shortcut is only available for [flags](#flags) (boolean options) and
-[counters](#counters) (numeric options with [`count`](/api/args/interface/SingleOption#count)),
-otherwise an error is thrown.
+[counters](#counter-options) (numeric options with
+[`count`](/api/args/interface/SingleOption#count)), otherwise an error is thrown.
 
 When passing flags within a group, it will mark the value as `true`. Flag negation is not supported
 within a group.

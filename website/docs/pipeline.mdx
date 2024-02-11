@@ -159,9 +159,9 @@ To begin, import and extend the `Routine` class and implement the
 be defined, starting with an output type (defaults to `unknown`), an input type (defaults to
 `unknown`), and an options interface (defaults to an empty object).
 
-The blueprint method is inherited from [`Contract`](./common.mdx#contract), and should return an
-object that matches the structure of the generic options interface. The execute method should accept
-the input type and return the expected output type.
+The blueprint method is inherited from [`Contract`](./common.mdx#class-contracts), and should return
+an object that matches the structure of the generic options interface. The execute method should
+accept the input type and return the expected output type.
 
 ```ts
 import { Blueprint, Schemas, Bind } from '@boost/common';

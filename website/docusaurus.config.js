@@ -148,7 +148,7 @@ module.exports = {
 				],
 				minimal: true,
 				readmes: true,
-				debug: true,
+				debug: false,
 				tsconfigName: 'tsconfig.docs.json',
 			},
 		],
