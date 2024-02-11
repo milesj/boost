@@ -1,4 +1,4 @@
-import { ModulePath, Path, PortablePath } from '.';
+import { ModulePath, Path, type PortablePath } from '.';
 
 /**
  * Normalize a path or its parts by ensuring all path separators match

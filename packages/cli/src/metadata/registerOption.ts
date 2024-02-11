@@ -1,4 +1,4 @@
-import { OptionConfig } from '@boost/args';
+import type { OptionConfig } from '@boost/args';
 import { CLIError } from '../CLIError';
 import { RESERVED_OPTIONS } from '../constants';
 import { getConstructor } from './getConstructor';

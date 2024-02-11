@@ -1,6 +1,6 @@
 import { render } from 'ink-testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Input, InputProps } from '../../src/components/Input';
+import { Input, type InputProps } from '../../src/components/Input';
 import { KEYS } from '../helpers';
 
 describe('Input', () => {

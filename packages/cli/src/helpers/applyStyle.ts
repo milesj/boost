@@ -1,5 +1,5 @@
 import { style } from '@boost/terminal';
-import { StyleType } from '../types';
+import type { StyleType } from '../types';
 import { loadTheme } from './loadTheme';
 
 export function applyStyle(text: string, type: StyleType): string {

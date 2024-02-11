@@ -1,6 +1,6 @@
 import { PipelineError } from './PipelineError';
 import { Task } from './Task';
-import { Action } from './types';
+import type { Action } from './types';
 import { WorkUnit } from './WorkUnit';
 
 /**

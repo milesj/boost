@@ -1,19 +1,19 @@
 import levenary from 'levenary';
 import {
-	ArgList,
-	Arguments,
-	Argv,
+	type ArgList,
+	type Arguments,
+	type Argv,
 	parse,
 	ParseError,
 	parseInContext,
-	PrimitiveType,
+	type PrimitiveType,
 	ValidationError,
 } from '@boost/args';
 import { ExitError } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
 import { Event } from '@boost/event';
 import { env, interopDefault } from '@boost/internal';
-import { createLogger, formats, LoggerFunction, StreamTransport } from '@boost/log';
+import { createLogger, formats, type LoggerFunction, StreamTransport } from '@boost/log';
 import { CLIError } from './CLIError';
 import { Command } from './Command';
 import { CommandManager } from './CommandManager';
@@ -35,7 +35,7 @@ import { getConstructor } from './metadata/getConstructor';
 import { removeProcessBin } from './middleware/removeProcessBin';
 import { Failure, Help, IndexHelp } from './react';
 import { msg } from './translate';
-import {
+import type {
 	Categories,
 	Commandable,
 	CommandPath,

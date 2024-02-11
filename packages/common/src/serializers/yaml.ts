@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import YAML, {
+import type {
 	CreateNodeOptions,
 	DocumentOptions,
 	ParseOptions,
@@ -7,7 +7,8 @@ import YAML, {
 	ToJSOptions,
 	ToStringOptions,
 } from 'yaml';
-import { PortablePath } from '../types';
+import YAML from 'yaml';
+import type { PortablePath } from '../types';
 
 export function parse<T = object>(
 	content: string,

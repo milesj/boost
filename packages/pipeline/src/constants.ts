@@ -1,4 +1,4 @@
-import { Status } from './types';
+import type { Status } from './types';
 
 export const STATUS_PENDING: Status = 'pending';
 export const STATUS_RUNNING: Status = 'running';

@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import { PackageGraphTree, PackageGraphTreeNode, PackageStructure } from './types';
+import type { PackageGraphTree, PackageGraphTreeNode, PackageStructure } from './types';
 
 class Node {
 	name: string;

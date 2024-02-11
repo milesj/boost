@@ -1,10 +1,10 @@
-import { createInstance, InitOptions } from 'i18next';
-import { Path, PortablePath, toArray } from '@boost/common';
+import { createInstance, type InitOptions } from 'i18next';
+import { Path, type PortablePath, toArray } from '@boost/common';
 import { debug } from './debug';
 import { FileBackend } from './FileBackend';
 import { LocaleDetector } from './LocaleDetector';
 import { TranslateError } from './TranslateError';
-import { Format, InterpolationParams, Locale, MessageOptions, Translator } from './types';
+import type { Format, InterpolationParams, Locale, MessageOptions, Translator } from './types';
 
 // istanbul ignore next
 function handleError(error: Error | null) {

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type { ReactElement } from 'react';
-import {
+import type {
 	ArgList,
 	Arguments,
 	Argv,
@@ -26,7 +26,7 @@ import {
 	UnknownOptionMap,
 	ValueType,
 } from '@boost/args';
-import { Loggable, LoggerFunction } from '@boost/log';
+import type { Loggable, LoggerFunction } from '@boost/log';
 import { INTERNAL_INITIALIZER } from './constants';
 
 export type {

@@ -1,4 +1,4 @@
-import { CommandConfigMap, OptionConfigMap, ParamConfigList } from '../../src';
+import type { CommandConfigMap, OptionConfigMap, ParamConfigList } from '../../src';
 
 export const commands: CommandConfigMap = {
 	foo: {

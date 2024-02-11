@@ -3,7 +3,7 @@ import { AggregatedPipeline } from '../src/AggregatedPipeline';
 import { Context } from '../src/Context';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
-import { AggregatedResult } from '../src/types';
+import type { AggregatedResult } from '../src/types';
 
 describe('AggregatedPipeline', () => {
 	function sortAggregated(result: AggregatedResult<unknown>) {

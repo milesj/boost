@@ -1,6 +1,6 @@
 import { Box } from 'ink';
 import { SPACING_ROW } from '../constants';
-import { StyleType } from '../types';
+import type { StyleType } from '../types';
 import { Style } from './Style';
 
 export interface HeaderProps {

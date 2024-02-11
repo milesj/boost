@@ -6,7 +6,7 @@ import { CommonError } from './CommonError';
 import { Path } from './Path';
 import * as json from './serializers/json';
 import * as yaml from './serializers/yaml';
-import { PackageStructure, PortablePath, WorkspaceMetadata, WorkspacePackage } from './types';
+import type { PackageStructure, PortablePath, WorkspaceMetadata, WorkspacePackage } from './types';
 
 export interface ProjectSearchOptions {
 	relative?: boolean;

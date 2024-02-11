@@ -1,5 +1,5 @@
 import { DEFAULT_NUMBER_VALUE } from '../constants';
-import { ValueType } from '../types';
+import type { ValueType } from '../types';
 
 export function castValue(
 	value: unknown,

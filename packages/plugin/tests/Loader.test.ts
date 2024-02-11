@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Path } from '@boost/common';
 import { copyFixtureToNodeModule } from '@boost/test-utils';
 import { Loader } from '../src/Loader';
-import { createRendererRegistry, Renderable } from './__fixtures__/Renderer';
+import { createRendererRegistry, type Renderable } from './__fixtures__/Renderer';
 
 describe('Loader', () => {
 	let fixtures: Function[];

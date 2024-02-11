@@ -1,4 +1,4 @@
-import { LongOptionName } from './types';
+import type { LongOptionName } from './types';
 
 export class ValidationError extends Error {
 	option: string;

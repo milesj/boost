@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import JSON from 'json5';
-import { PortablePath } from '../types';
+import type { PortablePath } from '../types';
 
 export type JSONReviver = (key: string, value: unknown) => unknown;
 

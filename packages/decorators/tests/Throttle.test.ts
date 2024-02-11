@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { Throttle } from '../src';
 
 describe('@Throttle()', () => {

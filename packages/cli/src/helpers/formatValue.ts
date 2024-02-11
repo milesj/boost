@@ -1,4 +1,4 @@
-import { PrimitiveType } from '@boost/args';
+import type { PrimitiveType } from '@boost/args';
 
 export function formatValue(value: PrimitiveType): string {
 	switch (typeof value) {

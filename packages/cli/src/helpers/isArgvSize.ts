@@ -1,4 +1,4 @@
-import { Argv } from '../types';
+import type { Argv } from '../types';
 import { isNodeBinary } from './isNodeBinary';
 
 export function isArgvSize(argv: Argv, size: number): boolean {

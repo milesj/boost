@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { PortablePath } from '@boost/common';
+import type { PortablePath } from '@boost/common';
 import { FileTransport } from '../../src/transports/FileTransport';
 
 export function existsFile(path: PortablePath): boolean {

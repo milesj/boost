@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { Categories } from '../types';
+import type { Categories } from '../types';
 import { getConstructor } from './getConstructor';
 
 export function getInheritedCategories(base: Object): Categories {

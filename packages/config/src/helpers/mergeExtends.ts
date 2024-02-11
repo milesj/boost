@@ -1,5 +1,5 @@
 import { toArray } from '@boost/common';
-import { ExtendsSetting } from '../types';
+import { type ExtendsSetting } from '../types';
 import { mergeArray } from './mergeArray';
 
 /**

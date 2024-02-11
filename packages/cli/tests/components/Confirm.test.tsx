@@ -1,6 +1,6 @@
 import { render } from 'ink-testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Confirm, ConfirmProps } from '../../src/components/Confirm';
+import { Confirm, type ConfirmProps } from '../../src/components/Confirm';
 
 describe('Confirm', () => {
 	const props: ConfirmProps = {

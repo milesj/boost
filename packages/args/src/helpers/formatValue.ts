@@ -1,5 +1,5 @@
 import { ArgsError } from '../ArgsError';
-import { Option, ValueType } from '../types';
+import type { Option, ValueType } from '../types';
 
 export function formatValue(value: ValueType, format?: Option<ValueType>['format']): ValueType {
 	let nextValue = value;

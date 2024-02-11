@@ -17,7 +17,7 @@ import { isShortOptionGroup } from './helpers/isShortOptionGroup';
 import { mapParserOptions } from './helpers/mapParserOptions';
 import { processShortOptionGroup } from './helpers/processShortOptionGroup';
 import { Scope } from './Scope';
-import {
+import type {
 	AliasMap,
 	ArgList,
 	Arguments,

@@ -1,5 +1,5 @@
 import { optimal } from '@boost/common/optimal';
-import { CommandStaticConfig } from '../types';
+import type { CommandStaticConfig } from '../types';
 import { commandConstructorBlueprint } from './blueprints';
 
 export function validateConfig(

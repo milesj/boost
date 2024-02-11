@@ -1,5 +1,5 @@
-import { ModuleResolver, PackageStructure, Path } from '@boost/common';
-import { DeepPartial } from '@boost/common/optimal';
+import { type ModuleResolver, type PackageStructure, Path } from '@boost/common';
+import { type DeepPartial } from '@boost/common/optimal';
 
 export type ExtType = 'cjs' | 'js' | 'json' | 'json5' | 'mjs' | 'ts' | 'yaml' | 'yml';
 

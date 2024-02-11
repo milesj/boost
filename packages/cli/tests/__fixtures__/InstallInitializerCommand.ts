@@ -1,4 +1,4 @@
-import { Arg, Categories, Command, GlobalOptions } from '../../src';
+import { Arg, type Categories, Command, type GlobalOptions } from '../../src';
 
 export interface InstallOptions extends GlobalOptions {
 	save: boolean;

@@ -1,4 +1,4 @@
-import { CommandConfig } from '../types';
+import type { CommandConfig } from '../types';
 import { formatType } from './formatType';
 
 export function formatCommandCall(name: string, metadata: CommandConfig): string {

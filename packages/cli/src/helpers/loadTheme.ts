@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import { env } from '@boost/internal';
 import { style } from '@boost/terminal';
 import { CLIError } from '../CLIError';
-import { ThemePalette } from '../types';
+import type { ThemePalette } from '../types';
 
 const loadedThemes = new Map<string, ThemePalette>();
 const requireTheme = createRequire(import.meta.url);

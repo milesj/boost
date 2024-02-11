@@ -1,5 +1,11 @@
-import { Blueprint, Schemas } from '@boost/common/optimal';
-import { DEFAULT_PRIORITY, Pluggable, Plugin, Registry, RegistryOptions } from '../../src';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
+import {
+	DEFAULT_PRIORITY,
+	type Pluggable,
+	Plugin,
+	Registry,
+	type RegistryOptions,
+} from '../../src';
 
 export interface Renderable extends Pluggable {
 	render: () => string;

@@ -11,13 +11,13 @@ import {
 	Arg,
 	Command,
 	Config,
-	GlobalOptions,
+	type GlobalOptions,
 	INTERNAL_OPTIONS,
-	OptionConfigMap,
-	Options,
+	type OptionConfigMap,
+	type Options,
 	Program,
-	TaskContext,
-	UnknownOptionMap,
+	type TaskContext,
+	type UnknownOptionMap,
 } from '../src';
 import { ProgramContext, useProgram } from '../src/react';
 import { MockReadStream, MockWriteStream, runProgram, runTask } from '../src/test';

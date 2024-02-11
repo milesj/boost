@@ -10,7 +10,7 @@ import { CLIError } from '../CLIError';
 import { DELIMITER, SPACING_COL, SPACING_ROW } from '../constants';
 import { applyStyle } from '../helpers/applyStyle';
 import { msg } from '../translate';
-import { StyleType } from '../types';
+import type { StyleType } from '../types';
 import { Header } from './Header';
 import { Style } from './Style';
 

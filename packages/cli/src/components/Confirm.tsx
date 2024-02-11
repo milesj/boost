@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useFocus } from 'ink';
 import { msg } from '../translate';
-import { Prompt, PromptProps } from './internal/Prompt';
+import { Prompt, type PromptProps } from './internal/Prompt';
 import { Selected } from './internal/Selected';
 import { Style } from './Style';
 

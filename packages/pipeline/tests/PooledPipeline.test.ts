@@ -4,7 +4,7 @@ import { PipelineError } from '../src/PipelineError';
 import { PooledPipeline } from '../src/PooledPipeline';
 import { Routine } from '../src/Routine';
 import { Task } from '../src/Task';
-import { AggregatedResult } from '../src/types';
+import type { AggregatedResult } from '../src/types';
 
 describe('PooledPipeline', () => {
 	function sortAggregated(result: AggregatedResult<unknown>) {

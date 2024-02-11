@@ -4,19 +4,19 @@ import {
 	Contract,
 	isObject,
 	MODULE_NAME_PATTERN,
-	ModuleID,
-	ModuleResolver,
+	type ModuleID,
+	type ModuleResolver,
 	PathResolver,
 } from '@boost/common';
-import { Blueprint, Schemas } from '@boost/common/optimal';
-import { createDebugger, Debugger } from '@boost/debug';
+import type { Blueprint, Schemas } from '@boost/common/optimal';
+import { createDebugger, type Debugger } from '@boost/debug';
 import { Event } from '@boost/event';
 import { color } from '@boost/internal';
 import { DEFAULT_PRIORITY } from './constants';
 import { debug } from './debug';
 import { Loader } from './Loader';
 import { PluginError } from './PluginError';
-import {
+import type {
 	Callback,
 	Pluggable,
 	RegisterOptions,

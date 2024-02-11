@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
-	Arg,
-	Category,
+	type Arg,
+	type Category,
 	COMMAND_FORMAT,
-	Config,
+	type Config,
 	DEFAULT_BOOLEAN_VALUE,
 	DEFAULT_NUMBER_VALUE,
 	DEFAULT_STRING_VALUE,
-	Flag,
-	MultipleOption,
-	Option,
-	ParamConfig,
-	PrimitiveType,
-	ShortOptionName,
-	SingleOption,
+	type Flag,
+	type MultipleOption,
+	type Option,
+	type ParamConfig,
+	type PrimitiveType,
+	type ShortOptionName,
+	type SingleOption,
 } from '@boost/args';
-import { Blueprint, schemas } from '@boost/common/optimal';
-import { CommandStaticConfig } from '../types';
+import { type Blueprint, schemas } from '@boost/common/optimal';
+import type { CommandStaticConfig } from '../types';
 
 const { array, bool, func, number, object, shape, string, union } = schemas;
 

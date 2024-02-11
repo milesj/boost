@@ -5,8 +5,8 @@ import { figures } from '@boost/terminal';
 import { useListNavigation } from '../hooks';
 import { DividerRow } from './internal/DividerRow';
 import { OptionRow } from './internal/OptionRow';
-import { Prompt, PromptProps } from './internal/Prompt';
-import { ScrollableList, ScrollableListProps } from './internal/ScrollableList';
+import { Prompt, type PromptProps } from './internal/Prompt';
+import { ScrollableList, type ScrollableListProps } from './internal/ScrollableList';
 import { Selected } from './internal/Selected';
 
 export type SelectOptionLike<T> =

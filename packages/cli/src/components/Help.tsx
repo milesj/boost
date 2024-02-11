@@ -1,8 +1,8 @@
 import { Box, Text } from 'ink';
-import { OptionConfigMap, ParamConfigList } from '@boost/args';
+import type { OptionConfigMap, ParamConfigList } from '@boost/args';
 import { SPACING_COL } from '../constants';
 import { formatDescription } from '../helpers';
-import { Categories, CommandConfig, CommandConfigMap } from '../types';
+import type { Categories, CommandConfig, CommandConfigMap } from '../types';
 import { Header } from './Header';
 import { HelpCommands } from './internal/HelpCommands';
 import { HelpOptions } from './internal/HelpOptions';
