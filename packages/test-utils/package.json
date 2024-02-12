@@ -1,6 +1,6 @@
 {
   "name": "@boost/test-utils",
-  "version": "5.0.0-alpha.0",
+  "version": "5.0.0-alpha.1",
   "type": "module",
   "release": "1651512178249",
   "description": "Utility classes and functions for testing Boost applications in Vitest.",

@@ -1,6 +1,6 @@
 {
   "name": "@boost/decorators",
-  "version": "5.0.0-alpha.0",
+  "version": "5.0.0-alpha.1",
   "type": "module",
   "release": "1651512178029",
   "description": "Experimental decorators for common patterns.",

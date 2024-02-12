@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0 - 2024-02-12
+
+#### 💥 Breaking
+
+- Require Ink v4. (#199) ([33d2e03](https://github.com/milesj/boost/commit/33d2e03)), closes [#199](https://github.com/milesj/boost/issues/199)
+- Require React v18. ([7a6be83](https://github.com/milesj/boost/commit/7a6be83))
+- Switch to ESM only. Drop Node.js v14 support. (#195) ([42cf7af](https://github.com/milesj/boost/commit/42cf7af)), closes [#195](https://github.com/milesj/boost/issues/195)
+
+#### 🚀 Updates
+
+- Support .cjs and .mjs. ([f01e0e4](https://github.com/milesj/boost/commit/f01e0e4))
+
+#### 📘 Docs
+
+- Update docs and readmes. (#202) ([4e30180](https://github.com/milesj/boost/commit/4e30180)), closes [#202](https://github.com/milesj/boost/issues/202)
+
+#### 🛠 Internals
+
+- Get all tests running with ESM. (#197) ([660b9c4](https://github.com/milesj/boost/commit/660b9c4)), closes [#197](https://github.com/milesj/boost/issues/197)
+
+**Note:** Version bump only for package website
+
+
+
+
+
 ### 1.0.1 - 2023-05-01
 
 #### 📦 Dependencies

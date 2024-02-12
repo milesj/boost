@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 5.0.0-alpha.1 - 2024-02-12
+
+#### 💥 Breaking
+
+- Replace Jest with Vitest. (#194) ([7237d5e](https://github.com/milesj/boost/commit/7237d5e)), closes [#194](https://github.com/milesj/boost/issues/194)
+- Switch to ESM only. Drop Node.js v14 support. (#195) ([42cf7af](https://github.com/milesj/boost/commit/42cf7af)), closes [#195](https://github.com/milesj/boost/issues/195)
+
+#### 🚀 Updates
+
+- Integrate moon for build system. (#196) ([2d0fce3](https://github.com/milesj/boost/commit/2d0fce3)), closes [#196](https://github.com/milesj/boost/issues/196)
+
+#### 📦 Dependencies
+
+- **[execa]** Update to v8. ([d1541e8](https://github.com/milesj/boost/commit/d1541e8))
+- **[fast-glob]** Update to v3.3. ([87b9d1c](https://github.com/milesj/boost/commit/87b9d1c))
+- Update TS declarations. ([82dd29f](https://github.com/milesj/boost/commit/82dd29f))
+
+#### 📘 Docs
+
+- Update docs and readmes. (#202) ([4e30180](https://github.com/milesj/boost/commit/4e30180)), closes [#202](https://github.com/milesj/boost/issues/202)
+
+#### 🛠 Internals
+
+- Enable verbatim module syntax. ([001e679](https://github.com/milesj/boost/commit/001e679))
+- Get all tests running with ESM. (#197) ([660b9c4](https://github.com/milesj/boost/commit/660b9c4)), closes [#197](https://github.com/milesj/boost/issues/197)
+- Remove usages of require(). ([e6144b9](https://github.com/milesj/boost/commit/e6144b9))
+
+**Note:** Version bump only for package @boost/debug
+
+
+
+
+
 ### 4.0.1 - 2023-05-01
 
 #### 📦 Dependencies

@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 5.0.0-alpha.1 - 2024-02-12
+
+#### 💥 Breaking
+
+- Replace Jest with Vitest. (#194) ([7237d5e](https://github.com/milesj/boost/commit/7237d5e)), closes [#194](https://github.com/milesj/boost/issues/194)
+- Switch to ESM only. Drop Node.js v14 support. (#195) ([42cf7af](https://github.com/milesj/boost/commit/42cf7af)), closes [#195](https://github.com/milesj/boost/issues/195)
+
+#### 📦 Dependencies
+
+- **[ansi-escapes]** Update to v6.2. ([66bfdd2](https://github.com/milesj/boost/commit/66bfdd2))
+- **[ansi-regex]** Update to v6. ([b149558](https://github.com/milesj/boost/commit/b149558))
+- **[chalk]** Update to v5.3. ([1d775c9](https://github.com/milesj/boost/commit/1d775c9))
+- **[cli-truncate]** Update to v3.1. ([0165598](https://github.com/milesj/boost/commit/0165598))
+- **[figures]** Update to v5. ([5874d6c](https://github.com/milesj/boost/commit/5874d6c))
+- **[slice-ansi]** Update to v7.1. ([4c52dc7](https://github.com/milesj/boost/commit/4c52dc7))
+- **[string-width]** Update to v6.1. ([a17afab](https://github.com/milesj/boost/commit/a17afab))
+- **[strip-ansi]** Update to v7. ([254ce5b](https://github.com/milesj/boost/commit/254ce5b))
+- **[term-size]** Update to v3. ([8bfe6dc](https://github.com/milesj/boost/commit/8bfe6dc))
+- **[wrap-ansi]** Update to v8.1. ([5baacb8](https://github.com/milesj/boost/commit/5baacb8))
+
+#### 📘 Docs
+
+- Update docs and readmes. (#202) ([4e30180](https://github.com/milesj/boost/commit/4e30180)), closes [#202](https://github.com/milesj/boost/issues/202)
+
+#### 🛠 Internals
+
+- Get all tests running with ESM. (#197) ([660b9c4](https://github.com/milesj/boost/commit/660b9c4)), closes [#197](https://github.com/milesj/boost/issues/197)
+
+**Note:** Version bump only for package @boost/terminal
+
+
+
+
+
 ### 4.0.1 - 2023-05-01
 
 #### 📦 Dependencies

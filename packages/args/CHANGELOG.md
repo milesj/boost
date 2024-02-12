@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 5.0.0-alpha.1 - 2024-02-12
+
+#### 💥 Breaking
+
+- Replace Jest with Vitest. (#194) ([7237d5e](https://github.com/milesj/boost/commit/7237d5e)), closes [#194](https://github.com/milesj/boost/issues/194)
+- Require Ink v4. (#199) ([33d2e03](https://github.com/milesj/boost/commit/33d2e03)), closes [#199](https://github.com/milesj/boost/issues/199)
+- Switch to ESM only. Drop Node.js v14 support. (#195) ([42cf7af](https://github.com/milesj/boost/commit/42cf7af)), closes [#195](https://github.com/milesj/boost/issues/195)
+
+#### 🚀 Updates
+
+- Integrate moon for build system. (#196) ([2d0fce3](https://github.com/milesj/boost/commit/2d0fce3)), closes [#196](https://github.com/milesj/boost/issues/196)
+
+#### 📘 Docs
+
+- Update docs and readmes. (#202) ([4e30180](https://github.com/milesj/boost/commit/4e30180)), closes [#202](https://github.com/milesj/boost/issues/202)
+
+#### 🛠 Internals
+
+- Enable verbatim module syntax. ([001e679](https://github.com/milesj/boost/commit/001e679))
+
+**Note:** Version bump only for package @boost/args
+
+
+
+
+
 ### 4.0.1 - 2023-05-01
 
 #### 📦 Dependencies
