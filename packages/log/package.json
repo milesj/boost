@@ -15,6 +15,7 @@
   "types": "./mjs/index.d.ts",
   "files": [
     "mjs/**/*",
+    "res/**/*",
     "src/**/*"
   ],
   "engines": {
