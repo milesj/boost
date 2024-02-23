@@ -1806,7 +1806,7 @@ __metadata:
     "@boost/common": "npm:^5.0.0-alpha.1"
     "@boost/event": "npm:^5.0.0-alpha.1"
     "@boost/internal": "npm:^5.0.0-alpha.1"
-    "@boost/log": "npm:^5.0.0-alpha.1"
+    "@boost/log": "npm:^5.0.0-alpha.2"
     "@boost/terminal": "npm:^5.0.0-alpha.1"
     "@boost/translate": "npm:^5.0.0-alpha.1"
     debug: "npm:^4.3.4"
@@ -1978,7 +1978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@boost/log@npm:^5.0.0-alpha.1, @boost/log@workspace:packages/log":
+"@boost/log@npm:^5.0.0-alpha.2, @boost/log@workspace:packages/log":
   version: 0.0.0-use.local
   resolution: "@boost/log@workspace:packages/log"
   dependencies:
