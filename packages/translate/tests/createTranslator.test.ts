@@ -6,14 +6,14 @@ import type { Translator } from '../src/types';
 describe('createTranslator()', () => {
 	let translator: Translator;
 
-	beforeEach(() => {
-		translator = createTranslator('common', getFixturePath('i18n-resources'));
+	beforeEach(async () => {
+		translator = await createTranslator('common', getFixturePath('i18n-resources'));
 	});
 
-	it('errors if no namespace is provided', () => {
-		expect(() => {
+	it('errors if no namespace is provided', async () => {
+		await expect(() => {
 			createTranslator([], []);
-		}).toThrowErrorMatchingSnapshot();
+		}).resolves.toThrowErrorMatchingSnapshot();
 	});
 
 	it('errors if no resource paths are provided', () => {
