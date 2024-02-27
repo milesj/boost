@@ -27,7 +27,7 @@ tasks:
   pack:
     command: 'packemon pack --addEngines --addExports --declaration'
     deps:
-      - 'typecheck'
+      # - 'typecheck'
       - '^:pack'
     inputs:
       - '@group(sources)'

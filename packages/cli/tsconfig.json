@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "outDir": "dts",
+    "outDir": "../../.moon/cache/types/packages/cli",
     "rootDir": ".",
     "noUnusedLocals": false
   },

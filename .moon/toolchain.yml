@@ -8,3 +8,6 @@ node:
   addEnginesConstraint: true
   dedupeOnLockfileChange: true
   syncProjectWorkspaceDependencies: false
+
+typescript:
+  routeOutDirToCache: true

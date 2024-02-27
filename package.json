@@ -12,7 +12,7 @@
     "node": "20.11.0"
   },
   "devDependencies": {
-    "@moonrepo/cli": "^1.21.3",
+    "@moonrepo/cli": "^1.22.0",
     "@moonrepo/dev": "^2.0.1",
     "@types/exit": "^0.1.33",
     "@types/fs-extra": "^11.0.4",
@@ -23,8 +23,8 @@
     "@types/semver": "^7.5.7",
     "@types/split": "^1.0.5",
     "@vitest/coverage-v8": "^1.2.2",
-    "eslint": "^8.56.0",
-    "eslint-config-moon": "^2.1.1",
+    "eslint": "^8.57.0",
+    "eslint-config-moon": "^2.1.2",
     "fs-extra": "^11.2.0",
     "lerna": "^8.1.2",
     "packemon": "^3.3.1",
