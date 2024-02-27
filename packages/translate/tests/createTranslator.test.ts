@@ -11,17 +11,17 @@ describe('createTranslator()', () => {
 	});
 
 	it('errors if no namespace is provided', async () => {
-		await expect(() => createTranslator([], [])).resolves.toThrowErrorMatchingSnapshot();
+		await expect(createTranslator([], [])).rejects.toThrowErrorMatchingSnapshot();
 	});
 
 	it('errors if no resource paths are provided', async () => {
-		await expect(() => createTranslator('common', [])).resolves.toThrowErrorMatchingSnapshot();
+		await expect(createTranslator('common', [])).rejects.toThrowErrorMatchingSnapshot();
 	});
 
 	it('errors if `autoDetect` and `locale` are empty', async () => {
-		await expect(() =>
+		await expect(
 			createTranslator('common', getFixturePath('i18n-resources'), { autoDetect: false }),
-		).resolves.toThrowErrorMatchingSnapshot();
+		).rejects.toThrowErrorMatchingSnapshot();
 	});
 
 	it('returns a function to load translated messages', () => {
