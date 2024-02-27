@@ -10,7 +10,7 @@ common server-side settings.
 ```ts
 import { createTranslator } from '@boost/translate';
 
-const msg = createTranslator(['common', 'errors'], '../path/to/resources');
+const msg = await createTranslator(['common', 'errors'], '../path/to/resources');
 
 msg('common:welcome', { name: 'Boost' }); // Hello Boost!
 ```

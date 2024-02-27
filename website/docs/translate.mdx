@@ -66,7 +66,7 @@ function that can be used for loading and retrieving translations.
 ```ts
 import { createTranslator } from '@boost/translate';
 
-const msg = createTranslator(['common', 'errors'], '../path/to/resources');
+const msg = await createTranslator(['common', 'errors'], '../path/to/resources');
 ```
 
 > The first namespace provided becomes the "default namespace".

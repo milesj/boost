@@ -6,13 +6,6 @@ import { LocaleDetector } from './LocaleDetector';
 import { TranslateError } from './TranslateError';
 import type { Format, InterpolationParams, Locale, MessageOptions, Translator } from './types';
 
-// istanbul ignore next
-function handleError(error: Error | null) {
-	if (error) {
-		throw error;
-	}
-}
-
 export interface TranslatorOptions {
 	/** Automatically detect the locale from the environment. Defaults to `true`. */
 	autoDetect?: boolean;
@@ -32,11 +25,11 @@ export interface TranslatorOptions {
  * Create and return a `Translator` instance with the defined namespace.
  * A list of resource paths are required for locating translation files.
  */
-export function createTranslator(
+export async function createTranslator(
 	namespace: string[] | string,
 	resourcePath: PortablePath | PortablePath[],
 	options: TranslatorOptions = {},
-): Translator {
+): Promise<Translator> {
 	const {
 		autoDetect = true,
 		debug: debugOpt = false,
@@ -64,26 +57,23 @@ export function createTranslator(
 		translator.use(new LocaleDetector());
 	}
 
-	void translator.init(
-		{
-			backend: {
-				format: resourceFormat,
-				paths: resourcePaths,
-			},
-			cleanCode: true,
-			debug: debugOpt,
-			defaultNS: namespaces[0],
-			fallbackLng: fallbackLocale,
-			initImmediate: false,
-			lng: locale,
-			load: lookupType,
-			lowerCaseLng: false,
-			ns: namespaces,
-			returnEmptyString: true,
-			returnNull: true,
+	await translator.init({
+		backend: {
+			format: resourceFormat,
+			paths: resourcePaths,
 		},
-		handleError,
-	);
+		cleanCode: true,
+		debug: debugOpt,
+		defaultNS: namespaces[0],
+		fallbackLng: fallbackLocale,
+		initImmediate: false,
+		lng: locale,
+		load: lookupType,
+		lowerCaseLng: false,
+		ns: namespaces,
+		returnEmptyString: true,
+		returnNull: true,
+	});
 
 	function msg(
 		key: string[] | string,

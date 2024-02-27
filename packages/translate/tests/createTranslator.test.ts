@@ -6,26 +6,22 @@ import type { Translator } from '../src/types';
 describe('createTranslator()', () => {
 	let translator: Translator;
 
-	beforeEach(() => {
-		translator = createTranslator('common', getFixturePath('i18n-resources'));
+	beforeEach(async () => {
+		translator = await createTranslator('common', getFixturePath('i18n-resources'));
 	});
 
-	it('errors if no namespace is provided', () => {
-		expect(() => {
-			createTranslator([], []);
-		}).toThrowErrorMatchingSnapshot();
+	it('errors if no namespace is provided', async () => {
+		await expect(createTranslator([], [])).rejects.toThrowErrorMatchingSnapshot();
 	});
 
-	it('errors if no resource paths are provided', () => {
-		expect(() => {
-			createTranslator('common', []);
-		}).toThrowErrorMatchingSnapshot();
+	it('errors if no resource paths are provided', async () => {
+		await expect(createTranslator('common', [])).rejects.toThrowErrorMatchingSnapshot();
 	});
 
-	it('errors if `autoDetect` and `locale` are empty', () => {
-		expect(() => {
-			createTranslator('common', getFixturePath('i18n-resources'), { autoDetect: false });
-		}).toThrowErrorMatchingSnapshot();
+	it('errors if `autoDetect` and `locale` are empty', async () => {
+		await expect(
+			createTranslator('common', getFixturePath('i18n-resources'), { autoDetect: false }),
+		).rejects.toThrowErrorMatchingSnapshot();
 	});
 
 	it('returns a function to load translated messages', () => {
@@ -64,8 +60,8 @@ describe('createTranslator()', () => {
 	});
 
 	describe('msg()', () => {
-		beforeEach(() => {
-			translator = createTranslator('common', [
+		beforeEach(async () => {
+			translator = await createTranslator('common', [
 				getFixturePath('i18n-resources'),
 				getFixturePath('i18n-resources-more'),
 			]);
