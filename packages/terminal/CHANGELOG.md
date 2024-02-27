@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 5.0.0-alpha.2 - 2024-02-27
+
+#### 💥 Breaking
+
+- Rework translate to be async. (#204) ([8b58c6d](https://github.com/milesj/boost/commit/8b58c6d)), closes [#204](https://github.com/milesj/boost/issues/204)
+
+**Note:** Version bump only for package @boost/terminal
+
+
+
+
+
 # 5.0.0-alpha.1 - 2024-02-12
 
 #### 💥 Breaking

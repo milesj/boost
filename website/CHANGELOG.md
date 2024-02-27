@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-alpha.0 - 2024-02-27
+
+#### 💥 Breaking
+
+- Rework translate to be async. (#204) ([8b58c6d](https://github.com/milesj/boost/commit/8b58c6d)), closes [#204](https://github.com/milesj/boost/issues/204)
+
+**Note:** Version bump only for package website
+
+
+
+
+
 # 2.0.0 - 2024-02-12
 
 #### 💥 Breaking

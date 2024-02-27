@@ -1,6 +1,6 @@
 {
   "name": "@boost/internal",
-  "version": "5.0.0-alpha.1",
+  "version": "5.0.0-alpha.2",
   "type": "module",
   "release": "1651512176170",
   "description": "Boost internals.",
