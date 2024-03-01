@@ -15,7 +15,9 @@ tasks:
       shell: true
 
   build:
-    command: 'packemon build --addEngines --quiet'
+    command:
+      'yarn dlx --package packemon@4.0.0-alpha.2 --package typescript --quiet packemon build
+      --addEngines --quiet'
     deps:
       - '^:build'
     inputs:
@@ -25,7 +27,9 @@ tasks:
       runInCI: false
 
   pack:
-    command: 'packemon pack --addEngines --addExports --declaration'
+    command:
+      'yarn dlx --package packemon@4.0.0-alpha.2 --package typescript --quiet packemon pack
+      --addEngines --addExports --declaration'
     deps:
       # - 'typecheck'
       - '^:pack'

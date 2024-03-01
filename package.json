@@ -6,7 +6,7 @@
     "moon": "$(yarn bin moon) --color",
     "release": "yarn run moon run :pack && lerna-release",
     "version": "yarn install && git add yarn.lock",
-    "packemon": "yarn dlx --package packemon@3.3.1 --package typescript --quiet packemon"
+    "packemon": "yarn dlx --package packemon@4.0.0-alpha.2 --package typescript --quiet packemon"
   },
   "engines": {
     "node": "20.11.0"
@@ -27,7 +27,6 @@
     "eslint-config-moon": "^2.1.2",
     "fs-extra": "^11.2.0",
     "lerna": "^8.1.2",
-    "packemon": "^3.3.1",
     "prettier": "^3.2.5",
     "prettier-config-moon": "^1.1.2",
     "time-require": "^0.1.2",

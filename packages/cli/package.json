@@ -23,7 +23,7 @@
     "src/**/*"
   ],
   "engines": {
-    "node": ">=16.12.0"
+    "node": ">=18.12.0"
   },
   "repository": {
     "type": "git",
@@ -73,22 +73,16 @@
   "exports": {
     "./package.json": "./package.json",
     "./react": {
-      "node": {
-        "types": "./mjs/react.d.ts",
-        "import": "./mjs/react.mjs"
-      }
+      "types": "./mjs/react.d.ts",
+      "import": "./mjs/react.mjs"
     },
     "./test": {
-      "node": {
-        "types": "./mjs/test.d.ts",
-        "import": "./mjs/test.mjs"
-      }
+      "types": "./mjs/test.d.ts",
+      "import": "./mjs/test.mjs"
     },
     ".": {
-      "node": {
-        "types": "./mjs/index.d.ts",
-        "import": "./mjs/index.mjs"
-      }
+      "types": "./mjs/index.d.ts",
+      "import": "./mjs/index.mjs"
     }
   }
 }

@@ -8,6 +8,6 @@
     "verbatimModuleSyntax": true,
     "resolvePackageJsonExports": true,
     "resolvePackageJsonImports": true,
-    "customConditions": ["node"],
+    "customConditions": ["node", "default"],
   }
 }
