@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 5.0.0 - 2024-03-01
+
+#### 💥 Breaking
+
+- Drop Node v16 support. Require v18.12+. ([d6fe159](https://github.com/milesj/boost/commit/d6fe159))
+
+#### 📘 Docs
+
+- Finalize 5.0 migration. ([7a3700f](https://github.com/milesj/boost/commit/7a3700f))
+
+**Note:** Version bump only for package @boost/test-utils
+
+
+
+
+
 # 5.0.0-alpha.2 - 2024-02-27
 
 #### 💥 Breaking

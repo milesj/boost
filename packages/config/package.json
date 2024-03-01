@@ -1,6 +1,6 @@
 {
   "name": "@boost/config",
-  "version": "5.0.0-alpha.2",
+  "version": "5.0.0",
   "type": "module",
   "release": "1651512176721",
   "description": "Powerful convention based finder, loader, and manager of both configuration and ignore files.",
@@ -30,15 +30,15 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^5.0.0-alpha.2",
-    "@boost/debug": "^5.0.0-alpha.2",
-    "@boost/event": "^5.0.0-alpha.2",
-    "@boost/internal": "^5.0.0-alpha.2",
-    "@boost/module": "^5.0.0-alpha.2",
+    "@boost/common": "^5.0.0",
+    "@boost/debug": "^5.0.0",
+    "@boost/event": "^5.0.0",
+    "@boost/internal": "^5.0.0",
+    "@boost/module": "^5.0.0",
     "minimatch": "^9.0.3"
   },
   "devDependencies": {
-    "@boost/test-utils": "^5.0.0-alpha.2"
+    "@boost/test-utils": "^5.0.0"
   },
   "funding": {
     "type": "ko-fi",

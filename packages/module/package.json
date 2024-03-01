@@ -1,6 +1,6 @@
 {
   "name": "@boost/module",
-  "version": "5.0.0-alpha.2",
+  "version": "5.0.0",
   "release": "1651512177871",
   "description": "Module resolving and loading utilities with TypeScript support.",
   "keywords": [

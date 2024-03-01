@@ -1,6 +1,6 @@
 {
   "name": "@boost/pipeline",
-  "version": "5.0.0-alpha.2",
+  "version": "5.0.0",
   "type": "module",
   "release": "1651512175959",
   "description": "Pipe an input through a series of routines and tasks to produce an output, or simply, run logic in a series of stages.",
@@ -34,11 +34,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@boost/common": "^5.0.0-alpha.2",
-    "@boost/debug": "^5.0.0-alpha.2",
-    "@boost/event": "^5.0.0-alpha.2",
-    "@boost/internal": "^5.0.0-alpha.2",
-    "@boost/translate": "^5.0.0-alpha.2",
+    "@boost/common": "^5.0.0",
+    "@boost/debug": "^5.0.0",
+    "@boost/event": "^5.0.0",
+    "@boost/internal": "^5.0.0",
+    "@boost/translate": "^5.0.0",
     "execa": "^8.0.1",
     "lodash-es": "^4.17.21",
     "split": "^1.0.1"
