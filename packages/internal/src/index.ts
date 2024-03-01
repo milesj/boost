@@ -5,4 +5,3 @@
 
 export * from './browser';
 export * from './importAbsoluteModule';
-export * from './interopDefault';

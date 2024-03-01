@@ -21,7 +21,7 @@
     "src/**/*"
   ],
   "engines": {
-    "node": ">=16.12.0"
+    "node": ">=18.12.0"
   },
   "repository": {
     "type": "git",
@@ -45,10 +45,8 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "node": {
-        "types": "./mjs/index.d.ts",
-        "import": "./mjs/index.mjs"
-      }
+      "types": "./mjs/index.d.ts",
+      "import": "./mjs/index.mjs"
     }
   }
 }
