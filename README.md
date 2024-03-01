@@ -29,8 +29,9 @@ applications, packages, and tooling.
 ## Requirements
 
 - Linux, OSX, Windows
-- Node.js v16.12+ (for backend and tooling)
+- Node.js v18.12+ (for backend and tooling)
 - Edge, Chrome, Firefox (for frontend)
+- ESM only
 
 ## Documentation
 
